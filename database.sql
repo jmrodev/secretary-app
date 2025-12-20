@@ -17,6 +17,14 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Recreate Database
+--
+DROP DATABASE IF EXISTS `clinical_management`;
+CREATE DATABASE `clinical_management`;
+USE `clinical_management`;
+
+
+--
 -- Table structure for table `appointments`
 --
 
@@ -296,6 +304,7 @@ CREATE TABLE `transactions` (
   KEY `fk_trans_doctor` (`doctor_id`),
   KEY `request_id` (`request_id`),
   CONSTRAINT `fk_trans_doctor` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `fk_transactions_request` FOREIGN KEY (`request_id`) REFERENCES `medical_requests` (`id`) ON DELETE SET NULL,
   CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`related_user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
