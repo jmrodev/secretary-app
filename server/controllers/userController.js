@@ -225,7 +225,20 @@ exports.getUsersForAdmin = async (req, res) => {
                 WHEN role = 'doctor' THEN (SELECT dni FROM doctors WHERE user_id = users.id)
                 WHEN role = 'secretary' THEN (SELECT dni FROM secretaries WHERE user_id = users.id)
                 ELSE NULL
-            END as dni
+            END as dni,
+
+            CASE
+                WHEN role = 'patient' THEN (SELECT phone FROM patients WHERE user_id = users.id)
+                WHEN role = 'doctor' THEN (SELECT phone FROM doctors WHERE user_id = users.id)
+                WHEN role = 'secretary' THEN (SELECT phone FROM secretaries WHERE user_id = users.id)
+                ELSE NULL
+            END as phone,
+
+            CASE
+                WHEN role = 'doctor' THEN (SELECT specialty FROM doctors WHERE user_id = users.id)
+                ELSE NULL
+            END as specialty
+
             FROM users
             ORDER BY created_at DESC
         `);

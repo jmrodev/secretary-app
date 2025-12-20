@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useMessage } from '../context/MessageContext';
+import { useLanguage } from '../context/LanguageContext';
 import Modal from '../components/Modal';
 
 const AdminUsers = () => {
     const { user } = useAuth();
     const { showMessage } = useMessage();
+    const { t } = useLanguage();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -29,7 +31,7 @@ const AdminUsers = () => {
             setUsers(res.data);
         } catch (err) {
             console.error(err);
-            showMessage("Failed to load users", 'error');
+            showMessage(t('failed_load_users') || "Failed to load users", 'error');
         } finally {
             setLoading(false);
         }
@@ -85,12 +87,12 @@ const AdminUsers = () => {
         try {
             const { formData } = modalState;
             await api.post('/users/admin/users', formData);
-            showMessage("User created successfully", 'success');
+            showMessage(t('user_created'), 'success');
             fetchUsers();
             closeModal();
         } catch (err) {
             console.error(err);
-            showMessage(err.response?.data || "Failed to create user", 'error');
+            showMessage(err.response?.data || t('failed_create_user'), 'error');
         }
     };
 
@@ -98,12 +100,12 @@ const AdminUsers = () => {
         try {
             const { user, formData } = modalState;
             await api.put(`/users/admin/users/${user.id}`, formData);
-            showMessage("User updated successfully", 'success');
+            showMessage(t('user_updated'), 'success');
             fetchUsers();
             closeModal();
         } catch (err) {
             console.error(err);
-            showMessage(err.response?.data || "Failed to update user", 'error');
+            showMessage(err.response?.data || t('failed_update_user'), 'error');
         }
     };
 
@@ -111,12 +113,12 @@ const AdminUsers = () => {
         try {
             const { user } = modalState;
             await api.delete(`/users/admin/users/${user.id}`);
-            showMessage("User deleted successfully", 'success');
+            showMessage(t('user_deleted'), 'success');
             fetchUsers();
             closeModal();
         } catch (err) {
             console.error(err);
-            showMessage(err.response?.data || "Failed to delete user", 'error');
+            showMessage(err.response?.data || t('failed_delete_user'), 'error');
         }
     };
 
@@ -124,11 +126,11 @@ const AdminUsers = () => {
         try {
             const { user, formData } = modalState;
             await api.post(`/users/admin/reset-password/${user.id}`, { newPassword: formData.password });
-            showMessage(`Password reset for ${user.username}`, 'success');
+            showMessage(`${t('password_reset')} ${user.username}`, 'success');
             closeModal();
         } catch (err) {
             console.error(err);
-            showMessage(err.response?.data || "Failed to reset password", 'error');
+            showMessage(err.response?.data || t('failed_reset_password'), 'error');
         }
     };
 
@@ -139,17 +141,17 @@ const AdminUsers = () => {
         const setFormData = (newData) => setModalState(prev => ({ ...prev, formData: { ...prev.formData, ...newData } }));
 
         if (type === 'DELETE') {
-            return <p>Are you sure you want to delete user <strong>{user.username}</strong>? This action cannot be undone.</p>;
+            return <p>{t('delete_confirmation')} <strong>{user.username}</strong>? {t('action_cannot_undone')}</p>;
         }
 
         if (type === 'RESET_DNI') {
-            return <p>Reset password for <strong>{user.username}</strong> to DNI (<strong>{user.dni}</strong>)?</p>;
+            return <p>{t('reset_dni_confirmation')} <strong>{user.username}</strong> {t('to_dni')} (<strong>{user.dni}</strong>)?</p>;
         }
 
         if (type === 'RESET_MANUAL') {
             return (
                 <div>
-                    <label className="input-label">New Password</label>
+                    <label className="input-label">{t('new_password')}</label>
                     <input className="input-field" value={formData.password} onChange={e => setFormData({ password: e.target.value })} />
                 </div>
             );
@@ -160,35 +162,35 @@ const AdminUsers = () => {
             <div style={{ display: 'grid', gap: '1rem' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                     <div>
-                        <label className="input-label">Username</label>
+                        <label className="input-label">{t('username')}</label>
                         <input className="input-field" value={formData.username} onChange={e => setFormData({ username: e.target.value })} />
                     </div>
                     {type === 'CREATE' && (
                         <div>
-                            <label className="input-label">Password</label>
+                            <label className="input-label">{t('password')}</label>
                             <input className="input-field" type="password" value={formData.password} onChange={e => setFormData({ password: e.target.value })} />
                         </div>
                     )}
                 </div>
 
                 <div>
-                    <label className="input-label">Role</label>
+                    <label className="input-label">{t('role_header')}</label>
                     <select className="input-field" value={formData.role} onChange={e => setFormData({ role: e.target.value })}>
-                        <option value="patient">Patient</option>
-                        <option value="doctor">Doctor</option>
-                        <option value="secretary">Secretary</option>
+                        <option value="patient">{t('patient')}</option>
+                        <option value="doctor">{t('doctor')}</option>
+                        <option value="secretary">{t('secretary')}</option>
                         <option value="admin">Admin</option>
                     </select>
                 </div>
 
                 <div>
-                    <label className="input-label">Full Name</label>
+                    <label className="input-label">{t('full_name')}</label>
                     <input className="input-field" value={formData.full_name} onChange={e => setFormData({ full_name: e.target.value })} />
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                     <div>
-                        <label className="input-label">DNI</label>
+                        <label className="input-label">{t('dni')}</label>
                         <input className="input-field" value={formData.dni} onChange={e => setFormData({ dni: e.target.value })} />
                     </div>
                     <div>
@@ -199,7 +201,7 @@ const AdminUsers = () => {
 
                 {formData.role === 'doctor' && (
                     <div>
-                        <label className="input-label">Specialty</label>
+                        <label className="input-label">{t('specialty')}</label>
                         <input className="input-field" value={formData.specialty} onChange={e => setFormData({ specialty: e.target.value })} />
                     </div>
                 )}
@@ -227,30 +229,30 @@ const AdminUsers = () => {
         <div className="app-layout">
             <aside className="sidebar">
                 <div style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>MediCare</h2>
-                    <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>Admin Console</div>
+                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>{t('app_name')}</h2>
+                    <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>{t('admin_console')}</div>
                 </div>
                 <nav>
-                    <a href="/dashboard" className="sidebar-link">Dashboard</a>
-                    <a href="/logs" className="sidebar-link">Audit Logs</a>
-                    <a href="#" className="sidebar-link active">User Management</a>
+                    <a href="/dashboard" className="sidebar-link">{t('dashboard')}</a>
+                    <a href="/logs" className="sidebar-link">{t('audit_logs')}</a>
+                    <a href="#" className="sidebar-link active">{t('user_management')}</a>
                 </nav>
             </aside>
 
             <main className="main-content">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                     <div>
-                        <h1 className="title">User Management</h1>
-                        <p style={{ color: '#64748b' }}>Manage system access and recover user accounts.</p>
+                        <h1 className="title">{t('user_management')}</h1>
+                        <p style={{ color: '#64748b' }}>{t('manage_users_subtitle')}</p>
                     </div>
-                    <button className="btn btn-primary" onClick={openCreateModal}>+ Add User</button>
+                    <button className="btn btn-primary" onClick={openCreateModal}>{t('add_user')}</button>
                 </div>
 
                 <div className="card">
                     <div style={{ marginBottom: '1.5rem' }}>
                         <input
                             type="text"
-                            placeholder="Search by username, name or role..."
+                            placeholder={t('search_users_placeholder')}
                             className="input-field"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
@@ -258,14 +260,14 @@ const AdminUsers = () => {
                         />
                     </div>
 
-                    {loading ? <p>Loading users...</p> : (
+                    {loading ? <p>{t('loading_users')}</p> : (
                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                             <thead>
                                 <tr style={{ background: '#f8fafc', textAlign: 'left' }}>
-                                    <th style={{ padding: '0.75rem', borderBottom: '2px solid #e2e8f0' }}>User</th>
-                                    <th style={{ padding: '0.75rem', borderBottom: '2px solid #e2e8f0' }}>Role</th>
-                                    <th style={{ padding: '0.75rem', borderBottom: '2px solid #e2e8f0' }}>Name / Contact</th>
-                                    <th style={{ padding: '0.75rem', borderBottom: '2px solid #e2e8f0' }}>Actions</th>
+                                    <th style={{ padding: '0.75rem', borderBottom: '2px solid #e2e8f0' }}>{t('user_header')}</th>
+                                    <th style={{ padding: '0.75rem', borderBottom: '2px solid #e2e8f0' }}>{t('role_header')}</th>
+                                    <th style={{ padding: '0.75rem', borderBottom: '2px solid #e2e8f0' }}>{t('name_contact_header')}</th>
+                                    <th style={{ padding: '0.75rem', borderBottom: '2px solid #e2e8f0' }}>{t('actions')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -290,10 +292,10 @@ const AdminUsers = () => {
                                         </td>
                                         <td style={{ padding: '0.75rem' }}>
                                             <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                                <button onClick={() => openEditModal(u)} className="btn btn-secondary" style={{ padding: '0.25rem 0.5rem' }}>Edit</button>
-                                                <button onClick={() => openResetModal(u)} className="btn btn-secondary" style={{ padding: '0.25rem 0.5rem' }}>Reset PWD</button>
+                                                <button onClick={() => openEditModal(u)} className="btn btn-secondary" style={{ padding: '0.25rem 0.5rem' }}>{t('edit')}</button>
+                                                <button onClick={() => openResetModal(u)} className="btn btn-secondary" style={{ padding: '0.25rem 0.5rem' }}>{t('reset_pwd')}</button>
                                                 {u.role !== 'admin' && (
-                                                    <button onClick={() => openDeleteModal(u)} className="btn btn-secondary" style={{ padding: '0.25rem 0.5rem', background: '#fee2e2', color: '#991b1b', border: 'none' }}>Del</button>
+                                                    <button onClick={() => openDeleteModal(u)} className="btn btn-secondary" style={{ padding: '0.25rem 0.5rem', background: '#fee2e2', color: '#991b1b', border: 'none' }}>{t('delete')}</button>
                                                 )}
                                             </div>
                                         </td>
@@ -309,17 +311,17 @@ const AdminUsers = () => {
                 isOpen={modalState.isOpen}
                 onClose={closeModal}
                 title={
-                    modalState.type === 'CREATE' ? 'Add New User' :
-                        (modalState.type === 'EDIT' ? 'Edit User' :
-                            (modalState.type === 'DELETE' ? 'Delete User' : 'Reset Password'))
+                    modalState.type === 'CREATE' ? t('add_new_user') :
+                        (modalState.type === 'EDIT' ? t('edit_user') :
+                            (modalState.type === 'DELETE' ? t('delete_user') : t('reset_password')))
                 }
                 footer={
                     <>
-                        <button onClick={closeModal} className="btn btn-secondary">Cancel</button>
+                        <button onClick={closeModal} className="btn btn-secondary">{t('cancel')}</button>
                         <button onClick={confirmAction} className={`btn ${modalState.type === 'DELETE' ? 'btn-danger' : 'btn-primary'}`}
                             style={modalState.type === 'DELETE' ? { background: '#ef4444', color: 'white' } : {}}
                         >
-                            Confirm
+                            {t('confirm')}
                         </button>
                     </>
                 }

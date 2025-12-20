@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import TransactionModal from '../components/TransactionModal';
 
 const Appointments = () => {
@@ -9,6 +10,7 @@ const Appointments = () => {
     const [patients, setPatients] = useState([]);
     const [loading, setLoading] = useState(true);
     const { user } = useAuth();
+    const { t } = useLanguage();
 
     // Form Stats
     const [selectedDoctor, setSelectedDoctor] = useState('');
@@ -62,42 +64,42 @@ const Appointments = () => {
                 appointment_date: date,
                 reason
             });
-            setMessage('Appointment booked!');
+            setMessage(t('appointment_booked'));
             setShowForm(false);
             setReason('');
             setDate('');
             fetchAppointments();
         } catch (err) {
-            setMessage('Failed to book appointment.');
+            setMessage(t('failed_book'));
             console.error(err);
         }
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <div>{t('loading')}</div>;
 
     return (
         <div className="app-layout">
             <aside className="sidebar">
                 <div style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>MediCare</h2>
+                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>{t('app_name')}</h2>
                 </div>
                 <nav>
-                    <a href="/dashboard" className="sidebar-link">Dashboard</a>
+                    <a href="/dashboard" className="sidebar-link">{t('dashboard')}</a>
                     {(user.role === 'secretary' || user.role === 'admin' || user.role === 'doctor' || user.role === 'patient') && (
-                        <a href="/documents" className="sidebar-link">Documents</a>
+                        <a href="/documents" className="sidebar-link">{t('documents')}</a>
                     )}
-                    <a href="#" className="sidebar-link active">Appointments</a>
+                    <a href="#" className="sidebar-link active">{t('appointments')}</a>
                     {(user.role === 'secretary' || user.role === 'admin' || user.role === 'doctor') && (
-                        <a href="/finances" className="sidebar-link">Finances</a>
+                        <a href="/finances" className="sidebar-link">{t('finances')}</a>
                     )}
                 </nav>
             </aside>
             <main className="main-content">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                    <h1 className="title" style={{ marginBottom: 0 }}>Appointments</h1>
+                    <h1 className="title" style={{ marginBottom: 0 }}>{t('appointments')}</h1>
                     {(user.role === 'patient' || user.role === 'secretary') && (
                         <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
-                            {showForm ? 'Cancel Booking' : 'Book Appointment'}
+                            {showForm ? t('cancel_booking') : t('book_appointment')}
                         </button>
                     )}
                 </div>
@@ -106,12 +108,12 @@ const Appointments = () => {
 
                 {showForm && (
                     <div className="card" style={{ marginBottom: '2rem', animation: 'fadeIn 0.3s ease' }}>
-                        <h3>New Appointment</h3>
+                        <h3>{t('new_appointment')}</h3>
                         <form onSubmit={handleBook}>
                             <div className="input-group">
-                                <label className="input-label">Select Doctor</label>
+                                <label className="input-label">{t('doctors')}</label>
                                 <select className="input-field" value={selectedDoctor} onChange={e => setSelectedDoctor(e.target.value)} required>
-                                    <option value="">-- Select Doctor --</option>
+                                    <option value="">{t('select_doctor')}</option>
                                     {doctors.map(d => (
                                         <option key={d.id} value={d.id}>{d.full_name} ({d.specialty})</option>
                                     ))}
@@ -120,9 +122,9 @@ const Appointments = () => {
 
                             {user.role === 'secretary' && (
                                 <div className="input-group">
-                                    <label className="input-label">Select Patient</label>
+                                    <label className="input-label">{t('patients')}</label>
                                     <select className="input-field" value={selectedPatient} onChange={e => setSelectedPatient(e.target.value)} required>
-                                        <option value="">-- Select Patient --</option>
+                                        <option value="">{t('select_patient')}</option>
                                         {patients.map(p => (
                                             <option key={p.id} value={p.id}>{p.full_name}</option>
                                         ))}
@@ -131,33 +133,33 @@ const Appointments = () => {
                             )}
 
                             <div className="input-group">
-                                <label className="input-label">Date & Time</label>
+                                <label className="input-label">{t('date_time')}</label>
                                 <input type="datetime-local" className="input-field" value={date} onChange={e => setDate(e.target.value)} required />
                             </div>
 
                             <div className="input-group">
-                                <label className="input-label">Reason</label>
+                                <label className="input-label">{t('reason')}</label>
                                 <textarea className="input-field" rows="3" value={reason} onChange={e => setReason(e.target.value)} required></textarea>
                             </div>
 
-                            <button type="submit" className="btn btn-accent" style={{ width: '100%' }}>Confirm Booking</button>
+                            <button type="submit" className="btn btn-accent" style={{ width: '100%' }}>{t('confirm_booking')}</button>
                         </form>
                     </div>
                 )}
 
                 <div className="card">
                     {appointments.length === 0 ? (
-                        <p>No appointments found.</p>
+                        <p>{t('no_appointments')}</p>
                     ) : (
                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                             <thead>
                                 <tr style={{ textAlign: 'left', borderBottom: '1px solid #e2e8f0' }}>
-                                    <th style={{ padding: '1rem' }}>Date</th>
-                                    <th style={{ padding: '1rem' }}>Doctor</th>
-                                    <th style={{ padding: '1rem' }}>Patient</th>
-                                    <th style={{ padding: '1rem' }}>Reason</th>
-                                    <th style={{ padding: '1rem' }}>Status</th>
-                                    <th style={{ padding: '1rem' }}>Payment</th>
+                                    <th style={{ padding: '1rem' }}>{t('date_label')}</th>
+                                    <th style={{ padding: '1rem' }}>{t('doctor')}</th>
+                                    <th style={{ padding: '1rem' }}>{t('patient')}</th>
+                                    <th style={{ padding: '1rem' }}>{t('reason')}</th>
+                                    <th style={{ padding: '1rem' }}>{t('status')}</th>
+                                    <th style={{ padding: '1rem' }}>{t('payment')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -175,7 +177,7 @@ const Appointments = () => {
                                                 backgroundColor: app.status === 'confirmed' ? '#dcfce7' : (app.status === 'cancelled' ? '#fee2e2' : '#f1f5f9'),
                                                 color: app.status === 'confirmed' ? '#166534' : (app.status === 'cancelled' ? '#991b1b' : '#475569')
                                             }}>
-                                                {app.status || 'pending'}
+                                                {app.status === 'confirmed' ? t('completed') : (app.status === 'cancelled' ? t('cancelled') : t('pending'))}
                                             </span>
                                         </td>
                                         <td style={{ padding: '1rem' }}>
@@ -187,7 +189,7 @@ const Appointments = () => {
                                                     backgroundColor: app.payment_status === 'paid' ? '#dcfce7' : (app.payment_status === 'debt' ? '#fee2e2' : (app.payment_status === 'partial' ? '#fef9c3' : '#f1f5f9')),
                                                     color: app.payment_status === 'paid' ? '#166534' : (app.payment_status === 'debt' ? '#991b1b' : (app.payment_status === 'partial' ? '#854d0e' : '#475569'))
                                                 }}>
-                                                    {app.payment_status || 'pending'}
+                                                    {app.payment_status === 'paid' ? t('paid') : (app.payment_status === 'debt' ? t('debt') : t('pending'))}
                                                 </span>
                                                 {(app.payment_status !== 'paid') && (user.role === 'secretary' || user.role === 'doctor') && (
                                                     <button

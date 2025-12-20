@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useMessage } from '../context/MessageContext';
+import { useLanguage } from '../context/LanguageContext';
 
 import Modal from '../components/Modal';
 
 const Patients = () => {
     const { user } = useAuth();
     const { showMessage } = useMessage();
+    const { t } = useLanguage();
     const [patients, setPatients] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -44,7 +46,7 @@ const Patients = () => {
             setPatients(res.data);
         } catch (err) {
             console.error(err);
-            showMessage("Failed to load patients", 'error');
+            showMessage(t('failed_create_patient'), 'error'); // Reusing error msg slightly
         } finally {
             setLoading(false);
         }
@@ -89,7 +91,7 @@ const Patients = () => {
                 dni: newDni,
                 insurance: newInsurance
             });
-            showMessage('Patient created successfully', 'success');
+            showMessage(t('patient_created'), 'success');
             setShowCreate(false);
             setNewUsername('');
             setNewPassword('');
@@ -100,7 +102,7 @@ const Patients = () => {
             setNewInsurance('');
             fetchPatients();
         } catch (err) {
-            const msg = err.response?.data || "Failed to create patient";
+            const msg = err.response?.data || t('failed_create_patient');
             setCreateMsg(msg); // Keep local msg for form error
             showMessage(msg, 'error');
             console.error(err);
@@ -145,14 +147,14 @@ const Patients = () => {
         try {
             await api.put(`/users/patients/${details.id}`, editData); // details.id is patients.id
             setEditModalOpen(false);
-            showMessage("Patient details updated", 'success');
+            showMessage(t('patient_updated'), 'success');
             // Refresh details
             handleViewDetails(details.id);
             // Also refresh list if needed, but prioritize view
             fetchPatients();
         } catch (err) {
             console.error("Failed to update patient", err);
-            showMessage("Failed to update patient", 'error');
+            showMessage(t('failed_update_patient'), 'error');
         }
     };
 
@@ -170,7 +172,7 @@ const Patients = () => {
                 amount: debtParams.amount,
                 method: debtParams.method
             });
-            showMessage("Payment processed successfully", 'success');
+            showMessage(t('payment_processed'), 'success');
             setDebtModalOpen(false);
             fetchPatients(); // Refresh list to update badge
             if (selectedPatient === debtParams.patientId) {
@@ -178,22 +180,22 @@ const Patients = () => {
             }
         } catch (err) {
             console.error(err);
-            showMessage("Payment failed", 'error');
+            showMessage(t('payment_failed'), 'error');
         }
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <div>{t('loading')}</div>;
 
     if (viewLoading) {
         return (
             <div className="app-layout">
                 <aside className="sidebar">
                     <div style={{ marginBottom: '2rem' }}>
-                        <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>MediCare</h2>
+                        <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>{t('app_name')}</h2>
                     </div>
                 </aside>
                 <main className="main-content">
-                    <div>Loading patient history...</div>
+                    <div>{t('loading')}</div>
                 </main>
             </div>
         );
@@ -204,39 +206,39 @@ const Patients = () => {
             <div className="app-layout">
                 <aside className="sidebar">
                     <div style={{ marginBottom: '2rem' }}>
-                        <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>MediCare</h2>
+                        <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>{t('app_name')}</h2>
                     </div>
                     <nav>
-                        <a href="/dashboard" className="sidebar-link">Dashboard</a>
-                        <a href="#" className="sidebar-link active">Patients</a>
+                        <a href="/dashboard" className="sidebar-link">{t('dashboard')}</a>
+                        <a href="#" className="sidebar-link active">{t('patients')}</a>
                     </nav>
                 </aside>
                 <main className="main-content" style={{ maxWidth: '800px', margin: '0 auto' }}>
-                    <button onClick={() => { setSelectedPatient(null); setDetails(null); }} style={{ marginBottom: '1rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent-color)', fontWeight: 'bold' }}>&larr; Back to List</button>
+                    <button onClick={() => { setSelectedPatient(null); setDetails(null); }} style={{ marginBottom: '1rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent-color)', fontWeight: 'bold' }}>&larr; {t('back_to_list')}</button>
 
                     <h1 className="title" style={{ textTransform: 'capitalize' }}>{details.full_name}</h1>
 
                     <div className="card" style={{ marginBottom: '2rem' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <h3>Patient Info</h3>
-                            <button className="btn btn-secondary" onClick={handleEditClick} style={{ padding: '0.25rem 0.5rem', fontSize: '0.85rem' }}>Edit Info</button>
+                            <h3>{t('patient_info')}</h3>
+                            <button className="btn btn-secondary" onClick={handleEditClick} style={{ padding: '0.25rem 0.5rem', fontSize: '0.85rem' }}>{t('edit_info')}</button>
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
-                            <p><strong>DNI:</strong> {details.dni || 'N/A'}</p>
+                            <p><strong>{t('dni')}:</strong> {details.dni || 'N/A'}</p>
                             <p><strong>Insurance:</strong> {details.insurance || 'N/A'}</p>
                             <p><strong>Phone:</strong> {details.phone || 'N/A'}</p>
-                            <p><strong>DOB:</strong> {details.dob ? new Date(details.dob).toLocaleDateString() : 'N/A'}</p>
+                            <p><strong>{t('dob')}:</strong> {details.dob ? new Date(details.dob).toLocaleDateString() : 'N/A'}</p>
                         </div>
                         <div style={{ marginTop: '1rem', display: 'flex', gap: '2rem' }}>
-                            <p><strong>Address:</strong> {details.address || 'N/A'}</p>
-                            <p><strong>Accumulated Medical Leave:</strong> <span style={{ fontWeight: 'bold', color: '#7c3aed' }}>{details.accumulated_days || 0} Days</span></p>
+                            <p><strong>{t('address')}:</strong> {details.address || 'N/A'}</p>
+                            <p><strong>{t('accumulated_medical_leave')}:</strong> <span style={{ fontWeight: 'bold', color: '#7c3aed' }}>{details.accumulated_days || 0} Days</span></p>
                         </div>
-                        <p style={{ marginTop: '0.5rem' }}><strong>Micro-History:</strong> {details.medical_history || 'N/A'}</p>
+                        <p style={{ marginTop: '0.5rem' }}><strong>{t('micro_history')}:</strong> {details.medical_history || 'N/A'}</p>
                     </div>
 
                     <div className="card" style={{ marginBottom: '2rem' }}>
-                        <h3>Previous Appointments</h3>
-                        {details.appointments.length === 0 ? <p>No history.</p> : (
+                        <h3>{t('previous_appointments')}</h3>
+                        {details.appointments.length === 0 ? <p>{t('no_appointments')}</p> : (
                             <ul style={{ listStyle: 'none', padding: 0 }}>
                                 {details.appointments.map(a => (
                                     <li key={a.id} style={{ padding: '0.5rem 0', borderBottom: '1px solid #f1f5f9' }}>
@@ -249,10 +251,10 @@ const Patients = () => {
                     </div>
 
                     <div className="card" style={{ marginBottom: '2rem' }}>
-                        <h3>Medical Documents</h3>
+                        <h3>{t('medical_documents')}</h3>
 
-                        <h4 style={{ fontSize: '1rem', marginTop: '1rem', color: '#64748b' }}>Prescriptions & Licenses</h4>
-                        {details.prescriptions && details.prescriptions.length === 0 ? <p className="text-muted">No prescriptions found.</p> : (
+                        <h4 style={{ fontSize: '1rem', marginTop: '1rem', color: '#64748b' }}>{t('prescriptions_licenses')}</h4>
+                        {details.prescriptions && details.prescriptions.length === 0 ? <p className="text-muted">None.</p> : (
                             <ul style={{ listStyle: 'none', padding: 0 }}>
                                 {details.prescriptions && details.prescriptions.map(p => (
                                     <li key={p.id} style={{ padding: '0.5rem 0', borderBottom: '1px solid #f1f5f9' }}>
@@ -283,43 +285,43 @@ const Patients = () => {
                     </div>
 
                     <div className="card" style={{ marginBottom: '2rem' }}>
-                        <h3>Financial History & Debt</h3>
+                        <h3>{t('financial_history_debt')}</h3>
                         {(!details.transactions || details.transactions.length === 0) ? <p>No transactions found.</p> : (
                             <>
                                 <div style={{ marginBottom: '1rem', padding: '1rem', background: '#fffbeb', borderRadius: '6px', border: '1px solid #fcd34d', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <div>
-                                        <strong>Total Debt: </strong>
+                                        <strong>{t('total_debt')}: </strong>
                                         <span style={{ color: '#b45309', fontWeight: 'bold', fontSize: '1.2rem' }}>
                                             ${details.transactions.filter(t => t.status === 'pending').reduce((acc, t) => acc + Number(t.amount), 0).toFixed(2)}
                                         </span>
                                     </div>
                                     {details.transactions.some(t => t.status === 'pending') && (
-                                        <button className="btn btn-primary" onClick={(e) => openDebtModal(e, details.id, details.transactions.filter(t => t.status === 'pending').reduce((acc, t) => acc + Number(t.amount), 0))}>Pay Debt</button>
+                                        <button className="btn btn-primary" onClick={(e) => openDebtModal(e, details.id, details.transactions.filter(t => t.status === 'pending').reduce((acc, t) => acc + Number(t.amount), 0))}>{t('pay_debt')}</button>
                                     )}
                                 </div>
                                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
                                     <thead>
                                         <tr style={{ textAlign: 'left', borderBottom: '1px solid #e2e8f0' }}>
-                                            <th style={{ padding: '0.5rem' }}>Date</th>
-                                            <th style={{ padding: '0.5rem' }}>Description</th>
-                                            <th style={{ padding: '0.5rem' }}>Amount</th>
-                                            <th style={{ padding: '0.5rem' }}>Status</th>
+                                            <th style={{ padding: '0.5rem' }}>{t('transaction_date')}</th>
+                                            <th style={{ padding: '0.5rem' }}>{t('description')}</th>
+                                            <th style={{ padding: '0.5rem' }}>{t('amount')}</th>
+                                            <th style={{ padding: '0.5rem' }}>{t('status')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {details.transactions.map(t => (
-                                            <tr key={t.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                                                <td style={{ padding: '0.5rem' }}>{new Date(t.transaction_date).toLocaleDateString()}</td>
-                                                <td style={{ padding: '0.5rem' }}>{t.description}</td>
-                                                <td style={{ padding: '0.5rem', fontWeight: 'bold' }}>${t.amount}</td>
+                                        {details.transactions.map(tx => (
+                                            <tr key={tx.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                                                <td style={{ padding: '0.5rem' }}>{new Date(tx.transaction_date).toLocaleDateString()}</td>
+                                                <td style={{ padding: '0.5rem' }}>{tx.description}</td>
+                                                <td style={{ padding: '0.5rem', fontWeight: 'bold' }}>${tx.amount}</td>
                                                 <td style={{ padding: '0.5rem' }}>
                                                     <span style={{
                                                         padding: '2px 6px', borderRadius: '4px',
-                                                        background: t.status === 'paid' ? '#dcfce7' : '#fee2e2',
-                                                        color: t.status === 'paid' ? '#166534' : '#991b1b',
+                                                        background: tx.status === 'paid' ? '#dcfce7' : '#fee2e2',
+                                                        color: tx.status === 'paid' ? '#166534' : '#991b1b',
                                                         fontSize: '0.8rem'
                                                     }}>
-                                                        {(t.status || 'unknown').toUpperCase()}
+                                                        {(tx.status === 'paid' ? t('paid') : t('debt')).toUpperCase()}
                                                     </span>
                                                 </td>
                                             </tr>
@@ -336,19 +338,19 @@ const Patients = () => {
                         title="Edit Patient Details"
                         footer={
                             <>
-                                <button className="btn btn-secondary" onClick={() => setEditModalOpen(false)}>Cancel</button>
-                                <button className="btn btn-primary" onClick={handleSaveEdit}>Save Changes</button>
+                                <button className="btn btn-secondary" onClick={() => setEditModalOpen(false)}>{t('cancel')}</button>
+                                <button className="btn btn-primary" onClick={handleSaveEdit}>{t('confirm')}</button>
                             </>
                         }
                     >
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                             <div className="input-group">
-                                <label className="input-label">Full Name</label>
+                                <label className="input-label">{t('full_name')}</label>
                                 <input className="input-field" value={editData.full_name} onChange={e => setEditData({ ...editData, full_name: e.target.value })} />
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                 <div className="input-group">
-                                    <label className="input-label">DNI</label>
+                                    <label className="input-label">{t('dni')}</label>
                                     <input className="input-field" value={editData.dni} onChange={e => setEditData({ ...editData, dni: e.target.value })} />
                                 </div>
                                 <div className="input-group">
@@ -362,16 +364,16 @@ const Patients = () => {
                                     <input className="input-field" value={editData.phone} onChange={e => setEditData({ ...editData, phone: e.target.value })} />
                                 </div>
                                 <div className="input-group">
-                                    <label className="input-label">DOB</label>
+                                    <label className="input-label">{t('dob')}</label>
                                     <input type="date" className="input-field" value={editData.dob} onChange={e => setEditData({ ...editData, dob: e.target.value })} />
                                 </div>
                             </div>
                             <div className="input-group">
-                                <label className="input-label">Address</label>
+                                <label className="input-label">{t('address')}</label>
                                 <input className="input-field" value={editData.address} onChange={e => setEditData({ ...editData, address: e.target.value })} />
                             </div>
                             <div className="input-group">
-                                <label className="input-label">Medical History (Text)</label>
+                                <label className="input-label">{t('micro_history')}</label>
                                 <textarea className="input-field" rows="3" value={editData.medical_history} onChange={e => setEditData({ ...editData, medical_history: e.target.value })} />
                             </div>
 
@@ -394,20 +396,20 @@ const Patients = () => {
                     <Modal
                         isOpen={debtModalOpen}
                         onClose={() => setDebtModalOpen(false)}
-                        title="Pay Debt"
+                        title={t('pay_debt')}
                         footer={
                             <>
-                                <button className="btn btn-secondary" onClick={() => setDebtModalOpen(false)}>Cancel</button>
-                                <button className="btn btn-primary" onClick={handlePayDebt}>Confirm Payment</button>
+                                <button className="btn btn-secondary" onClick={() => setDebtModalOpen(false)}>{t('cancel')}</button>
+                                <button className="btn btn-primary" onClick={handlePayDebt}>{t('confirm_payment')}</button>
                             </>
                         }
                     >
                         <div>
                             <p style={{ marginBottom: '1rem' }}>Enter amount to pay:</p>
-                            <label className="input-label">Amount ($)</label>
+                            <label className="input-label">{t('amount')} ($)</label>
                             <input className="input-field" type="number" value={debtParams.amount} onChange={e => setDebtParams({ ...debtParams, amount: e.target.value })} />
 
-                            <label className="input-label" style={{ marginTop: '1rem' }}>Payment Method</label>
+                            <label className="input-label" style={{ marginTop: '1rem' }}>{t('payment_method')}</label>
                             <select className="input-field" value={debtParams.method} onChange={e => setDebtParams({ ...debtParams, method: e.target.value })}>
                                 <option value="cash">Cash</option>
                                 <option value="transfer">Transfer</option>
@@ -426,19 +428,19 @@ const Patients = () => {
         <div className="app-layout">
             <aside className="sidebar">
                 <div style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>MediCare</h2>
+                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>{t('app_name')}</h2>
                 </div>
                 <nav>
-                    <a href="/dashboard" className="sidebar-link">Dashboard</a>
-                    <a href="#" className="sidebar-link active">Patients</a>
+                    <a href="/dashboard" className="sidebar-link">{t('dashboard')}</a>
+                    <a href="#" className="sidebar-link active">{t('patients')}</a>
                 </nav>
             </aside>
             <main className="main-content">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h1 className="title">Patients</h1>
+                    <h1 className="title">{t('patients_list')}</h1>
                     {user.role === 'secretary' && (
                         <button className="btn btn-primary" onClick={() => setShowCreate(!showCreate)}>
-                            {showCreate ? 'Cancel' : 'Register New Patient'}
+                            {showCreate ? t('cancel') : t('register_new_patient')}
                         </button>
                     )}
                 </div>
@@ -447,7 +449,7 @@ const Patients = () => {
                 <div style={{ marginBottom: '1.5rem' }}>
                     <input
                         type="text"
-                        placeholder="Search by name, DNI, insurance..."
+                        placeholder={t('search_placeholder')}
                         className="input-field"
                         value={searchTerm}
                         onChange={e => setSearchTerm(e.target.value)}
@@ -459,25 +461,25 @@ const Patients = () => {
 
                 {showCreate && (
                     <div className="card" style={{ marginBottom: '2rem', animation: 'fadeIn 0.3s ease' }}>
-                        <h3>Register Patient</h3>
+                        <h3>{t('register_new_patient')}</h3>
                         <form onSubmit={handleCreate}>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                 <div className="input-group">
-                                    <label className="input-label">Username</label>
+                                    <label className="input-label">{t('username')}</label>
                                     <input className="input-field" value={newUsername} onChange={e => setNewUsername(e.target.value)} required />
                                 </div>
                                 <div className="input-group">
-                                    <label className="input-label">Password</label>
+                                    <label className="input-label">{t('password')}</label>
                                     <input type="password" className="input-field" value={newPassword} onChange={e => setNewPassword(e.target.value)} required />
                                 </div>
                             </div>
                             <div className="input-group">
-                                <label className="input-label">Full Name</label>
+                                <label className="input-label">{t('full_name')}</label>
                                 <input className="input-field" value={fullName} onChange={e => setFullName(e.target.value)} required />
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                 <div className="input-group">
-                                    <label className="input-label">DNI</label>
+                                    <label className="input-label">{t('dni')}</label>
                                     <input className="input-field" value={newDni} onChange={e => setNewDni(e.target.value)} />
                                 </div>
                                 <div className="input-group">
@@ -491,23 +493,23 @@ const Patients = () => {
                                     <input className="input-field" value={phone} onChange={e => setPhone(e.target.value)} />
                                 </div>
                                 <div className="input-group">
-                                    <label className="input-label">Date of Birth</label>
+                                    <label className="input-label">{t('dob')}</label>
                                     <input type="date" className="input-field" value={dob} onChange={e => setDob(e.target.value)} />
                                 </div>
                             </div>
-                            <button type="submit" className="btn btn-primary">Create Account</button>
+                            <button type="submit" className="btn btn-primary">{t('create_account')}</button>
                         </form>
                     </div>
                 )}
 
                 <div className="card">
                     <ul style={{ listStyle: 'none', padding: 0 }}>
-                        {filteredPatients.length === 0 ? <li style={{ padding: '1rem', color: '#64748b' }}>No patients found.</li> : filteredPatients.map(p => (
+                        {filteredPatients.length === 0 ? <li style={{ padding: '1rem', color: '#64748b' }}>{t('no_patients_found')}</li> : filteredPatients.map(p => (
                             <li key={p.id} style={{ padding: '1rem', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <div>
                                     <strong style={{ textTransform: 'capitalize' }}>{p.full_name}</strong>
                                     <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
-                                        {p.dni && `DNI: ${p.dni} | `}
+                                        {p.dni && `${t('dni')}: ${p.dni} | `}
                                         {p.insurance && `OS: ${p.insurance} | `}
                                         {p.phone}
                                     </div>
@@ -517,12 +519,12 @@ const Patients = () => {
                                             style={{ marginTop: '0.25rem', display: 'inline-block', background: '#fee2e2', color: '#991b1b', padding: '2px 6px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 'bold', cursor: 'pointer', border: '1px solid #fecaca' }}
                                             title="Click to Pay Debt"
                                         >
-                                            Deuda: ${p.total_debt}
+                                            {t('debt')}: ${p.total_debt}
                                         </div>
                                     )}
                                 </div>
                                 <button className="btn btn-accent" style={{ padding: '0.25rem 0.75rem', fontSize: '0.8rem' }} onClick={() => handleViewDetails(p.id)}>
-                                    View History
+                                    {t('view_history')}
                                 </button>
                             </li>
                         ))}
@@ -533,20 +535,20 @@ const Patients = () => {
                 <Modal
                     isOpen={debtModalOpen}
                     onClose={() => setDebtModalOpen(false)}
-                    title="Pay Debt"
+                    title={t('pay_debt')}
                     footer={
                         <>
-                            <button className="btn btn-secondary" onClick={() => setDebtModalOpen(false)}>Cancel</button>
-                            <button className="btn btn-primary" onClick={handlePayDebt}>Confirm Payment</button>
+                            <button className="btn btn-secondary" onClick={() => setDebtModalOpen(false)}>{t('cancel')}</button>
+                            <button className="btn btn-primary" onClick={handlePayDebt}>{t('confirm_payment')}</button>
                         </>
                     }
                 >
                     <div>
                         <p style={{ marginBottom: '1rem' }}>Enter amount to pay:</p>
-                        <label className="input-label">Amount ($)</label>
+                        <label className="input-label">{t('amount')} ($)</label>
                         <input className="input-field" type="number" value={debtParams.amount} onChange={e => setDebtParams({ ...debtParams, amount: e.target.value })} />
 
-                        <label className="input-label" style={{ marginTop: '1rem' }}>Payment Method</label>
+                        <label className="input-label" style={{ marginTop: '1rem' }}>{t('payment_method')}</label>
                         <select className="input-field" value={debtParams.method} onChange={e => setDebtParams({ ...debtParams, method: e.target.value })}>
                             <option value="cash">Cash</option>
                             <option value="transfer">Transfer</option>

@@ -2,8 +2,10 @@
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import Modal from './Modal';
+import { useLanguage } from '../context/LanguageContext';
 
-const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = {}, requestId }) => {
+const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requestId }) => {
+    const { t } = useLanguage();
     const [formData, setFormData] = useState({
         type: 'income_patient',
         amount: '',
@@ -12,6 +14,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = {}, reques
         doctor_id: '',
         method: 'cash',
         status: 'paid',
+        service_type: 'consultation',
         proof: null
     });
 
@@ -27,36 +30,37 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = {}, reques
 
     useEffect(() => {
         if (isOpen) {
+            const data = initialData || {};
             setFormData(prev => ({
                 ...prev,
-                type: initialData.type || 'income_patient',
-                amount: initialData.amount || '',
-                description: initialData.description || '',
-                related_user_id: initialData.patientUserId || initialData.patientId || '', // prefer userId, fallback (though likely wrong if fallback is patientId)
-                doctor_id: initialData.doctorId || '',
-                method: initialData.method || 'cash',
-                status: initialData.status || 'paid'
+                type: data.type || 'income_patient',
+                amount: data.amount || '',
+                description: data.description || '',
+                related_user_id: data.patientUserId || data.patientId || '', // prefer userId, fallback (though likely wrong if fallback is patientId)
+                doctor_id: data.doctorId || '',
+                method: data.method || 'cash',
+                status: data.status || 'paid'
             }));
 
             // Auto-fetch pricing if doctor and patient are present
-            if (initialData.doctorId && initialData.patientId) {
-                fetchPricing(initialData.doctorId, initialData.patientId);
+            if (data.doctorId && data.patientId) {
+                fetchPricing(data.doctorId, data.patientId);
             }
 
             // Pre-fill search if patient is set
-            if (initialData.patientName) {
-                setPatientSearch(`${initialData.patientName} (${initialData.patientDni || 'N/A'})`);
+            if (data.patientName) {
+                setPatientSearch(`${data.patientName} (${data.patientDni || 'N/A'})`);
             } else {
                 setPatientSearch('');
             }
 
             fetchLists();
         }
-    }, [isOpen, initialData]);
+    }, [isOpen]); // Dependent only on isOpen to avoid loops with unstable initialData objects
 
     const fetchPricing = async (docId, patId, serviceType = 'consultation') => {
         try {
-            const res = await api.get(`/ finances / pricing ? doctor_id = ${docId}& patient_id=${patId}& service_type=${serviceType} `);
+            const res = await api.get(`/finances/pricing?doctor_id=${docId}&patient_id=${patId}&service_type=${serviceType}`);
             if (res.data) {
                 setFormData(prev => ({ ...prev, amount: res.data.price }));
                 setTotalPrice(Number(res.data.price));
@@ -89,7 +93,6 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = {}, reques
             });
 
             // Calculate Debt if patient income
-            // Calculate Debt if patient income
             if (formData.type === 'income_patient' && totalPrice > 0) {
                 const paid = Number(formData.amount);
                 const debt = totalPrice - paid;
@@ -98,7 +101,6 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = {}, reques
                 }
             }
 
-            // If this transaction is related to an appointment, we might need a way to link it?
             if (requestId) {
                 data.append('request_id', requestId);
             }
@@ -108,7 +110,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = {}, reques
             if (onSuccess) onSuccess(res.data);
             onClose();
         } catch (err) {
-            alert("Failed to record transaction");
+            alert(t('failed_record_transaction'));
             console.error(err);
         } finally {
             setLoading(false);
@@ -119,33 +121,33 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = {}, reques
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title="Record Payment"
+            title={t('record_payment')}
             footer={
                 <>
-                    <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
+                    <button className="btn btn-secondary" onClick={onClose}>{t('cancel')}</button>
                     <button className="btn btn-primary" onClick={handleSubmit} disabled={loading}>
-                        {loading ? 'Processing...' : 'Confirm Payment'}
+                        {loading ? t('processing') : t('confirm_payment')}
                     </button>
                 </>
             }
         >
             <div className="input-group">
-                <label className="input-label">Type</label>
+                <label className="input-label">{t('type')}</label>
                 <select className="input-field" value={formData.type} onChange={e => setFormData({ ...formData, type: e.target.value })}>
-                    <option value="income_patient">Consultation / Patient Pay</option>
-                    <option value="income_rental">Rental Payment (Doctor)</option>
-                    <option value="expense_general">General Expense</option>
+                    <option value="income_patient">{t('income_patient')}</option>
+                    <option value="income_rental">{t('income_rental')}</option>
+                    <option value="expense_general">{t('expense_general')}</option>
                 </select>
             </div>
 
             {formData.type === 'income_patient' && (
                 <div className="input-group">
-                    <label className="input-label">Patient</label>
+                    <label className="input-label">{t('patient')}</label>
                     <div style={{ position: 'relative' }}>
                         <input
                             type="text"
                             className="input-field"
-                            placeholder="Search by name or DNI..."
+                            placeholder={t('search_name_dni')}
                             value={patientSearch}
                             onChange={(e) => {
                                 setPatientSearch(e.target.value);
@@ -153,10 +155,10 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = {}, reques
                                 setFormData({ ...formData, related_user_id: '' }); // Reset selection on edit
                             }}
                             onFocus={() => {
-                                if (!initialData.patientId) setShowPatientList(true);
+                                if (!initialData?.patientId) setShowPatientList(true);
                             }}
-                            readOnly={!!initialData.patientId}
-                            style={initialData.patientId ? { backgroundColor: '#f1f5f9', cursor: 'not-allowed' } : {}}
+                            readOnly={!!initialData?.patientId}
+                            style={initialData?.patientId ? { backgroundColor: '#f1f5f9', cursor: 'not-allowed' } : {}}
                         />
                         {showPatientList && patientSearch && !formData.related_user_id && (
                             <ul style={{
@@ -187,12 +189,6 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = {}, reques
                                             setShowPatientList(false);
                                             // Trigger pricing fetch
                                             if (formData.doctor_id) {
-                                                fetchPricing(formData.doctor_id, p.id); // Note: we need patients.id usually, but transaction uses related_user_id (which is p.user_id). Let's check filter.
-                                                // Actually the pricing logic needs the ID (table id), but transaction uses user_id.
-                                                // The pricing endpoint expects patients.id.
-                                                // Let's ensure we have the right IDs.
-                                                // p.id is patients.id. p.user_id is users.id.
-                                                // fetchPricing uses docId and patId.
                                                 fetchPricing(formData.doctor_id, p.id);
                                             }
                                         }}
@@ -211,51 +207,58 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = {}, reques
 
             {formData.type === 'income_rental' && (
                 <div className="input-group">
-                    <label className="input-label">Doctor (Payer)</label>
+                    <label className="input-label">{t('doctor_payer')}</label>
                     <select className="input-field" value={formData.related_user_id} onChange={e => setFormData({ ...formData, related_user_id: e.target.value })}>
-                        <option value="">Select Doctor</option>
+                        <option value="">{t('select_doctor')}</option>
                         {doctors.map(d => <option key={d.id} value={d.user_id}>{d.full_name}</option>)}
                     </select>
                 </div>
             )}
 
             <div className="input-group">
-                <label className="input-label">Beneficiary Doctor (Cash Box)</label>
+                <label className="input-label">{t('beneficiary_doctor_cash_box')}</label>
                 <select className="input-field" value={formData.doctor_id} onChange={e => {
                     const newDocId = e.target.value;
                     setFormData({ ...formData, doctor_id: newDocId });
-                    // If we have a patient selected (related_user_id is set + it's income_patient)
-                    // We need the PATIENT ID (table id).
-                    // This is tricky because we only stored related_user_id.
-                    // Ideally we should store patient_id in state too?
-                    // Let's rely on patientSearch or initialData linkage?
-                    // Or iterate patients list using related_user_id to find id.
                     if (formData.type === 'income_patient' && formData.related_user_id) {
                         const pat = patients.find(p => p.user_id === Number(formData.related_user_id));
                         if (pat) fetchPricing(newDocId, pat.id, formData.service_type);
                     }
                 }}>
-                    <option value="">Select Doctor</option>
+                    <option value="">{t('select_doctor')}</option>
                     {doctors.map(d => <option key={d.id} value={d.id}>{d.full_name}</option>)}
                 </select>
             </div>
 
             {formData.type === 'income_patient' && (
                 <div className="input-group">
-                    <label className="input-label">Service Type</label>
+                    <label className="input-label">{t('service_type')}</label>
                     <select className="input-field" value={formData.service_type || 'consultation'} onChange={e => {
                         const newType = e.target.value;
                         setFormData({ ...formData, service_type: newType });
                         if (formData.doctor_id && formData.related_user_id) {
                             const pat = patients.find(p => p.user_id === Number(formData.related_user_id));
-                            if (pat) fetchPricing(formData.doctor_id, pat.id, newType);
+                            if (pat) {
+                                fetchPricing(formData.doctor_id, pat.id, newType);
+                                // Update description
+                                let newDesc = '';
+                                if (newType === 'consultation') newDesc = `Consultation: ${pat.full_name}`;
+                                else if (newType === 'virtual_consultation') newDesc = `Virtual Cons: ${pat.full_name}`;
+                                else if (newType === 'prescription') newDesc = `Prescription: ${pat.full_name}`;
+                                else if (newType === 'medical_license') newDesc = `License: ${pat.full_name}`;
+                                else if (newType === 'custom') newDesc = `Custom: ${pat.full_name}`;
+
+                                setFormData(prev => ({ ...prev, service_type: newType, description: newDesc }));
+                                return;
+                            }
                         }
+                        setFormData({ ...formData, service_type: newType });
                     }}>
-                        <option value="consultation">Consultation (Standard)</option>
-                        <option value="virtual_consultation">Virtual Consultation</option>
-                        <option value="prescription">Prescription (Rate)</option>
-                        <option value="medical_license">Medical License</option>
-                        <option value="custom">Custom</option>
+                        <option value="consultation">{t('consultation_standard')}</option>
+                        <option value="virtual_consultation">{t('virtual_consultation')}</option>
+                        <option value="prescription">{t('prescription_rate')}</option>
+                        <option value="medical_license">{t('medical_license')}</option>
+                        <option value="custom">{t('custom')}</option>
                     </select>
                 </div>
             )}
@@ -263,21 +266,21 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = {}, reques
             <div className="input-group">
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                     <div>
-                        <label className="input-label">Amount Paid</label>
+                        <label className="input-label">{t('amount_paid')}</label>
                         <input type="number" className="input-field" value={formData.amount} onChange={e => setFormData({ ...formData, amount: e.target.value })} />
                         {pricingInfo && (
                             <div style={{ marginTop: '0.25rem' }}>
                                 <small style={{ display: 'block', color: '#64748b' }}>{pricingInfo}</small>
                                 {(totalPrice - Number(formData.amount)) > 0 && (
                                     <small style={{ display: 'block', color: '#ef4444', fontWeight: 'bold' }}>
-                                        Debt: ${(totalPrice - Number(formData.amount)).toFixed(2)}
+                                        {t('debt')}: ${(totalPrice - Number(formData.amount)).toFixed(2)}
                                     </small>
                                 )}
                             </div>
                         )}
                     </div>
                     <div>
-                        <label className="input-label">Method</label>
+                        <label className="input-label">{t('method')}</label>
                         <select className="input-field" value={formData.method} onChange={e => setFormData({ ...formData, method: e.target.value })}>
                             <option value="cash">Cash</option>
                             <option value="debit">Debit Card</option>
@@ -290,21 +293,21 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = {}, reques
             </div>
 
             <div className="input-group">
-                <label className="input-label">Status</label>
+                <label className="input-label">{t('status')}</label>
                 <select className="input-field" value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value })}>
-                    <option value="paid">Paid (Pagado)</option>
-                    <option value="partial">Partial (Parcial)</option>
-                    <option value="pending">Pending (Deuda)</option>
+                    <option value="paid">{t('paid')}</option>
+                    <option value="partial">{t('partial')}</option>
+                    <option value="pending">{t('pending')}</option>
                 </select>
             </div>
 
             <div className="input-group">
-                <label className="input-label">Description</label>
+                <label className="input-label">{t('description')}</label>
                 <input className="input-field" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} placeholder="e.g. Consultation Dr. X" />
             </div>
 
             <div className="input-group">
-                <label className="input-label">Proof of Payment (Optional)</label>
+                <label className="input-label">{t('proof_payment_optional')}</label>
                 <input type="file" className="input-field" onChange={e => setFormData({ ...formData, proof: e.target.files[0] })} />
             </div>
         </Modal>

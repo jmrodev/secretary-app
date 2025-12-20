@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useMessage } from '../context/MessageContext';
+import { useLanguage } from '../context/LanguageContext'; // Import hook
 import Modal from '../components/Modal';
 import TransactionModal from '../components/TransactionModal';
 
 const Dashboard = () => {
     const { user, logout } = useAuth();
     const { showMessage } = useMessage();
+    const { t, toggleLanguage, language } = useLanguage(); // Use hook
 
     const [todayAppointments, setTodayAppointments] = useState([]);
     const [loadingSchedule, setLoadingSchedule] = useState(true);
@@ -41,14 +43,14 @@ const Dashboard = () => {
         return () => clearInterval(interval);
     }, []);
 
-    if (!user) return <div>Loading...</div>;
+    if (!user) return <div>{t('loading')}</div>;
 
     const confirmAction = async () => {
         if (!pendingAction) return;
         try {
             await api.patch(`/appointments/${pendingAction.id}/status`, { status: pendingAction.status });
             setTodayAppointments(prev => prev.map(p => p.id === pendingAction.id ? { ...p, status: pendingAction.status } : p));
-            showMessage(`Appointment marked as ${pendingAction.status}`, 'success');
+            showMessage(`${t('appointments')} marked as ${pendingAction.status}`, 'success'); // Partial translation for now
         } catch (err) {
             showMessage("Failed to update status", 'error');
         } finally {
@@ -58,17 +60,23 @@ const Dashboard = () => {
     };
 
     const handleSavePrescription = async () => {
+        if (!prescribeModal.medications.trim()) {
+            showMessage(t('please_enter_meds'), 'warning');
+            return;
+        }
+
         try {
             await api.post('/medical/prescriptions', {
                 appointment_id: prescribeModal.apptId,
                 medications: prescribeModal.medications,
                 instructions: prescribeModal.instructions
             });
-            showMessage("Prescription created!", 'success');
+            showMessage(t('prescription_created'), 'success');
             setPrescribeModal({ open: false, apptId: null, patientName: '', medications: '', instructions: '' });
         } catch (err) {
             console.error(err);
-            showMessage("Failed to create prescription", 'error');
+            const errMsg = err.response?.data || t('failed_prescription');
+            showMessage(errMsg, 'error');
         }
     };
 
@@ -77,12 +85,12 @@ const Dashboard = () => {
             <Modal
                 isOpen={modalOpen}
                 onClose={() => setModalOpen(false)}
-                title="Confirm Action"
+                title={t('confirm_action')}
                 footer={
                     <>
-                        <button onClick={() => setModalOpen(false)} className="btn btn-secondary">Cancel</button>
+                        <button onClick={() => setModalOpen(false)} className="btn btn-secondary">{t('cancel')}</button>
                         <button onClick={confirmAction} className="btn btn-primary" style={{ backgroundColor: pendingAction?.status === 'cancelled' ? '#ef4444' : '#22c55e' }}>
-                            Confirm
+                            {t('confirm')}
                         </button>
                     </>
                 }
@@ -96,18 +104,18 @@ const Dashboard = () => {
                 title={`New Prescription for ${prescribeModal.patientName}`}
                 footer={
                     <>
-                        <button className="btn btn-secondary" onClick={() => setPrescribeModal({ ...prescribeModal, open: false })}>Cancel</button>
-                        <button className="btn btn-primary" onClick={handleSavePrescription}>Create</button>
+                        <button className="btn btn-secondary" onClick={() => setPrescribeModal({ ...prescribeModal, open: false })}>{t('cancel')}</button>
+                        <button className="btn btn-primary" onClick={handleSavePrescription} disabled={!prescribeModal.medications.trim()}>{t('create')}</button>
                     </>
                 }
             >
                 <div style={{ display: 'grid', gap: '1rem' }}>
                     <div className="input-group">
-                        <label className="input-label">Medications (One per line)</label>
+                        <label className="input-label">{t('medications')}</label>
                         <textarea className="input-field" rows="4" value={prescribeModal.medications} onChange={e => setPrescribeModal({ ...prescribeModal, medications: e.target.value })} placeholder="e.g. Ibuprofen 600mg" autoFocus />
                     </div>
                     <div className="input-group">
-                        <label className="input-label">Instructions / Notes</label>
+                        <label className="input-label">{t('instructions')}</label>
                         <textarea className="input-field" rows="3" value={prescribeModal.instructions} onChange={e => setPrescribeModal({ ...prescribeModal, instructions: e.target.value })} placeholder="e.g. Take every 8 hours with food." />
                     </div>
                 </div>
@@ -118,17 +126,18 @@ const Dashboard = () => {
                 onClose={() => setPaymentModal({ ...paymentModal, open: false })}
                 initialData={paymentModal.initialData}
                 onSuccess={async (data) => {
-                    // Update appointment payment status if needed
                     if (paymentModal.apptId) {
                         try {
                             await api.patch(`/appointments/${paymentModal.apptId}/payment`, { status: data.status });
                             showMessage("Payment recorded and Appointment updated!", 'success');
-                            // Refresh schedule
-                            // Ideally trigger a context reload or refetch logic in existing layout
-                            // For now reload window or just let the user see the log?
-                            // Best: trigger fetchScheule again. But it is inside useEffect.
-                            // We'll rely on the poll interval or user refresh.
-                        } catch (e) { console.error(e); }
+
+                            setTodayAppointments(prev => prev.map(a =>
+                                a.id === paymentModal.apptId ? { ...a, payment_status: data.status } : a
+                            ));
+                        } catch (e) {
+                            console.error(e);
+                            showMessage("Payment recorded but failed to update appointment status", 'warning');
+                        }
                     } else {
                         showMessage("Payment recorded!", 'success');
                     }
@@ -137,77 +146,81 @@ const Dashboard = () => {
 
             <aside className="sidebar">
                 <div style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>MediCare</h2>
-                    <div style={{ fontSize: '0.85rem', opacity: 0.7 }}>Logged in as {user.username}</div>
+                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>{t('app_name')}</h2>
+                    <div style={{ fontSize: '0.85rem', opacity: 0.7 }}>{t('logged_in_as')} {user.username}</div>
                     <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.5rem', background: 'rgba(255,255,255,0.2)', padding: '2px 6px', borderRadius: '4px', display: 'inline-block' }}>{user.role}</div>
                 </div>
 
                 <nav>
-                    <a href="#" className="sidebar-link active">Dashboard</a>
-                    <a href="/profile" className="sidebar-link">My Profile</a>
+                    <a href="#" className="sidebar-link active">{t('dashboard')}</a>
+                    <a href="/profile" className="sidebar-link">{t('my_profile')}</a>
 
                     {user.role === 'admin' && (
                         <>
-                            <a href="/logs" className="sidebar-link">Audit Logs</a>
-                            <a href="/admin/users" className="sidebar-link">User Management</a>
+                            <a href="/logs" className="sidebar-link">{t('audit_logs')}</a>
+                            <a href="/admin/users" className="sidebar-link">{t('user_management')}</a>
                         </>
                     )}
 
                     {(user.role === 'secretary' || user.role === 'doctor' || user.role === 'patient') && (
-                        <a href="/documents" className="sidebar-link">Documents</a>
+                        <a href="/documents" className="sidebar-link">{t('documents')}</a>
                     )}
 
                     {(user.role === 'secretary' || user.role === 'doctor') && (
                         <>
-                            <a href="/appointments" className="sidebar-link">Appointments</a>
-                            <a href="/patients" className="sidebar-link">Patients</a>
-                            <a href="/finances" className="sidebar-link">Finances</a>
+                            <a href="/appointments" className="sidebar-link">{t('appointments')}</a>
+                            <a href="/patients" className="sidebar-link">{t('patients')}</a>
+                            <a href="/finances" className="sidebar-link">{t('finances')}</a>
                         </>
                     )}
 
                     {(user.role === 'secretary') && (
                         <>
-                            <a href="/doctors" className="sidebar-link">Doctors</a>
+                            <a href="/doctors" className="sidebar-link">{t('doctors')}</a>
                         </>
                     )}
 
                     {user.role === 'doctor' && (
                         <>
-                            <a href="#" className="sidebar-link">My Patients</a>
-                            <a href="/rentals" className="sidebar-link">Rent Office</a>
+                            <a href="#" className="sidebar-link">{t('my_patients')}</a>
+                            <a href="/rentals" className="sidebar-link">{t('rent_office')}</a>
                         </>
                     )}
 
                     {user.role === 'patient' && (
                         <>
-                            <a href="#" className="sidebar-link">My Appointments</a>
-                            <a href="#" className="sidebar-link">Medical History</a>
+                            <a href="#" className="sidebar-link">{t('my_appointments')}</a>
+                            <a href="#" className="sidebar-link">{t('medical_history')}</a>
                         </>
                     )}
                 </nav>
 
                 <div style={{ marginTop: 'auto' }}>
+                    <button onClick={toggleLanguage} className="sidebar-link" style={{ background: 'rgba(255,255,255,0.1)', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span>🌐 {t('language')}</span>
+                        <span style={{ textTransform: 'uppercase', fontWeight: 'bold' }}>{language}</span>
+                    </button>
                     <button onClick={logout} className="sidebar-link" style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer' }}>
-                        Sign Out
+                        {t('sign_out')}
                     </button>
                 </div>
             </aside>
 
             <main className="main-content">
                 <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                    <h1 className="title">Dashboard</h1>
+                    <h1 className="title">{t('dashboard')}</h1>
                     {user.role !== 'admin' && (
-                        <a href="/appointments" className="btn btn-primary" style={{ textDecoration: 'none' }}>New Appointment</a>
+                        <a href="/appointments" className="btn btn-primary" style={{ textDecoration: 'none' }}>{t('new_appointment')}</a>
                     )}
                 </header>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
                     {user.role !== 'admin' && (
                         <div className="card">
-                            <h3>Today's Schedule</h3>
-                            {loadingSchedule ? <p>Loading...</p> : (
+                            <h3>{t('today_schedule')}</h3>
+                            {loadingSchedule ? <p>{t('loading')}</p> : (
                                 todayAppointments.length === 0 ?
-                                    <p className="text-muted">No appointments scheduled for today.</p> :
+                                    <p className="text-muted">{t('no_appointments_today')}</p> :
                                     <ul style={{ listStyle: 'none', padding: 0 }}>
                                         {todayAppointments.sort((a, b) => new Date(a.appointment_date) - new Date(b.appointment_date)).map(a => {
                                             const time = new Date(a.appointment_date);
@@ -215,10 +228,6 @@ const Dashboard = () => {
                                             const isPast = time < now;
                                             const isCompleted = a.status === 'completed';
                                             const isCancelled = a.status === 'cancelled';
-
-                                            // Determine if it's the "Next" appointment (first pending one)
-                                            // Ideally we calculate this outside the map, but for simple display:
-                                            // We'll style based on status first.
 
                                             let bg = 'transparent';
                                             let borderLeft = 'none';
@@ -231,7 +240,6 @@ const Dashboard = () => {
                                                 opacity = 0.5;
                                                 bg = '#fef2f2';
                                             } else if (!isPast && a.status === 'pending') {
-                                                // Highlight upcoming pending
                                                 bg = '#eff6ff';
                                                 borderLeft = '4px solid #3b82f6';
                                             }
@@ -257,8 +265,8 @@ const Dashboard = () => {
                                                     <div>
                                                         <div style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>
                                                             {a.appointment_date.split('T')[1].substring(0, 5)}
-                                                            {a.status === 'completed' && <span style={{ fontSize: '0.7rem', marginLeft: '0.5rem', color: 'green' }}>(Completed)</span>}
-                                                            {a.status === 'cancelled' && <span style={{ fontSize: '0.7rem', marginLeft: '0.5rem', color: 'red' }}>(Cancelled)</span>}
+                                                            {a.status === 'completed' && <span style={{ fontSize: '0.7rem', marginLeft: '0.5rem', color: 'green' }}>({t('completed')})</span>}
+                                                            {a.status === 'cancelled' && <span style={{ fontSize: '0.7rem', marginLeft: '0.5rem', color: 'red' }}>({t('cancelled')})</span>}
                                                         </div>
                                                         <div style={{ fontSize: '1rem' }}>{a.patient_name}</div>
                                                         <div style={{ fontSize: '0.8rem', color: '#64748b' }}>w/ {a.doctor_name}</div>
@@ -280,11 +288,11 @@ const Dashboard = () => {
                                                                                 type: 'income_patient',
                                                                                 amount: '',
                                                                                 description: `Consultation: ${a.patient_name}`,
-                                                                                patientId: a.patient_id, // We need patient_id in data 
+                                                                                patientId: a.patient_id,
                                                                                 patientName: a.patient_name,
                                                                                 patientDni: a.patient_dni,
                                                                                 patientUserId: a.patient_user_id,
-                                                                                doctorId: a.doctor_id     // We need doctor_id
+                                                                                doctorId: a.doctor_id
                                                                             },
                                                                             apptId: a.id
                                                                         })} title={a.payment_status === 'partial' ? "Pay Remaining" : "Charge Payment"} style={{ border: 'none', background: a.payment_status === 'partial' ? '#ca8a04' : '#eab308', color: 'white', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>$</button>
@@ -312,29 +320,29 @@ const Dashboard = () => {
 
                     {user.role !== 'admin' && (
                         <div className="card">
-                            <h3>Quick Actions</h3>
+                            <h3>{t('quick_actions')}</h3>
                             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                                <a href="/appointments" className="btn btn-accent" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', textDecoration: 'none', display: 'inline-block' }}>Book Appointment</a>
-                                {user.role === 'doctor' && <a href="/documents" className="btn btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', textDecoration: 'none', display: 'inline-block' }}>View Documents</a>}
-                                {user.role === 'secretary' && <a href="/patients" className="btn btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', textDecoration: 'none', display: 'inline-block' }}>Register Patient</a>}
+                                <a href="/appointments" className="btn btn-accent" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', textDecoration: 'none', display: 'inline-block' }}>{t('book_appointment')}</a>
+                                {user.role === 'doctor' && <a href="/documents" className="btn btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', textDecoration: 'none', display: 'inline-block' }}>{t('view_documents')}</a>}
+                                {user.role === 'secretary' && <a href="/patients" className="btn btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', textDecoration: 'none', display: 'inline-block' }}>{t('register_patient')}</a>}
                             </div>
                         </div>
                     )}
 
                     <div className="card">
-                        <h3>Notifications</h3>
-                        <p>System operational.</p>
+                        <h3>{t('notifications')}</h3>
+                        <p>{t('system_operational')}</p>
                     </div>
                 </div>
 
                 {user.role === 'admin' && (
                     <div className="card" style={{ marginTop: '1.5rem' }}>
-                        <h3>Administration</h3>
+                        <h3>{t('administration')}</h3>
                         <a href="/logs" className="btn btn-secondary" style={{ display: 'inline-block', marginTop: '0.5rem', textDecoration: 'none', marginRight: '1rem' }}>
-                            View Audit Logs
+                            {t('view_audit_logs')}
                         </a>
                         <a href="/admin/users" className="btn btn-primary" style={{ display: 'inline-block', marginTop: '0.5rem', textDecoration: 'none' }}>
-                            Manage Users
+                            {t('manage_users')}
                         </a>
                     </div>
                 )}

@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { useNavigate, Link } from 'react-router-dom';
 
 const Register = () => {
     const { register } = useAuth();
     const navigate = useNavigate();
+    const { t } = useLanguage();
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -37,37 +39,37 @@ const Register = () => {
     return (
         <div className="auth-page">
             <div className="card auth-card" style={{ maxWidth: '500px' }}>
-                <h2 className="title" style={{ textAlign: 'center' }}>Create Account</h2>
+                <h2 className="title" style={{ textAlign: 'center' }}>{t('create_account')}</h2>
 
                 {error && <div style={{ color: 'var(--error)', marginBottom: '1rem', textAlign: 'center' }}>{error}</div>}
 
                 <form onSubmit={handleSubmit}>
                     <div className="input-group">
-                        <label className="input-label">I am a...</label>
+                        <label className="input-label">{t('i_am')}</label>
                         <select name="role" className="input-field" value={formData.role} onChange={handleChange}>
-                            <option value="patient">Patient</option>
-                            <option value="doctor">Doctor</option>
-                            <option value="secretary">Secretary</option>
+                            <option value="patient">{t('patient')}</option>
+                            <option value="doctor">{t('doctor')}</option>
+                            <option value="secretary">{t('secretary')}</option>
                         </select>
                     </div>
 
                     <div className="input-group">
-                        <label className="input-label">Full Name</label>
+                        <label className="input-label">{t('full_name')}</label>
                         <input name="fullName" className="input-field" onChange={handleChange} required />
                     </div>
 
                     <div className="input-group">
-                        <label className="input-label">DNI (Identity Number)</label>
+                        <label className="input-label">{t('dni')}</label>
                         <input name="dni" className="input-field" onChange={handleChange} required />
                     </div>
 
                     <div className="input-group">
-                        <label className="input-label">Username</label>
+                        <label className="input-label">{t('username')}</label>
                         <input name="username" className="input-field" onChange={handleChange} required />
                     </div>
 
                     <div className="input-group">
-                        <label className="input-label">Password</label>
+                        <label className="input-label">{t('password')}</label>
                         <input type="password" name="password" className="input-field" onChange={handleChange} required />
                     </div>
 
@@ -75,11 +77,11 @@ const Register = () => {
                     {formData.role === 'doctor' && (
                         <>
                             <div className="input-group">
-                                <label className="input-label">Specialty</label>
+                                <label className="input-label">{t('specialty')}</label>
                                 <input name="specialty" className="input-field" onChange={handleChange} />
                             </div>
                             <div className="input-group">
-                                <label className="input-label">CBU (for payments)</label>
+                                <label className="input-label">{t('cbu')}</label>
                                 <input name="cbu" className="input-field" onChange={handleChange} />
                             </div>
                         </>
@@ -88,19 +90,19 @@ const Register = () => {
                     {formData.role === 'patient' && (
                         <>
                             <div className="input-group">
-                                <label className="input-label">Date of Birth</label>
+                                <label className="input-label">{t('dob')}</label>
                                 <input type="date" name="dob" className="input-field" onChange={handleChange} />
                             </div>
                         </>
                     )}
 
                     <button type="submit" className="btn btn-accent" style={{ width: '100%' }}>
-                        Register
+                        {t('register')}
                     </button>
                 </form>
                 <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-                    <span className="subtitle">Already have an account? </span>
-                    <Link to="/login" style={{ color: 'var(--primary-color)', textDecoration: 'none', fontWeight: 600 }}>Login</Link>
+                    <span className="subtitle">{t('already_account')} </span>
+                    <Link to="/login" style={{ color: 'var(--primary-color)', textDecoration: 'none', fontWeight: 600 }}>{t('login')}</Link>
                 </div>
             </div>
         </div>

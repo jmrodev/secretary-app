@@ -6,13 +6,17 @@ import './index.css';
 import { AuthProvider } from './context/AuthContext';
 import { MessageProvider } from './context/MessageContext';
 
+import { LanguageProvider } from './context/LanguageContext';
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <MessageProvider>
-          <App />
-        </MessageProvider>
+        <LanguageProvider>
+          <MessageProvider>
+            <App />
+          </MessageProvider>
+        </LanguageProvider>
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>

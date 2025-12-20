@@ -27,7 +27,7 @@ const verifyToken = async (req, res, next) => {
         conn.release();
 
         if (rows.length === 0) {
-            return res.status(404).send("User not found");
+            return res.status(401).send("User not found (Session invalid)");
         }
 
         const currentVersion = rows[0].token_version;

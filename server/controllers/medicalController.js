@@ -7,17 +7,35 @@ exports.createPrescription = async (req, res) => {
     let conn;
     try {
         const { appointment_id, medications, instructions } = req.body;
+        console.log("DEBUG: createPrescription called", { appointment_id, medications });
+
+        if (!medications || !medications.trim()) {
+            return res.status(400).send("Medications are required");
+        }
+
         // Verify doctor owns the appointment
         conn = await pool.getConnection();
 
         // Check appointment ownership
         const appt = await conn.query("SELECT doctor_id FROM appointments WHERE id = ?", [appointment_id]);
-        if (appt.length === 0) return res.status(404).send("Appointment not found");
+        if (appt.length === 0) {
+            console.log("DEBUG: Appointment not found");
+            return res.status(404).send("Appointment not found");
+        }
 
         // Verify user is the doctor of this appointment
         // We need to match req.user.user_id -> doctor_id
         const docInfo = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [req.user.user_id]);
-        if (docInfo.length === 0 || docInfo[0].id !== appt[0].doctor_id) {
+
+        if (docInfo.length === 0) {
+            console.log("DEBUG: Doctor profile not found for user", req.user.user_id);
+            return res.status(403).send("Unauthorized");
+        }
+
+        console.log(`DEBUG: Checking match. UserDocID: ${docInfo[0].id}, ApptDocID: ${appt[0].doctor_id}`);
+
+        if (docInfo[0].id !== appt[0].doctor_id) {
+            console.log("DEBUG: Mismatch in doctor ownership");
             return res.status(403).send("Unauthorized");
         }
 
@@ -25,6 +43,8 @@ exports.createPrescription = async (req, res) => {
             "INSERT INTO prescriptions (appointment_id, medications, instructions) VALUES (?, ?, ?)",
             [appointment_id, medications, instructions]
         );
+
+        console.log("DEBUG: Insert successful");
 
         // Fetch details for readable log
         const details = await conn.query(`
@@ -39,7 +59,7 @@ exports.createPrescription = async (req, res) => {
 
         res.status(201).send("Prescription created");
     } catch (err) {
-        console.error(err);
+        console.error("DEBUG: createPrescription error", err);
         res.status(500).send("Server Error");
     } finally {
         if (conn) conn.release();

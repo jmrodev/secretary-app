@@ -37,7 +37,7 @@ exports.createTransaction = async (req, res) => {
 
         logAction(req, 'FINANCE_TRANSACTION', logDetail);
 
-        res.status(201).send("Transaction recorded");
+        res.status(201).json({ message: "Transaction recorded", status: status || 'paid' });
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");
@@ -195,6 +195,10 @@ exports.getPricing = async (req, res) => {
                 case 'virtual_consultation':
                     basePrice = Number(d.virtual_consultation_price) || 0;
                     priceType = 'Virtual Consultation';
+                    break;
+                case 'custom':
+                    basePrice = 0;
+                    priceType = 'Custom';
                     break;
                 case 'consultation':
                 default:

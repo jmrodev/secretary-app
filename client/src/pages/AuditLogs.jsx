@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const AuditLogs = () => {
     const { user } = useAuth();
+    const { t } = useLanguage();
     const [logs, setLogs] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -21,33 +23,33 @@ const AuditLogs = () => {
         fetchLogs();
     }, []);
 
-    if (loading) return <div className="app-layout"><main className="main-content">Loading Logs...</main></div>;
+    if (loading) return <div className="app-layout"><main className="main-content">{t('loading_logs')}</main></div>;
 
-    if (user.role !== 'admin') return <div className="app-layout"><main className="main-content">Access Denied</main></div>;
+    if (user.role !== 'admin') return <div className="app-layout"><main className="main-content">{t('access_denied')}</main></div>;
 
     return (
         <div className="app-layout">
             <aside className="sidebar">
                 <div style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>MediCare</h2>
+                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>{t('app_name')}</h2>
                 </div>
                 <nav>
-                    <a href="/dashboard" className="sidebar-link">Dashboard</a>
-                    <a href="#" className="sidebar-link active">Audit Logs</a>
+                    <a href="/dashboard" className="sidebar-link">{t('dashboard')}</a>
+                    <a href="#" className="sidebar-link active">{t('audit_logs')}</a>
                 </nav>
             </aside>
             <main className="main-content">
-                <h1 className="title">System Transaction Logs</h1>
+                <h1 className="title">{t('system_transaction_logs')}</h1>
 
                 <div className="card" style={{ overflowX: 'auto' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '800px' }}>
                         <thead>
                             <tr style={{ borderBottom: '2px solid #f1f5f9', textAlign: 'left' }}>
-                                <th style={{ padding: '1rem' }}>Time</th>
-                                <th style={{ padding: '1rem' }}>User</th>
-                                <th style={{ padding: '1rem' }}>Action</th>
-                                <th style={{ padding: '1rem' }}>Details</th>
-                                <th style={{ padding: '1rem' }}>IP</th>
+                                <th style={{ padding: '1rem' }}>{t('time_header')}</th>
+                                <th style={{ padding: '1rem' }}>{t('user_header')}</th>
+                                <th style={{ padding: '1rem' }}>{t('action_header')}</th>
+                                <th style={{ padding: '1rem' }}>{t('details_header')}</th>
+                                <th style={{ padding: '1rem' }}>{t('ip_header')}</th>
                             </tr>
                         </thead>
                         <tbody>

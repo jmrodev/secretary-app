@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const OfficeRentals = () => {
+    const { t } = useLanguage();
     const [consultorios, setConsultorios] = useState([]);
     const [rentals, setRentals] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -45,32 +47,32 @@ const OfficeRentals = () => {
                 end_time: endTime,
                 cost: 50.00 // Fixed cost for demo
             });
-            setMessage('Rental booked successfully!');
+            setMessage(t('rental_booked'));
             // Refresh rentals
             const rRes = await api.get('/consultorios/my-rentals');
             setRentals(rRes.data);
         } catch (err) {
-            setMessage('Failed to book rental.');
+            setMessage(t('failed_book_rental'));
             console.error(err);
         }
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <div>{t('loading')}</div>;
 
     return (
         <div className="app-layout">
             <aside className="sidebar">
                 <div style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>MediCare</h2>
+                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>{t('app_name')}</h2>
                 </div>
                 <nav>
-                    <a href="/dashboard" className="sidebar-link">Dashboard</a>
-                    <a href="/appointments" className="sidebar-link">Appointments</a>
-                    <a href="#" className="sidebar-link active">Office Rentals</a>
+                    <a href="/dashboard" className="sidebar-link">{t('dashboard')}</a>
+                    <a href="/appointments" className="sidebar-link">{t('appointments')}</a>
+                    <a href="#" className="sidebar-link active">{t('office_rentals')}</a>
                 </nav>
             </aside>
             <main className="main-content">
-                <h1 className="title">Office Rentals</h1>
+                <h1 className="title">{t('office_rentals')}</h1>
 
                 {message && <div style={{ padding: '1rem', background: '#dcfce7', color: '#166534', borderRadius: '8px', marginBottom: '1rem' }}>{message}</div>}
 
@@ -78,45 +80,45 @@ const OfficeRentals = () => {
                     {/* Booking Form (Doctors only) */}
                     {user.role === 'doctor' && (
                         <div className="card">
-                            <h3>Book an Office</h3>
+                            <h3>{t('book_office')}</h3>
                             <form onSubmit={handleRent}>
                                 <div className="input-group">
-                                    <label className="input-label">Select Office</label>
+                                    <label className="input-label">{t('select_office')}</label>
                                     <select className="input-field" value={selectedOffice} onChange={(e) => setSelectedOffice(e.target.value)} required>
-                                        <option value="">-- Select --</option>
+                                        <option value="">-- {t('select_office')} --</option>
                                         {consultorios.map(c => (
-                                            <option key={c.id} value={c.id}>{c.name} - {c.status}</option>
+                                            <option key={c.id} value={c.id}>{c.name} - {t(c.status) || c.status}</option>
                                         ))}
                                     </select>
                                 </div>
                                 <div className="input-group">
-                                    <label className="input-label">Date</label>
+                                    <label className="input-label">{t('date')}</label>
                                     <input type="date" className="input-field" value={date} onChange={(e) => setDate(e.target.value)} required />
                                 </div>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                     <div className="input-group">
-                                        <label className="input-label">Start Time</label>
+                                        <label className="input-label">{t('start_time')}</label>
                                         <input type="time" className="input-field" value={startTime} onChange={(e) => setStartTime(e.target.value)} required />
                                     </div>
                                     <div className="input-group">
-                                        <label className="input-label">End Time</label>
+                                        <label className="input-label">{t('end_time')}</label>
                                         <input type="time" className="input-field" value={endTime} onChange={(e) => setEndTime(e.target.value)} required />
                                     </div>
                                 </div>
-                                <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>Book Rental ($50.00)</button>
+                                <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>{t('book_rental_btn')}</button>
                             </form>
                         </div>
                     )}
 
                     {/* Available Offices List */}
                     <div className="card">
-                        <h3>Available Offices</h3>
+                        <h3>{t('available_offices')}</h3>
                         {consultorios.map(c => (
                             <div key={c.id} style={{ padding: '1rem', background: '#f8fafc', marginBottom: '0.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
                                 <strong>{c.name}</strong>
                                 <p style={{ margin: '0.25rem 0', fontSize: '0.9rem', color: '#64748b' }}>{c.description || 'No description'}</p>
                                 <span style={{ fontSize: '0.8rem', padding: '2px 6px', background: c.status === 'available' ? '#dcfce7' : '#fee2e2', color: c.status === 'available' ? '#166534' : '#991b1b', borderRadius: '4px' }}>
-                                    {c.status}
+                                    {t(c.status) || c.status}
                                 </span>
                             </div>
                         ))}
@@ -126,15 +128,15 @@ const OfficeRentals = () => {
                 {/* My Rentals List */}
                 {user.role === 'doctor' && rentals.length > 0 && (
                     <div style={{ marginTop: '2rem' }}>
-                        <h2 className="title" style={{ fontSize: '1.5rem' }}>My Rentals</h2>
+                        <h2 className="title" style={{ fontSize: '1.5rem' }}>{t('my_rentals')}</h2>
                         <div className="card">
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ textAlign: 'left', borderBottom: '1px solid #e2e8f0' }}>
-                                        <th style={{ padding: '1rem' }}>Office</th>
-                                        <th style={{ padding: '1rem' }}>Date</th>
-                                        <th style={{ padding: '1rem' }}>Time</th>
-                                        <th style={{ padding: '1rem' }}>Cost</th>
+                                        <th style={{ padding: '1rem' }}>{t('office')}</th>
+                                        <th style={{ padding: '1rem' }}>{t('date')}</th>
+                                        <th style={{ padding: '1rem' }}>{t('time')}</th>
+                                        <th style={{ padding: '1rem' }}>{t('cost')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>

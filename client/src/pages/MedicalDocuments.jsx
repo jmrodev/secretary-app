@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useMessage } from '../context/MessageContext';
+import { useLanguage } from '../context/LanguageContext';
 import Modal from '../components/Modal';
 import TransactionModal from '../components/TransactionModal';
 
 const MedicalDocuments = () => {
     const { user } = useAuth();
     const { showMessage } = useMessage();
+    const { t } = useLanguage();
     const [activeTab, setActiveTab] = useState('requests'); // requests | files | history
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -51,6 +53,7 @@ const MedicalDocuments = () => {
 
     // Old Medical History State (Prescriptions/Licenses)
     const [prescriptions, setPrescriptions] = useState([]);
+    const [selectedPrescription, setSelectedPrescription] = useState(null);
     const [licenses, setLicenses] = useState([]);
 
     useEffect(() => {
@@ -106,11 +109,11 @@ const MedicalDocuments = () => {
                 doctor_id: selectedDoctor,
                 request_note: reqNote
             });
-            showMessage("Request sent to Doctor", 'success');
+            showMessage(t('request_sent'), 'success');
             setReqNote('');
             fetchRequests();
         } catch (err) {
-            showMessage("Failed to send request", 'error');
+            showMessage(t('request_failed'), 'error');
         }
     };
 
@@ -118,15 +121,15 @@ const MedicalDocuments = () => {
         try {
             await api.patch(`/medical/requests/${id}`, { status, doctor_note: note });
             fetchRequests();
-            showMessage(`Request ${status}`, 'success');
+            showMessage(t('status_updated'), 'success');
         } catch (err) {
-            showMessage("Failed to update", 'error');
+            showMessage(t('update_failed'), 'error');
         }
     };
 
     const openActionModal = (type, id) => {
         setActionModal({ open: true, type, id });
-        setActionNote(type === 'completed' ? 'Approved' : '');
+        setActionNote(type === 'completed' ? t('approve') : '');
     };
 
     const confirmAction = () => {
@@ -146,13 +149,13 @@ const MedicalDocuments = () => {
 
         try {
             await api.post('/medical/files', formData);
-            showMessage("File uploaded successfully", 'success');
+            showMessage(t('file_uploaded'), 'success');
             setFileDesc('');
             setSelectedFile(null);
             // Reset file input via key or id if necessary, but simple for now
             fetchFiles();
         } catch (err) {
-            showMessage("Upload failed", 'error');
+            showMessage(t('upload_failed'), 'error');
         }
     };
 
@@ -160,35 +163,35 @@ const MedicalDocuments = () => {
         <div className="app-layout">
             <aside className="sidebar">
                 <div style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>MediCare</h2>
+                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>{t('app_name')}</h2>
                 </div>
                 <nav>
-                    <a href="/dashboard" className="sidebar-link">Dashboard</a>
-                    <a href="#" className="sidebar-link active">Documents</a>
+                    <a href="/dashboard" className="sidebar-link">{t('dashboard')}</a>
+                    <a href="#" className="sidebar-link active">{t('documents')}</a>
                 </nav>
             </aside>
 
             <main className="main-content">
-                <h1 className="title">Medical Documents</h1>
+                <h1 className="title">{t('medical_documents')}</h1>
 
                 <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', borderBottom: '1px solid #e2e8f0' }}>
                     <button
                         onClick={() => setActiveTab('requests')}
                         style={{ padding: '1rem', background: 'none', border: 'none', borderBottom: activeTab === 'requests' ? '2px solid #3b82f6' : 'none', fontWeight: activeTab === 'requests' ? 'bold' : 'normal', cursor: 'pointer' }}
                     >
-                        Requests Workflow
+                        {t('requests_workflow')}
                     </button>
                     <button
                         onClick={() => setActiveTab('files')}
                         style={{ padding: '1rem', background: 'none', border: 'none', borderBottom: activeTab === 'files' ? '2px solid #3b82f6' : 'none', fontWeight: activeTab === 'files' ? 'bold' : 'normal', cursor: 'pointer' }}
                     >
-                        File Repository
+                        {t('file_repository')}
                     </button>
                     <button
                         onClick={() => setActiveTab('history')}
                         style={{ padding: '1rem', background: 'none', border: 'none', borderBottom: activeTab === 'history' ? '2px solid #3b82f6' : 'none', fontWeight: activeTab === 'history' ? 'bold' : 'normal', cursor: 'pointer' }}
                     >
-                        Prescriptions & Licenses
+                        {t('prescriptions_licenses')}
                     </button>
                 </div>
 
@@ -196,7 +199,7 @@ const MedicalDocuments = () => {
                 <div style={{ marginBottom: '1.5rem' }}>
                     <input
                         type="text"
-                        placeholder="Search by name, address, DNI, doctor..."
+                        placeholder={t('search_docs_placeholder')}
                         className="input-field"
                         value={searchTerm}
                         onChange={e => setSearchTerm(e.target.value)}
@@ -208,56 +211,58 @@ const MedicalDocuments = () => {
                     <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '2rem' }}>
                         {(user.role === 'secretary') && (
                             <div className="card">
-                                <h3>New Request</h3>
+                                <h3>{t('new_request')}</h3>
                                 <form onSubmit={handleCreateRequest}>
                                     <div className="input-group">
-                                        <label className="input-label">Type</label>
+                                        <label className="input-label">{t('request_type')}</label>
                                         <select className="input-field" value={reqType} onChange={e => setReqType(e.target.value)}>
-                                            <option value="prescription">Prescription</option>
-                                            <option value="license">Medical License</option>
+                                            <option value="prescription">{t('prescription')}</option>
+                                            <option value="license">{t('license')}</option>
                                         </select>
                                     </div>
                                     <div className="input-group">
-                                        <label className="input-label">Patient</label>
+                                        <label className="input-label">{t('patient_label')}</label>
                                         <select className="input-field" value={selectedPatient} onChange={e => setSelectedPatient(e.target.value)} required>
-                                            <option value="">Select Patient</option>
+                                            <option value="">{t('select_patient')}</option>
                                             {patients.map(p => <option key={p.id} value={p.id}>{p.full_name}</option>)}
                                         </select>
                                     </div>
                                     <div className="input-group">
-                                        <label className="input-label">Doctor</label>
+                                        <label className="input-label">{t('doctor_label')}</label>
                                         <select className="input-field" value={selectedDoctor} onChange={e => setSelectedDoctor(e.target.value)} required>
-                                            <option value="">Select Doctor</option>
+                                            <option value="">{t('select_doctor')}</option>
                                             {doctors.map(d => <option key={d.id} value={d.id}>{d.full_name} - {d.specialty}</option>)}
                                         </select>
                                     </div>
                                     <div className="input-group">
-                                        <label className="input-label">Note for Doctor</label>
+                                        <label className="input-label">{t('note_for_doctor')}</label>
                                         <textarea className="input-field" rows="3" value={reqNote} onChange={e => setReqNote(e.target.value)} placeholder="e.g. Needs Ibuprofen 600mg" required />
                                     </div>
-                                    <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>Send Request</button>
+                                    <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>{t('send_request')}</button>
                                 </form>
                             </div>
                         )}
 
                         <div className="card" style={{ gridColumn: user.role !== 'secretary' ? '1 / -1' : 'auto' }}>
-                            <h3>{user.role === 'doctor' ? 'Pending Requests' : 'Request Status'}</h3>
-                            {requests.filter(filterItem).length === 0 ? <p>No requests found.</p> : (
+                            <h3>{user.role === 'doctor' ? t('pending_requests') : t('request_status')}</h3>
+                            {requests.filter(filterItem).length === 0 ? <p>{t('no_requests')}</p> : (
                                 <ul style={{ listStyle: 'none', padding: 0 }}>
                                     {requests.filter(filterItem).map(r => (
                                         <li key={r.id} style={{ padding: '1rem', borderBottom: '1px solid #f1f5f9', background: r.status === 'pending' ? '#fff' : '#f8fafc', opacity: r.status === 'pending' ? 1 : 0.75 }}>
                                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                                <span style={{ fontWeight: 'bold', textTransform: 'uppercase', fontSize: '0.8rem', color: r.type === 'prescription' ? '#3b82f6' : '#8b5cf6' }}>{r.type}</span>
+                                                <span style={{ fontWeight: 'bold', textTransform: 'uppercase', fontSize: '0.8rem', color: r.type === 'prescription' ? '#3b82f6' : '#8b5cf6' }}>
+                                                    {r.type === 'prescription' ? t('prescription') : (r.type === 'license' ? t('license') : r.type)}
+                                                </span>
                                                 <span style={{
                                                     padding: '2px 8px', borderRadius: '12px', fontSize: '0.75rem',
                                                     background: r.status === 'pending' ? '#fef3c7' : (r.status === 'completed' ? '#dcfce7' : '#fee2e2'),
                                                     color: r.status === 'pending' ? '#b45309' : (r.status === 'completed' ? '#166534' : '#991b1b')
                                                 }}>
-                                                    {r.status}
+                                                    {t(r.status) || r.status}
                                                 </span>
                                             </div>
                                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
-                                                <div><strong>Patient:</strong> {r.patient_name}</div>
+                                                <div><strong>{t('patient_label')}:</strong> {r.patient_name}</div>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                                     <span style={{
                                                         padding: '2px 8px', borderRadius: '12px', fontSize: '0.75rem',
@@ -290,12 +295,12 @@ const MedicalDocuments = () => {
                                                 </div>
                                             </div>
                                             <div style={{ marginTop: '0.5rem', fontStyle: 'italic', color: '#475569' }}>"{r.request_note}"</div>
-                                            {r.doctor_note && <div style={{ marginTop: '0.5rem', padding: '0.5rem', background: '#f0fdf4', borderLeft: '3px solid #22c55e', fontSize: '0.9rem' }}><strong>Doctor says:</strong> {r.doctor_note}</div>}
+                                            {r.doctor_note && <div style={{ marginTop: '0.5rem', padding: '0.5rem', background: '#f0fdf4', borderLeft: '3px solid #22c55e', fontSize: '0.9rem' }}><strong>{t('doctor_says')}:</strong> {r.doctor_note}</div>}
 
                                             {user.role === 'doctor' && r.status === 'pending' && (
                                                 <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem' }}>
-                                                    <button onClick={() => openActionModal('completed', r.id)} className="btn btn-primary" style={{ fontSize: '0.8rem' }}>Mark as Done</button>
-                                                    <button onClick={() => openActionModal('rejected', r.id)} className="btn btn-accent" style={{ fontSize: '0.8rem', background: '#ef4444' }}>Reject</button>
+                                                    <button onClick={() => openActionModal('completed', r.id)} className="btn btn-primary" style={{ fontSize: '0.8rem' }}>{t('mark_as_done')}</button>
+                                                    <button onClick={() => openActionModal('rejected', r.id)} className="btn btn-accent" style={{ fontSize: '0.8rem', background: '#ef4444' }}>{t('reject')}</button>
                                                 </div>
                                             )}
                                         </li>
@@ -309,30 +314,30 @@ const MedicalDocuments = () => {
                 {activeTab === 'files' && (
                     <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '2rem' }}>
                         <div className="card">
-                            <h3>Upload Document</h3>
+                            <h3>{t('upload_document')}</h3>
                             <form onSubmit={handleFileUpload}>
                                 <div className="input-group">
-                                    <label className="input-label">Patient</label>
+                                    <label className="input-label">{t('patient_label')}</label>
                                     <select className="input-field" value={filePatient} onChange={e => setFilePatient(e.target.value)} required>
-                                        <option value="">Select Patient</option>
+                                        <option value="">{t('select_patient')}</option>
                                         {patients.map(p => <option key={p.id} value={p.id}>{p.full_name}</option>)}
                                     </select>
                                 </div>
                                 <div className="input-group">
-                                    <label className="input-label">Description</label>
+                                    <label className="input-label">{t('description')}</label>
                                     <input className="input-field" value={fileDesc} onChange={e => setFileDesc(e.target.value)} placeholder="e.g. Lab Results PDF" required />
                                 </div>
                                 <div className="input-group">
-                                    <label className="input-label">File</label>
+                                    <label className="input-label">{t('file')}</label>
                                     <input type="file" className="input-field" onChange={e => setSelectedFile(e.target.files[0])} required />
                                 </div>
-                                <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>Upload File</button>
+                                <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>{t('upload_file')}</button>
                             </form>
                         </div>
 
                         <div className="card">
-                            <h3>File Repository</h3>
-                            {files.filter(filterItem).length === 0 ? <p>No files found.</p> : (
+                            <h3>{t('file_repository')}</h3>
+                            {files.filter(filterItem).length === 0 ? <p>{t('no_files')}</p> : (
                                 <ul style={{ listStyle: 'none', padding: 0 }}>
                                     {files.filter(filterItem).map(f => (
                                         <li key={f.id} style={{ padding: '1rem', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -341,7 +346,7 @@ const MedicalDocuments = () => {
                                                     {f.description || f.file_name}
                                                 </a>
                                                 <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '4px' }}>
-                                                    <strong>Patient:</strong> {f.patient_name} • <strong>By:</strong> <span style={{ textTransform: 'capitalize' }}>{f.uploader_name}</span>
+                                                    <strong>{t('patient_label')}:</strong> {f.patient_name} • <strong>{t('by_dr') || 'By'}:</strong> <span style={{ textTransform: 'capitalize' }}>{f.uploader_name}</span>
                                                 </div>
                                             </div>
                                             <span style={{ fontSize: '0.7rem', background: '#e2e8f0', padding: '2px 8px', borderRadius: '12px', textTransform: 'uppercase' }}>{f.file_type.split('/')[1] || 'FILE'}</span>
@@ -356,12 +361,32 @@ const MedicalDocuments = () => {
                 {activeTab === 'history' && (
                     <div style={{ display: 'grid', gap: '2rem' }}>
                         <div className="card">
-                            <h3>Prescriptions & Licenses History</h3>
+                            <h3>{t('prescriptions_licenses')}</h3>
 
-                            <h4 style={{ marginTop: '1.5rem' }}>Recent Prescriptions</h4>
-                            {prescriptions.filter(filterItem).length === 0 ? <p className="text-muted">None.</p> : (
-                                <ul style={{ paddingLeft: '1rem' }}>
-                                    {prescriptions.filter(filterItem).map(p => <li key={p.id}>{new Date(p.created_at).toLocaleDateString()} - <strong>{p.patient_name}</strong>: {p.medications} (Dr. {p.doctor_name})</li>)}
+                            <h4 style={{ marginTop: '1.5rem' }}>{t('recent_prescriptions')}</h4>
+                            {prescriptions.filter(filterItem).length === 0 ? <p className="text-muted">{t('none')}</p> : (
+                                <ul style={{ paddingLeft: '0', listStyle: 'none' }}>
+                                    {prescriptions.filter(filterItem).map(p => (
+                                        <li key={p.id}
+                                            onClick={() => setSelectedPrescription(p)}
+                                            style={{
+                                                padding: '0.75rem',
+                                                borderBottom: '1px solid #eee',
+                                                cursor: 'pointer',
+                                                display: 'flex',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center'
+                                            }}
+                                            onMouseEnter={(e) => e.currentTarget.style.background = '#f8fafc'}
+                                            onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                                        >
+                                            <div>
+                                                <div><strong>{new Date(p.created_at).toLocaleDateString()}</strong> - {p.patient_name}</div>
+                                                <div style={{ fontSize: '0.85rem', color: '#64748b' }}>Dr. {p.doctor_name}</div>
+                                            </div>
+                                            <button className="btn btn-secondary" style={{ fontSize: '0.75rem', padding: '2px 8px' }}>{t('view') || 'View'}</button>
+                                        </li>
+                                    ))}
                                 </ul>
                             )}
                         </div>
@@ -373,17 +398,17 @@ const MedicalDocuments = () => {
             <Modal
                 isOpen={actionModal.open}
                 onClose={() => setActionModal({ open: false, type: '', id: null })}
-                title={actionModal.type === 'completed' ? 'Approve Request' : 'Reject Request'}
+                title={actionModal.type === 'completed' ? t('approve_request') : t('reject_request')}
                 footer={
                     <>
-                        <button className="btn btn-secondary" onClick={() => setActionModal({ open: false, type: '', id: null })}>Cancel</button>
-                        <button className="btn btn-primary" onClick={confirmAction}>{actionModal.type === 'completed' ? 'Approve' : 'Reject'}</button>
+                        <button className="btn btn-secondary" onClick={() => setActionModal({ open: false, type: '', id: null })}>{t('cancel')}</button>
+                        <button className="btn btn-primary" onClick={confirmAction}>{actionModal.type === 'completed' ? t('approve') : t('reject')}</button>
                     </>
                 }
             >
                 <div className="input-group">
                     <label className="input-label">
-                        {actionModal.type === 'completed' ? 'Message (Optional)' : 'Reason for Rejection'}
+                        {actionModal.type === 'completed' ? t('message_optional') : t('reason_rejection')}
                     </label>
                     <textarea
                         className="input-field"
@@ -409,6 +434,45 @@ const MedicalDocuments = () => {
                     }
                 }}
             />
+
+            {/* Prescription Detail Modal */}
+            <Modal
+                isOpen={!!selectedPrescription}
+                onClose={() => setSelectedPrescription(null)}
+                title={t('prescription_details')}
+                footer={
+                    <button className="btn btn-primary" onClick={() => setSelectedPrescription(null)}>{t('close')}</button>
+                }
+            >
+                {selectedPrescription && (
+                    <div style={{ display: 'grid', gap: '1rem' }}>
+                        <div>
+                            <label className="input-label">{t('date')}</label>
+                            <div>{new Date(selectedPrescription.created_at).toLocaleString()}</div>
+                        </div>
+                        <div>
+                            <label className="input-label">{t('patient_label')}</label>
+                            <div>{selectedPrescription.patient_name} <span className="text-muted">({selectedPrescription.patient_dni})</span></div>
+                        </div>
+                        <div>
+                            <label className="input-label">{t('doctor_label')}</label>
+                            <div>{selectedPrescription.doctor_name}</div>
+                        </div>
+                        <div style={{ marginTop: '0.5rem', padding: '1rem', background: '#f8fafc', borderRadius: '4px', border: '1px solid #e2e8f0' }}>
+                            <label className="input-label" style={{ display: 'block', marginBottom: '0.5rem' }}>{t('medications')}</label>
+                            <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit', margin: 0 }}>{selectedPrescription.medications}</pre>
+                        </div>
+                        {selectedPrescription.instructions && (
+                            <div style={{ marginTop: '0.5rem' }}>
+                                <label className="input-label">{t('instructions_notes')}</label>
+                                <div style={{ padding: '0.5rem', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '4px' }}>
+                                    {selectedPrescription.instructions}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </Modal>
         </div >
     );
 };

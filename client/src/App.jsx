@@ -12,10 +12,13 @@ import AuditLogs from './pages/AuditLogs';
 import AdminUsers from './pages/AdminUsers';
 import Doctors from './pages/Doctors';
 import { useAuth } from './context/AuthContext';
+import { useLanguage } from './context/LanguageContext';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  if (loading) return <div>Loading...</div>;
+  const { t } = useLanguage();
+
+  if (loading) return <div>{t('loading')}</div>;
   if (!user) return <Navigate to="/login" />;
   return children;
 };
@@ -43,11 +46,6 @@ function App() {
       <Route path="/documents" element={
         <ProtectedRoute>
           <MedicalDocuments />
-        </ProtectedRoute>
-      } />
-      <Route path="/finances" element={
-        <ProtectedRoute>
-          <Finances />
         </ProtectedRoute>
       } />
       <Route path="/finances" element={
