@@ -11,6 +11,7 @@ import Patients from './pages/Patients';
 import AuditLogs from './pages/AuditLogs';
 import AdminUsers from './pages/AdminUsers';
 import Doctors from './pages/Doctors';
+import SystemConfig from './pages/SystemConfig';
 import { useAuth } from './context/AuthContext';
 import { useLanguage } from './context/LanguageContext';
 
@@ -76,6 +77,11 @@ function App() {
       <Route path="/admin/users" element={
         <ProtectedRoute>
           <AdminUsers />
+        </ProtectedRoute>
+      } />
+      <Route path="/config" element={
+        <ProtectedRoute>
+          <SystemConfig />
         </ProtectedRoute>
       } />
       <Route path="/" element={<Navigate to="/dashboard" />} />

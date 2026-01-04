@@ -27,6 +27,7 @@ const Patients = () => {
     const [dob, setDob] = useState('');
     const [newDni, setNewDni] = useState('');
     const [newInsurance, setNewInsurance] = useState('');
+    const [newEmail, setNewEmail] = useState('');
     const [createMsg, setCreateMsg] = useState('');
 
     // Search State
@@ -61,11 +62,42 @@ const Patients = () => {
         return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     };
 
+    const calculateFinancialRating = (debt) => {
+        if (debt <= 0) return 5;
+        if (debt < 1000) return 4;
+        if (debt < 5000) return 3;
+        if (debt < 10000) return 2;
+        return 1;
+    };
+
+    const calculateAttendanceRating = (total, missed) => {
+        if (!total || total === 0) return 5; // New patient
+        const ratio = (total - missed) / total;
+        if (ratio >= 0.95) return 5;
+        if (ratio >= 0.85) return 4;
+        if (ratio >= 0.70) return 3;
+        if (ratio >= 0.50) return 2;
+        return 1;
+    };
+
+    const handleBehaviorRatingChange = async (patientId, newRating) => {
+        try {
+            await api.put(`/users/patients/${patientId}`, { behavior_rating: newRating });
+            // Optimistic update
+            setPatients(prev => prev.map(p =>
+                p.id === patientId ? { ...p, behavior_rating: newRating } : p
+            ));
+        } catch (err) {
+            console.error("Failed to update behavior rating", err);
+        }
+    };
+
     const filteredPatients = patients.filter(p =>
         normalizeText(p.full_name).includes(normalizeText(searchTerm)) ||
         (p.phone && p.phone.includes(searchTerm)) ||
         (p.dni && p.dni.includes(searchTerm)) ||
-        (p.insurance && normalizeText(p.insurance).includes(normalizeText(searchTerm)))
+        (p.insurance && normalizeText(p.insurance).includes(normalizeText(searchTerm))) ||
+        (p.email && normalizeText(p.email).includes(normalizeText(searchTerm)))
     ).sort((a, b) => {
         // Sort by debt descending (debtors first)
         const debtA = Number(a.total_debt) || 0;
@@ -89,7 +121,8 @@ const Patients = () => {
                 phone,
                 dob,
                 dni: newDni,
-                insurance: newInsurance
+                insurance: newInsurance,
+                email: newEmail
             });
             showMessage(t('patient_created'), 'success');
             setShowCreate(false);
@@ -98,8 +131,10 @@ const Patients = () => {
             setFullName('');
             setPhone('');
             setDob('');
+
             setNewDni('');
             setNewInsurance('');
+            setNewEmail('');
             fetchPatients();
         } catch (err) {
             const msg = err.response?.data || t('failed_create_patient');
@@ -134,6 +169,7 @@ const Patients = () => {
             dni: details.dni || '',
             phone: details.phone || '',
             insurance: details.insurance || '',
+            email: details.email || '',
             dob: details.dob ? details.dob.split('T')[0] : '',
 
             medical_history: details.medical_history || '',
@@ -226,7 +262,8 @@ const Patients = () => {
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
                             <p><strong>{t('dni')}:</strong> {details.dni || 'N/A'}</p>
                             <p><strong>Insurance:</strong> {details.insurance || 'N/A'}</p>
-                            <p><strong>Phone:</strong> {details.phone || 'N/A'}</p>
+                            <p><strong>Phone:</strong> {details.phone ? <a href={`https://wa.me/${details.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" style={{ color: '#3b82f6', fontWeight: 'bold' }}>{details.phone}</a> : 'N/A'}</p>
+                            <p><strong>Email:</strong> {details.email ? <a href={`mailto:${details.email}`} style={{ color: '#3b82f6', fontWeight: 'bold' }}>{details.email}</a> : 'N/A'}</p>
                             <p><strong>{t('dob')}:</strong> {details.dob ? new Date(details.dob).toLocaleDateString() : 'N/A'}</p>
                         </div>
                         <div style={{ marginTop: '1rem', display: 'flex', gap: '2rem' }}>
@@ -358,6 +395,10 @@ const Patients = () => {
                                     <input className="input-field" value={editData.insurance} onChange={e => setEditData({ ...editData, insurance: e.target.value })} />
                                 </div>
                             </div>
+                            <div className="input-group">
+                                <label className="input-label">Email</label>
+                                <input className="input-field" type="email" value={editData.email} onChange={e => setEditData({ ...editData, email: e.target.value })} />
+                            </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                 <div className="input-group">
                                     <label className="input-label">Phone</label>
@@ -437,7 +478,26 @@ const Patients = () => {
             </aside>
             <main className="main-content">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h1 className="title">{t('patients_list')}</h1>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <h1 className="title">{t('patients_list')}</h1>
+                        <span style={{
+                            background: '#e2e8f0',
+                            color: '#475569',
+                            padding: '0.25rem 0.75rem',
+                            borderRadius: '999px',
+                            fontSize: '0.9rem',
+                            fontWeight: 'bold'
+                        }}>
+                            {patients.length}
+                        </span>
+                        <button
+                            onClick={() => { setLoading(true); fetchPatients(); }}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', marginLeft: '0.5rem' }}
+                            title={t('refresh_list')}
+                        >
+                            🔄
+                        </button>
+                    </div>
                     {user.role === 'secretary' && (
                         <button className="btn btn-primary" onClick={() => setShowCreate(!showCreate)}>
                             {showCreate ? t('cancel') : t('register_new_patient')}
@@ -487,6 +547,10 @@ const Patients = () => {
                                     <input className="input-field" value={newInsurance} onChange={e => setNewInsurance(e.target.value)} />
                                 </div>
                             </div>
+                            <div className="input-group" style={{ marginBottom: '1rem' }}>
+                                <label className="input-label">Email</label>
+                                <input className="input-field" type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)} />
+                            </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                 <div className="input-group">
                                     <label className="input-label">Phone</label>
@@ -511,7 +575,12 @@ const Patients = () => {
                                     <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
                                         {p.dni && `${t('dni')}: ${p.dni} | `}
                                         {p.insurance && `OS: ${p.insurance} | `}
-                                        {p.phone}
+                                        {p.email && <a href={`mailto:${p.email}`} style={{ color: '#3b82f6', textDecoration: 'none', marginRight: '0.5rem' }} onClick={(e) => e.stopPropagation()}>✉️</a>}
+                                        {p.phone && (
+                                            <a href={`https://wa.me/${p.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" style={{ color: '#3b82f6', textDecoration: 'none', fontWeight: 'bold' }} onClick={(e) => e.stopPropagation()}>
+                                                {p.phone}
+                                            </a>
+                                        )}
                                     </div>
                                     {Number(p.total_debt) > 0 && (
                                         <div
@@ -523,6 +592,33 @@ const Patients = () => {
                                         </div>
                                     )}
                                 </div>
+
+                                {/* Ratings Column */}
+                                <div style={{ display: 'flex', gap: '1.5rem', marginRight: '1rem' }}>
+                                    <div style={{ textAlign: 'center' }} title={`${t('rating_financial_tooltip')}: $${p.total_debt}`}>
+                                        <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '2px' }}>{t('rating_financial')}</div>
+                                        <div style={{ color: '#fbbf24' }}>
+                                            {[1, 2, 3, 4, 5].map(s => <span key={s}>{s <= calculateFinancialRating(Number(p.total_debt)) ? '★' : '☆'}</span>)}
+                                        </div>
+                                    </div>
+                                    <div style={{ textAlign: 'center' }} title={`${t('rating_attendance_tooltip')}: ${p.total_appointments - p.missed_appointments}/${p.total_appointments}`}>
+                                        <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '2px' }}>{t('rating_attendance')}</div>
+                                        <div style={{ color: '#3b82f6' }}>
+                                            {[1, 2, 3, 4, 5].map(s => <span key={s}>{s <= calculateAttendanceRating(p.total_appointments, p.missed_appointments) ? '★' : '☆'}</span>)}
+                                        </div>
+                                    </div>
+                                    <div
+                                        style={{ textAlign: 'center', cursor: 'pointer' }}
+                                        title={t('rating_behavior_tooltip')}
+                                        onClick={() => handleBehaviorRatingChange(p.id, ((p.behavior_rating || 5) % 5) + 1)}
+                                    >
+                                        <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '2px' }}>{t('rating_behavior')}</div>
+                                        <div style={{ color: '#ec4899' }}>
+                                            {[1, 2, 3, 4, 5].map(s => <span key={s}>{s <= (p.behavior_rating || 5) ? '★' : '☆'}</span>)}
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <button className="btn btn-accent" style={{ padding: '0.25rem 0.75rem', fontSize: '0.8rem' }} onClick={() => handleViewDetails(p.id)}>
                                     {t('view_history')}
                                 </button>

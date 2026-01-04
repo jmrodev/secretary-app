@@ -1,6 +1,7 @@
 const { pool } = require('../db');
 const { logAction } = require('../utils/audit');
 const bcrypt = require('bcrypt');
+const googleController = require('./googleController');
 
 exports.getProfile = async (req, res) => {
     let conn;
@@ -39,7 +40,7 @@ exports.getAllDoctors = async (req, res) => {
     let conn;
     try {
         conn = await pool.getConnection();
-        const rows = await conn.query("SELECT id, full_name, specialty, phone, office_number, rental_type, rental_cost, consultation_price, prescription_price, medical_license_price, virtual_consultation_price FROM doctors");
+        const rows = await conn.query("SELECT id, user_id, full_name, specialty, phone, office_number, rental_type, rental_cost, consultation_price, prescription_price, medical_license_price, virtual_consultation_price FROM doctors");
         res.json(rows);
     } catch (err) {
         console.error(err);
@@ -54,17 +55,23 @@ exports.getAllPatients = async (req, res) => {
     try {
         conn = await pool.getConnection();
         // Calculate total_debt for each patient
-        // Transactions use related_user_id (users.id), patients have user_id (users.id)
-        // We sum 'amount' from transactions where status='pending' and related_user_id = patients.user_id
-        // Note: transaction amount for debt is positive in DB? 
-        // When we insert debt: amount is positive, status is pending.
+        // Also fetch total appointments and missed/cancelled ones (for attendance rating)
         const query = `
             SELECT p.*, 
-            (SELECT COALESCE(SUM(amount), 0) FROM transactions t WHERE t.related_user_id = p.user_id AND t.status = 'pending') as total_debt
+            (SELECT COALESCE(SUM(amount), 0) FROM transactions t WHERE t.related_user_id = p.user_id AND t.status = 'pending') as total_debt,
+            (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id) as total_appointments,
+            (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id AND a.status IN ('cancelled', 'missed')) as missed_appointments
             FROM patients p
         `;
         const rows = await conn.query(query);
-        res.json(rows);
+        // Serialize BigInts
+        const serialized = rows.map(r => ({
+            ...r,
+            total_debt: Number(r.total_debt),
+            total_appointments: Number(r.total_appointments),
+            missed_appointments: Number(r.missed_appointments)
+        }));
+        res.json(serialized);
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");
@@ -304,11 +311,20 @@ exports.updatePatientDetails = async (req, res) => {
         if (updates.medical_history !== undefined) { fields.push("medical_history = ?"); params.push(updates.medical_history); }
         if (updates.tariff_percent !== undefined) { fields.push("tariff_percent = ?"); params.push(updates.tariff_percent); }
         if (updates.tariff_override !== undefined) { fields.push("tariff_override = ?"); params.push(updates.tariff_override === '' ? null : updates.tariff_override); }
+        if (updates.behavior_rating !== undefined) { fields.push("behavior_rating = ?"); params.push(updates.behavior_rating); }
 
         if (fields.length > 0) {
             const query = `UPDATE patients SET ${fields.join(', ')} WHERE id = ?`;
             params.push(id);
             await conn.query(query, params);
+
+            // Fetch updated patient data for sync
+            const [updatedPatient] = await conn.query("SELECT * FROM patients WHERE id = ?", [id]);
+            if (updatedPatient) {
+                // Fire and forget sync
+                googleController.syncContact(updatedPatient).catch(err => console.error("Async Sync Error:", err));
+            }
+
             res.json({ message: "Patient updated successfully" });
         } else {
             res.status(400).send("No valid fields");
@@ -375,8 +391,18 @@ exports.createUser = async (req, res) => {
 
         conn = await pool.getConnection();
 
+        // Start Transaction
+        await conn.beginTransaction();
+
         const exists = await conn.query("SELECT id FROM users WHERE username = ?", [username]);
-        if (exists.length > 0) return res.status(409).send("User already exists");
+        if (exists.length > 0) {
+            await conn.release(); // release before return to be safe, though finally handles it if check is outside transaction?
+            // Actually, we are in transaction, so we should commit or rollback? 
+            // Read-only op doesn't strictly need rollback but good practice to release consistently.
+            // Let's just return 409 and let finally release. Rolling back a read-only is fine.
+            await conn.rollback();
+            return res.status(409).send("User already exists");
+        }
 
         const hash = await bcrypt.hash(password, 10);
         const resUser = await conn.query("INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)", [username, hash, role]);
@@ -391,14 +417,21 @@ exports.createUser = async (req, res) => {
         } else if (role === 'patient') {
             await conn.query("INSERT INTO patients (user_id, full_name, dni, phone) VALUES (?, ?, ?, ?)",
                 [userId, fullName, dni || null, phone || null]);
+
+            // Sync new patient to Google (Async - outside transaction critical path?)
+            // If this fails, should we fail user creation? Probably not.
+            googleController.syncContact({ full_name: fullName, dni, phone }).catch(err => console.error("Async Sync Error:", err));
         }
+
+        await conn.commit();
 
         logAction(req, 'ADMIN_CREATE_USER', `Created user ${username} (${role})`);
         res.status(201).json({ message: "User created", userId });
 
     } catch (err) {
-        console.error(err);
-        res.status(500).send("Server Error");
+        if (conn) await conn.rollback(); // Rollback on error
+        console.error("Create User Error:", err);
+        res.status(500).send("Server Error: " + err.message);
     } finally {
         if (conn) conn.release();
     }

@@ -162,6 +162,10 @@ const Dashboard = () => {
                         </>
                     )}
 
+                    {(user.role === 'admin' || user.role === 'secretary') && (
+                        <a href="/config" className="sidebar-link">Sys Config</a>
+                    )}
+
                     {(user.role === 'secretary' || user.role === 'doctor' || user.role === 'patient') && (
                         <a href="/documents" className="sidebar-link">{t('documents')}</a>
                     )}

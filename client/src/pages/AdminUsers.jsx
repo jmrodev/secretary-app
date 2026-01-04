@@ -86,7 +86,9 @@ const AdminUsers = () => {
     const handleCreate = async () => {
         try {
             const { formData } = modalState;
-            await api.post('/users/admin/users', formData);
+            // Backend expects 'fullName' for create, but 'full_name' for update. Map it here.
+            const payload = { ...formData, fullName: formData.full_name };
+            await api.post('/users/admin/users', payload);
             showMessage(t('user_created'), 'success');
             fetchUsers();
             closeModal();
@@ -111,7 +113,13 @@ const AdminUsers = () => {
 
     const handleDelete = async () => {
         try {
-            const { user } = modalState;
+            const { user, formData } = modalState;
+
+            if (formData.securityCode !== '1234') {
+                showMessage("Invalid Security Code", 'error');
+                return;
+            }
+
             await api.delete(`/users/admin/users/${user.id}`);
             showMessage(t('user_deleted'), 'success');
             fetchUsers();
@@ -141,7 +149,21 @@ const AdminUsers = () => {
         const setFormData = (newData) => setModalState(prev => ({ ...prev, formData: { ...prev.formData, ...newData } }));
 
         if (type === 'DELETE') {
-            return <p>{t('delete_confirmation')} <strong>{user.username}</strong>? {t('action_cannot_undone')}</p>;
+            return (
+                <div>
+                    <p>{t('delete_confirmation')} <strong>{user.username}</strong>? {t('action_cannot_undone')}</p>
+                    <div style={{ marginTop: '1rem' }}>
+                        <label className="input-label">Security Code (Safety)</label>
+                        <input
+                            className="input-field"
+                            type="password"
+                            placeholder="Enter 1234 to confirm"
+                            value={formData.securityCode || ''}
+                            onChange={e => setFormData({ securityCode: e.target.value })}
+                        />
+                    </div>
+                </div>
+            );
         }
 
         if (type === 'RESET_DNI') {

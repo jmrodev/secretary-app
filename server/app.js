@@ -20,14 +20,17 @@ app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/appointments', require('./routes/appointmentRoutes'));
 app.use('/api/consultorios', require('./routes/consultorioRoutes'));
 app.use('/api/medical', require('./routes/medicalRoutes'));
+app.use('/api/whatsapp', require('./routes/whatsappRoutes'));
 app.use('/api/finances', require('./routes/financeRoutes'));
 app.use('/api/logs', require('./routes/logRoutes'));
+app.use('/api/google', require('./routes/googleRoutes'));
 app.use('/uploads', express.static('uploads'));
 
 // Health check
 app.get('/', (req, res) => {
     res.send('Secretary App API is running');
 });
+// Force restart
 
 // Start server
 app.listen(PORT, async () => {

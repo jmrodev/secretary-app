@@ -109,7 +109,14 @@ export const translations = {
         patient_updated: "Detalles del paciente actualizados",
         failed_update_patient: "Error al actualizar paciente",
         payment_processed: "Pago procesado exitosamente",
+        payment_processed: "Pago procesado exitosamente",
         payment_failed: "El pago falló",
+        rating_financial: " Financiero",
+        rating_attendance: "Asistencia",
+        rating_behavior: "Comportamiento",
+        rating_financial_tooltip: "Cumplimiento financiero basado en deuda",
+        rating_attendance_tooltip: "Asistencia basada en historial de turnos",
+        rating_behavior_tooltip: "Valoración del personal (Click para cambiar)",
 
         // Medical Documents
         medical_documents: "Documentos Médicos",
@@ -163,9 +170,9 @@ export const translations = {
         // Finances
         actions: "Acciones",
         new_transaction: "+ Nueva Transacción",
-        filter_by_doctor: "Filtrar por Doctor",
-        all_doctors: "Todos los Doctores",
         cash_boxes: "Cajas Chicas",
+        filter_by_doctor: "Filtrar por Médico",
+        all_doctors: "Todos los Médicos",
         deliver: "Entregar",
         transaction_log: "Registro de Transacciones",
         beneficiary: "Beneficiario",
@@ -412,7 +419,14 @@ export const translations = {
         patient_updated: "Patient details updated",
         failed_update_patient: "Failed to update patient",
         payment_processed: "Payment processed successfully",
+        payment_processed: "Payment processed successfully",
         payment_failed: "Payment failed",
+        rating_financial: "Financial",
+        rating_attendance: "Attendance",
+        rating_behavior: "Behavior",
+        rating_financial_tooltip: "Financial rating based on debt",
+        rating_attendance_tooltip: "Attendance based on appointment history",
+        rating_behavior_tooltip: "Staff perception rating (Click to change)",
 
         // Medical Documents
         medical_documents: "Medical Documents",
@@ -466,9 +480,9 @@ export const translations = {
         // Finances
         actions: "Actions",
         new_transaction: "+ New Transaction",
+        cash_boxes: "Cash Boxes",
         filter_by_doctor: "Filter by Doctor",
         all_doctors: "All Doctors",
-        cash_boxes: "Cash Boxes",
         deliver: "Deliver",
         transaction_log: "Transaction Log",
         beneficiary: "Beneficiary",
