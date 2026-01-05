@@ -1,8 +1,7 @@
-
-
 services:
   db:
     image: mariadb:10.6
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: cima1255
       MYSQL_DATABASE: clinical_management
@@ -12,12 +11,13 @@ services:
     ports:
       - "3307:3306" # Mapeo a 3307 para evitar conflicto con local si existe
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$MYSQL_ROOT_PASSWORD"]
+      test: "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD"
       timeout: 20s
       retries: 10
 
   server:
     build: ./server
+    restart: always
     ports:
       - "5000:5000"
     environment:
@@ -35,6 +35,7 @@ services:
 
   client:
     build: ./client
+    restart: always
     ports:
       - "5173:5173"
     environment:
@@ -44,5 +45,3 @@ services:
     volumes:
       - ./client:/app
       - /app/node_modules
-
-
