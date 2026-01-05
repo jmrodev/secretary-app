@@ -308,7 +308,7 @@ const Patients = () => {
                                 {details.files && details.files.map(f => (
                                     <li key={f.id} style={{ padding: '0.5rem 0', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between' }}>
                                         <div>
-                                            <a href={`http://localhost:5000${f.file_url}`} target="_blank" rel="noreferrer" style={{ fontWeight: 'bold', color: '#3b82f6', textDecoration: 'none' }}>
+                                            <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${f.file_url}`} target="_blank" rel="noreferrer" style={{ fontWeight: 'bold', color: '#3b82f6', textDecoration: 'none' }}>
                                                 {f.description || f.file_name}
                                             </a>
                                             <div style={{ fontSize: '0.8rem', color: '#64748b' }}>

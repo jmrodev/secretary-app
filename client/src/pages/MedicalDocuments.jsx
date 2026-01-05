@@ -342,7 +342,7 @@ const MedicalDocuments = () => {
                                     {files.filter(filterItem).map(f => (
                                         <li key={f.id} style={{ padding: '1rem', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <div>
-                                                <a href={`http://localhost:5000${f.file_url}`} target="_blank" rel="noreferrer" style={{ fontWeight: 'bold', color: '#3b82f6', textDecoration: 'none', fontSize: '1.05rem' }}>
+                                                <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${f.file_url}`} target="_blank" rel="noreferrer" style={{ fontWeight: 'bold', color: '#3b82f6', textDecoration: 'none', fontSize: '1.05rem' }}>
                                                     {f.description || f.file_name}
                                                 </a>
                                                 <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '4px' }}>

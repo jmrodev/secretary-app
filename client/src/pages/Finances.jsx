@@ -197,7 +197,7 @@ const Finances = () => {
                                             {t.is_withdrawal ? '↩' : (t.type.includes('income') ? '+' : '-')}${Math.abs(t.amount)}
                                         </td>
                                         <td style={{ padding: '1rem' }}>
-                                            {t.proof_file ? <a href={`http://localhost:5000${t.proof_file}`} target="_blank" rel="noreferrer">{t('view') || 'View'}</a> : '-'}
+                                            {t.proof_file ? <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${t.proof_file}`} target="_blank" rel="noreferrer">{t('view') || 'View'}</a> : '-'}
                                         </td>
                                     </tr>
                                 ))}
