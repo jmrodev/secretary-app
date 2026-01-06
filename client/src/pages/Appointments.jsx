@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
 import TransactionModal from '../components/TransactionModal';
 import Calendar from '../components/Calendar';
 import DaySchedule from '../components/DaySchedule';
+import PatientSearchSelect from '../components/PatientSearchSelect';
+import Sidebar from '../components/Sidebar';
 
 const Appointments = () => {
     const [appointments, setAppointments] = useState([]);
     const [doctors, setDoctors] = useState([]);
-    const [patients, setPatients] = useState([]);
+    // const [patients, setPatients] = useState([]); // Removed bulk fetch
     const [loading, setLoading] = useState(true);
     const { user } = useAuth();
     const { t } = useLanguage();
@@ -29,6 +32,7 @@ const Appointments = () => {
     const [paymentModal, setPaymentModal] = useState({ open: false, initialData: {} });
 
     const [googleEvents, setGoogleEvents] = useState([]); // Store remote events
+    const [holidays, setHolidays] = useState([]); // Store holidays
 
     const fetchAppointments = async () => {
         try {
@@ -36,6 +40,15 @@ const Appointments = () => {
             setAppointments(res.data);
         } catch (err) {
             console.error("Failed to fetch appointments", err);
+        }
+    };
+
+    const fetchHolidays = async () => {
+        try {
+            const res = await api.get('/holidays');
+            setHolidays(res.data);
+        } catch (err) {
+            console.error("Failed to fetch holidays", err);
         }
     };
 
@@ -78,16 +91,11 @@ const Appointments = () => {
 
     const fetchAllData = async () => {
         await fetchAppointments();
+        await fetchHolidays();
         try {
             // Fetch doctors for selection
             const dRes = await api.get('/users/doctors');
             setDoctors(dRes.data);
-
-            // Fetch patients if secretary or doctor
-            if (user.role === 'secretary' || user.role === 'doctor') {
-                const pRes = await api.get('/users/patients');
-                setPatients(pRes.data);
-            }
         } catch (err) {
             console.error(err);
         } finally {
@@ -147,6 +155,14 @@ const Appointments = () => {
                 });
             }
         } else {
+            // Check if selected date is a holiday
+            const dateStr = selectedDate.toISOString().split('T')[0];
+            const isHoliday = holidays.find(h => h.date.startsWith(dateStr));
+            if (isHoliday) {
+                setMessage(`Cannot book on ${dateStr}: ${isHoliday.description}`);
+                return;
+            }
+
             // Book new appointment
             if (user.role === 'patient' || user.role === 'secretary' || user.role === 'doctor') {
                 const newDate = new Date(selectedDate);
@@ -167,6 +183,15 @@ const Appointments = () => {
     const handleBook = async (e) => {
         e.preventDefault();
         setMessage('');
+
+        // Client-side holiday check
+        const selectedDatePart = date.split('T')[0];
+        const isHoliday = holidays.find(h => h.date.startsWith(selectedDatePart));
+        if (isHoliday) {
+            setMessage(`Cannot book: ${isHoliday.description}`);
+            return;
+        }
+
         try {
             await api.post('/appointments', {
                 doctor_id: selectedDoctor,
@@ -202,21 +227,7 @@ const Appointments = () => {
 
     return (
         <div className="app-layout">
-            <aside className="sidebar">
-                <div style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>{t('app_name')}</h2>
-                </div>
-                <nav>
-                    <a href="/dashboard" className="sidebar-link">{t('dashboard')}</a>
-                    {(user.role === 'secretary' || user.role === 'admin' || user.role === 'doctor' || user.role === 'patient') && (
-                        <a href="/documents" className="sidebar-link">{t('documents')}</a>
-                    )}
-                    <a href="#" className="sidebar-link active">{t('appointments')}</a>
-                    {(user.role === 'secretary' || user.role === 'admin' || user.role === 'doctor') && (
-                        <a href="/finances" className="sidebar-link">{t('finances')}</a>
-                    )}
-                </nav>
-            </aside>
+            <Sidebar />
             <main className="main-content">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
@@ -257,6 +268,7 @@ const Appointments = () => {
                             selectedDate={selectedDate}
                             onDateSelect={handleDateSelect}
                             appointments={filteredAppointments}
+                            holidays={holidays}
                         />
                     </div>
                     <div className="schedule-section" style={{ position: 'relative', overflow: 'hidden' }}>
@@ -270,6 +282,7 @@ const Appointments = () => {
                             appointments={filteredAppointments}
                             onSlotClick={handleSlotClick}
                             onRatingChange={handleRatingChange}
+                            holidays={holidays}
                         />
                     </div>
                 </div>
@@ -302,12 +315,11 @@ const Appointments = () => {
                                 {(user.role === 'secretary' || user.role === 'doctor') && (
                                     <div className="input-group">
                                         <label className="input-label">{t('patients')}</label>
-                                        <select className="input-field" value={selectedPatient} onChange={e => setSelectedPatient(e.target.value)} required>
-                                            <option value="">{t('select_patient')}</option>
-                                            {patients.map(p => (
-                                                <option key={p.id} value={p.id}>{p.full_name}</option>
-                                            ))}
-                                        </select>
+                                        <PatientSearchSelect
+                                            value={selectedPatient}
+                                            onChange={setSelectedPatient}
+                                            placeholder={t('select_patient')}
+                                        />
                                     </div>
                                 )}
 

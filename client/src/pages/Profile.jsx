@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import Sidebar from '../components/Sidebar';
 
 const Profile = () => {
     const { user } = useAuth();
@@ -75,15 +76,7 @@ const Profile = () => {
     if (user.role === 'admin') {
         return (
             <div className="app-layout">
-                <aside className="sidebar">
-                    <div style={{ marginBottom: '2rem' }}>
-                        <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>{t('app_name')}</h2>
-                    </div>
-                    <nav>
-                        <a href="/dashboard" className="sidebar-link">{t('dashboard')}</a>
-                        <a href="#" className="sidebar-link active">{t('my_profile')}</a>
-                    </nav>
-                </aside>
+                <Sidebar />
                 <main className="main-content">
                     <h1 className="title">{t('my_profile')}</h1>
                     <div className="card">
@@ -98,15 +91,7 @@ const Profile = () => {
 
     return (
         <div className="app-layout">
-            <aside className="sidebar">
-                <div style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>{t('app_name')}</h2>
-                </div>
-                <nav>
-                    <a href="/dashboard" className="sidebar-link">{t('dashboard')}</a>
-                    <a href="#" className="sidebar-link active">{t('my_profile')}</a>
-                </nav>
-            </aside>
+            <Sidebar />
             <main className="main-content">
                 <h1 className="title">{t('my_profile')}</h1>
 

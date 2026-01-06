@@ -1,3 +1,6 @@
 
 # Local MySQL Data
 mysql_data/
+
+# Backups
+backup_*.sql

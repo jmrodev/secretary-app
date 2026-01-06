@@ -3,6 +3,7 @@ import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import Modal from '../components/Modal';
+import Sidebar from '../components/Sidebar';
 import TransactionModal from '../components/TransactionModal';
 
 const Finances = () => {
@@ -92,16 +93,7 @@ const Finances = () => {
 
     return (
         <div className="app-layout">
-            <aside className="sidebar">
-                <div style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>{t('app_name')}</h2>
-                </div>
-                <nav>
-                    <a href="/dashboard" className="sidebar-link">{t('dashboard')}</a>
-                    {(user.role === 'secretary' || user.role === 'admin') && <a href="/appointments" className="sidebar-link">{t('appointments')}</a>}
-                    <a href="#" className="sidebar-link active">{t('finances')}</a>
-                </nav>
-            </aside>
+            <Sidebar />
             <main className="main-content">
                 <h1 className="title">{t('finances')}</h1>
 

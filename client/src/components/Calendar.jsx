@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Calendar = ({ selectedDate, onDateSelect, appointments = [] }) => {
+const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = [] }) => {
     const [viewDate, setViewDate] = useState(new Date(selectedDate || new Date()));
 
     const getDaysInMonth = (date) => {
@@ -52,11 +52,16 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [] }) => {
                 isSameDay(new Date(appt.appointment_date), currentDay)
             );
 
+            // Check if holiday
+            const dateStr = currentDay.toISOString().split('T')[0];
+            const isHoliday = holidays && holidays.find(h => h.date.startsWith(dateStr));
+
             dayElements.push(
                 <div
                     key={i}
-                    className={`calendar-day ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''}`}
+                    className={`calendar-day ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''} ${isHoliday ? 'holiday' : ''}`}
                     onClick={() => onDateSelect(currentDay)}
+                    title={isHoliday ? isHoliday.description : ''}
                 >
                     <span className="day-number">{i}</span>
                     {hasAppointments && <div className="appointment-dot"></div>}
@@ -140,6 +145,11 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [] }) => {
                 }
                 .calendar-day.selected .appointment-dot {
                     background-color: white;
+                }
+                .calendar-day.holiday {
+                    background-color: #fee2e2;
+                    color: #991b1b;
+                    cursor: not-allowed;
                 }
             `}</style>
         </div>

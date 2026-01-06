@@ -495,4 +495,81 @@ exports.createAppointment = async (req, res) => {
     } finally {
         if (conn) conn.release();
     }
+
 };
+
+exports.createEventHelper = async (doctorId, eventData, userId = null) => {
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const tokens = await getTokens(conn, doctorId);
+
+        if (!tokens.google_refresh_token) {
+            console.log(`[Google] Doctor ${doctorId} not connected. Skipping event.`);
+            return null;
+        }
+
+        const oauth2Client = getOAuthClient();
+        oauth2Client.setCredentials({
+            refresh_token: tokens.google_refresh_token,
+            access_token: tokens.google_access_token,
+            expiry_date: parseInt(tokens.google_token_expiry)
+        });
+
+        const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+
+        // Ensure TimeZone is set if not provided
+        if (!eventData.start.timeZone) eventData.start.timeZone = 'America/Argentina/Buenos_Aires';
+        if (!eventData.end.timeZone) eventData.end.timeZone = 'America/Argentina/Buenos_Aires';
+
+        const result = await calendar.events.insert({
+            calendarId: 'primary',
+            resource: eventData,
+        });
+
+        if (userId) await logAction(userId, 'CALENDAR_SYNC', 'SYSTEM', `Synced Event ${result.data.id} to Doc ${doctorId}`);
+        return result.data;
+
+    } catch (err) {
+        console.error("CreateHelper Error:", err);
+        return null;
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.checkConflict = async (doctorId, startTime, endTime) => {
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const tokens = await getTokens(conn, doctorId);
+
+        if (!tokens.google_refresh_token) return false; // Not connected, can't check
+
+        const oauth2Client = getOAuthClient();
+        oauth2Client.setCredentials({
+            refresh_token: tokens.google_refresh_token,
+            access_token: tokens.google_access_token,
+            expiry_date: parseInt(tokens.google_token_expiry)
+        });
+        const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+
+        const res = await calendar.freebusy.query({
+            resource: {
+                timeMin: startTime,
+                timeMax: endTime,
+                timeZone: 'America/Argentina/Buenos_Aires',
+                items: [{ id: 'primary' }]
+            }
+        });
+
+        const busy = res.data.calendars.primary.busy;
+        return busy && busy.length > 0;
+    } catch (err) {
+        console.error("Conflict Check Error", err);
+        return false;
+    } finally {
+        if (conn) conn.release();
+    }
+};
+

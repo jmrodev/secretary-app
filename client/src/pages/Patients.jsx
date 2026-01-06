@@ -5,6 +5,7 @@ import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
 
 import Modal from '../components/Modal';
+import Sidebar from '../components/Sidebar';
 
 const Patients = () => {
     const { user } = useAuth();
@@ -225,11 +226,7 @@ const Patients = () => {
     if (viewLoading) {
         return (
             <div className="app-layout">
-                <aside className="sidebar">
-                    <div style={{ marginBottom: '2rem' }}>
-                        <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>{t('app_name')}</h2>
-                    </div>
-                </aside>
+                <Sidebar />
                 <main className="main-content">
                     <div>{t('loading')}</div>
                 </main>
@@ -240,15 +237,7 @@ const Patients = () => {
     if (selectedPatient && details) {
         return (
             <div className="app-layout">
-                <aside className="sidebar">
-                    <div style={{ marginBottom: '2rem' }}>
-                        <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>{t('app_name')}</h2>
-                    </div>
-                    <nav>
-                        <a href="/dashboard" className="sidebar-link">{t('dashboard')}</a>
-                        <a href="#" className="sidebar-link active">{t('patients')}</a>
-                    </nav>
-                </aside>
+                <Sidebar />
                 <main className="main-content" style={{ maxWidth: '800px', margin: '0 auto' }}>
                     <button onClick={() => { setSelectedPatient(null); setDetails(null); }} style={{ marginBottom: '1rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent-color)', fontWeight: 'bold' }}>&larr; {t('back_to_list')}</button>
 
@@ -467,15 +456,7 @@ const Patients = () => {
 
     return (
         <div className="app-layout">
-            <aside className="sidebar">
-                <div style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>{t('app_name')}</h2>
-                </div>
-                <nav>
-                    <a href="/dashboard" className="sidebar-link">{t('dashboard')}</a>
-                    <a href="#" className="sidebar-link active">{t('patients')}</a>
-                </nav>
-            </aside>
+            <Sidebar />
             <main className="main-content">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>

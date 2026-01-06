@@ -17,7 +17,18 @@ exports.createAppointment = async (req, res) => {
             } else {
                 return res.status(404).send("Patient profile not found");
             }
+        } else {
+            conn = await pool.getConnection();
         }
+
+        // --- Holiday Check ---
+        // Extract YYYY-MM-DD from appointment_date (which is ISO-like YYYY-MM-DDTHH:mm)
+        const datePart = appointment_date.split('T')[0];
+        const holidays = await conn.query("SELECT * FROM active_holidays WHERE date = ?", [datePart]);
+        if (holidays.length > 0) {
+            return res.status(400).json({ error: `Clinic is closed on this date: ${holidays[0].description}` });
+        }
+        // ---------------------
 
         // --- Google Calendar Conflict Check ---
         // Calculate End Time (Assuming 1 hour duration by default for now)
@@ -31,7 +42,7 @@ exports.createAppointment = async (req, res) => {
         }
         // --------------------------------------
 
-        if (!conn) conn = await pool.getConnection();
+        // if (!conn) conn = await pool.getConnection(); // Already acquired
 
         // Simple insert
         const result = await conn.query(

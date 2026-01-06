@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import Sidebar from '../components/Sidebar';
 
 const OfficeRentals = () => {
     const { t } = useLanguage();
@@ -61,16 +62,7 @@ const OfficeRentals = () => {
 
     return (
         <div className="app-layout">
-            <aside className="sidebar">
-                <div style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>{t('app_name')}</h2>
-                </div>
-                <nav>
-                    <a href="/dashboard" className="sidebar-link">{t('dashboard')}</a>
-                    <a href="/appointments" className="sidebar-link">{t('appointments')}</a>
-                    <a href="#" className="sidebar-link active">{t('office_rentals')}</a>
-                </nav>
-            </aside>
+            <Sidebar />
             <main className="main-content">
                 <h1 className="title">{t('office_rentals')}</h1>
 

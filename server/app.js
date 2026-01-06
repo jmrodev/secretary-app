@@ -24,6 +24,8 @@ app.use('/api/whatsapp', require('./routes/whatsappRoutes'));
 app.use('/api/finances', require('./routes/financeRoutes'));
 app.use('/api/logs', require('./routes/logRoutes'));
 app.use('/api/google', require('./routes/googleRoutes'));
+app.use('/api/settings', require('./routes/settingsRoutes'));
+app.use('/api/holidays', require('./routes/holidayRoutes'));
 app.use('/uploads', express.static('uploads'));
 
 // Health check

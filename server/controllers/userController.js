@@ -54,16 +54,24 @@ exports.getAllPatients = async (req, res) => {
     let conn;
     try {
         conn = await pool.getConnection();
-        // Calculate total_debt for each patient
-        // Also fetch total appointments and missed/cancelled ones (for attendance rating)
-        const query = `
+        const { search } = req.query;
+
+        let query = `
             SELECT p.*, 
             (SELECT COALESCE(SUM(amount), 0) FROM transactions t WHERE t.related_user_id = p.user_id AND t.status = 'pending') as total_debt,
             (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id) as total_appointments,
             (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id AND a.status IN ('cancelled', 'missed')) as missed_appointments
             FROM patients p
         `;
-        const rows = await conn.query(query);
+
+        let params = [];
+        if (search) {
+            const searchTerm = `%${search}%`;
+            query += ` WHERE p.full_name LIKE ? OR p.dni LIKE ? OR p.address LIKE ?`;
+            params = [searchTerm, searchTerm, searchTerm];
+        }
+
+        const rows = await conn.query(query, params);
         // Serialize BigInts
         const serialized = rows.map(r => ({
             ...r,

@@ -13,7 +13,13 @@ const { pool } = require('./db');
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             )
         `);
-        console.log("Table 'system_settings' created/verified.");
+        console.log("Table 'system_settings' verified.");
+
+        // Insert default for office rentals if not exists
+        await conn.query(`
+            INSERT IGNORE INTO system_settings (setting_key, setting_value) VALUES ('enable_office_rentals', 'true')
+        `);
+        console.log("Default settings inserted.");
 
     } catch (err) {
         console.error("Migration failed:", err);

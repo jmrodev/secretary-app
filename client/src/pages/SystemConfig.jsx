@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useLanguage } from '../context/LanguageContext';
 import { useMessage } from '../context/MessageContext';
+import { useConfig } from '../context/ConfigContext';
+import Sidebar from '../components/Sidebar';
 
 const SystemConfig = () => {
     const { t } = useLanguage();
     const { showMessage } = useMessage();
+    const { settings, updateSetting } = useConfig();
     const [connected, setConnected] = useState(false);
     const [loading, setLoading] = useState(false); // Changed default to false, load on select
     const [syncLogs, setSyncLogs] = useState([]);
@@ -94,17 +97,33 @@ const SystemConfig = () => {
 
     return (
         <div className="app-layout">
-            <aside className="sidebar">
-                <div style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>{t('app_name')}</h2>
-                </div>
-                <nav>
-                    <a href="/dashboard" className="sidebar-link">{t('dashboard')}</a>
-                    <a href="#" className="sidebar-link active">Sys Config</a>
-                </nav>
-            </aside>
+            <Sidebar />
             <main className="main-content">
                 <h1 className="title">System Configuration</h1>
+
+                <h1 className="title">System Configuration</h1>
+
+                <div className="card" style={{ marginBottom: '2rem' }}>
+                    <h3>General Settings</h3>
+                    <div className="input-group" style={{ flexDirection: 'row', alignItems: 'center', gap: '1rem' }}>
+                        <input
+                            type="checkbox"
+                            id="opt-rentals"
+                            checked={settings.enable_office_rentals === 'true'}
+                            onChange={(e) => updateSetting('enable_office_rentals', e.target.checked)}
+                            style={{ width: '20px', height: '20px' }}
+                        />
+                        <label htmlFor="opt-rentals" className="input-label" style={{ margin: 0 }}>
+                            Enable Office Rentals (Alquiler de Consultorios)
+                        </label>
+                    </div>
+                    <p style={{ fontSize: '0.9rem', color: '#64748b' }}>
+                        If disabled, the "Rentals" menu item will be hidden from the sidebar.
+                    </p>
+                </div>
+
+                {/* Holiday Management */}
+                <HolidayManager />
 
                 <div className="card">
                     <h3>Google Integration (Per Doctor)</h3>
@@ -288,6 +307,89 @@ const SystemConfig = () => {
                 </div>
             </main >
         </div >
+    );
+};
+
+
+const HolidayManager = () => {
+    const [holidays, setHolidays] = useState([]);
+    const [newDate, setNewDate] = useState('');
+    const [newDesc, setNewDesc] = useState('');
+    const { showMessage } = useMessage();
+
+    useEffect(() => {
+        loadHolidays();
+    }, []);
+
+    const loadHolidays = async () => {
+        try {
+            const res = await api.get('/holidays');
+            setHolidays(res.data);
+        } catch (err) {
+            console.error("Failed to load holidays", err);
+        }
+    };
+
+    const handleAdd = async (e) => {
+        e.preventDefault();
+        try {
+            await api.post('/holidays', { date: newDate, description: newDesc });
+            showMessage('Holiday added', 'success');
+            setNewDate('');
+            setNewDesc('');
+            loadHolidays();
+        } catch (err) {
+            showMessage(err.response?.data || 'Failed to add', 'error');
+        }
+    };
+
+    const handleDelete = async (id) => {
+        if (!confirm("Remove this holiday?")) return;
+        try {
+            await api.delete(`/holidays/${id}`);
+            loadHolidays();
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    // Format date for display (UTC slice fix not needed if string is YYYY-MM-DD from DB)
+    // DB returns YYYY-MM-DDT00:00:00.000Z usually. Use local split.
+    const formatDate = (isoString) => {
+        if (!isoString) return '';
+        return isoString.split('T')[0];
+    };
+
+    return (
+        <div className="card" style={{ marginBottom: '2rem' }}>
+            <h3>Establecer Feriados / Días Cerrados</h3>
+            <p style={{ fontSize: '0.9rem', color: '#64748b' }}>
+                Los días agregados aquí bloquearán la creación de turnos.
+            </p>
+
+            <form onSubmit={handleAdd} style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end', marginBottom: '1.5rem' }}>
+                <div style={{ flex: 1 }}>
+                    <label className="input-label">Fecha</label>
+                    <input type="date" className="input-field" value={newDate} onChange={e => setNewDate(e.target.value)} required />
+                </div>
+                <div style={{ flex: 2 }}>
+                    <label className="input-label">Descripción</label>
+                    <input type="text" className="input-field" value={newDesc} onChange={e => setNewDesc(e.target.value)} placeholder="Ej. Navidad" required />
+                </div>
+                <button type="submit" className="btn btn-primary">Agregar</button>
+            </form>
+
+            {holidays.length === 0 ? <p className="text-muted">No hay feriados configurados.</p> : (
+                <ul style={{ listStyle: 'none', padding: 0 }}>
+                    {holidays.map(h => (
+                        <li key={h.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem', borderBottom: '1px solid #eee' }}>
+                            <span><strong>{formatDate(h.date)}</strong>: {h.description}</span>
+                            <button onClick={() => handleDelete(h.id)} style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer' }}>Eliminar</button>
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
     );
 };
 

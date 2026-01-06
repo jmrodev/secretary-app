@@ -5,6 +5,8 @@ import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext'; // Import hook
 import Modal from '../components/Modal';
 import TransactionModal from '../components/TransactionModal';
+import RequirementsList from '../components/RequirementsList';
+import Sidebar from '../components/Sidebar';
 
 const Dashboard = () => {
     const { user, logout } = useAuth();
@@ -27,8 +29,13 @@ const Dashboard = () => {
         const fetchSchedule = async () => {
             try {
                 const res = await api.get('/appointments');
-                const today = new Date().toISOString().split('T')[0];
-                const todaysCalls = res.data.filter(a => a.appointment_date.startsWith(today));
+                const now = new Date();
+                const todayStr = now.toLocaleDateString(); // Local date string
+
+                const todaysCalls = res.data.filter(a => {
+                    const apptDate = new Date(a.appointment_date);
+                    return apptDate.toLocaleDateString() === todayStr;
+                });
                 setTodayAppointments(todaysCalls);
             } catch (err) {
                 console.error("Failed to fetch schedule", err);
@@ -144,71 +151,7 @@ const Dashboard = () => {
                 }}
             />
 
-            <aside className="sidebar">
-                <div style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>{t('app_name')}</h2>
-                    <div style={{ fontSize: '0.85rem', opacity: 0.7 }}>{t('logged_in_as')} {user.username}</div>
-                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.5rem', background: 'rgba(255,255,255,0.2)', padding: '2px 6px', borderRadius: '4px', display: 'inline-block' }}>{user.role}</div>
-                </div>
-
-                <nav>
-                    <a href="#" className="sidebar-link active">{t('dashboard')}</a>
-                    <a href="/profile" className="sidebar-link">{t('my_profile')}</a>
-
-                    {user.role === 'admin' && (
-                        <>
-                            <a href="/logs" className="sidebar-link">{t('audit_logs')}</a>
-                            <a href="/admin/users" className="sidebar-link">{t('user_management')}</a>
-                        </>
-                    )}
-
-                    {(user.role === 'admin' || user.role === 'secretary') && (
-                        <a href="/config" className="sidebar-link">Sys Config</a>
-                    )}
-
-                    {(user.role === 'secretary' || user.role === 'doctor' || user.role === 'patient') && (
-                        <a href="/documents" className="sidebar-link">{t('documents')}</a>
-                    )}
-
-                    {(user.role === 'secretary' || user.role === 'doctor') && (
-                        <>
-                            <a href="/appointments" className="sidebar-link">{t('appointments')}</a>
-                            <a href="/patients" className="sidebar-link">{t('patients')}</a>
-                            <a href="/finances" className="sidebar-link">{t('finances')}</a>
-                        </>
-                    )}
-
-                    {(user.role === 'secretary') && (
-                        <>
-                            <a href="/doctors" className="sidebar-link">{t('doctors')}</a>
-                        </>
-                    )}
-
-                    {user.role === 'doctor' && (
-                        <>
-                            <a href="#" className="sidebar-link">{t('my_patients')}</a>
-                            <a href="/rentals" className="sidebar-link">{t('rent_office')}</a>
-                        </>
-                    )}
-
-                    {user.role === 'patient' && (
-                        <>
-                            <a href="#" className="sidebar-link">{t('my_appointments')}</a>
-                            <a href="#" className="sidebar-link">{t('medical_history')}</a>
-                        </>
-                    )}
-                </nav>
-
-                <div style={{ marginTop: 'auto' }}>
-                    <button onClick={toggleLanguage} className="sidebar-link" style={{ background: 'rgba(255,255,255,0.1)', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <span>🌐 {t('language')}</span>
-                        <span style={{ textTransform: 'uppercase', fontWeight: 'bold' }}>{language}</span>
-                    </button>
-                    <button onClick={logout} className="sidebar-link" style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer' }}>
-                        {t('sign_out')}
-                    </button>
-                </div>
-            </aside>
+            <Sidebar />
 
             <main className="main-content">
                 <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
@@ -337,6 +280,17 @@ const Dashboard = () => {
                         <h3>{t('notifications')}</h3>
                         <p>{t('system_operational')}</p>
                     </div>
+
+                    {/* Requirements List (New Feature) */}
+                    {(user.role === 'secretary' || user.role === 'doctor' || user.role === 'admin') && (
+                        <div className="card" style={{ gridColumn: '1 / -1' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                                <h3>📋 Requerimientos en Curso</h3>
+                                <a href="/requests" style={{ fontSize: '0.8rem' }} className="btn btn-secondary">Ver Todos</a>
+                            </div>
+                            <RequirementsList user={user} />
+                        </div>
+                    )}
                 </div>
 
                 {user.role === 'admin' && (

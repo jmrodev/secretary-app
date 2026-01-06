@@ -5,6 +5,8 @@ import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
 import Modal from '../components/Modal';
 import TransactionModal from '../components/TransactionModal';
+import PatientSearchSelect from '../components/PatientSearchSelect';
+import Sidebar from '../components/Sidebar';
 
 const MedicalDocuments = () => {
     const { user } = useAuth();
@@ -70,8 +72,8 @@ const MedicalDocuments = () => {
 
     const fetchResources = async () => {
         try {
-            const pRes = await api.get('/users/patients');
-            setPatients(pRes.data);
+            // const pRes = await api.get('/users/patients'); // Removed in favor of async search
+            // setPatients(pRes.data);
             const dRes = await api.get('/users/doctors');
             setDoctors(dRes.data);
         } catch (err) { console.error(err); }
@@ -161,15 +163,7 @@ const MedicalDocuments = () => {
 
     return (
         <div className="app-layout">
-            <aside className="sidebar">
-                <div style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>{t('app_name')}</h2>
-                </div>
-                <nav>
-                    <a href="/dashboard" className="sidebar-link">{t('dashboard')}</a>
-                    <a href="#" className="sidebar-link active">{t('documents')}</a>
-                </nav>
-            </aside>
+            <Sidebar />
 
             <main className="main-content">
                 <h1 className="title">{t('medical_documents')}</h1>
@@ -222,10 +216,11 @@ const MedicalDocuments = () => {
                                     </div>
                                     <div className="input-group">
                                         <label className="input-label">{t('patient_label')}</label>
-                                        <select className="input-field" value={selectedPatient} onChange={e => setSelectedPatient(e.target.value)} required>
-                                            <option value="">{t('select_patient')}</option>
-                                            {patients.map(p => <option key={p.id} value={p.id}>{p.full_name}</option>)}
-                                        </select>
+                                        <PatientSearchSelect
+                                            value={selectedPatient}
+                                            onChange={setSelectedPatient}
+                                            placeholder={t('select_patient')}
+                                        />
                                     </div>
                                     <div className="input-group">
                                         <label className="input-label">{t('doctor_label')}</label>
@@ -318,10 +313,11 @@ const MedicalDocuments = () => {
                             <form onSubmit={handleFileUpload}>
                                 <div className="input-group">
                                     <label className="input-label">{t('patient_label')}</label>
-                                    <select className="input-field" value={filePatient} onChange={e => setFilePatient(e.target.value)} required>
-                                        <option value="">{t('select_patient')}</option>
-                                        {patients.map(p => <option key={p.id} value={p.id}>{p.full_name}</option>)}
-                                    </select>
+                                    <PatientSearchSelect
+                                        value={filePatient}
+                                        onChange={setFilePatient}
+                                        placeholder={t('select_patient')}
+                                    />
                                 </div>
                                 <div className="input-group">
                                     <label className="input-label">{t('description')}</label>
