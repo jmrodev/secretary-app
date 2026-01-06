@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import api from '../api/axios';
+import { useAuth } from './AuthContext';
 
 const ConfigContext = createContext();
 
@@ -11,10 +12,14 @@ export const ConfigProvider = ({ children }) => {
     });
     const [loading, setLoading] = useState(true);
 
+    const { user } = useAuth(); // Import useAuth to check login status
+
     const fetchSettings = async () => {
+        // If not logged in, don't fetch protected settings
+        if (!user) return;
+
         try {
             const res = await api.get('/settings');
-            // Merge defaults with server response
             setSettings(prev => ({ ...prev, ...res.data }));
         } catch (err) {
             console.error("Failed to load settings", err);
@@ -24,8 +29,12 @@ export const ConfigProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        fetchSettings();
-    }, []);
+        if (user) {
+            fetchSettings();
+        } else {
+            setLoading(false); // If no user, we are 'done' loading defaults
+        }
+    }, [user]);
 
     const updateSetting = async (key, value) => {
         try {

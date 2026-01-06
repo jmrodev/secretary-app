@@ -8,7 +8,10 @@ exports.getSettings = async (req, res) => {
         // Convert rows to object { key: value }
         const settings = {};
         rows.forEach(r => {
-            settings[r.setting_key] = r.setting_value;
+            // Exclude sensitive keys
+            if (!r.setting_key.startsWith('google_')) {
+                settings[r.setting_key] = r.setting_value;
+            }
         });
         res.json(settings);
     } catch (err) {
