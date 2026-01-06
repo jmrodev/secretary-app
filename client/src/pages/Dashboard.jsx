@@ -211,7 +211,7 @@ const Dashboard = () => {
                                                 }}>
                                                     <div>
                                                         <div style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>
-                                                            {a.appointment_date.split('T')[1].substring(0, 5)}
+                                                            {new Date(a.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
                                                             {a.status === 'completed' && <span style={{ fontSize: '0.7rem', marginLeft: '0.5rem', color: 'green' }}>({t('completed')})</span>}
                                                             {a.status === 'cancelled' && <span style={{ fontSize: '0.7rem', marginLeft: '0.5rem', color: 'red' }}>({t('cancelled')})</span>}
                                                         </div>
