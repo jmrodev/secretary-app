@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const holidayController = require('../controllers/holidayController');
-const { protect } = require('../middleware/authMiddleware');
+const { verifyToken } = require('../middleware/authMiddleware');
 
-router.get('/', protect, holidayController.getHolidays);
-router.post('/', protect, holidayController.addHoliday);
-router.delete('/:id', protect, holidayController.deleteHoliday);
+router.get('/', verifyToken, holidayController.getHolidays);
+router.post('/', verifyToken, holidayController.addHoliday);
+router.delete('/:id', verifyToken, holidayController.deleteHoliday);
 
 module.exports = router;
