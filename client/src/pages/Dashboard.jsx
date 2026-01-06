@@ -52,17 +52,24 @@ const Dashboard = () => {
 
     if (!user) return <div>{t('loading')}</div>;
 
+    // State for cancellation reason
+    const [cancellationReason, setCancellationReason] = useState("");
+
     const confirmAction = async () => {
         if (!pendingAction) return;
         try {
-            await api.patch(`/appointments/${pendingAction.id}/status`, { status: pendingAction.status });
+            await api.patch(`/appointments/${pendingAction.id}/status`, {
+                status: pendingAction.status,
+                reason: pendingAction.status === 'cancelled' ? cancellationReason : undefined
+            });
             setTodayAppointments(prev => prev.map(p => p.id === pendingAction.id ? { ...p, status: pendingAction.status } : p));
-            showMessage(`${t('appointments')} marked as ${pendingAction.status}`, 'success'); // Partial translation for now
+            showMessage(`${t('appointments')} marked as ${pendingAction.status}`, 'success');
         } catch (err) {
             showMessage("Failed to update status", 'error');
         } finally {
             setModalOpen(false);
             setPendingAction(null);
+            setCancellationReason(""); // Reset
         }
     };
 
@@ -103,6 +110,20 @@ const Dashboard = () => {
                 }
             >
                 <p>Are you sure you want to <strong>{pendingAction?.status === 'pending' ? 'restore' : 'mark'}</strong> the appointment for <strong>{pendingAction?.name}</strong> as <strong>{pendingAction?.status}</strong>?</p>
+
+                {pendingAction?.status === 'cancelled' && (
+                    <div style={{ marginTop: '1rem' }}>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Reason for cancellation:</label>
+                        <textarea
+                            className="input-field"
+                            rows="3"
+                            value={cancellationReason}
+                            onChange={(e) => setCancellationReason(e.target.value)}
+                            placeholder="Optional reason..."
+                            autoFocus
+                        />
+                    </div>
+                )}
             </Modal>
 
             <Modal

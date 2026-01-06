@@ -121,7 +121,7 @@ exports.updateStatus = async (req, res) => {
     let conn;
     try {
         const { id } = req.params;
-        const { status } = req.body;
+        const { status, reason } = req.body; // reason is optional, for cancellation
 
         const validStatuses = ['pending', 'confirmed', 'completed', 'cancelled'];
         if (!validStatuses.includes(status)) return res.status(400).send("Invalid status");
@@ -131,13 +131,17 @@ exports.updateStatus = async (req, res) => {
         const exists = await conn.query("SELECT * FROM appointments WHERE id = ?", [id]);
         if (exists.length === 0) return res.status(404).send("Appointment not found");
 
-        await conn.query("UPDATE appointments SET status = ? WHERE id = ?", [status, id]);
+        await conn.query("UPDATE appointments SET status = ?, cancellation_reason = ? WHERE id = ?", [status, reason || null, id]);
 
         const pId = exists[0].patient_id;
         const pat = await conn.query("SELECT full_name FROM patients WHERE id = ?", [pId]);
         const pName = pat.length > 0 ? pat[0].full_name : pId;
 
-        logAction(req, 'UPDATE_APPOINTMENT_STATUS', `Appointment for ${pName} changed to ${status}`);
+        let logMsg = `Appointment for ${pName} changed to ${status}`;
+        if (status === 'cancelled' && reason) {
+            logMsg += `. Reason: ${reason}`;
+        }
+        logAction(req, 'UPDATE_APPOINTMENT_STATUS', logMsg);
 
         res.json({ message: "Status updated" });
     } catch (err) {
