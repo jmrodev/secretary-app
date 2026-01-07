@@ -13,6 +13,7 @@ import AdminUsers from './pages/AdminUsers';
 import Doctors from './pages/Doctors';
 import SystemConfig from './pages/SystemConfig';
 import Requests from './pages/Requests';
+import Insurances from './pages/Insurances';
 import { useAuth } from './context/AuthContext';
 import { useLanguage } from './context/LanguageContext';
 
@@ -88,6 +89,11 @@ function App() {
       <Route path="/requests" element={
         <ProtectedRoute>
           <Requests />
+        </ProtectedRoute>
+      } />
+      <Route path="/insurances" element={
+        <ProtectedRoute>
+          <Insurances />
         </ProtectedRoute>
       } />
       <Route path="/" element={<Navigate to="/dashboard" />} />

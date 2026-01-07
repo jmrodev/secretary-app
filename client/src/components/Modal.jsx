@@ -22,17 +22,20 @@ const Modal = ({ isOpen, onClose, title, children, footer }) => {
                 borderRadius: '8px',
                 width: '90%',
                 maxWidth: '500px',
+                maxHeight: '90vh', // [NEW] Limit height
+                display: 'flex', // [NEW] Flex layout
+                flexDirection: 'column', // [NEW] Stack children
                 boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
             }}>
                 <div style={{ marginBottom: '1rem', borderBottom: '1px solid #eee', paddingBottom: '0.5rem' }}>
                     <h3 style={{ margin: 0, fontSize: '1.25rem' }}>{title}</h3>
                 </div>
 
-                <div style={{ marginBottom: '1.5rem' }}>
+                <div style={{ marginBottom: '1.5rem', overflowY: 'auto', flex: 1 }}> {/* [NEW] Scrollable content */}
                     {children}
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: 'auto' }}>
                     {footer}
                 </div>
             </div>

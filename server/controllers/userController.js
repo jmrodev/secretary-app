@@ -55,20 +55,49 @@ exports.getAllPatients = async (req, res) => {
     try {
         conn = await pool.getConnection();
         const { search } = req.query;
+        const { role, user_id } = req.user;
 
         let query = `
-            SELECT p.*, 
+            SELECT p.*, i.name as insurance_name,
             (SELECT COALESCE(SUM(amount), 0) FROM transactions t WHERE t.related_user_id = p.user_id AND t.status = 'pending') as total_debt,
             (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id) as total_appointments,
             (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id AND a.status IN ('cancelled', 'missed')) as missed_appointments
             FROM patients p
+            LEFT JOIN insurances i ON p.insurance_id = i.id
         `;
 
         let params = [];
+        let conditions = [];
+
+        // If Doctor, filter by assigned patients
+        if (role === 'doctor') {
+            // Get doctor_id from user_id first
+            const [docRows] = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [user_id]);
+            if (docRows.length > 0) {
+                const doctorId = docRows[0].id;
+                // Join or subquery. Join is cleaner but we started with simple select.
+                // Let's add INNER JOIN patient_doctors pd ON p.id = pd.patient_id WHERE pd.doctor_id = ?
+                query = `
+                    SELECT p.*, 
+                    (SELECT COALESCE(SUM(amount), 0) FROM transactions t WHERE t.related_user_id = p.user_id AND t.status = 'pending') as total_debt,
+                    (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id) as total_appointments,
+                    (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id AND a.status IN ('cancelled', 'missed')) as missed_appointments
+                    FROM patients p
+                    INNER JOIN patient_doctors pd ON p.id = pd.patient_id
+                `;
+                conditions.push("pd.doctor_id = ?");
+                params.push(doctorId);
+            }
+        }
+
         if (search) {
             const searchTerm = `%${search}%`;
-            query += ` WHERE p.full_name LIKE ? OR p.dni LIKE ? OR p.address LIKE ?`;
-            params = [searchTerm, searchTerm, searchTerm];
+            conditions.push("(p.full_name LIKE ? OR p.dni LIKE ? OR p.address LIKE ?)");
+            params.push(searchTerm, searchTerm, searchTerm);
+        }
+
+        if (conditions.length > 0) {
+            query += " WHERE " + conditions.join(" AND ");
         }
 
         const rows = await conn.query(query, params);
@@ -96,7 +125,11 @@ exports.getPatientDetails = async (req, res) => {
         conn = await pool.getConnection();
 
         // 1. Get Basic Info
-        const patientRows = await conn.query("SELECT * FROM patients WHERE id = ?", [id]);
+        const patientRows = await conn.query(`
+            SELECT p.*, i.name as insurance_name 
+            FROM patients p 
+            LEFT JOIN insurances i ON p.insurance_id = i.id 
+            WHERE p.id = ?`, [id]);
         if (patientRows.length === 0) return res.status(404).send("Patient not found");
         const patient = patientRows[0];
 
@@ -139,12 +172,21 @@ exports.getPatientDetails = async (req, res) => {
             [id]
         );
 
+        // 6. Get Assigned Doctors
+        const assignedDocs = await conn.query(`
+            SELECT d.id, d.full_name 
+            FROM patient_doctors pd
+            JOIN doctors d ON pd.doctor_id = d.id
+            WHERE pd.patient_id = ?
+        `, [id]);
+
         res.json({
             ...patient,
             appointments: apps,
             prescriptions: pres,
             files: files,
-            accumulated_days: Number(licenseStats[0].total_days)
+            accumulated_days: Number(licenseStats[0].total_days),
+            assignedDoctors: assignedDocs
         });
 
 
@@ -174,6 +216,9 @@ exports.updateProfile = async (req, res) => {
             if (updates.phone !== undefined) { fields.push("phone = ?"); params.push(updates.phone); }
             if (updates.address !== undefined) { fields.push("address = ?"); params.push(updates.address); }
             if (updates.medical_history !== undefined) { fields.push("medical_history = ?"); params.push(updates.medical_history); }
+            // New fields
+            if (updates.insurance_id !== undefined) { fields.push("insurance_id = ?"); params.push(updates.insurance_id === '' ? null : updates.insurance_id); }
+            if (updates.affiliate_number !== undefined) { fields.push("affiliate_number = ?"); params.push(updates.affiliate_number); }
 
             if (fields.length > 0) {
                 query = `UPDATE patients SET ${fields.join(', ')} WHERE user_id = ?`;
@@ -313,7 +358,10 @@ exports.updatePatientDetails = async (req, res) => {
         if (updates.full_name !== undefined) { fields.push("full_name = ?"); params.push(updates.full_name); }
         if (updates.dni !== undefined) { fields.push("dni = ?"); params.push(updates.dni); }
         if (updates.phone !== undefined) { fields.push("phone = ?"); params.push(updates.phone); }
-        if (updates.insurance !== undefined) { fields.push("insurance = ?"); params.push(updates.insurance); }
+        // if (updates.insurance !== undefined) { fields.push("insurance = ?"); params.push(updates.insurance); } // REMOVED/DEPRECATED
+        if (updates.insurance_id !== undefined) { fields.push("insurance_id = ?"); params.push(updates.insurance_id === '' ? null : updates.insurance_id); }
+        if (updates.affiliate_number !== undefined) { fields.push("affiliate_number = ?"); params.push(updates.affiliate_number); }
+
         if (updates.dob !== undefined) { fields.push("dob = ?"); params.push(updates.dob); }
         if (updates.address !== undefined) { fields.push("address = ?"); params.push(updates.address); }
         if (updates.medical_history !== undefined) { fields.push("medical_history = ?"); params.push(updates.medical_history); }
@@ -325,6 +373,23 @@ exports.updatePatientDetails = async (req, res) => {
             const query = `UPDATE patients SET ${fields.join(', ')} WHERE id = ?`;
             params.push(id);
             await conn.query(query, params);
+        }
+
+        if (updates.assignedDoctors !== undefined) {
+            // Expecting updates.assignedDoctors to be an array of doctor IDs
+            // Strategy: Delete all for this patient and re-insert? Or diff?
+            // Delete all is simpler and safe enough for this scale.
+            await conn.query("DELETE FROM patient_doctors WHERE patient_id = ?", [id]);
+
+            if (Array.isArray(updates.assignedDoctors) && updates.assignedDoctors.length > 0) {
+                const insertValues = updates.assignedDoctors.map(docId => [id, docId]);
+                // Bulk insert
+                await conn.batch("INSERT INTO patient_doctors (patient_id, doctor_id) VALUES (?, ?)", insertValues);
+            }
+        }
+
+        if (fields.length > 0 || updates.assignedDoctors !== undefined) {
+
 
             // Fetch updated patient data for sync
             const [updatedPatient] = await conn.query("SELECT * FROM patients WHERE id = ?", [id]);

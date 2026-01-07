@@ -1,27 +1,29 @@
 const mariadb = require('mariadb');
+require('dotenv').config({ path: './server/.env' });
 
 const pool = mariadb.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: 'cima1255',
-    database: 'clinical_management',
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
     port: 3307
 });
 
-async function main() {
+async function checkData() {
     let conn;
     try {
         conn = await pool.getConnection();
-        const patients = await conn.query("SELECT id, full_name, user_id FROM patients LIMIT 1");
-        const doctors = await conn.query("SELECT id, full_name, user_id FROM doctors LIMIT 1");
-        console.log("Patient:", patients[0]);
-        console.log("Doctor:", doctors[0]);
+        const doctors = await conn.query("SELECT id, user_id, full_name FROM doctors LIMIT 3");
+        const patients = await conn.query("SELECT id, user_id, full_name FROM patients LIMIT 3");
+
+        console.log("Doctors:", doctors);
+        console.log("Patients:", patients);
     } catch (err) {
         console.error(err);
     } finally {
         if (conn) conn.release();
-        pool.end();
+        process.exit();
     }
 }
 
-main();
+checkData();

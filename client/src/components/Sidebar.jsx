@@ -21,6 +21,10 @@ const Sidebar = () => {
                 <a href="/appointments" className={`sidebar-link ${isActive('/appointments')}`}>{t('appointments')}</a>
                 <a href="/patients" className={`sidebar-link ${isActive('/patients')}`}>{t('patients')}</a>
 
+                {(user.role === 'admin' || user.role === 'secretary') && (
+                    <a href="/insurances" className={`sidebar-link ${isActive('/insurances')}`}>🏥 Obras Sociales</a>
+                )}
+
                 {/* Optional Office Rentals */}
                 {settings.enable_office_rentals === 'true' && (
                     <a href="/rentals" className={`sidebar-link ${isActive('/rentals')}`}>{t('office_rentals')}</a>

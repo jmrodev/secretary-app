@@ -41,6 +41,7 @@ const MedicalDocuments = () => {
     const [selectedPatient, setSelectedPatient] = useState('');
     const [selectedDoctor, setSelectedDoctor] = useState('');
     const [reqNote, setReqNote] = useState('');
+    const [bonified, setBonified] = useState(false); // [NEW]
 
     // Files State
     const [files, setFiles] = useState([]);
@@ -109,10 +110,12 @@ const MedicalDocuments = () => {
                 type: reqType,
                 patient_id: selectedPatient,
                 doctor_id: selectedDoctor,
-                request_note: reqNote
+                request_note: reqNote,
+                bonified // [NEW]
             });
             showMessage(t('request_sent'), 'success');
             setReqNote('');
+            setBonified(false); // Reset
             fetchRequests();
         } catch (err) {
             showMessage(t('request_failed'), 'error');
@@ -232,6 +235,18 @@ const MedicalDocuments = () => {
                                     <div className="input-group">
                                         <label className="input-label">{t('note_for_doctor')}</label>
                                         <textarea className="input-field" rows="3" value={reqNote} onChange={e => setReqNote(e.target.value)} placeholder="e.g. Needs Ibuprofen 600mg" required />
+                                    </div>
+                                    <div className="input-group" style={{ flexDirection: 'row', alignItems: 'center', gap: '0.5rem' }}>
+                                        <input
+                                            type="checkbox"
+                                            id="req-bonified"
+                                            checked={bonified}
+                                            onChange={e => setBonified(e.target.checked)}
+                                            style={{ width: 'auto' }}
+                                        />
+                                        <label htmlFor="req-bonified" className="input-label" style={{ marginBottom: 0, cursor: 'pointer' }}>
+                                            {t('bonificado') || 'Bonificado (Free/Waived)'}
+                                        </label>
                                     </div>
                                     <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>{t('send_request')}</button>
                                 </form>

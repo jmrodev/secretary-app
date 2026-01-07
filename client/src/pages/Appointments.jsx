@@ -26,6 +26,7 @@ const Appointments = () => {
     const [selectedPatient, setSelectedPatient] = useState('');
     const [date, setDate] = useState('');
     const [reason, setReason] = useState('');
+    const [bonified, setBonified] = useState(false); // [NEW] Bonificado
     const [message, setMessage] = useState('');
 
     const [showForm, setShowForm] = useState(false);
@@ -176,6 +177,7 @@ const Appointments = () => {
                 // Pre-fill doctor if filtered
                 if (viewDoctorId) setSelectedDoctor(viewDoctorId);
                 setShowForm(true);
+                setBonified(false); // Reset
             }
         }
     };
@@ -197,7 +199,8 @@ const Appointments = () => {
                 doctor_id: selectedDoctor,
                 patient_id: (user.role === 'secretary' || user.role === 'doctor') ? selectedPatient : undefined,
                 appointment_date: date,
-                reason
+                reason,
+                bonified // [NEW]
             });
             setMessage(t('appointment_booked'));
             setShowForm(false);
@@ -331,6 +334,19 @@ const Appointments = () => {
                                 <div className="input-group">
                                     <label className="input-label">{t('reason')}</label>
                                     <textarea className="input-field" rows="3" value={reason} onChange={e => setReason(e.target.value)} required></textarea>
+                                </div>
+
+                                <div className="input-group" style={{ flexDirection: 'row', alignItems: 'center', gap: '0.5rem' }}>
+                                    <input
+                                        type="checkbox"
+                                        id="bonified"
+                                        checked={bonified}
+                                        onChange={e => setBonified(e.target.checked)}
+                                        style={{ width: 'auto' }}
+                                    />
+                                    <label htmlFor="bonified" className="input-label" style={{ marginBottom: 0, cursor: 'pointer' }}>
+                                        {t('bonificado') || 'Bonificado (Free/Waived)'}
+                                    </label>
                                 </div>
 
                                 <button type="submit" className="btn btn-accent" style={{ width: '100%' }}>{t('confirm_booking')}</button>

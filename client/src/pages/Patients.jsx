@@ -13,6 +13,8 @@ const Patients = () => {
     const { t } = useLanguage();
     const [patients, setPatients] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [doctors, setDoctors] = useState([]);
+    const [insurances, setInsurances] = useState([]); // [NEW]
 
     // View Details State
     const [selectedPatient, setSelectedPatient] = useState(null);
@@ -27,7 +29,8 @@ const Patients = () => {
     const [phone, setPhone] = useState('');
     const [dob, setDob] = useState('');
     const [newDni, setNewDni] = useState('');
-    const [newInsurance, setNewInsurance] = useState('');
+    const [newInsuranceId, setNewInsuranceId] = useState(''); // [NEW] (was newInsurance)
+    const [newAffiliateNumber, setNewAffiliateNumber] = useState(''); // [NEW]
     const [newEmail, setNewEmail] = useState('');
     const [createMsg, setCreateMsg] = useState('');
 
@@ -54,8 +57,30 @@ const Patients = () => {
         }
     };
 
+    // [NEW] Fetch Doctors for assignment
+    const fetchDoctors = async () => {
+        try {
+            const res = await api.get('/users/doctors');
+            setDoctors(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    // [NEW] Fetch Insurances
+    const fetchInsurances = async () => {
+        try {
+            const res = await api.get('/insurances');
+            setInsurances(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     useEffect(() => {
         fetchPatients();
+        fetchDoctors();
+        fetchInsurances(); // [NEW]
     }, []);
 
     const normalizeText = (text) => {
@@ -122,7 +147,8 @@ const Patients = () => {
                 phone,
                 dob,
                 dni: newDni,
-                insurance: newInsurance,
+                insurance_id: newInsuranceId, // [NEW]
+                affiliate_number: newAffiliateNumber, // [NEW]
                 email: newEmail
             });
             showMessage(t('patient_created'), 'success');
@@ -134,7 +160,8 @@ const Patients = () => {
             setDob('');
 
             setNewDni('');
-            setNewInsurance('');
+            setNewInsuranceId('');
+            setNewAffiliateNumber('');
             setNewEmail('');
             fetchPatients();
         } catch (err) {
@@ -169,13 +196,15 @@ const Patients = () => {
             full_name: details.full_name || '',
             dni: details.dni || '',
             phone: details.phone || '',
-            insurance: details.insurance || '',
+            insurance_id: details.insurance_id || '', // [NEW]
+            affiliate_number: details.affiliate_number || (details.insurance && !details.insurance_id ? details.insurance : '') || '', // Fallback to old field if exists and no ID
             email: details.email || '',
             dob: details.dob ? details.dob.split('T')[0] : '',
 
             medical_history: details.medical_history || '',
             tariff_percent: details.tariff_percent || 0,
-            tariff_override: details.tariff_override || ''
+            tariff_override: details.tariff_override || '',
+            assignedDoctors: details.assignedDoctors ? details.assignedDoctors.map(d => d.id) : []
         });
         setEditModalOpen(true);
     };
@@ -193,6 +222,17 @@ const Patients = () => {
             console.error("Failed to update patient", err);
             showMessage(t('failed_update_patient'), 'error');
         }
+    };
+
+    const toggleAssignedDoctor = (docId) => {
+        setEditData(prev => {
+            const current = prev.assignedDoctors || [];
+            if (current.includes(docId)) {
+                return { ...prev, assignedDoctors: current.filter(id => id !== docId) };
+            } else {
+                return { ...prev, assignedDoctors: [...current, docId] };
+            }
+        });
     };
 
     // Debt Payment Handlers
@@ -250,7 +290,8 @@ const Patients = () => {
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
                             <p><strong>{t('dni')}:</strong> {details.dni || 'N/A'}</p>
-                            <p><strong>Insurance:</strong> {details.insurance || 'N/A'}</p>
+                            <p><strong>Obra Social:</strong> {details.insurance_name || 'N/A'}</p>
+                            <p><strong>Nro Afiliado:</strong> {(details.affiliate_number || details.insurance || 'N/A').replace(/^Afiliado/, '').trim()}</p>
                             <p><strong>Phone:</strong> {details.phone ? <a href={`https://wa.me/${details.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" style={{ color: '#3b82f6', fontWeight: 'bold' }}>{details.phone}</a> : 'N/A'}</p>
                             <p><strong>Email:</strong> {details.email ? <a href={`mailto:${details.email}`} style={{ color: '#3b82f6', fontWeight: 'bold' }}>{details.email}</a> : 'N/A'}</p>
                             <p><strong>{t('dob')}:</strong> {details.dob ? new Date(details.dob).toLocaleDateString() : 'N/A'}</p>
@@ -380,8 +421,17 @@ const Patients = () => {
                                     <input className="input-field" value={editData.dni} onChange={e => setEditData({ ...editData, dni: e.target.value })} />
                                 </div>
                                 <div className="input-group">
-                                    <label className="input-label">Insurance</label>
-                                    <input className="input-field" value={editData.insurance} onChange={e => setEditData({ ...editData, insurance: e.target.value })} />
+                                    <label className="input-label">Obra Social</label>
+                                    <select className="input-field" value={editData.insurance_id} onChange={e => setEditData({ ...editData, insurance_id: e.target.value })}>
+                                        <option value="">Seleccionar...</option>
+                                        {insurances.map(ins => (
+                                            <option key={ins.id} value={ins.id}>{ins.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="input-group">
+                                    <label className="input-label">Nro Afiliado</label>
+                                    <input className="input-field" value={editData.affiliate_number} onChange={e => setEditData({ ...editData, affiliate_number: e.target.value })} />
                                 </div>
                             </div>
                             <div className="input-group">
@@ -402,6 +452,24 @@ const Patients = () => {
                                 <label className="input-label">{t('address')}</label>
                                 <input className="input-field" value={editData.address} onChange={e => setEditData({ ...editData, address: e.target.value })} />
                             </div>
+
+                            <div className="input-group">
+                                <label className="input-label">Assigned Doctors</label>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', border: '1px solid #e2e8f0', padding: '0.5rem', borderRadius: '6px', maxHeight: '150px', overflowY: 'auto' }}>
+                                    {doctors.map(doc => (
+                                        <label key={doc.id} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', cursor: 'pointer' }}>
+                                            <input
+                                                type="checkbox"
+                                                checked={editData.assignedDoctors?.includes(doc.id) || false}
+                                                onChange={() => toggleAssignedDoctor(doc.id)}
+                                            />
+                                            Dr. {doc.full_name}
+                                        </label>
+                                    ))}
+                                    {doctors.length === 0 && <span style={{ color: '#64748b', fontSize: '0.85rem' }}>No doctors found.</span>}
+                                </div>
+                            </div>
+
                             <div className="input-group">
                                 <label className="input-label">{t('micro_history')}</label>
                                 <textarea className="input-field" rows="3" value={editData.medical_history} onChange={e => setEditData({ ...editData, medical_history: e.target.value })} />
@@ -524,13 +592,24 @@ const Patients = () => {
                                     <input className="input-field" value={newDni} onChange={e => setNewDni(e.target.value)} />
                                 </div>
                                 <div className="input-group">
-                                    <label className="input-label">Insurance (Obra Social)</label>
-                                    <input className="input-field" value={newInsurance} onChange={e => setNewInsurance(e.target.value)} />
+                                    <label className="input-label">Obra Social</label>
+                                    <select className="input-field" value={newInsuranceId} onChange={e => setNewInsuranceId(e.target.value)}>
+                                        <option value="">Seleccionar...</option>
+                                        {insurances.map(ins => (
+                                            <option key={ins.id} value={ins.id}>{ins.name}</option>
+                                        ))}
+                                    </select>
                                 </div>
                             </div>
-                            <div className="input-group" style={{ marginBottom: '1rem' }}>
-                                <label className="input-label">Email</label>
-                                <input className="input-field" type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)} />
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                <div className="input-group">
+                                    <label className="input-label">Nro Afiliado</label>
+                                    <input className="input-field" value={newAffiliateNumber} onChange={e => setNewAffiliateNumber(e.target.value)} />
+                                </div>
+                                <div className="input-group">
+                                    <label className="input-label">Email</label>
+                                    <input className="input-field" type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)} />
+                                </div>
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                 <div className="input-group">
@@ -555,7 +634,7 @@ const Patients = () => {
                                     <strong style={{ textTransform: 'capitalize' }}>{p.full_name}</strong>
                                     <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
                                         {p.dni && `${t('dni')}: ${p.dni} | `}
-                                        {p.insurance && `OS: ${p.insurance} | `}
+                                        {(p.insurance_name || p.insurance) && `OS: ${p.insurance_name || p.insurance} | `}
                                         {p.email && <a href={`mailto:${p.email}`} style={{ color: '#3b82f6', textDecoration: 'none', marginRight: '0.5rem' }} onClick={(e) => e.stopPropagation()}>✉️</a>}
                                         {p.phone && (
                                             <a href={`https://wa.me/${p.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" style={{ color: '#3b82f6', textDecoration: 'none', fontWeight: 'bold' }} onClick={(e) => e.stopPropagation()}>

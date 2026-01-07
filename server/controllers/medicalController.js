@@ -1,5 +1,6 @@
 const { pool } = require('../db');
 const { logAction } = require('../utils/audit');
+const { calculatePrice } = require('../utils/priceCalculator');
 
 // --- Prescriptions ---
 
@@ -48,12 +49,29 @@ exports.createPrescription = async (req, res) => {
 
         // Fetch details for readable log
         const details = await conn.query(`
-            SELECT p.full_name 
+            SELECT p.full_name, p.id as patient_id, p.user_id as patient_user_id
             FROM appointments a 
             JOIN patients p ON a.patient_id = p.id 
             WHERE a.id = ?`, [appointment_id]);
 
         const patientName = details.length > 0 ? details[0].full_name : 'Unknown Patient';
+
+        // Calculate Debt
+        if (details.length > 0) {
+            const patientId = details[0].patient_id;
+            const patientUserId = details[0].patient_user_id;
+            const doctorId = appt[0].doctor_id;
+
+            const { price } = await calculatePrice(conn, doctorId, patientId, 'prescription');
+
+            if (price > 0) {
+                await conn.query(
+                    "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    ['income_patient', price, `Prescription - ${instructions ? instructions.substring(0, 50) : 'General'}`, patientUserId, doctorId, 'credit', 'pending']
+                );
+                console.log(`DEBUG: Generated debt of $${price} for prescription`);
+            }
+        }
 
         logAction(req, 'CREATE_PRESCRIPTION', `Patient: ${patientName}`);
 
@@ -128,12 +146,29 @@ exports.createLicense = async (req, res) => {
 
         // Fetch details for readable log
         const details = await conn.query(`
-            SELECT p.full_name 
+            SELECT p.full_name, p.id as patient_id, p.user_id as patient_user_id
             FROM appointments a 
             JOIN patients p ON a.patient_id = p.id 
             WHERE a.id = ?`, [appointment_id]);
 
         const patientName = details.length > 0 ? details[0].full_name : 'Unknown Patient';
+
+        // Calculate Debt
+        if (details.length > 0) {
+            const patientId = details[0].patient_id;
+            const patientUserId = details[0].patient_user_id;
+            const doctorId = appt[0].doctor_id; // appt is available from check above
+
+            const { price } = await calculatePrice(conn, doctorId, patientId, 'medical_license');
+
+            if (price > 0) {
+                await conn.query(
+                    "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    ['income_patient', price, `Medical License - ${days_duration} days`, patientUserId, doctorId, 'credit', 'pending']
+                );
+                console.log(`DEBUG: Generated debt of $${price} for license`);
+            }
+        }
 
         logAction(req, 'CREATE_LICENSE', `Patient: ${patientName}, Duration: ${days_duration} days`);
 
@@ -187,16 +222,41 @@ exports.getLicenses = async (req, res) => {
 exports.createRequest = async (req, res) => {
     let conn;
     try {
-        const { type, patient_id, doctor_id, request_note } = req.body;
-        const secretary_id = req.user.user_id;
+        const { type, patient_id, doctor_id, request_note, bonified } = req.body; // type: 'prescription' or 'license', bonified [NEW]
+
+        if (!['prescription', 'license'].includes(type)) return res.status(400).send("Invalid type");
 
         conn = await pool.getConnection();
-        await conn.query(
-            "INSERT INTO medical_requests (type, patient_id, doctor_id, secretary_id, request_note) VALUES (?, ?, ?, ?, ?)",
-            [type, patient_id, doctor_id, secretary_id, request_note]
+
+        // Check if patient exists
+        const pat = await conn.query("SELECT * FROM patients WHERE id = ?", [patient_id]);
+        if (pat.length === 0) return res.status(404).send("Patient not found");
+
+        const result = await conn.query(
+            "INSERT INTO medical_requests (type, patient_id, doctor_id, request_note, status, created_at) VALUES (?, ?, ?, ?, 'pending', NOW())",
+            [type, patient_id, doctor_id, request_note]
         );
+
+        // --- Debt Generation for Request ---
+        // If not bonified, generate debt immediately for the request
+        if (!bonified) {
+            const priceInfo = await calculatePrice(conn, doctor_id, patient_id, type === 'prescription' ? 'prescription' : 'medical_license');
+            if (priceInfo.price > 0) {
+                await conn.query(
+                    "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, date) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())",
+                    ['income_patient', priceInfo.price, `Request: ${type} for ${pat[0].full_name}`, pat[0].user_id, doctor_id, 'credit', 'pending']
+                );
+                // Update request with debt status
+                await conn.query("UPDATE medical_requests SET payment_status = 'debt', debt_amount = ? WHERE id = ?", [priceInfo.price, result.insertId]);
+            }
+        } else {
+            await conn.query("UPDATE medical_requests SET payment_status = 'bonified' WHERE id = ?", [result.insertId]);
+        }
+        // -----------------------------------
+
         logAction(req, 'CREATE_MEDICAL_REQUEST', `Type: ${type}, Patient ID: ${patient_id}`);
-        res.status(201).json({ message: "Request created" });
+
+        res.status(201).json({ id: Number(result.insertId), message: "Request created" });
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");

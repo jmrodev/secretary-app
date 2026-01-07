@@ -1,0 +1,2084 @@
+[
+  {
+    "name": "Ver\u00f3nica Otero",
+    "dni": "14842777",
+    "dob": "29/6/1962",
+    "sex": "Femenino",
+    "phone": "2494591475",
+    "address": "Alcaviru 808",
+    "insurance": "Afiliado1-13417589-01",
+    "source_file": "Veronica Otero.docx"
+  },
+  {
+    "name": "Romina Molet",
+    "dni": "34217895",
+    "sex": "Femenino",
+    "phone": "2235953713",
+    "address": "Pje Primero de Mayo 1233",
+    "insurance": "AfiliadoSancor 1740002/00",
+    "source_file": "Romina Molet.docx"
+  },
+  {
+    "name": "Mariana Rearte",
+    "dni": "3556282",
+    "sex": "Femenino",
+    "phone": "2494324554",
+    "address": "Av. Balb\u00edn 1596",
+    "insurance": "Afiliado",
+    "source_file": "Mariana Rearte.docx"
+  },
+  {
+    "name": "Liliana Ramella",
+    "dni": "11213751",
+    "dob": "11/05/1954",
+    "sex": "Femenino",
+    "phone": "29666028900",
+    "address": "Alsina 102",
+    "insurance": "Afiliado18 203667 3 01",
+    "source_file": "Liliana Ramella.docx"
+  },
+  {
+    "name": "Luisa Avila",
+    "dni": "13938048",
+    "dob": "16/03/1960",
+    "sex": "Femenino",
+    "phone": "2494357252",
+    "address": "Costra Rica319",
+    "insurance": "Afiliado2139380482/00",
+    "source_file": "Luisa Avila.docx"
+  },
+  {
+    "name": "Alejo P\u00e9rez",
+    "dni": "475582106",
+    "dob": "20/08/2006",
+    "sex": "Masculino",
+    "phone": "2494556429",
+    "address": "Brandsen 181",
+    "insurance": "AfiliadoNo tiene",
+    "source_file": "Alejo Perez.docx"
+  },
+  {
+    "name": "Carlos Daniel Guti\u00e9rrez",
+    "dni": "",
+    "sex": "Masculino",
+    "phone": "2494525802",
+    "address": "Carlos Gardel 1556",
+    "insurance": "Afiliado",
+    "source_file": "Carlos Daniel Gutierrez.docx"
+  },
+  {
+    "name": "Valentina Jugon",
+    "dni": "46188614",
+    "dob": "15/11/2004",
+    "sex": "Femenino",
+    "phone": "2494544512",
+    "address": "Los Jazmines 1794",
+    "insurance": "Afiliado2308809491/02",
+    "source_file": "Valentina Jug\u00f2n.docx"
+  },
+  {
+    "dni": "41 541 283. Paciente que presenta internaci\u00f3n previa en cl\u00ednica Teresa de Calcuta por consumo cr\u00f3nico de coca\u00edna y alcohol. En dicha instituci\u00f3n recibe tratamiento psicol\u00f3gico y psicofarmacol\u00f3gico. Posterior al alta contin\u00faa tratamiento ambulatorio con dicha profesional. Concurre entrevista el 3/12/ 2024 donde se encuentra vigil, globalmente orientado, negando deseos de consumo refiere que una de las medicaciones le da somnolencia por lo cual no la toma. Se solicita funci\u00f3n renal y litemia para control de la medicaci\u00f3n. Concurre nuevamente el 2/1/ 2025 donde refiere que no realiz\u00f3 estudios solicitados ya que \"no ten\u00eda ganas\" . Con \u00faltimo consumo hace 4 d\u00edas aproximadamente de coca\u00edna y alcohol. Concurre acompa\u00f1ado de su madre a las entrevistas quien refiere que bajo consumo presenta ideaci\u00f3n delirante de tipo paranoide con alucinaciones auditivas y visuales refiere tambi\u00e9n que ha consumido alcohol . Su madre refiere que el paciente presenta deudas monetarias debido a que utiliza el dinero para el consumo de coca\u00edna. Al ex\u00e1men vigil, reticente a continuar el tratamiento psicofarmacol\u00f3gico, sin conciencia de enferm",
+    "name_from_file": "Tandil 10 de enero de",
+    "source_file": "Tandil 10 de enero de.docx"
+  },
+  {
+    "name": "Marina Ekeroth",
+    "dni": "28200624",
+    "dob": "",
+    "sex": "Femenino",
+    "phone": "2494208302",
+    "address": "",
+    "insurance": "Afiliado228200624 400",
+    "source_file": "Marina Ekroth.docx"
+  },
+  {
+    "name": "Karina Gomez",
+    "dni": "20673420",
+    "dob": "01/07/1969",
+    "sex": "Femenino",
+    "phone": "2494619957",
+    "address": "Las Malvinas 986",
+    "insurance": "AfiliadoPlan Salud 7422/0",
+    "source_file": "Karina Gomez.docx"
+  },
+  {
+    "name": "Micaela Delgado",
+    "dni": "45521851",
+    "sex": "Femenino",
+    "phone": "2494209954",
+    "address": "Saavedra 431 dpto. 4",
+    "insurance": "Afiliado852555784502/",
+    "source_file": "Micaela Delgado.docx"
+  },
+  {
+    "name": "Ezequiel Orajobac",
+    "dni": "32981033",
+    "dob": "20/4/1987",
+    "sex": "Masculino",
+    "phone": "2494467914",
+    "address": "Rosales 33",
+    "insurance": "AfiliadoOspedic 32981033 00",
+    "source_file": "Ezequiel Orajobac.docx"
+  },
+  {
+    "name": "Leonardo Bruni",
+    "dni": "29375478",
+    "sex": "Elija un elemento.",
+    "phone": "2494621817",
+    "address": "Sarmiento 121",
+    "insurance": "AfiliadoLa Segunda ART Numero de Denuncia 97210243243Medicaci\u00f3n Quetiapina 25mg x30 cmp(Quetiazic 25)RaffoEscitalopram 15mg  28cmp(Lexapro 15 mg)LundbekDivalproato de sodio 500mg x50cmp(Valcote ER) Diagnostico :TEPT",
+    "source_file": "Leonardo Bruni.docx"
+  },
+  {
+    "name": "Gloria Kessler",
+    "dni": "23209495",
+    "sex": "Femenino",
+    "phone": "2494577607",
+    "address": "Rosales 365",
+    "insurance": "Afiliado223209495/200",
+    "source_file": "Gloria Kessler.docx"
+  },
+  {
+    "name": "Margarita Carbonetti",
+    "dni": "18037888",
+    "sex": "Femenino",
+    "phone": "2494508332",
+    "address": "Nicaragua 147",
+    "insurance": "Afiliado871803788000/",
+    "source_file": "Margarita Carbonetti.docx"
+  },
+  {
+    "name": "Marcela Frank",
+    "dni": "16890782",
+    "sex": "Femenino",
+    "phone": "1157018498",
+    "address": "Brown 161",
+    "insurance": "Afiliado",
+    "source_file": "Marcela Frank.docx"
+  },
+  {
+    "name": "Marcelo Nenkies",
+    "dni": "17345078",
+    "sex": "Masculino",
+    "phone": "",
+    "address": "",
+    "insurance": "Afiliado",
+    "source_file": "Marcelo Nenkies.docx"
+  },
+  {
+    "name": "Enzo Coria",
+    "dni": "38675986",
+    "dob": "3/05/1995",
+    "sex": "Masculino",
+    "phone": "2494281365",
+    "address": "Pasaje interno numero 5  1715",
+    "insurance": "AfiliadoUnion personal 2757098000",
+    "source_file": "Enzo Coria.docx"
+  },
+  {
+    "name": "Dolores Villaroel",
+    "dni": "18484066",
+    "dob": "14/11/1965",
+    "sex": "Femenino",
+    "phone": "2494490949",
+    "address": "Alem 1465 dtpto2",
+    "insurance": "Afiliado2184840663/00",
+    "source_file": "Dolores Villaroel.docx"
+  },
+  {
+    "name": "Juan Amet",
+    "dni": "28561801",
+    "dob": "22/12/980",
+    "sex": "Masculino",
+    "phone": "2804510872",
+    "address": "Av Falucho 690",
+    "insurance": "Afiliado 6227258801",
+    "source_file": "Juan Amet.docx"
+  },
+  {
+    "name": "Tamara Reynoso",
+    "dni": "36858069",
+    "sex": "Femenino",
+    "phone": "2266448120",
+    "address": "Ciudad Balcarce",
+    "insurance": "Afiliado",
+    "source_file": "Tamara Reynoso.docx"
+  },
+  {
+    "name": "Florencia Anabel Esperati",
+    "dni": "",
+    "sex": "Femenino",
+    "phone": "2974588874",
+    "address": "Rivas 1282 dpto.2",
+    "insurance": "Afiliado",
+    "source_file": "Florencia Anabel Esperati.docx"
+  },
+  {
+    "name": "Yesica Diaz",
+    "dni": "36764861",
+    "dob": "5/01/1991",
+    "sex": "Femenino",
+    "phone": "2494499216",
+    "address": "Las Heras 1740",
+    "insurance": "AfiliadoNo tiene obra social",
+    "source_file": "Yesica Diaz.docx"
+  },
+  {
+    "name": "Martinoia Patricia",
+    "dni": "14340602",
+    "sex": "Femenino",
+    "phone": "2494630620",
+    "address": "25 de mayo 558",
+    "insurance": "Afiliado1132441601",
+    "source_file": "Martinoia Patricia.docx"
+  },
+  {
+    "name": "Macarena Judith Go\u00f1i",
+    "dni": "49.603.006",
+    "dob": "19/05/2009",
+    "sex": "Femenino",
+    "phone": "2494353082",
+    "address": "Rodr\u00edguez 246 ciudad Rauch",
+    "insurance": "Afiliado202592808898",
+    "source_file": "Macarena Judith Go\u00f1i.docx"
+  },
+  {
+    "name": "Rocio Giogia",
+    "dni": "31708300",
+    "dob": "1/6/1985",
+    "sex": "Femenino",
+    "phone": "2494283036",
+    "address": "Vigil 3055",
+    "insurance": "AfiliadoNo tiene",
+    "source_file": "Rocio Giogia.docx"
+  },
+  {
+    "name": "Rocio Lappano",
+    "dni": "34037779",
+    "sex": "Femenino",
+    "phone": "2494249770",
+    "address": "Paz 230",
+    "insurance": "Afiliado2734037779-1",
+    "source_file": "Rocio Lappano.docx"
+  },
+  {
+    "name": "Luis Peralta",
+    "dni": "13119792",
+    "dob": "28/5/1959",
+    "sex": "Masculino",
+    "phone": "2494321823",
+    "address": "Cianio 1360 Ayacucho",
+    "insurance": "Afiliado5000807 63127966 01",
+    "source_file": "Luis Peralta.docx"
+  },
+  {
+    "name": "Florencia Ascat",
+    "dni": "33852607",
+    "dob": "2/8/1988",
+    "sex": "Femenino",
+    "phone": "2494240929",
+    "address": "San Lorenzo 159",
+    "insurance": "AfiliadoB33852607600",
+    "source_file": "Florencia Ascat.docx"
+  },
+  {
+    "name": "Brisa Chavez",
+    "dni": "41289231",
+    "dob": "29/9/1998",
+    "sex": "Femenino",
+    "phone": "249689665",
+    "address": "Juarez 1789",
+    "insurance": "AfiliadoNo tiene",
+    "source_file": "Brisa Chavez.docx"
+  },
+  {
+    "name": "Valentina Marino",
+    "dni": "46094671",
+    "sex": "Femenino",
+    "phone": "2494339734",
+    "address": "Piedra Buena 3800",
+    "insurance": "AfiliadoHaga clic o pulse aqu\u00ed para escribir texto.",
+    "source_file": "Valentina Marino.docx"
+  },
+  {
+    "name": "German Gilabert",
+    "dni": "22671417",
+    "dob": "20/03/1972",
+    "sex": "Masculino",
+    "phone": "2494545013",
+    "address": "Casacuberta 170",
+    "insurance": "AfiliadoNo tiene",
+    "source_file": "German Gilabert.docx"
+  },
+  {
+    "name": "Pamela Varioleto",
+    "dni": "",
+    "sex": "Femenino",
+    "phone": "",
+    "address": "",
+    "insurance": "Afiliado",
+    "source_file": "Pamela Varioleto.docx"
+  },
+  {
+    "name": "Lianela Torales",
+    "dni": "34646285",
+    "dob": "11/7/1989",
+    "sex": "Femenino",
+    "phone": "345444056",
+    "address": "9 de Julio primero A",
+    "insurance": "AfiliadoGaleno 0204734301 02",
+    "source_file": "Lianela Torales.docx"
+  },
+  {
+    "name": "Florencia Rueda",
+    "dni": "37944881",
+    "dob": "24/3/1994",
+    "sex": "Femenino",
+    "phone": "2494601231",
+    "address": "Nicaragua 172",
+    "insurance": "AfiliadoJerarquicos Salud 175710-01",
+    "source_file": "Florencia Rueda.docx"
+  },
+  {
+    "name": "Giuliana Poffer",
+    "dni": "38824330",
+    "dob": "10/7/1995",
+    "sex": "Femenino",
+    "phone": "2494359076",
+    "address": "",
+    "insurance": "Afiliado141197859194",
+    "source_file": "Giuliana Poffer.docx"
+  },
+  {
+    "name": "Leonel Morales",
+    "dni": "43907484",
+    "dob": "10/04/2002",
+    "sex": "Masculino",
+    "phone": "2494339677",
+    "address": "Los Tulipanes 1946",
+    "insurance": "AfiliadoSmata 43907484",
+    "source_file": "Leonel Morales.docx"
+  },
+  {
+    "name": "Lucia P\u00e9rez",
+    "dni": "32917772",
+    "sex": "Femenino",
+    "phone": "2494309545",
+    "address": "Mitre1343",
+    "insurance": "Afiliado1-32917772-0",
+    "source_file": "Lucia Perez.docx"
+  },
+  {
+    "name": "godoy juan pablo",
+    "dni": "38524955",
+    "sex": "Masculino",
+    "phone": "1166411944",
+    "address": "14 de julio 1286 dto1",
+    "insurance": "Afiliado62783372001",
+    "source_file": "godoy juan pablo.docx"
+  },
+  {
+    "name": "Daniel Lupori",
+    "dni": "34466148",
+    "sex": "Masculino",
+    "phone": "2494356557",
+    "address": "Dardo Rocha 1035 ciudad Rauch",
+    "insurance": "Afiliado34466148",
+    "source_file": "Daniel Lupori.docx"
+  },
+  {
+    "name": "Luis Dambrosio",
+    "dni": "20040914",
+    "sex": "Masculino",
+    "phone": "2494309597",
+    "address": "Darragueira  569",
+    "insurance": "AfiliadoOsperyhra  227188/00",
+    "source_file": "Luis Dambrosio.docx"
+  },
+  {
+    "name": "Maira Galeazzi",
+    "dni": "41924236",
+    "dob": "03/08/1998",
+    "sex": "Femenino",
+    "phone": "2494321823",
+    "address": "Roca827 casa25",
+    "insurance": "AfiliadoSancor  salud 1621207/00",
+    "source_file": "Maira Galeazzi.docx"
+  },
+  {
+    "name": "Mirta Etel Minvielle",
+    "dni": "1386232",
+    "dob": "11/07/1937",
+    "sex": "Femenino",
+    "phone": "2281595300",
+    "address": "Arenales 1181 cuidad Azul",
+    "insurance": "Afiliado15013411401",
+    "source_file": "Mirta Minvielle.docx"
+  },
+  {
+    "name": "Diego Labadie",
+    "dni": "25197820",
+    "dob": "7/6/1976",
+    "sex": "Masculino",
+    "phone": "249643012",
+    "address": "Guemes1840",
+    "insurance": "Afiliado1251978205/00",
+    "source_file": "Diego Labadie.docx"
+  },
+  {
+    "name": "Micaela Delgado",
+    "dni": "45521851",
+    "sex": "Femenino",
+    "phone": "2494208992",
+    "address": "Saavedra 431 depto 4",
+    "insurance": "N\u00famero de afiliado8545521851/01Fecha de \u00faltima actualizaci\u00f3n de datos29/5/2023",
+    "source_file": "Delgado Micaela.docx"
+  },
+  {
+    "name": "Dolores Martinez",
+    "dni": "16159976",
+    "sex": "Femenino",
+    "phone": "2494001530",
+    "address": "Teresa de Calcuta 590",
+    "insurance": "Afiliado34208167-9/02",
+    "source_file": "Dolores Martinez.docx"
+  },
+  {
+    "name": "Miguel \u00c1ngel Videla",
+    "dni": "8111972",
+    "dob": "14/06/1950",
+    "sex": "Masculino",
+    "phone": "2494357913",
+    "address": "Piedrabuena 2478",
+    "insurance": "Afiliado9608111972/00",
+    "source_file": "Miguel Angel Videla.docx"
+  },
+  {
+    "name": "Rosa Ramos",
+    "dni": "6208925",
+    "dob": "4/7/50",
+    "sex": "Femenino",
+    "phone": "2494381622",
+    "address": "Constituci\u00f3n 1029",
+    "insurance": "Afiliado9606208925/0",
+    "source_file": "Rosa Ramos.docx"
+  },
+  {
+    "name": "Juan",
+    "dni": "",
+    "dob": "",
+    "sex": "Masculino",
+    "phone": "",
+    "address": "",
+    "insurance": "Afiliado",
+    "source_file": "Cristina Franco.docx"
+  },
+  {
+    "name": "Rocio Tangorra",
+    "dni": "35033571",
+    "sex": "Femenino",
+    "phone": "2494381846",
+    "address": "Psje Ponteaut 258",
+    "insurance": "AfiliadoSancor 108255600",
+    "source_file": "Rocio Tangorra.docx"
+  },
+  {
+    "name": "Valentina Montiel",
+    "dni": "44416751",
+    "dob": "30/8/2002",
+    "sex": "Femenino",
+    "phone": "2235191385",
+    "address": "Pinto 08",
+    "insurance": "AfiliadoOSDOP 2415538870",
+    "source_file": "Valentina Montiel.docx"
+  },
+  {
+    "name": "Camila Goitanda",
+    "dni": "39161405",
+    "sex": "Femenino",
+    "phone": "2281312170",
+    "address": "Saavedra 116",
+    "insurance": "AfiliadoNo tiene",
+    "source_file": "Camila Giotanda.docx"
+  },
+  {
+    "name": "Felipe Monsalve",
+    "dni": "47274464",
+    "sex": "Masculino",
+    "phone": "249428515",
+    "address": "Echeverria 274",
+    "insurance": "AfiliadoApsa",
+    "source_file": "Felipe Monsalve.docx"
+  },
+  {
+    "name": "Diego Bordon",
+    "dni": "26050420",
+    "dob": "22/9/1977",
+    "sex": "Masculino",
+    "phone": "2494690026",
+    "address": "Saavedra 419",
+    "insurance": "AfiliadoGaleano 22442930004",
+    "source_file": "Diego Bordon.docx"
+  },
+  {
+    "name": "Juan Angel Farias",
+    "dni": "34751283",
+    "dob": "11/8/1989",
+    "sex": "Masculino",
+    "phone": "2281527484",
+    "address": "Rivas 648 dto 1",
+    "insurance": "AfiliadoNo tiene obra social",
+    "source_file": "Juan Angel Farias.docx"
+  },
+  {
+    "name": "Jes\u00fas Silva Capurro",
+    "dni": "44641146",
+    "sex": "Masculino",
+    "phone": "2966497633",
+    "address": "Av. Dorrego 136",
+    "insurance": "AfiliadoK13851561403",
+    "source_file": "Jesus Silva Capurro.docx"
+  },
+  {
+    "name": "Magdalena Elsa Cartelle",
+    "dni": "3489776",
+    "dob": "20/04/1937",
+    "sex": "Femenino",
+    "phone": "2494637135",
+    "address": "Procasa 4 pje 2 casa 186",
+    "insurance": "Afiliado",
+    "source_file": "Magdalena Cartelle.docx"
+  },
+  {
+    "name": "",
+    "dni": "",
+    "sex": "Femenino",
+    "phone": "",
+    "address": "",
+    "insurance": "Afiliado",
+    "name_from_file": "Sofia Clementi",
+    "source_file": "Sofia Clementi.docx"
+  },
+  {
+    "name": "Mar\u00eda Alejandra Oliva",
+    "dni": "22671676",
+    "dob": "19/06/1972",
+    "sex": "Femenino",
+    "phone": "2494488755",
+    "address": "Maip\u00fa 73",
+    "insurance": "AfiliadoSociedad Italiana 4819/01",
+    "source_file": "Maria Alejandra Oliva.docx"
+  },
+  {
+    "name": "Silvina Karina Cejas",
+    "dni": "21460139",
+    "sex": "Femenino",
+    "phone": "2494337407",
+    "address": "Haga clic o pulse aqu\u00ed para escribir texto.",
+    "insurance": "AfiliadoHaga clic o pulse aqu\u00ed para escribir texto.",
+    "source_file": "Silvana Karina Cejas.docx"
+  },
+  {
+    "name": "Micaela Tripodi",
+    "dni": "35033408",
+    "dob": "09/02/1989",
+    "sex": "Femenino",
+    "phone": "2494625604",
+    "address": "Richieri 314",
+    "insurance": "AfiliadoNo tiene obra social",
+    "source_file": "Micaela Tripodi.docx"
+  },
+  {
+    "name": "Victoria Cajal",
+    "dni": "31438459",
+    "sex": "Femenino",
+    "phone": "2494672562",
+    "address": "Ezeiza 1550 dpto.1",
+    "insurance": "Afiliado2314384597/00",
+    "source_file": "victoria Cajal.docx"
+  },
+  {
+    "name": "Luana Mingione",
+    "dni": "42254532",
+    "dob": "17/12/1999",
+    "sex": "Femenino",
+    "phone": "1152623349",
+    "address": "Tacuari 337",
+    "insurance": "AfiliadoAvaliant 38803716",
+    "source_file": "Luana Mingione.docx"
+  },
+  {
+    "name": "Marianela Benavidez",
+    "dni": "31037447",
+    "dob": "16/06/1984",
+    "sex": "Femenino",
+    "phone": "2494213472",
+    "address": "Lisandro de la Torre 2333",
+    "insurance": "AfiliadoAvalian 41624816",
+    "source_file": "Marianela Benavidez.docx"
+  },
+  {
+    "name": "Lourdes Paladino",
+    "dni": "45587319",
+    "sex": "Femenino",
+    "phone": "2494284799",
+    "address": "Pasaje C 633",
+    "insurance": "Afiliado",
+    "source_file": "Lourdes Paladino.docx"
+  },
+  {
+    "name": "Gast\u00f3n Mart\u00ednez",
+    "dni": "26937860",
+    "dob": "21/12/1978",
+    "sex": "Masculino",
+    "phone": "2494243593",
+    "address": "Pasaje Balcarce 279",
+    "insurance": "AfiliadoUnion Personal 02650356 00 1",
+    "source_file": "Gaston Martinez.docx"
+  },
+  {
+    "name": "Tamara Sanchez Torre\u00f1o",
+    "dni": "36386734",
+    "dob": "",
+    "sex": "Femenino",
+    "phone": "2983344011",
+    "address": "",
+    "insurance": "Afiliado2363867344/00",
+    "source_file": "Tamara Sanchez Torre\u00f1o.docx"
+  },
+  {
+    "name": "Jos\u00edas Rosales",
+    "dni": "35562800",
+    "dob": "",
+    "sex": "Masculino",
+    "phone": "2494499744",
+    "address": "Patagonia 72",
+    "insurance": "Afiliado",
+    "source_file": "Josias Rosales.docx"
+  },
+  {
+    "name": "Estefan\u00eda Cippiana",
+    "dni": "31690692",
+    "sex": "Femenino",
+    "phone": "2494362074",
+    "address": "Haga clic o pulse aqu\u00ed para escribir texto.",
+    "insurance": "AfiliadoHaga clic o pulse aqu\u00ed para escribir texto.",
+    "source_file": "Estefania Cippiana.docx"
+  },
+  {
+    "name": "Ayel\u00e9n Stupino",
+    "dni": "35774354",
+    "sex": "Femenino",
+    "phone": "2494245742",
+    "address": "Payr\u00f3 547",
+    "insurance": "Afiliado800006152751601100/00",
+    "source_file": "Ayelen Stupino.docx"
+  },
+  {
+    "name": "Viviana Ruth Mosquera",
+    "dni": "203301583",
+    "dob": "03/08/1968",
+    "sex": "Femenino",
+    "phone": "2235734998",
+    "address": "Languiyu 1097",
+    "insurance": "Afiliado2203301537/00",
+    "source_file": "Viviana Ruth Mosquera.docx"
+  },
+  {
+    "name": "Mat\u00edas Tissera",
+    "dni": "27082591",
+    "sex": "Masculino",
+    "phone": "2494645066",
+    "address": "Pro casa 4 Psje 2 n\u00fam. 180",
+    "insurance": "AfiliadoUni\u00f3n Personal 270802103",
+    "source_file": "Matias Tissera.docx"
+  },
+  {
+    "name": "",
+    "dni": "",
+    "sex": "Femenino",
+    "phone": "",
+    "address": "",
+    "insurance": "Afiliado",
+    "name_from_file": "Sandra Beatriz Picollo",
+    "source_file": "Sandra Beatriz Picollo.docx"
+  },
+  {
+    "name": "Jael  Jaque Weber",
+    "dni": "48228349",
+    "dob": "10/12/2007",
+    "sex": "Femenino",
+    "phone": "2494698002",
+    "address": "Bolivia 223",
+    "insurance": "AfiliadoA924236751/03",
+    "source_file": "Jael Jaque Weber.docx"
+  },
+  {
+    "name": "Mar\u00eda Susana Castro",
+    "dni": "6211963",
+    "sex": "Femenino",
+    "phone": "2284227237",
+    "address": "Mariano Moreno 1330 ciudad Laprida",
+    "insurance": "Afiliado",
+    "source_file": "Maria Susana Castro.docx"
+  },
+  {
+    "name": "Nahuel Torrano",
+    "dni": "41569334",
+    "dob": "31/01/1999",
+    "sex": "Masculino",
+    "phone": "2494371490",
+    "address": "Rivadavia 467 dto 7",
+    "insurance": "AfiliadoNo tiene",
+    "source_file": "Nahuel Torrano.docx"
+  },
+  {
+    "name": "Jimena Milagros Torres",
+    "dni": "45731065",
+    "dob": "27/2/2025",
+    "sex": "Femenino",
+    "phone": "2284520255",
+    "address": "Cuidad Olavarria",
+    "insurance": "Afiliado62846117704",
+    "source_file": "Jimena Milagros Torres.docx"
+  },
+  {
+    "name": "Maria Florencia Calderon",
+    "dni": "30598858",
+    "dob": "30/11/1983",
+    "sex": "Femenino",
+    "phone": "2494022553",
+    "address": "Costa Rica 146",
+    "insurance": "AfiliadoOspe 2730598858300",
+    "source_file": "Maria Florencia Calderon.docx"
+  },
+  {
+    "name": "Juana Garc\u00eda Alias",
+    "dni": "11704818",
+    "sex": "Femenino",
+    "phone": "2494646408",
+    "address": "Arana 761",
+    "insurance": "AfiliadoSociedad Italiana 6247/1",
+    "source_file": "Juana Garcia Alias.docx"
+  },
+  {
+    "name": "Rocio Urban",
+    "dni": "40769177",
+    "sex": "Femenino",
+    "phone": "2494013867",
+    "address": "Las Malvinas 888",
+    "insurance": "Afiliado",
+    "source_file": "Rocio Urban.docx"
+  },
+  {
+    "name": "Camila Huaiquil",
+    "dni": "431062036",
+    "dob": "6/02/20001",
+    "sex": "Femenino",
+    "phone": "2494215031",
+    "address": "San Martin 1225",
+    "insurance": "AfiliadoNo tiene obra social",
+    "source_file": "Camila Huaiquil.docx"
+  },
+  {
+    "name": "Benjam\u00edn Barelle",
+    "dni": "37871182",
+    "dob": "20/4/1994",
+    "sex": "Masculino",
+    "phone": "228156336",
+    "address": "La Valle1460 ciudad Rauch",
+    "insurance": "Afiliado137871182800/",
+    "source_file": "Benjamin Barelle.docx"
+  },
+  {
+    "name": "Tomas Cordero",
+    "dni": "41545321",
+    "dob": "",
+    "sex": "Masculino",
+    "phone": "2494378441",
+    "address": "",
+    "insurance": "AfiliadoSancor Salud2059189/00",
+    "source_file": "Tomas Cordero.docx"
+  },
+  {
+    "name": "Juan Manuel Gonzalez",
+    "dni": "38951109",
+    "dob": "4/08/1995",
+    "sex": "Masculino",
+    "phone": "2494481756",
+    "address": "Moreno 195",
+    "insurance": "AfiliadoIOSFA15285/9",
+    "source_file": "Juan Manuel Gonzalez.docx"
+  },
+  {
+    "name": "Sara Fortier",
+    "dni": "49310109",
+    "dob": "18/02/2009",
+    "sex": "Femenino",
+    "phone": "2494657346",
+    "address": "Chieno 202",
+    "insurance": "AfiliadoUni\u00f3n Personal 00212861054",
+    "source_file": "Sara Fortier.docx"
+  },
+  {
+    "name": "Mar\u00eda Fernanda Ristagno",
+    "dni": "31156172",
+    "dob": "22/11/1984",
+    "sex": "Femenino",
+    "phone": "2494477947",
+    "address": "Beiro 1293",
+    "insurance": "Afiliado140117502409/00",
+    "source_file": "Maria Fernada Ristagno.docx"
+  },
+  {
+    "name": "Flavia Cuello",
+    "dni": "35774416",
+    "dob": "4/02/1991",
+    "sex": "Femenino",
+    "phone": "2494281734",
+    "address": "Alvarado 777",
+    "insurance": "Afiliado1345352849/01",
+    "source_file": "Flavia Cuello.docx"
+  },
+  {
+    "name": "Juana Hirigoyen",
+    "dni": "44426840",
+    "sex": "Femenino",
+    "phone": "2923647982",
+    "address": "14 de Julio 1145",
+    "insurance": "AfiliadoA14325937702",
+    "source_file": "Juana Hirigoyen.docx"
+  },
+  {
+    "name": "Andrea Quercetty",
+    "dni": "25035331",
+    "dob": "23/01/1976",
+    "sex": "Femenino",
+    "phone": "2355463428",
+    "address": "Ituzaing\u00f3 229 dpto. 1",
+    "insurance": "AfiliadoNo tiene",
+    "source_file": "Andrea Quercetti.docx"
+  },
+  {
+    "name": "Camila Weiman",
+    "dni": "41545489",
+    "sex": "Femenino",
+    "phone": "2494210498",
+    "address": "Chevarrier 274",
+    "insurance": "Afiliado",
+    "source_file": "Camila Weiman.docx"
+  },
+  {
+    "dni": "41 541 283. Paciente que presenta internaci\u00f3n previa en cl\u00ednica Teresa de Calcuta por consumo cr\u00f3nico de coca\u00edna y alcohol. En dicha instituci\u00f3n recibe tratamiento psicol\u00f3gico y psicofarmacol\u00f3gico. Posterior al alta contin\u00faa tratamiento ambulatorio con dicha profesional. Concurre entrevista el 3/12/ 2024 donde se encuentra vigil, globalmente orientado, negando deseos de consumo refiere que una de las medicaciones le da somnolencia por lo cual no la toma. Se solicita funci\u00f3n renal y litemia para control de la medicaci\u00f3n. Concurre nuevamente el 2/1/ 2025 donde refiere que no realiz\u00f3 estudios solicitados ya que \"no ten\u00eda ganas\" . Con \u00faltimo consumo hace 4 d\u00edas aproximadamente de coca\u00edna y alcohol. Concurre acompa\u00f1ado de su madre a las entrevistas quien refiere que bajo consumo presenta ideaci\u00f3n delirante de tipo paranoide con alucinaciones auditivas y visuales refiere tambi\u00e9n que ha consumido alcohol . Su madre refiere que el paciente presenta deudas monetarias debido a que utiliza el dinero para el consumo de coca\u00edna. Al ex\u00e1men vigil, reticente a continuar el tratamiento psicofarmacol\u00f3gico, sin conciencia de enferm",
+    "name_from_file": "SIlva luciano",
+    "source_file": "SIlva luciano.docx"
+  },
+  {
+    "name": "Yaretzi Cuautle Ortelli",
+    "dni": "46824620",
+    "sex": "Femenino",
+    "phone": "2494515007",
+    "address": "Av. Avellaneda1205",
+    "insurance": "Afiliado1-18533618-3",
+    "source_file": "Yaretzi Cuautle Ortelli.docx"
+  },
+  {
+    "name": "Belen Baez",
+    "dni": "45803982",
+    "dob": "7/03/2005",
+    "sex": "Femenino",
+    "phone": "2974031350",
+    "address": "AV Espa\u00f1a 207",
+    "insurance": "Afiliado61 511887 8 04",
+    "source_file": "Belen Baez.docx"
+  },
+  {
+    "name": "Josefina Andre",
+    "dni": "33788912",
+    "sex": "Femenino",
+    "phone": "2494337250",
+    "address": "costa rica 548 dto 9",
+    "insurance": "AfiliadoSancor salud: 17627100",
+    "source_file": "Andre Josefina.docx"
+  },
+  {
+    "name": "Pamela Belen Cuadrado",
+    "dni": "35140804",
+    "dob": "3/51990",
+    "sex": "Femenino",
+    "phone": "2235978258",
+    "address": "Paraje desvio Aguirre calle 5 numero 24",
+    "insurance": "Afiliado2351408041/00",
+    "source_file": "Pamela Belen Cuadrado.docx"
+  },
+  {
+    "name": "Oriana Morello",
+    "dni": "45865820",
+    "sex": "Femenino",
+    "phone": "2281365990",
+    "address": "Islas Malvinas 270 ciudad Azul",
+    "insurance": "Afiliado9820037491/02",
+    "source_file": "Oriana Morello.docx"
+  },
+  {
+    "name": "Marcos C\u00f3rdoba",
+    "dni": "33984179",
+    "sex": "Masculino",
+    "phone": "2494518100",
+    "address": "Santa Cruz 2343",
+    "insurance": "Afiliado",
+    "source_file": "Marcos Cordoba.docx"
+  },
+  {
+    "name": "Juan Tomas Rigotti",
+    "dni": "43867978",
+    "sex": "Masculino",
+    "phone": "2494010598",
+    "address": "Panam\u00e1 405",
+    "insurance": "Afiliado1-11413984/5",
+    "source_file": "Juan Tomas Rigotti.docx"
+  },
+  {
+    "name": "Ver\u00f3nica Torres",
+    "dni": "25550835",
+    "sex": "Femenino",
+    "phone": "2494550936",
+    "address": "Saavedra 815",
+    "insurance": "Afiliado",
+    "source_file": "Veronica Torres.docx"
+  },
+  {
+    "name": "Florencia Villareal",
+    "dni": "40668886",
+    "dob": "Escribir edad",
+    "sex": "Femenino",
+    "phone": "2266534574",
+    "address": "Haga clic o pulse aqu\u00ed para escribir texto.",
+    "insurance": "Afiliado8000061832294011006",
+    "source_file": "Florencia Villareal.docx"
+  },
+  {
+    "name": "",
+    "dni": "",
+    "sex": "Femenino",
+    "phone": "",
+    "address": "",
+    "insurance": "Afiliado",
+    "name_from_file": "Esther Hernandez",
+    "source_file": "Esther Hernandez.docx"
+  },
+  {
+    "name": "Pablo Oliver",
+    "dni": "3178590",
+    "sex": "Masculino",
+    "phone": "2494543898",
+    "address": "Vicente L\u00f3pez 1268",
+    "insurance": "Afiliado",
+    "source_file": "Pablo Oliver.docx"
+  },
+  {
+    "name": "Lourdes Mart\u00ednez",
+    "dni": "29019973",
+    "dob": "Escribir edad",
+    "sex": "Femenino",
+    "phone": "2494625395",
+    "address": "Haga clic o pulse aqu\u00ed para escribir texto.",
+    "insurance": "Afiliado229019973/00",
+    "source_file": "Lourdes Martinez.docx"
+  },
+  {
+    "name": "Gallinal Marcos",
+    "dni": "45.035.555",
+    "dob": "9/7/2003",
+    "sex": "Masculino",
+    "phone": "2494533036",
+    "address": "Ugarte 2103",
+    "insurance": "Afiliado800006 0127274 02 1039",
+    "source_file": "Marcos Gallinal.docx"
+  },
+  {
+    "name": "Gabriel Gramullia",
+    "dni": "24988239",
+    "sex": "Masculino",
+    "phone": "2494620516",
+    "address": "14 de Julio 1011",
+    "insurance": "AfiliadoA24988239/00 Pami 15549257991900",
+    "source_file": "Gabriel Gramullia.docx"
+  },
+  {
+    "name": "Gustavo Adolfo Bravo",
+    "dni": "16473932",
+    "sex": "Masculino",
+    "phone": "2494372632",
+    "address": "G\u00fcemes 1307",
+    "insurance": "Afiliado",
+    "source_file": "Gustavo Adolfo Bravo.docx"
+  },
+  {
+    "name": "",
+    "dni": "",
+    "sex": "Femenino",
+    "phone": "",
+    "address": "",
+    "insurance": "Afiliado",
+    "name_from_file": "Ermelinda Aristrain",
+    "source_file": "Ermelinda Aristrain.docx"
+  },
+  {
+    "name": "Jose Antonio Garmendia",
+    "dni": "10102125",
+    "dob": "20/3/52",
+    "sex": "Masculino",
+    "phone": "2494467505",
+    "address": "4 de Abril 264",
+    "insurance": "AfiliadoSociedad italiana",
+    "source_file": "Jose Antonio Garmendia.docx"
+  },
+  {
+    "name": "Jessica Leandra Gallego  Alzate",
+    "dni": "96200189",
+    "dob": "20/8/1990",
+    "sex": "Femenino",
+    "phone": "2494208671",
+    "address": "Montevideo 218 planta alta",
+    "insurance": "Afiliado20962001891",
+    "source_file": "Jessica Leandra Gallego Alzate.docx"
+  },
+  {
+    "name": "Yare Ortelli",
+    "dni": "46824620",
+    "sex": "Femenino",
+    "phone": "2494515007",
+    "address": "Avellaneda 1025",
+    "insurance": "Afiliado",
+    "source_file": "Yare Ortelli.docx"
+  },
+  {
+    "name": "Lidia Ester Milano",
+    "dni": "17221403",
+    "dob": "16/03/965",
+    "sex": "Femenino",
+    "phone": "224571740",
+    "address": "Argerich 2099",
+    "insurance": "Afiliado2172214032/00",
+    "source_file": "Maria Ester Milano.docx"
+  },
+  {
+    "name": "Mar\u00eda Jos\u00e9 Ferragine",
+    "dni": "26303219",
+    "sex": "Femenino",
+    "phone": "2494679895",
+    "address": "Sarmiento 825 Vela",
+    "insurance": "Afiliado2263032192/00",
+    "source_file": "Maria Jose Ferragine.docx"
+  },
+  {
+    "name": "Sol Esparza",
+    "dni": "43932114",
+    "dob": "1/6/2002",
+    "sex": "Femenino",
+    "phone": "2262309986",
+    "address": "Alem 540",
+    "insurance": "Afiliado\u00c1msterdam 17409/2",
+    "source_file": "Sol Esparza.docx"
+  },
+  {
+    "name": "Carolina Noemi Alvarez",
+    "dni": "24812453",
+    "dob": "",
+    "sex": "Femenino",
+    "phone": "2494654047",
+    "address": "",
+    "insurance": "AfiliadoOSPE 27-24812453-4 00",
+    "source_file": "Carolina Noemi Alvarez.docx"
+  },
+  {
+    "name": "Alejandro Fern\u00e1ndez",
+    "dni": "24733669",
+    "sex": "Masculino",
+    "phone": "2494622586",
+    "address": "Richieri 53",
+    "insurance": "AfiliadoAvalian 18843318",
+    "source_file": "Alejandro Fernandez.docx"
+  },
+  {
+    "name": "Oriana Fiora",
+    "dni": "43784270",
+    "dob": "16/11/201",
+    "sex": "Femenino",
+    "phone": "2235256365",
+    "address": "Beretervide 550",
+    "insurance": "AfiliadoNo tiene",
+    "source_file": "Oriana Fiora.docx"
+  },
+  {
+    "name": "Rocio Gonzalez",
+    "dni": "40896383",
+    "dob": "4/3/1998",
+    "sex": "Femenino",
+    "phone": "2257617611",
+    "address": "Alberdi 57",
+    "insurance": "Afiliado862060769140",
+    "source_file": "Rocio Gonzalez.docx"
+  },
+  {
+    "name": "Guillermina Carloni",
+    "dni": "28009981",
+    "dob": "16/01/1980",
+    "sex": "Femenino",
+    "phone": "2494475207",
+    "address": "4 de Abril 115",
+    "insurance": "AfiliadoAvalian36647222",
+    "source_file": "Guillermina Carloni.docx"
+  },
+  {
+    "name": "Catalina Bustos",
+    "dni": "44928315",
+    "sex": "Femenino",
+    "phone": "2281467613",
+    "address": "Haga clic o pulse aqu\u00ed para escribir texto.",
+    "insurance": "AfiliadoHaga clic o pulse aqu\u00ed para escribir texto.",
+    "source_file": "Catalina Bustos.docx"
+  },
+  {
+    "name": "Lucia Malen Torres",
+    "dni": "4655365",
+    "sex": "Femenino",
+    "phone": "2494242826",
+    "address": "Piedra Buena 1259",
+    "insurance": "Afiliado",
+    "source_file": "Lucia Torres.docx"
+  },
+  {
+    "name": "Juan Vaninetti",
+    "dni": "33576376",
+    "sex": "Masculino",
+    "phone": "2262505434",
+    "address": "Rivas 981",
+    "insurance": "Afiliado63059756001",
+    "source_file": "Juan Vaninetti.docx"
+  },
+  {
+    "name": "Claudio Alejandro Mhameud",
+    "dni": "40374101",
+    "dob": "E18/08/1996",
+    "sex": "Masculino",
+    "phone": "2494650422",
+    "address": "Chapaleofu 1856",
+    "insurance": "AfiliadoNo tiene",
+    "source_file": "Claudio Alehjandro Mhameud.docx"
+  },
+  {
+    "name": "Rocio Carrasco",
+    "dni": "35774879",
+    "sex": "Femenino",
+    "phone": "2494572619",
+    "address": "Belgrano 857 Dpto. 39",
+    "insurance": "Afiliado",
+    "source_file": "Rocio Carrasco.docx"
+  },
+  {
+    "name": "Tomas Gubaldini",
+    "dni": "34548794",
+    "sex": "Masculino",
+    "phone": "2281501197",
+    "address": "Pellegrini 353 dpto.11",
+    "insurance": "AfiliadoSancor Salud 1943735/00",
+    "source_file": "Tomas Gubaldini.docx"
+  },
+  {
+    "name": "Anal\u00eda Remiro",
+    "dni": "14913056",
+    "dob": "13/10/1962",
+    "sex": "Femenino",
+    "phone": "2494510237",
+    "address": "Libertad 24",
+    "insurance": "Afiliado61922575001",
+    "source_file": "Analia Remiro.docx"
+  },
+  {
+    "name": "Ana Porta",
+    "dni": "44339401",
+    "sex": "Femenino",
+    "phone": "2494250974",
+    "address": "De Rosas 18",
+    "insurance": "Afiliado",
+    "source_file": "Ana Porta.docx"
+  },
+  {
+    "name": "Evelyn Santiva\u00f1ez",
+    "dni": "40455348",
+    "dob": "1/05/1997",
+    "sex": "Femenino",
+    "phone": "2494659412",
+    "address": "Av. Avellaneda 1624",
+    "insurance": "AfiliadoNo tiene",
+    "source_file": "Evelyn Santiva\u00f1ez.docx"
+  },
+  {
+    "name": "Laura Rodr\u00edguez",
+    "dni": "27703932",
+    "sex": "Femenino",
+    "phone": "2494358269",
+    "address": "Bolivia 292",
+    "insurance": "Afiliado22670339326/00",
+    "source_file": "Laura Rodriguez.docx"
+  },
+  {
+    "name": "Guillermo Juan Cruz Goitandia",
+    "dni": "25723960",
+    "dob": "10/6/1977",
+    "sex": "Masculino",
+    "phone": "2281584822",
+    "address": "Moreno 1241 dpto 4",
+    "insurance": "Afiliado125723960700",
+    "source_file": "Guillermo Juan Cruz Goitandia.docx"
+  },
+  {
+    "name": "Clara Guallan",
+    "dni": "43513845",
+    "sex": "Femenino",
+    "phone": "2227510138",
+    "address": "",
+    "insurance": "Afiliado",
+    "source_file": "Clara Guallan.docx"
+  },
+  {
+    "name": "",
+    "dni": "",
+    "sex": "Femenino",
+    "phone": "",
+    "address": "",
+    "insurance": "Afiliado",
+    "name_from_file": "Mirian Florentin",
+    "source_file": "Mirian Florentin.docx"
+  },
+  {
+    "name": "Pierina Talamona",
+    "dni": "",
+    "sex": "Femenino",
+    "phone": "",
+    "address": "",
+    "insurance": "Afiliado",
+    "source_file": "Pierina Talamona.docx"
+  },
+  {
+    "name": "Guillermina Carloni",
+    "dni": "28009981",
+    "dob": "16/01/1980",
+    "sex": "Femenino",
+    "phone": "2494475207",
+    "address": "4 de Abril 115",
+    "insurance": "AfiliadoAvalian 36647222",
+    "source_file": "Florencia Carloni.docx"
+  },
+  {
+    "name": "Johana Alli",
+    "dni": "31464570",
+    "dob": "9/02/1985",
+    "sex": "Femenino",
+    "phone": "1159580961",
+    "address": "Saavedra 20",
+    "insurance": "Afiliado231464570000",
+    "source_file": "Johana Alli.docx"
+  },
+  {
+    "name": "Camila Venancio",
+    "dni": "40769117",
+    "dob": "12/09/1997",
+    "sex": "Femenino",
+    "phone": "2494208120",
+    "address": "Cuba 1513",
+    "insurance": "AfiliadoNo tiene",
+    "source_file": "Camila Venancio.docx"
+  },
+  {
+    "name": "Andrea Mariana Verdi",
+    "dni": "23910705",
+    "sex": "Femenino",
+    "phone": "2494638859",
+    "address": "Chacabuco 565 dtpo.4 B",
+    "insurance": "AfiliadoGaleno 14649700114",
+    "source_file": "Andrea Verdi.docx"
+  },
+  {
+    "name": "Rosario Funaro",
+    "dni": "41676002",
+    "sex": "Femenino",
+    "phone": "2494559236",
+    "address": "Ruta 74 km216",
+    "insurance": "Afiliado80000614218960111000",
+    "source_file": "Rosario Funaro.docx"
+  },
+  {
+    "name": "Cecilia Paris",
+    "dni": "31779205",
+    "dob": "2/7/1985",
+    "sex": "Femenino",
+    "phone": "2494523719",
+    "address": "Ruta 30km131",
+    "insurance": "Afiliado 231779205600",
+    "source_file": "Cecilia Paris.docx"
+  },
+  {
+    "name": "Roxana Orliacq",
+    "dni": "16414622",
+    "sex": "Femenino",
+    "phone": "2494343031",
+    "address": "Maritorena 320",
+    "insurance": "Afiliado2164146222/00",
+    "source_file": "Roxana Orliacq.docx"
+  },
+  {
+    "name": "",
+    "dni": "48182363",
+    "sex": "Femenino",
+    "phone": "",
+    "address": "",
+    "insurance": "Afiliado",
+    "name_from_file": "Celeste Calles Grassi",
+    "source_file": "Celeste Calles Grassi.docx"
+  },
+  {
+    "name": "M\u00f3nica Montes",
+    "dni": "13824930",
+    "sex": "Femenino",
+    "phone": "2494624278",
+    "address": "Colectora Pugliese Sur 9025",
+    "insurance": "Afiliado4-31005036-01/334",
+    "source_file": "Monica Montes.docx"
+  },
+  {
+    "name": "Ivana Ethel Olivera",
+    "dni": "21017679",
+    "sex": "Femenino",
+    "phone": "2494601483",
+    "address": "Haga clic o pulse aqu\u00ed para escribir texto.",
+    "insurance": "AfiliadoHaga clic o pulse aqu\u00ed para escribir texto.",
+    "source_file": "Ivana Ethel Olivera.docx"
+  },
+  {
+    "name": "Claudio Gatica",
+    "dni": "28823023",
+    "sex": "Masculino",
+    "phone": "2494247739",
+    "address": "Hait\u00ed 1524",
+    "insurance": "Afiliado12821288230233/00",
+    "source_file": "Claudio Gatica.docx"
+  },
+  {
+    "name": "Gabriel Merlo",
+    "dni": "24812321",
+    "sex": "Masculino",
+    "phone": "2494518266",
+    "address": "Laprida2032",
+    "insurance": "AfiliadoUOM .24812321",
+    "source_file": "Gabriel Merlo.docx"
+  },
+  {
+    "name": "Camila Pittelli",
+    "dni": "43197479",
+    "dob": "26/8/2001",
+    "sex": "Femenino",
+    "phone": "2281534263",
+    "address": "La Rioja 406 Villa Cacique",
+    "insurance": "Afiliado120042564/0400",
+    "source_file": "Camila Pittelli.docx"
+  },
+  {
+    "name": "Zo\u00e9 B\u00e1ncala",
+    "dni": "49163239",
+    "sex": "Femenino",
+    "phone": "2494352365",
+    "address": "Costa Rica 18",
+    "insurance": "Afiliado",
+    "source_file": "Zoe Bancala.docx"
+  },
+  {
+    "name": "Alejandra genes",
+    "dni": "18640793",
+    "sex": "Femenino",
+    "phone": "22841548102",
+    "address": "Chacabuco 565 detp 5b",
+    "insurance": "AfiliadoJer\u00e1rquicos salud: 64446-01",
+    "source_file": "Genes Alejandra.docx"
+  },
+  {
+    "name": "Maria Florencia",
+    "dni": "26518890",
+    "dob": "17/3/78",
+    "sex": "Femenino",
+    "phone": "2494286148",
+    "address": "Ruta 74 km 209 La mata lote 64",
+    "insurance": "AfiliadoSancor 1140903/01",
+    "source_file": "Maria Florencia Laino.docx"
+  },
+  {
+    "name": "Gustavo Adolfo Bravo",
+    "dni": "16473932",
+    "dob": "29/7/1963",
+    "sex": "Masculino",
+    "phone": "2494372632",
+    "address": "G\u00fcemes 1307",
+    "insurance": "Afiliado9816473932/00",
+    "source_file": "Adolfo Bravo.docx"
+  },
+  {
+    "name": "Lorena Paola Ambrosio",
+    "dni": "26198447",
+    "dob": "",
+    "sex": "Femenino",
+    "phone": "2494642802",
+    "address": "",
+    "insurance": "Afiliado1/22985880/1",
+    "source_file": "Lorena Paola Ambrosio.docx"
+  },
+  {
+    "name": "Daiana Egoscuadra",
+    "dni": "38371421",
+    "sex": "Femenino",
+    "phone": "2281564645",
+    "address": "Haga clic o pulse aqu\u00ed para escribir texto.",
+    "insurance": "AfiliadoHaga clic o pulse aqu\u00ed para escribir texto.",
+    "source_file": "Daiana Egoscuadra.docx"
+  },
+  {
+    "name": "Luisina Fasciglioni",
+    "dni": "47683161",
+    "sex": "Femenino",
+    "phone": "2266536642",
+    "address": "Calle 38 n\u00fam.1221 ciudad Balcarce",
+    "insurance": "Afiliado61899185804",
+    "source_file": "Luisina Fasciglioni.docx"
+  },
+  {
+    "name": "Ver\u00f3nica Ochoa",
+    "dni": "22671489",
+    "sex": "Femenino",
+    "phone": "2494494518",
+    "address": "Argerich 2050",
+    "insurance": "AfiliadoSancor 133163300",
+    "source_file": "Veronica Ochoa.docx"
+  },
+  {
+    "dob": "40942125Edad5/1/1998",
+    "sex": "Femenino",
+    "phone": "2494486603",
+    "address": "Barrio Terminal casa 107",
+    "insurance": "AfiliadoAvalian 38274813",
+    "name_from_file": "Dana Martinez Peroggi",
+    "source_file": "Dana Martinez Peroggi.docx"
+  },
+  {
+    "name": "Estefan\u00eda Ciappina",
+    "dni": "31690692",
+    "dob": "26/04/1986",
+    "sex": "Femenino",
+    "phone": "2494362074",
+    "address": "Chacabuco 584",
+    "insurance": "AfiliadoSancor 1819131/00",
+    "source_file": "Estefania Ciappina.docx"
+  },
+  {
+    "name": "Ferreira Hortensia",
+    "dni": "27116569",
+    "sex": "Femenino",
+    "phone": "2494068034",
+    "address": "Pellegrini 1099 Ciudad Rauch",
+    "insurance": "Afiliado",
+    "source_file": "Hortensia Ferreira.docx"
+  },
+  {
+    "name": "Jesica Astudillo",
+    "dni": "24812356",
+    "dob": "Escribir edad",
+    "sex": "Femenino",
+    "phone": "2494211657",
+    "address": "Haga clic o pulse aqu\u00ed para escribir texto.",
+    "insurance": "Afiliado25535604",
+    "source_file": "Jesica Astudillo.docx"
+  },
+  {
+    "name": "Ignacio Miguel M\u00e1rquez Corrales",
+    "dni": "46239457",
+    "dob": "18/03/2004",
+    "sex": "Masculino",
+    "phone": "2494064770",
+    "address": "Brandsen 1074",
+    "insurance": "AfiliadoOsmata 46239457",
+    "source_file": "Ignacio Miguel Marquez Corrales.docx"
+  },
+  {
+    "name": "Rocio Tangorra",
+    "dni": "35033571",
+    "sex": "Femenino.",
+    "phone": "2494381846",
+    "address": "Psj.Ponteaut 782",
+    "insurance": "AfiliadoSancor  108255600",
+    "source_file": "Sofia Guerrera.docx"
+  },
+  {
+    "name": "Gabriela Etel Martinez",
+    "dni": "21502148",
+    "dob": "24/04/1970",
+    "sex": "Femenino",
+    "phone": "2494546414",
+    "address": "Primera Junta  725",
+    "insurance": "Afiliado22502148300",
+    "source_file": "Gabriela Etel Martinez.docx"
+  },
+  {
+    "name": "Delia Guti\u00e9rrez",
+    "dni": "32894260",
+    "dob": "31/07/1988",
+    "sex": "Femenino",
+    "phone": "2494520489",
+    "address": "Napaleofu",
+    "insurance": "AfiliadoNo tiene",
+    "source_file": "Delia Gutierrez.docx"
+  },
+  {
+    "name": "Marcela Conciancich",
+    "dni": "",
+    "sex": "Femenino",
+    "phone": "2281633343",
+    "address": "",
+    "insurance": "Afiliado",
+    "source_file": "Marcela Conciancich.docx"
+  },
+  {
+    "name": "Lucrecia Albornoz",
+    "dni": "30379000",
+    "dob": "4/08/1983",
+    "sex": "Femenino",
+    "phone": "2494469735",
+    "address": "Del rio1508",
+    "insurance": "AfiliadoSancor 2043097/00",
+    "source_file": "Lucrecia Albornoz.docx"
+  },
+  {
+    "name": "Laureano Baiza",
+    "dni": "35562726",
+    "dob": "28/05/1992",
+    "sex": "Masculino",
+    "phone": "2494000579",
+    "address": "Venezuela 926",
+    "insurance": "AfiliadoSancor Salud 204901301",
+    "source_file": "Laureano Baiza.docx"
+  },
+  {
+    "name": "Guillermo Restivo",
+    "dni": "16247650",
+    "dob": "26/03/1963",
+    "sex": "Elija un elemento.",
+    "phone": "2494639335",
+    "address": "Payro 965 dpto 9",
+    "insurance": "AfiliadoFederada Salud 192867/01",
+    "source_file": "Guillermo Restivo.docx"
+  },
+  {
+    "name": "Alejandro Mora",
+    "dni": "24913177",
+    "sex": "Masculino",
+    "phone": "2494631706",
+    "address": "Beretervide 956",
+    "insurance": "Afiliado0-24913177/0",
+    "source_file": "Alejandro Mora.docx"
+  },
+  {
+    "name": "Lucrecia Regulez",
+    "dni": "30880876",
+    "sex": "Femenino",
+    "phone": "2494639158",
+    "address": "Moreno 1453",
+    "insurance": "AfiliadoIOSFA 30880876",
+    "source_file": "Lucrecia Regulez.docx"
+  },
+  {
+    "name": "Ayel\u00e9n Marcos",
+    "dni": "39800423",
+    "dob": "30/10/1994",
+    "sex": "Femenino",
+    "phone": "2494358727",
+    "address": "Arenales245",
+    "insurance": "AfiliadoOspe 27-39800423-500",
+    "source_file": "Ayelen Marcos.docx"
+  },
+  {
+    "name": "Araceli Derose",
+    "dni": "13824925",
+    "dob": "28/1/9961",
+    "sex": "Femenino",
+    "phone": "2494359076",
+    "address": "Urquiza 686",
+    "insurance": "Afiliado8613824925/00",
+    "source_file": "Aracerli Derose.docx"
+  },
+  {
+    "name": "Milagros Arouxet",
+    "dni": "46751365",
+    "dob": "5/01/2006",
+    "sex": "Femenino",
+    "phone": "2494371044",
+    "address": "Espa\u00f1a 921",
+    "insurance": "AfiliadoUnion Personal 02642596 01 1",
+    "source_file": "Milagros Arouxet.docx"
+  },
+  {
+    "name": "Maria Lucila Echeverry",
+    "dni": "27828907",
+    "dob": "23/11/1979",
+    "sex": "Femenino",
+    "phone": "27828907",
+    "address": "Calle 24 1873 Juan N Fernandez",
+    "insurance": "AfiliadoAvalian 08971722",
+    "source_file": "Maria Lucila Echeverry.docx"
+  },
+  {
+    "name": "Catalina Martens",
+    "dni": "44957087",
+    "dob": "Escribir edad",
+    "sex": "Femenino",
+    "phone": "2494004418",
+    "address": "Haga clic o pulse aqu\u00ed para escribir texto.",
+    "insurance": "Afiliado61192311302",
+    "source_file": "Catalina Martens.docx"
+  },
+  {
+    "name": "Rafaela Gisela Luque",
+    "dni": "32067917",
+    "dob": "8/05/86",
+    "sex": "Femenino",
+    "phone": "2494350077",
+    "address": "Los Corales 1669",
+    "insurance": "AfiliadoOspe 2732067917 1 00",
+    "source_file": "Rafaela Gisela Luque.docx"
+  },
+  {
+    "name": "Antonella Mart\u00ednez Peroggi",
+    "dni": "37014680",
+    "dob": "19/2/1992",
+    "sex": "Femenino",
+    "phone": "2494317497",
+    "address": "Barrio terminal casa107",
+    "insurance": "AfiliadoNo tiene",
+    "source_file": "Antonella Martinez Peroggi.docx"
+  },
+  {
+    "name": "Abril Mustaf\u00e1",
+    "dni": "42955050",
+    "dob": "19/09/2000",
+    "sex": "Femenino",
+    "phone": "2236361307",
+    "address": "Alberdi 480",
+    "insurance": "AfiliadoOSARPYH(Elevar)30615b",
+    "source_file": "Abril Mustafa.docx"
+  },
+  {
+    "name": "Natalia Noemi Torres",
+    "dni": "28835396",
+    "dob": "Escribir edad",
+    "sex": "Femenino",
+    "phone": "2494652664",
+    "address": "Haga clic o pulse aqu\u00ed para escribir texto.",
+    "insurance": "Afiliado2298353961/00",
+    "source_file": "Natalia Noemi Torres.docx"
+  },
+  {
+    "name": "Julia Arist\u00eda",
+    "dni": "3721138",
+    "sex": "Femenino",
+    "phone": "2494275991",
+    "address": "4 De abril 403",
+    "insurance": "Afiliado9603721800",
+    "source_file": "Julia Aristia.docx"
+  },
+  {
+    "name": "Manuela Iglesias",
+    "dni": "32067569",
+    "sex": "Femenino",
+    "phone": "2494616796",
+    "address": "De los Reyes 548",
+    "insurance": "Afiliado2/32067569/000",
+    "source_file": "Manuela Iglesias.docx"
+  },
+  {
+    "name": "Jorge juan Jos\u00e9 D Alessandro",
+    "dni": "34037795",
+    "sex": "Masculino",
+    "phone": "2494250449",
+    "address": "Haga clic o pulse aqu\u00ed para escribir texto.",
+    "insurance": "AfiliadoHaga clic o pulse aqu\u00ed para escribir texto.",
+    "source_file": "Jorge Juan Jose D Alessandro.docx"
+  },
+  {
+    "name": "Diana Fiasche",
+    "dni": "32478981",
+    "sex": "Femenino",
+    "phone": "2494306864",
+    "address": "Av. San Martin 340",
+    "insurance": "AfiliadoMedicus",
+    "source_file": "Daiana Fiasche.docx"
+  },
+  {
+    "name": "Natalia Pi\u00f1eiro",
+    "dni": "22890578",
+    "sex": "Femenino",
+    "phone": "2494505144",
+    "address": "Tilpanaro 28",
+    "insurance": "Afiliado2228957085/00",
+    "source_file": "Natalia Pi\u00f1eiro.docx"
+  },
+  {
+    "name": "Martina Ugarte",
+    "dni": "46353657",
+    "sex": "Masculino",
+    "phone": "2494326522",
+    "address": "Cabral 1072",
+    "insurance": "Afiliado",
+    "source_file": "Martina Ugarte.docx"
+  },
+  {
+    "name": "Nicolas Fortino",
+    "dni": "25197501",
+    "sex": "Masculino",
+    "phone": "2494651561",
+    "address": "",
+    "insurance": "AfiliadoSancor Salud 1070701/00",
+    "source_file": "Nicolas Fortino.docx"
+  },
+  {
+    "name": "Claudia Remiro",
+    "dni": "12894000",
+    "dob": "20/06/1960",
+    "sex": "Femenino",
+    "phone": "2494511234",
+    "address": "Espa\u00f1a 431",
+    "insurance": "Afiliado61908257 6 /01",
+    "source_file": "Caudia Remiro.docx"
+  },
+  {
+    "name": "Maria Laura Rivas",
+    "dni": "18295222",
+    "sex": "Femenino",
+    "phone": "2494469365",
+    "address": "14 de Julio 558",
+    "insurance": "Afiliado408578526-01/334",
+    "source_file": "Maria Laura Rivas.docx"
+  },
+  {
+    "name": "Lautaro Montesinos",
+    "dni": "46188673",
+    "sex": "Masculino",
+    "phone": "2494694478",
+    "address": "Chaco1026",
+    "insurance": "AfiliadoUni\u00f3n Personal  00766362 02 0",
+    "source_file": "Lautaro Montesinos.docx"
+  },
+  {
+    "name": "Martin Bianco",
+    "dni": "42428806",
+    "dob": "7/2/2000",
+    "sex": "Masculino",
+    "phone": "2494680830",
+    "address": "Los Huesos 346",
+    "insurance": "Afiliado8621922871/41",
+    "source_file": "Martin Bianco.docx"
+  },
+  {
+    "name": "Sofia Caamall Fanucchi",
+    "dni": "94916343",
+    "dob": "Escribir edad",
+    "sex": "Femenino",
+    "phone": "2236979068",
+    "address": "Haga clic o pulse aqu\u00ed para escribir texto.",
+    "insurance": "Afiliado8000060452702 02 1009",
+    "source_file": "Sofia Camaal Fanucchi.docx"
+  },
+  {
+    "name": "Mar\u00eda Alejandra Le\u00f3n",
+    "dni": "20064042",
+    "sex": "Femenino",
+    "phone": "2494660840",
+    "address": "G\u00f3mez 1316",
+    "insurance": "Afiliado",
+    "source_file": "Maria Alejandra Leon.docx"
+  },
+  {
+    "name": "Pablo Alzugaray",
+    "dni": "20286677",
+    "sex": "Masculino",
+    "phone": "249638140",
+    "address": "Pellegrini 915",
+    "insurance": "AfiliadoHaga clic o pulse aqu\u00ed para escribir texto.",
+    "source_file": "Pablo Alzugaray.docx"
+  },
+  {
+    "name": "Emanuel Salaverry",
+    "dni": "29163255",
+    "dob": "23/3/1982",
+    "sex": "Masculino",
+    "phone": "2281586064",
+    "address": "Juan B Justo 82",
+    "insurance": "AfiliadoHaga clic o pulse aqu\u00ed para escribir texto.",
+    "source_file": "Emanuel Salaverry.docx"
+  },
+  {
+    "name": "Adriana Alejandra Viscoimi",
+    "dni": "20754305",
+    "sex": "Femenino",
+    "phone": "2494340456",
+    "address": "Pellegrini 1236 dpto. 9",
+    "insurance": "Afiliado2207543056/00",
+    "source_file": "Adriana Alejandra Viscoimi.docx"
+  },
+  {
+    "name": "Giuliana  Laguardia",
+    "dni": "42296493",
+    "dob": "22/11/99",
+    "sex": "Femenino",
+    "phone": "2284693452",
+    "address": "Pinto 257",
+    "insurance": "AfiliadoGaleno 018665220107",
+    "source_file": "Giuliana Laguardia.docx"
+  },
+  {
+    "name": "Natalia Sacra",
+    "dni": "25635043",
+    "sex": "Femenino",
+    "phone": "1171448807",
+    "address": "Mitre 1537",
+    "insurance": "Afiliado2/25635043600",
+    "source_file": "Natalia Sacra.docx"
+  },
+  {
+    "name": "Franco Mart\u00ednez",
+    "dni": "22292897",
+    "sex": "Masculino",
+    "phone": "2494625395",
+    "address": "Av. Balb\u00edn 1218",
+    "insurance": "Afiliado9522292827/00",
+    "source_file": "Franco Martinez.docx"
+  },
+  {
+    "name": "Mar\u00eda L\u00f3pez de Armentia",
+    "dni": "16414659",
+    "sex": "Femenino",
+    "phone": "2494597663",
+    "address": "Av. Miguens 1654 Ciudad Ayacucho",
+    "insurance": "Afiliado8616414659/00",
+    "source_file": "Maria Lopez de Armentia.docx"
+  },
+  {
+    "name": "Tatiana Lescano",
+    "dni": "48643924",
+    "sex": "Femenino",
+    "phone": "2494342313",
+    "address": "Libertad 415 ciudad Rauch",
+    "insurance": "Afiliado22466957263/04",
+    "source_file": "Tatiana Lescano.docx"
+  },
+  {
+    "name": "Belen Correa",
+    "dni": "42177214",
+    "dob": "17/10/1999",
+    "sex": "Femenino",
+    "phone": "2494640340",
+    "address": "Saenz Pe\u00f1a 173",
+    "insurance": "AfiliadoOSUTHGRA",
+    "source_file": "Belen Correa.docx"
+  },
+  {
+    "name": "Eveliyn Nicole Garc\u00eda",
+    "dni": "40023596",
+    "dob": "24/12/1994",
+    "sex": "Femenino",
+    "phone": "2281357239",
+    "address": "Bolivia 11",
+    "insurance": "Afiliado240023596300",
+    "source_file": "Evelyn Nicole Garcia.docx"
+  },
+  {
+    "name": "Yamila Emer",
+    "dni": "26489382",
+    "sex": "Femenino.",
+    "phone": "2494656319",
+    "address": "Paraguay398",
+    "insurance": "AfiliadoLuz y Fuerza 16/16986/4/01",
+    "source_file": "Yamila Emer.docx"
+  },
+  {
+    "name": "Mauro Bilbao",
+    "dni": "3356759",
+    "sex": "Masculino",
+    "phone": "2494308802",
+    "address": "Cardiel 667",
+    "insurance": "Afiliado3-06451831-01/000",
+    "source_file": "Mauro Bilbao.docx"
+  },
+  {
+    "name": "Alejandra Lutz",
+    "dni": "20673541",
+    "sex": "Masculino",
+    "phone": "2494568196",
+    "address": "M\u00e9jico 1285",
+    "insurance": "Afiliado",
+    "source_file": "Alejandra Lutz.docx"
+  },
+  {
+    "name": "M\u00f3nica Atairo",
+    "dni": "16336940",
+    "sex": "Femenino",
+    "phone": "2983511799",
+    "address": "Bol\u00edvar 416 ciudad Gonz\u00e1lez Ch\u00e1vez",
+    "insurance": "Afiliado861633694000",
+    "source_file": "Monica Atairo.docx"
+  },
+  {
+    "name": "Graciela Gargaglioni",
+    "dni": "16156485",
+    "sex": "Femenino",
+    "phone": "2494476469",
+    "address": "Barrio Fonavi Casa 38",
+    "insurance": "AfiliadoNo tiene",
+    "source_file": "Graciela Gargalioni.docx"
+  },
+  {
+    "name": "",
+    "dni": "",
+    "dob": "",
+    "sex": "Elija un elemento.",
+    "phone": "",
+    "address": "",
+    "insurance": "Afiliado",
+    "name_from_file": "Matias Barrionuevo",
+    "source_file": "Matias Barrionuevo.docx"
+  },
+  {
+    "name": "Julieta Sanchez",
+    "dni": "43036748",
+    "dob": "27/2/2001",
+    "sex": "Femenino",
+    "phone": "01132770951",
+    "address": "Alem 1556",
+    "insurance": "Afiliado60841200603",
+    "source_file": "Julieta Sanchez.docx"
+  },
+  {
+    "name": "Rodrigo Yamil Shemi",
+    "dni": "40809456",
+    "dob": "21/10/1997",
+    "sex": "Masculino",
+    "phone": "2494687669",
+    "address": "Pierrone 1465",
+    "insurance": "AfiliadoNo tiene obra social",
+    "source_file": "Rodrigo Yami Shemi.docx"
+  },
+  {
+    "name": "Guillermo Edo",
+    "dni": "12089151",
+    "dob": "14/2/1956",
+    "sex": "Masculino",
+    "phone": "1141431975",
+    "address": "Andres Macaya 1216",
+    "insurance": "Afiliado34204404801 plan 310",
+    "source_file": "Guillermo Edo.docx"
+  },
+  {
+    "name": "Ana Torregrosa",
+    "dni": "2040890",
+    "sex": "Femenino",
+    "phone": "2494628707",
+    "address": "Roca 334",
+    "insurance": "Afiliado155033359105/00",
+    "source_file": "Ana Torregrosa.docx"
+  },
+  {
+    "name": "Alejandra Oliva",
+    "dni": "22671676",
+    "dob": "19/06/1972",
+    "sex": "Femenino",
+    "phone": "2494488755",
+    "address": "Maipu 73",
+    "insurance": "AfiliadoSociedad italiana 4819/1",
+    "source_file": "Alejandra Oliva.docx"
+  },
+  {
+    "name": "Jorgelina Moyano",
+    "dni": "27827455",
+    "dob": "31/01/1980",
+    "sex": "Femenino",
+    "phone": "2494479991",
+    "address": "Paseo de los abuelos 2368",
+    "insurance": "Afiliado2278274550/00",
+    "source_file": "Jorgelina Moyano.docx"
+  },
+  {
+    "name": "Yolanda Gramullia",
+    "dni": "17672701",
+    "dob": "4/05/1966",
+    "sex": "Femenino",
+    "phone": "2494623280",
+    "address": "Montevideo 365",
+    "insurance": "Afiliado861767270100",
+    "source_file": "Yolanda Gramullia.docx"
+  },
+  {
+    "name": "Luciana Cabrera",
+    "dni": "40769159",
+    "sex": "Femenino",
+    "phone": "24946377892",
+    "address": "Azucena 135",
+    "insurance": "AfiliadoSancor Salud 170950400",
+    "source_file": "Luciana Cabrera.docx"
+  },
+  {
+    "name": "Jos\u00e9 Mar\u00eda Tozzetto",
+    "dni": "22590212",
+    "dob": "22/02/1972",
+    "sex": "Masculino",
+    "phone": "3516570221",
+    "address": "Venezuela 532",
+    "insurance": "AfiliadoNo tiene obra social",
+    "source_file": "Jose Maria Tozzetto.docx"
+  },
+  {
+    "name": "Federico Almandoz",
+    "dni": "25509033",
+    "dob": "13/11/1976",
+    "sex": "Masculino",
+    "phone": "2494620168",
+    "address": "Caseros 803",
+    "insurance": "Afiliado61470425001",
+    "source_file": "Federico Almandoz.docx"
+  },
+  {
+    "name": "Tomas Borgnia Tumini",
+    "dni": "47552211",
+    "dob": "3/3/2017",
+    "sex": "Masculino",
+    "phone": "2494486420",
+    "address": "Saavedra 1281",
+    "insurance": "Afiliado 1270827562",
+    "source_file": "Tomas Tumini.docx"
+  },
+  {
+    "name": "Mar\u00eda Florencia Carloni",
+    "dni": "32425161",
+    "dob": "9/071986",
+    "sex": "Femenino",
+    "phone": "2494562897",
+    "address": "Vigil 772",
+    "insurance": "AfiliadoFedera 25949601",
+    "source_file": "Maria Florencia Carloni.docx"
+  },
+  {
+    "name": "Sixto Pablo Fern\u00e1ndez",
+    "dni": "30134533",
+    "sex": "Masculino",
+    "phone": "2494315980",
+    "address": "De los Reyes 568",
+    "insurance": "Afiliado3-06137027-00/000",
+    "source_file": "Sixto Pablo Fernandez.docx"
+  }
+]

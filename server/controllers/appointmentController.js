@@ -1,11 +1,12 @@
 const { pool } = require('../db');
 const { logAction } = require('../utils/audit');
 const googleController = require('./googleController');
+const { calculatePrice } = require('../utils/priceCalculator');
 
 exports.createAppointment = async (req, res) => {
     let conn;
     try {
-        const { doctor_id, appointment_date, reason } = req.body; // patient_id from token if patient, or body if secretary
+        const { doctor_id, appointment_date, reason, bonified } = req.body; // patient_id from token if patient, or body if secretary
         let patient_id = req.body.patient_id;
 
         if (req.user.role === 'patient') {
@@ -74,6 +75,26 @@ exports.createAppointment = async (req, res) => {
         // ---------------------------------
 
         logAction(req, 'CREATE_APPOINTMENT', `Patient: ${pNameStr}, Doctor: ${dNameStr}`);
+
+        // --- Debt Generation ---
+        if (!bonified && (req.user.role === 'secretary' || req.user.role === 'doctor')) {
+            // Only generate debt if created by staff, or if we want patients to generate debt on booking? 
+            // Usually booking doesn't charge until completion, but user said "Turno receta licencia" implies "Bonificado para turno". 
+            // If it's bonified, free. If not, charge.
+            // Let's assume on creation for now as per "Bonificado para turno...".
+
+            const priceInfo = await calculatePrice(conn, doctor_id, patient_id, 'consultation');
+            if (priceInfo.price > 0) {
+                await conn.query(
+                    "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, date) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())",
+                    ['income_patient', priceInfo.price, `Consultation (Booking): ${pNameStr}`, req.user.role === 'patient' ? req.user.user_id : (await conn.query("SELECT user_id FROM patients WHERE id = ?", [patient_id]))[0]?.user_id, doctor_id, 'credit', 'pending']
+                );
+                // Also link transaction to appointment? The schema doesn't seem to have direct link in transactions table easily inferred, 
+                // but we can update appointment payment_status.
+                await conn.query("UPDATE appointments SET payment_status = 'debt' WHERE id = ?", [result.insertId]);
+            }
+        }
+        // -----------------------
 
         res.status(201).json({ id: Number(result.insertId), message: "Appointment created" });
     } catch (err) {

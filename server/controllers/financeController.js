@@ -1,5 +1,6 @@
 const { pool } = require('../db');
 const { logAction } = require('../utils/audit');
+const { calculatePrice } = require('../utils/priceCalculator');
 
 // --- Consolidated Finances ---
 
@@ -175,80 +176,12 @@ exports.getPricing = async (req, res) => {
 
         conn = await pool.getConnection();
 
-        // Get Doctor Prices
-        const rows = await conn.query("SELECT consultation_price, prescription_price, medical_license_price, virtual_consultation_price FROM doctors WHERE id = ?", [doctor_id]);
+        const result = await calculatePrice(conn, doctor_id, patient_id, service_type);
 
-        let basePrice = 0;
-        let priceType = 'Consultation';
-
-        if (rows.length > 0) {
-            const d = rows[0];
-            switch (service_type) {
-                case 'prescription':
-                    basePrice = Number(d.prescription_price) || 0;
-                    priceType = 'Prescription';
-                    break;
-                case 'medical_license':
-                    basePrice = Number(d.medical_license_price) || 0;
-                    priceType = 'Medical License';
-                    break;
-                case 'virtual_consultation':
-                    basePrice = Number(d.virtual_consultation_price) || 0;
-                    priceType = 'Virtual Consultation';
-                    break;
-                case 'custom':
-                    basePrice = 0;
-                    priceType = 'Custom';
-                    break;
-                case 'consultation':
-                default:
-                    basePrice = Number(d.consultation_price) || 0;
-                    priceType = 'Consultation';
-                    break;
-            }
-        }
-
-        let finalPrice = basePrice;
-        let explanation = `${priceType} Base Price: $${basePrice}`;
-
-        // Get Patient Tariff (apply to all or just consultation? Usually all medical acts)
-        if (patient_id) {
-            const patRows = await conn.query("SELECT tariff_percent, tariff_override FROM patients WHERE id = ?", [patient_id]);
-            if (patRows.length > 0) {
-                const { tariff_percent, tariff_override } = patRows[0];
-
-                if (tariff_override !== null) {
-                    // Tariff override usually replaces the standard consultation price. 
-                    // For other services, maybe we shouldn't override? 
-                    // Let's assume override applies to PRIMARY consultation, but maybe percentage applies to others?
-                    // For simplicity, let's say override applies to standard consultation only, or maybe it's a "User Level" price?
-                    // Let's apply percentage to everything, but override only if it's a standard consultation OR if we treat override as "the price this patient pays for a visit".
-                    // If service_type is NOT consultation, maybe we ignore override?
-                    // Let's stick to percentage for auxiliary services.
-
-                    if (service_type === 'consultation' || !service_type) {
-                        finalPrice = Number(tariff_override);
-                        explanation += ` | Tariff Override: $${tariff_override}`;
-                    } else {
-                        // Apply percentage if exists
-                        if (tariff_percent !== 0) {
-                            const adjustment = basePrice * (tariff_percent / 100);
-                            finalPrice += adjustment;
-                            explanation += ` | Tariff Adjustment: ${tariff_percent}% ($${adjustment.toFixed(2)})`;
-                        }
-                    }
-                } else if (tariff_percent !== 0) {
-                    const adjustment = basePrice * (tariff_percent / 100);
-                    finalPrice += adjustment;
-                    explanation += ` | Tariff Adjustment: ${tariff_percent}% ($${adjustment.toFixed(2)})`;
-                }
-            }
-        }
-
-        res.json({ price: finalPrice.toFixed(2), explanation });
+        res.json({ price: result.price.toFixed(2), explanation: result.explanation });
     } catch (err) {
         console.error(err);
-        res.status(500).send("Server Error");
+        res.status(500).send("Server Error: " + err.message);
     } finally {
         if (conn) conn.release();
     }
