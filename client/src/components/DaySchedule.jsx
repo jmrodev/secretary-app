@@ -1,6 +1,9 @@
 import React from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 const DaySchedule = ({ date, appointments, onSlotClick, onRatingChange }) => {
+    const { t } = useLanguage();
+
     // Generate hourly slots from 8 AM to 8 PM
     const startHour = 8;
     const endHour = 20; // Last slot starts at 20:00 (8 PM)
@@ -25,7 +28,7 @@ const DaySchedule = ({ date, appointments, onSlotClick, onRatingChange }) => {
 
     return (
         <div className="day-schedule card">
-            <h3 style={{ marginBottom: '1.5rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem' }}>
+            <h3 className="mb-4 text-center border-b pb-4">
                 {date.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
             </h3>
 
@@ -51,8 +54,8 @@ const DaySchedule = ({ date, appointments, onSlotClick, onRatingChange }) => {
                                                 {new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                             </div>
                                             <div className="appt-details">
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                                    <strong>{appt.patient_name || 'Reserved'}</strong>
+                                                <div className="flex items-center gap-2">
+                                                    <strong>{appt.patient_name || 'Reserved'} ({t(appt.status)})</strong>
                                                     {/* Financial Rating */}
                                                     {appt.financial_rating !== undefined && appt.financial_rating !== null && (
                                                         <div
@@ -73,6 +76,11 @@ const DaySchedule = ({ date, appointments, onSlotClick, onRatingChange }) => {
                                                     )}
                                                 </div>
                                                 <span className="doctor-name">Dr. {appt.doctor_name}</span>
+                                                {appt.reason && (
+                                                    <div style={{ fontSize: '0.75rem', color: '#6366f1', fontStyle: 'italic', marginTop: '0.2rem' }}>
+                                                        💬 {appt.reason}
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     ))
@@ -81,7 +89,7 @@ const DaySchedule = ({ date, appointments, onSlotClick, onRatingChange }) => {
                                         className="available-slot"
                                         onClick={() => onSlotClick(hour, null)}
                                     >
-                                        <span className="plus-icon">+</span> Available
+                                        <span className="plus-icon">+</span> {t('available') || 'Available'}
                                     </div>
                                 )}
                             </div>
@@ -89,104 +97,6 @@ const DaySchedule = ({ date, appointments, onSlotClick, onRatingChange }) => {
                     );
                 })}
             </div>
-
-            <style>{`
-                .day-schedule {
-                    padding: 1.5rem;
-                    height: 100%;
-                }
-                .schedule-timeline {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.5rem;
-                }
-                .time-slot {
-                    display: flex;
-                    align-items: flex-start;
-                    gap: 1rem;
-                    min-height: 60px;
-                }
-                .time-label {
-                    width: 50px;
-                    text-align: right;
-                    font-weight: 500;
-                    color: #64748b;
-                    font-size: 0.9rem;
-                    padding-top: 0.5rem;
-                }
-                .slot-content {
-                    flex: 1;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.5rem;
-                }
-                .available-slot {
-                    background-color: #f8fafc;
-                    border: 1px dashed #cbd5e1;
-                    border-radius: 6px;
-                    padding: 0.5rem 1rem;
-                    color: #94a3b8;
-                    cursor: pointer;
-                    transition: all 0.2s;
-                    display: flex;
-                    align-items: center;
-                    gap: 0.5rem;
-                }
-                .available-slot:hover {
-                    background-color: #eff6ff;
-                    border-color: #60a5fa;
-                    color: #3b82f6;
-                }
-                .appointment-card {
-                    padding: 0.75rem 1rem;
-                    border-radius: 6px;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    gap: 1rem;
-                    transition: transform 0.1s;
-                }
-                .appointment-card:hover {
-                    transform: translateY(-1px);
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-                }
-                .appt-time {
-                    font-weight: 600;
-                    font-size: 0.9rem;
-                }
-                .appt-details {
-                    display: flex;
-                    flex-direction: column;
-                }
-                .doctor-name {
-                    font-size: 0.8rem;
-                    opacity: 0.8;
-                }
-                
-                /* Status Colors */
-                .status-confirmed, .status-completed {
-                    background-color: #dcfce7;
-                    border: 1px solid #bbf7d0;
-                    color: #166534;
-                }
-                .status-cancelled {
-                    background-color: #fee2e2;
-                    border: 1px solid #fecaca;
-                    color: #991b1b;
-                    opacity: 0.7;
-                }
-                .status-pending {
-                    background-color: #f1f5f9;
-                    border: 1px solid #e2e8f0;
-                    color: #475569;
-                }
-
-                @media (max-width: 768px) {
-                    .calendar-container, .day-schedule {
-                        margin-bottom: 1rem;
-                    }
-                }
-            `}</style>
         </div>
     );
 };

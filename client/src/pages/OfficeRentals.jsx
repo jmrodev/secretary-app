@@ -3,6 +3,7 @@ import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import Sidebar from '../components/Sidebar';
+import { formatPrice } from '../utils/format';
 
 const OfficeRentals = () => {
     const { t } = useLanguage();
@@ -137,7 +138,7 @@ const OfficeRentals = () => {
                                             <td style={{ padding: '1rem' }}>{r.consultorio_name}</td>
                                             <td style={{ padding: '1rem' }}>{new Date(r.rental_date).toLocaleDateString()}</td>
                                             <td style={{ padding: '1rem' }}>{r.start_time} - {r.end_time}</td>
-                                            <td style={{ padding: '1rem' }}>${r.cost}</td>
+                                            <td style={{ padding: '1rem' }}>{formatPrice(r.cost)}</td>
                                         </tr>
                                     ))}
                                 </tbody>

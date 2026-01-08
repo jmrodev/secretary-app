@@ -3,6 +3,8 @@ import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import Sidebar from '../components/Sidebar';
+import { formatPrice } from '../utils/format';
+import CurrencyInput from '../components/CurrencyInput';
 
 const Doctors = () => {
     const { t } = useLanguage();
@@ -98,13 +100,14 @@ const Doctors = () => {
                                     <div style={{ fontSize: '0.85rem', color: '#475569', marginTop: '0.25rem' }}>
                                         {d.phone && `${t('phone_abbrev')}: ${d.phone} | `}
                                         {t('office_label')}: <strong>{d.office_number || 'N/A'}</strong> |
-                                        {t('rent_label')}: <strong>${d.rental_cost || 0} ({t(d.rental_type) || d.rental_type})</strong>
+                                        {t('rent_label')}: <strong>{formatPrice(d.rental_cost)} ({t(d.rental_type) || d.rental_type})</strong>
                                     </div>
                                     <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.25rem' }}>
-                                        {t('tariffs_label')}: {t('consult_abbrev')} <strong>${d.consultation_price || 0}</strong> |
-                                        {t('rx_abbrev')} <strong>${d.prescription_price || 0}</strong> |
-                                        {t('lic_abbrev')} <strong>${d.medical_license_price || 0}</strong> |
-                                        {t('virtual_abbrev')} <strong>${d.virtual_consultation_price || 0}</strong>
+                                        {t('tariffs_label')}: {t('consult_abbrev')} <strong>{formatPrice(d.consultation_price)}</strong> |
+                                        {t('rx_abbrev')} <strong>{formatPrice(d.prescription_price)}</strong> |
+                                        {t('lic_abbrev')} <strong>{formatPrice(d.medical_license_price)}</strong> |
+                                        {t('cert_abbrev') || 'Cert.'} <strong>{formatPrice(d.certificate_price)}</strong> |
+                                        {t('virtual_abbrev')} <strong>{formatPrice(d.virtual_consultation_price)}</strong>
                                     </div>
                                 </div>
                                 {user.role === 'secretary' && (
@@ -143,7 +146,7 @@ const Doctors = () => {
                                 </div>
                                 <div className="input-group">
                                     <label className="input-label">{t('rent_cost')}</label>
-                                    <input type="number" className="input-field" value={editData.rental_cost} onChange={e => setEditData({ ...editData, rental_cost: e.target.value })} />
+                                    <CurrencyInput className="input-field" value={editData.rental_cost} onChange={e => setEditData({ ...editData, rental_cost: e.target.value })} />
                                 </div>
                             </div>
 
@@ -151,19 +154,23 @@ const Doctors = () => {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                 <div className="input-group">
                                     <label className="input-label">{t('consultation_price')}</label>
-                                    <input type="number" className="input-field" value={editData.consultation_price} onChange={e => setEditData({ ...editData, consultation_price: e.target.value })} />
+                                    <CurrencyInput className="input-field" value={editData.consultation_price} onChange={e => setEditData({ ...editData, consultation_price: e.target.value })} />
                                 </div>
                                 <div className="input-group">
                                     <label className="input-label">{t('virtual_consultation_price')}</label>
-                                    <input type="number" className="input-field" value={editData.virtual_consultation_price} onChange={e => setEditData({ ...editData, virtual_consultation_price: e.target.value })} />
+                                    <CurrencyInput className="input-field" value={editData.virtual_consultation_price} onChange={e => setEditData({ ...editData, virtual_consultation_price: e.target.value })} />
                                 </div>
                                 <div className="input-group">
                                     <label className="input-label">{t('prescription_price')}</label>
-                                    <input type="number" className="input-field" value={editData.prescription_price} onChange={e => setEditData({ ...editData, prescription_price: e.target.value })} />
+                                    <CurrencyInput className="input-field" value={editData.prescription_price} onChange={e => setEditData({ ...editData, prescription_price: e.target.value })} />
                                 </div>
                                 <div className="input-group">
                                     <label className="input-label">{t('medical_license_price')}</label>
-                                    <input type="number" className="input-field" value={editData.medical_license_price} onChange={e => setEditData({ ...editData, medical_license_price: e.target.value })} />
+                                    <CurrencyInput className="input-field" value={editData.medical_license_price} onChange={e => setEditData({ ...editData, medical_license_price: e.target.value })} />
+                                </div>
+                                <div className="input-group">
+                                    <label className="input-label">{t('certificate_price') || 'Certificate Price'}</label>
+                                    <CurrencyInput className="input-field" value={editData.certificate_price} onChange={e => setEditData({ ...editData, certificate_price: e.target.value })} />
                                 </div>
                             </div>
 

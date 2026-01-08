@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useMessage } from '../context/MessageContext';
@@ -8,6 +9,7 @@ import Calendar from '../components/Calendar';
 import DaySchedule from '../components/DaySchedule';
 import PatientSearchSelect from '../components/PatientSearchSelect';
 import Sidebar from '../components/Sidebar';
+import Modal from '../components/Modal';
 
 const Appointments = () => {
     const [appointments, setAppointments] = useState([]);
@@ -16,6 +18,16 @@ const Appointments = () => {
     const [loading, setLoading] = useState(true);
     const { user } = useAuth();
     const { t } = useLanguage();
+    const { showMessage } = useMessage();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    // Reschedule Mode state (from navigation)
+    const rescheduleAppt = location.state?.rescheduleAppt;
+
+    const exitRescheduleMode = () => {
+        navigate(location.pathname, { replace: true, state: {} });
+    };
 
     // View State
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -108,18 +120,20 @@ const Appointments = () => {
         fetchAllData();
     }, [user.role]);
 
-    // Auto-select doctor view if user is a doctor
+    // Auto-select doctor view if user is a doctor OR if in Reschedule Mode
     useEffect(() => {
+        if (rescheduleAppt) {
+            setViewDoctorId(rescheduleAppt.doctor_id);
+            return;
+        }
+
         if (user.role === 'doctor' && doctors.length > 0) {
-            // Find doctor profile linked to this user
-            // Note: user object usually has user_id or id depending on auth flow. Standardize to user.user_id from context if available, or user.id.
-            // Based on authController login: { user_id, username, role... }
             const myDoctorProfile = doctors.find(d => d.user_id === (user.user_id || user.id));
             if (myDoctorProfile) {
                 setViewDoctorId(myDoctorProfile.id);
             }
         }
-    }, [user, doctors]);
+    }, [user, doctors, rescheduleAppt]);
 
     // Computed appointments based on filter
     const currentDoctor = viewDoctorId ? doctors.find(d => d.id === Number(viewDoctorId)) : null;
@@ -135,28 +149,38 @@ const Appointments = () => {
         setSelectedDate(date);
     };
 
+    // Action Modal State
+    const [actionModal, setActionModal] = useState({ open: false, appt: null });
+
     const handleSlotClick = (hour, existingAppt) => {
-        if (existingAppt) {
-            // View existing appointment details (could open a modal, currently just selected)
-            // For now, if payment is pending, open payment modal like before?
-            if (existingAppt.payment_status !== 'paid' && (user.role === 'secretary' || user.role === 'doctor')) {
-                setPaymentModal({
-                    open: true,
-                    initialData: {
-                        type: 'income_patient',
-                        amount: '',
-                        description: `Consultation: ${existingAppt.patient_name}`,
-                        patientId: existingAppt.patient_id,
-                        patientName: existingAppt.patient_name,
-                        patientDni: existingAppt.patient_dni,
-                        patientUserId: existingAppt.patient_user_id,
-                        doctorId: existingAppt.doctor_id
-                    },
-                    apptId: existingAppt.id
-                });
+        if (rescheduleAppt) {
+            if (existingAppt) return; // Can't reschedule onto another appt
+
+            const newDate = new Date(selectedDate);
+            newDate.setHours(hour, 0, 0, 0);
+
+            // Adjust timezone to local ISO string for input
+            const offset = newDate.getTimezoneOffset() * 60000;
+            const localISOTime = (new Date(newDate - offset)).toISOString().slice(0, 16);
+
+            if (confirm(t('confirm_reschedule_to').replace('{date}', new Date(localISOTime).toLocaleString()))) {
+                handleReschedule(rescheduleAppt.id, localISOTime);
+                exitRescheduleMode();
             }
+            return;
+        }
+
+        if (existingAppt) {
+            setActionModal({ open: true, appt: existingAppt });
         } else {
+            // Existing booking logic
+            // ... (keep existing booking logic from original file here, or refactor. Since I can't see the original lines 140+ fully in context of replacement without copy-paste, I will assume I need to copy the `else` block content or just inject logic before it?) 
+            // Better: Updating `handleSlotClick` entirely to use `actionModal` for existing.
+            // The logic below recreates existing logic for "New Appointment" inside the else.
+
             // Check if selected date is a holiday
+            // ... (rest of booking logic)
+            // RE-INSERTING ORIGINAL BOOKING LOGIC BELOW:
             const dateStr = selectedDate.toISOString().split('T')[0];
             const isHoliday = holidays.find(h => h.date.startsWith(dateStr));
             if (isHoliday) {
@@ -164,8 +188,7 @@ const Appointments = () => {
                 return;
             }
 
-            // Book new appointment
-            if (user.role === 'patient' || user.role === 'secretary' || user.role === 'doctor') {
+            if (user.role === 'patient' || user.role === 'secretary' || user.role === 'doctor' || user.role === 'admin') {
                 const newDate = new Date(selectedDate);
                 newDate.setHours(hour, 0, 0, 0);
 
@@ -174,11 +197,63 @@ const Appointments = () => {
                 const localISOTime = (new Date(newDate - offset)).toISOString().slice(0, 16);
 
                 setDate(localISOTime);
-                // Pre-fill doctor if filtered
-                if (viewDoctorId) setSelectedDoctor(viewDoctorId);
+                // Pre-fill doctor if filtered, otherwise reset to empty to allow selection
+                if (viewDoctorId) {
+                    setSelectedDoctor(viewDoctorId);
+                } else {
+                    setSelectedDoctor('');
+                }
                 setShowForm(true);
-                setBonified(false); // Reset
+                setBonified(false);
             }
+        }
+    };
+
+    const handleUpdateStatus = async (id, status) => {
+        let reason = null;
+        if (status === 'cancelled') {
+            reason = window.prompt(t('cancellation_reason_prompt') || "Please enter a reason for cancellation:");
+            if (reason === null) return; // User cancelled the prompt
+        }
+
+        try {
+            await api.put(`/appointments/${id}/status`, { status, reason });
+            setMessage(t('status_updated'));
+            fetchAppointments();
+            // Update actionModal appt state if open
+            if (actionModal.open && actionModal.appt && actionModal.appt.id === id) {
+                setActionModal(prev => ({
+                    ...prev,
+                    appt: { ...prev.appt, status }
+                }));
+            }
+        } catch (err) {
+            console.error(err);
+            setMessage(t('failed_update'));
+        }
+    };
+
+    const handleDelete = async (id) => {
+        if (!window.confirm(t('delete_error') || "Are you sure? This will remove the record mostly (Secretary Error).")) return;
+        try {
+            await api.delete(`/appointments/${id}`);
+            setMessage(t('appointment_deleted'));
+            fetchAppointments();
+        } catch (err) {
+            console.error(err);
+            setMessage(t('failed_delete'));
+        }
+    };
+
+    const handleReschedule = async (id, newDate) => {
+        try {
+            const isoDate = new Date(newDate).toISOString();
+            await api.put(`/appointments/${id}`, { appointment_date: isoDate });
+            setMessage(t('rescheduled_success'));
+            fetchAppointments();
+        } catch (err) {
+            console.error(err);
+            setMessage(t('failed_reschedule'));
         }
     };
 
@@ -198,7 +273,7 @@ const Appointments = () => {
             await api.post('/appointments', {
                 doctor_id: selectedDoctor,
                 patient_id: (user.role === 'secretary' || user.role === 'doctor') ? selectedPatient : undefined,
-                appointment_date: date,
+                appointment_date: new Date(date).toISOString(),
                 reason,
                 bonified // [NEW]
             });
@@ -209,6 +284,23 @@ const Appointments = () => {
             fetchAppointments();
         } catch (err) {
             setMessage(t('failed_book'));
+            console.error(err);
+        }
+    };
+
+    const handleCancel = async (id) => {
+        // [NEW] Prompt for cancellation reason
+        const reason = window.prompt(t('cancellation_reason_prompt') || "Please enter a reason for cancellation:");
+        if (reason === null) return; // User pressed cancel on the prompt
+
+        if (!window.confirm(t('confirm_cancel'))) return;
+
+        try {
+            await api.put(`/appointments/${id}/status`, { status: 'cancelled', reason }); // Send reason
+            setMessage(t('appointment_cancelled'));
+            fetchAppointments();
+        } catch (err) {
+            setMessage(t('failed_cancel'));
             console.error(err);
         }
     };
@@ -232,17 +324,39 @@ const Appointments = () => {
         <div className="app-layout">
             <Sidebar />
             <main className="main-content">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-                        <h1 className="title" style={{ marginBottom: 0 }}>{t('appointments')}</h1>
+                {rescheduleAppt && (
+                    <div className="reschedule-banner" style={{
+                        background: '#eff6ff',
+                        border: '1px solid #3b82f6',
+                        padding: '1rem',
+                        borderRadius: '0.5rem',
+                        marginBottom: '1rem',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        color: '#1e40af',
+                        fontWeight: '500',
+                        boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                    }}>
+                        <div>
+                            🚀 {t('rescheduling_mode')}: <strong>{rescheduleAppt.patient_name}</strong>. {t('reschedule_instruction')}
+                        </div>
+                        <button className="btn btn-secondary" style={{ padding: '0.25rem 0.75rem', fontSize: '0.8rem', background: 'white' }} onClick={exitRescheduleMode}>
+                            {t('exit_reschedule')}
+                        </button>
+                    </div>
+                )}
+
+                <div className="flex-between mb-8">
+                    <div className="flex items-center gap-8">
+                        <h1 className="title mb-0">{t('appointments')}</h1>
 
                         {/* Doctor Filter for Secretary */}
                         {user.role === 'secretary' && (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                <label style={{ fontWeight: 500, fontSize: '0.9rem' }}>{t('filter_by_doctor')}:</label>
+                            <div className="active-filters">
+                                <label className="font-medium text-sm">{t('filter_by_doctor')}:</label>
                                 <select
-                                    className="input-field"
-                                    style={{ padding: '0.4rem', width: 'auto' }}
+                                    className="input-field w-auto p-2"
                                     value={viewDoctorId}
                                     onChange={(e) => setViewDoctorId(e.target.value)}
                                 >
@@ -262,7 +376,7 @@ const Appointments = () => {
                     )}
                 </div>
 
-                {message && <div style={{ padding: '1rem', background: message.includes('Failed') ? '#fee2e2' : '#dcfce7', color: message.includes('Failed') ? '#991b1b' : '#166534', borderRadius: '8px', marginBottom: '1rem' }}>{message}</div>}
+                {message && <div className={`alert-box ${message.includes('Failed') ? 'alert-error' : 'alert-success'}`}>{message}</div>}
 
                 {/* Calendar Layout */}
                 <div className="appointments-grid">
@@ -306,7 +420,7 @@ const Appointments = () => {
                                             {doctors.find(d => d.id === Number(selectedDoctor))?.full_name || 'You'}
                                         </div>
                                     ) : (
-                                        <select className="input-field" value={selectedDoctor} onChange={e => setSelectedDoctor(e.target.value)} required>
+                                        <select className="input-field" value={selectedDoctor || ''} onChange={e => setSelectedDoctor(e.target.value)} required>
                                             <option value="">{t('select_doctor')}</option>
                                             {doctors.map(d => (
                                                 <option key={d.id} value={d.id}>{d.full_name} ({d.specialty})</option>
@@ -368,52 +482,121 @@ const Appointments = () => {
                         }
                     }}
                 />
+
+                {/* Action Modal for Appointment */}
+                {actionModal.open && actionModal.appt && (
+                    <Modal
+                        isOpen={actionModal.open}
+                        onClose={() => setActionModal({ ...actionModal, open: false })}
+                        title={`Appointment: ${actionModal.appt.patient_name}`}
+                    >
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            <div className="flex-between">
+                                <p><strong>{t('date_label')}:</strong> {new Date(actionModal.appt.appointment_date).toLocaleString()}</p>
+                                <div className="flex gap-2">
+                                    <span className={`status-chip status-${actionModal.appt.status}`}>
+                                        {t(actionModal.appt.status) || actionModal.appt.status}
+                                    </span>
+                                    <span className={`status-badge-wrapper badge-${actionModal.appt.payment_status === 'paid' ? 'green' : 'red'}`}>
+                                        {t(actionModal.appt.payment_status) || actionModal.appt.payment_status}
+                                    </span>
+                                </div>
+                            </div>
+                            <p><strong>{t('reason')}:</strong> {actionModal.appt.reason || t('no_description') || 'No description'}</p>
+                            <hr style={{ borderColor: '#f1f5f9' }} />
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                {/* Pay Button */}
+                                {(actionModal.appt.payment_status === 'pending' || actionModal.appt.payment_status === 'debt') && (
+                                    <button className="btn btn-primary" onClick={() => {
+                                        setPaymentModal({
+                                            open: true,
+                                            initialData: {
+                                                type: 'income_patient',
+                                                amount: actionModal.appt.cost || 0,
+                                                patientId: actionModal.appt.patient_id,
+                                                patientName: actionModal.appt.patient_name,
+                                                patientDni: actionModal.appt.patient_dni,
+                                                patientUserId: actionModal.appt.patient_user_id,
+                                                doctorId: actionModal.appt.doctor_id,
+                                                description: `Payment for appointment on ${new Date(actionModal.appt.appointment_date).toLocaleDateString()}`,
+                                                apptId: actionModal.appt.id
+                                            },
+                                            apptId: actionModal.appt.id
+                                        });
+                                        setActionModal({ ...actionModal, open: false });
+                                    }}>
+                                        💳 {t('pay')}
+                                    </button>
+                                )}
+
+                                {/* Reschedule Button */}
+                                <button className="btn btn-secondary" onClick={() => {
+                                    navigate('/appointments', { state: { rescheduleAppt: actionModal.appt } });
+                                    setActionModal({ ...actionModal, open: false });
+                                }}>
+                                    📅 {t('reschedule')}
+                                </button>
+
+                                {/* Action Buttons for Status */}
+                                {actionModal.appt.status === 'pending' && (
+                                    <button className="btn" style={{ background: '#10b981', color: 'white' }} onClick={() => {
+                                        handleUpdateStatus(actionModal.appt.id, 'confirmed');
+                                        setActionModal({ ...actionModal, open: false });
+                                    }}>
+                                        ✅ {t('confirm')}
+                                    </button>
+                                )}
+
+                                {(actionModal.appt.status === 'confirmed' || actionModal.appt.status === 'pending' || actionModal.appt.status === 'rescheduled') && (
+                                    <button className="btn" style={{ background: '#3b82f6', color: 'white' }} onClick={() => {
+                                        handleUpdateStatus(actionModal.appt.id, 'completed');
+                                        setActionModal({ ...actionModal, open: false });
+                                    }}>
+                                        🏆 {t('complete')}
+                                    </button>
+                                )}
+
+                                <button className="btn" style={{ background: '#f59e0b', color: 'white' }} onClick={() => {
+                                    handleUpdateStatus(actionModal.appt.id, 'suspended');
+                                    setActionModal({ ...actionModal, open: false });
+                                }}>
+                                    ⏸ {t('suspend')}
+                                </button>
+
+                                <button className="btn" style={{ background: '#64748b', color: 'white' }} onClick={() => {
+                                    handleUpdateStatus(actionModal.appt.id, 'absent');
+                                    setActionModal({ ...actionModal, open: false });
+                                }}>
+                                    🚫 {t('absent')}
+                                </button>
+                            </div>
+
+                            <hr style={{ borderColor: '#f1f5f9' }} />
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                {/* Cancel (Standard) */}
+                                <button className="btn btn-secondary" style={{ borderColor: '#ef4444', color: '#ef4444' }} onClick={() => {
+                                    handleCancel(actionModal.appt.id);
+                                    setActionModal({ ...actionModal, open: false });
+                                }}>
+                                    ❌ {t('cancel')}
+                                </button>
+
+                                {/* Delete (Error) */}
+                                {(user.role === 'admin' || user.role === 'secretary') && (
+                                    <button className="btn" style={{ background: '#ef4444', color: 'white' }} onClick={() => {
+                                        handleDelete(actionModal.appt.id);
+                                        setActionModal({ ...actionModal, open: false });
+                                    }}>
+                                        🗑 {t('delete_error')}
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </Modal>
+                )}
             </main >
-            <style>{`
-                .appointments-grid {
-                    display: grid;
-                    grid-template-columns: 1fr 2fr;
-                    gap: 1.5rem;
-                    height: calc(100vh - 120px);
-                }
-                .calendar-section {
-                    
-                }
-                .schedule-section {
-                    overflow-y: auto;
-                }
-                .modal-overlay {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: rgba(0,0,0,0.5);
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    z-index: 1000;
-                }
-                .watermark {
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%) rotate(-30deg);
-                    font-size: 4rem;
-                    font-weight: 900;
-                    color: rgba(0,0,0,0.05);
-                    pointer-events: none;
-                    white-space: nowrap;
-                    z-index: 0;
-                    user-select: none;
-                }
-                @media (max-width: 900px) {
-                    .appointments-grid {
-                        grid-template-columns: 1fr;
-                        height: auto;
-                    }
-                }
-            `}</style>
         </div >
     );
 };

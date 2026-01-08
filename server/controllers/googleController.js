@@ -384,7 +384,7 @@ exports.importContacts = async (req, res) => {
         }
 
         res.json({ message: "Import completed", results });
-        await logAction(req.user.user_id, 'GOOGLE_IMPORT', req.ip, `Imported/Synced: Created ${results.created}, Updated ${results.updated}, Errors ${results.errors}`);
+        await logAction(req, 'GOOGLE_IMPORT', `Imported/Synced: Created ${results.created}, Updated ${results.updated}, Errors ${results.errors}`);
 
     } catch (err) {
         console.error("Import Failed:", err);
@@ -487,7 +487,7 @@ exports.createAppointment = async (req, res) => {
         res.json({ message: "Event created", eventId: result.data.id, link: result.data.htmlLink });
         // Use default username 'system' if req.user undefined (though verifyToken middleware should handle it)
         const userId = req.user ? req.user.user_id : null;
-        if (userId) await logAction(userId, 'CALENDAR_EVENT_CREATE', req.ip, `Created Google Event: ${summary} for Doc ${doctorId || 'Global'}`);
+        if (userId) await logAction(req, 'CALENDAR_EVENT_CREATE', `Created Google Event: ${summary} for Doc ${doctorId || 'Global'}`);
 
     } catch (err) {
         console.error("Calendar Create Error:", err);
@@ -527,7 +527,8 @@ exports.createEventHelper = async (doctorId, eventData, userId = null) => {
             resource: eventData,
         });
 
-        if (userId) await logAction(userId, 'CALENDAR_SYNC', 'SYSTEM', `Synced Event ${result.data.id} to Doc ${doctorId}`);
+        const mockReq = { user: { user_id: userId, username: 'System' }, ip: 'SYSTEM' };
+        if (userId) await logAction(mockReq, 'CALENDAR_SYNC', `Synced Event ${result.data.id} to Doc ${doctorId}`);
         return result.data;
 
     } catch (err) {

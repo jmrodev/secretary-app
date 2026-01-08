@@ -10,7 +10,7 @@ exports.createTransaction = async (req, res) => {
         // type: income_patient, income_rental, expense_general, payment_doctor, withdrawal
         // related_user_id: Patient or Doctor interacting
         // doctor_id: Beneficiary of the cash box
-        const { type, amount, description, related_user_id, doctor_id, method, status, debt_amount } = req.body;
+        const { type, amount, description, related_user_id, doctor_id, method, status, debt_amount, appointment_id } = req.body;
         const proof_file = req.file ? `/uploads/${req.file.filename}` : null;
 
         conn = await pool.getConnection();
@@ -20,17 +20,24 @@ exports.createTransaction = async (req, res) => {
         // Let's assume there's always a transaction record.
         if (Number(amount) > 0) {
             await conn.query(
-                "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, proof_file, request_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                [type, amount, description, related_user_id || null, doctor_id || null, method || 'cash', status || 'paid', proof_file, req.body.request_id || null]
+                "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, proof_file, request_id, appointment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [type, amount, description, related_user_id || null, doctor_id || null, method || 'cash', status || 'paid', proof_file, req.body.request_id || null, appointment_id || null]
             );
         }
 
         // 2. Register the Debt (if debt_amount > 0)
         if (Number(debt_amount) > 0) {
             await conn.query(
-                "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, proof_file, request_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                [type, debt_amount, `DEBT: ${description}`, related_user_id || null, doctor_id || null, 'credit', 'pending', null, req.body.request_id || null]
+                "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, proof_file, request_id, appointment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [type, debt_amount, `DEBT: ${description}`, related_user_id || null, doctor_id || null, 'credit', 'pending', null, req.body.request_id || null, appointment_id || null]
             );
+        }
+
+        // 3. Update Appointment payment_status if apptId is provided
+        if (appointment_id) {
+            const finalStatus = Number(debt_amount) > 0 ? (Number(amount) > 0 ? 'partial' : 'debt') : 'paid';
+            const isPaid = finalStatus === 'paid' ? 1 : 0;
+            await conn.query("UPDATE appointments SET payment_status = ?, is_paid = ? WHERE id = ?", [finalStatus, isPaid, appointment_id]);
         }
 
         let logDetail = `${type}: $${amount} - ${description}`;
@@ -225,6 +232,11 @@ exports.payDebt = async (req, res) => {
                     "UPDATE transactions SET status = 'paid', method = ?, description = CONCAT(description, ' - Paid') WHERE id = ?",
                     [method, debt.id]
                 );
+
+                // If this debt was linked to an appointment, it's now 'paid'
+                if (debt.appointment_id) {
+                    await conn.query("UPDATE appointments SET payment_status = 'paid', is_paid = 1 WHERE id = ?", [debt.appointment_id]);
+                }
                 remaining -= debtAmount;
                 totalPaid += debtAmount;
             } else {
@@ -238,9 +250,14 @@ exports.payDebt = async (req, res) => {
                 // 2. Create new transaction for the REMAINDER (Pending)
                 const remainder = debtAmount - remaining;
                 await conn.query(
-                    "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, transaction_date, request_id) VALUES (?, ?, ?, ?, ?, 'credit', 'pending', ?, ?)",
-                    [debt.type, remainder, debt.description, debt.related_user_id, debt.doctor_id, debt.transaction_date, debt.request_id]
+                    "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, transaction_date, request_id, appointment_id) VALUES (?, ?, ?, ?, ?, 'credit', 'pending', ?, ?, ?)",
+                    [debt.type, remainder, debt.description, debt.related_user_id, debt.doctor_id, debt.transaction_date, debt.request_id, debt.appointment_id || null]
                 );
+
+                // If this debt was linked to an appointment, it's now 'partial'
+                if (debt.appointment_id) {
+                    await conn.query("UPDATE appointments SET payment_status = 'partial', is_paid = 0 WHERE id = ?", [debt.appointment_id]);
+                }
 
                 totalPaid += remaining;
                 remaining = 0;

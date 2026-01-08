@@ -7,6 +7,8 @@ import Modal from '../components/Modal';
 import TransactionModal from '../components/TransactionModal';
 import PatientSearchSelect from '../components/PatientSearchSelect';
 import Sidebar from '../components/Sidebar';
+import { formatPrice } from '../utils/format';
+import { timeAgo } from '../utils/time';
 
 const MedicalDocuments = () => {
     const { user } = useAuth();
@@ -57,7 +59,26 @@ const MedicalDocuments = () => {
     // Old Medical History State (Prescriptions/Licenses)
     const [prescriptions, setPrescriptions] = useState([]);
     const [selectedPrescription, setSelectedPrescription] = useState(null);
-    const [licenses, setLicenses] = useState([]);
+    // Confirm Delete File State
+    const [fileToDelete, setFileToDelete] = useState(null);
+
+    const handleFileDeleteClick = (file) => {
+        setFileToDelete(file);
+    };
+
+    const confirmFileDelete = async () => {
+        if (!fileToDelete) return;
+        try {
+            await api.delete(`/medical/files/${fileToDelete.id}`);
+            showMessage(t('file_deleted') || 'Archivo eliminado correctamente', 'success');
+            fetchFiles();
+        } catch (err) {
+            showMessage(`${t('error')}: ${err.response?.data?.message || err.message}`, 'error');
+        } finally {
+            setFileToDelete(null);
+        }
+    };
+
 
     useEffect(() => {
         if (activeTab === 'requests') {
@@ -118,7 +139,8 @@ const MedicalDocuments = () => {
             setBonified(false); // Reset
             fetchRequests();
         } catch (err) {
-            showMessage(t('request_failed'), 'error');
+            const errorMsg = err.response?.data || err.message || t('request_failed');
+            showMessage(`${t('request_failed')}: ${errorMsg}`, 'error');
         }
     };
 
@@ -214,7 +236,8 @@ const MedicalDocuments = () => {
                                         <label className="input-label">{t('request_type')}</label>
                                         <select className="input-field" value={reqType} onChange={e => setReqType(e.target.value)}>
                                             <option value="prescription">{t('prescription')}</option>
-                                            <option value="license">{t('license')}</option>
+                                            <option value="license">{t('medical_license')}</option>
+                                            <option value="certificate">{t('certificate') || 'Certificado'}</option>
                                         </select>
                                     </div>
                                     <div className="input-group">
@@ -277,10 +300,17 @@ const MedicalDocuments = () => {
                                                     <span style={{
                                                         padding: '2px 8px', borderRadius: '12px', fontSize: '0.75rem',
                                                         background: r.payment_status === 'paid' ? '#dcfce7' : (r.payment_status === 'debt' ? '#fee2e2' : '#f1f5f9'),
-                                                        color: r.payment_status === 'paid' ? '#166534' : (r.payment_status === 'debt' ? '#991b1b' : '#475569')
+                                                        color: r.payment_status === 'paid' ? '#166534' : (r.payment_status === 'debt' ? '#991b1b' : '#475569'),
+                                                        display: 'flex', flexDirection: 'column', alignItems: 'center'
                                                     }}>
                                                         {r.payment_status === 'paid' ? `PAID (${r.payment_method || 'CASH'})` :
-                                                            (r.payment_status === 'debt' ? `DEBT $${r.debt_amount}` : 'PENDING')}
+                                                            (r.payment_status === 'debt' ? `DEBT ${formatPrice(r.debt_amount)}` : 'PENDING')}
+
+                                                        {(r.status === 'pending' || r.payment_status === 'debt') && (
+                                                            <span style={{ fontSize: '0.7rem', opacity: 0.8, marginTop: '2px' }}>
+                                                                {timeAgo(r.created_at)}
+                                                            </span>
+                                                        )}
                                                     </span>
                                                     {(r.payment_status !== 'paid') && (user.role === 'secretary' || user.role === 'doctor') && (
                                                         <button
@@ -297,114 +327,170 @@ const MedicalDocuments = () => {
                                                                 reqId: r.id
                                                             })}
                                                             title="Charge"
-                                                            style={{ border: 'none', background: '#eab308', color: 'white', borderRadius: '50%', width: '24px', height: '24px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem' }}
+                                                            className="btn-icon"
+                                                            style={{ color: '#10b981' }}
                                                         >
-                                                            $
+                                                            💲
                                                         </button>
                                                     )}
+                                                    {user.role === 'admin' && (
+                                                        <button
+                                                            className="btn-icon"
+                                                            onClick={async () => {
+                                                                if (!window.confirm("¿Seguro que desea eliminar?")) return;
+                                                                try {
+                                                                    await api.delete(`/medical/requests/${r.id}`);
+                                                                    fetchRequests();
+                                                                } catch (e) {
+                                                                    alert("Error: " + (e.response?.data?.message || JSON.stringify(e.response?.data) || e.message));
+                                                                }
+                                                            }}
+                                                            title="Eliminar"
+                                                            style={{ color: '#ef4444' }}
+                                                        >
+                                                            🗑️
+                                                        </button>
+                                                    )}
+
                                                 </div>
                                             </div>
                                             <div style={{ marginTop: '0.5rem', fontStyle: 'italic', color: '#475569' }}>"{r.request_note}"</div>
                                             {r.doctor_note && <div style={{ marginTop: '0.5rem', padding: '0.5rem', background: '#f0fdf4', borderLeft: '3px solid #22c55e', fontSize: '0.9rem' }}><strong>{t('doctor_says')}:</strong> {r.doctor_note}</div>}
 
-                                            {user.role === 'doctor' && r.status === 'pending' && (
-                                                <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem' }}>
-                                                    <button onClick={() => openActionModal('completed', r.id)} className="btn btn-primary" style={{ fontSize: '0.8rem' }}>{t('mark_as_done')}</button>
-                                                    <button onClick={() => openActionModal('rejected', r.id)} className="btn btn-accent" style={{ fontSize: '0.8rem', background: '#ef4444' }}>{t('reject')}</button>
+                                            {
+                                                user.role === 'doctor' && r.status === 'pending' && (
+                                                    <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem' }}>
+                                                        <button onClick={() => openActionModal('completed', r.id)} className="btn btn-primary" style={{ fontSize: '0.8rem' }}>{t('mark_as_done')}</button>
+                                                        <button onClick={() => openActionModal('rejected', r.id)} className="btn btn-accent" style={{ fontSize: '0.8rem', background: '#ef4444' }}>{t('reject')}</button>
+                                                    </div>
+                                                )
+                                            }
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
+                    </div>
+                )
+                }
+
+                {
+                    activeTab === 'files' && (
+                        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '2rem' }}>
+                            <div className="card">
+                                <h3>{t('upload_document')}</h3>
+                                <form onSubmit={handleFileUpload}>
+                                    <div className="input-group">
+                                        <label className="input-label">{t('patient_label')}</label>
+                                        <PatientSearchSelect
+                                            value={filePatient}
+                                            onChange={setFilePatient}
+                                            placeholder={t('select_patient')}
+                                        />
+                                    </div>
+                                    <div className="input-group">
+                                        <label className="input-label">{t('description')}</label>
+                                        <input className="input-field" value={fileDesc} onChange={e => setFileDesc(e.target.value)} placeholder="e.g. Lab Results PDF" required />
+                                    </div>
+                                    <div className="input-group">
+                                        <label className="input-label">{t('file')}</label>
+                                        <input type="file" className="input-field" onChange={e => setSelectedFile(e.target.files[0])} required />
+                                    </div>
+                                    <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>{t('upload_file')}</button>
+                                </form>
+                            </div>
+
+                            <div className="card">
+                                <h3>{t('file_repository')}</h3>
+                                {files.filter(filterItem).length === 0 ? <p>{t('no_files')}</p> : (
+                                    <ul style={{ listStyle: 'none', padding: 0 }}>
+                                        {files.filter(filterItem).map(f => (
+                                            <li key={f.id} style={{ padding: '1rem', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <div>
+                                                    <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${f.file_url}`} target="_blank" rel="noreferrer" style={{ fontWeight: 'bold', color: '#3b82f6', textDecoration: 'none', fontSize: '1.05rem' }}>
+                                                        {f.description || f.file_name}
+                                                    </a>
+                                                    <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '4px' }}>
+                                                        <strong>{t('patient_label')}:</strong> {f.patient_name} • <strong>{t('by_dr') || 'By'}:</strong> <span style={{ textTransform: 'capitalize' }}>{f.uploader_name}</span>
+                                                    </div>
                                                 </div>
-                                            )}
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
+                                                <span style={{ fontSize: '0.7rem', background: '#e2e8f0', padding: '2px 8px', borderRadius: '12px', textTransform: 'uppercase' }}>{f.file_type.split('/')[1] || 'FILE'}</span>
+                                                {user.role === 'admin' && (
+                                                    <button
+                                                        className="btn-icon delete"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleFileDeleteClick(f);
+                                                        }}
+                                                        title="Eliminar Archivo"
+                                                        style={{ color: '#ef4444', border: 'none', background: 'none', cursor: 'pointer', marginLeft: '10px' }}
+                                                    >
+                                                        🗑️
+                                                    </button>
+                                                )}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )
+                }
 
-                {activeTab === 'files' && (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '2rem' }}>
-                        <div className="card">
-                            <h3>{t('upload_document')}</h3>
-                            <form onSubmit={handleFileUpload}>
-                                <div className="input-group">
-                                    <label className="input-label">{t('patient_label')}</label>
-                                    <PatientSearchSelect
-                                        value={filePatient}
-                                        onChange={setFilePatient}
-                                        placeholder={t('select_patient')}
-                                    />
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">{t('description')}</label>
-                                    <input className="input-field" value={fileDesc} onChange={e => setFileDesc(e.target.value)} placeholder="e.g. Lab Results PDF" required />
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">{t('file')}</label>
-                                    <input type="file" className="input-field" onChange={e => setSelectedFile(e.target.files[0])} required />
-                                </div>
-                                <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>{t('upload_file')}</button>
-                            </form>
-                        </div>
+                {/* Confirm File Delete Modal */}
+                <Modal
+                    isOpen={!!fileToDelete}
+                    onClose={() => setFileToDelete(null)}
+                    title={t('confirm_delete') || "Confirmar Eliminación"}
+                    footer={
+                        <>
+                            <button className="btn btn-secondary" onClick={() => setFileToDelete(null)}>{t('cancel')}</button>
+                            <button className="btn btn-danger" style={{ background: '#ef4444', color: 'white' }} onClick={confirmFileDelete}>{t('delete') || "Eliminar"}</button>
+                        </>
+                    }
+                >
+                    <p>¿Seguro que desea eliminar el archivo <strong>{fileToDelete?.file_name}</strong>?</p>
+                    <p className="text-sm text-muted">Esta acción no se puede deshacer.</p>
+                </Modal>
 
-                        <div className="card">
-                            <h3>{t('file_repository')}</h3>
-                            {files.filter(filterItem).length === 0 ? <p>{t('no_files')}</p> : (
-                                <ul style={{ listStyle: 'none', padding: 0 }}>
-                                    {files.filter(filterItem).map(f => (
-                                        <li key={f.id} style={{ padding: '1rem', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            <div>
-                                                <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${f.file_url}`} target="_blank" rel="noreferrer" style={{ fontWeight: 'bold', color: '#3b82f6', textDecoration: 'none', fontSize: '1.05rem' }}>
-                                                    {f.description || f.file_name}
-                                                </a>
-                                                <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '4px' }}>
-                                                    <strong>{t('patient_label')}:</strong> {f.patient_name} • <strong>{t('by_dr') || 'By'}:</strong> <span style={{ textTransform: 'capitalize' }}>{f.uploader_name}</span>
+                {
+                    activeTab === 'history' && (
+                        <div style={{ display: 'grid', gap: '2rem' }}>
+                            <div className="card">
+                                <h3>{t('prescriptions_licenses')}</h3>
+
+                                <h4 style={{ marginTop: '1.5rem' }}>{t('recent_prescriptions')}</h4>
+                                {prescriptions.filter(filterItem).length === 0 ? <p className="text-muted">{t('none')}</p> : (
+                                    <ul style={{ paddingLeft: '0', listStyle: 'none' }}>
+                                        {prescriptions.filter(filterItem).map(p => (
+                                            <li key={p.id}
+                                                onClick={() => setSelectedPrescription(p)}
+                                                style={{
+                                                    padding: '0.75rem',
+                                                    borderBottom: '1px solid #eee',
+                                                    cursor: 'pointer',
+                                                    display: 'flex',
+                                                    justifyContent: 'space-between',
+                                                    alignItems: 'center'
+                                                }}
+                                                onMouseEnter={(e) => e.currentTarget.style.background = '#f8fafc'}
+                                                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                                            >
+                                                <div>
+                                                    <div><strong>{new Date(p.created_at).toLocaleDateString()}</strong> - {p.patient_name}</div>
+                                                    <div style={{ fontSize: '0.85rem', color: '#64748b' }}>Dr. {p.doctor_name}</div>
                                                 </div>
-                                            </div>
-                                            <span style={{ fontSize: '0.7rem', background: '#e2e8f0', padding: '2px 8px', borderRadius: '12px', textTransform: 'uppercase' }}>{f.file_type.split('/')[1] || 'FILE'}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
+                                                <button className="btn btn-secondary" style={{ fontSize: '0.75rem', padding: '2px 8px' }}>{t('view') || 'View'}</button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )
+                }
 
-                {activeTab === 'history' && (
-                    <div style={{ display: 'grid', gap: '2rem' }}>
-                        <div className="card">
-                            <h3>{t('prescriptions_licenses')}</h3>
-
-                            <h4 style={{ marginTop: '1.5rem' }}>{t('recent_prescriptions')}</h4>
-                            {prescriptions.filter(filterItem).length === 0 ? <p className="text-muted">{t('none')}</p> : (
-                                <ul style={{ paddingLeft: '0', listStyle: 'none' }}>
-                                    {prescriptions.filter(filterItem).map(p => (
-                                        <li key={p.id}
-                                            onClick={() => setSelectedPrescription(p)}
-                                            style={{
-                                                padding: '0.75rem',
-                                                borderBottom: '1px solid #eee',
-                                                cursor: 'pointer',
-                                                display: 'flex',
-                                                justifyContent: 'space-between',
-                                                alignItems: 'center'
-                                            }}
-                                            onMouseEnter={(e) => e.currentTarget.style.background = '#f8fafc'}
-                                            onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                                        >
-                                            <div>
-                                                <div><strong>{new Date(p.created_at).toLocaleDateString()}</strong> - {p.patient_name}</div>
-                                                <div style={{ fontSize: '0.85rem', color: '#64748b' }}>Dr. {p.doctor_name}</div>
-                                            </div>
-                                            <button className="btn btn-secondary" style={{ fontSize: '0.75rem', padding: '2px 8px' }}>{t('view') || 'View'}</button>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </div>
-                    </div>
-                )}
-
-            </main>
+            </main >
 
             <Modal
                 isOpen={actionModal.open}

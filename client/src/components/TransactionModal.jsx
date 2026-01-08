@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import Modal from './Modal';
 import { useLanguage } from '../context/LanguageContext';
+import CurrencyInput from './CurrencyInput';
+import { formatPrice } from '../utils/format';
 
 const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requestId }) => {
     const { t } = useLanguage();
@@ -105,6 +107,10 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                 data.append('request_id', requestId);
             }
 
+            if (initialData?.apptId) {
+                data.append('appointment_id', initialData.apptId);
+            }
+
             const res = await api.post('/finances/transactions', data);
 
             if (onSuccess) onSuccess(res.data);
@@ -143,10 +149,9 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
             {formData.type === 'income_patient' && (
                 <div className="input-group">
                     <label className="input-label">{t('patient')}</label>
-                    <div style={{ position: 'relative' }}>
+                    <div className="relative">
                         <input
                             type="text"
-                            className="input-field"
                             placeholder={t('search_name_dni')}
                             value={patientSearch}
                             onChange={(e) => {
@@ -158,25 +163,10 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                                 if (!initialData?.patientId) setShowPatientList(true);
                             }}
                             readOnly={!!initialData?.patientId}
-                            style={initialData?.patientId ? { backgroundColor: '#f1f5f9', cursor: 'not-allowed' } : {}}
+                            className={`input-field ${initialData?.patientId ? 'bg-read-only' : ''}`}
                         />
                         {showPatientList && patientSearch && !formData.related_user_id && (
-                            <ul style={{
-                                position: 'absolute',
-                                top: '100%',
-                                left: 0,
-                                right: 0,
-                                background: 'white',
-                                border: '1px solid #ccc',
-                                borderRadius: '4px',
-                                maxHeight: '200px',
-                                overflowY: 'auto',
-                                zIndex: 1000,
-                                padding: 0,
-                                margin: 0,
-                                listStyle: 'none',
-                                boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-                            }}>
+                            <ul className="dropdown-menu">
                                 {patients.filter(p =>
                                     p.full_name.toLowerCase().includes(patientSearch.toLowerCase()) ||
                                     (p.dni && p.dni.includes(patientSearch))
@@ -192,11 +182,9 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                                                 fetchPricing(formData.doctor_id, p.id);
                                             }
                                         }}
-                                        style={{ padding: '0.5rem', cursor: 'pointer', borderBottom: '1px solid #eee' }}
-                                        onMouseEnter={(e) => e.target.style.background = '#f1f5f9'}
-                                        onMouseLeave={(e) => e.target.style.background = 'white'}
+                                        className="dropdown-item"
                                     >
-                                        {p.full_name} <span style={{ color: '#64748b', fontSize: '0.85rem' }}>{p.dni}</span>
+                                        {p.full_name} <span className="text-xs-gray">{p.dni}</span>
                                     </li>
                                 ))}
                             </ul>
@@ -264,16 +252,16 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
             )}
 
             <div className="input-group">
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div className="grid-2-cols">
                     <div>
                         <label className="input-label">{t('amount_paid')}</label>
-                        <input type="number" className="input-field" value={formData.amount} onChange={e => setFormData({ ...formData, amount: e.target.value })} />
+                        <CurrencyInput className="input-field" value={formData.amount} onChange={e => setFormData({ ...formData, amount: e.target.value })} />
                         {pricingInfo && (
                             <div style={{ marginTop: '0.25rem' }}>
                                 <small style={{ display: 'block', color: '#64748b' }}>{pricingInfo}</small>
                                 {(totalPrice - Number(formData.amount)) > 0 && (
                                     <small style={{ display: 'block', color: '#ef4444', fontWeight: 'bold' }}>
-                                        {t('debt')}: ${(totalPrice - Number(formData.amount)).toFixed(2)}
+                                        {t('debt')}: {formatPrice(totalPrice - Number(formData.amount))}
                                     </small>
                                 )}
                             </div>
@@ -297,7 +285,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                 <select className="input-field" value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value })}>
                     <option value="paid">{t('paid')}</option>
                     <option value="partial">{t('partial')}</option>
-                    <option value="pending">{t('pending')}</option>
+                    <option value="pending">{t('pending_payment')}</option>
                 </select>
             </div>
 

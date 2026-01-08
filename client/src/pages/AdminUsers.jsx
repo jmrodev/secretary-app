@@ -29,10 +29,11 @@ const AdminUsers = () => {
     const fetchUsers = async () => {
         try {
             const res = await api.get('/users/admin/users');
-            setUsers(res.data);
+            // Double check filtering on frontend
+            setUsers(res.data.filter(u => u.role !== 'patient'));
         } catch (err) {
             console.error(err);
-            showMessage(t('failed_load_users') || "Failed to load users", 'error');
+            showMessage('Error fetching users', 'error');
         } finally {
             setLoading(false);
         }

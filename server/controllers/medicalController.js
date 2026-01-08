@@ -1,6 +1,8 @@
 const { pool } = require('../db');
 const { logAction } = require('../utils/audit');
 const { calculatePrice } = require('../utils/priceCalculator');
+const fs = require('fs');
+const path = require('path');
 
 // --- Prescriptions ---
 
@@ -222,9 +224,9 @@ exports.getLicenses = async (req, res) => {
 exports.createRequest = async (req, res) => {
     let conn;
     try {
-        const { type, patient_id, doctor_id, request_note, bonified } = req.body; // type: 'prescription' or 'license', bonified [NEW]
+        const { type, patient_id, doctor_id, request_note, bonified } = req.body; // type: 'prescription', 'license', 'certificate'
 
-        if (!['prescription', 'license'].includes(type)) return res.status(400).send("Invalid type");
+        if (!['prescription', 'license', 'certificate'].includes(type)) return res.status(400).send("Invalid type");
 
         conn = await pool.getConnection();
 
@@ -240,11 +242,16 @@ exports.createRequest = async (req, res) => {
         // --- Debt Generation for Request ---
         // If not bonified, generate debt immediately for the request
         if (!bonified) {
-            const priceInfo = await calculatePrice(conn, doctor_id, patient_id, type === 'prescription' ? 'prescription' : 'medical_license');
+            let serviceType = 'consultation';
+            if (type === 'prescription') serviceType = 'prescription';
+            else if (type === 'license') serviceType = 'medical_license';
+            else if (type === 'certificate') serviceType = 'certificate';
+
+            const priceInfo = await calculatePrice(conn, doctor_id, patient_id, serviceType);
             if (priceInfo.price > 0) {
                 await conn.query(
-                    "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, date) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())",
-                    ['income_patient', priceInfo.price, `Request: ${type} for ${pat[0].full_name}`, pat[0].user_id, doctor_id, 'credit', 'pending']
+                    "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, transaction_date, request_id) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)",
+                    ['income_patient', priceInfo.price, `Request: ${type} for ${pat[0].full_name}`, pat[0].user_id, doctor_id, 'credit', 'pending', result.insertId]
                 );
                 // Update request with debt status
                 await conn.query("UPDATE medical_requests SET payment_status = 'debt', debt_amount = ? WHERE id = ?", [priceInfo.price, result.insertId]);
@@ -254,12 +261,13 @@ exports.createRequest = async (req, res) => {
         }
         // -----------------------------------
 
-        logAction(req, 'CREATE_MEDICAL_REQUEST', `Type: ${type}, Patient ID: ${patient_id}`);
+
+        logAction(req, 'CREATE_MEDICAL_REQUEST', `Type: ${type}, Patient: ${pat[0].full_name} (ID: ${patient_id}). Details: ${request_note}`);
 
         res.status(201).json({ id: Number(result.insertId), message: "Request created" });
     } catch (err) {
         console.error(err);
-        res.status(500).send("Server Error");
+        res.status(500).send("Error creating request: " + err.message);
     } finally {
         if (conn) conn.release();
     }
@@ -273,9 +281,7 @@ exports.getRequests = async (req, res) => {
             SELECT r.*, 
             p.full_name as patient_name, p.dni as patient_dni, p.address as patient_address, p.user_id as patient_user_id, 
             d.full_name as doctor_name, 
-            s.username as secretary_name,
-            (SELECT COALESCE(SUM(amount), 0) FROM transactions t WHERE t.request_id = r.id AND t.status = 'pending') as debt_amount,
-            (SELECT method FROM transactions t WHERE t.request_id = r.id AND t.status = 'paid' LIMIT 1) as payment_method
+            s.username as secretary_name
             FROM medical_requests r
             JOIN patients p ON r.patient_id = p.id
             JOIN doctors d ON r.doctor_id = d.id
@@ -309,10 +315,42 @@ exports.updateRequestStatus = async (req, res) => {
     let conn;
     try {
         const { id } = req.params;
-        const { status, doctor_note } = req.body;
+        const { status, doctor_note, secretary_note } = req.body;
+        const { role } = req.user;
+
+        // Validation: Message mandatory for 'rejected' and 'consult'
+        if ((status === 'rejected' || status === 'consult') && !doctor_note && role === 'doctor') {
+            return res.status(400).json({ message: "Note is required for this status" });
+        }
 
         conn = await pool.getConnection();
-        await conn.query("UPDATE medical_requests SET status = ?, doctor_note = ? WHERE id = ?", [status, doctor_note, id]);
+
+        let setClause = "status = ?";
+        let params = [status];
+
+        // If doctor adds a note
+        if (doctor_note !== undefined) {
+            setClause += ", doctor_note = ?";
+            params.push(doctor_note);
+        }
+
+        // If secretary replies
+        if (secretary_note !== undefined) {
+            setClause += ", secretary_note = ?";
+            params.push(secretary_note);
+        }
+
+        let completedAt = null;
+        if (status === 'completed' || status === 'rejected') {
+            completedAt = new Date();
+            setClause += ", completed_at = ?";
+            params.push(completedAt);
+        }
+
+        const query = `UPDATE medical_requests SET ${setClause} WHERE id = ?`;
+        params.push(id);
+
+        await conn.query(query, params);
 
         logAction(req, 'UPDATE_MEDICAL_REQUEST', `Request ${id} updated to ${status}`);
         res.json({ message: "Request updated" });
@@ -322,7 +360,6 @@ exports.updateRequestStatus = async (req, res) => {
     } finally {
         if (conn) conn.release();
     }
-
 };
 
 exports.updateRequestPaymentStatus = async (req, res) => {
@@ -395,6 +432,78 @@ exports.getPatientFiles = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.deleteRequest = async (req, res) => {
+    let conn;
+    try {
+        const { id } = req.params;
+        const { role } = req.user;
+
+        if (role !== 'admin') {
+            return res.status(403).send("Only admins can delete requests");
+        }
+
+        conn = await pool.getConnection();
+
+        // 1. Delete associated PENDING transactions (cleanup debt)
+        // If it's already paid, we might want to keep the transaction log? 
+        // For now, let's only delete pending ones to avoid data inconsistencies.
+        await conn.query("DELETE FROM transactions WHERE request_id = ? AND status = 'pending'", [id]);
+
+        // 2. Delete the request
+        const result = await conn.query("DELETE FROM medical_requests WHERE id = ?", [id]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).send("Request not found");
+        }
+
+        logAction(req, 'DELETE_MEDICAL_REQUEST', `Deleted Request ID: ${id}`);
+        res.json({ message: "Request deleted successfully" });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error deleting request: " + err.message);
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.deleteFile = async (req, res) => {
+    let conn;
+    try {
+        const { id } = req.params;
+        const { role } = req.user;
+
+        if (role !== 'admin') {
+            return res.status(403).send("Admin only");
+        }
+
+        conn = await pool.getConnection();
+        const file = await conn.query("SELECT file_url FROM patient_files WHERE id = ?", [id]);
+
+        if (file.length === 0) {
+            return res.status(404).json({ message: "File not found" });
+        }
+
+        const filePath = path.join(__dirname, '..', file[0].file_url);
+
+        await conn.query("DELETE FROM patient_files WHERE id = ?", [id]);
+
+        // Delete from FS
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+        }
+
+        logAction(req, 'DELETE_FILE', `Deleted file ${id}`);
+        res.json({ message: "File deleted" });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: err.message });
     } finally {
         if (conn) conn.release();
     }

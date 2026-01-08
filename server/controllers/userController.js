@@ -57,6 +57,10 @@ exports.getAllPatients = async (req, res) => {
         const { search } = req.query;
         const { role, user_id } = req.user;
 
+        if (role === 'patient') {
+            return res.status(403).send("Unauthorized");
+        }
+
         let query = `
             SELECT p.*, i.name as insurance_name,
             (SELECT COALESCE(SUM(amount), 0) FROM transactions t WHERE t.related_user_id = p.user_id AND t.status = 'pending') as total_debt,
@@ -300,6 +304,7 @@ exports.getUsersForAdmin = async (req, res) => {
             END as specialty
 
             FROM users
+            WHERE role != 'patient'
             ORDER BY created_at DESC
         `);
         res.json(users);
@@ -436,6 +441,7 @@ exports.updateDoctor = async (req, res) => {
         if (updates.prescription_price !== undefined) { fields.push("prescription_price = ?"); params.push(updates.prescription_price); }
         if (updates.medical_license_price !== undefined) { fields.push("medical_license_price = ?"); params.push(updates.medical_license_price); }
         if (updates.virtual_consultation_price !== undefined) { fields.push("virtual_consultation_price = ?"); params.push(updates.virtual_consultation_price); }
+        if (updates.certificate_price !== undefined) { fields.push("certificate_price = ?"); params.push(updates.certificate_price); }
 
         if (fields.length > 0) {
             const query = `UPDATE doctors SET ${fields.join(', ')} WHERE id = ?`;
@@ -548,26 +554,87 @@ exports.deleteUser = async (req, res) => {
         const { id } = req.params;
         conn = await pool.getConnection();
 
-        // Check if user exists first to log username? Optional.
-        // Assuming cascade delete is handled or we rely on cleaning up manually if needed. 
-        // For strictly safe deletions, we should delete from profile tables first if no cascade.
-        // Current schema likely has user_id FK. If ON DELETE RESTRICT, this will fail.
-        // Let's attempt delete from users. If it fails due to constraint, we assume we need to delete children first.
-        // Usually clinical apps don't hard delete patients with data. Soft delete is better.
-        // But user asked for CRUD. Hard delete for now.
+        // 1. Get user role to know which specific tables to check (optional optimization, but good for logging)
+        const [user] = await conn.query("SELECT username, role FROM users WHERE id = ?", [id]);
+        if (!user) return res.status(404).json({ message: "User not found" });
 
-        // Let's try to delete from related tables first just in case.
-        await conn.query("DELETE FROM doctors WHERE user_id = ?", [id]);
-        await conn.query("DELETE FROM secretaries WHERE user_id = ?", [id]);
-        await conn.query("DELETE FROM patients WHERE user_id = ?", [id]);
+        console.log(`[deleteUser] Deleting user ${id} (${user.username}, ${user.role}) and all related data...`);
 
-        await conn.query("DELETE FROM users WHERE id = ?", [id]);
+        // Start Transaction
+        await conn.beginTransaction();
 
-        logAction(req, 'ADMIN_DELETE_USER', `Deleted user ${id}`);
-        res.json({ message: "User deleted" });
+        try {
+            // 2. Identify Patient/Doctor ID if applicable
+            let patientId = null;
+            let doctorId = null;
+
+            if (user.role === 'patient') {
+                const [p] = await conn.query("SELECT id FROM patients WHERE user_id = ?", [id]);
+                if (p) patientId = p.id;
+            } else if (user.role === 'doctor') {
+                const [d] = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [id]);
+                if (d) doctorId = d.id;
+            }
+
+            // 3. Delete from Related Tables (Order matters for FKs)
+
+            // Shared: Audit Logs & Files Uploaded & Transactions
+            await conn.query("DELETE FROM audit_logs WHERE user_id = ?", [id]);
+            await conn.query("DELETE FROM patient_files WHERE uploaded_by = ?", [id]); // Files uploaded BY this user
+            await conn.query("DELETE FROM transactions WHERE related_user_id = ?", [id]); // Financials linked to user
+
+            if (patientId) {
+                console.log(`Deleting patient data for patient_id: ${patientId}`);
+                // Delete Patient Specifics
+                await conn.query("DELETE FROM patient_files WHERE patient_id = ?", [patientId]); // Files belonging TO patient
+                await conn.query("DELETE FROM patient_doctors WHERE patient_id = ?", [patientId]);
+                await conn.query("DELETE FROM medical_requests WHERE patient_id = ?", [patientId]);
+
+                // Appointments & Prescriptions
+                // Need to delete prescriptions linked to appointments of this patient?
+                // Or rely on ON DELETE CASCADE? Assuming manual cleanup for safety.
+                await conn.query("DELETE FROM prescriptions WHERE appointment_id IN (SELECT id FROM appointments WHERE patient_id = ?)", [patientId]);
+                await conn.query("DELETE FROM medical_licenses WHERE appointment_id IN (SELECT id FROM appointments WHERE patient_id = ?)", [patientId]);
+                await conn.query("DELETE FROM appointments WHERE patient_id = ?", [patientId]);
+
+                // Finally profile
+                await conn.query("DELETE FROM patients WHERE id = ?", [patientId]);
+            }
+
+            if (doctorId) {
+                console.log(`Deleting doctor data for doctor_id: ${doctorId}`);
+                // Delete Doctor Specifics
+                await conn.query("DELETE FROM patient_doctors WHERE doctor_id = ?", [doctorId]);
+
+                // Appointments (Doc is provider) - This is DESTRUCTIVE to patient history.
+                // We'll proceed as requested.
+                await conn.query("DELETE FROM prescriptions WHERE appointment_id IN (SELECT id FROM appointments WHERE doctor_id = ?)", [doctorId]);
+                await conn.query("DELETE FROM medical_licenses WHERE appointment_id IN (SELECT id FROM appointments WHERE doctor_id = ?)", [doctorId]);
+                await conn.query("DELETE FROM appointments WHERE doctor_id = ?", [doctorId]);
+
+                // Finally profile
+                await conn.query("DELETE FROM doctors WHERE id = ?", [doctorId]);
+            }
+
+            if (user.role === 'secretary') {
+                await conn.query("DELETE FROM secretaries WHERE user_id = ?", [id]);
+            }
+
+            // 4. Delete from USERS
+            await conn.query("DELETE FROM users WHERE id = ?", [id]);
+
+            await conn.commit();
+            logAction(req, 'ADMIN_DELETE_USER', `Deleted user ${id} (${user.username})`);
+            res.json({ message: "User deleted successfully" });
+
+        } catch (error) {
+            await conn.rollback();
+            throw error;
+        }
+
     } catch (err) {
-        console.error(err);
-        res.status(500).send("Server Error");
+        console.error("Delete User Error:", err);
+        res.status(500).send("Server Error: " + err.message);
     } finally {
         if (conn) conn.release();
     }

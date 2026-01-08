@@ -29,6 +29,13 @@ exports.createAppointment = async (req, res) => {
         if (holidays.length > 0) {
             return res.status(400).json({ error: `Clinic is closed on this date: ${holidays[0].description}` });
         }
+
+        // --- Past Date Check ---
+        const now = new Date();
+        const apptDate = new Date(appointment_date);
+        if (apptDate < now) {
+            return res.status(400).json({ error: "Cannot book appointments in the past." });
+        }
         // ---------------------
 
         // --- Google Calendar Conflict Check ---
@@ -48,7 +55,7 @@ exports.createAppointment = async (req, res) => {
         // Simple insert
         const result = await conn.query(
             "INSERT INTO appointments (patient_id, doctor_id, appointment_date, reason) VALUES (?, ?, ?, ?)",
-            [patient_id, doctor_id, appointment_date, reason]
+            [patient_id, doctor_id, apptDate, reason]
         );
 
         // Fetch names for logging and Sync
@@ -85,9 +92,17 @@ exports.createAppointment = async (req, res) => {
 
             const priceInfo = await calculatePrice(conn, doctor_id, patient_id, 'consultation');
             if (priceInfo.price > 0) {
+                let relatedUserId = null;
+                if (req.user.role === 'patient') {
+                    relatedUserId = req.user.user_id;
+                } else {
+                    const pUser = await conn.query("SELECT user_id FROM patients WHERE id = ?", [patient_id]);
+                    if (pUser.length > 0) relatedUserId = pUser[0].user_id;
+                }
+
                 await conn.query(
-                    "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, date) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())",
-                    ['income_patient', priceInfo.price, `Consultation (Booking): ${pNameStr}`, req.user.role === 'patient' ? req.user.user_id : (await conn.query("SELECT user_id FROM patients WHERE id = ?", [patient_id]))[0]?.user_id, doctor_id, 'credit', 'pending']
+                    "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, transaction_date) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())",
+                    ['income_patient', priceInfo.price, `Consultation (Booking): ${pNameStr}`, relatedUserId, doctor_id, 'credit', 'pending']
                 );
                 // Also link transaction to appointment? The schema doesn't seem to have direct link in transactions table easily inferred, 
                 // but we can update appointment payment_status.
@@ -138,13 +153,72 @@ exports.getAppointments = async (req, res) => {
     }
 };
 
+exports.deleteAppointment = async (req, res) => {
+    let conn;
+    try {
+        const { id } = req.params;
+        conn = await pool.getConnection();
+
+        // Get details for log
+        const rows = await conn.query("SELECT a.*, p.full_name FROM appointments a JOIN patients p ON a.patient_id = p.id WHERE a.id = ?", [id]);
+        if (rows.length === 0) return res.status(404).send("Appointment not found");
+
+        const appt = rows[0];
+
+        // Delete
+        await conn.query("DELETE FROM appointments WHERE id = ?", [id]);
+
+        logAction(req, 'DELETE_APPOINTMENT', `Deleted appointment ID ${id} (Secretary Error) for ${appt.full_name}`);
+
+        res.json({ message: "Appointment deleted" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.updateAppointment = async (req, res) => {
+    let conn;
+    try {
+        const { id } = req.params;
+        const { appointment_date, reason } = req.body;
+
+        conn = await pool.getConnection();
+
+        // Check existence
+        const exists = await conn.query("SELECT * FROM appointments WHERE id = ?", [id]);
+        if (exists.length === 0) return res.status(404).send("Appointment not found");
+
+        const oldDate = exists[0].appointment_date;
+
+        // Update status to 'rescheduled' when moved
+        const apptDate = new Date(appointment_date);
+        await conn.query(
+            "UPDATE appointments SET appointment_date = ?, reason = ?, status = 'rescheduled' WHERE id = ?",
+            [apptDate, reason || exists[0].reason, id]
+        );
+
+        // Log
+        logAction(req, 'RESCHEDULE_APPOINTMENT', `Rescheduled Appt ID ${id} from ${oldDate} to ${appointment_date}`);
+
+        res.json({ message: "Appointment updated" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
 exports.updateStatus = async (req, res) => {
     let conn;
     try {
         const { id } = req.params;
         const { status, reason } = req.body; // reason is optional, for cancellation
 
-        const validStatuses = ['pending', 'confirmed', 'completed', 'cancelled'];
+        const validStatuses = ['pending', 'confirmed', 'completed', 'cancelled', 'suspended', 'absent'];
         if (!validStatuses.includes(status)) return res.status(400).send("Invalid status");
 
         conn = await pool.getConnection();
@@ -180,8 +254,9 @@ exports.updatePaymentStatus = async (req, res) => {
         const { id } = req.params;
         const { status } = req.body;
 
-        conn = await pool.getConnection(); // missing await in previous pattern? Fixed here.
-        await conn.query("UPDATE appointments SET payment_status = ? WHERE id = ?", [status, id]);
+        const isPaid = status === 'paid' ? 1 : 0;
+        conn = await pool.getConnection();
+        await conn.query("UPDATE appointments SET payment_status = ?, is_paid = ? WHERE id = ?", [status, isPaid, id]);
 
         res.json({ message: "Payment status updated" });
     } catch (err) {

@@ -4,6 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import Modal from '../components/Modal';
 import Sidebar from '../components/Sidebar';
+import { formatPrice } from '../utils/format';
+import CurrencyInput from '../components/CurrencyInput';
 import TransactionModal from '../components/TransactionModal';
 
 const Finances = () => {
@@ -139,7 +141,7 @@ const Finances = () => {
                                             <div key={d.id} style={{ padding: '1rem', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                 <div>
                                                     <div style={{ fontWeight: 'bold' }}>{d.full_name}</div>
-                                                    <div style={{ fontSize: '1.2rem', color: bal >= 0 ? 'green' : 'red' }}>${bal.toFixed(2)}</div>
+                                                    <div style={{ fontSize: '1.2rem', color: bal >= 0 ? 'green' : 'red' }}>{formatPrice(bal)}</div>
                                                 </div>
                                                 {bal > 0 && (
                                                     <button
@@ -176,20 +178,20 @@ const Finances = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {transactions.map(t => (
-                                    <tr key={t.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                                        <td style={{ padding: '1rem' }}>{new Date(t.transaction_date).toLocaleDateString()}</td>
+                                {transactions.map(tx => (
+                                    <tr key={tx.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                                        <td style={{ padding: '1rem' }}>{new Date(tx.transaction_date).toLocaleDateString()}</td>
                                         <td style={{ padding: '1rem' }}>
-                                            <div>{t.type.replace('_', ' ').toUpperCase()}</div>
-                                            <div style={{ fontSize: '0.8rem', color: '#64748b' }}>{t.description}</div>
+                                            <div>{tx.type.replace('_', ' ').toUpperCase()}</div>
+                                            <div style={{ fontSize: '0.8rem', color: '#64748b' }}>{tx.description}</div>
                                         </td>
-                                        <td style={{ padding: '1rem' }}>{t.doctor_name || t('general')}</td>
-                                        <td style={{ padding: '1rem' }}>{t.method}</td>
-                                        <td style={{ padding: '1rem', color: t.is_withdrawal ? 'blue' : (t.type.includes('income') ? 'green' : 'red'), fontWeight: 'bold' }}>
-                                            {t.is_withdrawal ? '↩' : (t.type.includes('income') ? '+' : '-')}${Math.abs(t.amount)}
+                                        <td style={{ padding: '1rem' }}>{tx.doctor_name || t('general')}</td>
+                                        <td style={{ padding: '1rem' }}>{tx.method}</td>
+                                        <td style={{ padding: '1rem', color: tx.is_withdrawal ? 'blue' : (tx.type.includes('income') ? 'green' : 'red'), fontWeight: 'bold' }}>
+                                            {tx.is_withdrawal ? '↩' : (tx.type.includes('income') ? '+' : '-')}${Math.abs(tx.amount)}
                                         </td>
                                         <td style={{ padding: '1rem' }}>
-                                            {t.proof_file ? <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${t.proof_file}`} target="_blank" rel="noreferrer">{t('view') || 'View'}</a> : '-'}
+                                            {tx.proof_file ? <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${tx.proof_file}`} target="_blank" rel="noreferrer">{t('view') || 'View'}</a> : '-'}
                                         </td>
                                     </tr>
                                 ))}
@@ -217,7 +219,7 @@ const Finances = () => {
                     <p>{t('current_system_balance')}: <strong>${closeBoxModal.balance?.toFixed(2)}</strong></p>
                     <div className="input-group" style={{ marginTop: '1rem' }}>
                         <label className="input-label">{t('amount_delivered')}</label>
-                        <input type="number" className="input-field" value={closeAmount} onChange={e => setCloseAmount(e.target.value)} placeholder={closeBoxModal.balance} />
+                        <CurrencyInput className="input-field" value={closeAmount} onChange={e => setCloseAmount(e.target.value)} placeholder={closeBoxModal.balance} />
                     </div>
                     <p className="text-muted" style={{ fontSize: '0.8rem' }}>{t('close_box_warning')}</p>
                 </Modal>

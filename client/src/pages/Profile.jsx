@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import CurrencyInput from '../components/CurrencyInput';
 import Sidebar from '../components/Sidebar';
 
 const Profile = () => {
@@ -101,7 +102,7 @@ const Profile = () => {
                     <form onSubmit={handleUpdate}>
                         <div className="input-group">
                             <label className="input-label">{t('username')}</label>
-                            <input className="input-field" value={user.username} disabled style={{ background: '#f1f5f9' }} />
+                            <input className="input-field bg-read-only" value={user.username} disabled />
                         </div>
 
                         <div className="input-group">
@@ -116,7 +117,7 @@ const Profile = () => {
 
                         {user.role === 'patient' && (
                             <>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                <div className="grid-2-cols">
                                     <div className="input-group">
                                         <label className="input-label">{t('dni')}</label>
                                         <input className="input-field" value={dni} onChange={e => setDni(e.target.value)} />
@@ -149,7 +150,7 @@ const Profile = () => {
                                 </div>
                                 <div className="input-group">
                                     <label className="input-label">{t('consultation_price')}</label>
-                                    <input type="number" className="input-field" value={consultationPrice} onChange={e => setConsultationPrice(e.target.value)} />
+                                    <CurrencyInput className="input-field" value={consultationPrice} onChange={e => setConsultationPrice(e.target.value)} />
                                 </div>
                             </>
                         )}

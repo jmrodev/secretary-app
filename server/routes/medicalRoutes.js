@@ -26,6 +26,8 @@ router.post('/requests', verifyToken, medicalController.createRequest);
 router.get('/requests', verifyToken, medicalController.getRequests);
 router.patch('/requests/:id', verifyToken, medicalController.updateRequestStatus);
 router.patch('/requests/:id/payment', verifyToken, medicalController.updateRequestPaymentStatus);
+router.delete('/requests/:id', verifyToken, medicalController.deleteRequest);
+router.delete('/files/:id', verifyToken, medicalController.deleteFile);
 
 // Files
 router.post('/files', verifyToken, upload.single('file'), medicalController.uploadFile);

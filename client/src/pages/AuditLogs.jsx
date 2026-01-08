@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import Modal from '../components/Modal';
 import Sidebar from '../components/Sidebar';
 
 const AuditLogs = () => {
@@ -9,6 +10,7 @@ const AuditLogs = () => {
     const { t } = useLanguage();
     const [logs, setLogs] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedLog, setSelectedLog] = useState(null);
 
     useEffect(() => {
         const fetchLogs = async () => {
@@ -34,44 +36,45 @@ const AuditLogs = () => {
             <main className="main-content">
                 <h1 className="title">{t('system_transaction_logs')}</h1>
 
-                <div className="card" style={{ overflowX: 'auto' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '800px' }}>
+                <div className="card table-responsive">
+                    <table className="table-base table-base-lg">
                         <thead>
-                            <tr style={{ borderBottom: '2px solid #f1f5f9', textAlign: 'left' }}>
-                                <th style={{ padding: '1rem' }}>{t('time_header')}</th>
-                                <th style={{ padding: '1rem' }}>{t('user_header')}</th>
-                                <th style={{ padding: '1rem' }}>{t('action_header')}</th>
-                                <th style={{ padding: '1rem' }}>{t('details_header')}</th>
-                                <th style={{ padding: '1rem' }}>{t('ip_header')}</th>
+                            <tr className="border-b-2 text-left">
+                                <th>{t('time_header')}</th>
+                                <th>{t('user_header')}</th>
+                                <th>{t('action_header')}</th>
+                                <th>{t('details_header')}</th>
+                                <th>{t('ip_header')}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {logs.map(log => (
-                                <tr key={log.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                                    <td style={{ padding: '1rem', whiteSpace: 'nowrap', color: '#64748b' }}>
+                                <tr key={log.id}>
+                                    <td className="whitespace-nowrap text-muted">
                                         {new Date(log.created_at).toLocaleString()}
                                     </td>
-                                    <td style={{ padding: '1rem' }}>
+                                    <td>
                                         <strong>{log.username}</strong>
                                     </td>
-                                    <td style={{ padding: '1rem' }}>
-                                        <span style={{
-                                            background: '#e2e8f0',
-                                            padding: '0.25rem 0.5rem',
-                                            borderRadius: '4px',
-                                            fontSize: '0.8rem',
-                                            fontWeight: 'bold',
-                                            color: '#1e293b'
-                                        }}>
+                                    <td>
+                                        <span className="status-chip chip-gray">
                                             {log.action}
                                         </span>
                                     </td>
-                                    <td style={{ padding: '1rem', fontSize: '0.9rem' }}>
-                                        {log.details.length > 50 ? (
-                                            <span title={log.details}>{log.details.substring(0, 50)}...</span>
+                                    <td className="text-sm">
+                                        {log.details && log.details.length > 50 ? (
+                                            <div>
+                                                {log.details.substring(0, 50)}...
+                                                <button
+                                                    className="text-blue-500 hover:text-blue-700 ml-2 text-xs"
+                                                    onClick={() => setSelectedLog(log)}
+                                                >
+                                                    {t('view_details') || 'Ver Detalle'}
+                                                </button>
+                                            </div>
                                         ) : log.details}
                                     </td>
-                                    <td style={{ padding: '1rem', fontSize: '0.85rem', color: '#64748b' }}>
+                                    <td className="text-xs-gray">
                                         {log.ip_address}
                                     </td>
                                 </tr>
@@ -79,6 +82,40 @@ const AuditLogs = () => {
                         </tbody>
                     </table>
                 </div>
+
+                {/* Detail Modal */}
+                <Modal
+                    isOpen={!!selectedLog}
+                    onClose={() => setSelectedLog(null)}
+                    title={t('log_details') || 'Detalle de Registro'}
+                >
+                    {selectedLog && (
+                        <div>
+                            <div className="mb-4">
+                                <strong>{t('action')}:</strong> {selectedLog.action}
+                            </div>
+                            <div className="mb-4">
+                                <strong>{t('user')}:</strong> {selectedLog.username}
+                            </div>
+                            <div className="mb-4">
+                                <strong>{t('date')}:</strong> {new Date(selectedLog.created_at).toLocaleString()}
+                            </div>
+                            <div className="p-4 bg-gray-50 rounded border">
+                                <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit' }}>
+                                    {selectedLog.details}
+                                </pre>
+                            </div>
+                            <div className="mt-4 flex justify-end">
+                                <button
+                                    onClick={() => setSelectedLog(null)}
+                                    className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+                                >
+                                    {t('close') || 'Cerrar'}
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </Modal>
             </main>
         </div>
     );

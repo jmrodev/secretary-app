@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useMessage } from '../context/MessageContext';
@@ -12,66 +13,108 @@ const Dashboard = () => {
     const { user, logout } = useAuth();
     const { showMessage } = useMessage();
     const { t, toggleLanguage, language } = useLanguage(); // Use hook
+    const navigate = useNavigate();
 
     const [todayAppointments, setTodayAppointments] = useState([]);
     const [loadingSchedule, setLoadingSchedule] = useState(true);
 
-    const [modalOpen, setModalOpen] = useState(false);
-    const [pendingAction, setPendingAction] = useState(null); // { id, status, name }
+    // Unified Action Modal (Sync with Appointments.jsx)
+    const [actionModal, setActionModal] = useState({ open: false, appt: null });
 
     // Prescription Modal
     const [prescribeModal, setPrescribeModal] = useState({ open: false, apptId: null, patientName: '', medications: '', instructions: '' });
 
     // Payment Modal
-    const [paymentModal, setPaymentModal] = useState({ open: false, initialData: {} });
+    const [paymentModal, setPaymentModal] = useState({ open: false, initialData: {}, apptId: null });
+
+    const fetchSchedule = async () => {
+        try {
+            const res = await api.get('/appointments');
+            const now = new Date();
+            const todayStr = now.toLocaleDateString(); // Local date string
+
+            const todaysCalls = res.data.filter(a => {
+                const apptDate = new Date(a.appointment_date);
+                return apptDate.toLocaleDateString() === todayStr;
+            });
+            setTodayAppointments(todaysCalls);
+        } catch (err) {
+            console.error("Failed to fetch schedule", err);
+        } finally {
+            setLoadingSchedule(false);
+        }
+    };
+
+    const handleUpdateStatus = async (id, status) => {
+        let reason = null;
+        if (status === 'cancelled') {
+            reason = window.prompt(t('cancellation_reason_prompt') || "Please enter a reason for cancellation:");
+            if (reason === null) return; // User cancelled the prompt
+        }
+
+        try {
+            await api.put(`/appointments/${id}/status`, { status, reason });
+            showMessage(t('status_updated'), 'success');
+            fetchSchedule();
+            // Update actionModal appt state if open
+            if (actionModal.open && actionModal.appt && actionModal.appt.id === id) {
+                setActionModal(prev => ({
+                    ...prev,
+                    appt: { ...prev.appt, status }
+                }));
+            }
+        } catch (err) {
+            console.error(err);
+            showMessage(t('failed_update'), 'error');
+        }
+    };
+
+    const handleDelete = async (id) => {
+        if (!window.confirm(t('delete_error') || "Are you sure? This will remove the record mostly (Secretary Error).")) return;
+        try {
+            await api.delete(`/appointments/${id}`);
+            showMessage(t('appointment_deleted'), 'success');
+            fetchSchedule();
+        } catch (err) {
+            console.error(err);
+            showMessage(t('failed_delete'), 'error');
+        }
+    };
+
+    const handleReschedule = async (id, newDate) => {
+        try {
+            const isoDate = new Date(newDate).toISOString();
+            await api.put(`/appointments/${id}`, { appointment_date: isoDate });
+            showMessage(t('rescheduled_success'), 'success');
+            fetchSchedule();
+        } catch (err) {
+            console.error(err);
+            showMessage(t('failed_reschedule'), 'error');
+        }
+    };
+
+    const handleCancel = async (id) => {
+        const reason = window.prompt(t('cancellation_reason_prompt') || "Please enter a reason for cancellation:");
+        if (reason === null) return;
+        if (!window.confirm(t('confirm_cancel'))) return;
+
+        try {
+            await api.put(`/appointments/${id}/status`, { status: 'cancelled', reason });
+            showMessage(t('appointment_cancelled'), 'success');
+            fetchSchedule();
+        } catch (err) {
+            console.error(err);
+            showMessage(t('failed_cancel'), 'error');
+        }
+    };
 
     useEffect(() => {
-        const fetchSchedule = async () => {
-            try {
-                const res = await api.get('/appointments');
-                const now = new Date();
-                const todayStr = now.toLocaleDateString(); // Local date string
-
-                const todaysCalls = res.data.filter(a => {
-                    const apptDate = new Date(a.appointment_date);
-                    return apptDate.toLocaleDateString() === todayStr;
-                });
-                setTodayAppointments(todaysCalls);
-            } catch (err) {
-                console.error("Failed to fetch schedule", err);
-            } finally {
-                setLoadingSchedule(false);
-            }
-        };
-
         fetchSchedule();
         const interval = setInterval(fetchSchedule, 10000); // Poll every 10 seconds
-
         return () => clearInterval(interval);
     }, []);
 
     if (!user) return <div>{t('loading')}</div>;
-
-    // State for cancellation reason
-    const [cancellationReason, setCancellationReason] = useState("");
-
-    const confirmAction = async () => {
-        if (!pendingAction) return;
-        try {
-            await api.patch(`/appointments/${pendingAction.id}/status`, {
-                status: pendingAction.status,
-                reason: pendingAction.status === 'cancelled' ? cancellationReason : undefined
-            });
-            setTodayAppointments(prev => prev.map(p => p.id === pendingAction.id ? { ...p, status: pendingAction.status } : p));
-            showMessage(`${t('appointments')} marked as ${pendingAction.status}`, 'success');
-        } catch (err) {
-            showMessage("Failed to update status", 'error');
-        } finally {
-            setModalOpen(false);
-            setPendingAction(null);
-            setCancellationReason(""); // Reset
-        }
-    };
 
     const handleSavePrescription = async () => {
         if (!prescribeModal.medications.trim()) {
@@ -96,40 +139,123 @@ const Dashboard = () => {
 
     return (
         <div className="app-layout">
-            <Modal
-                isOpen={modalOpen}
-                onClose={() => setModalOpen(false)}
-                title={t('confirm_action')}
-                footer={
-                    <>
-                        <button onClick={() => setModalOpen(false)} className="btn btn-secondary">{t('cancel')}</button>
-                        <button onClick={confirmAction} className="btn btn-primary" style={{ backgroundColor: pendingAction?.status === 'cancelled' ? '#ef4444' : '#22c55e' }}>
-                            {t('confirm')}
-                        </button>
-                    </>
-                }
-            >
-                <p>Are you sure you want to <strong>{pendingAction?.status === 'pending' ? 'restore' : 'mark'}</strong> the appointment for <strong>{pendingAction?.name}</strong> as <strong>{pendingAction?.status}</strong>?</p>
+            {/* Action Modal for Appointment (Synced with Appointments.jsx) */}
+            {actionModal.open && actionModal.appt && (
+                <Modal
+                    isOpen={actionModal.open}
+                    onClose={() => setActionModal({ ...actionModal, open: false })}
+                    title={`Appointment: ${actionModal.appt.patient_name}`}
+                >
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <div className="flex-between">
+                            <p><strong>{t('date_label')}:</strong> {new Date(actionModal.appt.appointment_date).toLocaleString()}</p>
+                            <div className="flex gap-2">
+                                <span className={`status-chip status-${actionModal.appt.status}`}>
+                                    {t(actionModal.appt.status) || actionModal.appt.status}
+                                </span>
+                                <span className={`status-badge-wrapper badge-${actionModal.appt.payment_status === 'paid' ? 'green' : 'red'}`}>
+                                    {t(actionModal.appt.payment_status) || actionModal.appt.payment_status}
+                                </span>
+                            </div>
+                        </div>
+                        <p><strong>{t('reason')}:</strong> {actionModal.appt.reason || t('no_description') || 'No description'}</p>
+                        <hr style={{ borderColor: '#f1f5f9' }} />
 
-                {pendingAction?.status === 'cancelled' && (
-                    <div style={{ marginTop: '1rem' }}>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Reason for cancellation:</label>
-                        <textarea
-                            className="input-field"
-                            rows="3"
-                            value={cancellationReason}
-                            onChange={(e) => setCancellationReason(e.target.value)}
-                            placeholder="Optional reason..."
-                            autoFocus
-                        />
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                            {/* Pay Button */}
+                            {(actionModal.appt.payment_status === 'pending' || actionModal.appt.payment_status === 'debt') && (
+                                <button className="btn btn-primary" onClick={() => {
+                                    setPaymentModal({
+                                        open: true,
+                                        initialData: {
+                                            type: 'income_patient',
+                                            amount: actionModal.appt.cost || 0,
+                                            patientId: actionModal.appt.patient_id,
+                                            patientName: actionModal.appt.patient_name,
+                                            patientDni: actionModal.appt.patient_dni,
+                                            patientUserId: actionModal.appt.patient_user_id,
+                                            doctorId: actionModal.appt.doctor_id,
+                                            description: `Payment for appointment on ${new Date(actionModal.appt.appointment_date).toLocaleDateString()}`,
+                                            apptId: actionModal.appt.id
+                                        },
+                                        apptId: actionModal.appt.id
+                                    });
+                                    setActionModal({ ...actionModal, open: false });
+                                }}>
+                                    💳 {t('pay')}
+                                </button>
+                            )}
+
+                            {/* Reschedule Button */}
+                            <button className="btn btn-secondary" onClick={() => {
+                                navigate('/appointments', { state: { rescheduleAppt: actionModal.appt } });
+                            }}>
+                                📅 {t('reschedule')}
+                            </button>
+
+                            {/* Action Buttons for Status */}
+                            {actionModal.appt.status === 'pending' && (
+                                <button className="btn" style={{ background: '#10b981', color: 'white' }} onClick={() => {
+                                    handleUpdateStatus(actionModal.appt.id, 'confirmed');
+                                    setActionModal({ ...actionModal, open: false });
+                                }}>
+                                    ✅ {t('confirm')}
+                                </button>
+                            )}
+
+                            {(actionModal.appt.status === 'confirmed' || actionModal.appt.status === 'pending' || actionModal.appt.status === 'rescheduled') && (
+                                <button className="btn" style={{ background: '#3b82f6', color: 'white' }} onClick={() => {
+                                    handleUpdateStatus(actionModal.appt.id, 'completed');
+                                    setActionModal({ ...actionModal, open: false });
+                                }}>
+                                    🏆 {t('complete')}
+                                </button>
+                            )}
+
+                            <button className="btn" style={{ background: '#f59e0b', color: 'white' }} onClick={() => {
+                                handleUpdateStatus(actionModal.appt.id, 'suspended');
+                                setActionModal({ ...actionModal, open: false });
+                            }}>
+                                ⏸ {t('suspend')}
+                            </button>
+
+                            <button className="btn" style={{ background: '#64748b', color: 'white' }} onClick={() => {
+                                handleUpdateStatus(actionModal.appt.id, 'absent');
+                                setActionModal({ ...actionModal, open: false });
+                            }}>
+                                🚫 {t('absent')}
+                            </button>
+                        </div>
+
+                        <hr style={{ borderColor: '#f1f5f9' }} />
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                            {/* Cancel (Standard) */}
+                            <button className="btn btn-secondary" style={{ borderColor: '#ef4444', color: '#ef4444' }} onClick={() => {
+                                handleCancel(actionModal.appt.id);
+                                setActionModal({ ...actionModal, open: false });
+                            }}>
+                                ❌ {t('cancel')}
+                            </button>
+
+                            {/* Delete (Error) */}
+                            {(user.role === 'admin' || user.role === 'secretary') && (
+                                <button className="btn" style={{ background: '#ef4444', color: 'white' }} onClick={() => {
+                                    handleDelete(actionModal.appt.id);
+                                    setActionModal({ ...actionModal, open: false });
+                                }}>
+                                    🗑 {t('delete_error')}
+                                </button>
+                            )}
+                        </div>
                     </div>
-                )}
-            </Modal>
+                </Modal>
+            )}
 
             <Modal
                 isOpen={prescribeModal.open}
                 onClose={() => setPrescribeModal({ ...prescribeModal, open: false })}
-                title={`New Prescription for ${prescribeModal.patientName}`}
+                title={`${t('prescription_for') || 'Receta para'} ${prescribeModal.patientName}`}
                 footer={
                     <>
                         <button className="btn btn-secondary" onClick={() => setPrescribeModal({ ...prescribeModal, open: false })}>{t('cancel')}</button>
@@ -140,11 +266,11 @@ const Dashboard = () => {
                 <div style={{ display: 'grid', gap: '1rem' }}>
                     <div className="input-group">
                         <label className="input-label">{t('medications')}</label>
-                        <textarea className="input-field" rows="4" value={prescribeModal.medications} onChange={e => setPrescribeModal({ ...prescribeModal, medications: e.target.value })} placeholder="e.g. Ibuprofen 600mg" autoFocus />
+                        <textarea className="input-field" rows="4" value={prescribeModal.medications} onChange={e => setPrescribeModal({ ...prescribeModal, medications: e.target.value })} placeholder={t('meds_placeholder') || "ej. Ibuprofeno 600mg"} autoFocus />
                     </div>
                     <div className="input-group">
                         <label className="input-label">{t('instructions')}</label>
-                        <textarea className="input-field" rows="3" value={prescribeModal.instructions} onChange={e => setPrescribeModal({ ...prescribeModal, instructions: e.target.value })} placeholder="e.g. Take every 8 hours with food." />
+                        <textarea className="input-field" rows="3" value={prescribeModal.instructions} onChange={e => setPrescribeModal({ ...prescribeModal, instructions: e.target.value })} placeholder={t('instructions_placeholder') || "ej. Tomar cada 8 horas con comida."} />
                     </div>
                 </div>
             </Modal>
@@ -175,14 +301,14 @@ const Dashboard = () => {
             <Sidebar />
 
             <main className="main-content">
-                <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                <header className="header-actions">
                     <h1 className="title">{t('dashboard')}</h1>
                     {user.role !== 'admin' && (
-                        <a href="/appointments" className="btn btn-primary" style={{ textDecoration: 'none' }}>{t('new_appointment')}</a>
+                        <a href="/appointments" className="btn btn-primary no-underline">{t('new_appointment')}</a>
                     )}
                 </header>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+                <div className="grid grid-cols-auto gap-6 text-left">
                     {user.role !== 'admin' && (
                         <div className="card">
                             <h3>{t('today_schedule')}</h3>
@@ -191,93 +317,39 @@ const Dashboard = () => {
                                     <p className="text-muted">{t('no_appointments_today')}</p> :
                                     <ul style={{ listStyle: 'none', padding: 0 }}>
                                         {todayAppointments.sort((a, b) => new Date(a.appointment_date) - new Date(b.appointment_date)).map(a => {
-                                            const time = new Date(a.appointment_date);
-                                            const now = new Date();
-                                            const isPast = time < now;
-                                            const isCompleted = a.status === 'completed';
-                                            const isCancelled = a.status === 'cancelled';
-
-                                            let bg = 'transparent';
-                                            let borderLeft = 'none';
-                                            let opacity = 1;
-
-                                            if (isCompleted) {
-                                                opacity = 0.5;
-                                                bg = '#f8fafc';
-                                            } else if (isCancelled) {
-                                                opacity = 0.5;
-                                                bg = '#fef2f2';
-                                            } else if (!isPast && a.status === 'pending') {
-                                                bg = '#eff6ff';
-                                                borderLeft = '4px solid #3b82f6';
-                                            }
-
-                                            const openConfirm = (status) => {
-                                                setPendingAction({ id: a.id, status, name: a.patient_name });
-                                                setModalOpen(true);
-                                            };
+                                            let itemClass = "appointment-item";
+                                            if (a.status === 'completed') itemClass += " status-completed";
+                                            else if (a.status === 'cancelled') itemClass += " status-cancelled";
+                                            else if (a.status === 'pending') itemClass += " status-pending";
 
                                             return (
-                                                <li key={a.id} style={{
-                                                    padding: '0.75rem',
-                                                    borderBottom: '1px solid #f1f5f9',
-                                                    background: bg,
-                                                    borderLeft: borderLeft,
-                                                    opacity: opacity,
-                                                    marginBottom: '0.5rem',
-                                                    borderRadius: '0 4px 4px 0',
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between',
-                                                    alignItems: 'center'
-                                                }}>
+                                                <li key={a.id} className={itemClass} onClick={() => setActionModal({ open: true, appt: a })} style={{ cursor: 'pointer' }}>
                                                     <div>
                                                         <div style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>
                                                             {new Date(a.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
-                                                            {a.status === 'completed' && <span style={{ fontSize: '0.7rem', marginLeft: '0.5rem', color: 'green' }}>({t('completed')})</span>}
-                                                            {a.status === 'cancelled' && <span style={{ fontSize: '0.7rem', marginLeft: '0.5rem', color: 'red' }}>({t('cancelled')})</span>}
+                                                            <span style={{ fontSize: '0.7rem', marginLeft: '0.5rem', color: '#64748b' }}>
+                                                                ({t(a.status)})
+                                                            </span>
                                                         </div>
                                                         <div style={{ fontSize: '1rem' }}>{a.patient_name}</div>
                                                         <div style={{ fontSize: '0.8rem', color: '#64748b' }}>w/ {a.doctor_name}</div>
+                                                        {a.reason && (
+                                                            <div style={{ fontSize: '0.75rem', color: '#6366f1', fontStyle: 'italic', marginTop: '0.2rem' }}>
+                                                                💬 {a.reason}
+                                                            </div>
+                                                        )}
                                                     </div>
 
-                                                    {(user.role === 'secretary' || user.role === 'doctor') && (
-                                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                                            {user.role === 'doctor' && (
-                                                                <button onClick={() => setPrescribeModal({ open: true, apptId: a.id, patientName: a.patient_name, medications: '', instructions: '' })} title="Write Prescription" style={{ border: 'none', background: '#3b82f6', color: 'white', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Rx</button>
-                                                            )}
-                                                            {(user.role === 'secretary' || user.role === 'doctor') && (
-                                                                <>
-                                                                    {a.payment_status === 'paid' ? (
-                                                                        <span title="Paid" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', background: '#dcfce7', color: '#166534', fontSize: '0.8rem' }}>$✓</span>
-                                                                    ) : (
-                                                                        <button onClick={() => setPaymentModal({
-                                                                            open: true,
-                                                                            initialData: {
-                                                                                type: 'income_patient',
-                                                                                amount: '',
-                                                                                description: `Consultation: ${a.patient_name}`,
-                                                                                patientId: a.patient_id,
-                                                                                patientName: a.patient_name,
-                                                                                patientDni: a.patient_dni,
-                                                                                patientUserId: a.patient_user_id,
-                                                                                doctorId: a.doctor_id
-                                                                            },
-                                                                            apptId: a.id
-                                                                        })} title={a.payment_status === 'partial' ? "Pay Remaining" : "Charge Payment"} style={{ border: 'none', background: a.payment_status === 'partial' ? '#ca8a04' : '#eab308', color: 'white', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>$</button>
-                                                                    )}
-                                                                </>
-                                                            )}
-                                                            {a.status === 'pending' && (
-                                                                <>
-                                                                    <button onClick={() => openConfirm('completed')} title="Mark Completed" style={{ border: 'none', background: '#dcfce7', color: '#166534', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✓</button>
-                                                                    <button onClick={() => openConfirm('cancelled')} title="Cancel" style={{ border: 'none', background: '#fee2e2', color: '#991b1b', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
-                                                                </>
-                                                            )}
-                                                            {(a.status === 'completed' || a.status === 'cancelled') && (
-                                                                <button onClick={() => openConfirm('pending')} title="Restore to Pending" style={{ border: 'none', background: '#e2e8f0', color: '#475569', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>↺</button>
-                                                            )}
-                                                        </div>
-                                                    )}
+                                                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                                        {a.payment_status === 'paid' && <span title="Paid" style={{ color: '#10b981' }}>$✓</span>}
+                                                        {a.payment_status === 'debt' && <span title="Debt" style={{ color: '#ef4444' }}>$!</span>}
+                                                        {user.role === 'doctor' && (
+                                                            <button onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setPrescribeModal({ open: true, apptId: a.id, patientName: a.patient_name, medications: '', instructions: '' });
+                                                            }} title="Write Prescription" className="icon-btn btn-icon-primary">Rx</button>
+                                                        )}
+                                                    </div>
                                                 </li>
                                             );
                                         })}
@@ -306,8 +378,8 @@ const Dashboard = () => {
                     {(user.role === 'secretary' || user.role === 'doctor' || user.role === 'admin') && (
                         <div className="card" style={{ gridColumn: '1 / -1' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                                <h3>📋 Requerimientos en Curso</h3>
-                                <a href="/requests" style={{ fontSize: '0.8rem' }} className="btn btn-secondary">Ver Todos</a>
+                                <h3>📋 {t('ongoing_requirements') || 'Requerimientos en Curso'}</h3>
+                                <a href="/requests" style={{ fontSize: '0.8rem' }} className="btn btn-secondary">{t('view_all') || 'Ver Todos'}</a>
                             </div>
                             <RequirementsList user={user} />
                         </div>

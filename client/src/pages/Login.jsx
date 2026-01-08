@@ -25,10 +25,10 @@ const Login = () => {
     return (
         <div className="auth-page">
             <div className="card auth-card">
-                <h2 className="title" style={{ textAlign: 'center' }}>{t('welcome_back')}</h2>
-                <p className="subtitle" style={{ textAlign: 'center' }}>{t('sign_in_subtitle')}</p>
+                <h2 className="title text-center">{t('welcome_back')}</h2>
+                <p className="subtitle text-center">{t('sign_in_subtitle')}</p>
 
-                {error && <div style={{ color: 'var(--error)', marginBottom: '1rem', textAlign: 'center' }}>{error}</div>}
+                {error && <div className="text-center text-red mb-4">{error}</div>}
 
                 <form onSubmit={handleSubmit}>
                     <div className="input-group">
@@ -51,11 +51,11 @@ const Login = () => {
                             required
                         />
                     </div>
-                    <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>
+                    <button type="submit" className="btn btn-primary w-full">
                         {t('sign_in')}
                     </button>
                 </form>
-                <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+                <div className="mt-6 text-center">
                     <span className="subtitle">{t('no_account')} </span>
                     <Link to="/register" style={{ color: 'var(--accent-color)', textDecoration: 'none', fontWeight: 600 }}>{t('register')}</Link>
                 </div>

@@ -39,9 +39,9 @@ const Register = () => {
     return (
         <div className="auth-page">
             <div className="card auth-card" style={{ maxWidth: '500px' }}>
-                <h2 className="title" style={{ textAlign: 'center' }}>{t('create_account')}</h2>
+                <h2 className="title text-center">{t('create_account')}</h2>
 
-                {error && <div style={{ color: 'var(--error)', marginBottom: '1rem', textAlign: 'center' }}>{error}</div>}
+                {error && <div className="alert-box alert-error text-center">{error}</div>}
 
                 <form onSubmit={handleSubmit}>
                     <div className="input-group">
@@ -96,11 +96,11 @@ const Register = () => {
                         </>
                     )}
 
-                    <button type="submit" className="btn btn-accent" style={{ width: '100%' }}>
+                    <button type="submit" className="btn btn-accent w-full">
                         {t('register')}
                     </button>
                 </form>
-                <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+                <div className="text-center mt-6">
                     <span className="subtitle">{t('already_account')} </span>
                     <Link to="/login" style={{ color: 'var(--primary-color)', textDecoration: 'none', fontWeight: 600 }}>{t('login')}</Link>
                 </div>

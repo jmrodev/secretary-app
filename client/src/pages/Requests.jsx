@@ -12,7 +12,7 @@ const Requests = () => {
             <Sidebar />
 
             <main className="main-content">
-                <header style={{ marginBottom: '2rem' }}>
+                <header className="mb-8">
                     <h1 className="title">Requerimientos en Curso</h1>
                 </header>
 

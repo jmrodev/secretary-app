@@ -6,6 +6,7 @@ import { useLanguage } from '../context/LanguageContext';
 
 import Modal from '../components/Modal';
 import Sidebar from '../components/Sidebar';
+import CurrencyInput from '../components/CurrencyInput';
 
 const Patients = () => {
     const { user } = useAuth();
@@ -281,14 +282,14 @@ const Patients = () => {
                 <main className="main-content" style={{ maxWidth: '800px', margin: '0 auto' }}>
                     <button onClick={() => { setSelectedPatient(null); setDetails(null); }} style={{ marginBottom: '1rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent-color)', fontWeight: 'bold' }}>&larr; {t('back_to_list')}</button>
 
-                    <h1 className="title" style={{ textTransform: 'capitalize' }}>{details.full_name}</h1>
+                    <h1 className="title capitalize">{details.full_name}</h1>
 
-                    <div className="card" style={{ marginBottom: '2rem' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div className="card mb-8">
+                        <div className="flex-between">
                             <h3>{t('patient_info')}</h3>
-                            <button className="btn btn-secondary" onClick={handleEditClick} style={{ padding: '0.25rem 0.5rem', fontSize: '0.85rem' }}>{t('edit_info')}</button>
+                            <button className="btn btn-secondary text-sm px-2" onClick={handleEditClick}>{t('edit_info')}</button>
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                        <div className="grid-cols-fit gap-4 mt-4 grid">
                             <p><strong>{t('dni')}:</strong> {details.dni || 'N/A'}</p>
                             <p><strong>Obra Social:</strong> {details.insurance_name || 'N/A'}</p>
                             <p><strong>Nro Afiliado:</strong> {(details.affiliate_number || details.insurance || 'N/A').replace(/^Afiliado/, '').trim()}</p>
@@ -309,8 +310,10 @@ const Patients = () => {
                             <ul style={{ listStyle: 'none', padding: 0 }}>
                                 {details.appointments.map(a => (
                                     <li key={a.id} style={{ padding: '0.5rem 0', borderBottom: '1px solid #f1f5f9' }}>
-                                        {new Date(a.appointment_date).toLocaleDateString()} - <strong>Dr. {a.doctor_name}</strong>
-                                        <div style={{ color: '#64748b', fontSize: '0.9rem' }}>{a.reason}</div>
+                                        {new Date(a.appointment_date).toLocaleDateString()} - <strong>Dr. {a.doctor_name}</strong> - <span style={{ color: a.status === 'cancelled' ? '#ef4444' : '#64748b' }}>{a.status}</span>
+                                        <div style={{ color: '#64748b', fontSize: '0.9rem' }}>
+                                            {a.status === 'cancelled' && a.cancellation_reason ? `Cancellation Reason: ${a.cancellation_reason}` : (a.reason || '')}
+                                        </div>
                                     </li>
                                 ))}
                             </ul>
@@ -410,12 +413,12 @@ const Patients = () => {
                             </>
                         }
                     >
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <div className="flex-col gap-4">
                             <div className="input-group">
                                 <label className="input-label">{t('full_name')}</label>
                                 <input className="input-field" value={editData.full_name} onChange={e => setEditData({ ...editData, full_name: e.target.value })} />
                             </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                            <div className="grid-cols-2 gap-4 grid">
                                 <div className="input-group">
                                     <label className="input-label">{t('dni')}</label>
                                     <input className="input-field" value={editData.dni} onChange={e => setEditData({ ...editData, dni: e.target.value })} />
@@ -429,10 +432,10 @@ const Patients = () => {
                                         ))}
                                     </select>
                                 </div>
-                                <div className="input-group">
-                                    <label className="input-label">Nro Afiliado</label>
-                                    <input className="input-field" value={editData.affiliate_number} onChange={e => setEditData({ ...editData, affiliate_number: e.target.value })} />
-                                </div>
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">Nro Afiliado</label>
+                                <input className="input-field" value={editData.affiliate_number} onChange={e => setEditData({ ...editData, affiliate_number: e.target.value })} />
                             </div>
                             <div className="input-group">
                                 <label className="input-label">Email</label>
@@ -483,7 +486,7 @@ const Patients = () => {
                                 </div>
                                 <div className="input-group">
                                     <label className="input-label">Tariff Override ($)</label>
-                                    <input type="number" className="input-field" value={editData.tariff_override} onChange={e => setEditData({ ...editData, tariff_override: e.target.value })} placeholder="e.g. 5000" />
+                                    <CurrencyInput className="input-field" value={editData.tariff_override} onChange={e => setEditData({ ...editData, tariff_override: e.target.value })} placeholder="e.g. 5000" />
                                     <small style={{ color: '#64748b' }}>Fixed price (ignores % if set)</small>
                                 </div>
                             </div>
@@ -505,7 +508,7 @@ const Patients = () => {
                         <div>
                             <p style={{ marginBottom: '1rem' }}>Enter amount to pay:</p>
                             <label className="input-label">{t('amount')} ($)</label>
-                            <input className="input-field" type="number" value={debtParams.amount} onChange={e => setDebtParams({ ...debtParams, amount: e.target.value })} />
+                            <CurrencyInput className="input-field" value={debtParams.amount} onChange={e => setDebtParams({ ...debtParams, amount: e.target.value })} />
 
                             <label className="input-label" style={{ marginTop: '1rem' }}>{t('payment_method')}</label>
                             <select className="input-field" value={debtParams.method} onChange={e => setDebtParams({ ...debtParams, method: e.target.value })}>
@@ -518,7 +521,7 @@ const Patients = () => {
                     </Modal>
 
                 </main>
-            </div>
+            </div >
         );
     }
 
@@ -526,22 +529,15 @@ const Patients = () => {
         <div className="app-layout">
             <Sidebar />
             <main className="main-content">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div className="flex-between">
+                    <div className="flex items-center gap-4">
                         <h1 className="title">{t('patients_list')}</h1>
-                        <span style={{
-                            background: '#e2e8f0',
-                            color: '#475569',
-                            padding: '0.25rem 0.75rem',
-                            borderRadius: '999px',
-                            fontSize: '0.9rem',
-                            fontWeight: 'bold'
-                        }}>
+                        <span className="bg-slate-200 text-slate-600 px-3 py-1 rounded-full text-sm font-bold">
                             {patients.length}
                         </span>
                         <button
                             onClick={() => { setLoading(true); fetchPatients(); }}
-                            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', marginLeft: '0.5rem' }}
+                            className="bg-none border-none cursor-pointer text-xl ml-2"
                             title={t('refresh_list')}
                         >
                             🔄
@@ -654,26 +650,26 @@ const Patients = () => {
                                 </div>
 
                                 {/* Ratings Column */}
-                                <div style={{ display: 'flex', gap: '1.5rem', marginRight: '1rem' }}>
-                                    <div style={{ textAlign: 'center' }} title={`${t('rating_financial_tooltip')}: $${p.total_debt}`}>
-                                        <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '2px' }}>{t('rating_financial')}</div>
-                                        <div style={{ color: '#fbbf24' }}>
+                                <div className="flex gap-6 mr-4">
+                                    <div className="rating-container" title={`${t('rating_financial_tooltip')}: $${p.total_debt}`}>
+                                        <div className="rating-label">{t('rating_financial')}</div>
+                                        <div className="rating-stars-gold">
                                             {[1, 2, 3, 4, 5].map(s => <span key={s}>{s <= calculateFinancialRating(Number(p.total_debt)) ? '★' : '☆'}</span>)}
                                         </div>
                                     </div>
-                                    <div style={{ textAlign: 'center' }} title={`${t('rating_attendance_tooltip')}: ${p.total_appointments - p.missed_appointments}/${p.total_appointments}`}>
-                                        <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '2px' }}>{t('rating_attendance')}</div>
-                                        <div style={{ color: '#3b82f6' }}>
+                                    <div className="rating-container" title={`${t('rating_attendance_tooltip')}: ${p.total_appointments - p.missed_appointments}/${p.total_appointments}`}>
+                                        <div className="rating-label">{t('rating_attendance')}</div>
+                                        <div className="rating-stars-blue">
                                             {[1, 2, 3, 4, 5].map(s => <span key={s}>{s <= calculateAttendanceRating(p.total_appointments, p.missed_appointments) ? '★' : '☆'}</span>)}
                                         </div>
                                     </div>
                                     <div
-                                        style={{ textAlign: 'center', cursor: 'pointer' }}
+                                        className="rating-container cursor-pointer"
                                         title={t('rating_behavior_tooltip')}
                                         onClick={() => handleBehaviorRatingChange(p.id, ((p.behavior_rating || 5) % 5) + 1)}
                                     >
-                                        <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '2px' }}>{t('rating_behavior')}</div>
-                                        <div style={{ color: '#ec4899' }}>
+                                        <div className="rating-label">{t('rating_behavior')}</div>
+                                        <div className="rating-stars-pink">
                                             {[1, 2, 3, 4, 5].map(s => <span key={s}>{s <= (p.behavior_rating || 5) ? '★' : '☆'}</span>)}
                                         </div>
                                     </div>
@@ -702,7 +698,7 @@ const Patients = () => {
                     <div>
                         <p style={{ marginBottom: '1rem' }}>Enter amount to pay:</p>
                         <label className="input-label">{t('amount')} ($)</label>
-                        <input className="input-field" type="number" value={debtParams.amount} onChange={e => setDebtParams({ ...debtParams, amount: e.target.value })} />
+                        <CurrencyInput className="input-field" value={debtParams.amount} onChange={e => setDebtParams({ ...debtParams, amount: e.target.value })} />
 
                         <label className="input-label" style={{ marginTop: '1rem' }}>{t('payment_method')}</label>
                         <select className="input-field" value={debtParams.method} onChange={e => setDebtParams({ ...debtParams, method: e.target.value })}>

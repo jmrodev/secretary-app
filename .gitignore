@@ -1,6 +1,4 @@
-
-# Local MySQL Data
-mysql_data/
-
+/mysql_data
 # Backups
 backup_*.sql
+android_sdk/tools.zip

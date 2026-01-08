@@ -11,7 +11,7 @@
 async function calculatePrice(conn, doctorId, patientId, serviceType = 'consultation') {
     // Get Doctor Prices
     const docRows = await conn.query(
-        "SELECT consultation_price, prescription_price, medical_license_price, virtual_consultation_price FROM doctors WHERE id = ?",
+        "SELECT consultation_price, prescription_price, medical_license_price, virtual_consultation_price, certificate_price FROM doctors WHERE id = ?",
         [doctorId]
     );
 
@@ -31,6 +31,10 @@ async function calculatePrice(conn, doctorId, patientId, serviceType = 'consulta
         case 'medical_license':
             basePrice = Number(d.medical_license_price) || 0;
             priceType = 'Medical License';
+            break;
+        case 'certificate':
+            basePrice = Number(d.certificate_price) || 0;
+            priceType = 'Certificate';
             break;
         case 'virtual_consultation':
             basePrice = Number(d.virtual_consultation_price) || 0;
