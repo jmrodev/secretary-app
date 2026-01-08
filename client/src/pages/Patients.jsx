@@ -279,8 +279,10 @@ const Patients = () => {
         return (
             <div className="app-layout">
                 <Sidebar />
-                <main className="main-content" style={{ maxWidth: '800px', margin: '0 auto' }}>
-                    <button onClick={() => { setSelectedPatient(null); setDetails(null); }} style={{ marginBottom: '1rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent-color)', fontWeight: 'bold' }}>&larr; {t('back_to_list')}</button>
+                <main className="main-content max-w-800 mx-auto">
+                    <button onClick={() => { setSelectedPatient(null); setDetails(null); }} className="back-btn-text">
+                        &larr; {t('back_to_list')}
+                    </button>
 
                     <h1 className="title capitalize">{details.full_name}</h1>
 
@@ -289,79 +291,85 @@ const Patients = () => {
                             <h3>{t('patient_info')}</h3>
                             <button className="btn btn-secondary text-sm px-2" onClick={handleEditClick}>{t('edit_info')}</button>
                         </div>
-                        <div className="grid-cols-fit gap-4 mt-4 grid">
+                        <div className="patient-info-grid">
                             <p><strong>{t('dni')}:</strong> {details.dni || 'N/A'}</p>
                             <p><strong>Obra Social:</strong> {details.insurance_name || 'N/A'}</p>
                             <p><strong>Nro Afiliado:</strong> {(details.affiliate_number || details.insurance || 'N/A').replace(/^Afiliado/, '').trim()}</p>
-                            <p><strong>Phone:</strong> {details.phone ? <a href={`https://wa.me/${details.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" style={{ color: '#3b82f6', fontWeight: 'bold' }}>{details.phone}</a> : 'N/A'}</p>
-                            <p><strong>Email:</strong> {details.email ? <a href={`mailto:${details.email}`} style={{ color: '#3b82f6', fontWeight: 'bold' }}>{details.email}</a> : 'N/A'}</p>
+                            <p><strong>Phone:</strong> {details.phone ? <a href={`https://wa.me/${details.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="detail-link">{details.phone}</a> : 'N/A'}</p>
+                            <p><strong>Email:</strong> {details.email ? <a href={`mailto:${details.email}`} className="detail-link">{details.email}</a> : 'N/A'}</p>
                             <p><strong>{t('dob')}:</strong> {details.dob ? new Date(details.dob).toLocaleDateString() : 'N/A'}</p>
                         </div>
-                        <div style={{ marginTop: '1rem', display: 'flex', gap: '2rem' }}>
+                        <div className="flex gap-8 mt-4">
                             <p><strong>{t('address')}:</strong> {details.address || 'N/A'}</p>
-                            <p><strong>{t('accumulated_medical_leave')}:</strong> <span style={{ fontWeight: 'bold', color: '#7c3aed' }}>{details.accumulated_days || 0} Days</span></p>
+                            <p><strong>{t('accumulated_medical_leave')}:</strong> <span className="font-bold text-purple-600">{details.accumulated_days || 0} Days</span></p>
                         </div>
-                        <p style={{ marginTop: '0.5rem' }}><strong>{t('micro_history')}:</strong> {details.medical_history || 'N/A'}</p>
+                        <p className="mt-2"><strong>{t('micro_history')}:</strong> {details.medical_history || 'N/A'}</p>
                     </div>
 
-                    <div className="card" style={{ marginBottom: '2rem' }}>
+                    <div className="card mb-4">
                         <h3>{t('previous_appointments')}</h3>
-                        {details.appointments.length === 0 ? <p>{t('no_appointments')}</p> : (
-                            <ul style={{ listStyle: 'none', padding: 0 }}>
+                        {details.appointments.length === 0 ? <p className="text-muted mt-2">{t('no_appointments')}</p> : (
+                            <ul className="history-list mt-2">
                                 {details.appointments.map(a => (
-                                    <li key={a.id} style={{ padding: '0.5rem 0', borderBottom: '1px solid #f1f5f9' }}>
-                                        {new Date(a.appointment_date).toLocaleDateString()} - <strong>Dr. {a.doctor_name}</strong> - <span style={{ color: a.status === 'cancelled' ? '#ef4444' : '#64748b' }}>{a.status}</span>
-                                        <div style={{ color: '#64748b', fontSize: '0.9rem' }}>
-                                            {a.status === 'cancelled' && a.cancellation_reason ? `Cancellation Reason: ${a.cancellation_reason}` : (a.reason || '')}
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-                    </div>
-
-                    <div className="card" style={{ marginBottom: '2rem' }}>
-                        <h3>{t('medical_documents')}</h3>
-
-                        <h4 style={{ fontSize: '1rem', marginTop: '1rem', color: '#64748b' }}>{t('prescriptions_licenses')}</h4>
-                        {details.prescriptions && details.prescriptions.length === 0 ? <p className="text-muted">None.</p> : (
-                            <ul style={{ listStyle: 'none', padding: 0 }}>
-                                {details.prescriptions && details.prescriptions.map(p => (
-                                    <li key={p.id} style={{ padding: '0.5rem 0', borderBottom: '1px solid #f1f5f9' }}>
-                                        {new Date(p.created_at).toLocaleDateString()} - <strong>{(p.type || 'unknown').toUpperCase()}</strong> by Dr. {p.doctor_name}
-                                        <div style={{ color: '#64748b', fontSize: '0.9rem' }}>{p.diagnosis ? `Dx: ${p.diagnosis}` : `Days: ${p.days}`}</div>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-
-                        <h4 style={{ fontSize: '1rem', marginTop: '1.5rem', color: '#64748b' }}>Uploaded Files</h4>
-                        {details.files && details.files.length === 0 ? <p className="text-muted">No uploaded files.</p> : (
-                            <ul style={{ listStyle: 'none', padding: 0 }}>
-                                {details.files && details.files.map(f => (
-                                    <li key={f.id} style={{ padding: '0.5rem 0', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between' }}>
-                                        <div>
-                                            <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${f.file_url}`} target="_blank" rel="noreferrer" style={{ fontWeight: 'bold', color: '#3b82f6', textDecoration: 'none' }}>
-                                                {f.description || f.file_name}
-                                            </a>
-                                            <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
-                                                Uploaded by {f.uploader_name} on {new Date(f.created_at).toLocaleDateString()}
+                                    <li key={a.id} className="history-item">
+                                        <div className="history-item-content">
+                                            <span>{new Date(a.appointment_date).toLocaleDateString()} - <strong>Dr. {a.doctor_name}</strong></span>
+                                            <div className="text-sm-muted">
+                                                {a.status === 'cancelled' && a.cancellation_reason ? `Reason: ${a.cancellation_reason}` : (a.reason || '')}
                                             </div>
                                         </div>
+                                        <span className={`status-badge ${a.status === 'cancelled' ? 'bg-red-100 text-red-800' : 'bg-slate-100 text-slate-800'}`}>{a.status}</span>
                                     </li>
                                 ))}
                             </ul>
                         )}
                     </div>
 
-                    <div className="card" style={{ marginBottom: '2rem' }}>
+                    <div className="card mb-4">
+                        <h3>{t('medical_documents')}</h3>
+
+                        <h4 className="text-muted font-bold mt-4 mb-2 text-sm uppercase">{t('prescriptions_licenses')}</h4>
+                        {details.prescriptions && details.prescriptions.length === 0 ? <p className="text-muted">None.</p> : (
+                            <ul className="history-list">
+                                {details.prescriptions && details.prescriptions.map(p => (
+                                    <li key={p.id} className="history-item">
+                                        <div className="history-item-content">
+                                            <span>{new Date(p.created_at).toLocaleDateString()} - <strong>{(p.type || 'unknown').toUpperCase()}</strong></span>
+                                            <span className="text-sm-muted">Dr. {p.doctor_name}</span>
+                                        </div>
+                                        <div className="text-sm-muted">{p.diagnosis ? `Dx: ${p.diagnosis}` : `Days: ${p.days}`}</div>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+
+                        <h4 className="text-muted font-bold mt-6 mb-2 text-sm uppercase">Uploaded Files</h4>
+                        {details.files && details.files.length === 0 ? <p className="text-muted">No uploaded files.</p> : (
+                            <ul className="history-list">
+                                {details.files && details.files.map(f => (
+                                    <li key={f.id} className="history-item">
+                                        <div className="history-item-content">
+                                            <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${f.file_url}`} target="_blank" rel="noreferrer" className="detail-link font-bold">
+                                                {f.description || f.file_name}
+                                            </a>
+                                            <span className="text-xs-muted">
+                                                Uploaded by {f.uploader_name} on {new Date(f.created_at).toLocaleDateString()}
+                                            </span>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+
+                    <div className="card mb-4">
                         <h3>{t('financial_history_debt')}</h3>
-                        {(!details.transactions || details.transactions.length === 0) ? <p>No transactions found.</p> : (
+                        {(!details.transactions || details.transactions.length === 0) ? <p className="text-muted mt-2">No transactions found.</p> : (
                             <>
-                                <div style={{ marginBottom: '1rem', padding: '1rem', background: '#fffbeb', borderRadius: '6px', border: '1px solid #fcd34d', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div className="debt-summary-box mt-4">
                                     <div>
                                         <strong>{t('total_debt')}: </strong>
-                                        <span style={{ color: '#b45309', fontWeight: 'bold', fontSize: '1.2rem' }}>
+                                        <span className="debt-amount-highlight">
                                             ${details.transactions.filter(t => t.status === 'pending').reduce((acc, t) => acc + Number(t.amount), 0).toFixed(2)}
                                         </span>
                                     </div>
@@ -369,28 +377,23 @@ const Patients = () => {
                                         <button className="btn btn-primary" onClick={(e) => openDebtModal(e, details.id, details.transactions.filter(t => t.status === 'pending').reduce((acc, t) => acc + Number(t.amount), 0))}>{t('pay_debt')}</button>
                                     )}
                                 </div>
-                                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+                                <table className="transactions-table">
                                     <thead>
-                                        <tr style={{ textAlign: 'left', borderBottom: '1px solid #e2e8f0' }}>
-                                            <th style={{ padding: '0.5rem' }}>{t('transaction_date')}</th>
-                                            <th style={{ padding: '0.5rem' }}>{t('description')}</th>
-                                            <th style={{ padding: '0.5rem' }}>{t('amount')}</th>
-                                            <th style={{ padding: '0.5rem' }}>{t('status')}</th>
+                                        <tr>
+                                            <th>{t('transaction_date')}</th>
+                                            <th>{t('description')}</th>
+                                            <th>{t('amount')}</th>
+                                            <th>{t('status')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {details.transactions.map(tx => (
-                                            <tr key={tx.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                                                <td style={{ padding: '0.5rem' }}>{new Date(tx.transaction_date).toLocaleDateString()}</td>
-                                                <td style={{ padding: '0.5rem' }}>{tx.description}</td>
-                                                <td style={{ padding: '0.5rem', fontWeight: 'bold' }}>${tx.amount}</td>
-                                                <td style={{ padding: '0.5rem' }}>
-                                                    <span style={{
-                                                        padding: '2px 6px', borderRadius: '4px',
-                                                        background: tx.status === 'paid' ? '#dcfce7' : '#fee2e2',
-                                                        color: tx.status === 'paid' ? '#166534' : '#991b1b',
-                                                        fontSize: '0.8rem'
-                                                    }}>
+                                            <tr key={tx.id}>
+                                                <td>{new Date(tx.transaction_date).toLocaleDateString()}</td>
+                                                <td>{tx.description}</td>
+                                                <td className="font-bold">${tx.amount}</td>
+                                                <td>
+                                                    <span className={`status-badge ${tx.status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                                                         {(tx.status === 'paid' ? t('paid') : t('debt')).toUpperCase()}
                                                     </span>
                                                 </td>
@@ -412,6 +415,7 @@ const Patients = () => {
                                 <button className="btn btn-primary" onClick={handleSaveEdit}>{t('confirm')}</button>
                             </>
                         }
+                        size="lg"
                     >
                         <div className="flex-col gap-4">
                             <div className="input-group">
@@ -441,7 +445,7 @@ const Patients = () => {
                                 <label className="input-label">Email</label>
                                 <input className="input-field" type="email" value={editData.email} onChange={e => setEditData({ ...editData, email: e.target.value })} />
                             </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                            <div className="grid-2-cols">
                                 <div className="input-group">
                                     <label className="input-label">Phone</label>
                                     <input className="input-field" value={editData.phone} onChange={e => setEditData({ ...editData, phone: e.target.value })} />
@@ -458,9 +462,9 @@ const Patients = () => {
 
                             <div className="input-group">
                                 <label className="input-label">Assigned Doctors</label>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', border: '1px solid #e2e8f0', padding: '0.5rem', borderRadius: '6px', maxHeight: '150px', overflowY: 'auto' }}>
+                                <div className="doctor-selection-grid">
                                     {doctors.map(doc => (
-                                        <label key={doc.id} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', cursor: 'pointer' }}>
+                                        <label key={doc.id} className="doctor-checkbox-label">
                                             <input
                                                 type="checkbox"
                                                 checked={editData.assignedDoctors?.includes(doc.id) || false}
@@ -478,7 +482,7 @@ const Patients = () => {
                                 <textarea className="input-field" rows="3" value={editData.medical_history} onChange={e => setEditData({ ...editData, medical_history: e.target.value })} />
                             </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', borderTop: '1px solid #e2e8f0', paddingTop: '1rem' }}>
+                            <div className="grid-2-cols border-t-divider pt-4">
                                 <div className="input-group">
                                     <label className="input-label">Tariff Adjustment (%)</label>
                                     <input type="number" className="input-field" value={editData.tariff_percent} onChange={e => setEditData({ ...editData, tariff_percent: e.target.value })} placeholder="e.g. 10 for +10%" />
@@ -551,14 +555,13 @@ const Patients = () => {
                 </div>
 
                 {/* Search Bar */}
-                <div style={{ marginBottom: '1.5rem' }}>
+                <div className="mb-6">
                     <input
                         type="text"
                         placeholder={t('search_placeholder')}
-                        className="input-field"
+                        className="input-field max-w-400"
                         value={searchTerm}
                         onChange={e => setSearchTerm(e.target.value)}
-                        style={{ maxWidth: '400px' }}
                     />
                 </div>
 
@@ -597,7 +600,7 @@ const Patients = () => {
                                     </select>
                                 </div>
                             </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                            <div className="grid-2-cols">
                                 <div className="input-group">
                                     <label className="input-label">Nro Afiliado</label>
                                     <input className="input-field" value={newAffiliateNumber} onChange={e => setNewAffiliateNumber(e.target.value)} />
@@ -607,7 +610,7 @@ const Patients = () => {
                                     <input className="input-field" type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)} />
                                 </div>
                             </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                            <div className="grid-2-cols">
                                 <div className="input-group">
                                     <label className="input-label">Phone</label>
                                     <input className="input-field" value={phone} onChange={e => setPhone(e.target.value)} />
@@ -622,10 +625,10 @@ const Patients = () => {
                     </div>
                 )}
 
-                <div className="card">
-                    <ul style={{ listStyle: 'none', padding: 0 }}>
-                        {filteredPatients.length === 0 ? <li style={{ padding: '1rem', color: '#64748b' }}>{t('no_patients_found')}</li> : filteredPatients.map(p => (
-                            <li key={p.id} style={{ padding: '1rem', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div className="card-transparent">
+                    <ul className="item-grid">
+                        {filteredPatients.length === 0 ? <li className="text-muted p-4">{t('no_patients_found')}</li> : filteredPatients.map(p => (
+                            <li key={p.id} className="item-card">
                                 <div>
                                     <strong style={{ textTransform: 'capitalize' }}>{p.full_name}</strong>
                                     <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
@@ -675,16 +678,16 @@ const Patients = () => {
                                     </div>
                                 </div>
 
-                                <button className="btn btn-accent" style={{ padding: '0.25rem 0.75rem', fontSize: '0.8rem' }} onClick={() => handleViewDetails(p.id)}>
+                                <button className="btn btn-accent btn-sm-compact" onClick={() => handleViewDetails(p.id)}>
                                     {t('view_history')}
                                 </button>
-                            </li>
+                            </li >
                         ))}
-                    </ul>
-                </div>
+                    </ul >
+                </div >
 
                 {/* Pay Debt Modal for List View */}
-                <Modal
+                < Modal
                     isOpen={debtModalOpen}
                     onClose={() => setDebtModalOpen(false)}
                     title={t('pay_debt')}
@@ -708,9 +711,9 @@ const Patients = () => {
                             <option value="debit_card">Debit Card</option>
                         </select>
                     </div>
-                </Modal>
-            </main>
-        </div>
+                </Modal >
+            </main >
+        </div >
     );
 };
 

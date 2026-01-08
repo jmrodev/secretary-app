@@ -67,39 +67,8 @@ exports.createAppointment = async (req, res) => {
         const dNameStr = docName.length > 0 ? docName[0].full_name : doctor_id;
         const pDetails = patData.length > 0 ? patData[0] : {};
 
-        // --- Google Calendar Auto-Sync ---
-        const eventData = {
-            summary: `Consultorio: ${pNameStr}`,
-            description: `Reason: ${reason}\nPatient: ${pNameStr} (DNI: ${pDetails.dni || 'N/A'})\nPhone: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nStatus: pending\nCreated by Secretary App`,
-            start: { dateTime: startTime.toISOString(), timeZone: 'America/Argentina/Buenos_Aires' },
-            end: { dateTime: endTime.toISOString(), timeZone: 'America/Argentina/Buenos_Aires' }
-        };
-
-        try {
-            const googleEvent = await googleController.createEventHelper(doctor_id, eventData, req.user.user_id);
-            if (googleEvent) {
-                console.log(`Synced to Google Calendar: ${googleEvent.id}`);
-                await conn.query("UPDATE appointments SET google_event_id = ? WHERE id = ?", [googleEvent.id, appointmentId]);
-            } else {
-                // Sync failed/Doc not connected, but we can retry if it was a transient error? 
-                // However, createEventHelper returns null on error. 
-                // We should assume if null is returned, it logged an error. 
-                // Let's queue it anyway if we want robust retry.
-                throw new Error("Sync failed (returned null)");
-            }
-        } catch (syncErr) {
-            console.warn("Google Sync Failed, queueing retry:", syncErr.message);
-            await conn.query(
-                "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'create', ?, 'pending')",
-                [appointmentId, doctor_id, JSON.stringify(eventData)]
-            );
-        }
-        // ---------------------------------
-        // ---------------------------------
-
-        logAction(req, 'CREATE_APPOINTMENT', `Patient: ${pNameStr}, Doctor: ${dNameStr}`);
-
         // --- Debt Generation ---
+        let paymentStatus = 'pending';
         try {
             if (!bonified && (req.user.role === 'secretary' || req.user.role === 'doctor')) {
                 const priceInfo = await calculatePrice(conn, doctor_id, patient_id, 'consultation');
@@ -126,6 +95,7 @@ exports.createAppointment = async (req, res) => {
                     );
 
                     await conn.query("UPDATE appointments SET payment_status = 'debt' WHERE id = ?", [appointmentId]);
+                    paymentStatus = 'debt';
                 }
             }
         } catch (debtError) {
@@ -133,6 +103,33 @@ exports.createAppointment = async (req, res) => {
             // We do NOT re-throw, so the appointment remains valid.
         }
         // -----------------------
+
+        // --- Google Calendar Auto-Sync ---
+        const eventData = {
+            summary: `Consultorio: ${pNameStr} [${paymentStatus === 'debt' ? 'DEUDA' : 'PENDIENTE'}]`,
+            description: `Motivo: ${reason}\nPaciente: ${pNameStr} (DNI: ${pDetails.dni || 'N/A'})\nTeléfono: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nEstado: pendiente\nPago: ${paymentStatus === 'debt' ? 'deuda' : 'pendiente'}\nCreado por Aplicación de Secretaría`,
+            start: { dateTime: startTime.toISOString(), timeZone: 'America/Argentina/Buenos_Aires' },
+            end: { dateTime: endTime.toISOString(), timeZone: 'America/Argentina/Buenos_Aires' }
+        };
+
+        try {
+            const googleEvent = await googleController.createEventHelper(doctor_id, eventData, req.user.user_id);
+            if (googleEvent) {
+                console.log(`Synced to Google Calendar: ${googleEvent.id}`);
+                await conn.query("UPDATE appointments SET google_event_id = ? WHERE id = ?", [googleEvent.id, appointmentId]);
+            } else {
+                throw new Error("Sync failed (returned null)");
+            }
+        } catch (syncErr) {
+            console.warn("Google Sync Failed, queueing retry:", syncErr.message);
+            await conn.query(
+                "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'create', ?, 'pending')",
+                [appointmentId, doctor_id, JSON.stringify(eventData)]
+            );
+        }
+        // ---------------------------------
+
+        logAction(req, 'CREATE_APPOINTMENT', `Patient: ${pNameStr}, Doctor: ${dNameStr}`);
 
         res.status(201).json({ id: Number(result.insertId), message: "Appointment created" });
     } catch (err) {
@@ -234,6 +231,39 @@ exports.updateAppointment = async (req, res) => {
         logAction(req, 'RESCHEDULE_APPOINTMENT', `Rescheduled Appt ID ${id} from ${oldDate} to ${appointment_date}`);
 
         res.json({ message: "Appointment updated" });
+
+        // --- Google Calendar Sync ---
+        if (exists[0].google_event_id) {
+            const startTime = new Date(appointment_date);
+            const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // 1 hour duration
+
+            const pId = exists[0].patient_id;
+            const pat = await conn.query("SELECT full_name, dni, phone, email FROM patients WHERE id = ?", [pId]);
+            const pName = pat.length > 0 ? pat[0].full_name : pId;
+            const pDetails = pat.length > 0 ? pat[0] : {};
+            const newDescription = `Motivo: ${reason || exists[0].reason}\nPaciente: ${pName} (DNI: ${pDetails.dni || 'N/A'})\nTeléfono: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nEstado: reprogramado\nPago: ${exists[0].payment_status}\nCreado por Aplicación de Secretaría`;
+
+            const updatePayload = {
+                summary: `Consultorio: ${pName} [${exists[0].payment_status.toUpperCase() === 'PAID' ? 'PAGADO' : (exists[0].payment_status.toUpperCase() === 'DEBT' ? 'DEUDA' : (exists[0].payment_status.toUpperCase() === 'PENDING' ? 'PENDIENTE' : 'PARCIAL'))}]`,
+                description: newDescription,
+                start: { dateTime: startTime.toISOString(), timeZone: 'America/Argentina/Buenos_Aires' },
+                end: { dateTime: endTime.toISOString(), timeZone: 'America/Argentina/Buenos_Aires' },
+                status: 'rescheduled',
+                paymentStatus: exists[0].payment_status
+            };
+
+            try {
+                const result = await googleController.updateEventHelper(exists[0].doctor_id, exists[0].google_event_id, updatePayload, req.user.user_id);
+                if (!result) throw new Error("Sync failed (returned null)");
+            } catch (syncErr) {
+                console.warn("Google Sync Failed (Update), queueing retry:", syncErr.message);
+                await conn.query(
+                    "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'update', ?, 'pending')",
+                    [id, exists[0].doctor_id, JSON.stringify({ eventId: exists[0].google_event_id, updates: updatePayload })]
+                );
+            }
+        }
+        // ----------------------------
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");
@@ -273,9 +303,10 @@ exports.updateStatus = async (req, res) => {
 
         // --- Google Calendar Sync ---
         if (exists[0].google_event_id) {
-            const newDescription = `Reason: ${exists[0].reason || 'N/A'}\nPatient: ${pName} (DNI: ${pDetails.dni || 'N/A'})\nPhone: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nStatus: ${status}\nCreated by Secretary App`;
+            const newDescription = `Motivo: ${exists[0].reason || 'N/A'}\nPaciente: ${pName} (DNI: ${pDetails.dni || 'N/A'})\nTeléfono: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nEstado: ${status}\nPago: ${exists[0].payment_status}\nCreado por Aplicación de Secretaría`;
 
             const updatePayload = {
+                summary: `Consultorio: ${pName} [${exists[0].payment_status.toUpperCase()}]`,
                 status: status,
                 paymentStatus: exists[0].payment_status,
                 description: newDescription
@@ -317,10 +348,29 @@ exports.updatePaymentStatus = async (req, res) => {
         // --- Google Calendar Sync ---
         const [appt] = await conn.query("SELECT * FROM appointments WHERE id = ?", [id]);
         if (appt && appt.google_event_id) {
-            await googleController.updateEventHelper(appt.doctor_id, appt.google_event_id, {
+            const patData = await conn.query("SELECT full_name, dni, phone, email FROM patients WHERE id = ?", [appt.patient_id]);
+            const pName = patData.length > 0 ? patData[0].full_name : appt.patient_id;
+            const pDetails = patData.length > 0 ? patData[0] : {};
+
+            const newDescription = `Motivo: ${appt.reason || 'N/A'}\nPaciente: ${pName} (DNI: ${pDetails.dni || 'N/A'})\nTeléfono: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nEstado: ${appt.status}\nPago: ${status}\nCreado por Aplicación de Secretaría`;
+
+            const updatePayload = {
+                summary: `Consultorio: ${pName} [${status.toUpperCase() === 'PAID' ? 'PAGADO' : (status.toUpperCase() === 'DEBT' ? 'DEUDA' : 'PARCIAL')}]`,
                 status: appt.status,
-                paymentStatus: status
-            }, req.user.user_id);
+                paymentStatus: status,
+                description: newDescription
+            };
+
+            try {
+                const result = await googleController.updateEventHelper(appt.doctor_id, appt.google_event_id, updatePayload, req.user.user_id);
+                if (!result) throw new Error("Sync failed (returned null)");
+            } catch (syncErr) {
+                console.warn("Google Sync Failed (Payment Update), queueing retry:", syncErr.message);
+                await conn.query(
+                    "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'update', ?, 'pending')",
+                    [id, appt.doctor_id, JSON.stringify({ eventId: appt.google_event_id, updates: updatePayload })]
+                );
+            }
         }
         // ----------------------------
     } catch (err) {

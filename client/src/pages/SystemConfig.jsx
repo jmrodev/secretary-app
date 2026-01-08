@@ -103,21 +103,21 @@ const SystemConfig = () => {
 
                 <h1 className="title">System Configuration</h1>
 
-                <div className="card" style={{ marginBottom: '2rem' }}>
+                <div className="card mb-8">
                     <h3>General Settings</h3>
-                    <div className="input-group" style={{ flexDirection: 'row', alignItems: 'center', gap: '1rem' }}>
+                    <div className="input-group-row-center gap-4">
                         <input
                             type="checkbox"
                             id="opt-rentals"
                             checked={settings.enable_office_rentals === 'true'}
                             onChange={(e) => updateSetting('enable_office_rentals', e.target.checked)}
-                            style={{ width: '20px', height: '20px' }}
+                            className="w-5 h-5"
                         />
-                        <label htmlFor="opt-rentals" className="input-label" style={{ margin: 0 }}>
+                        <label htmlFor="opt-rentals" className="input-label m-0">
                             Enable Office Rentals (Alquiler de Consultorios)
                         </label>
                     </div>
-                    <p style={{ fontSize: '0.9rem', color: '#64748b' }}>
+                    <p className="text-sm-muted">
                         If disabled, the "Rentals" menu item will be hidden from the sidebar.
                     </p>
                 </div>
@@ -127,17 +127,16 @@ const SystemConfig = () => {
 
                 <div className="card">
                     <h3>Google Integration (Per Doctor)</h3>
-                    <p style={{ color: '#64748b', marginBottom: '1.5rem' }}>
+                    <p className="text-muted mb-6">
                         Select a doctor to connect their specific Google Calendar/Contacts.
                     </p>
 
-                    <div style={{ marginBottom: '1.5rem' }}>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Select Doctor:</label>
+                    <div className="mb-6">
+                        <label className="block mb-2 font-bold">Select Doctor:</label>
                         <select
-                            className="form-control"
+                            className="form-control max-w-300"
                             value={selectedDoctor}
                             onChange={(e) => setSelectedDoctor(e.target.value)}
-                            style={{ maxWidth: '300px' }}
                         >
                             <option value="">-- Choose Doctor --</option>
                             {doctors.map(doc => (
@@ -151,14 +150,8 @@ const SystemConfig = () => {
                     ) : (
                         <>
                             {loading ? <p>Checking status...</p> : (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
-                                    <div style={{
-                                        padding: '0.5rem 1rem',
-                                        borderRadius: '6px',
-                                        background: connected ? '#dcfce7' : '#fee2e2',
-                                        color: connected ? '#166534' : '#991b1b',
-                                        fontWeight: 'bold'
-                                    }}>
+                                <div className="flex-center gap-4 mb-8">
+                                    <div className={`status-badge ${connected ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                                         {connected ? '✅ Google Connected' : '❌ Not Connected'}
                                     </div>
 
@@ -171,15 +164,15 @@ const SystemConfig = () => {
                             )}
 
                             {connected && (
-                                <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '1rem' }}>
+                                <div className="border-t-divider pt-4">
 
                                     {/* Calendar Section */}
-                                    <div style={{ marginTop: '1rem' }}>
+                                    <div className="mt-4">
                                         <h4>Google Calendar Integration</h4>
-                                        <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '1rem' }}>
+                                        <p className="text-sm-muted mb-4">
                                             Manage appointments and verify conflicts.
                                         </p>
-                                        <div style={{ display: 'flex', gap: '1rem' }}>
+                                        <div className="flex gap-4">
                                             <button className="btn btn-secondary" onClick={async () => {
                                                 try {
                                                     const res = await api.get(`/google/appointments?doctorId=${selectedDoctor}`);
@@ -237,9 +230,9 @@ const SystemConfig = () => {
                                     </div>
 
                                     {/* Contacts Section */}
-                                    <div style={{ marginTop: '1.5rem', borderTop: '1px solid #e2e8f0', paddingTop: '1rem' }}>
+                                    <div className="mt-6 border-t-divider pt-4">
                                         <h4>Google Contacts Sync</h4>
-                                        <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '1rem' }}>
+                                        <p className="text-sm-muted mb-4">
                                             Import your Google Contacts into the patient database.
                                         </p>
                                         <button className="btn btn-primary" onClick={async () => {
@@ -262,17 +255,7 @@ const SystemConfig = () => {
 
 
                                     {syncLogs.length > 0 && (
-                                        <div style={{
-                                            marginTop: '1rem',
-                                            padding: '0.5rem',
-                                            background: '#1e293b',
-                                            color: '#f8fafc',
-                                            borderRadius: '4px',
-                                            fontSize: '0.85rem',
-                                            fontFamily: 'monospace',
-                                            maxHeight: '250px',
-                                            overflowY: 'auto'
-                                        }}>
+                                        <div className="logs-container">
                                             {syncLogs.map((log, i) => (
                                                 <div key={i}>{log}</div>
                                             ))}
@@ -283,21 +266,21 @@ const SystemConfig = () => {
                         </>
                     )}
 
-                    <div style={{ marginTop: '2rem', padding: '1rem', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                    <div className="setup-instructions">
                         <h4>Setup Instructions</h4>
-                        <ol style={{ marginLeft: '1.5rem', marginTop: '0.5rem', color: '#475569' }}>
-                            <li>Go to <a href="https://console.cloud.google.com/" target="_blank" rel="noreferrer" style={{ color: '#3b82f6', textDecoration: 'underline' }}>Google Cloud Console</a>.</li>
+                        <ol className="ml-6 mt-2 text-slate-600">
+                            <li>Go to <a href="https://console.cloud.google.com/" target="_blank" rel="noreferrer" className="text-blue-link">Google Cloud Console</a>.</li>
                             <li>Create a Project.</li>
                             <li><strong>CRITICAL:</strong> Enable the following APIs (Library &rarr; Search):
-                                <ul style={{ marginLeft: '1rem', marginTop: '0.25rem', marginBottom: '0.5rem' }}>
-                                    <li><a href="https://console.cloud.google.com/apis/library/people.googleapis.com" target="_blank" rel="noreferrer" style={{ color: '#3b82f6' }}>Google People API</a> (for Contacts)</li>
-                                    <li><a href="https://console.cloud.google.com/apis/library/calendar-json.googleapis.com" target="_blank" rel="noreferrer" style={{ color: '#3b82f6' }}>Google Calendar API</a> (for Appointments)</li>
+                                <ul className="ml-4 mt-1 mb-2">
+                                    <li><a href="https://console.cloud.google.com/apis/library/people.googleapis.com" target="_blank" rel="noreferrer" className="text-blue-500">Google People API</a> (for Contacts)</li>
+                                    <li><a href="https://console.cloud.google.com/apis/library/calendar-json.googleapis.com" target="_blank" rel="noreferrer" className="text-blue-500">Google Calendar API</a> (for Appointments)</li>
                                 </ul>
                             </li>
-                            <li>Create <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noreferrer" style={{ color: '#3b82f6', textDecoration: 'underline' }}>OAuth 2.0 Credentials</a> (Client ID & Secret).</li>
+                            <li>Create <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noreferrer" className="text-blue-link">OAuth 2.0 Credentials</a> (Client ID & Secret).</li>
                             <li>Set Redirect URI to: <code>http://localhost:5000/api/google/callback</code></li>
                             <li>Add these to your <code>server/.env</code> file:</li>
-                            <pre style={{ background: '#0f172a', color: '#f8fafc', padding: '1rem', borderRadius: '4px', marginTop: '0.5rem' }}>
+                            <pre className="code-block mt-2">
                                 GOOGLE_CLIENT_ID=your_id{'\n'}
                                 GOOGLE_CLIENT_SECRET=your_secret{'\n'}
                                 GOOGLE_REDIRECT_URI=http://localhost:5000/api/google/callback
@@ -361,18 +344,18 @@ const HolidayManager = () => {
     };
 
     return (
-        <div className="card" style={{ marginBottom: '2rem' }}>
+        <div className="card mb-8">
             <h3>Establecer Feriados / Días Cerrados</h3>
-            <p style={{ fontSize: '0.9rem', color: '#64748b' }}>
+            <p className="text-sm-muted">
                 Los días agregados aquí bloquearán la creación de turnos.
             </p>
 
-            <form onSubmit={handleAdd} style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end', marginBottom: '1.5rem' }}>
-                <div style={{ flex: 1 }}>
+            <form onSubmit={handleAdd} className="flex gap-4 items-end mb-6">
+                <div className="flex-1">
                     <label className="input-label">Fecha</label>
                     <input type="date" className="input-field" value={newDate} onChange={e => setNewDate(e.target.value)} required />
                 </div>
-                <div style={{ flex: 2 }}>
+                <div className="flex-2">
                     <label className="input-label">Descripción</label>
                     <input type="text" className="input-field" value={newDesc} onChange={e => setNewDesc(e.target.value)} placeholder="Ej. Navidad" required />
                 </div>
@@ -380,11 +363,11 @@ const HolidayManager = () => {
             </form>
 
             {holidays.length === 0 ? <p className="text-muted">No hay feriados configurados.</p> : (
-                <ul style={{ listStyle: 'none', padding: 0 }}>
+                <ul className="list-none p-0">
                     {holidays.map(h => (
-                        <li key={h.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem', borderBottom: '1px solid #eee' }}>
+                        <li key={h.id} className="holiday-list-item">
                             <span><strong>{formatDate(h.date)}</strong>: {h.description}</span>
-                            <button onClick={() => handleDelete(h.id)} style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer' }}>Eliminar</button>
+                            <button onClick={() => handleDelete(h.id)} className="btn-text-danger">Eliminar</button>
                         </li>
                     ))}
                 </ul>

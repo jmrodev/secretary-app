@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+
 import Sidebar from '../components/Sidebar';
+import Modal from '../components/Modal';
 import { formatPrice } from '../utils/format';
 import CurrencyInput from '../components/CurrencyInput';
 
@@ -12,6 +14,7 @@ const Doctors = () => {
     const [doctors, setDoctors] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [settings, setSettings] = useState({});
 
     // Edit State
     const [editModalOpen, setEditModalOpen] = useState(false);
@@ -19,8 +22,12 @@ const Doctors = () => {
 
     const fetchDoctors = async () => {
         try {
-            const res = await api.get('/users/doctors');
-            setDoctors(res.data);
+            const [docsRes, settingsRes] = await Promise.all([
+                api.get('/users/doctors'),
+                api.get('/settings')
+            ]);
+            setDoctors(docsRes.data);
+            setSettings(settingsRes.data);
         } catch (err) {
             console.error(err);
         } finally {
@@ -74,113 +81,143 @@ const Doctors = () => {
         <div className="app-layout">
             <Sidebar />
             <main className="main-content">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div className="flex-between-center">
                     <h1 className="title">{t('doctors_title')}</h1>
                 </div>
 
                 {/* Search Bar */}
-                <div style={{ marginBottom: '1.5rem' }}>
+                <div className="mb-6">
                     <input
                         type="text"
                         placeholder={t('search_doctors_placeholder')}
-                        className="input-field"
+                        className="input-field max-w-400"
                         value={searchTerm}
                         onChange={e => setSearchTerm(e.target.value)}
-                        style={{ maxWidth: '400px' }}
                     />
                 </div>
 
-                <div className="card">
-                    <ul style={{ listStyle: 'none', padding: 0 }}>
-                        {filteredDoctors.length === 0 ? <li style={{ padding: '1rem', color: '#64748b' }}>{t('no_doctors_found')}</li> : filteredDoctors.map(d => (
-                            <li key={d.id} style={{ padding: '1rem', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div className="item-grid">
+                    {filteredDoctors.length === 0 ? <p className="text-muted col-span-full text-center py-8">{t('no_doctors_found')}</p> : filteredDoctors.map(d => (
+                        <div key={d.id} className="item-card group">
+                            <div className="item-header">
+                                <div className="doctor-avatar">
+                                    {d.full_name ? d.full_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'DR'}
+                                </div>
                                 <div>
-                                    <strong style={{ textTransform: 'capitalize' }}>{d.full_name}</strong>
-                                    <span style={{ fontSize: '0.85rem', color: '#64748b', marginLeft: '0.5rem' }}>({d.specialty})</span>
-                                    <div style={{ fontSize: '0.85rem', color: '#475569', marginTop: '0.25rem' }}>
-                                        {d.phone && `${t('phone_abbrev')}: ${d.phone} | `}
-                                        {t('office_label')}: <strong>{d.office_number || 'N/A'}</strong> |
-                                        {t('rent_label')}: <strong>{formatPrice(d.rental_cost)} ({t(d.rental_type) || d.rental_type})</strong>
+                                    <h3 className="font-bold text-lg text-slate-800 m-0 leading-tight">{d.full_name}</h3>
+                                    <p className="text-sm text-blue-600 m-0 mt-1 font-medium">{d.specialty || 'General'}</p>
+                                </div>
+                            </div>
+
+                            <div className="item-content">
+                                <div className="text-sm text-slate-600 flex flex-col gap-1 mb-2">
+                                    <div className="flex items-center gap-2">
+                                        <span>📞</span> <span className="font-medium">{d.phone || 'No phone'}</span>
                                     </div>
-                                    <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.25rem' }}>
-                                        {t('tariffs_label')}: {t('consult_abbrev')} <strong>{formatPrice(d.consultation_price)}</strong> |
-                                        {t('rx_abbrev')} <strong>{formatPrice(d.prescription_price)}</strong> |
-                                        {t('lic_abbrev')} <strong>{formatPrice(d.medical_license_price)}</strong> |
-                                        {t('cert_abbrev') || 'Cert.'} <strong>{formatPrice(d.certificate_price)}</strong> |
-                                        {t('virtual_abbrev')} <strong>{formatPrice(d.virtual_consultation_price)}</strong>
+                                    <div className="flex items-center gap-2">
+                                        <span>🏢</span> <span>{t('office_label')}: <span className="font-medium">{d.office_number || 'N/A'}</span></span>
                                     </div>
                                 </div>
-                                {user.role === 'secretary' && (
-                                    <button className="btn btn-secondary" style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem' }} onClick={() => handleEditClick(d)}>
+
+                                <div className="doctor-info-grid">
+                                    <div className="doctor-price-item">
+                                        <span className="doctor-price-label">{t('consult_abbrev')}</span>
+                                        <span className="doctor-price-value">{formatPrice(d.consultation_price)}</span>
+                                    </div>
+                                    <div className="doctor-price-item">
+                                        <span className="doctor-price-label">{t('rx_abbrev')}</span>
+                                        <span className="doctor-price-value">{formatPrice(d.prescription_price)}</span>
+                                    </div>
+                                    <div className="doctor-price-item">
+                                        <span className="doctor-price-label">{t('lic_abbrev')}</span>
+                                        <span className="doctor-price-value">{formatPrice(d.medical_license_price)}</span>
+                                    </div>
+                                    <div className="doctor-price-item">
+                                        <span className="doctor-price-label">{t('cert_abbrev') || 'Cert.'}</span>
+                                        <span className="doctor-price-value">{formatPrice(d.certificate_price)}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {user.role === 'secretary' && (
+                                <div className="item-footer">
+                                    <button className="btn btn-secondary btn-sm-compact" onClick={() => handleEditClick(d)}>
                                         {t('edit_details')}
                                     </button>
-                                )}
-                            </li>
-                        ))}
-                    </ul>
+                                </div>
+                            )}
+                        </div>
+                    ))}
                 </div>
 
-                {editModalOpen && (
-                    <div style={{
-                        position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-                        background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
-                    }}>
-                        <div style={{ background: 'white', padding: '2rem', borderRadius: '8px', width: '90%', maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto' }}>
-                            <h3 style={{ marginTop: 0 }}>{t('edit_doctor_details')}</h3>
+                <Modal
+                    isOpen={editModalOpen}
+                    onClose={() => setEditModalOpen(false)}
+                    title={t('edit_doctor_details')}
+                    size="lg"
+                    footer={
+                        <>
+                            <button className="btn btn-secondary" onClick={() => setEditModalOpen(false)}>
+                                {t('cancel') || 'Cancel'}
+                            </button>
+                            <button className="btn btn-primary" onClick={handleSaveEdit}>
+                                {t('save_changes') || 'Save'}
+                            </button>
+                        </>
+                    }
+                >
+                    <div className="flex-col gap-4">
+                        {(settings.enable_office_rentals === 'true') && (
+                            <>
+                                <h4 className="section-header-line">{t('rental_section')}</h4>
+                                <div className="input-group">
+                                    <label className="input-label">{t('office_number')}</label>
+                                    <input className="input-field" value={editData.office_number} onChange={e => setEditData({ ...editData, office_number: e.target.value })} />
+                                </div>
 
-                            <h4 style={{ borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem', marginBottom: '1rem' }}>{t('rental_section')}</h4>
+                                <div className="grid-2-cols mb-6">
+                                    <div className="input-group">
+                                        <label className="input-label">{t('rental_type')}</label>
+                                        <select className="input-field" value={editData.rental_type} onChange={e => setEditData({ ...editData, rental_type: e.target.value })}>
+                                            <option value="hourly">{t('hourly')}</option>
+                                            <option value="daily">{t('daily')}</option>
+                                            <option value="weekly">{t('weekly')}</option>
+                                            <option value="monthly">{t('monthly')}</option>
+                                        </select>
+                                    </div>
+                                    <div className="input-group">
+                                        <label className="input-label">{t('rent_cost')}</label>
+                                        <CurrencyInput className="input-field" value={editData.rental_cost} onChange={e => setEditData({ ...editData, rental_cost: e.target.value })} />
+                                    </div>
+                                </div>
+                            </>
+                        )}
+
+                        <h4 className="section-header-line">{t('tariffs_section')}</h4>
+                        <div className="grid-2-cols">
                             <div className="input-group">
-                                <label className="input-label">{t('office_number')}</label>
-                                <input className="input-field" value={editData.office_number} onChange={e => setEditData({ ...editData, office_number: e.target.value })} />
+                                <label className="input-label">{t('consultation_price')}</label>
+                                <CurrencyInput className="input-field" value={editData.consultation_price} onChange={e => setEditData({ ...editData, consultation_price: e.target.value })} />
                             </div>
-
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
-                                <div className="input-group">
-                                    <label className="input-label">{t('rental_type')}</label>
-                                    <select className="input-field" value={editData.rental_type} onChange={e => setEditData({ ...editData, rental_type: e.target.value })}>
-                                        <option value="hourly">{t('hourly')}</option>
-                                        <option value="daily">{t('daily')}</option>
-                                        <option value="weekly">{t('weekly')}</option>
-                                        <option value="monthly">{t('monthly')}</option>
-                                    </select>
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">{t('rent_cost')}</label>
-                                    <CurrencyInput className="input-field" value={editData.rental_cost} onChange={e => setEditData({ ...editData, rental_cost: e.target.value })} />
-                                </div>
+                            <div className="input-group">
+                                <label className="input-label">{t('virtual_consultation_price')}</label>
+                                <CurrencyInput className="input-field" value={editData.virtual_consultation_price} onChange={e => setEditData({ ...editData, virtual_consultation_price: e.target.value })} />
                             </div>
-
-                            <h4 style={{ borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem', marginBottom: '1rem' }}>{t('tariffs_section')}</h4>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                                <div className="input-group">
-                                    <label className="input-label">{t('consultation_price')}</label>
-                                    <CurrencyInput className="input-field" value={editData.consultation_price} onChange={e => setEditData({ ...editData, consultation_price: e.target.value })} />
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">{t('virtual_consultation_price')}</label>
-                                    <CurrencyInput className="input-field" value={editData.virtual_consultation_price} onChange={e => setEditData({ ...editData, virtual_consultation_price: e.target.value })} />
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">{t('prescription_price')}</label>
-                                    <CurrencyInput className="input-field" value={editData.prescription_price} onChange={e => setEditData({ ...editData, prescription_price: e.target.value })} />
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">{t('medical_license_price')}</label>
-                                    <CurrencyInput className="input-field" value={editData.medical_license_price} onChange={e => setEditData({ ...editData, medical_license_price: e.target.value })} />
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">{t('certificate_price') || 'Certificate Price'}</label>
-                                    <CurrencyInput className="input-field" value={editData.certificate_price} onChange={e => setEditData({ ...editData, certificate_price: e.target.value })} />
-                                </div>
+                            <div className="input-group">
+                                <label className="input-label">{t('prescription_price')}</label>
+                                <CurrencyInput className="input-field" value={editData.prescription_price} onChange={e => setEditData({ ...editData, prescription_price: e.target.value })} />
                             </div>
-
-                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '2rem' }}>
-                                <button className="btn btn-secondary" onClick={() => setEditModalOpen(false)}>{t('cancel')}</button>
-                                <button className="btn btn-primary" onClick={handleSaveEdit}>{t('save_changes')}</button>
+                            <div className="input-group">
+                                <label className="input-label">{t('medical_license_price')}</label>
+                                <CurrencyInput className="input-field" value={editData.medical_license_price} onChange={e => setEditData({ ...editData, medical_license_price: e.target.value })} />
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">{t('certificate_price') || 'Certificate Price'}</label>
+                                <CurrencyInput className="input-field" value={editData.certificate_price} onChange={e => setEditData({ ...editData, certificate_price: e.target.value })} />
                             </div>
                         </div>
                     </div>
-                )}
+                </Modal>
             </main>
         </div>
     );

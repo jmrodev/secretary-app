@@ -57,7 +57,7 @@ const Login = () => {
                 </form>
                 <div className="mt-6 text-center">
                     <span className="subtitle">{t('no_account')} </span>
-                    <Link to="/register" style={{ color: 'var(--accent-color)', textDecoration: 'none', fontWeight: 600 }}>{t('register')}</Link>
+                    <Link to="/register" className="link-accent font-bold no-underline">{t('register')}</Link>
                 </div>
             </div>
         </div>

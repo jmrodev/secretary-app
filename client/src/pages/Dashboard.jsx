@@ -146,7 +146,7 @@ const Dashboard = () => {
                     onClose={() => setActionModal({ ...actionModal, open: false })}
                     title={`Appointment: ${actionModal.appt.patient_name}`}
                 >
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <div className="flex-col-gap-4">
                         <div className="flex-between">
                             <p><strong>{t('date_label')}:</strong> {new Date(actionModal.appt.appointment_date).toLocaleString()}</p>
                             <div className="flex gap-2">
@@ -159,9 +159,9 @@ const Dashboard = () => {
                             </div>
                         </div>
                         <p><strong>{t('reason')}:</strong> {actionModal.appt.reason || t('no_description') || 'No description'}</p>
-                        <hr style={{ borderColor: '#f1f5f9' }} />
+                        <hr className="border-divider" />
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div className="grid-2-cols">
                             {/* Pay Button */}
                             {(actionModal.appt.payment_status === 'pending' || actionModal.appt.payment_status === 'debt') && (
                                 <button className="btn btn-primary" onClick={() => {
@@ -195,7 +195,7 @@ const Dashboard = () => {
 
                             {/* Action Buttons for Status */}
                             {actionModal.appt.status === 'pending' && (
-                                <button className="btn" style={{ background: '#10b981', color: 'white' }} onClick={() => {
+                                <button className="btn btn-status-confirm" onClick={() => {
                                     handleUpdateStatus(actionModal.appt.id, 'confirmed');
                                     setActionModal({ ...actionModal, open: false });
                                 }}>
@@ -204,7 +204,7 @@ const Dashboard = () => {
                             )}
 
                             {(actionModal.appt.status === 'confirmed' || actionModal.appt.status === 'pending' || actionModal.appt.status === 'rescheduled') && (
-                                <button className="btn" style={{ background: '#3b82f6', color: 'white' }} onClick={() => {
+                                <button className="btn btn-status-complete" onClick={() => {
                                     handleUpdateStatus(actionModal.appt.id, 'completed');
                                     setActionModal({ ...actionModal, open: false });
                                 }}>
@@ -212,14 +212,14 @@ const Dashboard = () => {
                                 </button>
                             )}
 
-                            <button className="btn" style={{ background: '#f59e0b', color: 'white' }} onClick={() => {
+                            <button className="btn btn-status-suspend" onClick={() => {
                                 handleUpdateStatus(actionModal.appt.id, 'suspended');
                                 setActionModal({ ...actionModal, open: false });
                             }}>
                                 ⏸ {t('suspend')}
                             </button>
 
-                            <button className="btn" style={{ background: '#64748b', color: 'white' }} onClick={() => {
+                            <button className="btn btn-status-absent" onClick={() => {
                                 handleUpdateStatus(actionModal.appt.id, 'absent');
                                 setActionModal({ ...actionModal, open: false });
                             }}>
@@ -227,11 +227,11 @@ const Dashboard = () => {
                             </button>
                         </div>
 
-                        <hr style={{ borderColor: '#f1f5f9' }} />
+                        <hr className="border-divider" />
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div className="grid-2-cols">
                             {/* Cancel (Standard) */}
-                            <button className="btn btn-secondary" style={{ borderColor: '#ef4444', color: '#ef4444' }} onClick={() => {
+                            <button className="btn btn-outline-danger" onClick={() => {
                                 handleCancel(actionModal.appt.id);
                                 setActionModal({ ...actionModal, open: false });
                             }}>
@@ -263,7 +263,7 @@ const Dashboard = () => {
                     </>
                 }
             >
-                <div style={{ display: 'grid', gap: '1rem' }}>
+                <div className="flex-col-gap-4">
                     <div className="input-group">
                         <label className="input-label">{t('medications')}</label>
                         <textarea className="input-field" rows="4" value={prescribeModal.medications} onChange={e => setPrescribeModal({ ...prescribeModal, medications: e.target.value })} placeholder={t('meds_placeholder') || "ej. Ibuprofeno 600mg"} autoFocus />
@@ -315,7 +315,7 @@ const Dashboard = () => {
                             {loadingSchedule ? <p>{t('loading')}</p> : (
                                 todayAppointments.length === 0 ?
                                     <p className="text-muted">{t('no_appointments_today')}</p> :
-                                    <ul style={{ listStyle: 'none', padding: 0 }}>
+                                    <ul className="appointment-list">
                                         {todayAppointments.sort((a, b) => new Date(a.appointment_date) - new Date(b.appointment_date)).map(a => {
                                             let itemClass = "appointment-item";
                                             if (a.status === 'completed') itemClass += " status-completed";
@@ -323,26 +323,26 @@ const Dashboard = () => {
                                             else if (a.status === 'pending') itemClass += " status-pending";
 
                                             return (
-                                                <li key={a.id} className={itemClass} onClick={() => setActionModal({ open: true, appt: a })} style={{ cursor: 'pointer' }}>
+                                                <li key={a.id} className={`${itemClass} clickable`} onClick={() => setActionModal({ open: true, appt: a })}>
                                                     <div>
-                                                        <div style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>
+                                                        <div className="text-sm-bold">
                                                             {new Date(a.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
-                                                            <span style={{ fontSize: '0.7rem', marginLeft: '0.5rem', color: '#64748b' }}>
+                                                            <span className="text-xs-muted ml-2">
                                                                 ({t(a.status)})
                                                             </span>
                                                         </div>
-                                                        <div style={{ fontSize: '1rem' }}>{a.patient_name}</div>
-                                                        <div style={{ fontSize: '0.8rem', color: '#64748b' }}>w/ {a.doctor_name}</div>
+                                                        <div className="font-size-1rem">{a.patient_name}</div>
+                                                        <div className="text-sm-normal w-doctor">w/ {a.doctor_name}</div>
                                                         {a.reason && (
-                                                            <div style={{ fontSize: '0.75rem', color: '#6366f1', fontStyle: 'italic', marginTop: '0.2rem' }}>
+                                                            <div className="text-italic-indigo mt-1">
                                                                 💬 {a.reason}
                                                             </div>
                                                         )}
                                                     </div>
 
-                                                    <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                                        {a.payment_status === 'paid' && <span title="Paid" style={{ color: '#10b981' }}>$✓</span>}
-                                                        {a.payment_status === 'debt' && <span title="Debt" style={{ color: '#ef4444' }}>$!</span>}
+                                                    <div className="flex gap-2">
+                                                        {a.payment_status === 'paid' && <span title="Paid" className="text-green-500">$✓</span>}
+                                                        {a.payment_status === 'debt' && <span title="Debt" className="text-red-500">$!</span>}
                                                         {user.role === 'doctor' && (
                                                             <button onClick={(e) => {
                                                                 e.stopPropagation();
@@ -361,10 +361,10 @@ const Dashboard = () => {
                     {user.role !== 'admin' && (
                         <div className="card">
                             <h3>{t('quick_actions')}</h3>
-                            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                                <a href="/appointments" className="btn btn-accent" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', textDecoration: 'none', display: 'inline-block' }}>{t('book_appointment')}</a>
-                                {user.role === 'doctor' && <a href="/documents" className="btn btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', textDecoration: 'none', display: 'inline-block' }}>{t('view_documents')}</a>}
-                                {user.role === 'secretary' && <a href="/patients" className="btn btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', textDecoration: 'none', display: 'inline-block' }}>{t('register_patient')}</a>}
+                            <div className="flex gap-2 flex-wrap">
+                                <a href="/appointments" className="btn btn-accent btn-sm-inline">{t('book_appointment')}</a>
+                                {user.role === 'doctor' && <a href="/documents" className="btn btn-secondary btn-sm-inline">{t('view_documents')}</a>}
+                                {user.role === 'secretary' && <a href="/patients" className="btn btn-primary btn-sm-inline">{t('register_patient')}</a>}
                             </div>
                         </div>
                     )}
@@ -376,10 +376,10 @@ const Dashboard = () => {
 
                     {/* Requirements List (New Feature) */}
                     {(user.role === 'secretary' || user.role === 'doctor' || user.role === 'admin') && (
-                        <div className="card" style={{ gridColumn: '1 / -1' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                        <div className="card col-span-full">
+                            <div className="flex-between mb-4">
                                 <h3>📋 {t('ongoing_requirements') || 'Requerimientos en Curso'}</h3>
-                                <a href="/requests" style={{ fontSize: '0.8rem' }} className="btn btn-secondary">{t('view_all') || 'Ver Todos'}</a>
+                                <a href="/requests" className="btn btn-secondary text-sm">{t('view_all') || 'Ver Todos'}</a>
                             </div>
                             <RequirementsList user={user} />
                         </div>
@@ -387,12 +387,12 @@ const Dashboard = () => {
                 </div>
 
                 {user.role === 'admin' && (
-                    <div className="card" style={{ marginTop: '1.5rem' }}>
+                    <div className="card mt-6">
                         <h3>{t('administration')}</h3>
-                        <a href="/logs" className="btn btn-secondary" style={{ display: 'inline-block', marginTop: '0.5rem', textDecoration: 'none', marginRight: '1rem' }}>
+                        <a href="/logs" className="btn btn-secondary btn-inline mt-2 mr-4 no-underline">
                             {t('view_audit_logs')}
                         </a>
-                        <a href="/admin/users" className="btn btn-primary" style={{ display: 'inline-block', marginTop: '0.5rem', textDecoration: 'none' }}>
+                        <a href="/admin/users" className="btn btn-primary btn-inline mt-2 no-underline">
                             {t('manage_users')}
                         </a>
                     </div>

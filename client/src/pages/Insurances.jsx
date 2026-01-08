@@ -8,6 +8,7 @@ const Insurances = () => {
     const { showMessage } = useMessage();
     const [insurances, setInsurances] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const [modalOpen, setModalOpen] = useState(false);
     const [editingId, setEditingId] = useState(null);
@@ -80,49 +81,112 @@ const Insurances = () => {
         }
     };
 
+    // Filter Logic
+    const filteredInsurances = insurances.filter(ins =>
+        ins.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (ins.cuit && ins.cuit.includes(searchTerm)) ||
+        (ins.website && ins.website.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+
+    const getInitials = (name) => {
+        return name
+            .split(' ')
+            .map(word => word[0])
+            .join('')
+            .substring(0, 2)
+            .toUpperCase();
+    };
+
     return (
         <div className="app-layout">
             <Sidebar />
             <main className="main-content">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h1 className="title">Obras Sociales (Insurances)</h1>
-                    <button className="btn btn-primary" onClick={handleOpenCreate}>+ New Insurance</button>
+                <div className="flex-between-center mb-6">
+                    <div>
+                        <h1 className="title">Obras Sociales</h1>
+                        <p className="subtitle mb-0">Manage health insurance providers</p>
+                    </div>
+                    <button className="btn btn-primary shadow-lg hover:shadow-xl transition-all" onClick={handleOpenCreate}>
+                        + New Insurance
+                    </button>
                 </div>
 
-                {loading ? <p>Loading...</p> : (
-                    <div className="card">
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                            <thead>
-                                <tr style={{ textAlign: 'left', borderBottom: '1px solid #e2e8f0' }}>
-                                    <th style={{ padding: '0.5rem' }}>Name</th>
-                                    <th style={{ padding: '0.5rem' }}>CUIT</th>
-                                    <th style={{ padding: '0.5rem' }}>Email / Phone</th>
-                                    <th style={{ padding: '0.5rem' }}>Website</th>
-                                    <th style={{ padding: '0.5rem' }}>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {insurances.map(ins => (
-                                    <tr key={ins.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                                        <td style={{ padding: '0.5rem', fontWeight: 'bold' }}>{ins.name}</td>
-                                        <td style={{ padding: '0.5rem' }}>{ins.cuit || '-'}</td>
-                                        <td style={{ padding: '0.5rem' }}>
-                                            <div style={{ fontSize: '0.9rem' }}>{ins.email}</div>
-                                            <div style={{ fontSize: '0.8rem', color: '#64748b' }}>{ins.phone}</div>
-                                        </td>
-                                        <td style={{ padding: '0.5rem' }}>
-                                            {ins.website && <a href={ins.website.startsWith('http') ? ins.website : `https://${ins.website}`} target="_blank" rel="noreferrer" style={{ color: '#3b82f6' }}>Link</a>}
-                                        </td>
-                                        <td style={{ padding: '0.5rem' }}>
-                                            <button className="btn btn-secondary" style={{ padding: '2px 6px', fontSize: '0.8rem', marginRight: '0.5rem' }} onClick={() => handleOpenEdit(ins)}>Edit</button>
-                                            <button style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontWeight: 'bold' }} onClick={() => handleDelete(ins.id)}>X</button>
-                                        </td>
-                                    </tr>
+                {/* Search Bar */}
+                <div className="mb-8 relative">
+                    <input
+                        type="text"
+                        placeholder="Search by name, CUIT or website..."
+                        className="input-field pl-10 py-3 text-lg"
+                        style={{ paddingLeft: '2.5rem' }}
+                        value={searchTerm}
+                        onChange={e => setSearchTerm(e.target.value)}
+                    />
+                    <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}>🔍</span>
+                </div>
+
+                {loading ? (
+                    <div className="grid place-items-center h-64 text-muted">Loading insurances...</div>
+                ) : (
+                    <>
+                        {filteredInsurances.length === 0 ? (
+                            <div className="text-center py-12 bg-slate-50 rounded-xl border-dashed border-2 border-slate-200">
+                                <p className="text-muted text-lg">No insurances found matching "{searchTerm}"</p>
+                                {searchTerm && <button className="btn-link mt-2 text-accent" onClick={() => setSearchTerm('')}>Clear Search</button>}
+                            </div>
+                        ) : (
+                            <div className="item-grid">
+                                {filteredInsurances.map(ins => (
+                                    <div key={ins.id} className="item-card group">
+                                        <div className="item-header">
+                                            <div className="insurance-avatar" style={{ background: '#3b82f6' }}>
+                                                {getInitials(ins.name)}
+                                            </div>
+                                            <div>
+                                                <h3 className="font-bold text-lg text-slate-800 m-0 leading-tight">{ins.name}</h3>
+                                                <p className="text-sm text-slate-500 m-0 mt-1">CUIT: {ins.cuit || 'N/A'}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="item-content">
+                                            <div className="insurance-details">
+                                                <div className="insurance-info-row">
+                                                    <span className="insurance-info-icon">📞</span>
+                                                    <span className="font-medium">{ins.phone || 'No phone'}</span>
+                                                </div>
+                                                <div className="insurance-info-row">
+                                                    <span className="insurance-info-icon">✉️</span>
+                                                    <span className="text-sm">{ins.email || 'No email'}</span>
+                                                </div>
+                                                {ins.website && (
+                                                    <div className="insurance-info-row">
+                                                        <span className="insurance-info-icon">🌐</span>
+                                                        <a href={ins.website.startsWith('http') ? ins.website : `https://${ins.website}`} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline text-sm truncate max-w-full">
+                                                            {ins.website}
+                                                        </a>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        <div className="item-footer">
+                                            <button
+                                                className="btn btn-secondary btn-sm-compact"
+                                                onClick={() => handleOpenEdit(ins)}
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                className="btn btn-danger btn-sm-compact"
+                                                onClick={() => handleDelete(ins.id)}
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </div>
                                 ))}
-                                {insurances.length === 0 && <tr><td colSpan="5" style={{ padding: '1rem', textAlign: 'center', color: '#64748b' }}>No insurances found.</td></tr>}
-                            </tbody>
-                        </table>
-                    </div>
+                            </div>
+                        )}
+                    </>
                 )}
 
                 <Modal
@@ -136,10 +200,10 @@ const Insurances = () => {
                         </>
                     }
                 >
-                    <div style={{ display: 'grid', gap: '1rem' }}>
+                    <div className="flex-col gap-4">
                         <div className="input-group">
                             <label className="input-label">Name *</label>
-                            <input className="input-field" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
+                            <input className="input-field" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} autoFocus />
                         </div>
                         <div className="input-group">
                             <label className="input-label">CUIT</label>
@@ -149,7 +213,7 @@ const Insurances = () => {
                             <label className="input-label">Website</label>
                             <input className="input-field" value={formData.website} onChange={e => setFormData({ ...formData, website: e.target.value })} placeholder="e.g. www.osde.com.ar" />
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div className="grid-2-cols">
                             <div className="input-group">
                                 <label className="input-label">Email</label>
                                 <input className="input-field" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />

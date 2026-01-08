@@ -154,7 +154,7 @@ const AdminUsers = () => {
             return (
                 <div>
                     <p>{t('delete_confirmation')} <strong>{user.username}</strong>? {t('action_cannot_undone')}</p>
-                    <div style={{ marginTop: '1rem' }}>
+                    <div className="mt-4">
                         <label className="input-label">Security Code (Safety)</label>
                         <input
                             className="input-field"
@@ -183,8 +183,8 @@ const AdminUsers = () => {
 
         // Create / Edit Form
         return (
-            <div style={{ display: 'grid', gap: '1rem' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="flex-col gap-4">
+                <div className="grid-2-cols">
                     <div>
                         <label className="input-label">{t('username')}</label>
                         <input className="input-field" value={formData.username} onChange={e => setFormData({ username: e.target.value })} />
@@ -254,62 +254,57 @@ const AdminUsers = () => {
             <Sidebar />
 
             <main className="main-content">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <div className="flex-between-center mb-6">
                     <div>
                         <h1 className="title">{t('user_management')}</h1>
-                        <p style={{ color: '#64748b' }}>{t('manage_users_subtitle')}</p>
+                        <p className="text-muted">{t('manage_users_subtitle')}</p>
                     </div>
                     <button className="btn btn-primary" onClick={openCreateModal}>{t('add_user')}</button>
                 </div>
 
                 <div className="card">
-                    <div style={{ marginBottom: '1.5rem' }}>
+                    <div className="mb-6">
                         <input
                             type="text"
                             placeholder={t('search_users_placeholder')}
-                            className="input-field"
+                            className="input-field max-w-400"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            style={{ maxWidth: '400px' }}
                         />
                     </div>
 
                     {loading ? <p>{t('loading_users')}</p> : (
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                        <table className="transactions-table">
                             <thead>
-                                <tr style={{ background: '#f8fafc', textAlign: 'left' }}>
-                                    <th style={{ padding: '0.75rem', borderBottom: '2px solid #e2e8f0' }}>{t('user_header')}</th>
-                                    <th style={{ padding: '0.75rem', borderBottom: '2px solid #e2e8f0' }}>{t('role_header')}</th>
-                                    <th style={{ padding: '0.75rem', borderBottom: '2px solid #e2e8f0' }}>{t('name_contact_header')}</th>
-                                    <th style={{ padding: '0.75rem', borderBottom: '2px solid #e2e8f0' }}>{t('actions')}</th>
+                                <tr className="text-left bg-slate-50">
+                                    <th className="p-3 border-b-2-slate">{t('user_header')}</th>
+                                    <th className="p-3 border-b-2-slate">{t('role_header')}</th>
+                                    <th className="p-3 border-b-2-slate">{t('name_contact_header')}</th>
+                                    <th className="p-3 border-b-2-slate">{t('actions')}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {filteredUsers.map(u => (
-                                    <tr key={u.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                                        <td style={{ padding: '0.75rem' }}>
-                                            <div style={{ fontWeight: 'bold' }}>{u.username}</div>
-                                            <div style={{ fontSize: '0.8rem', color: '#64748b' }}>DNI: {u.dni || '-'}</div>
+                                    <tr key={u.id} className="border-b-divider">
+                                        <td className="p-3">
+                                            <div className="font-bold">{u.username}</div>
+                                            <div className="text-xs-muted">DNI: {u.dni || '-'}</div>
                                         </td>
-                                        <td style={{ padding: '0.75rem' }}>
-                                            <span style={{
-                                                padding: '2px 8px', borderRadius: '12px', fontSize: '0.75rem',
-                                                background: u.role === 'admin' ? '#1e293b' : (u.role === 'doctor' ? '#3b82f6' : (u.role === 'secretary' ? '#8b5cf6' : '#22c55e')),
-                                                color: '#fff'
-                                            }}>
+                                        <td className="p-3">
+                                            <span className={`badge-role ${u.role}`}>
                                                 {u.role}
                                             </span>
                                         </td>
-                                        <td style={{ padding: '0.75rem' }}>
+                                        <td className="p-3">
                                             <div>{u.full_name || '-'}</div>
-                                            <div style={{ fontSize: '0.8rem', color: '#64748b' }}>{u.phone}</div>
+                                            <div className="text-xs-muted">{u.phone}</div>
                                         </td>
-                                        <td style={{ padding: '0.75rem' }}>
-                                            <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                                <button onClick={() => openEditModal(u)} className="btn btn-secondary" style={{ padding: '0.25rem 0.5rem' }}>{t('edit')}</button>
-                                                <button onClick={() => openResetModal(u)} className="btn btn-secondary" style={{ padding: '0.25rem 0.5rem' }}>{t('reset_pwd')}</button>
+                                        <td className="p-3">
+                                            <div className="flex gap-2">
+                                                <button onClick={() => openEditModal(u)} className="btn btn-secondary text-xs px-2 py-1">{t('edit')}</button>
+                                                <button onClick={() => openResetModal(u)} className="btn btn-secondary text-xs px-2 py-1">{t('reset_pwd')}</button>
                                                 {u.role !== 'admin' && (
-                                                    <button onClick={() => openDeleteModal(u)} className="btn btn-secondary" style={{ padding: '0.25rem 0.5rem', background: '#fee2e2', color: '#991b1b', border: 'none' }}>{t('delete')}</button>
+                                                    <button onClick={() => openDeleteModal(u)} className="btn btn-danger text-xs px-2 py-1">{t('delete')}</button>
                                                 )}
                                             </div>
                                         </td>
@@ -332,9 +327,7 @@ const AdminUsers = () => {
                 footer={
                     <>
                         <button onClick={closeModal} className="btn btn-secondary">{t('cancel')}</button>
-                        <button onClick={confirmAction} className={`btn ${modalState.type === 'DELETE' ? 'btn-danger' : 'btn-primary'}`}
-                            style={modalState.type === 'DELETE' ? { background: '#ef4444', color: 'white' } : {}}
-                        >
+                        <button onClick={confirmAction} className={`btn ${modalState.type === 'DELETE' ? 'btn-danger' : 'btn-primary'}`}>
                             {t('confirm')}
                         </button>
                     </>

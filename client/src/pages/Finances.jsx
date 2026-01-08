@@ -86,9 +86,21 @@ const Finances = () => {
             .reduce((acc, t) => {
                 if (t.is_withdrawal) return acc - parseFloat(t.amount);
                 if (t.type.includes('income')) return acc + parseFloat(t.amount);
-                if (t.type.includes('expense')) return acc - parseFloat(t.amount); // General expense usually handled differently but let's assume (-)
+                if (t.type.includes('expense')) return acc - parseFloat(t.amount);
                 return acc;
             }, 0);
+    };
+
+    const translateDescription = (desc) => {
+        if (!desc) return "";
+        let d = desc;
+        d = d.replace("Consultation (Booking)", "Consulta (Reserva)");
+        d = d.replace("Payment for appointment on", "Pago por turno del");
+        d = d.replace("Cash Box Delivery to Dr.", "Entrega de Caja al Dr.");
+        d = d.replace("Request: license for", "Solicitud: licencia para");
+        d = d.replace("Request: prescription for", "Solicitud: receta para");
+        d = d.replace("- Paid", "- Pagado");
+        return d;
     };
 
     if (loading) return <div>{t('loading')}</div>;
@@ -101,29 +113,29 @@ const Finances = () => {
 
                 {/* Stats (Admin/Secretary) */}
                 {(user.role === 'admin' || user.role === 'secretary') && (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+                    <div className="stats-grid mb-8">
                         {stats.map((s, idx) => (
-                            <div key={idx} className="card" style={{ textAlign: 'center' }}>
-                                <h3 style={{ fontSize: '1rem', color: '#64748b', textTransform: 'uppercase' }}>{t(s.type) || s.type.replace('_', ' ')}</h3>
-                                <p style={{ fontSize: '1.5rem', fontWeight: 700, margin: '0.5rem 0' }}>${s.total}</p>
+                            <div key={idx} className="card text-center">
+                                <h3 className="text-sm-muted uppercase">{t(s.type) || s.type.replace('_', ' ')}</h3>
+                                <p className="stat-value">${s.total}</p>
                             </div>
                         ))}
                     </div>
                 )}
 
-                <div style={{ display: 'grid', gridTemplateColumns: user.role !== 'patient' ? '1fr 2fr' : '1fr', gap: '2rem' }}>
+                <div className={user.role !== 'patient' ? 'grid-Sidebar-2fr gap-8' : 'grid-1-col'}>
 
                     {/* Sidebar / Controls for Staff */}
                     {user.role !== 'patient' && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                        <div className="flex-col gap-8">
                             <div className="card">
                                 <h3>{t('actions')}</h3>
-                                <button className="btn btn-primary" style={{ width: '100%', marginBottom: '1rem' }} onClick={() => setModalOpen(true)}>
+                                <button className="btn btn-primary mb-4 w-auto self-start" onClick={() => setModalOpen(true)}>
                                     {t('new_transaction')}
                                 </button>
 
-                                <div style={{ marginBottom: '1rem' }}>
-                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 'bold' }}>{t('filter_by_doctor')}</label>
+                                <div className="mb-4">
+                                    <label className="input-label block font-bold">{t('filter_by_doctor')}</label>
                                     <select className="input-field" value={selectedDoctorFilter} onChange={e => setSelectedDoctorFilter(e.target.value)}>
                                         <option value="">{t('all_doctors')}</option>
                                         {doctors.map(d => <option key={d.id} value={d.id}>{d.full_name}</option>)}
@@ -133,32 +145,44 @@ const Finances = () => {
 
                             {/* Cash Box Summary (Per Doctor) */}
                             {user.role === 'secretary' && (
-                                <div className="card">
-                                    <h3>{t('cash_boxes')}</h3>
-                                    {doctors.map(d => {
-                                        const bal = calculateBalance(d.id);
-                                        return (
-                                            <div key={d.id} style={{ padding: '1rem', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                <div>
-                                                    <div style={{ fontWeight: 'bold' }}>{d.full_name}</div>
-                                                    <div style={{ fontSize: '1.2rem', color: bal >= 0 ? 'green' : 'red' }}>{formatPrice(bal)}</div>
-                                                </div>
-                                                {bal > 0 && (
-                                                    <button
-                                                        className="btn btn-secondary"
-                                                        style={{ fontSize: '0.8rem', padding: '0.25rem 0.5rem' }}
-                                                        onClick={() => {
-                                                            setCloseBoxModal({ open: true, doctorId: d.id, doctorName: d.full_name, balance: bal });
-                                                            setCloseAmount(bal);
-                                                        }}
-                                                    >
-                                                        {t('deliver')}
-                                                    </button>
-                                                )}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
+                                <>
+                                    <div className="flex justify-between items-center mb-4">
+                                        <h3>{t('cash_boxes')}</h3>
+                                        {selectedDoctorFilter && (
+                                            <button className="btn-text" onClick={() => setSelectedDoctorFilter('')}>
+                                                {t('view_all') || 'View All'}
+                                            </button>
+                                        )}
+                                    </div>
+                                    <div className="grid-responsive">
+                                        {doctors
+                                            .filter(d => !selectedDoctorFilter || d.id == selectedDoctorFilter)
+                                            .map(d => {
+                                                const bal = calculateBalance(d.id);
+                                                return (
+                                                    <div key={d.id} className="card item-card p-4 flex flex-col justify-between">
+                                                        <div>
+                                                            <h4 className="font-bold text-slate-800 m-0">{d.full_name}</h4>
+                                                            <p className={`text-2xl font-bold mt-2 ${bal >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                                                                ${bal.toLocaleString()}
+                                                            </p>
+                                                        </div>
+                                                        {(bal > 0 && (user.role === 'admin' || user.role === 'secretary')) && (
+                                                            <button
+                                                                className="btn btn-sm btn-primary mt-4 w-auto self-start"
+                                                                onClick={() => {
+                                                                    setCloseBoxModal({ open: true, doctorId: d.id, doctorName: d.full_name, balance: bal });
+                                                                    setCloseAmount(bal);
+                                                                }}
+                                                            >
+                                                                {t('deliver')}
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
+                                    </div>
+                                </>
                             )}
                         </div>
                     )}
@@ -166,31 +190,31 @@ const Finances = () => {
                     {/* Transaction Log */}
                     <div className="card">
                         <h3>{t('transaction_log')}</h3>
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                        <table className="transactions-table">
                             <thead>
-                                <tr style={{ textAlign: 'left', borderBottom: '1px solid #e2e8f0' }}>
-                                    <th style={{ padding: '1rem' }}>{t('date_label')}</th>
-                                    <th style={{ padding: '1rem' }}>{t('description')}</th>
-                                    <th style={{ padding: '1rem' }}>{t('beneficiary')}</th>
-                                    <th style={{ padding: '1rem' }}>{t('payment_method')}</th>
-                                    <th style={{ padding: '1rem' }}>{t('amount')}</th>
-                                    <th style={{ padding: '1rem' }}>{t('proof')}</th>
+                                <tr className="text-left border-b-slate">
+                                    <th className="p-4">{t('date_label')}</th>
+                                    <th className="p-4">{t('description')}</th>
+                                    <th className="p-4">{t('beneficiary')}</th>
+                                    <th className="p-4">{t('payment_method')}</th>
+                                    <th className="p-4">{t('amount')}</th>
+                                    <th className="p-4">{t('proof')}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {transactions.map(tx => (
-                                    <tr key={tx.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                                        <td style={{ padding: '1rem' }}>{new Date(tx.transaction_date).toLocaleDateString()}</td>
-                                        <td style={{ padding: '1rem' }}>
-                                            <div>{tx.type.replace('_', ' ').toUpperCase()}</div>
-                                            <div style={{ fontSize: '0.8rem', color: '#64748b' }}>{tx.description}</div>
+                                    <tr key={tx.id} className="border-b-divider">
+                                        <td className="p-4">{new Date(tx.transaction_date).toLocaleDateString()}</td>
+                                        <td className="p-4">
+                                            <div>{t(tx.type) || tx.type.replace('_', ' ').toUpperCase()}</div>
+                                            <div className="text-sm-muted">{translateDescription(tx.description)}</div>
                                         </td>
-                                        <td style={{ padding: '1rem' }}>{tx.doctor_name || t('general')}</td>
-                                        <td style={{ padding: '1rem' }}>{tx.method}</td>
-                                        <td style={{ padding: '1rem', color: tx.is_withdrawal ? 'blue' : (tx.type.includes('income') ? 'green' : 'red'), fontWeight: 'bold' }}>
+                                        <td className="p-4">{tx.doctor_name || t('general')}</td>
+                                        <td className="p-4">{tx.method}</td>
+                                        <td className={`p-4 font-bold ${tx.is_withdrawal ? 'text-blue-600' : (tx.type.includes('income') ? 'text-green-600' : 'text-red-500')}`}>
                                             {tx.is_withdrawal ? '↩' : (tx.type.includes('income') ? '+' : '-')}${Math.abs(tx.amount)}
                                         </td>
-                                        <td style={{ padding: '1rem' }}>
+                                        <td className="p-4">
                                             {tx.proof_file ? <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${tx.proof_file}`} target="_blank" rel="noreferrer">{t('view') || 'View'}</a> : '-'}
                                         </td>
                                     </tr>
@@ -217,11 +241,11 @@ const Finances = () => {
                     footer={<><button className="btn btn-primary" onClick={handleCloseBox}>{t('confirm_delivery')}</button></>}
                 >
                     <p>{t('current_system_balance')}: <strong>${closeBoxModal.balance?.toFixed(2)}</strong></p>
-                    <div className="input-group" style={{ marginTop: '1rem' }}>
+                    <div className="input-group mt-4">
                         <label className="input-label">{t('amount_delivered')}</label>
                         <CurrencyInput className="input-field" value={closeAmount} onChange={e => setCloseAmount(e.target.value)} placeholder={closeBoxModal.balance} />
                     </div>
-                    <p className="text-muted" style={{ fontSize: '0.8rem' }}>{t('close_box_warning')}</p>
+                    <p className="text-xs-muted">{t('close_box_warning')}</p>
                 </Modal>
             </main>
         </div>

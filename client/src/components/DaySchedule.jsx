@@ -65,7 +65,7 @@ const DaySchedule = ({ date, appointments, onSlotClick, onRatingChange }) => {
                                                                 const newRating = (appt.financial_rating % 5) + 1; // Cycle 1-5
                                                                 if (onRatingChange) onRatingChange(appt.patient_id, newRating);
                                                             }}
-                                                            style={{ display: 'flex', color: '#f59e0b', fontSize: '1rem', cursor: 'pointer', userSelect: 'none' }}
+                                                            className="financial-rating"
                                                         >
                                                             {[1, 2, 3, 4, 5].map(star => (
                                                                 <span key={star}>
@@ -77,7 +77,7 @@ const DaySchedule = ({ date, appointments, onSlotClick, onRatingChange }) => {
                                                 </div>
                                                 <span className="doctor-name">Dr. {appt.doctor_name}</span>
                                                 {appt.reason && (
-                                                    <div style={{ fontSize: '0.75rem', color: '#6366f1', fontStyle: 'italic', marginTop: '0.2rem' }}>
+                                                    <div className="appt-reason-label">
                                                         💬 {appt.reason}
                                                     </div>
                                                 )}

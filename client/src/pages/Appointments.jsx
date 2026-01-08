@@ -336,23 +336,11 @@ const Appointments = () => {
             <Sidebar />
             <main className="main-content">
                 {rescheduleAppt && (
-                    <div className="reschedule-banner" style={{
-                        background: '#eff6ff',
-                        border: '1px solid #3b82f6',
-                        padding: '1rem',
-                        borderRadius: '0.5rem',
-                        marginBottom: '1rem',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        color: '#1e40af',
-                        fontWeight: '500',
-                        boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
-                    }}>
+                    <div className="reschedule-banner-container">
                         <div>
                             🚀 {t('rescheduling_mode')}: <strong>{rescheduleAppt.patient_name}</strong>. {t('reschedule_instruction')}
                         </div>
-                        <button className="btn btn-secondary" style={{ padding: '0.25rem 0.75rem', fontSize: '0.8rem', background: 'white' }} onClick={exitRescheduleMode}>
+                        <button className="reschedule-exit-btn" onClick={exitRescheduleMode}>
                             {t('exit_reschedule')}
                         </button>
                     </div>
@@ -399,9 +387,9 @@ const Appointments = () => {
                             holidays={holidays}
                         />
                     </div>
-                    <div className="schedule-section" style={{ position: 'relative', overflow: 'hidden' }}>
+                    <div className="schedule-section-container">
                         {currentDoctor && (
-                            <div className="watermark">
+                            <div className="watermark-text">
                                 {currentDoctor.full_name}
                             </div>
                         )}
@@ -420,14 +408,14 @@ const Appointments = () => {
                         <div className="modal-content card" style={{ maxWidth: '500px', width: '100%', animation: 'fadeIn 0.3s ease' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
                                 <h3>{t('new_appointment')}</h3>
-                                <button onClick={() => setShowForm(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}>&times;</button>
+                                <button onClick={() => setShowForm(false)} className="close-btn">&times;</button>
                             </div>
 
                             <form onSubmit={handleBook}>
                                 <div className="input-group">
                                     <label className="input-label">{t('doctors')}</label>
                                     {user.role === 'doctor' ? (
-                                        <div className="input-field" style={{ background: '#e2e8f0', color: '#64748b' }}>
+                                        <div className="input-field input-read-only">
                                             {doctors.find(d => d.id === Number(selectedDoctor))?.full_name || 'You'}
                                         </div>
                                     ) : (
@@ -461,20 +449,20 @@ const Appointments = () => {
                                     <textarea className="input-field" rows="3" value={reason} onChange={e => setReason(e.target.value)} required></textarea>
                                 </div>
 
-                                <div className="input-group" style={{ flexDirection: 'row', alignItems: 'center', gap: '0.5rem' }}>
+                                <div className="input-group checkbox-group">
                                     <input
                                         type="checkbox"
                                         id="bonified"
                                         checked={bonified}
                                         onChange={e => setBonified(e.target.checked)}
-                                        style={{ width: 'auto' }}
+                                        className="w-auto"
                                     />
-                                    <label htmlFor="bonified" className="input-label" style={{ marginBottom: 0, cursor: 'pointer' }}>
+                                    <label htmlFor="bonified" className="input-label checkbox-label">
                                         {t('bonificado') || 'Bonificado (Free/Waived)'}
                                     </label>
                                 </div>
 
-                                <button type="submit" className="btn btn-accent" style={{ width: '100%' }}>{t('confirm_booking')}</button>
+                                <button type="submit" className="btn btn-accent w-full">{t('confirm_booking')}</button>
                             </form>
                         </div>
                     </div>
@@ -501,7 +489,7 @@ const Appointments = () => {
                         onClose={() => setActionModal({ ...actionModal, open: false })}
                         title={`Appointment: ${actionModal.appt.patient_name}`}
                     >
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <div className="flex-col-gap-4">
                             <div className="flex-between">
                                 <p><strong>{t('date_label')}:</strong> {new Date(actionModal.appt.appointment_date).toLocaleString()}</p>
                                 <div className="flex gap-2">
@@ -514,9 +502,8 @@ const Appointments = () => {
                                 </div>
                             </div>
                             <p><strong>{t('reason')}:</strong> {actionModal.appt.reason || t('no_description') || 'No description'}</p>
-                            <hr style={{ borderColor: '#f1f5f9' }} />
-
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                            <hr className="border-divider" />
+                            <div className="grid-2-cols">
                                 {/* Pay Button */}
                                 {(actionModal.appt.payment_status === 'pending' || actionModal.appt.payment_status === 'debt') && (
                                     <button className="btn btn-primary" onClick={() => {
@@ -551,7 +538,7 @@ const Appointments = () => {
 
                                 {/* Action Buttons for Status */}
                                 {actionModal.appt.status === 'pending' && (
-                                    <button className="btn" style={{ background: '#10b981', color: 'white' }} onClick={() => {
+                                    <button className="btn btn-status-confirm" onClick={() => {
                                         handleUpdateStatus(actionModal.appt.id, 'confirmed');
                                         setActionModal({ ...actionModal, open: false });
                                     }}>
@@ -560,7 +547,7 @@ const Appointments = () => {
                                 )}
 
                                 {(actionModal.appt.status === 'confirmed' || actionModal.appt.status === 'pending' || actionModal.appt.status === 'rescheduled') && (
-                                    <button className="btn" style={{ background: '#3b82f6', color: 'white' }} onClick={() => {
+                                    <button className="btn btn-status-complete" onClick={() => {
                                         handleUpdateStatus(actionModal.appt.id, 'completed');
                                         setActionModal({ ...actionModal, open: false });
                                     }}>
@@ -568,14 +555,14 @@ const Appointments = () => {
                                     </button>
                                 )}
 
-                                <button className="btn" style={{ background: '#f59e0b', color: 'white' }} onClick={() => {
+                                <button className="btn btn-status-suspend" onClick={() => {
                                     handleUpdateStatus(actionModal.appt.id, 'suspended');
                                     setActionModal({ ...actionModal, open: false });
                                 }}>
                                     ⏸ {t('suspend')}
                                 </button>
 
-                                <button className="btn" style={{ background: '#64748b', color: 'white' }} onClick={() => {
+                                <button className="btn btn-status-absent" onClick={() => {
                                     handleUpdateStatus(actionModal.appt.id, 'absent');
                                     setActionModal({ ...actionModal, open: false });
                                 }}>
@@ -583,11 +570,10 @@ const Appointments = () => {
                                 </button>
                             </div>
 
-                            <hr style={{ borderColor: '#f1f5f9' }} />
-
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                            <hr className="border-divider" />
+                            <div className="grid-2-cols">
                                 {/* Cancel (Standard) */}
-                                <button className="btn btn-secondary" style={{ borderColor: '#ef4444', color: '#ef4444' }} onClick={() => {
+                                <button className="btn btn-outline-danger" onClick={() => {
                                     handleCancel(actionModal.appt.id);
                                     setActionModal({ ...actionModal, open: false });
                                 }}>
@@ -596,7 +582,7 @@ const Appointments = () => {
 
                                 {/* Delete (Error) */}
                                 {(user.role === 'admin' || user.role === 'secretary') && (
-                                    <button className="btn" style={{ background: '#ef4444', color: 'white' }} onClick={() => {
+                                    <button className="btn btn-status-delete" onClick={() => {
                                         handleDelete(actionModal.appt.id);
                                         setActionModal({ ...actionModal, open: false });
                                     }}>

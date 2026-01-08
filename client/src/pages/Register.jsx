@@ -38,7 +38,7 @@ const Register = () => {
 
     return (
         <div className="auth-page">
-            <div className="card auth-card" style={{ maxWidth: '500px' }}>
+            <div className="card auth-card max-w-500">
                 <h2 className="title text-center">{t('create_account')}</h2>
 
                 {error && <div className="alert-box alert-error text-center">{error}</div>}
@@ -102,7 +102,7 @@ const Register = () => {
                 </form>
                 <div className="text-center mt-6">
                     <span className="subtitle">{t('already_account')} </span>
-                    <Link to="/login" style={{ color: 'var(--primary-color)', textDecoration: 'none', fontWeight: 600 }}>{t('login')}</Link>
+                    <Link to="/login" className="link-primary font-bold no-underline">{t('login')}</Link>
                 </div>
             </div>
         </div>

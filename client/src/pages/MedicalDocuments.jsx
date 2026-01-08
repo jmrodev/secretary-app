@@ -193,25 +193,16 @@ const MedicalDocuments = () => {
             <main className="main-content">
                 <h1 className="title">{t('medical_documents')}</h1>
 
-                <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', borderBottom: '1px solid #e2e8f0' }}>
-                    <button
-                        onClick={() => setActiveTab('requests')}
-                        style={{ padding: '1rem', background: 'none', border: 'none', borderBottom: activeTab === 'requests' ? '2px solid #3b82f6' : 'none', fontWeight: activeTab === 'requests' ? 'bold' : 'normal', cursor: 'pointer' }}
-                    >
-                        {t('requests_workflow')}
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('files')}
-                        style={{ padding: '1rem', background: 'none', border: 'none', borderBottom: activeTab === 'files' ? '2px solid #3b82f6' : 'none', fontWeight: activeTab === 'files' ? 'bold' : 'normal', cursor: 'pointer' }}
-                    >
-                        {t('file_repository')}
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('history')}
-                        style={{ padding: '1rem', background: 'none', border: 'none', borderBottom: activeTab === 'history' ? '2px solid #3b82f6' : 'none', fontWeight: activeTab === 'history' ? 'bold' : 'normal', cursor: 'pointer' }}
-                    >
-                        {t('prescriptions_licenses')}
-                    </button>
+                <div className="tabs-container">
+                    {['requests', 'files', 'history'].map(tab => (
+                        <button
+                            key={tab}
+                            onClick={() => setActiveTab(tab)}
+                            className={`tab-btn ${activeTab === tab ? 'active' : ''}`}
+                        >
+                            {tab === 'requests' ? t('requests_workflow') : (tab === 'files' ? t('file_repository') : t('prescriptions_licenses'))}
+                        </button>
+                    ))}
                 </div>
 
                 {/* Search Bar */}
@@ -227,7 +218,7 @@ const MedicalDocuments = () => {
                 </div>
 
                 {activeTab === 'requests' && (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '2rem' }}>
+                    <div className="grid-requests-layout">
                         {(user.role === 'secretary') && (
                             <div className="card">
                                 <h3>{t('new_request')}</h3>
@@ -259,15 +250,15 @@ const MedicalDocuments = () => {
                                         <label className="input-label">{t('note_for_doctor')}</label>
                                         <textarea className="input-field" rows="3" value={reqNote} onChange={e => setReqNote(e.target.value)} placeholder="e.g. Needs Ibuprofen 600mg" required />
                                     </div>
-                                    <div className="input-group" style={{ flexDirection: 'row', alignItems: 'center', gap: '0.5rem' }}>
+                                    <div className="input-group-row-center gap-2">
                                         <input
                                             type="checkbox"
                                             id="req-bonified"
                                             checked={bonified}
                                             onChange={e => setBonified(e.target.checked)}
-                                            style={{ width: 'auto' }}
+                                            className="w-auto"
                                         />
-                                        <label htmlFor="req-bonified" className="input-label" style={{ marginBottom: 0, cursor: 'pointer' }}>
+                                        <label htmlFor="req-bonified" className="input-label mb-0 cursor-pointer">
                                             {t('bonificado') || 'Bonificado (Free/Waived)'}
                                         </label>
                                     </div>
@@ -278,40 +269,44 @@ const MedicalDocuments = () => {
 
                         <div className="card" style={{ gridColumn: user.role !== 'secretary' ? '1 / -1' : 'auto' }}>
                             <h3>{user.role === 'doctor' ? t('pending_requests') : t('request_status')}</h3>
-                            {requests.filter(filterItem).length === 0 ? <p>{t('no_requests')}</p> : (
-                                <ul style={{ listStyle: 'none', padding: 0 }}>
+                            {requests.filter(filterItem).length === 0 ? <p className="text-muted p-4">{t('no_requests')}</p> : (
+                                <div className="request-list-container">
                                     {requests.filter(filterItem).map(r => (
-                                        <li key={r.id} style={{ padding: '1rem', borderBottom: '1px solid #f1f5f9', background: r.status === 'pending' ? '#fff' : '#f8fafc', opacity: r.status === 'pending' ? 1 : 0.75 }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                                <span style={{ fontWeight: 'bold', textTransform: 'uppercase', fontSize: '0.8rem', color: r.type === 'prescription' ? '#3b82f6' : '#8b5cf6' }}>
-                                                    {r.type === 'prescription' ? t('prescription') : (r.type === 'license' ? t('license') : r.type)}
-                                                </span>
-                                                <span style={{
-                                                    padding: '2px 8px', borderRadius: '12px', fontSize: '0.75rem',
-                                                    background: r.status === 'pending' ? '#fef3c7' : (r.status === 'completed' ? '#dcfce7' : '#fee2e2'),
-                                                    color: r.status === 'pending' ? '#b45309' : (r.status === 'completed' ? '#166534' : '#991b1b')
-                                                }}>
+                                        <div key={r.id} className={`request-card-item ${r.status !== 'pending' ? 'opacity-75 bg-slate-50' : ''}`}>
+                                            <div className="request-header">
+                                                <div>
+                                                    <span className={`tag ${r.type === 'prescription' ? 'tag-blue' : 'tag-purple'} mr-2`}>
+                                                        {r.type === 'prescription' ? t('prescription') : (r.type === 'license' ? t('license') : r.type)}
+                                                    </span>
+                                                    <span className="font-bold text-slate-800">{r.patient_name}</span>
+                                                </div>
+                                                <span className={`tag ${r.status === 'pending' ? 'tag-amber' : (r.status === 'completed' ? 'tag-green' : 'tag-red')}`}>
                                                     {t(r.status) || r.status}
                                                 </span>
                                             </div>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
-                                                <div><strong>{t('patient_label')}:</strong> {r.patient_name}</div>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                                    <span style={{
-                                                        padding: '2px 8px', borderRadius: '12px', fontSize: '0.75rem',
-                                                        background: r.payment_status === 'paid' ? '#dcfce7' : (r.payment_status === 'debt' ? '#fee2e2' : '#f1f5f9'),
-                                                        color: r.payment_status === 'paid' ? '#166534' : (r.payment_status === 'debt' ? '#991b1b' : '#475569'),
-                                                        display: 'flex', flexDirection: 'column', alignItems: 'center'
-                                                    }}>
-                                                        {r.payment_status === 'paid' ? `PAID (${r.payment_method || 'CASH'})` :
-                                                            (r.payment_status === 'debt' ? `DEBT ${formatPrice(r.debt_amount)}` : 'PENDING')}
 
-                                                        {(r.status === 'pending' || r.payment_status === 'debt') && (
-                                                            <span style={{ fontSize: '0.7rem', opacity: 0.8, marginTop: '2px' }}>
-                                                                {timeAgo(r.created_at)}
-                                                            </span>
-                                                        )}
-                                                    </span>
+                                            <div className="text-sm text-slate-600 mb-2">
+                                                <span className="font-medium">{t('doctor_label')}:</span> Dr. {r.doctor_name || 'Unknown'}
+                                            </div>
+
+                                            <div className="bg-slate-50 p-3 rounded-lg text-sm text-slate-700 italic border border-slate-100">
+                                                "{r.request_note}"
+                                            </div>
+
+                                            {r.doctor_note && (
+                                                <div className="mt-2 text-sm text-green-700 bg-green-50 p-2 rounded border border-green-100">
+                                                    <strong>{t('doctor_says')}:</strong> {r.doctor_note}
+                                                </div>
+                                            )}
+
+                                            <div className="status-row">
+                                                <div className={`tag ${r.payment_status === 'paid' ? 'tag-green' : (r.payment_status === 'debt' ? 'tag-red' : 'tag-slate')}`}>
+                                                    {r.payment_status === 'paid' ? `PAID (${r.payment_method || 'CASH'})` :
+                                                        (r.payment_status === 'debt' ? `DEBT ${formatPrice(r.debt_amount)}` : 'PENDING')}
+                                                </div>
+                                                <span className="text-xs text-muted ml-auto">{timeAgo(r.created_at)}</span>
+
+                                                <div className="flex gap-2 ml-4">
                                                     {(r.payment_status !== 'paid') && (user.role === 'secretary' || user.role === 'doctor') && (
                                                         <button
                                                             onClick={() => setPaymentModal({
@@ -326,48 +321,41 @@ const MedicalDocuments = () => {
                                                                 },
                                                                 reqId: r.id
                                                             })}
+                                                            className="btn btn-sm-compact btn-primary"
                                                             title="Charge"
-                                                            className="btn-icon"
-                                                            style={{ color: '#10b981' }}
                                                         >
-                                                            💲
+                                                            $ Charge
                                                         </button>
                                                     )}
                                                     {user.role === 'admin' && (
                                                         <button
-                                                            className="btn-icon"
+                                                            className="btn btn-sm-compact btn-danger"
                                                             onClick={async () => {
                                                                 if (!window.confirm("¿Seguro que desea eliminar?")) return;
                                                                 try {
                                                                     await api.delete(`/medical/requests/${r.id}`);
                                                                     fetchRequests();
                                                                 } catch (e) {
-                                                                    alert("Error: " + (e.response?.data?.message || JSON.stringify(e.response?.data) || e.message));
+                                                                    alert("Error: " + (e.response?.data?.message || e.message));
                                                                 }
                                                             }}
-                                                            title="Eliminar"
-                                                            style={{ color: '#ef4444' }}
+                                                            title="Delete"
                                                         >
-                                                            🗑️
+                                                            Delete
                                                         </button>
                                                     )}
-
                                                 </div>
                                             </div>
-                                            <div style={{ marginTop: '0.5rem', fontStyle: 'italic', color: '#475569' }}>"{r.request_note}"</div>
-                                            {r.doctor_note && <div style={{ marginTop: '0.5rem', padding: '0.5rem', background: '#f0fdf4', borderLeft: '3px solid #22c55e', fontSize: '0.9rem' }}><strong>{t('doctor_says')}:</strong> {r.doctor_note}</div>}
 
-                                            {
-                                                user.role === 'doctor' && r.status === 'pending' && (
-                                                    <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem' }}>
-                                                        <button onClick={() => openActionModal('completed', r.id)} className="btn btn-primary" style={{ fontSize: '0.8rem' }}>{t('mark_as_done')}</button>
-                                                        <button onClick={() => openActionModal('rejected', r.id)} className="btn btn-accent" style={{ fontSize: '0.8rem', background: '#ef4444' }}>{t('reject')}</button>
-                                                    </div>
-                                                )
-                                            }
-                                        </li>
+                                            {user.role === 'doctor' && r.status === 'pending' && (
+                                                <div className="flex gap-2 mt-4 pt-3 border-t border-slate-100">
+                                                    <button onClick={() => openActionModal('completed', r.id)} className="btn btn-primary btn-sm">{t('mark_as_done')}</button>
+                                                    <button onClick={() => openActionModal('rejected', r.id)} className="btn btn-danger btn-sm">{t('reject')}</button>
+                                                </div>
+                                            )}
+                                        </div>
                                     ))}
-                                </ul>
+                                </div>
                             )}
                         </div>
                     </div>
@@ -376,7 +364,7 @@ const MedicalDocuments = () => {
 
                 {
                     activeTab === 'files' && (
-                        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '2rem' }}>
+                        <div className="grid-requests-layout">
                             <div className="card">
                                 <h3>{t('upload_document')}</h3>
                                 <form onSubmit={handleFileUpload}>
@@ -402,35 +390,41 @@ const MedicalDocuments = () => {
 
                             <div className="card">
                                 <h3>{t('file_repository')}</h3>
-                                {files.filter(filterItem).length === 0 ? <p>{t('no_files')}</p> : (
-                                    <ul style={{ listStyle: 'none', padding: 0 }}>
+                                {files.filter(filterItem).length === 0 ? <p className="text-muted p-4">{t('no_files')}</p> : (
+                                    <div className="file-grid">
                                         {files.filter(filterItem).map(f => (
-                                            <li key={f.id} style={{ padding: '1rem', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                <div>
-                                                    <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${f.file_url}`} target="_blank" rel="noreferrer" style={{ fontWeight: 'bold', color: '#3b82f6', textDecoration: 'none', fontSize: '1.05rem' }}>
-                                                        {f.description || f.file_name}
-                                                    </a>
-                                                    <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '4px' }}>
-                                                        <strong>{t('patient_label')}:</strong> {f.patient_name} • <strong>{t('by_dr') || 'By'}:</strong> <span style={{ textTransform: 'capitalize' }}>{f.uploader_name}</span>
+                                            <div key={f.id} className="file-card group" onClick={() => window.open(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${f.file_url}`, '_blank')}>
+                                                <div className="flex justify-between items-start">
+                                                    <div className="file-icon-placeholder">
+                                                        📄
+                                                    </div>
+                                                    <span className="text-xs bg-slate-100 text-slate-500 px-2 py-1 rounded uppercase">{f.file_type.split('/')[1] || 'FILE'}</span>
+                                                </div>
+
+                                                <div className="file-info">
+                                                    <h4>{f.description || f.file_name}</h4>
+                                                    <div className="file-meta">
+                                                        {f.patient_name}
+                                                    </div>
+                                                    <div className="file-meta text-xs">
+                                                        By {f.uploader_name}
                                                     </div>
                                                 </div>
-                                                <span style={{ fontSize: '0.7rem', background: '#e2e8f0', padding: '2px 8px', borderRadius: '12px', textTransform: 'uppercase' }}>{f.file_type.split('/')[1] || 'FILE'}</span>
+
                                                 {user.role === 'admin' && (
                                                     <button
-                                                        className="btn-icon delete"
+                                                        className="btn btn-sm-compact btn-danger mt-2 w-full opacity-0 group-hover:opacity-100 transition-opacity"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             handleFileDeleteClick(f);
                                                         }}
-                                                        title="Eliminar Archivo"
-                                                        style={{ color: '#ef4444', border: 'none', background: 'none', cursor: 'pointer', marginLeft: '10px' }}
                                                     >
-                                                        🗑️
+                                                        Delete
                                                     </button>
                                                 )}
-                                            </li>
+                                            </div>
                                         ))}
-                                    </ul>
+                                    </div>
                                 )}
                             </div>
                         </div>
@@ -465,16 +459,7 @@ const MedicalDocuments = () => {
                                         {prescriptions.filter(filterItem).map(p => (
                                             <li key={p.id}
                                                 onClick={() => setSelectedPrescription(p)}
-                                                style={{
-                                                    padding: '0.75rem',
-                                                    borderBottom: '1px solid #eee',
-                                                    cursor: 'pointer',
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between',
-                                                    alignItems: 'center'
-                                                }}
-                                                onMouseEnter={(e) => e.currentTarget.style.background = '#f8fafc'}
-                                                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                                                className="list-item-hover flex-between-center p-3 border-b-divider cursor-pointer"
                                             >
                                                 <div>
                                                     <div><strong>{new Date(p.created_at).toLocaleDateString()}</strong> - {p.patient_name}</div>

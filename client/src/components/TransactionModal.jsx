@@ -257,10 +257,10 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                         <label className="input-label">{t('amount_paid')}</label>
                         <CurrencyInput className="input-field" value={formData.amount} onChange={e => setFormData({ ...formData, amount: e.target.value })} />
                         {pricingInfo && (
-                            <div style={{ marginTop: '0.25rem' }}>
-                                <small style={{ display: 'block', color: '#64748b' }}>{pricingInfo}</small>
+                            <div className="pricing-info-container">
+                                <small className="pricing-info-text">{pricingInfo}</small>
                                 {(totalPrice - Number(formData.amount)) > 0 && (
-                                    <small style={{ display: 'block', color: '#ef4444', fontWeight: 'bold' }}>
+                                    <small className="debt-alert">
                                         {t('debt')}: {formatPrice(totalPrice - Number(formData.amount))}
                                     </small>
                                 )}

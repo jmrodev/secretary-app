@@ -39,6 +39,35 @@ exports.createTransaction = async (req, res) => {
             const finalStatus = Number(debt_amount) > 0 ? (Number(amount) > 0 ? 'partial' : 'debt') : 'paid';
             const isPaid = finalStatus === 'paid' ? 1 : 0;
             await conn.query("UPDATE appointments SET payment_status = ?, is_paid = ? WHERE id = ?", [finalStatus, isPaid, appointment_id]);
+
+            // --- Google Calendar Sync ---
+            const [appt] = await conn.query("SELECT * FROM appointments WHERE id = ?", [appointment_id]);
+            if (appt && appt.google_event_id) {
+                const patData = await conn.query("SELECT full_name, dni, phone, email FROM patients WHERE id = ?", [appt.patient_id]);
+                const pName = patData.length > 0 ? patData[0].full_name : appt.patient_id;
+                const pDetails = patData.length > 0 ? patData[0] : {};
+
+                const newDescription = `Motivo: ${appt.reason || 'N/A'}\nPaciente: ${pName} (DNI: ${pDetails.dni || 'N/A'})\nTeléfono: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nEstado: ${appt.status}\nPago: ${finalStatus}\nCreado por Aplicación de Secretaría`;
+
+                const updatePayload = {
+                    summary: `Consultorio: ${pName} [${finalStatus === 'debt' ? 'DEUDA' : (finalStatus === 'paid' ? 'PAGADO' : 'PARCIAL')}]`,
+                    status: appt.status,
+                    paymentStatus: finalStatus,
+                    description: newDescription
+                };
+
+                try {
+                    const result = await googleController.updateEventHelper(appt.doctor_id, appt.google_event_id, updatePayload, req.user?.user_id);
+                    if (!result) throw new Error("Sync failed (returned null)");
+                } catch (syncErr) {
+                    console.warn("Google Sync Failed (Finance Transaction Update), queueing retry:", syncErr.message);
+                    await conn.query(
+                        "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'update', ?, 'pending')",
+                        [appointment_id, appt.doctor_id, JSON.stringify({ eventId: appt.google_event_id, updates: updatePayload })]
+                    );
+                }
+            }
+            // ----------------------------
         }
 
         let logDetail = `${type}: $${amount} - ${description}`;
@@ -241,10 +270,29 @@ exports.payDebt = async (req, res) => {
                     // Sync to Google
                     const [appt] = await conn.query("SELECT * FROM appointments WHERE id = ?", [debt.appointment_id]);
                     if (appt && appt.google_event_id) {
-                        await googleController.updateEventHelper(appt.doctor_id, appt.google_event_id, {
+                        const patData = await conn.query("SELECT full_name, dni, phone, email FROM patients WHERE id = ?", [patient_id]);
+                        const pName = patData.length > 0 ? patData[0].full_name : patient_id;
+                        const pDetails = patData.length > 0 ? patData[0] : {};
+
+                        const newDescription = `Motivo: ${appt.reason || 'N/A'}\nPaciente: ${pName} (DNI: ${pDetails.dni || 'N/A'})\nTeléfono: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nEstado: ${appt.status}\nPago: pagado\nCreado por Aplicación de Secretaría`;
+
+                        const updatePayload = {
+                            summary: `Consultorio: ${pName} [PAGADO]`,
                             status: appt.status,
-                            paymentStatus: 'paid'
-                        }, req.user?.user_id);
+                            paymentStatus: 'paid',
+                            description: newDescription
+                        };
+
+                        try {
+                            const result = await googleController.updateEventHelper(appt.doctor_id, appt.google_event_id, updatePayload, req.user?.user_id);
+                            if (!result) throw new Error("Sync failed (returned null)");
+                        } catch (syncErr) {
+                            console.warn("Google Sync Failed (Finance Update - Paid), queueing retry:", syncErr.message);
+                            await conn.query(
+                                "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'update', ?, 'pending')",
+                                [debt.appointment_id, appt.doctor_id, JSON.stringify({ eventId: appt.google_event_id, updates: updatePayload })]
+                            );
+                        }
                     }
                 }
                 remaining -= debtAmount;
@@ -271,10 +319,29 @@ exports.payDebt = async (req, res) => {
                     // Sync to Google
                     const [appt] = await conn.query("SELECT * FROM appointments WHERE id = ?", [debt.appointment_id]);
                     if (appt && appt.google_event_id) {
-                        await googleController.updateEventHelper(appt.doctor_id, appt.google_event_id, {
+                        const patData = await conn.query("SELECT full_name, dni, phone, email FROM patients WHERE id = ?", [patient_id]);
+                        const pName = patData.length > 0 ? patData[0].full_name : patient_id;
+                        const pDetails = patData.length > 0 ? patData[0] : {};
+
+                        const newDescription = `Motivo: ${appt.reason || 'N/A'}\nPaciente: ${pName} (DNI: ${pDetails.dni || 'N/A'})\nTeléfono: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nEstado: ${appt.status}\nPago: parcial\nCreado por Aplicación de Secretaría`;
+
+                        const updatePayload = {
+                            summary: `Consultorio: ${pName} [PARCIAL]`,
                             status: appt.status,
-                            paymentStatus: 'partial'
-                        }, req.user?.user_id);
+                            paymentStatus: 'partial',
+                            description: newDescription
+                        };
+
+                        try {
+                            const result = await googleController.updateEventHelper(appt.doctor_id, appt.google_event_id, updatePayload, req.user?.user_id);
+                            if (!result) throw new Error("Sync failed (returned null)");
+                        } catch (syncErr) {
+                            console.warn("Google Sync Failed (Finance Update - Partial), queueing retry:", syncErr.message);
+                            await conn.query(
+                                "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'update', ?, 'pending')",
+                                [debt.appointment_id, appt.doctor_id, JSON.stringify({ eventId: appt.google_event_id, updates: updatePayload })]
+                            );
+                        }
                     }
                 }
 

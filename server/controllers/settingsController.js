@@ -27,11 +27,19 @@ exports.updateSetting = async (req, res) => {
     try {
         const { key, value } = req.body;
         conn = await pool.getConnection();
+
+        // Update the setting
         await conn.query(`
             INSERT INTO system_settings (setting_key, setting_value) 
             VALUES (?, ?) 
             ON DUPLICATE KEY UPDATE setting_value = ?
         `, [key, String(value), String(value)]);
+
+        // Special Logic: If disabling rentals, clear rental costs for all doctors
+        if (key === 'enable_office_rentals' && String(value) === 'false') {
+            await conn.query("UPDATE doctors SET rental_cost = 0, rental_type = 'monthly'");
+            console.log("Office rentals disabled: Reset all doctor rental costs to 0.");
+        }
 
         res.json({ message: "Setting updated" });
     } catch (err) {

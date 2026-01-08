@@ -101,7 +101,7 @@ const AuditLogs = () => {
                                 <strong>{t('date')}:</strong> {new Date(selectedLog.created_at).toLocaleString()}
                             </div>
                             <div className="p-4 bg-gray-50 rounded border">
-                                <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit' }}>
+                                <pre className="whitespace-pre-wrap font-inherit">
                                     {selectedLog.details}
                                 </pre>
                             </div>

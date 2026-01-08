@@ -76,7 +76,7 @@ const RequirementsList = ({ user }) => {
     if (loading) return <div>Cargando requerimientos...</div>;
 
     if (requests.length === 0) {
-        return <div className="text-muted" style={{ padding: '1rem', fontStyle: 'italic' }}>No hay requerimientos pendientes.</div>;
+        return <div className="no-requirements-msg">{t('no_requests') || 'No hay requerimientos pendientes.'}</div>;
     }
 
     const handleDeleteClick = (id) => {
@@ -99,7 +99,7 @@ const RequirementsList = ({ user }) => {
 
     return (
         <div className="table-responsive">
-            <table className="table-base" style={{ fontSize: '0.9rem' }}>
+            <table className="table-base requirements-table">
                 <thead>
                     <tr>
                         <th>Tipo</th>
@@ -116,8 +116,7 @@ const RequirementsList = ({ user }) => {
                         <tr key={r.id}>
                             <td>
                                 <span
-                                    className={`status-chip ${r.type === 'prescription' ? 'chip-blue' : 'chip-green'}`}
-                                    style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                                    className={`status-chip ${r.type === 'prescription' ? 'chip-blue' : 'chip-green'} type-chip-link`}
                                     onClick={() => setSelectedRequest(r)}
                                     title="Ver detalle"
                                 >
@@ -133,23 +132,21 @@ const RequirementsList = ({ user }) => {
                                 </span>
                             </td>
                             {(user.role === 'admin' || user.role === 'secretary') && (
-                                <td style={{ display: 'flex', gap: '5px' }}>
+                                <td className="actions-flex">
                                     {user.role === 'admin' && (
                                         <button
-                                            className="btn-icon delete"
+                                            className="btn-icon-base btn-icon-red"
                                             onClick={() => handleDeleteClick(r.id)}
                                             title="Eliminar"
-                                            style={{ color: '#ef4444', border: 'none', background: 'none', cursor: 'pointer' }}
                                         >
                                             🗑️
                                         </button>
                                     )}
                                     {(user.role === 'secretary' || user.role === 'admin') && r.status === 'consult' && (
                                         <button
-                                            className="btn-icon"
+                                            className="btn-icon-base btn-icon-blue"
                                             onClick={() => openActionModal('reply', r.id)}
                                             title={t('reply')}
-                                            style={{ color: '#3b82f6', border: 'none', background: 'none', cursor: 'pointer' }}
                                         >
                                             💬
                                         </button>
@@ -158,36 +155,33 @@ const RequirementsList = ({ user }) => {
                             )}
                             {
                                 user.role === 'doctor' && (
-                                    <td style={{ display: 'flex', gap: '5px' }}>
+                                    <td className="actions-flex">
                                         {r.status === 'pending' || r.status === 'consult' ? (
                                             <>
                                                 <button
-                                                    className="btn btn-icon"
+                                                    className="btn-icon-base btn-icon-green"
                                                     onClick={() => openActionModal('completed', r.id)}
                                                     title={t('mark_as_done')}
-                                                    style={{ color: '#16a34a', border: 'none', background: 'none', cursor: 'pointer' }}
                                                 >
                                                     ✅
                                                 </button>
                                                 <button
-                                                    className="btn btn-icon"
+                                                    className="btn-icon-base btn-icon-yellow"
                                                     onClick={() => openActionModal('consult', r.id)}
                                                     title={t('consult_secretary')}
-                                                    style={{ color: '#eab308', border: 'none', background: 'none', cursor: 'pointer' }}
                                                 >
                                                     ❓
                                                 </button>
                                                 <button
-                                                    className="btn btn-icon"
+                                                    className="btn-icon-base btn-icon-red"
                                                     onClick={() => openActionModal('rejected', r.id)}
                                                     title={t('reject')}
-                                                    style={{ color: '#ef4444', border: 'none', background: 'none', cursor: 'pointer' }}
                                                 >
                                                     ❌
                                                 </button>
                                             </>
                                         ) : (
-                                            <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>-</span>
+                                            <span className="status-placeholder">-</span>
                                         )}
                                     </td>
                                 )
@@ -236,7 +230,7 @@ const RequirementsList = ({ user }) => {
                         </div>
                         <div className="p-4 bg-gray-50 rounded border mb-4">
                             <strong>Detalle / Medicación:</strong>
-                            <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit', marginTop: '5px' }}>
+                            <pre className="note-pre">
                                 {selectedRequest.request_note || "Sin detalles adicionales."}
                             </pre>
                         </div>
@@ -244,7 +238,7 @@ const RequirementsList = ({ user }) => {
                         {selectedRequest.doctor_note && (
                             <div className="p-4 bg-green-50 rounded border mb-4">
                                 <strong>{t('doctor_note')}:</strong>
-                                <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit', marginTop: '5px' }}>
+                                <pre className="note-pre">
                                     {selectedRequest.doctor_note}
                                 </pre>
                             </div>
@@ -252,7 +246,7 @@ const RequirementsList = ({ user }) => {
                         {selectedRequest.secretary_note && (
                             <div className="p-4 bg-blue-50 rounded border mb-4">
                                 <strong>{t('secretary_reply')}:</strong>
-                                <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit', marginTop: '5px' }}>
+                                <pre className="note-pre">
                                     {selectedRequest.secretary_note}
                                 </pre>
                             </div>
@@ -293,7 +287,7 @@ const RequirementsList = ({ user }) => {
                     <label className="input-label">
                         {actionModal.type === 'consult' ? t('your_question') :
                             (actionModal.type === 'reply' ? t('your_answer') : t('doctor_note'))}
-                        {(actionModal.type === 'rejected' || actionModal.type === 'consult' || actionModal.type === 'reply') && <span style={{ color: 'red' }}> *</span>}
+                        {(actionModal.type === 'rejected' || actionModal.type === 'consult' || actionModal.type === 'reply') && <span className="required-star"> *</span>}
                     </label>
                     <textarea
                         className="input-field"
@@ -318,7 +312,7 @@ const RequirementsList = ({ user }) => {
                 footer={
                     <>
                         <button className="btn btn-secondary" onClick={() => setConfirmDeleteId(null)}>Cancelar</button>
-                        <button className="btn btn-danger" style={{ background: '#ef4444', color: 'white' }} onClick={confirmDelete}>Eliminar</button>
+                        <button className="btn btn-danger-custom" onClick={confirmDelete}>Eliminar</button>
                     </>
                 }
             >

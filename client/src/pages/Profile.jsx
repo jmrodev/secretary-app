@@ -96,7 +96,7 @@ const Profile = () => {
             <main className="main-content">
                 <h1 className="title">{t('my_profile')}</h1>
 
-                {message && <div style={{ padding: '1rem', background: message.includes('Failed') ? '#fee2e2' : '#dcfce7', color: message.includes('Failed') ? '#991b1b' : '#166534', borderRadius: '8px', marginBottom: '1rem' }}>{message}</div>}
+                {message && <div className={`p-4 rounded mb-4 ${message.includes('Failed') ? 'bg-red-100 text-red-900' : 'bg-green-100 text-green-900'}`}>{message}</div>}
 
                 <div className="card">
                     <form onSubmit={handleUpdate}>

@@ -16,19 +16,7 @@ export const MessageProvider = ({ children }) => {
         <MessageContext.Provider value={{ showMessage }}>
             {children}
             {message && (
-                <div style={{
-                    position: 'fixed',
-                    bottom: '20px',
-                    right: '20px',
-                    padding: '1rem 2rem',
-                    background: message.type === 'error' ? '#fee2e2' : '#dcfce7',
-                    color: message.type === 'error' ? '#991b1b' : '#166534',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                    zIndex: 1000,
-                    fontWeight: '500',
-                    border: message.type === 'error' ? '1px solid #f87171' : '1px solid #4ade80'
-                }}>
+                <div className={`toast-container ${message.type === 'error' ? 'toast-error' : 'toast-info'}`}>
                     {message.text}
                 </div>
             )}
