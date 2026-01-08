@@ -1,5 +1,6 @@
 const { pool } = require('../db');
 const { logAction } = require('../utils/audit');
+const googleController = require('./googleController');
 const { calculatePrice } = require('../utils/priceCalculator');
 
 // --- Consolidated Finances ---
@@ -236,6 +237,15 @@ exports.payDebt = async (req, res) => {
                 // If this debt was linked to an appointment, it's now 'paid'
                 if (debt.appointment_id) {
                     await conn.query("UPDATE appointments SET payment_status = 'paid', is_paid = 1 WHERE id = ?", [debt.appointment_id]);
+
+                    // Sync to Google
+                    const [appt] = await conn.query("SELECT * FROM appointments WHERE id = ?", [debt.appointment_id]);
+                    if (appt && appt.google_event_id) {
+                        await googleController.updateEventHelper(appt.doctor_id, appt.google_event_id, {
+                            status: appt.status,
+                            paymentStatus: 'paid'
+                        }, req.user?.user_id);
+                    }
                 }
                 remaining -= debtAmount;
                 totalPaid += debtAmount;
@@ -257,6 +267,15 @@ exports.payDebt = async (req, res) => {
                 // If this debt was linked to an appointment, it's now 'partial'
                 if (debt.appointment_id) {
                     await conn.query("UPDATE appointments SET payment_status = 'partial', is_paid = 0 WHERE id = ?", [debt.appointment_id]);
+
+                    // Sync to Google
+                    const [appt] = await conn.query("SELECT * FROM appointments WHERE id = ?", [debt.appointment_id]);
+                    if (appt && appt.google_event_id) {
+                        await googleController.updateEventHelper(appt.doctor_id, appt.google_event_id, {
+                            status: appt.status,
+                            paymentStatus: 'partial'
+                        }, req.user?.user_id);
+                    }
                 }
 
                 totalPaid += remaining;

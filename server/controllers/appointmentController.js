@@ -57,6 +57,7 @@ exports.createAppointment = async (req, res) => {
             "INSERT INTO appointments (patient_id, doctor_id, appointment_date, reason) VALUES (?, ?, ?, ?)",
             [patient_id, doctor_id, apptDate, reason]
         );
+        const appointmentId = result.insertId;
 
         // Fetch names for logging and Sync
         const patName = await conn.query("SELECT full_name FROM patients WHERE id = ?", [patient_id]);
@@ -78,6 +79,7 @@ exports.createAppointment = async (req, res) => {
         const googleEvent = await googleController.createEventHelper(doctor_id, eventData, req.user.user_id);
         if (googleEvent) {
             console.log(`Synced to Google Calendar: ${googleEvent.id}`);
+            await conn.query("UPDATE appointments SET google_event_id = ? WHERE id = ?", [googleEvent.id, appointmentId]);
         }
         // ---------------------------------
 
@@ -239,6 +241,15 @@ exports.updateStatus = async (req, res) => {
         logAction(req, 'UPDATE_APPOINTMENT_STATUS', logMsg);
 
         res.json({ message: "Status updated" });
+
+        // --- Google Calendar Sync ---
+        if (exists[0].google_event_id) {
+            await googleController.updateEventHelper(exists[0].doctor_id, exists[0].google_event_id, {
+                status: status,
+                paymentStatus: exists[0].payment_status
+            }, req.user.user_id);
+        }
+        // ----------------------------
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");
@@ -259,6 +270,16 @@ exports.updatePaymentStatus = async (req, res) => {
         await conn.query("UPDATE appointments SET payment_status = ?, is_paid = ? WHERE id = ?", [status, isPaid, id]);
 
         res.json({ message: "Payment status updated" });
+
+        // --- Google Calendar Sync ---
+        const [appt] = await conn.query("SELECT * FROM appointments WHERE id = ?", [id]);
+        if (appt && appt.google_event_id) {
+            await googleController.updateEventHelper(appt.doctor_id, appt.google_event_id, {
+                status: appt.status,
+                paymentStatus: status
+            }, req.user.user_id);
+        }
+        // ----------------------------
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");

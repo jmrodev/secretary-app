@@ -146,6 +146,24 @@ exports.disconnect = async (req, res) => {
     }
 };
 
+const getColorForStatus = (status, paymentStatus) => {
+    // Google Calendar Colors (Standard):
+    // 1: Lavender, 2: Sage, 3: Grape, 4: Flamingo, 5: Banana, 6: Tangerine, 
+    // 7: Peacock (Blue), 8: Graphite, 9: Blueberry, 10: Basil (Green), 11: Tomato (Red)
+
+    if (paymentStatus === 'paid') return '10'; // Basil (Green) for Paid
+    if (paymentStatus === 'debt' || paymentStatus === 'partial') return '11'; // Tomato (Red) for Debt
+
+    switch (status) {
+        case 'confirmed': return '7'; // Peacock (Blue)
+        case 'completed': return '10'; // Basil (Green)
+        case 'cancelled': return '8'; // Graphite (Gray)
+        case 'absent': return '4'; // Flamingo (Pink/Red)
+        case 'pending': return '5'; // Banana (Yellow)
+        default: return null;
+    }
+};
+
 const getTokens = async (conn, doctorId) => {
     let tokens = {};
     if (doctorId) {
@@ -569,6 +587,56 @@ exports.checkConflict = async (doctorId, startTime, endTime) => {
     } catch (err) {
         console.error("Conflict Check Error", err);
         return false;
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.updateEventHelper = async (doctorId, eventId, updates, userId = null) => {
+    if (!eventId) return null;
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const tokens = await getTokens(conn, doctorId);
+
+        if (!tokens.google_refresh_token) {
+            console.log(`[Google] Doctor ${doctorId} not connected. Skipping update.`);
+            return null;
+        }
+
+        const oauth2Client = getOAuthClient();
+        oauth2Client.setCredentials({
+            refresh_token: tokens.google_refresh_token,
+            access_token: tokens.google_access_token,
+            expiry_date: parseInt(tokens.google_token_expiry)
+        });
+
+        const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+
+        // Build resource for patch
+        const resource = {};
+        if (updates.summary) resource.summary = updates.summary;
+        if (updates.description) resource.description = updates.description;
+        if (updates.start) resource.start = updates.start;
+        if (updates.end) resource.end = updates.end;
+
+        // Status/Payment based color
+        const colorId = getColorForStatus(updates.status, updates.paymentStatus);
+        if (colorId) resource.colorId = colorId;
+
+        const result = await calendar.events.patch({
+            calendarId: 'primary',
+            eventId: eventId,
+            resource: resource,
+        });
+
+        const mockReq = { user: { user_id: userId, username: 'System' }, ip: 'SYSTEM' };
+        if (userId) await logAction(mockReq, 'CALENDAR_SYNC_UPDATE', `Updated Google Event ${eventId} for Doc ${doctorId}`);
+        return result.data;
+
+    } catch (err) {
+        console.error("UpdateHelper Error:", err.message);
+        return null;
     } finally {
         if (conn) conn.release();
     }
