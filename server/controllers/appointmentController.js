@@ -33,7 +33,7 @@ exports.createAppointment = async (req, res) => {
         // --- Past Date Check ---
         const now = new Date();
         const apptDate = new Date(appointment_date);
-        if (apptDate < now) {
+        if (req.user.role === 'patient' && apptDate < now) {
             return res.status(400).json({ error: "Cannot book appointments in the past." });
         }
         // ---------------------
@@ -60,56 +60,77 @@ exports.createAppointment = async (req, res) => {
         const appointmentId = result.insertId;
 
         // Fetch names for logging and Sync
-        const patName = await conn.query("SELECT full_name FROM patients WHERE id = ?", [patient_id]);
+        const patData = await conn.query("SELECT full_name, dni, phone, email FROM patients WHERE id = ?", [patient_id]);
         const docName = await conn.query("SELECT full_name FROM doctors WHERE id = ?", [doctor_id]);
 
-        const pNameStr = patName.length > 0 ? patName[0].full_name : patient_id;
+        const pNameStr = patData.length > 0 ? patData[0].full_name : patient_id;
         const dNameStr = docName.length > 0 ? docName[0].full_name : doctor_id;
+        const pDetails = patData.length > 0 ? patData[0] : {};
 
         // --- Google Calendar Auto-Sync ---
-        // Fire and forget (or await if critical). We await to log success/fail but don't fail the request if it fails?
-        // Let's await to be safe.
         const eventData = {
             summary: `Consultorio: ${pNameStr}`,
-            description: `Reason: ${reason}\nCreated by Secretary App`,
+            description: `Reason: ${reason}\nPatient: ${pNameStr} (DNI: ${pDetails.dni || 'N/A'})\nPhone: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nStatus: pending\nCreated by Secretary App`,
             start: { dateTime: startTime.toISOString(), timeZone: 'America/Argentina/Buenos_Aires' },
             end: { dateTime: endTime.toISOString(), timeZone: 'America/Argentina/Buenos_Aires' }
         };
 
-        const googleEvent = await googleController.createEventHelper(doctor_id, eventData, req.user.user_id);
-        if (googleEvent) {
-            console.log(`Synced to Google Calendar: ${googleEvent.id}`);
-            await conn.query("UPDATE appointments SET google_event_id = ? WHERE id = ?", [googleEvent.id, appointmentId]);
+        try {
+            const googleEvent = await googleController.createEventHelper(doctor_id, eventData, req.user.user_id);
+            if (googleEvent) {
+                console.log(`Synced to Google Calendar: ${googleEvent.id}`);
+                await conn.query("UPDATE appointments SET google_event_id = ? WHERE id = ?", [googleEvent.id, appointmentId]);
+            } else {
+                // Sync failed/Doc not connected, but we can retry if it was a transient error? 
+                // However, createEventHelper returns null on error. 
+                // We should assume if null is returned, it logged an error. 
+                // Let's queue it anyway if we want robust retry.
+                throw new Error("Sync failed (returned null)");
+            }
+        } catch (syncErr) {
+            console.warn("Google Sync Failed, queueing retry:", syncErr.message);
+            await conn.query(
+                "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'create', ?, 'pending')",
+                [appointmentId, doctor_id, JSON.stringify(eventData)]
+            );
         }
+        // ---------------------------------
         // ---------------------------------
 
         logAction(req, 'CREATE_APPOINTMENT', `Patient: ${pNameStr}, Doctor: ${dNameStr}`);
 
         // --- Debt Generation ---
-        if (!bonified && (req.user.role === 'secretary' || req.user.role === 'doctor')) {
-            // Only generate debt if created by staff, or if we want patients to generate debt on booking? 
-            // Usually booking doesn't charge until completion, but user said "Turno receta licencia" implies "Bonificado para turno". 
-            // If it's bonified, free. If not, charge.
-            // Let's assume on creation for now as per "Bonificado para turno...".
+        try {
+            if (!bonified && (req.user.role === 'secretary' || req.user.role === 'doctor')) {
+                const priceInfo = await calculatePrice(conn, doctor_id, patient_id, 'consultation');
+                if (priceInfo.price > 0) {
+                    let relatedUserId = null;
+                    if (req.user.role === 'patient') {
+                        relatedUserId = req.user.user_id;
+                    } else {
+                        const pUser = await conn.query("SELECT user_id FROM patients WHERE id = ?", [patient_id]);
+                        if (pUser.length > 0) {
+                            // Validate user existence to prevent FK Error
+                            const userExists = await conn.query("SELECT id FROM users WHERE id = ?", [pUser[0].user_id]);
+                            if (userExists.length > 0) {
+                                relatedUserId = pUser[0].user_id;
+                            } else {
+                                console.warn(`Skipping related_user_id for debt: User ${pUser[0].user_id} not found in users table.`);
+                            }
+                        }
+                    }
 
-            const priceInfo = await calculatePrice(conn, doctor_id, patient_id, 'consultation');
-            if (priceInfo.price > 0) {
-                let relatedUserId = null;
-                if (req.user.role === 'patient') {
-                    relatedUserId = req.user.user_id;
-                } else {
-                    const pUser = await conn.query("SELECT user_id FROM patients WHERE id = ?", [patient_id]);
-                    if (pUser.length > 0) relatedUserId = pUser[0].user_id;
+                    await conn.query(
+                        "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, transaction_date) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())",
+                        ['income_patient', priceInfo.price, `Consultation (Booking): ${pNameStr}`, relatedUserId, doctor_id, 'credit', 'pending']
+                    );
+
+                    await conn.query("UPDATE appointments SET payment_status = 'debt' WHERE id = ?", [appointmentId]);
                 }
-
-                await conn.query(
-                    "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, transaction_date) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())",
-                    ['income_patient', priceInfo.price, `Consultation (Booking): ${pNameStr}`, relatedUserId, doctor_id, 'credit', 'pending']
-                );
-                // Also link transaction to appointment? The schema doesn't seem to have direct link in transactions table easily inferred, 
-                // but we can update appointment payment_status.
-                await conn.query("UPDATE appointments SET payment_status = 'debt' WHERE id = ?", [result.insertId]);
             }
+        } catch (debtError) {
+            console.error("Debt Generation Failed (Non-fatal):", debtError);
+            // We do NOT re-throw, so the appointment remains valid.
         }
         // -----------------------
 
@@ -165,7 +186,14 @@ exports.deleteAppointment = async (req, res) => {
         const rows = await conn.query("SELECT a.*, p.full_name FROM appointments a JOIN patients p ON a.patient_id = p.id WHERE a.id = ?", [id]);
         if (rows.length === 0) return res.status(404).send("Appointment not found");
 
+
         const appt = rows[0];
+
+        // --- Google Calendar Sync (Delete) ---
+        if (appt.google_event_id) {
+            await googleController.deleteEventHelper(appt.doctor_id, appt.google_event_id, req.user.user_id);
+        }
+        // -------------------------------------
 
         // Delete
         await conn.query("DELETE FROM appointments WHERE id = ?", [id]);
@@ -231,8 +259,9 @@ exports.updateStatus = async (req, res) => {
         await conn.query("UPDATE appointments SET status = ?, cancellation_reason = ? WHERE id = ?", [status, reason || null, id]);
 
         const pId = exists[0].patient_id;
-        const pat = await conn.query("SELECT full_name FROM patients WHERE id = ?", [pId]);
+        const pat = await conn.query("SELECT full_name, dni, phone, email FROM patients WHERE id = ?", [pId]);
         const pName = pat.length > 0 ? pat[0].full_name : pId;
+        const pDetails = pat.length > 0 ? pat[0] : {};
 
         let logMsg = `Appointment for ${pName} changed to ${status}`;
         if (status === 'cancelled' && reason) {
@@ -244,10 +273,24 @@ exports.updateStatus = async (req, res) => {
 
         // --- Google Calendar Sync ---
         if (exists[0].google_event_id) {
-            await googleController.updateEventHelper(exists[0].doctor_id, exists[0].google_event_id, {
+            const newDescription = `Reason: ${exists[0].reason || 'N/A'}\nPatient: ${pName} (DNI: ${pDetails.dni || 'N/A'})\nPhone: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nStatus: ${status}\nCreated by Secretary App`;
+
+            const updatePayload = {
                 status: status,
-                paymentStatus: exists[0].payment_status
-            }, req.user.user_id);
+                paymentStatus: exists[0].payment_status,
+                description: newDescription
+            };
+
+            try {
+                const result = await googleController.updateEventHelper(exists[0].doctor_id, exists[0].google_event_id, updatePayload, req.user.user_id);
+                if (!result) throw new Error("Sync failed (returned null)");
+            } catch (syncErr) {
+                console.warn("Google Sync Failed (Status Update), queueing retry:", syncErr.message);
+                await conn.query(
+                    "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'update', ?, 'pending')",
+                    [id, exists[0].doctor_id, JSON.stringify({ eventId: exists[0].google_event_id, updates: updatePayload })]
+                );
+            }
         }
         // ----------------------------
     } catch (err) {

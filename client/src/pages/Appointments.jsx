@@ -236,9 +236,19 @@ const Appointments = () => {
     const handleDelete = async (id) => {
         if (!window.confirm(t('delete_error') || "Are you sure? This will remove the record mostly (Secretary Error).")) return;
         try {
-            await api.delete(`/appointments/${id}`);
-            setMessage(t('appointment_deleted'));
-            fetchAppointments();
+            if (String(id).startsWith('goo_')) {
+                // Handle Google Event Deletion
+                const eventId = id.replace('goo_', '');
+                await api.delete(`/google/appointments/${eventId}`, { data: { doctorId: viewDoctorId || selectedDoctor } });
+                setMessage(t('appointment_deleted'));
+                // Manually remove since it won't be in DB yet if we just added it, or force refetch
+                setGoogleEvents(prev => prev.filter(e => e.id !== id));
+            } else {
+                // Standard DB Deletion
+                await api.delete(`/appointments/${id}`);
+                setMessage(t('appointment_deleted'));
+                fetchAppointments();
+            }
         } catch (err) {
             console.error(err);
             setMessage(t('failed_delete'));
@@ -283,7 +293,8 @@ const Appointments = () => {
             setDate('');
             fetchAppointments();
         } catch (err) {
-            setMessage(t('failed_book'));
+            const serverError = err.response?.data?.error || err.response?.data;
+            setMessage(serverError || t('failed_book'));
             console.error(err);
         }
     };

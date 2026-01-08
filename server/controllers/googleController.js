@@ -642,3 +642,68 @@ exports.updateEventHelper = async (doctorId, eventId, updates, userId = null) =>
     }
 };
 
+
+exports.deleteEventHelper = async (doctorId, eventId, userId = null) => {
+    if (!eventId) return null;
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const tokens = await getTokens(conn, doctorId);
+
+        if (!tokens.google_refresh_token) {
+            console.log(`[Google] Doctor ${doctorId} not connected. Skipping delete.`);
+            return null;
+        }
+
+        const oauth2Client = getOAuthClient();
+        oauth2Client.setCredentials({
+            refresh_token: tokens.google_refresh_token,
+            access_token: tokens.google_access_token,
+            expiry_date: parseInt(tokens.google_token_expiry)
+        });
+
+        const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+
+        await calendar.events.delete({
+            calendarId: 'primary',
+            eventId: eventId,
+        });
+
+        const mockReq = { user: { user_id: userId, username: 'System' }, ip: 'SYSTEM' };
+        if (userId) await logAction(mockReq, 'CALENDAR_SYNC_DELETE', `Deleted Google Event ${eventId} for Doc ${doctorId}`);
+        return true;
+
+    } catch (err) {
+        // If 404 (Gone) or 410 (Deleted), consider it success
+        if (err.code === 404 || err.code === 410) {
+            return true;
+        }
+        console.error("DeleteEventHelper Error:", err.message);
+        return false;
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.deleteEvent = async (req, res) => {
+    const { eventId } = req.params;
+    const { doctorId } = req.body; // Needs doctorId to find tokens
+    let conn;
+    try {
+        if (!doctorId) {
+            return res.status(400).json({ error: "Doctor ID required to delete Google Event" });
+        }
+
+        const success = await exports.deleteEventHelper(doctorId, eventId, req.user.user_id);
+
+        if (success) {
+            res.json({ message: "Google Event deleted" });
+        } else {
+            res.status(500).json({ error: "Failed to delete Google Event" });
+        }
+
+    } catch (err) {
+        console.error("Delete Event Error:", err);
+        res.status(500).json({ error: err.message });
+    }
+};

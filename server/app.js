@@ -42,6 +42,11 @@ app.listen(PORT, async () => {
         const conn = await pool.getConnection();
         console.log('Connected to MariaDB');
         conn.release();
+
+        // Start Google Sync Worker
+        const { startSyncWorker } = require('./services/googleSyncService');
+        startSyncWorker();
+
     } catch (err) {
         console.error('Failed to connect to MariaDB:', err);
     }

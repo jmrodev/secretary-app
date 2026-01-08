@@ -79,9 +79,9 @@ CREATE TABLE `appointments` (
 LOCK TABLES `appointments` WRITE;
 /*!40000 ALTER TABLE `appointments` DISABLE KEYS */;
 INSERT INTO `appointments` VALUES
-(1,4,8,NULL,'2026-01-06 14:00:00','Test Dashboard Appointment','pending',0.00,0,'paid'),
-(2,206,9,NULL,'2026-01-06 12:00:00','L','pending',0.00,0,'pending'),
-(3,206,9,NULL,'2026-01-07 13:00:00','Hg','pending',0.00,0,'paid');
+(1,4,8,NULL,'2026-01-06 14:00:00','Test Dashboard Appointment','pending',NULL,0.00,0,'paid',NULL),
+(2,206,9,NULL,'2026-01-06 12:00:00','L','pending',NULL,0.00,0,'pending',NULL),
+(3,206,9,NULL,'2026-01-07 13:00:00','Hg','pending',NULL,0.00,0,'paid',NULL);
 /*!40000 ALTER TABLE `appointments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -378,10 +378,10 @@ CREATE TABLE `medical_requests` (
 LOCK TABLES `medical_requests` WRITE;
 /*!40000 ALTER TABLE `medical_requests` DISABLE KEYS */;
 INSERT INTO `medical_requests` VALUES
-(1,'license',206,9,2900,'completed','dame una receta ibuprofeno','Listo hecho Aprobar','2026-01-07 00:44:35','2026-01-07 04:16:55','paid'),
-(2,'prescription',266,8,NULL,'pending','latrigin 100mg x30c,vorizen15mgx30c lista',NULL,'2026-01-07 15:30:12','2026-01-07 15:32:26','paid'),
-(3,'prescription',266,8,NULL,'pending','latrigin 100mg x30c,vorizen15mgx30c lista',NULL,'2026-01-07 15:30:15','2026-01-07 15:33:09','paid'),
-(4,'prescription',266,8,NULL,'pending','latrigin 100mg x30c,vorizen15mgx30c lista',NULL,'2026-01-07 15:30:18','2026-01-07 15:33:59','paid');
+(1,'license',206,9,2900,'completed','dame una receta ibuprofeno','Listo hecho Aprobar','2026-01-07 00:44:35','2026-01-07 04:16:55','paid',0.00,NULL),
+(2,'prescription',266,8,NULL,'pending','latrigin 100mg x30c,vorizen15mgx30c lista',NULL,'2026-01-07 15:30:12','2026-01-07 15:32:26','paid',0.00,NULL),
+(3,'prescription',266,8,NULL,'pending','latrigin 100mg x30c,vorizen15mgx30c lista',NULL,'2026-01-07 15:30:15','2026-01-07 15:33:09','paid',0.00,NULL),
+(4,'prescription',266,8,NULL,'pending','latrigin 100mg x30c,vorizen15mgx30c lista',NULL,'2026-01-07 15:30:18','2026-01-07 15:33:59','paid',0.00,NULL);
 /*!40000 ALTER TABLE `medical_requests` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3532,24 +3532,24 @@ CREATE TABLE `transactions` (
 LOCK TABLES `transactions` WRITE;
 /*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
 INSERT INTO `transactions` VALUES
-(1,'income_patient',400.00,'Prescription: Pac Guillermo Juan Cruz Goitandia ( Ceci) - Paid Part','2026-01-07 00:39:45',605,9,'transfer','paid',NULL,0,NULL),
-(2,'income_patient',100.00,'Prescription: Pac Guillermo Juan Cruz Goitandia ( Ceci) - Paid','2026-01-07 00:39:45',605,9,'cash','paid',NULL,0,NULL),
-(3,'income_patient',50000.00,'Consultation: Mario Rossi','2026-01-07 01:55:53',16,8,'cash','paid','/uploads/1767750953454.jpeg',0,NULL),
-(4,'income_patient',50000.00,'Consultation:  turnos (Sandra Cifarelli 2494662207 pagado en efectivo 50.000)','2026-01-07 13:21:00',NULL,8,'cash','paid',NULL,0,NULL),
-(5,'income_patient',50000.00,'Consultation:  turnos (Cristina Franco2494530485)','2026-01-07 13:21:28',NULL,8,'cash','paid',NULL,0,NULL),
-(6,'income_patient',50000.00,'Consultation:  turnos (Cristina Franco2494530485)','2026-01-07 13:21:58',NULL,8,'cash','paid',NULL,0,NULL),
-(7,'income_patient',100000.00,'Consultation:  turnos (Claudia Belez)','2026-01-07 13:57:19',NULL,8,'cash','paid',NULL,0,NULL),
-(8,'income_patient',100000.00,'Consultation:  turnos (Claudia Belez)pago consulta que debia y acompanamieto a junta medica','2026-01-07 14:07:38',NULL,8,'cash','paid',NULL,0,NULL),
-(9,'income_patient',100000.00,'Consultation:  turnos (Claudia Belez)','2026-01-07 14:16:14',NULL,8,'cash','paid',NULL,0,NULL),
-(10,'income_patient',50000.00,'Consultation: Ayelen  Nicole   Stoessel 2494382087 nueva','2026-01-07 15:08:08',NULL,8,'transfer','paid',NULL,0,NULL),
-(11,'income_patient',50000.00,'Consultation: Ayelen  Nicole   Stoessel 2494382087 nueva pagado por transferencia','2026-01-07 15:17:43',NULL,8,'transfer','paid',NULL,0,NULL),
-(12,'income_patient',50000.00,'Consultation: Ayelen  Nicole   Stoessel 2494382087 nueva pagado por transferencia','2026-01-07 15:18:16',NULL,8,'transfer','paid',NULL,0,NULL),
-(13,'income_patient',10000.00,'Request: prescription for Pac Maylen Delloso(ceci)','2026-01-07 15:32:26',278,8,'transfer','paid',NULL,0,2),
-(14,'income_patient',10000.00,'DEBT: Request: prescription for Pac Maylen Delloso(ceci) - Paid Part','2026-01-07 15:32:26',278,8,'transfer','paid',NULL,0,2),
-(15,'income_patient',10000.00,'Request: prescription for Pac Maylen Delloso(ceci)','2026-01-07 15:33:09',278,8,'transfer','paid',NULL,0,3),
-(16,'income_patient',40000.00,'DEBT: Request: prescription for Pac Maylen Delloso(ceci)','2026-01-07 15:33:09',278,8,'credit','pending',NULL,0,3),
-(17,'income_patient',10000.00,'Prescription: Pac Maylen Delloso(ceci)','2026-01-07 15:33:59',278,8,'transfer','paid',NULL,0,4),
-(18,'income_patient',30000.00,'DEBT: Request: prescription for Pac Maylen Delloso(ceci)','2026-01-07 15:32:26',278,8,'credit','pending',NULL,0,2);
+(1,'income_patient',400.00,'Prescription: Pac Guillermo Juan Cruz Goitandia ( Ceci) - Paid Part','2026-01-07 00:39:45',605,9,'transfer','paid',NULL,0,NULL,NULL),
+(2,'income_patient',100.00,'Prescription: Pac Guillermo Juan Cruz Goitandia ( Ceci) - Paid','2026-01-07 00:39:45',605,9,'cash','paid',NULL,0,NULL,NULL),
+(3,'income_patient',50000.00,'Consultation: Mario Rossi','2026-01-07 01:55:53',16,8,'cash','paid','/uploads/1767750953454.jpeg',0,NULL,NULL),
+(4,'income_patient',50000.00,'Consultation:  turnos (Sandra Cifarelli 2494662207 pagado en efectivo 50.000)','2026-01-07 13:21:00',NULL,8,'cash','paid',NULL,0,NULL,NULL),
+(5,'income_patient',50000.00,'Consultation:  turnos (Cristina Franco2494530485)','2026-01-07 13:21:28',NULL,8,'cash','paid',NULL,0,NULL,NULL),
+(6,'income_patient',50000.00,'Consultation:  turnos (Cristina Franco2494530485)','2026-01-07 13:21:58',NULL,8,'cash','paid',NULL,0,NULL,NULL),
+(7,'income_patient',100000.00,'Consultation:  turnos (Claudia Belez)','2026-01-07 13:57:19',NULL,8,'cash','paid',NULL,0,NULL,NULL),
+(8,'income_patient',100000.00,'Consultation:  turnos (Claudia Belez)pago consulta que debia y acompanamieto a junta medica','2026-01-07 14:07:38',NULL,8,'cash','paid',NULL,0,NULL,NULL),
+(9,'income_patient',100000.00,'Consultation:  turnos (Claudia Belez)','2026-01-07 14:16:14',NULL,8,'cash','paid',NULL,0,NULL,NULL),
+(10,'income_patient',50000.00,'Consultation: Ayelen  Nicole   Stoessel 2494382087 nueva','2026-01-07 15:08:08',NULL,8,'transfer','paid',NULL,0,NULL,NULL),
+(11,'income_patient',50000.00,'Consultation: Ayelen  Nicole   Stoessel 2494382087 nueva pagado por transferencia','2026-01-07 15:17:43',NULL,8,'transfer','paid',NULL,0,NULL,NULL),
+(12,'income_patient',50000.00,'Consultation: Ayelen  Nicole   Stoessel 2494382087 nueva pagado por transferencia','2026-01-07 15:18:16',NULL,8,'transfer','paid',NULL,0,NULL,NULL),
+(13,'income_patient',10000.00,'Request: prescription for Pac Maylen Delloso(ceci)','2026-01-07 15:32:26',278,8,'transfer','paid',NULL,0,2,NULL),
+(14,'income_patient',10000.00,'DEBT: Request: prescription for Pac Maylen Delloso(ceci) - Paid Part','2026-01-07 15:32:26',278,8,'transfer','paid',NULL,0,2,NULL),
+(15,'income_patient',10000.00,'Request: prescription for Pac Maylen Delloso(ceci)','2026-01-07 15:33:09',278,8,'transfer','paid',NULL,0,3,NULL),
+(16,'income_patient',40000.00,'DEBT: Request: prescription for Pac Maylen Delloso(ceci)','2026-01-07 15:33:09',278,8,'credit','pending',NULL,0,3,NULL),
+(17,'income_patient',10000.00,'Prescription: Pac Maylen Delloso(ceci)','2026-01-07 15:33:59',278,8,'transfer','paid',NULL,0,4,NULL),
+(18,'income_patient',30000.00,'DEBT: Request: prescription for Pac Maylen Delloso(ceci)','2026-01-07 15:32:26',278,8,'credit','pending',NULL,0,2,NULL);
 /*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -6474,3 +6474,24 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2026-01-07 23:39:00
+
+--
+-- Table structure for table `google_sync_queue`
+--
+
+DROP TABLE IF EXISTS `google_sync_queue`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `google_sync_queue` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `appointment_id` int(11) NOT NULL,
+  `doctor_id` int(11) NOT NULL,
+  `action` enum('create','update','delete') NOT NULL,
+  `payload` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`payload`)),
+  `status` enum('pending','failed') DEFAULT 'pending',
+  `retries` int(11) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
