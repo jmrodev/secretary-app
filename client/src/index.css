@@ -215,6 +215,10 @@ body {
   max-width: 1100px;
 }
 
+.dashboard-wide>* {
+  max-width: 95% !important;
+}
+
 /* Login Page Specific */
 .auth-page {
   min-height: 100vh;
@@ -1177,7 +1181,9 @@ body {
 
 .schedule-section-container {
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  height: 100%;
+  /* Ensure it fills parent to allow scrolling calculation */
 }
 
 /* Patients Page Specifics */

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api',
+    baseURL: '/api'
 });
 
 api.interceptors.request.use((config) => {
@@ -10,14 +10,12 @@ api.interceptors.request.use((config) => {
         config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
-    return Promise.reject(error);
 });
 
 api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response && error.response.status === 401) {
-            // Session expired or invalid
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             window.location.href = '/login';

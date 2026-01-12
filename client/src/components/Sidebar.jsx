@@ -18,27 +18,32 @@ const Sidebar = () => {
             </div>
             <nav>
                 <a href="/dashboard" className={`sidebar-link ${isActive('/dashboard')}`}>{t('dashboard')}</a>
-                <a href="/appointments" className={`sidebar-link ${isActive('/appointments')}`}>{t('appointments')}</a>
+                {user.role !== 'admin' && (
+                    <a href="/appointments" className={`sidebar-link ${isActive('/appointments')}`}>{t('appointments')}</a>
+                )}
 
-
-                {user.role !== 'patient' && (
+                {user.role !== 'patient' && user.role !== 'admin' && (
                     <a href="/patients" className={`sidebar-link ${isActive('/patients')}`}>{t('patients')}</a>
                 )}
 
-                {(user.role === 'admin' || user.role === 'secretary') && (
+                {user.role === 'secretary' && (
                     <a href="/insurances" className={`sidebar-link ${isActive('/insurances')}`}>🏥 Obras Sociales</a>
                 )}
 
-                {/* Optional Office Rentals */}
-                {settings.enable_office_rentals === 'true' && (
+                {/* Optional Office Rentals - Non-Admins */}
+                {settings.enable_office_rentals === 'true' && user.role !== 'admin' && (
                     <a href="/rentals" className={`sidebar-link ${isActive('/rentals')}`}>{t('office_rentals')}</a>
                 )}
 
-                <a href="/requests" className={`sidebar-link ${isActive('/requests')}`}>Requerimientos</a>
-                <a href="/documents" className={`sidebar-link ${isActive('/documents')}`}>{t('medical_documents')}</a>
-                <a href="/doctors" className={`sidebar-link ${isActive('/doctors')}`}>{t('doctors')}</a>
+                {user.role !== 'admin' && (
+                    <>
+                        <a href="/requests" className={`sidebar-link ${isActive('/requests')}`}>Requerimientos</a>
+                        <a href="/documents" className={`sidebar-link ${isActive('/documents')}`}>{t('medical_documents')}</a>
+                        <a href="/doctors" className={`sidebar-link ${isActive('/doctors')}`}>{t('doctors')}</a>
+                    </>
+                )}
 
-                {(user.role === 'admin' || user.role === 'secretary') && (
+                {user.role === 'secretary' && (
                     <a href="/finances" className={`sidebar-link ${isActive('/finances')}`}>{t('finances')}</a>
                 )}
 

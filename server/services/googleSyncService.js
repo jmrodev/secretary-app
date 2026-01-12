@@ -1,5 +1,6 @@
 const { pool } = require('../db');
 const googleController = require('../controllers/googleController');
+const { importFromGoogle } = require('./googleSyncImport');
 
 /**
  * Process the synchronization queue for Google Calendar.
@@ -62,9 +63,16 @@ async function processSyncQueue() {
 // Function to start the worker interval
 function startSyncWorker(intervalMs = 300000) { // Default 5 minutes
     console.log("[GoogleSync] Worker started with interval:", intervalMs);
+
     // Run immediately on start
     processSyncQueue();
-    setInterval(processSyncQueue, intervalMs);
+    importFromGoogle(); // Import from Google on start
+
+    // Schedule periodic execution
+    setInterval(() => {
+        processSyncQueue();
+        importFromGoogle(); // Import from Google every interval
+    }, intervalMs);
 }
 
 module.exports = { startSyncWorker, processSyncQueue };

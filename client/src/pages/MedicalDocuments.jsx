@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useMessage } from '../context/MessageContext';
@@ -14,6 +15,7 @@ const MedicalDocuments = () => {
     const { user } = useAuth();
     const { showMessage } = useMessage();
     const { t } = useLanguage();
+    const location = useLocation();
     const [activeTab, setActiveTab] = useState('requests'); // requests | files | history
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -92,6 +94,21 @@ const MedicalDocuments = () => {
         }
     }, [activeTab]);
 
+    // Handle deep linking from Dashboard
+    useEffect(() => {
+        if (location.state?.patientName) {
+            setSearchTerm(location.state.patientName);
+        }
+        if (location.state?.patientId) {
+            console.log("Pre-selecting patient:", location.state.patientId);
+            setSelectedPatient(location.state.patientId);
+            setFilePatient(location.state.patientId);
+        }
+        if (location.state?.tab) {
+            setActiveTab(location.state.tab);
+        }
+    }, [location.state]);
+
     const fetchResources = async () => {
         try {
             // const pRes = await api.get('/users/patients'); // Removed in favor of async search
@@ -130,7 +147,7 @@ const MedicalDocuments = () => {
             await api.post('/medical/requests', {
                 type: reqType,
                 patient_id: selectedPatient,
-                doctor_id: selectedDoctor,
+                doctor_id: user.role === 'doctor' ? (user.user_id || user.id) : selectedDoctor,
                 request_note: reqNote,
                 bonified // [NEW]
             });
@@ -219,7 +236,7 @@ const MedicalDocuments = () => {
 
                 {activeTab === 'requests' && (
                     <div className="grid-requests-layout">
-                        {(user.role === 'secretary') && (
+                        {(user.role === 'secretary' || user.role === 'doctor') && (
                             <div className="card">
                                 <h3>{t('new_request')}</h3>
                                 <form onSubmit={handleCreateRequest}>
@@ -241,10 +258,16 @@ const MedicalDocuments = () => {
                                     </div>
                                     <div className="input-group">
                                         <label className="input-label">{t('doctor_label')}</label>
-                                        <select className="input-field" value={selectedDoctor} onChange={e => setSelectedDoctor(e.target.value)} required>
-                                            <option value="">{t('select_doctor')}</option>
-                                            {doctors.map(d => <option key={d.id} value={d.id}>{d.full_name} - {d.specialty}</option>)}
-                                        </select>
+                                        {user.role === 'doctor' ? (
+                                            <div className="input-field input-read-only">
+                                                {user.name || 'Me'}
+                                            </div>
+                                        ) : (
+                                            <select className="input-field" value={selectedDoctor} onChange={e => setSelectedDoctor(e.target.value)} required>
+                                                <option value="">{t('select_doctor')}</option>
+                                                {doctors.map(d => <option key={d.id} value={d.id}>{d.full_name} - {d.specialty}</option>)}
+                                            </select>
+                                        )}
                                     </div>
                                     <div className="input-group">
                                         <label className="input-label">{t('note_for_doctor')}</label>
@@ -393,7 +416,7 @@ const MedicalDocuments = () => {
                                 {files.filter(filterItem).length === 0 ? <p className="text-muted p-4">{t('no_files')}</p> : (
                                     <div className="file-grid">
                                         {files.filter(filterItem).map(f => (
-                                            <div key={f.id} className="file-card group" onClick={() => window.open(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${f.file_url}`, '_blank')}>
+                                            <div key={f.id} className="file-card group" onClick={() => window.open(f.file_url, '_blank')}>
                                                 <div className="flex justify-between items-start">
                                                     <div className="file-icon-placeholder">
                                                         📄

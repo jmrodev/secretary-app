@@ -25,10 +25,18 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(userData));
             setUser(userData);
-            return true;
+            return { success: true };
         } catch (error) {
             console.error("Login failed", error);
-            return false;
+            let message = "Error connecting to server";
+            if (error.response) {
+                // Server responded with a status code outside 2xx range
+                message = error.response.data || "Invalid credentials";
+            } else if (error.request) {
+                // Request was made but no response received
+                message = "No response from server. Check your connection.";
+            }
+            return { success: false, message };
         }
     };
 

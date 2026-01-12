@@ -43,7 +43,7 @@ export const translations = {
         please_enter_meds: "Por favor ingrese medicamentos",
 
         // Status
-        completed: "Completado",
+        completed: "Atendido",
         cancelled: "Cancelado",
         pending: "Pendiente",
         confirmed: "Confirmado",
@@ -80,6 +80,10 @@ export const translations = {
         dashboard: "Panel de Control",
         quick_actions: "Acciones Rápidas",
         notifications: "Notificaciones",
+
+        // Calendar
+        months_array: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        days_short_array: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
 
         // Auth
         welcome_back: "Bienvenido de nuevo",
@@ -118,6 +122,10 @@ export const translations = {
         no_appointments: "No se encontraron turnos.",
         appointment_booked: "¡Turno reservado!",
         failed_book: "Error al reservar turno.",
+        confirm_cancel: "¿Está seguro que desea cancelar este turno?",
+        confirm_attended: "¿Marcar como Atendido/Completado?",
+        cannot_delete_attended: "No se puede eliminar un turno que ya fue atendido.",
+        confirm_delete_appointment: "¿Está seguro? Esto eliminará el registro permanentemente.",
 
         // Patients
         patients_list: "Pacientes",
@@ -424,6 +432,10 @@ export const translations = {
         quick_actions: "Quick Actions",
         notifications: "Notifications",
 
+        // Calendar
+        months_array: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        days_short_array: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+
         // Auth
         welcome_back: "Welcome Back",
         sign_in_subtitle: "Sign in to your account",
@@ -461,6 +473,10 @@ export const translations = {
         no_appointments: "No appointments found.",
         appointment_booked: "Appointment booked!",
         failed_book: "Failed to book appointment.",
+        confirm_cancel: "Are you sure you want to cancel this appointment?",
+        confirm_attended: "Mark as Attended/Completed?",
+        cannot_delete_attended: "Cannot delete an appointment that has been attended.",
+        confirm_delete_appointment: "Are you sure? This will remove the record permanently.",
 
         // Patients
         patients_list: "Patients",

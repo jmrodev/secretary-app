@@ -8,6 +8,7 @@ import Modal from '../components/Modal';
 import TransactionModal from '../components/TransactionModal';
 import RequirementsList from '../components/RequirementsList';
 import Sidebar from '../components/Sidebar';
+import PatientHistoryModal from '../components/PatientHistoryModal';
 
 const Dashboard = () => {
     const { user, logout } = useAuth();
@@ -20,6 +21,7 @@ const Dashboard = () => {
 
     // Unified Action Modal (Sync with Appointments.jsx)
     const [actionModal, setActionModal] = useState({ open: false, appt: null });
+    const [historyModal, setHistoryModal] = useState({ open: false, patientId: null, patientName: '' });
 
     // Prescription Modal
     const [prescribeModal, setPrescribeModal] = useState({ open: false, apptId: null, patientName: '', medications: '', instructions: '' });
@@ -70,6 +72,13 @@ const Dashboard = () => {
     };
 
     const handleDelete = async (id) => {
+        // [NEW] Prevent deletion of attended appointments
+        const apptToDelete = todayAppointments.find(a => a.id === id);
+        if (apptToDelete && (apptToDelete.status === 'completed' || apptToDelete.status === 'attended')) {
+            alert(t('cannot_delete_attended') || "Cannot delete an appointment that has been attended.");
+            return;
+        }
+
         if (!window.confirm(t('delete_error') || "Are you sure? This will remove the record mostly (Secretary Error).")) return;
         try {
             await api.delete(`/appointments/${id}`);
@@ -159,95 +168,203 @@ const Dashboard = () => {
                             </div>
                         </div>
                         <p><strong>{t('reason')}:</strong> {actionModal.appt.reason || t('no_description') || 'No description'}</p>
+
+                        {/* Doctor Workflow Panel */}
+                        {user.role === 'doctor' && (
+                            <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 mt-2 mb-2">
+                                <h4 className="text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider flex items-center gap-1">
+                                    👨‍⚕️ {t('medical_panel') || 'Panel Médico'}
+                                </h4>
+                                <div className="grid grid-cols-2 gap-2 mb-3">
+                                    <button
+                                        className="btn btn-primary btn-sm flex items-center justify-center gap-2"
+                                        onClick={() => {
+                                            setHistoryModal({
+                                                open: true,
+                                                patientId: actionModal.appt.patient_id,
+                                                patientName: actionModal.appt.patient_name
+                                            });
+                                            setActionModal({ ...actionModal, open: false });
+                                        }}
+                                    >
+                                        🩺 {t('view_history') || 'Ver H. Clínica'}
+                                    </button>
+                                    <button
+                                        className="btn btn-accent btn-sm flex items-center justify-center gap-2"
+                                        onClick={() => {
+                                            setPrescribeModal({
+                                                open: true,
+                                                apptId: actionModal.appt.id,
+                                                patientName: actionModal.appt.patient_name,
+                                                medications: '',
+                                                instructions: ''
+                                            });
+                                            setActionModal(prev => ({ ...prev, open: false }));
+                                        }}
+                                    >
+                                        💊 {t('prescribe') || 'Recetar'}
+                                    </button>
+                                    <button
+                                        className="btn btn-status-complete btn-sm flex items-center justify-center gap-2 col-span-2"
+                                        onClick={() => {
+                                            if (window.confirm(t('confirm_attended') || 'Mark as Attended/Completed?')) {
+                                                handleUpdateStatus(actionModal.appt.id, 'completed');
+                                                setActionModal(prev => ({ ...prev, open: false }));
+                                            }
+                                        }}
+                                    >
+                                        ✅ {t('attended') || 'Atendido'}
+                                    </button>
+                                </div>
+
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        className="input-field text-sm py-1"
+                                        placeholder={t('evolution_note_placeholder') || "Nota de evolución / Razón..."}
+                                        defaultValue={actionModal.appt.reason || ''}
+                                        id="quick-evolution-note"
+                                    />
+                                    <button
+                                        className="btn btn-secondary btn-sm px-3"
+                                        title={t('save_note') || "Guardar Nota"}
+                                        onClick={async () => {
+                                            const note = document.getElementById('quick-evolution-note').value;
+                                            try {
+                                                await api.put(`/appointments/${actionModal.appt.id}`, {
+                                                    reason: note,
+                                                    appointment_date: actionModal.appt.appointment_date
+                                                });
+                                                showMessage(t('note_saved') || 'Nota actualizada', 'success');
+                                                // Refresh local state to reflect change without full reload being jarring
+                                                setActionModal(prev => ({
+                                                    ...prev,
+                                                    appt: { ...prev.appt, reason: note }
+                                                }));
+                                                fetchSchedule();
+                                            } catch (e) { console.error(e); }
+                                        }}
+                                    >
+                                        💾
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
                         <hr className="border-divider" />
 
-                        <div className="grid-2-cols">
-                            {/* Pay Button */}
-                            {(actionModal.appt.payment_status === 'pending' || actionModal.appt.payment_status === 'debt') && (
-                                <button className="btn btn-primary" onClick={() => {
-                                    setPaymentModal({
-                                        open: true,
-                                        initialData: {
-                                            type: 'income_patient',
-                                            amount: actionModal.appt.cost || 0,
-                                            patientId: actionModal.appt.patient_id,
-                                            patientName: actionModal.appt.patient_name,
-                                            patientDni: actionModal.appt.patient_dni,
-                                            patientUserId: actionModal.appt.patient_user_id,
-                                            doctorId: actionModal.appt.doctor_id,
-                                            description: `Payment for appointment on ${new Date(actionModal.appt.appointment_date).toLocaleDateString()}`,
-                                            apptId: actionModal.appt.id
-                                        },
-                                        apptId: actionModal.appt.id
-                                    });
-                                    setActionModal({ ...actionModal, open: false });
-                                }}>
-                                    💳 {t('pay')}
-                                </button>
-                            )}
+                        {/* ADMINISTRATIVE ACTIONS (Secretary/Admin Only) */}
+                        {(user.role === 'secretary' || user.role === 'admin') && (
+                            <>
+                                <div className="grid-2-cols">
+                                    {/* Pay Button */}
+                                    {(actionModal.appt.payment_status === 'pending' || actionModal.appt.payment_status === 'debt') && (
+                                        <button className="btn btn-primary" onClick={() => {
+                                            setPaymentModal({
+                                                open: true,
+                                                initialData: {
+                                                    type: 'income_patient',
+                                                    amount: actionModal.appt.cost || 0,
+                                                    patientId: actionModal.appt.patient_id,
+                                                    patientName: actionModal.appt.patient_name,
+                                                    patientDni: actionModal.appt.patient_dni,
+                                                    patientUserId: actionModal.appt.patient_user_id,
+                                                    doctorId: actionModal.appt.doctor_id,
+                                                    description: `Payment for appointment on ${new Date(actionModal.appt.appointment_date).toLocaleDateString()}`,
+                                                    apptId: actionModal.appt.id
+                                                },
+                                                apptId: actionModal.appt.id
+                                            });
+                                            setActionModal({ ...actionModal, open: false });
+                                        }}>
+                                            💳 {t('pay')}
+                                        </button>
+                                    )}
 
-                            {/* Reschedule Button */}
-                            <button className="btn btn-secondary" onClick={() => {
-                                navigate('/appointments', { state: { rescheduleAppt: actionModal.appt } });
-                            }}>
-                                📅 {t('reschedule')}
-                            </button>
+                                    {/* Reschedule Button - Hide if 'completed' */}
+                                    {actionModal.appt.status !== 'completed' && (
+                                        <button className="btn btn-secondary" onClick={() => {
+                                            navigate('/appointments', { state: { rescheduleAppt: actionModal.appt } });
+                                        }}>
+                                            📅 {t('reschedule')}
+                                        </button>
+                                    )}
 
-                            {/* Action Buttons for Status */}
-                            {actionModal.appt.status === 'pending' && (
-                                <button className="btn btn-status-confirm" onClick={() => {
-                                    handleUpdateStatus(actionModal.appt.id, 'confirmed');
-                                    setActionModal({ ...actionModal, open: false });
-                                }}>
-                                    ✅ {t('confirm')}
-                                </button>
-                            )}
+                                    {/* Action Buttons for Status */}
+                                    {actionModal.appt.status === 'pending' && (
+                                        <button className="btn btn-status-confirm" onClick={() => {
+                                            handleUpdateStatus(actionModal.appt.id, 'confirmed');
+                                            setActionModal({ ...actionModal, open: false });
+                                        }}>
+                                            ✅ {t('confirm')}
+                                        </button>
+                                    )}
 
-                            {(actionModal.appt.status === 'confirmed' || actionModal.appt.status === 'pending' || actionModal.appt.status === 'rescheduled') && (
-                                <button className="btn btn-status-complete" onClick={() => {
-                                    handleUpdateStatus(actionModal.appt.id, 'completed');
-                                    setActionModal({ ...actionModal, open: false });
-                                }}>
-                                    🏆 {t('complete')}
-                                </button>
-                            )}
+                                    {/* Action Buttons - Hide if 'completed' (Doctor Attended) */}
+                                    {actionModal.appt.status !== 'completed' && (
+                                        <>
+                                            {(user.role === 'secretary' || user.role === 'admin') && actionModal.appt.status !== 'arrived' && (
+                                                <button className="btn btn-primary" onClick={() => {
+                                                    handleUpdateStatus(actionModal.appt.id, 'arrived');
+                                                    setActionModal({ ...actionModal, open: false });
+                                                }}>
+                                                    🏥 {t('patient_arrived') || 'Asistió (En Sala)'}
+                                                </button>
+                                            )}
 
-                            <button className="btn btn-status-suspend" onClick={() => {
-                                handleUpdateStatus(actionModal.appt.id, 'suspended');
-                                setActionModal({ ...actionModal, open: false });
-                            }}>
-                                ⏸ {t('suspend')}
-                            </button>
+                                            {(actionModal.appt.status === 'confirmed' || actionModal.appt.status === 'pending' || actionModal.appt.status === 'rescheduled' || actionModal.appt.status === 'arrived') && (
+                                                <button className="btn btn-status-complete" onClick={() => {
+                                                    handleUpdateStatus(actionModal.appt.id, 'completed');
+                                                    setActionModal({ ...actionModal, open: false });
+                                                }}>
+                                                    🏆 {t('attended') || 'Atendido'}
+                                                </button>
+                                            )}
 
-                            <button className="btn btn-status-absent" onClick={() => {
-                                handleUpdateStatus(actionModal.appt.id, 'absent');
-                                setActionModal({ ...actionModal, open: false });
-                            }}>
-                                🚫 {t('absent')}
-                            </button>
-                        </div>
+                                            <button className="btn btn-status-suspend" onClick={() => {
+                                                handleUpdateStatus(actionModal.appt.id, 'suspended');
+                                                setActionModal({ ...actionModal, open: false });
+                                            }}>
+                                                ⏸ {t('suspend')}
+                                            </button>
 
-                        <hr className="border-divider" />
+                                            <button className="btn btn-status-absent" onClick={() => {
+                                                handleUpdateStatus(actionModal.appt.id, 'absent');
+                                                setActionModal({ ...actionModal, open: false });
+                                            }}>
+                                                🚫 {t('absent')}
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
 
-                        <div className="grid-2-cols">
-                            {/* Cancel (Standard) */}
-                            <button className="btn btn-outline-danger" onClick={() => {
-                                handleCancel(actionModal.appt.id);
-                                setActionModal({ ...actionModal, open: false });
-                            }}>
-                                ❌ {t('cancel')}
-                            </button>
+                                <hr className="border-divider" />
 
-                            {/* Delete (Error) */}
-                            {(user.role === 'admin' || user.role === 'secretary') && (
-                                <button className="btn" style={{ background: '#ef4444', color: 'white' }} onClick={() => {
-                                    handleDelete(actionModal.appt.id);
-                                    setActionModal({ ...actionModal, open: false });
-                                }}>
-                                    🗑 {t('delete_error')}
-                                </button>
-                            )}
-                        </div>
+                                {/* Cancel/Delete - Hide if 'completed' */}
+                                {actionModal.appt.status !== 'completed' && (
+                                    <div className="grid-2-cols">
+                                        {/* Cancel (Standard) */}
+                                        <button className="btn btn-outline-danger" onClick={() => {
+                                            handleCancel(actionModal.appt.id);
+                                            setActionModal({ ...actionModal, open: false });
+                                        }}>
+                                            ❌ {t('cancel')}
+                                        </button>
+
+                                        {/* Delete (Error) - Admin/Secretary Only if NOT attended */}
+                                        {(user.role === 'admin' || user.role === 'secretary') &&
+                                            (actionModal.appt.status !== 'completed' && actionModal.appt.status !== 'attended') && (
+                                                <button className="btn" style={{ background: '#ef4444', color: 'white' }} onClick={() => {
+                                                    handleDelete(actionModal.appt.id);
+                                                    setActionModal({ ...actionModal, open: false });
+                                                }}>
+                                                    🗑 {t('delete_error')}
+                                                </button>
+                                            )}
+                                    </div>
+                                )}
+                            </>
+                        )}
                     </div>
                 </Modal>
             )}
@@ -300,7 +417,7 @@ const Dashboard = () => {
 
             <Sidebar />
 
-            <main className="main-content">
+            <main className="main-content dashboard-wide">
                 <header className="header-actions">
                     <h1 className="title">{t('dashboard')}</h1>
                     {user.role !== 'admin' && (
@@ -308,7 +425,7 @@ const Dashboard = () => {
                     )}
                 </header>
 
-                <div className="grid grid-cols-auto gap-6 text-left">
+                <div className="flex flex-col gap-6 text-left">
                     {user.role !== 'admin' && (
                         <div className="card">
                             <h3>{t('today_schedule')}</h3>
@@ -375,7 +492,7 @@ const Dashboard = () => {
                     </div>
 
                     {/* Requirements List (New Feature) */}
-                    {(user.role === 'secretary' || user.role === 'doctor' || user.role === 'admin') && (
+                    {(user.role === 'secretary' || user.role === 'doctor') && (
                         <div className="card col-span-full">
                             <div className="flex-between mb-4">
                                 <h3>📋 {t('ongoing_requirements') || 'Requerimientos en Curso'}</h3>
@@ -398,6 +515,12 @@ const Dashboard = () => {
                     </div>
                 )}
             </main>
+            <PatientHistoryModal
+                isOpen={historyModal.open}
+                onClose={() => setHistoryModal({ ...historyModal, open: false })}
+                patientId={historyModal.patientId}
+                patientName={historyModal.patientName}
+            />
         </div>
     );
 };

@@ -5,7 +5,10 @@ import { useMessage } from '../context/MessageContext';
 import { useConfig } from '../context/ConfigContext';
 import Sidebar from '../components/Sidebar';
 
+import { useAuth } from '../context/AuthContext';
+
 const SystemConfig = () => {
+    const { user } = useAuth();
     const { t } = useLanguage();
     const { showMessage } = useMessage();
     const { settings, updateSetting } = useConfig();
@@ -101,193 +104,305 @@ const SystemConfig = () => {
             <main className="main-content">
                 <h1 className="title">System Configuration</h1>
 
-                <h1 className="title">System Configuration</h1>
-
-                <div className="card mb-8">
-                    <h3>General Settings</h3>
-                    <div className="input-group-row-center gap-4">
-                        <input
-                            type="checkbox"
-                            id="opt-rentals"
-                            checked={settings.enable_office_rentals === 'true'}
-                            onChange={(e) => updateSetting('enable_office_rentals', e.target.checked)}
-                            className="w-5 h-5"
-                        />
-                        <label htmlFor="opt-rentals" className="input-label m-0">
-                            Enable Office Rentals (Alquiler de Consultorios)
-                        </label>
+                {user.role === 'admin' && (
+                    <div className="card mb-8">
+                        <h3>General Settings</h3>
+                        <div className="input-group-row-center gap-4">
+                            <input
+                                type="checkbox"
+                                id="opt-rentals"
+                                checked={settings.enable_office_rentals === 'true'}
+                                onChange={(e) => updateSetting('enable_office_rentals', e.target.checked)}
+                                className="w-5 h-5"
+                            />
+                            <label htmlFor="opt-rentals" className="input-label m-0">
+                                Enable Office Rentals (Alquiler de Consultorios)
+                            </label>
+                        </div>
+                        <p className="text-sm-muted">
+                            If disabled, the "Rentals" menu item will be hidden from the sidebar.
+                        </p>
                     </div>
-                    <p className="text-sm-muted">
-                        If disabled, the "Rentals" menu item will be hidden from the sidebar.
-                    </p>
-                </div>
+                )}
 
-                {/* Holiday Management */}
+                {/* Holiday Management - Enabled for Secretary and Admin */}
                 <HolidayManager />
 
-                <div className="card">
-                    <h3>Google Integration (Per Doctor)</h3>
-                    <p className="text-muted mb-6">
-                        Select a doctor to connect their specific Google Calendar/Contacts.
-                    </p>
+                {user.role === 'admin' && (
+                    <div className="card">
+                        <h3>Google Integration (Per Doctor)</h3>
+                        <p className="text-muted mb-6">
+                            Select a doctor to connect their specific Google Calendar/Contacts.
+                        </p>
 
-                    <div className="mb-6">
-                        <label className="block mb-2 font-bold">Select Doctor:</label>
-                        <select
-                            className="form-control max-w-300"
-                            value={selectedDoctor}
-                            onChange={(e) => setSelectedDoctor(e.target.value)}
-                        >
-                            <option value="">-- Choose Doctor --</option>
-                            {doctors.map(doc => (
-                                <option key={doc.id} value={doc.id}>{doc.full_name}</option>
-                            ))}
-                        </select>
-                    </div>
+                        <div className="mb-6">
+                            <label className="block mb-2 font-bold">Select Doctor:</label>
+                            <select
+                                className="form-control max-w-300"
+                                value={selectedDoctor}
+                                onChange={(e) => setSelectedDoctor(e.target.value)}
+                            >
+                                <option value="">-- Choose Doctor --</option>
+                                {doctors.map(doc => (
+                                    <option key={doc.id} value={doc.id}>{doc.full_name}</option>
+                                ))}
+                            </select>
+                        </div>
 
-                    {!selectedDoctor ? (
-                        <p style={{ fontStyle: 'italic', color: '#94a3b8' }}>Please select a doctor to configure.</p>
-                    ) : (
-                        <>
-                            {loading ? <p>Checking status...</p> : (
-                                <div className="flex-center gap-4 mb-8">
-                                    <div className={`status-badge ${connected ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                                        {connected ? '✅ Google Connected' : '❌ Not Connected'}
+                        {!selectedDoctor ? (
+                            <p style={{ fontStyle: 'italic', color: '#94a3b8' }}>Please select a doctor to configure.</p>
+                        ) : (
+                            <>
+                                {loading ? <p>Checking status...</p> : (
+                                    <div className="flex-center gap-4 mb-8">
+                                        <div className={`status-badge ${connected ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                            {connected ? '✅ Google Connected' : '❌ Not Connected'}
+                                        </div>
+
+                                        {connected ? (
+                                            <button className="btn btn-secondary" onClick={handleDisconnect}>Disconnect</button>
+                                        ) : (
+                                            <button className="btn btn-primary" onClick={handleConnect}>Connect Google Account</button>
+                                        )}
                                     </div>
+                                )}
 
-                                    {connected ? (
-                                        <button className="btn btn-secondary" onClick={handleDisconnect}>Disconnect</button>
-                                    ) : (
-                                        <button className="btn btn-primary" onClick={handleConnect}>Connect Google Account</button>
-                                    )}
-                                </div>
-                            )}
+                                {connected && (
+                                    <div className="border-t-divider pt-4">
 
-                            {connected && (
-                                <div className="border-t-divider pt-4">
-
-                                    {/* Calendar Section */}
-                                    <div className="mt-4">
-                                        <h4>Google Calendar Integration</h4>
-                                        <p className="text-sm-muted mb-4">
-                                            Manage appointments and verify conflicts.
-                                        </p>
-                                        <div className="flex gap-4">
-                                            <button className="btn btn-secondary" onClick={async () => {
-                                                try {
-                                                    const res = await api.get(`/google/appointments?doctorId=${selectedDoctor}`);
-                                                    const events = res.data.events || [];
-                                                    setSyncLogs(prev => [...prev, `[CALENDAR][Doc ${selectedDoctor}] Found ${events.length} future events.`]);
-                                                    events.forEach(e => {
-                                                        setSyncLogs(prev => [...prev, `📅 ${e.start.dateTime || e.start.date} - ${e.summary}`]);
-                                                    });
-                                                    alert(`Found ${events.length} events. Check logs below.`);
-                                                } catch (err) {
-                                                    console.error(err);
-                                                    alert('Error: ' + (err.response?.data?.error || err.message));
-                                                }
-                                            }}>
-                                                📅 List My Appointments
-                                            </button>
-
-                                            <button className="btn btn-secondary" onClick={async () => {
-                                                const summary = prompt("Appointment Title:");
-                                                if (!summary) return;
-                                                try {
-                                                    // Create an event for tomorrow at 10am
-                                                    const tomorrow = new Date();
-                                                    tomorrow.setDate(tomorrow.getDate() + 1);
-                                                    tomorrow.setHours(10, 0, 0, 0);
-                                                    const endTime = new Date(tomorrow);
-                                                    endTime.setHours(11, 0, 0, 0);
-
-                                                    await api.post('/google/appointments', {
-                                                        doctorId: selectedDoctor,
-                                                        summary,
-                                                        description: 'Created via Secretary App',
-                                                        startTime: tomorrow.toISOString(),
-                                                        endTime: endTime.toISOString()
-                                                    });
-                                                    alert(`Event created for tomorrow!`);
-                                                    setSyncLogs(prev => [...prev, `[CALENDAR] Created event: ${summary}`]);
-                                                } catch (err) {
-                                                    console.error(err);
-                                                    const msg = err.response?.data?.error || err.message || JSON.stringify(err);
-                                                    if (msg && msg.toString().includes('Enable it by visiting')) {
-                                                        alert("⚠️ ACTION REQUIRED: Google Calendar API is disabled.\n\n" +
-                                                            "1. Go to Google Cloud Console -> APIs & Services -> Library.\n" +
-                                                            "2. Search for 'Google Calendar API'.\n" +
-                                                            "3. Click ENABLE.\n\n" +
-                                                            "(Don't click the link in the error, it often fails!)");
-                                                    } else {
-                                                        alert('Error: ' + msg);
+                                        {/* Calendar Section */}
+                                        <div className="mt-4">
+                                            <h4>Google Calendar Integration</h4>
+                                            <p className="text-sm-muted mb-4">
+                                                Manage appointments and verify conflicts.
+                                            </p>
+                                            <div className="flex gap-4">
+                                                <button className="btn btn-secondary" onClick={async () => {
+                                                    try {
+                                                        const res = await api.get(`/google/appointments?doctorId=${selectedDoctor}`);
+                                                        const events = res.data.events || [];
+                                                        setSyncLogs(prev => [...prev, `[CALENDAR][Doc ${selectedDoctor}] Found ${events.length} future events.`]);
+                                                        events.forEach(e => {
+                                                            setSyncLogs(prev => [...prev, `📅 ${e.start.dateTime || e.start.date} - ${e.summary}`]);
+                                                        });
+                                                        alert(`Found ${events.length} events. Check logs below.`);
+                                                    } catch (err) {
+                                                        console.error(err);
+                                                        alert('Error: ' + (err.response?.data?.error || err.message));
                                                     }
+                                                }}>
+                                                    📅 List My Appointments
+                                                </button>
+
+                                                <button className="btn btn-secondary" onClick={async () => {
+                                                    const summary = prompt("Appointment Title:");
+                                                    if (!summary) return;
+                                                    try {
+                                                        // Create an event for tomorrow at 10am
+                                                        const tomorrow = new Date();
+                                                        tomorrow.setDate(tomorrow.getDate() + 1);
+                                                        tomorrow.setHours(10, 0, 0, 0);
+                                                        const endTime = new Date(tomorrow);
+                                                        endTime.setHours(11, 0, 0, 0);
+
+                                                        await api.post('/google/appointments', {
+                                                            doctorId: selectedDoctor,
+                                                            summary,
+                                                            description: 'Created via Secretary App',
+                                                            startTime: tomorrow.toISOString(),
+                                                            endTime: endTime.toISOString()
+                                                        });
+                                                        alert(`Event created for tomorrow!`);
+                                                        setSyncLogs(prev => [...prev, `[CALENDAR] Created event: ${summary}`]);
+                                                    } catch (err) {
+                                                        console.error(err);
+                                                        const msg = err.response?.data?.error || err.message || JSON.stringify(err);
+                                                        if (msg && msg.toString().includes('Enable it by visiting')) {
+                                                            alert("⚠️ ACTION REQUIRED: Google Calendar API is disabled.\n\n" +
+                                                                "1. Go to Google Cloud Console -> APIs & Services -> Library.\n" +
+                                                                "2. Search for 'Google Calendar API'.\n" +
+                                                                "3. Click ENABLE.\n\n" +
+                                                                "(Don't click the link in the error, it often fails!)");
+                                                        } else {
+                                                            alert('Error: ' + msg);
+                                                        }
+                                                    }
+                                                }}>
+                                                    ➕ Test Create Appointment
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {/* Contacts Section */}
+                                        <div className="mt-6 border-t-divider pt-4">
+                                            <h4>Google Contacts Sync</h4>
+                                            <p className="text-sm-muted mb-4">
+                                                Import your Google Contacts into the patient database.
+                                            </p>
+                                            <button className="btn btn-primary" onClick={async () => {
+                                                if (!confirm("This will import contacts from the selected Google account. Continue?")) return;
+                                                setLoading(true);
+                                                try {
+                                                    const res = await api.post('/google/import', { doctorId: selectedDoctor });
+                                                    alert(`Import Complete!\nCreated: ${res.data.results.created}\nUpdated: ${res.data.results.updated}`);
+                                                    setSyncLogs(prev => [...prev, `[IMPORT] Created: ${res.data.results.created}, Updated: ${res.data.results.updated}`]);
+                                                } catch (err) {
+                                                    console.error(err);
+                                                    alert('Import Failed: ' + (err.response?.data?.error || err.message));
+                                                } finally {
+                                                    setLoading(false);
                                                 }
                                             }}>
-                                                ➕ Test Create Appointment
+                                                📥 Import Contacts from Google
                                             </button>
                                         </div>
-                                    </div>
 
-                                    {/* Contacts Section */}
-                                    <div className="mt-6 border-t-divider pt-4">
-                                        <h4>Google Contacts Sync</h4>
-                                        <p className="text-sm-muted mb-4">
-                                            Import your Google Contacts into the patient database.
-                                        </p>
-                                        <button className="btn btn-primary" onClick={async () => {
-                                            if (!confirm("This will import contacts from the selected Google account. Continue?")) return;
-                                            setLoading(true);
-                                            try {
-                                                const res = await api.post('/google/import', { doctorId: selectedDoctor });
-                                                alert(`Import Complete!\nCreated: ${res.data.results.created}\nUpdated: ${res.data.results.updated}`);
-                                                setSyncLogs(prev => [...prev, `[IMPORT] Created: ${res.data.results.created}, Updated: ${res.data.results.updated}`]);
-                                            } catch (err) {
-                                                console.error(err);
-                                                alert('Import Failed: ' + (err.response?.data?.error || err.message));
-                                            } finally {
-                                                setLoading(false);
-                                            }
-                                        }}>
-                                            📥 Import Contacts from Google
-                                        </button>
-                                    </div>
+                                        {/* CSV Import Section */}
+                                        <div className="mt-6 border-t-divider pt-4">
+                                            <h4>Importar Contactos desde CSV (Google Format)</h4>
+                                            <p className="text-sm-muted mb-4">
+                                                Subir archivo .csv exportado de Google Contacts.
+                                            </p>
+                                            <div className="flex gap-4 items-center">
+                                                <input
+                                                    type="file"
+                                                    accept=".csv"
+                                                    onChange={async (e) => {
+                                                        const file = e.target.files[0];
+                                                        if (!file) return;
 
+                                                        if (!confirm(`¿Importar contactos desde ${file.name}?`)) {
+                                                            e.target.value = null;
+                                                            return;
+                                                        }
 
-                                    {syncLogs.length > 0 && (
-                                        <div className="logs-container">
-                                            {syncLogs.map((log, i) => (
-                                                <div key={i}>{log}</div>
-                                            ))}
+                                                        const formData = new FormData();
+                                                        formData.append('file', file);
+
+                                                        // Streaming CSV Upload
+                                                        setLoading(true);
+                                                        setSyncLogs([]); // Clear logs
+
+                                                        try {
+                                                            const token = localStorage.getItem('token');
+                                                            const response = await fetch(`http://${window.location.hostname}:5000/api/import/csv`, {
+                                                                method: 'POST',
+                                                                headers: {
+                                                                    'Authorization': `Bearer ${token}`
+                                                                },
+                                                                body: formData
+                                                            });
+
+                                                            if (!response.ok) {
+                                                                const errText = await response.text();
+                                                                throw new Error(errText || 'Import failed');
+                                                            }
+
+                                                            const reader = response.body.getReader();
+                                                            const decoder = new TextDecoder("utf-8");
+                                                            let finalResult = null;
+
+                                                            while (true) {
+                                                                const { done, value } = await reader.read();
+                                                                if (done) break;
+
+                                                                const chunk = decoder.decode(value, { stream: true });
+                                                                const lines = chunk.split('\n');
+
+                                                                for (const line of lines) {
+                                                                    if (!line.trim()) continue;
+
+                                                                    if (line.startsWith('JSON_RESULT:')) {
+                                                                        try {
+                                                                            finalResult = JSON.parse(line.replace('JSON_RESULT:', ''));
+                                                                        } catch (e) {
+                                                                            console.error("Failed to parse result", e);
+                                                                        }
+                                                                    } else if (line.startsWith('[LOG]')) {
+                                                                        // Clean string and add to logs
+                                                                        setSyncLogs(prev => [...prev.slice(-99), line.replace('[LOG] ', '')]); // Keep last 100
+                                                                    } else {
+                                                                        // Other format
+                                                                        setSyncLogs(prev => [...prev.slice(-99), line]);
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            if (finalResult) {
+                                                                alert(`Importación completada!\nCreados: ${finalResult.created}\nActualizados: ${finalResult.updated}\nSaltados: ${finalResult.skipped}\nErrores: ${finalResult.errors}`);
+                                                            }
+
+                                                        } catch (err) {
+                                                            console.error(err);
+                                                            alert('Error al importar: ' + err.message);
+                                                            setSyncLogs(prev => [...prev, `FATAL ERROR: ${err.message}`]);
+                                                        } finally {
+                                                            setLoading(false);
+                                                            e.target.value = null;
+                                                        }
+                                                    }}
+                                                    className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                                />
+                                            </div>
+
+                                            {/* Terminal Logs Window */}
+                                            {syncLogs.length > 0 && (
+                                                <div className="mt-4 bg-gray-900 text-green-400 p-4 rounded-md font-mono text-xs h-64 overflow-y-auto whitespace-pre-wrap">
+                                                    <div className="border-b border-gray-700 pb-2 mb-2 select-none text-gray-400">
+                                                        {'>'} Terminal de Importación
+                                                    </div>
+                                                    {syncLogs.map((log, i) => (
+                                                        <div key={i} className="mb-0.5">{log}</div>
+                                                    ))}
+                                                    <div className="animate-pulse">_</div>
+                                                </div>
+                                            )}
                                         </div>
-                                    )}
-                                </div>
-                            )}
-                        </>
-                    )}
 
-                    <div className="setup-instructions">
-                        <h4>Setup Instructions</h4>
-                        <ol className="ml-6 mt-2 text-slate-600">
-                            <li>Go to <a href="https://console.cloud.google.com/" target="_blank" rel="noreferrer" className="text-blue-link">Google Cloud Console</a>.</li>
-                            <li>Create a Project.</li>
-                            <li><strong>CRITICAL:</strong> Enable the following APIs (Library &rarr; Search):
-                                <ul className="ml-4 mt-1 mb-2">
-                                    <li><a href="https://console.cloud.google.com/apis/library/people.googleapis.com" target="_blank" rel="noreferrer" className="text-blue-500">Google People API</a> (for Contacts)</li>
-                                    <li><a href="https://console.cloud.google.com/apis/library/calendar-json.googleapis.com" target="_blank" rel="noreferrer" className="text-blue-500">Google Calendar API</a> (for Appointments)</li>
-                                </ul>
-                            </li>
-                            <li>Create <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noreferrer" className="text-blue-link">OAuth 2.0 Credentials</a> (Client ID & Secret).</li>
-                            <li>Set Redirect URI to: <code>http://localhost:5000/api/google/callback</code></li>
-                            <li>Add these to your <code>server/.env</code> file:</li>
-                            <pre className="code-block mt-2">
-                                GOOGLE_CLIENT_ID=your_id{'\n'}
-                                GOOGLE_CLIENT_SECRET=your_secret{'\n'}
-                                GOOGLE_REDIRECT_URI=http://localhost:5000/api/google/callback
-                            </pre>
-                        </ol>
+
+                                        {syncLogs.length > 0 && (
+                                            <div className="logs-container">
+                                                {syncLogs.map((log, i) => (
+                                                    <div key={i}>{log}</div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </>
+                        )}
+
+                        <div className="setup-instructions">
+                            <h4>Instrucciones de Configuración (Solo para Soporte Técnico)</h4>
+                            <p className="mb-4">
+                                Si necesita conectar una nueva cuenta de Google y no funciona el botón, por favor contacte al administrador del sistema o soporte técnico.
+                            </p>
+
+                            <details>
+                                <summary className="cursor-pointer text-blue-600">Ver detalles técnicos (Avanzado)</summary>
+                                <ol className="ml-6 mt-2 text-slate-600">
+                                    <li>Ir a <a href="https://console.cloud.google.com/" target="_blank" rel="noreferrer" className="text-blue-link">Google Cloud Console</a>.</li>
+                                    <li>Crear un Proyecto.</li>
+                                    <li><strong>IMPORTANTE:</strong> Habilitar las APIs:
+                                        <ul className="ml-4 mt-1 mb-2">
+                                            <li><a href="https://console.cloud.google.com/apis/library/people.googleapis.com" target="_blank" rel="noreferrer" className="text-blue-500">Google People API</a> (Contactos)</li>
+                                            <li><a href="https://console.cloud.google.com/apis/library/calendar-json.googleapis.com" target="_blank" rel="noreferrer" className="text-blue-500">Google Calendar API</a> (Turnos)</li>
+                                        </ul>
+                                    </li>
+                                    <li>Crear <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noreferrer" className="text-blue-link">Credenciales OAuth 2.0</a>.</li>
+                                    <li>URI de redirección: <code>http://localhost:5000/api/google/callback</code></li>
+                                    <li>Agregar a <code>server/.env</code>:</li>
+                                    <pre className="code-block mt-2">
+                                        GOOGLE_CLIENT_ID=su_id{'\n'}
+                                        GOOGLE_CLIENT_SECRET=su_secreto{'\n'}
+                                        GOOGLE_REDIRECT_URI=http://localhost:5000/api/google/callback
+                                    </pre>
+                                </ol>
+                            </details>
+                        </div>
                     </div>
-                </div>
+                )
+                }
             </main >
         </div >
     );

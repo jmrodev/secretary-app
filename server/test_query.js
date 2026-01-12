@@ -1,43 +1,43 @@
 const mariadb = require('mariadb');
 
-async function testQuery() {
+(async () => {
     let conn;
     try {
         conn = await mariadb.createConnection({
             host: '127.0.0.1',
-            port: 3307,
             user: 'root',
-            password: 'cima1255',
-            database: 'clinical_management'
+            password: 'admin123', // Common password or try cima1255 if this fails
+            database: 'clinical_management',
+            port: 3306
         });
-        console.log("Connected.");
+        console.log("Connected to DB");
 
-        const query = `
-            SELECT r.*, 
-            p.full_name as patient_name, p.dni as patient_dni, p.address as patient_address, p.user_id as patient_user_id, 
-            d.full_name as doctor_name, 
-            s.username as secretary_name,
-            (SELECT method FROM transactions t WHERE t.request_id = r.id AND t.status = 'paid' LIMIT 1) as payment_method
-            FROM medical_requests r
-            JOIN patients p ON r.patient_id = p.id
-            JOIN doctors d ON r.doctor_id = d.id
-            LEFT JOIN users s ON r.secretary_id = s.id
-            ORDER BY r.created_at DESC
-        `;
+        const [rows] = await conn.query("DESC medical_requests");
+        console.table(rows);
 
-        const rows = await conn.query(query);
-        console.log(`Returned ${rows.length} rows.`);
-        if (rows.length > 0) {
-            console.log("First row sample:", rows[0]);
-        } else {
-            console.log("No rows found.");
-        }
-
+        conn.end();
     } catch (err) {
-        console.error("Query Error:", err);
+        console.error("Connection Error:", err.message);
+        // Try alternate password/port if needed
+        if (err.message.includes('Access denied') || err.message.includes('ECONNREFUSED')) {
+            try {
+                console.log("Retrying with cima1255 on 3307...");
+                conn = await mariadb.createConnection({
+                    host: '127.0.0.1',
+                    user: 'root',
+                    password: 'cima1255',
+                    database: 'clinical_management',
+                    port: 3307
+                });
+                console.log("Connected on Retry.");
+                const rows = await conn.query("DESC appointments");
+                console.log(JSON.stringify(rows, null, 2));
+                conn.end();
+            } catch (e) {
+                console.error("Retry failed:", e.message);
+            }
+        }
     } finally {
-        if (conn) conn.end();
+        process.exit();
     }
-}
-
-testQuery();
+})();

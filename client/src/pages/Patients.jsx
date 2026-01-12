@@ -38,6 +38,10 @@ const Patients = () => {
     // Search State
     const [searchTerm, setSearchTerm] = useState('');
 
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const patientsPerPage = 50;
+
     // Edit Modal State
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [editData, setEditData] = useState({});
@@ -45,6 +49,32 @@ const Patients = () => {
     // Debt Payment Modal State
     const [debtModalOpen, setDebtModalOpen] = useState(false);
     const [debtParams, setDebtParams] = useState({ patientId: null, amount: '', method: 'cash' });
+
+    // Prescription Modal State
+    const [prescribeModal, setPrescribeModal] = useState({ open: false, apptId: null, patientId: null, patientName: '', medications: '', instructions: '' });
+
+    const handleSavePrescription = async () => {
+        if (!prescribeModal.medications.trim()) {
+            showMessage(t('please_enter_meds'), 'warning');
+            return;
+        }
+
+        try {
+            await api.post('/medical/prescriptions', {
+                // Allows prescribing without appointment ID if directly from patient list
+                patient_id: prescribeModal.patientId,
+                appointment_id: prescribeModal.apptId,
+                medications: prescribeModal.medications,
+                instructions: prescribeModal.instructions
+            });
+            showMessage(t('prescription_created'), 'success');
+            setPrescribeModal({ open: false, apptId: null, patientId: null, patientName: '', medications: '', instructions: '' });
+        } catch (err) {
+            console.error(err);
+            const errMsg = err.response?.data || t('failed_prescription');
+            showMessage(errMsg, 'error');
+        }
+    };
 
     const fetchPatients = async () => {
         try {
@@ -135,6 +165,17 @@ const Patients = () => {
         // Secondary sort by name
         return a.full_name.localeCompare(b.full_name);
     });
+
+    // Pagination calculations
+    const totalPages = Math.ceil(filteredPatients.length / patientsPerPage);
+    const indexOfLastPatient = currentPage * patientsPerPage;
+    const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
+    const currentPatients = filteredPatients.slice(indexOfFirstPatient, indexOfLastPatient);
+
+    // Reset to page 1 when search term changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm]);
 
     const handleCreate = async (e) => {
         e.preventDefault();
@@ -280,7 +321,7 @@ const Patients = () => {
             <div className="app-layout">
                 <Sidebar />
                 <main className="main-content max-w-800 mx-auto">
-                    <button onClick={() => { setSelectedPatient(null); setDetails(null); }} className="back-btn-text">
+                    <button onClick={() => { setSelectedPatient(null); setDetails(null); }} className="btn btn-secondary mb-4 flex items-center gap-2">
                         &larr; {t('back_to_list')}
                     </button>
 
@@ -289,7 +330,9 @@ const Patients = () => {
                     <div className="card mb-8">
                         <div className="flex-between">
                             <h3>{t('patient_info')}</h3>
-                            <button className="btn btn-secondary text-sm px-2" onClick={handleEditClick}>{t('edit_info')}</button>
+                            <button className="btn btn-secondary btn-sm flex items-center gap-2" onClick={handleEditClick}>
+                                ✏️ {t('edit_info')}
+                            </button>
                         </div>
                         <div className="patient-info-grid">
                             <p><strong>{t('dni')}:</strong> {details.dni || 'N/A'}</p>
@@ -332,12 +375,18 @@ const Patients = () => {
                         {details.prescriptions && details.prescriptions.length === 0 ? <p className="text-muted">None.</p> : (
                             <ul className="history-list">
                                 {details.prescriptions && details.prescriptions.map(p => (
-                                    <li key={p.id} className="history-item">
+                                    <li key={`${p.type}-${p.id}`} className="history-item">
                                         <div className="history-item-content">
-                                            <span>{new Date(p.created_at).toLocaleDateString()} - <strong>{(p.type || 'unknown').toUpperCase()}</strong></span>
+                                            <span className="capitalize">{new Date(p.created_at).toLocaleDateString()} - <strong>{p.type === 'prescription' ? '💊 Receta' : '📄 Licencia'}</strong></span>
                                             <span className="text-sm-muted">Dr. {p.doctor_name}</span>
                                         </div>
-                                        <div className="text-sm-muted">{p.diagnosis ? `Dx: ${p.diagnosis}` : `Days: ${p.days}`}</div>
+                                        <div className="text-sm-muted mt-1">
+                                            {p.type === 'prescription' ? (
+                                                <span><strong>Rx:</strong> {p.diagnosis}</span> // diagnosis contains medications for Rx
+                                            ) : (
+                                                <span><strong>Dx:</strong> {p.diagnosis} <span className="ml-2 px-2 py-0.5 bg-slate-100 rounded border font-semibold text-xs">Days: {p.days}</span></span>
+                                            )}
+                                        </div>
                                     </li>
                                 ))}
                             </ul>
@@ -349,7 +398,7 @@ const Patients = () => {
                                 {details.files && details.files.map(f => (
                                     <li key={f.id} className="history-item">
                                         <div className="history-item-content">
-                                            <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${f.file_url}`} target="_blank" rel="noreferrer" className="detail-link font-bold">
+                                            <a href={f.file_url} target="_blank" rel="noreferrer" className="detail-link font-bold">
                                                 {f.description || f.file_name}
                                             </a>
                                             <span className="text-xs-muted">
@@ -374,7 +423,9 @@ const Patients = () => {
                                         </span>
                                     </div>
                                     {details.transactions.some(t => t.status === 'pending') && (
-                                        <button className="btn btn-primary" onClick={(e) => openDebtModal(e, details.id, details.transactions.filter(t => t.status === 'pending').reduce((acc, t) => acc + Number(t.amount), 0))}>{t('pay_debt')}</button>
+                                        <button className="btn btn-primary flex items-center gap-2" onClick={(e) => openDebtModal(e, details.id, details.transactions.filter(t => t.status === 'pending').reduce((acc, t) => acc + Number(t.amount), 0))}>
+                                            💸 {t('pay_debt')}
+                                        </button>
                                     )}
                                 </div>
                                 <table className="transactions-table">
@@ -541,21 +592,21 @@ const Patients = () => {
                         </span>
                         <button
                             onClick={() => { setLoading(true); fetchPatients(); }}
-                            className="bg-none border-none cursor-pointer text-xl ml-2"
+                            className="btn btn-secondary btn-sm"
                             title={t('refresh_list')}
                         >
-                            🔄
+                            🔄 Refresh
                         </button>
                     </div>
                     {user.role === 'secretary' && (
-                        <button className="btn btn-primary" onClick={() => setShowCreate(!showCreate)}>
-                            {showCreate ? t('cancel') : t('register_new_patient')}
+                        <button className="btn btn-primary flex items-center gap-2" onClick={() => setShowCreate(!showCreate)}>
+                            {showCreate ? `❌ ${t('cancel')}` : `➕ ${t('register_new_patient')}`}
                         </button>
                     )}
                 </div>
 
                 {/* Search Bar */}
-                <div className="mb-6">
+                <div className="mb-6 flex items-center gap-4">
                     <input
                         type="text"
                         placeholder={t('search_placeholder')}
@@ -563,6 +614,9 @@ const Patients = () => {
                         value={searchTerm}
                         onChange={e => setSearchTerm(e.target.value)}
                     />
+                    <div className="text-sm text-slate-600">
+                        Mostrando {indexOfFirstPatient + 1}-{Math.min(indexOfLastPatient, filteredPatients.length)} de {filteredPatients.length}
+                    </div>
                 </div>
 
                 {createMsg && <div style={{ padding: '1rem', background: createMsg.includes('Failed') ? '#fee2e2' : '#dcfce7', color: createMsg.includes('Failed') ? '#991b1b' : '#166534', borderRadius: '8px', marginBottom: '1rem' }}>{createMsg}</div>}
@@ -627,7 +681,7 @@ const Patients = () => {
 
                 <div className="card-transparent">
                     <ul className="item-grid">
-                        {filteredPatients.length === 0 ? <li className="text-muted p-4">{t('no_patients_found')}</li> : filteredPatients.map(p => (
+                        {currentPatients.length === 0 ? <li className="text-muted p-4">{t('no_patients_found')}</li> : currentPatients.map(p => (
                             <li key={p.id} className="item-card">
                                 <div>
                                     <strong style={{ textTransform: 'capitalize' }}>{p.full_name}</strong>
@@ -644,7 +698,7 @@ const Patients = () => {
                                     {Number(p.total_debt) > 0 && (
                                         <div
                                             onClick={(e) => openDebtModal(e, p.id, p.total_debt)}
-                                            style={{ marginTop: '0.25rem', display: 'inline-block', background: '#fee2e2', color: '#991b1b', padding: '2px 6px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 'bold', cursor: 'pointer', border: '1px solid #fecaca' }}
+                                            className="px-2 py-1 rounded text-xs font-bold bg-red-100 text-red-800 border border-red-200 cursor-pointer hover:bg-red-200 inline-block mt-1"
                                             title="Click to Pay Debt"
                                         >
                                             {t('debt')}: ${p.total_debt}
@@ -678,13 +732,40 @@ const Patients = () => {
                                     </div>
                                 </div>
 
-                                <button className="btn btn-accent btn-sm-compact" onClick={() => handleViewDetails(p.id)}>
-                                    {t('view_history')}
-                                </button>
+                                <div className="flex gap-2 items-center">
+                                    <button className="btn btn-primary btn-sm flex items-center justify-center gap-2" onClick={() => handleViewDetails(p.id)}>
+                                        🩺 {t('view_details') || 'Ver Ficha'}
+                                    </button>
+                                </div>
                             </li >
                         ))}
-                    </ul >
-                </div >
+                    </ul>
+                </div>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                    <div className="flex justify-center items-center gap-2 mt-6">
+                        <button
+                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                            disabled={currentPage === 1}
+                            className="btn btn-secondary btn-sm"
+                            style={{ opacity: currentPage === 1 ? 0.5 : 1 }}
+                        >
+                            ← Anterior
+                        </button>
+                        <span className="px-4 py-2 text-sm text-slate-600">
+                            Página {currentPage} de {totalPages}
+                        </span>
+                        <button
+                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                            disabled={currentPage === totalPages}
+                            className="btn btn-secondary btn-sm"
+                            style={{ opacity: currentPage === totalPages ? 0.5 : 1 }}
+                        >
+                            Siguiente →
+                        </button>
+                    </div>
+                )}
 
                 {/* Pay Debt Modal for List View */}
                 < Modal
@@ -712,6 +793,30 @@ const Patients = () => {
                         </select>
                     </div>
                 </Modal >
+
+                {/* Prescription Modal */}
+                <Modal
+                    isOpen={prescribeModal.open}
+                    onClose={() => setPrescribeModal({ ...prescribeModal, open: false })}
+                    title={`${t('prescription_for') || 'Receta para'} ${prescribeModal.patientName}`}
+                    footer={
+                        <>
+                            <button className="btn btn-secondary" onClick={() => setPrescribeModal({ ...prescribeModal, open: false })}>{t('cancel')}</button>
+                            <button className="btn btn-primary" onClick={handleSavePrescription} disabled={!prescribeModal.medications.trim()}>{t('create')}</button>
+                        </>
+                    }
+                >
+                    <div className="flex-col-gap-4">
+                        <div className="input-group">
+                            <label className="input-label">{t('medications')}</label>
+                            <textarea className="input-field" rows="4" value={prescribeModal.medications} onChange={e => setPrescribeModal({ ...prescribeModal, medications: e.target.value })} placeholder={t('meds_placeholder') || "ej. Ibuprofeno 600mg"} autoFocus />
+                        </div>
+                        <div className="input-group">
+                            <label className="input-label">{t('instructions')}</label>
+                            <textarea className="input-field" rows="3" value={prescribeModal.instructions} onChange={e => setPrescribeModal({ ...prescribeModal, instructions: e.target.value })} placeholder={t('instructions_placeholder') || "ej. Tomar cada 8 horas con comida."} />
+                        </div>
+                    </div>
+                </Modal>
             </main >
         </div >
     );

@@ -148,13 +148,33 @@ exports.getPatientDetails = async (req, res) => {
         );
 
         // 3. Get Prescriptions
+        // 3. Get Prescriptions & Licenses (Combined)
         const pres = await conn.query(`
-            SELECT p.*, d.full_name as doctor_name 
+            (SELECT 
+                p.id, 
+                p.created_at, 
+                'prescription' as type, 
+                d.full_name as doctor_name,
+                p.medications as diagnosis, 
+                NULL as days
             FROM prescriptions p
             JOIN appointments a ON p.appointment_id = a.id
             JOIN doctors d ON a.doctor_id = d.id
-            WHERE a.patient_id = ?`,
-            [id]
+            WHERE a.patient_id = ?)
+            UNION
+            (SELECT 
+                ml.id, 
+                ml.created_at, 
+                'license' as type, 
+                d.full_name as doctor_name,
+                ml.diagnosis, 
+                ml.days_duration as days
+            FROM medical_licenses ml
+            JOIN appointments a ON ml.appointment_id = a.id
+            JOIN doctors d ON a.doctor_id = d.id
+            WHERE a.patient_id = ?)
+            ORDER BY created_at DESC`,
+            [id, id]
         );
 
         // 4. Get Uploaded Files

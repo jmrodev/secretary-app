@@ -28,37 +28,54 @@ const RequirementsList = ({ user }) => {
             }
 
             const payload = { status: actionModal.type === 'reply' ? 'consult' : actionModal.type }; // Reply keeps status as consult
-            if (actionModal.type === 'reply') {
-                payload.secretary_note = actionNote;
-            } else {
-                payload.doctor_note = actionNote;
+
+            if (actionNote.trim()) {
+                if (actionModal.type === 'reply') {
+                    payload.secretary_note = actionNote;
+                } else {
+                    payload.doctor_note = actionNote;
+                }
             }
 
-            await api.patch(`/medical/requests/${actionModal.id}/status`, payload);
+            // Fixed URL: Backend route is PATCH /requests/:id
+            await api.patch(`/medical/requests/${actionModal.id}`, payload);
 
             showMessage(t('action_success') || 'Updated successfully', 'success');
             setActionModal({ open: false, type: '', id: null });
             fetchRequests();
         } catch (err) {
             console.error(err);
-            showMessage(t('error_update') || 'Failed to update', 'error');
+            const errMsg = err.response?.data?.message || t('error_update') || 'Failed to update';
+            showMessage(errMsg, 'error');
         }
     };
+
+    const [filter, setFilter] = useState('active'); // 'active' (pending/consult) or 'history' (completed/rejected)
+    const [allRequests, setAllRequests] = useState([]);
 
     const fetchRequests = async () => {
         try {
             const res = await api.get('/medical/requests');
-            // Filter for "active" or "in progress" if needed, 
-            // but 'pending' is usually what "que estan realizandose" means.
-            // The backend returns all, let's filter specifically for pending/in-process.
-            const active = res.data.filter(r => r.status === 'pending');
-            setRequests(active);
+            setAllRequests(res.data);
+            filterRequests(res.data, filter);
         } catch (err) {
             console.error("Failed to fetch requirements", err);
         } finally {
             setLoading(false);
         }
     };
+
+    const filterRequests = (data, currentFilter) => {
+        if (currentFilter === 'active') {
+            setRequests(data.filter(r => r.status === 'pending' || r.status === 'consult'));
+        } else {
+            setRequests(data.filter(r => r.status === 'completed' || r.status === 'rejected'));
+        }
+    };
+
+    useEffect(() => {
+        filterRequests(allRequests, filter);
+    }, [filter, allRequests]);
 
     useEffect(() => {
         fetchRequests();
@@ -75,9 +92,7 @@ const RequirementsList = ({ user }) => {
 
     if (loading) return <div>Cargando requerimientos...</div>;
 
-    if (requests.length === 0) {
-        return <div className="no-requirements-msg">{t('no_requests') || 'No hay requerimientos pendientes.'}</div>;
-    }
+
 
     const handleDeleteClick = (id) => {
         setConfirmDeleteId(id);
@@ -99,97 +114,117 @@ const RequirementsList = ({ user }) => {
 
     return (
         <div className="table-responsive">
-            <table className="table-base requirements-table">
-                <thead>
-                    <tr>
-                        <th>Tipo</th>
-                        <th>Paciente</th>
-                        <th>Doctor</th>
-                        <th>Solicitado Por</th>
-                        <th>Estado</th>
-                        {user.role === 'admin' && <th>Acciones</th>}
-                        {user.role === 'doctor' && <th>Gestionar</th>}
-                    </tr>
-                </thead>
-                <tbody>
-                    {requests.map(r => (
-                        <tr key={r.id}>
-                            <td>
-                                <span
-                                    className={`status-chip ${r.type === 'prescription' ? 'chip-blue' : 'chip-green'} type-chip-link`}
-                                    onClick={() => setSelectedRequest(r)}
-                                    title="Ver detalle"
-                                >
-                                    {typeLabels[r.type] || r.type}
-                                </span>
-                            </td>
-                            <td className="font-bold">{r.patient_name}</td>
-                            <td>{r.doctor_name}</td>
-                            <td>{r.secretary_name || 'Secretaría'}</td>
-                            <td>
-                                <span className="status-chip chip-yellow">
-                                    {r.status}
-                                </span>
-                            </td>
-                            {(user.role === 'admin' || user.role === 'secretary') && (
-                                <td className="actions-flex">
-                                    {user.role === 'admin' && (
-                                        <button
-                                            className="btn-icon-base btn-icon-red"
-                                            onClick={() => handleDeleteClick(r.id)}
-                                            title="Eliminar"
-                                        >
-                                            🗑️
-                                        </button>
-                                    )}
-                                    {(user.role === 'secretary' || user.role === 'admin') && r.status === 'consult' && (
-                                        <button
-                                            className="btn-icon-base btn-icon-blue"
-                                            onClick={() => openActionModal('reply', r.id)}
-                                            title={t('reply')}
-                                        >
-                                            💬
-                                        </button>
-                                    )}
+            <div className="flex gap-2 mb-4">
+                <button
+                    className={`btn btn-sm ${filter === 'active' ? 'btn-primary' : 'btn-secondary'}`}
+                    onClick={() => setFilter('active')}
+                >
+                    {t('pending') || 'Pendientes'}
+                </button>
+                <button
+                    className={`btn btn-sm ${filter === 'history' ? 'btn-primary' : 'btn-secondary'}`}
+                    onClick={() => setFilter('history')}
+                >
+                    {t('history') || 'Historial'}
+                </button>
+            </div>
+
+            {requests.length === 0 ? (
+                <div className="no-requirements-msg mt-4">{t('no_requests') || (filter === 'active' ? 'No hay requerimientos pendientes.' : 'No hay historial.')}</div>
+            ) : (
+                <table className="table-base requirements-table">
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Paciente</th>
+                            <th>Doctor</th>
+                            <th>Solicitado Por</th>
+                            <th>Estado</th>
+                            {user.role === 'admin' && <th>Acciones</th>}
+                            {user.role === 'doctor' && <th>Gestionar</th>}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {requests.map(r => (
+                            <tr key={r.id}>
+                                <td>
+                                    <span
+                                        className={`status-chip ${r.type === 'prescription' ? 'chip-blue' : 'chip-green'} type-chip-link`}
+                                        onClick={() => setSelectedRequest(r)}
+                                        title="Ver detalle"
+                                    >
+                                        {typeLabels[r.type] || r.type}
+                                    </span>
                                 </td>
-                            )}
-                            {
-                                user.role === 'doctor' && (
+                                <td className="font-bold">{r.patient_name}</td>
+                                <td>{r.doctor_name}</td>
+                                <td>{r.secretary_name || 'Secretaría'}</td>
+                                <td>
+                                    <span className="status-chip chip-yellow">
+                                        {r.status}
+                                    </span>
+                                </td>
+                                {(user.role === 'admin' || user.role === 'secretary') && (
                                     <td className="actions-flex">
-                                        {r.status === 'pending' || r.status === 'consult' ? (
-                                            <>
-                                                <button
-                                                    className="btn-icon-base btn-icon-green"
-                                                    onClick={() => openActionModal('completed', r.id)}
-                                                    title={t('mark_as_done')}
-                                                >
-                                                    ✅
-                                                </button>
-                                                <button
-                                                    className="btn-icon-base btn-icon-yellow"
-                                                    onClick={() => openActionModal('consult', r.id)}
-                                                    title={t('consult_secretary')}
-                                                >
-                                                    ❓
-                                                </button>
-                                                <button
-                                                    className="btn-icon-base btn-icon-red"
-                                                    onClick={() => openActionModal('rejected', r.id)}
-                                                    title={t('reject')}
-                                                >
-                                                    ❌
-                                                </button>
-                                            </>
-                                        ) : (
-                                            <span className="status-placeholder">-</span>
+                                        {user.role === 'admin' && (
+                                            <button
+                                                className="btn-icon-base btn-icon-red"
+                                                onClick={() => handleDeleteClick(r.id)}
+                                                title="Eliminar"
+                                            >
+                                                🗑️
+                                            </button>
+                                        )}
+                                        {(user.role === 'secretary' || user.role === 'admin') && r.status === 'consult' && (
+                                            <button
+                                                className="btn-icon-base btn-icon-blue"
+                                                onClick={() => openActionModal('reply', r.id)}
+                                                title={t('reply')}
+                                            >
+                                                💬
+                                            </button>
                                         )}
                                     </td>
-                                )
-                            }
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+                                )}
+                                {
+                                    user.role === 'doctor' && (
+                                        <td className="actions-flex">
+                                            {r.status === 'pending' || r.status === 'consult' ? (
+                                                <>
+                                                    <button
+                                                        className="btn-icon-base btn-icon-green"
+                                                        onClick={() => openActionModal('completed', r.id)}
+                                                        title={t('mark_as_done')}
+                                                    >
+                                                        ✅
+                                                    </button>
+                                                    <button
+                                                        className="btn-icon-base btn-icon-yellow"
+                                                        onClick={() => openActionModal('consult', r.id)}
+                                                        title={t('consult_secretary')}
+                                                    >
+                                                        ❓
+                                                    </button>
+                                                    <button
+                                                        className="btn-icon-base btn-icon-red"
+                                                        onClick={() => openActionModal('rejected', r.id)}
+                                                        title={t('reject')}
+                                                    >
+                                                        ❌
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                <span className="status-placeholder">-</span>
+                                            )}
+                                        </td>
+                                    )
+                                }
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
+
 
             {/* Detail Modal */}
             <Modal

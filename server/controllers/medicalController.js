@@ -114,6 +114,16 @@ exports.getPrescriptions = async (req, res) => {
             }
         }
 
+
+
+        // [NEW] Filter by specific patient
+        if (req.query.patientId) {
+            query += " AND a.patient_id = ?";
+            params.push(req.query.patientId);
+        }
+
+        query += " ORDER BY a.appointment_date DESC";
+
         const rows = await conn.query(query, params);
         res.json(rows);
     } catch (err) {
@@ -210,6 +220,16 @@ exports.getLicenses = async (req, res) => {
             }
         }
 
+
+
+        // [NEW] Filter by specific patient
+        if (req.query.patientId) {
+            query += " AND a.patient_id = ?";
+            params.push(req.query.patientId);
+        }
+
+        query += " ORDER BY a.appointment_date DESC";
+
         const rows = await conn.query(query, params);
         res.json(rows);
     } catch (err) {
@@ -298,6 +318,16 @@ exports.getRequests = async (req, res) => {
             }
         }
 
+        // [NEW] Filter by specific patient
+        if (req.query.patientId) {
+            if (query.includes(' WHERE ')) {
+                query += " AND r.patient_id = ?";
+            } else {
+                query += " WHERE r.patient_id = ?";
+            }
+            params.push(req.query.patientId);
+        }
+
         query += " ORDER BY r.created_at DESC";
 
         if (!conn) conn = await pool.getConnection();
@@ -342,7 +372,8 @@ exports.updateRequestStatus = async (req, res) => {
 
         let completedAt = null;
         if (status === 'completed' || status === 'rejected') {
-            completedAt = new Date();
+            // Safe MySQL timestamp format
+            completedAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
             setClause += ", completed_at = ?";
             params.push(completedAt);
         }
@@ -355,8 +386,8 @@ exports.updateRequestStatus = async (req, res) => {
         logAction(req, 'UPDATE_MEDICAL_REQUEST', `Request ${id} updated to ${status}`);
         res.json({ message: "Request updated" });
     } catch (err) {
-        console.error(err);
-        res.status(500).send("Server Error");
+        console.error("Update Request Status Error:", err);
+        res.status(500).json({ message: "Server Error: " + err.message });
     } finally {
         if (conn) conn.release();
     }

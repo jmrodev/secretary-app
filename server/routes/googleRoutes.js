@@ -9,6 +9,7 @@ router.get('/callback', googleController.oauthCallback); // Public: Browser redi
 router.get('/status', verifyToken, googleController.getStatus);
 router.post('/disconnect', verifyToken, googleController.disconnect);
 router.post('/import', verifyToken, isSecretary, googleController.importContacts);
+router.post('/sync-import', verifyToken, googleController.syncImportEvents); // NEW: Import events from Google
 router.get('/appointments', verifyToken, googleController.listAppointments);
 router.post('/appointments', verifyToken, googleController.createAppointment);
 router.delete('/appointments/:eventId', verifyToken, googleController.deleteEvent);

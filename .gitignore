@@ -1,4 +1,43 @@
+# Dependency directories
+node_modules/
+**/node_modules/
+
+# Build artifacts
+dist/
+dist-ssr/
+build/
+**/build/
+.gradle/
+**/.gradle/
+
+# Local configuration and credentials
+.env
+**/.env
+**/.env.local
+local.properties
+android_native/local.properties
+*.jks
+*.keystore
+
+# Database and data
 /mysql_data
 # Backups
 backup_*.sql
+contacts.csv
+extracted_patients.json
+
+# Server uploads
+server/uploads/
+
+# Android SDK tools
 android_sdk/tools.zip
+
+# System and IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store

@@ -145,7 +145,7 @@ exports.getAppointments = async (req, res) => {
     try {
         conn = await pool.getConnection();
         const { role, user_id } = req.user;
-        let query = "SELECT a.*, p.full_name as patient_name, p.dni as patient_dni, p.user_id as patient_user_id, p.behavior_rating, d.full_name as doctor_name FROM appointments a JOIN patients p ON a.patient_id = p.id JOIN doctors d ON a.doctor_id = d.id";
+        let query = "SELECT a.*, p.full_name as patient_name, p.dni as patient_dni, p.user_id as patient_user_id, p.behavior_rating, d.full_name as doctor_name FROM appointments a LEFT JOIN patients p ON a.patient_id = p.id JOIN doctors d ON a.doctor_id = d.id";
         let params = [];
 
         if (role === 'patient') {
@@ -163,7 +163,21 @@ exports.getAppointments = async (req, res) => {
         }
         // Secretary/Admin sees all
 
+        console.log(`[getAppointments] Request from UserID: ${user_id}, Role: ${role}`);
+        // [NEW] Filter by specific patient (for history view)
+        if (req.query.patientId) {
+            if (query.includes(' WHERE ')) {
+                query += " AND a.patient_id = ?";
+            } else {
+                query += " WHERE a.patient_id = ?";
+            }
+            params.push(req.query.patientId);
+        }
+
+        query += " ORDER BY a.appointment_date DESC"; // Ensure history is ordered
+
         const rows = await conn.query(query, params);
+
         res.json(rows);
     } catch (err) {
         console.error(err);
@@ -185,6 +199,11 @@ exports.deleteAppointment = async (req, res) => {
 
 
         const appt = rows[0];
+
+        // [NEW] Prevent deletion if status is 'completed' (Attended)
+        if (appt.status === 'completed') {
+            return res.status(400).send("Cannot delete an appointment that has been attended (completed).");
+        }
 
         // --- Google Calendar Sync (Delete) ---
         if (appt.google_event_id) {
@@ -220,11 +239,16 @@ exports.updateAppointment = async (req, res) => {
 
         const oldDate = exists[0].appointment_date;
 
-        // Update status to 'rescheduled' when moved
         const apptDate = new Date(appointment_date);
+        const oldDateObj = new Date(oldDate);
+
+        // Only change status to 'rescheduled' if the date/time actually changed
+        const isReschedule = apptDate.getTime() !== oldDateObj.getTime();
+        const newStatus = isReschedule ? 'rescheduled' : exists[0].status;
+
         await conn.query(
-            "UPDATE appointments SET appointment_date = ?, reason = ?, status = 'rescheduled' WHERE id = ?",
-            [apptDate, reason || exists[0].reason, id]
+            "UPDATE appointments SET appointment_date = ?, reason = ?, status = ? WHERE id = ?",
+            [apptDate, reason || exists[0].reason, newStatus, id]
         );
 
         // Log

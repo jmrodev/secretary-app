@@ -24,23 +24,46 @@ app.use('/api/whatsapp', require('./routes/whatsappRoutes'));
 app.use('/api/finances', require('./routes/financeRoutes'));
 app.use('/api/logs', require('./routes/logRoutes'));
 app.use('/api/google', require('./routes/googleRoutes'));
+app.use('/api/import', require('./routes/importRoutes'));
 app.use('/api/settings', require('./routes/settingsRoutes'));
 app.use('/api/insurances', require('./routes/insuranceRoutes'));
 app.use('/api/holidays', require('./routes/holidayRoutes'));
 app.use('/uploads', express.static('uploads'));
 
-// Health check
-app.get('/', (req, res) => {
-    res.send('Secretary App API is running');
+app.get('/api/debug/dump-appointments', async (req, res) => {
+    try {
+        const { pool } = require('./db');
+        const conn = await pool.getConnection();
+        const [rows] = await conn.query(`
+            SELECT a.id, a.doctor_id, d.full_name as doctor_name, a.patient_id, a.appointment_date, a.status 
+            FROM appointments a 
+            JOIN doctors d ON a.doctor_id = d.id 
+            ORDER BY a.doctor_id
+        `);
+        conn.release();
+        res.json({ count: rows.length, rows });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
 });
-// Force restart
+
+app.use('/api/auth', authRoutes);
 
 // Start server
-app.listen(PORT, async () => {
+app.listen(PORT, '0.0.0.0', async () => {
     console.log(`Server running on port ${PORT}`);
     try {
         const conn = await pool.getConnection();
         console.log('Connected to MariaDB');
+
+        // Debug: Identify DB
+        const [dbInfo] = await conn.query("SELECT DATABASE() as db, @@hostname as host");
+        console.log("!!! CONNECTED TO DB:", dbInfo[0]);
+
+        const appts = await conn.query("SELECT * FROM appointments LIMIT 1");
+        console.log("!!! SAMPLE APPOINTMENT:", appts && appts[0] && appts[0].length > 0 ? "Found Data" : "NO DATA (Empty DB)");
+
+
         conn.release();
 
         // Start Google Sync Worker

@@ -707,3 +707,19 @@ exports.deleteEvent = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+exports.syncImportEvents = async (req, res) => {
+    try {
+        const { importFromGoogle } = require('../services/googleSyncImport');
+
+        console.log("[GoogleImport] Manual sync triggered by user:", req.user.username);
+        await importFromGoogle();
+
+        res.json({ message: "Sync completed successfully" });
+        await logAction(req, 'GOOGLE_SYNC_IMPORT', 'Manual import from Google Calendar');
+
+    } catch (err) {
+        console.error("Sync Import Error:", err);
+        res.status(500).json({ error: err.message });
+    }
+};

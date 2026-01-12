@@ -1,7 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+import { useLanguage } from '../context/LanguageContext';
 
 const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = [] }) => {
     const [viewDate, setViewDate] = useState(new Date(selectedDate || new Date()));
+    const { t } = useLanguage();
+
+    // Sync viewDate when selectedDate changes (e.g. from parent or next/prev navigation)
+    useEffect(() => {
+        if (selectedDate) {
+            setViewDate(new Date(selectedDate));
+        }
+    }, [selectedDate]);
 
     const getDaysInMonth = (date) => {
         const year = date.getFullYear();
@@ -18,20 +28,26 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
     };
 
     const { days, firstDay } = getDaysInMonth(viewDate);
-    const months = [
+
+    // Get translated arrays; default to English if missing (safety check)
+    const months = t('months_array') || [
         'January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'
     ];
-
-    // Adjust for Monday start if needed, but keeping Sunday start simpler for now
-    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const daysOfWeek = t('days_short_array') || ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     const handlePrevMonth = () => {
-        setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1));
+        const newDate = new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1);
+        setViewDate(newDate);
+        // [UX Improvement] Auto-select 1st of new month so "Agenda de Turnos" updates immediately
+        onDateSelect(newDate);
     };
 
     const handleNextMonth = () => {
-        setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1));
+        const newDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1);
+        setViewDate(newDate);
+        // [UX Improvement] Auto-select 1st of new month
+        onDateSelect(newDate);
     };
 
     const renderDays = () => {
