@@ -3,6 +3,9 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const { pool } = require('./db');
 
+// BigInt JSON serialization fix
+BigInt.prototype.toJSON = function () { return Number(this); };
+
 const authRoutes = require('./routes/authRoutes');
 
 dotenv.config();
@@ -57,11 +60,11 @@ app.listen(PORT, '0.0.0.0', async () => {
         console.log('Connected to MariaDB');
 
         // Debug: Identify DB
-        const [dbInfo] = await conn.query("SELECT DATABASE() as db, @@hostname as host");
-        console.log("!!! CONNECTED TO DB:", dbInfo[0]);
+        const dbInfo = await conn.query("SELECT DATABASE() as db, @@hostname as host");
+        console.log("!!! CONNECTED TO DB:", dbInfo[0]?.db);
 
         const appts = await conn.query("SELECT * FROM appointments LIMIT 1");
-        console.log("!!! SAMPLE APPOINTMENT:", appts && appts[0] && appts[0].length > 0 ? "Found Data" : "NO DATA (Empty DB)");
+        console.log("!!! SAMPLE APPOINTMENT:", appts.length > 0 ? "Found Data" : "NO DATA (Empty DB)");
 
 
         conn.release();

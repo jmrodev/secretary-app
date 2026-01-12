@@ -24,6 +24,9 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import androidx.work.*
+import com.secretaryapp.utils.NetworkErrorMapper
+import com.secretaryapp.workers.UploadWorker
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -63,6 +66,12 @@ class PatientDetailActivity : AppCompatActivity() {
         val email = intent.getStringExtra("email")
         patientId = intent.getIntExtra("patient_id", 0)
 
+        // Restore state if available
+        savedInstanceState?.let {
+            currentPhotoPath = it.getString("currentPhotoPath")
+            currentDocumentType = it.getString("currentDocumentType")
+        }
+
         findViewById<TextView>(R.id.tvDetailPatName).text = name
         findViewById<TextView>(R.id.tvDetailPatDni).text = "DNI: $dni"
         findViewById<TextView>(R.id.tvDetailPatPhone).text = "Tel: $phone"
@@ -87,6 +96,34 @@ class PatientDetailActivity : AppCompatActivity() {
             intent.putExtra("patient_name", name)
             startActivity(intent)
         }
+
+        loadPatientDetails()
+        observeUploads()
+    }
+
+    private fun loadPatientDetails() {
+        val authToken = SessionManager.authToken ?: return
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = RetrofitClient.instance.getPatientDetails(authToken, patientId)
+                if (response.isSuccessful && response.body() != null) {
+                    val details = response.body()!!
+                    withContext(Dispatchers.Main) {
+                        findViewById<TextView>(R.id.tvNextVisit).text = "📅 Visita: ${details.next_suggested_visit_date?.split("T")?.get(0) ?: "N/A"}"
+                        findViewById<TextView>(R.id.tvNextPrescr).text = "💊 Receta: ${details.next_suggested_prescription_date?.split("T")?.get(0) ?: "N/A"}"
+                        findViewById<TextView>(R.id.tvLicExpiry).text = "📄 Licencia: ${details.license_expiry_date?.split("T")?.get(0) ?: "N/A"}"
+                    }
+                }
+            } catch (e: Exception) {
+                // Silent error for details
+            }
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("currentPhotoPath", currentPhotoPath)
+        outState.putString("currentDocumentType", currentDocumentType)
     }
     
     private fun checkCameraPermission(documentType: String) {
@@ -120,63 +157,94 @@ class PatientDetailActivity : AppCompatActivity() {
     }
     
     private fun createImageFile(): File {
-        val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
+        val typeLabel = when(currentDocumentType) {
+            "Licencia Médica" -> "licencia"
+            "Receta" -> "receta"
+            "Certificado" -> "certificado"
+            else -> "documento"
+        }
+        val dateStamp = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.US).format(Date())
+        val fileName = "${typeLabel}_${dateStamp}"
         val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(
-            "IMG_${timestamp}_",
+            "${fileName}_",
             ".jpg",
             storageDir
         )
     }
     
     private fun uploadPhoto() {
-        val file = File(currentPhotoPath ?: return)
+        val path = currentPhotoPath ?: return
+        val file = File(path)
         
         if (!file.exists()) {
             Toast.makeText(this, "Archivo no encontrado", Toast.LENGTH_SHORT).show()
             return
         }
         
-        Toast.makeText(this, "Subiendo foto...", Toast.LENGTH_SHORT).show()
+        val authToken = SessionManager.authToken
+        if (authToken == null) {
+            Toast.makeText(this, "Error de sesión. Por favor reingrese.", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        val description = currentDocumentType ?: "Desconocido"
         
-        val requestFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
-        val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
+        val uploadData = workDataOf(
+            "authToken" to authToken,
+            "patientId" to patientId,
+            "photoPath" to path,
+            "description" to description
+        )
+
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val uploadRequest = OneTimeWorkRequestBuilder<UploadWorker>()
+            .setConstraints(constraints)
+            .setInputData(uploadData)
+            .setBackoffCriteria(
+                BackoffPolicy.LINEAR,
+                WorkRequest.MIN_BACKOFF_MILLIS,
+                java.util.concurrent.TimeUnit.MILLISECONDS
+            )
+            .addTag("upload_${patientId}")
+            .build()
+
+        WorkManager.getInstance(applicationContext).enqueueUniqueWork(
+            "upload_${path.hashCode()}",
+            ExistingWorkPolicy.REPLACE,
+            uploadRequest
+        )
         
-        val patientIdBody = patientId.toString().toRequestBody("text/plain".toMediaTypeOrNull())
-        val descriptionBody = currentDocumentType?.toRequestBody("text/plain".toMediaTypeOrNull())
-        
-        android.util.Log.d("PatientDetailActivity", "Uploading - Token: ${SessionManager.authToken}")
-        android.util.Log.d("PatientDetailActivity", "Patient ID: $patientId")
-        
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val response = RetrofitClient.instance.uploadFile(
-                    SessionManager.authToken ?: return@launch,
-                    patientIdBody,
-                    descriptionBody!!,
-                    body
-                )
+        Toast.makeText(this, getString(R.string.msg_upload_queued), Toast.LENGTH_SHORT).show()
+    }
+
+    private fun observeUploads() {
+        WorkManager.getInstance(applicationContext)
+            .getWorkInfosByTagLiveData("upload_${patientId}")
+            .observe(this) { workInfos ->
+                val workInfo = workInfos?.find { !it.state.isFinished } ?: workInfos?.firstOrNull()
                 
-                withContext(Dispatchers.Main) {
-                    if (response.isSuccessful) {
-                        Toast.makeText(this@PatientDetailActivity, 
-                            "Archivo subido correctamente", 
-                            Toast.LENGTH_SHORT).show()
-                        // Eliminar archivo temporal
-                        file.delete()
-                    } else {
-                        Toast.makeText(this@PatientDetailActivity, 
-                            "Error al subir archivo: ${response.code()}", 
-                            Toast.LENGTH_SHORT).show()
+                workInfo?.let {
+                    when (it.state) {
+                        WorkInfo.State.ENQUEUED -> {
+                            // Already handled by toast in uploadPhoto, but could show a persistent indicator
+                        }
+                        WorkInfo.State.RUNNING -> {
+                            Toast.makeText(this, getString(R.string.msg_uploading), Toast.LENGTH_SHORT).show()
+                        }
+                        WorkInfo.State.SUCCEEDED -> {
+                            Toast.makeText(this, getString(R.string.msg_upload_success), Toast.LENGTH_SHORT).show()
+                        }
+                        WorkInfo.State.FAILED -> {
+                            Toast.makeText(this, getString(R.string.error_unknown), Toast.LENGTH_SHORT).show()
+                        }
+                        WorkInfo.State.BLOCKED -> { }
+                        WorkInfo.State.CANCELLED -> { }
                     }
                 }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@PatientDetailActivity, 
-                        "Error: ${e.message}", 
-                        Toast.LENGTH_SHORT).show()
-                }
             }
-        }
     }
 }

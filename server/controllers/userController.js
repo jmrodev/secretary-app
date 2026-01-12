@@ -40,7 +40,7 @@ exports.getAllDoctors = async (req, res) => {
     let conn;
     try {
         conn = await pool.getConnection();
-        const rows = await conn.query("SELECT id, user_id, full_name, specialty, phone, office_number, rental_type, rental_cost, consultation_price, prescription_price, medical_license_price, virtual_consultation_price FROM doctors");
+        const rows = await conn.query("SELECT id, user_id, full_name, specialty, phone, office_number, rental_type, rental_cost, consultation_price, prescription_price, medical_license_price, virtual_consultation_price, default_visit_interval_days, default_prescription_interval_days FROM doctors");
         res.json(rows);
     } catch (err) {
         console.error(err);
@@ -258,6 +258,8 @@ exports.updateProfile = async (req, res) => {
             if (updates.office_number !== undefined) { fields.push("office_number = ?"); params.push(updates.office_number); }
             if (updates.rental_type !== undefined) { fields.push("rental_type = ?"); params.push(updates.rental_type); }
             if (updates.rental_cost !== undefined) { fields.push("rental_cost = ?"); params.push(updates.rental_cost); }
+            if (updates.default_visit_interval_days !== undefined) { fields.push("default_visit_interval_days = ?"); params.push(updates.default_visit_interval_days); }
+            if (updates.default_prescription_interval_days !== undefined) { fields.push("default_prescription_interval_days = ?"); params.push(updates.default_prescription_interval_days); }
             if (fields.length > 0) {
                 query = `UPDATE doctors SET ${fields.join(', ')} WHERE user_id = ?`;
                 params.push(user_id);
@@ -393,6 +395,11 @@ exports.updatePatientDetails = async (req, res) => {
         if (updates.tariff_percent !== undefined) { fields.push("tariff_percent = ?"); params.push(updates.tariff_percent); }
         if (updates.tariff_override !== undefined) { fields.push("tariff_override = ?"); params.push(updates.tariff_override === '' ? null : updates.tariff_override); }
         if (updates.behavior_rating !== undefined) { fields.push("behavior_rating = ?"); params.push(updates.behavior_rating); }
+        if (updates.visit_interval_days !== undefined) { fields.push("visit_interval_days = ?"); params.push(updates.visit_interval_days === '' ? null : updates.visit_interval_days); }
+        if (updates.prescription_interval_days !== undefined) { fields.push("prescription_interval_days = ?"); params.push(updates.prescription_interval_days === '' ? null : updates.prescription_interval_days); }
+        if (updates.next_suggested_visit_date !== undefined) { fields.push("next_suggested_visit_date = ?"); params.push(updates.next_suggested_visit_date === '' ? null : updates.next_suggested_visit_date); }
+        if (updates.next_suggested_prescription_date !== undefined) { fields.push("next_suggested_prescription_date = ?"); params.push(updates.next_suggested_prescription_date === '' ? null : updates.next_suggested_prescription_date); }
+        if (updates.license_expiry_date !== undefined) { fields.push("license_expiry_date = ?"); params.push(updates.license_expiry_date === '' ? null : updates.license_expiry_date); }
 
         if (fields.length > 0) {
             const query = `UPDATE patients SET ${fields.join(', ')} WHERE id = ?`;
@@ -462,6 +469,8 @@ exports.updateDoctor = async (req, res) => {
         if (updates.medical_license_price !== undefined) { fields.push("medical_license_price = ?"); params.push(updates.medical_license_price); }
         if (updates.virtual_consultation_price !== undefined) { fields.push("virtual_consultation_price = ?"); params.push(updates.virtual_consultation_price); }
         if (updates.certificate_price !== undefined) { fields.push("certificate_price = ?"); params.push(updates.certificate_price); }
+        if (updates.default_visit_interval_days !== undefined) { fields.push("default_visit_interval_days = ?"); params.push(updates.default_visit_interval_days); }
+        if (updates.default_prescription_interval_days !== undefined) { fields.push("default_prescription_interval_days = ?"); params.push(updates.default_prescription_interval_days); }
 
         if (fields.length > 0) {
             const query = `UPDATE doctors SET ${fields.join(', ')} WHERE id = ?`;
@@ -568,6 +577,50 @@ exports.updateUser = async (req, res) => {
     }
 };
 
+exports.getReminders = async (req, res) => {
+    let conn;
+    try {
+        const { role, user_id } = req.user;
+        conn = await pool.getConnection();
+
+        let doctorId = null;
+        if (role === 'doctor') {
+            const [docRows] = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [user_id]);
+            if (docRows.length > 0) doctorId = docRows[0].id;
+        }
+
+        const query = `
+            SELECT p.id, p.full_name, p.phone, p.dni,
+            d.full_name as doctor_name,
+            p.next_suggested_visit_date,
+            p.next_suggested_prescription_date,
+            p.license_expiry_date
+            FROM patients p
+            INNER JOIN patient_doctors pd ON p.id = pd.patient_id
+            INNER JOIN doctors d ON pd.doctor_id = d.id
+            WHERE 
+                (p.next_suggested_visit_date IS NOT NULL AND p.next_suggested_visit_date <= CURRENT_DATE)
+                OR (p.next_suggested_prescription_date IS NOT NULL AND p.next_suggested_prescription_date <= CURRENT_DATE)
+                OR (p.license_expiry_date IS NOT NULL AND p.license_expiry_date <= CURRENT_DATE)
+        `;
+
+        let finalQuery = query;
+        let params = [];
+        if (doctorId) {
+            finalQuery += " AND pd.doctor_id = ?";
+            params.push(doctorId);
+        }
+
+        const rows = await conn.query(finalQuery, params);
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
 exports.deleteUser = async (req, res) => {
     let conn;
     try {
@@ -654,6 +707,105 @@ exports.deleteUser = async (req, res) => {
 
     } catch (err) {
         console.error("Delete User Error:", err);
+        res.status(500).send("Server Error: " + err.message);
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.getStats = async (req, res) => {
+    let conn;
+    try {
+        const { role, user_id } = req.user;
+        conn = await pool.getConnection();
+
+        // Get current date boundaries
+        const now = new Date();
+        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString().split('T')[0];
+        const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).toISOString().split('T')[0];
+
+        // Week boundaries (Monday to Sunday)
+        const dayOfWeek = now.getDay();
+        const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+        const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset).toISOString().split('T')[0];
+        const weekEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset + 7).toISOString().split('T')[0];
+
+        // Month boundaries
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+        const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString().split('T')[0];
+
+        let appointmentsToday, appointmentsWeek, appointmentsMonth, totalAppointments;
+        let totalPatients, totalContacts;
+
+        if (role === 'doctor') {
+            const doctorRows = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [user_id]);
+            if (doctorRows.length === 0) return res.status(404).send("Doctor profile not found");
+            const doctorId = doctorRows[0].id;
+
+            const todayResult = await conn.query(
+                "SELECT COUNT(*) as count FROM appointments WHERE doctor_id = ? AND appointment_date >= ? AND appointment_date < ?",
+                [doctorId, todayStart, todayEnd]
+            );
+            appointmentsToday = Number(todayResult[0].count);
+
+            const weekResult = await conn.query(
+                "SELECT COUNT(*) as count FROM appointments WHERE doctor_id = ? AND appointment_date >= ? AND appointment_date < ?",
+                [doctorId, weekStart, weekEnd]
+            );
+            appointmentsWeek = Number(weekResult[0].count);
+
+            const monthResult = await conn.query(
+                "SELECT COUNT(*) as count FROM appointments WHERE doctor_id = ? AND appointment_date >= ? AND appointment_date < ?",
+                [doctorId, monthStart, monthEnd]
+            );
+            appointmentsMonth = Number(monthResult[0].count);
+
+            const totalResult = await conn.query("SELECT COUNT(*) as count FROM appointments WHERE doctor_id = ?", [doctorId]);
+            totalAppointments = Number(totalResult[0].count);
+
+            const patientsResult = await conn.query("SELECT COUNT(DISTINCT patient_id) as count FROM patient_doctors WHERE doctor_id = ?", [doctorId]);
+            totalPatients = Number(patientsResult[0].count);
+
+        } else {
+            const todayResult = await conn.query(
+                "SELECT COUNT(*) as count FROM appointments WHERE appointment_date >= ? AND appointment_date < ?",
+                [todayStart, todayEnd]
+            );
+            appointmentsToday = Number(todayResult[0].count);
+
+            const weekResult = await conn.query(
+                "SELECT COUNT(*) as count FROM appointments WHERE appointment_date >= ? AND appointment_date < ?",
+                [weekStart, weekEnd]
+            );
+            appointmentsWeek = Number(weekResult[0].count);
+
+            const monthResult = await conn.query(
+                "SELECT COUNT(*) as count FROM appointments WHERE appointment_date >= ? AND appointment_date < ?",
+                [monthStart, monthEnd]
+            );
+            appointmentsMonth = Number(monthResult[0].count);
+
+            const totalResult = await conn.query("SELECT COUNT(*) as count FROM appointments");
+            totalAppointments = Number(totalResult[0].count);
+
+            const patientsResult = await conn.query("SELECT COUNT(*) as count FROM patients");
+            totalPatients = Number(patientsResult[0].count);
+        }
+
+        const contactsResult = await conn.query("SELECT COUNT(*) as count FROM patients");
+        totalContacts = Number(contactsResult[0].count);
+
+        res.json({
+            appointments_today: appointmentsToday,
+            appointments_week: appointmentsWeek,
+            appointments_month: appointmentsMonth,
+            total_appointments: totalAppointments,
+            total_patients: totalPatients,
+            total_contacts: totalContacts
+        });
+
+    } catch (err) {
+        console.error("getStats Error:", err);
         res.status(500).send("Server Error: " + err.message);
     } finally {
         if (conn) conn.release();

@@ -31,6 +31,7 @@
         <activity android:name=".PatientDetailActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".PatientFilesActivity" />
+        <activity android:name=".RemindersActivity" />
         
         <provider
             android:name="androidx.core.content.FileProvider"

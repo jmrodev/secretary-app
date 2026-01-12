@@ -771,6 +771,12 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 
+.grid-3-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
 .gap-2 {
   gap: 0.5rem;
 }
@@ -896,6 +902,21 @@ body {
   margin-bottom: 2px;
 }
 
+.rating-stars-gold span,
+.rating-stars-blue span,
+.rating-stars-pink span {
+  font-size: 1.2rem;
+}
+
+/* Follow-up Suggestions */
+.follow-up-suggestions-grid {
+  transition: all 0.2s ease;
+}
+
+.follow-up-suggestions-grid:hover {
+  background-color: #f1f5f9;
+}
+
 .rating-stars-gold {
   color: #fbbf24;
 }
@@ -909,12 +930,21 @@ body {
 }
 
 /* DaySchedule Refactor */
-.financial-rating {
-  display: flex;
-  color: #f59e0b;
-  font-size: 1rem;
-  cursor: pointer;
-  user-select: none;
+.rating-mini-stars {
+  font-size: 0.85rem;
+  letter-spacing: -1px;
+}
+
+.text-gold {
+  color: #fbbf24;
+}
+
+.text-blue {
+  color: #3b82f6;
+}
+
+.text-pink {
+  color: #ec4899;
 }
 
 .appt-reason-label {

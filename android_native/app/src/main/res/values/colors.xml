@@ -11,4 +11,24 @@
     <!-- App theme colors -->
     <color name="primary">#FF6200EE</color>
     <color name="secondary">#FF03DAC5</color>
+
+    <!-- Status Colors (Google Calendar Palette) -->
+    <color name="status_pending">#f6bf26</color>
+    <color name="status_confirmed">#039be5</color>
+    <color name="status_arrived">#33b679</color>
+    <color name="status_completed">#0b8043</color>
+    <color name="status_cancelled">#616161</color>
+    <color name="status_absent">#e67c73</color>
+    <color name="status_rescheduled">#8e24aa</color>
+    
+    <!-- Payment Colors -->
+    <color name="payment_paid">#0b8043</color>
+    <color name="payment_debt">#d50000</color>
+    <color name="payment_partial">#f6bf26</color>
+    <color name="payment_pending">#757575</color>
+    
+    <!-- Rating Colors -->
+    <color name="rating_gold">#fbbf24</color>
+    <color name="rating_blue">#3b82f6</color>
+    <color name="rating_pink">#ec4899</color>
 </resources>

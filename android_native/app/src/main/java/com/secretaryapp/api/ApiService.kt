@@ -48,6 +48,17 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Query("patient_id") patientId: Int
     ): Response<List<PatientFile>>
+
+    @GET("users/patients/{id}")
+    suspend fun getPatientDetails(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int
+    ): Response<com.secretaryapp.model.PatientDetailsResponse>
+
+    @GET("users/reminders")
+    suspend fun getReminders(
+        @Header("Authorization") token: String
+    ): Response<List<Patient>>
 }
 
 

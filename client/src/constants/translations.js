@@ -46,7 +46,9 @@ export const translations = {
         completed: "Atendido",
         cancelled: "Cancelado",
         pending: "Pendiente",
-        confirmed: "Confirmado",
+        confirmed: "Confirmado (Viene)",
+        arrived: "Llegó",
+        rescheduled: "Reprogramado",
         suspended: "Suspendido",
         absent: "Ausente",
         paid: "Pagado",
@@ -123,6 +125,7 @@ export const translations = {
         appointment_booked: "¡Turno reservado!",
         failed_book: "Error al reservar turno.",
         confirm_cancel: "¿Está seguro que desea cancelar este turno?",
+        patient_arrived: "Llegó (En Sala)",
         confirm_attended: "¿Marcar como Atendido/Completado?",
         cannot_delete_attended: "No se puede eliminar un turno que ya fue atendido.",
         confirm_delete_appointment: "¿Está seguro? Esto eliminará el registro permanentemente.",
@@ -348,7 +351,14 @@ export const translations = {
         daily: "Diario",
         weekly: "Semanal",
         monthly: "Mensual",
-        save_changes: "Guardar Cambios"
+        save_changes: "Guardar Cambios",
+        follow_up_settings: "Configuración de Seguimiento",
+        visit_interval_days: "Intervalo entre Visitas (Días)",
+        prescription_interval_days: "Intervalo para Recetas (Días)",
+        reminders: "Recordatorios",
+        next_suggested_visit: "Próxima Visita Sugerida",
+        next_suggested_prescription: "Próxima Receta Sugerida",
+        license_expiry: "Vencimiento de Licencia"
     },
     en: {
         app_name: "MediCare",
@@ -398,6 +408,8 @@ export const translations = {
         cancelled: "Cancelled",
         pending: "Pending",
         confirmed: "Confirmed",
+        arrived: "Arrived",
+        rescheduled: "Rescheduled",
         suspended: "Suspended",
         absent: "Absent",
         paid: "Paid",
@@ -474,6 +486,7 @@ export const translations = {
         appointment_booked: "Appointment booked!",
         failed_book: "Failed to book appointment.",
         confirm_cancel: "Are you sure you want to cancel this appointment?",
+        patient_arrived: "Patient Arrived (In Room)",
         confirm_attended: "Mark as Attended/Completed?",
         cannot_delete_attended: "Cannot delete an appointment that has been attended.",
         confirm_delete_appointment: "Are you sure? This will remove the record permanently.",
@@ -699,6 +712,13 @@ export const translations = {
         daily: "Daily",
         weekly: "Weekly",
         monthly: "Monthly",
-        save_changes: "Save Changes"
+        save_changes: "Save Changes",
+        follow_up_settings: "Follow-up Settings",
+        visit_interval_days: "Visit Interval (Days)",
+        prescription_interval_days: "Prescription Interval (Days)",
+        reminders: "Reminders",
+        next_suggested_visit: "Next Suggested Visit",
+        next_suggested_prescription: "Next Suggested Prescription",
+        license_expiry: "License Expiry"
     }
 };

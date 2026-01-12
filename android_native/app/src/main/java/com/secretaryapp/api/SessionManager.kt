@@ -5,6 +5,16 @@ object SessionManager {
     var username: String? = null
     var userId: Int = 0
     var role: String? = null
+    
+    private var prefs: android.content.SharedPreferences? = null
+
+    fun init(context: android.content.Context) {
+        prefs = context.getSharedPreferences("AppSession", android.content.Context.MODE_PRIVATE)
+        rawToken = prefs?.getString("token", null)
+        username = prefs?.getString("username", null)
+        userId = prefs?.getInt("user_id", 0) ?: 0
+        role = prefs?.getString("role", null)
+    }
 
     // Propiedad que retorna el token con Bearer automáticamente
     val authToken: String?
@@ -16,10 +26,18 @@ object SessionManager {
         get() = rawToken
 
     fun saveSession(token: String, userId: Int, username: String, role: String) {
-        this.rawToken = token  // Guardar token sin prefijo
+        this.rawToken = token
         this.userId = userId
         this.username = username
         this.role = role
+        
+        prefs?.edit()?.apply {
+            putString("token", token)
+            putInt("user_id", userId)
+            putString("username", username)
+            putString("role", role)
+            apply()
+        }
     }
 
     fun clear() {
@@ -27,6 +45,8 @@ object SessionManager {
         username = null
         userId = 0
         role = null
+        
+        prefs?.edit()?.clear()?.apply()
     }
 
     fun isLoggedIn(): Boolean = rawToken != null

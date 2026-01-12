@@ -16,10 +16,21 @@ class PatientAdapter(private var patients: List<Patient>) :
     class PatientViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvName: TextView = itemView.findViewById(R.id.tvPatientName)
         val tvDni: TextView = itemView.findViewById(R.id.tvPatientDni)
+        val tvFinancial: TextView = itemView.findViewById(R.id.tvFinancialStars)
+        val tvAttendance: TextView = itemView.findViewById(R.id.tvAttendanceStars)
+        val tvBehavior: TextView = itemView.findViewById(R.id.tvBehaviorStars)
 
         fun bind(patient: Patient) {
             tvName.text = patient.full_name
             tvDni.text = "DNI: ${patient.dni ?: "N/A"}"
+            
+            val fRating = com.secretaryapp.utils.RatingUtils.calculateFinancialRating(patient.total_debt)
+            val aRating = com.secretaryapp.utils.RatingUtils.calculateAttendanceRating(patient.total_appointments, patient.missed_appointments)
+            val bRating = patient.behavior_rating ?: 5
+
+            tvFinancial.text = com.secretaryapp.utils.RatingUtils.getStarString(fRating)
+            tvAttendance.text = com.secretaryapp.utils.RatingUtils.getStarString(aRating)
+            tvBehavior.text = com.secretaryapp.utils.RatingUtils.getStarString(bRating)
             
             itemView.setOnClickListener {
                 val intent = Intent(itemView.context, PatientDetailActivity::class.java).apply {

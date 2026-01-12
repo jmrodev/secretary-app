@@ -8,7 +8,8 @@ class SecretaryApp : Application() {
     override fun onCreate() {
         super.onCreate()
         
-        // Initialize RetrofitClient with application context
+        // Initialize RetrofitClient and SessionManager with application context
         RetrofitClient.initialize(applicationContext)
+        SessionManager.init(applicationContext)
     }
 }

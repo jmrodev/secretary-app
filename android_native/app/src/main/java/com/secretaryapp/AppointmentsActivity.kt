@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.secretaryapp.utils.NetworkErrorMapper
 
 class AppointmentsActivity : AppCompatActivity() {
 
@@ -36,6 +37,11 @@ class AppointmentsActivity : AppCompatActivity() {
             setupDoctorSpinner(spinnerDoctors)
         }
 
+        // fetchAppointments() removed from onCreate
+    }
+
+    override fun onResume() {
+        super.onResume()
         fetchAppointments()
     }
 
@@ -61,7 +67,13 @@ class AppointmentsActivity : AppCompatActivity() {
                         }
                     }
                 }
-            } catch (e: Exception) { e.printStackTrace() }
+            } catch (e: Exception) { 
+                e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    val errorMessage = NetworkErrorMapper.getUserFriendlyMessage(e, this@AppointmentsActivity)
+                    Toast.makeText(this@AppointmentsActivity, errorMessage, Toast.LENGTH_LONG).show()
+                }
+            }
          }
     }
 
@@ -92,7 +104,8 @@ class AppointmentsActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@AppointmentsActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    val errorMessage = NetworkErrorMapper.getUserFriendlyMessage(e, this@AppointmentsActivity)
+                    Toast.makeText(this@AppointmentsActivity, errorMessage, Toast.LENGTH_LONG).show()
                 }
             }
         }

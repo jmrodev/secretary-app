@@ -12,10 +12,26 @@
     <string name="detail_notes_label">Notas / Evolución</string>
     <string name="detail_save_notes">Guardar Nota</string>
     <string name="detail_status_label">Actualizar Estado</string>
-    <string name="status_confirm">Llegó (Confirmar)</string>
-    <string name="status_complete">Atendido (Completar)</string>
+    <string name="status_confirm">Confirmado (Viene)</string>
+    <string name="status_arrived">Llegó</string>
+    <string name="status_complete">Atendido</string>
     <string name="status_absent">Ausente</string>
+    <string name="status_cancel">Cancelar Turno</string>
+    <string name="status_reschedule">Reprogramar</string>
     <string name="status_paid">Marcar Pagado</string>
     <string name="msg_login_success">¡Bienvenido!</string>
     <string name="msg_login_fail">Error de acceso</string>
+
+    <!-- Error Messages -->
+    <string name="error_connection_timeout">La conexión tardó demasiado. Asegúrese de que el servidor esté encendido.</string>
+    <string name="error_connection_failed">No se pudo conectar con el servidor. Verifique si la PC está encendida y conectada a la red.</string>
+    <string name="error_no_internet">Sin conexión a internet.</string>
+    <string name="error_unknown">Ocurrió un error inesperado. Intente de nuevo.</string>
+
+    <!-- Upload Progress -->
+    <string name="msg_uploading">Subiendo archivo...</string>
+    <string name="msg_upload_success">Archivo subido correctamente.</string>
+    <string name="msg_upload_failed">Error al subir. Se reintentará automáticamente.</string>
+    <string name="msg_upload_queued">El archivo se subirá en cuanto haya conexión.</string>
+    <string name="msg_upload_interrupted">Subida interrumpida, se reintentará luego.</string>
 </resources>

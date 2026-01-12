@@ -246,7 +246,12 @@ const Patients = () => {
             medical_history: details.medical_history || '',
             tariff_percent: details.tariff_percent || 0,
             tariff_override: details.tariff_override || '',
-            assignedDoctors: details.assignedDoctors ? details.assignedDoctors.map(d => d.id) : []
+            assignedDoctors: details.assignedDoctors ? details.assignedDoctors.map(d => d.id) : [],
+            visit_interval_days: details.visit_interval_days || '',
+            prescription_interval_days: details.prescription_interval_days || '',
+            next_suggested_visit_date: details.next_suggested_visit_date ? details.next_suggested_visit_date.split('T')[0] : '',
+            next_suggested_prescription_date: details.next_suggested_prescription_date ? details.next_suggested_prescription_date.split('T')[0] : '',
+            license_expiry_date: details.license_expiry_date ? details.license_expiry_date.split('T')[0] : ''
         });
         setEditModalOpen(true);
     };
@@ -346,7 +351,24 @@ const Patients = () => {
                             <p><strong>{t('address')}:</strong> {details.address || 'N/A'}</p>
                             <p><strong>{t('accumulated_medical_leave')}:</strong> <span className="font-bold text-purple-600">{details.accumulated_days || 0} Days</span></p>
                         </div>
-                        <p className="mt-2"><strong>{t('micro_history')}:</strong> {details.medical_history || 'N/A'}</p>
+                        <div className="follow-up-suggestions-grid mt-4 p-4 bg-slate-50 rounded border border-slate-200">
+                            <h4 className="text-sm font-bold uppercase text-slate-500 mb-2">{t('reminders')} / {t('follow_up_settings')}</h4>
+                            <div className="grid-3-cols gap-4">
+                                <div>
+                                    <p className="text-xs text-slate-500 uppercase">{t('next_suggested_visit')}</p>
+                                    <p className="font-bold">{details.next_suggested_visit_date ? new Date(details.next_suggested_visit_date).toLocaleDateString() : 'N/A'}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-slate-500 uppercase">{t('next_suggested_prescription')}</p>
+                                    <p className="font-bold">{details.next_suggested_prescription_date ? new Date(details.next_suggested_prescription_date).toLocaleDateString() : 'N/A'}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-slate-500 uppercase">{t('license_expiry')}</p>
+                                    <p className="font-bold">{details.license_expiry_date ? new Date(details.license_expiry_date).toLocaleDateString() : 'N/A'}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p className="mt-4"><strong>{t('micro_history')}:</strong> {details.medical_history || 'N/A'}</p>
                     </div>
 
                     <div className="card mb-4">
@@ -543,6 +565,34 @@ const Patients = () => {
                                     <label className="input-label">Tariff Override ($)</label>
                                     <CurrencyInput className="input-field" value={editData.tariff_override} onChange={e => setEditData({ ...editData, tariff_override: e.target.value })} placeholder="e.g. 5000" />
                                     <small style={{ color: '#64748b' }}>Fixed price (ignores % if set)</small>
+                                </div>
+                            </div>
+
+                            <div className="border-t-divider pt-4 mt-4">
+                                <h4 className="font-bold text-slate-700 mb-2">{t('follow_up_settings')} (Override)</h4>
+                                <div className="grid-2-cols gap-4">
+                                    <div className="input-group">
+                                        <label className="input-label">{t('visit_interval_days')}</label>
+                                        <input type="number" className="input-field" value={editData.visit_interval_days} onChange={e => setEditData({ ...editData, visit_interval_days: e.target.value })} placeholder="Días..." />
+                                    </div>
+                                    <div className="input-group">
+                                        <label className="input-label">{t('prescription_interval_days')}</label>
+                                        <input type="number" className="input-field" value={editData.prescription_interval_days} onChange={e => setEditData({ ...editData, prescription_interval_days: e.target.value })} placeholder="Días..." />
+                                    </div>
+                                </div>
+                                <div className="grid-3-cols gap-4 mt-4">
+                                    <div className="input-group">
+                                        <label className="input-label">{t('next_suggested_visit')}</label>
+                                        <input type="date" className="input-field" value={editData.next_suggested_visit_date} onChange={e => setEditData({ ...editData, next_suggested_visit_date: e.target.value })} />
+                                    </div>
+                                    <div className="input-group">
+                                        <label className="input-label">{t('next_suggested_prescription')}</label>
+                                        <input type="date" className="input-field" value={editData.next_suggested_prescription_date} onChange={e => setEditData({ ...editData, next_suggested_prescription_date: e.target.value })} />
+                                    </div>
+                                    <div className="input-group">
+                                        <label className="input-label">{t('license_expiry')}</label>
+                                        <input type="date" className="input-field" value={editData.license_expiry_date} onChange={e => setEditData({ ...editData, license_expiry_date: e.target.value })} />
+                                    </div>
                                 </div>
                             </div>
                         </div>

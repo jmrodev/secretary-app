@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.secretaryapp.utils.NetworkErrorMapper
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -81,9 +82,10 @@ class SettingsActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
+                    val errorMessage = NetworkErrorMapper.getUserFriendlyMessage(e, this@SettingsActivity)
                     Toast.makeText(
                         this@SettingsActivity,
-                        "✗ Error de conexión: ${e.message}",
+                        "✗ $errorMessage",
                         Toast.LENGTH_LONG
                     ).show()
                 }

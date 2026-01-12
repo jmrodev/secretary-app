@@ -73,6 +73,24 @@ exports.createPrescription = async (req, res) => {
                 );
                 console.log(`DEBUG: Generated debt of $${price} for prescription`);
             }
+
+            // --- REMINDER LOGIC: Update next suggested prescription date ---
+            const [intervals] = await conn.query(`
+                SELECT 
+                    COALESCE(p.prescription_interval_days, d.default_prescription_interval_days) as interval_days
+                FROM patients p
+                JOIN patient_doctors pd ON p.id = pd.patient_id
+                JOIN doctors d ON pd.doctor_id = d.id
+                WHERE p.id = ? AND d.id = ?
+            `, [patientId, doctorId]);
+
+            if (intervals && intervals.interval_days > 0) {
+                const nextDate = new Date();
+                nextDate.setDate(nextDate.getDate() + Number(intervals.interval_days));
+                const nextDateStr = nextDate.toISOString().split('T')[0];
+                await conn.query("UPDATE patients SET next_suggested_prescription_date = ? WHERE id = ?", [nextDateStr, patientId]);
+                console.log(`DEBUG: Set next suggested prescription date to ${nextDateStr}`);
+            }
         }
 
         logAction(req, 'CREATE_PRESCRIPTION', `Patient: ${patientName}`);
@@ -180,6 +198,13 @@ exports.createLicense = async (req, res) => {
                 );
                 console.log(`DEBUG: Generated debt of $${price} for license`);
             }
+
+            // --- REMINDER LOGIC: Update license expiry date ---
+            const startDate = new Date(start_date);
+            const expiryDate = new Date(startDate.getTime() + (Number(days_duration) * 24 * 60 * 60 * 1000));
+            const expiryDateStr = expiryDate.toISOString().split('T')[0];
+            await conn.query("UPDATE patients SET license_expiry_date = ? WHERE id = ?", [expiryDateStr, patientId]);
+            console.log(`DEBUG: Set license expiry date to ${expiryDateStr}`);
         }
 
         logAction(req, 'CREATE_LICENSE', `Patient: ${patientName}, Duration: ${days_duration} days`);

@@ -22,6 +22,8 @@ const Profile = () => {
     const [specialty, setSpecialty] = useState('');
     const [cbu, setCbu] = useState('');
     const [consultationPrice, setConsultationPrice] = useState('');
+    const [visitInterval, setVisitInterval] = useState(0);
+    const [prescriptionInterval, setPrescriptionInterval] = useState(0);
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -40,6 +42,8 @@ const Profile = () => {
                     setSpecialty(res.data.specialty || '');
                     setCbu(res.data.cbu || '');
                     setConsultationPrice(res.data.consultation_price || '');
+                    setVisitInterval(res.data.default_visit_interval_days || 0);
+                    setPrescriptionInterval(res.data.default_prescription_interval_days || 0);
                 }
             } catch (err) {
                 console.error(err);
@@ -63,7 +67,9 @@ const Profile = () => {
                 insurance,
                 specialty,
                 cbu,
-                consultation_price: consultationPrice
+                consultation_price: consultationPrice,
+                default_visit_interval_days: visitInterval,
+                default_prescription_interval_days: prescriptionInterval
             });
             setMessage(t('profile_updated'));
         } catch (err) {
@@ -151,6 +157,18 @@ const Profile = () => {
                                 <div className="input-group">
                                     <label className="input-label">{t('consultation_price')}</label>
                                     <CurrencyInput className="input-field" value={consultationPrice} onChange={e => setConsultationPrice(e.target.value)} />
+                                </div>
+
+                                <h3 className="text-lg font-medium mt-6 mb-4">{t('follow_up_settings')}</h3>
+                                <div className="grid-2-cols">
+                                    <div className="input-group">
+                                        <label className="input-label">{t('visit_interval_days')}</label>
+                                        <input type="number" className="input-field" value={visitInterval} onChange={e => setVisitInterval(e.target.value)} min="0" />
+                                    </div>
+                                    <div className="input-group">
+                                        <label className="input-label">{t('prescription_interval_days')}</label>
+                                        <input type="number" className="input-field" value={prescriptionInterval} onChange={e => setPrescriptionInterval(e.target.value)} min="0" />
+                                    </div>
                                 </div>
                             </>
                         )}

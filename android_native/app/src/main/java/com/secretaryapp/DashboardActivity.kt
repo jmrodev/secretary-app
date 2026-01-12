@@ -26,6 +26,10 @@ class DashboardActivity : AppCompatActivity() {
              startActivity(Intent(this, PatientsActivity::class.java))
         }
 
+        findViewById<Button>(R.id.btnReminders).setOnClickListener {
+            startActivity(Intent(this, RemindersActivity::class.java))
+        }
+
         btnLogout.setOnClickListener {
             SessionManager.clear()
             startActivity(Intent(this, MainActivity::class.java))

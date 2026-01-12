@@ -145,7 +145,16 @@ exports.getAppointments = async (req, res) => {
     try {
         conn = await pool.getConnection();
         const { role, user_id } = req.user;
-        let query = "SELECT a.*, p.full_name as patient_name, p.dni as patient_dni, p.user_id as patient_user_id, p.behavior_rating, d.full_name as doctor_name FROM appointments a LEFT JOIN patients p ON a.patient_id = p.id JOIN doctors d ON a.doctor_id = d.id";
+        let query = `
+            SELECT a.*, p.full_name as patient_name, p.dni as patient_dni, p.user_id as patient_user_id, p.behavior_rating, 
+            (SELECT COALESCE(SUM(amount), 0) FROM transactions t WHERE t.related_user_id = p.user_id AND t.status = 'pending') as total_debt,
+            (SELECT COUNT(*) FROM appointments a2 WHERE a2.patient_id = p.id) as total_appointments,
+            (SELECT COUNT(*) FROM appointments a2 WHERE a2.patient_id = p.id AND a2.status IN ('cancelled', 'absent')) as missed_appointments,
+            d.full_name as doctor_name 
+            FROM appointments a 
+            LEFT JOIN patients p ON a.patient_id = p.id 
+            JOIN doctors d ON a.doctor_id = d.id
+        `;
         let params = [];
 
         if (role === 'patient') {
@@ -302,7 +311,7 @@ exports.updateStatus = async (req, res) => {
         const { id } = req.params;
         const { status, reason } = req.body; // reason is optional, for cancellation
 
-        const validStatuses = ['pending', 'confirmed', 'completed', 'cancelled', 'suspended', 'absent'];
+        const validStatuses = ['pending', 'confirmed', 'completed', 'cancelled', 'suspended', 'absent', 'rescheduled', 'arrived'];
         if (!validStatuses.includes(status)) return res.status(400).send("Invalid status");
 
         conn = await pool.getConnection();
@@ -311,6 +320,27 @@ exports.updateStatus = async (req, res) => {
         if (exists.length === 0) return res.status(404).send("Appointment not found");
 
         await conn.query("UPDATE appointments SET status = ?, cancellation_reason = ? WHERE id = ?", [status, reason || null, id]);
+
+        // --- REMINDER LOGIC: Update next suggested visit date if completed ---
+        if (status === 'completed') {
+            const [intervals] = await conn.query(`
+                SELECT 
+                    COALESCE(p.visit_interval_days, d.default_visit_interval_days) as interval_days,
+                    p.id as patient_id, d.id as doctor_id
+                FROM appointments a
+                JOIN patients p ON a.patient_id = p.id
+                JOIN doctors d ON a.doctor_id = d.id
+                WHERE a.id = ?
+            `, [id]);
+
+            if (intervals && intervals.interval_days > 0) {
+                const nextDate = new Date();
+                nextDate.setDate(nextDate.getDate() + Number(intervals.interval_days));
+                const nextDateStr = nextDate.toISOString().split('T')[0];
+                await conn.query("UPDATE patients SET next_suggested_visit_date = ? WHERE id = ?", [nextDateStr, intervals.patient_id]);
+                console.log(`DEBUG: Set next suggested visit date to ${nextDateStr} for appointment ${id}`);
+            }
+        }
 
         const pId = exists[0].patient_id;
         const pat = await conn.query("SELECT full_name, dni, phone, email FROM patients WHERE id = ?", [pId]);

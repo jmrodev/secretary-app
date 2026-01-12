@@ -12,6 +12,7 @@ import com.secretaryapp.api.RetrofitClient
 import com.secretaryapp.api.SessionManager
 import com.secretaryapp.model.Patient
 import com.secretaryapp.ui.PatientAdapter
+import com.secretaryapp.utils.NetworkErrorMapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -61,7 +62,8 @@ class PatientsActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                  withContext(Dispatchers.Main) {
-                        Toast.makeText(this@PatientsActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                        val errorMessage = NetworkErrorMapper.getUserFriendlyMessage(e, this@PatientsActivity)
+                        Toast.makeText(this@PatientsActivity, errorMessage, Toast.LENGTH_LONG).show()
                     }
             }
         }

@@ -17,7 +17,10 @@ const Dashboard = () => {
     const navigate = useNavigate();
 
     const [todayAppointments, setTodayAppointments] = useState([]);
+    const [reminders, setReminders] = useState([]);
+    const [stats, setStats] = useState(null);
     const [loadingSchedule, setLoadingSchedule] = useState(true);
+    const [loadingReminders, setLoadingReminders] = useState(true);
 
     // Unified Action Modal (Sync with Appointments.jsx)
     const [actionModal, setActionModal] = useState({ open: false, appt: null });
@@ -28,6 +31,26 @@ const Dashboard = () => {
 
     // Payment Modal
     const [paymentModal, setPaymentModal] = useState({ open: false, initialData: {}, apptId: null });
+
+    const fetchReminders = async () => {
+        try {
+            const res = await api.get('/users/reminders');
+            setReminders(res.data);
+        } catch (err) {
+            console.error("Failed to fetch reminders", err);
+        } finally {
+            setLoadingReminders(false);
+        }
+    };
+
+    const fetchStats = async () => {
+        try {
+            const res = await api.get('/users/stats');
+            setStats(res.data);
+        } catch (err) {
+            console.error("Failed to fetch stats", err);
+        }
+    };
 
     const fetchSchedule = async () => {
         try {
@@ -119,7 +142,12 @@ const Dashboard = () => {
 
     useEffect(() => {
         fetchSchedule();
-        const interval = setInterval(fetchSchedule, 10000); // Poll every 10 seconds
+        fetchReminders();
+        fetchStats();
+        const interval = setInterval(() => {
+            fetchSchedule();
+            fetchReminders();
+        }, 30000); // 30 seconds for reminders
         return () => clearInterval(interval);
     }, []);
 
@@ -426,6 +454,36 @@ const Dashboard = () => {
                 </header>
 
                 <div className="flex flex-col gap-6 text-left">
+                    {/* Statistics Section */}
+                    {stats && (
+                        <div className="grid grid-3-cols gap-4">
+                            <div className="card bg-blue-50">
+                                <h4 className="text-sm font-bold text-blue-700">📅 Turnos Hoy</h4>
+                                <p className="text-3xl font-bold text-blue-900">{stats.appointments_today}</p>
+                            </div>
+                            <div className="card bg-green-50">
+                                <h4 className="text-sm font-bold text-green-700">📊 Turnos Semana</h4>
+                                <p className="text-3xl font-bold text-green-900">{stats.appointments_week}</p>
+                            </div>
+                            <div className="card bg-purple-50">
+                                <h4 className="text-sm font-bold text-purple-700">📈 Turnos Mes</h4>
+                                <p className="text-3xl font-bold text-purple-900">{stats.appointments_month}</p>
+                            </div>
+                            <div className="card bg-orange-50">
+                                <h4 className="text-sm font-bold text-orange-700">🏥 Total Turnos</h4>
+                                <p className="text-3xl font-bold text-orange-900">{stats.total_appointments}</p>
+                            </div>
+                            <div className="card bg-pink-50">
+                                <h4 className="text-sm font-bold text-pink-700">👥 Pacientes</h4>
+                                <p className="text-3xl font-bold text-pink-900">{stats.total_patients}</p>
+                            </div>
+                            <div className="card bg-indigo-50">
+                                <h4 className="text-sm font-bold text-indigo-700">📞 Contactos</h4>
+                                <p className="text-3xl font-bold text-indigo-900">{stats.total_contacts}</p>
+                            </div>
+                        </div>
+                    )}
+
                     {user.role !== 'admin' && (
                         <div className="card">
                             <h3>{t('today_schedule')}</h3>
@@ -472,6 +530,33 @@ const Dashboard = () => {
                                         })}
                                     </ul>
                             )}
+                        </div>
+                    )}
+
+                    {user.role !== 'admin' && reminders.length > 0 && (
+                        <div className="card border-l-4 border-yellow-400">
+                            <h3 className="flex items-center gap-2">🔔 {t('reminders')}</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 text-left">
+                                {reminders.map(r => (
+                                    <div key={r.id} className="p-3 bg-yellow-50 rounded border border-yellow-100 flex flex-col gap-1 cursor-pointer hover:bg-yellow-100 transition-colors" onClick={() => navigate('/patients', { state: { selectedPatientId: r.id } })}>
+                                        <div className="flex-between">
+                                            <span className="font-bold text-slate-800">{r.full_name}</span>
+                                            <span className="text-xs font-bold px-2 py-0.5 bg-yellow-200 text-yellow-800 rounded">DUE</span>
+                                        </div>
+                                        <div className="text-xs text-slate-600">
+                                            {r.next_suggested_visit_date && new Date(r.next_suggested_visit_date + 'T23:59:59') <= new Date() && (
+                                                <div className="flex items-center gap-1">📅 {t('next_suggested_visit')}: {new Date(r.next_suggested_visit_date + 'T00:00:00').toLocaleDateString()}</div>
+                                            )}
+                                            {r.next_suggested_prescription_date && new Date(r.next_suggested_prescription_date + 'T23:59:59') <= new Date() && (
+                                                <div className="flex items-center gap-1">💊 {t('next_suggested_prescription')}: {new Date(r.next_suggested_prescription_date + 'T00:00:00').toLocaleDateString()}</div>
+                                            )}
+                                            {r.license_expiry_date && new Date(r.license_expiry_date + 'T23:59:59') <= new Date() && (
+                                                <div className="flex items-center gap-1">📄 {t('license_expiry')}: {new Date(r.license_expiry_date + 'T00:00:00').toLocaleDateString()}</div>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     )}
 

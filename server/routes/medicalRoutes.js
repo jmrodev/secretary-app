@@ -10,7 +10,9 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
+        // Sanitize original filename (remove spaces and special chars, keep alphanumeric plus dots and dashes)
+        const sanitized = file.originalname.replace(/[^a-z0-9.-]/gi, '_');
+        cb(null, Date.now() + "_" + sanitized);
     }
 });
 const upload = multer({ storage: storage });

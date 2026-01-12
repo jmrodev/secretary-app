@@ -14,6 +14,8 @@ router.put('/patients/:id', verifyToken, userController.updatePatientDetails);
 router.get('/doctors', verifyToken, userController.getAllDoctors);
 router.put('/doctors/:id', verifyToken, userController.updateDoctor);
 router.get('/patients', verifyToken, userController.getAllPatients);
+router.get('/reminders', verifyToken, userController.getReminders);
+router.get('/stats', verifyToken, userController.getStats);
 
 // Admin routes
 router.get('/admin/users', verifyToken, userController.getUsersForAdmin);
