@@ -31,6 +31,7 @@ app.use('/api/import', require('./routes/importRoutes'));
 app.use('/api/settings', require('./routes/settingsRoutes'));
 app.use('/api/insurances', require('./routes/insuranceRoutes'));
 app.use('/api/holidays', require('./routes/holidayRoutes'));
+app.use('/api/messages', require('./routes/messageRoutes'));
 app.use('/uploads', express.static('uploads'));
 
 app.get('/api/debug/dump-appointments', async (req, res) => {

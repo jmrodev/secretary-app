@@ -10,7 +10,7 @@
         android:id="@+id/tvHistoryDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="16sp"
         android:textStyle="bold"
         android:text="2024-01-01 10:00" />
@@ -35,6 +35,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#EEE"
+        android:background="?android:attr/listDivider"
         android:layout_marginTop="8dp"/>
 </LinearLayout>

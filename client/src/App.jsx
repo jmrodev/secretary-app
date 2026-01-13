@@ -14,6 +14,7 @@ import Doctors from './pages/Doctors';
 import SystemConfig from './pages/SystemConfig';
 import Requests from './pages/Requests';
 import Insurances from './pages/Insurances';
+import FloatingChat from './components/FloatingChat';
 import { useAuth } from './context/AuthContext';
 import { useLanguage } from './context/LanguageContext';
 
@@ -28,76 +29,79 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/dashboard" element={
-        <ProtectedRoute>
-          <Dashboard />
-        </ProtectedRoute>
-      } />
-      <Route path="/appointments" element={
-        <ProtectedRoute>
-          <Appointments />
-        </ProtectedRoute>
-      } />
-      <Route path="/rentals" element={
-        <ProtectedRoute>
-          <OfficeRentals />
-        </ProtectedRoute>
-      } />
-      <Route path="/documents" element={
-        <ProtectedRoute>
-          <MedicalDocuments />
-        </ProtectedRoute>
-      } />
-      <Route path="/finances" element={
-        <ProtectedRoute>
-          <Finances />
-        </ProtectedRoute>
-      } />
-      <Route path="/profile" element={
-        <ProtectedRoute>
-          <Profile />
-        </ProtectedRoute>
-      } />
-      <Route path="/patients" element={
-        <ProtectedRoute>
-          <Patients />
-        </ProtectedRoute>
-      } />
-      <Route path="/doctors" element={
-        <ProtectedRoute>
-          <Doctors />
-        </ProtectedRoute>
-      } />
-      <Route path="/logs" element={
-        <ProtectedRoute>
-          <AuditLogs />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/users" element={
-        <ProtectedRoute>
-          <AdminUsers />
-        </ProtectedRoute>
-      } />
-      <Route path="/config" element={
-        <ProtectedRoute>
-          <SystemConfig />
-        </ProtectedRoute>
-      } />
-      <Route path="/requests" element={
-        <ProtectedRoute>
-          <Requests />
-        </ProtectedRoute>
-      } />
-      <Route path="/insurances" element={
-        <ProtectedRoute>
-          <Insurances />
-        </ProtectedRoute>
-      } />
-      <Route path="/" element={<Navigate to="/dashboard" />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/appointments" element={
+          <ProtectedRoute>
+            <Appointments />
+          </ProtectedRoute>
+        } />
+        <Route path="/rentals" element={
+          <ProtectedRoute>
+            <OfficeRentals />
+          </ProtectedRoute>
+        } />
+        <Route path="/documents" element={
+          <ProtectedRoute>
+            <MedicalDocuments />
+          </ProtectedRoute>
+        } />
+        <Route path="/finances" element={
+          <ProtectedRoute>
+            <Finances />
+          </ProtectedRoute>
+        } />
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        } />
+        <Route path="/patients" element={
+          <ProtectedRoute>
+            <Patients />
+          </ProtectedRoute>
+        } />
+        <Route path="/doctors" element={
+          <ProtectedRoute>
+            <Doctors />
+          </ProtectedRoute>
+        } />
+        <Route path="/logs" element={
+          <ProtectedRoute>
+            <AuditLogs />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/users" element={
+          <ProtectedRoute>
+            <AdminUsers />
+          </ProtectedRoute>
+        } />
+        <Route path="/config" element={
+          <ProtectedRoute>
+            <SystemConfig />
+          </ProtectedRoute>
+        } />
+        <Route path="/requests" element={
+          <ProtectedRoute>
+            <Requests />
+          </ProtectedRoute>
+        } />
+        <Route path="/insurances" element={
+          <ProtectedRoute>
+            <Insurances />
+          </ProtectedRoute>
+        } />
+        <Route path="/" element={<Navigate to="/dashboard" />} />
+      </Routes>
+      <FloatingChat />
+    </>
   );
 }
 

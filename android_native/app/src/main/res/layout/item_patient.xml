@@ -22,7 +22,7 @@
                 android:id="@+id/tvPatientName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:text="Patient Name" />
@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:text="DNI"
                 android:textSize="14sp"
-                android:textColor="#555555" />
+                android:textColor="?android:attr/textColorSecondary" />
         </LinearLayout>
 
         <LinearLayout

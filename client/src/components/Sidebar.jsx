@@ -2,6 +2,8 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useConfig } from '../context/ConfigContext';
 import { useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const Sidebar = () => {
     const { user, logout } = useAuth();
@@ -10,6 +12,7 @@ const Sidebar = () => {
     const location = useLocation();
 
     const isActive = (path) => location.pathname === path ? 'active' : '';
+    const API_URL = import.meta.env.VITE_API_URL || '/api';
 
     return (
         <aside className="sidebar">

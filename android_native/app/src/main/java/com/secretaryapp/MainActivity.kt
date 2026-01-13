@@ -1,19 +1,24 @@
 package com.secretaryapp
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.secretaryapp.api.LoginRequest
 import com.secretaryapp.api.RetrofitClient
 import com.secretaryapp.api.SessionManager
+import com.secretaryapp.utils.NetworkErrorMapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import com.secretaryapp.utils.NetworkErrorMapper
 
 class MainActivity : AppCompatActivity() {
 
@@ -68,9 +73,23 @@ class MainActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     val errorMessage = NetworkErrorMapper.getUserFriendlyMessage(e, this@MainActivity)
-                    Toast.makeText(this@MainActivity, errorMessage, Toast.LENGTH_LONG).show()
+                    showErrorDialog("Error de Conexión", errorMessage)
                 }
             }
         }
+    }
+
+    private fun showErrorDialog(title: String, message: String) {
+        AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("Cerrar", null)
+            .setNeutralButton("Copiar") { dialog: DialogInterface, which: Int ->
+                val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("Error Detail", message)
+                clipboard.setPrimaryClip(clip)
+                Toast.makeText(this@MainActivity, "Copiado al portapapeles", Toast.LENGTH_SHORT).show()
+            }
+            .show()
     }
 }

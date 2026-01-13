@@ -494,3 +494,45 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+--
+-- Table structure for table `messages`
+--
+
+DROP TABLE IF EXISTS `messages`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `messages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `sender_id` int(11) NOT NULL,
+  `recipient_id` int(11) DEFAULT NULL,
+  `recipient_type` enum('individual','all_staff','all_patients') DEFAULT 'individual',
+  `subject` varchar(255) DEFAULT NULL,
+  `message` text NOT NULL,
+  `read_status` tinyint(4) DEFAULT 0 COMMENT '0: Sent, 1: Delivered, 2: Read',
+  `delivered_at` timestamp NULL DEFAULT NULL,
+  `read_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_recipient` (`recipient_id`),
+  KEY `idx_sender` (`sender_id`),
+  KEY `idx_type` (`recipient_type`),
+  KEY `idx_created` (`created_at`),
+  CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `messages_ibfk_2` FOREIGN KEY (`recipient_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `user_typing_status`
+--
+
+DROP TABLE IF EXISTS `user_typing_status`;
+CREATE TABLE `user_typing_status` (
+    `user_id` int(11) NOT NULL,
+    `target_id` int(11) NOT NULL,
+    `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+    PRIMARY KEY (`user_id`, `target_id`),
+    CONSTRAINT `fk_typing_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_typing_target` FOREIGN KEY (`target_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+

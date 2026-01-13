@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
-        android:background="#FFFDE7">
+        android:background="?android:attr/colorBackground">
 
         <TextView
             android:id="@+id/tvPatientName"
@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:fontFamily="sans-serif-medium"
-            android:textColor="#333333"/>
+            android:textColor="?attr/colorOnSurface"/>
 
         <LinearLayout
             android:id="@+id/llRemindersContainer"
@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:text="📅 Próxima Visita"
                 android:visibility="gone"
-                android:textColor="#856404"
+                android:textColor="?android:attr/textColorSecondary"
                 android:layout_marginTop="4dp"/>
 
             <TextView
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:text="💊 Próxima Receta"
                 android:visibility="gone"
-                android:textColor="#856404"
+                android:textColor="?android:attr/textColorSecondary"
                 android:layout_marginTop="4dp"/>
 
             <TextView
@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:text="📄 Vencimiento Licencia"
                 android:visibility="gone"
-                android:textColor="#856404"
+                android:textColor="?android:attr/textColorSecondary"
                 android:layout_marginTop="4dp"/>
 
         </LinearLayout>

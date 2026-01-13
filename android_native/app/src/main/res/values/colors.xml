@@ -31,4 +31,9 @@
     <color name="rating_gold">#fbbf24</color>
     <color name="rating_blue">#3b82f6</color>
     <color name="rating_pink">#ec4899</color>
+
+    <!-- Messaging Colors -->
+    <color name="accent">#0EA5E9</color>
+    <color name="text_muted">#64748B</color>
+    <color name="unread_bg">#EFF6FF</color>
 </resources>

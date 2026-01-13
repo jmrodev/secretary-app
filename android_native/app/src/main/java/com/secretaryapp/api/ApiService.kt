@@ -4,11 +4,13 @@ import com.secretaryapp.model.Appointment
 import com.secretaryapp.model.Doctor
 import com.secretaryapp.model.Patient
 import com.secretaryapp.model.PatientFile
+import com.secretaryapp.model.StatsResponse
 import com.secretaryapp.model.UploadResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.*
+import com.secretaryapp.model.*
 
 
 interface ApiService {
@@ -59,7 +61,50 @@ interface ApiService {
     suspend fun getReminders(
         @Header("Authorization") token: String
     ): Response<List<Patient>>
+
+    @GET("users/stats")
+    suspend fun getStats(
+        @Header("Authorization") token: String
+    ): Response<StatsResponse>
+
+    // Messaging endpoints
+    @GET("messages/inbox")
+    suspend fun getInbox(@Header("Authorization") token: String): Response<List<com.secretaryapp.model.Message>>
+
+    @GET("messages/sent")
+    suspend fun getSent(@Header("Authorization") token: String): Response<List<com.secretaryapp.model.Message>>
+
+    @GET("messages/unread-count")
+    suspend fun getUnreadCount(@Header("Authorization") token: String): Response<UnreadCountResponse>
+
+    @GET("messages/recipients")
+    suspend fun getRecipients(@Header("Authorization") token: String): Response<List<Recipient>>
+
+    @GET("messages/conversations")
+    suspend fun getConversations(@Header("Authorization") token: String): Response<List<Message>>
+
+    @GET("messages/thread/{otherId}")
+    suspend fun getThread(@Header("Authorization") token: String, @Path("otherId") otherId: Int): Response<List<Message>>
+
+    @GET("messages/{id}")
+    suspend fun getMessage(@Header("Authorization") token: String, @Path("id") id: Int): Response<Message>
+
+    @POST("messages")
+    suspend fun sendMessage(@Header("Authorization") token: String, @Body message: SendMessageRequest): Response<MessageResponse>
+
+    @PUT("messages/{id}/read")
+    suspend fun markAsRead(@Header("Authorization") token: String, @Path("id") id: Int): Response<com.secretaryapp.model.MessageResponse>
+
+    @DELETE("messages/{id}")
+    suspend fun deleteMessage(@Header("Authorization") token: String, @Path("id") id: Int): Response<com.secretaryapp.model.MessageResponse>
+
+    @POST("messages/typing")
+    suspend fun notifyTyping(@Header("Authorization") token: String, @Body request: com.secretaryapp.model.TypingRequest): Response<com.secretaryapp.model.MessageResponse>
+
+    @GET("messages/typing/{other_id}")
+    suspend fun getTypingStatus(@Header("Authorization") token: String, @Path("other_id") otherId: Int): Response<com.secretaryapp.model.TypingStatus>
 }
+
 
 
 data class UpdateReasonRequest(val reason: String, val appointment_date: String)

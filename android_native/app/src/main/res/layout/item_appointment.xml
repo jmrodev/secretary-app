@@ -19,14 +19,15 @@
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
-            <TextView
-                android:id="@+id/tvPatientName"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Patient Name"
-                android:textStyle="bold"
-                android:textSize="18sp"/>
+                <TextView
+                    android:id="@+id/tvPatientName"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Patient Name"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:textColor="?attr/colorOnSurface"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -66,7 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Dr. Name"
-            android:textColor="#555"/>
+            android:textColor="?android:attr/textColorSecondary"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -81,7 +82,8 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="2024-01-01 10:00"
-                android:textStyle="italic"/>
+                android:textStyle="italic"
+                android:textColor="?android:attr/textColorSecondary"/>
 
             <TextView
                 android:id="@+id/tvPaymentStatus"
@@ -98,19 +100,19 @@
                 android:visibility="gone"
                 android:background="@android:color/darker_gray"/>
 
-             <TextView
+            <TextView
                 android:id="@+id/tvStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="STATUS"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:textColor="#FFFFFF"
+                android:textColor="?attr/colorOnSurface"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
-                android:background="#EEE"/>
+                android:background="?android:attr/colorBackground"/>
         </LinearLayout>
 
     </LinearLayout>

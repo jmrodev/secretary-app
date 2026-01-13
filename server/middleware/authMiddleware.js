@@ -10,11 +10,15 @@ const verifyToken = async (req, res, next) => {
     }
 
     try {
-        const bearer = token.split(' ');
-        const bearerToken = bearer[1];
+        const parts = token.trim().split(/\s+/);
+        if (parts.length < 2 || parts[0].toLowerCase() !== 'bearer') {
+            return res.status(403).send('Invalid token format (Example: Bearer <token>)');
+        }
 
-        if (!bearerToken) {
-            return res.status(403).send('Invalid token format');
+        const bearerToken = parts[1];
+
+        if (!bearerToken || bearerToken.length < 10) {
+            return res.status(403).send('Invalid token (token too short)');
         }
 
         const decoded = jwt.verify(bearerToken, process.env.JWT_SECRET);
