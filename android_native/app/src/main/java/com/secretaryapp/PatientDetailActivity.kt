@@ -77,13 +77,13 @@ class PatientDetailActivity : AppCompatActivity() {
         val tvEmail = findViewById<TextView>(R.id.tvDetailPatEmail)
         val tvAddress = findViewById<TextView>(R.id.tvDetailPatAddress)
 
-        tvDetailName.text = name
-        tvDetailDni.text = "DNI: $dni"
+        findViewById<TextView>(R.id.tvDetailPatName).text = name
+        findViewById<TextView>(R.id.tvDetailPatDni).text = "DNI: $dni"
         
         // Phone Action
         if (!phone.isNullOrEmpty()) {
             tvPhone.text = "📞 $phone"
-            tvPhone.setTextColor(getColor(R.color.colorAccent)) // Make it look clickable (assuming accent defined or utilize blue)
+            tvPhone.setTextColor(getColor(R.color.accent)) // Make it look clickable (assuming accent defined or utilize blue)
             tvPhone.setOnClickListener {
                 val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phone"))
                 startActivity(intent)
@@ -95,7 +95,7 @@ class PatientDetailActivity : AppCompatActivity() {
         // Email Action
         if (!email.isNullOrEmpty()) {
             tvEmail.text = "✉️ $email"
-            tvEmail.setTextColor(getColor(R.color.colorAccent))
+            tvEmail.setTextColor(getColor(R.color.accent))
             tvEmail.setOnClickListener {
                 val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:$email"))
                 startActivity(intent)
@@ -107,7 +107,7 @@ class PatientDetailActivity : AppCompatActivity() {
         // Address Action
         if (!address.isNullOrEmpty()) {
             tvAddress.text = "📍 $address"
-            tvAddress.setTextColor(getColor(R.color.colorAccent)) 
+            tvAddress.setTextColor(getColor(R.color.accent)) 
             tvAddress.setOnClickListener {
                 try {
                     val uri = Uri.parse("geo:0,0?q=${Uri.encode(address + ", Tandil")}")
