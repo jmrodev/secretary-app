@@ -72,7 +72,8 @@ class PatientsActivity : AppCompatActivity() {
     private fun filter(text: String) {
         val filtered = allPatients.filter {
             it.full_name.contains(text, ignoreCase = true) || 
-            (it.dni?.contains(text) == true)
+            (it.dni?.contains(text) == true) ||
+            (it.phone?.contains(text) == true)
         }
         adapter.updateList(filtered)
     }

@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Mensaje recibido"
-            android:textColor="#1E293B"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="14sp" />
 
         <TextView
@@ -32,7 +32,7 @@
             android:layout_gravity="end"
             android:layout_marginTop="2dp"
             android:text="10:00"
-            android:textColor="#94A3B8"
+            android:textColor="?android:attr/textColorSecondary"
             android:textSize="10sp" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

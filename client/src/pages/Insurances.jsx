@@ -150,12 +150,35 @@ const Insurances = () => {
                                         <div className="item-content">
                                             <div className="insurance-details">
                                                 <div className="insurance-info-row">
+                                                    <span className="insurance-info-icon">📍</span>
+                                                    <a
+                                                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ins.address || `${ins.name} Tandil`)}`}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        className="font-medium text-slate-800 hover:text-blue-600 hover:underline text-sm truncate"
+                                                    >
+                                                        {ins.address || 'Buscar en mapa'}
+                                                    </a>
+                                                </div>
+                                                <div className="insurance-info-row">
                                                     <span className="insurance-info-icon">📞</span>
-                                                    <span className="font-medium">{ins.phone || 'No phone'}</span>
+                                                    <span className="font-medium">
+                                                        {ins.phone ? (
+                                                            <a href={`tel:${ins.phone.replace(/[^0-9+]/g, '')}`} className="text-slate-800 hover:text-blue-600 hover:underline">
+                                                                {ins.phone}
+                                                            </a>
+                                                        ) : 'No phone'}
+                                                    </span>
                                                 </div>
                                                 <div className="insurance-info-row">
                                                     <span className="insurance-info-icon">✉️</span>
-                                                    <span className="text-sm">{ins.email || 'No email'}</span>
+                                                    <span className="text-sm">
+                                                        {ins.email ? (
+                                                            <a href={`mailto:${ins.email}`} className="text-slate-600 hover:text-blue-600 hover:underline">
+                                                                {ins.email}
+                                                            </a>
+                                                        ) : 'No email'}
+                                                    </span>
                                                 </div>
                                                 {ins.website && (
                                                     <div className="insurance-info-row">
@@ -226,6 +249,16 @@ const Insurances = () => {
                         <div className="input-group">
                             <label className="input-label">Address</label>
                             <input className="input-field" value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} />
+                            {formData.address && (
+                                <a
+                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(formData.address)}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-xs text-blue-600 hover:underline mt-1 inline-block"
+                                >
+                                    Test Link ↗
+                                </a>
+                            )}
                         </div>
                     </div>
                 </Modal>

@@ -151,7 +151,7 @@ const Patients = () => {
 
     const filteredPatients = patients.filter(p =>
         normalizeText(p.full_name).includes(normalizeText(searchTerm)) ||
-        (p.phone && p.phone.includes(searchTerm)) ||
+        (p.phone && p.phone.replace(/[^0-9]/g, '').includes(searchTerm.replace(/[^0-9]/g, ''))) ||
         (p.dni && p.dni.includes(searchTerm)) ||
         (p.insurance && normalizeText(p.insurance).includes(normalizeText(searchTerm))) ||
         (p.email && normalizeText(p.email).includes(normalizeText(searchTerm)))
@@ -348,7 +348,7 @@ const Patients = () => {
                             <p><strong>{t('dob')}:</strong> {details.dob ? new Date(details.dob).toLocaleDateString() : 'N/A'}</p>
                         </div>
                         <div className="flex gap-8 mt-4">
-                            <p><strong>{t('address')}:</strong> {details.address || 'N/A'}</p>
+                            <p><strong>{t('address')}:</strong> {details.address ? <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(details.address + ', Tandil')}`} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">📍 {details.address}</a> : 'N/A'}</p>
                             <p><strong>{t('accumulated_medical_leave')}:</strong> <span className="font-bold text-purple-600">{details.accumulated_days || 0} Days</span></p>
                         </div>
                         <div className="follow-up-suggestions-grid mt-4 p-4 bg-slate-50 rounded border border-slate-200">

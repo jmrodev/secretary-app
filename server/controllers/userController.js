@@ -96,8 +96,8 @@ exports.getAllPatients = async (req, res) => {
 
         if (search) {
             const searchTerm = `%${search}%`;
-            conditions.push("(p.full_name LIKE ? OR p.dni LIKE ? OR p.address LIKE ?)");
-            params.push(searchTerm, searchTerm, searchTerm);
+            conditions.push("(p.full_name LIKE ? OR p.dni LIKE ? OR p.address LIKE ? OR p.phone LIKE ?)");
+            params.push(searchTerm, searchTerm, searchTerm, searchTerm);
         }
 
         if (conditions.length > 0) {

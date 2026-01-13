@@ -36,6 +36,14 @@
         android:layout_height="wrap_content"
         android:text="Email"
         android:textSize="18sp"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/tvDetailPatAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Address"
+        android:textSize="18sp"
         android:layout_marginBottom="24dp"/>
 
     <TextView

@@ -190,7 +190,8 @@ const Messages = () => {
                         // Filter active conversations
                         const filteredConvos = conversations.filter(c =>
                             (c.other_display_name || c.other_username || '').toLowerCase().includes(q) ||
-                            (c.message || '').toLowerCase().includes(q)
+                            (c.message || '').toLowerCase().includes(q) ||
+                            (c.other_phone || '').includes(q)
                         );
 
                         // If searching, also suggest recipients (staff) that are not in conversations

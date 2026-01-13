@@ -112,10 +112,14 @@ const Doctors = () => {
                             <div className="item-content">
                                 <div className="text-sm text-slate-600 flex flex-col gap-1 mb-2">
                                     <div className="flex items-center gap-2">
-                                        <span>📞</span> <span className="font-medium">{d.phone || 'No phone'}</span>
+                                        <span>📞</span> <span className="font-medium">
+                                            {d.phone ? <a href={`tel:${d.phone.replace(/[^0-9]/g, '')}`} className="text-slate-600 hover:text-blue-600 hover:underline">{d.phone}</a> : 'No phone'}
+                                        </span>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <span>🏢</span> <span>{t('office_label')}: <span className="font-medium">{d.office_number || 'N/A'}</span></span>
+                                        <span>🏢</span> <span>{t('office_label')}: <span className="font-medium">
+                                            {d.office_number ? <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('Consultorio ' + d.office_number + ' Tandil')}`} target="_blank" rel="noreferrer" className="text-slate-600 hover:text-blue-600 hover:underline">{d.office_number}</a> : 'N/A'}
+                                        </span></span>
                                     </div>
                                 </div>
 

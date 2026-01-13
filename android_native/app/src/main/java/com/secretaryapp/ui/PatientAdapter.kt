@@ -22,7 +22,7 @@ class PatientAdapter(private var patients: List<Patient>) :
 
         fun bind(patient: Patient) {
             tvName.text = patient.full_name
-            tvDni.text = "DNI: ${patient.dni ?: "N/A"}"
+            tvDni.text = "DNI: ${patient.dni ?: "N/A"} • Tel: ${patient.phone ?: "N/A"}"
             
             val fRating = com.secretaryapp.utils.RatingUtils.calculateFinancialRating(patient.total_debt)
             val aRating = com.secretaryapp.utils.RatingUtils.calculateAttendanceRating(patient.total_appointments, patient.missed_appointments)
@@ -39,6 +39,7 @@ class PatientAdapter(private var patients: List<Patient>) :
                     putExtra("dni", patient.dni)
                     putExtra("phone", patient.phone)
                     putExtra("email", patient.email)
+                    putExtra("address", patient.address)
                 }
                 itemView.context.startActivity(intent)
             }

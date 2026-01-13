@@ -203,6 +203,7 @@ exports.getConversations = async (req, res) => {
                     convo.other_user_id,
                     u.username as other_username,
                     COALESCE(d.full_name, s.full_name, u.username) as other_display_name,
+                    COALESCE(d.phone, s.phone, p.phone) as other_phone,
                     (SELECT COUNT(*) FROM messages 
                      WHERE recipient_id = ? AND sender_id = convo.other_user_id AND read_status < 2) as unread_count
              FROM (
@@ -216,6 +217,7 @@ exports.getConversations = async (req, res) => {
              JOIN users u ON convo.other_user_id = u.id
              LEFT JOIN doctors d ON u.id = d.user_id
              LEFT JOIN secretaries s ON u.id = s.user_id
+             LEFT JOIN patients p ON u.id = p.user_id
              ORDER BY m.created_at DESC`,
             [user_id, user_id, user_id, user_id]
         );

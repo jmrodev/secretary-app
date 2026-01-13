@@ -64,6 +64,7 @@ class PatientDetailActivity : AppCompatActivity() {
         val dni = intent.getStringExtra("dni")
         val phone = intent.getStringExtra("phone")
         val email = intent.getStringExtra("email")
+        val address = intent.getStringExtra("address")
         patientId = intent.getIntExtra("patient_id", 0)
 
         // Restore state if available
@@ -72,10 +73,59 @@ class PatientDetailActivity : AppCompatActivity() {
             currentDocumentType = it.getString("currentDocumentType")
         }
 
-        findViewById<TextView>(R.id.tvDetailPatName).text = name
-        findViewById<TextView>(R.id.tvDetailPatDni).text = "DNI: $dni"
-        findViewById<TextView>(R.id.tvDetailPatPhone).text = "Tel: $phone"
-        findViewById<TextView>(R.id.tvDetailPatEmail).text = "Email: $email"
+        val tvPhone = findViewById<TextView>(R.id.tvDetailPatPhone)
+        val tvEmail = findViewById<TextView>(R.id.tvDetailPatEmail)
+        val tvAddress = findViewById<TextView>(R.id.tvDetailPatAddress)
+
+        tvDetailName.text = name
+        tvDetailDni.text = "DNI: $dni"
+        
+        // Phone Action
+        if (!phone.isNullOrEmpty()) {
+            tvPhone.text = "📞 $phone"
+            tvPhone.setTextColor(getColor(R.color.colorAccent)) // Make it look clickable (assuming accent defined or utilize blue)
+            tvPhone.setOnClickListener {
+                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phone"))
+                startActivity(intent)
+            }
+        } else {
+            tvPhone.text = "Tel: N/A"
+        }
+
+        // Email Action
+        if (!email.isNullOrEmpty()) {
+            tvEmail.text = "✉️ $email"
+            tvEmail.setTextColor(getColor(R.color.colorAccent))
+            tvEmail.setOnClickListener {
+                val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:$email"))
+                startActivity(intent)
+            }
+        } else {
+            tvEmail.text = "Email: N/A"
+        }
+
+        // Address Action
+        if (!address.isNullOrEmpty()) {
+            tvAddress.text = "📍 $address"
+            tvAddress.setTextColor(getColor(R.color.colorAccent)) 
+            tvAddress.setOnClickListener {
+                try {
+                    val uri = Uri.parse("geo:0,0?q=${Uri.encode(address + ", Tandil")}")
+                    val intent = Intent(Intent.ACTION_VIEW, uri)
+                    intent.setPackage("com.google.android.apps.maps")
+                    if (intent.resolveActivity(packageManager) != null) {
+                         startActivity(intent)
+                    } else {
+                         // Fallback to browser if no maps app
+                         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/maps/search/?api=1&query=${Uri.encode(address + ", Tandil")}")))
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(this, "No se pudo abrir el mapa", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else {
+            tvAddress.text = "Dirección: N/A"
+        }
         
         // Botones de documentos
         findViewById<Button>(R.id.btnTakeLicense).setOnClickListener {
