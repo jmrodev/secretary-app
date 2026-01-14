@@ -576,7 +576,6 @@ exports.getNextFreeSlot = async (req, res) => {
 
         while (daysChecked < maxDays) {
             // Check Weekend/Holiday
-            // (We iterate days, but now we must check specific schedule for that day)
             const dayOfWeek = currentDay.getDay();
 
             // Check Holiday
@@ -584,35 +583,30 @@ exports.getNextFreeSlot = async (req, res) => {
             const holidays = await conn.query("SELECT id FROM active_holidays WHERE date = ?", [dateStr]);
             if (holidays.length > 0) {
                 currentDay.setDate(currentDay.getDate() + 1);
-                currentDay.setHours(0, 0, 0, 0); // Reset to start of day
+                currentDay.setHours(0, 0, 0, 0);
                 daysChecked++;
                 continue;
             }
 
             // Get Schedule for this day
-            // If no schedule for this doc, default 8-20 Mon-Fri
             let dayBlocks = await conn.query(
                 "SELECT start_time, end_time, is_break FROM doctor_schedules WHERE doctor_id = ? AND day_of_week = ? ORDER BY start_time",
                 [doctor_id, dayOfWeek]
             );
 
             if (dayBlocks.length === 0) {
-                // Apply Default Legacy: Mon-Fri 8-20
                 if (dayOfWeek >= 1 && dayOfWeek <= 5) {
                     dayBlocks = [{ start_time: '08:00:00', end_time: '20:00:00', is_break: 0 }];
                 }
             }
 
             if (dayBlocks.length === 0) {
-                // No schedule today
                 currentDay.setDate(currentDay.getDate() + 1);
                 currentDay.setHours(0, 0, 0, 0);
                 daysChecked++;
                 continue;
             }
 
-            // Fetch occupied slots (Entire Day to be safe, or min/max of blocks)
-            // Let's fetch entire day
             const dayStartQuery = new Date(currentDay); dayStartQuery.setHours(0, 0, 0, 0);
             const dayEndQuery = new Date(currentDay); dayEndQuery.setHours(23, 59, 59, 999);
 
@@ -621,12 +615,9 @@ exports.getNextFreeSlot = async (req, res) => {
                 [doctor_id, dayStartQuery, dayEndQuery]
             );
 
-            // Iterate Blocks
             for (const block of dayBlocks) {
-                // skip if found both
                 if (foundRegular && foundBreak) break;
 
-                // Parse block times relative to currentDay
                 const blockStart = new Date(currentDay);
                 const [sh, sm] = block.start_time.split(':');
                 blockStart.setHours(sh, sm, 0, 0);
@@ -637,64 +628,37 @@ exports.getNextFreeSlot = async (req, res) => {
 
                 const isBreakBlock = block.is_break === 1;
 
-                // Iterate slots in this block
                 let timeCursor = new Date(blockStart);
                 while (timeCursor < blockEnd) {
                     if (foundRegular && foundBreak) break;
 
-                    // Check if valid start time (future)
                     if (timeCursor <= new Date()) {
                         timeCursor = new Date(timeCursor.getTime() + duration * 60000);
                         continue;
                     }
 
                     const slotEnd = new Date(timeCursor.getTime() + duration * 60000);
-                    // Must finish before block end? Yes.
-                    if (slotEnd > blockEnd) {
-                        break; // Move to next block
-                    }
+                    if (slotEnd > blockEnd) break;
 
-                    // Check Conflicts
-                    const isBusy = existingAppts.some(app => {
-                        const appTime = new Date(app.appointment_date).getTime();
-                        // Standard overlap check:
-                        // [appStart, appStart+duration) OVERLAPS [timeCursor, slotEnd)
-                        // appStart < slotEnd && appStart+duration > timeCursor.
-                        // Assuming all appointments are 'duration' length approx, or just strict slot matching.
-                        // Existing logic was strict match or simple contain.
-                        // Let's stick to strict match for grid alignment if possible, OR simple range check.
+                    const slotStartMs = timeCursor.getTime();
 
-                        // Let's use Range check for safety
+                    const isBusyLocally = existingAppts.some(app => {
                         const appStart = new Date(app.appointment_date).getTime();
-                        const appEnd = appStart + duration * 60000; // Assume same duration? 
-                        // Dangerous assumption if variable durations.
-                        // But usually appts are fixed slots.
-                        // Let's check strict start time match first as primary grid system
-                        return appStart === timeCursor.getTime();
+                        return appStart === slotStartMs;
                     });
 
-                    if (!isBusy) {
-                        // Google Check
-                        const busy = await googleController.checkConflict(doctor_id, timeCursor.toISOString(), slotEnd.toISOString());
-                        if (!busy) {
-                            if (isBreakBlock) {
-                                if (!foundBreak) foundBreak = timeCursor;
-                            } else {
-                                if (!foundRegular) foundRegular = timeCursor;
-                            }
+                    if (!isBusyLocally) {
+                        if (isBreakBlock) {
+                            if (!foundBreak) foundBreak = new Date(timeCursor);
+                        } else {
+                            if (!foundRegular) foundRegular = new Date(timeCursor);
                         }
                     }
 
-                    // Increment
-                    // If break block, maybe increment by duration too? 
-                    // Or is this a "Gap"?
-                    // User said "asignar turno en descanso". So "Break" is just a type of slot.
                     timeCursor = new Date(timeCursor.getTime() + duration * 60000);
                 }
             }
 
-
-            // Move to next day
             currentDay.setDate(currentDay.getDate() + 1);
             currentDay.setHours(0, 0, 0, 0);
             daysChecked++;

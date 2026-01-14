@@ -1,9 +1,11 @@
 import { QRCodeSVG } from 'qrcode.react';
 import Modal from './Modal';
 import { useLanguage } from '../context/LanguageContext';
+import { useModal } from '../context/ModalContext';
 
 const QRCodeModal = ({ isOpen, onClose, url, expiresAt }) => {
     const { t } = useLanguage();
+    const { alert } = useModal();
 
     const handlePrint = () => {
         const printWindow = window.open('', '', 'width=600,height=600');

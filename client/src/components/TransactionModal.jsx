@@ -3,11 +3,13 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import Modal from './Modal';
 import { useLanguage } from '../context/LanguageContext';
+import { useModal } from '../context/ModalContext';
 import CurrencyInput from './CurrencyInput';
 import { formatPrice } from '../utils/format';
 
 const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requestId }) => {
     const { t } = useLanguage();
+    const { alert } = useModal();
     const [formData, setFormData] = useState({
         type: 'income_patient',
         payments: [{ amount: '', method: 'cash' }],

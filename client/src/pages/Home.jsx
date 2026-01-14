@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { useModal } from '../context/ModalContext';
 
 const Home = () => {
     const navigate = useNavigate();
     const { t } = useLanguage();
+    const { alert } = useModal();
 
     const copyLink = (path = '') => {
         const url = `${window.location.origin}${path}`;

@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useModal } from '../context/ModalContext';
 import axios from 'axios';
 
 const Messages = () => {
     const { user } = useAuth();
+    const { alert } = useModal();
     const [conversations, setConversations] = useState([]);
     const [selectedConvo, setSelectedConvo] = useState(null);
     const [thread, setThread] = useState([]);

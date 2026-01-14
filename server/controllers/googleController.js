@@ -592,6 +592,40 @@ exports.checkConflict = async (doctorId, startTime, endTime) => {
     }
 };
 
+exports.getBusyIntervals = async (doctorId, startTime, endTime) => {
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const tokens = await getTokens(conn, doctorId);
+
+        if (!tokens.google_refresh_token) return []; // Not connected, can't check
+
+        const oauth2Client = getOAuthClient();
+        oauth2Client.setCredentials({
+            refresh_token: tokens.google_refresh_token,
+            access_token: tokens.google_access_token,
+            expiry_date: parseInt(tokens.google_token_expiry)
+        });
+        const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+
+        const res = await calendar.freebusy.query({
+            resource: {
+                timeMin: startTime,
+                timeMax: endTime,
+                timeZone: 'America/Argentina/Buenos_Aires',
+                items: [{ id: 'primary' }]
+            }
+        });
+
+        return res.data.calendars.primary.busy || [];
+    } catch (err) {
+        console.error("Busy Intervals Error", err);
+        return [];
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
 exports.updateEventHelper = async (doctorId, eventId, updates, userId = null) => {
     if (!eventId) return null;
     let conn;

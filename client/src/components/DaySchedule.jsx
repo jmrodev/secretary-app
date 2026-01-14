@@ -2,7 +2,6 @@ import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
 import { useConfig } from '../context/ConfigContext';
-import { Users, AlertTriangle } from 'lucide-react';
 
 const DaySchedule = ({ date, appointments, onSlotClick, onRatingChange, doctor, schedule }) => {
     const { t } = useLanguage();

@@ -1,4 +1,3 @@
-```javascript
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
@@ -24,8 +23,8 @@ const TempAccess = () => {
         const verify = async () => {
             try {
                 const [resVerify, resInsurances] = await Promise.all([
-                    api.get(`/ temp - access / verify / ${ token } `),
-                    api.get('/insurances') // Public or needs generic access? Ideally public for drop-down
+                    api.get(`/temp-access/verify/${token}`),
+                    api.get('/insurances')
                 ]);
 
                 setIsValid(resVerify.data.valid);
@@ -46,7 +45,7 @@ const TempAccess = () => {
 
     const handleSubmit = async (formData) => {
         try {
-            await api.post(`/ temp - access / complete / ${ token } `, formData);
+            await api.post(`/temp-access/complete/${token}`, formData);
             setSuccess(true);
         } catch (err) {
             console.error(err);
@@ -89,7 +88,7 @@ const TempAccess = () => {
                         initialValues={initialData}
                         onSubmit={handleSubmit}
                         isEdit={!isNew}
-                        isAdmin={false} // Hides admin fields
+                        isAdmin={false}
                         insurances={insurances}
                     />
                 </div>
@@ -99,3 +98,4 @@ const TempAccess = () => {
 };
 
 export default TempAccess;
+

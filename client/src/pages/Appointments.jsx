@@ -225,7 +225,7 @@ const Appointments = () => {
         setSelectedDate(date);
     };
 
-    const handleSlotClick = (hour, existingAppt, minute = 0) => {
+    const handleSlotClick = async (hour, existingAppt, minute = 0) => {
         if (rescheduleAppt) {
             if (existingAppt) return; // Can't reschedule onto another appt
 
@@ -297,7 +297,7 @@ const Appointments = () => {
     const handleUpdateStatus = async (id, status) => {
         let reason = null;
         if (status === 'cancelled') {
-            reason = window.prompt(t('cancellation_reason_prompt') || "Please enter a reason for cancellation:");
+            reason = await prompt(t('cancellation_reason_prompt') || "Please enter a reason for cancellation:");
             if (reason === null) return; // User cancelled the prompt
         }
 
