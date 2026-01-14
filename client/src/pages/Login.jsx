@@ -55,10 +55,13 @@ const Login = () => {
                         {t('sign_in')}
                     </button>
                 </form>
+                {/* Disabling public registration as per user request. Managed by Admin/Secretary. */}
+                {/* 
                 <div className="mt-6 text-center">
                     <span className="subtitle">{t('no_account')} </span>
                     <Link to="/register" className="link-accent font-bold no-underline">{t('register')}</Link>
                 </div>
+                */}
             </div>
         </div>
     );

@@ -14,12 +14,23 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.secretaryapp.utils.NetworkErrorMapper
 
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanIntentResult
+import com.journeyapps.barcodescanner.ScanOptions
+
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var etServerIp: EditText
     private lateinit var etServerPort: EditText
     private lateinit var btnTestConnection: Button
+    private lateinit var btnScanQr: Button
     private lateinit var btnSave: Button
+
+    private val barcodeLauncher = registerForActivityResult(ScanContract()) { result: ScanIntentResult ->
+        if (result.contents != null) {
+            parseScannedUrl(result.contents)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,10 +39,19 @@ class SettingsActivity : AppCompatActivity() {
         etServerIp = findViewById(R.id.etServerIp)
         etServerPort = findViewById(R.id.etServerPort)
         btnTestConnection = findViewById(R.id.btnTestConnection)
+        btnScanQr = findViewById(R.id.btnScanQr)
         btnSave = findViewById(R.id.btnSave)
 
         // Load saved configuration
         loadConfiguration()
+
+        btnScanQr.setOnClickListener {
+            val options = ScanOptions()
+            options.setPrompt("Escanee el QR del Dashboard (Fondo Gris)")
+            options.setBeepEnabled(true)
+            options.setOrientationLocked(false)
+            barcodeLauncher.launch(options)
+        }
 
         btnTestConnection.setOnClickListener {
             testConnection()
@@ -60,7 +80,9 @@ class SettingsActivity : AppCompatActivity() {
             return
         }
 
-        val testUrl = "http://$ip:$port/api/"
+        val protocol = if (port == "443") "https" else "http"
+        val portSuffix = if (port == "443" || port == "80") "" else ":$port"
+        val testUrl = "$protocol://$ip$portSuffix/api/"
         
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -108,13 +130,43 @@ class SettingsActivity : AppCompatActivity() {
         editor.putString("server_port", port)
         editor.apply()
 
-        // Update RetrofitClient
-        val baseUrl = "http://$ip:$port/api/"
+        // Update RetrofitClient using protocol-aware logic
+        val protocol = if (port == "443") "https" else "http"
+        val portSuffix = if (port == "443" || port == "80") "" else ":$port"
+        val baseUrl = "$protocol://$ip$portSuffix/api/"
         RetrofitClient.updateBaseUrl(baseUrl)
 
         Toast.makeText(this, "Configuración guardada", Toast.LENGTH_SHORT).show()
         
         // Return to previous activity
         finish()
+    }
+
+    private fun parseScannedUrl(contents: String) {
+        try {
+            // contents could be "http://192.168.0.98:5173" or just "192.168.0.98"
+            val cleanUrl = if (contents.startsWith("http")) contents else "http://$contents"
+            val uri = java.net.URI(cleanUrl)
+            val host = uri.host
+            var port = uri.port
+
+            if (host != null) {
+                etServerIp.setText(host)
+                // If scanned from Dashboard (Vite), it's 5173. But API is 5000.
+                // If it's a Cloudflare URL, port is -1 and it's https (443)
+                if (cleanUrl.contains(".trycloudflare.com")) {
+                    port = 443
+                } else if (port == 5173 || port == -1) {
+                    port = 5000
+                }
+                etServerPort.setText(port.toString())
+                Toast.makeText(this, "Conexión detectada: $host:$port", Toast.LENGTH_SHORT).show()
+                
+                // Optional: Auto-test connection
+                testConnection()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error al leer el QR: ${e.message}", Toast.LENGTH_LONG).show()
+        }
     }
 }

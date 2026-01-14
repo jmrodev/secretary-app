@@ -2064,6 +2064,7 @@ body {
   border-radius: 50%;
   margin-right: 8px;
 }
+
 /* Floating Chat Widget - LinkedIn Style */
 .floating-chat-container {
   position: fixed;
@@ -2078,7 +2079,7 @@ body {
   pointer-events: none;
 }
 
-.floating-chat-container > * {
+.floating-chat-container>* {
   pointer-events: auto;
 }
 
@@ -2225,7 +2226,7 @@ body {
   font-size: 0.85rem;
   line-height: 1.4;
   position: relative;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .widget-bubble.sent {
@@ -2371,11 +2372,491 @@ body {
 }
 
 @keyframes pulse {
-  0% { opacity: 0.6; }
-  50% { opacity: 1; }
-  100% { opacity: 0.6; }
+  0% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.6;
+  }
 }
 
 .bubble-text {
   word-break: break-word;
+}
+
+/* Landing Page Premium Styles */
+.home-landing {
+  min-height: 100vh;
+  position: relative;
+  background: #0f172a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.landing-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at top right, rgba(14, 165, 233, 0.15), transparent),
+    radial-gradient(circle at bottom left, rgba(37, 99, 235, 0.1), transparent);
+  pointer-events: none;
+}
+
+.landing-content {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 1000px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.landing-header {
+  margin-bottom: 4rem;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.pulse-logo {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  display: inline-block;
+  animation: pulseLogo 3s infinite;
+}
+
+.landing-header h1 {
+  font-size: 3.5rem;
+  color: white;
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.landing-header .highlight {
+  color: #0ea5e9;
+  text-shadow: 0 0 20px rgba(14, 165, 233, 0.4);
+}
+
+.tagline {
+  color: #94a3b8;
+  font-size: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.landing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.landing-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 2.5rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-click-area {
+  cursor: pointer;
+}
+
+.landing-card:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(14, 165, 233, 0.3);
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.card-icon {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.landing-card h3 {
+  color: white;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.landing-card p {
+  color: #94a3b8;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.card-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.btn-glass {
+  background: rgba(14, 165, 233, 0.2);
+  border: 1px solid rgba(14, 165, 233, 0.4);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-glass:hover {
+  background: #0ea5e9;
+  box-shadow: 0 0 15px rgba(14, 165, 233, 0.5);
+}
+
+.btn-copy-small {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-copy-small:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.landing-footer {
+  color: #475569;
+  font-size: 0.9rem;
+}
+
+.version-tag {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 4px 12px;
+  background: rgba(14, 165, 233, 0.1);
+  color: #0ea5e9;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+@keyframes pulseLogo {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .landing-header h1 {
+    font-size: 2.5rem;
+  }
+
+  .landing-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Tailwind Compatibility Layer for AuditLogs & Finances */
+.bg-slate-50 {
+  background-color: #f8fafc;
+}
+
+.bg-white {
+  background-color: #ffffff;
+}
+
+.bg-blue-50 {
+  background-color: #eff6ff;
+}
+
+.bg-green-50 {
+  background-color: #f0fdf4;
+}
+
+.bg-purple-50 {
+  background-color: #faf5ff;
+}
+
+.bg-red-100 {
+  background-color: #fee2e2;
+}
+
+.bg-green-100 {
+  background-color: #dcfce7;
+}
+
+.bg-yellow-100 {
+  background-color: #fef9c3;
+}
+
+.hover\:bg-slate-50:hover {
+  background-color: #f8fafc;
+}
+
+.text-slate-300 {
+  color: #cbd5e1;
+}
+
+.text-slate-400 {
+  color: #94a3b8;
+}
+
+.text-slate-500 {
+  color: #64748b;
+}
+
+.text-slate-600 {
+  color: #475569;
+}
+
+.text-slate-700 {
+  color: #334155;
+}
+
+.text-slate-800 {
+  color: #1e293b;
+}
+
+.text-blue-500 {
+  color: #3b82f6;
+}
+
+.text-blue-600 {
+  color: #2563eb;
+}
+
+.text-blue-700 {
+  color: #1d4ed8;
+}
+
+.text-green-600 {
+  color: #16a34a;
+}
+
+.text-green-700 {
+  color: #15803d;
+}
+
+.text-red-500 {
+  color: #ef4444;
+}
+
+.text-red-700 {
+  color: #b91c1c;
+}
+
+.text-purple-700 {
+  color: #7e22ce;
+}
+
+.border-slate-100 {
+  border-color: #f1f5f9;
+}
+
+.border-slate-200 {
+  border-color: #e2e8f0;
+}
+
+.border-blue-100 {
+  border-color: #dbeafe;
+}
+
+.border-blue-200 {
+  border-color: #bfdbfe;
+}
+
+.border-green-200 {
+  border-color: #bbf7d0;
+}
+
+.border-purple-200 {
+  border-color: #e9d5ff;
+}
+
+.divide-y>*+* {
+  border-top-width: 1px;
+}
+
+.divide-slate-100>*+* {
+  border-color: #f1f5f9;
+}
+
+.w-fit {
+  width: fit-content;
+}
+
+.w-1\/3 {
+  width: 33.333333%;
+}
+
+.max-w-5xl {
+  max-width: 64rem;
+}
+
+.max-w-xs {
+  max-width: 20rem;
+}
+
+.max-w-\[200px\] {
+  max-width: 200px;
+}
+
+.p-0 {
+  padding: 0px;
+}
+
+.p-4 {
+  padding: 1rem;
+}
+
+.px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.py-0\.5 {
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+}
+
+.py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.py-3 {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.pt-2 {
+  padding-top: 0.5rem;
+}
+
+.pt-4 {
+  padding-top: 1rem;
+}
+
+.rounded {
+  border-radius: 0.25rem;
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+.rounded-full {
+  border-radius: 9999px;
+}
+
+.shadow-sm {
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.shadow-inner {
+  box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.tracking-wider {
+  letter-spacing: 0.05em;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.inline-flex {
+  display: inline-flex;
+}
+
+/* Amber / Yellow for Grouping (added for Finances) */
+.bg-amber-50 {
+  background-color: #fffbeb;
+}
+
+.bg-amber-50\/50 {
+  background-color: rgba(255, 251, 235, 0.5);
+}
+
+.bg-amber-100 {
+  background-color: #fef3c7;
+}
+
+.bg-amber-100\/50 {
+  background-color: rgba(254, 243, 199, 0.5);
+}
+
+.border-amber-100 {
+  border-color: #fef3c7;
+}
+
+.border-amber-200 {
+  border-color: #fde68a;
+}
+
+.text-amber-800 {
+  color: #92400e;
 }

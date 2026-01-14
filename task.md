@@ -30,3 +30,13 @@
     - [x] Implement CSV Parsing Logic (Google Contacts headers - Added Spanish support) <!-- id: 27 -->
     - [x] Add Frontend Import UI <!-- id: 28 -->
     - [x] **ACTION REQUIRED**: User needs to rebuild docker container (`sudo docker compose up -d --build`) <!-- id: 29 -->
+
+- [x] Investigate duplicate prescription requests <!-- id: 30 -->
+- [x] Fix duplicate prescription requests <!-- id: 31 -->
+    - [x] Disable submit button in MedicalDocuments.jsx <!-- id: 32 -->
+    - [x] Clean up duplicate records in DB <!-- id: 33 -->
+
+- [x] Implement Overmedication Warning and Fix UI <!-- id: 34 -->
+    - [x] Clean up temporary scripts <!-- id: 35 -->
+    - [x] Implement warning logic in MedicalDocuments.jsx <!-- id: 36 -->
+    - [x] Fix checkbox UI issue <!-- id: 37 -->

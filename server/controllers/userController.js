@@ -40,7 +40,7 @@ exports.getAllDoctors = async (req, res) => {
     let conn;
     try {
         conn = await pool.getConnection();
-        const rows = await conn.query("SELECT id, user_id, full_name, specialty, phone, office_number, rental_type, rental_cost, consultation_price, prescription_price, medical_license_price, virtual_consultation_price, default_visit_interval_days, default_prescription_interval_days FROM doctors");
+        const rows = await conn.query("SELECT id, user_id, full_name, specialty, phone, office_number, rental_type, rental_cost, consultation_price, prescription_price, medical_license_price, certificate_price, virtual_consultation_price, default_visit_interval_days, default_prescription_interval_days, appointment_duration, break_duration FROM doctors");
         res.json(rows);
     } catch (err) {
         console.error(err);
@@ -64,11 +64,11 @@ exports.getAllPatients = async (req, res) => {
         let query = `
             SELECT p.*, i.name as insurance_name,
             (SELECT COALESCE(SUM(amount), 0) FROM transactions t WHERE t.related_user_id = p.user_id AND t.status = 'pending') as total_debt,
-            (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id) as total_appointments,
-            (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id AND a.status IN ('cancelled', 'missed')) as missed_appointments
+                (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id) as total_appointments,
+                    (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id AND a.status IN('cancelled', 'missed')) as missed_appointments
             FROM patients p
             LEFT JOIN insurances i ON p.insurance_id = i.id
-        `;
+            `;
 
         let params = [];
         let conditions = [];
@@ -82,13 +82,14 @@ exports.getAllPatients = async (req, res) => {
                 // Join or subquery. Join is cleaner but we started with simple select.
                 // Let's add INNER JOIN patient_doctors pd ON p.id = pd.patient_id WHERE pd.doctor_id = ?
                 query = `
-                    SELECT p.*, 
-                    (SELECT COALESCE(SUM(amount), 0) FROM transactions t WHERE t.related_user_id = p.user_id AND t.status = 'pending') as total_debt,
-                    (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id) as total_appointments,
-                    (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id AND a.status IN ('cancelled', 'missed')) as missed_appointments
+                    SELECT p.*, i.name as insurance_name,
+            (SELECT COALESCE(SUM(amount), 0) FROM transactions t WHERE t.related_user_id = p.user_id AND t.status = 'pending') as total_debt,
+                (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id) as total_appointments,
+                    (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id AND a.status IN('cancelled', 'missed')) as missed_appointments
                     FROM patients p
+                    LEFT JOIN insurances i ON p.insurance_id = i.id
                     INNER JOIN patient_doctors pd ON p.id = pd.patient_id
-                `;
+            `;
                 conditions.push("pd.doctor_id = ?");
                 params.push(doctorId);
             }
@@ -125,15 +126,16 @@ exports.getPatientDetails = async (req, res) => {
     let conn;
     try {
         const { id } = req.params;
-        console.log(`[getPatientDetails] Request for ID: ${id}`);
+        console.log(`[getPatientDetails] Request for ID: ${id} `);
         conn = await pool.getConnection();
 
         // 1. Get Basic Info
         const patientRows = await conn.query(`
-            SELECT p.*, i.name as insurance_name 
+            SELECT p.*, i.name as insurance_name, inst.name as institution_name 
             FROM patients p 
             LEFT JOIN insurances i ON p.insurance_id = i.id 
-            WHERE p.id = ?`, [id]);
+            LEFT JOIN institutions inst ON p.institution_id = inst.id 
+            WHERE p.id = ? `, [id]);
         if (patientRows.length === 0) return res.status(404).send("Patient not found");
         const patient = patientRows[0];
 
@@ -142,7 +144,7 @@ exports.getPatientDetails = async (req, res) => {
             SELECT a.*, d.full_name as doctor_name 
             FROM appointments a 
             JOIN doctors d ON a.doctor_id = d.id 
-            WHERE a.patient_id = ? 
+            WHERE a.patient_id = ?
             ORDER BY a.appointment_date DESC`,
             [id]
         );
@@ -150,24 +152,24 @@ exports.getPatientDetails = async (req, res) => {
         // 3. Get Prescriptions
         // 3. Get Prescriptions & Licenses (Combined)
         const pres = await conn.query(`
-            (SELECT 
-                p.id, 
-                p.created_at, 
-                'prescription' as type, 
-                d.full_name as doctor_name,
-                p.medications as diagnosis, 
-                NULL as days
+                (SELECT 
+                p.id,
+                    p.created_at,
+                    'prescription' as type,
+                    d.full_name as doctor_name,
+                    p.medications as diagnosis,
+                    NULL as days
             FROM prescriptions p
             JOIN appointments a ON p.appointment_id = a.id
             JOIN doctors d ON a.doctor_id = d.id
             WHERE a.patient_id = ?)
-            UNION
+        UNION
             (SELECT 
-                ml.id, 
-                ml.created_at, 
-                'license' as type, 
+                ml.id,
+                ml.created_at,
+                'license' as type,
                 d.full_name as doctor_name,
-                ml.diagnosis, 
+                ml.diagnosis,
                 ml.days_duration as days
             FROM medical_licenses ml
             JOIN appointments a ON ml.appointment_id = a.id
@@ -182,7 +184,7 @@ exports.getPatientDetails = async (req, res) => {
             SELECT f.*, u.username as uploader_name 
             FROM patient_files f
             JOIN users u ON f.uploaded_by = u.id
-            WHERE f.patient_id = ? 
+            WHERE f.patient_id = ?
             ORDER BY f.created_at DESC`,
             [id]
         );
@@ -192,7 +194,7 @@ exports.getPatientDetails = async (req, res) => {
             SELECT COALESCE(SUM(ml.days_duration), 0) as total_days
             FROM medical_licenses ml
             JOIN appointments a ON ml.appointment_id = a.id
-            WHERE a.patient_id = ?`,
+            WHERE a.patient_id = ? `,
             [id]
         );
 
@@ -202,7 +204,7 @@ exports.getPatientDetails = async (req, res) => {
             FROM patient_doctors pd
             JOIN doctors d ON pd.doctor_id = d.id
             WHERE pd.patient_id = ?
-        `, [id]);
+            `, [id]);
 
         res.json({
             ...patient,
@@ -228,7 +230,7 @@ exports.updateProfile = async (req, res) => {
         const { role, user_id } = req.user;
         const updates = req.body;
 
-        console.log(`Updating profile for user ${user_id} (${role})`, updates);
+        console.log(`Updating profile for user ${user_id}(${role})`, updates);
 
         conn = await pool.getConnection();
         let query = "";
@@ -245,7 +247,7 @@ exports.updateProfile = async (req, res) => {
             if (updates.affiliate_number !== undefined) { fields.push("affiliate_number = ?"); params.push(updates.affiliate_number); }
 
             if (fields.length > 0) {
-                query = `UPDATE patients SET ${fields.join(', ')} WHERE user_id = ?`;
+                query = `UPDATE patients SET ${fields.join(', ')} WHERE user_id = ? `;
                 params.push(user_id);
             }
         } else if (role === 'doctor') {
@@ -261,7 +263,7 @@ exports.updateProfile = async (req, res) => {
             if (updates.default_visit_interval_days !== undefined) { fields.push("default_visit_interval_days = ?"); params.push(updates.default_visit_interval_days); }
             if (updates.default_prescription_interval_days !== undefined) { fields.push("default_prescription_interval_days = ?"); params.push(updates.default_prescription_interval_days); }
             if (fields.length > 0) {
-                query = `UPDATE doctors SET ${fields.join(', ')} WHERE user_id = ?`;
+                query = `UPDATE doctors SET ${fields.join(', ')} WHERE user_id = ? `;
                 params.push(user_id);
             }
         } else if (role === 'secretary') {
@@ -269,7 +271,7 @@ exports.updateProfile = async (req, res) => {
             if (updates.full_name !== undefined) { fields.push("full_name = ?"); params.push(updates.full_name); }
             if (updates.phone !== undefined) { fields.push("phone = ?"); params.push(updates.phone); }
             if (fields.length > 0) {
-                query = `UPDATE secretaries SET ${fields.join(', ')} WHERE user_id = ?`;
+                query = `UPDATE secretaries SET ${fields.join(', ')} WHERE user_id = ? `;
                 params.push(user_id);
             }
         }
@@ -300,30 +302,30 @@ exports.getUsersForAdmin = async (req, res) => {
         const users = await conn.query(`
             SELECT id, username, role, created_at,
             CASE 
-                WHEN role = 'patient' THEN (SELECT full_name FROM patients WHERE user_id = users.id)
-                WHEN role = 'doctor' THEN (SELECT full_name FROM doctors WHERE user_id = users.id)
-                WHEN role = 'secretary' THEN (SELECT full_name FROM secretaries WHERE user_id = users.id)
+                WHEN role = 'patient' THEN(SELECT full_name FROM patients WHERE user_id = users.id)
+                WHEN role = 'doctor' THEN(SELECT full_name FROM doctors WHERE user_id = users.id)
+                WHEN role = 'secretary' THEN(SELECT full_name FROM secretaries WHERE user_id = users.id)
                 ELSE 'System'
-            END as full_name,
+        END as full_name,
 
             CASE
-                WHEN role = 'patient' THEN (SELECT dni FROM patients WHERE user_id = users.id)
-                WHEN role = 'doctor' THEN (SELECT dni FROM doctors WHERE user_id = users.id)
-                WHEN role = 'secretary' THEN (SELECT dni FROM secretaries WHERE user_id = users.id)
+                WHEN role = 'patient' THEN(SELECT dni FROM patients WHERE user_id = users.id)
+                WHEN role = 'doctor' THEN(SELECT dni FROM doctors WHERE user_id = users.id)
+                WHEN role = 'secretary' THEN(SELECT dni FROM secretaries WHERE user_id = users.id)
                 ELSE NULL
-            END as dni,
+        END as dni,
 
             CASE
-                WHEN role = 'patient' THEN (SELECT phone FROM patients WHERE user_id = users.id)
-                WHEN role = 'doctor' THEN (SELECT phone FROM doctors WHERE user_id = users.id)
-                WHEN role = 'secretary' THEN (SELECT phone FROM secretaries WHERE user_id = users.id)
+                WHEN role = 'patient' THEN(SELECT phone FROM patients WHERE user_id = users.id)
+                WHEN role = 'doctor' THEN(SELECT phone FROM doctors WHERE user_id = users.id)
+                WHEN role = 'secretary' THEN(SELECT phone FROM secretaries WHERE user_id = users.id)
                 ELSE NULL
-            END as phone,
+        END as phone,
 
             CASE
-                WHEN role = 'doctor' THEN (SELECT specialty FROM doctors WHERE user_id = users.id)
+                WHEN role = 'doctor' THEN(SELECT specialty FROM doctors WHERE user_id = users.id)
                 ELSE NULL
-            END as specialty
+        END as specialty
 
             FROM users
             WHERE role != 'patient'
@@ -360,7 +362,7 @@ exports.adminResetPassword = async (req, res) => {
         await conn.query("UPDATE users SET password_hash = ?, token_version = token_version + 1 WHERE id = ?", [hashedPassword, id]);
         console.log("DB Updated & Token Version Incremented");
 
-        logAction(req, 'ADMIN_RESET_PASSWORD', `Reset password for User ID: ${id}`);
+        logAction(req, 'ADMIN_RESET_PASSWORD', `Reset password for User ID: ${id} `);
         res.json({ message: "Password reset successfully" });
     } catch (err) {
         console.error("Reset Password Error:", err);
@@ -375,7 +377,7 @@ exports.updatePatientDetails = async (req, res) => {
     try {
         const { id } = req.params; // patients.id
         const updates = req.body;
-        console.log(`[updatePatientDetails] Updating patient ${id}`, updates);
+        console.log(`[updatePatientDetails] Updating patient ${id} `, updates);
 
         conn = await pool.getConnection();
 
@@ -397,12 +399,13 @@ exports.updatePatientDetails = async (req, res) => {
         if (updates.behavior_rating !== undefined) { fields.push("behavior_rating = ?"); params.push(updates.behavior_rating); }
         if (updates.visit_interval_days !== undefined) { fields.push("visit_interval_days = ?"); params.push(updates.visit_interval_days === '' ? null : updates.visit_interval_days); }
         if (updates.prescription_interval_days !== undefined) { fields.push("prescription_interval_days = ?"); params.push(updates.prescription_interval_days === '' ? null : updates.prescription_interval_days); }
+        if (updates.institution_id !== undefined) { fields.push("institution_id = ?"); params.push(updates.institution_id === '' ? null : updates.institution_id); } // [NEW]
         if (updates.next_suggested_visit_date !== undefined) { fields.push("next_suggested_visit_date = ?"); params.push(updates.next_suggested_visit_date === '' ? null : updates.next_suggested_visit_date); }
         if (updates.next_suggested_prescription_date !== undefined) { fields.push("next_suggested_prescription_date = ?"); params.push(updates.next_suggested_prescription_date === '' ? null : updates.next_suggested_prescription_date); }
         if (updates.license_expiry_date !== undefined) { fields.push("license_expiry_date = ?"); params.push(updates.license_expiry_date === '' ? null : updates.license_expiry_date); }
 
         if (fields.length > 0) {
-            const query = `UPDATE patients SET ${fields.join(', ')} WHERE id = ?`;
+            const query = `UPDATE patients SET ${fields.join(', ')} WHERE id = ? `;
             params.push(id);
             await conn.query(query, params);
         }
@@ -447,7 +450,7 @@ exports.updateDoctor = async (req, res) => {
     try {
         const { id } = req.params; // doctors.id
         const updates = req.body;
-        console.log(`[updateDoctor] Updating doctor ${id}`, updates);
+        console.log(`[updateDoctor] Updating doctor ${id} `, updates);
 
         if (req.user.role !== 'admin' && req.user.role !== 'secretary') {
             return res.status(403).send("Unauthorized");
@@ -471,9 +474,11 @@ exports.updateDoctor = async (req, res) => {
         if (updates.certificate_price !== undefined) { fields.push("certificate_price = ?"); params.push(updates.certificate_price); }
         if (updates.default_visit_interval_days !== undefined) { fields.push("default_visit_interval_days = ?"); params.push(updates.default_visit_interval_days); }
         if (updates.default_prescription_interval_days !== undefined) { fields.push("default_prescription_interval_days = ?"); params.push(updates.default_prescription_interval_days); }
+        if (updates.appointment_duration !== undefined) { fields.push("appointment_duration = ?"); params.push(updates.appointment_duration); }
+        if (updates.break_duration !== undefined) { fields.push("break_duration = ?"); params.push(updates.break_duration); }
 
         if (fields.length > 0) {
-            const query = `UPDATE doctors SET ${fields.join(', ')} WHERE id = ?`;
+            const query = `UPDATE doctors SET ${fields.join(', ')} WHERE id = ? `;
             params.push(id);
             await conn.query(query, params);
             res.json({ message: "Doctor updated successfully" });
@@ -566,7 +571,7 @@ exports.updateUser = async (req, res) => {
                 [full_name, dni, phone, id]);
         }
 
-        logAction(req, 'ADMIN_UPDATE_USER', `Updated user ${id}`);
+        logAction(req, 'ADMIN_UPDATE_USER', `Updated user ${id} `);
         res.json({ message: "User updated" });
 
     } catch (err) {
@@ -598,11 +603,11 @@ exports.getReminders = async (req, res) => {
             FROM patients p
             INNER JOIN patient_doctors pd ON p.id = pd.patient_id
             INNER JOIN doctors d ON pd.doctor_id = d.id
-            WHERE 
-                (p.next_suggested_visit_date IS NOT NULL AND p.next_suggested_visit_date <= CURRENT_DATE)
-                OR (p.next_suggested_prescription_date IS NOT NULL AND p.next_suggested_prescription_date <= CURRENT_DATE)
-                OR (p.license_expiry_date IS NOT NULL AND p.license_expiry_date <= CURRENT_DATE)
-        `;
+        WHERE
+            (p.next_suggested_visit_date IS NOT NULL AND p.next_suggested_visit_date <= CURRENT_DATE)
+        OR(p.next_suggested_prescription_date IS NOT NULL AND p.next_suggested_prescription_date <= CURRENT_DATE)
+        OR(p.license_expiry_date IS NOT NULL AND p.license_expiry_date <= CURRENT_DATE)
+            `;
 
         let finalQuery = query;
         let params = [];
@@ -657,7 +662,7 @@ exports.deleteUser = async (req, res) => {
             await conn.query("DELETE FROM transactions WHERE related_user_id = ?", [id]); // Financials linked to user
 
             if (patientId) {
-                console.log(`Deleting patient data for patient_id: ${patientId}`);
+                console.log(`Deleting patient data for patient_id: ${patientId} `);
                 // Delete Patient Specifics
                 await conn.query("DELETE FROM patient_files WHERE patient_id = ?", [patientId]); // Files belonging TO patient
                 await conn.query("DELETE FROM patient_doctors WHERE patient_id = ?", [patientId]);
@@ -675,7 +680,7 @@ exports.deleteUser = async (req, res) => {
             }
 
             if (doctorId) {
-                console.log(`Deleting doctor data for doctor_id: ${doctorId}`);
+                console.log(`Deleting doctor data for doctor_id: ${doctorId} `);
                 // Delete Doctor Specifics
                 await conn.query("DELETE FROM patient_doctors WHERE doctor_id = ?", [doctorId]);
 
@@ -807,6 +812,51 @@ exports.getStats = async (req, res) => {
     } catch (err) {
         console.error("getStats Error:", err);
         res.status(500).send("Server Error: " + err.message);
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.toggleNewPatientStatus = async (req, res) => {
+    let conn;
+    try {
+        const { id } = req.params;
+        conn = await pool.getConnection();
+
+        // Get current status
+        const [patient] = await conn.query("SELECT is_new_patient FROM patients WHERE id = ?", [id]);
+        if (!patient) return res.status(404).send("Patient not found");
+
+        const newStatus = !patient.is_new_patient;
+        const markedAt = newStatus ? new Date() : null;
+
+        await conn.query("UPDATE patients SET is_new_patient = ?, marked_new_at = ? WHERE id = ?", [newStatus, markedAt, id]);
+
+        logAction(req, 'TOGGLE_NEW_PATIENT', `Toggled new patient status for ${id} to ${newStatus}`);
+        res.json({ message: "Patient status updated", is_new_patient: newStatus });
+    } catch (err) {
+        console.error("Toggle New Patient Error:", err);
+        res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.getNewPatientStats = async (req, res) => {
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const [row] = await conn.query("SELECT COUNT(*) as count FROM patients WHERE is_new_patient = 1");
+
+        res.json({
+            current_new: Number(row.count),
+            weekly: 0,
+            monthly: 0,
+            yearly: 0
+        });
+    } catch (err) {
+        console.error("Get New Patient Stats Error:", err);
+        res.status(500).send("Server Error");
     } finally {
         if (conn) conn.release();
     }

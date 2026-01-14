@@ -269,7 +269,7 @@ exports.getLicenses = async (req, res) => {
 exports.createRequest = async (req, res) => {
     let conn;
     try {
-        const { type, patient_id, doctor_id, request_note, bonified } = req.body; // type: 'prescription', 'license', 'certificate'
+        const { type, patient_id, doctor_id, request_note, bonified, status } = req.body; // type: 'prescription', 'license', 'certificate'
 
         if (!['prescription', 'license', 'certificate'].includes(type)) return res.status(400).send("Invalid type");
 
@@ -279,9 +279,15 @@ exports.createRequest = async (req, res) => {
         const pat = await conn.query("SELECT * FROM patients WHERE id = ?", [patient_id]);
         if (pat.length === 0) return res.status(404).send("Patient not found");
 
+        const initialStatus = status || 'pending';
+        let completedAt = null;
+        if (initialStatus === 'completed') {
+            completedAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        }
+
         const result = await conn.query(
-            "INSERT INTO medical_requests (type, patient_id, doctor_id, request_note, status, created_at) VALUES (?, ?, ?, ?, 'pending', NOW())",
-            [type, patient_id, doctor_id, request_note]
+            "INSERT INTO medical_requests (type, patient_id, doctor_id, request_note, status, created_at, completed_at) VALUES (?, ?, ?, ?, ?, NOW(), ?)",
+            [type, patient_id, doctor_id, request_note, initialStatus, completedAt]
         );
 
         // --- Debt Generation for Request ---

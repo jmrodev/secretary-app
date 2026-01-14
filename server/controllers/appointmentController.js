@@ -39,9 +39,12 @@ exports.createAppointment = async (req, res) => {
         // ---------------------
 
         // --- Google Calendar Conflict Check ---
-        // Calculate End Time (Assuming 1 hour duration by default for now)
+        // Calculate End Time
+        const [docData] = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [doctor_id]);
+        const durationMinutes = (docData && docData.length > 0 && docData[0].appointment_duration) ? docData[0].appointment_duration : 60;
+
         const startTime = new Date(appointment_date);
-        const endTime = new Date(startTime.getTime() + 60 * 60 * 1000);
+        const endTime = new Date(startTime.getTime() + durationMinutes * 60 * 1000);
 
         const hasConflict = await googleController.checkConflict(doctor_id, startTime.toISOString(), endTime.toISOString());
 
@@ -50,12 +53,39 @@ exports.createAppointment = async (req, res) => {
         }
         // --------------------------------------
 
+        // --- Out of Hours Check ---
+        let isOutOfHours = 0;
+        // Fetch schedule for this day
+        const dayOfWeek = apptDate.getDay(); // 0-6
+        const scheduleRows = await conn.query(
+            "SELECT * FROM doctor_schedules WHERE doctor_id = ? AND day_of_week = ? AND is_break = 0",
+            [doctor_id, dayOfWeek]
+        );
+
+        if (scheduleRows.length > 0) {
+            const apptTimeStr = apptDate.toTimeString().split(' ')[0]; // HH:MM:SS
+            // Check if it fits in ANY block
+            const fits = scheduleRows.some(block => {
+                return apptTimeStr >= block.start_time && apptTimeStr < block.end_time;
+            });
+
+            if (!fits) isOutOfHours = 1;
+        } else {
+            // Default 8-20 if no schedule defined? Or assume OOH?
+            // Let's keep legacy behavior: if NO schedule defined, assume 8-20 is "In Hours" for now, or just 0.
+            // But user wants to define it. If empty, maybe everything is OOH? Or everything allowed?
+            // Let's assume default 8-20 for backward compatibility if table exists but no rows for doc.
+            // Actually, safely assume In-Hours if no config, to avoid mass flagging.
+            const hour = apptDate.getHours();
+            if (hour < 8 || hour >= 20) isOutOfHours = 1;
+        }
+        // --------------------------
+
         // if (!conn) conn = await pool.getConnection(); // Already acquired
 
-        // Simple insert
         const result = await conn.query(
-            "INSERT INTO appointments (patient_id, doctor_id, appointment_date, reason) VALUES (?, ?, ?, ?)",
-            [patient_id, doctor_id, apptDate, reason]
+            "INSERT INTO appointments (patient_id, doctor_id, appointment_date, reason, is_out_of_hours) VALUES (?, ?, ?, ?, ?)",
+            [patient_id, doctor_id, apptDate, reason, isOutOfHours]
         );
         const appointmentId = result.insertId;
 
@@ -106,7 +136,7 @@ exports.createAppointment = async (req, res) => {
 
         // --- Google Calendar Auto-Sync ---
         const eventData = {
-            summary: `Consultorio: ${pNameStr} [${paymentStatus === 'debt' ? 'DEUDA' : 'PENDIENTE'}]`,
+            summary: pNameStr,
             description: `Motivo: ${reason}\nPaciente: ${pNameStr} (DNI: ${pDetails.dni || 'N/A'})\nTeléfono: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nEstado: pendiente\nPago: ${paymentStatus === 'debt' ? 'deuda' : 'pendiente'}\nCreado por Aplicación de Secretaría`,
             start: { dateTime: startTime.toISOString(), timeZone: 'America/Argentina/Buenos_Aires' },
             end: { dateTime: endTime.toISOString(), timeZone: 'America/Argentina/Buenos_Aires' }
@@ -202,28 +232,71 @@ exports.deleteAppointment = async (req, res) => {
         const { id } = req.params;
         conn = await pool.getConnection();
 
-        // Get details for log
-        const rows = await conn.query("SELECT a.*, p.full_name FROM appointments a JOIN patients p ON a.patient_id = p.id WHERE a.id = ?", [id]);
+        // Get details for log - Use LEFT JOIN to allow deleting appointments without linked patients (e.g. synced Google events)
+        const rows = await conn.query(`
+            SELECT a.*, p.full_name 
+            FROM appointments a 
+            LEFT JOIN patients p ON a.patient_id = p.id 
+            WHERE a.id = ?
+        `, [id]);
         if (rows.length === 0) return res.status(404).send("Appointment not found");
 
 
         const appt = rows[0];
 
-        // [NEW] Prevent deletion if status is 'completed' (Attended)
-        if (appt.status === 'completed') {
-            return res.status(400).send("Cannot delete an appointment that has been attended (completed).");
+        // 1. Block Deletion of Past Appointments
+        const now = new Date();
+        const apptDate = new Date(appt.appointment_date);
+        if (apptDate < now) {
+            return res.status(400).send("Cannot delete past appointments.");
         }
+
+        // 2. Block Deletion of Completed/Arrived Appointments
+        // "si vino o completo" -> arrived, completed
+        if (['completed', 'attended', 'arrived'].includes(appt.status)) {
+            return res.status(400).send("Cannot delete an appointment that has been attended/completed.");
+        }
+
+        // 3. Check for "Other Completed Actions" (Medical Records)
+        const prescriptions = await conn.query("SELECT id FROM prescriptions WHERE appointment_id = ?", [id]);
+        const licenses = await conn.query("SELECT id FROM medical_licenses WHERE appointment_id = ?", [id]);
+
+        if (prescriptions.length > 0 || licenses.length > 0) {
+            return res.status(400).send("Cannot delete appointment: It has associated medical records (Prescriptions/Licenses).");
+        }
+
+        // 4. Handle Payment -> Convert to Credit ("Saldo a favor")
+        if (appt.payment_status === 'paid') {
+            const transactions = await conn.query(
+                "SELECT id, description FROM transactions WHERE appointment_id = ? AND type = 'income_patient' AND status = 'paid'",
+                [id]
+            );
+
+            if (transactions.length > 0) {
+                for (const tx of transactions) {
+                    const newDesc = `Saldo a favor (Turno Eliminado ${new Date(appt.appointment_date).toLocaleDateString()}): ${tx.description}`;
+                    await conn.query("UPDATE transactions SET description = ? WHERE id = ?", [newDesc, tx.id]);
+                }
+                console.log(`Converted transaction(s) to credit for appt ${id}`);
+            }
+        }
+
 
         // --- Google Calendar Sync (Delete) ---
         if (appt.google_event_id) {
-            await googleController.deleteEventHelper(appt.doctor_id, appt.google_event_id, req.user.user_id);
+            try {
+                await googleController.deleteEventHelper(appt.doctor_id, appt.google_event_id, req.user.user_id);
+            } catch (syncErr) {
+                console.warn(`[DeleteSync] Failed to delete event ${appt.google_event_id} from Google: ${syncErr.message}. Proceeding with DB deletion.`);
+            }
         }
         // -------------------------------------
 
         // Delete
         await conn.query("DELETE FROM appointments WHERE id = ?", [id]);
 
-        logAction(req, 'DELETE_APPOINTMENT', `Deleted appointment ID ${id} (Secretary Error) for ${appt.full_name}`);
+        const loggedName = appt.full_name || appt.reason || `Appt ID ${id}`;
+        logAction(req, 'DELETE_APPOINTMENT', `Deleted appointment ID ${id} (Secretary Error) for ${loggedName}`);
 
         res.json({ message: "Appointment deleted" });
     } catch (err) {
@@ -267,8 +340,12 @@ exports.updateAppointment = async (req, res) => {
 
         // --- Google Calendar Sync ---
         if (exists[0].google_event_id) {
+            // [NEW] Get Duration
+            const [docData] = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [exists[0].doctor_id]);
+            const durationMinutes = (docData && docData.length > 0 && docData[0].appointment_duration) ? docData[0].appointment_duration : 60;
+
             const startTime = new Date(appointment_date);
-            const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // 1 hour duration
+            const endTime = new Date(startTime.getTime() + durationMinutes * 60 * 1000);
 
             const pId = exists[0].patient_id;
             const pat = await conn.query("SELECT full_name, dni, phone, email FROM patients WHERE id = ?", [pId]);
@@ -277,7 +354,7 @@ exports.updateAppointment = async (req, res) => {
             const newDescription = `Motivo: ${reason || exists[0].reason}\nPaciente: ${pName} (DNI: ${pDetails.dni || 'N/A'})\nTeléfono: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nEstado: reprogramado\nPago: ${exists[0].payment_status}\nCreado por Aplicación de Secretaría`;
 
             const updatePayload = {
-                summary: `Consultorio: ${pName} [${exists[0].payment_status.toUpperCase() === 'PAID' ? 'PAGADO' : (exists[0].payment_status.toUpperCase() === 'DEBT' ? 'DEUDA' : (exists[0].payment_status.toUpperCase() === 'PENDING' ? 'PENDIENTE' : 'PARCIAL'))}]`,
+                summary: pName,
                 description: newDescription,
                 start: { dateTime: startTime.toISOString(), timeZone: 'America/Argentina/Buenos_Aires' },
                 end: { dateTime: endTime.toISOString(), timeZone: 'America/Argentina/Buenos_Aires' },
@@ -342,6 +419,15 @@ exports.updateStatus = async (req, res) => {
             }
         }
 
+        if (status === 'cancelled') {
+            const pId = exists[0].patient_id;
+            if (pId) {
+                // Decrement behavior rating (min 0)
+                await conn.query("UPDATE patients SET behavior_rating = GREATEST(0, behavior_rating - 1) WHERE id = ?", [pId]);
+                console.log(`DEBUG: Decremented behavior rating for patient ${pId} due to cancellation.`);
+            }
+        }
+
         const pId = exists[0].patient_id;
         const pat = await conn.query("SELECT full_name, dni, phone, email FROM patients WHERE id = ?", [pId]);
         const pName = pat.length > 0 ? pat[0].full_name : pId;
@@ -357,24 +443,39 @@ exports.updateStatus = async (req, res) => {
 
         // --- Google Calendar Sync ---
         if (exists[0].google_event_id) {
-            const newDescription = `Motivo: ${exists[0].reason || 'N/A'}\nPaciente: ${pName} (DNI: ${pDetails.dni || 'N/A'})\nTeléfono: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nEstado: ${status}\nPago: ${exists[0].payment_status}\nCreado por Aplicación de Secretaría`;
+            if (status === 'cancelled') {
+                // [NEW] If cancelled, delete from Google Calendar to release slot immediately
+                try {
+                    await googleController.deleteEventHelper(exists[0].doctor_id, exists[0].google_event_id, req.user.user_id);
+                    // Optionally clear event ID so we don't try to sync it anymore
+                    await conn.query("UPDATE appointments SET google_event_id = NULL WHERE id = ?", [id]);
+                } catch (syncErr) {
+                    console.warn("Google Sync Failed (Delete on Cancel), queueing retry:", syncErr.message);
+                    await conn.query(
+                        "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'delete', ?, 'pending')",
+                        [id, exists[0].doctor_id, JSON.stringify({ eventId: exists[0].google_event_id })]
+                    );
+                }
+            } else {
+                const newDescription = `Motivo: ${exists[0].reason || 'N/A'}\nPaciente: ${pName} (DNI: ${pDetails.dni || 'N/A'})\nTeléfono: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nEstado: ${status}\nPago: ${exists[0].payment_status}\nCreado por Aplicación de Secretaría`;
 
-            const updatePayload = {
-                summary: `Consultorio: ${pName} [${exists[0].payment_status.toUpperCase()}]`,
-                status: status,
-                paymentStatus: exists[0].payment_status,
-                description: newDescription
-            };
+                const updatePayload = {
+                    summary: pName,
+                    status: status,
+                    paymentStatus: exists[0].payment_status,
+                    description: newDescription
+                };
 
-            try {
-                const result = await googleController.updateEventHelper(exists[0].doctor_id, exists[0].google_event_id, updatePayload, req.user.user_id);
-                if (!result) throw new Error("Sync failed (returned null)");
-            } catch (syncErr) {
-                console.warn("Google Sync Failed (Status Update), queueing retry:", syncErr.message);
-                await conn.query(
-                    "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'update', ?, 'pending')",
-                    [id, exists[0].doctor_id, JSON.stringify({ eventId: exists[0].google_event_id, updates: updatePayload })]
-                );
+                try {
+                    const result = await googleController.updateEventHelper(exists[0].doctor_id, exists[0].google_event_id, updatePayload, req.user.user_id);
+                    if (!result) throw new Error("Sync failed (returned null)");
+                } catch (syncErr) {
+                    console.warn("Google Sync Failed (Status Update), queueing retry:", syncErr.message);
+                    await conn.query(
+                        "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'update', ?, 'pending')",
+                        [id, exists[0].doctor_id, JSON.stringify({ eventId: exists[0].google_event_id, updates: updatePayload })]
+                    );
+                }
             }
         }
         // ----------------------------
@@ -409,7 +510,7 @@ exports.updatePaymentStatus = async (req, res) => {
             const newDescription = `Motivo: ${appt.reason || 'N/A'}\nPaciente: ${pName} (DNI: ${pDetails.dni || 'N/A'})\nTeléfono: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nEstado: ${appt.status}\nPago: ${status}\nCreado por Aplicación de Secretaría`;
 
             const updatePayload = {
-                summary: `Consultorio: ${pName} [${status.toUpperCase() === 'PAID' ? 'PAGADO' : (status.toUpperCase() === 'DEBT' ? 'DEUDA' : 'PARCIAL')}]`,
+                summary: pName,
                 status: appt.status,
                 paymentStatus: status,
                 description: newDescription
@@ -427,6 +528,188 @@ exports.updatePaymentStatus = async (req, res) => {
             }
         }
         // ----------------------------
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.getNextFreeSlot = async (req, res) => {
+    let conn;
+    try {
+        const { doctor_id, start_date } = req.query;
+        if (!doctor_id) return res.status(400).send("Doctor ID is required");
+
+        conn = await pool.getConnection();
+
+        // 1. Get Doctor Config
+        const [doc] = await conn.query("SELECT appointment_duration, break_duration FROM doctors WHERE id = ?", [doctor_id]);
+        const duration = (doc && doc.length > 0 && doc[0].appointment_duration) ? doc[0].appointment_duration : 60;
+        const breakTime = (doc && doc.length > 0 && doc[0].break_duration) ? doc[0].break_duration : 0;
+        const startHour = 8;
+        const endHour = 20;
+
+        // 2. Setup Loop
+        let currentDay = start_date ? new Date(start_date) : new Date();
+
+        // Round up to next slot interval if "now"
+        // But for simplicity, let's just ensure we don't return a past time.
+        // If "now" is 10:15, and slots are 10:00, 11:00... we should find 11:00.
+        // But for this MVP, exact start times:
+
+        // Adjust for current day limits
+        if (currentDay.getHours() >= endHour) {
+            currentDay.setDate(currentDay.getDate() + 1);
+            currentDay.setHours(startHour, 0, 0, 0);
+        } else if (currentDay.getHours() < startHour) {
+            currentDay.setHours(startHour, 0, 0, 0);
+        }
+
+        const maxDays = 60;
+        let daysChecked = 0;
+
+        // Trackers
+        let foundRegular = null;
+        let foundBreak = null;
+
+        while (daysChecked < maxDays) {
+            // Check Weekend/Holiday
+            // (We iterate days, but now we must check specific schedule for that day)
+            const dayOfWeek = currentDay.getDay();
+
+            // Check Holiday
+            const dateStr = currentDay.toISOString().split('T')[0];
+            const holidays = await conn.query("SELECT id FROM active_holidays WHERE date = ?", [dateStr]);
+            if (holidays.length > 0) {
+                currentDay.setDate(currentDay.getDate() + 1);
+                currentDay.setHours(0, 0, 0, 0); // Reset to start of day
+                daysChecked++;
+                continue;
+            }
+
+            // Get Schedule for this day
+            // If no schedule for this doc, default 8-20 Mon-Fri
+            let dayBlocks = await conn.query(
+                "SELECT start_time, end_time, is_break FROM doctor_schedules WHERE doctor_id = ? AND day_of_week = ? ORDER BY start_time",
+                [doctor_id, dayOfWeek]
+            );
+
+            if (dayBlocks.length === 0) {
+                // Apply Default Legacy: Mon-Fri 8-20
+                if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+                    dayBlocks = [{ start_time: '08:00:00', end_time: '20:00:00', is_break: 0 }];
+                }
+            }
+
+            if (dayBlocks.length === 0) {
+                // No schedule today
+                currentDay.setDate(currentDay.getDate() + 1);
+                currentDay.setHours(0, 0, 0, 0);
+                daysChecked++;
+                continue;
+            }
+
+            // Fetch occupied slots (Entire Day to be safe, or min/max of blocks)
+            // Let's fetch entire day
+            const dayStartQuery = new Date(currentDay); dayStartQuery.setHours(0, 0, 0, 0);
+            const dayEndQuery = new Date(currentDay); dayEndQuery.setHours(23, 59, 59, 999);
+
+            const existingAppts = await conn.query(
+                "SELECT appointment_date FROM appointments WHERE doctor_id = ? AND appointment_date >= ? AND appointment_date <= ? AND status != 'cancelled'",
+                [doctor_id, dayStartQuery, dayEndQuery]
+            );
+
+            // Iterate Blocks
+            for (const block of dayBlocks) {
+                // skip if found both
+                if (foundRegular && foundBreak) break;
+
+                // Parse block times relative to currentDay
+                const blockStart = new Date(currentDay);
+                const [sh, sm] = block.start_time.split(':');
+                blockStart.setHours(sh, sm, 0, 0);
+
+                const blockEnd = new Date(currentDay);
+                const [eh, em] = block.end_time.split(':');
+                blockEnd.setHours(eh, em, 0, 0);
+
+                const isBreakBlock = block.is_break === 1;
+
+                // Iterate slots in this block
+                let timeCursor = new Date(blockStart);
+                while (timeCursor < blockEnd) {
+                    if (foundRegular && foundBreak) break;
+
+                    // Check if valid start time (future)
+                    if (timeCursor <= new Date()) {
+                        timeCursor = new Date(timeCursor.getTime() + duration * 60000);
+                        continue;
+                    }
+
+                    const slotEnd = new Date(timeCursor.getTime() + duration * 60000);
+                    // Must finish before block end? Yes.
+                    if (slotEnd > blockEnd) {
+                        break; // Move to next block
+                    }
+
+                    // Check Conflicts
+                    const isBusy = existingAppts.some(app => {
+                        const appTime = new Date(app.appointment_date).getTime();
+                        // Standard overlap check:
+                        // [appStart, appStart+duration) OVERLAPS [timeCursor, slotEnd)
+                        // appStart < slotEnd && appStart+duration > timeCursor.
+                        // Assuming all appointments are 'duration' length approx, or just strict slot matching.
+                        // Existing logic was strict match or simple contain.
+                        // Let's stick to strict match for grid alignment if possible, OR simple range check.
+
+                        // Let's use Range check for safety
+                        const appStart = new Date(app.appointment_date).getTime();
+                        const appEnd = appStart + duration * 60000; // Assume same duration? 
+                        // Dangerous assumption if variable durations.
+                        // But usually appts are fixed slots.
+                        // Let's check strict start time match first as primary grid system
+                        return appStart === timeCursor.getTime();
+                    });
+
+                    if (!isBusy) {
+                        // Google Check
+                        const busy = await googleController.checkConflict(doctor_id, timeCursor.toISOString(), slotEnd.toISOString());
+                        if (!busy) {
+                            if (isBreakBlock) {
+                                if (!foundBreak) foundBreak = timeCursor;
+                            } else {
+                                if (!foundRegular) foundRegular = timeCursor;
+                            }
+                        }
+                    }
+
+                    // Increment
+                    // If break block, maybe increment by duration too? 
+                    // Or is this a "Gap"?
+                    // User said "asignar turno en descanso". So "Break" is just a type of slot.
+                    timeCursor = new Date(timeCursor.getTime() + duration * 60000);
+                }
+            }
+
+
+            // Move to next day
+            currentDay.setDate(currentDay.getDate() + 1);
+            currentDay.setHours(0, 0, 0, 0);
+            daysChecked++;
+        }
+
+        if (foundRegular || foundBreak) {
+            return res.json({
+                slot: foundRegular,
+                breakSlot: foundBreak,
+                doctor_id
+            });
+        }
+
+        res.status(404).json({ message: "No free slots found in next 60 days." });
+
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");

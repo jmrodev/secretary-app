@@ -11,8 +11,8 @@ android {
         applicationId = "com.secretaryapp"
         minSdk = 26
         targetSdk = 34
-        versionCode = 22
-        versionName = "1.9.3"
+        versionCode = 23
+        versionName = "1.9.3.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -34,6 +34,22 @@ android {
         outputs.all {
             val output = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
             output.outputFileName = "secretary-app-v${defaultConfig.versionName}.apk"
+        }
+    }
+
+    // Auto-copy APK content
+    tasks.register<Copy>("copyApkToServer") {
+        description = "Copies the generated APK to the server uploads directory"
+        val apkName = "secretary-app-v${defaultConfig.versionName}.apk"
+        
+        from(layout.buildDirectory.dir("outputs/apk/debug").get().file(apkName))
+        into("/home/cima/Documentos/secretary-app/server/uploads/")
+        rename { "secretary-app.apk" }
+    }
+
+    afterEvaluate {
+        tasks.named("assembleDebug") {
+            finalizedBy("copyApkToServer")
         }
     }
     compileOptions {
@@ -66,4 +82,8 @@ dependencies {
     
     // WorkManager for robust background tasks
     implementation("androidx.work:work-runtime-ktx:2.9.0")
+
+    // QR Scanning
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation("com.google.zxing:core:3.4.1")
 }

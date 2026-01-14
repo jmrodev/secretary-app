@@ -28,59 +28,114 @@ const AuditLogs = () => {
 
     if (loading) return <div className="app-layout"><main className="main-content">{t('loading_logs')}</main></div>;
 
-    if (user.role !== 'admin') return <div className="app-layout"><main className="main-content">{t('access_denied')}</main></div>;
+    const formatAction = (action) => {
+        let color = 'chip-gray';
+        let label = action;
+
+        if (action.includes('LOGIN')) color = 'chip-blue';
+        if (action.includes('CREATE')) color = 'chip-green';
+        if (action.includes('UPDATE')) color = 'chip-yellow'; // Yellow text might be hard to read on light bg, checking CSS... yellow bg with dark gold text. Good.
+        if (action.includes('DELETE')) color = 'chip-indigo'; // or red? css has chip-indigo. Let's use red style inline or add chip-red if needed. chip-danger isn't there? 
+        // Actually, let's use custom class if needed or mapped ones.
+        if (action.includes('DELETE')) return { color: 'bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold', label };
+        if (action.includes('ERROR')) return { color: 'bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold', label };
+
+        return { color: `status-chip ${color}`, label };
+    };
+
+    const formatDetails = (detailsRaw) => {
+        if (!detailsRaw) return <span className="text-muted">-</span>;
+
+        let content = detailsRaw;
+        let isJson = false;
+        try {
+            const parsed = JSON.parse(detailsRaw);
+            if (typeof parsed === 'object' && parsed !== null) {
+                content = parsed;
+                isJson = true;
+            }
+        } catch (e) {
+            // Not JSON
+        }
+
+        if (isJson) {
+            return (
+                <div className="text-xs">
+                    {Object.entries(content).map(([key, value]) => (
+                        <div key={key} className="mb-1">
+                            <span className="font-semibold text-slate-700">{key}:</span>{' '}
+                            <span className="text-slate-600">{typeof value === 'object' ? JSON.stringify(value) : String(value)}</span>
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+
+        return <span className="text-sm text-slate-600">{String(detailsRaw)}</span>;
+    };
+
+    if (loading) return <div className="app-layout"><main className="main-content flex justify-center items-center h-full">{t('loading_logs')}</main></div>;
+
+    if (user.role !== 'admin') return <div className="app-layout"><main className="main-content text-center p-10">{t('access_denied')}</main></div>;
 
     return (
         <div className="app-layout">
             <Sidebar />
             <main className="main-content">
-                <h1 className="title">{t('system_transaction_logs')}</h1>
+                <div className="w-full max-w-5xl">
+                    <h1 className="title mb-6">{t('system_transaction_logs')}</h1>
 
-                <div className="card table-responsive">
-                    <table className="table-base table-base-lg">
-                        <thead>
-                            <tr className="border-b-2 text-left">
-                                <th>{t('time_header')}</th>
-                                <th>{t('user_header')}</th>
-                                <th>{t('action_header')}</th>
-                                <th>{t('details_header')}</th>
-                                <th>{t('ip_header')}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {logs.map(log => (
-                                <tr key={log.id}>
-                                    <td className="whitespace-nowrap text-muted">
-                                        {new Date(log.created_at).toLocaleString()}
-                                    </td>
-                                    <td>
-                                        <strong>{log.username}</strong>
-                                    </td>
-                                    <td>
-                                        <span className="status-chip chip-gray">
-                                            {log.action}
-                                        </span>
-                                    </td>
-                                    <td className="text-sm">
-                                        {log.details && log.details.length > 50 ? (
-                                            <div>
-                                                {log.details.substring(0, 50)}...
-                                                <button
-                                                    className="text-blue-500 hover:text-blue-700 ml-2 text-xs"
-                                                    onClick={() => setSelectedLog(log)}
-                                                >
-                                                    {t('view_details') || 'Ver Detalle'}
-                                                </button>
-                                            </div>
-                                        ) : log.details}
-                                    </td>
-                                    <td className="text-xs-gray">
-                                        {log.ip_address}
-                                    </td>
+                    <div className="card table-responsive p-0 overflow-hidden shadow-sm">
+                        <table className="table-base table-base-lg w-full">
+                            <thead className="bg-slate-50">
+                                <tr className="border-b text-left text-xs uppercase tracking-wider text-slate-500">
+                                    <th className="py-3 px-4">{t('time_header')}</th>
+                                    <th className="py-3 px-4">{t('user_header')}</th>
+                                    <th className="py-3 px-4">{t('action_header')}</th>
+                                    <th className="py-3 px-4 w-1/3">{t('details_header')}</th>
+                                    <th className="py-3 px-4">{t('ip_header')}</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100">
+                                {logs.map(log => {
+                                    const actionStyle = formatAction(log.action);
+                                    return (
+                                        <tr key={log.id} className="hover:bg-slate-50 transition-colors">
+                                            <td className="py-3 px-4 text-sm text-slate-500 whitespace-nowrap">
+                                                {new Date(log.created_at).toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                                            </td>
+                                            <td className="py-3 px-4 text-sm font-medium text-slate-700">
+                                                {log.username}
+                                            </td>
+                                            <td className="py-3 px-4">
+                                                <span className={actionStyle.color}>
+                                                    {actionStyle.label}
+                                                </span>
+                                            </td>
+                                            <td className="py-3 px-4 text-sm max-w-xs truncate" title={log.details}>
+                                                {log.details ? (
+                                                    log.details.length > 60 ? (
+                                                        <span className="flex items-center gap-2">
+                                                            <span className="text-slate-500 truncate block max-w-[200px]">{log.details}</span>
+                                                            <button
+                                                                className="text-blue-600 hover:text-blue-800 text-xs font-semibold bg-blue-50 px-2 py-1 rounded border border-blue-100"
+                                                                onClick={() => setSelectedLog(log)}
+                                                            >
+                                                                View
+                                                            </button>
+                                                        </span>
+                                                    ) : <span className="text-slate-500">{log.details}</span>
+                                                ) : <span className="text-slate-300">-</span>}
+                                            </td>
+                                            <td className="py-3 px-4 text-xs text-slate-400 font-mono">
+                                                {log.ip_address}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 {/* Detail Modal */}
@@ -90,25 +145,37 @@ const AuditLogs = () => {
                     title={t('log_details') || 'Detalle de Registro'}
                 >
                     {selectedLog && (
-                        <div>
-                            <div className="mb-4">
-                                <strong>{t('action')}:</strong> {selectedLog.action}
+                        <div className="space-y-4">
+                            <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-100">
+                                <div>
+                                    <div className="text-xs text-slate-400 uppercase tracking-wider mb-1">{t('action')}</div>
+                                    <div className="font-bold text-slate-800">{selectedLog.action}</div>
+                                </div>
+                                <div>
+                                    <div className="text-xs text-slate-400 uppercase tracking-wider mb-1">{t('user')}</div>
+                                    <div className="font-medium text-slate-800">{selectedLog.username}</div>
+                                </div>
+                                <div>
+                                    <div className="text-xs text-slate-400 uppercase tracking-wider mb-1">{t('date')}</div>
+                                    <div className="text-sm text-slate-600">{new Date(selectedLog.created_at).toLocaleString()}</div>
+                                </div>
+                                <div>
+                                    <div className="text-xs text-slate-400 uppercase tracking-wider mb-1">{t('ip_header')}</div>
+                                    <div className="text-sm font-mono text-slate-600">{selectedLog.ip_address}</div>
+                                </div>
                             </div>
-                            <div className="mb-4">
-                                <strong>{t('user')}:</strong> {selectedLog.username}
+
+                            <div className="border-t pt-4">
+                                <h4 className="text-sm font-bold text-slate-700 mb-3">{t('details_header')}</h4>
+                                <div className="bg-white p-4 rounded border border-slate-200 max-h-60 overflow-y-auto shadow-inner">
+                                    {formatDetails(selectedLog.details)}
+                                </div>
                             </div>
-                            <div className="mb-4">
-                                <strong>{t('date')}:</strong> {new Date(selectedLog.created_at).toLocaleString()}
-                            </div>
-                            <div className="p-4 bg-gray-50 rounded border">
-                                <pre className="whitespace-pre-wrap font-inherit">
-                                    {selectedLog.details}
-                                </pre>
-                            </div>
-                            <div className="mt-4 flex justify-end">
+
+                            <div className="flex justify-end pt-2">
                                 <button
                                     onClick={() => setSelectedLog(null)}
-                                    className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+                                    className="btn btn-secondary"
                                 >
                                     {t('close') || 'Cerrar'}
                                 </button>

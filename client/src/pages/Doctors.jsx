@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import { useModal } from '../context/ModalContext';
+import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
 
 import Sidebar from '../components/Sidebar';
@@ -11,6 +13,8 @@ import CurrencyInput from '../components/CurrencyInput';
 const Doctors = () => {
     const { t } = useLanguage();
     const { user } = useAuth();
+    const { showMessage } = useMessage();
+    const { alert } = useModal();
     const [doctors, setDoctors] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -59,7 +63,10 @@ const Doctors = () => {
             consultation_price: doc.consultation_price || 0,
             prescription_price: doc.prescription_price || 0,
             medical_license_price: doc.medical_license_price || 0,
-            virtual_consultation_price: doc.virtual_consultation_price || 0
+            certificate_price: doc.certificate_price || 0,
+            virtual_consultation_price: doc.virtual_consultation_price || 0,
+            appointment_duration: doc.appointment_duration || 60,
+            break_duration: doc.break_duration || 0
         });
         setEditModalOpen(true);
     };
@@ -69,6 +76,7 @@ const Doctors = () => {
             await api.put(`/users/doctors/${editData.id}`, editData);
             setEditModalOpen(false);
             fetchDoctors();
+            showMessage("Doctor status updated", "success");
         } catch (err) {
             console.error("Failed to update doctor", err);
             alert("Failed to update doctor.");
@@ -218,6 +226,28 @@ const Doctors = () => {
                             <div className="input-group">
                                 <label className="input-label">{t('certificate_price') || 'Certificate Price'}</label>
                                 <CurrencyInput className="input-field" value={editData.certificate_price} onChange={e => setEditData({ ...editData, certificate_price: e.target.value })} />
+                            </div>
+                        </div>
+
+                        <h4 className="section-header-line">📅 {t('schedule_config') || 'Configuración de Agenda'}</h4>
+                        <div className="grid-2-cols">
+                            <div className="input-group">
+                                <label className="input-label">{t('appointment_duration') || 'Duración Turno (min)'}</label>
+                                <input
+                                    type="number"
+                                    className="input-field"
+                                    value={editData.appointment_duration}
+                                    onChange={e => setEditData({ ...editData, appointment_duration: e.target.value })}
+                                />
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">{t('break_duration') || 'Tiempo Descanso (min)'}</label>
+                                <input
+                                    type="number"
+                                    className="input-field"
+                                    value={editData.break_duration}
+                                    onChange={e => setEditData({ ...editData, break_duration: e.target.value })}
+                                />
                             </div>
                         </div>
                     </div>

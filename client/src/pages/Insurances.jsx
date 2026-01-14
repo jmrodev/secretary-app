@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
+import { useModal } from '../context/ModalContext';
 import Sidebar from '../components/Sidebar';
 import Modal from '../components/Modal';
 import { useMessage } from '../context/MessageContext';
 
 const Insurances = () => {
     const { showMessage } = useMessage();
+    const { confirm } = useModal();
     const [insurances, setInsurances] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -70,7 +72,7 @@ const Insurances = () => {
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm("Are you sure?")) return;
+        if (!await confirm("Are you sure?")) return;
         try {
             await api.delete(`/insurances/${id}`);
             showMessage("Insurance deleted", "success");

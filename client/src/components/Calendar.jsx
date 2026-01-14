@@ -37,17 +37,19 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
     const daysOfWeek = t('days_short_array') || ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     const handlePrevMonth = () => {
-        const newDate = new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1);
-        setViewDate(newDate);
-        // [UX Improvement] Auto-select 1st of new month so "Agenda de Turnos" updates immediately
-        onDateSelect(newDate);
+        setViewDate(prev => {
+            const newDate = new Date(prev.getFullYear(), prev.getMonth() - 1, 1);
+            onDateSelect(newDate);
+            return newDate;
+        });
     };
 
     const handleNextMonth = () => {
-        const newDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1);
-        setViewDate(newDate);
-        // [UX Improvement] Auto-select 1st of new month
-        onDateSelect(newDate);
+        setViewDate(prev => {
+            const newDate = new Date(prev.getFullYear(), prev.getMonth() + 1, 1);
+            onDateSelect(newDate);
+            return newDate;
+        });
     };
 
     const renderDays = () => {

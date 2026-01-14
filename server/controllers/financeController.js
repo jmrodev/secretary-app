@@ -12,14 +12,31 @@ exports.createTransaction = async (req, res) => {
         // related_user_id: Patient or Doctor interacting
         // doctor_id: Beneficiary of the cash box
         const { type, amount, description, related_user_id, doctor_id, method, status, debt_amount, appointment_id } = req.body;
+        let { payments } = req.body;
         const proof_file = req.file ? `/uploads/${req.file.filename}` : null;
+
+        if (payments && typeof payments === 'string') {
+            try {
+                payments = JSON.parse(payments);
+            } catch (e) {
+                console.error("Failed to parse payments JSON", e);
+            }
+        }
 
         conn = await pool.getConnection();
 
-        // 1. Register the Payment (if amount > 0)
-        // If amount is 0, it means they paid nothing now, everything is debt? 
-        // Let's assume there's always a transaction record.
-        if (Number(amount) > 0) {
+        // 1. Register the Payments
+        if (Array.isArray(payments) && payments.length > 0) {
+            for (const p of payments) {
+                if (Number(p.amount) > 0) {
+                    await conn.query(
+                        "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, proof_file, request_id, appointment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        [type, p.amount, description, related_user_id || null, doctor_id || null, p.method || 'cash', status || 'paid', proof_file, req.body.request_id || null, appointment_id || null]
+                    );
+                }
+            }
+        } else if (Number(amount) > 0) {
+            // Fallback for single payment
             await conn.query(
                 "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, proof_file, request_id, appointment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 [type, amount, description, related_user_id || null, doctor_id || null, method || 'cash', status || 'paid', proof_file, req.body.request_id || null, appointment_id || null]

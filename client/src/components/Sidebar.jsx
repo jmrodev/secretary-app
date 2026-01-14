@@ -59,6 +59,10 @@ const Sidebar = () => {
                 )}
 
                 {(user.role === 'admin' || user.role === 'secretary') && (
+                    <a href="/institutions" className={`sidebar-link ${isActive('/institutions')}`}>🏢 Instituciones</a>
+                )}
+
+                {(user.role === 'admin' || user.role === 'secretary') && (
                     <a href="/config" className={`sidebar-link ${isActive('/config')}`}>{t('system_config')}</a>
                 )}
 

@@ -6,7 +6,7 @@ const { logAction } = require('../utils/audit');
 exports.register = async (req, res) => {
     let conn;
     try {
-        const { username, password, role, fullName, phone, specialty, cbu, dob, address, medicalHistory, dni, insurance } = req.body;
+        const { username, password, role, fullName, phone, specialty, cbu, dob, address, medicalHistory, dni, insurance_id, institution_id, affiliate_number } = req.body;
 
         if (!(username && password && role && fullName)) {
             return res.status(400).send('All input is required');
@@ -38,6 +38,8 @@ exports.register = async (req, res) => {
 
         // Create Profile based on role
 
+        let patientId = null;
+
         if (role === 'doctor') {
             await conn.query("INSERT INTO doctors (user_id, full_name, specialty, phone, cbu, dni) VALUES (?, ?, ?, ?, ?, ?)",
                 [userId, fullName, specialty || null, phone || null, cbu || null, dni || null]);
@@ -45,8 +47,9 @@ exports.register = async (req, res) => {
             await conn.query("INSERT INTO secretaries (user_id, full_name, phone, dni) VALUES (?, ?, ?, ?)",
                 [userId, fullName, phone || null, dni || null]);
         } else if (role === 'patient') {
-            await conn.query("INSERT INTO patients (user_id, full_name, dob, phone, address, medical_history, dni, insurance) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                [userId, fullName, dob || null, phone || null, address || null, medicalHistory || null, dni || null, insurance || null]);
+            const pResult = await conn.query("INSERT INTO patients (user_id, full_name, dob, phone, address, medical_history, dni, insurance_id, institution_id, affiliate_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [userId, fullName, dob || null, phone || null, address || null, medicalHistory || null, dni || null, insurance_id || null, institution_id || null, affiliate_number || null]);
+            patientId = pResult.insertId;
         }
 
         // Create token
@@ -60,7 +63,7 @@ exports.register = async (req, res) => {
         const logReq = { body: { username }, ip: req.ip };
         logAction(logReq, 'REGISTER', `New user registered: ${username} as ${role}`);
 
-        res.status(201).json({ user_id: userId, username, role, token });
+        res.status(201).json({ user_id: userId, username, role, token, patient_id: patientId });
     } catch (err) {
         console.log(err);
         res.status(500).send("Internal Server Error");

@@ -24,7 +24,9 @@ object RetrofitClient {
             val savedIp = sharedPreferences.getString("server_ip", DEFAULT_IP)
             val savedPort = sharedPreferences.getString("server_port", DEFAULT_PORT)
             
-            currentBaseUrl = "http://$savedIp:$savedPort/api/"
+            val protocol = if (savedPort == "443") "https" else "http"
+            val portSuffix = if (savedPort == "443" || savedPort == "80") "" else ":$savedPort"
+            currentBaseUrl = "$protocol://$savedIp$portSuffix/api/"
         }
     }
 

@@ -7,14 +7,55 @@ const { pool } = require('./db');
 BigInt.prototype.toJSON = function () { return Number(this); };
 
 const authRoutes = require('./routes/authRoutes');
+const institutionRoutes = require('./routes/institutionRoutes'); // [NEW]
 
 dotenv.config();
 
+const { initScheduler } = require('./utils/scheduler');
+
 const app = express();
+// Initialize Scheduler
+initScheduler();
+
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+
+// Add bypass header for Cloudflare Tunnel and Auto-detect Staff IP
+app.use(async (req, res, next) => {
+    res.setHeader('Bypass-Tunnel-Reminder', 'true');
+
+    // Self-learning: Detect if staff is accessing via a LAN IP and update staff_base_url
+    try {
+        const host = req.get('host'); // e.g. "192.168.1.50:5000"
+        if (host && !host.includes('localhost') && !host.includes('127.0.0.1') && !host.includes('.trycloudflare.com')) {
+            const ipPart = host.split(':')[0];
+            // Check if it's a private IPv4 (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
+            const isPrivate = /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.)/.test(ipPart);
+
+            if (isPrivate) {
+                const staffUrl = `http://${ipPart}:5173`; // We assume the client is on 5173
+                // Only update if different to avoid constant DB writes
+                // We should probably cache this in memory or just use a flag, 
+                // but for now, we'll let it run. A better way is to do it once per startup or on change.
+                if (global.lastDetectedStaffIp !== staffUrl) {
+                    global.lastDetectedStaffIp = staffUrl;
+                    const { pool } = require('./db');
+                    await pool.query(
+                        'INSERT INTO system_settings (setting_key, setting_value) VALUES ("staff_base_url", ?) ON DUPLICATE KEY UPDATE setting_value = ?',
+                        [staffUrl, staffUrl]
+                    );
+                    console.log(`🤖 Auto-detected Staff LAN IP: ${staffUrl}`);
+                }
+            }
+        }
+    } catch (e) {
+        // Silently fail to not block the request
+    }
+
+    next();
+});
 
 
 
@@ -32,7 +73,11 @@ app.use('/api/settings', require('./routes/settingsRoutes'));
 app.use('/api/insurances', require('./routes/insuranceRoutes'));
 app.use('/api/holidays', require('./routes/holidayRoutes'));
 app.use('/api/messages', require('./routes/messageRoutes'));
+app.use('/api/temp-access', require('./routes/tempAccessRoutes')); // [NEW] QR Access
+app.use('/api/institutions', institutionRoutes); // [NEW] Institutions
+app.use('/api/schedules', require('./routes/scheduleRoutes')); // [NEW] Schedules
 app.use('/uploads', express.static('uploads'));
+
 
 app.get('/api/debug/dump-appointments', async (req, res) => {
     try {
@@ -73,6 +118,10 @@ app.listen(PORT, '0.0.0.0', async () => {
         // Start Google Sync Worker
         const { startSyncWorker } = require('./services/googleSyncService');
         startSyncWorker();
+
+        // Start Cloudflare Tunnel Manager (100% Automatic)
+        const { startTunnelManager } = require('./utils/tunnel-manager');
+        startTunnelManager();
 
     } catch (err) {
         console.error('Failed to connect to MariaDB:', err);

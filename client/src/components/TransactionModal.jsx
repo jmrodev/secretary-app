@@ -10,11 +10,10 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
     const { t } = useLanguage();
     const [formData, setFormData] = useState({
         type: 'income_patient',
-        amount: '',
+        payments: [{ amount: '', method: 'cash' }],
         description: '',
         related_user_id: '',
         doctor_id: '',
-        method: 'cash',
         status: 'paid',
         service_type: 'consultation',
         proof: null
@@ -36,11 +35,10 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
             setFormData(prev => ({
                 ...prev,
                 type: data.type || 'income_patient',
-                amount: data.amount || '',
+                payments: data.payments || [{ amount: data.amount || '', method: data.method || 'cash' }],
                 description: data.description || '',
-                related_user_id: data.patientUserId || data.patientId || '', // prefer userId, fallback (though likely wrong if fallback is patientId)
+                related_user_id: data.patientUserId || data.patientId || '',
                 doctor_id: data.doctorId || '',
-                method: data.method || 'cash',
                 status: data.status || 'paid'
             }));
 
@@ -64,7 +62,13 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
         try {
             const res = await api.get(`/finances/pricing?doctor_id=${docId}&patient_id=${patId}&service_type=${serviceType}`);
             if (res.data) {
-                setFormData(prev => ({ ...prev, amount: res.data.price }));
+                setFormData(prev => {
+                    const newPayments = [...prev.payments];
+                    if (newPayments.length > 0) {
+                        newPayments[0].amount = res.data.price;
+                    }
+                    return { ...prev, payments: newPayments };
+                });
                 setTotalPrice(Number(res.data.price));
                 setPricingInfo(res.data.explanation);
             }
@@ -91,13 +95,18 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
         try {
             const data = new FormData();
             Object.keys(formData).forEach(key => {
-                if (formData[key] !== null) data.append(key, formData[key]);
+                if (key === 'payments') {
+                    data.append(key, JSON.stringify(formData[key]));
+                } else if (formData[key] !== null) {
+                    data.append(key, formData[key]);
+                }
             });
+
+            const totalPaid = formData.payments.reduce((acc, p) => acc + Number(p.amount || 0), 0);
 
             // Calculate Debt if patient income
             if (formData.type === 'income_patient' && totalPrice > 0) {
-                const paid = Number(formData.amount);
-                const debt = totalPrice - paid;
+                const debt = totalPrice - totalPaid;
                 if (debt > 0) {
                     data.append('debt_amount', debt);
                 }
@@ -252,30 +261,74 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
             )}
 
             <div className="input-group">
-                <div className="grid-2-cols">
-                    <div>
-                        <label className="input-label">{t('amount_paid')}</label>
-                        <CurrencyInput className="input-field" value={formData.amount} onChange={e => setFormData({ ...formData, amount: e.target.value })} />
-                        {pricingInfo && (
-                            <div className="pricing-info-container">
-                                <small className="pricing-info-text">{pricingInfo}</small>
-                                {(totalPrice - Number(formData.amount)) > 0 && (
-                                    <small className="debt-alert">
-                                        {t('debt')}: {formatPrice(totalPrice - Number(formData.amount))}
-                                    </small>
-                                )}
-                            </div>
+                <label className="input-label">{t('payment_methods')}</label>
+                {formData.payments.map((payment, index) => (
+                    <div key={index} className="grid-payment-row" style={{ display: 'grid', gridTemplateColumns: 'minmax(100px, 1fr) minmax(100px, 1fr) auto', gap: '10px', marginBottom: '10px', alignItems: 'end' }}>
+                        <div>
+                            <small className="input-label-inner">{t('amount')}</small>
+                            <CurrencyInput
+                                className="input-field"
+                                value={payment.amount}
+                                onChange={e => {
+                                    const newPayments = [...formData.payments];
+                                    newPayments[index].amount = e.target.value;
+                                    setFormData({ ...formData, payments: newPayments });
+                                }}
+                            />
+                        </div>
+                        <div>
+                            <small className="input-label-inner">{t('method')}</small>
+                            <select
+                                className="input-field"
+                                value={payment.method}
+                                onChange={e => {
+                                    const newPayments = [...formData.payments];
+                                    newPayments[index].method = e.target.value;
+                                    setFormData({ ...formData, payments: newPayments });
+                                }}
+                            >
+                                <option value="cash">{t('cash') || 'Cash'}</option>
+                                <option value="debit">{t('debit') || 'Debit Card'}</option>
+                                <option value="credit">{t('credit') || 'Credit Card'}</option>
+                                <option value="transfer">{t('transfer') || 'Transfer'}</option>
+                                <option value="mercadopago">MercadoPago</option>
+                            </select>
+                        </div>
+                        {formData.payments.length > 1 && (
+                            <button
+                                className="btn-icon text-red"
+                                onClick={() => {
+                                    const newPayments = formData.payments.filter((_, i) => i !== index);
+                                    setFormData({ ...formData, payments: newPayments });
+                                }}
+                                title={t('remove')}
+                            >
+                                ✕
+                            </button>
                         )}
                     </div>
-                    <div>
-                        <label className="input-label">{t('method')}</label>
-                        <select className="input-field" value={formData.method} onChange={e => setFormData({ ...formData, method: e.target.value })}>
-                            <option value="cash">Cash</option>
-                            <option value="debit">Debit Card</option>
-                            <option value="credit">Credit Card</option>
-                            <option value="transfer">Transfer</option>
-                            <option value="mercadopago">MercadoPago</option>
-                        </select>
+                ))}
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '5px' }}>
+                    <button
+                        type="button"
+                        className="btn-text"
+                        onClick={() => setFormData({ ...formData, payments: [...formData.payments, { amount: '', method: 'cash' }] })}
+                    >
+                        + {t('add_payment_method') || 'Add Method'}
+                    </button>
+
+                    <div className="pricing-info-container" style={{ textAlign: 'right' }}>
+                        {pricingInfo && <small className="pricing-info-text" style={{ display: 'block' }}>{pricingInfo}</small>}
+                        {totalPrice > 0 && (
+                            <small className={(totalPrice - formData.payments.reduce((acc, p) => acc + Number(p.amount || 0), 0)) > 0 ? 'debt-alert' : 'text-green'}>
+                                {t('total_to_pay') || 'Total'}: {formatPrice(totalPrice)} |
+                                {t('paid')}: {formatPrice(formData.payments.reduce((acc, p) => acc + Number(p.amount || 0), 0))}
+                                {(totalPrice - formData.payments.reduce((acc, p) => acc + Number(p.amount || 0), 0)) > 0 &&
+                                    <span> | {t('debt')}: {formatPrice(totalPrice - formData.payments.reduce((acc, p) => acc + Number(p.amount || 0), 0))}</span>
+                                }
+                            </small>
+                        )}
                     </div>
                 </div>
             </div>

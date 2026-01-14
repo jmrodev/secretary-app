@@ -4,13 +4,16 @@ import { useLanguage } from '../context/LanguageContext';
 import { useMessage } from '../context/MessageContext';
 import { useConfig } from '../context/ConfigContext';
 import Sidebar from '../components/Sidebar';
-
+import QRCodeModal from '../components/QRCodeModal';
+import DoctorScheduleSettings from '../components/DoctorScheduleSettings'; // [NEW]
+import { useModal } from '../context/ModalContext';
 import { useAuth } from '../context/AuthContext';
 
 const SystemConfig = () => {
     const { user } = useAuth();
     const { t } = useLanguage();
     const { showMessage } = useMessage();
+    const { alert, confirm, prompt } = useModal();
     const { settings, updateSetting } = useConfig();
     const [connected, setConnected] = useState(false);
     const [loading, setLoading] = useState(false); // Changed default to false, load on select
@@ -18,7 +21,12 @@ const SystemConfig = () => {
 
     // Doctor Selection State
     const [doctors, setDoctors] = useState([]);
-    const [selectedDoctor, setSelectedDoctor] = useState('');
+    const [selectedDoctor, setSelectedDoctor] = useState(localStorage.getItem('last_selected_doctor_id') || '');
+
+    // QR Modal State
+    const [qrModalOpen, setQrModalOpen] = useState(false);
+    const [qrUrl, setQrUrl] = useState('');
+    const [qrExpiry, setQrExpiry] = useState(null);
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -38,6 +46,7 @@ const SystemConfig = () => {
     useEffect(() => {
         if (selectedDoctor) {
             checkStatus(selectedDoctor);
+            localStorage.setItem('last_selected_doctor_id', selectedDoctor);
         } else {
             setConnected(false);
         }
@@ -88,7 +97,7 @@ const SystemConfig = () => {
     };
 
     const handleDisconnect = async () => {
-        if (!window.confirm("Are you sure? This will stop syncing.")) return;
+        if (!await confirm("Are you sure? This will stop syncing.")) return;
         try {
             await api.post('/google/disconnect', { doctorId: selectedDoctor });
             setConnected(false);
@@ -104,33 +113,137 @@ const SystemConfig = () => {
             <main className="main-content">
                 <h1 className="title">System Configuration</h1>
 
-                {user.role === 'admin' && (
-                    <div className="card mb-8">
-                        <h3>General Settings</h3>
-                        <div className="input-group-row-center gap-4">
-                            <input
-                                type="checkbox"
-                                id="opt-rentals"
-                                checked={settings.enable_office_rentals === 'true'}
-                                onChange={(e) => updateSetting('enable_office_rentals', e.target.checked)}
-                                className="w-5 h-5"
-                            />
-                            <label htmlFor="opt-rentals" className="input-label m-0">
-                                Enable Office Rentals (Alquiler de Consultorios)
-                            </label>
+                {(user.role === 'admin' || user.role === 'secretary') && (
+                    <>
+                        <div className="card mb-8">
+                            <h3>Configuración General</h3>
+                            <div className="input-group-row-center gap-4 mb-4">
+                                <input
+                                    type="checkbox"
+                                    id="opt-rentals"
+                                    checked={settings.enable_office_rentals === 'true'}
+                                    onChange={(e) => updateSetting('enable_office_rentals', e.target.checked)}
+                                    className="w-5 h-5"
+                                    disabled={user.role !== 'admin'}
+                                />
+                                <label htmlFor="opt-rentals" className="input-label m-0">
+                                    Activar Alquiler de Consultorios
+                                </label>
+                            </div>
+
+                            <div className="input-group">
+                                <label className="input-label" htmlFor="public-base-url">URL Pública de la Clínica (Cloudflare)</label>
+                                <input
+                                    type="url"
+                                    id="public-base-url"
+                                    className="input-field max-w-400"
+                                    placeholder="https://mi-consultorio.trycloudflare.com"
+                                    value={settings.public_base_url || ''}
+                                    onChange={(e) => updateSetting('public_base_url', e.target.value)}
+                                    readOnly={user.role !== 'admin'}
+                                />
+                                <p className="text-sm-muted mt-1">
+                                    Dirección web externa del sistema que aparecerá en enlaces y códigos QR de registro/acceso.
+                                </p>
+                            </div>
+
+                            <div className="input-group mt-6">
+                                <label className="input-label" htmlFor="staff-base-url">URL Base Local (Staff / Oficina)</label>
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        id="staff-base-url"
+                                        className="input-field flex-1"
+                                        placeholder="http://192.168.0.x:5173"
+                                        value={settings.staff_base_url || ''}
+                                        onChange={(e) => updateSetting('staff_base_url', e.target.value)}
+                                        readOnly={user.role !== 'admin'}
+                                    />
+                                    <button
+                                        className="btn btn-outline"
+                                        onClick={() => {
+                                            const url = settings.staff_base_url || window.location.origin;
+                                            navigator.clipboard.writeText(url);
+                                            showMessage(`Local Staff Link copied: ${url}`, 'success');
+                                        }}
+                                    >
+                                        🔗 Link
+                                    </button>
+                                    <button
+                                        className="btn btn-secondary"
+                                        onClick={() => {
+                                            const url = settings.staff_base_url || window.location.origin;
+                                            setQrUrl(url);
+                                            setQrExpiry(null);
+                                            setQrModalOpen(true);
+                                        }}
+                                    >
+                                        💻 STAFF QR
+                                    </button>
+                                </div>
+                                <p className="text-sm-muted mt-1">
+                                    Esta sección de acceso es exclusiva para el Staff (Médicos y Secretarias). Comparta este acceso local para usar el sistema dentro de la oficina. Usa la IP de esta PC.
+                                    <br />
+                                    <span className="text-green-600 font-bold">✨ Se actualiza solo cuando entras desde un dispositivo nuevo en la red.</span>
+                                </p>
+                            </div>
+
+                            <p className="text-sm-muted mt-4">
+                                Si se desactiva el Alquiler de Consultorios, la opción "Alquileres" desaparecerá del menú lateral para todo el Staff.
+                            </p>
                         </div>
-                        <p className="text-sm-muted">
-                            If disabled, the "Rentals" menu item will be hidden from the sidebar.
-                        </p>
-                    </div>
+
+                        <div className="card mb-8">
+                            <h3>Aplicación Móvil (Android)</h3>
+                            <p className="text-sm-muted mb-4">
+                                Descargue la última versión de la aplicación para gestionar la clínica desde su dispositivo Android.
+                            </p>
+
+                            <div className="flex gap-4 items-center flex-wrap">
+                                <a
+                                    href={`${settings.public_base_url || window.location.origin}/uploads/secretary-app.apk`}
+                                    download="secretary-app.apk"
+                                    className="btn btn-primary no-decoration"
+                                >
+                                    ⬇️ Descargar APK
+                                </a>
+
+                                <button
+                                    className="btn btn-outline"
+                                    onClick={() => {
+                                        const url = `${settings.public_base_url || window.location.origin}/uploads/secretary-app.apk`;
+                                        navigator.clipboard.writeText(url);
+                                        showMessage('Enlace de descarga copiado al portapapeles', 'success');
+                                    }}
+                                >
+                                    🔗 Copiar Enlace
+                                </button>
+
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={() => {
+                                        const url = `${settings.public_base_url || window.location.origin}/uploads/secretary-app.apk`;
+                                        setQrUrl(url);
+                                        setQrExpiry(null);
+                                        setQrModalOpen(true);
+                                    }}
+                                >
+                                    📱 Ver QR de Descarga
+                                </button>
+                            </div>
+                            <p className="text-xs text-muted mt-2">
+                                Versión actual: v1.9.3.1
+                            </p>
+                        </div>
+                    </>
                 )}
 
                 {/* Holiday Management - Enabled for Secretary and Admin */}
                 <HolidayManager />
 
-                {user.role === 'admin' && (
+                {(user.role === 'admin' || user.role === 'secretary') && (
                     <div className="card">
-                        <h3>Google Integration (Per Doctor)</h3>
+                        <h3>Configuración por Médico (Google, Horarios)</h3>
                         <p className="text-muted mb-6">
                             Select a doctor to connect their specific Google Calendar/Contacts.
                         </p>
@@ -195,7 +308,7 @@ const SystemConfig = () => {
                                                 </button>
 
                                                 <button className="btn btn-secondary" onClick={async () => {
-                                                    const summary = prompt("Appointment Title:");
+                                                    const summary = await prompt("Appointment Title:");
                                                     if (!summary) return;
                                                     try {
                                                         // Create an event for tomorrow at 10am
@@ -240,7 +353,7 @@ const SystemConfig = () => {
                                                 Import your Google Contacts into the patient database.
                                             </p>
                                             <button className="btn btn-primary" onClick={async () => {
-                                                if (!confirm("This will import contacts from the selected Google account. Continue?")) return;
+                                                if (!await confirm("This will import contacts from the selected Google account. Continue?")) return;
                                                 setLoading(true);
                                                 try {
                                                     const res = await api.post('/google/import', { doctorId: selectedDoctor });
@@ -271,7 +384,7 @@ const SystemConfig = () => {
                                                         const file = e.target.files[0];
                                                         if (!file) return;
 
-                                                        if (!confirm(`¿Importar contactos desde ${file.name}?`)) {
+                                                        if (!await confirm(`¿Importar contactos desde ${file.name}?`)) {
                                                             e.target.value = null;
                                                             return;
                                                         }
@@ -372,7 +485,13 @@ const SystemConfig = () => {
                             </>
                         )}
 
-                        <div className="setup-instructions">
+                        {selectedDoctor && (
+                            <div className="mt-8 border-t border-slate-200 pt-6">
+                                <DoctorScheduleSettings doctorId={selectedDoctor} />
+                            </div>
+                        )}
+
+                        {user.role === 'admin' && <div className="setup-instructions">
                             <h4>Instrucciones de Configuración (Solo para Soporte Técnico)</h4>
                             <p className="mb-4">
                                 Si necesita conectar una nueva cuenta de Google y no funciona el botón, por favor contacte al administrador del sistema o soporte técnico.
@@ -399,11 +518,16 @@ const SystemConfig = () => {
                                     </pre>
                                 </ol>
                             </details>
-                        </div>
+                        </div>}
                     </div>
-                )
-                }
+                )}
             </main >
+            <QRCodeModal
+                isOpen={qrModalOpen}
+                onClose={() => setQrModalOpen(false)}
+                url={qrUrl}
+                expiresAt={qrExpiry}
+            />
         </div >
     );
 };
@@ -442,7 +566,7 @@ const HolidayManager = () => {
     };
 
     const handleDelete = async (id) => {
-        if (!confirm("Remove this holiday?")) return;
+        if (!await confirm("Remove this holiday?")) return;
         try {
             await api.delete(`/holidays/${id}`);
             loadHolidays();

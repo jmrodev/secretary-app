@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import api from '../api/axios';
 
 const FloatingChat = () => {
     const { user } = useAuth();
@@ -21,7 +21,7 @@ const FloatingChat = () => {
     const scrollRef = useRef(null);
     const typingTimeoutRef = useRef(null);
     const notificationSound = useRef(new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3')); // Notification sound
-    const API_URL = import.meta.env.VITE_API_URL || '/api';
+
 
     useEffect(() => {
         if (!user || user.role === 'patient') return;
@@ -64,9 +64,7 @@ const FloatingChat = () => {
 
     const loadConversations = async () => {
         try {
-            const res = await axios.get(`${API_URL}/messages/conversations`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
+            const res = await api.get('/messages/conversations');
             const newData = Array.isArray(res.data) ? res.data : [];
 
             // Check for new messages to notify
@@ -104,9 +102,7 @@ const FloatingChat = () => {
     const loadThread = async (otherId, silent = false) => {
         if (!silent) setLoading(true);
         try {
-            const res = await axios.get(`${API_URL}/messages/thread/${otherId}`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
+            const res = await api.get(`/messages/thread/${otherId}`);
             setThread(Array.isArray(res.data) ? res.data : []);
         } catch (err) {
             console.error('Error loading thread:', err);
@@ -117,9 +113,7 @@ const FloatingChat = () => {
 
     const loadUnreadCount = async () => {
         try {
-            const res = await axios.get(`${API_URL}/messages/unread-count`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
+            const res = await api.get('/messages/unread-count');
             setUnreadCount(res.data.unread_count || 0);
         } catch (err) {
             console.error('Error loading unread count:', err);
@@ -128,9 +122,7 @@ const FloatingChat = () => {
 
     const loadRecipients = async () => {
         try {
-            const res = await axios.get(`${API_URL}/messages/recipients`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
+            const res = await api.get('/messages/recipients');
             setRecipients(res.data || []);
         } catch (err) {
             console.error('Error loading recipients:', err);
@@ -139,9 +131,7 @@ const FloatingChat = () => {
 
     const checkTypingStatus = async (otherId) => {
         try {
-            const res = await axios.get(`${API_URL}/messages/typing/${otherId}`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
+            const res = await api.get(`/messages/typing/${otherId}`);
             setIsOtherTyping(res.data.is_typing);
         } catch (err) {
             console.error('Error checking typing status:', err);
@@ -151,9 +141,7 @@ const FloatingChat = () => {
     const notifyTyping = async () => {
         if (!selectedConvo) return;
         try {
-            await axios.post(`${API_URL}/messages/typing`, { target_id: selectedConvo.other_user_id }, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
+            await api.post('/messages/typing', { target_id: selectedConvo.other_user_id });
         } catch (err) {
             console.error('Error notifying typing:', err);
         }
@@ -178,13 +166,11 @@ const FloatingChat = () => {
 
         setSending(true);
         try {
-            await axios.post(`${API_URL}/messages`, {
+            await api.post('/messages', {
                 recipient_id: selectedConvo.other_user_id,
                 recipient_type: 'individual',
                 subject: selectedConvo.subject?.startsWith('Re:') ? selectedConvo.subject : `Re: ${selectedConvo.subject || ''}`,
                 message: messageText
-            }, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
             });
 
             setMessageText('');

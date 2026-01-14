@@ -98,9 +98,17 @@ class AppointmentAdapter : RecyclerView.Adapter<AppointmentAdapter.ViewHolder>()
             
             // Basic date formatting
             val displayDate = try {
-                 appt.appointment_date.replace("T", " ").take(16)
+                 // Input: 2026-06-03T09:00:00.000Z
+                 val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
+                 inputFormat.timeZone = java.util.TimeZone.getTimeZone("UTC")
+                 val dateObj = inputFormat.parse(appt.appointment_date)
+                 
+                 // Desired: "Mié 03/06, 09:00" or similar
+                 val outputFormat = SimpleDateFormat("EEE dd/MM, HH:mm", Locale("es", "AR"))
+                 outputFormat.timeZone = java.util.TimeZone.getTimeZone("America/Argentina/Buenos_Aires")
+                 outputFormat.format(dateObj!!)
             } catch (e: Exception) {
-                appt.appointment_date
+                appt.appointment_date.replace("T", " ").take(16)
             }
             tvDate.text = displayDate
             
@@ -113,6 +121,7 @@ class AppointmentAdapter : RecyclerView.Adapter<AppointmentAdapter.ViewHolder>()
                     putExtra("date_iso", appt.appointment_date)
                     putExtra("reason", appt.reason)
                     putExtra("status", appt.status)
+                    putExtra("payment_status", appt.payment_status)
                 }
                 itemView.context.startActivity(intent)
             }

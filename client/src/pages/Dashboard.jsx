@@ -8,17 +8,22 @@ import Modal from '../components/Modal';
 import TransactionModal from '../components/TransactionModal';
 import RequirementsList from '../components/RequirementsList';
 import Sidebar from '../components/Sidebar';
+import { useModal } from '../context/ModalContext';
 import PatientHistoryModal from '../components/PatientHistoryModal';
+import { useConfig } from '../context/ConfigContext';
 
 const Dashboard = () => {
     const { user, logout } = useAuth();
     const { showMessage } = useMessage();
+    const { alert, confirm, prompt } = useModal();
     const { t, toggleLanguage, language } = useLanguage(); // Use hook
+    const { settings } = useConfig();
     const navigate = useNavigate();
 
     const [todayAppointments, setTodayAppointments] = useState([]);
     const [reminders, setReminders] = useState([]);
     const [stats, setStats] = useState(null);
+    const [newPatientStats, setNewPatientStats] = useState(null);
     const [loadingSchedule, setLoadingSchedule] = useState(true);
     const [loadingReminders, setLoadingReminders] = useState(true);
 
@@ -31,6 +36,7 @@ const Dashboard = () => {
 
     // Payment Modal
     const [paymentModal, setPaymentModal] = useState({ open: false, initialData: {}, apptId: null });
+
 
     const fetchReminders = async () => {
         try {
@@ -49,6 +55,15 @@ const Dashboard = () => {
             setStats(res.data);
         } catch (err) {
             console.error("Failed to fetch stats", err);
+        }
+    };
+
+    const fetchNewPatientStats = async () => {
+        try {
+            const res = await api.get('/users/patients/stats/new');
+            setNewPatientStats(res.data);
+        } catch (err) {
+            console.error("Failed to fetch new patient stats", err);
         }
     };
 
@@ -73,8 +88,8 @@ const Dashboard = () => {
     const handleUpdateStatus = async (id, status) => {
         let reason = null;
         if (status === 'cancelled') {
-            reason = window.prompt(t('cancellation_reason_prompt') || "Please enter a reason for cancellation:");
-            if (reason === null) return; // User cancelled the prompt
+            reason = await prompt(t('cancellation_reason_prompt') || "Please enter a reason for cancellation:");
+            if (!reason) return; // User cancelled the prompt
         }
 
         try {
@@ -98,11 +113,11 @@ const Dashboard = () => {
         // [NEW] Prevent deletion of attended appointments
         const apptToDelete = todayAppointments.find(a => a.id === id);
         if (apptToDelete && (apptToDelete.status === 'completed' || apptToDelete.status === 'attended')) {
-            alert(t('cannot_delete_attended') || "Cannot delete an appointment that has been attended.");
+            await alert(t('cannot_delete_attended') || "Cannot delete an appointment that has been attended.");
             return;
         }
 
-        if (!window.confirm(t('delete_error') || "Are you sure? This will remove the record mostly (Secretary Error).")) return;
+        if (!await confirm(t('delete_error') || "Are you sure? This will remove the record mostly (Secretary Error).")) return;
         try {
             await api.delete(`/appointments/${id}`);
             showMessage(t('appointment_deleted'), 'success');
@@ -126,9 +141,9 @@ const Dashboard = () => {
     };
 
     const handleCancel = async (id) => {
-        const reason = window.prompt(t('cancellation_reason_prompt') || "Please enter a reason for cancellation:");
-        if (reason === null) return;
-        if (!window.confirm(t('confirm_cancel'))) return;
+        const reason = await prompt(t('cancellation_reason_prompt') || "Please enter a reason for cancellation:");
+        if (!reason) return;
+        if (!await confirm(t('confirm_cancel'))) return;
 
         try {
             await api.put(`/appointments/${id}/status`, { status: 'cancelled', reason });
@@ -144,6 +159,7 @@ const Dashboard = () => {
         fetchSchedule();
         fetchReminders();
         fetchStats();
+        fetchNewPatientStats();
         const interval = setInterval(() => {
             fetchSchedule();
             fetchReminders();
@@ -234,8 +250,8 @@ const Dashboard = () => {
                                     </button>
                                     <button
                                         className="btn btn-status-complete btn-sm flex items-center justify-center gap-2 col-span-2"
-                                        onClick={() => {
-                                            if (window.confirm(t('confirm_attended') || 'Mark as Attended/Completed?')) {
+                                        onClick={async () => {
+                                            if (await confirm(t('confirm_attended') || 'Mark as Attended/Completed?')) {
                                                 handleUpdateStatus(actionModal.appt.id, 'completed');
                                                 setActionModal(prev => ({ ...prev, open: false }));
                                             }
@@ -448,10 +464,39 @@ const Dashboard = () => {
             <main className="main-content dashboard-wide">
                 <header className="header-actions">
                     <h1 className="title">{t('dashboard')}</h1>
-                    {user.role !== 'admin' && (
-                        <a href="/appointments" className="btn btn-primary no-underline">{t('new_appointment')}</a>
-                    )}
+                    <div className="flex gap-4 items-center">
+                        {user.role !== 'admin' && (
+                            <a href="/appointments" className="btn btn-primary no-underline">{t('new_appointment')}</a>
+                        )}
+                    </div>
                 </header>
+
+
+
+                {/* New Patient Statistics Card */}
+                {newPatientStats && (
+                    <div className="card mb-6 bg-gradient-to-r from-purple-50 to-white border border-purple-100">
+                        <h3 className="text-purple-800 flex items-center gap-2">✨ Nuevos Pacientes</h3>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                            <div className="bg-white p-3 rounded-lg border border-purple-100 shadow-sm">
+                                <p className="text-xs text-purple-600 uppercase font-bold mb-1">Esta Semana</p>
+                                <p className="text-3xl font-bold text-purple-900">{newPatientStats.currentWeek}</p>
+                            </div>
+                            <div className="bg-white p-3 rounded-lg border border-purple-100 shadow-sm">
+                                <p className="text-xs text-purple-600 uppercase font-bold mb-1">Este Mes</p>
+                                <p className="text-3xl font-bold text-purple-900">{newPatientStats.currentMonth}</p>
+                            </div>
+                            <div className="bg-white p-3 rounded-lg border border-purple-100 shadow-sm">
+                                <p className="text-xs text-purple-600 uppercase font-bold mb-1">Este Año</p>
+                                <p className="text-3xl font-bold text-purple-900">{newPatientStats.currentYear}</p>
+                            </div>
+                            <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                <p className="text-xs text-slate-500 uppercase font-bold mb-1">Año Anterior</p>
+                                <p className="text-3xl font-bold text-slate-500">{newPatientStats.lastYear}</p>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 <div className="flex flex-col gap-6 text-left">
                     {/* Statistics Section */}
@@ -484,8 +529,9 @@ const Dashboard = () => {
                         </div>
                     )}
 
+
                     {user.role !== 'admin' && (
-                        <div className="card">
+                        <div className="card mb-8 shadow-sm border-l-4 border-blue-500 bg-blue-50/30">
                             <h3>{t('today_schedule')}</h3>
                             {loadingSchedule ? <p>{t('loading')}</p> : (
                                 todayAppointments.length === 0 ?
@@ -534,7 +580,7 @@ const Dashboard = () => {
                     )}
 
                     {user.role !== 'admin' && reminders.length > 0 && (
-                        <div className="card border-l-4 border-yellow-400">
+                        <div className="card mb-8 border-l-4 border-yellow-400 bg-yellow-50/20 shadow-sm">
                             <h3 className="flex items-center gap-2">🔔 {t('reminders')}</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 text-left">
                                 {reminders.map(r => (
@@ -561,7 +607,7 @@ const Dashboard = () => {
                     )}
 
                     {user.role !== 'admin' && (
-                        <div className="card">
+                        <div className="card mb-8">
                             <h3>{t('quick_actions')}</h3>
                             <div className="flex gap-2 flex-wrap">
                                 <a href="/appointments" className="btn btn-accent btn-sm-inline">{t('book_appointment')}</a>
@@ -571,9 +617,9 @@ const Dashboard = () => {
                         </div>
                     )}
 
-                    <div className="card">
-                        <h3>{t('notifications')}</h3>
-                        <p>{t('system_operational')}</p>
+                    <div className="card mb-8 shadow-sm">
+                        <h3 className="text-slate-800">{t('notifications')}</h3>
+                        <p className="text-green-600 font-medium">✅ {t('system_operational')}</p>
                     </div>
 
                     {/* Requirements List (New Feature) */}
@@ -588,25 +634,27 @@ const Dashboard = () => {
                     )}
                 </div>
 
-                {user.role === 'admin' && (
-                    <div className="card mt-6">
-                        <h3>{t('administration')}</h3>
-                        <a href="/logs" className="btn btn-secondary btn-inline mt-2 mr-4 no-underline">
-                            {t('view_audit_logs')}
-                        </a>
-                        <a href="/admin/users" className="btn btn-primary btn-inline mt-2 no-underline">
-                            {t('manage_users')}
-                        </a>
-                    </div>
-                )}
-            </main>
+                {
+                    user.role === 'admin' && (
+                        <div className="card mt-6">
+                            <h3>{t('administration')}</h3>
+                            <a href="/logs" className="btn btn-secondary btn-inline mt-2 mr-4 no-underline">
+                                {t('view_audit_logs')}
+                            </a>
+                            <a href="/admin/users" className="btn btn-primary btn-inline mt-2 no-underline">
+                                {t('manage_users')}
+                            </a>
+                        </div>
+                    )
+                }
+            </main >
             <PatientHistoryModal
                 isOpen={historyModal.open}
                 onClose={() => setHistoryModal({ ...historyModal, open: false })}
                 patientId={historyModal.patientId}
                 patientName={historyModal.patientName}
             />
-        </div>
+        </div >
     );
 };
 

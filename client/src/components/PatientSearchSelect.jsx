@@ -2,7 +2,13 @@ import React from 'react';
 import AsyncSelect from 'react-select/async';
 import api from '../api/axios';
 
-const PatientSearchSelect = ({ value, onChange, placeholder = "Buscar paciente (Nombre, DNI, Dirección)..." }) => {
+import { components } from 'react-select';
+
+import { useLanguage } from '../context/LanguageContext';
+
+const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient }) => {
+    const { t } = useLanguage();
+    const finalPlaceholder = placeholder || t('search_placeholder');
 
     const loadOptions = async (inputValue) => {
         if (!inputValue || inputValue.length < 2) return [];
@@ -19,15 +25,8 @@ const PatientSearchSelect = ({ value, onChange, placeholder = "Buscar paciente (
         }
     };
 
-    // Handle initial value (if ID is passed, we might need to fetch label, 
-    // but for now assume parent manages state or we just show selected)
-    // For simplicity in this Refactor, if value is passed, we expect the Parent to pass the full object or we handle ID separately.
-    // Given the current usage in Appointments, 'selectedPatient' is just an ID. 
-    // To show the label correctly for an existing ID without fetching, we might need a prop `initialPatient`.
-    // However, specifically for *creating* new appointments, we usually start empty.
-
     const handleChange = (selectedOption) => {
-        onChange(selectedOption ? selectedOption.value : '');
+        onChange(selectedOption ? selectedOption.value : '', selectedOption ? selectedOption.patient : null);
     };
 
     return (
@@ -36,9 +35,28 @@ const PatientSearchSelect = ({ value, onChange, placeholder = "Buscar paciente (
             defaultOptions
             loadOptions={loadOptions}
             onChange={handleChange}
-            placeholder={placeholder}
-            noOptionsMessage={() => "No se encontraron pacientes"}
-            loadingMessage={() => "Buscando..."}
+            placeholder={finalPlaceholder}
+            noOptionsMessage={({ inputValue }) => (
+                <div className="text-center p-2">
+                    <p className="text-slate-500 mb-2">
+                        {t('no_results_for')} "{inputValue}"
+                    </p>
+                    {onCreatePatient && inputValue && (
+                        <button
+                            type="button" // Prevent form submit
+                            className="btn btn-sm btn-outline-primary"
+                            onMouseDown={(e) => {
+                                e.preventDefault(); // Prevent blur
+                                e.stopPropagation();
+                                onCreatePatient(inputValue);
+                            }}
+                        >
+                            {t('create_new_patient')}
+                        </button>
+                    )}
+                </div>
+            )}
+            loadingMessage={() => t('loading')}
             styles={{
                 control: (base) => ({
                     ...base,
@@ -50,5 +68,6 @@ const PatientSearchSelect = ({ value, onChange, placeholder = "Buscar paciente (
         />
     );
 };
+
 
 export default PatientSearchSelect;

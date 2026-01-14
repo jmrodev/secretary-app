@@ -43,9 +43,11 @@ const MedicalDocuments = () => {
     const [patients, setPatients] = useState([]);
     const [doctors, setDoctors] = useState([]);
     const [selectedPatient, setSelectedPatient] = useState('');
-    const [selectedDoctor, setSelectedDoctor] = useState('');
+    const [patientData, setPatientData] = useState(null); // [NEW] Full patient object
+    const [selectedDoctor, setSelectedDoctor] = useState(localStorage.getItem('last_selected_doctor_id') || '');
     const [reqNote, setReqNote] = useState('');
     const [bonified, setBonified] = useState(false); // [NEW]
+    const [sendToDoctor, setSendToDoctor] = useState(true); // [NEW] Forwarding toggle
 
     // Files State
     const [files, setFiles] = useState([]);
@@ -57,6 +59,7 @@ const MedicalDocuments = () => {
     const [actionModal, setActionModal] = useState({ open: false, type: '', id: null });
     const [actionNote, setActionNote] = useState('');
     const [paymentModal, setPaymentModal] = useState({ open: false, initialData: {} });
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Old Medical History State (Prescriptions/Licenses)
     const [prescriptions, setPrescriptions] = useState([]);
@@ -93,6 +96,12 @@ const MedicalDocuments = () => {
             fetchHistory();
         }
     }, [activeTab]);
+
+    useEffect(() => {
+        if (selectedDoctor) {
+            localStorage.setItem('last_selected_doctor_id', selectedDoctor);
+        }
+    }, [selectedDoctor]);
 
     // Handle deep linking from Dashboard
     useEffect(() => {
@@ -143,21 +152,28 @@ const MedicalDocuments = () => {
 
     const handleCreateRequest = async (e) => {
         e.preventDefault();
+        if (isSubmitting) return;
+
+        setIsSubmitting(true);
         try {
             await api.post('/medical/requests', {
                 type: reqType,
                 patient_id: selectedPatient,
                 doctor_id: user.role === 'doctor' ? (user.user_id || user.id) : selectedDoctor,
                 request_note: reqNote,
-                bonified // [NEW]
+                bonified, // [NEW]
+                status: sendToDoctor ? 'pending' : 'completed' // [NEW] logic
             });
-            showMessage(t('request_sent'), 'success');
+            showMessage(sendToDoctor ? t('request_sent') : (t('request_saved_completed') || 'Guardado como Completado'), 'success');
             setReqNote('');
             setBonified(false); // Reset
+            setSendToDoctor(true); // Reset
             fetchRequests();
         } catch (err) {
             const errorMsg = err.response?.data || err.message || t('request_failed');
             showMessage(`${t('request_failed')}: ${errorMsg}`, 'error');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -252,9 +268,30 @@ const MedicalDocuments = () => {
                                         <label className="input-label">{t('patient_label')}</label>
                                         <PatientSearchSelect
                                             value={selectedPatient}
-                                            onChange={setSelectedPatient}
+                                            onChange={(val, patient) => {
+                                                setSelectedPatient(val);
+                                                setPatientData(patient);
+                                            }}
                                             placeholder={t('select_patient')}
                                         />
+                                        {patientData && reqType === 'prescription' && patientData.next_suggested_prescription_date && new Date(patientData.next_suggested_prescription_date) > new Date() && (
+                                            <div className="bg-yellow-50 text-yellow-800 p-3 rounded mt-2 border border-yellow-200 text-sm flex items-start gap-2">
+                                                <span className="text-xl">⚠️</span>
+                                                <div>
+                                                    <strong>{t('possible_overmedication') || 'Posible Sobrefrecuencia'}:</strong><br />
+                                                    {t('patient_has_valid_until') || 'Paciente tiene cobertura sugerida hasta'}: <b>{new Date(patientData.next_suggested_prescription_date).toLocaleDateString()}</b>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {patientData && reqType === 'license' && patientData.license_expiry_date && new Date(patientData.license_expiry_date) > new Date() && (
+                                            <div className="bg-yellow-50 text-yellow-800 p-3 rounded mt-2 border border-yellow-200 text-sm flex items-start gap-2">
+                                                <span className="text-xl">⚠️</span>
+                                                <div>
+                                                    <strong>{t('active_license') || 'Licencia Vigente'}:</strong><br />
+                                                    {t('license_valid_until') || 'Licencia válida hasta'}: <b>{new Date(patientData.license_expiry_date).toLocaleDateString()}</b>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="input-group">
                                         <label className="input-label">{t('doctor_label')}</label>
@@ -285,7 +322,26 @@ const MedicalDocuments = () => {
                                             {t('bonificado') || 'Bonificado (Free/Waived)'}
                                         </label>
                                     </div>
-                                    <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>{t('send_request')}</button>
+                                    <div className="input-group-row-center gap-2 mb-4 p-2 bg-slate-50 rounded border border-slate-100">
+                                        <input
+                                            type="checkbox"
+                                            id="req-forward"
+                                            checked={sendToDoctor}
+                                            onChange={e => setSendToDoctor(e.target.checked)}
+                                            className="w-4 h-4 cursor-pointer"
+                                        />
+                                        <label htmlFor="req-forward" className="input-label mb-0 cursor-pointer select-none font-medium text-slate-700">
+                                            {t('send_to_doctor') || 'Enviar a revisión médica'}
+                                        </label>
+                                    </div>
+                                    <button
+                                        type="submit"
+                                        className="btn btn-primary"
+                                        style={{ width: '100%' }}
+                                        disabled={isSubmitting}
+                                    >
+                                        {isSubmitting ? (t('sending') || 'Enviando...') : t('send_request')}
+                                    </button>
                                 </form>
                             </div>
                         )}
@@ -381,7 +437,7 @@ const MedicalDocuments = () => {
                                 </div>
                             )}
                         </div>
-                    </div>
+                    </div >
                 )
                 }
 

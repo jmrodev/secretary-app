@@ -143,9 +143,12 @@ CREATE TABLE `doctors` (
   `rental_cost` decimal(10,2) DEFAULT 0.00,
   `prescription_price` decimal(10,2) DEFAULT 0.00,
   `medical_license_price` decimal(10,2) DEFAULT 0.00,
+  `certificate_price` decimal(10,2) DEFAULT 0.00,
   `virtual_consultation_price` decimal(10,2) DEFAULT 0.00,
   `default_visit_interval_days` int(11) DEFAULT 0,
   `default_prescription_interval_days` int(11) DEFAULT 0,
+  `appointment_duration` int(11) DEFAULT 60,
+  `break_duration` int(11) DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `doctors_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
@@ -227,6 +230,7 @@ CREATE TABLE `medical_requests` (
   `type` enum('prescription','license') NOT NULL,
   `patient_id` int(11) NOT NULL,
   `doctor_id` int(11) NOT NULL,
+  `requires_doctor_approval` tinyint(1) DEFAULT 1,
   `secretary_id` int(11) DEFAULT NULL,
   `status` enum('pending','completed','rejected') DEFAULT 'pending',
   `request_note` text DEFAULT NULL,
@@ -336,6 +340,8 @@ CREATE TABLE `patients` (
   `tariff_percent` int(11) DEFAULT 0,
   `tariff_override` decimal(10,2) DEFAULT NULL,
   `behavior_rating` int(11) DEFAULT 5,
+  `is_new_patient` tinyint(1) DEFAULT 1,
+  `marked_new_at` timestamp NULL DEFAULT current_timestamp(),
   `insurance` varchar(255) DEFAULT NULL,
   `visit_interval_days` int(11) DEFAULT NULL,
   `prescription_interval_days` int(11) DEFAULT NULL,
@@ -536,3 +542,83 @@ CREATE TABLE `user_typing_status` (
     CONSTRAINT `fk_typing_target` FOREIGN KEY (`target_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+
+--
+-- Table structure for table `patient_access_tokens`
+--
+
+DROP TABLE IF EXISTS `patient_access_tokens`;
+CREATE TABLE `patient_access_tokens` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `token` varchar(64) NOT NULL,
+  `patient_id` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `expires_at` timestamp NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `token` (`token`),
+  KEY `patient_id` (`patient_id`),
+  CONSTRAINT `patient_access_tokens_ibfk_1` FOREIGN KEY (`patient_id` ) REFERENCES `patients` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Table structure for table `patient_statistics`
+--
+
+DROP TABLE IF EXISTS `patient_statistics`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `patient_statistics` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `period_type` enum('weekly','monthly','yearly') NOT NULL,
+  `period_start` date NOT NULL,
+  `period_end` date NOT NULL,
+  `new_patients_count` int(11) DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_period` (`period_type`,`period_start`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `institutions`
+--
+
+DROP TABLE IF EXISTS `institutions`;
+CREATE TABLE `institutions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` text DEFAULT NULL,
+  `status` enum('active','inactive') DEFAULT 'active',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Table structure for table `doctor_schedules`
+--
+
+DROP TABLE IF EXISTS `doctor_schedules`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `doctor_schedules` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `doctor_id` int(11) NOT NULL,
+  `day_of_week` int(11) NOT NULL, -- 0=Sun, 1=Mon...
+  `start_time` time NOT NULL,
+  `end_time` time NOT NULL,
+  `is_break` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `doctor_id` (`doctor_id`),
+  CONSTRAINT `doctor_schedules_ibfk_1` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Add is_out_of_hours to appointments
+--
+-- ALTER TABLE `appointments` ADD COLUMN `is_out_of_hours` tinyint(1) DEFAULT 0;
+
+-- Update patients table definition
+ALTER TABLE `patients` ADD COLUMN `institution_id` INT DEFAULT NULL;
+ALTER TABLE `patients` ADD CONSTRAINT `fk_patient_institution` FOREIGN KEY (`institution_id`) REFERENCES `institutions` (`id`) ON DELETE SET NULL;

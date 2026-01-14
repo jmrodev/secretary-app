@@ -60,6 +60,7 @@ class AppointmentDetailActivity : AppCompatActivity() {
         val date = intent.getStringExtra("date")
         val reason = intent.getStringExtra("reason")
         val status = intent.getStringExtra("status")
+        val paymentStatus = intent.getStringExtra("payment_status")
 
         appointmentId = id
         currentReason = reason
@@ -107,6 +108,51 @@ class AppointmentDetailActivity : AppCompatActivity() {
         
         // Secretary: Pay
         btnPaid.setOnClickListener { updatePayment("paid") }
+
+        // Update visibility based on status
+        updateButtonVisibility(status, paymentStatus)
+    }
+
+    private fun updateButtonVisibility(status: String?, paymentStatus: String?) {
+        if (status == null) return
+        
+        val btnConfirm = findViewById<Button>(R.id.btnMarkConfirmed)
+        val btnArrived = findViewById<Button>(R.id.btnMarkArrived)
+        val btnComplete = findViewById<Button>(R.id.btnMarkCompleted)
+        val btnAbsent = findViewById<Button>(R.id.btnMarkAbsent)
+        val btnCancelled = findViewById<Button>(R.id.btnMarkCancelled)
+        val btnRescheduled = findViewById<Button>(R.id.btnMarkRescheduled)
+        val btnPaid = findViewById<Button>(R.id.btnMarkPaid)
+        
+        if (status == "completed" || status == "cancelled" || status == "absent") {
+            btnConfirm.visibility = View.GONE
+            btnArrived.visibility = View.GONE
+            btnComplete.visibility = View.GONE
+            btnAbsent.visibility = View.GONE
+            btnCancelled.visibility = View.GONE
+            btnRescheduled.visibility = View.GONE
+        } else {
+             // Default visible
+            btnConfirm.visibility = View.VISIBLE
+            btnArrived.visibility = View.VISIBLE
+            btnComplete.visibility = View.VISIBLE
+            btnAbsent.visibility = View.VISIBLE
+            btnCancelled.visibility = View.VISIBLE
+            btnRescheduled.visibility = View.VISIBLE
+            
+            // Fine adjustments
+            if (status == "arrived") {
+                 btnConfirm.visibility = View.GONE
+                 btnArrived.visibility = View.GONE
+            }
+            if (status == "confirmed") {
+                 btnConfirm.visibility = View.GONE
+            }
+        }
+
+        if (paymentStatus == "paid") {
+            btnPaid.visibility = View.GONE
+        }
     }
 
     private fun updateAppointment(newReason: String) {

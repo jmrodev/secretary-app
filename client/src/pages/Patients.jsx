@@ -3,15 +3,20 @@ import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useConfig } from '../context/ConfigContext';
 
 import Modal from '../components/Modal';
 import Sidebar from '../components/Sidebar';
 import CurrencyInput from '../components/CurrencyInput';
+import PatientForm from '../components/PatientForm';
+import QRCodeModal from '../components/QRCodeModal';
+
 
 const Patients = () => {
     const { user } = useAuth();
     const { showMessage } = useMessage();
     const { t } = useLanguage();
+    const { settings } = useConfig();
     const [patients, setPatients] = useState([]);
     const [loading, setLoading] = useState(true);
     const [doctors, setDoctors] = useState([]);
@@ -53,6 +58,38 @@ const Patients = () => {
     // Prescription Modal State
     const [prescribeModal, setPrescribeModal] = useState({ open: false, apptId: null, patientId: null, patientName: '', medications: '', instructions: '' });
 
+    // QR Modal State
+    const [qrModalOpen, setQrModalOpen] = useState(false);
+    const [qrUrl, setQrUrl] = useState('');
+    const [qrExpiry, setQrExpiry] = useState(null);
+
+    const handleGenerateQR = async (patientId = null) => {
+        try {
+            const res = await api.post('/temp-access/generate', { patientId });
+            // Patients ALWAYS use Cloudflare URL
+            const baseUrl = settings.public_base_url || window.location.origin;
+            const fullUrl = `${baseUrl}${res.data.url}`;
+
+            setQrUrl(fullUrl);
+            setQrExpiry(res.data.expiresAt);
+            setQrModalOpen(true);
+        } catch (err) {
+            console.error('Error in handleGenerateQR:', err);
+            showMessage('Error generating QR code: ' + (err.response?.data?.error || err.message), 'error');
+        }
+    };
+
+    const handleDashboardQR = () => {
+        // Staff should use the configured Local IP if available, otherwise fallback to current origin
+        const url = settings.staff_base_url || window.location.origin;
+        if (url.includes('localhost')) {
+            showMessage("⚠️ Aviso: El QR dará 'localhost'. Para que funcione en otros dispositivos, configura la IP de esta PC en la pantalla de Configuración.", 'warning');
+        }
+        setQrUrl(url);
+        setQrExpiry(null); // Dashboard link doesn't expire
+        setQrModalOpen(true);
+    };
+
     const handleSavePrescription = async () => {
         if (!prescribeModal.medications.trim()) {
             showMessage(t('please_enter_meds'), 'warning');
@@ -82,7 +119,7 @@ const Patients = () => {
             setPatients(res.data);
         } catch (err) {
             console.error(err);
-            showMessage(t('failed_create_patient'), 'error'); // Reusing error msg slightly
+            showMessage(t('failed_load_patients') || "Error al cargar la lista de pacientes.", 'error');
         } finally {
             setLoading(false);
         }
@@ -149,12 +186,39 @@ const Patients = () => {
         }
     };
 
+    const handleToggleNewPatient = async (patientId) => {
+        try {
+            const res = await api.put(`/users/patients/${patientId}/toggle-new`);
+            const { is_new_patient, marked_new_at } = res.data;
+
+            // Update list state
+            setPatients(prev => prev.map(p =>
+                p.id === patientId ? { ...p, is_new_patient, marked_new_at } : p
+            ));
+
+            // Update details state if open
+            if (details && details.id === patientId) {
+                setDetails(prev => ({ ...prev, is_new_patient, marked_new_at }));
+            }
+
+            showMessage(is_new_patient ? 'Marcado como Nuevo Paciente' : 'Desmarcado como Nuevo Paciente', 'success');
+        } catch (err) {
+            console.error("Failed to toggle new patient status", err);
+            showMessage("Error al actualizar estado de nuevo paciente", 'error');
+        }
+    };
+
+    const normalizedSearch = normalizeText(searchTerm).trim();
+    const trimmedSearch = searchTerm.trim();
+
     const filteredPatients = patients.filter(p =>
-        normalizeText(p.full_name).includes(normalizeText(searchTerm)) ||
-        (p.phone && p.phone.replace(/[^0-9]/g, '').includes(searchTerm.replace(/[^0-9]/g, ''))) ||
-        (p.dni && p.dni.includes(searchTerm)) ||
-        (p.insurance && normalizeText(p.insurance).includes(normalizeText(searchTerm))) ||
-        (p.email && normalizeText(p.email).includes(normalizeText(searchTerm)))
+        normalizeText(p.full_name).includes(normalizedSearch) ||
+        (trimmedSearch.replace(/[^0-9]/g, '').length > 0 && p.phone && p.phone.replace(/[^0-9]/g, '').includes(trimmedSearch.replace(/[^0-9]/g, ''))) ||
+        (p.dni && p.dni.includes(trimmedSearch)) ||
+        (p.insurance && normalizeText(p.insurance).includes(normalizedSearch)) ||
+        (p.insurance_name && normalizeText(p.insurance_name).includes(normalizedSearch)) ||
+        (p.affiliate_number && normalizeText(p.affiliate_number).includes(normalizedSearch)) ||
+        (p.email && normalizeText(p.email).includes(normalizedSearch))
     ).sort((a, b) => {
         // Sort by debt descending (debtors first)
         const debtA = Number(a.total_debt) || 0;
@@ -177,38 +241,22 @@ const Patients = () => {
         setCurrentPage(1);
     }, [searchTerm]);
 
-    const handleCreate = async (e) => {
-        e.preventDefault();
+    const handleCreate = async (formData) => {
         setCreateMsg('');
         try {
+            // PatientForm gives us a clean object. We just need to add role='patient' if not present
+            // But verify what the backend expects. api.post('/auth/register') expects username, password, etc.
+            // PatientForm fields match mostly.
             await api.post('/auth/register', {
-                username: newUsername,
-                password: newPassword,
-                role: 'patient',
-                fullName,
-                phone,
-                dob,
-                dni: newDni,
-                insurance_id: newInsuranceId, // [NEW]
-                affiliate_number: newAffiliateNumber, // [NEW]
-                email: newEmail
+                ...formData,
+                role: 'patient'
             });
             showMessage(t('patient_created'), 'success');
             setShowCreate(false);
-            setNewUsername('');
-            setNewPassword('');
-            setFullName('');
-            setPhone('');
-            setDob('');
-
-            setNewDni('');
-            setNewInsuranceId('');
-            setNewAffiliateNumber('');
-            setNewEmail('');
             fetchPatients();
         } catch (err) {
             const msg = err.response?.data || t('failed_create_patient');
-            setCreateMsg(msg); // Keep local msg for form error
+            setCreateMsg(msg);
             showMessage(msg, 'error');
             console.error(err);
         }
@@ -218,7 +266,10 @@ const Patients = () => {
         try {
             setViewLoading(true);
             setSelectedPatient(id);
-            setDetails(null);
+            // Only clear details if viewing a DIFFERENT patient to avoid jumping back to list
+            if (selectedPatient !== id) {
+                setDetails(null);
+            }
             const [info, trans] = await Promise.all([
                 api.get(`/users/patients/${id}`),
                 api.get(`/finances/transactions?patient_id=${id}`) // Fetch financial history
@@ -335,9 +386,31 @@ const Patients = () => {
                     <div className="card mb-8">
                         <div className="flex-between">
                             <h3>{t('patient_info')}</h3>
-                            <button className="btn btn-secondary btn-sm flex items-center gap-2" onClick={handleEditClick}>
-                                ✏️ {t('edit_info')}
-                            </button>
+                            <div className="flex gap-2">
+                                {user.role === 'secretary' && (
+                                    <button
+                                        className={`btn btn-sm flex items-center gap-2 ${details.is_new_patient ? 'btn-primary' : 'btn-secondary'}`}
+                                        onClick={() => handleToggleNewPatient(details.id)}
+                                        title={details.is_new_patient ? "Click para desmarcar como nuevo" : "Click para marcar como nuevo"}
+                                    >
+                                        {details.is_new_patient ? '✨ NUEVO' : '👤 EXISTENTE'}
+                                    </button>
+                                )}
+                                <button className="btn btn-secondary btn-sm flex items-center gap-2" onClick={() => handleGenerateQR(details.id)}>
+                                    📱 QR Info
+                                </button>
+                                <button className="btn btn-secondary btn-sm flex items-center gap-2" onClick={() => {
+                                    const baseUrl = settings.public_base_url || window.location.origin;
+                                    const url = `${baseUrl}`;
+                                    navigator.clipboard.writeText(url);
+                                    showMessage(t('link_copied') || 'Enlace copiado', 'success');
+                                }}>
+                                    🔗 {t('copy_link') || 'Copiar Link'}
+                                </button>
+                                <button className="btn btn-secondary btn-sm flex items-center gap-2" onClick={handleEditClick}>
+                                    ✏️ {t('edit_info')}
+                                </button>
+                            </div>
                         </div>
                         <div className="patient-info-grid">
                             <p><strong>{t('dni')}:</strong> {details.dni || 'N/A'}</p>
@@ -482,123 +555,34 @@ const Patients = () => {
                         isOpen={editModalOpen}
                         onClose={() => setEditModalOpen(false)}
                         title="Edit Patient Details"
-                        footer={
-                            <>
-                                <button className="btn btn-secondary" onClick={() => setEditModalOpen(false)}>{t('cancel')}</button>
-                                <button className="btn btn-primary" onClick={handleSaveEdit}>{t('confirm')}</button>
-                            </>
-                        }
                         size="lg"
                     >
-                        <div className="flex-col gap-4">
-                            <div className="input-group">
-                                <label className="input-label">{t('full_name')}</label>
-                                <input className="input-field" value={editData.full_name} onChange={e => setEditData({ ...editData, full_name: e.target.value })} />
-                            </div>
-                            <div className="grid-cols-2 gap-4 grid">
-                                <div className="input-group">
-                                    <label className="input-label">{t('dni')}</label>
-                                    <input className="input-field" value={editData.dni} onChange={e => setEditData({ ...editData, dni: e.target.value })} />
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">Obra Social</label>
-                                    <select className="input-field" value={editData.insurance_id} onChange={e => setEditData({ ...editData, insurance_id: e.target.value })}>
-                                        <option value="">Seleccionar...</option>
-                                        {insurances.map(ins => (
-                                            <option key={ins.id} value={ins.id}>{ins.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-                            <div className="input-group">
-                                <label className="input-label">Nro Afiliado</label>
-                                <input className="input-field" value={editData.affiliate_number} onChange={e => setEditData({ ...editData, affiliate_number: e.target.value })} />
-                            </div>
-                            <div className="input-group">
-                                <label className="input-label">Email</label>
-                                <input className="input-field" type="email" value={editData.email} onChange={e => setEditData({ ...editData, email: e.target.value })} />
-                            </div>
-                            <div className="grid-2-cols">
-                                <div className="input-group">
-                                    <label className="input-label">Phone</label>
-                                    <input className="input-field" value={editData.phone} onChange={e => setEditData({ ...editData, phone: e.target.value })} />
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">{t('dob')}</label>
-                                    <input type="date" className="input-field" value={editData.dob} onChange={e => setEditData({ ...editData, dob: e.target.value })} />
-                                </div>
-                            </div>
-                            <div className="input-group">
-                                <label className="input-label">{t('address')}</label>
-                                <input className="input-field" value={editData.address} onChange={e => setEditData({ ...editData, address: e.target.value })} />
-                            </div>
-
-                            <div className="input-group">
-                                <label className="input-label">Assigned Doctors</label>
-                                <div className="doctor-selection-grid">
-                                    {doctors.map(doc => (
-                                        <label key={doc.id} className="doctor-checkbox-label">
-                                            <input
-                                                type="checkbox"
-                                                checked={editData.assignedDoctors?.includes(doc.id) || false}
-                                                onChange={() => toggleAssignedDoctor(doc.id)}
-                                            />
-                                            Dr. {doc.full_name}
-                                        </label>
-                                    ))}
-                                    {doctors.length === 0 && <span style={{ color: '#64748b', fontSize: '0.85rem' }}>No doctors found.</span>}
-                                </div>
-                            </div>
-
-                            <div className="input-group">
-                                <label className="input-label">{t('micro_history')}</label>
-                                <textarea className="input-field" rows="3" value={editData.medical_history} onChange={e => setEditData({ ...editData, medical_history: e.target.value })} />
-                            </div>
-
-                            <div className="grid-2-cols border-t-divider pt-4">
-                                <div className="input-group">
-                                    <label className="input-label">Tariff Adjustment (%)</label>
-                                    <input type="number" className="input-field" value={editData.tariff_percent} onChange={e => setEditData({ ...editData, tariff_percent: e.target.value })} placeholder="e.g. 10 for +10%" />
-                                    <small style={{ color: '#64748b' }}>Override base price by percentage</small>
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">Tariff Override ($)</label>
-                                    <CurrencyInput className="input-field" value={editData.tariff_override} onChange={e => setEditData({ ...editData, tariff_override: e.target.value })} placeholder="e.g. 5000" />
-                                    <small style={{ color: '#64748b' }}>Fixed price (ignores % if set)</small>
-                                </div>
-                            </div>
-
-                            <div className="border-t-divider pt-4 mt-4">
-                                <h4 className="font-bold text-slate-700 mb-2">{t('follow_up_settings')} (Override)</h4>
-                                <div className="grid-2-cols gap-4">
-                                    <div className="input-group">
-                                        <label className="input-label">{t('visit_interval_days')}</label>
-                                        <input type="number" className="input-field" value={editData.visit_interval_days} onChange={e => setEditData({ ...editData, visit_interval_days: e.target.value })} placeholder="Días..." />
-                                    </div>
-                                    <div className="input-group">
-                                        <label className="input-label">{t('prescription_interval_days')}</label>
-                                        <input type="number" className="input-field" value={editData.prescription_interval_days} onChange={e => setEditData({ ...editData, prescription_interval_days: e.target.value })} placeholder="Días..." />
-                                    </div>
-                                </div>
-                                <div className="grid-3-cols gap-4 mt-4">
-                                    <div className="input-group">
-                                        <label className="input-label">{t('next_suggested_visit')}</label>
-                                        <input type="date" className="input-field" value={editData.next_suggested_visit_date} onChange={e => setEditData({ ...editData, next_suggested_visit_date: e.target.value })} />
-                                    </div>
-                                    <div className="input-group">
-                                        <label className="input-label">{t('next_suggested_prescription')}</label>
-                                        <input type="date" className="input-field" value={editData.next_suggested_prescription_date} onChange={e => setEditData({ ...editData, next_suggested_prescription_date: e.target.value })} />
-                                    </div>
-                                    <div className="input-group">
-                                        <label className="input-label">{t('license_expiry')}</label>
-                                        <input type="date" className="input-field" value={editData.license_expiry_date} onChange={e => setEditData({ ...editData, license_expiry_date: e.target.value })} />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <PatientForm
+                            initialValues={editData}
+                            onSubmit={async (data) => {
+                                try {
+                                    await api.put(`/users/patients/${details.id}`, data);
+                                    setEditModalOpen(false);
+                                    showMessage(t('patient_updated'), 'success');
+                                    await handleViewDetails(details.id);
+                                    fetchPatients();
+                                } catch (err) {
+                                    console.error(err);
+                                    showMessage(t('failed_update_patient'), 'error');
+                                }
+                            }}
+                            onCancel={() => setEditModalOpen(false)}
+                            isEdit={true}
+                            isAdmin={true}
+                            insurances={insurances}
+                            doctors={doctors}
+                        />
                     </Modal>
 
+
+
                     {/* Pay Debt Modal (in Details View) */}
+
                     <Modal
                         isOpen={debtModalOpen}
                         onClose={() => setDebtModalOpen(false)}
@@ -625,8 +609,14 @@ const Patients = () => {
                         </div>
                     </Modal>
 
+                    <QRCodeModal
+                        isOpen={qrModalOpen}
+                        onClose={() => setQrModalOpen(false)}
+                        url={qrUrl}
+                        expiresAt={qrExpiry}
+                    />
                 </main>
-            </div >
+            </div>
         );
     }
 
@@ -649,9 +639,25 @@ const Patients = () => {
                         </button>
                     </div>
                     {user.role === 'secretary' && (
-                        <button className="btn btn-primary flex items-center gap-2" onClick={() => setShowCreate(!showCreate)}>
-                            {showCreate ? `❌ ${t('cancel')}` : `➕ ${t('register_new_patient')}`}
-                        </button>
+                        <div className="flex flex-col gap-2">
+                            {/* Patient Section */}
+                            <div className="flex gap-2">
+                                <button className="btn btn-secondary flex items-center gap-2" onClick={() => handleGenerateQR()} title="QR para registro de paciente (Usa Cloudflare)">
+                                    📱 <span className="text-xs font-bold bg-blue-100 text-blue-800 px-1 rounded">PACIENTE</span> QR
+                                </button>
+                                <button className="btn btn-secondary flex items-center gap-2" onClick={() => {
+                                    const baseUrl = settings.public_base_url || window.location.origin;
+                                    const url = `${baseUrl}/patient-access`;
+                                    navigator.clipboard.writeText(url);
+                                    showMessage(`Link Registro Paciente: ${url}`, 'success');
+                                }}>
+                                    🔗 Link Registro
+                                </button>
+                                <button className="btn btn-primary flex items-center gap-2 ml-4" onClick={() => setShowCreate(!showCreate)}>
+                                    {showCreate ? `❌ ${t('cancel')}` : `➕ ${t('register_new_patient')}`}
+                                </button>
+                            </div>
+                        </div>
                     )}
                 </div>
 
@@ -674,58 +680,13 @@ const Patients = () => {
                 {showCreate && (
                     <div className="card" style={{ marginBottom: '2rem', animation: 'fadeIn 0.3s ease' }}>
                         <h3>{t('register_new_patient')}</h3>
-                        <form onSubmit={handleCreate}>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                                <div className="input-group">
-                                    <label className="input-label">{t('username')}</label>
-                                    <input className="input-field" value={newUsername} onChange={e => setNewUsername(e.target.value)} required />
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">{t('password')}</label>
-                                    <input type="password" className="input-field" value={newPassword} onChange={e => setNewPassword(e.target.value)} required />
-                                </div>
-                            </div>
-                            <div className="input-group">
-                                <label className="input-label">{t('full_name')}</label>
-                                <input className="input-field" value={fullName} onChange={e => setFullName(e.target.value)} required />
-                            </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                                <div className="input-group">
-                                    <label className="input-label">{t('dni')}</label>
-                                    <input className="input-field" value={newDni} onChange={e => setNewDni(e.target.value)} />
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">Obra Social</label>
-                                    <select className="input-field" value={newInsuranceId} onChange={e => setNewInsuranceId(e.target.value)}>
-                                        <option value="">Seleccionar...</option>
-                                        {insurances.map(ins => (
-                                            <option key={ins.id} value={ins.id}>{ins.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-                            <div className="grid-2-cols">
-                                <div className="input-group">
-                                    <label className="input-label">Nro Afiliado</label>
-                                    <input className="input-field" value={newAffiliateNumber} onChange={e => setNewAffiliateNumber(e.target.value)} />
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">Email</label>
-                                    <input className="input-field" type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)} />
-                                </div>
-                            </div>
-                            <div className="grid-2-cols">
-                                <div className="input-group">
-                                    <label className="input-label">Phone</label>
-                                    <input className="input-field" value={phone} onChange={e => setPhone(e.target.value)} />
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">{t('dob')}</label>
-                                    <input type="date" className="input-field" value={dob} onChange={e => setDob(e.target.value)} />
-                                </div>
-                            </div>
-                            <button type="submit" className="btn btn-primary">{t('create_account')}</button>
-                        </form>
+                        <PatientForm
+                            onSubmit={handleCreate}
+                            isEdit={false}
+                            isAdmin={true}
+                            insurances={insurances}
+                            doctors={doctors}
+                        />
                     </div>
                 )}
 
@@ -734,7 +695,10 @@ const Patients = () => {
                         {currentPatients.length === 0 ? <li className="text-muted p-4">{t('no_patients_found')}</li> : currentPatients.map(p => (
                             <li key={p.id} className="item-card">
                                 <div>
-                                    <strong style={{ textTransform: 'capitalize' }}>{p.full_name}</strong>
+                                    <strong style={{ textTransform: 'capitalize' }}>
+                                        {p.full_name}
+                                        {p.is_new_patient === 1 && <span className="ml-2 text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded border border-purple-200">✨ NUEVO</span>}
+                                    </strong>
                                     <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
                                         {p.dni && `${t('dni')}: ${p.dni} | `}
                                         {(p.insurance_name || p.insurance) && `OS: ${p.insurance_name || p.insurance} | `}
@@ -818,7 +782,7 @@ const Patients = () => {
                 )}
 
                 {/* Pay Debt Modal for List View */}
-                < Modal
+                <Modal
                     isOpen={debtModalOpen}
                     onClose={() => setDebtModalOpen(false)}
                     title={t('pay_debt')}
@@ -829,20 +793,23 @@ const Patients = () => {
                         </>
                     }
                 >
-                    <div>
-                        <p style={{ marginBottom: '1rem' }}>Enter amount to pay:</p>
-                        <label className="input-label">{t('amount')} ($)</label>
-                        <CurrencyInput className="input-field" value={debtParams.amount} onChange={e => setDebtParams({ ...debtParams, amount: e.target.value })} />
-
-                        <label className="input-label" style={{ marginTop: '1rem' }}>{t('payment_method')}</label>
-                        <select className="input-field" value={debtParams.method} onChange={e => setDebtParams({ ...debtParams, method: e.target.value })}>
-                            <option value="cash">Cash</option>
-                            <option value="transfer">Transfer</option>
-                            <option value="credit_card">Credit Card</option>
-                            <option value="debit_card">Debit Card</option>
-                        </select>
+                    <div className="flex-col-gap-4">
+                        <p>{t('enter_payment_amount') || 'Ingrese el monto a pagar:'}</p>
+                        <div className="input-group">
+                            <label className="input-label">{t('amount')} ($)</label>
+                            <CurrencyInput className="input-field" value={debtParams.amount} onChange={e => setDebtParams({ ...debtParams, amount: e.target.value })} />
+                        </div>
+                        <div className="input-group">
+                            <label className="input-label">{t('payment_method')}</label>
+                            <select className="input-field" value={debtParams.method} onChange={e => setDebtParams({ ...debtParams, method: e.target.value })}>
+                                <option value="cash">Cash</option>
+                                <option value="transfer">Transfer</option>
+                                <option value="credit_card">Credit Card</option>
+                                <option value="debit_card">Debit Card</option>
+                            </select>
+                        </div>
                     </div>
-                </Modal >
+                </Modal>
 
                 {/* Prescription Modal */}
                 <Modal
@@ -867,8 +834,15 @@ const Patients = () => {
                         </div>
                     </div>
                 </Modal>
-            </main >
-        </div >
+
+                <QRCodeModal
+                    isOpen={qrModalOpen}
+                    onClose={() => setQrModalOpen(false)}
+                    url={qrUrl}
+                    expiresAt={qrExpiry}
+                />
+            </main>
+        </div>
     );
 };
 

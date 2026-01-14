@@ -14,6 +14,9 @@ import Doctors from './pages/Doctors';
 import SystemConfig from './pages/SystemConfig';
 import Requests from './pages/Requests';
 import Insurances from './pages/Insurances';
+import Institutions from './pages/Institutions'; // [NEW]
+import TempAccess from './pages/TempAccess'; // [NEW]
+import Home from './pages/Home';
 import FloatingChat from './components/FloatingChat';
 import { useAuth } from './context/AuthContext';
 import { useLanguage } from './context/LanguageContext';
@@ -24,6 +27,33 @@ const ProtectedRoute = ({ children }) => {
 
   if (loading) return <div>{t('loading')}</div>;
   if (!user) return <Navigate to="/login" />;
+
+  // Patients should not be able to access the management dashboard or other views
+  if (user.role === 'patient') {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 text-center">
+        <div className="card max-w-md p-8 shadow-lg">
+          <div className="text-5xl mb-4">✅</div>
+          <h2 className="title text-xl mb-4">Registro Completado</h2>
+          <p className="text-slate-600 mb-6">
+            Tu información ha sido recibida correctamente.
+            <br /><br />
+            Esta sección es de uso administrativo. Si necesitas realizar otra gestión, por favor utiliza el enlace enviado a tu dispositivo o escanea el QR en el consultorio.
+          </p>
+          <button
+            className="btn btn-secondary w-full"
+            onClick={() => {
+              localStorage.clear();
+              window.location.href = '/';
+            }}
+          >
+            Cerrar Sesión
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return children;
 };
 
@@ -31,6 +61,7 @@ function App() {
   return (
     <>
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={
@@ -98,7 +129,13 @@ function App() {
             <Insurances />
           </ProtectedRoute>
         } />
-        <Route path="/" element={<Navigate to="/dashboard" />} />
+        <Route path="/institutions" element={
+          <ProtectedRoute>
+            <Institutions />
+          </ProtectedRoute>
+        } />
+        <Route path="/patient-access/:token" element={<TempAccess />} />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       <FloatingChat />
     </>

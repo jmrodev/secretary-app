@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useModal } from '../context/ModalContext';
+import { useMessage } from '../context/MessageContext';
 import Modal from '../components/Modal';
 import Sidebar from '../components/Sidebar';
 import { formatPrice } from '../utils/format';
@@ -11,6 +13,8 @@ import TransactionModal from '../components/TransactionModal';
 const Finances = () => {
     const { user } = useAuth();
     const { t } = useLanguage();
+    const { showMessage } = useMessage();
+    const { alert } = useModal();
     const [transactions, setTransactions] = useState([]);
     const [stats, setStats] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -20,7 +24,7 @@ const Finances = () => {
     const [doctors, setDoctors] = useState([]);
 
     // Filters
-    const [selectedDoctorFilter, setSelectedDoctorFilter] = useState('');
+    const [selectedDoctorFilter, setSelectedDoctorFilter] = useState(localStorage.getItem('last_selected_doctor_id') || '');
 
     // New Transaction Form State
     const [modalOpen, setModalOpen] = useState(false);
@@ -62,6 +66,7 @@ const Finances = () => {
 
     useEffect(() => {
         fetchData();
+        localStorage.setItem('last_selected_doctor_id', selectedDoctorFilter);
     }, [selectedDoctorFilter]);
 
     const handleCloseBox = async () => {
@@ -71,6 +76,8 @@ const Finances = () => {
                 amount_delivered: closeAmount,
                 description: `Cash Box Delivery to Dr. ${closeBoxModal.doctorName}`
             });
+            await api.put(`/finance/close-box/${closeBoxModal.doctorId}`);
+            showMessage(t('box_closed_successfully'), 'success');
             setCloseBoxModal({ ...closeBoxModal, open: false });
             setCloseAmount('');
             fetchData();
@@ -190,35 +197,113 @@ const Finances = () => {
                     {/* Transaction Log */}
                     <div className="card">
                         <h3>{t('transaction_log')}</h3>
-                        <table className="transactions-table">
-                            <thead>
-                                <tr className="text-left border-b-slate">
-                                    <th className="p-4">{t('date_label')}</th>
-                                    <th className="p-4">{t('description')}</th>
-                                    <th className="p-4">{t('beneficiary')}</th>
-                                    <th className="p-4">{t('payment_method')}</th>
-                                    <th className="p-4">{t('amount')}</th>
-                                    <th className="p-4">{t('proof')}</th>
+                        <table className="table-base table-base-lg w-full">
+                            <thead className="bg-slate-50">
+                                <tr className="border-b text-left text-xs uppercase tracking-wider text-slate-500">
+                                    <th className="py-3 px-4">{t('date_label')}</th>
+                                    <th className="py-3 px-4 w-1/3">{t('description')}</th>
+                                    <th className="py-3 px-4">{t('beneficiary')}</th>
+                                    <th className="py-3 px-4">{t('payment_method')}</th>
+                                    <th className="py-3 px-4 text-right">{t('amount')}</th>
+                                    <th className="py-3 px-4 text-center">{t('proof')}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {transactions.map(tx => (
-                                    <tr key={tx.id} className="border-b-divider">
-                                        <td className="p-4">{new Date(tx.transaction_date).toLocaleDateString()}</td>
-                                        <td className="p-4">
-                                            <div>{t(tx.type) || tx.type.replace('_', ' ').toUpperCase()}</div>
-                                            <div className="text-sm-muted">{translateDescription(tx.description)}</div>
-                                        </td>
-                                        <td className="p-4">{tx.doctor_name || t('general')}</td>
-                                        <td className="p-4">{tx.method}</td>
-                                        <td className={`p-4 font-bold ${tx.is_withdrawal ? 'text-blue-600' : (tx.type.includes('income') ? 'text-green-600' : 'text-red-500')}`}>
-                                            {tx.is_withdrawal ? '↩' : (tx.type.includes('income') ? '+' : '-')}${Math.abs(tx.amount)}
-                                        </td>
-                                        <td className="p-4">
-                                            {tx.proof_file ? <a href={tx.proof_file} target="_blank" rel="noreferrer">{t('view') || 'View'}</a> : '-'}
-                                        </td>
-                                    </tr>
-                                ))}
+                                {(() => {
+                                    // Grouping Logic
+                                    const groups = [];
+                                    let currentGroup = [];
+                                    let lastKey = null;
+
+                                    transactions.forEach(tx => {
+                                        // Create a unique key for grouping
+                                        // Priority: appointment_id -> request_id -> (date + doctor + description)
+                                        let key = null;
+                                        if (tx.appointment_id) key = `appt_${tx.appointment_id}`;
+                                        else if (tx.request_id) key = `req_${tx.request_id}`;
+                                        else key = `gen_${tx.transaction_date}_${tx.doctor_id}_${tx.description}`;
+
+                                        if (key !== lastKey) {
+                                            if (currentGroup.length > 0) groups.push(currentGroup);
+                                            currentGroup = [tx];
+                                            lastKey = key;
+                                        } else {
+                                            currentGroup.push(tx);
+                                        }
+                                    });
+                                    if (currentGroup.length > 0) groups.push(currentGroup);
+
+                                    return groups.map((group, gIdx) => (
+                                        <tr key={`group-${gIdx}`} className="hover:bg-slate-50 transition-colors">
+                                            {/* Render all rows for this group in a single TR? No, tbody cannot contain nested TRs directly like that cleanly with rowspan usually, but let's try rendering multiple TRs or use a fragment. 
+                                               Actually, mapping groups to fragments of TRs is better.
+                                             */}
+                                            <td colSpan="6" className="p-0 border-b border-slate-100">
+                                                {/* Inner table or just rows? If we output TRs here, we need to return an array of elements. React allows returning arrays. */}
+                                                <table className="w-full">
+                                                    <tbody>
+                                                        {group.map((tx, tIdx) => {
+                                                            const methodIcon = tx.method === 'cash' ? '💵' : (tx.method === 'transfer' ? '🏦' : '💳');
+                                                            const methodLabel = tx.method === 'cash' ? t('cash') : (tx.method === 'transfer' ? t('transfer') : t('card'));
+                                                            const isIncome = tx.type.includes('income') && !tx.is_withdrawal;
+                                                            // const isExpense = tx.type.includes('expense') || tx.is_withdrawal;
+                                                            const isGroupStart = tIdx === 0;
+                                                            const isGroupEnd = tIdx === group.length - 1;
+                                                            const groupSize = group.length;
+
+                                                            // Visual grouping: If groupSize > 1, add a colored identifying left border or background
+                                                            const groupClass = groupSize > 1 ? "bg-amber-50/50" : ""; // light amber background for groups
+
+                                                            return (
+                                                                <tr key={tx.id} className={`${groupClass} ${!isGroupEnd ? 'border-b border-amber-100' : ''}`}>
+                                                                    <td className="py-3 px-4 text-sm text-slate-500 whitespace-nowrap w-[15%]">
+                                                                        {new Date(tx.transaction_date).toLocaleDateString()}
+                                                                        <div className="text-xs text-slate-400">{new Date(tx.transaction_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                                                    </td>
+                                                                    <td className="py-3 px-4 w-1/3">
+                                                                        <div className="flex flex-col">
+                                                                            <span className={`text-xs font-bold uppercase mb-1 w-fit px-2 py-0.5 rounded ${isIncome ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                                                                {t(tx.type) || tx.type.replace('_', ' ')}
+                                                                            </span>
+                                                                            <span className="text-sm text-slate-700">{translateDescription(tx.description)}</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td className="py-3 px-4 text-sm font-medium text-slate-600 w-[15%]">
+                                                                        {tx.doctor_name || <span className="text-slate-400 italic">{t('general')}</span>}
+                                                                    </td>
+                                                                    <td className="py-3 px-4 w-[15%]">
+                                                                        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${tx.method === 'cash' ? 'bg-green-50 text-green-700 border-green-200' :
+                                                                            (tx.method === 'transfer' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-purple-50 text-purple-700 border-purple-200')
+                                                                            }`}>
+                                                                            <span>{methodIcon}</span> {methodLabel || tx.method}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td className={`py-3 px-4 text-sm font-bold text-right w-[10%] ${tx.is_withdrawal ? 'text-blue-600' : (isIncome ? 'text-green-600' : 'text-red-500')
+                                                                        }`}>
+                                                                        {tx.is_withdrawal ? '↩' : (isIncome ? '+' : '-')}${Math.abs(tx.amount).toLocaleString()}
+                                                                    </td>
+                                                                    <td className="py-3 px-4 text-center w-[10%]">
+                                                                        {tx.proof_file ? (
+                                                                            <a href={tx.proof_file} target="_blank" rel="noreferrer" className="text-blue-500 hover:text-blue-700 p-1" title={t('view')}>
+                                                                                📁
+                                                                            </a>
+                                                                        ) : <span className="text-slate-300">-</span>}
+                                                                    </td>
+                                                                </tr>
+                                                            );
+                                                        })}
+                                                    </tbody>
+                                                </table>
+                                                {/* Group total if > 1 */}
+                                                {group.length > 1 && (
+                                                    <div className="bg-amber-100/50 px-4 py-1 text-right text-xs font-bold text-amber-800 border-t border-amber-200">
+                                                        Total Group: ${group.reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0).toLocaleString()}
+                                                    </div>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ));
+                                })()}
                             </tbody>
                         </table>
                     </div>
