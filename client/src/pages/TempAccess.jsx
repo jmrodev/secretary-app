@@ -1,13 +1,16 @@
+```javascript
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import PatientForm from '../components/PatientForm';
 import { useLanguage } from '../context/LanguageContext';
+import { useModal } from '../context/ModalContext';
 
 const TempAccess = () => {
     const { token } = useParams();
     const navigate = useNavigate();
     const { t } = useLanguage();
+    const { alert } = useModal();
 
     const [loading, setLoading] = useState(true);
     const [isValid, setIsValid] = useState(false);
@@ -21,7 +24,7 @@ const TempAccess = () => {
         const verify = async () => {
             try {
                 const [resVerify, resInsurances] = await Promise.all([
-                    api.get(`/temp-access/verify/${token}`),
+                    api.get(`/ temp - access / verify / ${ token } `),
                     api.get('/insurances') // Public or needs generic access? Ideally public for drop-down
                 ]);
 
@@ -43,7 +46,7 @@ const TempAccess = () => {
 
     const handleSubmit = async (formData) => {
         try {
-            await api.post(`/temp-access/complete/${token}`, formData);
+            await api.post(`/ temp - access / complete / ${ token } `, formData);
             setSuccess(true);
         } catch (err) {
             console.error(err);

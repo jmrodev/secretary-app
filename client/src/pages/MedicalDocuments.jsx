@@ -4,6 +4,7 @@ import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useModal } from '../context/ModalContext';
 import Modal from '../components/Modal';
 import TransactionModal from '../components/TransactionModal';
 import PatientSearchSelect from '../components/PatientSearchSelect';
@@ -15,6 +16,7 @@ const MedicalDocuments = () => {
     const { user } = useAuth();
     const { showMessage } = useMessage();
     const { t } = useLanguage();
+    const { alert, confirm } = useModal();
     const location = useLocation();
     const [activeTab, setActiveTab] = useState('requests'); // requests | files | history
     const [searchTerm, setSearchTerm] = useState('');
@@ -410,7 +412,7 @@ const MedicalDocuments = () => {
                                                         <button
                                                             className="btn btn-sm-compact btn-danger"
                                                             onClick={async () => {
-                                                                if (!window.confirm("¿Seguro que desea eliminar?")) return;
+                                                                if (!await confirm("¿Seguro que desea eliminar?")) return;
                                                                 try {
                                                                     await api.delete(`/medical/requests/${r.id}`);
                                                                     fetchRequests();
