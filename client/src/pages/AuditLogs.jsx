@@ -63,15 +63,15 @@ const AuditLogs = () => {
                 <div className="text-xs">
                     {Object.entries(content).map(([key, value]) => (
                         <div key={key} className="mb-1">
-                            <span className="font-semibold text-slate-700">{key}:</span>{' '}
-                            <span className="text-slate-600">{typeof value === 'object' ? JSON.stringify(value) : String(value)}</span>
+                            <span className="font-semibold text-main-700">{key}:</span>{' '}
+                            <span className="text-main-600">{typeof value === 'object' ? JSON.stringify(value) : String(value)}</span>
                         </div>
                     ))}
                 </div>
             );
         }
 
-        return <span className="text-sm text-slate-600">{String(detailsRaw)}</span>;
+        return <span className="text-sm text-main-600">{String(detailsRaw)}</span>;
     };
 
     if (loading) return <div className="app-layout"><main className="main-content flex justify-center items-center h-full">{t('loading_logs')}</main></div>;
@@ -87,7 +87,7 @@ const AuditLogs = () => {
                     <div className="card table-responsive p-0 overflow-hidden shadow-sm">
                         <table className="table-base table-base-lg w-full">
                             <thead className="bg-slate-50">
-                                <tr className="border-b text-left text-xs uppercase tracking-wider text-slate-500">
+                                <tr className="border-b text-left text-xs uppercase tracking-wider text-main-500">
                                     <th className="py-3 px-4">{t('time_header')}</th>
                                     <th className="py-3 px-4">{t('user_header')}</th>
                                     <th className="py-3 px-4">{t('action_header')}</th>
@@ -100,10 +100,10 @@ const AuditLogs = () => {
                                     const actionStyle = formatAction(log.action);
                                     return (
                                         <tr key={log.id} className="hover:bg-slate-50 transition-colors">
-                                            <td className="py-3 px-4 text-sm text-slate-500 whitespace-nowrap">
+                                            <td className="py-3 px-4 text-sm text-main-500 whitespace-nowrap">
                                                 {new Date(log.created_at).toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}
                                             </td>
-                                            <td className="py-3 px-4 text-sm font-medium text-slate-700">
+                                            <td className="py-3 px-4 text-sm font-medium text-main-700">
                                                 {log.username}
                                             </td>
                                             <td className="py-3 px-4">
@@ -115,7 +115,7 @@ const AuditLogs = () => {
                                                 {log.details ? (
                                                     log.details.length > 60 ? (
                                                         <span className="flex items-center gap-2">
-                                                            <span className="text-slate-500 truncate block max-w-[200px]">{log.details}</span>
+                                                            <span className="text-main-500 truncate block max-w-[200px]">{log.details}</span>
                                                             <button
                                                                 className="text-blue-600 hover:text-blue-800 text-xs font-semibold bg-blue-50 px-2 py-1 rounded border border-blue-100"
                                                                 onClick={() => setSelectedLog(log)}
@@ -123,10 +123,10 @@ const AuditLogs = () => {
                                                                 View
                                                             </button>
                                                         </span>
-                                                    ) : <span className="text-slate-500">{log.details}</span>
-                                                ) : <span className="text-slate-300">-</span>}
+                                                    ) : <span className="text-main-500">{log.details}</span>
+                                                ) : <span className="text-main-300">-</span>}
                                             </td>
-                                            <td className="py-3 px-4 text-xs text-slate-400 font-mono">
+                                            <td className="py-3 px-4 text-xs text-muted font-mono">
                                                 {log.ip_address}
                                             </td>
                                         </tr>
@@ -147,25 +147,25 @@ const AuditLogs = () => {
                         <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-100">
                                 <div>
-                                    <div className="text-xs text-slate-400 uppercase tracking-wider mb-1">{t('action')}</div>
-                                    <div className="font-bold text-slate-800">{selectedLog.action}</div>
+                                    <div className="text-xs text-muted uppercase tracking-wider mb-1">{t('action')}</div>
+                                    <div className="font-bold text-main-800">{selectedLog.action}</div>
                                 </div>
                                 <div>
-                                    <div className="text-xs text-slate-400 uppercase tracking-wider mb-1">{t('user')}</div>
-                                    <div className="font-medium text-slate-800">{selectedLog.username}</div>
+                                    <div className="text-xs text-muted uppercase tracking-wider mb-1">{t('user')}</div>
+                                    <div className="font-medium text-main-800">{selectedLog.username}</div>
                                 </div>
                                 <div>
-                                    <div className="text-xs text-slate-400 uppercase tracking-wider mb-1">{t('date')}</div>
-                                    <div className="text-sm text-slate-600">{new Date(selectedLog.created_at).toLocaleString()}</div>
+                                    <div className="text-xs text-muted uppercase tracking-wider mb-1">{t('date')}</div>
+                                    <div className="text-sm text-main-600">{new Date(selectedLog.created_at).toLocaleString()}</div>
                                 </div>
                                 <div>
-                                    <div className="text-xs text-slate-400 uppercase tracking-wider mb-1">{t('ip_header')}</div>
-                                    <div className="text-sm font-mono text-slate-600">{selectedLog.ip_address}</div>
+                                    <div className="text-xs text-muted uppercase tracking-wider mb-1">{t('ip_header')}</div>
+                                    <div className="text-sm font-mono text-main-600">{selectedLog.ip_address}</div>
                                 </div>
                             </div>
 
                             <div className="border-t pt-4">
-                                <h4 className="text-sm font-bold text-slate-700 mb-3">{t('details_header')}</h4>
+                                <h4 className="text-sm font-bold text-main-700 mb-3">{t('details_header')}</h4>
                                 <div className="bg-white p-4 rounded border border-slate-200 max-h-60 overflow-y-auto shadow-inner">
                                     {formatDetails(selectedLog.details)}
                                 </div>

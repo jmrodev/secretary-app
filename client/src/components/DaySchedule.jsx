@@ -133,7 +133,7 @@ const DaySchedule = ({ date, appointments, onSlotClick, onRatingChange, doctor, 
                                                         {appt.type === 'virtual' && '📹 '}
                                                         {appt.patient_name || appt.reason || 'Reserved'} ({t(appt.status)})
                                                     </strong>
-                                                    <span className="doctor-name hidden md:inline ml-2 text-xs text-slate-500">Dr. {appt.doctor_name}</span>
+                                                    <span className="doctor-name hidden md:inline ml-2 text-xs text-main-500">Dr. {appt.doctor_name}</span>
 
                                                     {/* Toggle Video Button */}
                                                     {onToggleVirtual && (

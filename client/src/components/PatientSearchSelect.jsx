@@ -39,7 +39,7 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
             placeholder={finalPlaceholder}
             noOptionsMessage={({ inputValue }) => (
                 <div className="text-center p-2">
-                    <p className="text-slate-500 mb-2">
+                    <p className="text-main-500 mb-2">
                         {t('no_results_for')} "{inputValue}"
                     </p>
                     {onCreatePatient && inputValue && (

@@ -81,12 +81,12 @@ const DoctorScheduleSettings = ({ doctorId, schedule, setSchedule, loading }) =>
 
     return (
         <div className="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
-            <h3 className="text-lg font-bold text-slate-800 mb-4">Configuración de Horarios de Atención</h3>
-            <p className="text-sm text-slate-500 mb-6">Defina los días y franjas horarias en las que este médico atiende. El sistema utilizará esto para buscar turnos libres.</p>
+            <h3 className="text-lg font-bold text-main-800 mb-4">Configuración de Horarios de Atención</h3>
+            <p className="text-sm text-main-500 mb-6">Defina los días y franjas horarias en las que este médico atiende. El sistema utilizará esto para buscar turnos libres.</p>
 
             {/* Bulk Actions */}
             <div className="mb-8 p-4 bg-slate-50 rounded-lg border border-slate-200">
-                <h4 className="text-sm font-bold text-slate-700 mb-3">Aplicar a múltiples días</h4>
+                <h4 className="text-sm font-bold text-main-700 mb-3">Aplicar a múltiples días</h4>
                 <div className="flex flex-wrap items-center gap-4">
                     <div className="flex items-center gap-2">
                         <input
@@ -95,7 +95,7 @@ const DoctorScheduleSettings = ({ doctorId, schedule, setSchedule, loading }) =>
                             value={bulkStart}
                             onChange={(e) => setBulkStart(e.target.value)}
                         />
-                        <span className="text-slate-400">a</span>
+                        <span className="text-muted">a</span>
                         <input
                             type="time"
                             className="input-field py-1 px-2 w-28 text-sm"
@@ -137,7 +137,7 @@ const DoctorScheduleSettings = ({ doctorId, schedule, setSchedule, loading }) =>
                                     checked={isActive}
                                     onChange={() => toggleDay(day.id)}
                                 />
-                                <label htmlFor={`day-${day.id}`} className={`font-medium cursor-pointer ${isActive ? 'text-slate-900' : 'text-slate-400'}`}>
+                                <label htmlFor={`day-${day.id}`} className={`font-medium cursor-pointer ${isActive ? 'text-main-900' : 'text-muted'}`}>
                                     {day.name}
                                 </label>
                             </div>
@@ -150,7 +150,7 @@ const DoctorScheduleSettings = ({ doctorId, schedule, setSchedule, loading }) =>
                                         value={config.start_time ? config.start_time.slice(0, 5) : ''}
                                         onChange={(e) => handleDayChange(day.id, 'start_time', e.target.value)}
                                     />
-                                    <span className="text-slate-400">a</span>
+                                    <span className="text-muted">a</span>
                                     <input
                                         type="time"
                                         className="input-field py-1 px-2 w-28 text-sm"
@@ -159,7 +159,7 @@ const DoctorScheduleSettings = ({ doctorId, schedule, setSchedule, loading }) =>
                                     />
                                 </div>
                             )}
-                            {!isActive && <div className="text-xs text-slate-400 italic">No atiende</div>}
+                            {!isActive && <div className="text-xs text-muted italic">No atiende</div>}
                         </div>
                     );
                 })}

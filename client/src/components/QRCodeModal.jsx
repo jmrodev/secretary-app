@@ -33,7 +33,7 @@ const QRCodeModal = ({ isOpen, onClose, url, expiresAt }) => {
             }
         >
             <div className="flex flex-col items-center justify-center p-4">
-                <p className="text-center text-slate-600 mb-4">
+                <p className="text-center text-main-600 mb-4">
                     Muestra este código al paciente para que complete sus datos.
                 </p>
                 <div className="p-4 bg-white rounded border" id="qr-wrapper">
@@ -46,7 +46,7 @@ const QRCodeModal = ({ isOpen, onClose, url, expiresAt }) => {
                     />
                 </div>
                 {expiresAt && (
-                    <p className="text-xs text-slate-500 mt-2">
+                    <p className="text-xs text-main-500 mt-2">
                         Expira: {new Date(expiresAt).toLocaleTimeString()}
                     </p>
                 )}

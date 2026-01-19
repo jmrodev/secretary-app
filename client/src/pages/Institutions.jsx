@@ -147,7 +147,7 @@ const InstitutionFinances = ({ institutions }) => {
                 title="Registrar Pago de Institución"
             >
                 <div className="flex flex-col gap-4">
-                    <p className="text-sm text-slate-600">
+                    <p className="text-sm text-main-600">
                         Se aplicará el pago a las deudas más antiguas de la institución.
                     </p>
                     <div className="input-group">
@@ -283,13 +283,13 @@ const Institutions = () => {
                         {/* Tabs */}
                         <div className="bg-slate-200 p-1 rounded-lg flex text-sm">
                             <button
-                                className={`px-4 py-1 rounded-md transition-all ${activeTab === 'list' ? 'bg-white shadow text-slate-800' : 'text-slate-600 hover:text-slate-800'}`}
+                                className={`px-4 py-1 rounded-md transition-all ${activeTab === 'list' ? 'bg-white shadow text-main-800' : 'text-main-600 hover:text-main-800'}`}
                                 onClick={() => setActiveTab('list')}
                             >
                                 Listado
                             </button>
                             <button
-                                className={`px-4 py-1 rounded-md transition-all ${activeTab === 'finances' ? 'bg-white shadow text-slate-800' : 'text-slate-600 hover:text-slate-800'}`}
+                                className={`px-4 py-1 rounded-md transition-all ${activeTab === 'finances' ? 'bg-white shadow text-main-800' : 'text-main-600 hover:text-main-800'}`}
                                 onClick={() => setActiveTab('finances')}
                             >
                                 📊 Finanzas
@@ -322,14 +322,14 @@ const Institutions = () => {
                                 <tbody>
                                     {institutions.length === 0 ? (
                                         <tr>
-                                            <td colSpan="5" className="text-center py-4 text-slate-500">
+                                            <td colSpan="5" className="text-center py-4 text-main-500">
                                                 No hay instituciones registradas.
                                             </td>
                                         </tr>
                                     ) : (
                                         institutions.map(inst => (
                                             <tr key={inst.id}>
-                                                <td className="font-medium text-slate-800">{inst.name}</td>
+                                                <td className="font-medium text-main-800">{inst.name}</td>
                                                 <td className="font-mono text-blue-700">${inst.base_price}</td>
                                                 <td className="font-mono text-red-600 font-bold">${inst.total_debt}</td>
                                                 <td>

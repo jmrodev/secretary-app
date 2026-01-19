@@ -550,7 +550,7 @@ const Patients = () => {
                         title={t('rating_guide_title')}
                     >
                         <div className="p-2">
-                            <p className="whitespace-pre-line text-slate-600">
+                            <p className="whitespace-pre-line text-main-600">
                                 {t('rating_guide_body')}
                             </p>
                             <div className="mt-6 flex justify-end">
@@ -592,17 +592,20 @@ const Patients = () => {
                     <div className="flex-between w-full gap-4">
                         {/* Search Bar - Main Filter */}
                         {activeTab === 'list' && (
-                            <div className="flex-1 relative" style={{ maxWidth: '600px' }}>
-                                <input
-                                    type="text"
-                                    placeholder={t('search_placeholder') || "Buscar por nombre, DNI, teléfono..."}
-                                    className="input-field w-full"
-                                    value={searchTerm}
-                                    onChange={e => setSearchTerm(e.target.value)}
-                                />
-                                <span className="search-stats absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs bg-white px-2">
-                                    {filteredPatients.length} resultados
-                                </span>
+                            <div className="search-bar-container flex-1" style={{ maxWidth: '600px' }}>
+                                <div className="search-wrapper">
+                                    <span className="search-icon">🔍</span>
+                                    <input
+                                        type="text"
+                                        placeholder={t('search_placeholder') || "Buscar por nombre, DNI, teléfono..."}
+                                        className="search-bar-input"
+                                        value={searchTerm}
+                                        onChange={e => setSearchTerm(e.target.value)}
+                                    />
+                                    <span className="search-stats absolute right-4 top-1/2 -translate-y-1/2 text-muted text-xs bg-white px-2 rounded-full border border-gray-100 shadow-sm">
+                                        {filteredPatients.length} resultados
+                                    </span>
+                                </div>
                             </div>
                         )}
 
@@ -668,12 +671,12 @@ const Patients = () => {
                                             <li key={p.id} className="item-card hover:shadow-lg transition-all border border-slate-100 p-4 bg-white rounded-xl shadow-sm mb-3">
                                                 <div className="flex-1">
                                                     <div className="flex items-center gap-2 mb-1">
-                                                        <strong className="text-lg text-slate-800 capitalize leading-tight">{p.full_name}</strong>
+                                                        <strong className="text-lg text-main-800 capitalize leading-tight">{p.full_name}</strong>
                                                         {p.is_new_patient === 1 && <span className="badge badge-purple uppercase text-[10px]">✨ NUEVO</span>}
                                                     </div>
-                                                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-500">
-                                                        {p.dni && <span><span className="font-semibold text-slate-400">DNI:</span> {p.dni}</span>}
-                                                        {(p.insurance_name || p.insurance) && <span><span className="font-semibold text-slate-400">OS:</span> {p.insurance_name || p.insurance}</span>}
+                                                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-main-500">
+                                                        {p.dni && <span><span className="font-semibold text-muted">DNI:</span> {p.dni}</span>}
+                                                        {(p.insurance_name || p.insurance) && <span><span className="font-semibold text-muted">OS:</span> {p.insurance_name || p.insurance}</span>}
                                                         {p.phone && (
                                                             <a href={`https://wa.me/${p.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="text-blue-600 font-bold hover:underline" onClick={(e) => e.stopPropagation()}>
                                                                 📱 {p.phone}
@@ -692,13 +695,13 @@ const Patients = () => {
 
                                                 <div className="flex items-center flex-wrap gap-4 mr-6">
                                                     <div className="rating-container flex flex-col items-center" title={`${t('rating_financial_tooltip')}\nDeuda Actual: $${p.total_debt}`}>
-                                                        <div className="text-[10px] font-bold text-slate-400 uppercase mb-1">FIN</div>
+                                                        <div className="text-[10px] font-bold text-muted uppercase mb-1">FIN</div>
                                                         <div className="rating-stars-gold text-base">
                                                             {[1, 2, 3, 4, 5].map(s => <span key={s}>{s <= calculateFinancialRating(Number(p.total_debt)) ? '★' : '☆'}</span>)}
                                                         </div>
                                                     </div>
                                                     <div className="rating-container flex flex-col items-center" title={`${t('rating_attendance_tooltip')}\nResumen: ${p.total_appointments - p.missed_appointments}/${p.total_appointments}`}>
-                                                        <div className="text-[10px] font-bold text-slate-400 uppercase mb-1">ASIST</div>
+                                                        <div className="text-[10px] font-bold text-muted uppercase mb-1">ASIST</div>
                                                         <div className="rating-stars-blue text-base">
                                                             {[1, 2, 3, 4, 5].map(s => <span key={s}>{s <= calculateAttendanceRating(p.total_appointments, p.missed_appointments) ? '★' : '☆'}</span>)}
                                                         </div>
@@ -708,7 +711,7 @@ const Patients = () => {
                                                         onClick={() => handleBehaviorRatingChange(p.id, ((p.behavior_rating || 5) % 5) + 1)}
                                                         title={`${t('rating_behavior_tooltip')}\nCalificación: ${p.behavior_rating || 5}/5 (Click para cambiar)`}
                                                     >
-                                                        <div className="text-[10px] font-bold text-slate-400 uppercase mb-1">COND</div>
+                                                        <div className="text-[10px] font-bold text-muted uppercase mb-1">COND</div>
                                                         <div className="rating-stars-pink text-base">
                                                             {[1, 2, 3, 4, 5].map(s => <span key={s}>{s <= (p.behavior_rating || 5) ? '★' : '☆'}</span>)}
                                                         </div>
@@ -746,7 +749,7 @@ const Patients = () => {
                                     >
                                         ← Anterior
                                     </button>
-                                    <span className="px-6 py-2 bg-white rounded-full text-sm font-bold text-slate-500 border border-slate-200 shadow-sm">
+                                    <span className="px-6 py-2 bg-white rounded-full text-sm font-bold text-main-500 border border-slate-200 shadow-sm">
                                         Página {currentPage} de {totalPages}
                                     </span>
                                     <button
@@ -770,7 +773,7 @@ const Patients = () => {
                                 {recycleItems.length === 0 ? (
                                     <li className="text-muted p-20 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-300">
                                         <div className="text-5xl opacity-20 mb-4">🗑️</div>
-                                        <p className="text-lg font-bold text-slate-400">La papelera está vacía.</p>
+                                        <p className="text-lg font-bold text-muted">La papelera está vacía.</p>
                                     </li>
                                 ) : (
                                     recycleItems.map(item => (
@@ -782,11 +785,11 @@ const Patients = () => {
                                                             {item.entity_type === 'doctor' ? 'MÉDICO' : 'SECRETARIA'}
                                                         </span>
                                                     )}
-                                                    <strong className="text-lg text-slate-800 leading-tight">{item.entity_name}</strong>
+                                                    <strong className="text-lg text-main-800 leading-tight">{item.entity_name}</strong>
                                                 </div>
-                                                <div className="flex flex-col gap-1 text-sm text-slate-500">
-                                                    <span>📅 Eliminado el <span className="font-bold text-slate-600">{new Date(item.deleted_at).toLocaleString()}</span></span>
-                                                    <span>👤 Por <span className="font-bold text-slate-600">{item.deleted_by_name}</span></span>
+                                                <div className="flex flex-col gap-1 text-sm text-main-500">
+                                                    <span>📅 Eliminado el <span className="font-bold text-main-600">{new Date(item.deleted_at).toLocaleString()}</span></span>
+                                                    <span>👤 Por <span className="font-bold text-main-600">{item.deleted_by_name}</span></span>
                                                 </div>
                                                 <div className="text-[11px] text-red-500 mt-3 font-bold bg-red-50 inline-block px-3 py-1 rounded-full border border-red-100">
                                                     ⚠️ EXPIRA EL {new Date(item.expires_at).toLocaleDateString()}
@@ -853,13 +856,13 @@ const Patients = () => {
                     }
                 >
                     <div className="flex flex-col gap-6 p-2">
-                        <p className="text-slate-600 font-medium">{t('enter_payment_amount') || 'Ingrese el monto a pagar:'}</p>
+                        <p className="text-main-600 font-medium">{t('enter_payment_amount') || 'Ingrese el monto a pagar:'}</p>
                         <div className="input-group">
-                            <label className="input-label text-[10px] font-bold uppercase text-slate-400 tracking-wider mb-1">{t('amount')} ($)</label>
+                            <label className="input-label text-[10px] font-bold uppercase text-muted tracking-wider mb-1">{t('amount')} ($)</label>
                             <CurrencyInput className="input-field text-xl font-bold bg-slate-50 border-slate-200" value={debtParams.amount} onChange={e => setDebtParams({ ...debtParams, amount: e.target.value })} />
                         </div>
                         <div className="input-group">
-                            <label className="input-label text-[10px] font-bold uppercase text-slate-400 tracking-wider mb-1">{t('payment_method')}</label>
+                            <label className="input-label text-[10px] font-bold uppercase text-muted tracking-wider mb-1">{t('payment_method')}</label>
                             <select className="input-field bg-slate-50 border-slate-200" value={debtParams.method} onChange={e => setDebtParams({ ...debtParams, method: e.target.value })}>
                                 <option value="cash">💵 Cash</option>
                                 <option value="transfer">🏦 Transfer</option>

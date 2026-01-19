@@ -85,7 +85,7 @@ const MedicationAutocomplete = ({ value, onChange, placeholder, className }) => 
                             {med}
                         </li>
                     ))}
-                    <li className="px-4 py-1 text-xs text-slate-400 bg-slate-50 italic">
+                    <li className="px-4 py-1 text-xs text-muted bg-slate-50 italic">
                         {t('local_vademecum') || 'Vademécum Local'}
                     </li>
                 </ul>

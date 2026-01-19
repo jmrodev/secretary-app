@@ -407,13 +407,13 @@ const MedicalDocuments = () => {
                     ))}
                 </div>
 
-                <div className="medical-docs-search-container">
-                    <div className="relative w-full">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
+                <div className="search-bar-container">
+                    <div className="search-wrapper">
+                        <span className="search-icon">🔍</span>
                         <input
                             type="text"
                             placeholder={t('search_docs_placeholder')}
-                            className="input-field pl-10"
+                            className="search-bar-input"
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
                         />
@@ -476,7 +476,7 @@ const MedicalDocuments = () => {
                                                     <div className="file-icon-placeholder">
                                                         📄
                                                     </div>
-                                                    <span className="text-xs bg-slate-100 text-slate-500 px-2 py-1 rounded uppercase">{f.file_type.split('/')[1] || 'FILE'}</span>
+                                                    <span className="text-xs bg-slate-100 text-main-500 px-2 py-1 rounded uppercase">{f.file_type.split('/')[1] || 'FILE'}</span>
                                                 </div>
 
                                                 <div className="file-info">
@@ -528,7 +528,7 @@ const MedicalDocuments = () => {
                 {
                     activeTab === 'prescriptions' && (
                         <div className="flex flex-col gap-6">
-                            <h3 className="text-slate-800 mb-4 flex items-center gap-2">
+                            <h3 className="text-main-800 mb-4 flex items-center gap-2">
                                 <span>💊</span> {t('recent_prescriptions')}
                             </h3>
                             <div className="history-grid">
@@ -536,8 +536,8 @@ const MedicalDocuments = () => {
                                     <div key={`${p._origin}_${p.id}`} className="history-item">
                                         <div className="history-item-header">
                                             <div>
-                                                <div className="font-bold text-slate-800">{p.patient_name}</div>
-                                                <div className="text-xs text-slate-500">{timeAgo(p.created_at)} ({new Date(p.created_at).toLocaleDateString()})</div>
+                                                <div className="font-bold text-main-800">{p.patient_name}</div>
+                                                <div className="text-xs text-main-500">{timeAgo(p.created_at)} ({new Date(p.created_at).toLocaleDateString()})</div>
                                             </div>
                                             {p._origin === 'request' && <span className="tag tag-slate">{t('request') || 'Solicitud'}</span>}
                                         </div>
@@ -545,7 +545,7 @@ const MedicalDocuments = () => {
                                             {p.medications || p.request_note}
                                         </div>
                                         <div className="flex justify-between items-center">
-                                            <span className="text-xs text-slate-500">Dr. {p.doctor_name}</span>
+                                            <span className="text-xs text-main-500">Dr. {p.doctor_name}</span>
                                             <div className="flex gap-2">
                                                 <button onClick={() => handleViewItem(p)} className="btn btn-sm-compact btn-secondary">{t('view')}</button>
                                                 {(user.role === 'admin' || user.role === 'secretary') && (
@@ -563,7 +563,7 @@ const MedicalDocuments = () => {
                             </div>
                             {combinedPrescriptions.filter(filterItem).length === 0 && (
                                 <div className="card text-center p-12">
-                                    <p className="text-slate-500">{t('none_found')}</p>
+                                    <p className="text-main-500">{t('none_found')}</p>
                                 </div>
                             )}
                         </div>
@@ -573,7 +573,7 @@ const MedicalDocuments = () => {
                 {
                     activeTab === 'licenses' && (
                         <div className="flex flex-col gap-6">
-                            <h3 className="text-slate-800 mb-4 flex items-center gap-2">
+                            <h3 className="text-main-800 mb-4 flex items-center gap-2">
                                 <span>📄</span> {t('recent_licenses')}
                             </h3>
                             <div className="history-grid">
@@ -581,8 +581,8 @@ const MedicalDocuments = () => {
                                     <div key={`${l._origin}_${l.id}`} className="history-item">
                                         <div className="history-item-header">
                                             <div>
-                                                <div className="font-bold text-slate-800">{l.patient_name}</div>
-                                                <div className="text-xs text-slate-500">{timeAgo(l.appointment_date || l.created_at)} ({new Date(l.appointment_date || l.created_at).toLocaleDateString()})</div>
+                                                <div className="font-bold text-main-800">{l.patient_name}</div>
+                                                <div className="text-xs text-main-500">{timeAgo(l.appointment_date || l.created_at)} ({new Date(l.appointment_date || l.created_at).toLocaleDateString()})</div>
                                             </div>
                                             {l._origin === 'request' && <span className="tag tag-slate">{t('request') || 'Solicitud'}</span>}
                                         </div>
@@ -593,7 +593,7 @@ const MedicalDocuments = () => {
                                             {l.diagnosis}
                                         </div>
                                         <div className="flex justify-between items-center">
-                                            <span className="text-xs text-slate-500">Dr. {l.doctor_name}</span>
+                                            <span className="text-xs text-main-500">Dr. {l.doctor_name}</span>
                                             <div className="flex gap-2">
                                                 <button onClick={() => handleViewItem(l)} className="btn btn-sm-compact btn-secondary">{t('view')}</button>
                                                 {(user.role === 'admin' || user.role === 'secretary') && (
@@ -611,7 +611,7 @@ const MedicalDocuments = () => {
                             </div>
                             {combinedLicenses.filter(filterItem).length === 0 && (
                                 <div className="card text-center p-12">
-                                    <p className="text-slate-500">{t('none_found')}</p>
+                                    <p className="text-main-500">{t('none_found')}</p>
                                 </div>
                             )}
                         </div>
@@ -621,7 +621,7 @@ const MedicalDocuments = () => {
                 {
                     activeTab === 'certificates' && (
                         <div className="flex flex-col gap-6">
-                            <h3 className="text-slate-800 mb-4 flex items-center gap-2">
+                            <h3 className="text-main-800 mb-4 flex items-center gap-2">
                                 <span>📜</span> {t('recent_certificates')}
                             </h3>
                             <div className="history-grid">
@@ -629,8 +629,8 @@ const MedicalDocuments = () => {
                                     <div key={`${c._origin}_${c.id}`} className="history-item">
                                         <div className="history-item-header">
                                             <div>
-                                                <div className="font-bold text-slate-800">{c.patient_name}</div>
-                                                <div className="text-xs text-slate-500">{timeAgo(c.created_at)} ({new Date(c.created_at).toLocaleDateString()})</div>
+                                                <div className="font-bold text-main-800">{c.patient_name}</div>
+                                                <div className="text-xs text-main-500">{timeAgo(c.created_at)} ({new Date(c.created_at).toLocaleDateString()})</div>
                                             </div>
                                             <span className="tag tag-slate">{t('medical_certificate') || 'Certificado'}</span>
                                         </div>
@@ -638,7 +638,7 @@ const MedicalDocuments = () => {
                                             {c.description}
                                         </div>
                                         <div className="flex justify-between items-center">
-                                            <span className="text-xs text-slate-500">Dr. {c.doctor_name}</span>
+                                            <span className="text-xs text-main-500">Dr. {c.doctor_name}</span>
                                             <div className="flex gap-2">
                                                 <button onClick={() => handleViewItem(c)} className="btn btn-sm-compact btn-secondary">{t('view')}</button>
                                                 {(user.role === 'admin' || user.role === 'secretary') && (
@@ -656,7 +656,7 @@ const MedicalDocuments = () => {
                             </div>
                             {combinedCertificates.filter(filterItem).length === 0 && (
                                 <div className="card text-center p-12">
-                                    <p className="text-slate-500">{t('none_found')}</p>
+                                    <p className="text-main-500">{t('none_found')}</p>
                                 </div>
                             )}
                         </div>
@@ -871,7 +871,7 @@ const MedicalDocuments = () => {
                                 </div>
                             )}
                         </div>
-                        <div className="text-sm text-slate-500 border-t pt-4">
+                        <div className="text-sm text-main-500 border-t pt-4">
                             <p><strong>{t('patient')}:</strong> {selectedLicense.patient_name}</p>
                             <p><strong>{t('doctor')}:</strong> {selectedLicense.doctor_name}</p>
                         </div>
@@ -937,7 +937,7 @@ const MedicalDocuments = () => {
                                 </div>
                             )}
                         </div>
-                        <div className="text-sm text-slate-500 border-t pt-4">
+                        <div className="text-sm text-main-500 border-t pt-4">
                             <p><strong>{t('patient')}:</strong> {selectedRequest.patient_name}</p>
                             <p><strong>{t('doctor')}:</strong> {selectedRequest.doctor_name}</p>
                             <p><strong>Status:</strong> <span className="tag tag-green tag-sm">{t(selectedRequest.status)}</span></p>
@@ -957,7 +957,7 @@ const MedicalDocuments = () => {
                                             />
                                         </div>
                                     ) : (
-                                        <p className="font-bold text-slate-700">
+                                        <p className="font-bold text-main-700">
                                             {selectedRequest.debt_amount ? `$${selectedRequest.debt_amount}` : '$0.00'}
                                         </p>
                                     )}

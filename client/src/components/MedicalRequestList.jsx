@@ -29,7 +29,7 @@ const MedicalRequestList = ({
                             <span className={`tag ${r.type === 'prescription' ? 'tag-blue' : 'tag-purple'} self-start`}>
                                 {r.type === 'prescription' ? t('prescription') : (r.type === 'license' ? t('license') : (r.type === 'certificate' ? t('certificate') : r.type))}
                             </span>
-                            <span className="font-bold text-slate-800 text-lg">{r.patient_name}</span>
+                            <span className="font-bold text-main-800 text-lg">{r.patient_name}</span>
                         </div>
                         <span className={`tag ${r.status === 'pending' ? 'tag-amber' : (r.status === 'completed' ? 'tag-green' : 'tag-red')}`}>
                             {t(r.status) || r.status}
@@ -37,13 +37,13 @@ const MedicalRequestList = ({
                     </div>
 
                     {/* Doctor Info */}
-                    <div className="text-sm text-slate-600 mb-3 flex items-center gap-2">
+                    <div className="text-sm text-main-600 mb-3 flex items-center gap-2">
                         <span className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-xs">👨‍⚕️</span>
                         <span className="font-medium">{r.doctor_name || 'Sin Doctor'}</span>
                     </div>
 
                     {/* Request Note (e.g. Medications) */}
-                    <div className="bg-slate-50 p-3 rounded-lg text-sm text-slate-700 italic border border-slate-100 mb-3 shadow-inner">
+                    <div className="bg-slate-50 p-3 rounded-lg text-sm text-main-700 italic border border-slate-100 mb-3 shadow-inner">
                         "{r.request_note}"
                     </div>
 
@@ -60,7 +60,7 @@ const MedicalRequestList = ({
                             {r.payment_status === 'paid' ? `PAID` :
                                 (r.payment_status === 'debt' ? `DEBT ${formatPrice(r.debt_amount)}` : 'PENDING')}
                         </div>
-                        <span className="text-xs text-slate-400 flex items-center gap-1">
+                        <span className="text-xs text-muted flex items-center gap-1">
                             🕒 {timeAgo(r.created_at)}
                         </span>
                     </div>

@@ -169,14 +169,17 @@ const Doctors = () => {
                 </div>
 
                 {/* Search Bar */}
-                <div className="mb-6">
-                    <input
-                        type="text"
-                        placeholder={t('search_doctors_placeholder')}
-                        className="input-field max-w-400"
-                        value={searchTerm}
-                        onChange={e => setSearchTerm(e.target.value)}
-                    />
+                <div className="search-bar-container mb-6">
+                    <div className="search-wrapper">
+                        <span className="search-icon">🔍</span>
+                        <input
+                            type="text"
+                            placeholder={t('search_doctors_placeholder')}
+                            className="search-bar-input"
+                            value={searchTerm}
+                            onChange={e => setSearchTerm(e.target.value)}
+                        />
+                    </div>
                 </div>
 
                 <div className="item-grid">
@@ -187,21 +190,21 @@ const Doctors = () => {
                                     {d.full_name ? d.full_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'DR'}
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-lg text-slate-800 m-0 leading-tight">{d.full_name}</h3>
+                                    <h3 className="font-bold text-lg text-main-800 m-0 leading-tight">{d.full_name}</h3>
                                     <p className="text-sm text-blue-600 m-0 mt-1 font-medium">{d.specialty || 'General'}</p>
                                 </div>
                             </div>
 
                             <div className="item-content">
-                                <div className="text-sm text-slate-600 flex flex-col gap-1 mb-2">
+                                <div className="text-sm text-main-600 flex flex-col gap-1 mb-2">
                                     <div className="flex items-center gap-2">
                                         <span>📞</span> <span className="font-medium">
-                                            {d.phone ? <a href={`tel:${d.phone.replace(/[^0-9]/g, '')}`} className="text-slate-600 hover:text-blue-600 hover:underline">{d.phone}</a> : 'No phone'}
+                                            {d.phone ? <a href={`tel:${d.phone.replace(/[^0-9]/g, '')}`} className="text-main-600 hover:text-blue-600 hover:underline">{d.phone}</a> : 'No phone'}
                                         </span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <span>🏢</span> <span>{t('office_label')}: <span className="font-medium">
-                                            {d.office_number ? <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('Consultorio ' + d.office_number + ' Tandil')}`} target="_blank" rel="noreferrer" className="text-slate-600 hover:text-blue-600 hover:underline">{d.office_number}</a> : 'N/A'}
+                                            {d.office_number ? <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('Consultorio ' + d.office_number + ' Tandil')}`} target="_blank" rel="noreferrer" className="text-main-600 hover:text-blue-600 hover:underline">{d.office_number}</a> : 'N/A'}
                                         </span></span>
                                     </div>
                                 </div>

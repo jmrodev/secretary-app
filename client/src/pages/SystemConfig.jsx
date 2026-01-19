@@ -287,7 +287,7 @@ const SystemConfig = () => {
                                     <div className="space-y-4">
                                         <div className="flex items-center gap-2 mb-2">
                                             <span className="text-xl">📅</span>
-                                            <h4 className="font-bold text-slate-800">Recordatorio de Turno</h4>
+                                            <h4 className="font-bold text-main-800">Recordatorio de Turno</h4>
                                         </div>
                                         <div className="input-group">
                                             <label className="input-label" htmlFor="reminder-template">Plantilla de Mensaje</label>
@@ -319,7 +319,7 @@ const SystemConfig = () => {
                                     <div className="space-y-4">
                                         <div className="flex items-center gap-2 mb-2">
                                             <span className="text-xl">🔗</span>
-                                            <h4 className="font-bold text-slate-800">Enlace de Edición de Perfil (QR/Link)</h4>
+                                            <h4 className="font-bold text-main-800">Enlace de Edición de Perfil (QR/Link)</h4>
                                         </div>
                                         <div className="input-group">
                                             <label className="input-label" htmlFor="edit-link-template">Plantilla de Mensaje</label>
@@ -344,7 +344,7 @@ const SystemConfig = () => {
                                                     </span>
                                                 ))}
                                             </div>
-                                            <p className="text-xs text-slate-400 mt-1 italic">
+                                            <p className="text-xs text-muted mt-1 italic">
                                                 Este mensaje se usa al compartir el link o QR para que el paciente edite sus datos.
                                             </p>
                                         </div>
@@ -354,7 +354,7 @@ const SystemConfig = () => {
                                     <div className="space-y-4">
                                         <div className="flex items-center gap-2 mb-2">
                                             <span className="text-xl">🕒</span>
-                                            <h4 className="font-bold text-slate-800">Próximo Turno Disponible</h4>
+                                            <h4 className="font-bold text-main-800">Próximo Turno Disponible</h4>
                                         </div>
                                         <div className="input-group">
                                             <label className="input-label" htmlFor="next-free-template">Plantilla de Mensaje</label>
@@ -391,19 +391,19 @@ const SystemConfig = () => {
                         <div className="tab-panel animate-in">
                             {/* GOOGLE INTEGRATION */}
                             <div className="card mb-8">
-                                <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                                <h2 className="text-xl font-bold text-main-800 mb-4 flex items-center gap-2">
                                     <span className="text-2xl">📅</span> Integración con Google Calendar
                                 </h2>
 
                                 <div className="p-6 bg-slate-50 rounded-xl border border-slate-200">
                                     <div className="flex justify-between items-start mb-6">
                                         <div>
-                                            <p className="text-slate-600 mb-2">
+                                            <p className="text-main-600 mb-2">
                                                 Conecta tu cuenta de Google para sincronizar turnos automáticamente.
                                             </p>
                                             <div className="flex items-center gap-2 mb-4">
                                                 <div className={`w-3 h-3 rounded-full ${googleUnlinked ? 'bg-slate-400' : 'bg-green-500 animate-pulse'}`}></div>
-                                                <span className="font-medium text-slate-700">
+                                                <span className="font-medium text-main-700">
                                                     Estado: {googleUnlinked ? 'Desconectado' : 'Conectado'}
                                                 </span>
                                             </div>
@@ -412,7 +412,7 @@ const SystemConfig = () => {
                                         {!googleUnlinked && (
                                             <div className="flex flex-col items-end gap-2">
                                                 <label className="flex items-center gap-3 bg-white px-4 py-2 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-slate-50 transition-colors">
-                                                    <span className="text-sm font-semibold text-slate-700">
+                                                    <span className="text-sm font-semibold text-main-700">
                                                         {localSettings.google_sync_enabled === 'false' ? '⏸️ Sincronización PAUSADA' : '✅ Sincronización ACTIVA'}
                                                     </span>
                                                     <div className="relative inline-flex items-center cursor-pointer">
@@ -425,7 +425,7 @@ const SystemConfig = () => {
                                                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                                                     </div>
                                                 </label>
-                                                <p className="text-xs text-slate-400 text-right max-w-[250px]">
+                                                <p className="text-xs text-muted text-right max-w-[250px]">
                                                     Si pausas, los cambios en la App no se enviarán a Google, pero la cuenta sigue conectada.
                                                 </p>
                                             </div>
@@ -465,10 +465,10 @@ const SystemConfig = () => {
 
                                 <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 flex flex-wrap justify-between items-center gap-6">
                                     <div className="flex flex-col flex-1 min-w-[280px]">
-                                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Estado del Túnel</span>
+                                        <span className="text-xs font-bold text-muted uppercase tracking-wider mb-2">Estado del Túnel</span>
                                         <div className="flex flex-col gap-2">
                                             <div className="chip-green status-chip w-fit">Túnel Activo</div>
-                                            <span className="text-sm font-mono text-slate-600 break-all bg-white/50 p-2 rounded border border-slate-100">{settings.public_base_url || 'No detectada'}</span>
+                                            <span className="text-sm font-mono text-main-600 break-all bg-white/50 p-2 rounded border border-slate-100">{settings.public_base_url || 'No detectada'}</span>
                                         </div>
                                     </div>
                                     <button
@@ -523,7 +523,7 @@ const SystemConfig = () => {
                                 <div className="grid-2-cols gap-6 mb-8">
                                     <div className="p-6 bg-blue-50/50 rounded-xl border border-blue-100">
                                         <h4 className="font-bold mb-2">Descarga Remota</h4>
-                                        <p className="text-sm text-slate-600 mb-4">Para uso fuera de la clínica (requiere internet).</p>
+                                        <p className="text-sm text-main-600 mb-4">Para uso fuera de la clínica (requiere internet).</p>
                                         <div className="flex gap-2">
                                             <a
                                                 href={`${settings.public_base_url || window.location.origin}/uploads/secretary-app.apk`}
@@ -546,7 +546,7 @@ const SystemConfig = () => {
 
                                     <div className="p-6 bg-slate-50 rounded-xl border border-slate-200">
                                         <h4 className="font-bold mb-2">Descarga Local</h4>
-                                        <p className="text-sm text-slate-600 mb-4">Ideal para tablets dentro de la clínica (más rápido).</p>
+                                        <p className="text-sm text-main-600 mb-4">Ideal para tablets dentro de la clínica (más rápido).</p>
                                         <div className="flex gap-2">
                                             <a
                                                 href={`${settings.staff_base_url || window.location.origin}/uploads/secretary-app.apk`}
@@ -568,7 +568,7 @@ const SystemConfig = () => {
                                     </div>
                                 </div>
 
-                                <div className="flex justify-between items-center text-xs text-slate-400">
+                                <div className="flex justify-between items-center text-xs text-muted">
                                     <span>Clínica Flow Mobile Core</span>
                                     <span className="chip-blue">v1.9.3.1</span>
                                 </div>
@@ -588,14 +588,14 @@ const SystemConfig = () => {
                                         <div className="flex items-center gap-4 mb-6">
                                             <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-2xl">📁</div>
                                             <div>
-                                                <h4 className="font-bold text-slate-800 text-lg">Importar Pacientes (CSV Contacts)</h4>
-                                                <p className="text-sm text-slate-500">Carga masiva desde Google Contacts o archivos CSV compatibles.</p>
+                                                <h4 className="font-bold text-main-800 text-lg">Importar Pacientes (CSV Contacts)</h4>
+                                                <p className="text-sm text-main-500">Carga masiva desde Google Contacts o archivos CSV compatibles.</p>
                                             </div>
                                         </div>
 
                                         <div className="bg-white p-6 rounded-xl border border-dashed border-slate-300 flex flex-col items-center gap-4">
                                             <div className="text-center">
-                                                <p className="text-sm text-slate-600 mb-4 px-4">Seleccione su archivo <strong>.csv</strong> para iniciar el proceso de sincronización.</p>
+                                                <p className="text-sm text-main-600 mb-4 px-4">Seleccione su archivo <strong>.csv</strong> para iniciar el proceso de sincronización.</p>
                                                 <input
                                                     type="file"
                                                     id="csv-upload"
@@ -655,7 +655,7 @@ const SystemConfig = () => {
                                         {syncLogs.length > 0 && (
                                             <div className="mt-8">
                                                 <div className="flex items-center justify-between mb-2 px-1">
-                                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Logs de Sincronización</span>
+                                                    <span className="text-xs font-bold text-muted uppercase tracking-widest">Logs de Sincronización</span>
                                                     <span className="text-[10px] bg-emerald-100 text-emerald-600 px-2 py-0.5 rounded-full font-bold animate-pulse">LIVE</span>
                                                 </div>
                                                 <div className="bg-slate-900 text-emerald-400 p-5 rounded-xl font-mono text-xs h-64 overflow-y-auto whitespace-pre-wrap shadow-2xl border border-slate-800 custom-scrollbar">

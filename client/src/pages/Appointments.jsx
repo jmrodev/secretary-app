@@ -601,7 +601,7 @@ const Appointments = () => {
                 <div className={`header-actions-container mb-8 ${viewDoctorId ? `doctor-color-${Number(viewDoctorId) % 10} doctor-themed-bg` : ''}`} style={viewDoctorId ? { borderRadius: '1rem', padding: '1rem 1.5rem' } : {}}>
                     <div className="action-bar-buttons-container">
                         <button
-                            className={`btn ${showForm ? 'btn-secondary' : viewDoctorId ? 'doctor-themed-accent' : 'btn-primary'}`}
+                            className={`btn ${showForm ? 'btn-secondary' : viewDoctorId ? 'd-accent' : 'btn-primary'}`}
                             onClick={() => setShowForm(!showForm)}
                         >
                             {showForm ? <span>❌ Cancelar</span> : <span>✨ Nuevo Turno</span>}
@@ -644,7 +644,7 @@ const Appointments = () => {
                     /* PATIENT APPOINTMENT LIST VIEW */
                     <div className="patient-history-view animate-fade-in card p-4">
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-xl font-bold text-slate-700">
+                            <h2 className="text-xl font-bold text-main-700">
                                 {t('results_for')}: {patientAppointments[0]?.patient_name || t('patient')}
                             </h2>
                             <button className="btn btn-secondary btn-sm" onClick={() => setSearchPatientId('')}>
@@ -659,7 +659,7 @@ const Appointments = () => {
                                     <h3 className="mb-4 text-blue-600 font-bold border-b border-blue-200 pb-2">📅 {t('upcoming_appointments')}</h3>
                                     {patientAppointments.filter(a => new Date(a.appointment_date) >= new Date()).length === 0 ? (
                                         <div className="text-center py-8">
-                                            <p className="text-slate-500 text-lg mb-4">
+                                            <p className="text-main-500 text-lg mb-4">
                                                 {t('no_patient_history')}
                                             </p>
                                             <p className="text-sm text-blue-600 mb-2 font-medium">
@@ -672,9 +672,9 @@ const Appointments = () => {
                                                 <div key={appt.id} className="p-3 bg-white border border-blue-100 rounded-lg shadow-sm flex flex-col gap-2">
                                                     <div className="flex justify-between items-center">
                                                         <div>
-                                                            <div className="font-bold text-slate-800">{new Date(appt.appointment_date).toLocaleDateString()} {new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                                                            <div className="text-slate-600 text-sm">Dr. {appt.doctor_name}</div>
-                                                            <div className="text-xs text-slate-500 italic">{appt.reason}</div>
+                                                            <div className="font-bold text-main-800">{new Date(appt.appointment_date).toLocaleDateString()} {new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                                            <div className="text-main-600 text-sm">Dr. {appt.doctor_name}</div>
+                                                            <div className="text-xs text-main-500 italic">{appt.reason}</div>
                                                         </div>
                                                         <span className={`tag tag-${appt.status === 'confirmed' ? 'green' : 'amber'}`}>
                                                             {t(appt.status)}
@@ -713,7 +713,7 @@ const Appointments = () => {
 
                                 {/* Past History */}
                                 <div>
-                                    <h3 className="mb-4 text-slate-600 font-bold border-b pb-2">📜 {t('history')}</h3>
+                                    <h3 className="mb-4 text-main-600 font-bold border-b pb-2">📜 {t('history')}</h3>
                                     {patientAppointments.filter(a => new Date(a.appointment_date) < new Date()).length === 0 ? (
                                         <p className="text-muted italic text-sm">{t('no_history')}</p>
                                     ) : (
@@ -721,13 +721,13 @@ const Appointments = () => {
                                             {patientAppointments.filter(a => new Date(a.appointment_date) < new Date()).map(appt => (
                                                 <div key={appt.id} className="p-3 bg-slate-50 border border-slate-100 rounded-lg hover:shadow-md transition-all">
                                                     <div className="flex justify-between mb-1">
-                                                        <span className="font-semibold text-slate-700">{new Date(appt.appointment_date).toLocaleDateString()}</span>
+                                                        <span className="font-semibold text-main-700">{new Date(appt.appointment_date).toLocaleDateString()}</span>
                                                         <span className={`text-xs uppercase font-bold text-${appt.status === 'completed' ? 'green-600' : 'slate-500'}`}>
                                                             {t(appt.status)}
                                                         </span>
                                                     </div>
-                                                    <div className="text-sm text-slate-600 mb-2">Dr. {appt.doctor_name}</div>
-                                                    <div className="text-sm italic text-slate-500 mb-3">"{appt.reason}"</div>
+                                                    <div className="text-sm text-main-600 mb-2">Dr. {appt.doctor_name}</div>
+                                                    <div className="text-sm italic text-main-500 mb-3">"{appt.reason}"</div>
 
                                                     <div className="flex gap-2 justify-end border-t border-slate-200 pt-2">
                                                         <button
@@ -985,7 +985,7 @@ const Appointments = () => {
                                 {/* Doctor Workflow Panel (Synced with Dashboard.jsx) */}
                                 {user.role === 'doctor' && (
                                     <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 mt-2 mb-2">
-                                        <h4 className="text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider flex items-center gap-1">
+                                        <h4 className="text-xs font-bold text-main-500 mb-2 uppercase tracking-wider flex items-center gap-1">
                                             👨‍⚕️ {t('medical_panel') || 'Panel Médico'}
                                         </h4>
                                         <div className="grid grid-cols-2 gap-2 mb-3">
@@ -1225,7 +1225,7 @@ const Appointments = () => {
                 >
                     <div className="flex flex-col gap-4 max-h-[70vh] overflow-y-auto custom-scrollbar p-1">
                         {!nextSlotData?.results ? (
-                            <div className="text-center p-8 text-slate-500">Cargando resultados...</div>
+                            <div className="text-center p-8 text-main-500">Cargando resultados...</div>
                         ) : (
                             <div className="flex flex-col gap-4">
                                 {(() => {
@@ -1256,7 +1256,7 @@ const Appointments = () => {
                                         <div key={rI} className="flex flex-wrap md:flex-nowrap gap-1">
                                             {row.map((dayGroup, i) => (
                                                 <div key={i} className={`bg-slate-50 border border-slate-200 p-3 shadow-sm w-full md:w-auto md:flex-1 ${i === 0 ? 'rounded-l-xl' : ''} ${i === row.length - 1 ? 'rounded-r-xl' : ''} ${row.length === 1 ? 'rounded-xl' : 'border-r-0 last:border-r'}`}>
-                                                    <h4 className="font-bold text-slate-700 mb-2 border-b border-slate-200 pb-1 flex items-center gap-2 capitalize text-nowrap pr-2">
+                                                    <h4 className="font-bold text-main-700 mb-2 border-b border-slate-200 pb-1 flex items-center gap-2 capitalize text-nowrap pr-2">
                                                         📅 {dayGroup.dayName}
                                                     </h4>
                                                     <div className="flex flex-wrap gap-2">
@@ -1272,7 +1272,7 @@ const Appointments = () => {
                                                                     {slot.is_break && <span className="text-[10px] uppercase font-bold text-amber-600 ml-1">Extra</span>}
                                                                 </button>
                                                                 <button
-                                                                    className="btn btn-xs btn-ghost text-slate-400 hover:text-blue-600 w-full"
+                                                                    className="btn btn-xs btn-ghost text-muted hover:text-blue-600 w-full"
                                                                     onClick={(e) => { e.stopPropagation(); handleCopySlot(slot); }}
                                                                     title="Copiar Propuesta"
                                                                 >
@@ -1292,7 +1292,7 @@ const Appointments = () => {
                         <div className="flex gap-2 mt-2">
                             {slotHistory.length > 0 && (
                                 <button
-                                    className="btn btn-secondary flex-1 py-4 font-bold text-slate-600 border-2 border-slate-300 hover:bg-slate-100"
+                                    className="btn btn-secondary flex-1 py-4 font-bold text-main-600 border-2 border-slate-300 hover:bg-slate-100"
                                     onClick={() => {
                                         const prevDate = slotHistory[slotHistory.length - 1];
                                         setSlotHistory(prev => prev.slice(0, -1));
@@ -1305,7 +1305,7 @@ const Appointments = () => {
                             )}
                             {nextSlotData?.nextStartDate && (
                                 <button
-                                    className="btn btn-secondary flex-1 py-4 font-bold text-slate-600 border-dashed border-2 border-slate-300 hover:border-slate-400 hover:bg-slate-100 transition-all"
+                                    className="btn btn-secondary flex-1 py-4 font-bold text-main-600 border-dashed border-2 border-slate-300 hover:border-slate-400 hover:bg-slate-100 transition-all"
                                     onClick={() => {
                                         setSlotHistory(prev => [...prev, currentSlotParams]);
                                         setCurrentSlotParams(nextSlotData.nextStartDate);
@@ -1414,7 +1414,7 @@ const HolidayList = ({ holidays, onHolidaysChanged }) => {
             {holidays.map(h => (
                 <div key={h.id} className="holiday-list-item">
                     <div>
-                        <span className="font-bold text-slate-800">{formatDate(h.date)}</span>
+                        <span className="font-bold text-main-800">{formatDate(h.date)}</span>
                         <div className="text-sm text-muted">{h.description}</div>
                     </div>
                     <button onClick={() => handleDelete(h.id)} className="btn-text-danger" title="Eliminar">

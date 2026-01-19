@@ -112,14 +112,14 @@ const Insurances = () => {
                     </button>
                 </div>
 
-                {/* Search Bar - Premium Style */}
-                <div className="search-container-premium mb-10">
+                {/* Search Bar - Standard Style */}
+                <div className="search-bar-container mb-10">
                     <div className="search-wrapper">
                         <span className="search-icon">🔍</span>
                         <input
                             type="text"
                             placeholder="Buscar por nombre, CUIT o web..."
-                            className="search-input-premium"
+                            className="search-bar-input"
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
                         />
@@ -144,53 +144,53 @@ const Insurances = () => {
                         ) : (
                             <div className="item-grid">
                                 {filteredInsurances.map(ins => (
-                                    <div key={ins.id} className="item-card group">
+                                    <div key={ins.id} className="card">
                                         <div className="item-header">
-                                            <div className="insurance-avatar" style={{ background: '#3b82f6' }}>
+                                            <div className="avatar-tile" style={{ background: '#3b82f6' }}>
                                                 {getInitials(ins.name)}
                                             </div>
                                             <div>
-                                                <h3 className="font-bold text-lg text-slate-800 m-0 leading-tight">{ins.name}</h3>
-                                                <p className="text-sm text-slate-500 m-0 mt-1">CUIT: {ins.cuit || 'N/A'}</p>
+                                                <h3 className="font-bold text-lg text-main-800 m-0 leading-tight">{ins.name}</h3>
+                                                <p className="text-sm text-main-500 m-0 mt-1">CUIT: {ins.cuit || 'N/A'}</p>
                                             </div>
                                         </div>
 
                                         <div className="item-content">
-                                            <div className="insurance-details">
-                                                <div className="insurance-info-row">
-                                                    <span className="insurance-info-icon">📍</span>
+                                            <div className="info-list">
+                                                <div className="info-row">
+                                                    <span className="info-icon">📍</span>
                                                     <a
                                                         href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ins.address || `${ins.name} Tandil`)}`}
                                                         target="_blank"
                                                         rel="noreferrer"
-                                                        className="font-medium text-slate-800 hover:text-blue-600 hover:underline text-sm truncate"
+                                                        className="font-medium text-main-800 hover:text-blue-600 hover:underline text-sm truncate"
                                                     >
                                                         {ins.address || 'Buscar en mapa'}
                                                     </a>
                                                 </div>
-                                                <div className="insurance-info-row">
-                                                    <span className="insurance-info-icon">📞</span>
+                                                <div className="info-row">
+                                                    <span className="info-icon">📞</span>
                                                     <span className="font-medium">
                                                         {ins.phone ? (
-                                                            <a href={`tel:${ins.phone.replace(/[^0-9+]/g, '')}`} className="text-slate-800 hover:text-blue-600 hover:underline">
+                                                            <a href={`tel:${ins.phone.replace(/[^0-9+]/g, '')}`} className="text-main-800 hover:text-blue-600 hover:underline">
                                                                 {ins.phone}
                                                             </a>
                                                         ) : 'No phone'}
                                                     </span>
                                                 </div>
-                                                <div className="insurance-info-row">
-                                                    <span className="insurance-info-icon">✉️</span>
+                                                <div className="info-row">
+                                                    <span className="info-icon">✉️</span>
                                                     <span className="text-sm">
                                                         {ins.email ? (
-                                                            <a href={`mailto:${ins.email}`} className="text-slate-600 hover:text-blue-600 hover:underline">
+                                                            <a href={`mailto:${ins.email}`} className="text-main-600 hover:text-blue-600 hover:underline">
                                                                 {ins.email}
                                                             </a>
                                                         ) : 'No email'}
                                                     </span>
                                                 </div>
                                                 {ins.website && (
-                                                    <div className="insurance-info-row">
-                                                        <span className="insurance-info-icon">🌐</span>
+                                                    <div className="info-row">
+                                                        <span className="info-icon">🌐</span>
                                                         <a href={ins.website.startsWith('http') ? ins.website : `https://${ins.website}`} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline text-sm truncate max-w-full">
                                                             {ins.website}
                                                         </a>

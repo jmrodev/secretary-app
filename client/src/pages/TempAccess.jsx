@@ -62,7 +62,7 @@ const TempAccess = () => {
                 <div className="card max-w-md w-full text-center p-8">
                     <div className="text-5xl mb-4">✅</div>
                     <h2 className="title text-xl mb-2">¡Datos Guardados!</h2>
-                    <p className="text-slate-600">
+                    <p className="text-main-600">
                         Gracias por completar tu información.
                         Ya puedes cerrar esta ventana y devolver el dispositivo o esperar a ser llamado.
                     </p>
@@ -79,7 +79,7 @@ const TempAccess = () => {
                         <h1 className="title text-xl text-primary-600">
                             {isNew ? 'Registro de Paciente' : 'Actualizar mis Datos'}
                         </h1>
-                        <p className="text-sm text-slate-500">
+                        <p className="text-sm text-main-500">
                             Por favor completa los siguientes campos.
                         </p>
                     </div>

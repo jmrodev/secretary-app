@@ -35,7 +35,7 @@ const ProtectedRoute = ({ children }) => {
         <div className="card max-w-md p-8 shadow-lg">
           <div className="text-5xl mb-4">✅</div>
           <h2 className="title text-xl mb-4">Registro Completado</h2>
-          <p className="text-slate-600 mb-6">
+          <p className="text-main-600 mb-6">
             Tu información ha sido recibida correctamente.
             <br /><br />
             Esta sección es de uso administrativo. Si necesitas realizar otra gestión, por favor utiliza el enlace enviado a tu dispositivo o escanea el QR en el consultorio.

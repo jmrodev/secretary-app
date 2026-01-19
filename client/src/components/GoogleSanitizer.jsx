@@ -162,7 +162,7 @@ const GoogleSanitizer = () => {
                     🛠️
                 </div>
                 <div>
-                    <h2 className="text-xl font-bold text-slate-800">Saneador de Turnos</h2>
+                    <h2 className="text-xl font-bold text-main-800">Saneador de Turnos</h2>
                     <p className="text-sm text-muted">Auditoría y corrección de sincronización con Google Calendar.</p>
                 </div>
             </div>
@@ -284,7 +284,7 @@ const GoogleSanitizer = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             {/* Patient Info */}
                             <div className="space-y-4">
-                                <h4 className="text-sm font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">
+                                <h4 className="text-sm font-bold text-muted uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">
                                     Datos del Paciente
                                 </h4>
 
@@ -338,7 +338,7 @@ const GoogleSanitizer = () => {
 
                             {/* Appt Info */}
                             <div className="space-y-4">
-                                <h4 className="text-sm font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">
+                                <h4 className="text-sm font-bold text-muted uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">
                                     Detalles del Turno
                                 </h4>
 
@@ -418,11 +418,11 @@ const GoogleSanitizer = () => {
                 <table className="min-w-full bg-white text-sm">
                     <thead className="bg-slate-50 border-b border-slate-200">
                         <tr>
-                            <th className="py-3 px-4 text-left font-bold text-slate-500 uppercase text-xs">Horario</th>
-                            <th className="py-3 px-4 text-left font-bold text-slate-500 uppercase text-xs w-1/3">APP (Local)</th>
-                            <th className="py-3 px-4 text-left font-bold text-slate-500 uppercase text-xs w-1/3">GOOGLE (Nube)</th>
-                            <th className="py-3 px-4 text-center font-bold text-slate-500 uppercase text-xs">Estado</th>
-                            <th className="py-3 px-4 text-center font-bold text-slate-500 uppercase text-xs">Acción</th>
+                            <th className="py-3 px-4 text-left font-bold text-main-500 uppercase text-xs">Horario</th>
+                            <th className="py-3 px-4 text-left font-bold text-main-500 uppercase text-xs w-1/3">APP (Local)</th>
+                            <th className="py-3 px-4 text-left font-bold text-main-500 uppercase text-xs w-1/3">GOOGLE (Nube)</th>
+                            <th className="py-3 px-4 text-center font-bold text-main-500 uppercase text-xs">Estado</th>
+                            <th className="py-3 px-4 text-center font-bold text-main-500 uppercase text-xs">Acción</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
@@ -435,18 +435,18 @@ const GoogleSanitizer = () => {
                             return (
                                 <tr key={appt.id} className={`hover:bg-slate-50 transition-colors ${isMessy(appt.full_name) ? "bg-red-50/50" : ""}`}>
                                     <td className="py-3 px-4 whitespace-nowrap">
-                                        <div className="font-mono text-slate-600 font-medium">
+                                        <div className="font-mono text-main-600 font-medium">
                                             {new Date(appt.appointment_date).toLocaleDateString()}
                                         </div>
-                                        <div className="font-bold text-slate-800 text-lg">
+                                        <div className="font-bold text-main-800 text-lg">
                                             {new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         </div>
                                     </td>
 
                                     {/* APP SIDE */}
                                     <td className="py-3 px-4 align-top">
-                                        <div className="font-bold text-slate-800">{appt.full_name || <span className="text-red-400 italic">Desconocido</span>}</div>
-                                        {appt.reason && <div className="text-xs text-slate-500 mt-1">{appt.reason}</div>}
+                                        <div className="font-bold text-main-800">{appt.full_name || <span className="text-red-400 italic">Desconocido</span>}</div>
+                                        {appt.reason && <div className="text-xs text-main-500 mt-1">{appt.reason}</div>}
                                         {isMessy(appt.full_name) && (
                                             <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-100 text-red-700 text-[10px] rounded-full font-bold mt-2">
                                                 🧼 Requiere Limpieza
@@ -459,7 +459,7 @@ const GoogleSanitizer = () => {
                                         {googleData ? (
                                             <div>
                                                 <div className="font-bold text-emerald-700">{googleData.summary || '(Sin Título)'}</div>
-                                                <div className="text-[10px] text-slate-400 font-mono mt-1 line-clamp-2" title={googleData.description}>
+                                                <div className="text-[10px] text-muted font-mono mt-1 line-clamp-2" title={googleData.description}>
                                                     {googleData.description ? googleData.description.substring(0, 80) + '...' : '(Sin descripción)'}
                                                 </div>
                                                 {!isExactMatch && !isGhost && (
@@ -469,7 +469,7 @@ const GoogleSanitizer = () => {
                                                 )}
                                             </div>
                                         ) : (
-                                            <span className="text-slate-400 italic text-xs">No encontrado en nube</span>
+                                            <span className="text-muted italic text-xs">No encontrado en nube</span>
                                         )}
                                     </td>
 
@@ -503,7 +503,7 @@ const GoogleSanitizer = () => {
                         })}
                         {appointments.length === 0 && (
                             <tr>
-                                <td colSpan="5" className="py-12 text-center text-slate-400">
+                                <td colSpan="5" className="py-12 text-center text-muted">
                                     <div className="text-4xl mb-2">🤷‍♂️</div>
                                     No hay turnos para mostrar en este rango.
                                 </td>
@@ -523,7 +523,7 @@ const GoogleSanitizer = () => {
                     >
                         ← Anterior
                     </button>
-                    <span className="text-sm font-medium text-slate-600 bg-slate-100 px-3 py-1 rounded-full">
+                    <span className="text-sm font-medium text-main-600 bg-slate-100 px-3 py-1 rounded-full">
                         Página {currentPage} de {totalPages}
                     </span>
                     <button

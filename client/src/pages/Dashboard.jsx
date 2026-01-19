@@ -328,7 +328,7 @@ const Dashboard = () => {
                         {/* Doctor Workflow Panel */}
                         {user.role === 'doctor' && (
                             <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 mt-2 mb-2">
-                                <h4 className="text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider flex items-center gap-1">
+                                <h4 className="text-xs font-bold text-main-500 mb-2 uppercase tracking-wider flex items-center gap-1">
                                     👨‍⚕️ {t('medical_panel') || 'Panel Médico'}
                                 </h4>
                                 <div className="grid grid-cols-2 gap-2 mb-3">
@@ -523,7 +523,7 @@ const Dashboard = () => {
                             {/* General Statistics Section */}
                             {stats && (
                                 <div className="flex flex-col gap-2">
-                                    <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 px-1">{t('general_stats') || 'Estadísticas Generales'}</h4>
+                                    <h4 className="text-[10px] font-bold text-muted uppercase tracking-widest mb-1 px-1">{t('general_stats') || 'Estadísticas Generales'}</h4>
                                     <div className="stats-card-mini bg-blue-50 text-blue-700 border border-blue-100 py-2 shadow-sm">
                                         <h4 className="text-[10px]">📅 {t('turnos_hoy') || 'Hoy'}</h4>
                                         <p className="text-lg">{stats.appointments_today}</p>
@@ -536,7 +536,7 @@ const Dashboard = () => {
                                         <h4 className="text-[10px]">📈 {t('turnos_mes') || 'Mes'}</h4>
                                         <p className="text-lg">{stats.appointments_month}</p>
                                     </div>
-                                    <div className="stats-card-mini bg-slate-100 text-slate-600 border border-slate-200 py-2 shadow-sm">
+                                    <div className="stats-card-mini bg-slate-100 text-main-600 border border-slate-200 py-2 shadow-sm">
                                         <h4 className="text-[10px]">👥 {t('pacientes_label') || 'Pacientes'}</h4>
                                         <p className="text-lg">{stats.total_patients}</p>
                                     </div>
@@ -546,7 +546,7 @@ const Dashboard = () => {
                             {/* New Patient Growth Section - Now integrated as mini aside */}
                             {newPatientStats && (
                                 <div className="flex flex-col gap-2 mt-4">
-                                    <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 px-1">✨ {t('new_patients_stat') || 'Crecimiento de Pacientes'}</h4>
+                                    <h4 className="text-[10px] font-bold text-muted uppercase tracking-widest mb-1 px-1">✨ {t('new_patients_stat') || 'Crecimiento de Pacientes'}</h4>
                                     <div className="stats-card-mini bg-emerald-500 text-white border border-emerald-600 py-2 shadow-sm scale-[1.02]">
                                         <h4 className="text-[10px] opacity-90">✨ {t('this_day') || 'Hoy'}</h4>
                                         <p className="text-lg">{newPatientStats.currentDay}</p>
@@ -574,7 +574,7 @@ const Dashboard = () => {
                                     <div className="flex flex-col gap-2">
                                         {reminders.slice(0, 3).map(r => (
                                             <div key={r.id} className="text-sm p-2 bg-white/80 rounded-lg border border-amber-100 cursor-pointer hover:bg-white hover:shadow-md transition-all" onClick={() => navigate('/patients', { state: { selectedPatientId: r.id } })}>
-                                                <div className="font-bold text-slate-800 truncate text-[11px]">{r.full_name}</div>
+                                                <div className="font-bold text-main-800 truncate text-[11px]">{r.full_name}</div>
                                                 <div className="text-[10px] text-amber-700 mt-1">
                                                     {r.medical_history_evolution && <div className="truncate italic opacity-75">"{r.medical_history_evolution}"</div>}
                                                 </div>
@@ -617,10 +617,10 @@ const Dashboard = () => {
 
                             {activeTab === 'schedule' && user.role !== 'admin' && (
                                 <section className="card p-0 overflow-hidden border-slate-200 shadow-sm transition-all">
-                                    {loadingSchedule ? <div className="p-8 text-center text-slate-400">{t('loading')}</div> : (
+                                    {loadingSchedule ? <div className="p-8 text-center text-muted">{t('loading')}</div> : (
                                         todayAppointments.length === 0 ?
                                             <div className="text-center p-12 bg-white">
-                                                <p className="text-slate-400 m-0">{t('no_appointments_today')}</p>
+                                                <p className="text-muted m-0">{t('no_appointments_today')}</p>
                                             </div> :
                                             <div className="overflow-x-auto">
                                                 <table className="dashboard-table">
@@ -636,14 +636,14 @@ const Dashboard = () => {
                                                     <tbody>
                                                         {todayAppointments.map(a => (
                                                             <tr key={a.id} className="group" onClick={() => setActionModal({ open: true, appt: a })}>
-                                                                <td className="font-bold text-slate-900 w-24">
+                                                                <td className="font-bold text-main-900 w-24">
                                                                     {new Date(a.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
                                                                 </td>
                                                                 <td>
-                                                                    <div className="font-bold text-slate-800">{a.patient_name}</div>
-                                                                    {a.reason && <div className="text-[11px] text-slate-400 italic truncate max-w-[200px]">{a.reason}</div>}
+                                                                    <div className="font-bold text-main-800">{a.patient_name}</div>
+                                                                    {a.reason && <div className="text-[11px] text-muted italic truncate max-w-[200px]">{a.reason}</div>}
                                                                 </td>
-                                                                <td className="text-slate-500 text-sm">
+                                                                <td className="text-main-500 text-sm">
                                                                     {a.doctor_name}
                                                                 </td>
                                                                 <td>
@@ -683,10 +683,10 @@ const Dashboard = () => {
 
                             {activeTab === 'upcoming' && user.role !== 'admin' && (
                                 <section className="card p-0 overflow-hidden border-slate-200 shadow-sm transition-all">
-                                    {loadingSchedule ? <div className="p-8 text-center text-slate-400">{t('loading')}</div> : (
+                                    {loadingSchedule ? <div className="p-8 text-center text-muted">{t('loading')}</div> : (
                                         upcomingAppointments.length === 0 ?
                                             <div className="text-center p-12 bg-white">
-                                                <p className="text-slate-400 m-0">{t('no_upcoming_appointments') || 'No hay próximos turnos.'}</p>
+                                                <p className="text-muted m-0">{t('no_upcoming_appointments') || 'No hay próximos turnos.'}</p>
                                             </div> :
                                             <div className="overflow-x-auto">
                                                 <table className="dashboard-table">
@@ -719,16 +719,16 @@ const Dashboard = () => {
                                                                         </tr>
                                                                     )}
                                                                     <tr className="group" onClick={() => setActionModal({ open: true, appt: a })}>
-                                                                        <td className="font-bold text-slate-900 min-w-[120px]">
+                                                                        <td className="font-bold text-main-900 min-w-[120px]">
                                                                             <div className="flex flex-col">
-                                                                                <span className="text-xs text-slate-500">{new Date(a.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}</span>
+                                                                                <span className="text-xs text-main-500">{new Date(a.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}</span>
                                                                             </div>
                                                                         </td>
                                                                         <td>
-                                                                            <div className="font-bold text-slate-800">{a.patient_name}</div>
-                                                                            {a.reason && <div className="text-[11px] text-slate-400 italic truncate max-w-[200px]">{a.reason}</div>}
+                                                                            <div className="font-bold text-main-800">{a.patient_name}</div>
+                                                                            {a.reason && <div className="text-[11px] text-muted italic truncate max-w-[200px]">{a.reason}</div>}
                                                                         </td>
-                                                                        <td className="text-slate-500 text-sm">
+                                                                        <td className="text-main-500 text-sm">
                                                                             {a.doctor_name}
                                                                         </td>
                                                                         <td>

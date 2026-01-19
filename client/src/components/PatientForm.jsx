@@ -310,7 +310,7 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
 
             {isAdmin && (
                 <div className="admin-fields border-t-divider pt-4 mt-6">
-                    <h4 className="font-bold text-slate-700 mb-4 uppercase text-sm">Administrative Settings</h4>
+                    <h4 className="font-bold text-main-700 mb-4 uppercase text-sm">Administrative Settings</h4>
 
                     <div className="input-group mb-4">
                         <label className="input-label">Assigned Doctors</label>

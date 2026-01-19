@@ -87,11 +87,11 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
                                                 <strong>{formatDate(appt.appointment_date)}</strong>
                                                 <span className={`status-chip status-${appt.status}`}>{t(appt.status) || appt.status}</span>
                                             </div>
-                                            <div className="text-sm text-slate-600">
+                                            <div className="text-sm text-main-600">
                                                 Dr. {appt.doctor_name}
                                             </div>
                                             {appt.reason && (
-                                                <div className="text-sm mt-1 italic text-slate-700">
+                                                <div className="text-sm mt-1 italic text-main-700">
                                                     "{appt.reason}"
                                                 </div>
                                             )}
@@ -116,7 +116,7 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
                             <div className="flex-col gap-6">
                                 {/* Prescriptions */}
                                 <div>
-                                    <h4 className="text-slate-700 font-bold border-b mb-2 pb-1">{t('prescriptions') || 'Prescriptions'}</h4>
+                                    <h4 className="text-main-700 font-bold border-b mb-2 pb-1">{t('prescriptions') || 'Prescriptions'}</h4>
                                     {history.prescriptions.length === 0 ? <p className="text-sm text-muted">None</p> : (
                                         <ul className="list-none flex-col gap-2">
                                             {history.prescriptions.map(p => (
@@ -134,7 +134,7 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
 
                                 {/* Requests */}
                                 <div>
-                                    <h4 className="text-slate-700 font-bold border-b mb-2 pb-1">{t('requests') || 'Requests'}</h4>
+                                    <h4 className="text-main-700 font-bold border-b mb-2 pb-1">{t('requests') || 'Requests'}</h4>
                                     {history.requests.length === 0 ? <p className="text-sm text-muted">None</p> : (
                                         <ul className="list-none flex-col gap-2">
                                             {history.requests.map(r => (
@@ -153,7 +153,7 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
 
                                 {/* Licenses */}
                                 <div>
-                                    <h4 className="text-slate-700 font-bold border-b mb-2 pb-1">{t('licenses') || 'Medical Licenses'}</h4>
+                                    <h4 className="text-main-700 font-bold border-b mb-2 pb-1">{t('licenses') || 'Medical Licenses'}</h4>
                                     {history.licenses.length === 0 ? <p className="text-sm text-muted">None</p> : (
                                         <ul className="list-none flex-col gap-2">
                                             {history.licenses.map(l => (

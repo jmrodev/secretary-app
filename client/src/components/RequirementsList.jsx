@@ -282,7 +282,7 @@ const RequirementsList = ({ user }) => {
             ) : (
                 <div className="recycle-bin-view">
                     {recycleRequests.length === 0 ? (
-                        <div className="text-center p-12 bg-slate-50 rounded-lg border border-dashed border-slate-300 text-slate-400">
+                        <div className="text-center p-12 bg-slate-50 rounded-lg border border-dashed border-slate-300 text-muted">
                             <span className="text-4xl block mb-2">🗑️</span>
                             No hay elementos en la papelera.
                         </div>

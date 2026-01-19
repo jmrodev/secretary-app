@@ -176,7 +176,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated }) => {
                         onChange={e => setSendToDoctor(e.target.checked)}
                         className="w-4 h-4 cursor-pointer"
                     />
-                    <label htmlFor="req-forward" className="input-label mb-0 cursor-pointer select-none font-medium text-slate-700">
+                    <label htmlFor="req-forward" className="input-label mb-0 cursor-pointer select-none font-medium text-main-700">
                         {t('send_to_doctor') || 'Enviar a revisión médica'}
                     </label>
                 </div>

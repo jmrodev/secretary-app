@@ -195,7 +195,7 @@ const Finances = () => {
                                                 return (
                                                     <div key={d.id} className="card item-card p-4 flex flex-col justify-between">
                                                         <div>
-                                                            <h4 className="font-bold text-slate-800 m-0">{d.full_name}</h4>
+                                                            <h4 className="font-bold text-main-800 m-0">{d.full_name}</h4>
                                                             <p className={`text-2xl font-bold mt-2 ${bal >= 0 ? 'text-green-600' : 'text-red-500'}`}>
                                                                 ${bal.toLocaleString()}
                                                             </p>
@@ -225,7 +225,7 @@ const Finances = () => {
                         <h3>{t('transaction_log')}</h3>
                         <table className="table-base table-base-lg w-full">
                             <thead className="bg-slate-50">
-                                <tr className="border-b text-left text-xs uppercase tracking-wider text-slate-500">
+                                <tr className="border-b text-left text-xs uppercase tracking-wider text-main-500">
                                     <th className="py-3 px-4">{t('date_label')}</th>
                                     <th className="py-3 px-4 w-1/3">{t('description')}</th>
                                     <th className="py-3 px-4">{t('beneficiary')}</th>
@@ -286,20 +286,20 @@ const Finances = () => {
 
                                                             return (
                                                                 <tr key={tx.id} className={`${groupClass} ${!isGroupEnd ? 'border-b border-amber-100' : ''}`}>
-                                                                    <td className="py-3 px-4 text-sm text-slate-500 whitespace-nowrap w-[15%]">
+                                                                    <td className="py-3 px-4 text-sm text-main-500 whitespace-nowrap w-[15%]">
                                                                         {new Date(tx.transaction_date).toLocaleDateString()}
-                                                                        <div className="text-xs text-slate-400">{new Date(tx.transaction_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                                                        <div className="text-xs text-muted">{new Date(tx.transaction_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                                                                     </td>
                                                                     <td className="py-3 px-4 w-1/3">
                                                                         <div className="flex flex-col">
                                                                             <span className={`text-xs font-bold uppercase mb-1 w-fit px-2 py-0.5 rounded ${isIncome ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                                                                                 {t(tx.type) || tx.type.replace('_', ' ')}
                                                                             </span>
-                                                                            <span className="text-sm text-slate-700">{translateDescription(tx.description)}</span>
+                                                                            <span className="text-sm text-main-700">{translateDescription(tx.description)}</span>
                                                                         </div>
                                                                     </td>
-                                                                    <td className="py-3 px-4 text-sm font-medium text-slate-600 w-[15%]">
-                                                                        {tx.doctor_name || <span className="text-slate-400 italic">{t('general')}</span>}
+                                                                    <td className="py-3 px-4 text-sm font-medium text-main-600 w-[15%]">
+                                                                        {tx.doctor_name || <span className="text-muted italic">{t('general')}</span>}
                                                                     </td>
                                                                     <td className="py-3 px-4 w-[15%]">
                                                                         <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${tx.method === 'cash' ? 'bg-green-50 text-green-700 border-green-200' :
@@ -318,7 +318,7 @@ const Finances = () => {
                                                                             <a href={tx.proof_file} target="_blank" rel="noreferrer" className="text-blue-500 hover:text-blue-700 p-1" title={t('view')}>
                                                                                 📁
                                                                             </a>
-                                                                        ) : <span className="text-slate-300">-</span>}
+                                                                        ) : <span className="text-main-300">-</span>}
                                                                     </td>
                                                                     {(user.role === 'admin' || settings.enable_secretary_finance_crud === 'true') && (
                                                                         <td className="py-3 px-4 text-center w-[10%]">
