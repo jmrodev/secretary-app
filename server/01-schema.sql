@@ -51,8 +51,11 @@ CREATE TABLE `appointments` (
   `cancellation_reason` text DEFAULT NULL,
   `cost` decimal(10,2) DEFAULT 0.00,
   `is_paid` tinyint(1) DEFAULT 0,
-  `payment_status` enum('pending','paid','debt','partial') DEFAULT 'pending',
-  `google_event_id` varchar(255) DEFAULT NULL,
+  payment_status ENUM('pending', 'paid', 'debt', 'partial', 'refunded', 'none') DEFAULT 'none',
+  google_event_id VARCHAR(255),
+  is_out_of_hours BOOLEAN DEFAULT 0,
+  type ENUM('consultation', 'virtual') DEFAULT 'consultation',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `patient_id` (`patient_id`),
   KEY `doctor_id` (`doctor_id`),
@@ -227,7 +230,7 @@ DROP TABLE IF EXISTS `medical_requests`;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `medical_requests` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `type` enum('prescription','license') NOT NULL,
+  `type` enum('prescription','license','certificate') NOT NULL,
   `patient_id` int(11) NOT NULL,
   `doctor_id` int(11) NOT NULL,
   `requires_doctor_approval` tinyint(1) DEFAULT 1,
@@ -328,7 +331,9 @@ DROP TABLE IF EXISTS `patients`;
 CREATE TABLE `patients` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
-  `full_name` varchar(100) NOT NULL,
+  `first_name` varchar(100) DEFAULT NULL,
+  `last_name` varchar(100) DEFAULT NULL,
+  `full_name` varchar(255) NOT NULL,
   `dob` date DEFAULT NULL,
   `phone` varchar(100) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
@@ -11,20 +11,23 @@ import Sidebar from '../components/Sidebar';
 import { useModal } from '../context/ModalContext';
 import PatientHistoryModal from '../components/PatientHistoryModal';
 import { useConfig } from '../context/ConfigContext';
+import { copyToClipboard } from '../utils/clipboardUtils';
 
 const Dashboard = () => {
     const { user, logout } = useAuth();
     const { showMessage } = useMessage();
-    const { alert, confirm, prompt } = useModal();
+    const { alert, confirm, prompt, doubleConfirm } = useModal();
     const { t, toggleLanguage, language } = useLanguage(); // Use hook
     const { settings } = useConfig();
     const navigate = useNavigate();
 
     const [todayAppointments, setTodayAppointments] = useState([]);
-    const [reminders, setReminders] = useState([]);
+    const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+    const [loadingSchedule, setLoadingSchedule] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [stats, setStats] = useState(null);
     const [newPatientStats, setNewPatientStats] = useState(null);
-    const [loadingSchedule, setLoadingSchedule] = useState(true);
+    const [reminders, setReminders] = useState([]);
     const [loadingReminders, setLoadingReminders] = useState(true);
 
     // Unified Action Modal (Sync with Appointments.jsx)
@@ -36,6 +39,9 @@ const Dashboard = () => {
 
     // Payment Modal
     const [paymentModal, setPaymentModal] = useState({ open: false, initialData: {}, apptId: null });
+
+    const [activeTab, setActiveTab] = useState('schedule');
+    const [pendingReqCount, setPendingReqCount] = useState(0);
 
 
     const fetchReminders = async () => {
@@ -61,9 +67,19 @@ const Dashboard = () => {
     const fetchNewPatientStats = async () => {
         try {
             const res = await api.get('/users/patients/stats/new');
-            setNewPatientStats(res.data);
+            // Ensure we have defaults if some keys are missing
+            setNewPatientStats({
+                current_new: 0,
+                currentDay: 0,
+                currentWeek: 0,
+                currentMonth: 0,
+                currentYear: 0,
+                lastYear: 0,
+                ...res.data
+            });
         } catch (err) {
             console.error("Failed to fetch new patient stats", err);
+            setNewPatientStats({ current_new: 0, currentDay: 0, currentWeek: 0, currentMonth: 0, currentYear: 0, lastYear: 0 });
         }
     };
 
@@ -76,8 +92,31 @@ const Dashboard = () => {
             const todaysCalls = res.data.filter(a => {
                 const apptDate = new Date(a.appointment_date);
                 return apptDate.toLocaleDateString() === todayStr;
+            }).sort((a, b) => {
+                // Statuses that should be at the top
+                const topStatus = ['pending', 'confirmed', 'arrived'];
+                const aTop = topStatus.includes(a.status);
+                const bTop = topStatus.includes(b.status);
+
+                if (aTop && !bTop) return -1;
+                if (!aTop && bTop) return 1;
+
+                // For same group (both top or both bottom), sort by time
+                return new Date(a.appointment_date) - new Date(b.appointment_date);
             });
             setTodayAppointments(todaysCalls);
+
+            // Filter Upcoming (Future Dates)
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(0, 0, 0, 0);
+
+            const upcomingCalls = res.data.filter(a => {
+                const apptDate = new Date(a.appointment_date);
+                return apptDate >= tomorrow && ['pending', 'confirmed', 'rescheduled'].includes(a.status);
+            }).sort((a, b) => new Date(a.appointment_date) - new Date(b.appointment_date));
+
+            setUpcomingAppointments(upcomingCalls);
         } catch (err) {
             console.error("Failed to fetch schedule", err);
         } finally {
@@ -110,14 +149,17 @@ const Dashboard = () => {
     };
 
     const handleDelete = async (id) => {
-        // [NEW] Prevent deletion of attended appointments
+        // [NEW] Prevent deletion of attended appointments (unless unrestricted CRUD enabled)
         const apptToDelete = todayAppointments.find(a => a.id === id);
-        if (apptToDelete && (apptToDelete.status === 'completed' || apptToDelete.status === 'attended')) {
+        if (apptToDelete && (apptToDelete.status === 'completed' || apptToDelete.status === 'attended') && settings.enable_secretary_unrestricted_crud !== 'true') {
             await alert(t('cannot_delete_attended') || "Cannot delete an appointment that has been attended.");
             return;
         }
 
-        if (!await confirm(t('delete_error') || "Are you sure? This will remove the record mostly (Secretary Error).")) return;
+        if (!await doubleConfirm(
+            t('confirm_delete_appointment') || "¿Está seguro? Esto eliminará el registro permanentemente.",
+            t('confirm_permanent_delete') || "Esta acción es irreversible. ¿Confirmar eliminación definitiva?"
+        )) return;
         try {
             await api.delete(`/appointments/${id}`);
             showMessage(t('appointment_deleted'), 'success');
@@ -155,26 +197,94 @@ const Dashboard = () => {
         }
     };
 
+    const fetchRequests = async () => {
+        try {
+            const res = await api.get('/medical/requests');
+            const pending = res.data.filter(r => r.status === 'pending').length;
+            setPendingReqCount(pending);
+        } catch (err) {
+            console.error("Failed to fetch requests", err);
+        }
+    };
+
     useEffect(() => {
         fetchSchedule();
-        fetchReminders();
         fetchStats();
-        fetchNewPatientStats();
+        if (user.role !== 'patient') {
+            fetchReminders();
+            fetchRequests();
+        }
+        if (user.role === 'admin' || user.role === 'secretary') {
+            fetchNewPatientStats();
+        }
         const interval = setInterval(() => {
             fetchSchedule();
-            fetchReminders();
+            if (user.role !== 'patient') {
+                fetchReminders();
+                fetchRequests();
+            }
         }, 30000); // 30 seconds for reminders
         return () => clearInterval(interval);
-    }, []);
+    }, [user.role]);
+
+    const handleWhatsAppConfirm = (appt) => {
+        if (!appt.patient_phone) {
+            showMessage("No phone number available for this patient.", "error");
+            return;
+        }
+
+        const dateStr = new Date(appt.appointment_date).toLocaleDateString();
+        const timeStr = new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+
+        let messageTemplate = settings.appointment_reminder_template;
+        if (!messageTemplate || !messageTemplate.trim()) {
+            messageTemplate = `Hola {patient_name}, te escribimos para confirmar tu turno del día {date} a las {time} con el/la Dr/a. {doctor_name}. Por favor confirma asistencia. Gracias!`;
+        }
+
+        const message = messageTemplate
+            .replace(/{patient_name}/g, appt.patient_name)
+            .replace(/{date}/g, dateStr)
+            .replace(/{time}/g, timeStr)
+            .replace(/{doctor_name}/g, appt.doctor_name)
+            .replace(/{secretary_name}/g, user.name || 'Secretaria');
+
+        // Copy to clipboard
+        copyToClipboard(message).then(() => {
+            showMessage("Texto copiado! Abriendo WhatsApp...", "success");
+
+            // Format phone: remove non-digits
+            let phone = appt.patient_phone.replace(/\D/g, '');
+            // Assume Argentina (549) if not starting with country code (naive check)
+            if (!phone.startsWith('54') && phone.length >= 10) {
+                phone = '549' + phone;
+            }
+
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+            let url;
+            if (isMobile) {
+                url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            } else {
+                // Desktop: Go directly to WhatsApp Web to avoid "Download App" prompts
+                url = `https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
+            }
+
+            window.open(url, '_blank');
+        }).catch(err => {
+            console.error("Failed to copy text: ", err);
+            showMessage("Error al copiar el texto.", "error");
+        });
+    };
 
     if (!user) return <div>{t('loading')}</div>;
 
     const handleSavePrescription = async () => {
-        if (!prescribeModal.medications.trim()) {
-            showMessage(t('please_enter_meds'), 'warning');
+        if (!prescribeModal.medications.trim() || isSubmitting) {
+            if (!prescribeModal.medications.trim()) showMessage(t('please_enter_meds'), 'warning');
             return;
         }
 
+        setIsSubmitting(true);
         try {
             await api.post('/medical/prescriptions', {
                 appointment_id: prescribeModal.apptId,
@@ -187,12 +297,14 @@ const Dashboard = () => {
             console.error(err);
             const errMsg = err.response?.data || t('failed_prescription');
             showMessage(errMsg, 'error');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     return (
         <div className="app-layout">
-            {/* Action Modal for Appointment (Synced with Appointments.jsx) */}
+            {/* Action Modal for Appointment */}
             {actionModal.open && actionModal.appt && (
                 <Modal
                     isOpen={actionModal.open}
@@ -211,7 +323,7 @@ const Dashboard = () => {
                                 </span>
                             </div>
                         </div>
-                        <p><strong>{t('reason')}:</strong> {actionModal.appt.reason || t('no_description') || 'No description'}</p>
+                        <p><strong>{t('reason')}:</strong> {actionModal.appt.reason || t('no_description')}</p>
 
                         {/* Doctor Workflow Panel */}
                         {user.role === 'doctor' && (
@@ -297,117 +409,53 @@ const Dashboard = () => {
 
                         <hr className="border-divider" />
 
-                        {/* ADMINISTRATIVE ACTIONS (Secretary/Admin Only) */}
+                        {/* Administrative Actions */}
                         {(user.role === 'secretary' || user.role === 'admin') && (
-                            <>
-                                <div className="grid-2-cols">
-                                    {/* Pay Button */}
-                                    {(actionModal.appt.payment_status === 'pending' || actionModal.appt.payment_status === 'debt') && (
-                                        <button className="btn btn-primary" onClick={() => {
-                                            setPaymentModal({
-                                                open: true,
-                                                initialData: {
-                                                    type: 'income_patient',
-                                                    amount: actionModal.appt.cost || 0,
-                                                    patientId: actionModal.appt.patient_id,
-                                                    patientName: actionModal.appt.patient_name,
-                                                    patientDni: actionModal.appt.patient_dni,
-                                                    patientUserId: actionModal.appt.patient_user_id,
-                                                    doctorId: actionModal.appt.doctor_id,
-                                                    description: `Payment for appointment on ${new Date(actionModal.appt.appointment_date).toLocaleDateString()}`,
-                                                    apptId: actionModal.appt.id
-                                                },
+                            <div className="grid-2-cols">
+                                {(actionModal.appt.payment_status === 'pending' || actionModal.appt.payment_status === 'debt') && (
+                                    <button className="btn btn-primary" onClick={() => {
+                                        setPaymentModal({
+                                            open: true,
+                                            initialData: {
+                                                type: 'income_patient',
+                                                amount: actionModal.appt.cost || 0,
+                                                patientId: actionModal.appt.patient_id,
+                                                patientName: actionModal.appt.patient_name,
+                                                patientDni: actionModal.appt.patient_dni,
+                                                patientUserId: actionModal.appt.patient_user_id,
+                                                doctorId: actionModal.appt.doctor_id,
+                                                description: `Payment for appointment on ${new Date(actionModal.appt.appointment_date).toLocaleDateString()}`,
                                                 apptId: actionModal.appt.id
-                                            });
-                                            setActionModal({ ...actionModal, open: false });
-                                        }}>
-                                            💳 {t('pay')}
-                                        </button>
-                                    )}
-
-                                    {/* Reschedule Button - Hide if 'completed' */}
-                                    {actionModal.appt.status !== 'completed' && (
-                                        <button className="btn btn-secondary" onClick={() => {
-                                            navigate('/appointments', { state: { rescheduleAppt: actionModal.appt } });
-                                        }}>
-                                            📅 {t('reschedule')}
-                                        </button>
-                                    )}
-
-                                    {/* Action Buttons for Status */}
-                                    {actionModal.appt.status === 'pending' && (
-                                        <button className="btn btn-status-confirm" onClick={() => {
-                                            handleUpdateStatus(actionModal.appt.id, 'confirmed');
-                                            setActionModal({ ...actionModal, open: false });
-                                        }}>
-                                            ✅ {t('confirm')}
-                                        </button>
-                                    )}
-
-                                    {/* Action Buttons - Hide if 'completed' (Doctor Attended) */}
-                                    {actionModal.appt.status !== 'completed' && (
-                                        <>
-                                            {(user.role === 'secretary' || user.role === 'admin') && actionModal.appt.status !== 'arrived' && (
-                                                <button className="btn btn-primary" onClick={() => {
-                                                    handleUpdateStatus(actionModal.appt.id, 'arrived');
-                                                    setActionModal({ ...actionModal, open: false });
-                                                }}>
-                                                    🏥 {t('patient_arrived') || 'Asistió (En Sala)'}
-                                                </button>
-                                            )}
-
-                                            {(actionModal.appt.status === 'confirmed' || actionModal.appt.status === 'pending' || actionModal.appt.status === 'rescheduled' || actionModal.appt.status === 'arrived') && (
-                                                <button className="btn btn-status-complete" onClick={() => {
-                                                    handleUpdateStatus(actionModal.appt.id, 'completed');
-                                                    setActionModal({ ...actionModal, open: false });
-                                                }}>
-                                                    🏆 {t('attended') || 'Atendido'}
-                                                </button>
-                                            )}
-
-                                            <button className="btn btn-status-suspend" onClick={() => {
-                                                handleUpdateStatus(actionModal.appt.id, 'suspended');
-                                                setActionModal({ ...actionModal, open: false });
-                                            }}>
-                                                ⏸ {t('suspend')}
-                                            </button>
-
-                                            <button className="btn btn-status-absent" onClick={() => {
-                                                handleUpdateStatus(actionModal.appt.id, 'absent');
-                                                setActionModal({ ...actionModal, open: false });
-                                            }}>
-                                                🚫 {t('absent')}
-                                            </button>
-                                        </>
-                                    )}
-                                </div>
-
-                                <hr className="border-divider" />
-
-                                {/* Cancel/Delete - Hide if 'completed' */}
-                                {actionModal.appt.status !== 'completed' && (
-                                    <div className="grid-2-cols">
-                                        {/* Cancel (Standard) */}
-                                        <button className="btn btn-outline-danger" onClick={() => {
-                                            handleCancel(actionModal.appt.id);
-                                            setActionModal({ ...actionModal, open: false });
-                                        }}>
-                                            ❌ {t('cancel')}
-                                        </button>
-
-                                        {/* Delete (Error) - Admin/Secretary Only if NOT attended */}
-                                        {(user.role === 'admin' || user.role === 'secretary') &&
-                                            (actionModal.appt.status !== 'completed' && actionModal.appt.status !== 'attended') && (
-                                                <button className="btn" style={{ background: '#ef4444', color: 'white' }} onClick={() => {
-                                                    handleDelete(actionModal.appt.id);
-                                                    setActionModal({ ...actionModal, open: false });
-                                                }}>
-                                                    🗑 {t('delete_error')}
-                                                </button>
-                                            )}
-                                    </div>
+                                            },
+                                            apptId: actionModal.appt.id
+                                        });
+                                        setActionModal({ ...actionModal, open: false });
+                                    }}>
+                                        💳 {t('pay')}
+                                    </button>
                                 )}
-                            </>
+                                {(actionModal.appt.status !== 'completed' || settings.enable_secretary_unrestricted_crud === 'true') && (
+                                    <button className="btn btn-secondary" onClick={() => {
+                                        navigate('/appointments', { state: { rescheduleAppt: actionModal.appt } });
+                                    }}>
+                                        📅 {t('reschedule')}
+                                    </button>
+                                )}
+                                <button className="btn btn-outline-danger" onClick={() => {
+                                    handleCancel(actionModal.appt.id);
+                                    setActionModal({ ...actionModal, open: false });
+                                }}>
+                                    ❌ {t('cancel')}
+                                </button>
+                                {(user.role === 'admin' || user.role === 'secretary') && (
+                                    <button className="btn" style={{ background: '#ef4444', color: 'white' }} onClick={() => {
+                                        handleDelete(actionModal.appt.id);
+                                        setActionModal({ ...actionModal, open: false });
+                                    }}>
+                                        🗑 {t('delete_error')}
+                                    </button>
+                                )}
+                            </div>
                         )}
                     </div>
                 </Modal>
@@ -420,7 +468,9 @@ const Dashboard = () => {
                 footer={
                     <>
                         <button className="btn btn-secondary" onClick={() => setPrescribeModal({ ...prescribeModal, open: false })}>{t('cancel')}</button>
-                        <button className="btn btn-primary" onClick={handleSavePrescription} disabled={!prescribeModal.medications.trim()}>{t('create')}</button>
+                        <button className="btn btn-primary" onClick={handleSavePrescription} disabled={!prescribeModal.medications.trim() || isSubmitting}>
+                            {isSubmitting ? t('sending') : t('create')}
+                        </button>
                     </>
                 }
             >
@@ -445,14 +495,8 @@ const Dashboard = () => {
                         try {
                             await api.patch(`/appointments/${paymentModal.apptId}/payment`, { status: data.status });
                             showMessage("Payment recorded and Appointment updated!", 'success');
-
-                            setTodayAppointments(prev => prev.map(a =>
-                                a.id === paymentModal.apptId ? { ...a, payment_status: data.status } : a
-                            ));
-                        } catch (e) {
-                            console.error(e);
-                            showMessage("Payment recorded but failed to update appointment status", 'warning');
-                        }
+                            fetchSchedule();
+                        } catch (e) { console.error(e); }
                     } else {
                         showMessage("Payment recorded!", 'success');
                     }
@@ -461,200 +505,289 @@ const Dashboard = () => {
 
             <Sidebar />
 
-            <main className="main-content dashboard-wide">
-                <header className="header-actions">
-                    <h1 className="title">{t('dashboard')}</h1>
-                    <div className="flex gap-4 items-center">
-                        {user.role !== 'admin' && (
-                            <a href="/appointments" className="btn btn-primary no-underline">{t('new_appointment')}</a>
-                        )}
-                    </div>
-                </header>
-
-
-
-                {/* New Patient Statistics Card */}
-                {newPatientStats && (
-                    <div className="card mb-6 bg-gradient-to-r from-purple-50 to-white border border-purple-100">
-                        <h3 className="text-purple-800 flex items-center gap-2">✨ Nuevos Pacientes</h3>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-                            <div className="bg-white p-3 rounded-lg border border-purple-100 shadow-sm">
-                                <p className="text-xs text-purple-600 uppercase font-bold mb-1">Esta Semana</p>
-                                <p className="text-3xl font-bold text-purple-900">{newPatientStats.currentWeek}</p>
-                            </div>
-                            <div className="bg-white p-3 rounded-lg border border-purple-100 shadow-sm">
-                                <p className="text-xs text-purple-600 uppercase font-bold mb-1">Este Mes</p>
-                                <p className="text-3xl font-bold text-purple-900">{newPatientStats.currentMonth}</p>
-                            </div>
-                            <div className="bg-white p-3 rounded-lg border border-purple-100 shadow-sm">
-                                <p className="text-xs text-purple-600 uppercase font-bold mb-1">Este Año</p>
-                                <p className="text-3xl font-bold text-purple-900">{newPatientStats.currentYear}</p>
-                            </div>
-                            <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
-                                <p className="text-xs text-slate-500 uppercase font-bold mb-1">Año Anterior</p>
-                                <p className="text-3xl font-bold text-slate-500">{newPatientStats.lastYear}</p>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                <div className="flex flex-col gap-6 text-left">
-                    {/* Statistics Section */}
-                    {stats && (
-                        <div className="grid grid-3-cols gap-4">
-                            <div className="card bg-blue-50">
-                                <h4 className="text-sm font-bold text-blue-700">📅 Turnos Hoy</h4>
-                                <p className="text-3xl font-bold text-blue-900">{stats.appointments_today}</p>
-                            </div>
-                            <div className="card bg-green-50">
-                                <h4 className="text-sm font-bold text-green-700">📊 Turnos Semana</h4>
-                                <p className="text-3xl font-bold text-green-900">{stats.appointments_week}</p>
-                            </div>
-                            <div className="card bg-purple-50">
-                                <h4 className="text-sm font-bold text-purple-700">📈 Turnos Mes</h4>
-                                <p className="text-3xl font-bold text-purple-900">{stats.appointments_month}</p>
-                            </div>
-                            <div className="card bg-orange-50">
-                                <h4 className="text-sm font-bold text-orange-700">🏥 Total Turnos</h4>
-                                <p className="text-3xl font-bold text-orange-900">{stats.total_appointments}</p>
-                            </div>
-                            <div className="card bg-pink-50">
-                                <h4 className="text-sm font-bold text-pink-700">👥 Pacientes</h4>
-                                <p className="text-3xl font-bold text-pink-900">{stats.total_patients}</p>
-                            </div>
-                            <div className="card bg-indigo-50">
-                                <h4 className="text-sm font-bold text-indigo-700">📞 Contactos</h4>
-                                <p className="text-3xl font-bold text-indigo-900">{stats.total_contacts}</p>
-                            </div>
-                        </div>
-                    )}
-
-
-                    {user.role !== 'admin' && (
-                        <div className="card mb-8 shadow-sm border-l-4 border-blue-500 bg-blue-50/30">
-                            <h3>{t('today_schedule')}</h3>
-                            {loadingSchedule ? <p>{t('loading')}</p> : (
-                                todayAppointments.length === 0 ?
-                                    <p className="text-muted">{t('no_appointments_today')}</p> :
-                                    <ul className="appointment-list">
-                                        {todayAppointments.sort((a, b) => new Date(a.appointment_date) - new Date(b.appointment_date)).map(a => {
-                                            let itemClass = "appointment-item";
-                                            if (a.status === 'completed') itemClass += " status-completed";
-                                            else if (a.status === 'cancelled') itemClass += " status-cancelled";
-                                            else if (a.status === 'pending') itemClass += " status-pending";
-
-                                            return (
-                                                <li key={a.id} className={`${itemClass} clickable`} onClick={() => setActionModal({ open: true, appt: a })}>
-                                                    <div>
-                                                        <div className="text-sm-bold">
-                                                            {new Date(a.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
-                                                            <span className="text-xs-muted ml-2">
-                                                                ({t(a.status)})
-                                                            </span>
-                                                        </div>
-                                                        <div className="font-size-1rem">{a.patient_name}</div>
-                                                        <div className="text-sm-normal w-doctor">w/ {a.doctor_name}</div>
-                                                        {a.reason && (
-                                                            <div className="text-italic-indigo mt-1">
-                                                                💬 {a.reason}
-                                                            </div>
-                                                        )}
-                                                    </div>
-
-                                                    <div className="flex gap-2">
-                                                        {a.payment_status === 'paid' && <span title="Paid" className="text-green-500">$✓</span>}
-                                                        {a.payment_status === 'debt' && <span title="Debt" className="text-red-500">$!</span>}
-                                                        {user.role === 'doctor' && (
-                                                            <button onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                setPrescribeModal({ open: true, apptId: a.id, patientName: a.patient_name, medications: '', instructions: '' });
-                                                            }} title="Write Prescription" className="icon-btn btn-icon-primary">Rx</button>
-                                                        )}
-                                                    </div>
-                                                </li>
-                                            );
-                                        })}
-                                    </ul>
+            <main className="main-content">
+                <div className="w-full">
+                    <header className="header-actions">
+                        <div className="flex gap-4 items-center">
+                            {user.role !== 'admin' && (
+                                <a href="/appointments" className="btn btn-primary no-underline font-bold">
+                                    + {t('new_appointment')}
+                                </a>
                             )}
                         </div>
-                    )}
+                    </header>
 
-                    {user.role !== 'admin' && reminders.length > 0 && (
-                        <div className="card mb-8 border-l-4 border-yellow-400 bg-yellow-50/20 shadow-sm">
-                            <h3 className="flex items-center gap-2">🔔 {t('reminders')}</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 text-left">
-                                {reminders.map(r => (
-                                    <div key={r.id} className="p-3 bg-yellow-50 rounded border border-yellow-100 flex flex-col gap-1 cursor-pointer hover:bg-yellow-100 transition-colors" onClick={() => navigate('/patients', { state: { selectedPatientId: r.id } })}>
-                                        <div className="flex-between">
-                                            <span className="font-bold text-slate-800">{r.full_name}</span>
-                                            <span className="text-xs font-bold px-2 py-0.5 bg-yellow-200 text-yellow-800 rounded">DUE</span>
-                                        </div>
-                                        <div className="text-xs text-slate-600">
-                                            {r.next_suggested_visit_date && new Date(r.next_suggested_visit_date + 'T23:59:59') <= new Date() && (
-                                                <div className="flex items-center gap-1">📅 {t('next_suggested_visit')}: {new Date(r.next_suggested_visit_date + 'T00:00:00').toLocaleDateString()}</div>
-                                            )}
-                                            {r.next_suggested_prescription_date && new Date(r.next_suggested_prescription_date + 'T23:59:59') <= new Date() && (
-                                                <div className="flex items-center gap-1">💊 {t('next_suggested_prescription')}: {new Date(r.next_suggested_prescription_date + 'T00:00:00').toLocaleDateString()}</div>
-                                            )}
-                                            {r.license_expiry_date && new Date(r.license_expiry_date + 'T23:59:59') <= new Date() && (
-                                                <div className="flex items-center gap-1">📄 {t('license_expiry')}: {new Date(r.license_expiry_date + 'T00:00:00').toLocaleDateString()}</div>
-                                            )}
-                                        </div>
+                    <div className="dashboard-grid-layout !items-start">
+                        {/* SIDE COLUMN (STATISTICS) - LEFT SIDE */}
+                        <aside className="dashboard-side-col">
+                            {/* General Statistics Section */}
+                            {stats && (
+                                <div className="flex flex-col gap-2">
+                                    <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 px-1">{t('general_stats') || 'Estadísticas Generales'}</h4>
+                                    <div className="stats-card-mini bg-blue-50 text-blue-700 border border-blue-100 py-2 shadow-sm">
+                                        <h4 className="text-[10px]">📅 {t('turnos_hoy') || 'Hoy'}</h4>
+                                        <p className="text-lg">{stats.appointments_today}</p>
                                     </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
+                                    <div className="stats-card-mini bg-emerald-50 text-emerald-700 border border-emerald-100 py-2 shadow-sm">
+                                        <h4 className="text-[10px]">📊 {t('turnos_semana') || 'Semana'}</h4>
+                                        <p className="text-lg">{stats.appointments_week}</p>
+                                    </div>
+                                    <div className="stats-card-mini bg-indigo-50 text-indigo-700 border border-indigo-100 py-2 shadow-sm">
+                                        <h4 className="text-[10px]">📈 {t('turnos_mes') || 'Mes'}</h4>
+                                        <p className="text-lg">{stats.appointments_month}</p>
+                                    </div>
+                                    <div className="stats-card-mini bg-slate-100 text-slate-600 border border-slate-200 py-2 shadow-sm">
+                                        <h4 className="text-[10px]">👥 {t('pacientes_label') || 'Pacientes'}</h4>
+                                        <p className="text-lg">{stats.total_patients}</p>
+                                    </div>
+                                </div>
+                            )}
 
-                    {user.role !== 'admin' && (
-                        <div className="card mb-8">
-                            <h3>{t('quick_actions')}</h3>
-                            <div className="flex gap-2 flex-wrap">
-                                <a href="/appointments" className="btn btn-accent btn-sm-inline">{t('book_appointment')}</a>
-                                {user.role === 'doctor' && <a href="/documents" className="btn btn-secondary btn-sm-inline">{t('view_documents')}</a>}
-                                {user.role === 'secretary' && <a href="/patients" className="btn btn-primary btn-sm-inline">{t('register_patient')}</a>}
-                            </div>
-                        </div>
-                    )}
+                            {/* New Patient Growth Section - Now integrated as mini aside */}
+                            {newPatientStats && (
+                                <div className="flex flex-col gap-2 mt-4">
+                                    <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 px-1">✨ {t('new_patients_stat') || 'Crecimiento de Pacientes'}</h4>
+                                    <div className="stats-card-mini bg-emerald-500 text-white border border-emerald-600 py-2 shadow-sm scale-[1.02]">
+                                        <h4 className="text-[10px] opacity-90">✨ {t('this_day') || 'Hoy'}</h4>
+                                        <p className="text-lg">{newPatientStats.currentDay}</p>
+                                    </div>
+                                    <div className="stats-card-mini bg-white text-indigo-700 border border-indigo-50 py-2 shadow-sm">
+                                        <h4 className="text-[10px]">📅 {t('this_week') || 'Esta Semana'}</h4>
+                                        <p className="text-lg">{newPatientStats.currentWeek}</p>
+                                    </div>
+                                    <div className="stats-card-mini bg-white text-indigo-700 border border-indigo-50 py-2 shadow-sm">
+                                        <h4 className="text-[10px]">📊 {t('this_month') || 'Este Mes'}</h4>
+                                        <p className="text-lg">{newPatientStats.currentMonth}</p>
+                                    </div>
+                                    <div className="stats-card-mini bg-indigo-900 text-white border border-indigo-800 py-2 shadow-sm">
+                                        <h4 className="text-[10px] opacity-80">📈 {t('this_year') || 'Este Año'}</h4>
+                                        <p className="text-lg">{newPatientStats.currentYear}</p>
+                                    </div>
+                                </div>
+                            )}
 
-                    <div className="card mb-8 shadow-sm">
-                        <h3 className="text-slate-800">{t('notifications')}</h3>
-                        <p className="text-green-600 font-medium">✅ {t('system_operational')}</p>
+                            {user.role !== 'admin' && reminders.length > 0 && (
+                                <div className="card p-4 border-l-4 border-amber-400 bg-amber-50/20 mt-4 shadow-sm">
+                                    <h4 className="text-[10px] font-bold text-amber-800 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                        <span>🔔</span> {t('reminders')}
+                                    </h4>
+                                    <div className="flex flex-col gap-2">
+                                        {reminders.slice(0, 3).map(r => (
+                                            <div key={r.id} className="text-sm p-2 bg-white/80 rounded-lg border border-amber-100 cursor-pointer hover:bg-white hover:shadow-md transition-all" onClick={() => navigate('/patients', { state: { selectedPatientId: r.id } })}>
+                                                <div className="font-bold text-slate-800 truncate text-[11px]">{r.full_name}</div>
+                                                <div className="text-[10px] text-amber-700 mt-1">
+                                                    {r.medical_history_evolution && <div className="truncate italic opacity-75">"{r.medical_history_evolution}"</div>}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </aside>
+
+                        {/* MAIN COLUMN - RIGHT SIDE */}
+                        <div className="dashboard-main-col lg:col-span-1">
+                            <div className="dash-tabs mt-1">
+                                <button
+                                    className={`dash-tab ${activeTab === 'schedule' ? 'active' : ''}`}
+                                    onClick={() => setActiveTab('schedule')}
+                                >
+                                    📅 {t('today_schedule')}
+                                </button>
+                                <button
+                                    className={`dash-tab ${activeTab === 'upcoming' ? 'active' : ''}`}
+                                    onClick={() => setActiveTab('upcoming')}
+                                >
+                                    📆 {t('upcoming_appointments') || 'Próximos'}
+                                </button>
+                                {(user.role === 'secretary' || user.role === 'doctor' || user.role === 'admin') && (
+                                    <button
+                                        className={`dash-tab ${activeTab === 'requirements' ? 'active' : ''}`}
+                                        onClick={() => setActiveTab('requirements')}
+                                    >
+                                        📋 {t('ongoing_requirements')}
+                                        {pendingReqCount > 0 && (
+                                            <span className="dot-badge pulse-red ml-2" title={`${pendingReqCount} pending`}>
+                                                {pendingReqCount}
+                                            </span>
+                                        )}
+                                    </button>
+                                )}
+                            </div>
+
+                            {activeTab === 'schedule' && user.role !== 'admin' && (
+                                <section className="card p-0 overflow-hidden border-slate-200 shadow-sm transition-all">
+                                    {loadingSchedule ? <div className="p-8 text-center text-slate-400">{t('loading')}</div> : (
+                                        todayAppointments.length === 0 ?
+                                            <div className="text-center p-12 bg-white">
+                                                <p className="text-slate-400 m-0">{t('no_appointments_today')}</p>
+                                            </div> :
+                                            <div className="overflow-x-auto">
+                                                <table className="dashboard-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>{t('time_label') || 'Hora'}</th>
+                                                            <th>{t('patient_label') || 'Paciente'}</th>
+                                                            <th>{t('doctor_label') || 'Doctor'}</th>
+                                                            <th>{t('status_label') || 'Estado'}</th>
+                                                            <th className="text-right">{t('actions') || 'Acciones'}</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {todayAppointments.map(a => (
+                                                            <tr key={a.id} className="group" onClick={() => setActionModal({ open: true, appt: a })}>
+                                                                <td className="font-bold text-slate-900 w-24">
+                                                                    {new Date(a.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
+                                                                </td>
+                                                                <td>
+                                                                    <div className="font-bold text-slate-800">{a.patient_name}</div>
+                                                                    {a.reason && <div className="text-[11px] text-slate-400 italic truncate max-w-[200px]">{a.reason}</div>}
+                                                                </td>
+                                                                <td className="text-slate-500 text-sm">
+                                                                    {a.doctor_name}
+                                                                </td>
+                                                                <td>
+                                                                    <span className={`status-chip-mini status-${a.status}`}>
+                                                                        {t(a.status) || a.status}
+                                                                    </span>
+                                                                </td>
+                                                                <td className="text-right">
+                                                                    <div className="flex items-center justify-end gap-2">
+                                                                        <div className="flex gap-1">
+                                                                            {a.payment_status === 'paid' && <span title="Paid" className="text-emerald-500 font-bold">$✓</span>}
+                                                                            {a.payment_status === 'debt' && <span title="Debt" className="text-rose-500 font-bold">$!</span>}
+                                                                        </div>
+                                                                        <button onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            setActionModal({ open: true, appt: a });
+                                                                        }} className="btn btn-sm-compact btn-secondary px-3">
+                                                                            {t('manage') || 'Gestionar'}
+                                                                        </button>
+                                                                        {user.role === 'doctor' && (
+                                                                            <button onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                setPrescribeModal({ open: true, apptId: a.id, patientName: a.patient_name, medications: '', instructions: '' });
+                                                                            }} className="btn btn-sm-compact btn-primary px-3">Rx</button>
+                                                                        )}
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                    )}
+                                </section>
+                            )}
+
+
+                            {activeTab === 'upcoming' && user.role !== 'admin' && (
+                                <section className="card p-0 overflow-hidden border-slate-200 shadow-sm transition-all">
+                                    {loadingSchedule ? <div className="p-8 text-center text-slate-400">{t('loading')}</div> : (
+                                        upcomingAppointments.length === 0 ?
+                                            <div className="text-center p-12 bg-white">
+                                                <p className="text-slate-400 m-0">{t('no_upcoming_appointments') || 'No hay próximos turnos.'}</p>
+                                            </div> :
+                                            <div className="overflow-x-auto">
+                                                <table className="dashboard-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>{t('date_label') || 'Fecha'}</th>
+                                                            <th>{t('patient_label') || 'Paciente'}</th>
+                                                            <th>{t('doctor_label') || 'Doctor'}</th>
+                                                            <th>{t('status_label') || 'Estado'}</th>
+                                                            <th className="text-right">{t('actions') || 'Acciones'}</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {upcomingAppointments.map((a, index) => {
+                                                            const dateObj = new Date(a.appointment_date);
+                                                            const dateStr = dateObj.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
+                                                            const headerDate = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+
+                                                            const prevDateObj = index > 0 ? new Date(upcomingAppointments[index - 1].appointment_date) : null;
+                                                            const prevDateStr = prevDateObj ? prevDateObj.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }) : null;
+                                                            const showHeader = index === 0 || dateStr !== prevDateStr;
+
+                                                            return (
+                                                                <Fragment key={a.id}>
+                                                                    {showHeader && (
+                                                                        <tr className="bg-slate-50 border-b border-indigo-100">
+                                                                            <td colSpan="5" className="font-bold text-indigo-700 text-xs uppercase tracking-wider py-2 pl-4">
+                                                                                {headerDate}
+                                                                            </td>
+                                                                        </tr>
+                                                                    )}
+                                                                    <tr className="group" onClick={() => setActionModal({ open: true, appt: a })}>
+                                                                        <td className="font-bold text-slate-900 min-w-[120px]">
+                                                                            <div className="flex flex-col">
+                                                                                <span className="text-xs text-slate-500">{new Date(a.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}</span>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div className="font-bold text-slate-800">{a.patient_name}</div>
+                                                                            {a.reason && <div className="text-[11px] text-slate-400 italic truncate max-w-[200px]">{a.reason}</div>}
+                                                                        </td>
+                                                                        <td className="text-slate-500 text-sm">
+                                                                            {a.doctor_name}
+                                                                        </td>
+                                                                        <td>
+                                                                            <span className={`status-chip-mini status-${a.status}`}>
+                                                                                {t(a.status) || a.status}
+                                                                            </span>
+                                                                        </td>
+                                                                        <td className="text-right">
+                                                                            <div className="flex items-center justify-end gap-2">
+                                                                                <button onClick={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    handleWhatsAppConfirm(a);
+                                                                                }}
+                                                                                    className="btn btn-sm-compact bg-green-100 text-green-700 hover:bg-green-200 px-3"
+                                                                                    title="Confirmar por WhatsApp"
+                                                                                >
+                                                                                    📱 Confirmar
+                                                                                </button>
+                                                                                <button onClick={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    setActionModal({ open: true, appt: a });
+                                                                                }} className="btn btn-sm-compact btn-secondary px-3">
+                                                                                    {t('manage') || 'Gestionar'}
+                                                                                </button>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </Fragment>
+                                                            );
+                                                        })}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                    )}
+                                </section>
+                            )}
+
+                            {activeTab === 'requirements' && (user.role === 'secretary' || user.role === 'doctor' || user.role === 'admin') && (
+                                <section className="transition-all">
+                                    <div className="flex items-center justify-end mb-4">
+                                        <a href="/requests" className="text-xs font-bold text-blue-600 hover:underline px-3 py-1 bg-blue-50 rounded-full">{t('view_all')} →</a>
+                                    </div>
+                                    <div className="card p-0 overflow-hidden border-slate-200 shadow-sm">
+                                        <RequirementsList user={user} />
+                                    </div>
+                                </section>
+                            )}
+                        </div>
                     </div>
-
-                    {/* Requirements List (New Feature) */}
-                    {(user.role === 'secretary' || user.role === 'doctor') && (
-                        <div className="card col-span-full">
-                            <div className="flex-between mb-4">
-                                <h3>📋 {t('ongoing_requirements') || 'Requerimientos en Curso'}</h3>
-                                <a href="/requests" className="btn btn-secondary text-sm">{t('view_all') || 'Ver Todos'}</a>
-                            </div>
-                            <RequirementsList user={user} />
-                        </div>
-                    )}
                 </div>
+            </main>
 
-                {
-                    user.role === 'admin' && (
-                        <div className="card mt-6">
-                            <h3>{t('administration')}</h3>
-                            <a href="/logs" className="btn btn-secondary btn-inline mt-2 mr-4 no-underline">
-                                {t('view_audit_logs')}
-                            </a>
-                            <a href="/admin/users" className="btn btn-primary btn-inline mt-2 no-underline">
-                                {t('manage_users')}
-                            </a>
-                        </div>
-                    )
-                }
-            </main >
             <PatientHistoryModal
                 isOpen={historyModal.open}
                 onClose={() => setHistoryModal({ ...historyModal, open: false })}
                 patientId={historyModal.patientId}
                 patientName={historyModal.patientName}
             />
-        </div >
+        </div>
     );
 };
 

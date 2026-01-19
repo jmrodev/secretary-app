@@ -96,6 +96,8 @@ app.get('/api/debug/dump-appointments', async (req, res) => {
     }
 });
 
+
+
 app.use('/api/auth', authRoutes);
 
 // Start server

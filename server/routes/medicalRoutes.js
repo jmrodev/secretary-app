@@ -19,14 +19,20 @@ const upload = multer({ storage: storage });
 
 router.post('/prescriptions', verifyToken, medicalController.createPrescription);
 router.get('/prescriptions', verifyToken, medicalController.getPrescriptions);
+router.put('/prescriptions/:id', verifyToken, medicalController.updatePrescription);
 
 router.post('/licenses', verifyToken, medicalController.createLicense);
 router.get('/licenses', verifyToken, medicalController.getLicenses);
+router.put('/licenses/:id', verifyToken, medicalController.updateLicense);
+
+router.delete('/prescriptions/:id', verifyToken, medicalController.deletePrescription);
+router.delete('/licenses/:id', verifyToken, medicalController.deleteLicense);
 
 // Requests
 router.post('/requests', verifyToken, medicalController.createRequest);
 router.get('/requests', verifyToken, medicalController.getRequests);
 router.patch('/requests/:id', verifyToken, medicalController.updateRequestStatus);
+router.put('/requests/:id', verifyToken, medicalController.updateRequest);
 router.patch('/requests/:id/payment', verifyToken, medicalController.updateRequestPaymentStatus);
 router.delete('/requests/:id', verifyToken, medicalController.deleteRequest);
 router.delete('/files/:id', verifyToken, medicalController.deleteFile);

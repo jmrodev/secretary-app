@@ -1,4 +1,5 @@
 const { pool } = require('../db');
+const { refreshTunnel } = require('../utils/tunnel-manager');
 
 exports.getSettings = async (req, res) => {
     let conn;
@@ -8,8 +9,21 @@ exports.getSettings = async (req, res) => {
         // Convert rows to object { key: value }
         const settings = {};
         rows.forEach(r => {
-            // Exclude sensitive keys
-            if (!r.setting_key.startsWith('google_')) {
+            // Exclude sensitive keys logic
+            // Allow 'google_sync_enabled' to pass through
+            if (r.setting_key === 'google_sync_enabled') {
+                settings[r.setting_key] = r.setting_value;
+            }
+            // For tokens, don't send the value, just existence check if needed, OR relies on a separate "isConnected" check.
+            // But to fix current frontend logic easily:
+            else if (r.setting_key === 'google_refresh_token') {
+                // Send dummy value if exists, just to signal "Connected" to frontend
+                if (r.setting_value && r.setting_value.length > 0) {
+                    settings[r.setting_key] = "MASKED_PRESENT";
+                }
+            }
+            // Block other sensitive google_ keys (access_token, client_secret, etc)
+            else if (!r.setting_key.startsWith('google_')) {
                 settings[r.setting_key] = r.setting_value;
             }
         });
@@ -47,5 +61,15 @@ exports.updateSetting = async (req, res) => {
         res.status(500).send("Server Error");
     } finally {
         if (conn) conn.release();
+    }
+};
+
+exports.refreshTunnel = (req, res) => {
+    try {
+        refreshTunnel();
+        res.json({ message: "Tunnel refresh initiated. It may take a minute to update the URL." });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to refresh tunnel" });
     }
 };

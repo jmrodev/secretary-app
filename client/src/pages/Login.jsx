@@ -23,8 +23,9 @@ const Login = () => {
     };
 
     return (
-        <div className="auth-page">
-            <div className="card auth-card">
+        <div className="home-landing">
+            <div className="landing-overlay"></div>
+            <div className="card auth-card relative z-10">
                 <h2 className="title text-center">{t('welcome_back')}</h2>
                 <p className="subtitle text-center">{t('sign_in_subtitle')}</p>
 

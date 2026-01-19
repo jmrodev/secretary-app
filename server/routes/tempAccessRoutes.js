@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router();
 const tempAccessController = require('../controllers/tempAccessController');
 const { verifyToken } = require('../middleware/authMiddleware');
+const { authorize } = require('../middleware/authorize');
+const { ACCESS_LEVELS } = require('../constants/roles');
 
 // Route to generate token (Protected - only staff should generate QRs)
-// We might need to ensure 'verifyToken' allows secretaries/admins.
-// Assuming verifyToken checks for valid JWT in header.
-router.post('/generate', verifyToken, tempAccessController.generateToken);
+router.post('/generate', verifyToken, authorize(ACCESS_LEVELS.MANAGE_PATIENTS), tempAccessController.generateToken);
 
 // public routes for the patient device
 router.get('/verify/:token', tempAccessController.verifyToken);

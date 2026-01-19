@@ -1,5 +1,6 @@
 const { pool } = require('../db');
 const { logAction } = require('../utils/audit');
+const { saveToRecycleBin } = require('../utils/recycleBin');
 const { calculatePrice } = require('../utils/priceCalculator');
 const fs = require('fs');
 const path = require('path');
@@ -123,7 +124,6 @@ exports.getPrescriptions = async (req, res) => {
                 params.push(patInfo[0].id);
             }
         }
-        // Doctors see all they wrote? Or all for their patients? Let's say all they wrote for now.
         else if (role === 'doctor') {
             const docInfo = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [user_id]);
             if (docInfo.length > 0) {
@@ -132,11 +132,12 @@ exports.getPrescriptions = async (req, res) => {
             }
         }
 
-
-
-        // [NEW] Filter by specific patient
         if (req.query.patientId) {
-            query += " AND a.patient_id = ?";
+            if (query.includes(' WHERE ')) {
+                query += " AND a.patient_id = ?";
+            } else {
+                query += " WHERE a.patient_id = ?";
+            }
             params.push(req.query.patientId);
         }
 
@@ -144,6 +145,58 @@ exports.getPrescriptions = async (req, res) => {
 
         const rows = await conn.query(query, params);
         res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.updatePrescription = async (req, res) => {
+    let conn;
+    try {
+        const { id } = req.params;
+        const { medications, instructions } = req.body;
+        const { role, user_id } = req.user;
+
+        if (!medications || !medications.trim()) {
+            return res.status(400).send("Medications are required");
+        }
+
+        conn = await pool.getConnection();
+
+        // Check prescription existence and owner
+        const prescription = await conn.query(`
+            SELECT pr.*, a.doctor_id 
+            FROM prescriptions pr
+            JOIN appointments a ON pr.appointment_id = a.id
+            WHERE pr.id = ?`, [id]);
+
+        if (prescription.length === 0) {
+            return res.status(404).send("Prescription not found");
+        }
+
+        // Authorization: Admin, Secretary or the Doctor who wrote it
+        let authorized = (role === 'admin' || role === 'secretary');
+        if (role === 'doctor') {
+            const docInfo = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [user_id]);
+            if (docInfo.length > 0 && docInfo[0].id === prescription[0].doctor_id) {
+                authorized = true;
+            }
+        }
+
+        if (!authorized) {
+            return res.status(403).send("Unauthorized");
+        }
+
+        await conn.query(
+            "UPDATE prescriptions SET medications = ?, instructions = ? WHERE id = ?",
+            [medications, instructions, id]
+        );
+
+        logAction(req, 'UPDATE_PRESCRIPTION', `Prescription ID: ${id}`);
+        res.send("Prescription updated");
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");
@@ -245,11 +298,12 @@ exports.getLicenses = async (req, res) => {
             }
         }
 
-
-
-        // [NEW] Filter by specific patient
         if (req.query.patientId) {
-            query += " AND a.patient_id = ?";
+            if (query.includes(' WHERE ')) {
+                query += " AND a.patient_id = ?";
+            } else {
+                query += " WHERE a.patient_id = ?";
+            }
             params.push(req.query.patientId);
         }
 
@@ -257,6 +311,108 @@ exports.getLicenses = async (req, res) => {
 
         const rows = await conn.query(query, params);
         res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.updateLicense = async (req, res) => {
+    let conn;
+    try {
+        const { id } = req.params;
+        const { start_date, days_duration, diagnosis } = req.body;
+        const { role, user_id } = req.user;
+
+        conn = await pool.getConnection();
+
+        // Check license existence and owner
+        const license = await conn.query(`
+            SELECT ml.*, a.doctor_id 
+            FROM medical_licenses ml
+            JOIN appointments a ON ml.appointment_id = a.id
+            WHERE ml.id = ?`, [id]);
+
+        if (license.length === 0) {
+            return res.status(404).send("License not found");
+        }
+
+        // Authorization: Admin, Secretary or the Doctor who wrote it
+        let authorized = (role === 'admin' || role === 'secretary');
+        if (role === 'doctor') {
+            const docInfo = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [user_id]);
+            if (docInfo.length > 0 && docInfo[0].id === license[0].doctor_id) {
+                authorized = true;
+            }
+        }
+
+        if (!authorized) {
+            return res.status(403).send("Unauthorized");
+        }
+
+        await conn.query(
+            "UPDATE medical_licenses SET start_date = ?, days_duration = ?, diagnosis = ? WHERE id = ?",
+            [start_date, days_duration, diagnosis, id]
+        );
+
+        logAction(req, 'UPDATE_LICENSE', `License ID: ${id}`);
+        res.send("License updated");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.deletePrescription = async (req, res) => {
+    let conn;
+    try {
+        const { id } = req.params;
+        const { role } = req.user;
+
+        if (role !== 'admin' && role !== 'secretary') {
+            return res.status(403).send("Unauthorized");
+        }
+
+        conn = await pool.getConnection();
+        const result = await conn.query("DELETE FROM prescriptions WHERE id = ?", [id]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).send("Prescription not found");
+        }
+
+        logAction(req, 'DELETE_PRESCRIPTION', `Deleted Prescription ID: ${id}`);
+        res.json({ message: "Prescription deleted" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.deleteLicense = async (req, res) => {
+    let conn;
+    try {
+        const { id } = req.params;
+        const { role } = req.user;
+
+        if (role !== 'admin' && role !== 'secretary') {
+            return res.status(403).send("Unauthorized");
+        }
+
+        conn = await pool.getConnection();
+        const result = await conn.query("DELETE FROM medical_licenses WHERE id = ?", [id]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).send("License not found");
+        }
+
+        logAction(req, 'DELETE_LICENSE', `Deleted License ID: ${id}`);
+        res.json({ message: "License deleted" });
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");
@@ -280,14 +436,18 @@ exports.createRequest = async (req, res) => {
         if (pat.length === 0) return res.status(404).send("Patient not found");
 
         const initialStatus = status || 'pending';
-        let completedAt = null;
+
+        let completedAtQueryPart = '?';
+        let queryParams = [type, patient_id, doctor_id, request_note, initialStatus, null];
+
         if (initialStatus === 'completed') {
-            completedAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
+            completedAtQueryPart = 'NOW()';
+            queryParams = [type, patient_id, doctor_id, request_note, initialStatus];
         }
 
         const result = await conn.query(
-            "INSERT INTO medical_requests (type, patient_id, doctor_id, request_note, status, created_at, completed_at) VALUES (?, ?, ?, ?, ?, NOW(), ?)",
-            [type, patient_id, doctor_id, request_note, initialStatus, completedAt]
+            `INSERT INTO medical_requests (type, patient_id, doctor_id, request_note, status, created_at, completed_at) VALUES (?, ?, ?, ?, ?, NOW(), ${completedAtQueryPart})`,
+            queryParams
         );
 
         // --- Debt Generation for Request ---
@@ -386,6 +546,18 @@ exports.updateRequestStatus = async (req, res) => {
 
         conn = await pool.getConnection();
 
+        // [RULE] If completed/rejected before today, only admin can touch it
+        const reqInfo = await conn.query("SELECT * FROM medical_requests WHERE id = ?", [id]);
+        if (reqInfo.length === 0) return res.status(404).json({ message: "Request not found" });
+
+        if (role !== 'admin' && (reqInfo[0].status === 'completed' || reqInfo[0].status === 'rejected')) {
+            const completedDate = new Date(reqInfo[0].completed_at || reqInfo[0].updated_at).toLocaleDateString();
+            const todayDate = new Date().toLocaleDateString();
+            if (completedDate !== todayDate) {
+                return res.status(403).json({ message: "Completed/Rejected requests from previous days can only be managed by administrators." });
+            }
+        }
+
         let setClause = "status = ?";
         let params = [status];
 
@@ -401,12 +573,8 @@ exports.updateRequestStatus = async (req, res) => {
             params.push(secretary_note);
         }
 
-        let completedAt = null;
         if (status === 'completed' || status === 'rejected') {
-            // Safe MySQL timestamp format
-            completedAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
-            setClause += ", completed_at = ?";
-            params.push(completedAt);
+            setClause += ", completed_at = NOW()";
         }
 
         const query = `UPDATE medical_requests SET ${setClause} WHERE id = ?`;
@@ -419,6 +587,66 @@ exports.updateRequestStatus = async (req, res) => {
     } catch (err) {
         console.error("Update Request Status Error:", err);
         res.status(500).json({ message: "Server Error: " + err.message });
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.updateRequest = async (req, res) => {
+    let conn;
+    try {
+        const { id } = req.params;
+        const { request_note, doctor_note, debt_amount } = req.body;
+        const { role } = req.user;
+
+        conn = await pool.getConnection();
+
+        // Check if request exists
+        const reqInfo = await conn.query("SELECT * FROM medical_requests WHERE id = ?", [id]);
+        if (reqInfo.length === 0) return res.status(404).send("Request not found");
+
+        // Authorization: Admin, Secretary or the Doctor of the request
+        if (role !== 'admin' && role !== 'secretary') {
+            const docInfo = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [req.user.user_id]);
+            if (docInfo.length === 0 || docInfo[0].id !== reqInfo[0].doctor_id) {
+                return res.status(403).send("Unauthorized");
+            }
+        }
+
+        // [RULE] If completed/rejected before today, only admin can touch it
+        if (role !== 'admin' && (reqInfo[0].status === 'completed' || reqInfo[0].status === 'rejected')) {
+            const completedDate = new Date(reqInfo[0].completed_at || reqInfo[0].updated_at).toLocaleDateString();
+            const todayDate = new Date().toLocaleDateString();
+            if (completedDate !== todayDate) {
+                return res.status(403).json({ message: "Completed/Rejected requests from previous days can only be managed by administrators." });
+            }
+        }
+
+        let setClause = "updated_at = NOW()";
+        let params = [];
+
+        if (request_note !== undefined) {
+            setClause += ", request_note = ?";
+            params.push(request_note);
+        }
+        if (doctor_note !== undefined) {
+            setClause += ", doctor_note = ?";
+            params.push(doctor_note);
+        }
+        if (debt_amount !== undefined) {
+            setClause += ", debt_amount = ?";
+            params.push(debt_amount);
+        }
+
+        const query = `UPDATE medical_requests SET ${setClause} WHERE id = ?`;
+        params.push(id);
+
+        await conn.query(query, params);
+        logAction(req, 'MANUAL_EDIT_REQUEST', `Request ${id} edited manually`);
+        res.json({ message: "Request updated" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
     } finally {
         if (conn) conn.release();
     }
@@ -505,15 +733,33 @@ exports.deleteRequest = async (req, res) => {
         const { id } = req.params;
         const { role } = req.user;
 
-        if (role !== 'admin') {
-            return res.status(403).send("Only admins can delete requests");
+        if (role !== 'admin' && role !== 'secretary') {
+            return res.status(403).send("Only admins and secretaries can delete requests");
         }
 
         conn = await pool.getConnection();
 
+        // [RULE] Same-day rule for deletion
+        const reqInfo = await conn.query("SELECT * FROM medical_requests WHERE id = ?", [id]);
+        if (reqInfo.length === 0) return res.status(404).send("Request not found");
+
+        if (role !== 'admin' && (reqInfo[0].status === 'completed' || reqInfo[0].status === 'rejected')) {
+            const completedDate = new Date(reqInfo[0].completed_at || reqInfo[0].updated_at).toLocaleDateString();
+            const todayDate = new Date().toLocaleDateString();
+            if (completedDate !== todayDate) {
+                return res.status(403).send("Only administrators can delete completed requests from previous days.");
+            }
+        }
+
+        // Backup
+        const requestData = reqInfo[0];
+        // Fetch patient Name for the backup label
+        const [pat] = await conn.query("SELECT full_name FROM patients WHERE id = ?", [requestData.patient_id]);
+        const patientName = pat.length > 0 ? pat[0].full_name : "Unknown";
+
+        await saveToRecycleBin(req, 'medical_request', id, `${requestData.type} - ${patientName}`, requestData);
+
         // 1. Delete associated PENDING transactions (cleanup debt)
-        // If it's already paid, we might want to keep the transaction log? 
-        // For now, let's only delete pending ones to avoid data inconsistencies.
         await conn.query("DELETE FROM transactions WHERE request_id = ? AND status = 'pending'", [id]);
 
         // 2. Delete the request
@@ -522,6 +768,7 @@ exports.deleteRequest = async (req, res) => {
         if (result.affectedRows === 0) {
             return res.status(404).send("Request not found");
         }
+
 
         logAction(req, 'DELETE_MEDICAL_REQUEST', `Deleted Request ID: ${id}`);
         res.json({ message: "Request deleted successfully" });
@@ -540,8 +787,8 @@ exports.deleteFile = async (req, res) => {
         const { id } = req.params;
         const { role } = req.user;
 
-        if (role !== 'admin') {
-            return res.status(403).send("Admin only");
+        if (role !== 'admin' && role !== 'secretary') {
+            return res.status(403).send("Unauthorized. Only admins and secretaries can delete files.");
         }
 
         conn = await pool.getConnection();

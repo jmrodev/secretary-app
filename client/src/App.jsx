@@ -16,7 +16,7 @@ import Requests from './pages/Requests';
 import Insurances from './pages/Insurances';
 import Institutions from './pages/Institutions'; // [NEW]
 import TempAccess from './pages/TempAccess'; // [NEW]
-import Home from './pages/Home';
+
 import FloatingChat from './components/FloatingChat';
 import { useAuth } from './context/AuthContext';
 import { useLanguage } from './context/LanguageContext';
@@ -57,12 +57,14 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+import { Toaster } from 'react-hot-toast';
+
 function App() {
   return (
     <>
+      <Toaster position="top-right" containerStyle={{ zIndex: 9999 }} />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={
           <ProtectedRoute>

@@ -1,5 +1,6 @@
 const { pool } = require('../db');
-const { logAction } = require('../utils/audit');
+const { logAction, logCRUD } = require('../utils/audit');
+const { saveToRecycleBin } = require('../utils/recycleBin');
 const bcrypt = require('bcrypt');
 const googleController = require('./googleController');
 
@@ -63,9 +64,9 @@ exports.getAllPatients = async (req, res) => {
 
         let query = `
             SELECT p.*, i.name as insurance_name,
-            (SELECT COALESCE(SUM(amount), 0) FROM transactions t WHERE t.related_user_id = p.user_id AND t.status = 'pending') as total_debt,
+            (SELECT COALESCE(SUM(t.amount), 0) FROM transactions t LEFT JOIN appointments a ON t.appointment_id = a.id WHERE t.related_user_id = p.user_id AND t.status = 'pending' AND (t.appointment_id IS NULL OR a.status IN ('completed', 'attended', 'arrived', 'absent'))) as total_debt,
                 (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id) as total_appointments,
-                    (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id AND a.status IN('cancelled', 'missed')) as missed_appointments
+                    (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id AND (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%'))) as missed_appointments
             FROM patients p
             LEFT JOIN insurances i ON p.insurance_id = i.id
             `;
@@ -83,9 +84,9 @@ exports.getAllPatients = async (req, res) => {
                 // Let's add INNER JOIN patient_doctors pd ON p.id = pd.patient_id WHERE pd.doctor_id = ?
                 query = `
                     SELECT p.*, i.name as insurance_name,
-            (SELECT COALESCE(SUM(amount), 0) FROM transactions t WHERE t.related_user_id = p.user_id AND t.status = 'pending') as total_debt,
+            (SELECT COALESCE(SUM(t.amount), 0) FROM transactions t LEFT JOIN appointments a ON t.appointment_id = a.id WHERE t.related_user_id = p.user_id AND t.status = 'pending' AND (t.appointment_id IS NULL OR a.status IN ('completed', 'attended', 'arrived', 'absent'))) as total_debt,
                 (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id) as total_appointments,
-                    (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id AND a.status IN('cancelled', 'missed')) as missed_appointments
+                    (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id AND (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%'))) as missed_appointments
                     FROM patients p
                     LEFT JOIN insurances i ON p.insurance_id = i.id
                     INNER JOIN patient_doctors pd ON p.id = pd.patient_id
@@ -96,9 +97,12 @@ exports.getAllPatients = async (req, res) => {
         }
 
         if (search) {
-            const searchTerm = `%${search}%`;
-            conditions.push("(p.full_name LIKE ? OR p.dni LIKE ? OR p.address LIKE ? OR p.phone LIKE ?)");
-            params.push(searchTerm, searchTerm, searchTerm, searchTerm);
+            const tokens = search.split(/\s+/).filter(t => t.length > 0);
+            tokens.forEach(token => {
+                const term = `%${token}%`;
+                conditions.push("(p.full_name LIKE ? OR p.first_name LIKE ? OR p.last_name LIKE ? OR p.dni LIKE ? OR p.address LIKE ? OR p.phone LIKE ?)");
+                params.push(term, term, term, term, term, term);
+            });
         }
 
         if (conditions.length > 0) {
@@ -131,7 +135,8 @@ exports.getPatientDetails = async (req, res) => {
 
         // 1. Get Basic Info
         const patientRows = await conn.query(`
-            SELECT p.*, i.name as insurance_name, inst.name as institution_name 
+            SELECT p.*, i.name as insurance_name, inst.name as institution_name,
+            (SELECT COALESCE(SUM(t.amount), 0) FROM transactions t LEFT JOIN appointments a ON t.appointment_id = a.id WHERE t.related_user_id = p.user_id AND t.status = 'pending' AND (t.appointment_id IS NULL OR a.status IN ('completed', 'attended', 'arrived', 'absent'))) as total_debt
             FROM patients p 
             LEFT JOIN insurances i ON p.insurance_id = i.id 
             LEFT JOIN institutions inst ON p.institution_id = inst.id 
@@ -245,6 +250,7 @@ exports.updateProfile = async (req, res) => {
             // New fields
             if (updates.insurance_id !== undefined) { fields.push("insurance_id = ?"); params.push(updates.insurance_id === '' ? null : updates.insurance_id); }
             if (updates.affiliate_number !== undefined) { fields.push("affiliate_number = ?"); params.push(updates.affiliate_number); }
+            if (updates.email !== undefined) { fields.push("email = ?"); params.push(updates.email); } // [FIX]
 
             if (fields.length > 0) {
                 query = `UPDATE patients SET ${fields.join(', ')} WHERE user_id = ? `;
@@ -385,13 +391,15 @@ exports.updatePatientDetails = async (req, res) => {
         let params = [];
 
         if (updates.full_name !== undefined) { fields.push("full_name = ?"); params.push(updates.full_name); }
+        if (updates.first_name !== undefined) { fields.push("first_name = ?"); params.push(updates.first_name); } // [NEW]
+        if (updates.last_name !== undefined) { fields.push("last_name = ?"); params.push(updates.last_name); }   // [NEW]
         if (updates.dni !== undefined) { fields.push("dni = ?"); params.push(updates.dni); }
         if (updates.phone !== undefined) { fields.push("phone = ?"); params.push(updates.phone); }
         // if (updates.insurance !== undefined) { fields.push("insurance = ?"); params.push(updates.insurance); } // REMOVED/DEPRECATED
         if (updates.insurance_id !== undefined) { fields.push("insurance_id = ?"); params.push(updates.insurance_id === '' ? null : updates.insurance_id); }
         if (updates.affiliate_number !== undefined) { fields.push("affiliate_number = ?"); params.push(updates.affiliate_number); }
 
-        if (updates.dob !== undefined) { fields.push("dob = ?"); params.push(updates.dob); }
+        if (updates.dob !== undefined) { fields.push("dob = ?"); params.push(updates.dob === '' ? null : updates.dob); }
         if (updates.address !== undefined) { fields.push("address = ?"); params.push(updates.address); }
         if (updates.medical_history !== undefined) { fields.push("medical_history = ?"); params.push(updates.medical_history); }
         if (updates.tariff_percent !== undefined) { fields.push("tariff_percent = ?"); params.push(updates.tariff_percent); }
@@ -399,15 +407,27 @@ exports.updatePatientDetails = async (req, res) => {
         if (updates.behavior_rating !== undefined) { fields.push("behavior_rating = ?"); params.push(updates.behavior_rating); }
         if (updates.visit_interval_days !== undefined) { fields.push("visit_interval_days = ?"); params.push(updates.visit_interval_days === '' ? null : updates.visit_interval_days); }
         if (updates.prescription_interval_days !== undefined) { fields.push("prescription_interval_days = ?"); params.push(updates.prescription_interval_days === '' ? null : updates.prescription_interval_days); }
-        if (updates.institution_id !== undefined) { fields.push("institution_id = ?"); params.push(updates.institution_id === '' ? null : updates.institution_id); } // [NEW]
+        if (updates.institution_id !== undefined) { fields.push("institution_id = ?"); params.push(updates.institution_id === '' ? null : updates.institution_id); }
         if (updates.next_suggested_visit_date !== undefined) { fields.push("next_suggested_visit_date = ?"); params.push(updates.next_suggested_visit_date === '' ? null : updates.next_suggested_visit_date); }
         if (updates.next_suggested_prescription_date !== undefined) { fields.push("next_suggested_prescription_date = ?"); params.push(updates.next_suggested_prescription_date === '' ? null : updates.next_suggested_prescription_date); }
         if (updates.license_expiry_date !== undefined) { fields.push("license_expiry_date = ?"); params.push(updates.license_expiry_date === '' ? null : updates.license_expiry_date); }
+        if (updates.email !== undefined) { fields.push("email = ?"); params.push(updates.email); } // [FIX] Add email updates
 
         if (fields.length > 0) {
+            // Get OLD data for logging
+            const [oldRows] = await conn.query("SELECT * FROM patients WHERE id = ?", [id]);
+            const oldData = oldRows ? oldRows[0] : {};
+
             const query = `UPDATE patients SET ${fields.join(', ')} WHERE id = ? `;
             params.push(id);
             await conn.query(query, params);
+
+            // Get NEW data for logging
+            const [newRows] = await conn.query("SELECT * FROM patients WHERE id = ?", [id]);
+            const newData = newRows ? newRows[0] : {};
+
+            // Log detailed change
+            logCRUD(req, 'UPDATE_PATIENT_DETAILS', 'patient', id, oldData, newData);
         }
 
         if (updates.assignedDoctors !== undefined) {
@@ -452,7 +472,14 @@ exports.updateDoctor = async (req, res) => {
         const updates = req.body;
         console.log(`[updateDoctor] Updating doctor ${id} `, updates);
 
-        if (req.user.role !== 'admin' && req.user.role !== 'secretary') {
+        // Check permissions
+        if (req.user.role === 'doctor') {
+            // Check if the doctor is updating their own profile
+            const [doc] = await pool.query("SELECT id FROM doctors WHERE user_id = ?", [req.user.user_id]);
+            if (!doc || doc.length === 0 || doc[0].id != id) {
+                return res.status(403).send("Unauthorized: You can only edit your own profile");
+            }
+        } else if (req.user.role !== 'admin' && req.user.role !== 'secretary') {
             return res.status(403).send("Unauthorized");
         }
 
@@ -647,50 +674,59 @@ exports.deleteUser = async (req, res) => {
             let doctorId = null;
 
             if (user.role === 'patient') {
-                const [p] = await conn.query("SELECT id FROM patients WHERE user_id = ?", [id]);
-                if (p) patientId = p.id;
+                const [p] = await conn.query("SELECT * FROM patients WHERE user_id = ?", [id]);
+                if (p && p.id) {
+                    patientId = p.id;
+                    // BACKUP - Gather all patient data
+                    const [appts] = await conn.query("SELECT * FROM appointments WHERE patient_id = ?", [patientId]);
+                    const [files] = await conn.query("SELECT * FROM patient_files WHERE patient_id = ?", [patientId]);
+                    const [reqs] = await conn.query("SELECT * FROM medical_requests WHERE patient_id = ?", [patientId]);
+                    const [docs] = await conn.query("SELECT * FROM patient_doctors WHERE patient_id = ?", [patientId]);
+
+                    const fullBackup = {
+                        profile: p,
+                        appointments: appts,
+                        files: files,
+                        medical_requests: reqs,
+                        assigned_doctors: docs,
+                        reason: "User/Patient Deletion"
+                    };
+                    await saveToRecycleBin(req, 'patient', patientId, p.full_name, fullBackup);
+                }
             } else if (user.role === 'doctor') {
-                const [d] = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [id]);
-                if (d) doctorId = d.id;
+                const [d] = await conn.query("SELECT * FROM doctors WHERE user_id = ?", [id]);
+                if (d && d.id) {
+                    doctorId = d.id;
+                    await saveToRecycleBin(req, 'doctor', doctorId, d.full_name, { profile: d, reason: "Doctor Deletion" });
+                }
+            } else if (user.role === 'secretary') {
+                const [s] = await conn.query("SELECT * FROM secretaries WHERE user_id = ?", [id]);
+                if (s && s.id) {
+                    await saveToRecycleBin(req, 'secretary', s.id, s.full_name, { profile: s, reason: "Secretary Deletion" });
+                }
             }
 
             // 3. Delete from Related Tables (Order matters for FKs)
-
-            // Shared: Audit Logs & Files Uploaded & Transactions
+            // ... (Rest of delete logic remains same but we use the backup above)
             await conn.query("DELETE FROM audit_logs WHERE user_id = ?", [id]);
-            await conn.query("DELETE FROM patient_files WHERE uploaded_by = ?", [id]); // Files uploaded BY this user
-            await conn.query("DELETE FROM transactions WHERE related_user_id = ?", [id]); // Financials linked to user
+            await conn.query("DELETE FROM patient_files WHERE uploaded_by = ?", [id]);
+            await conn.query("DELETE FROM transactions WHERE related_user_id = ?", [id]);
 
             if (patientId) {
-                console.log(`Deleting patient data for patient_id: ${patientId} `);
-                // Delete Patient Specifics
-                await conn.query("DELETE FROM patient_files WHERE patient_id = ?", [patientId]); // Files belonging TO patient
+                await conn.query("DELETE FROM patient_files WHERE patient_id = ?", [patientId]);
                 await conn.query("DELETE FROM patient_doctors WHERE patient_id = ?", [patientId]);
                 await conn.query("DELETE FROM medical_requests WHERE patient_id = ?", [patientId]);
-
-                // Appointments & Prescriptions
-                // Need to delete prescriptions linked to appointments of this patient?
-                // Or rely on ON DELETE CASCADE? Assuming manual cleanup for safety.
                 await conn.query("DELETE FROM prescriptions WHERE appointment_id IN (SELECT id FROM appointments WHERE patient_id = ?)", [patientId]);
                 await conn.query("DELETE FROM medical_licenses WHERE appointment_id IN (SELECT id FROM appointments WHERE patient_id = ?)", [patientId]);
                 await conn.query("DELETE FROM appointments WHERE patient_id = ?", [patientId]);
-
-                // Finally profile
                 await conn.query("DELETE FROM patients WHERE id = ?", [patientId]);
             }
 
             if (doctorId) {
-                console.log(`Deleting doctor data for doctor_id: ${doctorId} `);
-                // Delete Doctor Specifics
                 await conn.query("DELETE FROM patient_doctors WHERE doctor_id = ?", [doctorId]);
-
-                // Appointments (Doc is provider) - This is DESTRUCTIVE to patient history.
-                // We'll proceed as requested.
                 await conn.query("DELETE FROM prescriptions WHERE appointment_id IN (SELECT id FROM appointments WHERE doctor_id = ?)", [doctorId]);
                 await conn.query("DELETE FROM medical_licenses WHERE appointment_id IN (SELECT id FROM appointments WHERE doctor_id = ?)", [doctorId]);
                 await conn.query("DELETE FROM appointments WHERE doctor_id = ?", [doctorId]);
-
-                // Finally profile
                 await conn.query("DELETE FROM doctors WHERE id = ?", [doctorId]);
             }
 
@@ -702,7 +738,7 @@ exports.deleteUser = async (req, res) => {
             await conn.query("DELETE FROM users WHERE id = ?", [id]);
 
             await conn.commit();
-            logAction(req, 'ADMIN_DELETE_USER', `Deleted user ${id} (${user.username})`);
+            logAction(req, 'ADMIN_DELETE_USER', `Deleted user ${id} (${user.username}) - Backup saved to Recycle Bin`);
             res.json({ message: "User deleted successfully" });
 
         } catch (error) {
@@ -846,13 +882,32 @@ exports.getNewPatientStats = async (req, res) => {
     let conn;
     try {
         conn = await pool.getConnection();
-        const [row] = await conn.query("SELECT COUNT(*) as count FROM patients WHERE is_new_patient = 1");
+
+        // We consider "New Patients" as those marked with is_new_patient = 1 
+        // OR those that were created within this week/month/year?
+        // Let's stick to counts based on created_at for those marked as is_new_patient or all patients?
+        // Usually "New Patient Stats" means patients added to the system recently.
+
+        const [stats] = await conn.query(`
+            SELECT 
+                COUNT(*) as total_new,
+                COUNT(CASE WHEN DATE(u.created_at) = CURDATE() THEN 1 END) as current_day,
+                COUNT(CASE WHEN YEARWEEK(u.created_at, 1) = YEARWEEK(NOW(), 1) THEN 1 END) as current_week,
+                COUNT(CASE WHEN MONTH(u.created_at) = MONTH(NOW()) AND YEAR(u.created_at) = YEAR(NOW()) THEN 1 END) as current_month,
+                COUNT(CASE WHEN YEAR(u.created_at) = YEAR(NOW()) THEN 1 END) as current_year,
+                COUNT(CASE WHEN YEAR(u.created_at) = YEAR(NOW()) - 1 THEN 1 END) as last_year
+            FROM patients p
+            JOIN users u ON p.user_id = u.id
+            WHERE p.is_new_patient = 1
+        `);
 
         res.json({
-            current_new: Number(row.count),
-            weekly: 0,
-            monthly: 0,
-            yearly: 0
+            current_new: Number(stats.total_new),
+            currentDay: Number(stats.current_day),
+            currentWeek: Number(stats.current_week),
+            currentMonth: Number(stats.current_month),
+            currentYear: Number(stats.current_year),
+            lastYear: Number(stats.last_year)
         });
     } catch (err) {
         console.error("Get New Patient Stats Error:", err);

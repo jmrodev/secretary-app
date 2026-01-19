@@ -83,7 +83,6 @@ const AuditLogs = () => {
             <Sidebar />
             <main className="main-content">
                 <div className="w-full max-w-5xl">
-                    <h1 className="title mb-6">{t('system_transaction_logs')}</h1>
 
                     <div className="card table-responsive p-0 overflow-hidden shadow-sm">
                         <table className="table-base table-base-lg w-full">

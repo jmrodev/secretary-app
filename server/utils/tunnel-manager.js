@@ -8,7 +8,14 @@ const path = require('path');
  * in the system_settings table.
  */
 
+let tunnelProcess = null;
+
 function startTunnelManager() {
+    if (tunnelProcess) {
+        console.log('⚠️ Tunnel already running. Use refresh if needed.');
+        return tunnelProcess;
+    }
+
     const CLOUDFLARED_PATH = path.join(__dirname, '../cloudflared');
     const TARGET_URL = 'http://client:5173';
 
@@ -22,13 +29,13 @@ function startTunnelManager() {
         return;
     }
 
-    const child = spawn(CLOUDFLARED_PATH, ['tunnel', '--url', TARGET_URL]);
+    tunnelProcess = spawn(CLOUDFLARED_PATH, ['tunnel', '--url', TARGET_URL]);
 
-    child.stdout.on('data', (data) => {
+    tunnelProcess.stdout.on('data', (data) => {
         processData(data.toString());
     });
 
-    child.stderr.on('data', (data) => {
+    tunnelProcess.stderr.on('data', (data) => {
         processData(data.toString());
     });
 
@@ -52,15 +59,28 @@ function startTunnelManager() {
         }
     }
 
-    child.on('close', (code) => {
+    tunnelProcess.on('close', (code) => {
         console.log(`👋 Tunnel process exited with code ${code}`);
+        tunnelProcess = null;
     });
 
     process.on('SIGINT', () => {
-        child.kill();
+        if (tunnelProcess) tunnelProcess.kill();
     });
 
-    return child;
+    return tunnelProcess;
 }
 
-module.exports = { startTunnelManager };
+function refreshTunnel() {
+    console.log('🔄 Refreshing Tunnel...');
+    if (tunnelProcess) {
+        tunnelProcess.kill();
+        tunnelProcess = null;
+    }
+    // Wait a bit before restarting to ensure port is free or clean exit
+    setTimeout(() => {
+        startTunnelManager();
+    }, 2000);
+}
+
+module.exports = { startTunnelManager, refreshTunnel };

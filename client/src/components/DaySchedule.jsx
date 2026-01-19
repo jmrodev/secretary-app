@@ -3,7 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
 import { useConfig } from '../context/ConfigContext';
 
-const DaySchedule = ({ date, appointments, onSlotClick, onRatingChange, doctor, schedule }) => {
+const DaySchedule = ({ date, appointments, onSlotClick, onRatingChange, doctor, schedule, onToggleVirtual }) => {
     const { t } = useLanguage();
     const { confirm } = useModal();
     const { settings } = useConfig();
@@ -129,9 +129,31 @@ const DaySchedule = ({ date, appointments, onSlotClick, onRatingChange, doctor, 
                                             </div>
                                             <div className="appt-details">
                                                 <div className="flex items-center gap-2">
-                                                    <strong>{appt.patient_name || appt.reason || 'Reserved'} ({t(appt.status)})</strong>
+                                                    <strong>
+                                                        {appt.type === 'virtual' && '📹 '}
+                                                        {appt.patient_name || appt.reason || 'Reserved'} ({t(appt.status)})
+                                                    </strong>
                                                     <span className="doctor-name hidden md:inline ml-2 text-xs text-slate-500">Dr. {appt.doctor_name}</span>
+
+                                                    {/* Toggle Video Button */}
+                                                    {onToggleVirtual && (
+                                                        <button
+                                                            className="ml-2 p-1 hover:bg-slate-200 rounded-full transition-colors"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                onToggleVirtual(appt);
+                                                            }}
+                                                            title={appt.type === 'virtual' ? "Cambiar a Presencial" : "Cambiar a Videollamada"}
+                                                        >
+                                                            {appt.type === 'virtual' ? '🏢' : '📹'}
+                                                        </button>
+                                                    )}
                                                 </div>
+                                                {appt.type === 'virtual' && appt.patient_phone && (
+                                                    <div className="text-xs text-blue-600 mt-1 flex items-center gap-1">
+                                                        📞 {appt.patient_phone}
+                                                    </div>
+                                                )}
                                                 {appt.is_out_of_hours === 1 && <span className="text-xs text-amber-600 font-bold ml-2">⚠️ Fuera de Horario</span>}
                                             </div>
                                         </div>

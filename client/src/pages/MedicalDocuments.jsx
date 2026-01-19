@@ -10,15 +10,19 @@ import TransactionModal from '../components/TransactionModal';
 import PatientSearchSelect from '../components/PatientSearchSelect';
 import Sidebar from '../components/Sidebar';
 import { formatPrice } from '../utils/format';
-import { timeAgo } from '../utils/time';
+import { timeAgo, isToday } from '../utils/time';
+import MedicationAutocomplete from '../components/MedicationAutocomplete';
+
+import MedicalRequestForm from '../components/MedicalRequestForm';
+import MedicalRequestList from '../components/MedicalRequestList';
 
 const MedicalDocuments = () => {
     const { user } = useAuth();
     const { showMessage } = useMessage();
     const { t } = useLanguage();
-    const { alert, confirm } = useModal();
+    const { alert, confirm, doubleConfirm } = useModal();
     const location = useLocation();
-    const [activeTab, setActiveTab] = useState('requests'); // requests | files | history
+    const [activeTab, setActiveTab] = useState('requests'); // requests | files | prescriptions | licenses | certificates
     const [searchTerm, setSearchTerm] = useState('');
 
     const normalizeText = (text) => {
@@ -66,6 +70,13 @@ const MedicalDocuments = () => {
     // Old Medical History State (Prescriptions/Licenses)
     const [prescriptions, setPrescriptions] = useState([]);
     const [selectedPrescription, setSelectedPrescription] = useState(null);
+    const [licenses, setLicenses] = useState([]);
+    const [selectedLicense, setSelectedLicense] = useState(null);
+    const [selectedRequest, setSelectedRequest] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editData, setEditData] = useState({ medications: '', instructions: '' });
+    const [licenseEditData, setLicenseEditData] = useState({ start_date: '', days_duration: '', diagnosis: '' });
+    const [requestEditData, setRequestEditData] = useState({ request_note: '', doctor_note: '', debt_amount: '' });
     // Confirm Delete File State
     const [fileToDelete, setFileToDelete] = useState(null);
 
@@ -132,7 +143,15 @@ const MedicalDocuments = () => {
     const fetchRequests = async () => {
         try {
             const res = await api.get('/medical/requests');
-            setRequests(res.data);
+            const sorted = res.data.sort((a, b) => {
+                const topStatus = ['pending', 'consult'];
+                const aTop = topStatus.includes(a.status);
+                const bTop = topStatus.includes(b.status);
+                if (aTop && !bTop) return -1;
+                if (!aTop && bTop) return 1;
+                return new Date(b.created_at) - new Date(a.created_at); // Newest first
+            });
+            setRequests(sorted);
         } catch (err) { console.error(err); }
     };
 
@@ -221,227 +240,205 @@ const MedicalDocuments = () => {
         }
     };
 
+    const handleUpdatePrescription = async () => {
+        if (!selectedPrescription) return;
+        try {
+            await api.put(`/medical/prescriptions/${selectedPrescription.id}`, editData);
+            showMessage(t('prescription_updated') || 'Receta actualizada', 'success');
+            setIsEditing(false);
+            fetchHistory(); // Refresh list
+            // Update the selected prescription object in state to show changes in modal
+            setSelectedPrescription({ ...selectedPrescription, ...editData });
+        } catch (err) {
+            showMessage(`${t('error')}: ${err.response?.data || err.message}`, 'error');
+        }
+    };
+
+    const handleUpdateLicense = async () => {
+        if (!selectedLicense) return;
+        try {
+            await api.put(`/medical/licenses/${selectedLicense.id}`, licenseEditData);
+            showMessage(t('license_updated') || 'Licencia actualizada', 'success');
+            setIsEditing(false);
+            fetchHistory();
+            setSelectedLicense({ ...selectedLicense, ...licenseEditData });
+        } catch (err) {
+            showMessage(`${t('error')}: ${err.response?.data || err.message}`, 'error');
+        }
+    };
+
+    const handleDeletePrescription = async (id) => {
+        if (!await confirm(t('confirm_delete_prescription') || '¿Seguro que desea eliminar esta receta?')) return;
+        try {
+            await api.delete(`/medical/prescriptions/${id}`);
+            showMessage(t('prescription_deleted') || 'Receta eliminada', 'success');
+            fetchHistory();
+        } catch (err) {
+            showMessage(`${t('error')}: ${err.response?.data || err.message}`, 'error');
+        }
+    };
+
+    const handleDeleteLicense = async (id) => {
+        if (!await confirm(t('confirm_delete_license') || '¿Seguro que desea eliminar esta licencia?')) return;
+        try {
+            await api.delete(`/medical/licenses/${id}`);
+            showMessage(t('license_deleted') || 'Licencia eliminada', 'success');
+            fetchHistory();
+        } catch (err) {
+            showMessage(`${t('error')}: ${err.response?.data || err.message}`, 'error');
+        }
+    };
+
+    const handleUpdateRequest = async () => {
+        if (!selectedRequest) return;
+        try {
+            await api.put(`/medical/requests/${selectedRequest.id}`, requestEditData);
+            showMessage(t('request_updated') || 'Solicitud actualizada', 'success');
+            setIsEditing(false);
+            fetchRequests();
+            setSelectedRequest({ ...selectedRequest, ...requestEditData });
+        } catch (err) {
+            showMessage(`${t('error')}: ${err.response?.data || err.message}`, 'error');
+        }
+    };
+
+    const handleDeleteRequest = async (id, r) => {
+        // [RULE] Only admin can delete completed from previous days
+        if (user.role !== 'admin' && (r.status === 'completed' || r.status === 'rejected')) {
+            if (!isToday(r.completed_at || r.updated_at)) {
+                showMessage("Solo administradores pueden eliminar solicitudes finalizadas de días anteriores.", "warning");
+                return;
+            }
+        }
+
+        if (!await doubleConfirm(
+            t('confirm_delete') || '¿Seguro que desea eliminar?',
+            t('confirm_permanent_delete') || 'Esta acción eliminará el registro permanentemente. ¿Confirmar segunda vez?'
+        )) return;
+        try {
+            await api.delete(`/medical/requests/${id}`);
+            showMessage(t('deleted_success') || 'Eliminado correctamente', 'success');
+            fetchRequests();
+        } catch (err) {
+            showMessage(`${t('error')}: ${err.response?.data || err.message}`, 'error');
+        }
+    };
+
+    const combinedPrescriptions = [
+        ...prescriptions.map(p => ({ ...p, _origin: 'prescription' })),
+        ...requests.filter(r => r.type === 'prescription' && r.status === 'completed').map(r => ({
+            ...r,
+            _origin: 'request',
+            medications: r.request_note,
+            instructions: r.doctor_note
+        }))
+    ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    const combinedLicenses = [
+        ...licenses.map(l => ({ ...l, _origin: 'license' })),
+        ...requests.filter(r => r.type === 'license' && r.status === 'completed').map(r => ({
+            ...r,
+            _origin: 'request',
+            start_date: r.created_at,
+            days_duration: '-',
+            diagnosis: r.request_note
+        }))
+    ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    const combinedCertificates = [
+        ...requests.filter(r => r.type === 'certificate' && r.status === 'completed').map(r => ({
+            ...r,
+            _origin: 'request',
+            description: r.request_note
+        }))
+    ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    const handleViewItem = (item) => {
+        if (item._origin === 'prescription') {
+            setSelectedPrescription(item);
+        } else if (item._origin === 'license') {
+            setSelectedLicense(item);
+        } else if (item._origin === 'request') {
+            setSelectedRequest(item);
+            setRequestEditData({
+                request_note: item.request_note || '',
+                doctor_note: item.doctor_note || '',
+                debt_amount: item.debt_amount || ''
+            });
+        }
+    };
+
+    const myDoctorProfile = user.role === 'doctor' ? doctors.find(d => d.user_id === (user.user_id || user.id)) : null;
+
     return (
         <div className="app-layout">
             <Sidebar />
 
             <main className="main-content">
-                <h1 className="title">{t('medical_documents')}</h1>
+                <div className="medical-docs-header">
+                    <div>
+                        <h1 className="title">{t('medical_documents')}</h1>
+                        <p className="subtitle">{t('medical_docs_subtitle') || 'Gestione requerimientos, archivos e historial de pacientes en un solo lugar.'}</p>
+                    </div>
+                    <div className="flex gap-2">
+                        {/* Optional Action buttons could go here */}
+                    </div>
+                </div>
 
                 <div className="tabs-container">
-                    {['requests', 'files', 'history'].map(tab => (
+                    {['requests', 'files', 'prescriptions', 'licenses', 'certificates'].map(tab => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
                             className={`tab-btn ${activeTab === tab ? 'active' : ''}`}
                         >
-                            {tab === 'requests' ? t('requests_workflow') : (tab === 'files' ? t('file_repository') : t('prescriptions_licenses'))}
+                            {tab === 'requests' ? (
+                                <><span className="icon">⚡</span> {t('requests_workflow')}</>
+                            ) : tab === 'files' ? (
+                                <><span className="icon">📂</span> {t('file_repository')}</>
+                            ) : tab === 'prescriptions' ? (
+                                <><span className="icon">💊</span> {t('prescriptions')}</>
+                            ) : tab === 'licenses' ? (
+                                <><span className="icon">📄</span> {t('medical_licenses')}</>
+                            ) : (
+                                <><span className="icon">📜</span> {t('certificates') || 'Certificados'}</>
+                            )}
                         </button>
                     ))}
                 </div>
 
-                {/* Search Bar */}
-                <div style={{ marginBottom: '1.5rem' }}>
-                    <input
-                        type="text"
-                        placeholder={t('search_docs_placeholder')}
-                        className="input-field"
-                        value={searchTerm}
-                        onChange={e => setSearchTerm(e.target.value)}
-                        style={{ maxWidth: '500px' }}
-                    />
+                <div className="medical-docs-search-container">
+                    <div className="relative w-full">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
+                        <input
+                            type="text"
+                            placeholder={t('search_docs_placeholder')}
+                            className="input-field pl-10"
+                            value={searchTerm}
+                            onChange={e => setSearchTerm(e.target.value)}
+                        />
+                    </div>
                 </div>
 
                 {activeTab === 'requests' && (
                     <div className="grid-requests-layout">
-                        {(user.role === 'secretary' || user.role === 'doctor') && (
-                            <div className="card">
-                                <h3>{t('new_request')}</h3>
-                                <form onSubmit={handleCreateRequest}>
-                                    <div className="input-group">
-                                        <label className="input-label">{t('request_type')}</label>
-                                        <select className="input-field" value={reqType} onChange={e => setReqType(e.target.value)}>
-                                            <option value="prescription">{t('prescription')}</option>
-                                            <option value="license">{t('medical_license')}</option>
-                                            <option value="certificate">{t('certificate') || 'Certificado'}</option>
-                                        </select>
-                                    </div>
-                                    <div className="input-group">
-                                        <label className="input-label">{t('patient_label')}</label>
-                                        <PatientSearchSelect
-                                            value={selectedPatient}
-                                            onChange={(val, patient) => {
-                                                setSelectedPatient(val);
-                                                setPatientData(patient);
-                                            }}
-                                            placeholder={t('select_patient')}
-                                        />
-                                        {patientData && reqType === 'prescription' && patientData.next_suggested_prescription_date && new Date(patientData.next_suggested_prescription_date) > new Date() && (
-                                            <div className="bg-yellow-50 text-yellow-800 p-3 rounded mt-2 border border-yellow-200 text-sm flex items-start gap-2">
-                                                <span className="text-xl">⚠️</span>
-                                                <div>
-                                                    <strong>{t('possible_overmedication') || 'Posible Sobrefrecuencia'}:</strong><br />
-                                                    {t('patient_has_valid_until') || 'Paciente tiene cobertura sugerida hasta'}: <b>{new Date(patientData.next_suggested_prescription_date).toLocaleDateString()}</b>
-                                                </div>
-                                            </div>
-                                        )}
-                                        {patientData && reqType === 'license' && patientData.license_expiry_date && new Date(patientData.license_expiry_date) > new Date() && (
-                                            <div className="bg-yellow-50 text-yellow-800 p-3 rounded mt-2 border border-yellow-200 text-sm flex items-start gap-2">
-                                                <span className="text-xl">⚠️</span>
-                                                <div>
-                                                    <strong>{t('active_license') || 'Licencia Vigente'}:</strong><br />
-                                                    {t('license_valid_until') || 'Licencia válida hasta'}: <b>{new Date(patientData.license_expiry_date).toLocaleDateString()}</b>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className="input-group">
-                                        <label className="input-label">{t('doctor_label')}</label>
-                                        {user.role === 'doctor' ? (
-                                            <div className="input-field input-read-only">
-                                                {user.name || 'Me'}
-                                            </div>
-                                        ) : (
-                                            <select className="input-field" value={selectedDoctor} onChange={e => setSelectedDoctor(e.target.value)} required>
-                                                <option value="">{t('select_doctor')}</option>
-                                                {doctors.map(d => <option key={d.id} value={d.id}>{d.full_name} - {d.specialty}</option>)}
-                                            </select>
-                                        )}
-                                    </div>
-                                    <div className="input-group">
-                                        <label className="input-label">{t('note_for_doctor')}</label>
-                                        <textarea className="input-field" rows="3" value={reqNote} onChange={e => setReqNote(e.target.value)} placeholder="e.g. Needs Ibuprofen 600mg" required />
-                                    </div>
-                                    <div className="input-group-row-center gap-2">
-                                        <input
-                                            type="checkbox"
-                                            id="req-bonified"
-                                            checked={bonified}
-                                            onChange={e => setBonified(e.target.checked)}
-                                            className="w-auto"
-                                        />
-                                        <label htmlFor="req-bonified" className="input-label mb-0 cursor-pointer">
-                                            {t('bonificado') || 'Bonificado (Free/Waived)'}
-                                        </label>
-                                    </div>
-                                    <div className="input-group-row-center gap-2 mb-4 p-2 bg-slate-50 rounded border border-slate-100">
-                                        <input
-                                            type="checkbox"
-                                            id="req-forward"
-                                            checked={sendToDoctor}
-                                            onChange={e => setSendToDoctor(e.target.checked)}
-                                            className="w-4 h-4 cursor-pointer"
-                                        />
-                                        <label htmlFor="req-forward" className="input-label mb-0 cursor-pointer select-none font-medium text-slate-700">
-                                            {t('send_to_doctor') || 'Enviar a revisión médica'}
-                                        </label>
-                                    </div>
-                                    <button
-                                        type="submit"
-                                        className="btn btn-primary"
-                                        style={{ width: '100%' }}
-                                        disabled={isSubmitting}
-                                    >
-                                        {isSubmitting ? (t('sending') || 'Enviando...') : t('send_request')}
-                                    </button>
-                                </form>
-                            </div>
-                        )}
+                        <MedicalRequestForm
+                            doctors={doctors}
+                            onRequestCreated={fetchRequests}
+                        />
 
                         <div className="card" style={{ gridColumn: user.role !== 'secretary' ? '1 / -1' : 'auto' }}>
                             <h3>{user.role === 'doctor' ? t('pending_requests') : t('request_status')}</h3>
-                            {requests.filter(filterItem).length === 0 ? <p className="text-muted p-4">{t('no_requests')}</p> : (
-                                <div className="request-list-container">
-                                    {requests.filter(filterItem).map(r => (
-                                        <div key={r.id} className={`request-card-item ${r.status !== 'pending' ? 'opacity-75 bg-slate-50' : ''}`}>
-                                            <div className="request-header">
-                                                <div>
-                                                    <span className={`tag ${r.type === 'prescription' ? 'tag-blue' : 'tag-purple'} mr-2`}>
-                                                        {r.type === 'prescription' ? t('prescription') : (r.type === 'license' ? t('license') : r.type)}
-                                                    </span>
-                                                    <span className="font-bold text-slate-800">{r.patient_name}</span>
-                                                </div>
-                                                <span className={`tag ${r.status === 'pending' ? 'tag-amber' : (r.status === 'completed' ? 'tag-green' : 'tag-red')}`}>
-                                                    {t(r.status) || r.status}
-                                                </span>
-                                            </div>
-
-                                            <div className="text-sm text-slate-600 mb-2">
-                                                <span className="font-medium">{t('doctor_label')}:</span> Dr. {r.doctor_name || 'Unknown'}
-                                            </div>
-
-                                            <div className="bg-slate-50 p-3 rounded-lg text-sm text-slate-700 italic border border-slate-100">
-                                                "{r.request_note}"
-                                            </div>
-
-                                            {r.doctor_note && (
-                                                <div className="mt-2 text-sm text-green-700 bg-green-50 p-2 rounded border border-green-100">
-                                                    <strong>{t('doctor_says')}:</strong> {r.doctor_note}
-                                                </div>
-                                            )}
-
-                                            <div className="status-row">
-                                                <div className={`tag ${r.payment_status === 'paid' ? 'tag-green' : (r.payment_status === 'debt' ? 'tag-red' : 'tag-slate')}`}>
-                                                    {r.payment_status === 'paid' ? `PAID (${r.payment_method || 'CASH'})` :
-                                                        (r.payment_status === 'debt' ? `DEBT ${formatPrice(r.debt_amount)}` : 'PENDING')}
-                                                </div>
-                                                <span className="text-xs text-muted ml-auto">{timeAgo(r.created_at)}</span>
-
-                                                <div className="flex gap-2 ml-4">
-                                                    {(r.payment_status !== 'paid') && (user.role === 'secretary' || user.role === 'doctor') && (
-                                                        <button
-                                                            onClick={() => setPaymentModal({
-                                                                open: true,
-                                                                initialData: {
-                                                                    type: 'income_patient',
-                                                                    amount: '',
-                                                                    description: `Request: ${r.type} for ${r.patient_name}`,
-                                                                    patientId: r.patient_user_id,
-                                                                    patientName: r.patient_name,
-                                                                    doctorId: r.doctor_id
-                                                                },
-                                                                reqId: r.id
-                                                            })}
-                                                            className="btn btn-sm-compact btn-primary"
-                                                            title="Charge"
-                                                        >
-                                                            $ Charge
-                                                        </button>
-                                                    )}
-                                                    {user.role === 'admin' && (
-                                                        <button
-                                                            className="btn btn-sm-compact btn-danger"
-                                                            onClick={async () => {
-                                                                if (!await confirm("¿Seguro que desea eliminar?")) return;
-                                                                try {
-                                                                    await api.delete(`/medical/requests/${r.id}`);
-                                                                    fetchRequests();
-                                                                } catch (e) {
-                                                                    alert("Error: " + (e.response?.data?.message || e.message));
-                                                                }
-                                                            }}
-                                                            title="Delete"
-                                                        >
-                                                            Delete
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            </div>
-
-                                            {user.role === 'doctor' && r.status === 'pending' && (
-                                                <div className="flex gap-2 mt-4 pt-3 border-t border-slate-100">
-                                                    <button onClick={() => openActionModal('completed', r.id)} className="btn btn-primary btn-sm">{t('mark_as_done')}</button>
-                                                    <button onClick={() => openActionModal('rejected', r.id)} className="btn btn-danger btn-sm">{t('reject')}</button>
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
+                            <MedicalRequestList
+                                requests={requests}
+                                filterItem={filterItem}
+                                handleDeleteRequest={handleDeleteRequest}
+                                openActionModal={openActionModal}
+                                setPaymentModal={setPaymentModal}
+                            />
                         </div>
                     </div >
-                )
-                }
+                )}
 
                 {
                     activeTab === 'files' && (
@@ -492,7 +489,7 @@ const MedicalDocuments = () => {
                                                     </div>
                                                 </div>
 
-                                                {user.role === 'admin' && (
+                                                {(user.role === 'admin' || user.role === 'secretary') && (
                                                     <button
                                                         className="btn btn-sm-compact btn-danger mt-2 w-full opacity-0 group-hover:opacity-100 transition-opacity"
                                                         onClick={(e) => {
@@ -529,29 +526,139 @@ const MedicalDocuments = () => {
                 </Modal>
 
                 {
-                    activeTab === 'history' && (
-                        <div style={{ display: 'grid', gap: '2rem' }}>
-                            <div className="card">
-                                <h3>{t('prescriptions_licenses')}</h3>
-
-                                <h4 style={{ marginTop: '1.5rem' }}>{t('recent_prescriptions')}</h4>
-                                {prescriptions.filter(filterItem).length === 0 ? <p className="text-muted">{t('none')}</p> : (
-                                    <ul style={{ paddingLeft: '0', listStyle: 'none' }}>
-                                        {prescriptions.filter(filterItem).map(p => (
-                                            <li key={p.id}
-                                                onClick={() => setSelectedPrescription(p)}
-                                                className="list-item-hover flex-between-center p-3 border-b-divider cursor-pointer"
-                                            >
-                                                <div>
-                                                    <div><strong>{new Date(p.created_at).toLocaleDateString()}</strong> - {p.patient_name}</div>
-                                                    <div style={{ fontSize: '0.85rem', color: '#64748b' }}>Dr. {p.doctor_name}</div>
-                                                </div>
-                                                <button className="btn btn-secondary" style={{ fontSize: '0.75rem', padding: '2px 8px' }}>{t('view') || 'View'}</button>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )}
+                    activeTab === 'prescriptions' && (
+                        <div className="flex flex-col gap-6">
+                            <h3 className="text-slate-800 mb-4 flex items-center gap-2">
+                                <span>💊</span> {t('recent_prescriptions')}
+                            </h3>
+                            <div className="history-grid">
+                                {combinedPrescriptions.filter(filterItem).map(p => (
+                                    <div key={`${p._origin}_${p.id}`} className="history-item">
+                                        <div className="history-item-header">
+                                            <div>
+                                                <div className="font-bold text-slate-800">{p.patient_name}</div>
+                                                <div className="text-xs text-slate-500">{timeAgo(p.created_at)} ({new Date(p.created_at).toLocaleDateString()})</div>
+                                            </div>
+                                            {p._origin === 'request' && <span className="tag tag-slate">{t('request') || 'Solicitud'}</span>}
+                                        </div>
+                                        <div className="note-bubble mb-3 truncate hover:whitespace-normal cursor-help" title={p.medications || p.request_note}>
+                                            {p.medications || p.request_note}
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-xs text-slate-500">Dr. {p.doctor_name}</span>
+                                            <div className="flex gap-2">
+                                                <button onClick={() => handleViewItem(p)} className="btn btn-sm-compact btn-secondary">{t('view')}</button>
+                                                {(user.role === 'admin' || user.role === 'secretary') && (
+                                                    <button
+                                                        onClick={() => p._origin === 'prescription' ? handleDeletePrescription(p.id) : handleDeleteRequest(p.id, p)}
+                                                        className="btn btn-sm-compact btn-danger"
+                                                    >
+                                                        🗑️
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
+                            {combinedPrescriptions.filter(filterItem).length === 0 && (
+                                <div className="card text-center p-12">
+                                    <p className="text-slate-500">{t('none_found')}</p>
+                                </div>
+                            )}
+                        </div>
+                    )
+                }
+
+                {
+                    activeTab === 'licenses' && (
+                        <div className="flex flex-col gap-6">
+                            <h3 className="text-slate-800 mb-4 flex items-center gap-2">
+                                <span>📄</span> {t('recent_licenses')}
+                            </h3>
+                            <div className="history-grid">
+                                {combinedLicenses.filter(filterItem).map(l => (
+                                    <div key={`${l._origin}_${l.id}`} className="history-item">
+                                        <div className="history-item-header">
+                                            <div>
+                                                <div className="font-bold text-slate-800">{l.patient_name}</div>
+                                                <div className="text-xs text-slate-500">{timeAgo(l.appointment_date || l.created_at)} ({new Date(l.appointment_date || l.created_at).toLocaleDateString()})</div>
+                                            </div>
+                                            {l._origin === 'request' && <span className="tag tag-slate">{t('request') || 'Solicitud'}</span>}
+                                        </div>
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <span className="tag tag-blue">{l.days_duration} {t('days')}</span>
+                                        </div>
+                                        <div className="note-bubble doc-note-bubble mb-3 truncate" title={l.diagnosis}>
+                                            {l.diagnosis}
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-xs text-slate-500">Dr. {l.doctor_name}</span>
+                                            <div className="flex gap-2">
+                                                <button onClick={() => handleViewItem(l)} className="btn btn-sm-compact btn-secondary">{t('view')}</button>
+                                                {(user.role === 'admin' || user.role === 'secretary') && (
+                                                    <button
+                                                        onClick={() => l._origin === 'license' ? handleDeleteLicense(l.id) : handleDeleteRequest(l.id, l)}
+                                                        className="btn btn-sm-compact btn-danger"
+                                                    >
+                                                        🗑️
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            {combinedLicenses.filter(filterItem).length === 0 && (
+                                <div className="card text-center p-12">
+                                    <p className="text-slate-500">{t('none_found')}</p>
+                                </div>
+                            )}
+                        </div>
+                    )
+                }
+
+                {
+                    activeTab === 'certificates' && (
+                        <div className="flex flex-col gap-6">
+                            <h3 className="text-slate-800 mb-4 flex items-center gap-2">
+                                <span>📜</span> {t('recent_certificates')}
+                            </h3>
+                            <div className="history-grid">
+                                {combinedCertificates.filter(filterItem).map(c => (
+                                    <div key={`${c._origin}_${c.id}`} className="history-item">
+                                        <div className="history-item-header">
+                                            <div>
+                                                <div className="font-bold text-slate-800">{c.patient_name}</div>
+                                                <div className="text-xs text-slate-500">{timeAgo(c.created_at)} ({new Date(c.created_at).toLocaleDateString()})</div>
+                                            </div>
+                                            <span className="tag tag-slate">{t('medical_certificate') || 'Certificado'}</span>
+                                        </div>
+                                        <div className="note-bubble mb-3">
+                                            {c.description}
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-xs text-slate-500">Dr. {c.doctor_name}</span>
+                                            <div className="flex gap-2">
+                                                <button onClick={() => handleViewItem(c)} className="btn btn-sm-compact btn-secondary">{t('view')}</button>
+                                                {(user.role === 'admin' || user.role === 'secretary') && (
+                                                    <button
+                                                        onClick={() => handleDeleteRequest(c.id, c)}
+                                                        className="btn btn-sm-compact btn-danger"
+                                                    >
+                                                        🗑️
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            {combinedCertificates.filter(filterItem).length === 0 && (
+                                <div className="card text-center p-12">
+                                    <p className="text-slate-500">{t('none_found')}</p>
+                                </div>
+                            )}
                         </div>
                     )
                 }
@@ -601,10 +708,38 @@ const MedicalDocuments = () => {
             {/* Prescription Detail Modal */}
             <Modal
                 isOpen={!!selectedPrescription}
-                onClose={() => setSelectedPrescription(null)}
+                onClose={() => {
+                    setSelectedPrescription(null);
+                    setIsEditing(false);
+                }}
                 title={t('prescription_details')}
                 footer={
-                    <button className="btn btn-primary" onClick={() => setSelectedPrescription(null)}>{t('close')}</button>
+                    <div className="flex gap-2">
+                        {isEditing ? (
+                            <>
+                                <button className="btn btn-secondary" onClick={() => setIsEditing(false)}>{t('cancel')}</button>
+                                <button className="btn btn-primary" onClick={handleUpdatePrescription}>{t('save') || 'Guardar Changes'}</button>
+                            </>
+                        ) : (
+                            <>
+                                {(user.role === 'admin' || user.role === 'secretary' || (user.role === 'doctor' && myDoctorProfile?.id === selectedPrescription?.doctor_id)) && (
+                                    <button
+                                        className="btn btn-secondary"
+                                        onClick={() => {
+                                            setEditData({
+                                                medications: selectedPrescription.medications,
+                                                instructions: selectedPrescription.instructions || ''
+                                            });
+                                            setIsEditing(true);
+                                        }}
+                                    >
+                                        {t('edit') || 'Editar'}
+                                    </button>
+                                )}
+                                <button className="btn btn-primary" onClick={() => setSelectedPrescription(null)}>{t('close')}</button>
+                            </>
+                        )}
+                    </div>
                 }
             >
                 {selectedPrescription && (
@@ -623,16 +758,212 @@ const MedicalDocuments = () => {
                         </div>
                         <div style={{ marginTop: '0.5rem', padding: '1rem', background: '#f8fafc', borderRadius: '4px', border: '1px solid #e2e8f0' }}>
                             <label className="input-label" style={{ display: 'block', marginBottom: '0.5rem' }}>{t('medications')}</label>
-                            <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit', margin: 0 }}>{selectedPrescription.medications}</pre>
+                            {isEditing ? (
+                                <textarea
+                                    className="input-field"
+                                    rows="4"
+                                    value={editData.medications}
+                                    onChange={e => setEditData({ ...editData, medications: e.target.value })}
+                                />
+                            ) : (
+                                <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit', margin: 0 }}>{selectedPrescription.medications}</pre>
+                            )}
                         </div>
-                        {selectedPrescription.instructions && (
-                            <div style={{ marginTop: '0.5rem' }}>
-                                <label className="input-label">{t('instructions_notes')}</label>
+                        <div style={{ marginTop: '0.5rem' }}>
+                            <label className="input-label">{t('instructions_notes')}</label>
+                            {isEditing ? (
+                                <textarea
+                                    className="input-field"
+                                    rows="2"
+                                    value={editData.instructions}
+                                    onChange={e => setEditData({ ...editData, instructions: e.target.value })}
+                                />
+                            ) : (
                                 <div style={{ padding: '0.5rem', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '4px' }}>
-                                    {selectedPrescription.instructions}
+                                    {selectedPrescription.instructions || t('none')}
                                 </div>
-                            </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+            </Modal>
+
+            {/* License Detail Modal */}
+            <Modal
+                isOpen={!!selectedLicense}
+                onClose={() => {
+                    setSelectedLicense(null);
+                    setIsEditing(false);
+                }}
+                title={t('license_details') || 'Detalles de Licencia'}
+                footer={
+                    <div className="flex gap-2">
+                        {isEditing ? (
+                            <>
+                                <button className="btn btn-secondary" onClick={() => setIsEditing(false)}>{t('cancel')}</button>
+                                <button className="btn btn-primary" onClick={handleUpdateLicense}>{t('save') || 'Guardar Changes'}</button>
+                            </>
+                        ) : (
+                            <>
+                                {(user.role === 'admin' || user.role === 'secretary' || (user.role === 'doctor' && myDoctorProfile?.id === selectedLicense?.doctor_id)) && (
+                                    <button
+                                        className="btn btn-secondary"
+                                        onClick={() => {
+                                            setLicenseEditData({
+                                                start_date: selectedLicense.start_date ? selectedLicense.start_date.split('T')[0] : '',
+                                                days_duration: selectedLicense.days_duration,
+                                                diagnosis: selectedLicense.diagnosis
+                                            });
+                                            setIsEditing(true);
+                                        }}
+                                    >
+                                        {t('edit') || 'Editar'}
+                                    </button>
+                                )}
+                                <button className="btn btn-primary" onClick={() => setSelectedLicense(null)}>{t('close')}</button>
+                            </>
                         )}
+                    </div>
+                }
+            >
+                {selectedLicense && (
+                    <div style={{ display: 'grid', gap: '1.5rem' }}>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="input-label">{t('start_date') || 'Fecha de Inicio'}</label>
+                                {isEditing ? (
+                                    <input
+                                        type="date"
+                                        className="input-field"
+                                        value={licenseEditData.start_date}
+                                        onChange={e => setLicenseEditData({ ...licenseEditData, start_date: e.target.value })}
+                                    />
+                                ) : (
+                                    <div className="p-2 border rounded bg-slate-50">{new Date(selectedLicense.start_date).toLocaleDateString()}</div>
+                                )}
+                            </div>
+                            <div>
+                                <label className="input-label">{t('days_duration') || 'Días de Duración'}</label>
+                                {isEditing ? (
+                                    <input
+                                        type="number"
+                                        className="input-field"
+                                        value={licenseEditData.days_duration}
+                                        onChange={e => setLicenseEditData({ ...licenseEditData, days_duration: e.target.value })}
+                                    />
+                                ) : (
+                                    <div className="p-2 border rounded bg-slate-50">{selectedLicense.days_duration} {t('days')}</div>
+                                )}
+                            </div>
+                        </div>
+                        <div>
+                            <label className="input-label">{t('diagnosis') || 'Diagnóstico'}</label>
+                            {isEditing ? (
+                                <textarea
+                                    className="input-field"
+                                    rows="4"
+                                    value={licenseEditData.diagnosis}
+                                    onChange={e => setLicenseEditData({ ...licenseEditData, diagnosis: e.target.value })}
+                                />
+                            ) : (
+                                <div className="p-3 border rounded bg-slate-50 italic">
+                                    "{selectedLicense.diagnosis}"
+                                </div>
+                            )}
+                        </div>
+                        <div className="text-sm text-slate-500 border-t pt-4">
+                            <p><strong>{t('patient')}:</strong> {selectedLicense.patient_name}</p>
+                            <p><strong>{t('doctor')}:</strong> {selectedLicense.doctor_name}</p>
+                        </div>
+                    </div>
+                )}
+            </Modal>
+
+            {/* Request Detail Modal (Editing from History) */}
+            <Modal
+                isOpen={!!selectedRequest}
+                onClose={() => {
+                    setSelectedRequest(null);
+                    setIsEditing(false);
+                }}
+                title={selectedRequest?.type === 'prescription' ? t('prescription_details') : (selectedRequest?.type === 'certificate' ? (t('certificate_details') || 'Detalles de Certificado') : t('license_details'))}
+                footer={
+                    <div className="flex justify-end gap-2">
+                        {isEditing ? (
+                            <>
+                                <button className="btn btn-secondary" onClick={() => setIsEditing(false)}>{t('cancel')}</button>
+                                <button className="btn btn-primary" onClick={handleUpdateRequest}>{t('save')}</button>
+                            </>
+                        ) : (
+                            <>
+                                {(user.role === 'admin' || user.role === 'secretary' || (user.role === 'doctor' && (user.user_id || user.id) === selectedRequest?.doctor_user_id)) && (
+                                    <button className="btn btn-secondary" onClick={() => setIsEditing(true)}>{t('edit')}</button>
+                                )}
+                                <button className="btn btn-primary" onClick={() => setSelectedRequest(null)}>{t('close')}</button>
+                            </>
+                        )}
+                    </div>
+                }
+            >
+                {selectedRequest && (
+                    <div style={{ display: 'grid', gap: '1.5rem' }}>
+                        <div>
+                            <label className="input-label">{selectedRequest.type === 'prescription' ? t('medications') : (selectedRequest.type === 'certificate' ? (t('description') || 'Descripción') : t('diagnosis'))}</label>
+                            {isEditing ? (
+                                <textarea
+                                    className="input-field"
+                                    rows="4"
+                                    value={requestEditData.request_note}
+                                    onChange={e => setRequestEditData({ ...requestEditData, request_note: e.target.value })}
+                                />
+                            ) : (
+                                <div className="p-3 border rounded bg-slate-50 italic whitespace-pre-wrap">
+                                    "{selectedRequest.request_note}"
+                                </div>
+                            )}
+                        </div>
+                        <div>
+                            <label className="input-label">{t('doctor_says')}</label>
+                            {isEditing ? (
+                                <textarea
+                                    className="input-field"
+                                    rows="2"
+                                    value={requestEditData.doctor_note}
+                                    onChange={e => setRequestEditData({ ...requestEditData, doctor_note: e.target.value })}
+                                />
+                            ) : (
+                                <div className="p-3 border rounded bg-slate-50">
+                                    {selectedRequest.doctor_note || t('none')}
+                                </div>
+                            )}
+                        </div>
+                        <div className="text-sm text-slate-500 border-t pt-4">
+                            <p><strong>{t('patient')}:</strong> {selectedRequest.patient_name}</p>
+                            <p><strong>{t('doctor')}:</strong> {selectedRequest.doctor_name}</p>
+                            <p><strong>Status:</strong> <span className="tag tag-green tag-sm">{t(selectedRequest.status)}</span></p>
+
+                            {(user.role === 'secretary' || user.role === 'admin') && (
+                                <div className="mt-2 pt-2 border-t border-slate-100">
+                                    <label className="input-label">Valor (Deuda/Costo)</label>
+                                    {isEditing ? (
+                                        <div className="flex items-center gap-2">
+                                            <span>$</span>
+                                            <input
+                                                type="number"
+                                                className="input-field w-32"
+                                                value={requestEditData.debt_amount}
+                                                onChange={e => setRequestEditData({ ...requestEditData, debt_amount: e.target.value })}
+                                                placeholder="0.00"
+                                            />
+                                        </div>
+                                    ) : (
+                                        <p className="font-bold text-slate-700">
+                                            {selectedRequest.debt_amount ? `$${selectedRequest.debt_amount}` : '$0.00'}
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 )}
             </Modal>

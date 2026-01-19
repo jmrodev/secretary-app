@@ -14,9 +14,23 @@ export const timeAgo = (date) => {
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
+    const weeks = Math.floor(days / 7);
+    const months = Math.floor(days / 30);
+    const years = Math.floor(days / 365);
 
-    if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`;
-    if (hours > 0) return `${hours} hr${hours > 1 ? 's' : ''} ago`;
-    if (minutes > 0) return `${minutes} min${minutes > 1 ? 's' : ''} ago`;
-    return 'Just now';
+    if (years > 0) return `hace ${years} ${years === 1 ? 'año' : 'años'}`;
+    if (months > 0) return `hace ${months} ${months === 1 ? 'mes' : 'meses'}`;
+    if (weeks > 0) return `hace ${weeks} ${weeks === 1 ? 'semana' : 'semanas'}`;
+    if (days > 0) return `hace ${days} ${days === 1 ? 'día' : 'días'}`;
+    if (hours > 0) return `hace ${hours} ${hours === 1 ? 'hora' : 'horas'}`;
+    if (minutes > 0) return `hace ${minutes} ${minutes === 1 ? 'min' : 'mins'}`;
+    return 'Justo ahora';
+};
+
+export const isToday = (someDate) => {
+    const today = new Date();
+    const d = new Date(someDate);
+    return d.getDate() === today.getDate() &&
+        d.getMonth() === today.getMonth() &&
+        d.getFullYear() === today.getFullYear();
 };

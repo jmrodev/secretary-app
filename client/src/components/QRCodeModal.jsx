@@ -2,41 +2,20 @@ import { QRCodeSVG } from 'qrcode.react';
 import Modal from './Modal';
 import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
+import { copyToClipboard } from '../utils/clipboardUtils';
 
 const QRCodeModal = ({ isOpen, onClose, url, expiresAt }) => {
     const { t } = useLanguage();
     const { alert } = useModal();
 
     const handlePrint = () => {
-        const printWindow = window.open('', '', 'width=600,height=600');
-        printWindow.document.write(`
-            <html>
-                <head>
-                    <title>Patient Access QR</title>
-                    <style>
-                        body { font-family: sans-serif; text-align: center; padding: 2rem; }
-                        .qr-container { margin-top: 2rem; }
-                        h2 { margin-bottom: 0.5rem; }
-                        .expiry { color: #666; font-size: 0.9rem; }
-                    </style>
-                </head>
-                <body>
-                    <h2>Escanea para completar tus datos</h2>
-                    <p>Por favor, escanea este código con tu celular.</p>
-                    <div class="qr-container">
-                        ${document.getElementById('qr-code-svg').outerHTML}
-                    </div>
-                    <p class="expiry">Válido hasta: ${new Date(expiresAt).toLocaleTimeString()}</p>
-                </body>
-            </html>
-        `);
-        printWindow.document.close();
-        printWindow.print();
+        // ... existing code ...
     };
 
     const handleCopy = () => {
-        navigator.clipboard.writeText(url);
-        alert("¡Enlace copiado al portapapeles!");
+        copyToClipboard(url).then(() => {
+            alert("¡Enlace copiado al portapapeles!");
+        }).catch(err => console.error(err));
     };
 
     return (

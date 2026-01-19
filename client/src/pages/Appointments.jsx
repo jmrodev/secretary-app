@@ -5,6 +5,8 @@ import { useAuth } from '../context/AuthContext';
 import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
+import { copyToClipboard } from '../utils/clipboardUtils';
+import { useConfig } from '../context/ConfigContext';
 import TransactionModal from '../components/TransactionModal';
 import Calendar from '../components/Calendar';
 import DaySchedule from '../components/DaySchedule';
@@ -22,6 +24,7 @@ const Appointments = () => {
     const { user } = useAuth();
     const { t } = useLanguage();
     const { showMessage } = useMessage();
+    const { settings } = useConfig();
     const { alert, confirm, prompt } = useModal();
     const navigate = useNavigate();
     const location = useLocation();
@@ -52,6 +55,7 @@ const Appointments = () => {
     const [date, setDate] = useState('');
     const [reason, setReason] = useState('Consulta'); // Default reason
     const [bonified, setBonified] = useState(false); // [NEW] Bonificado
+    const [type, setType] = useState('consultation'); // [NEW] Virtual/Consultation
     const [message, setMessage] = useState('');
 
     const [showForm, setShowForm] = useState(false);
@@ -69,6 +73,9 @@ const Appointments = () => {
     // Next available slot modal
     const [nextSlotData, setNextSlotData] = useState(null); // { slot, breakSlot }
     const [showNextSlotModal, setShowNextSlotModal] = useState(false);
+    const [activeTab, setActiveTab] = useState('calendar'); // 'calendar' or 'holidays'
+    const [slotHistory, setSlotHistory] = useState([]);
+    const [currentSlotParams, setCurrentSlotParams] = useState(null);
 
     const fetchAppointments = async () => {
         try {
@@ -103,6 +110,31 @@ const Appointments = () => {
         // Also sync viewDoctorId for the view if it was empty
         if (!viewDoctorId) setViewDoctorId(selectedDoctor);
     }, [selectedDoctor]);
+
+    // Keyboard navigation for Next Slot Modal
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (!showNextSlotModal) return;
+
+            if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                if (slotHistory.length > 0) {
+                    const prevDate = slotHistory[slotHistory.length - 1];
+                    setSlotHistory(prev => prev.slice(0, -1));
+                    setCurrentSlotParams(prevDate);
+                    handleNextFreeSlot(prevDate);
+                }
+            } else if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+                if (nextSlotData?.nextStartDate) {
+                    setSlotHistory(prev => [...prev, currentSlotParams]);
+                    setCurrentSlotParams(nextSlotData.nextStartDate);
+                    handleNextFreeSlot(nextSlotData.nextStartDate);
+                }
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [showNextSlotModal, slotHistory, nextSlotData, currentSlotParams]);
 
     // [NEW] Fetch patient specific appointments
     useEffect(() => {
@@ -340,7 +372,7 @@ const Appointments = () => {
     };
 
     const handleDelete = async (id, status) => {
-        if (status === 'attended') return alert(t('cannot_delete_attended') || "Cannot delete an appointment that has been attended.");
+        if (status === 'attended' && settings.enable_secretary_unrestricted_crud !== 'true') return alert(t('cannot_delete_attended') || "Cannot delete an appointment that has been attended.");
         if (!await confirm(t('confirm_delete_appointment') || "Are you sure? This will remove the record mostly (Secretary Error).")) return;
         try {
             if (String(id).startsWith('goo_')) {
@@ -375,17 +407,42 @@ const Appointments = () => {
         }
     };
 
+    const handleToggleVirtual = async (appointment) => {
+        try {
+            const newType = appointment.type === 'virtual' ? 'consultation' : 'virtual';
+            await api.patch(`/appointments/${appointment.id}/type`, { type: newType });
+
+            // Optimistic update
+            setAppointments(prev => prev.map(a =>
+                a.id === appointment.id ? { ...a, type: newType } : a
+            ));
+
+            // fetchAppointments(); // Optional if optimistic is enough
+            showMessage(`Turno cambiado a ${newType === 'virtual' ? 'Videollamada' : 'Presencial'}`, 'success');
+        } catch (err) {
+            console.error(err);
+            showMessage("Error al cambiar tipo de turno", 'error');
+        }
+    };
+
     const handleBook = async (e) => {
         e.preventDefault();
-        setMessage('');
+        // setMessage(''); // Use global toast instead
 
         // Client-side holiday check
         const selectedDatePart = date.split('T')[0];
         const isHoliday = holidays.find(h => h.date.startsWith(selectedDatePart));
         if (isHoliday) {
-            setMessage(`Cannot book: ${isHoliday.description}`);
+            showMessage(`Cannot book: ${isHoliday.description}`, 'error');
             return;
         }
+
+        console.log("Booking Appointment with:", {
+            doctor_id: selectedDoctor,
+            patient_id: selectedPatient,
+            date: date,
+            reason
+        });
 
         try {
             await api.post('/appointments', {
@@ -393,17 +450,20 @@ const Appointments = () => {
                 patient_id: (user.role === 'secretary' || user.role === 'doctor') ? selectedPatient : undefined,
                 appointment_date: new Date(date).toISOString(),
                 reason: reason || 'Consulta', // Ensure it sends 'Consulta' if empty for some reason
-                bonified // [NEW]
+                bonified, // [NEW]
+                type // [NEW]
             });
-            setMessage(t('appointment_booked'));
+            showMessage(t('appointment_booked'), 'success');
             setShowForm(false);
             setReason('Consulta'); // Reset to default 'Consulta'
             setDate('');
+            setType('consultation');
             fetchAppointments();
         } catch (err) {
             const serverError = err.response?.data?.error || err.response?.data;
-            setMessage(serverError || t('failed_book'));
-            console.error(err);
+            const msg = serverError || t('failed_book');
+            console.error("Booking Error:", err);
+            showMessage(msg, 'error');
         }
     };
 
@@ -435,7 +495,7 @@ const Appointments = () => {
         }
     };
 
-    const handleNextFreeSlot = async () => {
+    const handleNextFreeSlot = async (startDate = null) => {
         const docId = viewDoctorId || selectedDoctor;
         if (!docId) {
             showMessage("Por favor, selecciona un médico primero para buscar turnos.", 'warning');
@@ -444,19 +504,23 @@ const Appointments = () => {
 
         try {
             setLoading(true);
-            const res = await api.get('/appointments/next-free', { params: { doctor_id: docId } });
+            const params = { doctor_id: docId };
+            // If startDate is passed (for pagination)
+            if (startDate && typeof startDate === 'string') params.start_date = startDate;
+
+            const res = await api.get('/appointments/next-free-batch', { params });
             setLoading(false);
 
-            if (res.data && (res.data.slot || res.data.breakSlot)) {
-                setNextSlotData(res.data);
+            if (res.data && res.data.results && res.data.results.length > 0) {
+                setNextSlotData(res.data); // Store full response { results: [], nextStartDate: '' }
                 setShowNextSlotModal(true);
             } else {
-                showMessage("No se encontraron turnos libres cercanos.", 'info');
+                showMessage("No se encontraron más turnos libres en el rango analizado.", 'info');
             }
         } catch (err) {
             setLoading(false);
             console.error(err);
-            showMessage("Error buscando turno libre o no encontrados.", 'error');
+            showMessage("Error buscando turnos libres.", 'error');
         }
     };
 
@@ -470,6 +534,30 @@ const Appointments = () => {
         setSelectedDoctor(viewDoctorId || selectedDoctor);
         setShowNextSlotModal(false);
         setShowForm(true);
+    };
+
+    const handleCopySlot = (slot) => {
+        const docId = viewDoctorId || selectedDoctor;
+        const doctor = doctors.find(d => d.id === Number(docId));
+        const docName = doctor ? doctor.full_name : 'el Doctor';
+
+        let template = settings.next_free_slot_template;
+        if (!template || !template.trim()) {
+            template = "El próximo turno disponible para {doctor_name} es el {date} a las {time}.";
+        }
+
+        const dateObj = new Date(slot.iso);
+        const dateStr = dateObj.toLocaleDateString();
+
+        const msg = template
+            .replace(/{doctor_name}/g, docName)
+            .replace(/{date}/g, dateStr)
+            .replace(/{time}/g, slot.time)
+            .replace(/{secretary_name}/g, user.name || 'Secretaria');
+
+        copyToClipboard(msg).then(() => {
+            showMessage('Propuesta copiada al portapapeles', 'success');
+        }).catch(err => console.error("Clipboard error", err));
     };
 
     if (loading) return <div>{t('loading')}</div>;
@@ -489,47 +577,60 @@ const Appointments = () => {
                     </div>
                 )}
 
-                <div className="flex-between mb-8">
-                    <div className="flex items-center gap-8">
-                        <h1 className="title mb-0">{t('appointments')}</h1>
+                {/* Primary Navigation Tabs - Always at the top */}
+                <div className="top-nav-tabs mb-6">
+                    <div className="tabs-container" style={{ margin: 0 }}>
+                        <button
+                            className={`tab-btn ${activeTab === 'calendar' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('calendar')}
+                        >
+                            📅 {t('calendar') || 'Agenda'}
+                        </button>
+                        {(user.role === 'admin' || user.role === 'secretary') && (
+                            <button
+                                className={`tab-btn ${activeTab === 'holidays' ? 'active' : ''}`}
+                                onClick={() => setActiveTab('holidays')}
+                            >
+                                🏖️ {t('holidays') || 'Feriados'}
+                            </button>
+                        )}
+                    </div>
+                </div>
 
-                        {/* Doctor Filter for Secretary */}
-                        {user.role === 'secretary' && (
-                            <div className="active-filters">
-                                <label className="font-medium text-sm">{t('filter_by_doctor')}:</label>
+                {/* Sub-header con Acciones y Filtro de Médico */}
+                <div className={`header-actions-container mb-8 ${viewDoctorId ? `doctor-color-${Number(viewDoctorId) % 10} doctor-themed-bg` : ''}`} style={viewDoctorId ? { borderRadius: '1rem', padding: '1rem 1.5rem' } : {}}>
+                    <div className="action-bar-buttons-container">
+                        <button
+                            className={`btn ${showForm ? 'btn-secondary' : viewDoctorId ? 'doctor-themed-accent' : 'btn-primary'}`}
+                            onClick={() => setShowForm(!showForm)}
+                        >
+                            {showForm ? <span>❌ Cancelar</span> : <span>✨ Nuevo Turno</span>}
+                        </button>
+                        <button className="btn btn-outline-primary btn-sm-icon" onClick={() => {
+                            setSlotHistory([]);
+                            setCurrentSlotParams(null);
+                            handleNextFreeSlot(null);
+                        }} title="Próximo turno libre">
+                            <span>🔍</span> Próximo Libre
+                        </button>
+                    </div>
+
+                    {activeTab === 'calendar' && user.role === 'secretary' && (
+                        <div className="filter-group">
+                            <div className="flex items-center gap-3">
+                                <label className={`filter-label ${viewDoctorId ? 'doctor-themed-text' : ''}`} style={{ margin: 0 }}>Filtrar por Médico:</label>
                                 <select
-                                    className="input-field w-auto p-2"
+                                    className="filter-select"
                                     value={viewDoctorId}
                                     onChange={(e) => setViewDoctorId(e.target.value)}
+                                    style={{ minWidth: '200px' }}
                                 >
-                                    <option value="">{t('all_doctors')}</option>
+                                    <option value="">Todos los Médicos</option>
                                     {doctors.map(d => (
                                         <option key={d.id} value={d.id}>{d.full_name}</option>
                                     ))}
                                 </select>
                             </div>
-                        )}
-                    </div>
-
-                    {(user.role === 'patient' || user.role === 'secretary' || user.role === 'doctor') && (
-                        <div className="flex gap-4">
-                            {/* Patient Search Filter */}
-                            <div style={{ width: '300px' }}>
-                                <PatientSearchSelect
-                                    value={searchPatientId}
-                                    placeholder={t('search_patient_appointment') || "🔍 Buscador..."}
-                                    onChange={(val) => setSearchPatientId(val)}
-                                    onCreatePatient={() => {
-                                        setEditPatientModalOpen(true);
-                                    }}
-                                />
-                            </div>
-                            <button className="btn btn-secondary flex items-center gap-2" onClick={handleNextFreeSlot} title="Buscar el próximo turno libre disponible">
-                                🔍 {t('next_free_slot') || 'Próximo Libre'}
-                            </button>
-                            <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
-                                {showForm ? t('cancel_booking') : t('new_appointment')}
-                            </button>
                         </div>
                     )}
                 </div>
@@ -568,15 +669,33 @@ const Appointments = () => {
                                     ) : (
                                         <div className="space-y-3">
                                             {patientAppointments.filter(a => new Date(a.appointment_date) >= new Date()).map(appt => (
-                                                <div key={appt.id} className="p-3 bg-white border border-blue-100 rounded-lg shadow-sm flex justify-between items-center">
-                                                    <div>
-                                                        <div className="font-bold text-slate-800">{new Date(appt.appointment_date).toLocaleDateString()} {new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                                                        <div className="text-slate-600 text-sm">Dr. {appt.doctor_name}</div>
-                                                        <div className="text-xs text-slate-500 italic">{appt.reason}</div>
+                                                <div key={appt.id} className="p-3 bg-white border border-blue-100 rounded-lg shadow-sm flex flex-col gap-2">
+                                                    <div className="flex justify-between items-center">
+                                                        <div>
+                                                            <div className="font-bold text-slate-800">{new Date(appt.appointment_date).toLocaleDateString()} {new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                                            <div className="text-slate-600 text-sm">Dr. {appt.doctor_name}</div>
+                                                            <div className="text-xs text-slate-500 italic">{appt.reason}</div>
+                                                        </div>
+                                                        <span className={`tag tag-${appt.status === 'confirmed' ? 'green' : 'amber'}`}>
+                                                            {t(appt.status)}
+                                                        </span>
                                                     </div>
-                                                    <span className={`tag tag-${appt.status === 'confirmed' ? 'green' : 'amber'}`}>
-                                                        {t(appt.status)}
-                                                    </span>
+                                                    {/* [NEW] Go To Appointment Button */}
+                                                    <button
+                                                        className="btn btn-sm btn-outline-primary w-full flex items-center justify-center gap-2 mt-1"
+                                                        onClick={() => {
+                                                            const apptDate = new Date(appt.appointment_date);
+                                                            // Correct timezone issue locally
+                                                            const offset = apptDate.getTimezoneOffset() * 60000;
+                                                            const localDate = new Date(apptDate.getTime() + offset);
+
+                                                            setSelectedDate(localDate);
+                                                            setViewDoctorId(appt.doctor_id);
+                                                            setSearchPatientId(''); // Clear search to go to calendar
+                                                        }}
+                                                    >
+                                                        ➡️ Ir al Turno
+                                                    </button>
                                                 </div>
                                             ))}
                                         </div>
@@ -633,33 +752,69 @@ const Appointments = () => {
                     </div>
 
                 ) : (
-                    <div className="appointments-grid">
-                        <div className="calendar-section">
-                            <Calendar
-                                selectedDate={selectedDate}
-                                onDateSelect={handleDateSelect}
-                                appointments={filteredAppointments}
-                                holidays={holidays}
-                            />
-                        </div>
-                        <div className="schedule-section-container">
-                            {currentDoctor && (
-                                <div className="watermark-text">
-                                    {currentDoctor.full_name}
-                                </div>
-                            )}
-                            <DaySchedule
-                                date={selectedDate}
-                                appointments={currentDoctor ? localFiltered.filter(a => a.doctor_id === currentDoctor.id) : localFiltered}
-                                onSlotClick={handleSlotClick}
-                                onRatingChange={handleRatingChange}
-                                doctor={currentDoctor}
-                                schedule={doctorSchedule} // [NEW] Pass schedule
-                            />
+                    <div className="appointments-tab-content">
+                        <div className="appointments-grid">
+                            <div className="calendar-section">
+                                {activeTab === 'calendar' ? (
+                                    <Calendar
+                                        selectedDate={selectedDate}
+                                        onDateSelect={handleDateSelect}
+                                        appointments={filteredAppointments}
+                                        holidays={holidays}
+                                    />
+                                ) : (
+                                    <div className="card h-full animate-in">
+                                        <h3 className="config-section-title">🏖️ Agregar Feriado</h3>
+                                        <p className="text-sm text-muted mb-6">
+                                            Bloquea días específicos en la agenda.
+                                        </p>
+                                        <HolidayForm onHolidaysChanged={fetchHolidays} />
+                                    </div>
+                                )}
+                            </div>
+                            <div className={`schedule-section-container ${viewDoctorId ? `doctor-color-${Number(viewDoctorId) % 10}` : ''}`}>
+                                {activeTab === 'calendar' ? (
+                                    <div className={viewDoctorId ? "doctor-themed-bg p-4 rounded-2xl border" : ""}>
+                                        <div className="schedule-header-search mb-4">
+                                            <div className="filter-group patient-search-container" style={{ minWidth: '100%' }}>
+                                                <label className={`filter-label ${viewDoctorId ? 'doctor-themed-text' : ''}`}>Buscar Historial de Paciente</label>
+                                                <PatientSearchSelect
+                                                    value={searchPatientId}
+                                                    placeholder="🔍 Buscar paciente para ver su historial..."
+                                                    onChange={(val) => setSearchPatientId(val)}
+                                                    onCreatePatient={() => {
+                                                        setEditPatientModalOpen(true);
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                        {currentDoctor && (
+                                            <div className="watermark-text" style={{ color: 'var(--doc-text)', opacity: 0.08 }}>
+                                                {currentDoctor.full_name}
+                                            </div>
+                                        )}
+                                        <DaySchedule
+                                            date={selectedDate}
+                                            appointments={currentDoctor ? localFiltered.filter(a => a.doctor_id === currentDoctor.id) : localFiltered}
+                                            onSlotClick={handleSlotClick}
+                                            onRatingChange={handleRatingChange}
+                                            doctor={currentDoctor}
+                                            schedule={doctorSchedule}
+                                            onToggleVirtual={handleToggleVirtual}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="card h-full animate-in overflow-hidden flex flex-col">
+                                        <h3 className="config-section-title">📋 Lista de Días Cerrados</h3>
+                                        <div className="flex-1 overflow-y-auto pr-2">
+                                            <HolidayList holidays={holidays} onHolidaysChanged={fetchHolidays} />
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
-                )
-                }
+                )}
 
                 <Modal
                     isOpen={showForm}
@@ -683,11 +838,32 @@ const Appointments = () => {
                             )}
                         </div>
 
+                        <div className="input-group">
+                            <label className="input-label">Tipo de Turno</label>
+                            <div className="flex gap-2">
+                                <button
+                                    type="button"
+                                    className={`btn btn-sm ${type === 'consultation' ? 'btn-primary' : 'btn-secondary'}`}
+                                    onClick={() => setType('consultation')}
+                                >
+                                    🏢 Presencial
+                                </button>
+                                <button
+                                    type="button"
+                                    className={`btn btn-sm ${type === 'virtual' ? 'btn-primary' : 'btn-secondary'}`}
+                                    onClick={() => setType('virtual')}
+                                >
+                                    📹 Videollamada
+                                </button>
+                            </div>
+                        </div>
+
                         {(user.role === 'secretary' || user.role === 'doctor') && (
                             <div className="input-group">
                                 <label className="input-label">{t('patients')}</label>
                                 <PatientSearchSelect
                                     value={selectedPatient}
+                                    autoFocus={true}
                                     placeholder={t('select_patient')}
                                     onCreatePatient={async (name) => {
                                         // Open Create Patient Modal with pre-filled name
@@ -735,6 +911,14 @@ const Appointments = () => {
                         <div className="input-group">
                             <label className="input-label">{t('date_time')}</label>
                             <input type="datetime-local" className="input-field" value={date} onChange={e => setDate(e.target.value)} required />
+                        </div>
+
+                        <div className="input-group">
+                            <label className="input-label">{t('appointment_type') || 'Tipo de Consulta'}</label>
+                            <select className="input-field" value={type} onChange={e => setType(e.target.value)}>
+                                <option value="consultation">{t('presencial') || 'Presencial (Consultorio)'}</option>
+                                <option value="virtual">{t('virtual') || 'Virtual (Remoto)'}</option>
+                            </select>
                         </div>
 
                         <div className="input-group">
@@ -907,8 +1091,8 @@ const Appointments = () => {
                                                 </button>
                                             )}
 
-                                            {/* Actions - Hide if Completed */}
-                                            {actionModal.appt.status !== 'completed' && (
+                                            {/* Actions - Hide if Completed (Unless Unrestricted CRUD enabled AND NOT paid) */}
+                                            {(actionModal.appt.status !== 'completed' || (settings.enable_secretary_unrestricted_crud === 'true' && actionModal.appt.payment_status !== 'paid')) && (
                                                 <>
                                                     {/* Arrived Button */}
                                                     {actionModal.appt.status !== 'arrived' && (
@@ -919,7 +1103,12 @@ const Appointments = () => {
                                                             🏥 {t('patient_arrived') || 'Asistió (En Sala)'}
                                                         </button>
                                                     )}
+                                                </>
+                                            )}
 
+                                            {/* Reschedule and Status buttons - logic split to be clearer */}
+                                            {(actionModal.appt.status !== 'completed' || (settings.enable_secretary_unrestricted_crud === 'true' && actionModal.appt.payment_status !== 'paid')) && (
+                                                <>
                                                     {/* Reschedule Button */}
                                                     <button className="btn btn-secondary" onClick={() => {
                                                         navigate('/appointments', { state: { rescheduleAppt: actionModal.appt } });
@@ -966,8 +1155,8 @@ const Appointments = () => {
 
                                         <hr className="border-divider" />
 
-                                        {/* Cancel/Delete - Hide if Completed */}
-                                        {actionModal.appt.status !== 'completed' && (
+                                        {/* Cancel/Delete - Hide if Completed (Unless Unrestricted CRUD enabled AND NOT paid) */}
+                                        {(actionModal.appt.status !== 'completed' || (settings.enable_secretary_unrestricted_crud === 'true' && actionModal.appt.payment_status !== 'paid')) && (
                                             <div className="grid-2-cols">
                                                 {/* Cancel (Standard) */}
                                                 <button className="btn btn-outline-danger" onClick={() => {
@@ -977,10 +1166,10 @@ const Appointments = () => {
                                                     ❌ {t('cancel')}
                                                 </button>
 
-                                                {/* Delete (Error) - Admin/Secretary Only if NOT attended */}
+                                                {/* Delete (Error) - Admin/Secretary */}
                                                 {(user.role === 'admin' || user.role === 'secretary') && (
                                                     <button className="btn" style={{ background: '#ef4444', color: 'white' }} onClick={() => {
-                                                        handleDelete(actionModal.appt.id);
+                                                        handleDelete(actionModal.appt.id, actionModal.appt.status);
                                                         setActionModal({ ...actionModal, open: false });
                                                     }}>
                                                         🗑 {t('delete_error')}
@@ -1031,32 +1220,106 @@ const Appointments = () => {
                 <Modal
                     isOpen={showNextSlotModal}
                     onClose={() => setShowNextSlotModal(false)}
-                    title="Próximos Turnos Libres"
+                    title="Búsqueda de Turnos Libres"
+                    size="lg"
                 >
-                    <div className="flex flex-col gap-4">
-                        <p className="text-slate-600 mb-2">Se han encontrado las siguientes opciones:</p>
+                    <div className="flex flex-col gap-4 max-h-[70vh] overflow-y-auto custom-scrollbar p-1">
+                        {!nextSlotData?.results ? (
+                            <div className="text-center p-8 text-slate-500">Cargando resultados...</div>
+                        ) : (
+                            <div className="flex flex-col gap-4">
+                                {(() => {
+                                    const rows = [];
+                                    let current = [];
+                                    let count = 0;
+                                    nextSlotData.results.forEach(d => {
+                                        // "mi vecino me dice si puedo porque tengoo un solo dia"
+                                        // Add to current row if total count doesn't exceed 4
+                                        if (count > 0 && (count + d.slots.length > 4)) {
+                                            rows.push(current);
+                                            current = [];
+                                            count = 0;
+                                        }
+                                        current.push(d);
+                                        count += d.slots.length;
 
-                        {nextSlotData?.slot && (
-                            <button
-                                className="btn btn-primary p-4 flex justify-between items-center text-lg"
-                                onClick={() => confirmNextSlot(nextSlotData.slot)}
-                            >
-                                <span>📅 Turno Normal</span>
-                                <span className="font-bold">{new Date(nextSlotData.slot).toLocaleString()}</span>
-                            </button>
+                                        // If this single day pushed us way over (e.g. 10 slots), cut immediately after
+                                        if (count >= 4) {
+                                            rows.push(current);
+                                            current = [];
+                                            count = 0;
+                                        }
+                                    });
+                                    if (current.length) rows.push(current);
+
+                                    return rows.map((row, rI) => (
+                                        <div key={rI} className="flex flex-wrap md:flex-nowrap gap-1">
+                                            {row.map((dayGroup, i) => (
+                                                <div key={i} className={`bg-slate-50 border border-slate-200 p-3 shadow-sm w-full md:w-auto md:flex-1 ${i === 0 ? 'rounded-l-xl' : ''} ${i === row.length - 1 ? 'rounded-r-xl' : ''} ${row.length === 1 ? 'rounded-xl' : 'border-r-0 last:border-r'}`}>
+                                                    <h4 className="font-bold text-slate-700 mb-2 border-b border-slate-200 pb-1 flex items-center gap-2 capitalize text-nowrap pr-2">
+                                                        📅 {dayGroup.dayName}
+                                                    </h4>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {dayGroup.slots.map((slot, idx) => (
+                                                            <div key={idx} className="flex flex-col gap-1 items-stretch flex-1 md:flex-none">
+                                                                <button
+                                                                    className={`btn ${slot.is_break ? 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100' : 'btn-outline-primary hover:bg-blue-50'} px-3 py-2 transition-all shadow-sm text-center flex items-center justify-center gap-1 min-w-[70px] h-auto w-full`}
+                                                                    onClick={() => confirmNextSlot(slot.iso)}
+                                                                    title={slot.is_break ? "Turno Descanso (Sobreturno)" : "Turno Normal"}
+                                                                    style={{ fontSize: '0.9rem' }}
+                                                                >
+                                                                    <span className="font-bold">{slot.time}</span>
+                                                                    {slot.is_break && <span className="text-[10px] uppercase font-bold text-amber-600 ml-1">Extra</span>}
+                                                                </button>
+                                                                <button
+                                                                    className="btn btn-xs btn-ghost text-slate-400 hover:text-blue-600 w-full"
+                                                                    onClick={(e) => { e.stopPropagation(); handleCopySlot(slot); }}
+                                                                    title="Copiar Propuesta"
+                                                                >
+                                                                    📋 Copiar
+                                                                </button>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ));
+                                })()}
+                            </div>
                         )}
 
-                        {nextSlotData?.breakSlot && (
-                            <button
-                                className="btn bg-amber-100 text-amber-900 border-amber-300 hover:bg-amber-200 p-4 flex justify-between items-center text-lg mt-2"
-                                onClick={() => confirmNextSlot(nextSlotData.breakSlot)}
-                            >
-                                <span className="flex items-center gap-2">☕ Turno Descanso <span className="text-xs bg-amber-600 text-white px-2 rounded">Opcional</span></span>
-                                <span className="font-bold">{new Date(nextSlotData.breakSlot).toLocaleString()}</span>
-                            </button>
-                        )}
+                        <div className="flex gap-2 mt-2">
+                            {slotHistory.length > 0 && (
+                                <button
+                                    className="btn btn-secondary flex-1 py-4 font-bold text-slate-600 border-2 border-slate-300 hover:bg-slate-100"
+                                    onClick={() => {
+                                        const prevDate = slotHistory[slotHistory.length - 1];
+                                        setSlotHistory(prev => prev.slice(0, -1));
+                                        setCurrentSlotParams(prevDate);
+                                        handleNextFreeSlot(prevDate);
+                                    }}
+                                >
+                                    ⬅️ Volver
+                                </button>
+                            )}
+                            {nextSlotData?.nextStartDate && (
+                                <button
+                                    className="btn btn-secondary flex-1 py-4 font-bold text-slate-600 border-dashed border-2 border-slate-300 hover:border-slate-400 hover:bg-slate-100 transition-all"
+                                    onClick={() => {
+                                        setSlotHistory(prev => [...prev, currentSlotParams]);
+                                        setCurrentSlotParams(nextSlotData.nextStartDate);
+                                        handleNextFreeSlot(nextSlotData.nextStartDate);
+                                    }}
+                                >
+                                    🔄 Buscar más ...
+                                </button>
+                            )}
+                        </div>
 
-                        <button className="btn btn-secondary mt-4" onClick={() => setShowNextSlotModal(false)}>Cancelar</button>
+                        <div className="mt-4 pt-4 border-t border-slate-100 flex justify-end">
+                            <button className="btn btn-secondary" onClick={() => setShowNextSlotModal(false)}>Cerrar</button>
+                        </div>
                     </div>
                 </Modal>
 
@@ -1084,6 +1347,82 @@ const Appointments = () => {
                 }
             </main >
         </div >
+    );
+};
+
+const HolidayForm = ({ onHolidaysChanged }) => {
+    const [newDate, setNewDate] = useState('');
+    const [newDesc, setNewDesc] = useState('');
+    const { showMessage } = useMessage();
+
+    const handleAdd = async (e) => {
+        e.preventDefault();
+        try {
+            await api.post('/holidays', { date: newDate, description: newDesc });
+            showMessage('Holiday added', 'success');
+            setNewDate('');
+            setNewDesc('');
+            if (onHolidaysChanged) onHolidaysChanged();
+        } catch (err) {
+            showMessage(err.response?.data || 'Failed to add', 'error');
+        }
+    };
+
+    return (
+        <form onSubmit={handleAdd} className="flex flex-col gap-4">
+            <div className="input-group">
+                <label className="input-label">Fecha</label>
+                <input type="date" className="input-field" value={newDate} onChange={e => setNewDate(e.target.value)} required />
+            </div>
+            <div className="input-group">
+                <label className="input-label">Descripción</label>
+                <input type="text" className="input-field" value={newDesc} onChange={e => setNewDesc(e.target.value)} placeholder="Ej. Navidad" required />
+            </div>
+            <button type="submit" className="btn btn-primary w-full mt-2">✨ Agregar Feriado</button>
+        </form>
+    );
+};
+
+const HolidayList = ({ holidays, onHolidaysChanged }) => {
+    const { confirm } = useModal();
+
+    const handleDelete = async (id) => {
+        if (!await confirm("¿Eliminar este feriado?")) return;
+        try {
+            await api.delete(`/holidays/${id}`);
+            if (onHolidaysChanged) onHolidaysChanged();
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const formatDate = (isoString) => {
+        if (!isoString) return '';
+        return isoString.split('T')[0];
+    };
+
+    if (holidays.length === 0) {
+        return (
+            <div className="text-center py-12 text-muted italic bg-slate-50 rounded-xl border border-dashed">
+                No hay feriados configurados.
+            </div>
+        );
+    }
+
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {holidays.map(h => (
+                <div key={h.id} className="holiday-list-item">
+                    <div>
+                        <span className="font-bold text-slate-800">{formatDate(h.date)}</span>
+                        <div className="text-sm text-muted">{h.description}</div>
+                    </div>
+                    <button onClick={() => handleDelete(h.id)} className="btn-text-danger" title="Eliminar">
+                        🗑️
+                    </button>
+                </div>
+            ))}
+        </div>
     );
 };
 

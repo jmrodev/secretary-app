@@ -32,6 +32,12 @@ export const ModalProvider = ({ children }) => {
     const confirm = (message, title) => showModal('confirm', message, title);
     const prompt = (message, defaultValue = '', title = '') => showModal('prompt', message, title, defaultValue);
 
+    const doubleConfirm = async (message1, message2, title1 = '', title2 = '') => {
+        const first = await confirm(message1, title1);
+        if (!first) return false;
+        return await confirm(message2 || "Are you absolutely sure? This action is irreversible.", title2 || "Final Confirmation");
+    };
+
     const handleConfirm = (value) => {
         if (modalConfig.resolve) {
             modalConfig.resolve(value);
@@ -47,7 +53,7 @@ export const ModalProvider = ({ children }) => {
     };
 
     return (
-        <ModalContext.Provider value={{ alert, confirm, prompt }}>
+        <ModalContext.Provider value={{ alert, confirm, prompt, doubleConfirm }}>
             {children}
             <ConfirmModal
                 isOpen={modalConfig.isOpen}

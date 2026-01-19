@@ -3,11 +3,9 @@ import api from '../api/axios';
 import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
 
-const DoctorScheduleSettings = ({ doctorId, onSave }) => {
+const DoctorScheduleSettings = ({ doctorId, schedule, setSchedule, loading }) => {
     const { t } = useLanguage();
     const { alert } = useModal();
-    const [schedule, setSchedule] = useState([]);
-    const [loading, setLoading] = useState(true);
 
     const DAYS = [
         { id: 1, name: 'Lunes' },
@@ -18,25 +16,6 @@ const DoctorScheduleSettings = ({ doctorId, onSave }) => {
         { id: 6, name: 'Sábado' },
         { id: 0, name: 'Domingo' }
     ];
-
-    useEffect(() => {
-        if (doctorId) fetchSchedule();
-    }, [doctorId]);
-
-    const fetchSchedule = async () => {
-        setLoading(true);
-        try {
-            const res = await api.get(`/schedules/${doctorId}`);
-            // Transform to easier format
-            // We want one entry per day, even if empty
-            const loaded = res.data; // [{day_of_week: 1, start_time: '08:00', ...}]
-            setSchedule(loaded);
-        } catch (err) {
-            console.error("Failed to load schedule", err);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const handleDayChange = (dayId, field, value) => {
         setSchedule(prev => {
@@ -59,8 +38,6 @@ const DoctorScheduleSettings = ({ doctorId, onSave }) => {
     };
 
     const toggleDay = (dayId) => {
-        // If exists, remove it? Or just toggle a 'active' flag?
-        // Our DB stores only active blocks. So removing = disabled.
         setSchedule(prev => {
             const exists = prev.find(s => s.day_of_week === dayId);
             if (exists) {
@@ -74,17 +51,6 @@ const DoctorScheduleSettings = ({ doctorId, onSave }) => {
                 }];
             }
         });
-    };
-
-    const handleSave = async () => {
-        try {
-            await api.put(`/schedules/${doctorId}`, { schedule });
-            if (onSave) onSave();
-            alert("Horarios guardados correctamente.");
-        } catch (err) {
-            console.error(err);
-            alert("Error al guardar horarios.");
-        }
     };
 
     const [bulkStart, setBulkStart] = useState('08:00');
@@ -197,15 +163,6 @@ const DoctorScheduleSettings = ({ doctorId, onSave }) => {
                         </div>
                     );
                 })}
-            </div>
-
-            <div className="mt-6 flex justify-end">
-                <button
-                    onClick={handleSave}
-                    className="btn btn-primary"
-                >
-                    Guardar Horarios
-                </button>
             </div>
         </div>
     );

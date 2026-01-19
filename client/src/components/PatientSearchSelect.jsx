@@ -6,7 +6,7 @@ import { components } from 'react-select';
 
 import { useLanguage } from '../context/LanguageContext';
 
-const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient }) => {
+const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, autoFocus = false }) => {
     const { t } = useLanguage();
     const finalPlaceholder = placeholder || t('search_placeholder');
 
@@ -35,6 +35,7 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient }) 
             defaultOptions
             loadOptions={loadOptions}
             onChange={handleChange}
+            autoFocus={autoFocus}
             placeholder={finalPlaceholder}
             noOptionsMessage={({ inputValue }) => (
                 <div className="text-center p-2">

@@ -22,6 +22,22 @@ exports.updateSchedule = async (req, res) => {
         const { schedule } = req.body; // Array of { day_of_week, start_time, end_time, is_break }
 
         conn = await pool.getConnection();
+        // Permission Check
+        const { role, user_id } = req.user;
+        console.log(`[UpdateSchedule] Request by ${user_id} (${role}) for Doctor ${doctorId}`);
+
+        if (role === 'doctor') {
+            // Verify doctor owns this id
+            const [docRows] = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [user_id]);
+            if (!docRows || docRows.length === 0 || docRows[0].id != doctorId) {
+                await conn.release();
+                return res.status(403).send("Unauthorized: Cannot edit another doctor's schedule");
+            }
+        } else if (role !== 'admin' && role !== 'secretary') {
+            await conn.release();
+            return res.status(403).send("Unauthorized");
+        }
+
         await conn.beginTransaction();
 
         // 1. Delete existing
@@ -38,6 +54,7 @@ exports.updateSchedule = async (req, res) => {
         }
 
         await conn.commit();
+        console.log(`[UpdateSchedule] Successfully updated schedule for Doctor ${doctorId}`);
         res.json({ message: "Schedule updated successfully" });
     } catch (err) {
         if (conn) await conn.rollback();

@@ -50,11 +50,25 @@ async function calculatePrice(conn, doctorId, patientId, serviceType = 'consulta
     let finalPrice = basePrice;
     let explanation = `${priceType} Base: $${basePrice}`;
 
-    // Get Patient Tariff
+    // Get Patient Tariff & Institution Base Price
     if (patientId) {
-        const patRows = await conn.query("SELECT tariff_percent, tariff_override FROM patients WHERE id = ?", [patientId]);
+        const patRows = await conn.query(`
+            SELECT p.tariff_percent, p.tariff_override, i.base_price as inst_price 
+            FROM patients p
+            LEFT JOIN institutions i ON p.institution_id = i.id
+            WHERE p.id = ?
+        `, [patientId]);
+
         if (patRows.length > 0) {
-            const { tariff_percent, tariff_override } = patRows[0];
+            const { tariff_percent, tariff_override, inst_price } = patRows[0];
+
+            // If Institution has a defined price, it overrides the Doctor's base price
+            if (Number(inst_price) > 0) {
+                basePrice = Number(inst_price);
+                explanation = `${priceType} (Institution Rate): $${basePrice}`;
+                finalPrice = basePrice;
+            }
+
             const percent = Number(tariff_percent) || 0;
             const override = Number(tariff_override);
 
@@ -70,7 +84,7 @@ async function calculatePrice(conn, doctorId, patientId, serviceType = 'consulta
         }
     }
 
-    return { price: Number(finalPrice.toFixed(2)), explanation };
+    return { price: Number(finalPrice.toFixed(2)), basePrice: Number(basePrice.toFixed(2)), explanation };
 }
 
 module.exports = { calculatePrice };

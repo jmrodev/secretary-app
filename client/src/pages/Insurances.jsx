@@ -103,31 +103,37 @@ const Insurances = () => {
         <div className="app-layout">
             <Sidebar />
             <main className="main-content">
-                <div className="flex-between-center mb-6">
-                    <div>
-                        <h1 className="title">Obras Sociales</h1>
-                        <p className="subtitle mb-0">Manage health insurance providers</p>
+                <div className="flex-between-center mb-10">
+                    <div className="page-header-minimal">
+                        <p className="subtitle mb-0">Gestione las obras sociales y prepagas del sistema</p>
                     </div>
                     <button className="btn btn-primary shadow-lg hover:shadow-xl transition-all" onClick={handleOpenCreate}>
-                        + New Insurance
+                        + Nueva Obra Social
                     </button>
                 </div>
 
-                {/* Search Bar */}
-                <div className="mb-8 relative">
-                    <input
-                        type="text"
-                        placeholder="Search by name, CUIT or website..."
-                        className="input-field pl-10 py-3 text-lg"
-                        style={{ paddingLeft: '2.5rem' }}
-                        value={searchTerm}
-                        onChange={e => setSearchTerm(e.target.value)}
-                    />
-                    <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}>🔍</span>
+                {/* Search Bar - Premium Style */}
+                <div className="search-container-premium mb-10">
+                    <div className="search-wrapper">
+                        <span className="search-icon">🔍</span>
+                        <input
+                            type="text"
+                            placeholder="Buscar por nombre, CUIT o web..."
+                            className="search-input-premium"
+                            value={searchTerm}
+                            onChange={e => setSearchTerm(e.target.value)}
+                        />
+                        {searchTerm && (
+                            <button className="search-clear" onClick={() => setSearchTerm('')}>✕</button>
+                        )}
+                    </div>
                 </div>
 
                 {loading ? (
-                    <div className="grid place-items-center h-64 text-muted">Loading insurances...</div>
+                    <div className="flex-center py-20">
+                        <div className="loading-spinner"></div>
+                        <p className="text-muted ml-3">Cargando obras sociales...</p>
+                    </div>
                 ) : (
                     <>
                         {filteredInsurances.length === 0 ? (
@@ -198,13 +204,13 @@ const Insurances = () => {
                                                 className="btn btn-secondary btn-sm-compact"
                                                 onClick={() => handleOpenEdit(ins)}
                                             >
-                                                Edit
+                                                Editar
                                             </button>
                                             <button
                                                 className="btn btn-danger btn-sm-compact"
                                                 onClick={() => handleDelete(ins.id)}
                                             >
-                                                Delete
+                                                Eliminar
                                             </button>
                                         </div>
                                     </div>
@@ -217,11 +223,11 @@ const Insurances = () => {
                 <Modal
                     isOpen={modalOpen}
                     onClose={() => setModalOpen(false)}
-                    title={editingId ? "Edit Insurance" : "New Insurance"}
+                    title={editingId ? "Editar Obra Social" : "Nueva Obra Social"}
                     footer={
                         <>
-                            <button className="btn btn-secondary" onClick={() => setModalOpen(false)}>Cancel</button>
-                            <button className="btn btn-primary" onClick={handleSubmit}>Save</button>
+                            <button className="btn btn-secondary" onClick={() => setModalOpen(false)}>Cancelar</button>
+                            <button className="btn btn-primary" onClick={handleSubmit}>Guardar</button>
                         </>
                     }
                 >
@@ -249,7 +255,7 @@ const Insurances = () => {
                             </div>
                         </div>
                         <div className="input-group">
-                            <label className="input-label">Address</label>
+                            <label className="input-label">Dirección</label>
                             <input className="input-field" value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} />
                             {formData.address && (
                                 <a
@@ -258,7 +264,7 @@ const Insurances = () => {
                                     rel="noreferrer"
                                     className="text-xs text-blue-600 hover:underline mt-1 inline-block"
                                 >
-                                    Test Link ↗
+                                    Ver en mapa ↗
                                 </a>
                             )}
                         </div>

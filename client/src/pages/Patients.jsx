@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useConfig } from '../context/ConfigContext';
+import { useModal } from '../context/ModalContext';
 
 import Modal from '../components/Modal';
 import Sidebar from '../components/Sidebar';
@@ -16,31 +17,22 @@ const Patients = () => {
     const { user } = useAuth();
     const { showMessage } = useMessage();
     const { t } = useLanguage();
+    const { alert, confirm, doubleConfirm } = useModal();
     const { settings } = useConfig();
     const [patients, setPatients] = useState([]);
     const [loading, setLoading] = useState(true);
     const [doctors, setDoctors] = useState([]);
-    const [insurances, setInsurances] = useState([]); // [NEW]
+    const [insurances, setInsurances] = useState([]);
 
     // View Details State
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [details, setDetails] = useState(null);
     const [viewLoading, setViewLoading] = useState(false);
 
+
+
     // Creation Form State
     const [showCreate, setShowCreate] = useState(false);
-    const [newUsername, setNewUsername] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [fullName, setFullName] = useState('');
-    const [phone, setPhone] = useState('');
-    const [dob, setDob] = useState('');
-    const [newDni, setNewDni] = useState('');
-    const [newInsuranceId, setNewInsuranceId] = useState(''); // [NEW] (was newInsurance)
-    const [newAffiliateNumber, setNewAffiliateNumber] = useState(''); // [NEW]
-    const [newEmail, setNewEmail] = useState('');
-    const [createMsg, setCreateMsg] = useState('');
-
-    // Search State
     const [searchTerm, setSearchTerm] = useState('');
 
     // Pagination State
@@ -58,18 +50,22 @@ const Patients = () => {
     // Prescription Modal State
     const [prescribeModal, setPrescribeModal] = useState({ open: false, apptId: null, patientId: null, patientName: '', medications: '', instructions: '' });
 
+    // Recycle Bin State
+    const [activeTab, setActiveTab] = useState('list'); // 'list' or 'recycle'
+    const [recycleItems, setRecycleItems] = useState([]);
+    const [showRecycleDetail, setShowRecycleDetail] = useState(null);
+
     // QR Modal State
     const [qrModalOpen, setQrModalOpen] = useState(false);
     const [qrUrl, setQrUrl] = useState('');
     const [qrExpiry, setQrExpiry] = useState(null);
+    const [showRatingInfo, setShowRatingInfo] = useState(false);
 
     const handleGenerateQR = async (patientId = null) => {
         try {
             const res = await api.post('/temp-access/generate', { patientId });
-            // Patients ALWAYS use Cloudflare URL
             const baseUrl = settings.public_base_url || window.location.origin;
             const fullUrl = `${baseUrl}${res.data.url}`;
-
             setQrUrl(fullUrl);
             setQrExpiry(res.data.expiresAt);
             setQrModalOpen(true);
@@ -79,26 +75,13 @@ const Patients = () => {
         }
     };
 
-    const handleDashboardQR = () => {
-        // Staff should use the configured Local IP if available, otherwise fallback to current origin
-        const url = settings.staff_base_url || window.location.origin;
-        if (url.includes('localhost')) {
-            showMessage("⚠️ Aviso: El QR dará 'localhost'. Para que funcione en otros dispositivos, configura la IP de esta PC en la pantalla de Configuración.", 'warning');
-        }
-        setQrUrl(url);
-        setQrExpiry(null); // Dashboard link doesn't expire
-        setQrModalOpen(true);
-    };
-
     const handleSavePrescription = async () => {
         if (!prescribeModal.medications.trim()) {
             showMessage(t('please_enter_meds'), 'warning');
             return;
         }
-
         try {
             await api.post('/medical/prescriptions', {
-                // Allows prescribing without appointment ID if directly from patient list
                 patient_id: prescribeModal.patientId,
                 appointment_id: prescribeModal.apptId,
                 medications: prescribeModal.medications,
@@ -125,7 +108,6 @@ const Patients = () => {
         }
     };
 
-    // [NEW] Fetch Doctors for assignment
     const fetchDoctors = async () => {
         try {
             const res = await api.get('/users/doctors');
@@ -135,7 +117,6 @@ const Patients = () => {
         }
     };
 
-    // [NEW] Fetch Insurances
     const fetchInsurances = async () => {
         try {
             const res = await api.get('/insurances');
@@ -145,10 +126,21 @@ const Patients = () => {
         }
     };
 
+    const fetchRecycleBin = async () => {
+        if (user.role !== 'admin' && user.role !== 'secretary') return;
+        try {
+            const res = await api.get('/logs/recycle-bin');
+            setRecycleItems(res.data);
+        } catch (err) {
+            console.error("Failed to fetch recycle bin", err);
+        }
+    };
+
     useEffect(() => {
         fetchPatients();
         fetchDoctors();
-        fetchInsurances(); // [NEW]
+        fetchInsurances();
+        fetchRecycleBin();
     }, []);
 
     const normalizeText = (text) => {
@@ -165,7 +157,7 @@ const Patients = () => {
     };
 
     const calculateAttendanceRating = (total, missed) => {
-        if (!total || total === 0) return 5; // New patient
+        if (!total || total === 0) return 5;
         const ratio = (total - missed) / total;
         if (ratio >= 0.95) return 5;
         if (ratio >= 0.85) return 4;
@@ -177,7 +169,6 @@ const Patients = () => {
     const handleBehaviorRatingChange = async (patientId, newRating) => {
         try {
             await api.put(`/users/patients/${patientId}`, { behavior_rating: newRating });
-            // Optimistic update
             setPatients(prev => prev.map(p =>
                 p.id === patientId ? { ...p, behavior_rating: newRating } : p
             ));
@@ -190,17 +181,12 @@ const Patients = () => {
         try {
             const res = await api.put(`/users/patients/${patientId}/toggle-new`);
             const { is_new_patient, marked_new_at } = res.data;
-
-            // Update list state
             setPatients(prev => prev.map(p =>
                 p.id === patientId ? { ...p, is_new_patient, marked_new_at } : p
             ));
-
-            // Update details state if open
             if (details && details.id === patientId) {
                 setDetails(prev => ({ ...prev, is_new_patient, marked_new_at }));
             }
-
             showMessage(is_new_patient ? 'Marcado como Nuevo Paciente' : 'Desmarcado como Nuevo Paciente', 'success');
         } catch (err) {
             console.error("Failed to toggle new patient status", err);
@@ -211,52 +197,113 @@ const Patients = () => {
     const normalizedSearch = normalizeText(searchTerm).trim();
     const trimmedSearch = searchTerm.trim();
 
-    const filteredPatients = patients.filter(p =>
-        normalizeText(p.full_name).includes(normalizedSearch) ||
-        (trimmedSearch.replace(/[^0-9]/g, '').length > 0 && p.phone && p.phone.replace(/[^0-9]/g, '').includes(trimmedSearch.replace(/[^0-9]/g, ''))) ||
-        (p.dni && p.dni.includes(trimmedSearch)) ||
-        (p.insurance && normalizeText(p.insurance).includes(normalizedSearch)) ||
-        (p.insurance_name && normalizeText(p.insurance_name).includes(normalizedSearch)) ||
-        (p.affiliate_number && normalizeText(p.affiliate_number).includes(normalizedSearch)) ||
-        (p.email && normalizeText(p.email).includes(normalizedSearch))
-    ).sort((a, b) => {
-        // Sort by debt descending (debtors first)
+    const searchTokens = normalizedSearch.split(/\s+/).filter(t => t.length > 0);
+
+    const filteredPatients = patients.filter(p => {
+        const searchText = normalizeText(
+            [
+                p.full_name,
+                p.first_name,
+                p.last_name,
+                p.dni,
+                p.insurance,
+                p.insurance_name,
+                p.affiliate_number,
+                p.email,
+                p.phone,
+                p.phone ? p.phone.replace(/[^0-9]/g, '') : ''
+            ].filter(Boolean).join(' ')
+        );
+
+        return searchTokens.every(token => searchText.includes(token));
+    }).sort((a, b) => {
         const debtA = Number(a.total_debt) || 0;
         const debtB = Number(b.total_debt) || 0;
         if (debtA > 0 && debtB === 0) return -1;
         if (debtA === 0 && debtB > 0) return 1;
-        if (debtA > 0 && debtB > 0) return debtB - debtA; // Higher debt first
-        // Secondary sort by name
+        if (debtA > 0 && debtB > 0) return debtB - debtA;
         return a.full_name.localeCompare(b.full_name);
     });
 
-    // Pagination calculations
     const totalPages = Math.ceil(filteredPatients.length / patientsPerPage);
     const indexOfLastPatient = currentPage * patientsPerPage;
     const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
     const currentPatients = filteredPatients.slice(indexOfFirstPatient, indexOfLastPatient);
 
-    // Reset to page 1 when search term changes
     useEffect(() => {
         setCurrentPage(1);
     }, [searchTerm]);
 
-    const handleCreate = async (formData) => {
-        setCreateMsg('');
+    const handleSendEditLink = async (patient) => {
+        if (!patient.phone) {
+            showMessage('El paciente no tiene teléfono registrado', 'error');
+            return;
+        }
+
         try {
-            // PatientForm gives us a clean object. We just need to add role='patient' if not present
-            // But verify what the backend expects. api.post('/auth/register') expects username, password, etc.
-            // PatientForm fields match mostly.
-            await api.post('/auth/register', {
-                ...formData,
-                role: 'patient'
-            });
+            const res = await api.post('/temp-access/generate', { patientId: patient.id });
+            const relativeUrl = res.data.url;
+
+            // Construct full URL using public_base_url (Cloudflare) or fallback to origin
+            const baseUrl = settings.public_base_url || window.location.origin;
+            const cleanBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+            const fullUrl = `${cleanBase}${relativeUrl}`;
+
+            let messageTemplate = settings.temp_access_message_template;
+            // Fallback default if setting is empty or missing
+            if (!messageTemplate || !messageTemplate.trim()) {
+                messageTemplate = "Hola {name}, por favor actualiza tus datos en el siguiente enlace: {link}";
+            }
+
+            // If patient doesn't have assignedDoctors (e.g. from list view), fetch them
+            let assignedDocs = patient.assignedDoctors;
+            if (!assignedDocs) {
+                try {
+                    const detailRes = await api.get(`/users/patients/${patient.id}`);
+                    assignedDocs = detailRes.data.assignedDoctors;
+                } catch (e) {
+                    console.error("Could not fetch details for doc name", e);
+                    assignedDocs = [];
+                }
+            }
+
+            const doctorName = (assignedDocs && assignedDocs.length > 0)
+                ? assignedDocs.map(d => d.full_name).join(' / ')
+                : (user.role === 'doctor' ? user.name : 'su médico');
+
+            const message = messageTemplate
+                .replace(/{name}/g, patient.full_name)
+                .replace(/{link}/g, fullUrl)
+                .replace(/{doctor_name}/g, doctorName)
+                .replace(/{secretary_name}/g, user.name || 'Secretaria');
+
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            const phone = patient.phone.replace(/[^0-9]/g, '');
+
+            let targetUrl;
+            if (isMobile) {
+                targetUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            } else {
+                targetUrl = `https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
+            }
+
+            window.open(targetUrl, '_blank');
+            showMessage('Enlace generado. Abriendo WhatsApp...', 'success');
+
+        } catch (err) {
+            console.error(err);
+            showMessage('Error al generar el enlace', 'error');
+        }
+    };
+
+    const handleCreate = async (formData) => {
+        try {
+            await api.post('/auth/register', { ...formData, role: 'patient' });
             showMessage(t('patient_created'), 'success');
             setShowCreate(false);
             fetchPatients();
         } catch (err) {
             const msg = err.response?.data || t('failed_create_patient');
-            setCreateMsg(msg);
             showMessage(msg, 'error');
             console.error(err);
         }
@@ -266,13 +313,12 @@ const Patients = () => {
         try {
             setViewLoading(true);
             setSelectedPatient(id);
-            // Only clear details if viewing a DIFFERENT patient to avoid jumping back to list
             if (selectedPatient !== id) {
                 setDetails(null);
             }
             const [info, trans] = await Promise.all([
                 api.get(`/users/patients/${id}`),
-                api.get(`/finances/transactions?patient_id=${id}`) // Fetch financial history
+                api.get(`/finances/transactions?patient_id=${id}`)
             ]);
             setDetails({ ...info.data, transactions: trans.data });
         } catch (err) {
@@ -287,13 +333,14 @@ const Patients = () => {
     const handleEditClick = () => {
         setEditData({
             full_name: details.full_name || '',
+            first_name: details.first_name || '',
+            last_name: details.last_name || '',
             dni: details.dni || '',
             phone: details.phone || '',
-            insurance_id: details.insurance_id || '', // [NEW]
-            affiliate_number: details.affiliate_number || (details.insurance && !details.insurance_id ? details.insurance : '') || '', // Fallback to old field if exists and no ID
+            insurance_id: details.insurance_id || '',
+            affiliate_number: details.affiliate_number || (details.insurance && !details.insurance_id ? details.insurance : '') || '',
             email: details.email || '',
             dob: details.dob ? details.dob.split('T')[0] : '',
-
             medical_history: details.medical_history || '',
             tariff_percent: details.tariff_percent || 0,
             tariff_override: details.tariff_override || '',
@@ -302,38 +349,12 @@ const Patients = () => {
             prescription_interval_days: details.prescription_interval_days || '',
             next_suggested_visit_date: details.next_suggested_visit_date ? details.next_suggested_visit_date.split('T')[0] : '',
             next_suggested_prescription_date: details.next_suggested_prescription_date ? details.next_suggested_prescription_date.split('T')[0] : '',
-            license_expiry_date: details.license_expiry_date ? details.license_expiry_date.split('T')[0] : ''
+            license_expiry_date: details.license_expiry_date ? details.license_expiry_date.split('T')[0] : '',
+            institution_id: details.institution_id || ''
         });
         setEditModalOpen(true);
     };
 
-    const handleSaveEdit = async () => {
-        try {
-            await api.put(`/users/patients/${details.id}`, editData); // details.id is patients.id
-            setEditModalOpen(false);
-            showMessage(t('patient_updated'), 'success');
-            // Refresh details
-            handleViewDetails(details.id);
-            // Also refresh list if needed, but prioritize view
-            fetchPatients();
-        } catch (err) {
-            console.error("Failed to update patient", err);
-            showMessage(t('failed_update_patient'), 'error');
-        }
-    };
-
-    const toggleAssignedDoctor = (docId) => {
-        setEditData(prev => {
-            const current = prev.assignedDoctors || [];
-            if (current.includes(docId)) {
-                return { ...prev, assignedDoctors: current.filter(id => id !== docId) };
-            } else {
-                return { ...prev, assignedDoctors: [...current, docId] };
-            }
-        });
-    };
-
-    // Debt Payment Handlers
     const openDebtModal = (e, patientId, currentDebt) => {
         e.stopPropagation();
         setDebtParams({ patientId, amount: currentDebt, method: 'cash' });
@@ -349,13 +370,45 @@ const Patients = () => {
             });
             showMessage(t('payment_processed'), 'success');
             setDebtModalOpen(false);
-            fetchPatients(); // Refresh list to update badge
+            fetchPatients();
             if (selectedPatient === debtParams.patientId) {
-                handleViewDetails(selectedPatient); // Refresh details if open
+                handleViewDetails(selectedPatient);
             }
         } catch (err) {
             console.error(err);
             showMessage(t('payment_failed'), 'error');
+        }
+    };
+
+
+    const handleDeletePatient = async (patientData) => {
+        if (!patientData || !patientData.user_id) {
+            showMessage("Error: No se pudo identificar al usuario.", 'error');
+            return;
+        }
+
+        const isConfirmed = await doubleConfirm(
+            `¿Estás seguro de que deseas eliminar al paciente ${patientData.full_name}? esta acción moverá sus datos a la Papelera.`,
+            `¡AVISO! El paciente ${patientData.full_name} será eliminado del listado activo. ¿Deseas continuar con la eliminación?`,
+            "Confirmar Eliminación",
+            "Segunda Verificación"
+        );
+
+        if (!isConfirmed) return;
+
+        try {
+            // Delete user by their USER ID (not patient ID)
+            await api.delete(`/users/admin/users/${patientData.user_id}`);
+            showMessage('Paciente eliminado y movido a la papelera.', 'success');
+
+            // Close details and refresh list
+            setSelectedPatient(null);
+            setDetails(null);
+            fetchPatients();
+            fetchRecycleBin();
+        } catch (err) {
+            console.error(err);
+            showMessage('Error al eliminar paciente: ' + (err.response?.data?.message || err.message), 'error');
         }
     };
 
@@ -391,164 +444,41 @@ const Patients = () => {
                                     <button
                                         className={`btn btn-sm flex items-center gap-2 ${details.is_new_patient ? 'btn-primary' : 'btn-secondary'}`}
                                         onClick={() => handleToggleNewPatient(details.id)}
-                                        title={details.is_new_patient ? "Click para desmarcar como nuevo" : "Click para marcar como nuevo"}
                                     >
                                         {details.is_new_patient ? '✨ NUEVO' : '👤 EXISTENTE'}
                                     </button>
                                 )}
-                                <button className="btn btn-secondary btn-sm flex items-center gap-2" onClick={() => handleGenerateQR(details.id)}>
-                                    📱 QR Info
-                                </button>
-                                <button className="btn btn-secondary btn-sm flex items-center gap-2" onClick={() => {
-                                    const baseUrl = settings.public_base_url || window.location.origin;
-                                    const url = `${baseUrl}`;
-                                    navigator.clipboard.writeText(url);
-                                    showMessage(t('link_copied') || 'Enlace copiado', 'success');
-                                }}>
-                                    🔗 {t('copy_link') || 'Copiar Link'}
-                                </button>
-                                <button className="btn btn-secondary btn-sm flex items-center gap-2" onClick={handleEditClick}>
-                                    ✏️ {t('edit_info')}
-                                </button>
+                                <button className="btn btn-secondary btn-sm" onClick={() => handleGenerateQR(details.id)}>📱 QR</button>
+                                <button className="btn btn-secondary btn-sm" onClick={handleEditClick}>✏️ {t('edit_info')}</button>
+                                {(user.role === 'admin' || user.role === 'secretary') && (
+                                    <button
+                                        className="btn btn-sm bg-red-100 text-red-600 hover:bg-red-200 border-red-200"
+                                        onClick={() => handleDeletePatient(details)}
+                                        title="Eliminar Paciente"
+                                    >
+                                        🗑️
+                                    </button>
+                                )}
                             </div>
                         </div>
                         <div className="patient-info-grid">
                             <p><strong>{t('dni')}:</strong> {details.dni || 'N/A'}</p>
-                            <p><strong>Obra Social:</strong> {details.insurance_name || 'N/A'}</p>
-                            <p><strong>Nro Afiliado:</strong> {(details.affiliate_number || details.insurance || 'N/A').replace(/^Afiliado/, '').trim()}</p>
-                            <p><strong>Phone:</strong> {details.phone ? <a href={`https://wa.me/${details.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="detail-link">{details.phone}</a> : 'N/A'}</p>
-                            <p><strong>Email:</strong> {details.email ? <a href={`mailto:${details.email}`} className="detail-link">{details.email}</a> : 'N/A'}</p>
+                            <p><strong>OS:</strong> {details.insurance_name || 'N/A'}</p>
+                            <p><strong>{t('assigned_doctors')}:</strong> {details.assignedDoctors && details.assignedDoctors.length > 0 ? details.assignedDoctors.map(d => d.full_name).join(', ') : t('none')}</p>
+                            <p><strong>Phone:</strong> {details.phone || 'N/A'}</p>
+                            <p><strong>Email:</strong> {details.email || 'N/A'}</p>
                             <p><strong>{t('dob')}:</strong> {details.dob ? new Date(details.dob).toLocaleDateString() : 'N/A'}</p>
                         </div>
-                        <div className="flex gap-8 mt-4">
-                            <p><strong>{t('address')}:</strong> {details.address ? <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(details.address + ', Tandil')}`} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">📍 {details.address}</a> : 'N/A'}</p>
-                            <p><strong>{t('accumulated_medical_leave')}:</strong> <span className="font-bold text-purple-600">{details.accumulated_days || 0} Days</span></p>
-                        </div>
-                        <div className="follow-up-suggestions-grid mt-4 p-4 bg-slate-50 rounded border border-slate-200">
-                            <h4 className="text-sm font-bold uppercase text-slate-500 mb-2">{t('reminders')} / {t('follow_up_settings')}</h4>
-                            <div className="grid-3-cols gap-4">
-                                <div>
-                                    <p className="text-xs text-slate-500 uppercase">{t('next_suggested_visit')}</p>
-                                    <p className="font-bold">{details.next_suggested_visit_date ? new Date(details.next_suggested_visit_date).toLocaleDateString() : 'N/A'}</p>
-                                </div>
-                                <div>
-                                    <p className="text-xs text-slate-500 uppercase">{t('next_suggested_prescription')}</p>
-                                    <p className="font-bold">{details.next_suggested_prescription_date ? new Date(details.next_suggested_prescription_date).toLocaleDateString() : 'N/A'}</p>
-                                </div>
-                                <div>
-                                    <p className="text-xs text-slate-500 uppercase">{t('license_expiry')}</p>
-                                    <p className="font-bold">{details.license_expiry_date ? new Date(details.license_expiry_date).toLocaleDateString() : 'N/A'}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <p className="mt-4"><strong>{t('micro_history')}:</strong> {details.medical_history || 'N/A'}</p>
-                    </div>
-
-                    <div className="card mb-4">
-                        <h3>{t('previous_appointments')}</h3>
-                        {details.appointments.length === 0 ? <p className="text-muted mt-2">{t('no_appointments')}</p> : (
-                            <ul className="history-list mt-2">
-                                {details.appointments.map(a => (
-                                    <li key={a.id} className="history-item">
-                                        <div className="history-item-content">
-                                            <span>{new Date(a.appointment_date).toLocaleDateString()} - <strong>Dr. {a.doctor_name}</strong></span>
-                                            <div className="text-sm-muted">
-                                                {a.status === 'cancelled' && a.cancellation_reason ? `Reason: ${a.cancellation_reason}` : (a.reason || '')}
-                                            </div>
-                                        </div>
-                                        <span className={`status-badge ${a.status === 'cancelled' ? 'bg-red-100 text-red-800' : 'bg-slate-100 text-slate-800'}`}>{a.status}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-                    </div>
-
-                    <div className="card mb-4">
-                        <h3>{t('medical_documents')}</h3>
-
-                        <h4 className="text-muted font-bold mt-4 mb-2 text-sm uppercase">{t('prescriptions_licenses')}</h4>
-                        {details.prescriptions && details.prescriptions.length === 0 ? <p className="text-muted">None.</p> : (
-                            <ul className="history-list">
-                                {details.prescriptions && details.prescriptions.map(p => (
-                                    <li key={`${p.type}-${p.id}`} className="history-item">
-                                        <div className="history-item-content">
-                                            <span className="capitalize">{new Date(p.created_at).toLocaleDateString()} - <strong>{p.type === 'prescription' ? '💊 Receta' : '📄 Licencia'}</strong></span>
-                                            <span className="text-sm-muted">Dr. {p.doctor_name}</span>
-                                        </div>
-                                        <div className="text-sm-muted mt-1">
-                                            {p.type === 'prescription' ? (
-                                                <span><strong>Rx:</strong> {p.diagnosis}</span> // diagnosis contains medications for Rx
-                                            ) : (
-                                                <span><strong>Dx:</strong> {p.diagnosis} <span className="ml-2 px-2 py-0.5 bg-slate-100 rounded border font-semibold text-xs">Days: {p.days}</span></span>
-                                            )}
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-
-                        <h4 className="text-muted font-bold mt-6 mb-2 text-sm uppercase">Uploaded Files</h4>
-                        {details.files && details.files.length === 0 ? <p className="text-muted">No uploaded files.</p> : (
-                            <ul className="history-list">
-                                {details.files && details.files.map(f => (
-                                    <li key={f.id} className="history-item">
-                                        <div className="history-item-content">
-                                            <a href={f.file_url} target="_blank" rel="noreferrer" className="detail-link font-bold">
-                                                {f.description || f.file_name}
-                                            </a>
-                                            <span className="text-xs-muted">
-                                                Uploaded by {f.uploader_name} on {new Date(f.created_at).toLocaleDateString()}
-                                            </span>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
                     </div>
 
                     <div className="card mb-4">
                         <h3>{t('financial_history_debt')}</h3>
-                        {(!details.transactions || details.transactions.length === 0) ? <p className="text-muted mt-2">No transactions found.</p> : (
-                            <>
-                                <div className="debt-summary-box mt-4">
-                                    <div>
-                                        <strong>{t('total_debt')}: </strong>
-                                        <span className="debt-amount-highlight">
-                                            ${details.transactions.filter(t => t.status === 'pending').reduce((acc, t) => acc + Number(t.amount), 0).toFixed(2)}
-                                        </span>
-                                    </div>
-                                    {details.transactions.some(t => t.status === 'pending') && (
-                                        <button className="btn btn-primary flex items-center gap-2" onClick={(e) => openDebtModal(e, details.id, details.transactions.filter(t => t.status === 'pending').reduce((acc, t) => acc + Number(t.amount), 0))}>
-                                            💸 {t('pay_debt')}
-                                        </button>
-                                    )}
-                                </div>
-                                <table className="transactions-table">
-                                    <thead>
-                                        <tr>
-                                            <th>{t('transaction_date')}</th>
-                                            <th>{t('description')}</th>
-                                            <th>{t('amount')}</th>
-                                            <th>{t('status')}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {details.transactions.map(tx => (
-                                            <tr key={tx.id}>
-                                                <td>{new Date(tx.transaction_date).toLocaleDateString()}</td>
-                                                <td>{tx.description}</td>
-                                                <td className="font-bold">${tx.amount}</td>
-                                                <td>
-                                                    <span className={`status-badge ${tx.status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                                                        {(tx.status === 'paid' ? t('paid') : t('debt')).toUpperCase()}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </>
-                        )}
+                        <div className="debt-summary-box mt-4">
+                            <div><strong>{t('total_debt')}: </strong> <span className="debt-amount-highlight">${Number(details.total_debt).toFixed(2)}</span></div>
+                            {Number(details.total_debt) > 0 && (
+                                <button className="btn btn-primary" onClick={(e) => openDebtModal(e, details.id, details.total_debt)}>💸 {t('pay_debt')}</button>
+                            )}
+                        </div>
                     </div>
 
                     <Modal
@@ -564,7 +494,7 @@ const Patients = () => {
                                     await api.put(`/users/patients/${details.id}`, data);
                                     setEditModalOpen(false);
                                     showMessage(t('patient_updated'), 'success');
-                                    await handleViewDetails(details.id);
+                                    handleViewDetails(details.id);
                                     fetchPatients();
                                 } catch (err) {
                                     console.error(err);
@@ -579,10 +509,6 @@ const Patients = () => {
                         />
                     </Modal>
 
-
-
-                    {/* Pay Debt Modal (in Details View) */}
-
                     <Modal
                         isOpen={debtModalOpen}
                         onClose={() => setDebtModalOpen(false)}
@@ -594,18 +520,20 @@ const Patients = () => {
                             </>
                         }
                     >
-                        <div>
-                            <p style={{ marginBottom: '1rem' }}>Enter amount to pay:</p>
-                            <label className="input-label">{t('amount')} ($)</label>
-                            <CurrencyInput className="input-field" value={debtParams.amount} onChange={e => setDebtParams({ ...debtParams, amount: e.target.value })} />
-
-                            <label className="input-label" style={{ marginTop: '1rem' }}>{t('payment_method')}</label>
-                            <select className="input-field" value={debtParams.method} onChange={e => setDebtParams({ ...debtParams, method: e.target.value })}>
-                                <option value="cash">Cash</option>
-                                <option value="transfer">Transfer</option>
-                                <option value="credit_card">Credit Card</option>
-                                <option value="debit_card">Debit Card</option>
-                            </select>
+                        <div className="flex flex-col gap-4">
+                            <div className="input-group">
+                                <label className="input-label">{t('amount')} ($)</label>
+                                <CurrencyInput className="input-field" value={debtParams.amount} onChange={e => setDebtParams({ ...debtParams, amount: e.target.value })} />
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">{t('payment_method')}</label>
+                                <select className="input-field" value={debtParams.method} onChange={e => setDebtParams({ ...debtParams, method: e.target.value })}>
+                                    <option value="cash">Cash</option>
+                                    <option value="transfer">Transfer</option>
+                                    <option value="credit_card">Credit Card</option>
+                                    <option value="debit_card">Debit Card</option>
+                                </select>
+                            </div>
                         </div>
                     </Modal>
 
@@ -615,6 +543,21 @@ const Patients = () => {
                         url={qrUrl}
                         expiresAt={qrExpiry}
                     />
+
+                    <Modal
+                        isOpen={showRatingInfo}
+                        onClose={() => setShowRatingInfo(false)}
+                        title={t('rating_guide_title')}
+                    >
+                        <div className="p-2">
+                            <p className="whitespace-pre-line text-slate-600">
+                                {t('rating_guide_body')}
+                            </p>
+                            <div className="mt-6 flex justify-end">
+                                <button className="btn btn-primary" onClick={() => setShowRatingInfo(false)}>{t('close')}</button>
+                            </div>
+                        </div>
+                    </Modal>
                 </main>
             </div>
         );
@@ -624,213 +567,305 @@ const Patients = () => {
         <div className="app-layout">
             <Sidebar />
             <main className="main-content">
-                <div className="flex-between">
-                    <div className="flex items-center gap-4">
-                        <h1 className="title">{t('patients_list')}</h1>
-                        <span className="bg-slate-200 text-slate-600 px-3 py-1 rounded-full text-sm font-bold">
-                            {patients.length}
-                        </span>
+                {/* Tabs matching Appointments style */}
+                <div className="top-nav-tabs mb-6">
+                    <div className="tabs-container" style={{ margin: 0 }}>
                         <button
-                            onClick={() => { setLoading(true); fetchPatients(); }}
-                            className="btn btn-secondary btn-sm"
-                            title={t('refresh_list')}
+                            className={`tab-btn ${activeTab === 'list' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('list')}
                         >
-                            🔄 Refresh
+                            📋 Lista Activa
                         </button>
+                        {(user.role === 'admin' || user.role === 'secretary') && (
+                            <button
+                                className={`tab-btn ${activeTab === 'recycle' ? 'active' : ''}`}
+                                onClick={() => { setActiveTab('recycle'); fetchRecycleBin(); }}
+                            >
+                                🗑️ Papelera
+                                {recycleItems.length > 0 && <span className="ml-2 bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded-full text-xs">{recycleItems.length}</span>}
+                            </button>
+                        )}
                     </div>
-                    {user.role === 'secretary' && (
-                        <div className="flex flex-col gap-2">
-                            {/* Patient Section */}
-                            <div className="flex gap-2">
-                                <button className="btn btn-secondary flex items-center gap-2" onClick={() => handleGenerateQR()} title="QR para registro de paciente (Usa Cloudflare)">
-                                    📱 <span className="text-xs font-bold bg-blue-100 text-blue-800 px-1 rounded">PACIENTE</span> QR
-                                </button>
-                                <button className="btn btn-secondary flex items-center gap-2" onClick={() => {
-                                    const baseUrl = settings.public_base_url || window.location.origin;
-                                    const url = `${baseUrl}/patient-access`;
-                                    navigator.clipboard.writeText(url);
-                                    showMessage(`Link Registro Paciente: ${url}`, 'success');
-                                }}>
-                                    🔗 Link Registro
-                                </button>
-                                <button className="btn btn-primary flex items-center gap-2 ml-4" onClick={() => setShowCreate(!showCreate)}>
-                                    {showCreate ? `❌ ${t('cancel')}` : `➕ ${t('register_new_patient')}`}
-                                </button>
+                </div>
+
+                <div className="header-actions-container mb-6">
+                    <div className="flex-between w-full gap-4">
+                        {/* Search Bar - Main Filter */}
+                        {activeTab === 'list' && (
+                            <div className="flex-1 relative" style={{ maxWidth: '600px' }}>
+                                <input
+                                    type="text"
+                                    placeholder={t('search_placeholder') || "Buscar por nombre, DNI, teléfono..."}
+                                    className="input-field w-full"
+                                    value={searchTerm}
+                                    onChange={e => setSearchTerm(e.target.value)}
+                                />
+                                <span className="search-stats absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs bg-white px-2">
+                                    {filteredPatients.length} resultados
+                                </span>
                             </div>
+                        )}
+
+                        {/* Spacer if no search */}
+                        {activeTab !== 'list' && <div className="flex-1"></div>}
+
+                        {/* Actions */}
+                        <div className="flex items-center gap-3">
+                            <button
+                                onClick={() => { setLoading(true); fetchPatients(); fetchRecycleBin(); }}
+                                className="btn btn-secondary btn-sm-icon"
+                                title={t('refresh_list') || 'Refresh'}
+                            >
+                                🔄
+                            </button>
+                            <button
+                                onClick={() => setShowRatingInfo(true)}
+                                className="btn btn-secondary btn-sm-icon"
+                                title="Guía de Calificaciones"
+                            >
+                                ℹ️
+                            </button>
+                            {user.role === 'secretary' && activeTab === 'list' && (
+                                <button className="btn btn-primary flex items-center gap-2 px-6 py-2 shadow-sm font-bold" onClick={() => setShowCreate(!showCreate)}>
+                                    {showCreate ? `❌ ${t('cancel')}` : `✨ ${t('new') || 'Nuevo'}`}
+                                </button>
+                            )}
                         </div>
-                    )}
-                </div>
-
-                {/* Search Bar */}
-                <div className="mb-6 flex items-center gap-4">
-                    <input
-                        type="text"
-                        placeholder={t('search_placeholder')}
-                        className="input-field max-w-400"
-                        value={searchTerm}
-                        onChange={e => setSearchTerm(e.target.value)}
-                    />
-                    <div className="text-sm text-slate-600">
-                        Mostrando {indexOfFirstPatient + 1}-{Math.min(indexOfLastPatient, filteredPatients.length)} de {filteredPatients.length}
                     </div>
                 </div>
 
-                {createMsg && <div style={{ padding: '1rem', background: createMsg.includes('Failed') ? '#fee2e2' : '#dcfce7', color: createMsg.includes('Failed') ? '#991b1b' : '#166534', borderRadius: '8px', marginBottom: '1rem' }}>{createMsg}</div>}
 
-                {showCreate && (
-                    <div className="card" style={{ marginBottom: '2rem', animation: 'fadeIn 0.3s ease' }}>
-                        <h3>{t('register_new_patient')}</h3>
-                        <PatientForm
-                            onSubmit={handleCreate}
-                            isEdit={false}
-                            isAdmin={true}
-                            insurances={insurances}
-                            doctors={doctors}
-                        />
-                    </div>
-                )}
 
-                <div className="card-transparent">
-                    <ul className="item-grid">
-                        {currentPatients.length === 0 ? <li className="text-muted p-4">{t('no_patients_found')}</li> : currentPatients.map(p => (
-                            <li key={p.id} className="item-card">
-                                <div>
-                                    <strong style={{ textTransform: 'capitalize' }}>
-                                        {p.full_name}
-                                        {p.is_new_patient === 1 && <span className="ml-2 text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded border border-purple-200">✨ NUEVO</span>}
-                                    </strong>
-                                    <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
-                                        {p.dni && `${t('dni')}: ${p.dni} | `}
-                                        {(p.insurance_name || p.insurance) && `OS: ${p.insurance_name || p.insurance} | `}
-                                        {p.email && <a href={`mailto:${p.email}`} style={{ color: '#3b82f6', textDecoration: 'none', marginRight: '0.5rem' }} onClick={(e) => e.stopPropagation()}>✉️</a>}
-                                        {p.phone && (
-                                            <a href={`https://wa.me/${p.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" style={{ color: '#3b82f6', textDecoration: 'none', fontWeight: 'bold' }} onClick={(e) => e.stopPropagation()}>
-                                                {p.phone}
-                                            </a>
-                                        )}
-                                    </div>
-                                    {Number(p.total_debt) > 0 && (
-                                        <div
-                                            onClick={(e) => openDebtModal(e, p.id, p.total_debt)}
-                                            className="px-2 py-1 rounded text-xs font-bold bg-red-100 text-red-800 border border-red-200 cursor-pointer hover:bg-red-200 inline-block mt-1"
-                                            title="Click to Pay Debt"
-                                        >
-                                            {t('debt')}: ${p.total_debt}
-                                        </div>
+                {
+                    showCreate && (
+                        <div className="card mb-8 animate-fadeInDown">
+                            <div className="flex-between mb-4">
+                                <h3>{t('register_new_patient')}</h3>
+                                <button className="btn-close" onClick={() => setShowCreate(false)}>✕</button>
+                            </div>
+                            <PatientForm
+                                onSubmit={handleCreate}
+                                isEdit={false}
+                                isAdmin={true}
+                                insurances={insurances}
+                                doctors={doctors}
+                            />
+                        </div>
+                    )
+                }
+
+                {
+                    activeTab === 'list' ? (
+                        <>
+                            <div className="card-transparent">
+                                <ul className="item-grid">
+                                    {currentPatients.length === 0 ? (
+                                        <li className="text-muted p-12 text-center bg-white rounded-lg border border-dashed border-slate-300">
+                                            {t('no_patients_found')}
+                                        </li>
+                                    ) : (
+                                        currentPatients.map(p => (
+                                            <li key={p.id} className="item-card hover:shadow-lg transition-all border border-slate-100 p-4 bg-white rounded-xl shadow-sm mb-3">
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <strong className="text-lg text-slate-800 capitalize leading-tight">{p.full_name}</strong>
+                                                        {p.is_new_patient === 1 && <span className="badge badge-purple uppercase text-[10px]">✨ NUEVO</span>}
+                                                    </div>
+                                                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-500">
+                                                        {p.dni && <span><span className="font-semibold text-slate-400">DNI:</span> {p.dni}</span>}
+                                                        {(p.insurance_name || p.insurance) && <span><span className="font-semibold text-slate-400">OS:</span> {p.insurance_name || p.insurance}</span>}
+                                                        {p.phone && (
+                                                            <a href={`https://wa.me/${p.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="text-blue-600 font-bold hover:underline" onClick={(e) => e.stopPropagation()}>
+                                                                📱 {p.phone}
+                                                            </a>
+                                                        )}
+                                                    </div>
+                                                    {Number(p.total_debt) > 0 && (
+                                                        <div
+                                                            onClick={(e) => openDebtModal(e, p.id, p.total_debt)}
+                                                            className="inline-flex items-center gap-1 px-2 py-0.5 mt-2 rounded-full text-xs font-bold bg-red-50 text-red-600 border border-red-100 cursor-pointer hover:bg-red-200 transition-colors"
+                                                        >
+                                                            💸 Deuda: ${p.total_debt}
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                <div className="flex items-center flex-wrap gap-4 mr-6">
+                                                    <div className="rating-container flex flex-col items-center" title={`${t('rating_financial_tooltip')}\nDeuda Actual: $${p.total_debt}`}>
+                                                        <div className="text-[10px] font-bold text-slate-400 uppercase mb-1">FIN</div>
+                                                        <div className="rating-stars-gold text-base">
+                                                            {[1, 2, 3, 4, 5].map(s => <span key={s}>{s <= calculateFinancialRating(Number(p.total_debt)) ? '★' : '☆'}</span>)}
+                                                        </div>
+                                                    </div>
+                                                    <div className="rating-container flex flex-col items-center" title={`${t('rating_attendance_tooltip')}\nResumen: ${p.total_appointments - p.missed_appointments}/${p.total_appointments}`}>
+                                                        <div className="text-[10px] font-bold text-slate-400 uppercase mb-1">ASIST</div>
+                                                        <div className="rating-stars-blue text-base">
+                                                            {[1, 2, 3, 4, 5].map(s => <span key={s}>{s <= calculateAttendanceRating(p.total_appointments, p.missed_appointments) ? '★' : '☆'}</span>)}
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        className="rating-container flex flex-col items-center cursor-pointer hover:bg-slate-50 p-1 rounded transition-colors"
+                                                        onClick={() => handleBehaviorRatingChange(p.id, ((p.behavior_rating || 5) % 5) + 1)}
+                                                        title={`${t('rating_behavior_tooltip')}\nCalificación: ${p.behavior_rating || 5}/5 (Click para cambiar)`}
+                                                    >
+                                                        <div className="text-[10px] font-bold text-slate-400 uppercase mb-1">COND</div>
+                                                        <div className="rating-stars-pink text-base">
+                                                            {[1, 2, 3, 4, 5].map(s => <span key={s}>{s <= (p.behavior_rating || 5) ? '★' : '☆'}</span>)}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex gap-2 items-center">
+                                                    <button
+                                                        className="btn btn-secondary btn-sm px-3 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border-indigo-200"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleSendEditLink(p);
+                                                        }}
+                                                        title="Enviar Link de Edición (WhatsApp)"
+                                                    >
+                                                        🔗 Link Edición
+                                                    </button>
+                                                    <button className="btn btn-primary btn-sm px-4" onClick={() => handleViewDetails(p.id)}>
+                                                        🩺 Ver Ficha
+                                                    </button>
+                                                </div>
+                                            </li>
+                                        ))
                                     )}
-                                </div>
+                                </ul>
+                            </div>
 
-                                {/* Ratings Column */}
-                                <div className="flex gap-6 mr-4">
-                                    <div className="rating-container" title={`${t('rating_financial_tooltip')}: $${p.total_debt}`}>
-                                        <div className="rating-label">{t('rating_financial')}</div>
-                                        <div className="rating-stars-gold">
-                                            {[1, 2, 3, 4, 5].map(s => <span key={s}>{s <= calculateFinancialRating(Number(p.total_debt)) ? '★' : '☆'}</span>)}
-                                        </div>
-                                    </div>
-                                    <div className="rating-container" title={`${t('rating_attendance_tooltip')}: ${p.total_appointments - p.missed_appointments}/${p.total_appointments}`}>
-                                        <div className="rating-label">{t('rating_attendance')}</div>
-                                        <div className="rating-stars-blue">
-                                            {[1, 2, 3, 4, 5].map(s => <span key={s}>{s <= calculateAttendanceRating(p.total_appointments, p.missed_appointments) ? '★' : '☆'}</span>)}
-                                        </div>
-                                    </div>
-                                    <div
-                                        className="rating-container cursor-pointer"
-                                        title={t('rating_behavior_tooltip')}
-                                        onClick={() => handleBehaviorRatingChange(p.id, ((p.behavior_rating || 5) % 5) + 1)}
+                            {totalPages > 1 && (
+                                <div className="flex justify-center items-center gap-2 mt-10 mb-6">
+                                    <button
+                                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                        disabled={currentPage === 1}
+                                        className="btn btn-secondary btn-sm"
+                                        style={{ opacity: currentPage === 1 ? 0.3 : 1 }}
                                     >
-                                        <div className="rating-label">{t('rating_behavior')}</div>
-                                        <div className="rating-stars-pink">
-                                            {[1, 2, 3, 4, 5].map(s => <span key={s}>{s <= (p.behavior_rating || 5) ? '★' : '☆'}</span>)}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="flex gap-2 items-center">
-                                    <button className="btn btn-primary btn-sm flex items-center justify-center gap-2" onClick={() => handleViewDetails(p.id)}>
-                                        🩺 {t('view_details') || 'Ver Ficha'}
+                                        ← Anterior
+                                    </button>
+                                    <span className="px-6 py-2 bg-white rounded-full text-sm font-bold text-slate-500 border border-slate-200 shadow-sm">
+                                        Página {currentPage} de {totalPages}
+                                    </span>
+                                    <button
+                                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                        disabled={currentPage === totalPages}
+                                        className="btn btn-secondary btn-sm"
+                                        style={{ opacity: currentPage === totalPages ? 0.3 : 1 }}
+                                    >
+                                        Siguiente →
                                     </button>
                                 </div>
-                            </li >
-                        ))}
-                    </ul>
-                </div>
+                            )}
+                        </>
+                    ) : (
+                        <div className="recycle-bin-view mt-6">
+                            <div className="alert alert-info mb-6 shadow-sm border border-blue-100 p-4 rounded-xl flex items-center gap-3">
+                                <span className="text-xl">ℹ️</span>
+                                <span className="font-medium">Los elementos aquí listados se eliminan permanentemente tras 30 días.</span>
+                            </div>
+                            <ul className="item-grid">
+                                {recycleItems.length === 0 ? (
+                                    <li className="text-muted p-20 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-300">
+                                        <div className="text-5xl opacity-20 mb-4">🗑️</div>
+                                        <p className="text-lg font-bold text-slate-400">La papelera está vacía.</p>
+                                    </li>
+                                ) : (
+                                    recycleItems.map(item => (
+                                        <li key={item.id} className="item-card border-l-4 border-l-purple-500 hover:bg-slate-50 transition-all shadow-sm p-4 bg-white rounded-xl mb-3">
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-3 mb-2">
+                                                    {item.entity_type !== 'patient' && (
+                                                        <span className="badge badge-purple uppercase text-[10px] font-black tracking-widest px-2">
+                                                            {item.entity_type === 'doctor' ? 'MÉDICO' : 'SECRETARIA'}
+                                                        </span>
+                                                    )}
+                                                    <strong className="text-lg text-slate-800 leading-tight">{item.entity_name}</strong>
+                                                </div>
+                                                <div className="flex flex-col gap-1 text-sm text-slate-500">
+                                                    <span>📅 Eliminado el <span className="font-bold text-slate-600">{new Date(item.deleted_at).toLocaleString()}</span></span>
+                                                    <span>👤 Por <span className="font-bold text-slate-600">{item.deleted_by_name}</span></span>
+                                                </div>
+                                                <div className="text-[11px] text-red-500 mt-3 font-bold bg-red-50 inline-block px-3 py-1 rounded-full border border-red-100">
+                                                    ⚠️ EXPIRA EL {new Date(item.expires_at).toLocaleDateString()}
+                                                </div>
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <button
+                                                    className="btn btn-sm text-green-600 bg-green-50 hover:bg-green-100 border-green-200"
+                                                    onClick={async () => {
+                                                        if (await confirm(`¿Restaurar a ${item.entity_name}?\n\nLa contraseña se reseteará a '123456'.`)) {
+                                                            try {
+                                                                await api.post(`/logs/restore/${item.id}`);
+                                                                showMessage('Restaurado con éxito', 'success');
+                                                                fetchRecycleBin();
+                                                                // Optional: Switch to list tab to see it
+                                                                // setActiveTab('list');
+                                                            } catch (err) {
+                                                                console.error(err);
+                                                                showMessage('Error al restaurar', 'error');
+                                                            }
+                                                        }
+                                                    }}
+                                                >
+                                                    ♻️ Restaurar
+                                                </button>
+                                                <button
+                                                    className="btn btn-secondary btn-sm flex items-center gap-2 px-4 shadow-sm"
+                                                    onClick={() => setShowRecycleDetail(item)}
+                                                >
+                                                    👁️ Ver Datos
+                                                </button>
+                                            </div>
+                                        </li>
+                                    ))
+                                )}
+                            </ul>
+                        </div>
+                    )
+                }
 
-                {/* Pagination Controls */}
-                {totalPages > 1 && (
-                    <div className="flex justify-center items-center gap-2 mt-6">
-                        <button
-                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                            disabled={currentPage === 1}
-                            className="btn btn-secondary btn-sm"
-                            style={{ opacity: currentPage === 1 ? 0.5 : 1 }}
-                        >
-                            ← Anterior
-                        </button>
-                        <span className="px-4 py-2 text-sm text-slate-600">
-                            Página {currentPage} de {totalPages}
-                        </span>
-                        <button
-                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                            disabled={currentPage === totalPages}
-                            className="btn btn-secondary btn-sm"
-                            style={{ opacity: currentPage === totalPages ? 0.5 : 1 }}
-                        >
-                            Siguiente →
-                        </button>
-                    </div>
-                )}
+                {/* Modals placed correctly inside main content */}
+                <Modal
+                    isOpen={!!showRecycleDetail}
+                    onClose={() => setShowRecycleDetail(null)}
+                    title={`📜 Respaldo: ${showRecycleDetail?.entity_name}`}
+                    size="lg"
+                >
+                    {showRecycleDetail && (
+                        <div className="p-6 bg-slate-900 text-green-400 font-mono text-xs rounded-xl shadow-2xl overflow-auto max-h-500 border border-slate-800">
+                            <pre className="leading-relaxed opacity-90">{JSON.stringify(JSON.parse(showRecycleDetail.data), null, 4)}</pre>
+                        </div>
+                    )}
+                </Modal>
 
-                {/* Pay Debt Modal for List View */}
                 <Modal
                     isOpen={debtModalOpen}
                     onClose={() => setDebtModalOpen(false)}
-                    title={t('pay_debt')}
+                    title={`💸 ${t('pay_debt')}`}
                     footer={
                         <>
                             <button className="btn btn-secondary" onClick={() => setDebtModalOpen(false)}>{t('cancel')}</button>
-                            <button className="btn btn-primary" onClick={handlePayDebt}>{t('confirm_payment')}</button>
+                            <button className="btn btn-primary px-8 font-bold" onClick={handlePayDebt}>{t('confirm_payment')}</button>
                         </>
                     }
                 >
-                    <div className="flex-col-gap-4">
-                        <p>{t('enter_payment_amount') || 'Ingrese el monto a pagar:'}</p>
+                    <div className="flex flex-col gap-6 p-2">
+                        <p className="text-slate-600 font-medium">{t('enter_payment_amount') || 'Ingrese el monto a pagar:'}</p>
                         <div className="input-group">
-                            <label className="input-label">{t('amount')} ($)</label>
-                            <CurrencyInput className="input-field" value={debtParams.amount} onChange={e => setDebtParams({ ...debtParams, amount: e.target.value })} />
+                            <label className="input-label text-[10px] font-bold uppercase text-slate-400 tracking-wider mb-1">{t('amount')} ($)</label>
+                            <CurrencyInput className="input-field text-xl font-bold bg-slate-50 border-slate-200" value={debtParams.amount} onChange={e => setDebtParams({ ...debtParams, amount: e.target.value })} />
                         </div>
                         <div className="input-group">
-                            <label className="input-label">{t('payment_method')}</label>
-                            <select className="input-field" value={debtParams.method} onChange={e => setDebtParams({ ...debtParams, method: e.target.value })}>
-                                <option value="cash">Cash</option>
-                                <option value="transfer">Transfer</option>
-                                <option value="credit_card">Credit Card</option>
-                                <option value="debit_card">Debit Card</option>
+                            <label className="input-label text-[10px] font-bold uppercase text-slate-400 tracking-wider mb-1">{t('payment_method')}</label>
+                            <select className="input-field bg-slate-50 border-slate-200" value={debtParams.method} onChange={e => setDebtParams({ ...debtParams, method: e.target.value })}>
+                                <option value="cash">💵 Cash</option>
+                                <option value="transfer">🏦 Transfer</option>
+                                <option value="credit_card">💳 Credit Card</option>
+                                <option value="debit_card">💰 Debit Card</option>
                             </select>
-                        </div>
-                    </div>
-                </Modal>
-
-                {/* Prescription Modal */}
-                <Modal
-                    isOpen={prescribeModal.open}
-                    onClose={() => setPrescribeModal({ ...prescribeModal, open: false })}
-                    title={`${t('prescription_for') || 'Receta para'} ${prescribeModal.patientName}`}
-                    footer={
-                        <>
-                            <button className="btn btn-secondary" onClick={() => setPrescribeModal({ ...prescribeModal, open: false })}>{t('cancel')}</button>
-                            <button className="btn btn-primary" onClick={handleSavePrescription} disabled={!prescribeModal.medications.trim()}>{t('create')}</button>
-                        </>
-                    }
-                >
-                    <div className="flex-col-gap-4">
-                        <div className="input-group">
-                            <label className="input-label">{t('medications')}</label>
-                            <textarea className="input-field" rows="4" value={prescribeModal.medications} onChange={e => setPrescribeModal({ ...prescribeModal, medications: e.target.value })} placeholder={t('meds_placeholder') || "ej. Ibuprofeno 600mg"} autoFocus />
-                        </div>
-                        <div className="input-group">
-                            <label className="input-label">{t('instructions')}</label>
-                            <textarea className="input-field" rows="3" value={prescribeModal.instructions} onChange={e => setPrescribeModal({ ...prescribeModal, instructions: e.target.value })} placeholder={t('instructions_placeholder') || "ej. Tomar cada 8 horas con comida."} />
                         </div>
                     </div>
                 </Modal>
@@ -841,8 +876,8 @@ const Patients = () => {
                     url={qrUrl}
                     expiresAt={qrExpiry}
                 />
-            </main>
-        </div>
+            </main >
+        </div >
     );
 };
 

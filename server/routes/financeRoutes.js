@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const financeController = require('../controllers/financeController');
-const { verifyToken, isSecretary, isAdmin } = require('../middleware/authMiddleware');
+const { verifyToken } = require('../middleware/authMiddleware');
+const { authorize } = require('../middleware/authorize');
+const { ACCESS_LEVELS } = require('../constants/roles');
 
 const multer = require('multer');
 const path = require('path');
@@ -21,7 +23,10 @@ router.get('/pricing', verifyToken, financeController.getPricing);
 router.post('/transactions', verifyToken, upload.single('proof'), financeController.createTransaction);
 router.get('/transactions', verifyToken, financeController.getTransactions); // View logic handles roles
 router.post('/transactions/close', verifyToken, financeController.closeCashBox);
+router.put('/transactions/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_FINANCE), financeController.updateTransaction);
+router.delete('/transactions/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_FINANCE), financeController.deleteTransaction);
 router.post('/pay-debt', verifyToken, financeController.payDebt);
-router.get('/stats', verifyToken, isSecretary, financeController.getStats);
+router.post('/pay-institution-debt', verifyToken, financeController.payInstitutionDebt);
+router.get('/stats', verifyToken, authorize(ACCESS_LEVELS.MANAGE_FINANCE), financeController.getStats);
 
 module.exports = router;

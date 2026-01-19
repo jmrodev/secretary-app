@@ -7,13 +7,15 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [token, setToken] = useState(localStorage.getItem('token'));
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        const storedToken = localStorage.getItem('token');
         const userData = localStorage.getItem('user');
-        if (token && userData) {
+        if (storedToken && userData) {
             setUser(JSON.parse(userData));
+            setToken(storedToken);
         }
         setLoading(false);
     }, []);
@@ -25,6 +27,7 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(userData));
             setUser(userData);
+            setToken(token);
             return { success: true };
         } catch (error) {
             console.error("Login failed", error);
@@ -47,6 +50,7 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(userData));
             setUser(userData);
+            setToken(token);
             return true;
         } catch (error) {
             console.error("Register failed", error);
@@ -58,10 +62,12 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         setUser(null);
+        setToken(null);
     };
 
     const value = {
         user,
+        token,
         login,
         register,
         logout,

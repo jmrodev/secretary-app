@@ -47,37 +47,46 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
 
     useEffect(() => {
         if (initialValues) {
+            // legacy migration: split full_name if structure is missing
+            let fName = initialValues.first_name;
+            let lName = initialValues.last_name;
+
+            if (!fName && !lName && initialValues.full_name) {
+                const parts = initialValues.full_name.trim().split(' ');
+                if (parts.length > 1) {
+                    lName = parts.pop();
+                    fName = parts.join(' ');
+                } else {
+                    fName = initialValues.full_name;
+                }
+            }
+
             setFormData(prev => ({
                 ...prev,
                 ...initialValues,
-                // Ensure no nulls to avoid uncontrolled input warnings
                 username: initialValues.username || '',
-                // password: '', // Password usually shouldn't be pre-filled or retrieved
                 full_name: initialValues.full_name || '',
+                first_name: fName || '',
+                last_name: lName || '',
                 dni: initialValues.dni || '',
                 phone: initialValues.phone || '',
                 email: initialValues.email || '',
                 address: initialValues.address || '',
                 insurance_id: initialValues.insurance_id || '',
-                institution_id: initialValues.institution_id || '', // [NEW]
+                institution_id: initialValues.institution_id || '',
                 affiliate_number: initialValues.affiliate_number || '',
                 medical_history: initialValues.medical_history || '',
-
-                // Handle date formatting (YYYY-MM-DD)
                 dob: initialValues.dob ? initialValues.dob.split('T')[0] : '',
                 next_suggested_visit_date: initialValues.next_suggested_visit_date ? initialValues.next_suggested_visit_date.split('T')[0] : '',
                 next_suggested_prescription_date: initialValues.next_suggested_prescription_date ? initialValues.next_suggested_prescription_date.split('T')[0] : '',
                 license_expiry_date: initialValues.license_expiry_date ? initialValues.license_expiry_date.split('T')[0] : '',
-
-                // Admin fields
                 tariff_percent: initialValues.tariff_percent !== null && initialValues.tariff_percent !== undefined ? initialValues.tariff_percent : '',
                 tariff_override: initialValues.tariff_override !== null && initialValues.tariff_override !== undefined ? initialValues.tariff_override : '',
                 visit_interval_days: initialValues.visit_interval_days || '',
                 prescription_interval_days: initialValues.prescription_interval_days || '',
-
-                // Ensure arrays
                 assignedDoctors: initialValues.assignedDoctors ? initialValues.assignedDoctors.map(d => d.id || d) : []
             }));
+
             if (initialValues.institution_id) {
                 setCoveredByInstitution(true);
             }
@@ -135,15 +144,40 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                 </div>
             )}
 
-            <div className="input-group mb-4">
-                <label className="input-label">{t('full_name')}</label>
-                <input
-                    name="full_name"
-                    className="input-field"
-                    value={formData.full_name}
-                    onChange={handleChange}
-                    required
-                />
+            <div className="grid-2-cols gap-4 mb-4">
+                <div className="input-group">
+                    <label className="input-label">Nombre</label>
+                    <input
+                        name="first_name"
+                        className="input-field"
+                        value={formData.first_name || ''}
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            setFormData(prev => ({
+                                ...prev,
+                                first_name: val,
+                                full_name: `${val} ${prev.last_name || ''}`.trim()
+                            }));
+                        }}
+                        required
+                    />
+                </div>
+                <div className="input-group">
+                    <label className="input-label">Apellido</label>
+                    <input
+                        name="last_name"
+                        className="input-field"
+                        value={formData.last_name || ''}
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            setFormData(prev => ({
+                                ...prev,
+                                last_name: val,
+                                full_name: `${prev.first_name || ''} ${val}`.trim()
+                            }));
+                        }}
+                    />
+                </div>
             </div>
 
             <div className="grid-2-cols gap-4 mb-4">
@@ -238,6 +272,7 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                         className="input-field"
                         value={formData.phone}
                         onChange={handleChange}
+                        required
                     />
                 </div>
                 <div className="input-group">

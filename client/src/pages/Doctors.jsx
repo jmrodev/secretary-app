@@ -9,6 +9,7 @@ import Sidebar from '../components/Sidebar';
 import Modal from '../components/Modal';
 import { formatPrice } from '../utils/format';
 import CurrencyInput from '../components/CurrencyInput';
+import DoctorScheduleSettings from '../components/DoctorScheduleSettings';
 
 const Doctors = () => {
     const { t } = useLanguage();
@@ -23,7 +24,14 @@ const Doctors = () => {
     // Edit State
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [editData, setEditData] = useState({});
+    const [activeTab, setActiveTab] = useState('tariffs'); // 'tariffs', 'google', 'schedule'
+    const [connected, setConnected] = useState(false);
+    const [loadingGoogle, setLoadingGoogle] = useState(false);
 
+
+    // Schedule State
+    const [schedule, setSchedule] = useState([]);
+    const [loadingSchedule, setLoadingSchedule] = useState(false);
     const fetchDoctors = async () => {
         try {
             const [docsRes, settingsRes] = await Promise.all([
@@ -41,7 +49,53 @@ const Doctors = () => {
 
     useEffect(() => {
         fetchDoctors();
+
+        // Check for Google Auth redirect status
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        if (status === 'success') {
+            showMessage('Cuenta de Google conectada con éxito', 'success');
+            window.history.replaceState({}, document.title, window.location.pathname);
+        } else if (status === 'error') {
+            showMessage('Error al conectar con Google', 'error');
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
     }, []);
+
+    const checkGoogleStatus = async (doctorId) => {
+        setLoadingGoogle(true);
+        try {
+            const res = await api.get(`/google/status?doctorId=${doctorId}`);
+            setConnected(res.data.connected);
+        } catch (err) {
+            console.error(err);
+            setConnected(false);
+        } finally {
+            setLoadingGoogle(false);
+        }
+    };
+
+    const handleConnectGoogle = async () => {
+        if (!editData.id) return;
+        try {
+            const res = await api.get(`/google/auth-url?doctorId=${editData.id}`);
+            window.location.href = res.data.url;
+        } catch (err) {
+            showMessage('Failed to initiate connection.', 'error');
+            console.error(err);
+        }
+    };
+
+    const handleDisconnectGoogle = async () => {
+        if (!await confirm("¿Estás seguro? Se detendrá la sincronización.")) return;
+        try {
+            await api.post('/google/disconnect', { doctorId: editData.id });
+            setConnected(false);
+            showMessage('Desconectado', 'success');
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     const normalizeText = (text) => {
         if (!text) return "";
@@ -68,15 +122,36 @@ const Doctors = () => {
             appointment_duration: doc.appointment_duration || 60,
             break_duration: doc.break_duration || 0
         });
+        setActiveTab('tariffs');
+
+        checkGoogleStatus(doc.id);
+        fetchSchedule(doc.id);
         setEditModalOpen(true);
+    };
+
+    const fetchSchedule = async (doctorId) => {
+        setLoadingSchedule(true);
+        try {
+            const res = await api.get(`/schedules/${doctorId}`);
+            setSchedule(res.data);
+        } catch (err) {
+            console.error("Failed to load schedule", err);
+            setSchedule([]);
+        } finally {
+            setLoadingSchedule(false);
+        }
     };
 
     const handleSaveEdit = async () => {
         try {
-            await api.put(`/users/doctors/${editData.id}`, editData);
+            await Promise.all([
+                api.put(`/users/doctors/${editData.id}`, editData),
+                api.put(`/schedules/${editData.id}`, { schedule })
+            ]);
+
             setEditModalOpen(false);
             fetchDoctors();
-            showMessage("Doctor status updated", "success");
+            showMessage("Doctor status and schedule updated", "success");
         } catch (err) {
             console.error("Failed to update doctor", err);
             alert("Failed to update doctor.");
@@ -151,10 +226,10 @@ const Doctors = () => {
                                 </div>
                             </div>
 
-                            {user.role === 'secretary' && (
+                            {(user.role === 'secretary' || user.role === 'admin' || user.id === d.user_id || user.user_id === d.user_id) && (
                                 <div className="item-footer">
                                     <button className="btn btn-secondary btn-sm-compact" onClick={() => handleEditClick(d)}>
-                                        {t('edit_details')}
+                                        {t('edit_details')} / Configurar
                                     </button>
                                 </div>
                             )}
@@ -178,78 +253,175 @@ const Doctors = () => {
                         </>
                     }
                 >
-                    <div className="flex-col gap-4">
-                        {(settings.enable_office_rentals === 'true') && (
-                            <>
-                                <h4 className="section-header-line">{t('rental_section')}</h4>
-                                <div className="input-group">
-                                    <label className="input-label">{t('office_number')}</label>
-                                    <input className="input-field" value={editData.office_number} onChange={e => setEditData({ ...editData, office_number: e.target.value })} />
-                                </div>
+                    <div className="tabs-container mb-6" style={{ borderBottom: '1px solid #eee' }}>
+                        <button
+                            className={`tab-btn-small ${activeTab === 'tariffs' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('tariffs')}
+                        >
+                            💰 Tarifas y Oficina
+                        </button>
+                        <button
+                            className={`tab-btn-small ${activeTab === 'schedule' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('schedule')}
+                        >
+                            📅 Horarios
+                        </button>
+                        <button
+                            className={`tab-btn-small ${activeTab === 'google' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('google')}
+                        >
+                            🌐 Google Sync
+                        </button>
+                    </div>
 
-                                <div className="grid-2-cols mb-6">
+                    <div className="tab-content-wrapper">
+                        {activeTab === 'tariffs' && (
+                            <div key="tariffs" className="animate-in flex-col gap-4">
+                                {(settings.enable_office_rentals === 'true') && (
+                                    <>
+                                        <h4 className="section-header-line">{t('rental_section')}</h4>
+                                        <div className="input-group">
+                                            <label className="input-label">{t('office_number')}</label>
+                                            <input className="input-field" value={editData.office_number} onChange={e => setEditData({ ...editData, office_number: e.target.value })} />
+                                        </div>
+
+                                        <div className="grid-2-cols mb-6">
+                                            <div className="input-group">
+                                                <label className="input-label">{t('rental_type')}</label>
+                                                <select className="input-field" value={editData.rental_type} onChange={e => setEditData({ ...editData, rental_type: e.target.value })}>
+                                                    <option value="hourly">{t('hourly')}</option>
+                                                    <option value="daily">{t('daily')}</option>
+                                                    <option value="weekly">{t('weekly')}</option>
+                                                    <option value="monthly">{t('monthly')}</option>
+                                                </select>
+                                            </div>
+                                            <div className="input-group">
+                                                <label className="input-label">{t('rent_cost')}</label>
+                                                <CurrencyInput className="input-field" value={editData.rental_cost} onChange={e => setEditData({ ...editData, rental_cost: e.target.value })} />
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
+
+                                <div className="flex-between-center">
+                                    <h4 className="section-header-line m-0">{t('tariffs_section')}</h4>
+                                    <div className="text-xs text-muted">Duración: {editData.appointment_duration}m + {editData.break_duration}m</div>
+                                </div>
+                                <div className="grid-2-cols">
                                     <div className="input-group">
-                                        <label className="input-label">{t('rental_type')}</label>
-                                        <select className="input-field" value={editData.rental_type} onChange={e => setEditData({ ...editData, rental_type: e.target.value })}>
-                                            <option value="hourly">{t('hourly')}</option>
-                                            <option value="daily">{t('daily')}</option>
-                                            <option value="weekly">{t('weekly')}</option>
-                                            <option value="monthly">{t('monthly')}</option>
-                                        </select>
+                                        <label className="input-label">{t('consultation_price')}</label>
+                                        <CurrencyInput className="input-field" value={editData.consultation_price} onChange={e => setEditData({ ...editData, consultation_price: e.target.value })} />
                                     </div>
                                     <div className="input-group">
-                                        <label className="input-label">{t('rent_cost')}</label>
-                                        <CurrencyInput className="input-field" value={editData.rental_cost} onChange={e => setEditData({ ...editData, rental_cost: e.target.value })} />
+                                        <label className="input-label">{t('virtual_consultation_price')}</label>
+                                        <CurrencyInput className="input-field" value={editData.virtual_consultation_price} onChange={e => setEditData({ ...editData, virtual_consultation_price: e.target.value })} />
+                                    </div>
+                                    <div className="input-group">
+                                        <label className="input-label">{t('prescription_price')}</label>
+                                        <CurrencyInput className="input-field" value={editData.prescription_price} onChange={e => setEditData({ ...editData, prescription_price: e.target.value })} />
+                                    </div>
+                                    <div className="input-group">
+                                        <label className="input-label">{t('medical_license_price')}</label>
+                                        <CurrencyInput className="input-field" value={editData.medical_license_price} onChange={e => setEditData({ ...editData, medical_license_price: e.target.value })} />
+                                    </div>
+                                    <div className="input-group">
+                                        <label className="input-label">{t('certificate_price') || 'Certificate Price'}</label>
+                                        <CurrencyInput className="input-field" value={editData.certificate_price} onChange={e => setEditData({ ...editData, certificate_price: e.target.value })} />
                                     </div>
                                 </div>
-                            </>
+                            </div>
                         )}
 
-                        <h4 className="section-header-line">{t('tariffs_section')}</h4>
-                        <div className="grid-2-cols">
-                            <div className="input-group">
-                                <label className="input-label">{t('consultation_price')}</label>
-                                <CurrencyInput className="input-field" value={editData.consultation_price} onChange={e => setEditData({ ...editData, consultation_price: e.target.value })} />
+                        {activeTab === 'schedule' && (
+                            <div key="schedule" className="animate-in space-y-6">
+                                <h4 className="section-header-line">Configuración de Agenda</h4>
+                                <div className="grid-2-cols mb-6">
+                                    <div className="input-group">
+                                        <label className="input-label">{t('appointment_duration') || 'Duración Turno (min)'}</label>
+                                        <input
+                                            type="number"
+                                            className="input-field"
+                                            value={editData.appointment_duration}
+                                            onChange={e => setEditData({ ...editData, appointment_duration: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="input-group">
+                                        <label className="input-label">{t('break_duration') || 'Tiempo Descanso (min)'}</label>
+                                        <input
+                                            type="number"
+                                            className="input-field"
+                                            value={editData.break_duration}
+                                            onChange={e => setEditData({ ...editData, break_duration: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                                <DoctorScheduleSettings
+                                    doctorId={editData.id}
+                                    schedule={schedule}
+                                    setSchedule={setSchedule}
+                                    loading={loadingSchedule}
+                                />
                             </div>
-                            <div className="input-group">
-                                <label className="input-label">{t('virtual_consultation_price')}</label>
-                                <CurrencyInput className="input-field" value={editData.virtual_consultation_price} onChange={e => setEditData({ ...editData, virtual_consultation_price: e.target.value })} />
-                            </div>
-                            <div className="input-group">
-                                <label className="input-label">{t('prescription_price')}</label>
-                                <CurrencyInput className="input-field" value={editData.prescription_price} onChange={e => setEditData({ ...editData, prescription_price: e.target.value })} />
-                            </div>
-                            <div className="input-group">
-                                <label className="input-label">{t('medical_license_price')}</label>
-                                <CurrencyInput className="input-field" value={editData.medical_license_price} onChange={e => setEditData({ ...editData, medical_license_price: e.target.value })} />
-                            </div>
-                            <div className="input-group">
-                                <label className="input-label">{t('certificate_price') || 'Certificate Price'}</label>
-                                <CurrencyInput className="input-field" value={editData.certificate_price} onChange={e => setEditData({ ...editData, certificate_price: e.target.value })} />
-                            </div>
-                        </div>
+                        )}
 
-                        <h4 className="section-header-line">📅 {t('schedule_config') || 'Configuración de Agenda'}</h4>
-                        <div className="grid-2-cols">
-                            <div className="input-group">
-                                <label className="input-label">{t('appointment_duration') || 'Duración Turno (min)'}</label>
-                                <input
-                                    type="number"
-                                    className="input-field"
-                                    value={editData.appointment_duration}
-                                    onChange={e => setEditData({ ...editData, appointment_duration: e.target.value })}
-                                />
+                        {activeTab === 'google' && (
+                            <div key="google" className="animate-in space-y-6">
+                                <h4 className="section-header-line">Integración con Google</h4>
+                                <div className="p-6 bg-slate-50 rounded-xl border border-slate-200">
+                                    <div className="flex justify-between items-start mb-6">
+                                        <div>
+                                            <h4 className="font-bold text-lg mb-1">Estado de Sincronización</h4>
+                                            <p className="text-sm text-muted">Sincroniza Turnos con Calendar y Pacientes con Contactos.</p>
+                                        </div>
+                                        {loadingGoogle ? (
+                                            <div className="animate-spin text-accent-color">⌛</div>
+                                        ) : (
+                                            <div className={`chip-${connected ? 'green' : 'gray'} status-chip`}>
+                                                {connected ? '● Conectado' : '○ Desconectado'}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="flex gap-4 mb-4">
+                                        {connected ? (
+                                            <button className="btn btn-outline-danger" onClick={handleDisconnectGoogle}>❌ Desconectar Cuenta</button>
+                                        ) : (
+                                            <button className="btn btn-primary" onClick={handleConnectGoogle}>🔗 Conectar con Google</button>
+                                        )}
+                                    </div>
+
+                                    {connected && (
+                                        <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-200">
+                                            <button className="btn btn-secondary text-sm" onClick={async () => {
+                                                try {
+                                                    const res = await api.get(`/google/appointments?doctorId=${editData.id}`);
+                                                    showMessage(`Se encontraron ${res.data.events?.length || 0} eventos futuros en el calendario.`, 'success');
+                                                } catch (err) {
+                                                    showMessage('Error: ' + (err.response?.data?.error || err.message), 'error');
+                                                }
+                                            }}>
+                                                📅 Verificar Calendario
+                                            </button>
+
+                                            <button className="btn btn-accent text-sm" onClick={async () => {
+                                                if (!await confirm("¿Importar contactos de Google a la base de pacientes local?")) return;
+                                                setLoadingGoogle(true);
+                                                try {
+                                                    const res = await api.post('/google/import', { doctorId: editData.id });
+                                                    showMessage(`Importación Completa!\nCreados: ${res.data.results.created}\nActualizados: ${res.data.results.updated}`, 'success');
+                                                } catch (err) {
+                                                    showMessage('Error: ' + (err.response?.data?.error || err.message), 'error');
+                                                } finally {
+                                                    setLoadingGoogle(false);
+                                                }
+                                            }}>
+                                                📥 Sincronizar Contactos
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
-                            <div className="input-group">
-                                <label className="input-label">{t('break_duration') || 'Tiempo Descanso (min)'}</label>
-                                <input
-                                    type="number"
-                                    className="input-field"
-                                    value={editData.break_duration}
-                                    onChange={e => setEditData({ ...editData, break_duration: e.target.value })}
-                                />
-                            </div>
-                        </div>
+                        )}
                     </div>
                 </Modal>
             </main>

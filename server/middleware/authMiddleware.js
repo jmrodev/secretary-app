@@ -24,8 +24,10 @@ const verifyToken = async (req, res, next) => {
         const decoded = jwt.verify(bearerToken, process.env.JWT_SECRET);
         req.user = decoded;
 
+        // Debug Log
+        // console.log(`[Auth] Verified User: ${decoded.username} (${decoded.role})`);
+
         // Check if token_version is still valid
-        // We need to fetch the current version from the DB
         const conn = await pool.getConnection();
         const rows = await conn.query("SELECT token_version FROM users WHERE id = ?", [decoded.user_id]);
         conn.release();
@@ -45,24 +47,10 @@ const verifyToken = async (req, res, next) => {
         }
 
     } catch (err) {
-        console.error("Auth Middleware Error:", err);
+        console.error("Auth Middleware Error:", err.message);
         return res.status(401).send('Invalid Token');
     }
     return next();
 };
 
-const isAdmin = (req, res, next) => {
-    if (req.user.role !== 'admin') {
-        return res.status(403).send('Access denied. Admin only.');
-    }
-    next();
-};
-
-const isSecretary = (req, res, next) => {
-    if (req.user.role !== 'secretary' && req.user.role !== 'admin') {
-        return res.status(403).send('Access denied. Secretary or Admin only.');
-    }
-    next();
-};
-
-module.exports = { verifyToken, isAdmin, isSecretary };
+module.exports = { verifyToken };

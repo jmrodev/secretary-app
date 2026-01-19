@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
 import { useMessage } from '../context/MessageContext';
+import { useConfig } from '../context/ConfigContext';
 import Modal from '../components/Modal';
 import Sidebar from '../components/Sidebar';
 import { formatPrice } from '../utils/format';
@@ -14,10 +15,13 @@ const Finances = () => {
     const { user } = useAuth();
     const { t } = useLanguage();
     const { showMessage } = useMessage();
-    const { alert } = useModal();
+    const { alert, confirm } = useModal();
+    const { settings } = useConfig();
     const [transactions, setTransactions] = useState([]);
     const [stats, setStats] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const [editingTx, setEditingTx] = useState(null);
 
     // Lists
     const [patients, setPatients] = useState([]);
@@ -69,6 +73,29 @@ const Finances = () => {
         localStorage.setItem('last_selected_doctor_id', selectedDoctorFilter);
     }, [selectedDoctorFilter]);
 
+    const handleDeleteTransaction = async (id) => {
+        if (!await confirm(t('confirm_delete_transaction') || "¿Eliminar esta transacción? Esto podría afectar el estado de pago del turno.")) return;
+        try {
+            await api.delete(`/finances/transactions/${id}`);
+            showMessage(t('transaction_symbol_deleted') || "Transacción eliminada", 'success');
+            fetchData();
+        } catch (err) {
+            alert(t('failed_delete_transaction'));
+        }
+    };
+
+    const handleUpdateTransaction = async (e) => {
+        if (e) e.preventDefault();
+        try {
+            await api.put(`/finances/transactions/${editingTx.id}`, editingTx);
+            showMessage(t('transaction_updated') || "Transacción actualizada", 'success');
+            setEditingTx(null);
+            fetchData();
+        } catch (err) {
+            alert(t('failed_update_transaction'));
+        }
+    };
+
     const handleCloseBox = async () => {
         try {
             await api.post('/finances/transactions/close', {
@@ -116,7 +143,6 @@ const Finances = () => {
         <div className="app-layout">
             <Sidebar />
             <main className="main-content">
-                <h1 className="title">{t('finances')}</h1>
 
                 {/* Stats (Admin/Secretary) */}
                 {(user.role === 'admin' || user.role === 'secretary') && (
@@ -206,6 +232,9 @@ const Finances = () => {
                                     <th className="py-3 px-4">{t('payment_method')}</th>
                                     <th className="py-3 px-4 text-right">{t('amount')}</th>
                                     <th className="py-3 px-4 text-center">{t('proof')}</th>
+                                    {(user.role === 'admin' || settings.enable_secretary_finance_crud === 'true') && (
+                                        <th className="py-3 px-4 text-center">{t('actions')}</th>
+                                    )}
                                 </tr>
                             </thead>
                             <tbody>
@@ -243,8 +272,9 @@ const Finances = () => {
                                                 <table className="w-full">
                                                     <tbody>
                                                         {group.map((tx, tIdx) => {
-                                                            const methodIcon = tx.method === 'cash' ? '💵' : (tx.method === 'transfer' ? '🏦' : '💳');
-                                                            const methodLabel = tx.method === 'cash' ? t('cash') : (tx.method === 'transfer' ? t('transfer') : t('card'));
+                                                            const isDebt = tx.method === 'on_account' || tx.method === 'credit';
+                                                            const methodIcon = tx.method === 'cash' ? '💵' : (tx.method === 'transfer' ? '🏦' : (isDebt ? '⏳' : '💳'));
+                                                            const methodLabel = tx.method === 'cash' ? t('cash') : (tx.method === 'transfer' ? t('transfer') : (isDebt ? (t('on_account') || 'Cuenta Corriente') : t('card')));
                                                             const isIncome = tx.type.includes('income') && !tx.is_withdrawal;
                                                             // const isExpense = tx.type.includes('expense') || tx.is_withdrawal;
                                                             const isGroupStart = tIdx === 0;
@@ -273,7 +303,8 @@ const Finances = () => {
                                                                     </td>
                                                                     <td className="py-3 px-4 w-[15%]">
                                                                         <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${tx.method === 'cash' ? 'bg-green-50 text-green-700 border-green-200' :
-                                                                            (tx.method === 'transfer' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-purple-50 text-purple-700 border-purple-200')
+                                                                            (tx.method === 'transfer' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                                                                                (isDebt ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-purple-50 text-purple-700 border-purple-200'))
                                                                             }`}>
                                                                             <span>{methodIcon}</span> {methodLabel || tx.method}
                                                                         </span>
@@ -289,6 +320,26 @@ const Finances = () => {
                                                                             </a>
                                                                         ) : <span className="text-slate-300">-</span>}
                                                                     </td>
+                                                                    {(user.role === 'admin' || settings.enable_secretary_finance_crud === 'true') && (
+                                                                        <td className="py-3 px-4 text-center w-[10%]">
+                                                                            <div className="flex gap-2 justify-center">
+                                                                                <button
+                                                                                    className="text-amber-500 hover:text-amber-700 p-1"
+                                                                                    onClick={() => setEditingTx(tx)}
+                                                                                    title={t('edit')}
+                                                                                >
+                                                                                    ✏️
+                                                                                </button>
+                                                                                <button
+                                                                                    className="text-red-500 hover:text-red-700 p-1"
+                                                                                    onClick={() => handleDeleteTransaction(tx.id)}
+                                                                                    title={t('delete')}
+                                                                                >
+                                                                                    🗑️
+                                                                                </button>
+                                                                            </div>
+                                                                        </td>
+                                                                    )}
                                                                 </tr>
                                                             );
                                                         })}
@@ -332,6 +383,65 @@ const Finances = () => {
                     </div>
                     <p className="text-xs-muted">{t('close_box_warning')}</p>
                 </Modal>
+
+                {/* Edit Transaction Modal */}
+                {editingTx && (
+                    <Modal
+                        isOpen={!!editingTx}
+                        onClose={() => setEditingTx(null)}
+                        title={t('edit_transaction') || "Editar Transacción"}
+                        footer={
+                            <div className="flex gap-2 justify-end w-full">
+                                <button className="btn btn-secondary" onClick={() => setEditingTx(null)}>{t('cancel')}</button>
+                                <button className="btn btn-primary" onClick={handleUpdateTransaction}>{t('save')}</button>
+                            </div>
+                        }
+                    >
+                        <form className="space-y-4">
+                            <div className="input-group">
+                                <label className="input-label">{t('amount')}</label>
+                                <CurrencyInput
+                                    className="input-field"
+                                    value={editingTx.amount}
+                                    onChange={e => setEditingTx({ ...editingTx, amount: e.target.value })}
+                                />
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">{t('description')}</label>
+                                <input
+                                    type="text"
+                                    className="input-field"
+                                    value={editingTx.description}
+                                    onChange={e => setEditingTx({ ...editingTx, description: e.target.value })}
+                                />
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">{t('payment_method')}</label>
+                                <select
+                                    className="input-field"
+                                    value={editingTx.method}
+                                    onChange={e => setEditingTx({ ...editingTx, method: e.target.value })}
+                                >
+                                    <option value="cash">{t('cash')}</option>
+                                    <option value="transfer">{t('transfer')}</option>
+                                    <option value="card">{t('card')}</option>
+                                    <option value="on_account">{t('on_account') || 'Cuenta Corriente'}</option>
+                                </select>
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">{t('status')}</label>
+                                <select
+                                    className="input-field"
+                                    value={editingTx.status}
+                                    onChange={e => setEditingTx({ ...editingTx, status: e.target.value })}
+                                >
+                                    <option value="paid">{t('paid')}</option>
+                                    <option value="pending">{t('pending')}</option>
+                                </select>
+                            </div>
+                        </form>
+                    </Modal>
+                )}
             </main>
         </div>
     );

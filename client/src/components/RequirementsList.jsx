@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useModal } from '../context/ModalContext';
 
 import Modal from './Modal';
 
@@ -13,7 +14,35 @@ const RequirementsList = ({ user }) => {
     const [actionModal, setActionModal] = useState({ open: false, type: '', id: null });
     const [actionNote, setActionNote] = useState('');
     const { showMessage } = useMessage();
-    const { t } = useLanguage(); // Ensure t is available
+    const { t } = useLanguage();
+    const { doubleConfirm, confirm } = useModal();
+    const [activeTab, setActiveTab] = useState('list');
+    const [recycleRequests, setRecycleRequests] = useState([]);
+
+    const fetchRecycleBin = async () => {
+        if (user.role !== 'admin' && user.role !== 'secretary') return;
+        try {
+            const res = await api.get('/logs/recycle-bin');
+            // Filter for medical_request
+            setRecycleRequests(res.data.filter(item => item.entity_type === 'medical_request'));
+        } catch (err) {
+            console.error("Failed to fetch recycle bin", err);
+        }
+    };
+
+    const handleRestore = async (item) => {
+        if (await confirm(`¿Restaurar solicitud de ${item.entity_name}?`)) {
+            try {
+                await api.post(`/logs/restore/${item.id}`);
+                showMessage('Solicitud restaurada exitosamente', 'success');
+                fetchRecycleBin();
+                fetchRequests(); // Refresh active list too
+            } catch (err) {
+                console.error(err);
+                showMessage('Error al restaurar: ' + (err.response?.data?.message || err.message), 'error');
+            }
+        }
+    };
 
     const openActionModal = (type, id) => {
         setActionModal({ open: true, type, id });
@@ -83,6 +112,12 @@ const RequirementsList = ({ user }) => {
         return () => clearInterval(interval);
     }, []);
 
+    useEffect(() => {
+        if (activeTab === 'recycle') {
+            fetchRecycleBin();
+        }
+    }, [activeTab]);
+
     const typeLabels = {
         'prescription': 'Receta 💊',
         'license': 'Licencia 📄',
@@ -94,137 +129,198 @@ const RequirementsList = ({ user }) => {
 
 
 
-    const handleDeleteClick = (id) => {
-        setConfirmDeleteId(id);
-    };
-
-    const confirmDelete = async () => {
-        if (!confirmDeleteId) return;
-        try {
-            await api.delete(`/medical/requests/${confirmDeleteId}`);
-            showMessage('Solicitud eliminada correctamente', 'success');
-            fetchRequests(); // Refresh list
-        } catch (err) {
-            console.error("Failed to delete", err);
-            showMessage("Error al eliminar: " + (err.response?.data?.message || err.message), 'error');
-        } finally {
-            setConfirmDeleteId(null);
+    const handleDeleteClick = async (id) => {
+        if (await doubleConfirm(
+            t('confirm_delete') || '¿Seguro que desea eliminar?',
+            t('confirm_permanent_delete') || 'Esta acción eliminará el registro permanentemente. ¿Confirmar segunda vez?'
+        )) {
+            try {
+                await api.delete(`/medical/requests/${id}`);
+                showMessage('Solicitud eliminada correctamente', 'success');
+                fetchRequests();
+            } catch (err) {
+                console.error("Failed to delete", err);
+                showMessage("Error al eliminar: " + (err.response?.data?.message || err.message), 'error');
+            }
         }
     };
 
     return (
         <div className="table-responsive">
-            <div className="flex gap-2 mb-4">
-                <button
-                    className={`btn btn-sm ${filter === 'active' ? 'btn-primary' : 'btn-secondary'}`}
-                    onClick={() => setFilter('active')}
-                >
-                    {t('pending') || 'Pendientes'}
-                </button>
-                <button
-                    className={`btn btn-sm ${filter === 'history' ? 'btn-primary' : 'btn-secondary'}`}
-                    onClick={() => setFilter('history')}
-                >
-                    {t('history') || 'Historial'}
-                </button>
-            </div>
-
-            {requests.length === 0 ? (
-                <div className="no-requirements-msg mt-4">{t('no_requests') || (filter === 'active' ? 'No hay requerimientos pendientes.' : 'No hay historial.')}</div>
-            ) : (
-                <table className="table-base requirements-table">
-                    <thead>
-                        <tr>
-                            <th>Tipo</th>
-                            <th>Paciente</th>
-                            <th>Doctor</th>
-                            <th>Solicitado Por</th>
-                            <th>Estado</th>
-                            {user.role === 'admin' && <th>Acciones</th>}
-                            {user.role === 'doctor' && <th>Gestionar</th>}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {requests.map(r => (
-                            <tr key={r.id}>
-                                <td>
-                                    <span
-                                        className={`status-chip ${r.type === 'prescription' ? 'chip-blue' : 'chip-green'} type-chip-link`}
-                                        onClick={() => setSelectedRequest(r)}
-                                        title="Ver detalle"
-                                    >
-                                        {typeLabels[r.type] || r.type}
-                                    </span>
-                                </td>
-                                <td className="font-bold">{r.patient_name}</td>
-                                <td>{r.doctor_name}</td>
-                                <td>{r.secretary_name || 'Secretaría'}</td>
-                                <td>
-                                    <span className="status-chip chip-yellow">
-                                        {r.status}
-                                    </span>
-                                </td>
-                                {(user.role === 'admin' || user.role === 'secretary') && (
-                                    <td className="actions-flex">
-                                        {user.role === 'admin' && (
-                                            <button
-                                                className="btn-icon-base btn-icon-red"
-                                                onClick={() => handleDeleteClick(r.id)}
-                                                title="Eliminar"
-                                            >
-                                                🗑️
-                                            </button>
-                                        )}
-                                        {(user.role === 'secretary' || user.role === 'admin') && r.status === 'consult' && (
-                                            <button
-                                                className="btn-icon-base btn-icon-blue"
-                                                onClick={() => openActionModal('reply', r.id)}
-                                                title={t('reply')}
-                                            >
-                                                💬
-                                            </button>
-                                        )}
-                                    </td>
-                                )}
-                                {
-                                    user.role === 'doctor' && (
-                                        <td className="actions-flex">
-                                            {r.status === 'pending' || r.status === 'consult' ? (
-                                                <>
-                                                    <button
-                                                        className="btn-icon-base btn-icon-green"
-                                                        onClick={() => openActionModal('completed', r.id)}
-                                                        title={t('mark_as_done')}
-                                                    >
-                                                        ✅
-                                                    </button>
-                                                    <button
-                                                        className="btn-icon-base btn-icon-yellow"
-                                                        onClick={() => openActionModal('consult', r.id)}
-                                                        title={t('consult_secretary')}
-                                                    >
-                                                        ❓
-                                                    </button>
-                                                    <button
-                                                        className="btn-icon-base btn-icon-red"
-                                                        onClick={() => openActionModal('rejected', r.id)}
-                                                        title={t('reject')}
-                                                    >
-                                                        ❌
-                                                    </button>
-                                                </>
-                                            ) : (
-                                                <span className="status-placeholder">-</span>
-                                            )}
-                                        </td>
-                                    )
-                                }
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+            {/* Navigation Tabs */}
+            {(user.role === 'admin' || user.role === 'secretary') && (
+                <div className="flex gap-4 mb-6 border-b border-gray-100">
+                    <button
+                        className={`pb-2 px-4 font-bold transition-colors ${activeTab === 'list' ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-400 hover:text-gray-600'}`}
+                        onClick={() => setActiveTab('list')}
+                    >
+                        📋 Listado Activo
+                    </button>
+                    <button
+                        className={`pb-2 px-4 font-bold transition-colors ${activeTab === 'recycle' ? 'border-b-2 border-purple-500 text-purple-600' : 'text-gray-400 hover:text-gray-600'}`}
+                        onClick={() => setActiveTab('recycle')}
+                    >
+                        🗑️ Papelera {recycleRequests.length > 0 && `(${recycleRequests.length})`}
+                    </button>
+                </div>
             )}
 
+            {activeTab === 'list' ? (
+                <>
+                    <div className="flex gap-2 mb-4">
+                        <button
+                            className={`btn btn-sm ${filter === 'active' ? 'btn-primary' : 'btn-secondary'}`}
+                            onClick={() => setFilter('active')}
+                        >
+                            {t('pending') || 'Pendientes'}
+                        </button>
+                        <button
+                            className={`btn btn-sm ${filter === 'history' ? 'btn-primary' : 'btn-secondary'}`}
+                            onClick={() => setFilter('history')}
+                        >
+                            {t('history') || 'Historial'}
+                        </button>
+                    </div>
+
+                    {requests.length === 0 ? (
+                        <div className="no-requirements-msg mt-4">{t('no_requests') || (filter === 'active' ? 'No hay requerimientos pendientes.' : 'No hay historial.')}</div>
+                    ) : (
+                        <table className="table-base requirements-table">
+                            <thead>
+                                <tr>
+                                    <th>{t('type')}</th>
+                                    <th>{t('patient')}</th>
+                                    <th>{t('doctor')}</th>
+                                    <th>{t('requested_by') || 'Solicitado Por'}</th>
+                                    <th>{t('status')}</th>
+                                    {user.role === 'admin' && <th>{t('actions')}</th>}
+                                    {(user.role === 'doctor' || user.role === 'secretary' || user.role === 'admin') && <th>{t('manage') || 'Gestionar'}</th>}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {requests.map(r => (
+                                    <tr key={r.id}>
+                                        <td>
+                                            <span
+                                                className={`status-chip ${r.type === 'prescription' ? 'chip-blue' : 'chip-green'} type-chip-link`}
+                                                onClick={() => setSelectedRequest(r)}
+                                                title="Ver detalle"
+                                            >
+                                                {typeLabels[r.type] || r.type}
+                                            </span>
+                                        </td>
+                                        <td className="font-bold">{r.patient_name}</td>
+                                        <td>{r.doctor_name}</td>
+                                        <td>{r.secretary_name || 'Secretaría'}</td>
+                                        <td>
+                                            <span className={`status-chip chip-yellow`}>
+                                                {t(r.status) || r.status}
+                                            </span>
+                                        </td>
+                                        {(user.role === 'admin' || user.role === 'secretary') && (
+                                            <td className="actions-flex">
+                                                {(user.role === 'admin' || user.role === 'secretary') && (
+                                                    <button
+                                                        className="btn-icon-base btn-icon-red"
+                                                        onClick={() => handleDeleteClick(r.id)}
+                                                        title="Eliminar"
+                                                    >
+                                                        🗑️
+                                                    </button>
+                                                )}
+                                                {(user.role === 'secretary' || user.role === 'admin') && r.status === 'consult' && (
+                                                    <button
+                                                        className="btn-icon-base btn-icon-blue"
+                                                        onClick={() => openActionModal('reply', r.id)}
+                                                        title={t('reply')}
+                                                    >
+                                                        💬
+                                                    </button>
+                                                )}
+                                            </td>
+                                        )}
+                                        {
+                                            (user.role === 'doctor' || user.role === 'secretary' || user.role === 'admin') && (
+                                                <td className="actions-flex">
+                                                    {r.status === 'pending' || r.status === 'consult' ? (
+                                                        <>
+                                                            <button
+                                                                className="btn-icon-base btn-icon-green"
+                                                                onClick={() => openActionModal('completed', r.id)}
+                                                                title={t('mark_as_done')}
+                                                            >
+                                                                ✅
+                                                            </button>
+                                                            <button
+                                                                className="btn-icon-base btn-icon-yellow"
+                                                                onClick={() => openActionModal('consult', r.id)}
+                                                                title={t('consult_secretary')}
+                                                            >
+                                                                ❓
+                                                            </button>
+                                                            <button
+                                                                className="btn-icon-base btn-icon-red"
+                                                                onClick={() => openActionModal('rejected', r.id)}
+                                                                title={t('reject')}
+                                                            >
+                                                                ❌
+                                                            </button>
+                                                        </>
+                                                    ) : (
+                                                        <span className="status-placeholder">-</span>
+                                                    )}
+                                                </td>
+                                            )
+                                        }
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+
+                    )}
+                </>
+            ) : (
+                <div className="recycle-bin-view">
+                    {recycleRequests.length === 0 ? (
+                        <div className="text-center p-12 bg-slate-50 rounded-lg border border-dashed border-slate-300 text-slate-400">
+                            <span className="text-4xl block mb-2">🗑️</span>
+                            No hay elementos en la papelera.
+                        </div>
+                    ) : (
+                        <table className="table-base requirements-table">
+                            <thead>
+                                <tr>
+                                    <th>Elemento</th>
+                                    <th>Eliminado Por</th>
+                                    <th>Fecha Eliminación</th>
+                                    <th>Expira</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {recycleRequests.map(item => (
+                                    <tr key={item.id} className="bg-red-50/30">
+                                        <td>
+                                            <strong>{item.entity_name}</strong>
+                                        </td>
+                                        <td>{item.deleted_by_name}</td>
+                                        <td>{new Date(item.deleted_at).toLocaleString()}</td>
+                                        <td className="text-red-600 font-bold">{new Date(item.expires_at).toLocaleDateString()}</td>
+                                        <td>
+                                            <button
+                                                className="btn btn-sm text-green-600 bg-green-100 hover:bg-green-200"
+                                                onClick={() => handleRestore(item)}
+                                            >
+                                                ♻️ Restaurar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
+                </div>
+            )}
 
             {/* Detail Modal */}
             <Modal
@@ -300,7 +396,7 @@ const RequirementsList = ({ user }) => {
             </Modal >
 
             {/* Doctor Action Modal */}
-            < Modal
+            <Modal
                 isOpen={actionModal.open}
                 onClose={() => setActionModal({ open: false, type: '', id: null })}
                 title={
@@ -339,21 +435,7 @@ const RequirementsList = ({ user }) => {
                 </div>
             </Modal >
 
-            {/* Delete Confirmation Modal */}
-            < Modal
-                isOpen={!!confirmDeleteId}
-                onClose={() => setConfirmDeleteId(null)}
-                title="Confirmar Eliminación"
-                footer={
-                    <>
-                        <button className="btn btn-secondary" onClick={() => setConfirmDeleteId(null)}>Cancelar</button>
-                        <button className="btn btn-danger-custom" onClick={confirmDelete}>Eliminar</button>
-                    </>
-                }
-            >
-                <p>¿Seguro que desea eliminar esta solicitud?</p>
-                <p className="text-sm text-muted">Esta acción no se puede deshacer.</p>
-            </Modal >
+
         </div >
     );
 };

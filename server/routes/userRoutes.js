@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const { verifyToken, isSecretary } = require('../middleware/authMiddleware');
+const { verifyToken } = require('../middleware/authMiddleware');
+const { authorize } = require('../middleware/authorize');
+const { ACCESS_LEVELS } = require('../constants/roles');
 
 router.get('/profile', verifyToken, userController.getProfile);
 router.put('/profile', verifyToken, userController.updateProfile);
@@ -9,22 +11,22 @@ router.put('/profile', verifyToken, userController.updateProfile);
 // Specific patient details (for doctors/secretaries)
 // Specific patient details (for doctors/secretaries)
 router.get('/patients/:id', verifyToken, userController.getPatientDetails);
-router.put('/patients/:id', verifyToken, isSecretary, userController.updatePatientDetails);
-router.put('/patients/:id/toggle-new', verifyToken, isSecretary, userController.toggleNewPatientStatus);
+router.put('/patients/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_PATIENTS), userController.updatePatientDetails);
+router.put('/patients/:id/toggle-new', verifyToken, authorize(ACCESS_LEVELS.MANAGE_PATIENTS), userController.toggleNewPatientStatus);
 
 // List routes
 router.get('/doctors', verifyToken, userController.getAllDoctors);
-router.put('/doctors/:id', verifyToken, isSecretary, userController.updateDoctor);
-router.get('/patients', verifyToken, isSecretary, userController.getAllPatients);
-router.get('/reminders', verifyToken, isSecretary, userController.getReminders);
-router.get('/stats', verifyToken, isSecretary, userController.getStats);
-router.get('/patients/stats/new', verifyToken, isSecretary, userController.getNewPatientStats);
+router.put('/doctors/:id', verifyToken, userController.updateDoctor);
+router.get('/patients', verifyToken, authorize(ACCESS_LEVELS.MANAGE_PATIENTS), userController.getAllPatients);
+router.get('/reminders', verifyToken, authorize(ACCESS_LEVELS.MANAGE_PATIENTS), userController.getReminders);
+router.get('/stats', verifyToken, authorize(ACCESS_LEVELS.MANAGE_PATIENTS), userController.getStats);
+router.get('/patients/stats/new', verifyToken, authorize(ACCESS_LEVELS.MANAGE_PATIENTS), userController.getNewPatientStats);
 
 // Admin routes
-router.get('/admin/users', verifyToken, isSecretary, userController.getUsersForAdmin);
-router.post('/admin/reset-password/:id', verifyToken, isSecretary, userController.adminResetPassword);
-router.post('/admin/users', verifyToken, isSecretary, userController.createUser);
-router.put('/admin/users/:id', verifyToken, isSecretary, userController.updateUser);
-router.delete('/admin/users/:id', verifyToken, isSecretary, userController.deleteUser);
+router.get('/admin/users', verifyToken, authorize(ACCESS_LEVELS.MANAGE_USERS), userController.getUsersForAdmin);
+router.post('/admin/reset-password/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_USERS), userController.adminResetPassword);
+router.post('/admin/users', verifyToken, authorize(ACCESS_LEVELS.MANAGE_USERS), userController.createUser);
+router.put('/admin/users/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_USERS), userController.updateUser);
+router.delete('/admin/users/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_USERS), userController.deleteUser);
 
 module.exports = router;

@@ -6,7 +6,12 @@ const { logAction } = require('../utils/audit');
 exports.register = async (req, res) => {
     let conn;
     try {
-        const { username, password, role, fullName, phone, specialty, cbu, dob, address, medicalHistory, dni, insurance_id, institution_id, affiliate_number } = req.body;
+        let { username, password, role, fullName, phone, specialty, cbu, dob, address, medicalHistory, dni, insurance_id, institution_id, affiliate_number } = req.body;
+
+        // Fallback for fullName if coming as full_name
+        if (!fullName && req.body.full_name) {
+            fullName = req.body.full_name;
+        }
 
         if (!(username && password && role && fullName)) {
             return res.status(400).send('All input is required');
@@ -47,8 +52,12 @@ exports.register = async (req, res) => {
             await conn.query("INSERT INTO secretaries (user_id, full_name, phone, dni) VALUES (?, ?, ?, ?)",
                 [userId, fullName, phone || null, dni || null]);
         } else if (role === 'patient') {
-            const pResult = await conn.query("INSERT INTO patients (user_id, full_name, dob, phone, address, medical_history, dni, insurance_id, institution_id, affiliate_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                [userId, fullName, dob || null, phone || null, address || null, medicalHistory || null, dni || null, insurance_id || null, institution_id || null, affiliate_number || null]);
+            // fullName is required by logic, but we can also store split names if provided
+            const firstName = req.body.first_name || fullName; // Fallback to fullName (as migrated data)
+            const lastName = req.body.last_name || '';
+
+            const pResult = await conn.query("INSERT INTO patients (user_id, full_name, first_name, last_name, dob, phone, address, medical_history, dni, insurance_id, institution_id, affiliate_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [userId, fullName, firstName, lastName, dob || null, phone || null, address || null, medicalHistory || null, dni || null, insurance_id || null, institution_id || null, affiliate_number || null]);
             patientId = pResult.insertId;
         }
 
@@ -99,11 +108,28 @@ exports.login = async (req, res) => {
                     { expiresIn: "24h" }
                 );
 
+                // Match user against role-specific table to get full Name
+                let name = user.username;
+                try {
+                    if (user.role === 'secretary') {
+                        const sec = await conn.query("SELECT full_name FROM secretaries WHERE user_id = ?", [user.id]);
+                        if (sec.length > 0) name = sec[0].full_name;
+                    } else if (user.role === 'doctor') {
+                        const doc = await conn.query("SELECT full_name FROM doctors WHERE user_id = ?", [user.id]);
+                        if (doc.length > 0) name = doc[0].full_name;
+                    } else if (user.role === 'patient') {
+                        const pat = await conn.query("SELECT full_name FROM patients WHERE user_id = ?", [user.id]);
+                        if (pat.length > 0) name = pat[0].full_name;
+                    }
+                } catch (e) {
+                    console.error("Error fetching user detail name", e);
+                }
+
                 // Audit Log
                 const logReq = { user: { user_id: user.id, username: user.username }, ip: req.ip };
                 logAction(logReq, 'LOGIN', 'Success');
 
-                return res.status(200).json({ user_id: user.id, username: user.username, role: user.role, token });
+                return res.status(200).json({ user_id: user.id, username: user.username, role: user.role, token, name });
             }
         }
         return res.status(400).send("Invalid Credentials");

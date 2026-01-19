@@ -25,29 +25,34 @@ exports.createTransaction = async (req, res) => {
 
         conn = await pool.getConnection();
 
+        // [FIX] Clean up existing pending debt for this appointment (if any) to prevent duplicates
+        if (appointment_id) {
+            await conn.query("DELETE FROM transactions WHERE appointment_id = ? AND status = 'pending'", [appointment_id]);
+        }
+
         // 1. Register the Payments
         if (Array.isArray(payments) && payments.length > 0) {
             for (const p of payments) {
                 if (Number(p.amount) > 0) {
                     await conn.query(
-                        "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, proof_file, request_id, appointment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                        [type, p.amount, description, related_user_id || null, doctor_id || null, p.method || 'cash', status || 'paid', proof_file, req.body.request_id || null, appointment_id || null]
+                        "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, institution_id, method, status, proof_file, request_id, appointment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        [type, p.amount, description, related_user_id || null, doctor_id || null, req.body.institution_id || null, p.method || 'cash', status || 'paid', proof_file, req.body.request_id || null, appointment_id || null]
                     );
                 }
             }
         } else if (Number(amount) > 0) {
             // Fallback for single payment
             await conn.query(
-                "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, proof_file, request_id, appointment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                [type, amount, description, related_user_id || null, doctor_id || null, method || 'cash', status || 'paid', proof_file, req.body.request_id || null, appointment_id || null]
+                "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, institution_id, method, status, proof_file, request_id, appointment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [type, amount, description, related_user_id || null, doctor_id || null, req.body.institution_id || null, method || 'cash', status || 'paid', proof_file, req.body.request_id || null, appointment_id || null]
             );
         }
 
         // 2. Register the Debt (if debt_amount > 0)
         if (Number(debt_amount) > 0) {
             await conn.query(
-                "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, proof_file, request_id, appointment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                [type, debt_amount, `DEBT: ${description}`, related_user_id || null, doctor_id || null, 'credit', 'pending', null, req.body.request_id || null, appointment_id || null]
+                "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, institution_id, method, status, proof_file, request_id, appointment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [type, debt_amount, `DEBT: ${description}`, related_user_id || null, doctor_id || null, req.body.institution_id || null, 'on_account', 'pending', null, req.body.request_id || null, appointment_id || null]
             );
         }
 
@@ -147,6 +152,10 @@ exports.getTransactions = async (req, res) => {
                     whereClauses.push("t.related_user_id = ?");
                     params.push(pat[0].user_id);
                 }
+            }
+            if (req.query.institution_id) {
+                whereClauses.push("t.institution_id = ?");
+                params.push(req.query.institution_id);
             }
         }
 
@@ -325,7 +334,7 @@ exports.payDebt = async (req, res) => {
                 // 2. Create new transaction for the REMAINDER (Pending)
                 const remainder = debtAmount - remaining;
                 await conn.query(
-                    "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, transaction_date, request_id, appointment_id) VALUES (?, ?, ?, ?, ?, 'credit', 'pending', ?, ?, ?)",
+                    "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, transaction_date, request_id, appointment_id) VALUES (?, ?, ?, ?, ?, 'on_account', 'pending', ?, ?, ?)",
                     [debt.type, remainder, debt.description, debt.related_user_id, debt.doctor_id, debt.transaction_date, debt.request_id, debt.appointment_id || null]
                 );
 
@@ -386,3 +395,193 @@ exports.payDebt = async (req, res) => {
         if (conn) conn.release();
     }
 };
+
+exports.payInstitutionDebt = async (req, res) => {
+    let conn;
+    try {
+        const { institution_id, amount, method, doctor_id } = req.body;
+
+        let payAmount = parseFloat(amount);
+        if (isNaN(payAmount) || payAmount <= 0) {
+            return res.status(400).send("Invalid amount");
+        }
+
+        conn = await pool.getConnection();
+
+        // 1. Fetch Pending Debt Transactions for this Institution
+        const debts = await conn.query(
+            "SELECT * FROM transactions WHERE institution_id = ? AND status = 'pending' AND amount > 0 ORDER BY transaction_date ASC",
+            [institution_id]
+        );
+
+        let remaining = payAmount;
+        let totalPaid = 0;
+
+        for (const debt of debts) {
+            if (remaining <= 0.01) break;
+
+            const debtAmount = Number(debt.amount);
+
+            if (remaining >= debtAmount) {
+                // Full payment of this line
+                await conn.query(
+                    "UPDATE transactions SET status = 'paid', method = ?, description = CONCAT(description, ' - Paid by Inst') WHERE id = ?",
+                    [method, debt.id]
+                );
+                remaining -= debtAmount;
+                totalPaid += debtAmount;
+            } else {
+                // Partial payment: Split transaction
+                await conn.query(
+                    "UPDATE transactions SET status = 'paid', amount = ?, method = ?, description = CONCAT(description, ' - Paid Part by Inst') WHERE id = ?",
+                    [remaining, method, debt.id]
+                );
+
+                const remainder = debtAmount - remaining;
+                await conn.query(
+                    "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, institution_id, method, status, transaction_date, request_id, appointment_id) VALUES (?, ?, ?, ?, ?, ?, 'on_account', 'pending', ?, ?, ?)",
+                    [debt.type, remainder, debt.description, debt.related_user_id, debt.doctor_id, debt.institution_id, debt.transaction_date, debt.request_id, debt.appointment_id || null]
+                );
+
+                totalPaid += remaining;
+                remaining = 0;
+            }
+        }
+
+        // Handle Overpayment
+        if (remaining > 0.01) {
+            await conn.query(
+                "INSERT INTO transactions (type, amount, description, institution_id, doctor_id, method, status) VALUES ('income_patient', ?, 'Advance Payment / Credit (Inst)', ?, ?, ?, 'paid')",
+                [remaining, institution_id, doctor_id || null, method]
+            );
+            totalPaid += remaining;
+        }
+
+        logAction(req, 'PAY_INSTITUTION_DEBT', `Institution ID ${institution_id} paid $${payAmount}`);
+        res.json({ message: "Institution payment processed", paid: totalPaid });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.updateTransaction = async (req, res) => {
+    let conn;
+    try {
+        const { id } = req.params;
+        const { amount, description, method, status } = req.body;
+        conn = await pool.getConnection();
+
+        // 1. Get current transaction to see if it's linked to an appointment
+        const [oldTx] = await conn.query("SELECT * FROM transactions WHERE id = ?", [id]);
+        if (!oldTx) return res.status(404).send("Transaction not found");
+
+        if (req.user.role === 'secretary') {
+            const [setting] = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'enable_secretary_finance_crud'");
+            if (!setting || setting.setting_value !== 'true') {
+                return res.status(403).send("Acceso denegado: CRUD de finanzas deshabilitado para secretarias.");
+            }
+        }
+
+        // 2. Update the transaction
+        await conn.query(
+            "UPDATE transactions SET amount = ?, description = ?, method = ?, status = ? WHERE id = ?",
+            [amount, description, method, status, id]
+        );
+
+        // 3. If linked to an appointment, re-calculate the payment status
+        if (oldTx.appointment_id) {
+            await syncAppointmentPaymentStatus(conn, oldTx.appointment_id, req.user?.user_id);
+        }
+
+        logAction(req, 'FINANCE_UPDATE', `Updated transaction ${id}: $${amount} - ${description}`);
+        res.json({ message: "Transaction updated" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.deleteTransaction = async (req, res) => {
+    let conn;
+    try {
+        const { id } = req.params;
+        conn = await pool.getConnection();
+
+        // 1. Get current transaction info
+        const [oldTx] = await conn.query("SELECT * FROM transactions WHERE id = ?", [id]);
+        if (!oldTx) return res.status(404).send("Transaction not found");
+
+        if (req.user.role === 'secretary') {
+            const [setting] = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'enable_secretary_finance_crud'");
+            if (!setting || setting.setting_value !== 'true') {
+                return res.status(403).send("Acceso denegado: CRUD de finanzas deshabilitado para secretarias.");
+            }
+        }
+
+        // 2. Delete
+        await conn.query("DELETE FROM transactions WHERE id = ?", [id]);
+
+        // 3. If linked to an appointment, re-calculate
+        if (oldTx.appointment_id) {
+            await syncAppointmentPaymentStatus(conn, oldTx.appointment_id, req.user?.user_id);
+        }
+
+        logAction(req, 'FINANCE_DELETE', `Deleted transaction ${id}: $${oldTx.amount} - ${oldTx.description}`);
+        res.json({ message: "Transaction deleted" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+// Helper function to re-calculate appointment payment status based on all its transactions
+async function syncAppointmentPaymentStatus(conn, appointmentId, userId) {
+    // Check if it's a patient or institution appointment? 
+    // For now, we look at ALL transactions for this appointment_id.
+    const txs = await conn.query("SELECT amount, status FROM transactions WHERE appointment_id = ?", [appointmentId]);
+
+    let totalPaid = 0;
+    let totalPending = 0;
+    txs.forEach(t => {
+        if (t.status === 'paid') totalPaid += Number(t.amount);
+        else if (t.status === 'pending') totalPending += Number(t.amount);
+    });
+
+    let finalStatus = 'unpaid';
+    if (totalPaid > 0 && totalPending > 0) finalStatus = 'partial';
+    else if (totalPaid > 0 && totalPending === 0) finalStatus = 'paid';
+    else if (totalPaid === 0 && totalPending > 0) finalStatus = 'debt';
+
+    const isPaid = finalStatus === 'paid' ? 1 : 0;
+    await conn.query("UPDATE appointments SET payment_status = ?, is_paid = ? WHERE id = ?", [finalStatus, isPaid, appointmentId]);
+
+    // Google Sync
+    const [appt] = await conn.query("SELECT * FROM appointments WHERE id = ?", [appointmentId]);
+    if (appt && appt.google_event_id) {
+        const patData = await conn.query("SELECT full_name, dni FROM patients WHERE id = ?", [appt.patient_id]);
+        const pName = patData.length > 0 ? patData[0].full_name : 'Paciente';
+
+        const updatePayload = {
+            summary: `Consultorio: ${pName} [${finalStatus === 'debt' ? 'DEUDA' : (finalStatus === 'paid' ? 'PAGADO' : 'PARCIAL')}]`,
+            paymentStatus: finalStatus
+        };
+
+        try {
+            await googleController.updateEventHelper(appt.doctor_id, appt.google_event_id, updatePayload, userId);
+        } catch (syncErr) {
+            console.warn("Google Sync Failed (Sync Recompute), queueing retry:", syncErr.message);
+            await conn.query(
+                "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'update', ?, 'pending')",
+                [appointmentId, appt.doctor_id, JSON.stringify({ eventId: appt.google_event_id, updates: updatePayload })]
+            );
+        }
+    }
+}
