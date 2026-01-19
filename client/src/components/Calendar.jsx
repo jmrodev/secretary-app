@@ -92,9 +92,9 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
     return (
         <div className="calendar-container card">
             <div className="calendar-header">
-                <button onClick={handlePrevMonth}>&lt;</button>
+                <button className="calendar-nav-btn" onClick={handlePrevMonth}>⬅️</button>
                 <h3>{months[viewDate.getMonth()]} {viewDate.getFullYear()}</h3>
-                <button onClick={handleNextMonth}>&gt;</button>
+                <button className="calendar-nav-btn" onClick={handleNextMonth}>➡️</button>
             </div>
             <div className="calendar-grid">
                 {daysOfWeek.map(day => (
@@ -110,14 +110,30 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    margin-bottom: 1rem;
+                    margin-bottom: 2rem;
                 }
-                .calendar-header button {
-                    background: none;
-                    border: none;
+                .calendar-nav-btn {
+                    background: var(--gray-100);
+                    border: 1px solid var(--gray-200);
                     cursor: pointer;
-                    font-size: 1.25rem;
-                    padding: 0.5rem;
+                    font-size: 1rem;
+                    width: 40px;
+                    height: 40px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 50%;
+                    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                }
+                .calendar-nav-btn:hover {
+                    background: var(--blue-100);
+                    border-color: var(--blue-300);
+                    transform: scale(1.1);
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                }
+                .calendar-nav-btn:active {
+                    transform: scale(0.95);
                 }
                 .calendar-grid {
                     display: grid;

@@ -850,8 +850,8 @@ exports.getFreeSlotsBatch = async (req, res) => {
         const todayZero = new Date(now); todayZero.setHours(0, 0, 0, 0);
         if (currentDay < todayZero) currentDay = new Date(todayZero);
 
-        const limitDaysWithSlots = 5; // How many days with ANY availability to return
-        const maxDaysToCheck = 30; // Safety cap
+        const limitDaysWithSlots = 20; // How many days with ANY availability to return
+        const maxDaysToCheck = 90; // Safety cap
         let daysChecked = 0;
         let daysFound = 0;
 

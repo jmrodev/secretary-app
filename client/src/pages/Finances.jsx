@@ -143,6 +143,26 @@ const Finances = () => {
         <div className="app-layout">
             <Sidebar />
             <main className="main-content">
+                {/* Doctor Filter Tabs */}
+                {(user.role === 'admin' || user.role === 'secretary') && (
+                    <div className="tabs-container mb-6 max-w-full overflow-x-auto custom-scrollbar flex-nowrap pb-2">
+                        <button
+                            className={`tab-btn whitespace-nowrap ${selectedDoctorFilter === '' ? 'active' : ''}`}
+                            onClick={() => setSelectedDoctorFilter('')}
+                        >
+                            👥 {t('all_doctors')}
+                        </button>
+                        {doctors.map(d => (
+                            <button
+                                key={d.id}
+                                className={`tab-btn whitespace-nowrap ${selectedDoctorFilter == d.id ? 'active' : ''}`}
+                                onClick={() => setSelectedDoctorFilter(d.id.toString())}
+                            >
+                                👨‍⚕️ {d.full_name}
+                            </button>
+                        ))}
+                    </div>
+                )}
 
                 {/* Stats (Admin/Secretary) */}
                 {(user.role === 'admin' || user.role === 'secretary') && (
@@ -162,17 +182,30 @@ const Finances = () => {
                     {user.role !== 'patient' && (
                         <div className="flex-col gap-8">
                             <div className="card">
-                                <h3>{t('actions')}</h3>
-                                <button className="btn btn-primary mb-4 w-auto self-start" onClick={() => setModalOpen(true)}>
-                                    {t('new_transaction')}
-                                </button>
+                                <h3>🚀 {t('quick_actions') || 'Acciones Rápidas'}</h3>
+                                <div className="flex flex-wrap gap-3 mt-2">
+                                    <button className="btn btn-primary w-fit whitespace-nowrap" onClick={() => setModalOpen(true)}>
+                                        ✨ {t('new_transaction')}
+                                    </button>
 
-                                <div className="mb-4">
-                                    <label className="input-label block font-bold">{t('filter_by_doctor')}</label>
-                                    <select className="input-field" value={selectedDoctorFilter} onChange={e => setSelectedDoctorFilter(e.target.value)}>
-                                        <option value="">{t('all_doctors')}</option>
-                                        {doctors.map(d => <option key={d.id} value={d.id}>{d.full_name}</option>)}
-                                    </select>
+                                    {selectedDoctorFilter && (() => {
+                                        const d = doctors.find(doc => doc.id == selectedDoctorFilter);
+                                        const bal = calculateBalance(selectedDoctorFilter);
+                                        if (d && bal > 0) {
+                                            return (
+                                                <button
+                                                    className="btn btn-secondary w-fit border-green-200 text-green-700 hover:bg-green-50 whitespace-nowrap"
+                                                    onClick={() => {
+                                                        setCloseBoxModal({ open: true, doctorId: d.id, doctorName: d.full_name, balance: bal });
+                                                        setCloseAmount(bal);
+                                                    }}
+                                                >
+                                                    💰 {t('deliver')} a {d.full_name.split(' ')[0]}
+                                                </button>
+                                            );
+                                        }
+                                        return null;
+                                    })()}
                                 </div>
                             </div>
 
@@ -200,17 +233,6 @@ const Finances = () => {
                                                                 ${bal.toLocaleString()}
                                                             </p>
                                                         </div>
-                                                        {(bal > 0 && (user.role === 'admin' || user.role === 'secretary')) && (
-                                                            <button
-                                                                className="btn btn-sm btn-primary mt-4 w-auto self-start"
-                                                                onClick={() => {
-                                                                    setCloseBoxModal({ open: true, doctorId: d.id, doctorName: d.full_name, balance: bal });
-                                                                    setCloseAmount(bal);
-                                                                }}
-                                                            >
-                                                                {t('deliver')}
-                                                            </button>
-                                                        )}
                                                     </div>
                                                 );
                                             })}

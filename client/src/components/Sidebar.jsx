@@ -18,18 +18,6 @@ const Sidebar = () => {
         <aside className="sidebar">
             <div className="sidebar-header">
                 <h2 className="sidebar-title">ClinicFlow</h2>
-                <div className="user-profile-card mt-4">
-                    <div className="user-avatar-mini">
-                        {user.username.charAt(0).toUpperCase()}
-                    </div>
-                    <div className="user-details">
-                        <span className="username">{user.username}</span>
-                        <span className="user-role">{t(user.role) || user.role}</span>
-                    </div>
-                    <button onClick={logout} className="btn-logout-minimal" title={t('sign_out')}>
-                        <span>🚪</span>
-                    </button>
-                </div>
             </div>
 
             <nav className="sidebar-nav">
@@ -109,6 +97,21 @@ const Sidebar = () => {
                     <span>👤</span> {t('profile')}
                 </a>
             </nav>
+
+            <div className="sidebar-footer">
+                <div className="user-profile-card">
+                    <div className="user-avatar-mini">
+                        {user.username.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="user-details">
+                        <span className="username">{user.username}</span>
+                        <span className="user-role">{t(user.role) || user.role}</span>
+                    </div>
+                    <button onClick={logout} className="btn-logout-minimal" title={t('sign_out')}>
+                        <span>🚪</span>
+                    </button>
+                </div>
+            </div>
         </aside>
     );
 };

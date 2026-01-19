@@ -660,83 +660,113 @@ const Patients = () => {
                 {
                     activeTab === 'list' ? (
                         <>
-                            <div className="card-transparent">
-                                <ul className="item-grid">
-                                    {currentPatients.length === 0 ? (
-                                        <li className="text-muted p-12 text-center bg-white rounded-lg border border-dashed border-slate-300">
-                                            {t('no_patients_found')}
-                                        </li>
-                                    ) : (
-                                        currentPatients.map(p => (
-                                            <li key={p.id} className="item-card hover:shadow-lg transition-all border border-slate-100 p-4 bg-white rounded-xl shadow-sm mb-3">
-                                                <div className="flex-1">
-                                                    <div className="flex items-center gap-2 mb-1">
-                                                        <strong className="text-lg text-main-800 capitalize leading-tight">{p.full_name}</strong>
-                                                        {p.is_new_patient === 1 && <span className="badge badge-purple uppercase text-[10px]">✨ NUEVO</span>}
-                                                    </div>
-                                                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-main-500">
-                                                        {p.dni && <span><span className="font-semibold text-muted">DNI:</span> {p.dni}</span>}
-                                                        {(p.insurance_name || p.insurance) && <span><span className="font-semibold text-muted">OS:</span> {p.insurance_name || p.insurance}</span>}
-                                                        {p.phone && (
+                            <div className="table-responsive">
+                                <table className="table-base">
+                                    <thead>
+                                        <tr>
+                                            <th>{t('patient')}</th>
+                                            <th>{t('identification')} / OS</th>
+                                            <th>{t('contact')}</th>
+                                            <th>{t('ratings')}</th>
+                                            <th>{t('debt')}</th>
+                                            <th className="text-right">{t('actions')}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {currentPatients.length === 0 ? (
+                                            <tr>
+                                                <td colSpan="6" className="text-muted p-12 text-center">
+                                                    {t('no_patients_found')}
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            currentPatients.map(p => (
+                                                <tr key={p.id} className="hover:bg-slate-50 transition-all">
+                                                    <td>
+                                                        <div className="flex flex-col gap-1">
+                                                            <div className="flex items-center gap-2">
+                                                                <strong className="text-main-800 capitalize leading-tight">{p.full_name}</strong>
+                                                                {p.is_new_patient === 1 && <span className="tag tag-purple text-[10px] py-0 px-1">✨ NUEVO</span>}
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div className="flex flex-col text-xs">
+                                                            {p.dni && <span><span className="font-semibold text-muted">DNI:</span> {p.dni}</span>}
+                                                            {(p.insurance_name || p.insurance) && <span><span className="font-semibold text-muted">OS:</span> {p.insurance_name || p.insurance}</span>}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        {p.phone ? (
                                                             <a href={`https://wa.me/${p.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="text-blue-600 font-bold hover:underline" onClick={(e) => e.stopPropagation()}>
                                                                 📱 {p.phone}
                                                             </a>
+                                                        ) : <span className="text-muted">N/A</span>}
+                                                    </td>
+                                                    <td>
+                                                        <div className="flex items-center gap-4">
+                                                            <div className="rating-container flex flex-col items-center" title={`${t('rating_financial_tooltip')}\nDeuda Actual: $${p.total_debt}`}>
+                                                                <div className="text-[9px] font-bold text-muted uppercase">FIN</div>
+                                                                <div className="rating-stars-gold text-sm">
+                                                                    {[1, 2, 3, 4, 5].map(s => <span key={s}>{s <= calculateFinancialRating(Number(p.total_debt)) ? '★' : '☆'}</span>)}
+                                                                </div>
+                                                            </div>
+                                                            <div className="rating-container flex flex-col items-center" title={`${t('rating_attendance_tooltip')}\nResumen: ${p.total_appointments - p.missed_appointments}/${p.total_appointments}`}>
+                                                                <div className="text-[9px] font-bold text-muted uppercase">ASIST</div>
+                                                                <div className="rating-stars-blue text-sm">
+                                                                    {[1, 2, 3, 4, 5].map(s => <span key={s}>{s <= calculateAttendanceRating(p.total_appointments, p.missed_appointments) ? '★' : '☆'}</span>)}
+                                                                </div>
+                                                            </div>
+                                                            <div
+                                                                className="rating-container flex flex-col items-center cursor-pointer hover:bg-slate-100 p-1 rounded transition-colors"
+                                                                onClick={() => handleBehaviorRatingChange(p.id, ((p.behavior_rating || 5) % 5) + 1)}
+                                                                title={`${t('rating_behavior_tooltip')}\nCalificación: ${p.behavior_rating || 5}/5 (Click para cambiar)`}
+                                                            >
+                                                                <div className="text-[9px] font-bold text-muted uppercase">COND</div>
+                                                                <div className="rating-stars-pink text-sm">
+                                                                    {[1, 2, 3, 4, 5].map(s => <span key={s}>{s <= (p.behavior_rating || 5) ? '★' : '☆'}</span>)}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        {Number(p.total_debt) > 0 ? (
+                                                            <div
+                                                                onClick={(e) => openDebtModal(e, p.id, p.total_debt)}
+                                                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-red-50 text-red-600 border border-red-100 cursor-pointer hover:bg-red-200 transition-colors"
+                                                            >
+                                                                💸 ${p.total_debt}
+                                                            </div>
+                                                        ) : (
+                                                            <span className="text-xs text-green-600 font-bold">$0.00</span>
                                                         )}
-                                                    </div>
-                                                    {Number(p.total_debt) > 0 && (
-                                                        <div
-                                                            onClick={(e) => openDebtModal(e, p.id, p.total_debt)}
-                                                            className="inline-flex items-center gap-1 px-2 py-0.5 mt-2 rounded-full text-xs font-bold bg-red-50 text-red-600 border border-red-100 cursor-pointer hover:bg-red-200 transition-colors"
-                                                        >
-                                                            💸 Deuda: ${p.total_debt}
+                                                    </td>
+                                                    <td>
+                                                        <div className="flex justify-end gap-1">
+                                                            <button
+                                                                className="btn-icon-base btn-icon-blue"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleSendEditLink(p);
+                                                                }}
+                                                                title="WhatsApp Link"
+                                                            >
+                                                                🔗
+                                                            </button>
+                                                            <button
+                                                                className="btn-icon-base btn-icon-blue"
+                                                                onClick={() => handleViewDetails(p.id)}
+                                                                title={t('view_medical_history')}
+                                                            >
+                                                                🩺
+                                                            </button>
                                                         </div>
-                                                    )}
-                                                </div>
-
-                                                <div className="flex items-center flex-wrap gap-4 mr-6">
-                                                    <div className="rating-container flex flex-col items-center" title={`${t('rating_financial_tooltip')}\nDeuda Actual: $${p.total_debt}`}>
-                                                        <div className="text-[10px] font-bold text-muted uppercase mb-1">FIN</div>
-                                                        <div className="rating-stars-gold text-base">
-                                                            {[1, 2, 3, 4, 5].map(s => <span key={s}>{s <= calculateFinancialRating(Number(p.total_debt)) ? '★' : '☆'}</span>)}
-                                                        </div>
-                                                    </div>
-                                                    <div className="rating-container flex flex-col items-center" title={`${t('rating_attendance_tooltip')}\nResumen: ${p.total_appointments - p.missed_appointments}/${p.total_appointments}`}>
-                                                        <div className="text-[10px] font-bold text-muted uppercase mb-1">ASIST</div>
-                                                        <div className="rating-stars-blue text-base">
-                                                            {[1, 2, 3, 4, 5].map(s => <span key={s}>{s <= calculateAttendanceRating(p.total_appointments, p.missed_appointments) ? '★' : '☆'}</span>)}
-                                                        </div>
-                                                    </div>
-                                                    <div
-                                                        className="rating-container flex flex-col items-center cursor-pointer hover:bg-slate-50 p-1 rounded transition-colors"
-                                                        onClick={() => handleBehaviorRatingChange(p.id, ((p.behavior_rating || 5) % 5) + 1)}
-                                                        title={`${t('rating_behavior_tooltip')}\nCalificación: ${p.behavior_rating || 5}/5 (Click para cambiar)`}
-                                                    >
-                                                        <div className="text-[10px] font-bold text-muted uppercase mb-1">COND</div>
-                                                        <div className="rating-stars-pink text-base">
-                                                            {[1, 2, 3, 4, 5].map(s => <span key={s}>{s <= (p.behavior_rating || 5) ? '★' : '☆'}</span>)}
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div className="flex gap-2 items-center">
-                                                    <button
-                                                        className="btn btn-secondary btn-sm px-3 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border-indigo-200"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleSendEditLink(p);
-                                                        }}
-                                                        title="Enviar Link de Edición (WhatsApp)"
-                                                    >
-                                                        🔗 Link Edición
-                                                    </button>
-                                                    <button className="btn btn-primary btn-sm px-4" onClick={() => handleViewDetails(p.id)}>
-                                                        🩺 Ver Ficha
-                                                    </button>
-                                                </div>
-                                            </li>
-                                        ))
-                                    )}
-                                </ul>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
                             </div>
 
                             {totalPages > 1 && (
@@ -769,63 +799,87 @@ const Patients = () => {
                                 <span className="text-xl">ℹ️</span>
                                 <span className="font-medium">Los elementos aquí listados se eliminan permanentemente tras 30 días.</span>
                             </div>
-                            <ul className="item-grid">
-                                {recycleItems.length === 0 ? (
-                                    <li className="text-muted p-20 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-300">
-                                        <div className="text-5xl opacity-20 mb-4">🗑️</div>
-                                        <p className="text-lg font-bold text-muted">La papelera está vacía.</p>
-                                    </li>
-                                ) : (
-                                    recycleItems.map(item => (
-                                        <li key={item.id} className="item-card border-l-4 border-l-purple-500 hover:bg-slate-50 transition-all shadow-sm p-4 bg-white rounded-xl mb-3">
-                                            <div className="flex-1">
-                                                <div className="flex items-center gap-3 mb-2">
-                                                    {item.entity_type !== 'patient' && (
-                                                        <span className="badge badge-purple uppercase text-[10px] font-black tracking-widest px-2">
-                                                            {item.entity_type === 'doctor' ? 'MÉDICO' : 'SECRETARIA'}
-                                                        </span>
-                                                    )}
-                                                    <strong className="text-lg text-main-800 leading-tight">{item.entity_name}</strong>
-                                                </div>
-                                                <div className="flex flex-col gap-1 text-sm text-main-500">
-                                                    <span>📅 Eliminado el <span className="font-bold text-main-600">{new Date(item.deleted_at).toLocaleString()}</span></span>
-                                                    <span>👤 Por <span className="font-bold text-main-600">{item.deleted_by_name}</span></span>
-                                                </div>
-                                                <div className="text-[11px] text-red-500 mt-3 font-bold bg-red-50 inline-block px-3 py-1 rounded-full border border-red-100">
-                                                    ⚠️ EXPIRA EL {new Date(item.expires_at).toLocaleDateString()}
-                                                </div>
-                                            </div>
-                                            <div className="flex gap-2">
-                                                <button
-                                                    className="btn btn-sm text-green-600 bg-green-50 hover:bg-green-100 border-green-200"
-                                                    onClick={async () => {
-                                                        if (await confirm(`¿Restaurar a ${item.entity_name}?\n\nLa contraseña se reseteará a '123456'.`)) {
-                                                            try {
-                                                                await api.post(`/logs/restore/${item.id}`);
-                                                                showMessage('Restaurado con éxito', 'success');
-                                                                fetchRecycleBin();
-                                                                // Optional: Switch to list tab to see it
-                                                                // setActiveTab('list');
-                                                            } catch (err) {
-                                                                console.error(err);
-                                                                showMessage('Error al restaurar', 'error');
-                                                            }
-                                                        }
-                                                    }}
-                                                >
-                                                    ♻️ Restaurar
-                                                </button>
-                                                <button
-                                                    className="btn btn-secondary btn-sm flex items-center gap-2 px-4 shadow-sm"
-                                                    onClick={() => setShowRecycleDetail(item)}
-                                                >
-                                                    👁️ Ver Datos
-                                                </button>
-                                            </div>
-                                        </li>
-                                    ))
-                                )}
-                            </ul>
+                            <div className="table-responsive">
+                                <table className="table-base">
+                                    <thead>
+                                        <tr>
+                                            <th>Entidad</th>
+                                            <th>Fecha Eliminación</th>
+                                            <th>Eliminado Por</th>
+                                            <th>Vencimiento</th>
+                                            <th className="text-right">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {recycleItems.length === 0 ? (
+                                            <tr>
+                                                <td colSpan="5" className="text-muted p-20 text-center">
+                                                    <div className="text-5xl opacity-20 mb-4">🗑️</div>
+                                                    <p className="text-lg font-bold text-muted">La papelera está vacía.</p>
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            recycleItems.map(item => (
+                                                <tr key={item.id} className="hover:bg-slate-50 transition-all">
+                                                    <td>
+                                                        <div className="flex items-center gap-3">
+                                                            {item.entity_type !== 'patient' && (
+                                                                <span className="tag tag-purple text-[10px] font-black tracking-widest px-2 uppercase shadow-none border-none">
+                                                                    {item.entity_type === 'doctor' ? 'MÉDICO' : 'SECRETARIA'}
+                                                                </span>
+                                                            )}
+                                                            <strong className="text-main-800 leading-tight">{item.entity_name}</strong>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div className="flex flex-col text-xs">
+                                                            <span className="font-bold text-main-600">{new Date(item.deleted_at).toLocaleDateString()}</span>
+                                                            <span className="text-muted">{new Date(item.deleted_at).toLocaleTimeString()}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span className="font-bold text-main-600 text-xs">{item.deleted_by_name}</span>
+                                                    </td>
+                                                    <td>
+                                                        <div className="text-[11px] text-red-500 font-bold bg-red-50 inline-block px-3 py-1 rounded-full border border-red-100">
+                                                            ⚠️ {new Date(item.expires_at).toLocaleDateString()}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div className="flex justify-end gap-1">
+                                                            <button
+                                                                className="btn-icon-base btn-icon-blue"
+                                                                title="Restaurar"
+                                                                onClick={async () => {
+                                                                    if (await confirm(`¿Restaurar a ${item.entity_name}?\n\nLa contraseña se reseteará a '123456'.`)) {
+                                                                        try {
+                                                                            await api.post(`/logs/restore/${item.id}`);
+                                                                            showMessage('Restaurado con éxito', 'success');
+                                                                            fetchRecycleBin();
+                                                                        } catch (err) {
+                                                                            console.error(err);
+                                                                            showMessage('Error al restaurar', 'error');
+                                                                        }
+                                                                    }
+                                                                }}
+                                                            >
+                                                                ♻️
+                                                            </button>
+                                                            <button
+                                                                className="btn-icon-base btn-icon-blue"
+                                                                title="Ver Datos"
+                                                                onClick={() => setShowRecycleDetail(item)}
+                                                            >
+                                                                👁️
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     )
                 }

@@ -469,39 +469,51 @@ const MedicalDocuments = () => {
                             <div className="card">
                                 <h3>{t('file_repository')}</h3>
                                 {files.filter(filterItem).length === 0 ? <p className="text-muted p-4">{t('no_files')}</p> : (
-                                    <div className="file-grid">
-                                        {files.filter(filterItem).map(f => (
-                                            <div key={f.id} className="file-card group" onClick={() => window.open(f.file_url, '_blank')}>
-                                                <div className="flex justify-between items-start">
-                                                    <div className="file-icon-placeholder">
-                                                        📄
-                                                    </div>
-                                                    <span className="text-xs bg-slate-100 text-main-500 px-2 py-1 rounded uppercase">{f.file_type.split('/')[1] || 'FILE'}</span>
-                                                </div>
-
-                                                <div className="file-info">
-                                                    <h4>{f.description || f.file_name}</h4>
-                                                    <div className="file-meta">
-                                                        {f.patient_name}
-                                                    </div>
-                                                    <div className="file-meta text-xs">
-                                                        By {f.uploader_name}
-                                                    </div>
-                                                </div>
-
-                                                {(user.role === 'admin' || user.role === 'secretary') && (
-                                                    <button
-                                                        className="btn btn-sm-compact btn-danger mt-2 w-full opacity-0 group-hover:opacity-100 transition-opacity"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleFileDeleteClick(f);
-                                                        }}
-                                                    >
-                                                        Delete
-                                                    </button>
-                                                )}
-                                            </div>
-                                        ))}
+                                    <div className="table-responsive">
+                                        <table className="table-base">
+                                            <thead>
+                                                <tr>
+                                                    <th>{t('file')}</th>
+                                                    <th>{t('patient')}</th>
+                                                    <th>{t('uploader')}</th>
+                                                    <th>{t('type')}</th>
+                                                    <th className="text-right">{t('actions')}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {files.filter(filterItem).map(f => (
+                                                    <tr key={f.id} className="hover:bg-slate-50 cursor-pointer" onClick={() => window.open(f.file_url, '_blank')}>
+                                                        <td>
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-xl">📄</span>
+                                                                <span className="font-bold">{f.description || f.file_name}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td>{f.patient_name}</td>
+                                                        <td>{f.uploader_name}</td>
+                                                        <td>
+                                                            <span className="text-xs bg-slate-100 text-main-500 px-2 py-1 rounded uppercase">{f.file_type.split('/')[1] || 'FILE'}</span>
+                                                        </td>
+                                                        <td>
+                                                            <div className="flex justify-end gap-1">
+                                                                {(user.role === 'admin' || user.role === 'secretary') && (
+                                                                    <button
+                                                                        className="btn-icon-base btn-icon-red"
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            handleFileDeleteClick(f);
+                                                                        }}
+                                                                        title="Delete"
+                                                                    >
+                                                                        🗑️
+                                                                    </button>
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
                                     </div>
                                 )}
                             </div>
@@ -531,35 +543,54 @@ const MedicalDocuments = () => {
                             <h3 className="text-main-800 mb-4 flex items-center gap-2">
                                 <span>💊</span> {t('recent_prescriptions')}
                             </h3>
-                            <div className="history-grid">
-                                {combinedPrescriptions.filter(filterItem).map(p => (
-                                    <div key={`${p._origin}_${p.id}`} className="history-item">
-                                        <div className="history-item-header">
-                                            <div>
-                                                <div className="font-bold text-main-800">{p.patient_name}</div>
-                                                <div className="text-xs text-main-500">{timeAgo(p.created_at)} ({new Date(p.created_at).toLocaleDateString()})</div>
-                                            </div>
-                                            {p._origin === 'request' && <span className="tag tag-slate">{t('request') || 'Solicitud'}</span>}
-                                        </div>
-                                        <div className="note-bubble mb-3 truncate hover:whitespace-normal cursor-help" title={p.medications || p.request_note}>
-                                            {p.medications || p.request_note}
-                                        </div>
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-xs text-main-500">Dr. {p.doctor_name}</span>
-                                            <div className="flex gap-2">
-                                                <button onClick={() => handleViewItem(p)} className="btn btn-sm-compact btn-secondary">{t('view')}</button>
-                                                {(user.role === 'admin' || user.role === 'secretary') && (
-                                                    <button
-                                                        onClick={() => p._origin === 'prescription' ? handleDeletePrescription(p.id) : handleDeleteRequest(p.id, p)}
-                                                        className="btn btn-sm-compact btn-danger"
-                                                    >
-                                                        🗑️
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
+                            <div className="table-responsive">
+                                <table className="table-base">
+                                    <thead>
+                                        <tr>
+                                            <th>{t('date')}</th>
+                                            <th>{t('patient')}</th>
+                                            <th>{t('medications')}</th>
+                                            <th>{t('doctor')}</th>
+                                            <th className="text-right">{t('actions')}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {combinedPrescriptions.filter(filterItem).map(p => (
+                                            <tr key={`${p._origin}_${p.id}`} className="hover:bg-slate-50">
+                                                <td>
+                                                    <div className="flex flex-col">
+                                                        <span className="text-sm">{new Date(p.created_at).toLocaleDateString()}</span>
+                                                        <span className="text-xs text-muted">{timeAgo(p.created_at)}</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div className="font-bold">{p.patient_name}</div>
+                                                    {p._origin === 'request' && <span className="tag tag-slate text-[10px] py-0 px-1">{t('request')}</span>}
+                                                </td>
+                                                <td>
+                                                    <div className="text-sm italic truncate max-w-xs" title={p.medications || p.request_note}>
+                                                        {p.medications || p.request_note}
+                                                    </div>
+                                                </td>
+                                                <td>Dr. {p.doctor_name}</td>
+                                                <td>
+                                                    <div className="flex justify-end gap-1">
+                                                        <button onClick={() => handleViewItem(p)} className="btn-icon-base btn-icon-blue" title={t('view')}>👁️</button>
+                                                        {(user.role === 'admin' || user.role === 'secretary') && (
+                                                            <button
+                                                                onClick={() => p._origin === 'prescription' ? handleDeletePrescription(p.id) : handleDeleteRequest(p.id, p)}
+                                                                className="btn-icon-base btn-icon-red"
+                                                                title="Delete"
+                                                            >
+                                                                🗑️
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
                             {combinedPrescriptions.filter(filterItem).length === 0 && (
                                 <div className="card text-center p-12">
@@ -576,38 +607,58 @@ const MedicalDocuments = () => {
                             <h3 className="text-main-800 mb-4 flex items-center gap-2">
                                 <span>📄</span> {t('recent_licenses')}
                             </h3>
-                            <div className="history-grid">
-                                {combinedLicenses.filter(filterItem).map(l => (
-                                    <div key={`${l._origin}_${l.id}`} className="history-item">
-                                        <div className="history-item-header">
-                                            <div>
-                                                <div className="font-bold text-main-800">{l.patient_name}</div>
-                                                <div className="text-xs text-main-500">{timeAgo(l.appointment_date || l.created_at)} ({new Date(l.appointment_date || l.created_at).toLocaleDateString()})</div>
-                                            </div>
-                                            {l._origin === 'request' && <span className="tag tag-slate">{t('request') || 'Solicitud'}</span>}
-                                        </div>
-                                        <div className="flex items-center gap-2 mb-3">
-                                            <span className="tag tag-blue">{l.days_duration} {t('days')}</span>
-                                        </div>
-                                        <div className="note-bubble doc-note-bubble mb-3 truncate" title={l.diagnosis}>
-                                            {l.diagnosis}
-                                        </div>
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-xs text-main-500">Dr. {l.doctor_name}</span>
-                                            <div className="flex gap-2">
-                                                <button onClick={() => handleViewItem(l)} className="btn btn-sm-compact btn-secondary">{t('view')}</button>
-                                                {(user.role === 'admin' || user.role === 'secretary') && (
-                                                    <button
-                                                        onClick={() => l._origin === 'license' ? handleDeleteLicense(l.id) : handleDeleteRequest(l.id, l)}
-                                                        className="btn btn-sm-compact btn-danger"
-                                                    >
-                                                        🗑️
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
+                            <div className="table-responsive">
+                                <table className="table-base">
+                                    <thead>
+                                        <tr>
+                                            <th>{t('date')}</th>
+                                            <th>{t('patient')}</th>
+                                            <th>{t('duration')}</th>
+                                            <th>{t('diagnosis')}</th>
+                                            <th>{t('doctor')}</th>
+                                            <th className="text-right">{t('actions')}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {combinedLicenses.filter(filterItem).map(l => (
+                                            <tr key={`${l._origin}_${l.id}`} className="hover:bg-slate-50">
+                                                <td>
+                                                    <div className="flex flex-col">
+                                                        <span className="text-sm">{new Date(l.appointment_date || l.created_at).toLocaleDateString()}</span>
+                                                        <span className="text-xs text-muted">{timeAgo(l.appointment_date || l.created_at)}</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div className="font-bold">{l.patient_name}</div>
+                                                    {l._origin === 'request' && <span className="tag tag-slate text-[10px] py-0 px-1">{t('request')}</span>}
+                                                </td>
+                                                <td>
+                                                    <span className="tag tag-blue">{l.days_duration} {t('days')}</span>
+                                                </td>
+                                                <td>
+                                                    <div className="text-sm italic truncate max-w-xs" title={l.diagnosis}>
+                                                        {l.diagnosis}
+                                                    </div>
+                                                </td>
+                                                <td>Dr. {l.doctor_name}</td>
+                                                <td>
+                                                    <div className="flex justify-end gap-1">
+                                                        <button onClick={() => handleViewItem(l)} className="btn-icon-base btn-icon-blue" title={t('view')}>👁️</button>
+                                                        {(user.role === 'admin' || user.role === 'secretary') && (
+                                                            <button
+                                                                onClick={() => l._origin === 'license' ? handleDeleteLicense(l.id) : handleDeleteRequest(l.id, l)}
+                                                                className="btn-icon-base btn-icon-red"
+                                                                title="Delete"
+                                                            >
+                                                                🗑️
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
                             {combinedLicenses.filter(filterItem).length === 0 && (
                                 <div className="card text-center p-12">
@@ -624,35 +675,54 @@ const MedicalDocuments = () => {
                             <h3 className="text-main-800 mb-4 flex items-center gap-2">
                                 <span>📜</span> {t('recent_certificates')}
                             </h3>
-                            <div className="history-grid">
-                                {combinedCertificates.filter(filterItem).map(c => (
-                                    <div key={`${c._origin}_${c.id}`} className="history-item">
-                                        <div className="history-item-header">
-                                            <div>
-                                                <div className="font-bold text-main-800">{c.patient_name}</div>
-                                                <div className="text-xs text-main-500">{timeAgo(c.created_at)} ({new Date(c.created_at).toLocaleDateString()})</div>
-                                            </div>
-                                            <span className="tag tag-slate">{t('medical_certificate') || 'Certificado'}</span>
-                                        </div>
-                                        <div className="note-bubble mb-3">
-                                            {c.description}
-                                        </div>
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-xs text-main-500">Dr. {c.doctor_name}</span>
-                                            <div className="flex gap-2">
-                                                <button onClick={() => handleViewItem(c)} className="btn btn-sm-compact btn-secondary">{t('view')}</button>
-                                                {(user.role === 'admin' || user.role === 'secretary') && (
-                                                    <button
-                                                        onClick={() => handleDeleteRequest(c.id, c)}
-                                                        className="btn btn-sm-compact btn-danger"
-                                                    >
-                                                        🗑️
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
+                            <div className="table-responsive">
+                                <table className="table-base">
+                                    <thead>
+                                        <tr>
+                                            <th>{t('date')}</th>
+                                            <th>{t('patient')}</th>
+                                            <th>{t('description')}</th>
+                                            <th>{t('doctor')}</th>
+                                            <th className="text-right">{t('actions')}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {combinedCertificates.filter(filterItem).map(c => (
+                                            <tr key={`${c._origin}_${c.id}`} className="hover:bg-slate-50">
+                                                <td>
+                                                    <div className="flex flex-col">
+                                                        <span className="text-sm">{new Date(c.created_at).toLocaleDateString()}</span>
+                                                        <span className="text-xs text-muted">{timeAgo(c.created_at)}</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div className="font-bold">{c.patient_name}</div>
+                                                    <span className="tag tag-slate text-[10px] py-0 px-1">{t('certificate')}</span>
+                                                </td>
+                                                <td>
+                                                    <div className="text-sm italic truncate max-w-xs" title={c.description}>
+                                                        {c.description}
+                                                    </div>
+                                                </td>
+                                                <td>Dr. {c.doctor_name}</td>
+                                                <td>
+                                                    <div className="flex justify-end gap-1">
+                                                        <button onClick={() => handleViewItem(c)} className="btn-icon-base btn-icon-blue" title={t('view')}>👁️</button>
+                                                        {(user.role === 'admin' || user.role === 'secretary') && (
+                                                            <button
+                                                                onClick={() => handleDeleteRequest(c.id, c)}
+                                                                className="btn-icon-base btn-icon-red"
+                                                                title="Delete"
+                                                            >
+                                                                🗑️
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
                             {combinedCertificates.filter(filterItem).length === 0 && (
                                 <div className="card text-center p-12">

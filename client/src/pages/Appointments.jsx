@@ -536,7 +536,7 @@ const Appointments = () => {
         setShowForm(true);
     };
 
-    const handleCopySlot = (slot) => {
+    const handleWhatsAppSlot = (slot) => {
         const docId = viewDoctorId || selectedDoctor;
         const doctor = doctors.find(d => d.id === Number(docId));
         const docName = doctor ? doctor.full_name : 'el Doctor';
@@ -555,9 +555,33 @@ const Appointments = () => {
             .replace(/{time}/g, slot.time)
             .replace(/{secretary_name}/g, user.name || 'Secretaria');
 
-        copyToClipboard(msg).then(() => {
-            showMessage('Propuesta copiada al portapapeles', 'success');
-        }).catch(err => console.error("Clipboard error", err));
+        // Copy to clipboard automatically for "Paste" (ZapZap/Manual)
+        copyToClipboard(msg).catch(err => console.error("Clipboard error", err));
+
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        const phone = selectedPatientData?.phone ? selectedPatientData.phone.replace(/[^0-9]/g, '') : '';
+
+        let targetUrl;
+        if (isMobile) {
+            targetUrl = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+        } else {
+            // Use protocol for native apps (like ZapZap) or web as fallback
+            targetUrl = phone
+                ? `whatsapp://send?phone=${phone}&text=${encodeURIComponent(msg)}`
+                : `whatsapp://send?text=${encodeURIComponent(msg)}`;
+
+            // Fallback to web if protocol fails after a short delay
+            setTimeout(() => {
+                if (!document.hasFocus()) return; // If window lost focus, protocol probably worked
+                const webUrl = phone
+                    ? `https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`
+                    : `https://wa.me/?text=${encodeURIComponent(msg)}`;
+                window.open(webUrl, '_blank');
+            }, 500);
+        }
+
+        window.location.href = targetUrl;
+        showMessage(t('whatsapp_opened') || 'Abriendo WhatsApp y Copiando Texto...', 'info');
     };
 
     if (loading) return <div>{t('loading')}</div>;
@@ -616,21 +640,23 @@ const Appointments = () => {
                     </div>
 
                     {activeTab === 'calendar' && user.role === 'secretary' && (
-                        <div className="filter-group">
-                            <div className="flex items-center gap-3">
-                                <label className={`filter-label ${viewDoctorId ? 'doctor-themed-text' : ''}`} style={{ margin: 0 }}>Filtrar por Médico:</label>
-                                <select
-                                    className="filter-select"
-                                    value={viewDoctorId}
-                                    onChange={(e) => setViewDoctorId(e.target.value)}
-                                    style={{ minWidth: '200px' }}
+                        <div className="tabs-container" style={{ margin: 0, padding: '0.25rem' }}>
+                            <button
+                                className={`tab-btn-small ${!viewDoctorId ? 'active' : ''}`}
+                                onClick={() => setViewDoctorId('')}
+                            >
+                                🏢 Todos
+                            </button>
+                            {doctors.map(d => (
+                                <button
+                                    key={d.id}
+                                    className={`tab-btn-small ${viewDoctorId == d.id ? 'active' : ''}`}
+                                    onClick={() => setViewDoctorId(d.id)}
+                                    title={d.specialty}
                                 >
-                                    <option value="">Todos los Médicos</option>
-                                    {doctors.map(d => (
-                                        <option key={d.id} value={d.id}>{d.full_name}</option>
-                                    ))}
-                                </select>
-                            </div>
+                                    👨‍⚕️ {d.full_name.split(' ').slice(0, 2).join(' ')}
+                                </button>
+                            ))}
                         </div>
                     )}
                 </div>
@@ -1220,79 +1246,83 @@ const Appointments = () => {
                 <Modal
                     isOpen={showNextSlotModal}
                     onClose={() => setShowNextSlotModal(false)}
-                    title="Búsqueda de Turnos Libres"
+                    title="🔍 Búsqueda de Turnos Libres"
                     size="lg"
                 >
-                    <div className="flex flex-col gap-4 max-h-[70vh] overflow-y-auto custom-scrollbar p-1">
+                    <div className="flex flex-col gap-6 max-h-[75vh] overflow-y-auto custom-scrollbar p-2">
                         {!nextSlotData?.results ? (
-                            <div className="text-center p-8 text-main-500">Cargando resultados...</div>
+                            <div className="text-center p-12 text-main-500 flex flex-col items-center gap-3">
+                                <div className="loading-spinner-small"></div>
+                                <p className="font-medium">Explorando agenda en busca de huecos...</p>
+                            </div>
                         ) : (
-                            <div className="flex flex-col gap-4">
-                                {(() => {
-                                    const rows = [];
-                                    let current = [];
-                                    let count = 0;
-                                    nextSlotData.results.forEach(d => {
-                                        // "mi vecino me dice si puedo porque tengoo un solo dia"
-                                        // Add to current row if total count doesn't exceed 4
-                                        if (count > 0 && (count + d.slots.length > 4)) {
-                                            rows.push(current);
-                                            current = [];
-                                            count = 0;
-                                        }
-                                        current.push(d);
-                                        count += d.slots.length;
+                            <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm">
+                                <table className="w-full border-collapse">
+                                    <thead className="bg-slate-50/80 backdrop-blur-sm sticky top-0 z-10">
+                                        <tr>
+                                            <th className="px-5 py-4 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-100">Horario / Fecha</th>
+                                            <th className="px-5 py-4 text-right text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-100">Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-50">
+                                        {nextSlotData.results.flatMap(day =>
+                                            day.slots.map(slot => ({ ...slot, date: day.date, dayName: day.dayName }))
+                                        ).map((slot, i) => {
+                                            const dateObj = new Date(slot.date.replace(/-/g, '/'));
+                                            const isToday = new Date().toDateString() === dateObj.toDateString();
+                                            const dayNameShort = slot.dayName.split(',')[0].slice(0, 3);
 
-                                        // If this single day pushed us way over (e.g. 10 slots), cut immediately after
-                                        if (count >= 4) {
-                                            rows.push(current);
-                                            current = [];
-                                            count = 0;
-                                        }
-                                    });
-                                    if (current.length) rows.push(current);
-
-                                    return rows.map((row, rI) => (
-                                        <div key={rI} className="flex flex-wrap md:flex-nowrap gap-1">
-                                            {row.map((dayGroup, i) => (
-                                                <div key={i} className={`bg-slate-50 border border-slate-200 p-3 shadow-sm w-full md:w-auto md:flex-1 ${i === 0 ? 'rounded-l-xl' : ''} ${i === row.length - 1 ? 'rounded-r-xl' : ''} ${row.length === 1 ? 'rounded-xl' : 'border-r-0 last:border-r'}`}>
-                                                    <h4 className="font-bold text-main-700 mb-2 border-b border-slate-200 pb-1 flex items-center gap-2 capitalize text-nowrap pr-2">
-                                                        📅 {dayGroup.dayName}
-                                                    </h4>
-                                                    <div className="flex flex-wrap gap-2">
-                                                        {dayGroup.slots.map((slot, idx) => (
-                                                            <div key={idx} className="flex flex-col gap-1 items-stretch flex-1 md:flex-none">
-                                                                <button
-                                                                    className={`btn ${slot.is_break ? 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100' : 'btn-outline-primary hover:bg-blue-50'} px-3 py-2 transition-all shadow-sm text-center flex items-center justify-center gap-1 min-w-[70px] h-auto w-full`}
-                                                                    onClick={() => confirmNextSlot(slot.iso)}
-                                                                    title={slot.is_break ? "Turno Descanso (Sobreturno)" : "Turno Normal"}
-                                                                    style={{ fontSize: '0.9rem' }}
-                                                                >
-                                                                    <span className="font-bold">{slot.time}</span>
-                                                                    {slot.is_break && <span className="text-[10px] uppercase font-bold text-amber-600 ml-1">Extra</span>}
-                                                                </button>
-                                                                <button
-                                                                    className="btn btn-xs btn-ghost text-muted hover:text-blue-600 w-full"
-                                                                    onClick={(e) => { e.stopPropagation(); handleCopySlot(slot); }}
-                                                                    title="Copiar Propuesta"
-                                                                >
-                                                                    📋 Copiar
-                                                                </button>
+                                            return (
+                                                <tr key={i} className="group hover:bg-slate-50/50 transition-colors">
+                                                    <td className="px-5 py-4">
+                                                        <div className="flex flex-col gap-1">
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-sm font-black text-main-900 leading-none">
+                                                                    {slot.time}
+                                                                </span>
+                                                                {isToday && (
+                                                                    <span className="text-[8px] bg-blue-600 text-white px-1.5 py-0.5 rounded-full font-black uppercase">HOY</span>
+                                                                )}
+                                                                {slot.is_break && (
+                                                                    <span className="text-[8px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full font-black uppercase border border-amber-200">EXT</span>
+                                                                )}
                                                             </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    ));
-                                })()}
+                                                            <span className="text-[10px] text-muted font-bold uppercase tracking-tight mt-1">
+                                                                {dayNameShort} {dateObj.getDate()} {dateObj.toLocaleDateString(undefined, { month: 'short' })}
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-5 py-4 text-right">
+                                                        <div className="flex items-center justify-end gap-3">
+                                                            <button
+                                                                className="w-10 h-10 flex items-center justify-center rounded-full bg-green-50 text-green-600 hover:bg-green-600 hover:text-white transition-all border border-green-100 hover:border-green-600 shadow-sm"
+                                                                onClick={(e) => { e.stopPropagation(); handleWhatsAppSlot(slot); }}
+                                                                title="Compartir por WhatsApp"
+                                                            >
+                                                                <svg xmlns="http://www.w3.org/2001/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                                                    <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z" />
+                                                                </svg>
+                                                            </button>
+                                                            <button
+                                                                className="px-5 py-2.5 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-black transition-all shadow-md active:scale-95"
+                                                                onClick={() => confirmNextSlot(slot.iso)}
+                                                            >
+                                                                Seleccionar
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
                             </div>
                         )}
 
-                        <div className="flex gap-2 mt-2">
+                        <div className="flex items-center gap-4 mt-4 px-2">
                             {slotHistory.length > 0 && (
                                 <button
-                                    className="btn btn-secondary flex-1 py-4 font-bold text-main-600 border-2 border-slate-300 hover:bg-slate-100"
+                                    className="flex-1 btn btn-secondary py-5 flex flex-col items-center gap-1 rounded-2xl border-2 hover:bg-slate-50 transition-all font-bold"
                                     onClick={() => {
                                         const prevDate = slotHistory[slotHistory.length - 1];
                                         setSlotHistory(prev => prev.slice(0, -1));
@@ -1300,25 +1330,28 @@ const Appointments = () => {
                                         handleNextFreeSlot(prevDate);
                                     }}
                                 >
-                                    ⬅️ Volver
+                                    <span className="text-xl">⬅️</span>
+                                    <span className="text-xs uppercase tracking-widest text-muted">Anteriores</span>
                                 </button>
                             )}
                             {nextSlotData?.nextStartDate && (
                                 <button
-                                    className="btn btn-secondary flex-1 py-4 font-bold text-main-600 border-dashed border-2 border-slate-300 hover:border-slate-400 hover:bg-slate-100 transition-all"
+                                    className="flex-[2] btn btn-secondary py-5 flex flex-col items-center gap-1 rounded-2xl border-2 border-dashed border-blue-200 hover:border-blue-400 hover:bg-blue-50 transition-all group"
                                     onClick={() => {
                                         setSlotHistory(prev => [...prev, currentSlotParams]);
                                         setCurrentSlotParams(nextSlotData.nextStartDate);
                                         handleNextFreeSlot(nextSlotData.nextStartDate);
                                     }}
                                 >
-                                    🔄 Buscar más ...
+                                    <span className="text-xl group-hover:scale-125 transition-transform">🔍</span>
+                                    <span className="text-xs uppercase tracking-widest font-black text-blue-600">Explorar más fechas</span>
                                 </button>
                             )}
                         </div>
 
-                        <div className="mt-4 pt-4 border-t border-slate-100 flex justify-end">
-                            <button className="btn btn-secondary" onClick={() => setShowNextSlotModal(false)}>Cerrar</button>
+                        <div className="mt-4 pt-4 border-t border-slate-100 flex justify-between items-center text-[10px] text-muted uppercase font-bold tracking-tighter">
+                            <span>Use las flechas del teclado para navegar</span>
+                            <button className="btn btn-sm btn-ghost" onClick={() => setShowNextSlotModal(false)}>Cerrar</button>
                         </div>
                     </div>
                 </Modal>

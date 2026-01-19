@@ -587,27 +587,28 @@ const Dashboard = () => {
 
                         {/* MAIN COLUMN - RIGHT SIDE */}
                         <div className="dashboard-main-col lg:col-span-1">
-                            <div className="dash-tabs mt-1">
+                            {/* Standardized Tabs */}
+                            <div className="tabs-container mt-1">
                                 <button
-                                    className={`dash-tab ${activeTab === 'schedule' ? 'active' : ''}`}
+                                    className={`tab-btn ${activeTab === 'schedule' ? 'active' : ''}`}
                                     onClick={() => setActiveTab('schedule')}
                                 >
                                     📅 {t('today_schedule')}
                                 </button>
                                 <button
-                                    className={`dash-tab ${activeTab === 'upcoming' ? 'active' : ''}`}
+                                    className={`tab-btn ${activeTab === 'upcoming' ? 'active' : ''}`}
                                     onClick={() => setActiveTab('upcoming')}
                                 >
                                     📆 {t('upcoming_appointments') || 'Próximos'}
                                 </button>
                                 {(user.role === 'secretary' || user.role === 'doctor' || user.role === 'admin') && (
                                     <button
-                                        className={`dash-tab ${activeTab === 'requirements' ? 'active' : ''}`}
+                                        className={`tab-btn ${activeTab === 'requirements' ? 'active' : ''}`}
                                         onClick={() => setActiveTab('requirements')}
                                     >
                                         📋 {t('ongoing_requirements')}
                                         {pendingReqCount > 0 && (
-                                            <span className="dot-badge pulse-red ml-2" title={`${pendingReqCount} pending`}>
+                                            <span className="ml-2 bg-red-500 text-white text-[10px] px-1.5 rounded-full font-bold shadow-sm" title={`${pendingReqCount} pendientes`}>
                                                 {pendingReqCount}
                                             </span>
                                         )}

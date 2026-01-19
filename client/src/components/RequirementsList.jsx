@@ -149,18 +149,18 @@ const RequirementsList = ({ user }) => {
         <div className="table-responsive">
             {/* Navigation Tabs */}
             {(user.role === 'admin' || user.role === 'secretary') && (
-                <div className="flex gap-4 mb-6 border-b border-gray-100">
+                <div className="tabs-container">
                     <button
-                        className={`pb-2 px-4 font-bold transition-colors ${activeTab === 'list' ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-400 hover:text-gray-600'}`}
+                        className={`tab-btn ${activeTab === 'list' ? 'active' : ''}`}
                         onClick={() => setActiveTab('list')}
                     >
                         📋 Listado Activo
                     </button>
                     <button
-                        className={`pb-2 px-4 font-bold transition-colors ${activeTab === 'recycle' ? 'border-b-2 border-purple-500 text-purple-600' : 'text-gray-400 hover:text-gray-600'}`}
+                        className={`tab-btn ${activeTab === 'recycle' ? 'active' : ''}`}
                         onClick={() => setActiveTab('recycle')}
                     >
-                        🗑️ Papelera {recycleRequests.length > 0 && `(${recycleRequests.length})`}
+                        🗑️ Papelera {recycleRequests.length > 0 && <span className="ml-2 bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded-full text-xs">{recycleRequests.length}</span>}
                     </button>
                 </div>
             )}
@@ -169,13 +169,13 @@ const RequirementsList = ({ user }) => {
                 <>
                     <div className="flex gap-2 mb-4">
                         <button
-                            className={`btn btn-sm ${filter === 'active' ? 'btn-primary' : 'btn-secondary'}`}
+                            className={`tab-btn-small ${filter === 'active' ? 'active' : ''}`}
                             onClick={() => setFilter('active')}
                         >
                             {t('pending') || 'Pendientes'}
                         </button>
                         <button
-                            className={`btn btn-sm ${filter === 'history' ? 'btn-primary' : 'btn-secondary'}`}
+                            className={`tab-btn-small ${filter === 'history' ? 'active' : ''}`}
                             onClick={() => setFilter('history')}
                         >
                             {t('history') || 'Historial'}
@@ -188,61 +188,64 @@ const RequirementsList = ({ user }) => {
                         <table className="table-base requirements-table">
                             <thead>
                                 <tr>
-                                    <th>{t('type')}</th>
-                                    <th>{t('patient')}</th>
-                                    <th>{t('doctor')}</th>
-                                    <th>{t('requested_by') || 'Solicitado Por'}</th>
-                                    <th>{t('status')}</th>
-                                    {user.role === 'admin' && <th>{t('actions')}</th>}
-                                    {(user.role === 'doctor' || user.role === 'secretary' || user.role === 'admin') && <th>{t('manage') || 'Gestionar'}</th>}
+                                    <th>Tipo</th>
+                                    <th>Fecha</th>
+                                    <th>Paciente</th>
+                                    <th>Doctor</th>
+                                    <th>Solicitado Por</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {requests.map(r => (
-                                    <tr key={r.id}>
+                                    <tr key={r.id} className="hover:bg-gray-50">
                                         <td>
                                             <span
-                                                className={`status-chip ${r.type === 'prescription' ? 'chip-blue' : 'chip-green'} type-chip-link`}
+                                                className={`status-chip ${r.type === 'prescription' ? 'chip-blue' : 'chip-green'} type-chip-link cursor-pointer`}
                                                 onClick={() => setSelectedRequest(r)}
                                                 title="Ver detalle"
                                             >
                                                 {typeLabels[r.type] || r.type}
                                             </span>
                                         </td>
-                                        <td className="font-bold">{r.patient_name}</td>
-                                        <td>{r.doctor_name}</td>
-                                        <td>{r.secretary_name || 'Secretaría'}</td>
+                                        <td>{new Date(r.created_at).toLocaleDateString()}</td>
+                                        <td>
+                                            <strong>{r.patient_name}</strong>
+                                        </td>
+                                        <td>
+                                            <span className="text-muted">Dr. {r.doctor_name}</span>
+                                        </td>
+                                        <td>
+                                            <span className="text-xs text-gray-500">{r.secretary_name || 'Secretaría'}</span>
+                                        </td>
                                         <td>
                                             <span className={`status-chip chip-yellow`}>
                                                 {t(r.status) || r.status}
                                             </span>
                                         </td>
-                                        {(user.role === 'admin' || user.role === 'secretary') && (
-                                            <td className="actions-flex">
-                                                {(user.role === 'admin' || user.role === 'secretary') && (
-                                                    <button
-                                                        className="btn-icon-base btn-icon-red"
-                                                        onClick={() => handleDeleteClick(r.id)}
-                                                        title="Eliminar"
-                                                    >
-                                                        🗑️
-                                                    </button>
-                                                )}
-                                                {(user.role === 'secretary' || user.role === 'admin') && r.status === 'consult' && (
-                                                    <button
-                                                        className="btn-icon-base btn-icon-blue"
-                                                        onClick={() => openActionModal('reply', r.id)}
-                                                        title={t('reply')}
-                                                    >
-                                                        💬
-                                                    </button>
-                                                )}
-                                            </td>
-                                        )}
-                                        {
-                                            (user.role === 'doctor' || user.role === 'secretary' || user.role === 'admin') && (
-                                                <td className="actions-flex">
-                                                    {r.status === 'pending' || r.status === 'consult' ? (
+                                        <td>
+                                            {(user.role === 'admin' || user.role === 'secretary' || user.role === 'doctor') && (
+                                                <div className="flex gap-1 justify-end">
+                                                    {(user.role === 'admin' || user.role === 'secretary') && (
+                                                        <button
+                                                            className="btn-icon-base btn-icon-red"
+                                                            onClick={() => handleDeleteClick(r.id)}
+                                                            title="Eliminar"
+                                                        >
+                                                            🗑️
+                                                        </button>
+                                                    )}
+                                                    {(user.role === 'secretary' || user.role === 'admin') && r.status === 'consult' && (
+                                                        <button
+                                                            className="btn-icon-base btn-icon-blue"
+                                                            onClick={() => openActionModal('reply', r.id)}
+                                                            title={t('reply')}
+                                                        >
+                                                            💬
+                                                        </button>
+                                                    )}
+                                                    {(r.status === 'pending' || r.status === 'consult') && (
                                                         <>
                                                             <button
                                                                 className="btn-icon-base btn-icon-green"
@@ -266,12 +269,10 @@ const RequirementsList = ({ user }) => {
                                                                 ❌
                                                             </button>
                                                         </>
-                                                    ) : (
-                                                        <span className="status-placeholder">-</span>
                                                     )}
-                                                </td>
-                                            )
-                                        }
+                                                </div>
+                                            )}
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>

@@ -20,112 +20,126 @@ const MedicalRequestList = ({
     }
 
     return (
-        <div className="request-list-container">
-            {requests.filter(filterItem).map(r => (
-                <div key={r.id} className={`request-card-item p-4 border rounded-xl shadow-sm mb-4 transition-all ${r.status !== 'pending' ? 'opacity-80 bg-slate-50 border-slate-200' : 'bg-white border-blue-100 hover:shadow-md'}`}>
-                    {/* Header: Type tag, Patient Name, Status tag */}
-                    <div className="flex justify-between items-start mb-3">
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                            <span className={`tag ${r.type === 'prescription' ? 'tag-blue' : 'tag-purple'} self-start`}>
-                                {r.type === 'prescription' ? t('prescription') : (r.type === 'license' ? t('license') : (r.type === 'certificate' ? t('certificate') : r.type))}
-                            </span>
-                            <span className="font-bold text-main-800 text-lg">{r.patient_name}</span>
-                        </div>
-                        <span className={`tag ${r.status === 'pending' ? 'tag-amber' : (r.status === 'completed' ? 'tag-green' : 'tag-red')}`}>
-                            {t(r.status) || r.status}
-                        </span>
-                    </div>
+        <div className="table-responsive">
+            <table className="table-base">
+                <thead>
+                    <tr>
+                        <th>{t('type')}</th>
+                        <th>{t('patient')}</th>
+                        <th>{t('doctor')}</th>
+                        <th>{t('detail')}</th>
+                        <th>{t('status')}</th>
+                        <th>{t('payment')}</th>
+                        <th>{t('date')}</th>
+                        <th className="text-right">{t('actions')}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {requests.filter(filterItem).map(r => (
+                        <tr key={r.id} className={r.status !== 'pending' ? 'opacity-80 bg-slate-50' : ''}>
+                            <td>
+                                <span className={`tag ${r.type === 'prescription' ? 'tag-blue' : 'tag-purple'}`}>
+                                    {r.type === 'prescription' ? t('prescription') : (r.type === 'license' ? t('license') : (r.type === 'certificate' ? t('certificate') : r.type))}
+                                </span>
+                            </td>
+                            <td>
+                                <div className="font-bold">{r.patient_name}</div>
+                            </td>
+                            <td>
+                                <div className="text-sm">Dr. {r.doctor_name || '---'}</div>
+                            </td>
+                            <td>
+                                <div className="text-sm italic text-gray-600 max-w-xs truncate" title={r.request_note}>
+                                    {r.request_note}
+                                </div>
+                            </td>
+                            <td>
+                                <div className="flex flex-col gap-1">
+                                    <span className={`tag ${r.status === 'pending' ? 'tag-amber' : (r.status === 'completed' ? 'tag-green' : 'tag-red')}`}>
+                                        {t(r.status) || r.status}
+                                    </span>
+                                    {r.doctor_note && (
+                                        <div className="text-xs text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100 mt-1 max-w-[150px] truncate" title={r.doctor_note}>
+                                            <b>{t('reply')}:</b> {r.doctor_note}
+                                        </div>
+                                    )}
+                                </div>
+                            </td>
+                            <td>
+                                <span className={`tag font-mono text-xs ${r.payment_status === 'paid' ? 'tag-green' : (r.payment_status === 'debt' ? 'tag-red' : 'tag-slate')}`}>
+                                    {r.payment_status === 'paid' ? `PAID` :
+                                        (r.payment_status === 'debt' ? `DEBT ${formatPrice(r.debt_amount)}` : 'PENDING')}
+                                </span>
+                            </td>
+                            <td>
+                                <span className="text-xs text-muted whitespace-nowrap">
+                                    {timeAgo(r.created_at)}
+                                </span>
+                            </td>
+                            <td>
+                                <div className="flex justify-end gap-1">
+                                    {/* Charge Button */}
+                                    {(r.payment_status !== 'paid') && (user.role === 'secretary' || user.role === 'doctor') && (
+                                        <button
+                                            onClick={() => setPaymentModal({
+                                                open: true,
+                                                initialData: {
+                                                    type: 'income_patient',
+                                                    amount: '',
+                                                    description: `Request: ${r.type} for ${r.patient_name}`,
+                                                    patientId: r.patient_user_id,
+                                                    patientName: r.patient_name,
+                                                    doctorId: r.doctor_id
+                                                },
+                                                reqId: r.id
+                                            })}
+                                            className="btn-icon-base btn-icon-blue"
+                                            title="Cobrar"
+                                        >
+                                            💲
+                                        </button>
+                                    )}
 
-                    {/* Doctor Info */}
-                    <div className="text-sm text-main-600 mb-3 flex items-center gap-2">
-                        <span className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-xs">👨‍⚕️</span>
-                        <span className="font-medium">{r.doctor_name || 'Sin Doctor'}</span>
-                    </div>
+                                    {/* Mark As Done Button */}
+                                    {(user.role === 'doctor' || user.role === 'secretary') && r.status === 'pending' && (
+                                        <button
+                                            onClick={() => openActionModal('completed', r.id)}
+                                            className="btn-icon-base btn-icon-green"
+                                            title={t('mark_as_done')}
+                                        >
+                                            ✅
+                                        </button>
+                                    )}
 
-                    {/* Request Note (e.g. Medications) */}
-                    <div className="bg-slate-50 p-3 rounded-lg text-sm text-main-700 italic border border-slate-100 mb-3 shadow-inner">
-                        "{r.request_note}"
-                    </div>
+                                    {/* Reject Button */}
+                                    {(user.role === 'doctor' || user.role === 'secretary') && r.status === 'pending' && (
+                                        <button
+                                            onClick={() => openActionModal('rejected', r.id)}
+                                            className="btn-icon-base btn-icon-yellow"
+                                            title={t('reject')}
+                                        >
+                                            ❌
+                                        </button>
+                                    )}
 
-                    {/* Doctor's Reply Note */}
-                    {r.doctor_note && (
-                        <div className="mb-3 text-sm text-emerald-800 bg-emerald-50 p-3 rounded-lg border border-emerald-100 shadow-sm">
-                            <strong>{t('doctor_says')}:</strong> {r.doctor_note}
-                        </div>
-                    )}
-
-                    {/* Footer: Payment Status & Time (Row 1) */}
-                    <div className="flex justify-between items-center mt-4 pt-3 border-t border-slate-100">
-                        <div className={`tag font-mono ${r.payment_status === 'paid' ? 'tag-green' : (r.payment_status === 'debt' ? 'tag-red' : 'tag-slate')}`}>
-                            {r.payment_status === 'paid' ? `PAID` :
-                                (r.payment_status === 'debt' ? `DEBT ${formatPrice(r.debt_amount)}` : 'PENDING')}
-                        </div>
-                        <span className="text-xs text-muted flex items-center gap-1">
-                            🕒 {timeAgo(r.created_at)}
-                        </span>
-                    </div>
-
-                    {/* Footer Actions Row - Unified */}
-                    <div className="grid grid-cols-2 gap-3 mt-4">
-                        {/* Charge Button */}
-                        {(r.payment_status !== 'paid') && (user.role === 'secretary' || user.role === 'doctor') && (
-                            <button
-                                onClick={() => setPaymentModal({
-                                    open: true,
-                                    initialData: {
-                                        type: 'income_patient',
-                                        amount: '',
-                                        description: `Request: ${r.type} for ${r.patient_name}`,
-                                        patientId: r.patient_user_id,
-                                        patientName: r.patient_name,
-                                        doctorId: r.doctor_id
-                                    },
-                                    reqId: r.id
-                                })}
-                                className="col-span-1 btn btn-sm btn-primary flex justify-center items-center gap-2"
-                                title="Charge"
-                            >
-                                <span>💲</span> Cobrar
-                            </button>
-                        )}
-
-                        {/* Delete Button */}
-                        {(user.role === 'admin' || user.role === 'secretary' || user.role === 'doctor') && (
-                            (user.role === 'admin' || r.status === 'pending' || r.status === 'consult' || isToday(r.completed_at || r.updated_at)) ? (
-                                <button
-                                    className="col-span-1 btn btn-sm btn-outline-danger flex justify-center items-center gap-2"
-                                    onClick={() => handleDeleteRequest(r.id, r)}
-                                    title="Delete"
-                                >
-                                    <span>🗑️</span> Eliminar
-                                </button>
-                            ) : null
-                        )}
-
-                        {/* Mark As Done Button */}
-                        {(user.role === 'doctor' || user.role === 'secretary') && r.status === 'pending' && (
-                            <button
-                                onClick={() => openActionModal('completed', r.id)}
-                                className="col-span-1 btn btn-sm btn-success flex justify-center items-center gap-2"
-                                style={{ background: '#dcfce7', color: '#15803d', border: '1px solid #bbf7d0' }}
-                            >
-                                ✅ Listo
-                            </button>
-                        )}
-
-                        {/* Reject Button */}
-                        {(user.role === 'doctor' || user.role === 'secretary') && r.status === 'pending' && (
-                            <button
-                                onClick={() => openActionModal('rejected', r.id)}
-                                className="col-span-1 btn btn-sm btn-danger flex justify-center items-center gap-2"
-                                style={{ background: '#fee2e2', color: '#b91c1c', border: '1px solid #fecaca' }}
-                            >
-                                ❌ Rechazar
-                            </button>
-                        )}
-                    </div>
-                </div>
-            ))}
+                                    {/* Delete Button */}
+                                    {(user.role === 'admin' || user.role === 'secretary' || user.role === 'doctor') && (
+                                        (user.role === 'admin' || r.status === 'pending' || r.status === 'consult' || isToday(r.completed_at || r.updated_at)) ? (
+                                            <button
+                                                className="btn-icon-base btn-icon-red"
+                                                onClick={() => handleDeleteRequest(r.id, r)}
+                                                title="Eliminar"
+                                            >
+                                                🗑️
+                                            </button>
+                                        ) : null
+                                    )}
+                                </div>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     );
 };
