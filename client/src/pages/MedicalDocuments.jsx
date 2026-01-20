@@ -23,6 +23,7 @@ const MedicalDocuments = () => {
     const { alert, confirm, doubleConfirm } = useModal();
     const location = useLocation();
     const [activeTab, setActiveTab] = useState('requests'); // requests | files | prescriptions | licenses | certificates
+    const [requestsSubTab, setRequestsSubTab] = useState('list'); // new | list
     const [searchTerm, setSearchTerm] = useState('');
 
     const normalizeText = (text) => {
@@ -421,23 +422,49 @@ const MedicalDocuments = () => {
                 </div>
 
                 {activeTab === 'requests' && (
-                    <div className="grid-requests-layout">
-                        <MedicalRequestForm
-                            doctors={doctors}
-                            onRequestCreated={fetchRequests}
-                        />
-
-                        <div className="card" style={{ gridColumn: user.role !== 'secretary' ? '1 / -1' : 'auto' }}>
-                            <h3>{user.role === 'doctor' ? t('pending_requests') : t('request_status')}</h3>
-                            <MedicalRequestList
-                                requests={requests}
-                                filterItem={filterItem}
-                                handleDeleteRequest={handleDeleteRequest}
-                                openActionModal={openActionModal}
-                                setPaymentModal={setPaymentModal}
-                            />
+                    <div className="flex flex-col gap-4">
+                        <div className="flex gap-2 mb-2 p-1 bg-slate-100/50 rounded-lg w-fit">
+                            <button
+                                onClick={() => setRequestsSubTab('list')}
+                                className={`tab-btn-small ${requestsSubTab === 'list' ? 'active' : ''}`}
+                                style={{ border: 'none' }}
+                            >
+                                <span className="icon">📋</span> {t('request_status')}
+                            </button>
+                            <button
+                                onClick={() => setRequestsSubTab('new')}
+                                className={`tab-btn-small ${requestsSubTab === 'new' ? 'active' : ''}`}
+                                style={{ border: 'none' }}
+                            >
+                                <span className="icon">➕</span> {t('new_request')}
+                            </button>
                         </div>
-                    </div >
+
+                        {requestsSubTab === 'new' ? (
+                            <div className="animate-fadeIn">
+                                <MedicalRequestForm
+                                    doctors={doctors}
+                                    onRequestCreated={() => {
+                                        fetchRequests();
+                                        setRequestsSubTab('list');
+                                    }}
+                                />
+                            </div>
+                        ) : (
+                            <div className="card animate-fadeIn" style={{ gridColumn: user.role !== 'secretary' ? '1 / -1' : 'auto' }}>
+                                <div className="flex justify-between items-center mb-4">
+                                    <h3 className="m-0">{user.role === 'doctor' ? t('pending_requests') : t('request_status')}</h3>
+                                </div>
+                                <MedicalRequestList
+                                    requests={requests}
+                                    filterItem={filterItem}
+                                    handleDeleteRequest={handleDeleteRequest}
+                                    openActionModal={openActionModal}
+                                    setPaymentModal={setPaymentModal}
+                                />
+                            </div>
+                        )}
+                    </div>
                 )}
 
                 {

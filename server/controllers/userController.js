@@ -25,7 +25,16 @@ exports.getProfile = async (req, res) => {
 
         const rows = await conn.query(query, [user_id]);
         if (rows.length > 0) {
-            res.json({ ...rows[0], role });
+            const profile = rows[0];
+            const entityType = role; // 'patient', 'doctor', 'secretary'
+            const phoneNumbers = await conn.query(`
+                SELECT id, phone_number, is_primary, label 
+                FROM phone_numbers 
+                WHERE entity_type = ? AND entity_id = ?
+                ORDER BY is_primary DESC, created_at ASC
+            `, [entityType, profile.id]);
+
+            res.json({ ...profile, role, phoneNumbers });
         } else {
             res.status(404).send("Profile not found");
         }
@@ -42,6 +51,12 @@ exports.getAllDoctors = async (req, res) => {
     try {
         conn = await pool.getConnection();
         const rows = await conn.query("SELECT id, user_id, full_name, specialty, phone, office_number, rental_type, rental_cost, consultation_price, prescription_price, medical_license_price, certificate_price, virtual_consultation_price, default_visit_interval_days, default_prescription_interval_days, appointment_duration, break_duration FROM doctors");
+
+        for (let r of rows) {
+            const phones = await conn.query("SELECT * FROM phone_numbers WHERE entity_type = 'doctor' AND entity_id = ?", [r.id]);
+            r.phoneNumbers = phones;
+        }
+
         res.json(rows);
     } catch (err) {
         console.error(err);
@@ -110,6 +125,13 @@ exports.getAllPatients = async (req, res) => {
         }
 
         const rows = await conn.query(query, params);
+
+        // Fetch phone numbers for each patient
+        for (let r of rows) {
+            const phones = await conn.query("SELECT * FROM phone_numbers WHERE entity_type = 'patient' AND entity_id = ?", [r.id]);
+            r.phoneNumbers = phones;
+        }
+
         // Serialize BigInts
         const serialized = rows.map(r => ({
             ...r,
@@ -211,13 +233,22 @@ exports.getPatientDetails = async (req, res) => {
             WHERE pd.patient_id = ?
             `, [id]);
 
+        // 7. Get All Phone Numbers
+        const phoneNumbers = await conn.query(`
+            SELECT id, phone_number, is_primary, label 
+            FROM phone_numbers 
+            WHERE entity_type = 'patient' AND entity_id = ?
+            ORDER BY is_primary DESC, created_at ASC
+        `, [id]);
+
         res.json({
             ...patient,
             appointments: apps,
             prescriptions: pres,
             files: files,
             accumulated_days: Number(licenseStats[0].total_days),
-            assignedDoctors: assignedDocs
+            assignedDoctors: assignedDocs,
+            phoneNumbers: phoneNumbers
         });
 
 
@@ -285,6 +316,43 @@ exports.updateProfile = async (req, res) => {
         if (query) {
             console.log("Executing query:", query, params);
             await conn.query(query, params);
+        }
+
+        // Handle Phone Numbers
+        if (updates.phoneNumbers !== undefined) {
+            // Get internal profile ID
+            let profileId;
+            let tableName;
+            if (role === 'patient') {
+                const [p] = await conn.query("SELECT id FROM patients WHERE user_id = ?", [user_id]);
+                profileId = p?.id;
+                tableName = 'patients';
+            } else if (role === 'doctor') {
+                const [d] = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [user_id]);
+                profileId = d?.id;
+                tableName = 'doctors';
+            } else if (role === 'secretary') {
+                const [s] = await conn.query("SELECT id FROM secretaries WHERE user_id = ?", [user_id]);
+                profileId = s?.id;
+                tableName = 'secretaries';
+            }
+
+            if (profileId && Array.isArray(updates.phoneNumbers)) {
+                await conn.query("DELETE FROM phone_numbers WHERE entity_type = ? AND entity_id = ?", [role, profileId]);
+                let primaryPhone = '';
+                for (const pn of updates.phoneNumbers) {
+                    await conn.query("INSERT INTO phone_numbers (entity_type, entity_id, phone_number, is_primary, label) VALUES (?, ?, ?, ?, ?)",
+                        [role, profileId, pn.phone_number, pn.is_primary ? 1 : 0, pn.label || 'Celular']);
+                    if (pn.is_primary) primaryPhone = pn.phone_number;
+                }
+                if (!primaryPhone && updates.phoneNumbers.length > 0) primaryPhone = updates.phoneNumbers[0].phone_number;
+                if (primaryPhone) {
+                    await conn.query(`UPDATE ${tableName} SET phone = ? WHERE id = ?`, [primaryPhone, profileId]);
+                }
+            }
+        }
+
+        if (query || updates.phoneNumbers !== undefined) {
             res.send("Profile updated successfully");
         } else {
             console.log("No valid fields to update found in:", updates);
@@ -308,35 +376,46 @@ exports.getUsersForAdmin = async (req, res) => {
         const users = await conn.query(`
             SELECT id, username, role, created_at,
             CASE 
-                WHEN role = 'patient' THEN(SELECT full_name FROM patients WHERE user_id = users.id)
-                WHEN role = 'doctor' THEN(SELECT full_name FROM doctors WHERE user_id = users.id)
-                WHEN role = 'secretary' THEN(SELECT full_name FROM secretaries WHERE user_id = users.id)
+                WHEN role = 'patient' THEN (SELECT id FROM patients WHERE user_id = users.id)
+                WHEN role = 'doctor' THEN (SELECT id FROM doctors WHERE user_id = users.id)
+                WHEN role = 'secretary' THEN (SELECT id FROM secretaries WHERE user_id = users.id)
+                ELSE NULL
+            END as profile_id,
+            CASE 
+                WHEN role = 'patient' THEN (SELECT full_name FROM patients WHERE user_id = users.id)
+                WHEN role = 'doctor' THEN (SELECT full_name FROM doctors WHERE user_id = users.id)
+                WHEN role = 'secretary' THEN (SELECT full_name FROM secretaries WHERE user_id = users.id)
                 ELSE 'System'
-        END as full_name,
-
+            END as full_name,
             CASE
-                WHEN role = 'patient' THEN(SELECT dni FROM patients WHERE user_id = users.id)
-                WHEN role = 'doctor' THEN(SELECT dni FROM doctors WHERE user_id = users.id)
-                WHEN role = 'secretary' THEN(SELECT dni FROM secretaries WHERE user_id = users.id)
+                WHEN role = 'patient' THEN (SELECT dni FROM patients WHERE user_id = users.id)
+                WHEN role = 'doctor' THEN (SELECT dni FROM doctors WHERE user_id = users.id)
+                WHEN role = 'secretary' THEN (SELECT dni FROM secretaries WHERE user_id = users.id)
                 ELSE NULL
-        END as dni,
-
+            END as dni,
             CASE
-                WHEN role = 'patient' THEN(SELECT phone FROM patients WHERE user_id = users.id)
-                WHEN role = 'doctor' THEN(SELECT phone FROM doctors WHERE user_id = users.id)
-                WHEN role = 'secretary' THEN(SELECT phone FROM secretaries WHERE user_id = users.id)
+                WHEN role = 'patient' THEN (SELECT phone FROM patients WHERE user_id = users.id)
+                WHEN role = 'doctor' THEN (SELECT phone FROM doctors WHERE user_id = users.id)
+                WHEN role = 'secretary' THEN (SELECT phone FROM secretaries WHERE user_id = users.id)
                 ELSE NULL
-        END as phone,
-
+            END as phone,
             CASE
-                WHEN role = 'doctor' THEN(SELECT specialty FROM doctors WHERE user_id = users.id)
+                WHEN role = 'doctor' THEN (SELECT specialty FROM doctors WHERE user_id = users.id)
                 ELSE NULL
-        END as specialty
-
+            END as specialty
             FROM users
             WHERE role != 'patient'
             ORDER BY created_at DESC
         `);
+
+        for (let u of users) {
+            if (u.profile_id && u.role !== 'admin') {
+                u.phoneNumbers = await conn.query("SELECT * FROM phone_numbers WHERE entity_type = ? AND entity_id = ?", [u.role === 'admin' ? 'user' : u.role, u.profile_id]);
+            } else {
+                u.phoneNumbers = [];
+            }
+        }
+
         res.json(users);
     } catch (err) {
         console.error(err);
@@ -440,6 +519,27 @@ exports.updatePatientDetails = async (req, res) => {
                 const insertValues = updates.assignedDoctors.map(docId => [id, docId]);
                 // Bulk insert
                 await conn.batch("INSERT INTO patient_doctors (patient_id, doctor_id) VALUES (?, ?)", insertValues);
+            }
+        }
+
+        if (updates.phoneNumbers !== undefined) {
+            await conn.query("DELETE FROM phone_numbers WHERE entity_type = 'patient' AND entity_id = ?", [id]);
+            if (Array.isArray(updates.phoneNumbers) && updates.phoneNumbers.length > 0) {
+                let primaryPhone = '';
+                for (const pn of updates.phoneNumbers) {
+                    await conn.query("INSERT INTO phone_numbers (entity_type, entity_id, phone_number, is_primary, label) VALUES (?, ?, ?, ?, ?)",
+                        ['patient', id, pn.phone_number, pn.is_primary ? 1 : 0, pn.label || 'Celular']);
+                    if (pn.is_primary) primaryPhone = pn.phone_number;
+                }
+                // If no primary was set, pick the first one
+                if (!primaryPhone && updates.phoneNumbers.length > 0) primaryPhone = updates.phoneNumbers[0].phone_number;
+
+                // Sync back to patients table for compatibility
+                if (primaryPhone) {
+                    await conn.query("UPDATE patients SET phone = ? WHERE id = ?", [primaryPhone, id]);
+                }
+            } else {
+                await conn.query("UPDATE patients SET phone = NULL WHERE id = ?", [id]);
             }
         }
 
@@ -548,19 +648,38 @@ exports.createUser = async (req, res) => {
         const resUser = await conn.query("INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)", [username, hash, role]);
         const userId = Number(resUser.insertId);
 
+        let profileId;
         if (role === 'doctor') {
-            await conn.query("INSERT INTO doctors (user_id, full_name, dni, specialty, phone) VALUES (?, ?, ?, ?, ?)",
+            const res = await conn.query("INSERT INTO doctors (user_id, full_name, dni, specialty, phone) VALUES (?, ?, ?, ?, ?)",
                 [userId, fullName, dni || null, specialty || null, phone || null]);
+            profileId = Number(res.insertId);
         } else if (role === 'secretary') {
-            await conn.query("INSERT INTO secretaries (user_id, full_name, dni, phone) VALUES (?, ?, ?, ?)",
+            const res = await conn.query("INSERT INTO secretaries (user_id, full_name, dni, phone) VALUES (?, ?, ?, ?)",
                 [userId, fullName, dni || null, phone || null]);
+            profileId = Number(res.insertId);
         } else if (role === 'patient') {
-            await conn.query("INSERT INTO patients (user_id, full_name, dni, phone) VALUES (?, ?, ?, ?)",
+            const res = await conn.query("INSERT INTO patients (user_id, full_name, dni, phone) VALUES (?, ?, ?, ?)",
                 [userId, fullName, dni || null, phone || null]);
+            profileId = Number(res.insertId);
 
-            // Sync new patient to Google (Async - outside transaction critical path?)
-            // If this fails, should we fail user creation? Probably not.
+            // Sync new patient to Google
             googleController.syncContact({ full_name: fullName, dni, phone }).catch(err => console.error("Async Sync Error:", err));
+        }
+
+        // Handle Phone Numbers
+        const phoneNumbers = req.body.phoneNumbers;
+        if (Array.isArray(phoneNumbers) && profileId) {
+            let primaryPhone = '';
+            for (const pn of phoneNumbers) {
+                await conn.query("INSERT INTO phone_numbers (entity_type, entity_id, phone_number, is_primary, label) VALUES (?, ?, ?, ?, ?)",
+                    [role, profileId, pn.phone_number, pn.is_primary ? 1 : 0, pn.label || 'Celular']);
+                if (pn.is_primary) primaryPhone = pn.phone_number;
+            }
+            if (!primaryPhone && phoneNumbers.length > 0) primaryPhone = phoneNumbers[0].phone_number;
+            if (primaryPhone) {
+                const table = role === 'doctor' ? 'doctors' : (role === 'secretary' ? 'secretaries' : 'patients');
+                await conn.query(`UPDATE ${table} SET phone = ? WHERE id = ?`, [primaryPhone, profileId]);
+            }
         }
 
         await conn.commit();
@@ -580,28 +699,54 @@ exports.createUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
     let conn;
     try {
-        const { id } = req.params;
-        const { username, role, full_name, dni, phone, specialty } = req.body;
+        const { id } = req.params; // This is the user_id
+        const { username, role, full_name, dni, phone, specialty, phoneNumbers } = req.body;
 
         conn = await pool.getConnection();
+        await conn.beginTransaction();
 
         await conn.query("UPDATE users SET username = ?, role = ? WHERE id = ?", [username, role, id]);
 
+        let profileId;
+        let tableName;
         if (role === 'doctor') {
-            await conn.query("UPDATE doctors SET full_name = ?, dni = ?, phone = ?, specialty = ? WHERE user_id = ?",
-                [full_name, dni, phone, specialty, id]);
+            const [p] = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [id]);
+            profileId = p?.id; tableName = 'doctors';
+            await conn.query("UPDATE doctors SET full_name = ?, dni = ?, phone = ?, specialty = ? WHERE id = ?",
+                [full_name, dni, phone, specialty, profileId]);
         } else if (role === 'secretary') {
-            await conn.query("UPDATE secretaries SET full_name = ?, dni = ?, phone = ? WHERE user_id = ?",
-                [full_name, dni, phone, id]);
+            const [p] = await conn.query("SELECT id FROM secretaries WHERE user_id = ?", [id]);
+            profileId = p?.id; tableName = 'secretaries';
+            await conn.query("UPDATE secretaries SET full_name = ?, dni = ?, phone = ? WHERE id = ?",
+                [full_name, dni, phone, profileId]);
         } else if (role === 'patient') {
-            await conn.query("UPDATE patients SET full_name = ?, dni = ?, phone = ? WHERE user_id = ?",
-                [full_name, dni, phone, id]);
+            const [p] = await conn.query("SELECT id FROM patients WHERE user_id = ?", [id]);
+            profileId = p?.id; tableName = 'patients';
+            await conn.query("UPDATE patients SET full_name = ?, dni = ?, phone = ? WHERE id = ?",
+                [full_name, dni, phone, profileId]);
         }
 
+        // Handle Phone Numbers
+        if (phoneNumbers !== undefined && Array.isArray(phoneNumbers) && profileId) {
+            await conn.query("DELETE FROM phone_numbers WHERE entity_type = ? AND entity_id = ?", [role, profileId]);
+            let primaryPhone = '';
+            for (const pn of phoneNumbers) {
+                await conn.query("INSERT INTO phone_numbers (entity_type, entity_id, phone_number, is_primary, label) VALUES (?, ?, ?, ?, ?)",
+                    [role, profileId, pn.phone_number, pn.is_primary ? 1 : 0, pn.label || 'Celular']);
+                if (pn.is_primary) primaryPhone = pn.phone_number;
+            }
+            if (!primaryPhone && phoneNumbers.length > 0) primaryPhone = phoneNumbers[0].phone_number;
+            if (primaryPhone) {
+                await conn.query(`UPDATE ${tableName} SET phone = ? WHERE id = ?`, [primaryPhone, profileId]);
+            }
+        }
+
+        await conn.commit();
         logAction(req, 'ADMIN_UPDATE_USER', `Updated user ${id} `);
         res.json({ message: "User updated" });
 
     } catch (err) {
+        if (conn) await conn.rollback();
         console.error(err);
         res.status(500).send("Server Error");
     } finally {

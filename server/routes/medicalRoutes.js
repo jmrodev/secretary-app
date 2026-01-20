@@ -37,6 +37,13 @@ router.patch('/requests/:id/payment', verifyToken, medicalController.updateReque
 router.delete('/requests/:id', verifyToken, medicalController.deleteRequest);
 router.delete('/files/:id', verifyToken, medicalController.deleteFile);
 
+// Vademecum & Patient Medications
+router.get('/vademecum/search', verifyToken, medicalController.searchVademecum);
+router.get('/patients/:patientId/medications', verifyToken, medicalController.getPatientMedications);
+router.post('/patients/medications', verifyToken, medicalController.addPatientMedication);
+router.put('/patients/medications/:id', verifyToken, medicalController.updatePatientMedication);
+router.delete('/patients/medications/:id', verifyToken, medicalController.deletePatientMedication);
+
 // Files
 router.post('/files', verifyToken, upload.single('file'), medicalController.uploadFile);
 router.get('/files', verifyToken, medicalController.getPatientFiles);

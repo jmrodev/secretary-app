@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
@@ -15,6 +15,7 @@ import Sidebar from '../components/Sidebar';
 import Modal from '../components/Modal';
 import PatientHistoryModal from '../components/PatientHistoryModal';
 import PatientEditModal from '../components/PatientEditModal';
+import MedicationAutocomplete from '../components/MedicationAutocomplete';
 
 const Appointments = () => {
     const [appointments, setAppointments] = useState([]);
@@ -29,8 +30,9 @@ const Appointments = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Reschedule Mode state (from navigation)
+    // Reschedule/Sync Mode state (from navigation)
     const rescheduleAppt = location.state?.rescheduleAppt;
+    const syncAppt = location.state?.syncAppt;
 
     const exitRescheduleMode = () => {
         navigate(location.pathname, { replace: true, state: {} });
@@ -42,7 +44,10 @@ const Appointments = () => {
 
     const [searchPatientId, setSearchPatientId] = useState(''); // [NEW] Filter by Patient
     const [patientAppointments, setPatientAppointments] = useState([]); // [NEW] List for specific patient
+    const [syncingZombieId, setSyncingZombieId] = useState(null); // [NEW] Track unlinked appt to replace
+    const [syncReferenceInfo, setSyncReferenceInfo] = useState(null); // [NEW] Info to show during adjustment
     const [patientApptLoading, setPatientApptLoading] = useState(false);
+    const [searchTerm, setSearchTerm] = useState(''); // [NEW] Search filter for appointments
 
 
 
@@ -63,6 +68,7 @@ const Appointments = () => {
 
     const [googleEvents, setGoogleEvents] = useState([]); // Store remote events
     const [holidays, setHolidays] = useState([]); // Store holidays
+    const [doctorSchedule, setDoctorSchedule] = useState([]); // doctorSchedule moved here to be initialized before use
 
     // Action Modal State (Moved up or re-declared if missed)
     const [actionModal, setActionModal] = useState({ open: false, appt: null });
@@ -79,12 +85,23 @@ const Appointments = () => {
 
     const fetchAppointments = async () => {
         try {
-            const res = await api.get('/appointments');
+            const params = {};
+            if (searchTerm) params.search = searchTerm;
+
+            const res = await api.get('/appointments', { params });
             setAppointments(res.data);
         } catch (err) {
             console.error("Failed to fetch appointments", err);
         }
     };
+
+    // [NEW] Trigger fetch when searchTerm changes (with debounce could be better, but simple for now)
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            fetchAppointments();
+        }, 500); // Debounce 500ms
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
 
     const fetchHolidays = async () => {
         try {
@@ -136,6 +153,44 @@ const Appointments = () => {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [showNextSlotModal, slotHistory, nextSlotData, currentSlotParams]);
 
+    // [NEW] Update default appointment type based on schedule
+    useEffect(() => {
+        if (!selectedDoctor || !date) return;
+
+        const updateType = async () => {
+            try {
+                // If we already have the schedule in doctorSchedule state (matching viewDoctorId)
+                let relevantSchedule = doctorSchedule;
+
+                // If selectedDoctor is different, we might need to fetch it 
+                // but usually doctorSchedule is already what we need if we came from handleSlotClick
+                if (viewDoctorId != selectedDoctor) {
+                    const res = await api.get(`/schedules/${selectedDoctor}`);
+                    relevantSchedule = res.data;
+                }
+
+                if (!relevantSchedule || relevantSchedule.length === 0) {
+                    // setType('consultation'); // Don't reset if no schedule found, maybe they chose manually
+                    return;
+                }
+
+                const dateObj = new Date(date.includes('T') ? date : date.replace(' ', 'T'));
+                const dayOfWeek = dateObj.getDay();
+
+                const config = relevantSchedule.find(s => s.day_of_week === dayOfWeek);
+                if (config && config.default_type) {
+                    setType(config.default_type);
+                } else {
+                    setType('consultation');
+                }
+            } catch (err) {
+                console.error("Error updating default type:", err);
+            }
+        };
+
+        updateType();
+    }, [selectedDoctor, date, doctorSchedule]);
+
     // [NEW] Fetch patient specific appointments
     useEffect(() => {
         if (searchPatientId) {
@@ -158,7 +213,6 @@ const Appointments = () => {
         }
     };
 
-    const [doctorSchedule, setDoctorSchedule] = useState([]); // [NEW]
 
     // Fetch Google Events and Doctor Schedule
     useEffect(() => {
@@ -224,13 +278,19 @@ const Appointments = () => {
             return;
         }
 
+        if (syncAppt) {
+            setViewDoctorId(syncAppt.doctor_id);
+            setSelectedDate(new Date(syncAppt.appointment_date));
+            handleSyncGoogleEvent(syncAppt);
+        }
+
         if (user.role === 'doctor' && doctors.length > 0) {
             const myDoctorProfile = doctors.find(d => d.user_id === (user.user_id || user.id));
             if (myDoctorProfile) {
                 setViewDoctorId(myDoctorProfile.id);
             }
         }
-    }, [user, doctors, rescheduleAppt]);
+    }, [user, doctors, rescheduleAppt, syncAppt]);
 
     // Computed appointments based on filter
     const currentDoctor = viewDoctorId ? doctors.find(d => d.id === Number(viewDoctorId)) : null;
@@ -239,6 +299,12 @@ const Appointments = () => {
         if (searchPatientId) return app.patient_id === Number(searchPatientId);
         if (viewDoctorId) return app.doctor_id === Number(viewDoctorId);
         return true;
+    }).map(app => {
+        // If it's in the DB but has no patient_id and has a google_event_id, it's "incomplete"
+        if (!app.patient_id && app.google_event_id) {
+            return { ...app, source: 'google-incomplete', status: 'external' }; // Force 'external' for styling
+        }
+        return app;
     });
 
     // Filter out Google events that are already in our local database (to avoid duplicates)
@@ -250,8 +316,19 @@ const Appointments = () => {
     });
 
     // Merge
-    // Merge
-    const filteredAppointments = [...localFiltered, ...uniqueGoogleEvents];
+    // Merge and Filter Global
+    const filteredAppointments = [...localFiltered, ...uniqueGoogleEvents].filter(app => {
+        if (!searchTerm) return true;
+        const term = searchTerm.toLowerCase();
+
+        // Check various fields for matches
+        // For Google events, patient_name holds the summary
+        const matchesName = (app.patient_name || app.full_name || '').toLowerCase().includes(term);
+        const matchesReason = (app.reason || '').toLowerCase().includes(term);
+        const matchesPhone = (app.patient_phone || '').toLowerCase().includes(term); // Phone might be string
+
+        return matchesName || matchesReason || matchesPhone;
+    });
 
     const handleDateSelect = (date) => {
         setSelectedDate(date);
@@ -425,6 +502,33 @@ const Appointments = () => {
         }
     };
 
+    const handleSyncGoogleEvent = (appt) => {
+        // Prepare data for the form
+        const apptDate = new Date(appt.appointment_date);
+        const offset = apptDate.getTimezoneOffset() * 60000;
+        const localISOTime = (new Date(apptDate - offset)).toISOString().slice(0, 16);
+
+        setDate(localISOTime);
+        setSelectedDoctor(appt.doctor_id);
+
+        // If it's a zombie in DB, we use 'reason' field as the name/description source
+        const prefillReason = appt.source === 'google-incomplete' ? appt.reason : appt.patient_name;
+        setReason(prefillReason || 'Consulta');
+
+        // Store original info to show as reference in the form
+        setSyncReferenceInfo(prefillReason || 'Sin descripción');
+
+        if (appt.source === 'google-incomplete') {
+            setSyncingZombieId(appt.id); // Mark for replacement
+        } else {
+            setSyncingZombieId(null);
+        }
+
+        setActionModal({ open: false, appt: null });
+        setShowForm(true);
+        showMessage("Ajuste iniciado: Por favor seleccione el paciente para este turno.", "info");
+    };
+
     const handleBook = async (e) => {
         e.preventDefault();
         // setMessage(''); // Use global toast instead
@@ -453,6 +557,18 @@ const Appointments = () => {
                 bonified, // [NEW]
                 type // [NEW]
             });
+
+            // If we were replacing a zombie, delete the old one
+            if (syncingZombieId) {
+                try {
+                    await api.delete(`/appointments/${syncingZombieId}`);
+                    console.log(`Deleted zombie appointment ${syncingZombieId} after successful adjustment.`);
+                } catch (delErr) {
+                    console.warn("Failed to delete zombie (non-critical):", delErr);
+                }
+                setSyncingZombieId(null);
+            }
+
             showMessage(t('appointment_booked'), 'success');
             setShowForm(false);
             setReason('Consulta'); // Reset to default 'Consulta'
@@ -493,6 +609,40 @@ const Appointments = () => {
         } catch (err) {
             console.error("Failed to update rating", err);
         }
+    };
+
+    const handleWhatsAppSlot = (slot) => {
+        const dateStr = new Date(slot.iso).toLocaleDateString();
+        const timeStr = new Date(slot.iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        let message = `Hola, tenemos un turno disponible el ${slot.dayName} ${dateStr} a las ${timeStr} con el/la Dr/a. ${doctors.find(d => d.id === (viewDoctorId || selectedDoctor))?.name || ''}. ¿Le gustaría reservarlo?`;
+
+        // Try to get patient phone if a patient is selected
+        let phone = selectedPatientData?.mobile_phone || selectedPatientData?.contact_info || '';
+
+        copyToClipboard(message).then(() => {
+            showMessage("Propuesta copiada! Abriendo WhatsApp...", "success");
+
+            phone = phone.replace(/\D/g, '');
+            if (phone && !phone.startsWith('54') && phone.length >= 10) phone = '549' + phone;
+
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+            if (isMobile) {
+                window.location.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            } else {
+                const appUrl = phone
+                    ? `whatsapp://send?phone=${phone}&text=${encodeURIComponent(message)}`
+                    : `whatsapp://send?text=${encodeURIComponent(message)}`;
+                const webUrl = phone
+                    ? `https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`
+                    : `https://web.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+
+                // Priority ZapZap -> Web
+                window.location.href = appUrl;
+                setTimeout(() => window.open(webUrl, '_blank'), 2500);
+            }
+        });
     };
 
     const handleNextFreeSlot = async (startDate = null) => {
@@ -536,52 +686,69 @@ const Appointments = () => {
         setShowForm(true);
     };
 
-    const handleWhatsAppSlot = (slot) => {
-        const docId = viewDoctorId || selectedDoctor;
-        const doctor = doctors.find(d => d.id === Number(docId));
-        const docName = doctor ? doctor.full_name : 'el Doctor';
+    const handleWhatsAppConfirm = (appt) => {
+        let phone = appt.patient_phone;
 
-        let template = settings.next_free_slot_template;
-        if (!template || !template.trim()) {
-            template = "El próximo turno disponible para {doctor_name} es el {date} a las {time}.";
+        if (!phone) {
+            // Heuristic for zombie appointments: try to find a phone in the reason field
+            const phoneMatch = appt.reason?.match(/\d{9,13}/);
+            if (phoneMatch) {
+                phone = phoneMatch[0];
+            } else {
+                showMessage("No phone number available. Please adjust/sync the appointment first.", "error");
+                return;
+            }
         }
 
-        const dateObj = new Date(slot.iso);
-        const dateStr = dateObj.toLocaleDateString();
+        const dateStr = new Date(appt.appointment_date).toLocaleDateString();
+        const timeStr = new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
 
-        const msg = template
-            .replace(/{doctor_name}/g, docName)
+        let messageTemplate = settings.appointment_reminder_template;
+        if (!messageTemplate || !messageTemplate.trim()) {
+            messageTemplate = `Hola {patient_name}, te escribimos para confirmar tu turno del día {date} a las {time} con el/la Dr/a. {doctor_name}. Por favor confirma asistencia. Gracias!`;
+        }
+
+        const message = messageTemplate
+            .replace(/{patient_name}/g, appt.patient_name || appt.reason)
             .replace(/{date}/g, dateStr)
-            .replace(/{time}/g, slot.time)
+            .replace(/{time}/g, timeStr)
+            .replace(/{doctor_name}/g, appt.doctor_name)
             .replace(/{secretary_name}/g, user.name || 'Secretaria');
 
-        // Copy to clipboard automatically for "Paste" (ZapZap/Manual)
-        copyToClipboard(msg).catch(err => console.error("Clipboard error", err));
+        // Copy to clipboard
+        copyToClipboard(message).then(() => {
+            showMessage("Texto copiado! Abriendo WhatsApp...", "success");
 
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        const phone = selectedPatientData?.phone ? selectedPatientData.phone.replace(/[^0-9]/g, '') : '';
+            phone = phone.replace(/\D/g, '');
+            if (!phone.startsWith('54') && phone.length >= 10) {
+                phone = '549' + phone;
+            }
 
-        let targetUrl;
-        if (isMobile) {
-            targetUrl = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
-        } else {
-            // Use protocol for native apps (like ZapZap) or web as fallback
-            targetUrl = phone
-                ? `whatsapp://send?phone=${phone}&text=${encodeURIComponent(msg)}`
-                : `whatsapp://send?text=${encodeURIComponent(msg)}`;
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-            // Fallback to web if protocol fails after a short delay
-            setTimeout(() => {
-                if (!document.hasFocus()) return; // If window lost focus, protocol probably worked
+            if (isMobile) {
+                // Mobile: Always use wa.me which handles app/web redirect automatically
+                window.location.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            } else {
+                // Desktop: Priority 'ZapZap' (Native App) -> Then Web
+                const appUrl = phone
+                    ? `whatsapp://send?phone=${phone}&text=${encodeURIComponent(message)}`
+                    : `whatsapp://send?text=${encodeURIComponent(message)}`;
+
                 const webUrl = phone
-                    ? `https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`
-                    : `https://wa.me/?text=${encodeURIComponent(msg)}`;
-                window.open(webUrl, '_blank');
-            }, 500);
-        }
+                    ? `https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`
+                    : `https://web.whatsapp.com/send?text=${encodeURIComponent(message)}`;
 
-        window.location.href = targetUrl;
-        showMessage(t('whatsapp_opened') || 'Abriendo WhatsApp y Copiando Texto...', 'info');
+                // 1. Try to open App
+                window.location.href = appUrl;
+
+                // 2. Fallback to Web if App doesn't capture it (simple timeout-based fallback)
+                // We increase timeout to 2.5s to give the user time to say 'Open' if prompted
+                setTimeout(() => {
+                    window.open(webUrl, '_blank');
+                }, 2500);
+            }
+        });
     };
 
     if (loading) return <div>{t('loading')}</div>;
@@ -609,6 +776,12 @@ const Appointments = () => {
                             onClick={() => setActiveTab('calendar')}
                         >
                             📅 {t('calendar') || 'Agenda'}
+                        </button>
+                        <button
+                            className={`tab-btn ${activeTab === 'upcoming' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('upcoming')}
+                        >
+                            📋 {t('upcoming_appointments') || 'Próximos Turnos'}
                         </button>
                         {(user.role === 'admin' || user.role === 'secretary') && (
                             <button
@@ -639,7 +812,7 @@ const Appointments = () => {
                         </button>
                     </div>
 
-                    {activeTab === 'calendar' && user.role === 'secretary' && (
+                    {(activeTab === 'calendar' || activeTab === 'upcoming') && user.role === 'secretary' && (
                         <div className="tabs-container" style={{ margin: 0, padding: '0.25rem' }}>
                             <button
                                 className={`tab-btn-small ${!viewDoctorId ? 'active' : ''}`}
@@ -777,6 +950,90 @@ const Appointments = () => {
                         )}
                     </div>
 
+                ) : activeTab === 'upcoming' ? (
+                    <div className="upcoming-list-view animate-in">
+                        <section className="card p-0 overflow-hidden border-slate-200 shadow-sm transition-all">
+                            {loading ? <div className="p-8 text-center text-muted">{t('loading')}</div> : (
+                                filteredAppointments.filter(a => new Date(a.appointment_date) >= new Date().setHours(0, 0, 0, 0)).length === 0 ?
+                                    <div className="text-center p-12 bg-white">
+                                        <p className="text-muted m-0">{t('no_upcoming_appointments') || 'No hay próximos turnos.'}</p>
+                                    </div> :
+                                    <div className="flex flex-col gap-2 p-4">
+                                        {filteredAppointments
+                                            .filter(a => new Date(a.appointment_date) >= new Date().setHours(0, 0, 0, 0))
+                                            .sort((a, b) => new Date(a.appointment_date) - new Date(b.appointment_date))
+                                            .map((a, index, arr) => {
+                                                const dateObj = new Date(a.appointment_date);
+                                                const dateStr = dateObj.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
+                                                const isToday = dateObj.toLocaleDateString() === new Date().toLocaleDateString();
+                                                const headerDate = isToday ? `Hoy, ${dateStr}` : dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+
+                                                const prevDateObj = index > 0 ? new Date(arr[index - 1].appointment_date) : null;
+                                                const prevDateStr = prevDateObj ? prevDateObj.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }) : null;
+                                                const showHeader = index === 0 || dateStr !== prevDateStr;
+
+                                                return (
+                                                    <Fragment key={a.id}>
+                                                        {showHeader && (
+                                                            <div className="flex items-center gap-3 mt-4 mb-2 first:mt-0">
+                                                                <span className="text-[10px] font-bold text-indigo-700 uppercase tracking-widest bg-indigo-50 px-2 py-0.5 rounded">
+                                                                    {headerDate}
+                                                                </span>
+                                                                <div className="h-[1px] flex-1 bg-gradient-to-r from-indigo-100 to-transparent"></div>
+                                                            </div>
+                                                        )}
+                                                        <div
+                                                            className={`flex items-center gap-4 p-3 bg-white rounded-xl border border-slate-100 hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer group status-${a.status} ${a.source === 'google-incomplete' || a.source === 'google' ? 'status-external' : ''}`}
+                                                            onClick={() => setActionModal({ open: true, appt: a })}
+                                                            style={a.source === 'google-incomplete' || a.source === 'google' || a.status === 'external' ? { borderLeft: '4px solid var(--amber-500)' } : {}}
+                                                        >
+                                                            <div className="flex flex-col items-center justify-center min-w-[60px] py-1 bg-slate-50 rounded-lg group-hover:bg-indigo-50 transition-colors">
+                                                                <span className="text-sm font-bold text-main-900">
+                                                                    {new Date(a.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
+                                                                </span>
+                                                            </div>
+
+                                                            <div className="flex-1 min-w-0">
+                                                                <div className="font-bold text-main-800 truncate">{a.patient_name}</div>
+                                                                {a.patient_phone && (
+                                                                    <div className="text-xs text-indigo-600 font-medium flex items-center gap-1">
+                                                                        📱 {a.patient_phone}
+                                                                    </div>
+                                                                )}
+                                                                <div className="flex items-center gap-2 text-[11px] text-muted truncate">
+                                                                    <span className="flex items-center gap-1">👨‍⚕️ {a.doctor_name}</span>
+                                                                    {a.reason && <span className="italic opacity-75 truncate">• {a.reason}</span>}
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="flex items-center gap-2">
+                                                                {a.payment_status === 'paid' && <span title="Paid" className="text-emerald-500 font-bold text-xs">$✓</span>}
+                                                                {a.payment_status === 'debt' && <span title="Debt" className="text-rose-500 font-bold text-xs">$!</span>}
+
+                                                                <span className={`status-chip-mini status-${a.status}`}>
+                                                                    {t(a.status) || a.status}
+                                                                </span>
+
+                                                                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                    <button onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        handleWhatsAppConfirm(a);
+                                                                    }}
+                                                                        className="p-1.5 bg-green-50 text-green-600 rounded-lg hover:bg-green-600 hover:text-white transition-all shadow-sm border border-green-100"
+                                                                        title="WhatsApp"
+                                                                    >
+                                                                        📲
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </Fragment>
+                                                );
+                                            })}
+                                    </div>
+                            )}
+                        </section>
+                    </div>
                 ) : (
                     <div className="appointments-tab-content">
                         <div className="appointments-grid">
@@ -801,17 +1058,39 @@ const Appointments = () => {
                             <div className={`schedule-section-container ${viewDoctorId ? `doctor-color-${Number(viewDoctorId) % 10}` : ''}`}>
                                 {activeTab === 'calendar' ? (
                                     <div className={viewDoctorId ? "doctor-themed-bg p-4 rounded-2xl border" : ""}>
-                                        <div className="schedule-header-search mb-4">
-                                            <div className="filter-group patient-search-container" style={{ minWidth: '100%' }}>
+                                        <div className="schedule-header-search mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="filter-group patient-search-container">
                                                 <label className={`filter-label ${viewDoctorId ? 'doctor-themed-text' : ''}`}>Buscar Historial de Paciente</label>
                                                 <PatientSearchSelect
                                                     value={searchPatientId}
-                                                    placeholder="🔍 Buscar paciente para ver su historial..."
+                                                    placeholder="🔍 Buscar por Nombre/DNI..."
                                                     onChange={(val) => setSearchPatientId(val)}
                                                     onCreatePatient={() => {
+                                                        setSelectedPatientData(null);
                                                         setEditPatientModalOpen(true);
                                                     }}
                                                 />
+                                            </div>
+                                            <div className="filter-group">
+                                                <label className={`filter-label ${viewDoctorId ? 'doctor-themed-text' : ''}`}>Filtrar Turnos (Motivo, Nombre)</label>
+                                                <div className="relative">
+                                                    <input
+                                                        type="text"
+                                                        className="input-field"
+                                                        placeholder="🔍 Buscar en motivo, paciente, tel..."
+                                                        value={searchTerm}
+                                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                                        style={{ height: '38px' }} // Match Select height roughly
+                                                    />
+                                                    {searchTerm && (
+                                                        <button
+                                                            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                                            onClick={() => setSearchTerm('')}
+                                                        >
+                                                            ✖️
+                                                        </button>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                         {currentDoctor && (
@@ -821,12 +1100,12 @@ const Appointments = () => {
                                         )}
                                         <DaySchedule
                                             date={selectedDate}
-                                            appointments={currentDoctor ? localFiltered.filter(a => a.doctor_id === currentDoctor.id) : localFiltered}
+                                            appointments={currentDoctor ? filteredAppointments.filter(a => a.doctor_id === currentDoctor.id) : filteredAppointments}
                                             onSlotClick={handleSlotClick}
                                             onRatingChange={handleRatingChange}
                                             doctor={currentDoctor}
                                             schedule={doctorSchedule}
-                                            onToggleVirtual={handleToggleVirtual}
+                                            onWhatsAppConfirm={handleWhatsAppConfirm}
                                         />
                                     </div>
                                 ) : (
@@ -844,10 +1123,28 @@ const Appointments = () => {
 
                 <Modal
                     isOpen={showForm}
-                    onClose={() => setShowForm(false)}
+                    onClose={() => {
+                        setShowForm(false);
+                        setSyncReferenceInfo(null);
+                        setSyncingZombieId(null);
+                    }}
                     title={t('new_appointment')}
                 >
-                    <form onSubmit={handleBook} id="new-appointment-form">
+                    <form onSubmit={handleBook} id="new-appointment-form" autoComplete="off">
+                        {/* Hidden fields to confuse Chrome password manager */}
+                        <input type="text" style={{ display: 'none' }} />
+                        <input type="password" style={{ display: 'none' }} />
+                        {syncReferenceInfo && (
+                            <div className="mb-6 p-4 bg-amber-50 border-2 border-amber-200 rounded-2xl flex flex-col gap-2 animate-in slide-in-from-top-4">
+                                <span className="text-[10px] font-black uppercase tracking-widest text-amber-600">📄 Información Original (Referencia)</span>
+                                <div className="text-sm font-bold text-amber-900 leading-tight">
+                                    {syncReferenceInfo}
+                                </div>
+                                <p className="text-[11px] text-amber-700 italic">
+                                    Utilice esta información para buscar al paciente correcto.
+                                </p>
+                            </div>
+                        )}
                         <div className="input-group">
                             <label className="input-label">{t('doctors')}</label>
                             {user.role === 'doctor' ? (
@@ -931,6 +1228,19 @@ const Appointments = () => {
                                         </button>
                                     </div>
                                 )}
+
+                                {selectedPatientData?.phone && (
+                                    <div className="mt-2 p-3 bg-emerald-50 border border-emerald-100 rounded-xl flex items-center justify-between">
+                                        <div className="flex flex-col">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">📱 Teléfono Contacto</span>
+                                            <span className="text-sm font-bold text-emerald-900">{selectedPatientData.phone}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1 text-[10px] font-black text-emerald-600 bg-white px-2 py-1 rounded-full shadow-sm">
+                                            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                                            WHATSAPP OK
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
 
@@ -990,10 +1300,24 @@ const Appointments = () => {
                         <Modal
                             isOpen={actionModal.open}
                             onClose={() => setActionModal({ ...actionModal, open: false })}
-                            title={`Appointment: ${actionModal.appt.patient_name}`}
+                            title={`Appointment: ${actionModal.appt.patient_name || actionModal.appt.reason || 'Sincronización requerida'}`}
                         >
                             <div className="flex-col-gap-4">
                                 <div className="flex-between">
+                                    <p><strong>{t('patient_label') || 'Paciente'}:</strong> {actionModal.appt.patient_name || actionModal.appt.reason || 'Sincronización requerida'}</p>
+                                    {actionModal.appt.patient_phone && (
+                                        <p className="flex items-center gap-2 text-blue-600">
+                                            <strong>{t('phone') || 'Teléfono'}:</strong>
+                                            <span className="font-mono">{actionModal.appt.patient_phone}</span>
+                                            <button
+                                                className="btn-icon-small hover:bg-blue-100 rounded-full p-1 transition-colors"
+                                                onClick={() => copyToClipboard(actionModal.appt.patient_phone).then(() => showMessage("Teléfono copiado", "success"))}
+                                                title="Copiar"
+                                            >
+                                                📋
+                                            </button>
+                                        </p>
+                                    )}
                                     <p><strong>{t('date_label')}:</strong> {new Date(actionModal.appt.appointment_date).toLocaleString()}</p>
                                     <div className="flex gap-2">
                                         <span className={`status-chip status-${actionModal.appt.status}`}>
@@ -1089,12 +1413,25 @@ const Appointments = () => {
                                     </div>
                                 )}
 
+                                <hr className="border-divider" />
+
+                                {/* Sync Needed / Adjustment Action - Outside role check for visibility */}
+                                {(actionModal.appt.source === 'google' || actionModal.appt.source === 'google-incomplete') && (
+                                    <button
+                                        className="btn btn-accent w-full py-4 mb-4"
+                                        onClick={() => handleSyncGoogleEvent(actionModal.appt)}
+                                        style={{ background: 'linear-gradient(135deg, var(--amber-500) 0%, var(--orange-600) 100%)', border: 'none', color: 'white' }}
+                                    >
+                                        ✨ Ingresar Ajuste (Sincronizar BBDD)
+                                    </button>
+                                )}
+
                                 {/* ADMINISTRATIVE ACTIONS (Secretary/Admin Only) */}
                                 {(user.role === 'secretary' || user.role === 'admin') && (
                                     <>
                                         <div className="grid-2-cols">
                                             {/* Pay Button */}
-                                            {(actionModal.appt.payment_status === 'pending' || actionModal.appt.payment_status === 'debt') && (
+                                            {(actionModal.appt.payment_status === 'pending' || actionModal.appt.payment_status === 'debt') && actionModal.appt.source !== 'google' && actionModal.appt.source !== 'google-incomplete' && (
                                                 <button className="btn btn-primary" onClick={() => {
                                                     setPaymentModal({
                                                         open: true,
@@ -1117,8 +1454,9 @@ const Appointments = () => {
                                                 </button>
                                             )}
 
+
                                             {/* Actions - Hide if Completed (Unless Unrestricted CRUD enabled AND NOT paid) */}
-                                            {(actionModal.appt.status !== 'completed' || (settings.enable_secretary_unrestricted_crud === 'true' && actionModal.appt.payment_status !== 'paid')) && (
+                                            {(actionModal.appt.status !== 'completed' || (settings.enable_secretary_unrestricted_crud === 'true' && actionModal.appt.payment_status !== 'paid')) && actionModal.appt.source !== 'google' && actionModal.appt.source !== 'google-incomplete' && (
                                                 <>
                                                     {/* Arrived Button */}
                                                     {actionModal.appt.status !== 'arrived' && (
@@ -1133,7 +1471,7 @@ const Appointments = () => {
                                             )}
 
                                             {/* Reschedule and Status buttons - logic split to be clearer */}
-                                            {(actionModal.appt.status !== 'completed' || (settings.enable_secretary_unrestricted_crud === 'true' && actionModal.appt.payment_status !== 'paid')) && (
+                                            {(actionModal.appt.status !== 'completed' || (settings.enable_secretary_unrestricted_crud === 'true' && actionModal.appt.payment_status !== 'paid')) && actionModal.appt.source !== 'google' && actionModal.appt.source !== 'google-incomplete' && (
                                                 <>
                                                     {/* Reschedule Button */}
                                                     <button className="btn btn-secondary" onClick={() => {
@@ -1185,12 +1523,14 @@ const Appointments = () => {
                                         {(actionModal.appt.status !== 'completed' || (settings.enable_secretary_unrestricted_crud === 'true' && actionModal.appt.payment_status !== 'paid')) && (
                                             <div className="grid-2-cols">
                                                 {/* Cancel (Standard) */}
-                                                <button className="btn btn-outline-danger" onClick={() => {
-                                                    handleCancel(actionModal.appt.id);
-                                                    setActionModal({ ...actionModal, open: false });
-                                                }}>
-                                                    ❌ {t('cancel')}
-                                                </button>
+                                                {actionModal.appt.source !== 'google' && actionModal.appt.source !== 'google-incomplete' && (
+                                                    <button className="btn btn-outline-danger" onClick={() => {
+                                                        handleCancel(actionModal.appt.id);
+                                                        setActionModal({ ...actionModal, open: false });
+                                                    }}>
+                                                        ❌ {t('cancel')}
+                                                    </button>
+                                                )}
 
                                                 {/* Delete (Error) - Admin/Secretary */}
                                                 {(user.role === 'admin' || user.role === 'secretary') && (
@@ -1227,7 +1567,23 @@ const Appointments = () => {
                     <div className="flex-col-gap-4">
                         <div className="input-group">
                             <label className="input-label">{t('medications')}</label>
-                            <textarea className="input-field" rows="4" value={prescribeModal.medications} onChange={e => setPrescribeModal({ ...prescribeModal, medications: e.target.value })} placeholder={t('meds_placeholder') || "ej. Ibuprofeno 600mg"} autoFocus />
+                            <MedicationAutocomplete
+                                value=""
+                                onChange={() => { }}
+                                placeholder={t('search_medication') || "Buscar medicamento..."}
+                                onSelectMedication={(med) => {
+                                    const current = prescribeModal.medications.trim();
+                                    const newValue = current ? `${current}\n${med.full_label}` : med.full_label;
+                                    setPrescribeModal({ ...prescribeModal, medications: newValue });
+                                }}
+                            />
+                            <textarea
+                                className="input-field mt-2"
+                                rows="4"
+                                value={prescribeModal.medications}
+                                onChange={e => setPrescribeModal({ ...prescribeModal, medications: e.target.value })}
+                                placeholder={t('meds_placeholder') || "ej. Ibuprofeno 600mg"}
+                            />
                         </div>
                         <div className="input-group">
                             <label className="input-label">{t('instructions')}</label>
@@ -1265,55 +1621,79 @@ const Appointments = () => {
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-slate-50">
-                                        {nextSlotData.results.flatMap(day =>
-                                            day.slots.map(slot => ({ ...slot, date: day.date, dayName: day.dayName }))
-                                        ).map((slot, i) => {
-                                            const dateObj = new Date(slot.date.replace(/-/g, '/'));
-                                            const isToday = new Date().toDateString() === dateObj.toDateString();
-                                            const dayNameShort = slot.dayName.split(',')[0].slice(0, 3);
+                                        {(() => {
+                                            let lastMonth = '';
+                                            const monthNames = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+                                            const todayIso = new Date().toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).split(' ')[0];
 
-                                            return (
-                                                <tr key={i} className="group hover:bg-slate-50/50 transition-colors">
-                                                    <td className="px-5 py-4">
-                                                        <div className="flex flex-col gap-1">
-                                                            <div className="flex items-center gap-2">
-                                                                <span className="text-sm font-black text-main-900 leading-none">
-                                                                    {slot.time}
-                                                                </span>
-                                                                {isToday && (
-                                                                    <span className="text-[8px] bg-blue-600 text-white px-1.5 py-0.5 rounded-full font-black uppercase">HOY</span>
-                                                                )}
-                                                                {slot.is_break && (
-                                                                    <span className="text-[8px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full font-black uppercase border border-amber-200">EXT</span>
-                                                                )}
-                                                            </div>
-                                                            <span className="text-[10px] text-muted font-bold uppercase tracking-tight mt-1">
-                                                                {dayNameShort} {dateObj.getDate()} {dateObj.toLocaleDateString(undefined, { month: 'short' })}
-                                                            </span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-5 py-4 text-right">
-                                                        <div className="flex items-center justify-end gap-3">
-                                                            <button
-                                                                className="w-10 h-10 flex items-center justify-center rounded-full bg-green-50 text-green-600 hover:bg-green-600 hover:text-white transition-all border border-green-100 hover:border-green-600 shadow-sm"
-                                                                onClick={(e) => { e.stopPropagation(); handleWhatsAppSlot(slot); }}
-                                                                title="Compartir por WhatsApp"
-                                                            >
-                                                                <svg xmlns="http://www.w3.org/2001/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                                                    <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z" />
-                                                                </svg>
-                                                            </button>
-                                                            <button
-                                                                className="px-5 py-2.5 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-black transition-all shadow-md active:scale-95"
-                                                                onClick={() => confirmNextSlot(slot.iso)}
-                                                            >
-                                                                Seleccionar
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
+                                            return nextSlotData.results.map((day, dayIndex) => {
+                                                const [y, m, d] = day.date.split('-');
+                                                const isToday = day.date === todayIso;
+                                                const monthLabel = `${monthNames[parseInt(m) - 1]} ${y}`;
+
+                                                const showMonthHeader = monthLabel !== lastMonth;
+                                                if (showMonthHeader) lastMonth = monthLabel;
+
+                                                return (
+                                                    <Fragment key={day.date}>
+                                                        {showMonthHeader && (
+                                                            <tr className="bg-slate-900 border-y border-slate-800">
+                                                                <td colSpan="2" className="px-5 py-2 text-center">
+                                                                    <span className="text-[10px] font-black text-white uppercase tracking-[0.2em]">
+                                                                        🗓️ {monthLabel}
+                                                                    </span>
+                                                                </td>
+                                                            </tr>
+                                                        )}
+                                                        <tr className="bg-slate-50/80">
+                                                            <td colSpan="2" className="px-5 py-2 border-b border-slate-100">
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="text-[10px] font-black text-main-600 uppercase tracking-widest">
+                                                                        📅 {day.dayName}
+                                                                    </span>
+                                                                    {isToday && (
+                                                                        <span className="text-[8px] bg-blue-600 text-white px-1.5 py-0.5 rounded-full font-black uppercase">HOY</span>
+                                                                    )}
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        {day.slots.map((slot, i) => (
+                                                            <tr key={`${day.date}-${i}`} className="group hover:bg-slate-50/50 transition-colors">
+                                                                <td className="px-5 py-4">
+                                                                    <div className="flex items-center gap-2">
+                                                                        <span className="text-sm font-black text-main-900 leading-none">
+                                                                            {slot.time}
+                                                                        </span>
+                                                                        {slot.is_break && (
+                                                                            <span className="text-[8px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full font-black uppercase border border-amber-200">EXT</span>
+                                                                        )}
+                                                                    </div>
+                                                                </td>
+                                                                <td className="px-5 py-4 text-right">
+                                                                    <div className="flex items-center justify-end gap-3">
+                                                                        <button
+                                                                            className="w-10 h-10 flex items-center justify-center rounded-full bg-green-50 text-green-600 hover:bg-green-600 hover:text-white transition-all border border-green-100 shadow-sm"
+                                                                            onClick={(e) => { e.stopPropagation(); handleWhatsAppSlot({ ...slot, dayName: day.dayName }); }}
+                                                                            title="Compartir por WhatsApp"
+                                                                        >
+                                                                            <svg xmlns="http://www.w3.org/2001/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                                                                <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z" />
+                                                                            </svg>
+                                                                        </button>
+                                                                        <button
+                                                                            className="px-5 py-2.5 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-black transition-all shadow-md active:scale-95"
+                                                                            onClick={() => confirmNextSlot(slot.iso)}
+                                                                        >
+                                                                            Seleccionar
+                                                                        </button>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                    </Fragment>
+                                                );
+                                            });
+                                        })()}
                                     </tbody>
                                 </table>
                             </div>
@@ -1357,11 +1737,12 @@ const Appointments = () => {
                 </Modal>
 
                 {
-                    editPatientModalOpen && selectedPatientData && (
+                    editPatientModalOpen && (
                         <PatientEditModal
                             isOpen={editPatientModalOpen}
                             onClose={() => setEditPatientModalOpen(false)}
                             patient={selectedPatientData}
+                            referenceInfo={syncReferenceInfo}
                             onUpdate={(updatedData) => {
                                 setSelectedPatient(updatedData.id); // [FIX] Auto-select the ID (crucial for form)
                                 setSelectedPatientData(updatedData);

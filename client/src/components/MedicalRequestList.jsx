@@ -49,7 +49,15 @@ const MedicalRequestList = ({
                                 <div className="text-sm">Dr. {r.doctor_name || '---'}</div>
                             </td>
                             <td>
-                                <div className="text-sm italic text-gray-600 max-w-xs truncate" title={r.request_note}>
+                                <div style={{
+                                    fontSize: '0.875rem',
+                                    fontStyle: 'italic',
+                                    color: 'var(--gray-600)',
+                                    maxWidth: '300px',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap'
+                                }} title={r.request_note}>
                                     {r.request_note}
                                 </div>
                             </td>
@@ -59,7 +67,18 @@ const MedicalRequestList = ({
                                         {t(r.status) || r.status}
                                     </span>
                                     {r.doctor_note && (
-                                        <div className="text-xs text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100 mt-1 max-w-[150px] truncate" title={r.doctor_note}>
+                                        <div style={{
+                                            fontSize: '0.75rem',
+                                            color: 'var(--green-700)',
+                                            backgroundColor: 'var(--green-50)',
+                                            padding: '0.125rem 0.375rem',
+                                            borderRadius: 'var(--radius)',
+                                            border: '1px solid var(--green-100)',
+                                            marginTop: '0.25rem',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap'
+                                        }} title={r.doctor_note}>
                                             <b>{t('reply')}:</b> {r.doctor_note}
                                         </div>
                                     )}

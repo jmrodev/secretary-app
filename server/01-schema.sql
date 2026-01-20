@@ -612,6 +612,7 @@ CREATE TABLE `doctor_schedules` (
   `start_time` time NOT NULL,
   `end_time` time NOT NULL,
   `is_break` tinyint(1) DEFAULT 0,
+  `default_type` enum('consultation', 'virtual') DEFAULT 'consultation',
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `doctor_id` (`doctor_id`),

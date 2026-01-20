@@ -178,6 +178,21 @@ exports.getAppointments = async (req, res) => {
             params.push(req.query.patientId);
         }
 
+        // [NEW] Global Search Filter (Reason, Name, Phone)
+        // If search term is provided, we might want to ignore date ranges entirely or search within them?
+        // Usually "search" implies finding it anywhere. 
+        // For now, let's append it to existing filters. If no filters exist, it searches all.
+        if (req.query.search) {
+            const searchTerm = `%${req.query.search}%`;
+            const searchClause = "(p.full_name LIKE ? OR a.reason LIKE ? OR p.phone LIKE ?)";
+            if (query.includes(' WHERE ')) {
+                query += ` AND ${searchClause}`;
+            } else {
+                query += ` WHERE ${searchClause}`;
+            }
+            params.push(searchTerm, searchTerm, searchTerm);
+        }
+
         query += " ORDER BY a.appointment_date DESC"; // Ensure history is ordered
 
         const rows = await conn.query(query, params);
@@ -973,6 +988,72 @@ exports.getFreeSlotsBatch = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.bulkUpdateType = async (req, res) => {
+    let conn;
+    try {
+        const { dayOfWeek, type, doctorId, fromDate, toDate } = req.body;
+
+        if (dayOfWeek === undefined || !type) {
+            return res.status(400).json({ error: "Faltan parámetros: dayOfWeek o type" });
+        }
+
+        conn = await pool.getConnection();
+        const { role, user_id } = req.user;
+
+        // Check permissions
+        if (role !== 'admin' && role !== 'secretary') {
+            if (role === 'doctor') {
+                const [docRows] = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [user_id]);
+                if (!docRows || docRows.length === 0 || docRows[0].id != doctorId) {
+                    return res.status(403).json({ error: "No autorizado para este médico" });
+                }
+            } else {
+                return res.status(403).json({ error: "No autorizado" });
+            }
+        }
+
+        // MySQL DAYOFWEEK is 1-7 (Sun=1...Sat=7). JS is 0-6 (Sun=0...Sat=6)
+        const mysqlDay = Number(dayOfWeek) + 1;
+
+        let query = "UPDATE appointments SET type = ? WHERE DAYOFWEEK(appointment_date) = ?";
+        let params = [type, mysqlDay];
+
+        if (doctorId) {
+            query += " AND doctor_id = ?";
+            params.push(doctorId);
+        }
+
+        if (fromDate) {
+            query += " AND appointment_date >= ?";
+            params.push(fromDate);
+        } else {
+            query += " AND appointment_date >= CURRENT_DATE()";
+        }
+
+        if (toDate) {
+            query += " AND appointment_date <= ?";
+            params.push(toDate);
+        }
+
+        query += " AND status NOT IN ('cancelled', 'completed')";
+
+        const result = await conn.query(query, params);
+
+        // Return count of affected rows
+        const count = result.affectedRows !== undefined ? result.affectedRows : 0;
+
+        res.json({
+            message: `Actualización exitosa. Se cambiaron ${count} turnos a ${type === 'virtual' ? 'Videollamada' : 'Presencial'}.`,
+            count
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server Error" });
     } finally {
         if (conn) conn.release();
     }

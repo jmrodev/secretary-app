@@ -219,6 +219,22 @@ const SystemConfig = () => {
                                             Permitir a Secretarias corregir montos y eliminar transacciones (CRUD Finanzas)
                                         </span>
                                     </label>
+
+                                    <label className="switch-container">
+                                        <div className="switch">
+                                            <input
+                                                type="checkbox"
+                                                id="allow-admin-edit-finance-date"
+                                                checked={settings.allow_admin_edit_finance_date === 'true'}
+                                                onChange={(e) => updateSetting('allow_admin_edit_finance_date', e.target.checked)}
+                                                disabled={user.role !== 'admin'}
+                                            />
+                                            <span className="slider"></span>
+                                        </div>
+                                        <span className="input-label m-0">
+                                            [ADMIN] Permitir editar FECHA de pago en Finanzas
+                                        </span>
+                                    </label>
                                 </div>
 
                                 <div className="section-divider my-8" style={{ height: '1px', background: '#e2e8f0' }}></div>
@@ -269,6 +285,13 @@ const SystemConfig = () => {
                                         </p>
                                     </div>
                                 </div>
+
+                            </div>
+                            <div className="mt-8 p-4 bg-blue-50 border border-blue-100 rounded-xl flex items-center gap-3">
+                                <span className="text-xl">💡</span>
+                                <p className="text-sm text-blue-700">
+                                    <strong>Nota:</strong> La herramienta de <strong>Programación Masiva de Agenda</strong> se ha movido a la pestaña de "Horarios" dentro de la ficha de cada Médico para un control más preciso.
+                                </p>
                             </div>
                         </div>
                     )}
@@ -425,7 +448,7 @@ const SystemConfig = () => {
                                                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                                                     </div>
                                                 </label>
-                                                <p className="text-xs text-muted text-right max-w-[250px]">
+                                                <p className="text-xs text-muted text-right">
                                                     Si pausas, los cambios en la App no se enviarán a Google, pero la cuenta sigue conectada.
                                                 </p>
                                             </div>

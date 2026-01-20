@@ -63,9 +63,35 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
                     ...base,
                     borderColor: '#e2e8f0',
                     borderRadius: '0.375rem',
-                    padding: '2px'
+                    padding: '2px',
+                    boxShadow: 'none',
+                    backgroundColor: 'white', // Ensure white background
+                    '&:hover': {
+                        borderColor: '#cbd5e1'
+                    }
+                }),
+                input: (base) => ({
+                    ...base,
+                    color: '#0f172a', // gray-900 for maximum contrast
+                    backgroundColor: 'transparent'
+                }),
+                singleValue: (base) => ({
+                    ...base,
+                    color: '#0f172a',
+                    fontWeight: '650' // slightly bolder
+                }),
+                placeholder: (base) => ({
+                    ...base,
+                    color: '#64748b' // gray-500
+                }),
+                menu: (base) => ({
+                    ...base,
+                    zIndex: 9999
                 })
             }}
+            // Disable browser autocomplete to prevent password manager interference
+            autoComplete="chrome-off"
+            inputId="patient-search-input"
         />
     );
 };

@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import CurrencyInput from '../components/CurrencyInput';
 import Sidebar from '../components/Sidebar';
+import PhoneNumbersManager from '../components/PhoneNumbersManager';
 
 const Profile = () => {
     const { user } = useAuth();
@@ -14,16 +15,11 @@ const Profile = () => {
 
     // Editable fields
     const [fullName, setFullName] = useState('');
-    const [phone, setPhone] = useState('');
+    const [phoneNumbers, setPhoneNumbers] = useState([]);
     const [address, setAddress] = useState('');
     const [medicalHistory, setMedicalHistory] = useState('');
     const [dni, setDni] = useState('');
     const [insurance, setInsurance] = useState('');
-    const [specialty, setSpecialty] = useState('');
-    const [cbu, setCbu] = useState('');
-    const [consultationPrice, setConsultationPrice] = useState('');
-    const [visitInterval, setVisitInterval] = useState(0);
-    const [prescriptionInterval, setPrescriptionInterval] = useState(0);
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -34,16 +30,11 @@ const Profile = () => {
                 // Init fields
                 if (res.data) {
                     setFullName(res.data.full_name || '');
-                    setPhone(res.data.phone || '');
+                    setPhoneNumbers(res.data.phoneNumbers || (res.data.phone ? [{ phone_number: res.data.phone, is_primary: true, label: 'Celular' }] : []));
                     setAddress(res.data.address || '');
                     setMedicalHistory(res.data.medical_history || '');
                     setDni(res.data.dni || '');
                     setInsurance(res.data.insurance || '');
-                    setSpecialty(res.data.specialty || '');
-                    setCbu(res.data.cbu || '');
-                    setConsultationPrice(res.data.consultation_price || '');
-                    setVisitInterval(res.data.default_visit_interval_days || 0);
-                    setPrescriptionInterval(res.data.default_prescription_interval_days || 0);
                 }
             } catch (err) {
                 console.error(err);
@@ -60,34 +51,47 @@ const Profile = () => {
         try {
             await api.put('/users/profile', {
                 full_name: fullName,
-                phone,
+                phoneNumbers: phoneNumbers,
                 address,
                 medical_history: medicalHistory,
                 dni,
-                insurance,
-                specialty,
-                cbu,
-                consultation_price: consultationPrice,
-                default_visit_interval_days: visitInterval,
-                default_prescription_interval_days: prescriptionInterval
+                insurance
             });
             setMessage(t('profile_updated'));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         } catch (err) {
             setMessage(t('failed_update_profile'));
             console.error(err);
         }
     };
 
-    if (loading) return <div>{t('loading')}</div>;
+    if (loading) return <div className="app-layout"><div className="p-8">{t('loading')}</div></div>;
 
     if (user.role === 'admin') {
         return (
             <div className="app-layout">
                 <Sidebar />
                 <main className="main-content">
-                    <h1 className="title">{t('my_profile')}</h1>
+                    <div className="header-banner">
+                        <div className="flex items-center gap-6 relative z-10">
+                            <div className="avatar-xl">
+                                {user.username.substring(0, 2).toUpperCase()}
+                            </div>
+                            <div>
+                                <div className="badge-glass mb-2">{t('admin')}</div>
+                                <h1 className="text-3xl font-bold text-white mb-1" style={{ textShadow: 'none' }}>
+                                    {user.username}
+                                </h1>
+                                <p className="text-blue-100 m-0 opacity-90">
+                                    {t('system_admin_account')}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                     <div className="card">
-                        <p>{t('admin_account_msg')}</p>
+                        <div className="section-title">
+                            <span>🛡️</span> {t('admin_account_msg')}
+                        </div>
                         <p><strong>{t('username')}:</strong> {user.username}</p>
                         <p><strong>{t('role_header')}:</strong> {user.role}</p>
                     </div>
@@ -100,82 +104,125 @@ const Profile = () => {
         <div className="app-layout">
             <Sidebar />
             <main className="main-content">
-                <h1 className="title">{t('my_profile')}</h1>
-
-                {message && <div className={`p-4 rounded mb-4 ${message.includes('Failed') ? 'bg-red-100 text-red-900' : 'bg-green-100 text-green-900'}`}>{message}</div>}
-
-                <div className="card">
-                    <form onSubmit={handleUpdate}>
-                        <div className="input-group">
-                            <label className="input-label">{t('username')}</label>
-                            <input className="input-field bg-read-only" value={user.username} disabled />
+                {/* Header Banner */}
+                <div className="header-banner">
+                    <div className="flex items-center gap-6 relative z-10">
+                        <div className="avatar-xl">
+                            {fullName ? fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : user.username.substring(0, 2).toUpperCase()}
                         </div>
-
-                        <div className="input-group">
-                            <label className="input-label">{t('full_name')}</label>
-                            <input className="input-field" value={fullName} onChange={e => setFullName(e.target.value)} required />
+                        <div>
+                            <div className="badge-glass mb-2">{user.role === 'doctor' ? t('medical_professional') : t('patient_account')}</div>
+                            <h1 className="text-3xl font-bold text-white mb-1" style={{ textShadow: 'none' }}>
+                                {fullName || user.username}
+                            </h1>
+                            <p className="text-blue-100 m-0 opacity-90">
+                                {user.role === 'doctor' ? t('manage_medical_settings') : t('manage_patient_profile')}
+                            </p>
                         </div>
-
-                        <div className="input-group">
-                            <label className="input-label">{t('phone') || 'Phone'}</label>
-                            <input className="input-field" value={phone} onChange={e => setPhone(e.target.value)} />
-                        </div>
-
-                        {user.role === 'patient' && (
-                            <>
-                                <div className="grid-2-cols">
-                                    <div className="input-group">
-                                        <label className="input-label">{t('dni')}</label>
-                                        <input className="input-field" value={dni} onChange={e => setDni(e.target.value)} />
-                                    </div>
-                                    <div className="input-group">
-                                        <label className="input-label">{t('insurance')}</label>
-                                        <input className="input-field" value={insurance} onChange={e => setInsurance(e.target.value)} />
-                                    </div>
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">{t('address')}</label>
-                                    <input className="input-field" value={address} onChange={e => setAddress(e.target.value)} />
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">{t('medical_history')}</label>
-                                    <textarea className="input-field" rows="3" value={medicalHistory} onChange={e => setMedicalHistory(e.target.value)} />
-                                </div>
-                            </>
-                        )}
-
-                        {user.role === 'doctor' && (
-                            <>
-                                <div className="input-group">
-                                    <label className="input-label">{t('specialty')}</label>
-                                    <input className="input-field" value={specialty} onChange={e => setSpecialty(e.target.value)} />
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">{t('cbu')}</label>
-                                    <input className="input-field" value={cbu} onChange={e => setCbu(e.target.value)} />
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">{t('consultation_price')}</label>
-                                    <CurrencyInput className="input-field" value={consultationPrice} onChange={e => setConsultationPrice(e.target.value)} />
-                                </div>
-
-                                <h3 className="text-lg font-medium mt-6 mb-4">{t('follow_up_settings')}</h3>
-                                <div className="grid-2-cols">
-                                    <div className="input-group">
-                                        <label className="input-label">{t('visit_interval_days')}</label>
-                                        <input type="number" className="input-field" value={visitInterval} onChange={e => setVisitInterval(e.target.value)} min="0" />
-                                    </div>
-                                    <div className="input-group">
-                                        <label className="input-label">{t('prescription_interval_days')}</label>
-                                        <input type="number" className="input-field" value={prescriptionInterval} onChange={e => setPrescriptionInterval(e.target.value)} min="0" />
-                                    </div>
-                                </div>
-                            </>
-                        )}
-
-                        <button type="submit" className="btn btn-primary">{t('save_changes')}</button>
-                    </form>
+                    </div>
                 </div>
+
+                {message && (
+                    <div className={`p-4 rounded-xl mb-6 flex items-center gap-3 shadow-sm ${message.includes('Failed') ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-green-50 text-green-700 border border-green-200'}`}>
+                        <span className="text-xl">{message.includes('Failed') ? '⚠️' : '✅'}</span>
+                        <span className="font-medium">{message}</span>
+                    </div>
+                )}
+
+                <form onSubmit={handleUpdate}>
+                    <div className="item-grid">
+                        {/* LEFT COLUMN: Personal Info */}
+                        <div className="card h-full">
+                            <div className="section-title">
+                                <span>👤</span> {t('personal_information')}
+                            </div>
+
+                            <div className="form-group">
+                                <label className="form-label">{t('username')}</label>
+                                <input className="form-input" value={user.username} disabled />
+                            </div>
+
+                            <div className="form-group">
+                                <label className="form-label">{t('full_name')}</label>
+                                <input
+                                    className="form-input"
+                                    value={fullName}
+                                    onChange={e => setFullName(e.target.value)}
+                                    placeholder="Juan Perez"
+                                    required
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label className="form-label">{t('dni')}</label>
+                                <input
+                                    className="form-input"
+                                    value={dni}
+                                    onChange={e => setDni(e.target.value)}
+                                    placeholder="12.345.678"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label className="form-label">{t('address')}</label>
+                                <input
+                                    className="form-input"
+                                    value={address}
+                                    onChange={e => setAddress(e.target.value)}
+                                    placeholder="Calle 123, Ciudad"
+                                />
+                            </div>
+
+                            <div className="mt-4">
+                                <PhoneNumbersManager
+                                    phoneNumbers={phoneNumbers}
+                                    onChange={setPhoneNumbers}
+                                />
+                            </div>
+                        </div>
+
+                        {/* RIGHT COLUMN: Professional / Medical Info */}
+                        <div className="card h-full">
+                            <div className="section-title">
+                                <span>{user.role === 'doctor' ? '🩺' : '📋'}</span>
+                                {user.role === 'doctor' ? t('professional_details') : t('medical_data')}
+                            </div>
+
+                            {user.role === 'patient' && (
+                                <>
+                                    <div className="form-group">
+                                        <label className="form-label">{t('insurance')}</label>
+                                        <input
+                                            className="form-input"
+                                            value={insurance}
+                                            onChange={e => setInsurance(e.target.value)}
+                                            placeholder="Example: OSDE, Swiss Medical"
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="form-label">{t('medical_history')}</label>
+                                        <textarea
+                                            className="form-input"
+                                            rows="6"
+                                            value={medicalHistory}
+                                            onChange={e => setMedicalHistory(e.target.value)}
+                                            placeholder="Allergies, chronic conditions, etc."
+                                        />
+                                    </div>
+                                </>
+                            )}
+
+                        </div>
+
+
+                    </div>
+
+                    <div className="flex justify-end mt-8 mb-12">
+                        <button type="submit" className="btn btn-primary">
+                            {t('save_changes')}
+                        </button>
+                    </div>
+                </form>
             </main>
         </div>
     );

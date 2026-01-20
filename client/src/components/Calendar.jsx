@@ -37,19 +37,15 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
     const daysOfWeek = t('days_short_array') || ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     const handlePrevMonth = () => {
-        setViewDate(prev => {
-            const newDate = new Date(prev.getFullYear(), prev.getMonth() - 1, 1);
-            onDateSelect(newDate);
-            return newDate;
-        });
+        const newDate = new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1);
+        setViewDate(newDate);
+        onDateSelect(newDate);
     };
 
     const handleNextMonth = () => {
-        setViewDate(prev => {
-            const newDate = new Date(prev.getFullYear(), prev.getMonth() + 1, 1);
-            onDateSelect(newDate);
-            return newDate;
-        });
+        const newDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1);
+        setViewDate(newDate);
+        onDateSelect(newDate);
     };
 
     const renderDays = () => {

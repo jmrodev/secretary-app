@@ -6,8 +6,12 @@ import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
 import CurrencyInput from './CurrencyInput';
 import { formatPrice } from '../utils/format';
+import { useAuth } from '../context/AuthContext';
+import { useConfig } from '../context/ConfigContext';
 
 const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requestId }) => {
+    const { user } = useAuth();
+    const { settings } = useConfig();
     const { t } = useLanguage();
     const { alert } = useModal();
     const [formData, setFormData] = useState({
@@ -18,7 +22,12 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
         doctor_id: '',
         status: 'paid',
         service_type: 'consultation',
-        proof: null
+        proof: null,
+        transaction_date: (() => {
+            const d = new Date();
+            const tzoffset = d.getTimezoneOffset() * 60000;
+            return new Date(d.getTime() - tzoffset).toISOString().slice(0, 16);
+        })()
     });
 
     const [loading, setLoading] = useState(false);
@@ -41,7 +50,12 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                 description: data.description || '',
                 related_user_id: data.patientUserId || data.patientId || '',
                 doctor_id: data.doctorId || '',
-                status: data.status || 'paid'
+                status: data.status || 'paid',
+                transaction_date: (() => {
+                    const d = new Date();
+                    const tzoffset = d.getTimezoneOffset() * 60000;
+                    return new Date(d.getTime() - tzoffset).toISOString().slice(0, 16);
+                })()
             }));
 
             // Auto-fetch pricing if doctor and patient are present
@@ -343,6 +357,19 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                     <option value="pending">{t('pending_payment')}</option>
                 </select>
             </div>
+
+            {(settings.allow_admin_edit_finance_date === 'true') && (
+                <div className="input-group">
+                    <label className="input-label">{t('transaction_date') || 'Fecha de Transacción'}</label>
+                    <input
+                        type="datetime-local"
+                        className="input-field"
+                        value={formData.transaction_date}
+                        onChange={e => setFormData({ ...formData, transaction_date: e.target.value })}
+                    />
+                    <p className="text-[10px] text-amber-600 mt-1">⚠️ Fecha de Pago: Permite registrar el movimiento con una fecha distinta a la actual.</p>
+                </div>
+            )}
 
             <div className="input-group">
                 <label className="input-label">{t('description')}</label>

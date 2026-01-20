@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import CurrencyInput from './CurrencyInput';
 import api from '../api/axios';
+import PhoneNumbersManager from './PhoneNumbersManager';
 
 const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmin = false, insurances = [], doctors = [] }) => {
     const { t } = useLanguage();
@@ -11,7 +12,7 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
         password: '',
         full_name: '',
         dni: '',
-        phone: '',
+        phoneNumbers: [],
         email: '',
         address: '',
         dob: '',
@@ -69,7 +70,7 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                 first_name: fName || '',
                 last_name: lName || '',
                 dni: initialValues.dni || '',
-                phone: initialValues.phone || '',
+                phoneNumbers: (initialValues.phoneNumbers && initialValues.phoneNumbers.length > 0) ? initialValues.phoneNumbers : (initialValues.phone ? [{ phone_number: initialValues.phone, is_primary: true, label: 'Celular' }] : []),
                 email: initialValues.email || '',
                 address: initialValues.address || '',
                 insurance_id: initialValues.insurance_id || '',
@@ -111,7 +112,28 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit(formData);
+
+        // Final fallback auto-fill if empty during creation
+        if (!isEdit && (!formData.username || !formData.password)) {
+            const firstName = (formData.first_name || '').trim();
+            const lastName = (formData.last_name || '').trim();
+            const autoValue = `${firstName}${lastName}`.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
+
+            setFormData(prev => ({
+                ...prev,
+                username: prev.username || autoValue,
+                password: prev.password || autoValue
+            }));
+
+            // Note: because setFormData is async, we should probably use the updated data for onSubmit
+            onSubmit({
+                ...formData,
+                username: formData.username || autoValue,
+                password: formData.password || autoValue
+            });
+        } else {
+            onSubmit(formData);
+        }
     };
 
     return (
@@ -153,11 +175,24 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                         value={formData.first_name || ''}
                         onChange={(e) => {
                             const val = e.target.value;
-                            setFormData(prev => ({
-                                ...prev,
-                                first_name: val,
-                                full_name: `${val} ${prev.last_name || ''}`.trim()
-                            }));
+                            setFormData(prev => {
+                                const newFirstName = val.trim();
+                                const newLastName = (prev.last_name || '').trim();
+                                const autoValue = `${newFirstName}${newLastName}`.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
+
+                                const oldAuto = `${(prev.first_name || '').trim()}${(prev.last_name || '').trim()}`.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
+
+                                const shouldUpdateUser = !isEdit && (!prev.username || prev.username === oldAuto);
+                                const shouldUpdatePass = !isEdit && (!prev.password || prev.password === oldAuto);
+
+                                return {
+                                    ...prev,
+                                    first_name: val,
+                                    full_name: `${val} ${prev.last_name || ''}`.trim(),
+                                    username: shouldUpdateUser ? autoValue : prev.username,
+                                    password: shouldUpdatePass ? autoValue : prev.password
+                                };
+                            });
                         }}
                         required
                     />
@@ -170,11 +205,24 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                         value={formData.last_name || ''}
                         onChange={(e) => {
                             const val = e.target.value;
-                            setFormData(prev => ({
-                                ...prev,
-                                last_name: val,
-                                full_name: `${prev.first_name || ''} ${val}`.trim()
-                            }));
+                            setFormData(prev => {
+                                const newFirstName = (prev.first_name || '').trim();
+                                const newLastName = val.trim();
+                                const autoValue = `${newFirstName}${newLastName}`.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
+
+                                const oldAuto = `${(prev.first_name || '').trim()}${(prev.last_name || '').trim()}`.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
+
+                                const shouldUpdateUser = !isEdit && (!prev.username || prev.username === oldAuto);
+                                const shouldUpdatePass = !isEdit && (!prev.password || prev.password === oldAuto);
+
+                                return {
+                                    ...prev,
+                                    last_name: val,
+                                    full_name: `${prev.first_name || ''} ${val}`.trim(),
+                                    username: shouldUpdateUser ? autoValue : prev.username,
+                                    password: shouldUpdatePass ? autoValue : prev.password
+                                };
+                            });
                         }}
                     />
                 </div>
@@ -207,15 +255,6 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
             </div>
 
             <div className="grid-2-cols gap-4 mb-4">
-                <div className="input-group">
-                    <label className="input-label">Nro Afiliado</label>
-                    <input
-                        name="affiliate_number"
-                        className="input-field"
-                        value={formData.affiliate_number}
-                        onChange={handleChange}
-                    />
-                </div>
                 <div className="input-group">
                     <label className="input-label">Email</label>
                     <input
@@ -264,17 +303,14 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                 )}
             </div>
 
+            {/* Multiple Phone Numbers Section */}
+            <div className="mb-6 pt-4 border-t border-slate-100">
+                <PhoneNumbersManager
+                    phoneNumbers={formData.phoneNumbers}
+                    onChange={(newPhones) => setFormData({ ...formData, phoneNumbers: newPhones })}
+                />
+            </div>
             <div className="grid-2-cols gap-4 mb-4">
-                <div className="input-group">
-                    <label className="input-label">Phone</label>
-                    <input
-                        name="phone"
-                        className="input-field"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
                 <div className="input-group">
                     <label className="input-label">{t('dob')}</label>
                     <input
@@ -282,6 +318,15 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                         name="dob"
                         className="input-field"
                         value={formData.dob}
+                        onChange={handleChange}
+                    />
+                </div>
+                <div className="input-group">
+                    <label className="input-label">Nro Afiliado</label>
+                    <input
+                        name="affiliate_number"
+                        className="input-field"
+                        value={formData.affiliate_number}
                         onChange={handleChange}
                     />
                 </div>

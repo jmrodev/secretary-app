@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
+import api from '../api/axios';
 
 const GoogleSanitizer = () => {
     const [appointments, setAppointments] = useState([]);
@@ -39,16 +40,12 @@ const GoogleSanitizer = () => {
 
     const fetchDoctors = async () => {
         try {
-            // Remove /api if it's already in the ENV, or adjust logic. 
-            // The logs showed .../api/api/..., so removing one /api here.
-            const baseUrl = import.meta.env.VITE_API_URL.replace(/\/api$/, '');
-            const res = await fetch(`${baseUrl}/api/users/doctors`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (res.ok) {
-                setDoctors(await res.json());
-            }
-        } catch (e) { console.error(e); }
+            const { data } = await api.get('/users/doctors');
+            setDoctors(data);
+        } catch (e) {
+            console.error(e);
+            toast.error("Error al cargar lista de doctores");
+        }
     };
 
     const fetchAuditData = async () => {
@@ -60,18 +57,9 @@ const GoogleSanitizer = () => {
             };
             if (selectedDoctor) params.doctor_id = selectedDoctor;
 
-            const queryParams = new URLSearchParams(params);
-
-            const baseUrl = import.meta.env.VITE_API_URL.replace(/\/api$/, '');
-            const res = await fetch(`${baseUrl}/api/google/audit-appointments?${queryParams.toString()}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (res.ok) {
-                const data = await res.json();
-                setAppointments(data);
-                // Reset page on search
-                setCurrentPage(1);
-            }
+            const { data } = await api.get('/google/audit-appointments', { params });
+            setAppointments(data);
+            setCurrentPage(1);
         } catch (error) {
             console.error(error);
             toast.error("Error al cargar auditoría");
@@ -98,26 +86,14 @@ const GoogleSanitizer = () => {
         if (!editingAppt) return;
 
         try {
-            const baseUrl = import.meta.env.VITE_API_URL.replace(/\/api$/, '');
-            const res = await fetch(`${baseUrl}/api/google/sanitize/${editingAppt.id}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(formData)
-            });
+            await api.post(`/google/sanitize/${editingAppt.id}`, formData);
 
-            if (res.ok) {
-                toast.success("Turno Saneado y Sincronizado");
-                setEditingAppt(null);
-                fetchAuditData(); // Refresh list to show updated state
-            } else {
-                toast.error("Error al guardar correcciones");
-            }
+            toast.success("Turno Saneado y Sincronizado");
+            setEditingAppt(null);
+            fetchAuditData(); // Refresh list to show updated state
         } catch (error) {
             console.error(error);
-            toast.error("Error de red");
+            toast.error("Error al guardar correcciones: " + (error.response?.data || error.message));
         }
     };
 

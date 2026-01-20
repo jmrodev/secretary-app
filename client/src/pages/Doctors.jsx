@@ -111,6 +111,8 @@ const Doctors = () => {
     const handleEditClick = (doc) => {
         setEditData({
             id: doc.id,
+            specialty: doc.specialty || '',
+            cbu: doc.cbu || '',
             office_number: doc.office_number || '',
             rental_type: doc.rental_type || 'monthly',
             rental_cost: doc.rental_cost || 0,
@@ -120,7 +122,9 @@ const Doctors = () => {
             certificate_price: doc.certificate_price || 0,
             virtual_consultation_price: doc.virtual_consultation_price || 0,
             appointment_duration: doc.appointment_duration || 60,
-            break_duration: doc.break_duration || 0
+            break_duration: doc.break_duration || 0,
+            default_visit_interval_days: doc.default_visit_interval_days || 0,
+            default_prescription_interval_days: doc.default_prescription_interval_days || 0
         });
         setActiveTab('tariffs');
 
@@ -191,20 +195,20 @@ const Doctors = () => {
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-lg text-main-800 m-0 leading-tight">{d.full_name}</h3>
-                                    <p className="text-sm text-blue-600 m-0 mt-1 font-medium">{d.specialty || 'General'}</p>
+                                    <p style={{ fontSize: '0.875rem', color: 'var(--blue-600)', margin: '0.25rem 0 0 0', fontWeight: '500' }}>{d.specialty || 'General'}</p>
                                 </div>
                             </div>
 
                             <div className="item-content">
-                                <div className="text-sm text-main-600 flex flex-col gap-1 mb-2">
+                                <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '0.25rem', marginBottom: '0.5rem' }}>
                                     <div className="flex items-center gap-2">
                                         <span>📞</span> <span className="font-medium">
-                                            {d.phone ? <a href={`tel:${d.phone.replace(/[^0-9]/g, '')}`} className="text-main-600 hover:text-blue-600 hover:underline">{d.phone}</a> : 'No phone'}
+                                            {d.phone ? <a href={`tel:${d.phone.replace(/[^0-9]/g, '')}`} style={{ color: 'var(--text-secondary)' }}>{d.phone}</a> : 'No phone'}
                                         </span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <span>🏢</span> <span>{t('office_label')}: <span className="font-medium">
-                                            {d.office_number ? <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('Consultorio ' + d.office_number + ' Tandil')}`} target="_blank" rel="noreferrer" className="text-main-600 hover:text-blue-600 hover:underline">{d.office_number}</a> : 'N/A'}
+                                            {d.office_number ? <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('Consultorio ' + d.office_number + ' Tandil')}`} target="_blank" rel="noreferrer" style={{ color: 'var(--text-secondary)' }}>{d.office_number}</a> : 'N/A'}
                                         </span></span>
                                     </div>
                                 </div>
@@ -308,7 +312,7 @@ const Doctors = () => {
 
                                 <div className="flex-between-center">
                                     <h4 className="section-header-line m-0">{t('tariffs_section')}</h4>
-                                    <div className="text-xs text-muted">Duración: {editData.appointment_duration}m + {editData.break_duration}m</div>
+                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Duración: {editData.appointment_duration}m + {editData.break_duration}m</div>
                                 </div>
                                 <div className="grid-2-cols">
                                     <div className="input-group">
@@ -330,6 +334,32 @@ const Doctors = () => {
                                     <div className="input-group">
                                         <label className="input-label">{t('certificate_price') || 'Certificate Price'}</label>
                                         <CurrencyInput className="input-field" value={editData.certificate_price} onChange={e => setEditData({ ...editData, certificate_price: e.target.value })} />
+                                    </div>
+                                </div>
+
+                                <h4 className="section-header-line">{t('professional_details') || 'Detalles Profesionales'}</h4>
+                                <div className="grid-2-cols">
+                                    <div className="input-group">
+                                        <label className="input-label">{t('specialty') || 'Especialidad'}</label>
+                                        <input className="input-field" value={editData.specialty} onChange={e => setEditData({ ...editData, specialty: e.target.value })} />
+                                    </div>
+                                    <div className="input-group">
+                                        <label className="input-label">{t('cbu_alias') || 'CBU/Alias'}</label>
+                                        <input className="input-field" value={editData.cbu} onChange={e => setEditData({ ...editData, cbu: e.target.value })} />
+                                    </div>
+                                </div>
+
+                                <h4 className="section-header-line">{t('follow_up_settings') || 'Configuración de Seguimiento'}</h4>
+                                <div className="grid-2-cols">
+                                    <div className="input-group">
+                                        <label className="input-label">{t('visit_interval_days') || 'Intervalo entre Visitas (Días)'}</label>
+                                        <input type="number" className="input-field" value={editData.default_visit_interval_days} onChange={e => setEditData({ ...editData, default_visit_interval_days: e.target.value })} min="0" />
+                                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>{t('profile_follow_up_help') || 'Tiempo predeterminado entre chequeos.'}</p>
+                                    </div>
+                                    <div className="input-group">
+                                        <label className="input-label">{t('prescription_interval_days') || 'Intervalo para Recetas (Días)'}</label>
+                                        <input type="number" className="input-field" value={editData.default_prescription_interval_days} onChange={e => setEditData({ ...editData, default_prescription_interval_days: e.target.value })} min="0" />
+                                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>{t('profile_prescription_help') || 'Duración predeterminada para recetas crónicas.'}</p>
                                     </div>
                                 </div>
                             </div>
@@ -370,11 +400,11 @@ const Doctors = () => {
                         {activeTab === 'google' && (
                             <div key="google" className="animate-in space-y-6">
                                 <h4 className="section-header-line">Integración con Google</h4>
-                                <div className="p-6 bg-slate-50 rounded-xl border border-slate-200">
+                                <div style={{ padding: '1.5rem', backgroundColor: 'var(--gray-50)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--gray-200)' }}>
                                     <div className="flex justify-between items-start mb-6">
                                         <div>
-                                            <h4 className="font-bold text-lg mb-1">Estado de Sincronización</h4>
-                                            <p className="text-sm text-muted">Sincroniza Turnos con Calendar y Pacientes con Contactos.</p>
+                                            <h4 style={{ fontWeight: '700', fontSize: '1.125rem', marginBottom: '0.25rem' }}>Estado de Sincronización</h4>
+                                            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Sincroniza Turnos con Calendar y Pacientes con Contactos.</p>
                                         </div>
                                         {loadingGoogle ? (
                                             <div className="animate-spin text-accent-color">⌛</div>
@@ -395,7 +425,7 @@ const Doctors = () => {
 
                                     {connected && (
                                         <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-200">
-                                            <button className="btn btn-secondary text-sm" onClick={async () => {
+                                            <button className="btn btn-secondary" onClick={async () => {
                                                 try {
                                                     const res = await api.get(`/google/appointments?doctorId=${editData.id}`);
                                                     showMessage(`Se encontraron ${res.data.events?.length || 0} eventos futuros en el calendario.`, 'success');
@@ -406,7 +436,7 @@ const Doctors = () => {
                                                 📅 Verificar Calendario
                                             </button>
 
-                                            <button className="btn btn-accent text-sm" onClick={async () => {
+                                            <button className="btn btn-accent" onClick={async () => {
                                                 if (!await confirm("¿Importar contactos de Google a la base de pacientes local?")) return;
                                                 setLoadingGoogle(true);
                                                 try {

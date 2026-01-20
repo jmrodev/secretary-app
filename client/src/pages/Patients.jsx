@@ -11,6 +11,7 @@ import Sidebar from '../components/Sidebar';
 import CurrencyInput from '../components/CurrencyInput';
 import PatientForm from '../components/PatientForm';
 import QRCodeModal from '../components/QRCodeModal';
+import PatientMedications from '../components/PatientMedications';
 
 
 const Patients = () => {
@@ -278,16 +279,28 @@ const Patients = () => {
                 .replace(/{secretary_name}/g, user.name || 'Secretaria');
 
             const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-            const phone = patient.phone.replace(/[^0-9]/g, '');
 
-            let targetUrl;
-            if (isMobile) {
-                targetUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            let targetPhone = '';
+            if (patient.phoneNumbers && patient.phoneNumbers.length > 0) {
+                const primary = patient.phoneNumbers.find(p => p.is_primary) || patient.phoneNumbers[0];
+                targetPhone = primary.phone_number;
             } else {
-                targetUrl = `https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
+                targetPhone = patient.phone;
             }
 
-            window.open(targetUrl, '_blank');
+            const phone = targetPhone.replace(/[^0-9]/g, '');
+
+            if (isMobile) {
+                window.location.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            } else {
+                const appUrl = `whatsapp://send?phone=${phone}&text=${encodeURIComponent(message)}`;
+                const webUrl = `https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
+
+                // Priority ZapZap -> Web
+                window.location.href = appUrl;
+                setTimeout(() => window.open(webUrl, '_blank'), 2500);
+            }
+
             showMessage('Enlace generado. Abriendo WhatsApp...', 'success');
 
         } catch (err) {
@@ -330,27 +343,35 @@ const Patients = () => {
         }
     };
 
-    const handleEditClick = () => {
+    const handleEditClick = (patient = null) => {
+        const data = patient || details;
+        if (!data) return;
+
+        const safeDate = (d) => d && typeof d === 'string' ? d.split('T')[0] : '';
+        const safeArray = (arr) => Array.isArray(arr) ? arr : [];
+
         setEditData({
-            full_name: details.full_name || '',
-            first_name: details.first_name || '',
-            last_name: details.last_name || '',
-            dni: details.dni || '',
-            phone: details.phone || '',
-            insurance_id: details.insurance_id || '',
-            affiliate_number: details.affiliate_number || (details.insurance && !details.insurance_id ? details.insurance : '') || '',
-            email: details.email || '',
-            dob: details.dob ? details.dob.split('T')[0] : '',
-            medical_history: details.medical_history || '',
-            tariff_percent: details.tariff_percent || 0,
-            tariff_override: details.tariff_override || '',
-            assignedDoctors: details.assignedDoctors ? details.assignedDoctors.map(d => d.id) : [],
-            visit_interval_days: details.visit_interval_days || '',
-            prescription_interval_days: details.prescription_interval_days || '',
-            next_suggested_visit_date: details.next_suggested_visit_date ? details.next_suggested_visit_date.split('T')[0] : '',
-            next_suggested_prescription_date: details.next_suggested_prescription_date ? details.next_suggested_prescription_date.split('T')[0] : '',
-            license_expiry_date: details.license_expiry_date ? details.license_expiry_date.split('T')[0] : '',
-            institution_id: details.institution_id || ''
+            id: data.id,
+            full_name: data.full_name || '',
+            first_name: data.first_name || '',
+            last_name: data.last_name || '',
+            dni: data.dni || '',
+            phone: data.phone || '',
+            phoneNumbers: safeArray(data.phoneNumbers).length > 0 ? data.phoneNumbers : (data.phone ? [{ phone_number: data.phone, is_primary: true, label: 'Celular' }] : []),
+            insurance_id: data.insurance_id || '',
+            affiliate_number: data.affiliate_number || (data.insurance && !data.insurance_id ? data.insurance : '') || '',
+            email: data.email || '',
+            dob: safeDate(data.dob),
+            medical_history: data.medical_history || '',
+            tariff_percent: data.tariff_percent || 0,
+            tariff_override: data.tariff_override || '',
+            assignedDoctors: safeArray(data.assignedDoctors).map(d => d.id || d),
+            visit_interval_days: data.visit_interval_days || '',
+            prescription_interval_days: data.prescription_interval_days || '',
+            next_suggested_visit_date: safeDate(data.next_suggested_visit_date),
+            next_suggested_prescription_date: safeDate(data.next_suggested_prescription_date),
+            license_expiry_date: safeDate(data.license_expiry_date),
+            institution_id: data.institution_id || ''
         });
         setEditModalOpen(true);
     };
@@ -465,11 +486,28 @@ const Patients = () => {
                             <p><strong>{t('dni')}:</strong> {details.dni || 'N/A'}</p>
                             <p><strong>OS:</strong> {details.insurance_name || 'N/A'}</p>
                             <p><strong>{t('assigned_doctors')}:</strong> {details.assignedDoctors && details.assignedDoctors.length > 0 ? details.assignedDoctors.map(d => d.full_name).join(', ') : t('none')}</p>
-                            <p><strong>Phone:</strong> {details.phone || 'N/A'}</p>
+                            <div className="flex flex-col gap-1">
+                                <strong>{t('phone') || 'Teléfonos'}:</strong>
+                                {details.phoneNumbers && details.phoneNumbers.length > 0 ? (
+                                    <div className="flex flex-col ml-2">
+                                        {details.phoneNumbers.map((p, idx) => (
+                                            <div key={idx} className="flex items-center gap-2 text-sm">
+                                                <span className={`w-2 h-2 rounded-full ${p.is_primary ? 'bg-green-500' : 'bg-slate-300'}`}></span>
+                                                <span className="font-medium text-main-700">{p.phone_number}</span>
+                                                {p.label && <span className="text-xs text-main-400">({p.label})</span>}
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <span>{details.phone || 'N/A'}</span>
+                                )}
+                            </div>
                             <p><strong>Email:</strong> {details.email || 'N/A'}</p>
                             <p><strong>{t('dob')}:</strong> {details.dob ? new Date(details.dob).toLocaleDateString() : 'N/A'}</p>
                         </div>
                     </div>
+
+                    <PatientMedications patientId={details.id} />
 
                     <div className="card mb-4">
                         <h3>{t('financial_history_debt')}</h3>
@@ -491,10 +529,15 @@ const Patients = () => {
                             initialValues={editData}
                             onSubmit={async (data) => {
                                 try {
-                                    await api.put(`/users/patients/${details.id}`, data);
+                                    const patientId = editData.id || details?.id;
+                                    if (!patientId) throw new Error("No patient ID found");
+
+                                    await api.put(`/users/patients/${patientId}`, data);
                                     setEditModalOpen(false);
                                     showMessage(t('patient_updated'), 'success');
-                                    handleViewDetails(details.id);
+                                    if (details?.id === patientId) {
+                                        handleViewDetails(patientId);
+                                    }
                                     fetchPatients();
                                 } catch (err) {
                                     console.error(err);
@@ -752,6 +795,16 @@ const Patients = () => {
                                                                 title="WhatsApp Link"
                                                             >
                                                                 🔗
+                                                            </button>
+                                                            <button
+                                                                className="btn-icon-base btn-icon-blue"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleEditClick(p);
+                                                                }}
+                                                                title={t('edit_info')}
+                                                            >
+                                                                ✏️
                                                             </button>
                                                             <button
                                                                 className="btn-icon-base btn-icon-blue"

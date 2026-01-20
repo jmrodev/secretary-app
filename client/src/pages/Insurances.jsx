@@ -4,6 +4,7 @@ import { useModal } from '../context/ModalContext';
 import Sidebar from '../components/Sidebar';
 import Modal from '../components/Modal';
 import { useMessage } from '../context/MessageContext';
+import PhoneNumbersManager from '../components/PhoneNumbersManager';
 
 const Insurances = () => {
     const { showMessage } = useMessage();
@@ -15,7 +16,7 @@ const Insurances = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [formData, setFormData] = useState({
-        name: '', cuit: '', website: '', email: '', phone: '', address: '', status: 'active'
+        name: '', cuit: '', website: '', email: '', phoneNumbers: [], address: '', status: 'active'
     });
 
     const fetchInsurances = async () => {
@@ -36,7 +37,7 @@ const Insurances = () => {
 
     const handleOpenCreate = () => {
         setEditingId(null);
-        setFormData({ name: '', cuit: '', website: '', email: '', phone: '', address: '', status: 'active' });
+        setFormData({ name: '', cuit: '', website: '', email: '', phoneNumbers: [], address: '', status: 'active' });
         setModalOpen(true);
     };
 
@@ -47,7 +48,7 @@ const Insurances = () => {
             cuit: ins.cuit || '',
             website: ins.website || '',
             email: ins.email || '',
-            phone: ins.phone || '',
+            phoneNumbers: ins.phoneNumbers || (ins.phone ? [{ phone_number: ins.phone, is_primary: true, label: 'Celular' }] : []),
             address: ins.address || '',
             status: ins.status || 'active'
         });
@@ -170,12 +171,21 @@ const Insurances = () => {
                                                 </div>
                                                 <div className="info-row">
                                                     <span className="info-icon">📞</span>
-                                                    <span className="font-medium">
-                                                        {ins.phone ? (
+                                                    <span className="font-medium text-sm">
+                                                        {ins.phoneNumbers && ins.phoneNumbers.length > 0 ? (
+                                                            <div className="flex flex-col">
+                                                                {ins.phoneNumbers.filter(p => p.is_primary).map(p => (
+                                                                    <a key={p.id} href={`tel:${p.phone_number.replace(/[^0-9+]/g, '')}`} className="text-main-800 hover:text-blue-600 hover:underline">
+                                                                        {p.phone_number} {p.label && <span className="text-[10px] text-muted normal-case font-normal">({p.label})</span>}
+                                                                    </a>
+                                                                ))}
+                                                                {ins.phoneNumbers.length > 1 && <span className="text-[10px] text-blue-500">+{ins.phoneNumbers.length - 1} más</span>}
+                                                            </div>
+                                                        ) : (ins.phone ? (
                                                             <a href={`tel:${ins.phone.replace(/[^0-9+]/g, '')}`} className="text-main-800 hover:text-blue-600 hover:underline">
                                                                 {ins.phone}
                                                             </a>
-                                                        ) : 'No phone'}
+                                                        ) : 'No phone')}
                                                     </span>
                                                 </div>
                                                 <div className="info-row">
@@ -244,15 +254,15 @@ const Insurances = () => {
                             <label className="input-label">Website</label>
                             <input className="input-field" value={formData.website} onChange={e => setFormData({ ...formData, website: e.target.value })} placeholder="e.g. www.osde.com.ar" />
                         </div>
-                        <div className="grid-2-cols">
-                            <div className="input-group">
-                                <label className="input-label">Email</label>
-                                <input className="input-field" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
-                            </div>
-                            <div className="input-group">
-                                <label className="input-label">Phone</label>
-                                <input className="input-field" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} />
-                            </div>
+                        <div className="mb-4">
+                            <PhoneNumbersManager
+                                phoneNumbers={formData.phoneNumbers}
+                                onChange={(newPhones) => setFormData({ ...formData, phoneNumbers: newPhones })}
+                            />
+                        </div>
+                        <div className="input-group">
+                            <label className="input-label">Email</label>
+                            <input className="input-field" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
                         </div>
                         <div className="input-group">
                             <label className="input-label">Dirección</label>

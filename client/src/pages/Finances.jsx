@@ -137,6 +137,22 @@ const Finances = () => {
         return d;
     };
 
+    const formatDateUnambiguous = (dateStr) => {
+        if (!dateStr) return "-";
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return dateStr;
+        const day = d.getDate().toString().padStart(2, '0');
+        const months = [
+            t('january') || 'enero', t('february') || 'febrero', t('march') || 'marzo',
+            t('april') || 'abril', t('may') || 'mayo', t('june') || 'junio',
+            t('july') || 'julio', t('august') || 'agosto', t('september') || 'septiembre',
+            t('october') || 'octubre', t('november') || 'noviembre', t('december') || 'diciembre'
+        ];
+        const month = months[d.getMonth()];
+        const year = d.getFullYear();
+        return `${day} de ${month} ${year}`;
+    };
+
     if (loading) return <div>{t('loading')}</div>;
 
     return (
@@ -309,7 +325,7 @@ const Finances = () => {
                                                             return (
                                                                 <tr key={tx.id} className={`${groupClass} ${!isGroupEnd ? 'border-b border-amber-100' : ''}`}>
                                                                     <td className="py-3 px-4 text-sm text-main-500 whitespace-nowrap w-[15%]">
-                                                                        {new Date(tx.transaction_date).toLocaleDateString()}
+                                                                        {formatDateUnambiguous(tx.transaction_date)}
                                                                         <div className="text-xs text-muted">{new Date(tx.transaction_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                                                                     </td>
                                                                     <td className="py-3 px-4 w-1/3">
@@ -321,7 +337,14 @@ const Finances = () => {
                                                                         </div>
                                                                     </td>
                                                                     <td className="py-3 px-4 text-sm font-medium text-main-600 w-[15%]">
-                                                                        {tx.doctor_name || <span className="text-muted italic">{t('general')}</span>}
+                                                                        <div className="flex flex-col">
+                                                                            <span>{tx.doctor_name || <span className="text-muted italic">{t('general')}</span>}</span>
+                                                                            {tx.patient_full_name && (
+                                                                                <span className="text-[10px] text-muted font-normal">
+                                                                                    👤 {tx.patient_full_name} {tx.patient_dni ? `(${tx.patient_dni})` : ''}
+                                                                                </span>
+                                                                            )}
+                                                                        </div>
                                                                     </td>
                                                                     <td className="py-3 px-4 w-[15%]">
                                                                         <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${tx.method === 'cash' ? 'bg-green-50 text-green-700 border-green-200' :
@@ -347,7 +370,17 @@ const Finances = () => {
                                                                             <div className="flex gap-2 justify-center">
                                                                                 <button
                                                                                     className="text-amber-500 hover:text-amber-700 p-1"
-                                                                                    onClick={() => setEditingTx(tx)}
+                                                                                    onClick={() => {
+                                                                                        const d = new Date(tx.transaction_date);
+                                                                                        // Convert to local YYYY-MM-DDTHH:mm for input
+                                                                                        const Y = d.getFullYear();
+                                                                                        const M = (d.getMonth() + 1).toString().padStart(2, '0');
+                                                                                        const D = d.getDate().toString().padStart(2, '0');
+                                                                                        const H = d.getHours().toString().padStart(2, '0');
+                                                                                        const Min = d.getMinutes().toString().padStart(2, '0');
+                                                                                        const localStr = `${Y}-${M}-${D}T${H}:${Min}`;
+                                                                                        setEditingTx({ ...tx, transaction_date: localStr });
+                                                                                    }}
                                                                                     title={t('edit')}
                                                                                 >
                                                                                     ✏️
@@ -461,6 +494,19 @@ const Finances = () => {
                                     <option value="pending">{t('pending')}</option>
                                 </select>
                             </div>
+                            {(settings.allow_admin_edit_finance_date === 'true') && (
+                                <div className="input-group">
+                                    <label className="input-label">{t('transaction_date') || 'Fecha de Transacción'}</label>
+                                    <input
+                                        type="datetime-local"
+                                        className="input-field"
+                                        value={editingTx.transaction_date || ''}
+                                        onChange={e => setEditingTx({ ...editingTx, transaction_date: e.target.value })}
+                                    />
+                                    <p className="text-[10px] text-amber-600 mt-1">⚠️ El formato (Día/Mes o Mes/Día) depende de su navegador. Por favor verifique el nombre del mes al seleccionar.</p>
+                                    <p className="text-[10px] text-amber-600 mt-1">⚠️ Cuidado: Cambiar la fecha puede afectar el orden cronológico de la caja.</p>
+                                </div>
+                            )}
                         </form>
                     </Modal>
                 )}

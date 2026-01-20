@@ -5,6 +5,7 @@ import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
 import Modal from '../components/Modal';
 import Sidebar from '../components/Sidebar';
+import PhoneNumbersManager from '../components/PhoneNumbersManager';
 
 const AdminUsers = () => {
     const { user } = useAuth();
@@ -19,7 +20,7 @@ const AdminUsers = () => {
         isOpen: false,
         type: null,
         user: null,
-        formData: { username: '', password: '', role: 'patient', full_name: '', dni: '', phone: '', specialty: '' }
+        formData: { username: '', password: '', role: 'patient', full_name: '', dni: '', phoneNumbers: [{ phone_number: '+549', label: 'Celular', is_primary: true }], specialty: '' }
     });
 
     useEffect(() => {
@@ -46,7 +47,7 @@ const AdminUsers = () => {
             isOpen: true,
             type: 'CREATE',
             user: null,
-            formData: { username: '', password: '', role: 'patient', full_name: '', dni: '', phone: '', specialty: '' }
+            formData: { username: '', password: '', role: 'patient', full_name: '', dni: '', phoneNumbers: [{ phone_number: '+549', label: 'Celular', is_primary: true }], specialty: '' }
         });
     };
 
@@ -61,7 +62,7 @@ const AdminUsers = () => {
                 role: u.role,
                 full_name: u.full_name || '',
                 dni: u.dni || '',
-                phone: u.phone || '',
+                phoneNumbers: u.phoneNumbers || (u.phone ? [{ phone_number: u.phone, is_primary: true, label: 'Celular' }] : []),
                 specialty: u.specialty || ''
             }
         });
@@ -212,15 +213,16 @@ const AdminUsers = () => {
                     <input className="input-field" value={formData.full_name} onChange={e => setFormData({ full_name: e.target.value })} />
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                    <div>
-                        <label className="input-label">{t('dni')}</label>
-                        <input className="input-field" value={formData.dni} onChange={e => setFormData({ dni: e.target.value })} />
-                    </div>
-                    <div>
-                        <label className="input-label">Phone</label>
-                        <input className="input-field" value={formData.phone} onChange={e => setFormData({ phone: e.target.value })} />
-                    </div>
+                <div>
+                    <label className="input-label">{t('dni')}</label>
+                    <input className="input-field" value={formData.dni} onChange={e => setFormData({ dni: e.target.value })} />
+                </div>
+
+                <div className="mb-4">
+                    <PhoneNumbersManager
+                        phoneNumbers={formData.phoneNumbers}
+                        onChange={(newPhones) => setFormData({ phoneNumbers: newPhones })}
+                    />
                 </div>
 
                 {formData.role === 'doctor' && (
@@ -297,7 +299,14 @@ const AdminUsers = () => {
                                         </td>
                                         <td className="p-3">
                                             <div>{u.full_name || '-'}</div>
-                                            <div className="text-xs-muted">{u.phone}</div>
+                                            <div className="text-xs-muted flex items-center gap-2">
+                                                {u.phoneNumbers && u.phoneNumbers.length > 0 ? (
+                                                    <>
+                                                        {u.phoneNumbers.find(p => p.is_primary)?.phone_number || u.phoneNumbers[0].phone_number}
+                                                        {u.phoneNumbers.length > 1 && <span className="text-[10px] bg-blue-50 text-blue-500 px-1 rounded">+{u.phoneNumbers.length - 1}</span>}
+                                                    </>
+                                                ) : (u.phone || '-')}
+                                            </div>
                                         </td>
                                         <td className="p-3">
                                             <div className="flex gap-2">

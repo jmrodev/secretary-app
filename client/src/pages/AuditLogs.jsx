@@ -115,7 +115,7 @@ const AuditLogs = () => {
                                                 {log.details ? (
                                                     log.details.length > 60 ? (
                                                         <span className="flex items-center gap-2">
-                                                            <span className="text-main-500 truncate block max-w-[200px]">{log.details}</span>
+                                                            <span className="text-main-500 truncate block ">{log.details}</span>
                                                             <button
                                                                 className="text-blue-600 hover:text-blue-800 text-xs font-semibold bg-blue-50 px-2 py-1 rounded border border-blue-100"
                                                                 onClick={() => setSelectedLog(log)}

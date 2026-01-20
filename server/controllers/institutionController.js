@@ -8,6 +8,13 @@ exports.getAllInstitutions = async (req, res) => {
             FROM institutions i 
             ORDER BY i.name ASC
         `);
+
+        // Fetch phones for each institution
+        for (let i = 0; i < rows.length; i++) {
+            const phones = await pool.query("SELECT * FROM phone_numbers WHERE entity_type = 'institution' AND entity_id = ?", [rows[i].id]);
+            rows[i].phoneNumbers = phones;
+        }
+
         res.json(rows);
     } catch (err) {
         console.error(err);
@@ -16,35 +23,69 @@ exports.getAllInstitutions = async (req, res) => {
 };
 
 exports.createInstitution = async (req, res) => {
-    const { name, description, status, base_price } = req.body;
+    const { name, description, status, base_price, phoneNumbers } = req.body;
     if (!name) return res.status(400).json({ error: "Name is required" });
 
+    let conn;
     try {
-        const result = await pool.query(
+        conn = await pool.getConnection();
+        await conn.beginTransaction();
+
+        const result = await conn.query(
             "INSERT INTO institutions (name, description, status, base_price) VALUES (?, ?, ?, ?)",
             [name, description, status || 'active', base_price || 0]
         );
-        res.status(201).json({ id: parseInt(result.insertId), name, description, status, base_price });
+        const instId = Number(result.insertId);
+
+        if (Array.isArray(phoneNumbers)) {
+            for (const pn of phoneNumbers) {
+                await conn.query("INSERT INTO phone_numbers (entity_type, entity_id, phone_number, is_primary, label) VALUES (?, ?, ?, ?, ?)",
+                    ['institution', instId, pn.phone_number, pn.is_primary ? 1 : 0, pn.label || 'Celular']);
+            }
+        }
+
+        await conn.commit();
+        res.status(201).json({ id: instId, name, description, status, base_price });
     } catch (err) {
+        if (conn) await conn.rollback();
         console.error(err);
         res.status(500).json({ error: "Failed to create institution" });
+    } finally {
+        if (conn) conn.release();
     }
 };
 
 exports.updateInstitution = async (req, res) => {
     const { id } = req.params;
-    const { name, description, status, base_price } = req.body;
+    const { name, description, status, base_price, phoneNumbers } = req.body;
     if (!name) return res.status(400).json({ error: "Name is required" });
 
+    let conn;
     try {
-        await pool.query(
+        conn = await pool.getConnection();
+        await conn.beginTransaction();
+
+        await conn.query(
             "UPDATE institutions SET name = ?, description = ?, status = ?, base_price = ? WHERE id = ?",
             [name, description, status, base_price || 0, id]
         );
+
+        if (phoneNumbers !== undefined && Array.isArray(phoneNumbers)) {
+            await conn.query("DELETE FROM phone_numbers WHERE entity_type = 'institution' AND entity_id = ?", [id]);
+            for (const pn of phoneNumbers) {
+                await conn.query("INSERT INTO phone_numbers (entity_type, entity_id, phone_number, is_primary, label) VALUES (?, ?, ?, ?, ?)",
+                    ['institution', id, pn.phone_number, pn.is_primary ? 1 : 0, pn.label || 'Celular']);
+            }
+        }
+
+        await conn.commit();
         res.json({ message: "Institution updated" });
     } catch (err) {
+        if (conn) await conn.rollback();
         console.error(err);
         res.status(500).json({ error: "Failed to update institution" });
+    } finally {
+        if (conn) conn.release();
     }
 };
 

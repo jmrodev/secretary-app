@@ -59,6 +59,31 @@ exports.register = async (req, res) => {
             const pResult = await conn.query("INSERT INTO patients (user_id, full_name, first_name, last_name, dob, phone, address, medical_history, dni, insurance_id, institution_id, affiliate_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 [userId, fullName, firstName, lastName, dob || null, phone || null, address || null, medicalHistory || null, dni || null, insurance_id || null, institution_id || null, affiliate_number || null]);
             patientId = pResult.insertId;
+
+            // Handle Multiple Phone Numbers
+            const phoneNumbers = req.body.phoneNumbers;
+            if (Array.isArray(phoneNumbers) && phoneNumbers.length > 0) {
+                let primaryPhone = '';
+                for (const pn of phoneNumbers) {
+                    await conn.query("INSERT INTO phone_numbers (entity_type, entity_id, phone_number, is_primary, label) VALUES (?, ?, ?, ?, ?)",
+                        ['patient', patientId, pn.phone_number, pn.is_primary ? 1 : 0, pn.label || 'Celular']);
+                    if (pn.is_primary) primaryPhone = pn.phone_number;
+                }
+
+                // If no primary was explicitly set, use the first one
+                if (!primaryPhone && phoneNumbers.length > 0) {
+                    primaryPhone = phoneNumbers[0].phone_number;
+                }
+
+                // Update legacy phone column if we found a primary number
+                if (primaryPhone) {
+                    await conn.query("UPDATE patients SET phone = ? WHERE id = ?", [primaryPhone, patientId]);
+                }
+            } else if (phone) {
+                // If legacy phone was sent but no phoneNumbers array, ensure it's in the new table too
+                await conn.query("INSERT INTO phone_numbers (entity_type, entity_id, phone_number, is_primary, label) VALUES (?, ?, ?, ?, ?)",
+                    ['patient', patientId, phone, 1, 'Celular']);
+            }
         }
 
         // Create token

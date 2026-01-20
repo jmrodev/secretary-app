@@ -6,6 +6,7 @@ import { useModal } from '../context/ModalContext';
 import { useMessage } from '../context/MessageContext';
 import Sidebar from '../components/Sidebar';
 import Modal from '../components/Modal';
+import PhoneNumbersManager from '../components/PhoneNumbersManager';
 
 // ... previous imports
 
@@ -204,6 +205,7 @@ const Institutions = () => {
     const [description, setDescription] = useState('');
     const [status, setStatus] = useState('active');
     const [basePrice, setBasePrice] = useState(0);
+    const [phoneNumbers, setPhoneNumbers] = useState([]);
 
     const fetchInstitutions = async () => {
         try {
@@ -225,10 +227,10 @@ const Institutions = () => {
         e.preventDefault();
         try {
             if (editing) {
-                await api.put(`/institutions/${editing.id}`, { name, description, status, base_price: basePrice });
+                await api.put(`/institutions/${editing.id}`, { name, description, status, base_price: basePrice, phoneNumbers });
                 showMessage('Institución actualizada', 'success');
             } else {
-                await api.post('/institutions', { name, description, status, base_price: basePrice });
+                await api.post('/institutions', { name, description, status, base_price: basePrice, phoneNumbers });
                 showMessage('Institución creada', 'success');
             }
             fetchInstitutions();
@@ -258,12 +260,14 @@ const Institutions = () => {
             setDescription(inst.description || '');
             setStatus(inst.status);
             setBasePrice(inst.base_price || 0);
+            setPhoneNumbers(inst.phoneNumbers || (inst.phone ? [{ phone_number: inst.phone, is_primary: true, label: 'Celular' }] : []));
         } else {
             setEditing(null);
             setName('');
             setDescription('');
             setStatus('active');
             setBasePrice(0);
+            setPhoneNumbers([]);
         }
         setModalOpen(true);
     };
@@ -380,6 +384,12 @@ const Institutions = () => {
                                 value={basePrice}
                                 onChange={e => setBasePrice(e.target.value)}
                                 placeholder="0.00"
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <PhoneNumbersManager
+                                phoneNumbers={phoneNumbers}
+                                onChange={setPhoneNumbers}
                             />
                         </div>
                         <div className="input-group">

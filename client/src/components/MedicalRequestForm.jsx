@@ -19,12 +19,36 @@ const MedicalRequestForm = ({ doctors, onRequestCreated }) => {
     const [bonified, setBonified] = useState(false);
     const [sendToDoctor, setSendToDoctor] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [patientMeds, setPatientMeds] = useState([]);
+    const [medLoading, setMedLoading] = useState(false);
+    const [medicationItems, setMedicationItems] = useState([]); // [NEW] List of meds
+    const [tempMed, setTempMed] = useState(''); // [NEW] Current autocomplete text
 
     useEffect(() => {
         if (selectedDoctor) {
             localStorage.setItem('last_selected_doctor_id', selectedDoctor);
         }
     }, [selectedDoctor]);
+
+    useEffect(() => {
+        if (selectedPatient && reqType === 'prescription') {
+            fetchPatientMeds(selectedPatient);
+        } else {
+            setPatientMeds([]);
+        }
+    }, [selectedPatient, reqType]);
+
+    const fetchPatientMeds = async (pid) => {
+        setMedLoading(true);
+        try {
+            const res = await api.get(`/medical/patients/${pid}/medications`);
+            setPatientMeds(res.data);
+        } catch (err) {
+            console.error("Error fetching patient meds", err);
+        } finally {
+            setMedLoading(false);
+        }
+    };
 
     const handleCreateRequest = async (e) => {
         e.preventDefault();
@@ -39,7 +63,10 @@ const MedicalRequestForm = ({ doctors, onRequestCreated }) => {
             showMessage(t('select_doctor') || 'Seleccione un doctor', 'error');
             return;
         }
-        if (!reqNote) {
+
+        const finalNote = reqType === 'prescription' ? medicationItems.join('\n') : reqNote;
+
+        if (!finalNote) {
             showMessage(t('fill_required_fields') || 'Complete los campos requeridos', 'error');
             return;
         }
@@ -50,7 +77,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated }) => {
                 type: reqType,
                 patient_id: selectedPatient,
                 doctor_id: user.role === 'doctor' ? (user.user_id || user.id) : selectedDoctor,
-                request_note: reqNote,
+                request_note: finalNote,
                 bonified,
                 status: sendToDoctor ? 'pending' : 'completed'
             });
@@ -58,6 +85,8 @@ const MedicalRequestForm = ({ doctors, onRequestCreated }) => {
 
             // Reset form
             setReqNote('');
+            setMedicationItems([]);
+            setTempMed('');
             setBonified(false);
             setSendToDoctor(true);
             setSelectedPatient('');
@@ -138,11 +167,76 @@ const MedicalRequestForm = ({ doctors, onRequestCreated }) => {
                 <div className="input-group">
                     <label className="input-label">{reqType === 'prescription' ? t('medication') : (reqType === 'license' ? t('diagnosis') : t('motive'))}</label>
                     {reqType === 'prescription' ? (
-                        <MedicationAutocomplete
-                            value={reqNote}
-                            onChange={setReqNote}
-                            placeholder={t('medication_placeholder') || "Ej: Ibuprofeno 600mg"}
-                        />
+                        <>
+                            <div className="flex gap-2 mb-2">
+                                <div className="flex-1">
+                                    <MedicationAutocomplete
+                                        value={tempMed}
+                                        onChange={setTempMed}
+                                        placeholder={t('medication_placeholder') || "Ej: Ibuprofeno 600mg"}
+                                        onSelectMedication={(med) => {
+                                            setMedicationItems([...medicationItems, med.full_label]);
+                                            setTempMed('');
+                                        }}
+                                    />
+                                </div>
+                                <button
+                                    type="button"
+                                    className="btn btn-secondary px-3"
+                                    onClick={() => {
+                                        if (tempMed.trim()) {
+                                            setMedicationItems([...medicationItems, tempMed.trim()]);
+                                            setTempMed('');
+                                        }
+                                    }}
+                                >
+                                    +
+                                </button>
+                            </div>
+
+                            {/* Medication List display */}
+                            {medicationItems.length > 0 && (
+                                <ul className="mb-4 bg-slate-50 rounded-lg border border-slate-100 divide-y divide-slate-100 overflow-hidden">
+                                    {medicationItems.map((item, idx) => (
+                                        <li key={idx} className="flex justify-between items-center p-2 text-sm text-slate-700">
+                                            <span className="flex-1 mr-2">{item}</span>
+                                            <button
+                                                type="button"
+                                                onClick={() => setMedicationItems(medicationItems.filter((_, i) => i !== idx))}
+                                                className="text-red-400 hover:text-red-600 transition-colors p-1"
+                                            >
+                                                ✕
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+
+                            {patientMeds.length > 0 && (
+                                <div className="mt-2">
+                                    <label className="text-[10px] uppercase font-bold text-slate-400 mb-1 block">
+                                        {t('patient_current_meds') || 'Medicación actual del paciente'}
+                                    </label>
+                                    <div className="flex flex-wrap gap-2">
+                                        {patientMeds.map(m => (
+                                            <button
+                                                key={m.id}
+                                                type="button"
+                                                className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-full border border-blue-100 hover:bg-blue-100 transition-colors"
+                                                onClick={() => {
+                                                    const label = `${m.medication_name} ${m.dose} (${m.frequency})`;
+                                                    if (!medicationItems.includes(label)) {
+                                                        setMedicationItems([...medicationItems, label]);
+                                                    }
+                                                }}
+                                            >
+                                                {m.medication_name} {m.dose}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </>
                     ) : (
                         <textarea
                             className="input-field"

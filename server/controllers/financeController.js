@@ -11,7 +11,7 @@ exports.createTransaction = async (req, res) => {
         // type: income_patient, income_rental, expense_general, payment_doctor, withdrawal
         // related_user_id: Patient or Doctor interacting
         // doctor_id: Beneficiary of the cash box
-        const { type, amount, description, related_user_id, doctor_id, method, status, debt_amount, appointment_id } = req.body;
+        const { type, amount, description, related_user_id, doctor_id, method, status, debt_amount, appointment_id, transaction_date } = req.body;
         let { payments } = req.body;
         const proof_file = req.file ? `/uploads/${req.file.filename}` : null;
 
@@ -35,24 +35,24 @@ exports.createTransaction = async (req, res) => {
             for (const p of payments) {
                 if (Number(p.amount) > 0) {
                     await conn.query(
-                        "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, institution_id, method, status, proof_file, request_id, appointment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                        [type, p.amount, description, related_user_id || null, doctor_id || null, req.body.institution_id || null, p.method || 'cash', status || 'paid', proof_file, req.body.request_id || null, appointment_id || null]
+                        "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, institution_id, method, status, proof_file, request_id, appointment_id, transaction_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        [type, p.amount, description, related_user_id || null, doctor_id || null, req.body.institution_id || null, p.method || 'cash', status || 'paid', proof_file, req.body.request_id || null, appointment_id || null, transaction_date || new Date()]
                     );
                 }
             }
         } else if (Number(amount) > 0) {
             // Fallback for single payment
             await conn.query(
-                "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, institution_id, method, status, proof_file, request_id, appointment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                [type, amount, description, related_user_id || null, doctor_id || null, req.body.institution_id || null, method || 'cash', status || 'paid', proof_file, req.body.request_id || null, appointment_id || null]
+                "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, institution_id, method, status, proof_file, request_id, appointment_id, transaction_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [type, amount, description, related_user_id || null, doctor_id || null, req.body.institution_id || null, method || 'cash', status || 'paid', proof_file, req.body.request_id || null, appointment_id || null, transaction_date || new Date()]
             );
         }
 
         // 2. Register the Debt (if debt_amount > 0)
         if (Number(debt_amount) > 0) {
             await conn.query(
-                "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, institution_id, method, status, proof_file, request_id, appointment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                [type, debt_amount, `DEBT: ${description}`, related_user_id || null, doctor_id || null, req.body.institution_id || null, 'on_account', 'pending', null, req.body.request_id || null, appointment_id || null]
+                "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, institution_id, method, status, proof_file, request_id, appointment_id, transaction_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [type, debt_amount, `DEBT: ${description}`, related_user_id || null, doctor_id || null, req.body.institution_id || null, 'on_account', 'pending', null, req.body.request_id || null, appointment_id || null, transaction_date || new Date()]
             );
         }
 
@@ -113,10 +113,11 @@ exports.getTransactions = async (req, res) => {
         const { doctor_id } = req.query; // Admin/Secretary can filter by specific doctor
 
         conn = await pool.getConnection();
-        let query = `SELECT t.*, u.username as related_user_name, d.full_name as doctor_name
+        let query = `SELECT t.*, u.username as related_user_name, d.full_name as doctor_name, p.full_name as patient_full_name, p.dni as patient_dni
                      FROM transactions t 
                      LEFT JOIN users u ON t.related_user_id = u.id
-                     LEFT JOIN doctors d ON t.doctor_id = d.id`;
+                     LEFT JOIN doctors d ON t.doctor_id = d.id
+                     LEFT JOIN patients p ON p.user_id = u.id`;
         let params = [];
 
         let whereClauses = [];
@@ -472,7 +473,7 @@ exports.updateTransaction = async (req, res) => {
     let conn;
     try {
         const { id } = req.params;
-        const { amount, description, method, status } = req.body;
+        const { amount, description, method, status, transaction_date } = req.body;
         conn = await pool.getConnection();
 
         // 1. Get current transaction to see if it's linked to an appointment
@@ -488,8 +489,8 @@ exports.updateTransaction = async (req, res) => {
 
         // 2. Update the transaction
         await conn.query(
-            "UPDATE transactions SET amount = ?, description = ?, method = ?, status = ? WHERE id = ?",
-            [amount, description, method, status, id]
+            "UPDATE transactions SET amount = ?, description = ?, method = ?, status = ?, transaction_date = ? WHERE id = ?",
+            [amount, description, method, status, transaction_date || oldTx.transaction_date, id]
         );
 
         // 3. If linked to an appointment, re-calculate the payment status

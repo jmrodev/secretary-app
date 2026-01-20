@@ -5,7 +5,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useMessage } from '../context/MessageContext';
 import PatientForm from './PatientForm'; // [NEW]
 
-const PatientEditModal = ({ isOpen, onClose, patient, onUpdate }) => {
+const PatientEditModal = ({ isOpen, onClose, patient, onUpdate, referenceInfo }) => {
     const { t } = useLanguage();
     const { showMessage } = useMessage();
     const [insurances, setInsurances] = useState([]);
@@ -80,7 +80,9 @@ const PatientEditModal = ({ isOpen, onClose, patient, onUpdate }) => {
     const isEdit = !!(patient && patient.id);
 
     // If creating, patient might accept { full_name: '..' } from convenience
-    const initialValues = patient || {};
+    const initialValues = patient || {
+        phoneNumbers: []
+    };
 
     return (
         <Modal
@@ -89,6 +91,14 @@ const PatientEditModal = ({ isOpen, onClose, patient, onUpdate }) => {
             title={isEdit ? (t('edit_patient') || 'Edit Patient') : (t('register_new_patient') || 'Register Patient')}
             size="lg" // Make it larger for the full form
         >
+            {referenceInfo && !isEdit && (
+                <div className="mb-6 p-4 bg-amber-50 border-2 border-amber-200 rounded-2xl flex flex-col gap-2 animate-in slide-in-from-top-4">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-amber-600">📄 Info de Turno (Referencia)</span>
+                    <div className="text-sm font-bold text-amber-900 leading-tight">
+                        {referenceInfo}
+                    </div>
+                </div>
+            )}
             <PatientForm
                 initialValues={initialValues}
                 onSubmit={handleSubmit}

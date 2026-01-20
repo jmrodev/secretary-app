@@ -12,6 +12,7 @@ import { useModal } from '../context/ModalContext';
 import PatientHistoryModal from '../components/PatientHistoryModal';
 import { useConfig } from '../context/ConfigContext';
 import { copyToClipboard } from '../utils/clipboardUtils';
+import MedicationAutocomplete from '../components/MedicationAutocomplete';
 
 const Dashboard = () => {
     const { user, logout } = useAuth();
@@ -21,9 +22,6 @@ const Dashboard = () => {
     const { settings } = useConfig();
     const navigate = useNavigate();
 
-    const [todayAppointments, setTodayAppointments] = useState([]);
-    const [upcomingAppointments, setUpcomingAppointments] = useState([]);
-    const [loadingSchedule, setLoadingSchedule] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [stats, setStats] = useState(null);
     const [newPatientStats, setNewPatientStats] = useState(null);
@@ -40,7 +38,7 @@ const Dashboard = () => {
     // Payment Modal
     const [paymentModal, setPaymentModal] = useState({ open: false, initialData: {}, apptId: null });
 
-    const [activeTab, setActiveTab] = useState('schedule');
+    const [activeTab, setActiveTab] = useState('requirements');
     const [pendingReqCount, setPendingReqCount] = useState(0);
 
 
@@ -83,46 +81,7 @@ const Dashboard = () => {
         }
     };
 
-    const fetchSchedule = async () => {
-        try {
-            const res = await api.get('/appointments');
-            const now = new Date();
-            const todayStr = now.toLocaleDateString(); // Local date string
 
-            const todaysCalls = res.data.filter(a => {
-                const apptDate = new Date(a.appointment_date);
-                return apptDate.toLocaleDateString() === todayStr;
-            }).sort((a, b) => {
-                // Statuses that should be at the top
-                const topStatus = ['pending', 'confirmed', 'arrived'];
-                const aTop = topStatus.includes(a.status);
-                const bTop = topStatus.includes(b.status);
-
-                if (aTop && !bTop) return -1;
-                if (!aTop && bTop) return 1;
-
-                // For same group (both top or both bottom), sort by time
-                return new Date(a.appointment_date) - new Date(b.appointment_date);
-            });
-            setTodayAppointments(todaysCalls);
-
-            // Filter Upcoming (Future Dates)
-            const tomorrow = new Date(now);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            tomorrow.setHours(0, 0, 0, 0);
-
-            const upcomingCalls = res.data.filter(a => {
-                const apptDate = new Date(a.appointment_date);
-                return apptDate >= tomorrow && ['pending', 'confirmed', 'rescheduled'].includes(a.status);
-            }).sort((a, b) => new Date(a.appointment_date) - new Date(b.appointment_date));
-
-            setUpcomingAppointments(upcomingCalls);
-        } catch (err) {
-            console.error("Failed to fetch schedule", err);
-        } finally {
-            setLoadingSchedule(false);
-        }
-    };
 
     const handleUpdateStatus = async (id, status) => {
         let reason = null;
@@ -150,7 +109,7 @@ const Dashboard = () => {
 
     const handleDelete = async (id) => {
         // [NEW] Prevent deletion of attended appointments (unless unrestricted CRUD enabled)
-        const apptToDelete = todayAppointments.find(a => a.id === id);
+        const apptToDelete = upcomingAppointments.find(a => a.id === id);
         if (apptToDelete && (apptToDelete.status === 'completed' || apptToDelete.status === 'attended') && settings.enable_secretary_unrestricted_crud !== 'true') {
             await alert(t('cannot_delete_attended') || "Cannot delete an appointment that has been attended.");
             return;
@@ -208,7 +167,6 @@ const Dashboard = () => {
     };
 
     useEffect(() => {
-        fetchSchedule();
         fetchStats();
         if (user.role !== 'patient') {
             fetchReminders();
@@ -218,7 +176,6 @@ const Dashboard = () => {
             fetchNewPatientStats();
         }
         const interval = setInterval(() => {
-            fetchSchedule();
             if (user.role !== 'patient') {
                 fetchReminders();
                 fetchRequests();
@@ -228,9 +185,17 @@ const Dashboard = () => {
     }, [user.role]);
 
     const handleWhatsAppConfirm = (appt) => {
-        if (!appt.patient_phone) {
-            showMessage("No phone number available for this patient.", "error");
-            return;
+        let phone = appt.patient_phone;
+
+        if (!phone) {
+            // Heuristic for zombie appointments: try to find a phone in the reason field
+            const phoneMatch = appt.reason?.match(/\d{9,13}/); // Look for 9-13 digit numbers
+            if (phoneMatch) {
+                phone = phoneMatch[0];
+            } else {
+                showMessage("No phone number available. Please adjust/sync the appointment first.", "error");
+                return;
+            }
         }
 
         const dateStr = new Date(appt.appointment_date).toLocaleDateString();
@@ -242,7 +207,7 @@ const Dashboard = () => {
         }
 
         const message = messageTemplate
-            .replace(/{patient_name}/g, appt.patient_name)
+            .replace(/{patient_name}/g, appt.patient_name || appt.reason)
             .replace(/{date}/g, dateStr)
             .replace(/{time}/g, timeStr)
             .replace(/{doctor_name}/g, appt.doctor_name)
@@ -253,7 +218,7 @@ const Dashboard = () => {
             showMessage("Texto copiado! Abriendo WhatsApp...", "success");
 
             // Format phone: remove non-digits
-            let phone = appt.patient_phone.replace(/\D/g, '');
+            phone = phone.replace(/\D/g, '');
             // Assume Argentina (549) if not starting with country code (naive check)
             if (!phone.startsWith('54') && phone.length >= 10) {
                 phone = '549' + phone;
@@ -309,10 +274,11 @@ const Dashboard = () => {
                 <Modal
                     isOpen={actionModal.open}
                     onClose={() => setActionModal({ ...actionModal, open: false })}
-                    title={`Appointment: ${actionModal.appt.patient_name}`}
+                    title={`Appointment: ${actionModal.appt.patient_name || actionModal.appt.reason || 'Sincronización requerida'}`}
                 >
                     <div className="flex-col-gap-4">
                         <div className="flex-between">
+                            <p><strong>{t('patient_label') || 'Paciente'}:</strong> {actionModal.appt.patient_name || actionModal.appt.reason || 'Sincronización requerida'}</p>
                             <p><strong>{t('date_label')}:</strong> {new Date(actionModal.appt.appointment_date).toLocaleString()}</p>
                             <div className="flex gap-2">
                                 <span className={`status-chip status-${actionModal.appt.status}`}>
@@ -409,10 +375,23 @@ const Dashboard = () => {
 
                         <hr className="border-divider" />
 
+                        {/* Sync Needed / Zombie Action */}
+                        {actionModal.appt.source === 'google-incomplete' && (
+                            <button
+                                className="btn btn-accent w-full py-4 mb-4"
+                                onClick={() => {
+                                    navigate('/appointments', { state: { syncAppt: actionModal.appt } });
+                                }}
+                                style={{ background: 'linear-gradient(135deg, var(--amber-500) 0%, var(--orange-600) 100%)', border: 'none', color: 'white' }}
+                            >
+                                ✨ Ingresar Ajuste (Vincular Paciente)
+                            </button>
+                        )}
+
                         {/* Administrative Actions */}
                         {(user.role === 'secretary' || user.role === 'admin') && (
                             <div className="grid-2-cols">
-                                {(actionModal.appt.payment_status === 'pending' || actionModal.appt.payment_status === 'debt') && (
+                                {(actionModal.appt.payment_status === 'pending' || actionModal.appt.payment_status === 'debt') && actionModal.appt.source !== 'google-incomplete' && (
                                     <button className="btn btn-primary" onClick={() => {
                                         setPaymentModal({
                                             open: true,
@@ -434,19 +413,21 @@ const Dashboard = () => {
                                         💳 {t('pay')}
                                     </button>
                                 )}
-                                {(actionModal.appt.status !== 'completed' || settings.enable_secretary_unrestricted_crud === 'true') && (
+                                {(actionModal.appt.status !== 'completed' || settings.enable_secretary_unrestricted_crud === 'true') && actionModal.appt.source !== 'google-incomplete' && (
                                     <button className="btn btn-secondary" onClick={() => {
                                         navigate('/appointments', { state: { rescheduleAppt: actionModal.appt } });
                                     }}>
                                         📅 {t('reschedule')}
                                     </button>
                                 )}
-                                <button className="btn btn-outline-danger" onClick={() => {
-                                    handleCancel(actionModal.appt.id);
-                                    setActionModal({ ...actionModal, open: false });
-                                }}>
-                                    ❌ {t('cancel')}
-                                </button>
+                                {actionModal.appt.source !== 'google-incomplete' && (
+                                    <button className="btn btn-outline-danger" onClick={() => {
+                                        handleCancel(actionModal.appt.id);
+                                        setActionModal({ ...actionModal, open: false });
+                                    }}>
+                                        ❌ {t('cancel')}
+                                    </button>
+                                )}
                                 {(user.role === 'admin' || user.role === 'secretary') && (
                                     <button className="btn" style={{ background: '#ef4444', color: 'white' }} onClick={() => {
                                         handleDelete(actionModal.appt.id);
@@ -477,7 +458,23 @@ const Dashboard = () => {
                 <div className="flex-col-gap-4">
                     <div className="input-group">
                         <label className="input-label">{t('medications')}</label>
-                        <textarea className="input-field" rows="4" value={prescribeModal.medications} onChange={e => setPrescribeModal({ ...prescribeModal, medications: e.target.value })} placeholder={t('meds_placeholder') || "ej. Ibuprofeno 600mg"} autoFocus />
+                        <MedicationAutocomplete
+                            value=""
+                            onChange={() => { }}
+                            placeholder={t('search_medication') || "Buscar medicamento..."}
+                            onSelectMedication={(med) => {
+                                const current = prescribeModal.medications.trim();
+                                const newValue = current ? `${current}\n${med.full_label}` : med.full_label;
+                                setPrescribeModal({ ...prescribeModal, medications: newValue });
+                            }}
+                        />
+                        <textarea
+                            className="input-field mt-2"
+                            rows="4"
+                            value={prescribeModal.medications}
+                            onChange={e => setPrescribeModal({ ...prescribeModal, medications: e.target.value })}
+                            placeholder={t('meds_placeholder') || "ej. Ibuprofeno 600mg"}
+                        />
                     </div>
                     <div className="input-group">
                         <label className="input-label">{t('instructions')}</label>
@@ -508,60 +505,103 @@ const Dashboard = () => {
             <main className="main-content">
                 <div className="w-full">
                     <header className="header-actions">
-                        <div className="flex gap-4 items-center">
-                            {user.role !== 'admin' && (
-                                <a href="/appointments" className="btn btn-primary no-underline font-bold">
-                                    + {t('new_appointment')}
-                                </a>
-                            )}
-                        </div>
+                        {/* Redundant New Appointment button removed as requested */}
                     </header>
 
                     <div className="dashboard-grid-layout !items-start">
                         {/* SIDE COLUMN (STATISTICS) - LEFT SIDE */}
                         <aside className="dashboard-side-col">
                             {/* General Statistics Section */}
+                            {/* Standardized Minimalist Stats Grid */}
                             {stats && (
-                                <div className="flex flex-col gap-2">
-                                    <h4 className="text-[10px] font-bold text-muted uppercase tracking-widest mb-1 px-1">{t('general_stats') || 'Estadísticas Generales'}</h4>
-                                    <div className="stats-card-mini bg-blue-50 text-blue-700 border border-blue-100 py-2 shadow-sm">
-                                        <h4 className="text-[10px]">📅 {t('turnos_hoy') || 'Hoy'}</h4>
-                                        <p className="text-lg">{stats.appointments_today}</p>
-                                    </div>
-                                    <div className="stats-card-mini bg-emerald-50 text-emerald-700 border border-emerald-100 py-2 shadow-sm">
-                                        <h4 className="text-[10px]">📊 {t('turnos_semana') || 'Semana'}</h4>
-                                        <p className="text-lg">{stats.appointments_week}</p>
-                                    </div>
-                                    <div className="stats-card-mini bg-indigo-50 text-indigo-700 border border-indigo-100 py-2 shadow-sm">
-                                        <h4 className="text-[10px]">📈 {t('turnos_mes') || 'Mes'}</h4>
-                                        <p className="text-lg">{stats.appointments_month}</p>
-                                    </div>
-                                    <div className="stats-card-mini bg-slate-100 text-main-600 border border-slate-200 py-2 shadow-sm">
-                                        <h4 className="text-[10px]">👥 {t('pacientes_label') || 'Pacientes'}</h4>
-                                        <p className="text-lg">{stats.total_patients}</p>
+                                <div className="flex flex-col gap-3">
+                                    <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 px-1">
+                                        {t('general_stats') || 'Estadísticas Generales'}
+                                    </h4>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all group">
+                                            <div className="flex items-center gap-2 mb-1 text-slate-500">
+                                                <span className="text-sm">📅</span>
+                                                <span className="text-[10px] font-medium uppercase tracking-wider">{t('turnos_hoy') || 'Hoy'}</span>
+                                            </div>
+                                            <div className="text-2xl font-black text-main-900 group-hover:text-indigo-600 transition-colors">
+                                                {stats.appointments_today}
+                                            </div>
+                                        </div>
+                                        <div className="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all group">
+                                            <div className="flex items-center gap-2 mb-1 text-slate-500">
+                                                <span className="text-sm">📊</span>
+                                                <span className="text-[10px] font-medium uppercase tracking-wider">{t('turnos_semana') || 'Semana'}</span>
+                                            </div>
+                                            <div className="text-2xl font-black text-main-900 group-hover:text-emerald-600 transition-colors">
+                                                {stats.appointments_week}
+                                            </div>
+                                        </div>
+                                        <div className="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all group">
+                                            <div className="flex items-center gap-2 mb-1 text-slate-500">
+                                                <span className="text-sm">📈</span>
+                                                <span className="text-[10px] font-medium uppercase tracking-wider">{t('turnos_mes') || 'Mes'}</span>
+                                            </div>
+                                            <div className="text-2xl font-black text-main-900 group-hover:text-indigo-600 transition-colors">
+                                                {stats.appointments_month}
+                                            </div>
+                                        </div>
+                                        <div className="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all group">
+                                            <div className="flex items-center gap-2 mb-1 text-slate-500">
+                                                <span className="text-sm">👥</span>
+                                                <span className="text-[10px] font-medium uppercase tracking-wider">{t('pacientes_label') || 'Pacientes'}</span>
+                                            </div>
+                                            <div className="text-2xl font-black text-main-900 group-hover:text-slate-600 transition-colors">
+                                                {stats.total_patients}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             )}
 
-                            {/* New Patient Growth Section - Now integrated as mini aside */}
+                            {/* New Patient Growth Section */}
                             {newPatientStats && (
-                                <div className="flex flex-col gap-2 mt-4">
-                                    <h4 className="text-[10px] font-bold text-muted uppercase tracking-widest mb-1 px-1">✨ {t('new_patients_stat') || 'Crecimiento de Pacientes'}</h4>
-                                    <div className="stats-card-mini bg-emerald-500 text-white border border-emerald-600 py-2 shadow-sm scale-[1.02]">
-                                        <h4 className="text-[10px] opacity-90">✨ {t('this_day') || 'Hoy'}</h4>
-                                        <p className="text-lg">{newPatientStats.currentDay}</p>
-                                    </div>
-                                    <div className="stats-card-mini bg-white text-indigo-700 border border-indigo-50 py-2 shadow-sm">
-                                        <h4 className="text-[10px]">📅 {t('this_week') || 'Esta Semana'}</h4>
-                                        <p className="text-lg">{newPatientStats.currentWeek}</p>
-                                    </div>
-                                    <div className="stats-card-mini bg-white text-indigo-700 border border-indigo-50 py-2 shadow-sm">
-                                        <h4 className="text-[10px]">📊 {t('this_month') || 'Este Mes'}</h4>
-                                        <p className="text-lg">{newPatientStats.currentMonth}</p>
-                                    </div>
-                                    <div className="stats-card-mini bg-indigo-900 text-white border border-indigo-800 py-2 shadow-sm">
-                                        <h4 className="text-[10px] opacity-80">📈 {t('this_year') || 'Este Año'}</h4>
-                                        <p className="text-lg">{newPatientStats.currentYear}</p>
+                                <div className="flex flex-col gap-3 mt-4">
+                                    <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 px-1">
+                                        ✨ {t('new_patients_stat') || 'Crecimiento de Pacientes'}
+                                    </h4>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <div className="bg-indigo-600 p-3 rounded-2xl border border-indigo-500 shadow-sm text-white group">
+                                            <div className="flex items-center gap-2 mb-1 opacity-80">
+                                                <span className="text-sm">✨</span>
+                                                <span className="text-[10px] font-medium uppercase tracking-wider">{t('this_day') || 'Hoy'}</span>
+                                            </div>
+                                            <div className="text-2xl font-black italic">
+                                                {newPatientStats.currentDay}
+                                            </div>
+                                        </div>
+                                        <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100 shadow-sm transition-all hover:bg-white hover:shadow-md group">
+                                            <div className="flex items-center gap-2 mb-1 text-slate-500">
+                                                <span className="text-sm">📅</span>
+                                                <span className="text-[10px] font-medium uppercase tracking-wider">{t('this_week') || 'Esta Sem.'}</span>
+                                            </div>
+                                            <div className="text-2xl font-black text-slate-800">
+                                                {newPatientStats.currentWeek}
+                                            </div>
+                                        </div>
+                                        <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100 shadow-sm transition-all hover:bg-white hover:shadow-md group">
+                                            <div className="flex items-center gap-2 mb-1 text-slate-500">
+                                                <span className="text-sm">📊</span>
+                                                <span className="text-[10px] font-medium uppercase tracking-wider">{t('this_month') || 'Este Mes'}</span>
+                                            </div>
+                                            <div className="text-2xl font-black text-slate-800">
+                                                {newPatientStats.currentMonth}
+                                            </div>
+                                        </div>
+                                        <div className="bg-indigo-900 p-3 rounded-2xl border border-indigo-800 shadow-sm text-white group">
+                                            <div className="flex items-center gap-2 mb-1 opacity-70">
+                                                <span className="text-sm">📈</span>
+                                                <span className="text-[10px] font-medium uppercase tracking-wider">{t('this_year') || 'Este Año'}</span>
+                                            </div>
+                                            <div className="text-2xl font-black italic">
+                                                {newPatientStats.currentYear}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             )}
@@ -588,20 +628,8 @@ const Dashboard = () => {
                         {/* MAIN COLUMN - RIGHT SIDE */}
                         <div className="dashboard-main-col lg:col-span-1">
                             {/* Standardized Tabs */}
-                            <div className="tabs-container mt-1">
-                                <button
-                                    className={`tab-btn ${activeTab === 'schedule' ? 'active' : ''}`}
-                                    onClick={() => setActiveTab('schedule')}
-                                >
-                                    📅 {t('today_schedule')}
-                                </button>
-                                <button
-                                    className={`tab-btn ${activeTab === 'upcoming' ? 'active' : ''}`}
-                                    onClick={() => setActiveTab('upcoming')}
-                                >
-                                    📆 {t('upcoming_appointments') || 'Próximos'}
-                                </button>
-                                {(user.role === 'secretary' || user.role === 'doctor' || user.role === 'admin') && (
+                            {(user.role === 'secretary' || user.role === 'doctor' || user.role === 'admin') && (
+                                <div className="tabs-container mt-1">
                                     <button
                                         className={`tab-btn ${activeTab === 'requirements' ? 'active' : ''}`}
                                         onClick={() => setActiveTab('requirements')}
@@ -613,159 +641,13 @@ const Dashboard = () => {
                                             </span>
                                         )}
                                     </button>
-                                )}
-                            </div>
-
-                            {activeTab === 'schedule' && user.role !== 'admin' && (
-                                <section className="card p-0 overflow-hidden border-slate-200 shadow-sm transition-all">
-                                    {loadingSchedule ? <div className="p-8 text-center text-muted">{t('loading')}</div> : (
-                                        todayAppointments.length === 0 ?
-                                            <div className="text-center p-12 bg-white">
-                                                <p className="text-muted m-0">{t('no_appointments_today')}</p>
-                                            </div> :
-                                            <div className="overflow-x-auto">
-                                                <table className="dashboard-table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>{t('time_label') || 'Hora'}</th>
-                                                            <th>{t('patient_label') || 'Paciente'}</th>
-                                                            <th>{t('doctor_label') || 'Doctor'}</th>
-                                                            <th>{t('status_label') || 'Estado'}</th>
-                                                            <th className="text-right">{t('actions') || 'Acciones'}</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {todayAppointments.map(a => (
-                                                            <tr key={a.id} className="group" onClick={() => setActionModal({ open: true, appt: a })}>
-                                                                <td className="font-bold text-main-900 w-24">
-                                                                    {new Date(a.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
-                                                                </td>
-                                                                <td>
-                                                                    <div className="font-bold text-main-800">{a.patient_name}</div>
-                                                                    {a.reason && <div className="text-[11px] text-muted italic truncate max-w-[200px]">{a.reason}</div>}
-                                                                </td>
-                                                                <td className="text-main-500 text-sm">
-                                                                    {a.doctor_name}
-                                                                </td>
-                                                                <td>
-                                                                    <span className={`status-chip-mini status-${a.status}`}>
-                                                                        {t(a.status) || a.status}
-                                                                    </span>
-                                                                </td>
-                                                                <td className="text-right">
-                                                                    <div className="flex items-center justify-end gap-2">
-                                                                        <div className="flex gap-1">
-                                                                            {a.payment_status === 'paid' && <span title="Paid" className="text-emerald-500 font-bold">$✓</span>}
-                                                                            {a.payment_status === 'debt' && <span title="Debt" className="text-rose-500 font-bold">$!</span>}
-                                                                        </div>
-                                                                        <button onClick={(e) => {
-                                                                            e.stopPropagation();
-                                                                            setActionModal({ open: true, appt: a });
-                                                                        }} className="btn btn-sm-compact btn-secondary px-3">
-                                                                            {t('manage') || 'Gestionar'}
-                                                                        </button>
-                                                                        {user.role === 'doctor' && (
-                                                                            <button onClick={(e) => {
-                                                                                e.stopPropagation();
-                                                                                setPrescribeModal({ open: true, apptId: a.id, patientName: a.patient_name, medications: '', instructions: '' });
-                                                                            }} className="btn btn-sm-compact btn-primary px-3">Rx</button>
-                                                                        )}
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        ))}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                    )}
-                                </section>
+                                </div>
                             )}
 
 
-                            {activeTab === 'upcoming' && user.role !== 'admin' && (
-                                <section className="card p-0 overflow-hidden border-slate-200 shadow-sm transition-all">
-                                    {loadingSchedule ? <div className="p-8 text-center text-muted">{t('loading')}</div> : (
-                                        upcomingAppointments.length === 0 ?
-                                            <div className="text-center p-12 bg-white">
-                                                <p className="text-muted m-0">{t('no_upcoming_appointments') || 'No hay próximos turnos.'}</p>
-                                            </div> :
-                                            <div className="overflow-x-auto">
-                                                <table className="dashboard-table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>{t('date_label') || 'Fecha'}</th>
-                                                            <th>{t('patient_label') || 'Paciente'}</th>
-                                                            <th>{t('doctor_label') || 'Doctor'}</th>
-                                                            <th>{t('status_label') || 'Estado'}</th>
-                                                            <th className="text-right">{t('actions') || 'Acciones'}</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {upcomingAppointments.map((a, index) => {
-                                                            const dateObj = new Date(a.appointment_date);
-                                                            const dateStr = dateObj.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
-                                                            const headerDate = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
 
-                                                            const prevDateObj = index > 0 ? new Date(upcomingAppointments[index - 1].appointment_date) : null;
-                                                            const prevDateStr = prevDateObj ? prevDateObj.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }) : null;
-                                                            const showHeader = index === 0 || dateStr !== prevDateStr;
 
-                                                            return (
-                                                                <Fragment key={a.id}>
-                                                                    {showHeader && (
-                                                                        <tr className="bg-slate-50 border-b border-indigo-100">
-                                                                            <td colSpan="5" className="font-bold text-indigo-700 text-xs uppercase tracking-wider py-2 pl-4">
-                                                                                {headerDate}
-                                                                            </td>
-                                                                        </tr>
-                                                                    )}
-                                                                    <tr className="group" onClick={() => setActionModal({ open: true, appt: a })}>
-                                                                        <td className="font-bold text-main-900 min-w-[120px]">
-                                                                            <div className="flex flex-col">
-                                                                                <span className="text-xs text-main-500">{new Date(a.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}</span>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td>
-                                                                            <div className="font-bold text-main-800">{a.patient_name}</div>
-                                                                            {a.reason && <div className="text-[11px] text-muted italic truncate max-w-[200px]">{a.reason}</div>}
-                                                                        </td>
-                                                                        <td className="text-main-500 text-sm">
-                                                                            {a.doctor_name}
-                                                                        </td>
-                                                                        <td>
-                                                                            <span className={`status-chip-mini status-${a.status}`}>
-                                                                                {t(a.status) || a.status}
-                                                                            </span>
-                                                                        </td>
-                                                                        <td className="text-right">
-                                                                            <div className="flex items-center justify-end gap-2">
-                                                                                <button onClick={(e) => {
-                                                                                    e.stopPropagation();
-                                                                                    handleWhatsAppConfirm(a);
-                                                                                }}
-                                                                                    className="btn btn-sm-compact bg-green-100 text-green-700 hover:bg-green-200 px-3"
-                                                                                    title="Confirmar por WhatsApp"
-                                                                                >
-                                                                                    📱 Confirmar
-                                                                                </button>
-                                                                                <button onClick={(e) => {
-                                                                                    e.stopPropagation();
-                                                                                    setActionModal({ open: true, appt: a });
-                                                                                }} className="btn btn-sm-compact btn-secondary px-3">
-                                                                                    {t('manage') || 'Gestionar'}
-                                                                                </button>
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                </Fragment>
-                                                            );
-                                                        })}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                    )}
-                                </section>
-                            )}
+
 
                             {activeTab === 'requirements' && (user.role === 'secretary' || user.role === 'doctor' || user.role === 'admin') && (
                                 <section className="transition-all">

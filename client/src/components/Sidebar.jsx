@@ -52,7 +52,7 @@ const Sidebar = () => {
                 {user.role !== 'admin' && (
                     <>
                         <a href="/requests" className={`sidebar-link ${isActive('/requests')}`}>
-                            <span>📝</span> Requerimientos
+                            <span>📝</span> {t('requests_workflow')}
                         </a>
                         <a href="/documents" className={`sidebar-link ${isActive('/documents')}`}>
                             <span>📁</span> {t('medical_documents')}

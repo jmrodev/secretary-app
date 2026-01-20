@@ -13,7 +13,7 @@ const Requests = () => {
 
             <main className="main-content">
                 <header className="mb-8">
-                    <h1 className="title">Requerimientos en Curso</h1>
+                    <h1 className="title">{t('requests_workflow')}</h1>
                 </header>
 
                 <div className="card">

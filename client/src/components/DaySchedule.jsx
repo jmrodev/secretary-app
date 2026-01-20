@@ -3,7 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
 import { useConfig } from '../context/ConfigContext';
 
-const DaySchedule = ({ date, appointments, onSlotClick, onRatingChange, doctor, schedule, onToggleVirtual }) => {
+const DaySchedule = ({ date, appointments, onSlotClick, onRatingChange, doctor, schedule, onWhatsAppConfirm }) => {
     const { t } = useLanguage();
     const { confirm } = useModal();
     const { settings } = useConfig();
@@ -35,8 +35,21 @@ const DaySchedule = ({ date, appointments, onSlotClick, onRatingChange, doctor, 
         const starts = schedule.map(s => parseInt(s.start_time.split(':')[0]));
         const ends = schedule.map(s => parseInt(s.end_time.split(':')[0]) + (parseInt(s.end_time.split(':')[1]) > 0 ? 1 : 0));
 
-        if (starts.length) startHour = Math.min(8, ...starts);
-        if (ends.length) endHour = Math.max(20, ...ends);
+        // [EXPANSION] Only expand if there are appointments ON THIS DAY outside the range
+        if (appointments && appointments.length > 0) {
+            appointments.forEach(appt => {
+                const apptDate = new Date(appt.appointment_date);
+                // Only consider if it's the same day we are viewing
+                if (apptDate.getFullYear() === date.getFullYear() &&
+                    apptDate.getMonth() === date.getMonth() &&
+                    apptDate.getDate() === date.getDate()) {
+
+                    const apptHour = apptDate.getHours();
+                    if (apptHour < startHour) startHour = apptHour;
+                    if (apptHour + 1 > endHour) endHour = apptHour + 1;
+                }
+            });
+        }
 
         daysConfig = schedule.filter(s => s.day_of_week === date.getDay() && s.is_break === 0);
     }
@@ -121,40 +134,53 @@ const DaySchedule = ({ date, appointments, onSlotClick, onRatingChange, doctor, 
                                     slotApps.map(appt => (
                                         <div
                                             key={appt.id}
-                                            className={`appointment-card status-${appt.status}`}
+                                            className={`flex items-center gap-4 p-3 mb-2 bg-white rounded-xl border border-slate-100 hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer group status-${appt.status} ${appt.source === 'google' || appt.source === 'google-incomplete' ? 'status-external' : ''}`}
                                             onClick={() => onSlotClick(slot.time.getHours(), appt)}
+                                            style={appt.source === 'google' || appt.source === 'google-incomplete' || appt.status === 'external' ? { borderLeft: '4px solid var(--amber-500)' } : {}}
                                         >
-                                            <div className="appt-time">
-                                                {new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            <div className="flex flex-col items-center justify-center min-w-[60px] py-1 bg-slate-50 rounded-lg group-hover:bg-indigo-50 transition-colors">
+                                                <span className="text-sm font-bold text-main-900">
+                                                    {new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
+                                                </span>
                                             </div>
-                                            <div className="appt-details">
-                                                <div className="flex items-center gap-2">
-                                                    <strong>
-                                                        {appt.type === 'virtual' && '📹 '}
-                                                        {appt.patient_name || appt.reason || 'Reserved'} ({t(appt.status)})
-                                                    </strong>
-                                                    <span className="doctor-name hidden md:inline ml-2 text-xs text-main-500">Dr. {appt.doctor_name}</span>
 
-                                                    {/* Toggle Video Button */}
-                                                    {onToggleVirtual && (
-                                                        <button
-                                                            className="ml-2 p-1 hover:bg-slate-200 rounded-full transition-colors"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                onToggleVirtual(appt);
-                                                            }}
-                                                            title={appt.type === 'virtual' ? "Cambiar a Presencial" : "Cambiar a Videollamada"}
+                                            <div className="flex-1 min-w-0">
+                                                <div className="font-bold text-main-800 truncate">
+                                                    {appt.type === 'virtual' && '📹 '}
+                                                    {appt.patient_name || 'S/N'}
+                                                </div>
+                                                {appt.patient_phone && (
+                                                    <div className="text-[10px] text-indigo-600 font-medium">
+                                                        📱 {appt.patient_phone}
+                                                    </div>
+                                                )}
+                                                <div className="flex items-center gap-2 text-[11px] text-muted truncate">
+                                                    <span className="flex items-center gap-1">👨‍⚕️ {appt.doctor_name}</span>
+                                                    {appt.reason && <span className="italic opacity-75 truncate">• {appt.reason}</span>}
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center gap-2">
+                                                {appt.payment_status === 'paid' && <span title="Paid" className="text-emerald-500 font-bold text-xs">$✓</span>}
+                                                {appt.payment_status === 'debt' && <span title="Debt" className="text-rose-500 font-bold text-xs">$!</span>}
+
+                                                <span className={`status-chip-mini status-${appt.status}`}>
+                                                    {t(appt.status) || appt.status}
+                                                </span>
+
+                                                <div className="flex gap-1 opacity-10 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    {onWhatsAppConfirm && (
+                                                        <button onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            onWhatsAppConfirm(appt);
+                                                        }}
+                                                            className="p-1.5 bg-green-50 text-green-600 rounded-lg hover:bg-green-600 hover:text-white transition-all shadow-sm border border-green-100"
+                                                            title="WhatsApp"
                                                         >
-                                                            {appt.type === 'virtual' ? '🏢' : '📹'}
+                                                            📲
                                                         </button>
                                                     )}
                                                 </div>
-                                                {appt.type === 'virtual' && appt.patient_phone && (
-                                                    <div className="text-xs text-blue-600 mt-1 flex items-center gap-1">
-                                                        📞 {appt.patient_phone}
-                                                    </div>
-                                                )}
-                                                {appt.is_out_of_hours === 1 && <span className="text-xs text-amber-600 font-bold ml-2">⚠️ Fuera de Horario</span>}
                                             </div>
                                         </div>
                                     ))

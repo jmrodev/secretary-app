@@ -11,6 +11,7 @@ router.put('/:id', verifyToken, appointmentController.updateAppointment);
 router.put('/:id/status', verifyToken, appointmentController.updateStatus);
 router.patch('/:id/payment', verifyToken, appointmentController.updatePaymentStatus);
 router.patch('/:id/type', verifyToken, appointmentController.updateType);
+router.post('/bulk-update-type', verifyToken, appointmentController.bulkUpdateType);
 router.delete('/:id', verifyToken, appointmentController.deleteAppointment);
 
 module.exports = router;

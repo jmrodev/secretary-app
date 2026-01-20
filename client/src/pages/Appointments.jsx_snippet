@@ -1,0 +1,33 @@
+    const handleWhatsAppSlot = (slot) => {
+        const dateStr = new Date(slot.iso).toLocaleDateString();
+        const timeStr = new Date(slot.iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        let message = `Hola, tenemos un turno disponible el ${slot.dayName} ${dateStr} a las ${timeStr} con el/la Dr/a. ${doctors.find(d => d.id === (viewDoctorId || selectedDoctor))?.name || ''}. ¿Le gustaría reservarlo?`;
+
+        // Try to get patient phone if a patient is selected
+        let phone = selectedPatientData?.mobile_phone || selectedPatientData?.contact_info || '';
+
+        copyToClipboard(message).then(() => {
+            showMessage("Propuesta copiada! Abriendo WhatsApp...", "success");
+
+            phone = phone.replace(/\D/g, '');
+            if (phone && !phone.startsWith('54') && phone.length >= 10) phone = '549' + phone;
+
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+            if (isMobile) {
+                window.location.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            } else {
+                const appUrl = phone
+                    ? `whatsapp://send?phone=${phone}&text=${encodeURIComponent(message)}`
+                    : `whatsapp://send?text=${encodeURIComponent(message)}`;
+                const webUrl = phone
+                    ? `https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`
+                    : `https://web.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+
+                // Priority ZapZap -> Web
+                window.location.href = appUrl;
+                setTimeout(() => window.open(webUrl, '_blank'), 2500);
+            }
+        });
+    };

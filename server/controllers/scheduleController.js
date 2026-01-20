@@ -47,8 +47,8 @@ exports.updateSchedule = async (req, res) => {
         if (schedule && schedule.length > 0) {
             for (const item of schedule) {
                 await conn.query(
-                    "INSERT INTO doctor_schedules (doctor_id, day_of_week, start_time, end_time, is_break) VALUES (?, ?, ?, ?, ?)",
-                    [doctorId, item.day_of_week, item.start_time, item.end_time, item.is_break || 0]
+                    "INSERT INTO doctor_schedules (doctor_id, day_of_week, start_time, end_time, is_break, default_type) VALUES (?, ?, ?, ?, ?, ?)",
+                    [doctorId, item.day_of_week, item.start_time, item.end_time, item.is_break || 0, item.default_type || 'consultation']
                 );
             }
         }

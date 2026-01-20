@@ -5,6 +5,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
 
 import Modal from './Modal';
+import MedicalRequestForm from './MedicalRequestForm';
 
 const RequirementsList = ({ user }) => {
     const [requests, setRequests] = useState([]);
@@ -16,8 +17,9 @@ const RequirementsList = ({ user }) => {
     const { showMessage } = useMessage();
     const { t } = useLanguage();
     const { doubleConfirm, confirm } = useModal();
-    const [activeTab, setActiveTab] = useState('list');
+    const [activeTab, setActiveTab] = useState('list'); // 'new' | 'list' | 'recycle'
     const [recycleRequests, setRecycleRequests] = useState([]);
+    const [doctors, setDoctors] = useState([]);
 
     const fetchRecycleBin = async () => {
         if (user.role !== 'admin' && user.role !== 'secretary') return;
@@ -106,8 +108,18 @@ const RequirementsList = ({ user }) => {
         filterRequests(allRequests, filter);
     }, [filter, allRequests]);
 
+    const fetchDoctors = async () => {
+        try {
+            const res = await api.get('/users/doctors');
+            setDoctors(res.data);
+        } catch (err) {
+            console.error("Failed to fetch doctors", err);
+        }
+    };
+
     useEffect(() => {
         fetchRequests();
+        fetchDoctors();
         const interval = setInterval(fetchRequests, 15000); // Poll every 15s
         return () => clearInterval(interval);
     }, []);
@@ -148,24 +160,40 @@ const RequirementsList = ({ user }) => {
     return (
         <div className="table-responsive">
             {/* Navigation Tabs */}
-            {(user.role === 'admin' || user.role === 'secretary') && (
-                <div className="tabs-container">
-                    <button
-                        className={`tab-btn ${activeTab === 'list' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('list')}
-                    >
-                        📋 Listado Activo
-                    </button>
+            <div className="tabs-container">
+                <button
+                    className={`tab-btn ${activeTab === 'list' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('list')}
+                >
+                    📋 {t('request_status')}
+                </button>
+                <button
+                    className={`tab-btn ${activeTab === 'new' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('new')}
+                >
+                    ➕ {t('new_request')}
+                </button>
+                {(user.role === 'admin' || user.role === 'secretary') && (
                     <button
                         className={`tab-btn ${activeTab === 'recycle' ? 'active' : ''}`}
                         onClick={() => setActiveTab('recycle')}
                     >
                         🗑️ Papelera {recycleRequests.length > 0 && <span className="ml-2 bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded-full text-xs">{recycleRequests.length}</span>}
                     </button>
-                </div>
-            )}
+                )}
+            </div>
 
-            {activeTab === 'list' ? (
+            {activeTab === 'new' ? (
+                <div className="animate-fadeIn mt-4">
+                    <MedicalRequestForm
+                        doctors={doctors}
+                        onRequestCreated={() => {
+                            fetchRequests();
+                            setActiveTab('list');
+                        }}
+                    />
+                </div>
+            ) : activeTab === 'list' ? (
                 <>
                     <div className="flex gap-2 mb-4">
                         <button
@@ -199,7 +227,7 @@ const RequirementsList = ({ user }) => {
                             </thead>
                             <tbody>
                                 {requests.map(r => (
-                                    <tr key={r.id} className="hover:bg-gray-50">
+                                    <tr key={r.id}>
                                         <td>
                                             <span
                                                 className={`status-chip ${r.type === 'prescription' ? 'chip-blue' : 'chip-green'} type-chip-link cursor-pointer`}
@@ -217,7 +245,7 @@ const RequirementsList = ({ user }) => {
                                             <span className="text-muted">Dr. {r.doctor_name}</span>
                                         </td>
                                         <td>
-                                            <span className="text-xs text-gray-500">{r.secretary_name || 'Secretaría'}</span>
+                                            <span style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>{r.secretary_name || 'Secretaría'}</span>
                                         </td>
                                         <td>
                                             <span className={`status-chip chip-yellow`}>
@@ -341,7 +369,7 @@ const RequirementsList = ({ user }) => {
                         <div className="mb-4">
                             <strong>Tipo:</strong> {typeLabels[selectedRequest.type] || selectedRequest.type}
                         </div>
-                        <div className="mb-4 text-sm text-gray-700">
+                        <div style={{ marginBottom: '1rem', fontSize: '0.875rem', color: 'var(--gray-700)' }}>
                             <div><strong>Solicitado:</strong> {new Date(selectedRequest.created_at).toLocaleString()}</div>
                             {selectedRequest.completed_at && (
                                 <>
@@ -360,7 +388,7 @@ const RequirementsList = ({ user }) => {
                                 </>
                             )}
                         </div>
-                        <div className="p-4 bg-gray-50 rounded border mb-4">
+                        <div style={{ padding: '1rem', backgroundColor: 'var(--gray-50)', borderRadius: 'var(--radius)', border: '1px solid var(--border-color)', marginBottom: '1rem' }}>
                             <strong>Detalle / Medicación:</strong>
                             <pre className="note-pre">
                                 {selectedRequest.request_note || "Sin detalles adicionales."}
@@ -387,7 +415,7 @@ const RequirementsList = ({ user }) => {
                         <div className="flex justify-end mt-4">
                             <button
                                 onClick={() => setSelectedRequest(null)}
-                                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+                                className="btn btn-secondary"
                             >
                                 Cerrar
                             </button>

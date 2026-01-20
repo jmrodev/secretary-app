@@ -4,6 +4,141 @@ const { saveToRecycleBin } = require('../utils/recycleBin');
 const { calculatePrice } = require('../utils/priceCalculator');
 const fs = require('fs');
 const path = require('path');
+const csv = require('csv-parser');
+
+// --- Vademecum & Patient Medications ---
+
+exports.searchVademecum = async (req, res) => {
+    let conn;
+    try {
+        const { q } = req.query;
+        if (!q || q.length < 2) return res.json([]);
+
+        conn = await pool.getConnection();
+        const searchTerms = q.trim().split(/\s+/).filter(t => t.length > 0);
+
+        // Build a Boolean Mode string: +word* +word2*
+        const booleanSearch = searchTerms.map(t => `+${t}*`).join(' ');
+
+        // We combine Natural Language (for relevance) and Boolean Mode (for strictness) 
+        // OR fallback to LIKE if terms are too short for FT index
+        const query = `
+            SELECT *, 
+            MATCH(nombre, presentacion, monodroga, laboratorio) AGAINST(? IN NATURAL LANGUAGE MODE) as relevance
+            FROM vademecum 
+            WHERE MATCH(nombre, presentacion, monodroga, laboratorio) AGAINST(? IN BOOLEAN MODE)
+            GROUP BY nombre, presentacion, monodroga, laboratorio
+            ORDER BY relevance DESC, nombre ASC
+            LIMIT 100
+        `;
+
+        let rows = await conn.query(query, [q, booleanSearch]);
+
+        // If FT search returns nothing (usually because terms are too short or stopped words), 
+        // fallback to the previous LIKE logic which is more permissive but slower
+        if (rows.length === 0) {
+            let fallbackQuery = "SELECT * FROM vademecum WHERE ";
+            let conditions = [];
+            let params = [];
+            searchTerms.forEach(term => {
+                conditions.push("(nombre LIKE ? OR presentacion LIKE ? OR monodroga LIKE ? OR laboratorio LIKE ?)");
+                params.push(`%${term}%`, `%${term}%`, `%${term}%`, `%${term}%`);
+            });
+            fallbackQuery += conditions.join(" AND ") + " GROUP BY nombre, presentacion, monodroga, laboratorio LIMIT 100";
+            rows = await conn.query(fallbackQuery, params);
+        }
+
+        res.json(rows.map(item => ({
+            id: item.id,
+            name: item.nombre,
+            presentation: item.presentacion,
+            drug: item.monodroga,
+            lab: item.laboratorio,
+            vademecum_type: item.vademecum_type,
+            full_label: `${item.nombre} (${item.presentacion}) - ${item.monodroga} [${item.laboratorio}]`
+        })));
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.getPatientMedications = async (req, res) => {
+    let conn;
+    try {
+        const { patientId } = req.params;
+        conn = await pool.getConnection();
+        const rows = await conn.query(
+            "SELECT * FROM patient_medications WHERE patient_id = ? AND status = 'active' ORDER BY created_at DESC",
+            [patientId]
+        );
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.addPatientMedication = async (req, res) => {
+    let conn;
+    try {
+        const { patient_id, medication_name, presentation, monodroga, dose, frequency, is_chronic, next_refill_date, notes } = req.body;
+        const added_by = req.user.user_id;
+
+        conn = await pool.getConnection();
+        await conn.query(
+            "INSERT INTO patient_medications (patient_id, medication_name, presentation, monodroga, dose, frequency, is_chronic, added_by, next_refill_date, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [patient_id, medication_name, presentation, monodroga, dose, frequency, is_chronic ? 1 : 0, added_by, next_refill_date || null, notes || null]
+        );
+
+        res.status(201).json({ message: "Medication added to patient" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.updatePatientMedication = async (req, res) => {
+    let conn;
+    try {
+        const { id } = req.params;
+        const { dose, frequency, is_chronic, status } = req.body;
+
+        conn = await pool.getConnection();
+        await conn.query(
+            "UPDATE patient_medications SET dose = ?, frequency = ?, is_chronic = ?, status = ? WHERE id = ?",
+            [dose, frequency, is_chronic ? 1 : 0, status || 'active', id]
+        );
+
+        res.json({ message: "Patient medication updated" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.deletePatientMedication = async (req, res) => {
+    let conn;
+    try {
+        const { id } = req.params;
+        conn = await pool.getConnection();
+        await conn.query("UPDATE patient_medications SET status = 'discontinued' WHERE id = ?", [id]);
+        res.json({ message: "Medication discontinued" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};
 
 // --- Prescriptions ---
 
@@ -798,22 +933,19 @@ exports.deleteFile = async (req, res) => {
             return res.status(404).json({ message: "File not found" });
         }
 
-        const filePath = path.join(__dirname, '..', file[0].file_url);
-
-        await conn.query("DELETE FROM patient_files WHERE id = ?", [id]);
-
-        // Delete from FS
+        const filePath = path.join(__dirname, '../../', file[0].file_url);
         if (fs.existsSync(filePath)) {
             fs.unlinkSync(filePath);
         }
 
-        logAction(req, 'DELETE_FILE', `Deleted file ${id}`);
+        await conn.query("DELETE FROM patient_files WHERE id = ?", [id]);
+        logAction(req, 'DELETE_FILE', `Deleted File ID: ${id}`);
         res.json({ message: "File deleted" });
-
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: err.message });
+        res.status(500).send("Server Error");
     } finally {
         if (conn) conn.release();
     }
 };
+
