@@ -1,4 +1,5 @@
 const { pool } = require('../db');
+const { ROLES } = require('../constants/roles');
 
 // Get schedule for a doctor
 exports.getSchedule = async (req, res) => {
@@ -26,14 +27,14 @@ exports.updateSchedule = async (req, res) => {
         const { role, user_id } = req.user;
         console.log(`[UpdateSchedule] Request by ${user_id} (${role}) for Doctor ${doctorId}`);
 
-        if (role === 'doctor') {
+        if (role === ROLES.DOCTOR) {
             // Verify doctor owns this id
-            const [docRows] = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [user_id]);
+            const docRows = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [user_id]);
             if (!docRows || docRows.length === 0 || docRows[0].id != doctorId) {
                 await conn.release();
                 return res.status(403).send("Unauthorized: Cannot edit another doctor's schedule");
             }
-        } else if (role !== 'admin' && role !== 'secretary') {
+        } else if (role !== ROLES.ADMIN && role !== ROLES.SECRETARY) {
             await conn.release();
             return res.status(403).send("Unauthorized");
         }

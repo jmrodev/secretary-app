@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
 import api from '../api/axios';
+import PatientManagerModal from './PatientManagerModal';
 
 const GoogleSanitizer = () => {
     const [appointments, setAppointments] = useState([]);
@@ -9,17 +10,9 @@ const GoogleSanitizer = () => {
     const { token } = useAuth();
 
     // Editor State
+    // Editor State
     const [editingAppt, setEditingAppt] = useState(null);
-    const [formData, setFormData] = useState({
-        patientName: '',
-        patientDni: '',
-        patientPhone: '',
-        patientEmail: '',
-        reason: '',
-        status: 'pending',
-        paymentStatus: 'none',
-        type: 'consultation'
-    });
+    const [editModalOpen, setEditModalOpen] = useState(false);
 
     // State for filtering
     const [dateRange, setDateRange] = useState({
@@ -70,35 +63,12 @@ const GoogleSanitizer = () => {
 
     const handleEdit = (appt) => {
         setEditingAppt(appt);
-        setFormData({
-            patientName: appt.full_name || '',
-            patientDni: appt.dni || '',
-            patientPhone: appt.phone || '',
-            patientEmail: appt.email || '',
-            reason: appt.reason || '',
-            status: appt.status || 'pending',
-            paymentStatus: appt.payment_status || 'none',
-            type: appt.type || 'consultation'
-        });
+        setEditModalOpen(true);
     };
 
-    const handleSave = async () => {
-        if (!editingAppt) return;
-
-        try {
-            await api.post(`/google/sanitize/${editingAppt.id}`, formData);
-
-            toast.success("Turno Saneado y Sincronizado");
-            setEditingAppt(null);
-            fetchAuditData(); // Refresh list to show updated state
-        } catch (error) {
-            console.error(error);
-            toast.error("Error al guardar correcciones: " + (error.response?.data || error.message));
-        }
-    };
-
-    const handleCancel = () => {
-        setEditingAppt(null);
+    const handleUpdateSuccess = (updatedPatient) => {
+        toast.success("Paciente Actualizado/Linkeado");
+        fetchAuditData(); // Refresh list to show updated state
     };
 
     // Helper to detect messy names (digits in name usually means title copy-paste)
@@ -190,204 +160,27 @@ const GoogleSanitizer = () => {
                 </div>
             </div>
 
-            {/* EDIT MODE */}
-            {editingAppt && (
-                <div className="mb-8 animate-in border-2 border-indigo-100 rounded-xl overflow-hidden shadow-lg">
-                    <div className="bg-indigo-50/50 p-4 border-b border-indigo-100 flex justify-between items-center">
-                        <h3 className="font-bold text-indigo-900 flex items-center gap-2">
-                            <span>✏️</span> Editando Turno #{editingAppt.id}
-                        </h3>
-                        <div className="flex gap-2">
-                            {editingAppt.google_data && (
-                                <button
-                                    onClick={() => {
-                                        if (!confirm('¿Sobreescribir formulario con datos de Google?')) return;
-                                        const g = editingAppt.google_data;
-                                        const updates = { ...formData };
-
-                                        // 1. Name
-                                        if (g.summary) updates.patientName = g.summary;
-
-                                        // 2. Parse Description
-                                        if (g.description) {
-                                            const motivoMatch = g.description.match(/Motivo:\s*(.*?)(?:\n|$)/i);
-                                            if (motivoMatch) updates.reason = motivoMatch[1].trim();
-
-                                            const phoneMatch = g.description.match(/Teléfono:\s*(.*?)(?:\n|$)/i);
-                                            if (phoneMatch && phoneMatch[1] !== 'N/A') updates.patientPhone = phoneMatch[1].trim();
-
-                                            const emailMatch = g.description.match(/Email:\s*(.*?)(?:\n|$)/i);
-                                            if (emailMatch && emailMatch[1] !== 'N/A') updates.patientEmail = emailMatch[1].trim();
-                                        }
-                                        setFormData(updates);
-                                        toast.success('Datos importados de Google');
-                                    }}
-                                    className="btn btn-secondary text-xs py-1 px-2 border-indigo-200 text-indigo-700 bg-white"
-                                    title="Usar info de Google para llenar el formulario"
-                                >
-                                    📥 Traer de Google
-                                </button>
-                            )}
-                            <span className="text-xs font-mono bg-white px-2 py-1 rounded text-indigo-400 border border-indigo-100 flex items-center">
-                                Dr. {editingAppt.doctor_name}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div className="p-6 bg-white">
-                        {editingAppt.google_data && (
-                            <div className="mb-6 p-3 bg-orange-50 border border-orange-100 rounded-lg text-xs text-orange-800 flex items-start gap-2">
-                                <span className="text-lg">⚠️</span>
-                                <div>
-                                    <strong>Atención: conflicto potencial.</strong>
-                                    <p>Al guardar, se <u>sobreescribirá</u> el evento en Google Calendar con los datos de este formulario.</p>
-                                    <ul className="mt-1 list-disc pl-4 space-y-1">
-                                        {editingAppt.google_data.summary !== formData.patientName && (
-                                            <li>
-                                                Google tiene: <strong>{editingAppt.google_data.summary}</strong> vs App: <strong>{formData.patientName}</strong>
-                                                <button
-                                                    className="ml-2 text-indigo-600 underline cursor-pointer"
-                                                    onClick={() => setFormData({ ...formData, patientName: editingAppt.google_data.summary })}
-                                                >Usar Google</button>
-                                            </li>
-                                        )}
-                                        {/* Simple check for description/reason difference logic could go here but it's complex due to metadata */}
-                                    </ul>
-                                </div>
-                            </div>
-                        )}
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            {/* Patient Info */}
-                            <div className="space-y-4">
-                                <h4 className="text-sm font-bold text-muted uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">
-                                    Datos del Paciente
-                                </h4>
-
-                                <div>
-                                    <label className="input-label text-xs">Nombre Completo (Título)</label>
-                                    <div className="flex gap-2">
-                                        <input
-                                            type="text"
-                                            className="input-field"
-                                            value={formData.patientName}
-                                            onChange={(e) => setFormData({ ...formData, patientName: e.target.value })}
-                                            placeholder="Ej: Juan Perez"
-                                        />
-                                    </div>
-                                    <p className="text-[10px] text-orange-500 mt-1 flex items-center gap-1">
-                                        <span>⚠️</span> Esto es lo que se muestra en el calendario.
-                                    </p>
-                                </div>
-
-                                <div>
-                                    <label className="input-label text-xs">DNI / Identificación</label>
-                                    <input
-                                        type="text"
-                                        className="input-field"
-                                        value={formData.patientDni}
-                                        onChange={(e) => setFormData({ ...formData, patientDni: e.target.value })}
-                                    />
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="input-label text-xs">Teléfono</label>
-                                        <input
-                                            type="text"
-                                            className="input-field"
-                                            value={formData.patientPhone}
-                                            onChange={(e) => setFormData({ ...formData, patientPhone: e.target.value })}
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="input-label text-xs">Email</label>
-                                        <input
-                                            type="email"
-                                            className="input-field"
-                                            value={formData.patientEmail}
-                                            onChange={(e) => setFormData({ ...formData, patientEmail: e.target.value })}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Appt Info */}
-                            <div className="space-y-4">
-                                <h4 className="text-sm font-bold text-muted uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">
-                                    Detalles del Turno
-                                </h4>
-
-                                <div>
-                                    <label className="input-label text-xs">Motivo de Consulta</label>
-                                    <textarea
-                                        className="input-field min-h-[80px]"
-                                        value={formData.reason}
-                                        onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
-                                    />
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="input-label text-xs">Estado</label>
-                                        <select
-                                            className="input-field"
-                                            value={formData.status}
-                                            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                        >
-                                            <option value="pending">🟡 Pendiente</option>
-                                            <option value="confirmed">🟢 Confirmado</option>
-                                            <option value="completed">✅ Completado</option>
-                                            <option value="cancelled">🔴 Cancelado</option>
-                                            <option value="absent">🚫 Ausente</option>
-                                            <option value="rescheduled">📅 Reprogramado</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label className="input-label text-xs">Estado de Pago</label>
-                                        <select
-                                            className="input-field"
-                                            value={formData.paymentStatus}
-                                            onChange={(e) => setFormData({ ...formData, paymentStatus: e.target.value })}
-                                        >
-                                            <option value="pending">⏳ Pendiente</option>
-                                            <option value="paid">💰 Pagado</option>
-                                            <option value="debt">📛 Deuda</option>
-                                            <option value="partial">🌗 Parcial</option>
-                                            <option value="none">⚪ Bonificado/Ninguno</option>
-                                        </select>
-                                    </div>
-                                    <div className="col-span-2">
-                                        <label className="input-label text-xs">Modalidad</label>
-                                        <select
-                                            className="input-field"
-                                            value={formData.type}
-                                            onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                                        >
-                                            <option value="consultation">🏥 Presencial (Consultorio)</option>
-                                            <option value="virtual">💻 Virtual (Videollamada)</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="mt-8 pt-4 border-t border-slate-100 flex justify-end gap-3">
-                            <button
-                                onClick={handleCancel}
-                                className="btn btn-secondary"
-                            >
-                                Cancelar
-                            </button>
-                            <button
-                                onClick={handleSave}
-                                className="btn btn-primary shadow-lg shadow-indigo-200"
-                            >
-                                💾 Guardar y Sobreescribir Google
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            {/* EDIT MODAL */}
+            {editModalOpen && editingAppt && (
+                <PatientManagerModal
+                    isOpen={editModalOpen}
+                    onClose={() => {
+                        setEditModalOpen(false);
+                        setEditingAppt(null);
+                    }}
+                    patient={{
+                        ...editingAppt,
+                        id: editingAppt.patient_id, // Map patient_id to id for the form
+                        // Ensure fields match what PatientForm expects if names differ
+                        // PatientForm expects: full_name, dni, phone, email...
+                        // editingAppt (from query) likely has these matching names.
+                    }}
+                    onUpdate={handleUpdateSuccess}
+                    comparisonData={editingAppt.google_data}
+                    isSanitizeMode={true}
+                    // Optionally pass doctors if needed, or let Modal fetch them
+                    doctors={doctors}
+                />
             )}
 
             <div className="overflow-hidden rounded-xl border border-slate-200 shadow-sm">

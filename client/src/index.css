@@ -379,14 +379,7 @@ a:hover {
 }
 
 /* Base Form Elements */
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="number"],
-input[type="date"],
-input[type="time"],
-input[type="search"],
-input[type="tel"],
+.input-field,
 select,
 textarea {
   width: 100%;
@@ -595,8 +588,84 @@ button:disabled {
   background-color: var(--accent-hover);
 }
 
+/* Form Layouts */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+}
+
 .input-group {
   margin-bottom: 1.5rem;
+}
+
+.section-divider {
+  margin-bottom: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--gray-200);
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.checkbox-label {
+  margin-bottom: 0;
+  cursor: pointer;
+  color: var(--amber-700);
+  font-weight: 500;
+}
+
+/* Admin Section Styles */
+.admin-section {
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
+  margin-top: 1.5rem;
+}
+
+.doctor-selection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.5rem;
+  max-height: 150px;
+  overflow-y: auto;
+  padding: 0.5rem;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+}
+
+.doctor-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--gray-700);
+  cursor: pointer;
+}
+
+.form-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+@media (max-width: 768px) {
+
+  .form-row,
+  .form-row-3 {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Switches */
@@ -3679,8 +3748,244 @@ input:checked+.slider:before {
   background-color: var(--red-50);
   border-color: var(--red-200);
 }
+
 .item-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
+}
+
+/* Appointment Card Grid Layout (Reusing existing class) */
+.appointment-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  /* Compact padding for list items */
+}
+
+/* Appointment Card Internal Layout */
+.appt-time-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+  padding: 0.25rem 0;
+  background-color: var(--gray-50);
+  border-radius: var(--radius-sm);
+  transition: background-color 0.2s;
+}
+
+.appointment-card:hover .appt-time-box {
+  background-color: var(--indigo-50);
+}
+
+.appt-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.appt-status {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 0.5rem;
+  text-align: right;
+}
+
+.appt-actions {
+  flex-shrink: 0;
+}
+
+@media screen and (max-width: 640px) {
+  .appointment-card {
+    grid-template-columns: auto 1fr;
+    row-gap: 0.75rem;
+  }
+
+  /* On mobile, wrapping behavior */
+  .appointment-card> :nth-child(3),
+  /* Status */
+  .appointment-card> :nth-child(4)
+
+  /* Button */
+    {
+    grid-column: span 1;
+    justify-self: end;
+  }
+}
+/* --- Generic Form Select Styles (Vanilla CSS) --- */
+
+.form-select-control {
+  background-color: white;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius);
+  padding: 0.5rem;
+  display: flex;
+  min-height: 48px;
+  box-shadow: none;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.form-select-control.focused {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+  outline: none;
+}
+
+.form-select-value-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  align-items: center;
+  padding: 0;
+  position: relative;
+}
+
+.form-select-input {
+  margin: 0;
+  padding: 0;
+  color: var(--text-main);
+}
+
+/* Ensure the actual input element takes no extra space */
+.form-select-input input {
+  width: 100% !important;
+  font: inherit;
+}
+
+.form-select-placeholder {
+  color: var(--gray-400);
+  position: absolute;
+  left: 0;
+}
+
+.form-select-value {
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.form-select-menu {
+  background-color: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  margin-top: 0.5rem;
+  position: absolute;
+  width: 100%;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.form-select-option {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  color: var(--text-main);
+}
+
+.form-select-option.focused {
+  background-color: var(--blue-50);
+  color: var(--blue-700);
+}
+
+.form-select-option.selected {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+/* --- Generic Dropdown System --- */
+.dropdown-menu {
+  position: absolute; /* Re-flow to proper position logic */
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  margin-top: 0.5rem;
+  z-index: 9999;
+  width: 100%;
+  overflow: hidden;
+}
+
+.dropdown-item {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  color: var(--text-main);
+  transition: background-color 0.15s;
+}
+
+.dropdown-item:hover,
+.dropdown-item.active {
+  background-color: var(--blue-50);
+  color: var(--blue-700);
+}
+
+.dropdown-item.selected {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+/* --- Form Helpers --- */
+/* Turns a standard input-field into a flexible container for complex controls */
+.input-flex-container {
+  display: flex !important; /* Force flex behavior */
+  align-items: center;
+  gap: 0.5rem;
+  padding-top: 0.4rem !important; /* Adjust for flex alignment */
+  padding-bottom: 0.4rem !important;
+  min-height: 48px;
+}
+
+.no-style-input {
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+  height: auto !important;
+  width: 100%;
+  color: inherit;
+}
+
+.value-flex-container {
+  display: flex;
+  flex: 1;
+  position: relative;
+}
+
+.placeholder-text {
+  color: var(--gray-400);
+  position: absolute;
+}
+
+.single-value-text {
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+/* Focus Ring Helper */
+.focus-ring {
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2) !important;
+}
+
+/* --- Utility: Visually Hidden (Trap Fields) --- */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  opacity: 0;
+  z-index: -1;
 }

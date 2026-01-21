@@ -103,7 +103,7 @@ const Finances = () => {
                 amount_delivered: closeAmount,
                 description: `Cash Box Delivery to Dr. ${closeBoxModal.doctorName}`
             });
-            await api.put(`/finance/close-box/${closeBoxModal.doctorId}`);
+
             showMessage(t('box_closed_successfully'), 'success');
             setCloseBoxModal({ ...closeBoxModal, open: false });
             setCloseAmount('');

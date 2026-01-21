@@ -31,6 +31,15 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
 
     return (
         <AsyncSelect
+            classNames={{
+                control: ({ isFocused }) => `input-field input-flex-container ${isFocused ? 'focus-ring' : ''}`,
+                input: () => 'no-style-input',
+                menu: () => 'dropdown-menu',
+                option: ({ isFocused, isSelected }) => `dropdown-item ${isFocused ? 'active' : ''} ${isSelected ? 'selected' : ''}`,
+                placeholder: () => 'placeholder-text',
+                singleValue: () => 'single-value-text',
+                valueContainer: () => 'value-flex-container'
+            }}
             cacheOptions
             defaultOptions
             loadOptions={loadOptions}
@@ -38,8 +47,8 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
             autoFocus={autoFocus}
             placeholder={finalPlaceholder}
             noOptionsMessage={({ inputValue }) => (
-                <div className="text-center p-2">
-                    <p className="text-main-500 mb-2">
+                <div className="form-select-no-results">
+                    <p>
                         {t('no_results_for')} "{inputValue}"
                     </p>
                     {onCreatePatient && inputValue && (
@@ -58,40 +67,10 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
                 </div>
             )}
             loadingMessage={() => t('loading')}
-            styles={{
-                control: (base) => ({
-                    ...base,
-                    borderColor: '#e2e8f0',
-                    borderRadius: '0.375rem',
-                    padding: '2px',
-                    boxShadow: 'none',
-                    backgroundColor: 'white', // Ensure white background
-                    '&:hover': {
-                        borderColor: '#cbd5e1'
-                    }
-                }),
-                input: (base) => ({
-                    ...base,
-                    color: '#0f172a', // gray-900 for maximum contrast
-                    backgroundColor: 'transparent'
-                }),
-                singleValue: (base) => ({
-                    ...base,
-                    color: '#0f172a',
-                    fontWeight: '650' // slightly bolder
-                }),
-                placeholder: (base) => ({
-                    ...base,
-                    color: '#64748b' // gray-500
-                }),
-                menu: (base) => ({
-                    ...base,
-                    zIndex: 9999
-                })
-            }}
             // Disable browser autocomplete to prevent password manager interference
             autoComplete="chrome-off"
             inputId="patient-search-input"
+            unstyled // Removes default styles so our classes take over
         />
     );
 };

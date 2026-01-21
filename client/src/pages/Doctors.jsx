@@ -32,6 +32,7 @@ const Doctors = () => {
     // Schedule State
     const [schedule, setSchedule] = useState([]);
     const [loadingSchedule, setLoadingSchedule] = useState(false);
+    const [saving, setSaving] = useState(false);
     const fetchDoctors = async () => {
         try {
             const [docsRes, settingsRes] = await Promise.all([
@@ -147,18 +148,23 @@ const Doctors = () => {
     };
 
     const handleSaveEdit = async () => {
+        setSaving(true);
         try {
             await Promise.all([
                 api.put(`/users/doctors/${editData.id}`, editData),
                 api.put(`/schedules/${editData.id}`, { schedule })
             ]);
 
+            showMessage(t('doctor_updated') || "Doctor actualizado exitosamente", "success");
+            await new Promise(resolve => setTimeout(resolve, 500)); // Small delay to show message
             setEditModalOpen(false);
             fetchDoctors();
-            showMessage("Doctor status and schedule updated", "success");
         } catch (err) {
             console.error("Failed to update doctor", err);
-            alert("Failed to update doctor.");
+            const errorMsg = err.response?.data?.message || err.response?.data || err.message || "Error al actualizar doctor";
+            showMessage(errorMsg, "error");
+        } finally {
+            setSaving(false);
         }
     };
 
@@ -254,8 +260,8 @@ const Doctors = () => {
                             <button className="btn btn-secondary" onClick={() => setEditModalOpen(false)}>
                                 {t('cancel') || 'Cancel'}
                             </button>
-                            <button className="btn btn-primary" onClick={handleSaveEdit}>
-                                {t('save_changes') || 'Save'}
+                            <button className="btn btn-primary" onClick={handleSaveEdit} disabled={saving}>
+                                {saving ? '⌛ Guardando...' : (t('save_changes') || 'Save')}
                             </button>
                         </>
                     }
@@ -341,11 +347,11 @@ const Doctors = () => {
                                 <div className="grid-2-cols">
                                     <div className="input-group">
                                         <label className="input-label">{t('specialty') || 'Especialidad'}</label>
-                                        <input className="input-field" value={editData.specialty} onChange={e => setEditData({ ...editData, specialty: e.target.value })} />
+                                        <input type="text" className="input-field" value={editData.specialty} onChange={e => setEditData({ ...editData, specialty: e.target.value })} />
                                     </div>
                                     <div className="input-group">
                                         <label className="input-label">{t('cbu_alias') || 'CBU/Alias'}</label>
-                                        <input className="input-field" value={editData.cbu} onChange={e => setEditData({ ...editData, cbu: e.target.value })} />
+                                        <input type="text" className="input-field" value={editData.cbu} onChange={e => setEditData({ ...editData, cbu: e.target.value })} />
                                     </div>
                                 </div>
 

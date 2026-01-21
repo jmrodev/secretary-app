@@ -168,62 +168,90 @@ const DoctorScheduleSettings = ({ doctorId, schedule, setSchedule, loading }) =>
                 </div>
             </div>
 
-            <div className="space-y-3">
-                {DAYS.map(day => {
-                    const config = schedule.find(s => s.day_of_week === day.id);
-                    const isActive = !!config;
+            <table className="table-base" style={{ width: '100%' }}>
+                <thead>
+                    <tr>
+                        <th style={{ width: '50px', textAlign: 'center' }}>Activo</th>
+                        <th style={{ width: '120px' }}>Día</th>
+                        <th style={{ width: '140px' }}>Tipo</th>
+                        <th style={{ width: '100px' }}>Desde</th>
+                        <th style={{ width: '20px' }}></th>
+                        <th style={{ width: '100px' }}>Hasta</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {DAYS.map(day => {
+                        const config = schedule.find(s => s.day_of_week === day.id);
+                        const isActive = !!config;
 
-                    return (
-                        <div key={day.id} className={`flex items-center gap-4 p-3 rounded-md border ${isActive ? 'border-primary-200 bg-primary-50/30' : 'border-slate-100 bg-slate-50'}`}>
-                            <div className="flex items-center gap-4 min-w-[300px]">
-                                <div className="flex items-center gap-2">
+                        return (
+                            <tr key={day.id} style={{ backgroundColor: isActive ? 'var(--primary-50)' : 'var(--gray-50)' }}>
+                                <td style={{ textAlign: 'center' }}>
                                     <input
                                         type="checkbox"
                                         id={`day-${day.id}`}
-                                        className="w-4 h-4 text-primary-600 rounded"
                                         checked={isActive}
                                         onChange={() => toggleDay(day.id)}
+                                        style={{ accentColor: 'var(--primary-color)' }}
                                     />
-                                    <label htmlFor={`day-${day.id}`} className={`font-medium cursor-pointer w-24 ${isActive ? 'text-main-900' : 'text-muted'}`}>
+                                </td>
+                                <td>
+                                    <label htmlFor={`day-${day.id}`} style={{
+                                        fontWeight: isActive ? '600' : '400',
+                                        color: isActive ? 'var(--text-main)' : 'var(--text-muted)',
+                                        cursor: 'pointer'
+                                    }}>
                                         {day.name}
                                     </label>
-                                </div>
-                                {isActive && (
-                                    <div className="flex items-center gap-2" title="Configurar día como Videollamada">
+                                </td>
+                                <td>
+                                    {isActive ? (
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                            <input
+                                                type="checkbox"
+                                                id={`virtual-${day.id}`}
+                                                checked={config.default_type === 'virtual'}
+                                                onChange={() => handleToggleVirtual(day.id)}
+                                                style={{ accentColor: 'var(--accent-color)' }}
+                                            />
+                                            <label htmlFor={`virtual-${day.id}`} style={{ fontSize: '0.875rem', cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                                                📹 Videollamada
+                                            </label>
+                                        </div>
+                                    ) : (
+                                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>No atiende</span>
+                                    )}
+                                </td>
+                                <td>
+                                    {isActive && (
                                         <input
-                                            type="checkbox"
-                                            id={`virtual-${day.id}`}
-                                            className="w-4 h-4 text-accent-color rounded cursor-pointer"
-                                            checked={config.default_type === 'virtual'}
-                                            onChange={() => handleToggleVirtual(day.id)}
+                                            type="time"
+                                            className="input-field"
+                                            style={{ padding: '0.25rem 0.5rem', width: '100px', fontSize: '0.875rem' }}
+                                            value={config.start_time ? config.start_time.slice(0, 5) : ''}
+                                            onChange={(e) => handleDayChange(day.id, 'start_time', e.target.value)}
                                         />
-                                        <label htmlFor={`virtual-${day.id}`} className="text-sm cursor-pointer whitespace-nowrap">📹 Videollamada</label>
-                                    </div>
-                                )}
-                            </div>
-
-                            {isActive && (
-                                <div className="flex items-center gap-2 flex-1">
-                                    <input
-                                        type="time"
-                                        className="input-field py-1 px-2 w-28 text-sm"
-                                        value={config.start_time ? config.start_time.slice(0, 5) : ''}
-                                        onChange={(e) => handleDayChange(day.id, 'start_time', e.target.value)}
-                                    />
-                                    <span className="text-muted">a</span>
-                                    <input
-                                        type="time"
-                                        className="input-field py-1 px-2 w-28 text-sm"
-                                        value={config.end_time ? config.end_time.slice(0, 5) : ''}
-                                        onChange={(e) => handleDayChange(day.id, 'end_time', e.target.value)}
-                                    />
-                                </div>
-                            )}
-                            {!isActive && <div className="text-xs text-muted italic">No atiende</div>}
-                        </div>
-                    );
-                })}
-            </div>
+                                    )}
+                                </td>
+                                <td style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
+                                    {isActive && 'a'}
+                                </td>
+                                <td>
+                                    {isActive && (
+                                        <input
+                                            type="time"
+                                            className="input-field"
+                                            style={{ padding: '0.25rem 0.5rem', width: '100px', fontSize: '0.875rem' }}
+                                            value={config.end_time ? config.end_time.slice(0, 5) : ''}
+                                            onChange={(e) => handleDayChange(day.id, 'end_time', e.target.value)}
+                                        />
+                                    )}
+                                </td>
+                            </tr>
+                        );
+                    })}
+                </tbody>
+            </table>
         </div>
     );
 };

@@ -4,23 +4,24 @@ import CurrencyInput from './CurrencyInput';
 import api from '../api/axios';
 import PhoneNumbersManager from './PhoneNumbersManager';
 
-const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmin = false, insurances = [], doctors = [] }) => {
+const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmin = false, insurances = [], doctors = [], comparisonData = null, isSanitizeMode = false }) => {
     const { t } = useLanguage();
 
     const [formData, setFormData] = useState({
         username: '',
         password: '',
         full_name: '',
+        first_name: '',
+        last_name: '',
         dni: '',
         phoneNumbers: [],
         email: '',
         address: '',
         dob: '',
         insurance_id: '',
-        institution_id: '', // [NEW]
+        institution_id: '',
         affiliate_number: '',
         medical_history: '',
-        // Admin only fields
         assignedDoctors: [],
         tariff_percent: '',
         tariff_override: '',
@@ -48,44 +49,16 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
 
     useEffect(() => {
         if (initialValues) {
-            // legacy migration: split full_name if structure is missing
-            let fName = initialValues.first_name;
-            let lName = initialValues.last_name;
-
-            if (!fName && !lName && initialValues.full_name) {
-                const parts = initialValues.full_name.trim().split(' ');
-                if (parts.length > 1) {
-                    lName = parts.pop();
-                    fName = parts.join(' ');
-                } else {
-                    fName = initialValues.full_name;
-                }
-            }
-
             setFormData(prev => ({
                 ...prev,
                 ...initialValues,
-                username: initialValues.username || '',
-                full_name: initialValues.full_name || '',
-                first_name: fName || '',
-                last_name: lName || '',
-                dni: initialValues.dni || '',
-                phoneNumbers: (initialValues.phoneNumbers && initialValues.phoneNumbers.length > 0) ? initialValues.phoneNumbers : (initialValues.phone ? [{ phone_number: initialValues.phone, is_primary: true, label: 'Celular' }] : []),
-                email: initialValues.email || '',
-                address: initialValues.address || '',
-                insurance_id: initialValues.insurance_id || '',
-                institution_id: initialValues.institution_id || '',
-                affiliate_number: initialValues.affiliate_number || '',
-                medical_history: initialValues.medical_history || '',
-                dob: initialValues.dob ? initialValues.dob.split('T')[0] : '',
-                next_suggested_visit_date: initialValues.next_suggested_visit_date ? initialValues.next_suggested_visit_date.split('T')[0] : '',
-                next_suggested_prescription_date: initialValues.next_suggested_prescription_date ? initialValues.next_suggested_prescription_date.split('T')[0] : '',
-                license_expiry_date: initialValues.license_expiry_date ? initialValues.license_expiry_date.split('T')[0] : '',
-                tariff_percent: initialValues.tariff_percent !== null && initialValues.tariff_percent !== undefined ? initialValues.tariff_percent : '',
-                tariff_override: initialValues.tariff_override !== null && initialValues.tariff_override !== undefined ? initialValues.tariff_override : '',
-                visit_interval_days: initialValues.visit_interval_days || '',
-                prescription_interval_days: initialValues.prescription_interval_days || '',
-                assignedDoctors: initialValues.assignedDoctors ? initialValues.assignedDoctors.map(d => d.id || d) : []
+                // Ensure arrays are initialized if missing in initialValues
+                phoneNumbers: initialValues.phoneNumbers || [],
+                assignedDoctors: initialValues.assignedDoctors ?
+                    (Array.isArray(initialValues.assignedDoctors) && typeof initialValues.assignedDoctors[0] === 'object'
+                        ? initialValues.assignedDoctors.map(d => d.id)
+                        : initialValues.assignedDoctors)
+                    : []
             }));
 
             if (initialValues.institution_id) {
@@ -99,56 +72,73 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleDoctorToggle = (docId) => {
+    const handleDoctorToggle = (doctorId) => {
         setFormData(prev => {
             const current = prev.assignedDoctors || [];
-            if (current.includes(docId)) {
-                return { ...prev, assignedDoctors: current.filter(id => id !== docId) };
+            if (current.includes(doctorId)) {
+                return { ...prev, assignedDoctors: current.filter(id => id !== doctorId) };
             } else {
-                return { ...prev, assignedDoctors: [...current, docId] };
+                return { ...prev, assignedDoctors: [...current, doctorId] };
             }
         });
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        onSubmit(formData);
+    };
 
-        // Final fallback auto-fill if empty during creation
-        if (!isEdit && (!formData.username || !formData.password)) {
-            const firstName = (formData.first_name || '').trim();
-            const lastName = (formData.last_name || '').trim();
-            const autoValue = `${firstName}${lastName}`.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
+    // Helper to highlight diffs
+    const getDiffClass = (fieldName, currentValue) => {
+        if (!comparisonData || !isSanitizeMode) return '';
+        let compareValue = comparisonData[fieldName];
 
-            setFormData(prev => ({
-                ...prev,
-                username: prev.username || autoValue,
-                password: prev.password || autoValue
-            }));
+        // Custom mapping for Google comparison
+        if (fieldName === 'full_name' && comparisonData.summary) compareValue = comparisonData.summary;
 
-            // Note: because setFormData is async, we should probably use the updated data for onSubmit
-            onSubmit({
-                ...formData,
-                username: formData.username || autoValue,
-                password: formData.password || autoValue
-            });
-        } else {
-            onSubmit(formData);
+        if (compareValue && String(compareValue).trim() !== String(currentValue).trim()) {
+            return 'bg-orange-50 ring-2 ring-orange-200';
         }
+        return '';
+    };
+
+    const QuickCopyBtn = ({ fieldName, valueToCopy }) => {
+        if (!isSanitizeMode || !valueToCopy) return null;
+        return (
+            <button
+                type="button"
+                className="ml-2 text-[10px] bg-orange-100 text-orange-700 px-2 py-0.5 rounded border border-orange-200 hover:bg-orange-200"
+                onClick={() => setFormData(prev => ({ ...prev, [fieldName]: valueToCopy }))}
+                title="Copiar valor de Google"
+            >
+                ← Usar Google
+            </button>
+        );
     };
 
     return (
-        <form onSubmit={handleSubmit} className="patient-form">
+        <form onSubmit={handleSubmit} className="patient-form" autoComplete="off">
+            {/* Fake fields to stop Chrome Autosave */}
+            <div className="visually-hidden">
+                <input type="text" name="fake_user_trap" autoComplete="username" tabIndex={-1} />
+                <input type="password" name="fake_pass_trap" autoComplete="new-password" tabIndex={-1} />
+            </div>
+
             {!isEdit && (
-                <div className="grid-2-cols gap-4 mb-4">
+                <div className="form-row">
                     <div className="input-group">
                         <label className="input-label">{t('username')}</label>
                         <input
+                            type="text"
                             name="username"
                             className="input-field"
                             value={formData.username}
                             onChange={handleChange}
                             required
                             autoComplete="off"
+                            data-lpignore="true"
+                            readOnly={!!formData.id} // heuristic
+                            onFocus={(e) => e.target.removeAttribute('readonly')}
                         />
                     </div>
                     <div className="input-group">
@@ -161,17 +151,21 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                             onChange={handleChange}
                             required
                             autoComplete="new-password"
+                            data-lpignore="true"
                         />
                     </div>
                 </div>
             )}
 
-            <div className="grid-2-cols gap-4 mb-4">
+            <div className="form-row">
                 <div className="input-group">
-                    <label className="input-label">Nombre</label>
+                    <label className="input-label">
+                        Nombre
+                        <QuickCopyBtn fieldName="first_name" valueToCopy={comparisonData?.first_name} />
+                    </label>
                     <input
                         name="first_name"
-                        className="input-field"
+                        className={`input-field ${getDiffClass('first_name', formData.first_name)}`}
                         value={formData.first_name || ''}
                         onChange={(e) => {
                             const val = e.target.value;
@@ -228,9 +222,29 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                 </div>
             </div>
 
-            <div className="grid-2-cols gap-4 mb-4">
+            {/* Full Name Display for Diff (Read Only or just visual) */}
+            {isSanitizeMode && (
+                <div className="mb-4 p-2 bg-slate-50 border border-slate-200 rounded">
+                    <label className="text-xs font-bold text-slate-500 uppercase">Nombre Completo (Comparación)</label>
+                    <div className="flex items-center gap-2 mt-1">
+                        <div className={`flex-1 p-2 bg-white border rounded ${getDiffClass('full_name', formData.full_name)}`}>
+                            {formData.full_name}
+                        </div>
+                        {comparisonData?.summary && (
+                            <div className="flex-1 p-2 bg-orange-50 border border-orange-200 rounded text-orange-800">
+                                {comparisonData.summary}
+                                <QuickCopyBtn fieldName="full_name" valueToCopy={comparisonData.summary} />
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            <div className="form-row">
                 <div className="input-group">
-                    <label className="input-label">{t('dni')}</label>
+                    <label className="input-label">
+                        {t('dni')}
+                    </label>
                     <input
                         name="dni"
                         className="input-field"
@@ -254,7 +268,7 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                 </div>
             </div>
 
-            <div className="grid-2-cols gap-4 mb-4">
+            <div className="form-row">
                 <div className="input-group">
                     <label className="input-label">Email</label>
                     <input
@@ -267,8 +281,8 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                 </div>
             </div>
 
-            <div className="mb-4 pt-2 border-t border-slate-200">
-                <div className="flex items-center gap-2 mb-2">
+            <div className="section-divider">
+                <div className="checkbox-row">
                     <input
                         type="checkbox"
                         checked={coveredByInstitution}
@@ -280,7 +294,7 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                         }}
                         id="pf_institution"
                     />
-                    <label htmlFor="pf_institution" className="input-label mb-0 cursor-pointer text-amber-700 font-medium">
+                    <label htmlFor="pf_institution" className="checkbox-label">
                         ¿Cubierto por una Institución? (Municipio, Hospital, etc.)
                     </label>
                 </div>
@@ -290,7 +304,7 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                         <label className="input-label">Institución Pagadora</label>
                         <select
                             name="institution_id"
-                            className="input-field border-amber-300 bg-amber-50"
+                            className="input-field"
                             value={formData.institution_id}
                             onChange={handleChange}
                         >
@@ -304,13 +318,13 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
             </div>
 
             {/* Multiple Phone Numbers Section */}
-            <div className="mb-6 pt-4 border-t border-slate-100">
+            <div className="section-divider">
                 <PhoneNumbersManager
                     phoneNumbers={formData.phoneNumbers}
                     onChange={(newPhones) => setFormData({ ...formData, phoneNumbers: newPhones })}
                 />
             </div>
-            <div className="grid-2-cols gap-4 mb-4">
+            <div className="form-row">
                 <div className="input-group">
                     <label className="input-label">{t('dob')}</label>
                     <input
@@ -332,7 +346,7 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                 </div>
             </div>
 
-            <div className="input-group mb-4">
+            <div className="input-group">
                 <label className="input-label">{t('address')}</label>
                 <input
                     name="address"
@@ -342,7 +356,7 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                 />
             </div>
 
-            <div className="input-group mb-4">
+            <div className="input-group">
                 <label className="input-label">{t('medical_history')}</label>
                 <textarea
                     name="medical_history"
@@ -354,8 +368,8 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
             </div>
 
             {isAdmin && (
-                <div className="admin-fields border-t-divider pt-4 mt-6">
-                    <h4 className="font-bold text-main-700 mb-4 uppercase text-sm">Administrative Settings</h4>
+                <div className="admin-section">
+                    <h4 className="section-title">Administrative Settings</h4>
 
                     <div className="input-group mb-4">
                         <label className="input-label">Assigned Doctors</label>
@@ -373,7 +387,7 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                         </div>
                     </div>
 
-                    <div className="grid-2-cols gap-4 mb-4">
+                    <div className="form-row">
                         <div className="input-group">
                             <label className="input-label">Tariff Adjustment (%)</label>
                             <input
@@ -396,7 +410,7 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                         </div>
                     </div>
 
-                    <div className="grid-2-cols gap-4 mb-4">
+                    <div className="form-row">
                         <div className="input-group">
                             <label className="input-label">{t('visit_interval_days')}</label>
                             <input type="number" name="visit_interval_days" className="input-field" value={formData.visit_interval_days} onChange={handleChange} />
@@ -407,7 +421,7 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                         </div>
                     </div>
 
-                    <div className="grid-3-cols gap-4">
+                    <div className="form-row-3">
                         <div className="input-group">
                             <label className="input-label">{t('next_suggested_visit')}</label>
                             <input type="date" name="next_suggested_visit_date" className="input-field" value={formData.next_suggested_visit_date} onChange={handleChange} />
@@ -424,13 +438,7 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                 </div>
             )}
 
-            <div className="mt-6 flex justify-end gap-3">
-                {/* Buttons are usually handled by the parent (Modal footer), but if this is a standalone page, we need them. 
-                     We can accept a 'renderFooter' prop or just put a submit button here if it's the main form.
-                     For Modal reuse, we might want to hide these if parent provides footer. 
-                     But for TempAccess page, we need them.
-                     Let's add a default submit button.
-                 */}
+            <div className="form-actions">
                 {onCancel && (
                     <button type="button" className="btn btn-secondary" onClick={onCancel}>
                         {t('cancel')}
@@ -440,7 +448,7 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                     {isEdit ? t('save_changes') : t('create_account')}
                 </button>
             </div>
-        </form>
+        </form >
     );
 };
 

@@ -57,6 +57,7 @@ const Appointments = () => {
     const [selectedPatientData, setSelectedPatientData] = useState(null); // Full object
     const [missingData, setMissingData] = useState([]);
     const [editPatientModalOpen, setEditPatientModalOpen] = useState(false);
+    const [whatsappModal, setWhatsappModal] = useState({ open: false, phone: '', message: '' });
     const [date, setDate] = useState('');
     const [reason, setReason] = useState('Consulta'); // Default reason
     const [bonified, setBonified] = useState(false); // [NEW] Bonificado
@@ -571,6 +572,28 @@ const Appointments = () => {
 
             showMessage(t('appointment_booked'), 'success');
             setShowForm(false);
+
+            // WhatsApp Confirmation Prompt
+            if (settings.appointment_confirmation_template && selectedPatientData && selectedPatientData.phone) {
+                const apptDateObj = new Date(date);
+                const dateStr = apptDateObj.toLocaleDateString();
+                const timeStr = apptDateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const doctorName = doctors.find(d => d.id === Number(selectedDoctor))?.full_name || 'Doctor';
+
+                let msg = settings.appointment_confirmation_template
+                    .replace(/{patient_name}/g, selectedPatientData.full_name)
+                    .replace(/{date}/g, dateStr)
+                    .replace(/{time}/g, timeStr)
+                    .replace(/{doctor_name}/g, doctorName)
+                    .replace(/{secretary_name}/g, user.name || 'Secretaría');
+
+                setWhatsappModal({
+                    open: true,
+                    phone: selectedPatientData.phone,
+                    message: msg
+                });
+            }
+
             setReason('Consulta'); // Reset to default 'Consulta'
             setDate('');
             setType('consultation');
@@ -983,17 +1006,19 @@ const Appointments = () => {
                                                             </div>
                                                         )}
                                                         <div
-                                                            className={`flex items-center gap-4 p-3 bg-white rounded-xl border border-slate-100 hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer group status-${a.status} ${a.source === 'google-incomplete' || a.source === 'google' ? 'status-external' : ''}`}
+                                                            className={`appointment-card group status-${a.status} ${a.source === 'google-incomplete' || a.source === 'google' ? 'status-external' : ''}`}
                                                             onClick={() => setActionModal({ open: true, appt: a })}
                                                             style={a.source === 'google-incomplete' || a.source === 'google' || a.status === 'external' ? { borderLeft: '4px solid var(--amber-500)' } : {}}
                                                         >
-                                                            <div className="flex flex-col items-center justify-center min-w-[60px] py-1 bg-slate-50 rounded-lg group-hover:bg-indigo-50 transition-colors">
+                                                            {/* Col 1: Time */}
+                                                            <div className="appt-time-box">
                                                                 <span className="text-sm font-bold text-main-900">
                                                                     {new Date(a.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
                                                                 </span>
                                                             </div>
 
-                                                            <div className="flex-1 min-w-0">
+                                                            {/* Col 2: Patient Info */}
+                                                            <div className="appt-info">
                                                                 <div className="font-bold text-main-800 truncate">{a.patient_name}</div>
                                                                 {a.patient_phone && (
                                                                     <div className="text-xs text-indigo-600 font-medium flex items-center gap-1">
@@ -1006,25 +1031,27 @@ const Appointments = () => {
                                                                 </div>
                                                             </div>
 
-                                                            <div className="flex items-center gap-2">
+                                                            {/* Col 3: Status Chips */}
+                                                            <div className="appt-status">
                                                                 {a.payment_status === 'paid' && <span title="Paid" className="text-emerald-500 font-bold text-xs">$✓</span>}
                                                                 {a.payment_status === 'debt' && <span title="Debt" className="text-rose-500 font-bold text-xs">$!</span>}
 
-                                                                <span className={`status-chip-mini status-${a.status}`}>
+                                                                <span className={`status-chip-mini status-${a.status} inline-block`}>
                                                                     {t(a.status) || a.status}
                                                                 </span>
+                                                            </div>
 
-                                                                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                                    <button onClick={(e) => {
-                                                                        e.stopPropagation();
-                                                                        handleWhatsAppConfirm(a);
-                                                                    }}
-                                                                        className="p-1.5 bg-green-50 text-green-600 rounded-lg hover:bg-green-600 hover:text-white transition-all shadow-sm border border-green-100"
-                                                                        title="WhatsApp"
-                                                                    >
-                                                                        📲
-                                                                    </button>
-                                                                </div>
+                                                            {/* Col 4: Action Button */}
+                                                            <div className="appt-actions">
+                                                                <button onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleWhatsAppConfirm(a);
+                                                                }}
+                                                                    className="p-1.5 bg-green-50 text-green-600 rounded-lg hover:bg-green-600 hover:text-white transition-all shadow-sm border border-green-100"
+                                                                    title="WhatsApp"
+                                                                >
+                                                                    📲
+                                                                </button>
                                                             </div>
                                                         </div>
                                                     </Fragment>
@@ -1058,7 +1085,7 @@ const Appointments = () => {
                             <div className={`schedule-section-container ${viewDoctorId ? `doctor-color-${Number(viewDoctorId) % 10}` : ''}`}>
                                 {activeTab === 'calendar' ? (
                                     <div className={viewDoctorId ? "doctor-themed-bg p-4 rounded-2xl border" : ""}>
-                                        <div className="schedule-header-search mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="schedule-header-search mb-4">
                                             <div className="filter-group patient-search-container">
                                                 <label className={`filter-label ${viewDoctorId ? 'doctor-themed-text' : ''}`}>Buscar Historial de Paciente</label>
                                                 <PatientSearchSelect
@@ -1071,33 +1098,8 @@ const Appointments = () => {
                                                     }}
                                                 />
                                             </div>
-                                            <div className="filter-group">
-                                                <label className={`filter-label ${viewDoctorId ? 'doctor-themed-text' : ''}`}>Filtrar Turnos (Motivo, Nombre)</label>
-                                                <div className="relative">
-                                                    <input
-                                                        type="text"
-                                                        className="input-field"
-                                                        placeholder="🔍 Buscar en motivo, paciente, tel..."
-                                                        value={searchTerm}
-                                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                                        style={{ height: '38px' }} // Match Select height roughly
-                                                    />
-                                                    {searchTerm && (
-                                                        <button
-                                                            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                                                            onClick={() => setSearchTerm('')}
-                                                        >
-                                                            ✖️
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            </div>
                                         </div>
-                                        {currentDoctor && (
-                                            <div className="watermark-text" style={{ color: 'var(--doc-text)', opacity: 0.08 }}>
-                                                {currentDoctor.full_name}
-                                            </div>
-                                        )}
+
                                         <DaySchedule
                                             date={selectedDate}
                                             appointments={currentDoctor ? filteredAppointments.filter(a => a.doctor_id === currentDoctor.id) : filteredAppointments}
@@ -1131,9 +1133,11 @@ const Appointments = () => {
                     title={t('new_appointment')}
                 >
                     <form onSubmit={handleBook} id="new-appointment-form" autoComplete="off">
-                        {/* Hidden fields to confuse Chrome password manager */}
-                        <input type="text" style={{ display: 'none' }} />
-                        <input type="password" style={{ display: 'none' }} />
+                        {/* Fake fields to stop Chrome Autosave */}
+                        <div className="visually-hidden">
+                            <input type="text" name="fake_user_trap_appt" autoComplete="username" tabIndex={-1} />
+                            <input type="password" name="fake_pass_trap_appt" autoComplete="new-password" tabIndex={-1} />
+                        </div>
                         {syncReferenceInfo && (
                             <div className="mb-6 p-4 bg-amber-50 border-2 border-amber-200 rounded-2xl flex flex-col gap-2 animate-in slide-in-from-top-4">
                                 <span className="text-[10px] font-black uppercase tracking-widest text-amber-600">📄 Información Original (Referencia)</span>
@@ -1598,6 +1602,77 @@ const Appointments = () => {
                     patientId={historyModal.patientId}
                     patientName={historyModal.patientName}
                 />
+
+                <Modal
+                    isOpen={whatsappModal.open}
+                    onClose={() => setWhatsappModal({ ...whatsappModal, open: false })}
+                    title="Enviar Confirmación por WhatsApp"
+                    size="md"
+                    footer={
+                        <>
+                            <button className="btn btn-secondary" onClick={() => setWhatsappModal({ ...whatsappModal, open: false })}>{t('cancel')}</button>
+                            <button
+                                className="btn btn-emerald text-white"
+                                onClick={() => {
+                                    const message = whatsappModal.message;
+                                    let phone = whatsappModal.phone.replace(/\D/g, '');
+
+                                    // Standardize AR phones if needed (optional but good consistency)
+                                    if (!phone.startsWith('54') && phone.length >= 10) {
+                                        phone = '549' + phone;
+                                    }
+
+                                    const encodedText = encodeURIComponent(message);
+
+                                    // Copy to clipboard for safety
+                                    navigator.clipboard.writeText(message).catch(err => console.error(err));
+
+                                    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+                                    if (isMobile) {
+                                        window.location.href = `https://wa.me/${phone}?text=${encodedText}`;
+                                    } else {
+                                        // Desktop: Try Protocol Handler (ZapZap) first
+                                        const appUrl = `whatsapp://send?phone=${phone}&text=${encodedText}`;
+                                        const webUrl = `https://web.whatsapp.com/send?phone=${phone}&text=${encodedText}`;
+
+                                        // 1. Try to open App
+                                        window.location.href = appUrl;
+
+                                        // 2. Fallback to Web
+                                        setTimeout(() => {
+                                            window.open(webUrl, '_blank');
+                                        }, 2500);
+                                    }
+
+                                    setWhatsappModal({ ...whatsappModal, open: false });
+                                    showMessage("Mensaje copiado. Abriendo WhatsApp...", "success");
+                                }}
+                            >
+                                📲 Enviar Mensaje (ZapZap)
+                            </button>
+                        </>
+                    }
+                >
+                    <div className="flex flex-col gap-4">
+                        <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-lg flex items-center gap-3">
+                            <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-xl">📱</div>
+                            <div>
+                                <p className="text-sm text-emerald-900 font-bold">Enviar a: {whatsappModal.phone}</p>
+                                <p className="text-xs text-emerald-700">El mensaje se abrirá en WhatsApp Desktop/Web.</p>
+                            </div>
+                        </div>
+
+                        <div className="input-group">
+                            <label className="input-label">Mensaje a enviar</label>
+                            <textarea
+                                className="input-field min-h-[120px]"
+                                value={whatsappModal.message}
+                                onChange={(e) => setWhatsappModal({ ...whatsappModal, message: e.target.value })}
+                            ></textarea>
+                        </div>
+                    </div>
+                </Modal>
 
                 <Modal
                     isOpen={showNextSlotModal}

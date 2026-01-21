@@ -134,17 +134,19 @@ const DaySchedule = ({ date, appointments, onSlotClick, onRatingChange, doctor, 
                                     slotApps.map(appt => (
                                         <div
                                             key={appt.id}
-                                            className={`flex items-center gap-4 p-3 mb-2 bg-white rounded-xl border border-slate-100 hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer group status-${appt.status} ${appt.source === 'google' || appt.source === 'google-incomplete' ? 'status-external' : ''}`}
+                                            className={`appointment-card group status-${appt.status} ${appt.source === 'google' || appt.source === 'google-incomplete' ? 'status-external' : ''}`}
                                             onClick={() => onSlotClick(slot.time.getHours(), appt)}
                                             style={appt.source === 'google' || appt.source === 'google-incomplete' || appt.status === 'external' ? { borderLeft: '4px solid var(--amber-500)' } : {}}
                                         >
-                                            <div className="flex flex-col items-center justify-center min-w-[60px] py-1 bg-slate-50 rounded-lg group-hover:bg-indigo-50 transition-colors">
+                                            {/* Col 1: Time */}
+                                            <div className="appt-time-box">
                                                 <span className="text-sm font-bold text-main-900">
                                                     {new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
                                                 </span>
                                             </div>
 
-                                            <div className="flex-1 min-w-0">
+                                            {/* Col 2: Info */}
+                                            <div className="appt-info">
                                                 <div className="font-bold text-main-800 truncate">
                                                     {appt.type === 'virtual' && '📹 '}
                                                     {appt.patient_name || 'S/N'}
@@ -160,27 +162,29 @@ const DaySchedule = ({ date, appointments, onSlotClick, onRatingChange, doctor, 
                                                 </div>
                                             </div>
 
-                                            <div className="flex items-center gap-2">
+                                            {/* Col 3: Status */}
+                                            <div className="appt-status">
                                                 {appt.payment_status === 'paid' && <span title="Paid" className="text-emerald-500 font-bold text-xs">$✓</span>}
                                                 {appt.payment_status === 'debt' && <span title="Debt" className="text-rose-500 font-bold text-xs">$!</span>}
 
-                                                <span className={`status-chip-mini status-${appt.status}`}>
+                                                <span className={`status-chip-mini status-${appt.status} inline-block`}>
                                                     {t(appt.status) || appt.status}
                                                 </span>
+                                            </div>
 
-                                                <div className="flex gap-1 opacity-10 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    {onWhatsAppConfirm && (
-                                                        <button onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            onWhatsAppConfirm(appt);
-                                                        }}
-                                                            className="p-1.5 bg-green-50 text-green-600 rounded-lg hover:bg-green-600 hover:text-white transition-all shadow-sm border border-green-100"
-                                                            title="WhatsApp"
-                                                        >
-                                                            📲
-                                                        </button>
-                                                    )}
-                                                </div>
+                                            {/* Col 4: Action */}
+                                            <div className="appt-actions">
+                                                {onWhatsAppConfirm && (
+                                                    <button onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        onWhatsAppConfirm(appt);
+                                                    }}
+                                                        className="p-1.5 bg-green-50 text-green-600 rounded-lg hover:bg-green-600 hover:text-white transition-all shadow-sm border border-green-100"
+                                                        title="WhatsApp"
+                                                    >
+                                                        📲
+                                                    </button>
+                                                )}
                                             </div>
                                         </div>
                                     ))

@@ -12,6 +12,7 @@ import CurrencyInput from '../components/CurrencyInput';
 import PatientForm from '../components/PatientForm';
 import QRCodeModal from '../components/QRCodeModal';
 import PatientMedications from '../components/PatientMedications';
+import PatientManagerModal from '../components/PatientManagerModal';
 
 
 const Patients = () => {
@@ -519,38 +520,23 @@ const Patients = () => {
                         </div>
                     </div>
 
-                    <Modal
+                    <PatientManagerModal
                         isOpen={editModalOpen}
                         onClose={() => setEditModalOpen(false)}
-                        title="Edit Patient Details"
-                        size="lg"
-                    >
-                        <PatientForm
-                            initialValues={editData}
-                            onSubmit={async (data) => {
-                                try {
-                                    const patientId = editData.id || details?.id;
-                                    if (!patientId) throw new Error("No patient ID found");
-
-                                    await api.put(`/users/patients/${patientId}`, data);
-                                    setEditModalOpen(false);
-                                    showMessage(t('patient_updated'), 'success');
-                                    if (details?.id === patientId) {
-                                        handleViewDetails(patientId);
-                                    }
-                                    fetchPatients();
-                                } catch (err) {
-                                    console.error(err);
-                                    showMessage(t('failed_update_patient'), 'error');
-                                }
-                            }}
-                            onCancel={() => setEditModalOpen(false)}
-                            isEdit={true}
-                            isAdmin={true}
-                            insurances={insurances}
-                            doctors={doctors}
-                        />
-                    </Modal>
+                        patient={editData}
+                        onUpdate={(updatedPatient) => {
+                            showMessage(t('patient_updated'), 'success');
+                            if (details && details.id === updatedPatient.id) {
+                                // Update details view if currently open
+                                setDetails(prev => ({ ...prev, ...updatedPatient }));
+                            }
+                            // Update list
+                            setPatients(prev => prev.map(p => p.id === updatedPatient.id ? { ...p, ...updatedPatient } : p));
+                            fetchPatients();
+                        }}
+                        insurances={insurances}
+                        doctors={doctors}
+                    />
 
                     <Modal
                         isOpen={debtModalOpen}

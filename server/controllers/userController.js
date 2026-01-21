@@ -69,66 +69,39 @@ exports.getAllDoctors = async (req, res) => {
 exports.getAllPatients = async (req, res) => {
     let conn;
     try {
-        conn = await pool.getConnection();
         const { search } = req.query;
-        const { role, user_id } = req.user;
+        const { role } = req.user;
 
+        // Block patients from accessing this endpoint
         if (role === 'patient') {
             return res.status(403).send("Unauthorized");
         }
 
-        let query = `
-            SELECT p.*, i.name as insurance_name,
-            (SELECT COALESCE(SUM(t.amount), 0) FROM transactions t LEFT JOIN appointments a ON t.appointment_id = a.id WHERE t.related_user_id = p.user_id AND t.status = 'pending' AND (t.appointment_id IS NULL OR a.status IN ('completed', 'attended', 'arrived', 'absent'))) as total_debt,
-                (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id) as total_appointments,
-                    (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id AND (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%'))) as missed_appointments
-            FROM patients p
-            LEFT JOIN insurances i ON p.insurance_id = i.id
-            `;
+        conn = await pool.getConnection();
 
-        let params = [];
-        let conditions = [];
+        // Build the query using PatientsQueryBuilder
+        const { PatientsQueryBuilder } = require('../utils/queryBuilders');
 
-        // If Doctor, filter by assigned patients
-        if (role === 'doctor') {
-            // Get doctor_id from user_id first
-            const [docRows] = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [user_id]);
-            if (docRows.length > 0) {
-                const doctorId = docRows[0].id;
-                // Join or subquery. Join is cleaner but we started with simple select.
-                // Let's add INNER JOIN patient_doctors pd ON p.id = pd.patient_id WHERE pd.doctor_id = ?
-                query = `
-                    SELECT p.*, i.name as insurance_name,
-            (SELECT COALESCE(SUM(t.amount), 0) FROM transactions t LEFT JOIN appointments a ON t.appointment_id = a.id WHERE t.related_user_id = p.user_id AND t.status = 'pending' AND (t.appointment_id IS NULL OR a.status IN ('completed', 'attended', 'arrived', 'absent'))) as total_debt,
-                (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id) as total_appointments,
-                    (SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id AND (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%'))) as missed_appointments
-                    FROM patients p
-                    LEFT JOIN insurances i ON p.insurance_id = i.id
-                    INNER JOIN patient_doctors pd ON p.id = pd.patient_id
-            `;
-                conditions.push("pd.doctor_id = ?");
-                params.push(doctorId);
-            }
-        }
+        const builder = new PatientsQueryBuilder(req.user);
 
-        if (search) {
-            const tokens = search.split(/\s+/).filter(t => t.length > 0);
-            tokens.forEach(token => {
-                const term = `%${token}%`;
-                conditions.push("(p.full_name LIKE ? OR p.first_name LIKE ? OR p.last_name LIKE ? OR p.dni LIKE ? OR p.address LIKE ? OR p.phone LIKE ?)");
-                params.push(term, term, term, term, term, term);
-            });
-        }
+        // Apply role filter (async)
+        await builder.applyRoleFilter();
 
-        if (conditions.length > 0) {
-            query += " WHERE " + conditions.join(" AND ");
-        }
+        // Apply other filters (sync)
+        builder
+            .withFullDetails()        // Incluye insurance, debt, stats
+            .applySearch(search)      // Aplica búsqueda si existe
+            .sortByName();            // Ordena por nombre
 
+        const { query, params } = builder.build();
         const rows = await conn.query(query, params);
 
         // Fetch phone numbers for each patient
         for (let r of rows) {
-            const phones = await conn.query("SELECT * FROM phone_numbers WHERE entity_type = 'patient' AND entity_id = ?", [r.id]);
+            const phones = await conn.query(
+                "SELECT * FROM phone_numbers WHERE entity_type = 'patient' AND entity_id = ?",
+                [r.id]
+            );
             r.phoneNumbers = phones;
         }
 
@@ -139,6 +112,7 @@ exports.getAllPatients = async (req, res) => {
             total_appointments: Number(r.total_appointments),
             missed_appointments: Number(r.missed_appointments)
         }));
+
         res.json(serialized);
     } catch (err) {
         console.error(err);
@@ -572,18 +546,20 @@ exports.updateDoctor = async (req, res) => {
         const updates = req.body;
         console.log(`[updateDoctor] Updating doctor ${id} `, updates);
 
+        conn = await pool.getConnection();
+
         // Check permissions
         if (req.user.role === 'doctor') {
             // Check if the doctor is updating their own profile
-            const [doc] = await pool.query("SELECT id FROM doctors WHERE user_id = ?", [req.user.user_id]);
+            const doc = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [req.user.user_id]);
             if (!doc || doc.length === 0 || doc[0].id != id) {
+                conn.release();
                 return res.status(403).send("Unauthorized: You can only edit your own profile");
             }
         } else if (req.user.role !== 'admin' && req.user.role !== 'secretary') {
+            conn.release();
             return res.status(403).send("Unauthorized");
         }
-
-        conn = await pool.getConnection();
 
         let fields = [];
         let params = [];

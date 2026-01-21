@@ -17,10 +17,10 @@ router.put('/patients/:id/toggle-new', verifyToken, authorize(ACCESS_LEVELS.MANA
 // List routes
 router.get('/doctors', verifyToken, userController.getAllDoctors);
 router.put('/doctors/:id', verifyToken, userController.updateDoctor);
-router.get('/patients', verifyToken, authorize(ACCESS_LEVELS.MANAGE_PATIENTS), userController.getAllPatients);
-router.get('/reminders', verifyToken, authorize(ACCESS_LEVELS.MANAGE_PATIENTS), userController.getReminders);
-router.get('/stats', verifyToken, authorize(ACCESS_LEVELS.MANAGE_PATIENTS), userController.getStats);
-router.get('/patients/stats/new', verifyToken, authorize(ACCESS_LEVELS.MANAGE_PATIENTS), userController.getNewPatientStats);
+router.get('/patients', verifyToken, userController.getAllPatients);
+router.get('/reminders', verifyToken, userController.getReminders);
+router.get('/stats', verifyToken, userController.getStats);
+router.get('/patients/stats/new', verifyToken, userController.getNewPatientStats);
 
 // Admin routes
 router.get('/admin/users', verifyToken, authorize(ACCESS_LEVELS.MANAGE_USERS), userController.getUsersForAdmin);

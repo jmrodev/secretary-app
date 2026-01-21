@@ -338,6 +338,41 @@ const SystemConfig = () => {
                                         </div>
                                     </div>
 
+                                    {/* Confirmation Template - NEW */}
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <span className="text-xl">✅</span>
+                                            <h4 className="font-bold text-main-800">Confirmación de Turno (Al Crear)</h4>
+                                        </div>
+                                        <div className="input-group">
+                                            <label className="input-label" htmlFor="confirmation-template">Plantilla de Mensaje</label>
+                                            <AutoTextarea
+                                                id="confirmation-template"
+                                                className="input-field min-h-[120px]"
+                                                placeholder="Hola {patient_name}, tu turno ha sido agendado para el {date} a las {time} con el/la Dr/a. {doctor_name}."
+                                                value={settings.appointment_confirmation_template || ''}
+                                                onChange={(e) => updateSetting('appointment_confirmation_template', e.target.value)}
+                                                disabled={user.role !== 'admin' && user.role !== 'secretary'}
+                                            />
+
+                                            <div className="flex gap-2 mt-2 flex-wrap">
+                                                {['{patient_name}', '{date}', '{time}', '{doctor_name}', '{secretary_name}'].map(v => (
+                                                    <span
+                                                        key={v}
+                                                        className="badge badge-emerald cursor-pointer hover:bg-emerald-200 transition-colors"
+                                                        onClick={() => insertVariable('confirmation-template', v, 'appointment_confirmation_template')}
+                                                        title="Clic para insertar"
+                                                    >
+                                                        {v}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                            <p className="text-xs text-muted mt-1 italic">
+                                                Este mensaje se ofrecerá enviar automáticamente al finalizar la creación de un nuevo turno.
+                                            </p>
+                                        </div>
+                                    </div>
+
                                     {/* Edit Link */}
                                     <div className="space-y-4">
                                         <div className="flex items-center gap-2 mb-2">
