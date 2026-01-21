@@ -66,6 +66,22 @@ const SystemConfig = () => {
         }
     }, [showMessage]);
 
+    const getFriendlyVarLabel = (v) => {
+        const labels = {
+            '{patient_name}': 'Paciente',
+            '{name}': 'Nombre',
+            '{date}': 'Fecha',
+            '{time}': 'Hora',
+            '{doctor_name}': 'Doctor',
+            '{appointment_type}': 'Tipo Turno',
+            '{appointment_location}': 'Lugar',
+            '{price}': 'Precio',
+            '{secretary_name}': 'Secretaria',
+            '{link}': 'Enlace'
+        };
+        return labels[v] || v;
+    };
+
     const insertVariable = (textareaId, variable, settingKey) => {
         const textarea = document.getElementById(textareaId);
         if (!textarea) return;
@@ -300,77 +316,168 @@ const SystemConfig = () => {
 
                     {/* --- TAB: COMMUNICATIONS --- */}
                     {activeTab === 'communications' && (user.role === 'admin' || user.role === 'secretary') && (
-                        <div className="tab-panel animate-in">
-                            <div className="card mb-8">
+                        <div className="tab-panel animate-in w-full overflow-hidden">
+                            <div className="card mb-8 w-full max-w-full">
                                 <h3 className="config-section-title">💬 Mensajería y Plantillas</h3>
                                 <p className="text-muted mb-6">Personalice los mensajes que se envían por WhatsApp.</p>
 
-                                <div className="flex flex-col gap-8">
-                                    {/* Appt Reminder */}
+                                <div className="flex flex-col gap-8 w-full">
+                                    {/* Clinic Details */}
                                     <div className="space-y-4">
                                         <div className="flex items-center gap-2 mb-2">
-                                            <span className="text-xl">📅</span>
-                                            <h4 className="font-bold text-main-800">Recordatorio de Turno</h4>
+                                            <span className="text-xl">📍</span>
+                                            <h4 className="font-bold text-main-800">Dirección del Consultorio</h4>
                                         </div>
                                         <div className="input-group">
-                                            <label className="input-label" htmlFor="reminder-template">Plantilla de Mensaje</label>
-                                            <AutoTextarea
-                                                id="reminder-template"
-                                                className="input-field min-h-[120px]"
-                                                placeholder="Hola {patient_name}, te escribimos para confirmar tu turno del día {date} a las {time} con el/la Dr/a. {doctor_name}. Por favor confirma asistencia."
-                                                value={settings.appointment_reminder_template || ''}
-                                                onChange={(e) => updateSetting('appointment_reminder_template', e.target.value)}
+                                            <label className="input-label" htmlFor="clinic-address">Dirección Física (para turnos Presenciales)</label>
+                                            <input
+                                                id="clinic-address"
+                                                type="text"
+                                                className="input-field"
+                                                placeholder="Calle X, Entre Y y Z"
+                                                value={settings.clinic_address || ''}
+                                                onChange={(e) => updateSetting('clinic_address', e.target.value)}
                                                 disabled={user.role !== 'admin' && user.role !== 'secretary'}
                                             />
+                                            <p className="text-xs text-muted mt-1 italic">
+                                                Esta dirección se usará para reemplazar la variable <b>{'{appointment_location}'}</b> si el turno es presencial.
+                                            </p>
+                                        </div>
+                                    </div>
 
-                                            <div className="flex gap-2 mt-2 flex-wrap">
-                                                {['{patient_name}', '{date}', '{time}', '{doctor_name}', '{secretary_name}'].map(v => (
-                                                    <span
-                                                        key={v}
-                                                        className="badge badge-blue cursor-pointer hover:bg-blue-200 transition-colors"
-                                                        onClick={() => insertVariable('reminder-template', v, 'appointment_reminder_template')}
-                                                        title="Clic para insertar"
-                                                    >
-                                                        {v}
-                                                    </span>
-                                                ))}
+                                    {/* Appt Reminder */}
+                                    <div className="space-y-4 pt-4 border-t border-gray-100">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <span className="text-xl">📅</span>
+                                            <h4 className="font-bold text-main-800">Recordatorios de Turno</h4>
+                                        </div>
+
+                                        <div className="flex flex-col gap-8">
+                                            <div className="input-group">
+                                                <label className="input-label" htmlFor="reminder-template">📍 Recordatorio Presencial (General)</label>
+                                                <AutoTextarea
+                                                    id="reminder-template"
+                                                    className="input-field min-h-[160px]"
+                                                    placeholder="Hola {patient_name}, te recordamos tu turno presencial..."
+                                                    value={settings.appointment_reminder_template || ''}
+                                                    onChange={(e) => updateSetting('appointment_reminder_template', e.target.value)}
+                                                    disabled={user.role !== 'admin' && user.role !== 'secretary'}
+                                                />
+                                                <div className="mt-3 w-full">
+                                                    <p className="text-xs font-semibold text-main-600 mb-2">Variables disponibles (Haz clic para insertar):</p>
+                                                    <div className="flex flex-wrap gap-2 w-full">
+                                                        {['{patient_name}', '{date}', '{time}', '{doctor_name}', '{appointment_type}', '{appointment_location}', '{price}', '{secretary_name}'].map(v => (
+                                                            <button
+                                                                key={v}
+                                                                type="button"
+                                                                className="px-3 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg text-sm font-medium hover:bg-blue-100 hover:border-blue-300 transition-all shadow-sm active:scale-95 whitespace-nowrap"
+                                                                onClick={() => insertVariable('reminder-template', v, 'appointment_reminder_template')}
+                                                                title={`Insertar ${v}`}
+                                                            >
+                                                                {getFriendlyVarLabel(v)}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="input-group">
+                                                <label className="input-label" htmlFor="reminder-virtual-template">🌐 Recordatorio Virtual (Telemedicina)</label>
+                                                <AutoTextarea
+                                                    id="reminder-virtual-template"
+                                                    className="input-field min-h-[160px]"
+                                                    placeholder="Hola {patient_name}, te recordamos tu turno virtual..."
+                                                    value={settings.appointment_reminder_virtual_template || ''}
+                                                    onChange={(e) => updateSetting('appointment_reminder_virtual_template', e.target.value)}
+                                                    disabled={user.role !== 'admin' && user.role !== 'secretary'}
+                                                />
+                                                <div className="mt-3 w-full">
+                                                    <p className="text-xs font-semibold text-main-600 mb-2">Variables disponibles (Haz clic para insertar):</p>
+                                                    <div className="flex flex-wrap gap-2 w-full">
+                                                        {['{patient_name}', '{date}', '{time}', '{doctor_name}', '{appointment_type}', '{appointment_location}', '{price}', '{secretary_name}'].map(v => (
+                                                            <button
+                                                                key={v}
+                                                                type="button"
+                                                                className="px-3 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg text-sm font-medium hover:bg-blue-100 hover:border-blue-300 transition-all shadow-sm active:scale-95 whitespace-nowrap"
+                                                                onClick={() => insertVariable('reminder-virtual-template', v, 'appointment_reminder_virtual_template')}
+                                                                title={`Insertar ${v}`}
+                                                            >
+                                                                {getFriendlyVarLabel(v)}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
 
                                     {/* Confirmation Template - NEW */}
-                                    <div className="space-y-4">
+                                    <div className="space-y-4 pt-4 border-t border-gray-100">
                                         <div className="flex items-center gap-2 mb-2">
                                             <span className="text-xl">✅</span>
                                             <h4 className="font-bold text-main-800">Confirmación de Turno (Al Crear)</h4>
                                         </div>
-                                        <div className="input-group">
-                                            <label className="input-label" htmlFor="confirmation-template">Plantilla de Mensaje</label>
-                                            <AutoTextarea
-                                                id="confirmation-template"
-                                                className="input-field min-h-[120px]"
-                                                placeholder="Hola {patient_name}, tu turno ha sido agendado para el {date} a las {time} con el/la Dr/a. {doctor_name}."
-                                                value={settings.appointment_confirmation_template || ''}
-                                                onChange={(e) => updateSetting('appointment_confirmation_template', e.target.value)}
-                                                disabled={user.role !== 'admin' && user.role !== 'secretary'}
-                                            />
 
-                                            <div className="flex gap-2 mt-2 flex-wrap">
-                                                {['{patient_name}', '{date}', '{time}', '{doctor_name}', '{secretary_name}'].map(v => (
-                                                    <span
-                                                        key={v}
-                                                        className="badge badge-emerald cursor-pointer hover:bg-emerald-200 transition-colors"
-                                                        onClick={() => insertVariable('confirmation-template', v, 'appointment_confirmation_template')}
-                                                        title="Clic para insertar"
-                                                    >
-                                                        {v}
-                                                    </span>
-                                                ))}
+                                        <div className="flex flex-col gap-8">
+                                            <div className="input-group">
+                                                <label className="input-label" htmlFor="confirmation-template">📍 Confirmación Presencial (General)</label>
+                                                <AutoTextarea
+                                                    id="confirmation-template"
+                                                    className="input-field min-h-[160px]"
+                                                    placeholder="Tu turno presencial ha sido agendado..."
+                                                    value={settings.appointment_confirmation_template || ''}
+                                                    onChange={(e) => updateSetting('appointment_confirmation_template', e.target.value)}
+                                                    disabled={user.role !== 'admin' && user.role !== 'secretary'}
+                                                />
+                                                <div className="mt-3 w-full">
+                                                    <p className="text-xs font-semibold text-emerald-700 mb-2">Variables disponibles (Haz clic para insertar):</p>
+                                                    <div className="flex flex-wrap gap-2 w-full">
+                                                        {['{patient_name}', '{date}', '{time}', '{doctor_name}', '{appointment_type}', '{appointment_location}', '{price}', '{secretary_name}'].map(v => (
+                                                            <button
+                                                                key={v}
+                                                                type="button"
+                                                                className="px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg text-sm font-medium hover:bg-emerald-100 hover:border-emerald-300 transition-all shadow-sm active:scale-95 whitespace-nowrap"
+                                                                onClick={() => insertVariable('confirmation-template', v, 'appointment_confirmation_template')}
+                                                                title={`Insertar ${v}`}
+                                                            >
+                                                                {getFriendlyVarLabel(v)}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <p className="text-xs text-muted mt-1 italic">
-                                                Este mensaje se ofrecerá enviar automáticamente al finalizar la creación de un nuevo turno.
-                                            </p>
+
+                                            <div className="input-group">
+                                                <label className="input-label" htmlFor="confirmation-virtual-template">🌐 Confirmación Virtual (Telemedicina)</label>
+                                                <AutoTextarea
+                                                    id="confirmation-virtual-template"
+                                                    className="input-field min-h-[160px]"
+                                                    placeholder="Tu turno virtual ha sido agendado..."
+                                                    value={settings.appointment_confirmation_virtual_template || ''}
+                                                    onChange={(e) => updateSetting('appointment_confirmation_virtual_template', e.target.value)}
+                                                    disabled={user.role !== 'admin' && user.role !== 'secretary'}
+                                                />
+                                                <div className="mt-3 w-full">
+                                                    <p className="text-xs font-semibold text-emerald-700 mb-2">Variables disponibles (Haz clic para insertar):</p>
+                                                    <div className="flex flex-wrap gap-2 w-full">
+                                                        {['{patient_name}', '{date}', '{time}', '{doctor_name}', '{appointment_type}', '{appointment_location}', '{price}', '{secretary_name}'].map(v => (
+                                                            <button
+                                                                key={v}
+                                                                type="button"
+                                                                className="px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg text-sm font-medium hover:bg-emerald-100 hover:border-emerald-300 transition-all shadow-sm active:scale-95 whitespace-nowrap"
+                                                                onClick={() => insertVariable('confirmation-virtual-template', v, 'appointment_confirmation_virtual_template')}
+                                                                title={`Insertar ${v}`}
+                                                            >
+                                                                {getFriendlyVarLabel(v)}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
+                                        <p className="text-xs text-muted mt-1 italic">
+                                            Este mensaje se ofrecerá enviar automáticamente al finalizar la creación de un nuevo turno.
+                                        </p>
                                     </div>
 
                                     {/* Edit Link */}
@@ -390,17 +497,21 @@ const SystemConfig = () => {
                                                 disabled={user.role !== 'admin' && user.role !== 'secretary'}
                                             />
 
-                                            <div className="flex gap-2 mt-2 flex-wrap">
-                                                {['{name}', '{link}', '{doctor_name}', '{secretary_name}'].map(v => (
-                                                    <span
-                                                        key={v}
-                                                        className="badge badge-purple cursor-pointer hover:bg-purple-200 transition-colors"
-                                                        onClick={() => insertVariable('edit-link-template', v, 'temp_access_message_template')}
-                                                        title="Clic para insertar"
-                                                    >
-                                                        {v}
-                                                    </span>
-                                                ))}
+                                            <div className="mt-3 w-full">
+                                                <p className="text-xs font-semibold text-purple-700 mb-2">Variables disponibles (Haz clic para insertar):</p>
+                                                <div className="flex flex-wrap gap-2 w-full">
+                                                    {['{name}', '{link}', '{doctor_name}', '{secretary_name}'].map(v => (
+                                                        <button
+                                                            key={v}
+                                                            type="button"
+                                                            className="px-3 py-1.5 bg-purple-50 text-purple-700 border border-purple-200 rounded-lg text-sm font-medium hover:bg-purple-100 hover:border-purple-300 transition-all shadow-sm active:scale-95 whitespace-nowrap"
+                                                            onClick={() => insertVariable('edit-link-template', v, 'temp_access_message_template')}
+                                                            title={`Insertar ${v}`}
+                                                        >
+                                                            {getFriendlyVarLabel(v)}
+                                                        </button>
+                                                    ))}
+                                                </div>
                                             </div>
                                             <p className="text-xs text-muted mt-1 italic">
                                                 Este mensaje se usa al compartir el link o QR para que el paciente edite sus datos.
@@ -425,17 +536,21 @@ const SystemConfig = () => {
                                                 disabled={user.role !== 'admin' && user.role !== 'secretary'}
                                             />
 
-                                            <div className="flex gap-2 mt-2 flex-wrap">
-                                                {['{doctor_name}', '{date}', '{time}', '{secretary_name}'].map(v => (
-                                                    <span
-                                                        key={v}
-                                                        className="badge badge-indigo cursor-pointer hover:bg-indigo-200 transition-colors"
-                                                        onClick={() => insertVariable('next-free-template', v, 'next_free_slot_template')}
-                                                        title="Clic para insertar"
-                                                    >
-                                                        {v}
-                                                    </span>
-                                                ))}
+                                            <div className="mt-3 w-full">
+                                                <p className="text-xs font-semibold text-indigo-700 mb-2">Variables disponibles (Haz clic para insertar):</p>
+                                                <div className="flex flex-wrap gap-2 w-full">
+                                                    {['{doctor_name}', '{date}', '{time}', '{appointment_type}', '{appointment_location}', '{price}', '{secretary_name}'].map(v => (
+                                                        <button
+                                                            key={v}
+                                                            type="button"
+                                                            className="px-3 py-1.5 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg text-sm font-medium hover:bg-indigo-100 hover:border-indigo-300 transition-all shadow-sm active:scale-95 whitespace-nowrap"
+                                                            onClick={() => insertVariable('next-free-template', v, 'next_free_slot_template')}
+                                                            title={`Insertar ${v}`}
+                                                        >
+                                                            {getFriendlyVarLabel(v)}
+                                                        </button>
+                                                    ))}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

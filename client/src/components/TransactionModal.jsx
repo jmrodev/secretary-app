@@ -43,24 +43,45 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
     useEffect(() => {
         if (isOpen) {
             const data = initialData || {};
-            setFormData(prev => ({
-                ...prev,
-                type: data.type || 'income_patient',
-                payments: data.payments || [{ amount: data.amount || '', method: data.method || 'cash' }],
-                description: data.description || '',
-                related_user_id: data.patientUserId || data.patientId || '',
-                doctor_id: data.doctorId || '',
-                status: data.status || 'paid',
-                transaction_date: (() => {
-                    const d = new Date();
-                    const tzoffset = d.getTimezoneOffset() * 60000;
-                    return new Date(d.getTime() - tzoffset).toISOString().slice(0, 16);
-                })()
-            }));
+            // Robust extraction of service type
+            let initialServiceType = data.serviceType || data.service_type || 'consultation';
+
+            // Map legacy or shorthand 'virtual' to 'virtual_consultation'
+            if (initialServiceType === 'virtual') initialServiceType = 'virtual_consultation';
+
+            // If still consultation but data.type is virtual (extra safety)
+            if (initialServiceType === 'consultation' && data.appointmentType === 'virtual') {
+                initialServiceType = 'virtual_consultation';
+            }
+
+            setFormData(prev => {
+                const updated = {
+                    ...prev,
+                    type: data.type || 'income_patient',
+                    payments: data.payments || [{ amount: data.amount || '', method: data.method || 'cash' }],
+                    description: data.description || '',
+                    related_user_id: data.patientUserId || data.patientId || '',
+                    doctor_id: data.doctorId || '',
+                    status: data.status || 'paid',
+                    service_type: initialServiceType,
+                    transaction_date: (() => {
+                        const d = new Date();
+                        const tzoffset = d.getTimezoneOffset() * 60000;
+                        return new Date(d.getTime() - tzoffset).toISOString().slice(0, 16);
+                    })()
+                };
+
+                // Adjust description if it's a generic one and we know it's virtual
+                if (initialServiceType === 'virtual_consultation' && (!updated.description || updated.description.includes('Payment for appointment'))) {
+                    updated.description = `Consulta Virtual: ${data.patientName || ''}`;
+                }
+
+                return updated;
+            });
 
             // Auto-fetch pricing if doctor and patient are present
             if (data.doctorId && data.patientId) {
-                fetchPricing(data.doctorId, data.patientId);
+                fetchPricing(data.doctorId, data.patientId, initialServiceType);
             }
 
             // Pre-fill search if patient is set

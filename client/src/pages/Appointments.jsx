@@ -574,17 +574,29 @@ const Appointments = () => {
             setShowForm(false);
 
             // WhatsApp Confirmation Prompt
-            if (settings.appointment_confirmation_template && selectedPatientData && selectedPatientData.phone) {
+            const isVirtual = type === 'virtual';
+            const template = (isVirtual && settings.appointment_confirmation_virtual_template)
+                ? settings.appointment_confirmation_virtual_template
+                : settings.appointment_confirmation_template;
+
+            if (template && selectedPatientData && selectedPatientData.phone) {
                 const apptDateObj = new Date(date);
                 const dateStr = apptDateObj.toLocaleDateString();
                 const timeStr = apptDateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                const doctorName = doctors.find(d => d.id === Number(selectedDoctor))?.full_name || 'Doctor';
 
-                let msg = settings.appointment_confirmation_template
+                const doctor = doctors.find(d => d.id === Number(selectedDoctor));
+                const doctorName = doctor?.full_name || 'Doctor';
+                const consultationPrice = isVirtual ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0);
+                const address = isVirtual ? 'Virtual (Cima Salud)' : (settings.clinic_address || 'Montiel 1255');
+
+                let msg = template
                     .replace(/{patient_name}/g, selectedPatientData.full_name)
                     .replace(/{date}/g, dateStr)
                     .replace(/{time}/g, timeStr)
                     .replace(/{doctor_name}/g, doctorName)
+                    .replace(/{appointment_type}/g, isVirtual ? 'VIRTUAL' : 'PRESENCIAL')
+                    .replace(/{appointment_location}/g, address)
+                    .replace(/{price}/g, new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(consultationPrice))
                     .replace(/{secretary_name}/g, user.name || 'Secretaría');
 
                 setWhatsappModal({
@@ -645,10 +657,18 @@ const Appointments = () => {
 
         let message = '';
         if (settings.next_free_slot_template) {
+            const isVirtualSlot = slot.is_virtual || false;
+            const doctor = doctors.find(d => Number(d.id) === docId);
+            const slotPrice = isVirtualSlot ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0);
+            const address = isVirtualSlot ? 'Virtual/Online' : (settings.clinic_address || 'Montiel 1255');
+
             message = settings.next_free_slot_template
                 .replace(/{[\s]*doctor_name[\s]*}/gi, doctorName)
                 .replace(/{[\s]*date[\s]*}/gi, `${slot.dayName} ${dateStr}`)
                 .replace(/{[\s]*time[\s]*}/gi, timeStr)
+                .replace(/{[\s]*appointment_type[\s]*}/gi, isVirtualSlot ? 'VIRTUAL' : 'PRESENCIAL')
+                .replace(/{[\s]*appointment_location[\s]*}/gi, address)
+                .replace(/{[\s]*price[\s]*}/gi, new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(slotPrice))
                 .replace(/{[\s]*secretary_name[\s]*}/gi, user.name || 'Secretaría');
         } else {
             message = `Hola, tenemos un turno disponible el ${slot.dayName} ${dateStr} a las ${timeStr} con el/la Dr/a. ${doctorName}. ¿Le gustaría reservarlo?`;
@@ -740,16 +760,27 @@ const Appointments = () => {
         const dateStr = new Date(appt.appointment_date).toLocaleDateString();
         const timeStr = new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
 
-        let messageTemplate = settings.appointment_reminder_template;
+        const isVirtual = appt.type === 'virtual';
+        let messageTemplate = isVirtual ? settings.appointment_reminder_virtual_template : settings.appointment_reminder_template;
+
         if (!messageTemplate || !messageTemplate.trim()) {
-            messageTemplate = `Hola {patient_name}, te escribimos para confirmar tu turno del día {date} a las {time} con el/la Dr/a. {doctor_name}. Por favor confirma asistencia. Gracias!`;
+            messageTemplate = isVirtual
+                ? `Hola {patient_name}, te recordamos tu turno VIRTUAL para el día {date} a las {time} con el/la Dr/a. {doctor_name}.`
+                : `Hola {patient_name}, te recordamos tu turno del día {date} a las {time} con el/la Dr/a. {doctor_name} en {appointment_location}. Por favor confirma asistencia.`;
         }
+
+        const doctor = doctors.find(d => d.id === appt.doctor_id);
+        const apptPrice = isVirtual ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0);
+        const address = isVirtual ? 'Virtual (Minutos antes enviaremos el link)' : (settings.clinic_address || 'Montiel 1255');
 
         const message = messageTemplate
             .replace(/{patient_name}/g, appt.patient_name || appt.reason)
             .replace(/{date}/g, dateStr)
             .replace(/{time}/g, timeStr)
             .replace(/{doctor_name}/g, appt.doctor_name)
+            .replace(/{appointment_type}/g, isVirtual ? 'VIRTUAL' : 'PRESENCIAL')
+            .replace(/{appointment_location}/g, address)
+            .replace(/{price}/g, new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(apptPrice))
             .replace(/{secretary_name}/g, user.name || 'Secretaria');
 
         // Copy to clipboard
@@ -1462,6 +1493,8 @@ const Appointments = () => {
                                                             patientUserId: actionModal.appt.patient_user_id,
                                                             doctorId: actionModal.appt.doctor_id,
                                                             description: `Payment for appointment on ${new Date(actionModal.appt.appointment_date).toLocaleDateString()}`,
+                                                            serviceType: actionModal.appt.type === 'virtual' ? 'virtual_consultation' : 'consultation',
+                                                            appointmentType: actionModal.appt.type,
                                                             apptId: actionModal.appt.id
                                                         },
                                                         apptId: actionModal.appt.id
@@ -1476,8 +1509,8 @@ const Appointments = () => {
                                             {/* Actions - Hide if Completed (Unless Unrestricted CRUD enabled AND NOT paid) */}
                                             {(actionModal.appt.status !== 'completed' || (settings.enable_secretary_unrestricted_crud === 'true' && actionModal.appt.payment_status !== 'paid')) && actionModal.appt.source !== 'google' && actionModal.appt.source !== 'google-incomplete' && (
                                                 <>
-                                                    {/* Arrived Button */}
-                                                    {actionModal.appt.status !== 'arrived' && (
+                                                    {/* Arrived Button (Hide for virtual) */}
+                                                    {actionModal.appt.status !== 'arrived' && actionModal.appt.type !== 'virtual' && (
                                                         <button className="btn btn-primary" onClick={() => {
                                                             handleUpdateStatus(actionModal.appt.id, 'arrived');
                                                             setActionModal({ ...actionModal, open: false });

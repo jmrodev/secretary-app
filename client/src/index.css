@@ -525,7 +525,7 @@ button:disabled {
   padding: 0.5rem;
   border-radius: 12px;
   border: 1px solid var(--gray-200);
-  width: fit-content;
+  width: 100%;
 }
 
 .tab-btn {
@@ -3817,6 +3817,7 @@ input:checked+.slider:before {
     justify-self: end;
   }
 }
+
 /* --- Generic Form Select Styles (Vanilla CSS) --- */
 
 .form-select-control {
@@ -3902,7 +3903,8 @@ input:checked+.slider:before {
 
 /* --- Generic Dropdown System --- */
 .dropdown-menu {
-  position: absolute; /* Re-flow to proper position logic */
+  position: absolute;
+  /* Re-flow to proper position logic */
   background: white;
   border: 1px solid var(--gray-200);
   border-radius: var(--radius-sm);
@@ -3934,10 +3936,12 @@ input:checked+.slider:before {
 /* --- Form Helpers --- */
 /* Turns a standard input-field into a flexible container for complex controls */
 .input-flex-container {
-  display: flex !important; /* Force flex behavior */
+  display: flex !important;
+  /* Force flex behavior */
   align-items: center;
   gap: 0.5rem;
-  padding-top: 0.4rem !important; /* Adjust for flex alignment */
+  padding-top: 0.4rem !important;
+  /* Adjust for flex alignment */
   padding-bottom: 0.4rem !important;
   min-height: 48px;
 }
