@@ -11,8 +11,6 @@ const PatientManagerModal = ({
     patient,
     onUpdate,
     referenceInfo,
-    comparisonData = null,
-    isSanitizeMode = false,
     insurances: providedInsurances = [],
     doctors: providedDoctors = []
 }) => {
@@ -53,7 +51,7 @@ const PatientManagerModal = ({
     const handleSubmit = async (formData) => {
         try {
             if (patient && patient.id) {
-                // UPDATE (or Sanitize Merge)
+                // UPDATE
                 await api.put(`/users/patients/${patient.id}`, formData);
 
                 const updatedPatient = {
@@ -77,10 +75,14 @@ const PatientManagerModal = ({
 
                 const res = await api.post('/auth/register', payload);
 
+                // Derive primary phone for UI
+                const derivedPhone = formData.phoneNumbers?.find(p => p.is_primary)?.phone_number || formData.phoneNumbers?.[0]?.phone_number || '';
+
                 const newPatient = {
                     id: res.data.patient_id,
                     user_id: res.data.user_id,
                     ...formData,
+                    phone: derivedPhone, // Ensure UI sees the phone immediately
                     insurance_name: insurances.find(i => i.id == formData.insurance_id)?.name
                 };
 
@@ -101,9 +103,6 @@ const PatientManagerModal = ({
     let title = t('register_new_patient') || 'Register Patient';
     if (isEdit) {
         title = t('edit_patient') || 'Edit Patient';
-    }
-    if (isSanitizeMode) {
-        title = 'Sincronizar Paciente (Google)';
     }
 
     const initialValues = patient || {
@@ -127,17 +126,6 @@ const PatientManagerModal = ({
                 </div>
             )}
 
-            {/* Comparison/Sanitize Header Info */}
-            {isSanitizeMode && comparisonData && (
-                <div className="mb-6 p-4 bg-orange-50 border-2 border-orange-200 rounded-2xl flex flex-col gap-2 animate-in slide-in-from-top-4">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-orange-600">⚠️ Conflicto de Datos Detectado</span>
-                    <div className="text-sm text-orange-800">
-                        Los datos en la base de datos (izquierda/formulario) difieren de los datos en Google (derecha/naranja).
-                        Revise y utilice los botones "Usar Google" para actualizar si es necesario.
-                    </div>
-                </div>
-            )}
-
             {!loadingData ? (
                 <PatientForm
                     initialValues={initialValues}
@@ -147,8 +135,6 @@ const PatientManagerModal = ({
                     isAdmin={true}
                     insurances={insurances}
                     doctors={doctors}
-                    comparisonData={comparisonData}
-                    isSanitizeMode={isSanitizeMode}
                 />
             ) : (
                 <div className="p-8 flex justify-center text-gray-400">

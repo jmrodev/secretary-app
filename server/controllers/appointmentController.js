@@ -679,52 +679,77 @@ exports.getNextFreeSlot = async (req, res) => {
         let foundRegular = null;
         let foundBreak = null;
 
+        // --- OPTIMIZATION: Pre-fetch data for the whole search range ---
+        const rangeMin = new Date(currentDay);
+        const rangeMax = new Date(currentDay);
+        if (direction === 'next') {
+            rangeMax.setDate(rangeMax.getDate() + maxDays);
+        } else {
+            rangeMin.setDate(rangeMin.getDate() - maxDays);
+        }
+
+        const tMin = rangeMin.toISOString();
+        const tMax = rangeMax.toISOString();
+        const dMin = tMin.split('T')[0];
+        const dMax = tMax.split('T')[0];
+
+        // 1. Fetch Google Busy (Chunked)
+        let googleBusyAll = [];
+        try {
+            googleBusyAll = await googleController.getBusyIntervals(doctor_id, tMin, tMax);
+        } catch (gErr) {
+            console.warn("Google Busy pre-fetch failed", gErr.message);
+        }
+
+        // 2. Fetch Holidays (range)
+        const holidaysRows = await conn.query("SELECT date FROM active_holidays WHERE date >= ? AND date <= ?", [dMin, dMax]);
+        const holidayDates = new Set();
+        holidaysRows.forEach(h => {
+            const d = new Date(h.date);
+            holidayDates.add(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`);
+        });
+
+        // 3. Fetch Schedules (All for doctor)
+        const schedulesAll = await conn.query("SELECT * FROM doctor_schedules WHERE doctor_id = ?", [doctor_id]);
+
+        // 4. Fetch Appointments (range)
+        const existingApptsAll = await conn.query(
+            "SELECT appointment_date FROM appointments WHERE doctor_id = ? AND appointment_date >= ? AND appointment_date <= ? AND status NOT IN ('cancelled', 'rescheduled')",
+            [doctor_id, tMin, tMax]
+        );
+        const apptTimes = existingApptsAll.map(a => new Date(a.appointment_date).getTime());
+
+        // --- End Optimization ---
+
         while (daysChecked < maxDays) {
             const dayOfWeek = currentDay.getDay();
-            // Local date string YYYY-MM-DD for holiday check
             const dateStr = [
                 currentDay.getFullYear(),
                 String(currentDay.getMonth() + 1).padStart(2, '0'),
                 String(currentDay.getDate()).padStart(2, '0')
             ].join('-');
 
-            // Check Holiday
-            const holidays = await conn.query("SELECT id FROM active_holidays WHERE date = ?", [dateStr]);
-            if (holidays.length > 0) {
+            // Check Holiday from Cache
+            if (holidayDates.has(dateStr)) {
                 currentDay.setDate(currentDay.getDate() + (direction === 'next' ? 1 : -1));
                 if (direction === 'next') currentDay.setHours(0, 0, 0, 0); else currentDay.setHours(23, 59, 59, 999);
                 daysChecked++;
                 continue;
             }
 
-            // Get Schedule for this day
-            // For 'previous', we order blocks DESC to check the latest blocks of the day first
-            let dayBlocks = await conn.query(
-                "SELECT start_time, end_time, is_break FROM doctor_schedules WHERE doctor_id = ? AND day_of_week = ? ORDER BY start_time " + (direction === 'next' ? 'ASC' : 'DESC'),
-                [doctor_id, dayOfWeek]
-            );
+            // Get Schedule from Cache
+            let dayBlocks = schedulesAll
+                .filter(s => s.day_of_week === dayOfWeek)
+                .sort((a, b) => direction === 'next'
+                    ? a.start_time.localeCompare(b.start_time)
+                    : b.start_time.localeCompare(a.start_time)
+                );
 
             if (dayBlocks.length === 0) {
                 currentDay.setDate(currentDay.getDate() + (direction === 'next' ? 1 : -1));
                 if (direction === 'next') currentDay.setHours(0, 0, 0, 0); else currentDay.setHours(23, 59, 59, 999);
                 daysChecked++;
                 continue;
-            }
-
-            const dayStartQuery = new Date(currentDay); dayStartQuery.setHours(0, 0, 0, 0);
-            const dayEndQuery = new Date(currentDay); dayEndQuery.setHours(23, 59, 59, 999);
-
-            const existingAppts = await conn.query(
-                "SELECT appointment_date FROM appointments WHERE doctor_id = ? AND appointment_date >= ? AND appointment_date <= ? AND status NOT IN ('cancelled', 'rescheduled')",
-                [doctor_id, dayStartQuery, dayEndQuery]
-            );
-
-            // Fetch Google Busy intervals
-            let googleBusy = [];
-            try {
-                googleBusy = await googleController.getBusyIntervals(doctor_id, dayStartQuery.toISOString(), dayEndQuery.toISOString());
-            } catch (gErr) {
-                console.warn("Google Busy check failed", gErr.message);
             }
 
             for (const block of dayBlocks) {
@@ -742,15 +767,10 @@ exports.getNextFreeSlot = async (req, res) => {
 
                 let timeCursor;
                 if (direction === 'next') {
-                    // Start from Max(blockStart, searchDate, now)
                     timeCursor = new Date(Math.max(blockStart.getTime(), initialSearchDate.getTime() + 60000, now.getTime() + 60000));
                 } else {
-                    // Start from Min(blockEnd - duration, searchDate - duration)
                     const latestPossible = Math.min(blockEnd.getTime() - duration * 60000, initialSearchDate.getTime() - duration * 60000);
-
                     if (latestPossible < blockStart.getTime() || latestPossible < now.getTime()) continue;
-
-                    // Align alignment: find distance from blockStart and snap to duration steps
                     const diff = latestPossible - blockStart.getTime();
                     const steps = Math.floor(diff / (duration * 60000));
                     timeCursor = new Date(blockStart.getTime() + steps * (duration * 60000));
@@ -762,11 +782,8 @@ exports.getNextFreeSlot = async (req, res) => {
                         const slotEndMs = slotStartMs + duration * 60000;
 
                         const isBusy =
-                            existingAppts.some(app => {
-                                const appStart = new Date(app.appointment_date).getTime();
-                                return (slotStartMs < (appStart + duration * 60000) && slotEndMs > appStart);
-                            }) ||
-                            googleBusy.some(b => {
+                            apptTimes.some(appStart => (slotStartMs < (appStart + duration * 60000) && slotEndMs > appStart)) ||
+                            googleBusyAll.some(b => {
                                 const bStart = new Date(b.start).getTime();
                                 const bEnd = new Date(b.end).getTime();
                                 return (slotStartMs < bEnd && slotEndMs > bStart);
@@ -783,17 +800,13 @@ exports.getNextFreeSlot = async (req, res) => {
                         timeCursor = new Date(timeCursor.getTime() + duration * 60000);
                     }
                 } else {
-                    // Backward loop
                     while (timeCursor.getTime() >= blockStart.getTime() && timeCursor.getTime() >= now.getTime()) {
                         const slotStartMs = timeCursor.getTime();
                         const slotEndMs = slotStartMs + duration * 60000;
 
                         const isBusy =
-                            existingAppts.some(app => {
-                                const appStart = new Date(app.appointment_date).getTime();
-                                return (slotStartMs < (appStart + duration * 60000) && slotEndMs > appStart);
-                            }) ||
-                            googleBusy.some(b => {
+                            apptTimes.some(appStart => (slotStartMs < (appStart + duration * 60000) && slotEndMs > appStart)) ||
+                            googleBusyAll.some(b => {
                                 const bStart = new Date(b.start).getTime();
                                 const bEnd = new Date(b.end).getTime();
                                 return (slotStartMs < bEnd && slotEndMs > bStart);
@@ -816,8 +829,6 @@ exports.getNextFreeSlot = async (req, res) => {
 
             currentDay.setDate(currentDay.getDate() + (direction === 'next' ? 1 : -1));
             if (direction === 'next') currentDay.setHours(0, 0, 0, 0); else currentDay.setHours(23, 59, 59, 999);
-
-            // Safety: if moving backward and day is before today, stop
             if (direction === 'previous' && currentDay < now) break;
 
             daysChecked++;
@@ -855,20 +866,50 @@ exports.getFreeSlotsBatch = async (req, res) => {
         const duration = (doc && doc.length > 0 && doc[0].appointment_duration) ? doc[0].appointment_duration : 60;
 
         // 2. Setup Loop
-        // Ensure we start from the requested date or NOW, whichever is later (to avoid showing past slots)
         let currentDay = start_date ? new Date(start_date) : new Date();
         const now = new Date();
-        // If the requested start date is in the past, reset to now. 
-        // Although if the user pages "next", they send a future date.
-        // If the user sends today, we check time.
-        // We just ensure currentDay is at least today's date (00:00)
         const todayZero = new Date(now); todayZero.setHours(0, 0, 0, 0);
         if (currentDay < todayZero) currentDay = new Date(todayZero);
 
-        const limitDaysWithSlots = 20; // How many days with ANY availability to return
-        const maxDaysToCheck = 90; // Safety cap
+        const limitDaysWithSlots = 20;
+        const maxDaysToCheck = 90;
         let daysChecked = 0;
         let daysFound = 0;
+
+        // --- OPTIMIZATION: Pre-fetch data for the whole search range ---
+        const rangeMax = new Date(currentDay);
+        rangeMax.setDate(rangeMax.getDate() + maxDaysToCheck);
+
+        const tMin = currentDay.toISOString();
+        const tMax = rangeMax.toISOString();
+        const dMin = tMin.split('T')[0];
+        const dMax = tMax.split('T')[0];
+
+        // 1. Fetch Google Busy (Chunked)
+        let googleBusyAll = [];
+        try {
+            googleBusyAll = await googleController.getBusyIntervals(doctor_id, tMin, tMax);
+        } catch (gErr) {
+            console.warn("Google Busy pre-fetch failed", gErr.message);
+        }
+
+        // 2. Fetch Holidays (range)
+        const holidaysRows = await conn.query("SELECT date FROM active_holidays WHERE date >= ? AND date <= ?", [dMin, dMax]);
+        const holidayDates = new Set();
+        holidaysRows.forEach(h => {
+            const d = new Date(h.date);
+            holidayDates.add(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`);
+        });
+
+        // 3. Fetch Schedules (All for doctor)
+        const schedulesAll = await conn.query("SELECT * FROM doctor_schedules WHERE doctor_id = ?", [doctor_id]);
+
+        // 4. Fetch Appointments (range)
+        const existingApptsAll = await conn.query(
+            "SELECT appointment_date FROM appointments WHERE doctor_id = ? AND appointment_date >= ? AND appointment_date <= ? AND status NOT IN ('cancelled', 'rescheduled')",
+            [doctor_id, tMin, tMax]
+        );
+        const apptTimes = existingApptsAll.map(a => new Date(a.appointment_date).getTime());
 
         const results = [];
 
@@ -880,39 +921,20 @@ exports.getFreeSlotsBatch = async (req, res) => {
                 String(currentDay.getDate()).padStart(2, '0')
             ].join('-');
 
-            // Check Holiday
-            const holidays = await conn.query("SELECT id FROM active_holidays WHERE date = ?", [dateStr]);
-            if (holidays.length > 0) {
+            // Check Holiday from Cache
+            if (holidayDates.has(dateStr)) {
                 currentDay.setDate(currentDay.getDate() + 1);
                 currentDay.setHours(0, 0, 0, 0);
                 daysChecked++;
                 continue;
             }
 
-            // Get Schedule for this day
-            const dayBlocks = await conn.query(
-                "SELECT start_time, end_time, is_break FROM doctor_schedules WHERE doctor_id = ? AND day_of_week = ? ORDER BY start_time ASC",
-                [doctor_id, dayOfWeek]
-            );
+            // Get Schedule from Cache
+            const dayBlocks = schedulesAll
+                .filter(s => s.day_of_week === dayOfWeek)
+                .sort((a, b) => a.start_time.localeCompare(b.start_time));
 
             if (dayBlocks.length > 0) {
-                const dayStartQuery = new Date(currentDay); dayStartQuery.setHours(0, 0, 0, 0);
-                const dayEndQuery = new Date(currentDay); dayEndQuery.setHours(23, 59, 59, 999);
-
-                // Fetch Existing Appts
-                const existingAppts = await conn.query(
-                    "SELECT appointment_date FROM appointments WHERE doctor_id = ? AND appointment_date >= ? AND appointment_date <= ? AND status NOT IN ('cancelled', 'rescheduled')",
-                    [doctor_id, dayStartQuery, dayEndQuery]
-                );
-
-                // Fetch Google Busy
-                let googleBusy = [];
-                try {
-                    googleBusy = await googleController.getBusyIntervals(doctor_id, dayStartQuery.toISOString(), dayEndQuery.toISOString());
-                } catch (gErr) {
-                    console.warn("Google Busy check failed", gErr.message);
-                }
-
                 const daySlots = [];
 
                 for (const block of dayBlocks) {
@@ -924,14 +946,8 @@ exports.getFreeSlotsBatch = async (req, res) => {
                     const [eh, em] = block.end_time.split(':');
                     blockEnd.setHours(eh, em, 0, 0);
 
-                    // If checking today, ensure we start after NOW
                     let timeCursor = new Date(blockStart);
                     if (timeCursor < now) {
-                        // Find next valid slot start
-                        // e.g. now is 10:15, duration 30. block 09:00.
-                        // 09:00, 09:30, 10:00 (past), 10:30 (future)
-                        // diff = 10:15 - 09:00 = 75m. 75/30 = 2.5 -> 3 steps.
-                        // 09:00 + 3*30 = 10:30.
                         const diff = now.getTime() - timeCursor.getTime();
                         if (diff > 0) {
                             const steps = Math.ceil(diff / (duration * 60000));
@@ -944,11 +960,8 @@ exports.getFreeSlotsBatch = async (req, res) => {
                         const slotEndMs = slotStartMs + duration * 60000;
 
                         const isBusy =
-                            existingAppts.some(app => {
-                                const appStart = new Date(app.appointment_date).getTime();
-                                return (slotStartMs < (appStart + duration * 60000) && slotEndMs > appStart);
-                            }) ||
-                            googleBusy.some(b => {
+                            apptTimes.some(appStart => (slotStartMs < (appStart + duration * 60000) && slotEndMs > appStart)) ||
+                            googleBusyAll.some(b => {
                                 const bStart = new Date(b.start).getTime();
                                 const bEnd = new Date(b.end).getTime();
                                 return (slotStartMs < bEnd && slotEndMs > bStart);

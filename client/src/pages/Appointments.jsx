@@ -638,10 +638,24 @@ const Appointments = () => {
         const dateStr = new Date(slot.iso).toLocaleDateString();
         const timeStr = new Date(slot.iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-        let message = `Hola, tenemos un turno disponible el ${slot.dayName} ${dateStr} a las ${timeStr} con el/la Dr/a. ${doctors.find(d => d.id === (viewDoctorId || selectedDoctor))?.name || ''}. ¿Le gustaría reservarlo?`;
+        // Robust doctor search
+        const docId = Number(viewDoctorId || selectedDoctor);
+        const doctor = doctors.find(d => Number(d.id) === docId);
+        const doctorName = doctor?.full_name || doctor?.name || '';
+
+        let message = '';
+        if (settings.next_free_slot_template) {
+            message = settings.next_free_slot_template
+                .replace(/{[\s]*doctor_name[\s]*}/gi, doctorName)
+                .replace(/{[\s]*date[\s]*}/gi, `${slot.dayName} ${dateStr}`)
+                .replace(/{[\s]*time[\s]*}/gi, timeStr)
+                .replace(/{[\s]*secretary_name[\s]*}/gi, user.name || 'Secretaría');
+        } else {
+            message = `Hola, tenemos un turno disponible el ${slot.dayName} ${dateStr} a las ${timeStr} con el/la Dr/a. ${doctorName}. ¿Le gustaría reservarlo?`;
+        }
 
         // Try to get patient phone if a patient is selected
-        let phone = selectedPatientData?.mobile_phone || selectedPatientData?.contact_info || '';
+        let phone = selectedPatientData?.phone || selectedPatientData?.mobile_phone || '';
 
         copyToClipboard(message).then(() => {
             showMessage("Propuesta copiada! Abriendo WhatsApp...", "success");

@@ -33,7 +33,7 @@ import Sidebar from '../components/Sidebar';
 import QRCodeModal from '../components/QRCodeModal';
 import { useModal } from '../context/ModalContext';
 import { useAuth } from '../context/AuthContext';
-import GoogleSanitizer from '../components/GoogleSanitizer';
+
 
 const SystemConfig = () => {
     const { user } = useAuth();
@@ -567,10 +567,7 @@ const SystemConfig = () => {
                                 </div>
                             </div>
 
-                            {/* --- GOOGLE SANITIZER TOOL --- */}
-                            <div className="mb-8">
-                                <GoogleSanitizer />
-                            </div>
+
 
                             <div className="card">
                                 <h3 className="config-section-title">📱 Aplicación Móvil (APK)</h3>

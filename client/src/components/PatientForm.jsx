@@ -4,7 +4,7 @@ import CurrencyInput from './CurrencyInput';
 import api from '../api/axios';
 import PhoneNumbersManager from './PhoneNumbersManager';
 
-const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmin = false, insurances = [], doctors = [], comparisonData = null, isSanitizeMode = false }) => {
+const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmin = false, insurances = [], doctors = [] }) => {
     const { t } = useLanguage();
 
     const [formData, setFormData] = useState({
@@ -88,34 +88,6 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
         onSubmit(formData);
     };
 
-    // Helper to highlight diffs
-    const getDiffClass = (fieldName, currentValue) => {
-        if (!comparisonData || !isSanitizeMode) return '';
-        let compareValue = comparisonData[fieldName];
-
-        // Custom mapping for Google comparison
-        if (fieldName === 'full_name' && comparisonData.summary) compareValue = comparisonData.summary;
-
-        if (compareValue && String(compareValue).trim() !== String(currentValue).trim()) {
-            return 'bg-orange-50 ring-2 ring-orange-200';
-        }
-        return '';
-    };
-
-    const QuickCopyBtn = ({ fieldName, valueToCopy }) => {
-        if (!isSanitizeMode || !valueToCopy) return null;
-        return (
-            <button
-                type="button"
-                className="ml-2 text-[10px] bg-orange-100 text-orange-700 px-2 py-0.5 rounded border border-orange-200 hover:bg-orange-200"
-                onClick={() => setFormData(prev => ({ ...prev, [fieldName]: valueToCopy }))}
-                title="Copiar valor de Google"
-            >
-                ← Usar Google
-            </button>
-        );
-    };
-
     return (
         <form onSubmit={handleSubmit} className="patient-form" autoComplete="off">
             {/* Fake fields to stop Chrome Autosave */}
@@ -159,13 +131,10 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
 
             <div className="form-row">
                 <div className="input-group">
-                    <label className="input-label">
-                        Nombre
-                        <QuickCopyBtn fieldName="first_name" valueToCopy={comparisonData?.first_name} />
-                    </label>
+                    <label className="input-label">Nombre</label>
                     <input
                         name="first_name"
-                        className={`input-field ${getDiffClass('first_name', formData.first_name)}`}
+                        className="input-field"
                         value={formData.first_name || ''}
                         onChange={(e) => {
                             const val = e.target.value;
@@ -222,29 +191,9 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                 </div>
             </div>
 
-            {/* Full Name Display for Diff (Read Only or just visual) */}
-            {isSanitizeMode && (
-                <div className="mb-4 p-2 bg-slate-50 border border-slate-200 rounded">
-                    <label className="text-xs font-bold text-slate-500 uppercase">Nombre Completo (Comparación)</label>
-                    <div className="flex items-center gap-2 mt-1">
-                        <div className={`flex-1 p-2 bg-white border rounded ${getDiffClass('full_name', formData.full_name)}`}>
-                            {formData.full_name}
-                        </div>
-                        {comparisonData?.summary && (
-                            <div className="flex-1 p-2 bg-orange-50 border border-orange-200 rounded text-orange-800">
-                                {comparisonData.summary}
-                                <QuickCopyBtn fieldName="full_name" valueToCopy={comparisonData.summary} />
-                            </div>
-                        )}
-                    </div>
-                </div>
-            )}
-
             <div className="form-row">
                 <div className="input-group">
-                    <label className="input-label">
-                        {t('dni')}
-                    </label>
+                    <label className="input-label">{t('dni')}</label>
                     <input
                         name="dni"
                         className="input-field"
@@ -321,9 +270,10 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
             <div className="section-divider">
                 <PhoneNumbersManager
                     phoneNumbers={formData.phoneNumbers}
-                    onChange={(newPhones) => setFormData({ ...formData, phoneNumbers: newPhones })}
+                    onChange={(newPhones) => setFormData(prev => ({ ...prev, phoneNumbers: newPhones }))}
                 />
             </div>
+
             <div className="form-row">
                 <div className="input-group">
                     <label className="input-label">{t('dob')}</label>
