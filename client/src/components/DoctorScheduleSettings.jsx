@@ -10,11 +10,20 @@ const DoctorScheduleSettings = ({ doctorId, schedule, setSchedule, loading }) =>
     const { showMessage } = useMessage();
     const [updatingBulk, setUpdatingBulk] = useState(false);
 
+    const DAYS = [
+        { id: 1, name: 'Lunes' },
+        { id: 2, name: 'Martes' },
+        { id: 3, name: 'Miércoles' },
+        { id: 4, name: 'Jueves' },
+        { id: 5, name: 'Viernes' },
+        { id: 6, name: 'Sábado' },
+        { id: 0, name: 'Domingo' }
+    ];
+
     const handleBulkUpdateType = async (dayId, type) => {
         const dayName = DAYS.find(d => d.id == dayId).name;
         const typeName = type === 'virtual' ? 'VIDEOLLAMADA' : 'PRESENCIAL';
 
-        // Note: we don't ask for confirmation here because handleToggleVirtual already did
         try {
             setUpdatingBulk(true);
             const res = await api.post('/appointments/bulk-update-type', {
@@ -31,61 +40,35 @@ const DoctorScheduleSettings = ({ doctorId, schedule, setSchedule, loading }) =>
         }
     };
 
-    const handleToggleVirtual = async (dayId) => {
-        const config = schedule.find(s => s.day_of_week === dayId);
-        if (!config) return;
-
-        const isCurrentlyVirtual = config.default_type === 'virtual';
-        const newType = isCurrentlyVirtual ? 'consultation' : 'virtual';
-
-        // Update local state
-        handleDayChange(dayId, 'default_type', newType);
-
-        // Bulk update question
-        const actionName = newType === 'virtual' ? 'VIDEOLLAMADA' : 'PRESENCIAL';
-        const dayName = DAYS.find(d => d.id == dayId).name;
-
-        if (await confirm(`Has configurado los ${dayName}s como día de ${actionName}. ¿Deseas convertir todos los turnos ya agendados para este día a ${actionName}?`)) {
-            handleBulkUpdateType(dayId, newType);
-        }
+    const handleAddBlock = (dayId) => {
+        setSchedule(prev => [
+            ...prev,
+            {
+                day_of_week: dayId,
+                start_time: '14:00',
+                end_time: '18:00',
+                is_break: 0,
+                default_type: 'consultation'
+            }
+        ]);
     };
 
-    const DAYS = [
-        { id: 1, name: 'Lunes' },
-        { id: 2, name: 'Martes' },
-        { id: 3, name: 'Miércoles' },
-        { id: 4, name: 'Jueves' },
-        { id: 5, name: 'Viernes' },
-        { id: 6, name: 'Sábado' },
-        { id: 0, name: 'Domingo' }
-    ];
+    const handleRemoveBlock = (indexToRemove) => {
+        setSchedule(prev => prev.filter((_, idx) => idx !== indexToRemove));
+    };
 
-    const handleDayChange = (dayId, field, value) => {
-        setSchedule(prev => {
-            // Check if day exists in schedule array
-            const exists = prev.find(s => s.day_of_week === dayId);
-            if (exists) {
-                // Update
-                return prev.map(s => s.day_of_week === dayId ? { ...s, [field]: value } : s);
-            } else {
-                // Add new (default 8-20 if no time set yet)
-                return [...prev, {
-                    day_of_week: dayId,
-                    start_time: '08:00',
-                    end_time: '20:00',
-                    is_break: 0,
-                    [field]: value
-                }];
-            }
-        });
+    const handleBlockChange = (index, field, value) => {
+        setSchedule(prev => prev.map((s, idx) => idx === index ? { ...s, [field]: value } : s));
     };
 
     const toggleDay = (dayId) => {
         setSchedule(prev => {
-            const exists = prev.find(s => s.day_of_week === dayId);
-            if (exists) {
+            const hasDay = prev.some(s => s.day_of_week === dayId);
+            if (hasDay) {
+                // Remove all blocks for this day
                 return prev.filter(s => s.day_of_week !== dayId);
             } else {
+                // Add initial block
                 return [...prev, {
                     day_of_week: dayId,
                     start_time: '08:00',
@@ -102,22 +85,18 @@ const DoctorScheduleSettings = ({ doctorId, schedule, setSchedule, loading }) =>
 
     const applyBulk = (daysToApply) => {
         setSchedule(prev => {
-            let newSched = [...prev];
+            // Keep days NOT in the bulk list
+            let newSched = prev.filter(s => !daysToApply.includes(s.day_of_week));
+
+            // Add new single block for each bulk day
             daysToApply.forEach(dayId => {
-                const existing = newSched.find(s => s.day_of_week === dayId);
-                const block = {
+                newSched.push({
                     day_of_week: dayId,
                     start_time: bulkStart,
                     end_time: bulkEnd,
                     is_break: 0,
-                    default_type: existing?.default_type || 'consultation'
-                };
-                if (existing) {
-                    const idx = newSched.indexOf(existing);
-                    newSched[idx] = block;
-                } else {
-                    newSched.push(block);
-                }
+                    default_type: 'consultation'
+                });
             });
             return newSched;
         });
@@ -128,11 +107,11 @@ const DoctorScheduleSettings = ({ doctorId, schedule, setSchedule, loading }) =>
     return (
         <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: 'var(--radius)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--gray-200)' }}>
             <h3 className="text-lg font-bold text-main-800 mb-4">Configuración de Horarios de Atención</h3>
-            <p className="text-sm text-main-500 mb-6">Defina los días y franjas horarias en las que este médico atiende. El sistema utilizará esto para buscar turnos libres.</p>
+            <p className="text-sm text-main-500 mb-6">Defina los días y franjas horarias en las que este médico atiende.</p>
 
             {/* Bulk Actions */}
             <div style={{ marginBottom: '2rem', padding: '1rem', backgroundColor: 'var(--gray-50)', borderRadius: 'var(--radius)', border: '1px solid var(--gray-200)' }}>
-                <h4 className="text-sm font-bold text-main-700 mb-3">Aplicar a múltiples días</h4>
+                <h4 className="text-sm font-bold text-main-700 mb-3">Aplicar a múltiples días (Sobrescribe horarios)</h4>
                 <div className="flex flex-wrap items-center gap-4">
                     <div className="flex items-center gap-2">
                         <input
@@ -168,90 +147,92 @@ const DoctorScheduleSettings = ({ doctorId, schedule, setSchedule, loading }) =>
                 </div>
             </div>
 
-            <table className="table-base" style={{ width: '100%' }}>
-                <thead>
-                    <tr>
-                        <th style={{ width: '50px', textAlign: 'center' }}>Activo</th>
-                        <th style={{ width: '120px' }}>Día</th>
-                        <th style={{ width: '140px' }}>Tipo</th>
-                        <th style={{ width: '100px' }}>Desde</th>
-                        <th style={{ width: '20px' }}></th>
-                        <th style={{ width: '100px' }}>Hasta</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {DAYS.map(day => {
-                        const config = schedule.find(s => s.day_of_week === day.id);
-                        const isActive = !!config;
+            <div className="space-y-4">
+                {DAYS.map(day => {
+                    const dayBlocks = schedule
+                        .map((s, originalIndex) => ({ ...s, originalIndex })) // Track original index for editing
+                        .filter(s => s.day_of_week === day.id)
+                        .sort((a, b) => a.start_time.localeCompare(b.start_time));
 
-                        return (
-                            <tr key={day.id} style={{ backgroundColor: isActive ? 'var(--primary-50)' : 'var(--gray-50)' }}>
-                                <td style={{ textAlign: 'center' }}>
+                    const isActive = dayBlocks.length > 0;
+
+                    return (
+                        <div key={day.id} className={`p-4 rounded-lg border transition-all ${isActive ? 'bg-white border-blue-200 shadow-sm' : 'bg-gray-50 border-gray-100 opacity-75'}`}>
+                            <div className="flex items-start gap-4">
+                                <div className="pt-2">
                                     <input
                                         type="checkbox"
                                         id={`day-${day.id}`}
                                         checked={isActive}
                                         onChange={() => toggleDay(day.id)}
-                                        style={{ accentColor: 'var(--primary-color)' }}
+                                        className="w-5 h-5 cursor-pointer accent-blue-600"
                                     />
-                                </td>
-                                <td>
-                                    <label htmlFor={`day-${day.id}`} style={{
-                                        fontWeight: isActive ? '600' : '400',
-                                        color: isActive ? 'var(--text-main)' : 'var(--text-muted)',
-                                        cursor: 'pointer'
-                                    }}>
+                                </div>
+                                <div className="flex-1">
+                                    <label htmlFor={`day-${day.id}`} className={`text-lg font-bold mb-2 block cursor-pointer ${isActive ? 'text-main-800' : 'text-main-400'}`}>
                                         {day.name}
                                     </label>
-                                </td>
-                                <td>
-                                    {isActive ? (
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                            <input
-                                                type="checkbox"
-                                                id={`virtual-${day.id}`}
-                                                checked={config.default_type === 'virtual'}
-                                                onChange={() => handleToggleVirtual(day.id)}
-                                                style={{ accentColor: 'var(--accent-color)' }}
-                                            />
-                                            <label htmlFor={`virtual-${day.id}`} style={{ fontSize: '0.875rem', cursor: 'pointer', whiteSpace: 'nowrap' }}>
-                                                📹 Videollamada
-                                            </label>
+
+                                    {isActive && (
+                                        <div className="space-y-2">
+                                            {dayBlocks.map((block, idx) => (
+                                                <div key={idx} className="flex flex-wrap items-center gap-3 bg-slate-50 p-2 rounded border border-gray-100">
+                                                    <div className="flex items-center gap-2">
+                                                        <input
+                                                            type="time"
+                                                            className="input-field py-1 px-2 w-32 text-sm bg-white"
+                                                            value={block.start_time ? block.start_time.slice(0, 5) : ''}
+                                                            onChange={(e) => handleBlockChange(block.originalIndex, 'start_time', e.target.value)}
+                                                        />
+                                                        <span className="text-muted text-sm px-1">a</span>
+                                                        <input
+                                                            type="time"
+                                                            className="input-field py-1 px-2 w-32 text-sm bg-white"
+                                                            value={block.end_time ? block.end_time.slice(0, 5) : ''}
+                                                            onChange={(e) => handleBlockChange(block.originalIndex, 'end_time', e.target.value)}
+                                                        />
+                                                    </div>
+
+                                                    <div className="h-6 w-px bg-gray-300 mx-2 hidden sm:block"></div>
+
+                                                    <div className="flex items-center gap-2">
+                                                        <select
+                                                            className={`input-field py-1 px-2 text-sm ${block.default_type === 'virtual' ? 'text-indigo-600 font-medium bg-indigo-50 border-indigo-200' : 'bg-white'}`}
+                                                            value={block.default_type || 'consultation'}
+                                                            onChange={(e) => {
+                                                                handleBlockChange(block.originalIndex, 'default_type', e.target.value);
+                                                                // Optional: Trigger confirmation for existing appts update if needed, similar to old logic
+                                                            }}
+                                                        >
+                                                            <option value="consultation">🏥 Presencial</option>
+                                                            <option value="virtual">📹 Videollamada</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <button
+                                                        onClick={() => handleRemoveBlock(block.originalIndex)}
+                                                        className="ml-auto p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                                                        title="Eliminar franja"
+                                                    >
+                                                        🗑️
+                                                    </button>
+                                                </div>
+                                            ))}
+
+                                            <button
+                                                onClick={() => handleAddBlock(day.id)}
+                                                className="mt-2 text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1 px-2 py-1 rounded hover:bg-blue-50 w-fit"
+                                            >
+                                                <span>+</span> Agregar Turno Cortado / Extra
+                                            </button>
                                         </div>
-                                    ) : (
-                                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>No atiende</span>
                                     )}
-                                </td>
-                                <td>
-                                    {isActive && (
-                                        <input
-                                            type="time"
-                                            className="input-field"
-                                            style={{ padding: '0.25rem 0.5rem', width: '100px', fontSize: '0.875rem' }}
-                                            value={config.start_time ? config.start_time.slice(0, 5) : ''}
-                                            onChange={(e) => handleDayChange(day.id, 'start_time', e.target.value)}
-                                        />
-                                    )}
-                                </td>
-                                <td style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
-                                    {isActive && 'a'}
-                                </td>
-                                <td>
-                                    {isActive && (
-                                        <input
-                                            type="time"
-                                            className="input-field"
-                                            style={{ padding: '0.25rem 0.5rem', width: '100px', fontSize: '0.875rem' }}
-                                            value={config.end_time ? config.end_time.slice(0, 5) : ''}
-                                            onChange={(e) => handleDayChange(day.id, 'end_time', e.target.value)}
-                                        />
-                                    )}
-                                </td>
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
         </div>
     );
 };
