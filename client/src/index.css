@@ -1611,11 +1611,7 @@ input:checked+.slider:before {
   width: 50px;
   text-align: right;
   font-weight: 500;
-<<<<<<< HEAD
   color: var(--text-secondary);
-=======
-  color: #94a3b8;
->>>>>>> parent of 6592afe (Revert "feat: Implement comprehensive dark mode styling across doctor-specific colors, scrollbars, calendar, and various UI components.")
   font-size: 0.9rem;
   padding-top: 0.5rem;
 }
@@ -1628,13 +1624,8 @@ input:checked+.slider:before {
 }
 
 .available-slot {
-<<<<<<< HEAD
   background-color: var(--gray-50);
   border: 1px dashed var(--gray-300);
-=======
-  background-color: rgba(255, 255, 255, 0.02);
-  border: 1px dashed #334155;
->>>>>>> parent of 6592afe (Revert "feat: Implement comprehensive dark mode styling across doctor-specific colors, scrollbars, calendar, and various UI components.")
   border-radius: var(--radius-sm);
   padding: 0.5rem 1rem;
   color: var(--text-secondary);
@@ -1647,7 +1638,6 @@ input:checked+.slider:before {
 }
 
 .available-slot:hover {
-<<<<<<< HEAD
   background-color: var(--blue-50);
   border-color: var(--blue-400);
   color: var(--blue-600);
@@ -1655,12 +1645,7 @@ input:checked+.slider:before {
 }
 
 
-=======
-  background-color: rgba(59, 130, 246, 0.1);
-  border-color: #3b82f6;
-  color: #60a5fa;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
+
 
 .appointment-card {
   padding: 0.75rem 1rem;
@@ -1681,7 +1666,6 @@ input:checked+.slider:before {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   border-color: #475569;
 }
->>>>>>> parent of 6592afe (Revert "feat: Implement comprehensive dark mode styling across doctor-specific colors, scrollbars, calendar, and various UI components.")
 
 .appt-time {
   font-weight: 600;
@@ -1693,28 +1677,18 @@ input:checked+.slider:before {
   flex-direction: column;
 }
 
-<<<<<<< HEAD
-
-=======
 .doctor-name {
   font-size: 0.8rem;
   opacity: 0.8;
-  color: #94a3b8;
+  color: var(--text-secondary);
 }
->>>>>>> parent of 6592afe (Revert "feat: Implement comprehensive dark mode styling across doctor-specific colors, scrollbars, calendar, and various UI components.")
 
 /* Status Colors used in DaySchedule */
 .status-confirmed,
 .status-completed {
-<<<<<<< HEAD
   background-color: var(--green-100);
   border: 1px solid var(--green-200);
   color: var(--green-800);
-=======
-  background-color: rgba(22, 163, 74, 0.1);
-  border: 1px solid rgba(22, 163, 74, 0.2);
-  color: #4ade80;
->>>>>>> parent of 6592afe (Revert "feat: Implement comprehensive dark mode styling across doctor-specific colors, scrollbars, calendar, and various UI components.")
 }
 
 .status-cancelled {
@@ -2648,8 +2622,6 @@ input:checked+.slider:before {
 }
 
 
-<<<<<<< HEAD
-=======
 .doctor-avatar {
   width: 60px;
   height: 60px;
@@ -2694,7 +2666,7 @@ input:checked+.slider:before {
 }
 
 .doctor-price-label {
-  color: #94a3b8;
+  color: var(--text-secondary);
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.025em;
@@ -2702,9 +2674,8 @@ input:checked+.slider:before {
 
 .doctor-price-value {
   font-weight: 600;
-  color: #f8fafc;
+  color: var(--text-main);
 }
->>>>>>> parent of 6592afe (Revert "feat: Implement comprehensive dark mode styling across doctor-specific colors, scrollbars, calendar, and various UI components.")
 
 /* Modal Styles - Restored for Appointments Page */
 .modal-overlay {
@@ -2750,11 +2721,7 @@ input:checked+.slider:before {
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-<<<<<<< HEAD
   color: var(--gray-500);
-=======
-  color: #94a3b8;
->>>>>>> parent of 6592afe (Revert "feat: Implement comprehensive dark mode styling across doctor-specific colors, scrollbars, calendar, and various UI components.")
 }
 
 @keyframes fadeIn {
@@ -4173,15 +4140,24 @@ input:checked+.slider:before {
   opacity: 0;
   z-index: -1;
 }
+
 .btn-simple-white {
-    background-color: white;
-    border: 1px solid var(--gray-800);
-    color: var(--gray-900);
-    font-weight: 500;
-    box-shadow: none;
-    padding: 0.5rem 1rem;
+  background: white !important;
+  /* Force override for global gradient */
+  background-color: white !important;
+  border: 1px solid #d1d5db !important;
+  /* gray-300 matches simple style */
+  color: #1f2937 !important;
+  /* gray-800 */
+  font-weight: 500;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+  padding: 0.5rem 1rem;
 }
+
 .btn-simple-white:hover {
-    background-color: var(--gray-100);
-    border-color: black;
+  background-color: #f9fafb !important;
+  /* gray-50 */
+  border-color: #9ca3af !important;
+  /* gray-400 */
+  color: #000 !important;
 }
