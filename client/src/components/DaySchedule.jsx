@@ -2,11 +2,13 @@ import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
 import { useConfig } from '../context/ConfigContext';
+import AppointmentCard from './AppointmentCard';
 
 const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule }) => {
     const { t } = useLanguage();
     const { confirm } = useModal();
     const { settings } = useConfig();
+    const [showOutOfHours, setShowOutOfHours] = React.useState(false);
 
     // Determine config based on schedule or defaults
     let startHour = 8;
@@ -86,96 +88,119 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule }) => {
 
     return (
         <div className="day-schedule card">
-            <h3 className="mb-4 text-center border-b pb-4">
-                {date.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
-            </h3>
+            <div className="flex-between items-center mb-4 border-b pb-4 px-2">
+                <h3 className="m-0">
+                    {date.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
+                </h3>
+                <label className="switch-container">
+                    <span className="text-xs font-bold text-muted uppercase tracking-wider">{t('show_out_of_hours') || 'Mostrar fuera de horario'}</span>
+                    <div className="switch">
+                        <input
+                            type="checkbox"
+                            checked={showOutOfHours}
+                            onChange={(e) => setShowOutOfHours(e.target.checked)}
+                        />
+                        <span className="slider round"></span>
+                    </div>
+                </label>
+            </div>
 
             <div className="schedule-timeline">
-                {timeSlots.map((slot, index) => {
-                    const slotApps = getAppointmentsForSlot(slot.time, slot.duration);
-                    const isOccupied = slotApps.length > 0;
-                    const isClosed = slot.type === 'closed';
-                    const isBreak = slot.type === 'break'; // Legacy
+                {timeSlots
+                    .map(slot => ({
+                        ...slot,
+                        slotApps: getAppointmentsForSlot(slot.time, slot.duration)
+                    }))
+                    .filter(slot => {
+                        if (showOutOfHours) return true;
+                        if (slot.type !== 'closed') return true;
+                        return slot.slotApps.length > 0;
+                    })
+                    .map((slot, index) => {
+                        const { slotApps } = slot;
+                        const isOccupied = slotApps.length > 0;
+                        const isClosed = slot.type === 'closed';
+                        const isBreak = slot.type === 'break'; // Legacy
 
-                    const slotStyle = {};
-                    if (isClosed) {
-                        slotStyle.backgroundColor = '#f1f5f9'; // Slate-100
-                        slotStyle.opacity = 0.6;
-                        slotStyle.borderLeft = '4px solid #cbd5e1';
-                    } else if (isBreak) {
-                        slotStyle.backgroundColor = '#fffbeb'; // Amber-50
-                    }
+                        const slotStyle = {};
+                        if (isClosed) {
+                            slotStyle.backgroundColor = '#f1f5f9'; // Slate-100
+                            slotStyle.opacity = 0.6;
+                            slotStyle.borderLeft = '4px solid #cbd5e1';
+                        } else if (isBreak) {
+                            slotStyle.backgroundColor = '#fffbeb'; // Amber-50
+                        }
 
-                    return (
-                        <div key={index} className="time-slot" style={slotStyle}>
-                            <div className="time-label">
-                                {slot.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                            </div>
-                            <div className="slot-content">
-                                {isOccupied ? (
-                                    slotApps.map(appt => (
-                                        <div
-                                            key={appt.id}
-                                            className={`appointment-card group status-${appt.status} ${appt.source === 'google' || appt.source === 'google-incomplete' ? 'status-external' : ''}`}
-                                            onClick={() => onSlotClick(slot.time.getHours(), appt)}
-                                            style={appt.source === 'google' || appt.source === 'google-incomplete' || appt.status === 'external' ? { borderLeft: '4px solid var(--amber-500)' } : {}}
-                                        >
-                                            {/* Col 1: Time */}
-                                            <div className="appt-time-box">
-                                                <span className="text-sm font-bold text-main-900">
-                                                    {new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
-                                                </span>
-                                            </div>
-
-                                            {/* Col 2: Info */}
-                                            <div className="appt-info">
-                                                <div className="font-bold text-main-800 truncate">
-                                                    {appt.type === 'virtual' && '📹 '}
-                                                    {appt.patient_name || 'S/N'}
+                        return (
+                            <div key={index} className="time-slot" style={slotStyle}>
+                                <div className="time-label">
+                                    {slot.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </div>
+                                <div className="slot-content">
+                                    {isOccupied ? (
+                                        slotApps.map(appt => (
+                                            <div
+                                                key={appt.id}
+                                                className={`appointment-card group status-${appt.status} ${appt.source === 'google' || appt.source === 'google-incomplete' ? 'status-external' : ''}`}
+                                                onClick={() => onSlotClick(slot.time.getHours(), appt)}
+                                                style={appt.source === 'google' || appt.source === 'google-incomplete' || appt.status === 'external' ? { borderLeft: '4px solid var(--amber-500)' } : {}}
+                                            >
+                                                {/* Col 1: Time */}
+                                                <div className="appt-time-box">
+                                                    <span className="text-sm font-bold text-main-900">
+                                                        {new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
+                                                    </span>
                                                 </div>
-                                                {appt.patient_phone && (
-                                                    <div className="text-[10px] text-indigo-600 font-medium">
-                                                        📱 {appt.patient_phone}
+
+                                                {/* Col 2: Info */}
+                                                <div className="appt-info">
+                                                    <div className="font-bold text-main-800 truncate">
+                                                        {appt.type === 'virtual' && '📹 '}
+                                                        {appt.patient_name || 'S/N'}
                                                     </div>
-                                                )}
-                                                <div className="flex items-center gap-2 text-[11px] text-muted truncate">
-                                                    <span className="flex items-center gap-1">👨‍⚕️ {appt.doctor_name}</span>
-                                                    {appt.reason && <span className="italic opacity-75 truncate">• {appt.reason}</span>}
+                                                    {appt.patient_phone && (
+                                                        <div className="text-[10px] text-indigo-600 font-medium">
+                                                            📱 {appt.patient_phone}
+                                                        </div>
+                                                    )}
+                                                    <div className="flex items-center gap-2 text-[11px] text-muted truncate">
+                                                        <span className="flex items-center gap-1">👨‍⚕️ {appt.doctor_name}</span>
+                                                        {appt.reason && <span className="italic opacity-75 truncate">• {appt.reason}</span>}
+                                                    </div>
                                                 </div>
+
+                                                {/* Col 3: Status */}
+                                                <div className="appt-status">
+                                                    {appt.payment_status === 'paid' && <span title="Paid" className="text-emerald-500 font-bold text-xs">$✓</span>}
+                                                    {appt.payment_status === 'debt' && <span title="Debt" className="text-rose-500 font-bold text-xs">$!</span>}
+
+                                                    <span className={`status-chip-mini status-${appt.status} inline-block`}>
+                                                        {t(appt.status) || appt.status}
+                                                    </span>
+                                                </div>
+
                                             </div>
-
-                                            {/* Col 3: Status */}
-                                            <div className="appt-status">
-                                                {appt.payment_status === 'paid' && <span title="Paid" className="text-emerald-500 font-bold text-xs">$✓</span>}
-                                                {appt.payment_status === 'debt' && <span title="Debt" className="text-rose-500 font-bold text-xs">$!</span>}
-
-                                                <span className={`status-chip-mini status-${appt.status} inline-block`}>
-                                                    {t(appt.status) || appt.status}
-                                                </span>
-                                            </div>
-
-                                        </div>
-                                    ))
-                                ) : (
-                                    <div
-                                        className={`available-slot ${isClosed ? 'cursor-warning' : ''}`}
-                                        onClick={async () => {
-                                            if (isClosed) {
-                                                if (await confirm("⚠️ Este horario está marcado como NO LABORABLE. ¿Desea asignar un turno de todas formas?")) {
+                                        ))
+                                    ) : (
+                                        <div
+                                            className={`available-slot ${isClosed ? 'cursor-warning' : ''}`}
+                                            onClick={async () => {
+                                                if (isClosed) {
+                                                    if (await confirm("⚠️ Este horario está marcado como NO LABORABLE. ¿Desea asignar un turno de todas formas?")) {
+                                                        onSlotClick(slot.time.getHours(), null, slot.time.getMinutes());
+                                                    }
+                                                } else {
                                                     onSlotClick(slot.time.getHours(), null, slot.time.getMinutes());
                                                 }
-                                            } else {
-                                                onSlotClick(slot.time.getHours(), null, slot.time.getMinutes());
-                                            }
-                                        }}
-                                    >
-                                        <span className="plus-icon">{isClosed ? '🚫' : '+'}</span> {isClosed ? (t('closed_hours') || 'Fuera de Horario') : (t('available') || 'Disponible')}
-                                    </div>
-                                )}
+                                            }}
+                                        >
+                                            <span className="plus-icon">{isClosed ? '🚫' : '+'}</span> {isClosed ? (t('closed_hours') || 'Fuera de Horario') : (t('available') || 'Disponible')}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    );
-                })}
+                        );
+                    })}
             </div>
         </div>
     );
