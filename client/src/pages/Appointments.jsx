@@ -779,94 +779,12 @@ const Appointments = () => {
     };
 
 
-    const handleWhatsAppConfirm = async (appt) => {
+    const handleWhatsAppUniversal = async (appt, type = 'reminder') => {
         let phone = appt.patient_phone;
-
         if (!phone) {
-            // Heuristic for zombie appointments: try to find a phone in the reason field
             const phoneMatch = appt.reason?.match(/\d{9,13}/);
-            if (phoneMatch) {
-                phone = phoneMatch[0];
-            } else {
-                showMessage("No phone number available. Please adjust/sync the appointment first.", "error");
-                return;
-            }
-        }
-
-        const dateStr = new Date(appt.appointment_date).toLocaleDateString();
-        const timeStr = new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-
-        const isVirtual = appt.type === 'virtual';
-        let messageTemplate = isVirtual ? settings.appointment_reminder_virtual_template : settings.appointment_reminder_template;
-
-        if (!messageTemplate || !messageTemplate.trim()) {
-            messageTemplate = isVirtual
-                ? `Hola {patient_name}, te recordamos tu turno VIRTUAL para el día {date} a las {time} con el/la Dr/a. {doctor_name}.`
-                : `Hola {patient_name}, te recordamos tu turno del día {date} a las {time} con el/la Dr/a. {doctor_name} en {appointment_location}. Por favor confirma asistencia.`;
-        }
-
-        const doctor = doctors.find(d => d.id === appt.doctor_id);
-        const apptPrice = isVirtual ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0);
-        const address = isVirtual ? 'Virtual (Minutos antes enviaremos el link)' : (settings.clinic_address || 'Montiel 1255');
-
-        const message = messageTemplate
-            .replace(/{patient_name}/g, appt.patient_name || appt.reason)
-            .replace(/{date}/g, dateStr)
-            .replace(/{time}/g, timeStr)
-            .replace(/{doctor_name}/g, appt.doctor_name)
-            .replace(/{appointment_type}/g, isVirtual ? 'VIRTUAL' : 'PRESENCIAL')
-            .replace(/{appointment_location}/g, address)
-            .replace(/{price}/g, new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(apptPrice))
-            .replace(/{secretary_name}/g, user.name || 'Secretaria');
-
-        // Copy to clipboard
-        try {
-            await copyToClipboard(message);
-            showMessage("Texto copiado! Abriendo WhatsApp...", "success");
-
-            phone = phone.replace(/\D/g, '');
-            if (!phone.startsWith('54') && phone.length >= 10) {
-                phone = '549' + phone;
-            }
-
-            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-            if (isMobile) {
-                // Mobile: Always use wa.me which handles app/web redirect automatically
-                window.location.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-            } else {
-                // Desktop: Priority 'ZapZap' (Native App) -> Then Web
-                const appUrl = phone
-                    ? `whatsapp://send?phone=${phone}&text=${encodeURIComponent(message)}`
-                    : `whatsapp://send?text=${encodeURIComponent(message)}`;
-
-                const webUrl = phone
-                    ? `https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`
-                    : `https://web.whatsapp.com/send?text=${encodeURIComponent(message)}`;
-
-                // 1. Try to open App
-                window.location.href = appUrl;
-
-                // 2. Fallback to Web if App doesn't capture it (simple timeout-based fallback)
-                setTimeout(() => {
-                    window.open(webUrl, '_blank');
-                }, 2500);
-            }
-        } catch (err) {
-            console.error("Failed to copy", err);
-            showMessage("Error al copiar texto", "error");
-        }
-    };
-
-    const handleWhatsAppCreated = (appt) => {
-        let phone = appt.patient_phone;
-
-        if (!phone) {
-            // Heuristic for reason phone
-            const phoneMatch = appt.reason?.match(/\d{9,13}/);
-            if (phoneMatch) {
-                phone = phoneMatch[0];
-            } else {
+            if (phoneMatch) phone = phoneMatch[0];
+            else {
                 showMessage("No phone number available.", "error");
                 return;
             }
@@ -874,15 +792,23 @@ const Appointments = () => {
 
         const dateStr = new Date(appt.appointment_date).toLocaleDateString();
         const timeStr = new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-
         const isVirtual = appt.type === 'virtual';
-        // USE CONFIRMATION TEMPLATE (CREATED) INSTEAD OF REMINDER
-        let messageTemplate = isVirtual ? settings.appointment_confirmation_virtual_template : settings.appointment_confirmation_template;
 
-        if (!messageTemplate || !messageTemplate.trim()) {
-            messageTemplate = isVirtual
-                ? `Hola {patient_name}, te confirmamos tu turno VIRTUAL para el día {date} a las {time} con el/la Dr/a. {doctor_name}.`
-                : `Hola {patient_name}, te confirmamos tu turno del día {date} a las {time} con el/la Dr/a. {doctor_name} en {appointment_location}.`;
+        let messageTemplate = '';
+        if (type === 'reminder') {
+            messageTemplate = isVirtual ? settings.appointment_reminder_virtual_template : settings.appointment_reminder_template;
+            if (!messageTemplate?.trim()) {
+                messageTemplate = isVirtual
+                    ? `Hola {patient_name}, te recordamos tu turno VIRTUAL para el día {date} a las {time} con el/la Dr/a. {doctor_name}.`
+                    : `Hola {patient_name}, te recordamos tu turno del día {date} a las {time} con el/la Dr/a. {doctor_name} en {appointment_location}. Por favor confirma asistencia.`;
+            }
+        } else {
+            messageTemplate = isVirtual ? settings.appointment_confirmation_virtual_template : settings.appointment_confirmation_template;
+            if (!messageTemplate?.trim()) {
+                messageTemplate = isVirtual
+                    ? `Hola {patient_name}, te confirmamos tu turno VIRTUAL para el día {date} a las {time} con el/la Dr/a. {doctor_name}.`
+                    : `Hola {patient_name}, te confirmamos tu turno del día {date} a las {time} con el/la Dr/a. {doctor_name} en {appointment_location}.`;
+            }
         }
 
         const doctor = doctors.find(d => d.id === appt.doctor_id);
@@ -899,29 +825,25 @@ const Appointments = () => {
             .replace(/{price}/g, new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(apptPrice))
             .replace(/{secretary_name}/g, user.name || 'Secretaria');
 
-        // Copy
-        copyToClipboard(message).then(() => {
-            showMessage("Comprobante copiado! Abriendo WhatsApp...", "success");
+        try {
+            await copyToClipboard(message);
+            showMessage(`${type === 'reminder' ? 'Recordatorio' : 'Comprobante'} copiado! Abriendo WhatsApp...`, "success");
 
             phone = phone.replace(/\D/g, '');
-            if (!phone.startsWith('54') && phone.length >= 10) {
-                phone = '549' + phone;
-            }
+            if (!phone.startsWith('54') && phone.length >= 10) phone = '549' + phone;
 
             const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
             if (isMobile) {
                 window.location.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
             } else {
                 const appUrl = `whatsapp://send?phone=${phone}&text=${encodeURIComponent(message)}`;
                 const webUrl = `https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
-
                 window.location.href = appUrl;
-                setTimeout(() => {
-                    window.open(webUrl, '_blank');
-                }, 2500);
+                setTimeout(() => { window.open(webUrl, '_blank'); }, 2500);
             }
-        });
+        } catch (err) {
+            showMessage("Error al procesar WhatsApp", "error");
+        }
     };
 
     if (loading) return <div>{t('loading')}</div>;
@@ -1188,19 +1110,19 @@ const Appointments = () => {
                                                             <div className="appt-actions">
                                                                 <button onClick={(e) => {
                                                                     e.stopPropagation();
-                                                                    handleWhatsAppConfirm(a);
+                                                                    handleWhatsAppUniversal(a, 'reminder');
                                                                 }}
                                                                     className="p-1.5 bg-green-50 text-green-600 rounded-lg hover:bg-green-600 hover:text-white transition-all shadow-sm border border-green-100"
-                                                                    title="WhatsApp"
+                                                                    title="Enviar recordatorio"
                                                                 >
                                                                     📲
                                                                 </button>
                                                                 <button onClick={(e) => {
                                                                     e.stopPropagation();
-                                                                    handleWhatsAppCreated(a);
+                                                                    handleWhatsAppUniversal(a, 'confirmation');
                                                                 }}
                                                                     className="p-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all shadow-sm border border-blue-100"
-                                                                    title="Enviar comprobante de turno (Confirmación)"
+                                                                    title="Enviar comprobante"
                                                                 >
                                                                     ✨
                                                                 </button>
@@ -1478,13 +1400,29 @@ const Appointments = () => {
                                         <p className="flex items-center gap-2 text-blue-600">
                                             <strong>{t('phone') || 'Teléfono'}:</strong>
                                             <span className="font-mono">{actionModal.appt.patient_phone}</span>
-                                            <button
-                                                className="btn-icon-small hover:bg-blue-100 rounded-full p-1 transition-colors"
-                                                onClick={() => copyToClipboard(actionModal.appt.patient_phone).then(() => showMessage("Teléfono copiado", "success"))}
-                                                title="Copiar"
-                                            >
-                                                📋
-                                            </button>
+                                            <div className="flex gap-1 ml-2">
+                                                <button
+                                                    className="btn-icon-small hover:bg-blue-100 rounded-full p-1 transition-colors"
+                                                    onClick={() => copyToClipboard(actionModal.appt.patient_phone).then(() => showMessage("Teléfono copiado", "success"))}
+                                                    title="Copiar Número"
+                                                >
+                                                    📋
+                                                </button>
+                                                <button
+                                                    className="btn-icon-small hover:bg-green-100 rounded-full p-1 transition-colors text-green-600"
+                                                    onClick={() => handleWhatsAppUniversal(actionModal.appt, 'reminder')}
+                                                    title="Enviar Recordatorio WhatsApp"
+                                                >
+                                                    📲
+                                                </button>
+                                                <button
+                                                    className="btn-icon-small hover:bg-indigo-100 rounded-full p-1 transition-colors text-indigo-600"
+                                                    onClick={() => handleWhatsAppUniversal(actionModal.appt, 'confirmation')}
+                                                    title="Enviar Comprobante WhatsApp"
+                                                >
+                                                    ✨
+                                                </button>
+                                            </div>
                                         </p>
                                     )}
                                     <p><strong>{t('date_label')}:</strong> {new Date(actionModal.appt.appointment_date).toLocaleString()}</p>

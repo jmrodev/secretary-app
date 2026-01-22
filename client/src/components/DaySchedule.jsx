@@ -139,47 +139,11 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule }) => {
                                 <div className="slot-content">
                                     {isOccupied ? (
                                         slotApps.map(appt => (
-                                            <div
+                                            <AppointmentCard
                                                 key={appt.id}
-                                                className={`appointment-card group status-${appt.status} ${appt.source === 'google' || appt.source === 'google-incomplete' ? 'status-external' : ''}`}
+                                                appt={appt}
                                                 onClick={() => onSlotClick(slot.time.getHours(), appt)}
-                                                style={appt.source === 'google' || appt.source === 'google-incomplete' || appt.status === 'external' ? { borderLeft: '4px solid var(--amber-500)' } : {}}
-                                            >
-                                                {/* Col 1: Time */}
-                                                <div className="appt-time-box">
-                                                    <span className="text-sm font-bold text-main-900">
-                                                        {new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
-                                                    </span>
-                                                </div>
-
-                                                {/* Col 2: Info */}
-                                                <div className="appt-info">
-                                                    <div className="font-bold text-main-800 truncate">
-                                                        {appt.type === 'virtual' && '📹 '}
-                                                        {appt.patient_name || 'S/N'}
-                                                    </div>
-                                                    {appt.patient_phone && (
-                                                        <div className="text-[10px] text-indigo-600 font-medium">
-                                                            📱 {appt.patient_phone}
-                                                        </div>
-                                                    )}
-                                                    <div className="flex items-center gap-2 text-[11px] text-muted truncate">
-                                                        <span className="flex items-center gap-1">👨‍⚕️ {appt.doctor_name}</span>
-                                                        {appt.reason && <span className="italic opacity-75 truncate">• {appt.reason}</span>}
-                                                    </div>
-                                                </div>
-
-                                                {/* Col 3: Status */}
-                                                <div className="appt-status">
-                                                    {appt.payment_status === 'paid' && <span title="Paid" className="text-emerald-500 font-bold text-xs">$✓</span>}
-                                                    {appt.payment_status === 'debt' && <span title="Debt" className="text-rose-500 font-bold text-xs">$!</span>}
-
-                                                    <span className={`status-chip-mini status-${appt.status} inline-block`}>
-                                                        {t(appt.status) || appt.status}
-                                                    </span>
-                                                </div>
-
-                                            </div>
+                                            />
                                         ))
                                     ) : (
                                         <div
@@ -194,7 +158,11 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule }) => {
                                                 }
                                             }}
                                         >
-                                            <span className="plus-icon">{isClosed ? '🚫' : '+'}</span> {isClosed ? (t('closed_hours') || 'Fuera de Horario') : (t('available') || 'Disponible')}
+                                            <span className="plus-icon">{isClosed ? '🚫' : '+'}</span>
+                                            <div className="flex-between w-full">
+                                                <span>{isClosed ? (t('closed_hours') || 'Fuera de Horario') : (t('available') || 'Disponible')}</span>
+                                                <span className="text-[10px] opacity-70 font-mono">{slot.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                            </div>
                                         </div>
                                     )}
                                 </div>
