@@ -303,12 +303,6 @@ const SystemConfig = () => {
                                 </div>
 
                             </div>
-                            <div className="mt-8 p-4 bg-blue-50 border border-blue-100 rounded-xl flex items-center gap-3">
-                                <span className="text-xl">💡</span>
-                                <p className="text-sm text-blue-700">
-                                    <strong>Nota:</strong> La herramienta de <strong>Programación Masiva de Agenda</strong> se ha movido a la pestaña de "Horarios" dentro de la ficha de cada Médico para un control más preciso.
-                                </p>
-                            </div>
                         </div>
                     )}
 
