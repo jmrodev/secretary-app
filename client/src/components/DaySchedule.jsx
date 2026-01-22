@@ -11,30 +11,8 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule }) => {
     const [showOutOfHours, setShowOutOfHours] = React.useState(false);
 
     // Determine config based on schedule or defaults
-    let startHour = 8;
-    let endHour = 20;
     let daysConfig = [];
-
     if (schedule && schedule.length > 0) {
-        const starts = schedule.map(s => parseInt(s.start_time.split(':')[0]));
-        const ends = schedule.map(s => parseInt(s.end_time.split(':')[0]) + (parseInt(s.end_time.split(':')[1]) > 0 ? 1 : 0));
-
-        // [EXPANSION] Only expand if there are appointments ON THIS DAY outside the range
-        if (appointments && appointments.length > 0) {
-            appointments.forEach(appt => {
-                const apptDate = new Date(appt.appointment_date);
-                // Only consider if it's the same day we are viewing
-                if (apptDate.getFullYear() === date.getFullYear() &&
-                    apptDate.getMonth() === date.getMonth() &&
-                    apptDate.getDate() === date.getDate()) {
-
-                    const apptHour = apptDate.getHours();
-                    if (apptHour < startHour) startHour = apptHour;
-                    if (apptHour + 1 > endHour) endHour = apptHour + 1;
-                }
-            });
-        }
-
         daysConfig = schedule.filter(s => s.day_of_week === date.getDay() && s.is_break === 0);
     }
 
@@ -42,10 +20,10 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule }) => {
 
     const timeSlots = [];
     let currentTime = new Date(date);
-    currentTime.setHours(startHour, 0, 0, 0);
+    currentTime.setHours(0, 0, 0, 0);
 
     const endTime = new Date(date);
-    endTime.setHours(endHour, 0, 0, 0);
+    endTime.setHours(23, 59, 59, 999);
 
     while (currentTime < endTime) {
         const timeStr = currentTime.toTimeString().split(' ')[0]; // HH:MM:SS
@@ -56,6 +34,10 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule }) => {
                 return timeStr >= block.start_time && timeStr < block.end_time;
             });
             if (!isOpen) type = 'closed';
+        } else {
+            // Default working hours if no schedule: 8-20
+            const hour = currentTime.getHours();
+            if (hour < 8 || hour >= 20) type = 'closed';
         }
 
         timeSlots.push({
