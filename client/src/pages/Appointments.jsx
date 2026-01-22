@@ -871,20 +871,20 @@ const Appointments = () => {
                             className={`tab-btn ${activeTab === 'calendar' ? 'active' : ''}`}
                             onClick={() => setActiveTab('calendar')}
                         >
-                            📅 {t('calendar') || 'Agenda'}
+                            📅 Agenda
                         </button>
                         <button
                             className={`tab-btn ${activeTab === 'upcoming' ? 'active' : ''}`}
                             onClick={() => setActiveTab('upcoming')}
                         >
-                            📋 {t('upcoming_appointments') || 'Próximos Turnos'}
+                            📋 Próximos Turnos
                         </button>
                         {(user.role === 'admin' || user.role === 'secretary') && (
                             <button
                                 className={`tab-btn ${activeTab === 'holidays' ? 'active' : ''}`}
                                 onClick={() => setActiveTab('holidays')}
                             >
-                                🏖️ {t('holidays') || 'Feriados'}
+                                🏖️ Feriados
                             </button>
                         )}
                     </div>
@@ -1070,64 +1070,12 @@ const Appointments = () => {
                                                                 <div className="h-[1px] flex-1 bg-gradient-to-r from-indigo-100 to-transparent"></div>
                                                             </div>
                                                         )}
-                                                        <div
-                                                            className={`appointment-card group status-${a.status} ${a.source === 'google-incomplete' || a.source === 'google' ? 'status-external' : ''}`}
+                                                        <AppointmentCard
+                                                            appt={a}
                                                             onClick={() => setActionModal({ open: true, appt: a })}
-                                                            style={a.source === 'google-incomplete' || a.source === 'google' || a.status === 'external' ? { borderLeft: '4px solid var(--amber-500)' } : {}}
-                                                        >
-                                                            {/* Col 1: Time */}
-                                                            <div className="appt-time-box">
-                                                                <span className="text-sm font-bold text-main-900">
-                                                                    {new Date(a.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
-                                                                </span>
-                                                            </div>
-
-                                                            {/* Col 2: Patient Info */}
-                                                            <div className="appt-info">
-                                                                <div className="font-bold text-main-800 truncate">{a.patient_name}</div>
-                                                                {a.patient_phone && (
-                                                                    <div className="text-xs text-indigo-600 font-medium flex items-center gap-1">
-                                                                        📱 {a.patient_phone}
-                                                                    </div>
-                                                                )}
-                                                                <div className="flex items-center gap-2 text-[11px] text-muted truncate">
-                                                                    <span className="flex items-center gap-1">👨‍⚕️ {a.doctor_name}</span>
-                                                                    {a.reason && <span className="italic opacity-75 truncate">• {a.reason}</span>}
-                                                                </div>
-                                                            </div>
-
-                                                            {/* Col 3: Status Chips */}
-                                                            <div className="appt-status">
-                                                                {a.payment_status === 'paid' && <span title="Paid" className="text-emerald-500 font-bold text-xs">$✓</span>}
-                                                                {a.payment_status === 'debt' && <span title="Debt" className="text-rose-500 font-bold text-xs">$!</span>}
-
-                                                                <span className={`status-chip-mini status-${a.status} inline-block`}>
-                                                                    {t(a.status) || a.status}
-                                                                </span>
-                                                            </div>
-
-                                                            {/* Col 4: Action Button */}
-                                                            <div className="appt-actions">
-                                                                <button onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    handleWhatsAppUniversal(a, 'reminder');
-                                                                }}
-                                                                    className="p-1.5 bg-green-50 text-green-600 rounded-lg hover:bg-green-600 hover:text-white transition-all shadow-sm border border-green-100"
-                                                                    title="Enviar recordatorio"
-                                                                >
-                                                                    📲
-                                                                </button>
-                                                                <button onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    handleWhatsAppUniversal(a, 'confirmation');
-                                                                }}
-                                                                    className="p-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all shadow-sm border border-blue-100"
-                                                                    title="Enviar comprobante"
-                                                                >
-                                                                    ✨
-                                                                </button>
-                                                            </div>
-                                                        </div>
+                                                            showActions={true}
+                                                            onWhatsAppAction={(appt, type) => handleWhatsAppUniversal(appt, type)}
+                                                        />
                                                     </Fragment>
                                                 );
                                             })}
@@ -2002,12 +1950,12 @@ const HolidayForm = ({ onHolidaysChanged }) => {
         e.preventDefault();
         try {
             await api.post('/holidays', { date: newDate, description: newDesc });
-            showMessage('Holiday added', 'success');
+            showMessage('Feriado agregado con éxito', 'success');
             setNewDate('');
             setNewDesc('');
             if (onHolidaysChanged) onHolidaysChanged();
         } catch (err) {
-            showMessage(err.response?.data || 'Failed to add', 'error');
+            showMessage(err.response?.data || 'Error al agregar feriado', 'error');
         }
     };
 
