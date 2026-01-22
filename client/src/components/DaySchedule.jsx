@@ -10,23 +10,48 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule }) => {
     const { settings } = useConfig();
     const [showOutOfHours, setShowOutOfHours] = React.useState(false);
 
-    // Determine config based on schedule or defaults
+    // 1. Determine Base Range (Schedule or Default 8-20)
+    let startHour = 8;
+    let endHour = 20;
     let daysConfig = [];
+
     if (schedule && schedule.length > 0) {
+        const starts = schedule.map(s => parseInt(s.start_time.split(':')[0]));
+        const ends = schedule.map(s => parseInt(s.end_time.split(':')[0]) + (parseInt(s.end_time.split(':')[1]) > 0 ? 1 : 0));
+        startHour = Math.min(...starts, 8);
+        endHour = Math.max(...ends, 20);
         daysConfig = schedule.filter(s => s.day_of_week === date.getDay() && s.is_break === 0);
     }
+
+    // 2. Expand Range based on Existing Appointments (Always show what exists)
+    const dayApps = appointments.filter(appt => {
+        const d = new Date(appt.appointment_date);
+        return d.getFullYear() === date.getFullYear() && d.getMonth() === date.getMonth() && d.getDate() === date.getDate();
+    });
+
+    if (dayApps.length > 0) {
+        dayApps.forEach(a => {
+            const h = new Date(a.appointment_date).getHours();
+            if (h < startHour) startHour = h;
+            if (h + 1 > endHour) endHour = h + 1;
+        });
+    }
+
+    // 3. If Toggle is ON, show Full 24h. If OFF, use Logical Range.
+    const finalStart = showOutOfHours ? 0 : startHour;
+    const finalEnd = showOutOfHours ? 24 : endHour;
 
     const duration = (doctor && doctor.appointment_duration) ? doctor.appointment_duration : 60;
 
     const timeSlots = [];
     let currentTime = new Date(date);
-    currentTime.setHours(0, 0, 0, 0);
+    currentTime.setHours(finalStart, 0, 0, 0);
 
     const endTime = new Date(date);
-    endTime.setHours(23, 59, 59, 999);
+    endTime.setHours(finalEnd, 0, 0, 0);
 
     while (currentTime < endTime) {
-        const timeStr = currentTime.toTimeString().split(' ')[0]; // HH:MM:SS
+        const timeStr = currentTime.toTimeString().split(' ')[0];
         let type = 'regular';
 
         if (daysConfig.length > 0) {
@@ -35,7 +60,7 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule }) => {
             });
             if (!isOpen) type = 'closed';
         } else {
-            // Default working hours if no schedule: 8-20
+            // Default logical working hours if no schedule
             const hour = currentTime.getHours();
             if (hour < 8 || hour >= 20) type = 'closed';
         }
