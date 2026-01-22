@@ -62,7 +62,7 @@ const Appointments = () => {
     const [reason, setReason] = useState('Consulta'); // Default reason
     const [bonified, setBonified] = useState(false); // [NEW] Bonificado
     const [type, setType] = useState('consultation'); // [NEW] Virtual/Consultation
-    const [message, setMessage] = useState('');
+    const [type, setType] = useState('consultation'); // [NEW] Virtual/Consultation
 
     const [showForm, setShowForm] = useState(false);
     const [paymentModal, setPaymentModal] = useState({ open: false, initialData: {} });
@@ -379,7 +379,7 @@ const Appointments = () => {
             });
 
             if (isHoliday) {
-                setMessage(`Cannot book on ${selectedYMD}: ${isHoliday.description}`);
+                showMessage(`Cannot book on ${selectedYMD}: ${isHoliday.description}`, 'error');
                 return;
             }
 
@@ -413,7 +413,8 @@ const Appointments = () => {
 
         try {
             await api.put(`/appointments/${id}/status`, { status, reason });
-            setMessage(t('status_updated'));
+            // setMessage(t('status_updated')); // REMOVED
+            showMessage(t('status_updated'), 'success');
             fetchAppointments();
             // Update actionModal appt state if open
             if (actionModal.open && actionModal.appt && actionModal.appt.id === id) {
@@ -424,7 +425,7 @@ const Appointments = () => {
             }
         } catch (err) {
             console.error(err);
-            setMessage(t('failed_update'));
+            showMessage(t('failed_update'), 'error');
         }
     };
 
@@ -457,19 +458,19 @@ const Appointments = () => {
                 // Handle Google Event Deletion
                 const eventId = id.replace('goo_', '');
                 await api.delete(`/google/appointments/${eventId}`, { data: { doctorId: viewDoctorId || selectedDoctor } });
-                setMessage(t('appointment_deleted'));
+                showMessage(t('appointment_deleted'), 'success');
                 // Manually remove since it won't be in DB yet if we just added it, or force refetch
                 setGoogleEvents(prev => prev.filter(e => e.id !== id));
             } else {
                 // Standard DB Deletion
                 await api.delete(`/appointments/${id}`);
-                setMessage(t('appointment_deleted'));
+                showMessage(t('appointment_deleted'), 'success');
                 fetchAppointments();
             }
         } catch (err) {
             console.error(err);
             const serverError = err.response?.data?.error || err.response?.data;
-            setMessage(serverError || t('failed_delete'));
+            showMessage(serverError || t('failed_delete'), 'error');
         }
     };
 
@@ -477,11 +478,11 @@ const Appointments = () => {
         try {
             const isoDate = new Date(newDate).toISOString();
             await api.put(`/appointments/${id}`, { appointment_date: isoDate });
-            setMessage(t('rescheduled_success'));
+            showMessage(t('rescheduled_success'), 'success');
             fetchAppointments();
         } catch (err) {
             console.error(err);
-            setMessage(t('failed_reschedule'));
+            showMessage(t('failed_reschedule'), 'error');
         }
     };
 
@@ -625,10 +626,10 @@ const Appointments = () => {
 
         try {
             await api.put(`/appointments/${id}/status`, { status: 'cancelled', reason }); // Send reason
-            setMessage(t('appointment_cancelled'));
+            showMessage(t('appointment_cancelled'), 'success');
             fetchAppointments();
         } catch (err) {
-            setMessage(t('failed_cancel'));
+            showMessage(t('failed_cancel'), 'error');
             console.error(err);
         }
     };
@@ -837,7 +838,8 @@ const Appointments = () => {
                 )}
 
                 {/* Primary Navigation Tabs - Always at the top */}
-                <div className="top-nav-tabs mb-6">
+                {/* Primary Navigation Tabs - Always at the top */}
+                <div className="top-nav-tabs mb-6" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div className="tabs-container" style={{ margin: 0 }}>
                         <button
                             className={`tab-btn ${activeTab === 'calendar' ? 'active' : ''}`}
@@ -860,10 +862,8 @@ const Appointments = () => {
                             </button>
                         )}
                     </div>
-                </div>
 
-                {/* Sub-header con Acciones y Filtro de Médico */}
-                <div className={`header-actions-container mb-8 ${viewDoctorId ? `doctor-color-${Number(viewDoctorId) % 10} doctor-themed-bg` : ''}`} style={viewDoctorId ? { borderRadius: '1rem', padding: '1rem 1.5rem' } : {}}>
+                    {/* Moved Action Buttons Here */}
                     <div className="action-bar-buttons-container">
                         <button
                             className={`btn ${showForm ? 'btn-secondary' : viewDoctorId ? 'd-accent' : 'btn-primary'}`}
@@ -879,6 +879,11 @@ const Appointments = () => {
                             <span>🔍</span> Próximo Libre
                         </button>
                     </div>
+                </div>
+
+                {/* Sub-header con Filtro de Médico (Botones movidos arriba) */}
+                <div className={`header-actions-container mb-8 ${viewDoctorId ? `doctor-color-${Number(viewDoctorId) % 10} doctor-themed-bg` : ''}`} style={viewDoctorId ? { borderRadius: '1rem', padding: '1rem 1.5rem', marginTop: '-1.5rem', borderTop: 'none' } : { marginTop: '-1.5rem', borderTop: 'none' }}>
+                    {/* Empty left side or just spacer if needed, relying on flex justify-between if we kept it, but now buttons are gone so we might just want the doctor tabs */}
 
                     {(activeTab === 'calendar' || activeTab === 'upcoming') && user.role === 'secretary' && (
                         <div className="tabs-container" style={{ margin: 0, padding: '0.25rem' }}>
@@ -904,7 +909,8 @@ const Appointments = () => {
 
 
 
-                {message && <div className={`alert-box ${message.includes('Failed') ? 'alert-error' : 'alert-success'}`}>{message}</div>}
+
+
 
                 {/* Calendar Layout */}
                 {searchPatientId ? (

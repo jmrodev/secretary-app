@@ -783,10 +783,11 @@ exports.syncImportEvents = async (req, res) => {
         const { importFromGoogle } = require('../services/googleSyncImport');
 
         console.log("[GoogleImport] Manual sync triggered by user:", req.user.username);
-        await importFromGoogle();
+        // await importFromGoogle(); // [DISABLED] 
+        console.log("[GoogleImport] Skipped (One-Way Sync Configured)");
 
-        res.json({ message: "Sync completed successfully" });
-        await logAction(req, 'GOOGLE_SYNC_IMPORT', 'Manual import from Google Calendar');
+        res.json({ message: "Import is disabled (One-Way Sync Active). Uploads are processed automatically." });
+        await logAction(req, 'GOOGLE_SYNC_IMPORT', 'Manual import skipped (One-Way Mode)');
 
     } catch (err) {
         console.error("Sync Import Error:", err);

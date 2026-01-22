@@ -29,9 +29,62 @@ exports.createAppointment = async (req, res) => {
         // Convert UTC/ISO input -> Argentina Local Time for DB
         const formattedDate = new Date(appointment_date).toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace('T', ' ');
 
+        // [NEW] Remove from Recently Freed Slots if we are booking it (Confirmed/Pending OR Reserved)
+        await conn.query("DELETE FROM recently_freed_slots WHERE doctor_id = ? AND slot_date = ?", [doctor_id, formattedDate]);
+
+        // [NEW] Check for Reserved Slot Overwrite
+        // If a slot is 'reserved' (provisional), another user can book it (overwrite it).
+        // ALSO: Check if there is already a confirmed appointment to prevent double booking.
+        const existingSlot = await conn.query(
+            "SELECT id, doctor_id, appointment_date, patient_id, status, google_event_id FROM appointments WHERE doctor_id = ? AND appointment_date = ?",
+            [doctor_id, formattedDate]
+        );
+
+        if (existingSlot.length > 0) {
+            const oldAppt = existingSlot[0];
+
+            if (oldAppt.status !== 'reserved' && oldAppt.status !== 'cancelled' && oldAppt.status !== 'absent') {
+                // It's a real appointment (confirmed, completed, etc) -> BLOCK
+                return res.status(400).send("Ya existe un turno confirmado en este horario.");
+            }
+
+            if (oldAppt.status === 'reserved') {
+                // It's a reservation -> OVERWRITE logic
+                // Get patient name for the list
+                const oldPatient = await conn.query("SELECT full_name FROM patients WHERE id = ?", [oldAppt.patient_id]);
+                const oldPatientName = oldPatient.length > 0 ? oldPatient[0].full_name : 'Paciente desconocido';
+
+
+                // 1. Move to overwritten list
+                await conn.query(
+                    "INSERT INTO overwritten_reservations (doctor_id, slot_date, patient_id, patient_name) VALUES (?, ?, ?, ?)",
+                    [oldAppt.doctor_id, oldAppt.appointment_date, oldAppt.patient_id, oldPatientName]
+                );
+
+                // 2. Delete the reserved appointment to allow new booking
+                await conn.query("DELETE FROM appointments WHERE id = ?", [oldAppt.id]);
+
+                // [NEW] 2b. Delete from Google Calendar if it was synced
+                if (oldAppt.google_event_id) {
+                    try {
+                        await googleController.deleteEventHelper(oldAppt.doctor_id, oldAppt.google_event_id, req.user.user_id);
+                        console.log(`[CreateAppointment] Deleted corresponding Google Event ${oldAppt.google_event_id} for overwritten reservation.`);
+                    } catch (syncErr) {
+                        console.warn(`[CreateAppointment] Failed to delete Google Event for overwritten reservation: ${syncErr.message}`);
+                        // Ensure we don't block the new appointment creation, but log it.
+                    }
+                }
+
+                // 3. Log the action
+                await logAction(req.user.user_id, 'RESERVATION_OVERWRITTEN', `Reserva de ${oldPatientName} en ${oldAppt.appointment_date} fue desplazada por nuevo turno.`);
+
+                console.log(`[CreateAppointment] Overwriting reserved slot ${oldAppt.id} (Patient: ${oldPatientName})`);
+            }
+        }
+
         const result = await conn.query(
-            "INSERT INTO appointments (patient_id, doctor_id, appointment_date, reason, is_out_of_hours, type) VALUES (?, ?, ?, ?, ?, ?)",
-            [patient_id, doctor_id, formattedDate, reason, false, type]
+            "INSERT INTO appointments (patient_id, doctor_id, appointment_date, reason, is_out_of_hours, type, status) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            [patient_id, doctor_id, formattedDate, reason, false, type, 'pending'] // Default to pending if not specified
         );
         const appointmentId = result.insertId;
 
@@ -272,6 +325,13 @@ exports.deleteAppointment = async (req, res) => {
             await conn.query("DELETE FROM transactions WHERE appointment_id = ? AND status = 'pending'", [id]);
         }
 
+        // [NEW] Add to Recently Freed Slots (DB)
+        const apptMoment = new Date(appt.appointment_date);
+        const apptFormatted = apptMoment.toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace('T', ' ');
+
+        await conn.query("DELETE FROM recently_freed_slots WHERE doctor_id = ? AND slot_date = ?", [appt.doctor_id, apptFormatted]);
+        await conn.query("INSERT INTO recently_freed_slots (doctor_id, slot_date) VALUES (?, ?)", [appt.doctor_id, apptFormatted]);
+
 
         // --- Google Calendar Sync (Delete) ---
         if (appt.google_event_id) {
@@ -332,6 +392,68 @@ exports.updateAppointment = async (req, res) => {
         // Only change status to 'rescheduled' if the date/time actually changed
         const isReschedule = apptDate.getTime() !== oldDateObj.getTime();
         const newStatus = isReschedule ? 'rescheduled' : exists[0].status;
+
+        if (isReschedule) {
+            // [NEW] Add OLD date to Recently Freed Slots logic
+            const oldMoment = new Date(oldDate);
+            const oldFormatted = oldMoment.toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace('T', ' ');
+
+            await conn.query("DELETE FROM recently_freed_slots WHERE doctor_id = ? AND slot_date = ?", [exists[0].doctor_id, oldFormatted]);
+            await conn.query("INSERT INTO recently_freed_slots (doctor_id, slot_date) VALUES (?, ?)", [exists[0].doctor_id, oldFormatted]);
+
+            // [NEW] Check for Reserved Slot Overwrite on NEW date
+            const formattedNewDate = new Date(appointment_date).toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace('T', ' ');
+
+            // [NEW] Remove the NEW target slot from Recently Freed if it was there
+            await conn.query("DELETE FROM recently_freed_slots WHERE doctor_id = ? AND slot_date = ?", [exists[0].doctor_id, formattedNewDate]);
+
+            const existingReserved = await conn.query(
+                "SELECT id, doctor_id, appointment_date, patient_id, status, google_event_id FROM appointments WHERE doctor_id = ? AND appointment_date = ? AND status = 'reserved' AND id != ?",
+                [exists[0].doctor_id, formattedNewDate, id]
+            );
+
+            if (existingReserved.length > 0) {
+                const oldAppt = existingReserved[0];
+                const oldPatient = await conn.query("SELECT full_name FROM patients WHERE id = ?", [oldAppt.patient_id]);
+                const oldPatientName = oldPatient.length > 0 ? oldPatient[0].full_name : 'Paciente desconocido';
+
+                // 1. Move to overwritten list
+                await conn.query(
+                    "INSERT INTO overwritten_reservations (doctor_id, slot_date, patient_id, patient_name) VALUES (?, ?, ?, ?)",
+                    [oldAppt.doctor_id, oldAppt.appointment_date, oldAppt.patient_id, oldPatientName]
+                );
+
+                // 2. Delete the reserved appointment
+                await conn.query("DELETE FROM appointments WHERE id = ?", [oldAppt.id]);
+
+                // [NEW] 2b. Delete from Google Calendar if it was synced
+                if (oldAppt.google_event_id) {
+                    try {
+                        await googleController.deleteEventHelper(oldAppt.doctor_id, oldAppt.google_event_id, req.user.user_id);
+                        console.log(`[UpdateAppointment] Deleted corresponding Google Event ${oldAppt.google_event_id} for overwritten reservation.`);
+                    } catch (syncErr) {
+                        console.warn(`[UpdateAppointment] Failed to delete Google Event for overwritten reservation: ${syncErr.message}`);
+                    }
+                }
+
+                // 3. Log
+                await logAction(req.user.user_id, 'RESERVATION_OVERWRITTEN_BY_RESCHEDULE', `Reserva de ${oldPatientName} en ${oldAppt.appointment_date} fue desplazada por reprogramación de turno ID ${id}.`);
+
+                console.log(`[UpdateAppointment] Overwriting reserved slot ${oldAppt.id} due to reschedule of ${id}`);
+            }
+
+            // [NEW] Double Booking Check for Reschedule
+            const existingSlotVideo = await conn.query(
+                "SELECT id, status FROM appointments WHERE doctor_id = ? AND appointment_date = ? AND id != ?",
+                [exists[0].doctor_id, formattedNewDate, id] // Don't block self
+            );
+            if (existingSlotVideo.length > 0) {
+                const blocker = existingSlotVideo[0];
+                if (blocker.status !== 'reserved' && blocker.status !== 'cancelled' && blocker.status !== 'absent') {
+                    return res.status(400).send("Ya existe un turno confirmado en el nuevo horario.");
+                }
+            }
+        }
 
         await conn.query(
             "UPDATE appointments SET appointment_date = ?, reason = ?, status = ? WHERE id = ?",
@@ -447,6 +569,14 @@ exports.updateStatus = async (req, res) => {
         }
 
         if (['cancelled', 'absent', 'suspended'].includes(status)) {
+            // [NEW] Add to Recently Freed Slots (DB)
+            const appt = exists[0];
+            const apptMoment = new Date(appt.appointment_date);
+            const apptFormatted = apptMoment.toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace('T', ' ');
+
+            await conn.query("DELETE FROM recently_freed_slots WHERE doctor_id = ? AND slot_date = ?", [appt.doctor_id, apptFormatted]);
+            await conn.query("INSERT INTO recently_freed_slots (doctor_id, slot_date) VALUES (?, ?)", [appt.doctor_id, apptFormatted]);
+
             const pId = exists[0].patient_id;
             const isError = reason && (
                 reason.toLowerCase().includes('error') ||

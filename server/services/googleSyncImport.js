@@ -8,6 +8,9 @@ const googleController = require('../controllers/googleController');
 async function importFromGoogle() {
     let conn;
     try {
+        console.log("[GoogleImport] One-way Sync Enabled directly: SKIPPING IMPORT from Google.");
+        return; // [DISABLED] One-way Sync
+
         conn = await pool.getConnection();
 
         // Get all doctors with Google integration

@@ -66,12 +66,12 @@ function startSyncWorker(intervalMs = 300000) { // Default 5 minutes
 
     // Run immediately on start
     processSyncQueue();
-    importFromGoogle(); // Import from Google on start
+    // importFromGoogle(); // [DISABLED] One-way Sync: Do not download from Google
 
     // Schedule periodic execution
     setInterval(() => {
         processSyncQueue();
-        importFromGoogle(); // Import from Google every interval
+        // importFromGoogle(); // [DISABLED] One-way Sync: Do not download from Google
     }, intervalMs);
 }
 
