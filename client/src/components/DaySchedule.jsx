@@ -3,28 +3,10 @@ import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
 import { useConfig } from '../context/ConfigContext';
 
-const DaySchedule = ({ date, appointments, onSlotClick, onRatingChange, doctor, schedule, onWhatsAppConfirm }) => {
+const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule }) => {
     const { t } = useLanguage();
     const { confirm } = useModal();
     const { settings } = useConfig();
-
-    const calculateFinancialRating = (debt) => {
-        if (debt <= 0) return 5;
-        if (debt < 1000) return 4;
-        if (debt < 5000) return 3;
-        if (debt < 10000) return 2;
-        return 1;
-    };
-
-    const calculateAttendanceRating = (total, missed) => {
-        if (!total || total === 0) return 5;
-        const ratio = (total - missed) / total;
-        if (ratio >= 0.95) return 5;
-        if (ratio >= 0.85) return 4;
-        if (ratio >= 0.70) return 3;
-        if (ratio >= 0.50) return 2;
-        return 1;
-    };
 
     // Determine config based on schedule or defaults
     let startHour = 8;
@@ -172,20 +154,6 @@ const DaySchedule = ({ date, appointments, onSlotClick, onRatingChange, doctor, 
                                                 </span>
                                             </div>
 
-                                            {/* Col 4: Action */}
-                                            <div className="appt-actions">
-                                                {onWhatsAppConfirm && (
-                                                    <button onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        onWhatsAppConfirm(appt);
-                                                    }}
-                                                        className="p-1.5 bg-green-50 text-green-600 rounded-lg hover:bg-green-600 hover:text-white transition-all shadow-sm border border-green-100"
-                                                        title="WhatsApp"
-                                                    >
-                                                        📲
-                                                    </button>
-                                                )}
-                                            </div>
                                         </div>
                                     ))
                                 ) : (

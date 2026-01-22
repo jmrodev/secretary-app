@@ -669,18 +669,6 @@ const Appointments = () => {
         }
     };
 
-    const handleRatingChange = async (patientId, newRating) => {
-        if (user.role !== 'secretary' && user.role !== 'doctor') return;
-        try {
-            await api.put(`/users/patients/${patientId}`, { financial_rating: newRating });
-            // Optimistically update or refetch
-            setAppointments(prev => prev.map(app =>
-                app.patient_id === patientId ? { ...app, financial_rating: newRating } : app
-            ));
-        } catch (err) {
-            console.error("Failed to update rating", err);
-        }
-    };
 
     const handleWhatsAppSlot = (slot) => {
         const dateStr = new Date(slot.iso).toLocaleDateString();
@@ -1264,12 +1252,12 @@ const Appointments = () => {
                                             </div>
                                             <div className="flex gap-2 mt-2">
                                                 <button
-                                                    className={`btn btn-simple-white flex-1 ${showForm ? 'active' : ''}`}
+                                                    className={`btn-simple-white flex-1 ${showForm ? 'ring-2 ring-blue-200' : ''}`}
                                                     onClick={() => setShowForm(!showForm)}
                                                 >
                                                     {showForm ? <span>❌ Cancelar</span> : <span>✨ Nuevo Turno</span>}
                                                 </button>
-                                                <button className="btn btn-simple-white flex-1" onClick={() => {
+                                                <button className="btn-simple-white flex-1" onClick={() => {
                                                     setSlotHistory([]);
                                                     setCurrentSlotParams(null);
                                                     handleNextFreeSlot(null);
@@ -1283,10 +1271,8 @@ const Appointments = () => {
                                             date={selectedDate}
                                             appointments={currentDoctor ? filteredAppointments.filter(a => a.doctor_id === currentDoctor.id) : filteredAppointments}
                                             onSlotClick={handleSlotClick}
-                                            onRatingChange={handleRatingChange}
                                             doctor={currentDoctor}
                                             schedule={doctorSchedule}
-                                            onWhatsAppConfirm={handleWhatsAppConfirm}
                                         />
                                     </div>
                                 ) : (
