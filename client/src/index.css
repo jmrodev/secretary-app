@@ -1603,18 +1603,9 @@ input:checked+.slider:before {
 .time-slot {
   display: flex;
   align-items: flex-start;
-  gap: 1rem;
   min-height: 60px;
 }
 
-.time-label {
-  width: 50px;
-  text-align: right;
-  font-weight: 500;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  padding-top: 0.5rem;
-}
 
 .slot-content {
   flex: 1;

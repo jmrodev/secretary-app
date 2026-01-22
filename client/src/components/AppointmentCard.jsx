@@ -12,6 +12,12 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
             onClick={onClick}
             style={isExternal ? { borderLeft: '4px solid var(--amber-500)' } : {}}
         >
+            {/* Col 1: Time */}
+            <div className="appt-time-box">
+                <span className="text-sm font-bold text-main-900">
+                    {new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
+                </span>
+            </div>
 
             {/* Col 2: Info */}
             <div className="appt-info">

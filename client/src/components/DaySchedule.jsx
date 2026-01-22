@@ -133,9 +133,6 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule }) => {
 
                         return (
                             <div key={index} className="time-slot" style={slotStyle}>
-                                <div className="time-label">
-                                    {slot.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                </div>
                                 <div className="slot-content">
                                     {isOccupied ? (
                                         slotApps.map(appt => (
@@ -160,8 +157,8 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule }) => {
                                         >
                                             <span className="plus-icon">{isClosed ? '🚫' : '+'}</span>
                                             <div className="flex-between w-full">
-                                                <span>{isClosed ? (t('closed_hours') || 'Fuera de Horario') : (t('available') || 'Disponible')}</span>
-                                                <span className="text-[10px] opacity-70 font-mono">{slot.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                <span className="text-sm font-bold opacity-80 font-mono">{slot.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                <span className="text-xs">{isClosed ? (t('closed_hours') || 'Fuera de Horario') : (t('available') || 'Disponible')}</span>
                                             </div>
                                         </div>
                                     )}
