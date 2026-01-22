@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
 import Sidebar from '../components/Sidebar';
 import { formatPrice } from '../utils/format';
 
 const OfficeRentals = () => {
     const { t } = useLanguage();
+    const { showMessage } = useMessage();
     const [consultorios, setConsultorios] = useState([]);
     const [rentals, setRentals] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -17,7 +19,6 @@ const OfficeRentals = () => {
     const [date, setDate] = useState('');
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
-    const [message, setMessage] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -40,7 +41,6 @@ const OfficeRentals = () => {
 
     const handleRent = async (e) => {
         e.preventDefault();
-        setMessage('');
         try {
             await api.post('/consultorios/rent', {
                 consultorio_id: selectedOffice,
@@ -49,13 +49,11 @@ const OfficeRentals = () => {
                 end_time: endTime,
                 cost: 50.00 // Fixed cost for demo
             });
-            setMessage(t('rental_booked'));
-            // Refresh rentals
-            const rRes = await api.get('/consultorios/my-rentals');
             setRentals(rRes.data);
+            showMessage(t('rental_booked'), 'success');
         } catch (err) {
-            setMessage(t('failed_book_rental'));
             console.error(err);
+            showMessage(t('failed_book_rental'), 'error');
         }
     };
 
@@ -66,8 +64,6 @@ const OfficeRentals = () => {
             <Sidebar />
             <main className="main-content">
                 <h1 className="title">{t('office_rentals')}</h1>
-
-                {message && <div style={{ padding: '1rem', background: '#dcfce7', color: '#166534', borderRadius: '8px', marginBottom: '1rem' }}>{message}</div>}
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
                     {/* Booking Form (Doctors only) */}

@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect, Fragment, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
@@ -62,7 +62,6 @@ const Appointments = () => {
     const [reason, setReason] = useState('Consulta'); // Default reason
     const [bonified, setBonified] = useState(false); // [NEW] Bonificado
     const [type, setType] = useState('consultation'); // [NEW] Virtual/Consultation
-    const [type, setType] = useState('consultation'); // [NEW] Virtual/Consultation
 
     const [showForm, setShowForm] = useState(false);
     const [paymentModal, setPaymentModal] = useState({ open: false, initialData: {} });
@@ -83,6 +82,31 @@ const Appointments = () => {
     const [activeTab, setActiveTab] = useState('calendar'); // 'calendar' or 'holidays'
     const [slotHistory, setSlotHistory] = useState([]);
     const [currentSlotParams, setCurrentSlotParams] = useState(null);
+    const [includeOutOfHours, setIncludeOutOfHours] = useState(false); // [NEW] Toggle for out of hours
+    const [slotsPage, setSlotsPage] = useState(0); // [NEW] Pagination for next slots
+    const slotsPerPage = 8;
+
+    // [NEW] Adaptive Pagination: Group by Whole Days (Memoized)
+    const slotPages = useMemo(() => {
+        const pages = [];
+        let currentPageSlots = [];
+
+        if (nextSlotData && nextSlotData.results) {
+            nextSlotData.results.forEach(day => {
+                const daySlots = day.slots.map(slot => ({ ...slot, dayDate: day.date, dayName: day.dayName }));
+                currentPageSlots.push(...daySlots);
+
+                if (currentPageSlots.length >= slotsPerPage) {
+                    pages.push(currentPageSlots);
+                    currentPageSlots = [];
+                }
+            });
+            if (currentPageSlots.length > 0) {
+                pages.push(currentPageSlots);
+            }
+        }
+        return pages;
+    }, [nextSlotData, slotsPerPage]);
 
     const fetchAppointments = async () => {
         try {
@@ -576,11 +600,18 @@ const Appointments = () => {
 
             // WhatsApp Confirmation Prompt
             const isVirtual = type === 'virtual';
-            const template = (isVirtual && settings.appointment_confirmation_virtual_template)
+            let template = (isVirtual && settings.appointment_confirmation_virtual_template)
                 ? settings.appointment_confirmation_virtual_template
                 : settings.appointment_confirmation_template;
 
-            if (template && selectedPatientData && selectedPatientData.phone) {
+            // [FIX] Fallback Defaults if settings are empty
+            if (!template || !template.trim()) {
+                template = isVirtual
+                    ? `Hola {patient_name}, te confirmamos tu turno VIRTUAL para el día {date} a las {time} con el/la Dr/a. {doctor_name}.`
+                    : `Hola {patient_name}, te confirmamos tu turno del día {date} a las {time} con el/la Dr/a. {doctor_name} en {appointment_location}.`;
+            }
+
+            if (selectedPatientData && selectedPatientData.phone) {
                 const apptDateObj = new Date(date);
                 const dateStr = apptDateObj.toLocaleDateString();
                 const timeStr = apptDateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -605,6 +636,10 @@ const Appointments = () => {
                     phone: selectedPatientData.phone,
                     message: msg
                 });
+            } else {
+                // [FIX] Warn if no phone or data
+                console.warn("Skipping WhatsApp Modal: Missing phone or patient data", selectedPatientData);
+                showMessage("Turno creado, pero no se pudo generar mensaje de WhatsApp (Falta teléfono o datos).", "warning");
             }
 
             setReason('Consulta'); // Reset to default 'Consulta'
@@ -703,16 +738,18 @@ const Appointments = () => {
         });
     };
 
-    const handleNextFreeSlot = async (startDate = null) => {
+    const handleNextFreeSlot = async (startDate = null, overrideOutOfHours = null) => {
         const docId = viewDoctorId || selectedDoctor;
         if (!docId) {
             showMessage("Por favor, selecciona un médico primero para buscar turnos.", 'warning');
             return;
         }
 
+        const useOutOfHours = overrideOutOfHours !== null ? overrideOutOfHours : includeOutOfHours;
+
         try {
             setLoading(true);
-            const params = { doctor_id: docId };
+            const params = { doctor_id: docId, include_out_of_hours: useOutOfHours };
             // If startDate is passed (for pagination)
             if (startDate && typeof startDate === 'string') params.start_date = startDate;
 
@@ -721,9 +758,18 @@ const Appointments = () => {
 
             if (res.data && res.data.results && res.data.results.length > 0) {
                 setNextSlotData(res.data); // Store full response { results: [], nextStartDate: '' }
+                setSlotsPage(0); // Reset pagination
                 setShowNextSlotModal(true);
             } else {
-                showMessage("No se encontraron más turnos libres en el rango analizado.", 'info');
+                if (useOutOfHours) {
+                    showMessage("No se encontraron turnos libres (ni siquiera fuera de horario).", 'info');
+                } else {
+                    showMessage("No se encontraron turnos libres. Prueba activando 'Fuera de Horario'.", 'info');
+                }
+                // Keep modal open if we just toggled, or if we want to show empty state with toggle available
+                if (showNextSlotModal) {
+                    setNextSlotData({ results: [] }); // Clear results but keep modal open to toggle back
+                }
             }
         } catch (err) {
             setLoading(false);
@@ -744,7 +790,8 @@ const Appointments = () => {
         setShowForm(true);
     };
 
-    const handleWhatsAppConfirm = (appt) => {
+
+    const handleWhatsAppConfirm = async (appt) => {
         let phone = appt.patient_phone;
 
         if (!phone) {
@@ -785,7 +832,8 @@ const Appointments = () => {
             .replace(/{secretary_name}/g, user.name || 'Secretaria');
 
         // Copy to clipboard
-        copyToClipboard(message).then(() => {
+        try {
+            await copyToClipboard(message);
             showMessage("Texto copiado! Abriendo WhatsApp...", "success");
 
             phone = phone.replace(/\D/g, '');
@@ -812,7 +860,75 @@ const Appointments = () => {
                 window.location.href = appUrl;
 
                 // 2. Fallback to Web if App doesn't capture it (simple timeout-based fallback)
-                // We increase timeout to 2.5s to give the user time to say 'Open' if prompted
+                setTimeout(() => {
+                    window.open(webUrl, '_blank');
+                }, 2500);
+            }
+        } catch (err) {
+            console.error("Failed to copy", err);
+            showMessage("Error al copiar texto", "error");
+        }
+    };
+
+    const handleWhatsAppCreated = (appt) => {
+        let phone = appt.patient_phone;
+
+        if (!phone) {
+            // Heuristic for reason phone
+            const phoneMatch = appt.reason?.match(/\d{9,13}/);
+            if (phoneMatch) {
+                phone = phoneMatch[0];
+            } else {
+                showMessage("No phone number available.", "error");
+                return;
+            }
+        }
+
+        const dateStr = new Date(appt.appointment_date).toLocaleDateString();
+        const timeStr = new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+
+        const isVirtual = appt.type === 'virtual';
+        // USE CONFIRMATION TEMPLATE (CREATED) INSTEAD OF REMINDER
+        let messageTemplate = isVirtual ? settings.appointment_confirmation_virtual_template : settings.appointment_confirmation_template;
+
+        if (!messageTemplate || !messageTemplate.trim()) {
+            messageTemplate = isVirtual
+                ? `Hola {patient_name}, te confirmamos tu turno VIRTUAL para el día {date} a las {time} con el/la Dr/a. {doctor_name}.`
+                : `Hola {patient_name}, te confirmamos tu turno del día {date} a las {time} con el/la Dr/a. {doctor_name} en {appointment_location}.`;
+        }
+
+        const doctor = doctors.find(d => d.id === appt.doctor_id);
+        const apptPrice = isVirtual ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0);
+        const address = isVirtual ? 'Virtual (Cima Salud)' : (settings.clinic_address || 'Montiel 1255');
+
+        const message = messageTemplate
+            .replace(/{patient_name}/g, appt.patient_name || appt.reason)
+            .replace(/{date}/g, dateStr)
+            .replace(/{time}/g, timeStr)
+            .replace(/{doctor_name}/g, appt.doctor_name)
+            .replace(/{appointment_type}/g, isVirtual ? 'VIRTUAL' : 'PRESENCIAL')
+            .replace(/{appointment_location}/g, address)
+            .replace(/{price}/g, new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(apptPrice))
+            .replace(/{secretary_name}/g, user.name || 'Secretaria');
+
+        // Copy
+        copyToClipboard(message).then(() => {
+            showMessage("Comprobante copiado! Abriendo WhatsApp...", "success");
+
+            phone = phone.replace(/\D/g, '');
+            if (!phone.startsWith('54') && phone.length >= 10) {
+                phone = '549' + phone;
+            }
+
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+            if (isMobile) {
+                window.location.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            } else {
+                const appUrl = `whatsapp://send?phone=${phone}&text=${encodeURIComponent(message)}`;
+                const webUrl = `https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
+
+                window.location.href = appUrl;
                 setTimeout(() => {
                     window.open(webUrl, '_blank');
                 }, 2500);
@@ -865,19 +981,7 @@ const Appointments = () => {
 
                     {/* Moved Action Buttons Here */}
                     <div className="action-bar-buttons-container">
-                        <button
-                            className={`btn ${showForm ? 'btn-secondary' : viewDoctorId ? 'd-accent' : 'btn-primary'}`}
-                            onClick={() => setShowForm(!showForm)}
-                        >
-                            {showForm ? <span>❌ Cancelar</span> : <span>✨ Nuevo Turno</span>}
-                        </button>
-                        <button className="btn btn-outline-primary btn-sm-icon" onClick={() => {
-                            setSlotHistory([]);
-                            setCurrentSlotParams(null);
-                            handleNextFreeSlot(null);
-                        }} title="Próximo turno libre">
-                            <span>🔍</span> Próximo Libre
-                        </button>
+                        {/* Buttons moved to Schedule Header */}
                     </div>
                 </div>
 
@@ -1103,6 +1207,15 @@ const Appointments = () => {
                                                                 >
                                                                     📲
                                                                 </button>
+                                                                <button onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleWhatsAppCreated(a);
+                                                                }}
+                                                                    className="p-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all shadow-sm border border-blue-100"
+                                                                    title="Enviar comprobante de turno (Confirmación)"
+                                                                >
+                                                                    ✨
+                                                                </button>
                                                             </div>
                                                         </div>
                                                     </Fragment>
@@ -1148,6 +1261,21 @@ const Appointments = () => {
                                                         setEditPatientModalOpen(true);
                                                     }}
                                                 />
+                                            </div>
+                                            <div className="flex gap-2 mt-2">
+                                                <button
+                                                    className={`btn btn-simple-white flex-1 ${showForm ? 'active' : ''}`}
+                                                    onClick={() => setShowForm(!showForm)}
+                                                >
+                                                    {showForm ? <span>❌ Cancelar</span> : <span>✨ Nuevo Turno</span>}
+                                                </button>
+                                                <button className="btn btn-simple-white flex-1" onClick={() => {
+                                                    setSlotHistory([]);
+                                                    setCurrentSlotParams(null);
+                                                    handleNextFreeSlot(null);
+                                                }} title="Próximo turno libre">
+                                                    <span>🔍</span> Próximo Libre
+                                                </button>
                                             </div>
                                         </div>
 
@@ -1734,6 +1862,28 @@ const Appointments = () => {
                     size="lg"
                 >
                     <div className="flex flex-col gap-6 max-h-[75vh] overflow-y-auto custom-scrollbar p-2">
+                        <div className="flex justify-end px-2">
+                            <label className="flex items-center gap-2 cursor-pointer select-none bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-100 hover:bg-amber-100 transition-colors">
+                                <input
+                                    type="checkbox"
+                                    className="w-4 h-4 text-amber-600 rounded focus:ring-amber-500 border-gray-300"
+                                    checked={includeOutOfHours}
+                                    onChange={(e) => {
+                                        const newVal = e.target.checked;
+                                        setIncludeOutOfHours(newVal);
+                                        // Refetch with new setting immediately from scratch (or currentParams?)
+                                        // Usually better to start fresh or keep pagination? Let's keep pagination if logical, but maybe simpler to start fresh search
+                                        // If we are deep paginating, maybe reset to null (today)?
+                                        // Let's reset to ensure we find earlier slots that might have been skipped
+                                        setSlotHistory([]);
+                                        setCurrentSlotParams(null);
+                                        handleNextFreeSlot(null, newVal);
+                                    }}
+                                />
+                                <span className="text-sm font-bold text-amber-800">🔓 Mostrar fuera de horario (08:00 - 21:00)</span>
+                            </label>
+                        </div>
+
                         {!nextSlotData?.results ? (
                             <div className="text-center p-12 text-main-500 flex flex-col items-center gap-3">
                                 <div className="loading-spinner-small"></div>
@@ -1750,20 +1900,23 @@ const Appointments = () => {
                                     </thead>
                                     <tbody className="divide-y divide-slate-50">
                                         {(() => {
-                                            let lastMonth = '';
                                             const monthNames = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
                                             const todayIso = new Date().toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).split(' ')[0];
 
-                                            return nextSlotData.results.map((day, dayIndex) => {
-                                                const [y, m, d] = day.date.split('-');
-                                                const isToday = day.date === todayIso;
+                                            // [NEW] Use memoized pages
+                                            const currentSlots = slotPages.length > 0 ? slotPages[Math.min(slotsPage, slotPages.length - 1)] : [];
+
+                                            return currentSlots.map((slot, index) => {
+                                                const [y, m, d] = slot.dayDate.split('-');
+                                                const isToday = slot.dayDate === todayIso;
                                                 const monthLabel = `${monthNames[parseInt(m) - 1]} ${y}`;
 
-                                                const showMonthHeader = monthLabel !== lastMonth;
-                                                if (showMonthHeader) lastMonth = monthLabel;
+                                                const prevSlot = index > 0 ? currentSlots[index - 1] : null;
+                                                const showDayHeader = !prevSlot || prevSlot.dayDate !== slot.dayDate;
+                                                const showMonthHeader = !prevSlot || (monthLabel !== `${monthNames[parseInt(prevSlot.dayDate.split('-')[1]) - 1]} ${prevSlot.dayDate.split('-')[0]}`);
 
                                                 return (
-                                                    <Fragment key={day.date}>
+                                                    <Fragment key={`${slot.dayDate}-${slot.iso}-${index}`}>
                                                         {showMonthHeader && (
                                                             <tr className="bg-slate-900 border-y border-slate-800">
                                                                 <td colSpan="2" className="px-5 py-2 text-center">
@@ -1773,51 +1926,54 @@ const Appointments = () => {
                                                                 </td>
                                                             </tr>
                                                         )}
-                                                        <tr className="bg-slate-50/80">
-                                                            <td colSpan="2" className="px-5 py-2 border-b border-slate-100">
-                                                                <div className="flex items-center gap-2">
-                                                                    <span className="text-[10px] font-black text-main-600 uppercase tracking-widest">
-                                                                        📅 {day.dayName}
-                                                                    </span>
-                                                                    {isToday && (
-                                                                        <span className="text-[8px] bg-blue-600 text-white px-1.5 py-0.5 rounded-full font-black uppercase">HOY</span>
-                                                                    )}
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                        {day.slots.map((slot, i) => (
-                                                            <tr key={`${day.date}-${i}`} className="group hover:bg-slate-50/50 transition-colors">
-                                                                <td className="px-5 py-4">
+                                                        {showDayHeader && (
+                                                            <tr className="bg-slate-100">
+                                                                <td colSpan="2" className="px-5 py-2 border-b border-slate-200">
                                                                     <div className="flex items-center gap-2">
-                                                                        <span className="text-sm font-black text-main-900 leading-none">
-                                                                            {slot.time}
+                                                                        <span className="text-[11px] font-black text-main-700 uppercase tracking-widest">
+                                                                            📅 {slot.dayName}
                                                                         </span>
-                                                                        {slot.is_break && (
-                                                                            <span className="text-[8px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full font-black uppercase border border-amber-200">EXT</span>
+                                                                        {isToday && (
+                                                                            <span className="text-[9px] bg-blue-600 text-white px-1.5 py-0.5 rounded-full font-black uppercase">HOY</span>
                                                                         )}
                                                                     </div>
                                                                 </td>
-                                                                <td className="px-5 py-4 text-right">
-                                                                    <div className="flex items-center justify-end gap-3">
-                                                                        <button
-                                                                            className="w-10 h-10 flex items-center justify-center rounded-full bg-green-50 text-green-600 hover:bg-green-600 hover:text-white transition-all border border-green-100 shadow-sm"
-                                                                            onClick={(e) => { e.stopPropagation(); handleWhatsAppSlot({ ...slot, dayName: day.dayName }); }}
-                                                                            title="Compartir por WhatsApp"
-                                                                        >
-                                                                            <svg xmlns="http://www.w3.org/2001/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                                                                <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z" />
-                                                                            </svg>
-                                                                        </button>
-                                                                        <button
-                                                                            className="px-5 py-2.5 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-black transition-all shadow-md active:scale-95"
-                                                                            onClick={() => confirmNextSlot(slot.iso)}
-                                                                        >
-                                                                            Seleccionar
-                                                                        </button>
-                                                                    </div>
-                                                                </td>
                                                             </tr>
-                                                        ))}
+                                                        )}
+                                                        <tr className={`group transition-colors ${slot.is_out_of_hours ? 'bg-amber-50/70 hover:bg-amber-100/50' : 'hover:bg-slate-50/50'}`}>
+                                                            <td className="px-5 py-4">
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className={`text-sm font-black leading-none ${slot.is_out_of_hours ? 'text-amber-800' : 'text-main-900'}`}>
+                                                                        {slot.time}
+                                                                    </span>
+                                                                    {slot.is_break && (
+                                                                        <span className="text-[8px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full font-black uppercase border border-amber-200">EXT</span>
+                                                                    )}
+                                                                    {slot.is_out_of_hours && (
+                                                                        <span className="text-[8px] bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded-full font-black uppercase border border-orange-200">EXTRA</span>
+                                                                    )}
+                                                                </div>
+                                                            </td>
+                                                            <td className="px-5 py-4 text-right">
+                                                                <div className="flex items-center justify-end gap-3">
+                                                                    <button
+                                                                        className="w-10 h-10 flex items-center justify-center rounded-full bg-green-50 text-green-600 hover:bg-green-600 hover:text-white transition-all border border-green-100 shadow-sm"
+                                                                        onClick={(e) => { e.stopPropagation(); handleWhatsAppSlot({ ...slot, dayName: slot.dayName }); }}
+                                                                        title="Compartir por WhatsApp"
+                                                                    >
+                                                                        <svg xmlns="http://www.w3.org/2001/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                                                            <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z" />
+                                                                        </svg>
+                                                                    </button>
+                                                                    <button
+                                                                        className={`px-5 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-md active:scale-95 ${slot.is_out_of_hours ? 'bg-amber-600 text-white hover:bg-amber-700' : 'bg-slate-900 text-white hover:bg-black'}`}
+                                                                        onClick={() => confirmNextSlot(slot.iso)}
+                                                                    >
+                                                                        Seleccionar
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
                                                     </Fragment>
                                                 );
                                             });
@@ -1826,9 +1982,30 @@ const Appointments = () => {
                                 </table>
                             </div>
                         )}
+                        {/* Pagination Controls */}
+                        {nextSlotData?.results && (
+                            <div className="flex justify-between items-center px-2">
+                                <button
+                                    className="btn btn-sm btn-secondary"
+                                    onClick={() => setSlotsPage(p => Math.max(0, p - 1))}
+                                    disabled={slotsPage === 0}
+                                >
+                                    ⬅️ Anterior
+                                </button>
+                                <span className="text-xs font-bold text-slate-500">Página {slotsPage + 1}</span>
+                                <button
+                                    className="btn btn-sm btn-secondary"
+                                    onClick={() => setSlotsPage(p => p + 1)}
+                                    // Robust check using memoized length
+                                    disabled={slotsPage >= slotPages.length - 1}
+                                >
+                                    Siguiente ➡️
+                                </button>
+                            </div>
+                        )}
 
-                        <div className="flex items-center gap-4 mt-4 px-2">
-                            {slotHistory.length > 0 && (
+                        <div className="flex items-center gap-4 mt-2 px-2">
+                            {/* Footer Buttons (Previous History etc) */}                            {slotHistory.length > 0 && (
                                 <button
                                     className="flex-1 btn btn-secondary py-5 flex flex-col items-center gap-1 rounded-2xl border-2 hover:bg-slate-50 transition-all font-bold"
                                     onClick={() => {

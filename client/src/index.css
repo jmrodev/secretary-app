@@ -4173,3 +4173,15 @@ input:checked+.slider:before {
   opacity: 0;
   z-index: -1;
 }
+.btn-simple-white {
+    background-color: white;
+    border: 1px solid var(--gray-800);
+    color: var(--gray-900);
+    font-weight: 500;
+    box-shadow: none;
+    padding: 0.5rem 1rem;
+}
+.btn-simple-white:hover {
+    background-color: var(--gray-100);
+    border-color: black;
+}

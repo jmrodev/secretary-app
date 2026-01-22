@@ -1,10 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
+import { useMessage } from '../context/MessageContext';
 import { useModal } from '../context/ModalContext';
 import axios from 'axios';
 
 const Messages = () => {
     const { user } = useAuth();
+    const { showMessage } = useMessage();
     const { alert } = useModal();
     const [conversations, setConversations] = useState([]);
     const [selectedConvo, setSelectedConvo] = useState(null);
@@ -127,7 +130,7 @@ const Messages = () => {
             loadConversations();
         } catch (err) {
             console.error('Error sending message:', err);
-            alert('Error al enviar mensaje');
+            showMessage('Error al enviar mensaje', 'error');
         } finally {
             setSending(false);
         }

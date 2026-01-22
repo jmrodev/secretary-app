@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useMessage } from '../context/MessageContext';
 import api from '../api/axios';
 
 const FloatingChat = () => {
     const { user } = useAuth();
+    const { showMessage } = useMessage();
     const [isOpen, setIsOpen] = useState(false);
     const [selectedConvo, setSelectedConvo] = useState(null);
     const [conversations, setConversations] = useState([]);
@@ -178,6 +180,7 @@ const FloatingChat = () => {
             loadConversations();
         } catch (err) {
             console.error('Error sending message:', err);
+            showMessage('Error al enviar mensaje', 'error');
         } finally {
             setSending(false);
         }

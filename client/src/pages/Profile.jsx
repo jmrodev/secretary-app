@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
 import CurrencyInput from '../components/CurrencyInput';
 import Sidebar from '../components/Sidebar';
@@ -9,9 +10,9 @@ import PhoneNumbersManager from '../components/PhoneNumbersManager';
 const Profile = () => {
     const { user } = useAuth();
     const { t } = useLanguage();
+    const { showMessage } = useMessage();
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [message, setMessage] = useState('');
 
     // Editable fields
     const [fullName, setFullName] = useState('');
@@ -47,7 +48,6 @@ const Profile = () => {
 
     const handleUpdate = async (e) => {
         e.preventDefault();
-        setMessage('');
         try {
             await api.put('/users/profile', {
                 full_name: fullName,
@@ -57,10 +57,10 @@ const Profile = () => {
                 dni,
                 insurance
             });
-            setMessage(t('profile_updated'));
+            showMessage(t('profile_updated'), 'success');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } catch (err) {
-            setMessage(t('failed_update_profile'));
+            showMessage(t('failed_update_profile'), 'error');
             console.error(err);
         }
     };
@@ -104,6 +104,7 @@ const Profile = () => {
         <div className="app-layout">
             <Sidebar />
             <main className="main-content">
+
                 {/* Header Banner */}
                 <div className="header-banner">
                     <div className="flex items-center gap-6 relative z-10">
@@ -121,13 +122,6 @@ const Profile = () => {
                         </div>
                     </div>
                 </div>
-
-                {message && (
-                    <div className={`p-4 rounded-xl mb-6 flex items-center gap-3 shadow-sm ${message.includes('Failed') ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-green-50 text-green-700 border border-green-200'}`}>
-                        <span className="text-xl">{message.includes('Failed') ? '⚠️' : '✅'}</span>
-                        <span className="font-medium">{message}</span>
-                    </div>
-                )}
 
                 <form onSubmit={handleUpdate}>
                     <div className="item-grid">

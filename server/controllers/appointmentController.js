@@ -1060,9 +1060,19 @@ exports.getFreeSlotsBatch = async (req, res) => {
             }
 
             // Get Schedule from Cache
-            const dayBlocks = schedulesAll
-                .filter(s => s.day_of_week === dayOfWeek)
-                .sort((a, b) => a.start_time.localeCompare(b.start_time));
+            let dayBlocks = [];
+            if (req.query.include_out_of_hours === 'true') {
+                // Synthetic block 08:00 - 21:00
+                dayBlocks = [{
+                    start_time: '08:00:00',
+                    end_time: '21:00:00',
+                    is_break: 0
+                }];
+            } else {
+                dayBlocks = schedulesAll
+                    .filter(s => s.day_of_week === dayOfWeek)
+                    .sort((a, b) => a.start_time.localeCompare(b.start_time));
+            }
 
             if (dayBlocks.length > 0) {
                 const daySlots = [];
@@ -1098,10 +1108,37 @@ exports.getFreeSlotsBatch = async (req, res) => {
                             });
 
                         if (!isBusy) {
+                            // [NEW] Calculate is_out_of_hours
+                            // It is out of hours if it does NOT intersect/cover any of the REAL blocks for this day.
+                            let isOutOfHours = false;
+
+                            if (req.query.include_out_of_hours === 'true') {
+                                // Re-parse standard day blocks for validation
+                                const standardDayBlocks = schedulesAll
+                                    .filter(s => s.day_of_week === dayOfWeek)
+                                    .sort((a, b) => a.start_time.localeCompare(b.start_time));
+
+                                // Check if this slot fits in any standard block
+                                const fitsInStandard = standardDayBlocks.some(sb => {
+                                    const [sbSh, sbSm] = sb.start_time.split(':');
+                                    const sbStart = new Date(currentDay); sbStart.setHours(sbSh, sbSm, 0, 0);
+
+                                    const [sbEh, sbEm] = sb.end_time.split(':');
+                                    const sbEnd = new Date(currentDay); sbEnd.setHours(sbEh, sbEm, 0, 0);
+
+                                    // Slot must be fully contained (or at least valid start?)
+                                    // Let's say valid start is enough for availability logic usually, but here we want strict containment
+                                    return (slotStartMs >= sbStart.getTime() && (slotStartMs + duration * 60000) <= sbEnd.getTime());
+                                });
+
+                                isOutOfHours = !fitsInStandard;
+                            }
+
                             daySlots.push({
                                 time: timeCursor.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                                 iso: timeCursor.toISOString(),
-                                is_break: block.is_break === 1
+                                is_break: block.is_break === 1,
+                                is_out_of_hours: isOutOfHours
                             });
                         }
                         timeCursor = new Date(timeCursor.getTime() + duration * 60000);
