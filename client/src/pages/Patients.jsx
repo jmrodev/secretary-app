@@ -200,14 +200,11 @@ const Patients = () => {
                     />
                 ) : (
                     // Simple inline Recycle Bin for now (can be extracted)
-                    <div className="card">
-                        <h3>Recycle Bin (Pending Refactor)</h3>
-                        <p>Logic from original file to be migrated.</p>
-                        {/* 
-                            TODO: Implement PatientRecycleBin organism if needed. 
-                            For now keeping consistent with step-by-step refactor. 
-                        */}
-                    </div>
+                    <PatientRecycleBin
+                        recycleItems={recycleItems}
+                        loading={loading}
+                        onRestore={() => alert("Restore function pending implementation in controller")}
+                    />
                 )}
 
                 {/* Global Modals */}
