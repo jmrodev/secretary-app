@@ -1,5 +1,5 @@
 import React from 'react';
-import { useProfileController } from '../hooks/useProfileController';
+import { useProfileController } from '../controllers/useProfileController';
 import Sidebar from '../components/organisms/Sidebar';
 import PhoneNumbersManager from '../components/molecules/PhoneNumbersManager';
 import Button from '../components/atoms/Button';

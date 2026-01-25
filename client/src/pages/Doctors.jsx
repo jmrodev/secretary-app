@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useDoctorsPageController } from '../hooks/useDoctorsPageController';
+import { useDoctorsPageController } from '../controllers/useDoctorsPageController';
 
 // Atomic Design Components
 import Input from '../components/atoms/Input';

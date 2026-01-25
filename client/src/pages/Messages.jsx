@@ -1,5 +1,5 @@
 import React from 'react';
-import { useMessagesPageController } from '../hooks/useMessagesPageController';
+import { useMessagesPageController } from '../controllers/useMessagesPageController';
 import ChatSidebar from '../components/organisms/ChatSidebar';
 import ChatWindow from '../components/organisms/ChatWindow';
 

@@ -1,53 +1,44 @@
-import { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { useLanguage } from '../context/LanguageContext';
-import { useNavigate, Link } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useRegisterController } from '../controllers/useRegisterController';
 import Button from '../components/atoms/Button';
 
+/**
+ * Register Page Component.
+ * Refactored to follow BEM methodology and Atomic Design.
+ */
 const Register = () => {
-    const { register } = useAuth();
-    const navigate = useNavigate();
-    const { t } = useLanguage();
-    const [formData, setFormData] = useState({
-        username: '',
-        password: '',
-        fullName: '',
-        role: 'patient', // default
-        phone: '',
-        specialty: '', // for doctor
-        cbu: '', // for doctor
-        dob: '', // for patient
-        address: '', // for patient
-        medicalHistory: '' // for patient
-    });
-    const [error, setError] = useState('');
-
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-        const success = await register(formData);
-        if (success) {
-            navigate('/dashboard');
-        } else {
-            setError('Registration failed. Try again.');
-        }
-    };
+    const {
+        formData,
+        handleChange,
+        handleSubmit,
+        error,
+        loading,
+        t
+    } = useRegisterController();
 
     return (
-        <div className="auth-page">
-            <div className="card auth-card max-w-500">
-                <h2 className="title text-center">{t('create_account')}</h2>
+        <div className="auth-layout auth-layout--hero">
+            <div className="auth-layout__overlay"></div>
 
-                {error && <div className="alert-box alert-error text-center">{error}</div>}
+            <main className="auth-card">
+                <header className="auth-card__header">
+                    <h1 className="auth-card__title">{t('create_account')}</h1>
+                    <p className="auth-card__subtitle">Completa el formulario para unirte.</p>
+                </header>
 
-                <form onSubmit={handleSubmit}>
+                {error && <div className="auth-card__error">{error}</div>}
+
+                <form className="auth-card__form" onSubmit={handleSubmit}>
                     <div className="input-group">
                         <label className="input-label">{t('i_am')}</label>
-                        <select name="role" className="input-field" value={formData.role} onChange={handleChange}>
+                        <select
+                            name="role"
+                            className="input-field"
+                            value={formData.role}
+                            onChange={handleChange}
+                            disabled={loading}
+                        >
                             <option value="patient">{t('patient')}</option>
                             <option value="doctor">{t('doctor')}</option>
                             <option value="secretary">{t('secretary')}</option>
@@ -56,56 +47,116 @@ const Register = () => {
 
                     <div className="input-group">
                         <label className="input-label">{t('full_name')}</label>
-                        <input name="fullName" className="input-field" onChange={handleChange} required />
+                        <input
+                            name="fullName"
+                            className="input-field"
+                            value={formData.fullName}
+                            onChange={handleChange}
+                            placeholder="Nombre completo"
+                            disabled={loading}
+                            required
+                        />
                     </div>
 
                     <div className="input-group">
                         <label className="input-label">{t('dni')}</label>
-                        <input name="dni" className="input-field" onChange={handleChange} required />
+                        <input
+                            name="dni"
+                            className="input-field"
+                            value={formData.dni}
+                            onChange={handleChange}
+                            placeholder="DNI"
+                            disabled={loading}
+                            required
+                        />
                     </div>
 
                     <div className="input-group">
                         <label className="input-label">{t('username')}</label>
-                        <input name="username" className="input-field" onChange={handleChange} required />
+                        <input
+                            name="username"
+                            className="input-field"
+                            value={formData.username}
+                            onChange={handleChange}
+                            placeholder="Usuario"
+                            disabled={loading}
+                            required
+                        />
                     </div>
 
                     <div className="input-group">
                         <label className="input-label">{t('password')}</label>
-                        <input type="password" name="password" className="input-field" onChange={handleChange} required />
+                        <input
+                            type="password"
+                            name="password"
+                            className="input-field"
+                            value={formData.password}
+                            onChange={handleChange}
+                            placeholder="••••••••"
+                            disabled={loading}
+                            required
+                        />
                     </div>
 
                     {/* Role specific fields */}
                     {formData.role === 'doctor' && (
-                        <>
+                        <div className="animate-fadeIn">
                             <div className="input-group">
                                 <label className="input-label">{t('specialty')}</label>
-                                <input name="specialty" className="input-field" onChange={handleChange} />
+                                <input
+                                    name="specialty"
+                                    className="input-field"
+                                    value={formData.specialty}
+                                    onChange={handleChange}
+                                    placeholder="Especialidad médica"
+                                    disabled={loading}
+                                />
                             </div>
                             <div className="input-group">
                                 <label className="input-label">{t('cbu')}</label>
-                                <input name="cbu" className="input-field" onChange={handleChange} />
+                                <input
+                                    name="cbu"
+                                    className="input-field"
+                                    value={formData.cbu}
+                                    onChange={handleChange}
+                                    placeholder="CBU para transferencias"
+                                    disabled={loading}
+                                />
                             </div>
-                        </>
+                        </div>
                     )}
 
                     {formData.role === 'patient' && (
-                        <>
-                            <div className="input-group">
-                                <label className="input-label">{t('dob')}</label>
-                                <input type="date" name="dob" className="input-field" onChange={handleChange} />
-                            </div>
-                        </>
+                        <div className="input-group animate-fadeIn">
+                            <label className="input-label">{t('dob')}</label>
+                            <input
+                                type="date"
+                                name="dob"
+                                className="input-field"
+                                value={formData.dob}
+                                onChange={handleChange}
+                                disabled={loading}
+                            />
+                        </div>
                     )}
 
-                    <Button type="submit" variant="accent" className="w-full">
-                        {t('register')}
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        className="w-full mt-4"
+                        disabled={loading}
+                    >
+                        {loading ? 'Preparando todo...' : t('register')}
                     </Button>
                 </form>
-                <div className="text-center mt-6">
-                    <span className="subtitle">{t('already_account')} </span>
-                    <Link to="/login" className="link-primary font-bold no-underline">{t('login')}</Link>
-                </div>
-            </div>
+
+                <footer className="auth-card__footer">
+                    <p className="auth-card__footer-text">
+                        {t('already_account')}
+                        <Link to="/login" className="auth-card__link">{t('login')}</Link>
+                    </p>
+                </footer>
+            </main>
         </div>
     );
 };

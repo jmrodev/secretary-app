@@ -1,0 +1,49 @@
+import React from 'react';
+
+/**
+ * Molecule component to display various page statuses (Loading, Error, Success).
+ * Uses BEM naming convention.
+ */
+const StatusDisplay = ({
+    type = 'loading', // 'loading' | 'error' | 'success'
+    title,
+    message,
+    icon
+}) => {
+    const renderContent = () => {
+        switch (type) {
+            case 'error':
+                return (
+                    <div className="status-display status-display--error">
+                        <div className="status-display__icon">{icon || '⚠️'}</div>
+                        <h2 className="status-display__title">{title || 'Error'}</h2>
+                        <p className="status-display__message">{message}</p>
+                    </div>
+                );
+            case 'success':
+                return (
+                    <div className="status-display status-display--success">
+                        <div className="status-display__icon">{icon || '✅'}</div>
+                        <h2 className="status-display__title">{title || 'Completado'}</h2>
+                        <p className="status-display__message">{message}</p>
+                    </div>
+                );
+            case 'loading':
+            default:
+                return (
+                    <div className="status-display status-display--loading">
+                        <div className="status-display__spinner"></div>
+                        <p className="status-display__message">{message || 'Cargando...'}</p>
+                    </div>
+                );
+        }
+    };
+
+    return (
+        <div className="status-display-container">
+            {renderContent()}
+        </div>
+    );
+};
+
+export default StatusDisplay;

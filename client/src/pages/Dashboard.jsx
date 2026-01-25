@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDashboardController } from '../hooks/useDashboardController';
+import { useDashboardController } from '../controllers/useDashboardController';
 import Button from '../components/atoms/Button';
 import Sidebar from '../components/organisms/Sidebar';
 import RequirementsList from '../components/organisms/RequirementsList';

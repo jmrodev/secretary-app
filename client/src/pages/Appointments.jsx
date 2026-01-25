@@ -1,6 +1,8 @@
 
 import React, { Fragment } from 'react';
-import { useAppointmentsPageController } from '../hooks/useAppointmentsPageController';
+import { useNavigate } from 'react-router-dom';
+import { useAppointmentsPageController } from '../controllers/useAppointmentsPageController';
+import Button from '../components/atoms/Button';
 
 // Components
 import CalendarSection from '../components/organisms/CalendarSection';
@@ -25,6 +27,7 @@ import UpcomingAppointmentsView from '../components/organisms/UpcomingAppointmen
 import PatientSearchSelect from '../components/molecules/PatientSearchSelect';
 
 const Appointments = () => {
+    const navigate = useNavigate();
     // Logic extracted to Custom Hook (Controller)
     const controller = useAppointmentsPageController();
     const {

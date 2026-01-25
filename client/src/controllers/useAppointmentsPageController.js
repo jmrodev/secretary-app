@@ -8,14 +8,14 @@ import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
 import { useConfig } from '../context/ConfigContext';
 
-import { useAppointments } from './useAppointments';
-import { useHolidays } from './useHolidays';
-import { useNextFreeSlot } from './useNextFreeSlot';
-import { useAppointmentBooking } from './useAppointmentBooking';
-import { useWhatsAppUniversal } from './useWhatsAppUniversal';
-import { useGoogleEvents } from './useGoogleEvents';
-import { usePatientSearch } from './usePatientSearch';
-import { useAppointmentsHandlers } from './useAppointmentsHandlers';
+import { useAppointments } from '../hooks/useAppointments';
+import { useHolidays } from '../hooks/useHolidays';
+import { useNextFreeSlot } from '../hooks/useNextFreeSlot';
+import { useAppointmentBooking } from '../hooks/useAppointmentBooking';
+import { useWhatsAppUniversal } from '../hooks/useWhatsAppUniversal';
+import { useGoogleEvents } from '../hooks/useGoogleEvents';
+import { usePatientSearch } from '../hooks/usePatientSearch';
+import { useAppointmentsHandlers } from '../hooks/useAppointmentsHandlers';
 import { copyToClipboard } from '../utils/clipboardUtils';
 
 export const useAppointmentsPageController = () => {
@@ -60,7 +60,8 @@ export const useAppointmentsPageController = () => {
         selectedDoctor, setSelectedDoctor, setDate, setReason, setType,
         setShowForm, setBonified, setSelectedInstitution,
         setSyncingZombieId, setSyncReferenceInfo, bookAppointment,
-        selectedPatientData, setSelectedPatientData, setSelectedPatient
+        selectedPatientData, setSelectedPatientData, setSelectedPatient,
+        whatsappModal, setWhatsappModal
     } = booking;
 
     const nextSlot = useNextFreeSlot(viewDoctorId || selectedDoctor);
@@ -204,6 +205,7 @@ export const useAppointmentsPageController = () => {
         historyModal, setHistoryModal,
         prescribeModal, setPrescribeModal,
         authModalOpen, setAuthModalOpen,
+        whatsappModal, setWhatsappModal,
 
         // Sub-Hooks Exports
         holidays, addHoliday, deleteHoliday,

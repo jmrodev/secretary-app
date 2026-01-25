@@ -1,135 +1,41 @@
-import { useState, useEffect } from 'react';
-import api from '../../api/axios';
-import { useMessage } from '../../context/MessageContext';
+import React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
-import { useModal } from '../../context/ModalContext';
+import { useRequirementsController } from '../../controllers/useRequirementsController';
 
+// Components
 import Modal from '../molecules/Modal';
 import Button from '../atoms/Button';
+import TabButton from '../atoms/TabButton';
 import MedicalRequestForm from './MedicalRequestForm';
 
+/**
+ * RequirementsList Organism.
+ * Displays and manages medical requests with list, new, and recycle bin views.
+ * Uses BEM naming convention.
+ */
 const RequirementsList = ({ user }) => {
-    const [requests, setRequests] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [selectedRequest, setSelectedRequest] = useState(null);
-    const [confirmDeleteId, setConfirmDeleteId] = useState(null);
-    const [actionModal, setActionModal] = useState({ open: false, type: '', id: null });
-    const [actionNote, setActionNote] = useState('');
-    const { showMessage } = useMessage();
     const { t } = useLanguage();
-    const { doubleConfirm, confirm } = useModal();
-    const [activeTab, setActiveTab] = useState('list'); // 'new' | 'list' | 'recycle'
-    const [recycleRequests, setRecycleRequests] = useState([]);
-    const [doctors, setDoctors] = useState([]);
-
-    const fetchRecycleBin = async () => {
-        if (user.role !== 'admin' && user.role !== 'secretary') return;
-        try {
-            const res = await api.get('/logs/recycle-bin');
-            // Filter for medical_request
-            setRecycleRequests(res.data.filter(item => item.entity_type === 'medical_request'));
-        } catch (err) {
-            console.error("Failed to fetch recycle bin", err);
-        }
-    };
-
-    const handleRestore = async (item) => {
-        if (await confirm(`¿Restaurar solicitud de ${item.entity_name}?`)) {
-            try {
-                await api.post(`/logs/restore/${item.id}`);
-                showMessage('Solicitud restaurada exitosamente', 'success');
-                fetchRecycleBin();
-                fetchRequests(); // Refresh active list too
-            } catch (err) {
-                console.error(err);
-                showMessage('Error al restaurar: ' + (err.response?.data?.message || err.message), 'error');
-            }
-        }
-    };
-
-    const openActionModal = (type, id) => {
-        setActionModal({ open: true, type, id });
-        setActionNote('');
-    };
-
-    const confirmAction = async () => {
-        try {
-            if ((actionModal.type === 'rejected' || actionModal.type === 'consult' || actionModal.type === 'reply') && !actionNote.trim()) {
-                showMessage(t('note_required') || 'Note is required', 'error');
-                return;
-            }
-
-            const payload = { status: actionModal.type === 'reply' ? 'consult' : actionModal.type }; // Reply keeps status as consult
-
-            if (actionNote.trim()) {
-                if (actionModal.type === 'reply') {
-                    payload.secretary_note = actionNote;
-                } else {
-                    payload.doctor_note = actionNote;
-                }
-            }
-
-            // Fixed URL: Backend route is PATCH /requests/:id
-            await api.patch(`/medical/requests/${actionModal.id}`, payload);
-
-            showMessage(t('action_success') || 'Updated successfully', 'success');
-            setActionModal({ open: false, type: '', id: null });
-            fetchRequests();
-        } catch (err) {
-            console.error(err);
-            const errMsg = err.response?.data?.message || t('error_update') || 'Failed to update';
-            showMessage(errMsg, 'error');
-        }
-    };
-
-    const [filter, setFilter] = useState('active'); // 'active' (pending/consult) or 'history' (completed/rejected)
-    const [allRequests, setAllRequests] = useState([]);
-
-    const fetchRequests = async () => {
-        try {
-            const res = await api.get('/medical/requests');
-            setAllRequests(res.data);
-            filterRequests(res.data, filter);
-        } catch (err) {
-            console.error("Failed to fetch requirements", err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const filterRequests = (data, currentFilter) => {
-        if (currentFilter === 'active') {
-            setRequests(data.filter(r => r.status === 'pending' || r.status === 'consult'));
-        } else {
-            setRequests(data.filter(r => r.status === 'completed' || r.status === 'rejected'));
-        }
-    };
-
-    useEffect(() => {
-        filterRequests(allRequests, filter);
-    }, [filter, allRequests]);
-
-    const fetchDoctors = async () => {
-        try {
-            const res = await api.get('/users/doctors');
-            setDoctors(res.data);
-        } catch (err) {
-            console.error("Failed to fetch doctors", err);
-        }
-    };
-
-    useEffect(() => {
-        fetchRequests();
-        fetchDoctors();
-        const interval = setInterval(fetchRequests, 15000); // Poll every 15s
-        return () => clearInterval(interval);
-    }, []);
-
-    useEffect(() => {
-        if (activeTab === 'recycle') {
-            fetchRecycleBin();
-        }
-    }, [activeTab]);
+    const {
+        requests,
+        loading,
+        selectedRequest,
+        setSelectedRequest,
+        actionModal,
+        setActionModal,
+        actionNote,
+        setActionNote,
+        activeTab,
+        setActiveTab,
+        recycleRequests,
+        doctors,
+        filter,
+        setFilter,
+        handleRestore,
+        openActionModal,
+        confirmAction,
+        handleDelete,
+        fetchRequests
+    } = useRequirementsController(user);
 
     const typeLabels = {
         'prescription': 'Receta 💊',
@@ -138,57 +44,42 @@ const RequirementsList = ({ user }) => {
         'referral': 'Derivación 📋'
     };
 
-    if (loading) return <div>Cargando requerimientos...</div>;
+    if (loading) return <div className="requirements-list__loading">Cargando requerimientos...</div>;
 
-
-
-    const handleDeleteClick = async (id) => {
-        if (await doubleConfirm(
-            t('confirm_delete') || '¿Seguro que desea eliminar?',
-            t('confirm_permanent_delete') || 'Esta acción eliminará el registro permanentemente. ¿Confirmar segunda vez?'
-        )) {
-            try {
-                await api.delete(`/medical/requests/${id}`);
-                showMessage('Solicitud eliminada correctamente', 'success');
-                fetchRequests();
-            } catch (err) {
-                console.error("Failed to delete", err);
-                showMessage("Error al eliminar: " + (err.response?.data?.message || err.message), 'error');
-            }
-        }
-    };
+    const isAdminOrSecretary = ['admin', 'secretary'].includes(user.role);
 
     return (
-        <div className="table-responsive">
-            {/* Navigation Tabs */}
-            <div className="tabs-container">
-                <Button
-                    variant="ghost"
-                    className={`tab-btn ${activeTab === 'list' ? 'active' : ''}`}
+        <div className="requirements-list">
+            {/* Top Level Navigation */}
+            <nav className="requirements-list__nav tabs-container">
+                <TabButton
+                    isActive={activeTab === 'list'}
                     onClick={() => setActiveTab('list')}
                 >
                     📋 {t('request_status')}
-                </Button>
-                <Button
-                    variant="ghost"
-                    className={`tab-btn ${activeTab === 'new' ? 'active' : ''}`}
+                </TabButton>
+                <TabButton
+                    isActive={activeTab === 'new'}
                     onClick={() => setActiveTab('new')}
                 >
                     ➕ {t('new_request')}
-                </Button>
-                {(user.role === 'admin' || user.role === 'secretary') && (
-                    <Button
-                        variant="ghost"
-                        className={`tab-btn ${activeTab === 'recycle' ? 'active' : ''}`}
+                </TabButton>
+                {isAdminOrSecretary && (
+                    <TabButton
+                        isActive={activeTab === 'recycle'}
                         onClick={() => setActiveTab('recycle')}
                     >
-                        🗑️ Papelera {recycleRequests.length > 0 && <span className="ml-2 bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded-full text-xs">{recycleRequests.length}</span>}
-                    </Button>
+                        🗑️ Papelera {recycleRequests.length > 0 && (
+                            <span className="requirements-list__count ml-2 bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded-full text-xs">
+                                {recycleRequests.length}
+                            </span>
+                        )}
+                    </TabButton>
                 )}
-            </div>
+            </nav>
 
             {activeTab === 'new' ? (
-                <div className="animate-fadeIn mt-4">
+                <div className="requirements-list__form-view animate-fadeIn mt-4">
                     <MedicalRequestForm
                         doctors={doctors}
                         onRequestCreated={() => {
@@ -198,83 +89,82 @@ const RequirementsList = ({ user }) => {
                     />
                 </div>
             ) : activeTab === 'list' ? (
-                <>
-                    <div className="flex gap-2 mb-4">
-                        <Button
-                            variant="ghost"
-                            size="sm-compact"
-                            className={`tab-btn-small ${filter === 'active' ? 'active' : ''}`}
+                <div className="requirements-list__list-view">
+                    {/* Status Filters */}
+                    <div className="requirements-list__filters flex gap-2 mb-4">
+                        <TabButton
+                            variant="pill"
+                            isActive={filter === 'active'}
                             onClick={() => setFilter('active')}
                         >
                             {t('pending') || 'Pendientes'}
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="sm-compact"
-                            className={`tab-btn-small ${filter === 'history' ? 'active' : ''}`}
+                        </TabButton>
+                        <TabButton
+                            variant="pill"
+                            isActive={filter === 'history'}
                             onClick={() => setFilter('history')}
                         >
                             {t('history') || 'Historial'}
-                        </Button>
+                        </TabButton>
                     </div>
 
                     {requests.length === 0 ? (
-                        <div className="no-requirements-msg mt-4">{t('no_requests') || (filter === 'active' ? 'No hay requerimientos pendientes.' : 'No hay historial.')}</div>
+                        <div className="requirements-list__empty no-requirements-msg mt-4">
+                            {t('no_requests') || (filter === 'active' ? 'No hay requerimientos pendientes.' : 'No hay historial.')}
+                        </div>
                     ) : (
-                        <table className="table-base requirements-table">
-                            <thead>
-                                <tr>
-                                    <th>Tipo</th>
-                                    <th>Fecha</th>
-                                    <th>Paciente</th>
-                                    <th>Doctor</th>
-                                    <th>Solicitado Por</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {requests.map(r => (
-                                    <tr key={r.id}>
-                                        <td>
-                                            <span
-                                                className={`status-chip ${r.type === 'prescription' ? 'chip-blue' : 'chip-green'} type-chip-link cursor-pointer`}
-                                                onClick={() => setSelectedRequest(r)}
-                                                title="Ver detalle"
-                                            >
-                                                {typeLabels[r.type] || r.type}
-                                            </span>
-                                        </td>
-                                        <td>{new Date(r.created_at).toLocaleDateString()}</td>
-                                        <td>
-                                            <strong>{r.patient_name}</strong>
-                                        </td>
-                                        <td>
-                                            <span className="text-muted">Dr. {r.doctor_name}</span>
-                                        </td>
-                                        <td>
-                                            <span style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>{r.secretary_name || 'Secretaría'}</span>
-                                        </td>
-                                        <td>
-                                            <span className={`status-chip chip-yellow`}>
-                                                {t(r.status) || r.status}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            {(user.role === 'admin' || user.role === 'secretary' || user.role === 'doctor') && (
+                        <div className="table-responsive">
+                            <table className="table-base requirements-list__table">
+                                <thead>
+                                    <tr>
+                                        <th>Tipo</th>
+                                        <th>Fecha</th>
+                                        <th>Paciente</th>
+                                        <th>Doctor</th>
+                                        <th>Solicitado Por</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {requests.map(r => (
+                                        <tr key={r.id}>
+                                            <td>
+                                                <span
+                                                    className={`status-chip ${r.type === 'prescription' ? 'chip-blue' : 'chip-green'} type-chip-link cursor-pointer`}
+                                                    onClick={() => setSelectedRequest(r)}
+                                                    title="Ver detalle"
+                                                >
+                                                    {typeLabels[r.type] || r.type}
+                                                </span>
+                                            </td>
+                                            <td>{new Date(r.created_at).toLocaleDateString()}</td>
+                                            <td><strong>{r.patient_name}</strong></td>
+                                            <td><span className="text-muted">Dr. {r.doctor_name}</span></td>
+                                            <td>
+                                                <span className="requirements-list__author text-xs text-slate-500">
+                                                    {r.secretary_name || 'Secretaría'}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span className={`status-chip chip-yellow`}>
+                                                    {t(r.status) || r.status}
+                                                </span>
+                                            </td>
+                                            <td>
                                                 <div className="flex gap-1 justify-end">
-                                                    {(user.role === 'admin' || user.role === 'secretary') && (
+                                                    {isAdminOrSecretary && (
                                                         <Button
                                                             variant="ghost"
                                                             size="sm-compact"
                                                             className="btn-icon-base btn-icon-red"
-                                                            onClick={() => handleDeleteClick(r.id)}
+                                                            onClick={() => handleDelete(r.id)}
                                                             title="Eliminar"
                                                         >
                                                             🗑️
                                                         </Button>
                                                     )}
-                                                    {(user.role === 'secretary' || user.role === 'admin') && r.status === 'consult' && (
+                                                    {isAdminOrSecretary && r.status === 'consult' && (
                                                         <Button
                                                             variant="ghost"
                                                             size="sm-compact"
@@ -317,55 +207,56 @@ const RequirementsList = ({ user }) => {
                                                         </>
                                                     )}
                                                 </div>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     )}
-                </>
+                </div>
             ) : (
-                <div className="recycle-bin-view">
+                <div className="requirements-list__recycle-view">
                     {recycleRequests.length === 0 ? (
-                        <div className="text-center p-12 bg-slate-50 rounded-lg border border-dashed border-slate-300 text-muted">
+                        <div className="requirements-list__recycle-empty text-center p-12 bg-slate-50 rounded-lg border border-dashed border-slate-300 text-muted">
                             <span className="text-4xl block mb-2">🗑️</span>
                             No hay elementos en la papelera.
                         </div>
                     ) : (
-                        <table className="table-base requirements-table">
-                            <thead>
-                                <tr>
-                                    <th>Elemento</th>
-                                    <th>Eliminado Por</th>
-                                    <th>Fecha Eliminación</th>
-                                    <th>Expira</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {recycleRequests.map(item => (
-                                    <tr key={item.id} className="bg-red-50/30">
-                                        <td>
-                                            <strong>{item.entity_name}</strong>
-                                        </td>
-                                        <td>{item.deleted_by_name}</td>
-                                        <td>{new Date(item.deleted_at).toLocaleString()}</td>
-                                        <td className="text-red-600 font-bold">{new Date(item.expires_at).toLocaleDateString()}</td>
-                                        <td>
-                                            <Button
-                                                size="sm"
-                                                className="text-green-600 bg-green-100 hover:bg-green-200"
-                                                onClick={() => handleRestore(item)}
-                                            >
-                                                ♻️ Restaurar
-                                            </Button>
-                                        </td>
+                        <div className="table-responsive">
+                            <table className="table-base requirements-list__table">
+                                <thead>
+                                    <tr>
+                                        <th>Elemento</th>
+                                        <th>Eliminado Por</th>
+                                        <th>Fecha Eliminación</th>
+                                        <th>Expira</th>
+                                        <th>Acciones</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {recycleRequests.map(item => (
+                                        <tr key={item.id} className="bg-red-50/30">
+                                            <td><strong>{item.entity_name}</strong></td>
+                                            <td>{item.deleted_by_name}</td>
+                                            <td>{new Date(item.deleted_at).toLocaleString()}</td>
+                                            <td className="text-red-600 font-bold">
+                                                {new Date(item.expires_at).toLocaleDateString()}
+                                            </td>
+                                            <td>
+                                                <Button
+                                                    size="sm"
+                                                    className="text-green-600 bg-green-100 hover:bg-green-200"
+                                                    onClick={() => handleRestore(item)}
+                                                >
+                                                    ♻️ Restaurar
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     )}
                 </div>
             )}
@@ -377,7 +268,7 @@ const RequirementsList = ({ user }) => {
                 title="Detalle de Solicitud"
             >
                 {selectedRequest && (
-                    <div>
+                    <div className="requirements-list__detail">
                         <div className="mb-4">
                             <strong>Paciente:</strong> {selectedRequest.patient_name} <br />
                             <small className="text-muted">DNI: {selectedRequest.patient_dni}</small>
@@ -388,7 +279,7 @@ const RequirementsList = ({ user }) => {
                         <div className="mb-4">
                             <strong>Tipo:</strong> {typeLabels[selectedRequest.type] || selectedRequest.type}
                         </div>
-                        <div style={{ marginBottom: '1rem', fontSize: '0.875rem', color: 'var(--gray-700)' }}>
+                        <div className="requirements-list__timestamps mb-4 text-sm text-slate-700">
                             <div><strong>Solicitado:</strong> {new Date(selectedRequest.created_at).toLocaleString()}</div>
                             {selectedRequest.completed_at && (
                                 <>
@@ -407,43 +298,40 @@ const RequirementsList = ({ user }) => {
                                 </>
                             )}
                         </div>
-                        <div style={{ padding: '1rem', backgroundColor: 'var(--gray-50)', borderRadius: 'var(--radius)', border: '1px solid var(--border-color)', marginBottom: '1rem' }}>
+                        <div className="requirements-list__note-box p-4 bg-slate-50 border border-slate-200 rounded-lg mb-4">
                             <strong>Detalle / Medicación:</strong>
-                            <pre className="note-pre">
+                            <pre className="requirements-list__note-pre whitespace-pre-wrap mt-2 font-sans text-sm">
                                 {selectedRequest.request_note || "Sin detalles adicionales."}
                             </pre>
                         </div>
 
                         {selectedRequest.doctor_note && (
-                            <div className="p-4 bg-green-50 rounded border mb-4">
+                            <div className="requirements-list__note-box p-4 bg-green-50 rounded border border-green-200 mb-4 text-sm">
                                 <strong>{t('doctor_note')}:</strong>
-                                <pre className="note-pre">
+                                <pre className="requirements-list__note-pre whitespace-pre-wrap mt-2 font-sans">
                                     {selectedRequest.doctor_note}
                                 </pre>
                             </div>
                         )}
                         {selectedRequest.secretary_note && (
-                            <div className="p-4 bg-blue-50 rounded border mb-4">
+                            <div className="requirements-list__note-box p-4 bg-blue-50 rounded border border-blue-200 mb-4 text-sm">
                                 <strong>{t('secretary_reply')}:</strong>
-                                <pre className="note-pre">
+                                <pre className="requirements-list__note-pre whitespace-pre-wrap mt-2 font-sans">
                                     {selectedRequest.secretary_note}
                                 </pre>
                             </div>
                         )}
 
                         <div className="flex justify-end mt-4">
-                            <Button
-                                onClick={() => setSelectedRequest(null)}
-                                variant="secondary"
-                            >
+                            <Button onClick={() => setSelectedRequest(null)} variant="secondary">
                                 Cerrar
                             </Button>
                         </div>
                     </div>
                 )}
-            </Modal >
+            </Modal>
 
-            {/* Doctor Action Modal */}
+            {/* Action Modal (Doctor/Secretary) */}
             <Modal
                 isOpen={actionModal.open}
                 onClose={() => setActionModal({ open: false, type: '', id: null })}
@@ -451,11 +339,13 @@ const RequirementsList = ({ user }) => {
                     actionModal.type === 'completed' ? t('mark_as_done') :
                         (actionModal.type === 'rejected' ? t('reject_request') :
                             (actionModal.type === 'consult' ? t('consult_secretary') :
-                                (actionModal.type === 'reply' ? t('reply_to_doctor') : 'Action')))
+                                (actionModal.type === 'reply' ? t('reply_to_doctor') : 'Acción')))
                 }
                 footer={
                     <>
-                        <Button variant="secondary" onClick={() => setActionModal({ open: false, type: '', id: null })}>{t('cancel')}</Button>
+                        <Button variant="secondary" onClick={() => setActionModal({ open: false, type: '', id: null })}>
+                            {t('cancel')}
+                        </Button>
                         <Button onClick={confirmAction}>
                             {actionModal.type === 'consult' ? t('send_message') : t('confirm')}
                         </Button>
@@ -466,7 +356,7 @@ const RequirementsList = ({ user }) => {
                     <label className="input-label">
                         {actionModal.type === 'consult' ? t('your_question') :
                             (actionModal.type === 'reply' ? t('your_answer') : t('doctor_note'))}
-                        {(actionModal.type === 'rejected' || actionModal.type === 'consult' || actionModal.type === 'reply') && <span className="required-star"> *</span>}
+                        {['rejected', 'consult', 'reply'].includes(actionModal.type) && <span className="text-red-500"> *</span>}
                     </label>
                     <textarea
                         className="input-field"
@@ -474,17 +364,15 @@ const RequirementsList = ({ user }) => {
                         value={actionNote}
                         onChange={e => setActionNote(e.target.value)}
                         placeholder={
-                            actionModal.type === 'consult' ? t('consult_placeholder') || "Escriba su consulta para la secretaria..." :
+                            actionModal.type === 'consult' ? t('consult_placeholder') || "Escriba su consulta..." :
                                 (actionModal.type === 'rejected' ? t('reject_reason') || "Motivo del rechazo..." :
                                     (actionModal.type === 'reply' ? t('reply_placeholder') || "Escriba su respuesta..." :
                                         t('optional_note') || "Nota opcional..."))
                         }
                     ></textarea>
                 </div>
-            </Modal >
-
-
-        </div >
+            </Modal>
+        </div>
     );
 };
 

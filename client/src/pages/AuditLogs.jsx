@@ -3,7 +3,7 @@ import Sidebar from '../components/organisms/Sidebar';
 import Modal from '../components/molecules/Modal';
 import Button from '../components/atoms/Button';
 import AuditLogTable from '../components/organisms/AuditLogTable';
-import { useAuditLogsController } from '../hooks/useAuditLogsController';
+import { useAuditLogsController } from '../controllers/useAuditLogsController';
 
 const AuditLogs = () => {
     const {

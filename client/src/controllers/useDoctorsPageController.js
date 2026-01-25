@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useModal } from '../context/ModalContext';
 import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
-import { useUsers } from './useUsers';
+import { useUsers } from '../hooks/useUsers';
 
 export const useDoctorsPageController = () => {
     const { t } = useLanguage();

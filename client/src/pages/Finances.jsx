@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useFinancesPageController } from '../hooks/useFinancesPageController';
+import { useFinancesPageController } from '../controllers/useFinancesPageController';
 
 // Atomic Design Components
 import Card from '../components/atoms/Card';

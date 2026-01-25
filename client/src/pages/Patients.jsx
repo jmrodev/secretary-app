@@ -1,5 +1,5 @@
 import React from 'react';
-import { usePatientsPageController } from '../hooks/usePatientsPageController';
+import { usePatientsPageController } from '../controllers/usePatientsPageController';
 import Button from '../components/atoms/Button';
 
 // Organisms
@@ -21,6 +21,7 @@ const Patients = () => {
         // State
         user, t,
         patients, loading, detailsLoading,
+        totalCount, currentPage, totalPages, handlePageChange,
         doctors, insurances, recycleItems,
         activeTab, setActiveTab,
         searchTerm, setSearchTerm,
@@ -189,15 +190,46 @@ const Patients = () => {
 
                 {/* Main Content Area */}
                 {activeTab === 'list' ? (
-                    <PatientList
-                        patients={patients}
-                        t={t}
-                        onViewDetails={handleViewDetails}
-                        onOpenDebt={handleOpenDebtModal}
-                        onToggleRating={handleRatingChange}
-                        calculateFinancialRating={calculateFinancialRating}
-                        calculateAttendanceRating={calculateAttendanceRating}
-                    />
+                    <>
+                        <PatientList
+                            patients={patients}
+                            t={t}
+                            onViewDetails={handleViewDetails}
+                            onOpenDebt={handleOpenDebtModal}
+                            onToggleRating={handleRatingChange}
+                            calculateFinancialRating={calculateFinancialRating}
+                            calculateAttendanceRating={calculateAttendanceRating}
+                        />
+                        {/* Pagination Controls */}
+                        {totalPages > 1 && (
+                            <div className="flex justify-between items-center mt-4 px-4 py-3 bg-white rounded-lg border border-slate-200 shadow-sm">
+                                <span className="text-sm text-slate-500">
+                                    {t('showing') || 'Mostrando'} {patients.length} {t('of') || 'de'} {totalCount} {t('patients') || 'pacientes'}
+                                </span>
+                                <div className="flex gap-2">
+                                    <Button
+                                        variant="secondary"
+                                        size="sm"
+                                        disabled={currentPage === 1}
+                                        onClick={() => handlePageChange(currentPage - 1)}
+                                    >
+                                        ← {t('previous') || 'Anterior'}
+                                    </Button>
+                                    <span className="flex items-center px-4 font-mono text-slate-600 bg-slate-50 rounded border border-slate-100">
+                                        {currentPage} / {totalPages}
+                                    </span>
+                                    <Button
+                                        variant="secondary"
+                                        size="sm"
+                                        disabled={currentPage === totalPages}
+                                        onClick={() => handlePageChange(currentPage + 1)}
+                                    >
+                                        {t('next') || 'Siguiente'} →
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
+                    </>
                 ) : (
                     // Simple inline Recycle Bin for now (can be extracted)
                     <PatientRecycleBin

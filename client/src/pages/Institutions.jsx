@@ -4,7 +4,7 @@ import Button from '../components/atoms/Button';
 import InstitutionList from '../components/organisms/InstitutionList';
 import InstitutionFinances from '../components/organisms/InstitutionFinances';
 import InstitutionFormModal from '../components/organisms/InstitutionFormModal';
-import { useInstitutionsController } from '../hooks/useInstitutionsController';
+import { useInstitutionsController } from '../controllers/useInstitutionsController';
 
 const Institutions = () => {
     const {

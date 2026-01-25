@@ -1,144 +1,88 @@
-import { useState, useEffect, useRef } from 'react';
+import React from 'react';
+import { useSystemConfigController } from '../controllers/useSystemConfigController';
 
-// Internal Auto-Resizing Textarea Component to avoid dependency issues without server restart
-const AutoTextarea = (props) => {
-    const textareaRef = useRef(null);
-
-    const adjustHeight = () => {
-        const el = textareaRef.current;
-        if (!el) return;
-        el.style.height = 'auto';
-        el.style.height = el.scrollHeight + 'px';
-    };
-
-    useEffect(() => {
-        adjustHeight();
-    }, [props.value]);
-
-    return (
-        <textarea
-            {...props}
-            ref={textareaRef}
-            rows={3}
-            onInput={adjustHeight}
-            style={{ ...props.style, overflow: 'hidden', resize: 'none' }}
-        />
-    );
-};
-import api from '../api/axios';
-import { useLanguage } from '../context/LanguageContext';
-import { useMessage } from '../context/MessageContext';
-import { useConfig } from '../context/ConfigContext';
+// Organisms
 import Sidebar from '../components/organisms/Sidebar';
+import GeneralSettings from '../components/organisms/GeneralSettings';
+import CommunicationSettings from '../components/organisms/CommunicationSettings';
+import IntegrationSettings from '../components/organisms/IntegrationSettings';
 import QRCodeModal from '../components/molecules/QRCodeModal';
-import { useModal } from '../context/ModalContext';
-import { useAuth } from '../context/AuthContext';
-
+import TabButton from '../components/atoms/TabButton';
 
 const SystemConfig = () => {
-    const { user } = useAuth();
-    const { t } = useLanguage();
-    const { showMessage } = useMessage();
-    const { confirm } = useModal();
-    const { settings, updateSetting, refreshSettings } = useConfig();
-    const [loading, setLoading] = useState(false);
-    const [syncLogs, setSyncLogs] = useState([]);
+    const {
+        user,
+        settings,
+        activeTab,
+        setActiveTab,
+        qrModal,
+        setQrModal,
+        loading,
+        googleUnlinked,
+        updateSetting,
+        handleGoogleAuth,
+        handleDisconnectGoogle,
+        handleRetryGoogleFailed,
+        handleTestMeta,
+        insertVariable,
+        handleRefreshTunnel
+    } = useSystemConfigController();
 
-    // Derived State
-    const localSettings = settings || {};
-    const googleUnlinked = !localSettings.google_refresh_token;
+    // Permission check for viewing settings
+    // If not admin/secretary, redirect or show denied is handled usually by router or layout, 
+    // but here we render conditional tabs.
 
-    // QR Modal State
-    const [qrModalOpen, setQrModalOpen] = useState(false);
-    const [qrUrl, setQrUrl] = useState('');
-    const [qrExpiry, setQrExpiry] = useState(null);
-    const [activeTab, setActiveTab] = useState('general');
-
-    useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const status = urlParams.get('status');
-        if (status === 'success') {
-            showMessage('Cuenta de Google Conectada con Éxito', 'success');
-            window.history.replaceState({}, document.title, window.location.pathname);
-        } else if (status === 'error') {
-            showMessage('Error al conectar con Google', 'error');
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
-    }, [showMessage]);
-
-    const getFriendlyVarLabel = (v) => {
-        const labels = {
-            '{patient_name}': 'Paciente',
-            '{name}': 'Nombre',
-            '{date}': 'Fecha',
-            '{time}': 'Hora',
-            '{doctor_name}': 'Doctor',
-            '{appointment_type}': 'Tipo Turno',
-            '{appointment_location}': 'Lugar',
-            '{price}': 'Precio',
-            '{secretary_name}': 'Secretaria',
-            '{link}': 'Enlace'
-        };
-        return labels[v] || v;
-    };
-
-    const insertVariable = (textareaId, variable, settingKey) => {
-        const textarea = document.getElementById(textareaId);
-        if (!textarea) return;
-
-        const start = textarea.selectionStart;
-        const end = textarea.selectionEnd;
-        const text = textarea.value;
-        const newText = text.substring(0, start) + variable + text.substring(end);
-
-        // Update state and backend
-        updateSetting(settingKey, newText);
-
-        // Restore cursor position after the inserted variable (need timeout for React re-render)
-        setTimeout(() => {
-            textarea.selectionStart = textarea.selectionEnd = start + variable.length;
-            textarea.focus();
-        }, 0);
-    };
-
-    const handleGoogleAuth = async () => {
-        try {
-            const { data } = await api.get('/google/auth-url');
-            window.location.href = data.url;
-        } catch (error) {
-            showMessage('Error al iniciar autenticación con Google', 'error');
-        }
-    };
-
-    const handleDisconnectGoogle = async () => {
-        if (!await confirm('¿Estás seguro de desconectar Google Calendar? Se dejarán de sincronizar los turnos.')) return;
-        try {
-            await api.post('/google/disconnect');
-            await refreshSettings();
-            showMessage('Cuenta desconectada correctamente', 'success');
-        } catch (error) {
-            showMessage('Error al desconectar cuenta', 'error');
-        }
-    };
-
-    const handleRefreshToken = async () => {
-        // Just re-trigger auth flow for now to refresh permissions
-        handleGoogleAuth();
-    };
-
-    const handleTestMeta = async () => {
-        const phone = await prompt("Ingrese un número de teléfono de prueba (incluya código de país, ej: 549...):");
-        if (!phone) return;
-
-        try {
-            setLoading(true);
-            await api.post('/whatsapp/test', { to: phone });
-            showMessage('✅ Mensaje de prueba enviado. Verifique su WhatsApp.', 'success');
-        } catch (error) {
-            console.error(error);
-            showMessage(error.response?.data?.error || 'Error al enviar mensaje de prueba', 'error');
-        } finally {
-            setLoading(false);
+    const renderTabContent = () => {
+        switch (activeTab) {
+            case 'general':
+                return (
+                    <GeneralSettings
+                        user={user}
+                        settings={settings}
+                        updateSetting={updateSetting}
+                        onShowQr={() => {
+                            const url = settings.staff_base_url || window.location.origin;
+                            setQrModal({ open: true, url, expiry: null });
+                        }}
+                    />
+                );
+            case 'communications':
+                return (
+                    <CommunicationSettings
+                        user={user}
+                        settings={settings}
+                        updateSetting={updateSetting}
+                        insertVariable={insertVariable}
+                    />
+                );
+            case 'integrations':
+                return (
+                    <IntegrationSettings
+                        user={user}
+                        settings={settings}
+                        updateSetting={updateSetting}
+                        loading={loading}
+                        googleUnlinked={googleUnlinked}
+                        onGoogleAuth={handleGoogleAuth}
+                        onDisconnectGoogle={handleDisconnectGoogle}
+                        onRefreshToken={handleGoogleAuth}
+                        onRetryGoogle={handleRetryGoogleFailed}
+                        onRefreshTunnel={handleRefreshTunnel}
+                        onTestMeta={handleTestMeta}
+                    />
+                );
+            case 'data':
+                return (
+                    <div className="tab-panel animate-in">
+                        <div className="card text-center p-12 text-muted bg-slate-50 border border-dashed rounded-xl">
+                            <span className="text-4xl block mb-4">💾</span>
+                            <h3 className="font-bold text-slate-700">Gestión de Datos y Copias de Seguridad</h3>
+                            <p>Próximamente...</p>
+                        </div>
+                    </div>
+                );
+            default:
+                return null;
         }
     };
 
@@ -146,869 +90,64 @@ const SystemConfig = () => {
         <div className="app-layout">
             <Sidebar />
             <main className="main-content">
-                <div className="w-full max-w-800 mx-auto">
-                    <div className="tabs-container mb-8">
+                <div className="w-full max-w-5xl mx-auto">
+                    {/* Header / Title if needed */}
+                    <div className="mb-6">
+                        <h1 className="text-2xl font-bold text-slate-800">Configuración del Sistema</h1>
+                        <p className="text-slate-500">Administre las preferencias globales de la aplicación.</p>
+                    </div>
+
+                    {/* Navigation Tabs */}
+                    <div className="tabs-container mb-8 border-b border-slate-200 sticky top-0 bg-white z-10 pt-4">
                         {(user.role === 'admin' || user.role === 'secretary') && (
-                            <button
-                                className={`tab-btn ${activeTab === 'general' ? 'active' : ''}`}
-                                onClick={() => setActiveTab('general')}
-                            >
-                                ⚙️ General
-                            </button>
-                        )}
-                        {(user.role === 'admin' || user.role === 'secretary') && (
-                            <button
-                                className={`tab-btn ${activeTab === 'communications' ? 'active' : ''}`}
-                                onClick={() => setActiveTab('communications')}
-                            >
-                                📢 Comunicaciones
-                            </button>
-                        )}
-                        {(user.role === 'admin' || user.role === 'secretary') && (
-                            <button
-                                className={`tab-btn ${activeTab === 'integrations' ? 'active' : ''}`}
-                                onClick={() => setActiveTab('integrations')}
-                            >
-                                🔌 Integraciones
-                            </button>
-                        )}
-                        {(user.role === 'admin' || user.role === 'secretary') && (
-                            <button
-                                className={`tab-btn ${activeTab === 'data' ? 'active' : ''}`}
-                                onClick={() => setActiveTab('data')}
-                            >
-                                💾 Datos
-                            </button>
+                            <>
+                                <TabButton
+                                    isActive={activeTab === 'general'}
+                                    onClick={() => setActiveTab('general')}
+                                    activeColor="blue"
+                                >
+                                    ⚙️ General
+                                </TabButton>
+                                <TabButton
+                                    isActive={activeTab === 'communications'}
+                                    onClick={() => setActiveTab('communications')}
+                                    activeColor="purple"
+                                >
+                                    📢 Comunicaciones
+                                </TabButton>
+                                <TabButton
+                                    isActive={activeTab === 'integrations'}
+                                    onClick={() => setActiveTab('integrations')}
+                                    activeColor="green"
+                                >
+                                    🔌 Integraciones
+                                </TabButton>
+                                <TabButton
+                                    isActive={activeTab === 'data'}
+                                    onClick={() => setActiveTab('data')}
+                                    activeColor="amber"
+                                >
+                                    💾 Datos
+                                </TabButton>
+                            </>
                         )}
                     </div>
 
-                    {/* --- TAB: GENERAL --- */}
-                    {activeTab === 'general' && (user.role === 'admin' || user.role === 'secretary') && (
-                        <div className="tab-panel animate-in">
-                            <div className="card">
-                                <h3 className="config-section-title">🛠️ Funcionalidades y Permisos</h3>
-                                <div className="space-y-6">
-                                    <label className="switch-container">
-                                        <div className="switch">
-                                            <input
-                                                type="checkbox"
-                                                id="opt-rentals"
-                                                checked={settings.enable_office_rentals === 'true'}
-                                                onChange={(e) => updateSetting('enable_office_rentals', e.target.checked)}
-                                                disabled={user.role !== 'admin'}
-                                            />
-                                            <span className="slider"></span>
-                                        </div>
-                                        <span className="input-label m-0">
-                                            Activar Alquiler de Consultorios
-                                        </span>
-                                    </label>
-
-                                    <label className="switch-container">
-                                        <div className="switch">
-                                            <input
-                                                type="checkbox"
-                                                id="allow-secretary-edit-past"
-                                                checked={settings.allow_secretary_edit_past_appointments === 'true'}
-                                                onChange={(e) => updateSetting('allow_secretary_edit_past_appointments', e.target.checked)}
-                                                disabled={user.role !== 'admin'}
-                                            />
-                                            <span className="slider"></span>
-                                        </div>
-                                        <span className="input-label m-0">
-                                            Permitir a Secretarias editar turnos anteriores
-                                        </span>
-                                    </label>
-
-                                    <label className="switch-container">
-                                        <div className="switch">
-                                            <input
-                                                type="checkbox"
-                                                id="enable-secretary-unrestricted-crud"
-                                                checked={settings.enable_secretary_unrestricted_crud === 'true'}
-                                                onChange={(e) => updateSetting('enable_secretary_unrestricted_crud', e.target.checked)}
-                                                disabled={user.role !== 'admin'}
-                                            />
-                                            <span className="slider"></span>
-                                        </div>
-                                        <span className="input-label m-0">
-                                            Habilitar Gestión Global (CRUD) de turnos en cualquier estado para Secretarias
-                                        </span>
-                                    </label>
-
-                                    <label className="switch-container">
-                                        <div className="switch">
-                                            <input
-                                                type="checkbox"
-                                                id="enable-secretary-finance-crud"
-                                                checked={settings.enable_secretary_finance_crud === 'true'}
-                                                onChange={(e) => updateSetting('enable_secretary_finance_crud', e.target.checked)}
-                                                disabled={user.role !== 'admin'}
-                                            />
-                                            <span className="slider"></span>
-                                        </div>
-                                        <span className="input-label m-0">
-                                            Permitir a Secretarias corregir montos y eliminar transacciones (CRUD Finanzas)
-                                        </span>
-                                    </label>
-
-                                    <label className="switch-container">
-                                        <div className="switch">
-                                            <input
-                                                type="checkbox"
-                                                id="allow-admin-edit-finance-date"
-                                                checked={settings.allow_admin_edit_finance_date === 'true'}
-                                                onChange={(e) => updateSetting('allow_admin_edit_finance_date', e.target.checked)}
-                                                disabled={user.role !== 'admin'}
-                                            />
-                                            <span className="slider"></span>
-                                        </div>
-                                        <span className="input-label m-0">
-                                            [ADMIN] Permitir editar FECHA de pago en Finanzas
-                                        </span>
-                                    </label>
-                                </div>
-
-                                <div className="section-divider my-8" style={{ height: '1px', background: '#e2e8f0' }}></div>
-
-                                <h3 className="config-section-title">🔗 Direcciones del Sistema</h3>
-                                <div className="grid-2-cols gap-8">
-                                    <div className="input-group">
-                                        <label className="input-label" htmlFor="public-base-url">URL Pública (Internet)</label>
-                                        <input
-                                            type="url"
-                                            id="public-base-url"
-                                            className="input-field"
-                                            placeholder="https://mi-consultorio.trycloudflare.com"
-                                            value={settings.public_base_url || ''}
-                                            onChange={(e) => updateSetting('public_base_url', e.target.value)}
-                                            readOnly={user.role !== 'admin'}
-                                        />
-                                    </div>
-
-                                    <div className="input-group">
-                                        <label className="input-label" htmlFor="staff-base-url">URL Local (Red Clínica)</label>
-                                        <div className="flex gap-2">
-                                            <input
-                                                type="text"
-                                                id="staff-base-url"
-                                                className="input-field flex-1"
-                                                placeholder="http://192.168.0.x:5173"
-                                                value={settings.staff_base_url || ''}
-                                                onChange={(e) => updateSetting('staff_base_url', e.target.value)}
-                                                readOnly={user.role !== 'admin'}
-                                            />
-                                            <button
-                                                className="btn btn-secondary shadow-sm hover:bg-slate-700 transition-colors"
-                                                style={{ padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-                                                onClick={() => {
-                                                    const url = settings.staff_base_url || window.location.origin;
-                                                    setQrUrl(url);
-                                                    setQrExpiry(null);
-                                                    setQrModalOpen(true);
-                                                }}
-                                                title="Ver QR Staff"
-                                            >
-                                                <span>📱</span> <span>QR</span>
-                                            </button>
-                                        </div>
-                                        <p className="text-sm text-muted mt-2">
-                                            Para conectar dispositivos locales.
-                                        </p>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    )}
-
-
-
-                    {/* --- TAB: COMMUNICATIONS --- */}
-                    {activeTab === 'communications' && (user.role === 'admin' || user.role === 'secretary') && (
-                        <div className="tab-panel animate-in w-full overflow-hidden">
-                            <div className="card mb-8 w-full max-w-full">
-                                <h3 className="config-section-title">💬 Mensajería y Plantillas</h3>
-                                <p className="text-muted mb-6">Personalice los mensajes que se envían por WhatsApp.</p>
-
-                                <div className="flex flex-col gap-8 w-full">
-                                    {/* Clinic Details */}
-                                    <div className="space-y-4">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <span className="text-xl">📍</span>
-                                            <h4 className="font-bold text-main-800">Dirección del Consultorio</h4>
-                                        </div>
-                                        <div className="input-group">
-                                            <label className="input-label" htmlFor="clinic-address">Dirección Física (para turnos Presenciales)</label>
-                                            <input
-                                                id="clinic-address"
-                                                type="text"
-                                                className="input-field"
-                                                placeholder="Calle X, Entre Y y Z"
-                                                value={settings.clinic_address || ''}
-                                                onChange={(e) => updateSetting('clinic_address', e.target.value)}
-                                                disabled={user.role !== 'admin' && user.role !== 'secretary'}
-                                            />
-                                            <p className="text-xs text-muted mt-1 italic">
-                                                Esta dirección se usará para reemplazar la variable <b>{'{appointment_location}'}</b> si el turno es presencial.
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    {/* Appt Reminder */}
-                                    <div className="space-y-4 pt-4 border-t border-gray-100">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <span className="text-xl">📅</span>
-                                            <h4 className="font-bold text-main-800">Recordatorios de Turno</h4>
-                                        </div>
-
-                                        <div className="flex flex-col gap-8">
-                                            <div className="input-group">
-                                                <label className="input-label" htmlFor="reminder-template">📍 Recordatorio Presencial (General)</label>
-                                                <AutoTextarea
-                                                    id="reminder-template"
-                                                    className="input-field min-h-[160px]"
-                                                    placeholder="Hola {patient_name}, te recordamos tu turno presencial..."
-                                                    value={settings.appointment_reminder_template || ''}
-                                                    onChange={(e) => updateSetting('appointment_reminder_template', e.target.value)}
-                                                    disabled={user.role !== 'admin' && user.role !== 'secretary'}
-                                                />
-                                                <div className="mt-3 w-full">
-                                                    <p className="text-xs font-semibold text-main-600 mb-2">Variables disponibles (Haz clic para insertar):</p>
-                                                    <div className="flex flex-wrap gap-2 w-full">
-                                                        {['{patient_name}', '{date}', '{time}', '{doctor_name}', '{appointment_type}', '{appointment_location}', '{price}', '{secretary_name}'].map(v => (
-                                                            <button
-                                                                key={v}
-                                                                type="button"
-                                                                className="px-3 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg text-sm font-medium hover:bg-blue-100 hover:border-blue-300 transition-all shadow-sm active:scale-95 whitespace-nowrap"
-                                                                onClick={() => insertVariable('reminder-template', v, 'appointment_reminder_template')}
-                                                                title={`Insertar ${v}`}
-                                                            >
-                                                                {getFriendlyVarLabel(v)}
-                                                            </button>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                                {settings.meta_phone_number_id && (<>
-                                                    <div className="mt-2 text-right">
-                                                        <label className="text-xs text-main-600 font-bold mr-2">Nombre de Plantilla Meta (API):</label>
-                                                        <input
-                                                            type="text"
-                                                            className="input-field text-xs inline-block w-48 py-1"
-                                                            placeholder="ej: appointment_reminder"
-                                                            value={settings.meta_reminder_template_name || ''}
-                                                            onChange={(e) => updateSetting('meta_reminder_template_name', e.target.value)}
-                                                        />
-                                                    </div>
-                                                    <div className="mt-1 text-right">
-                                                        <label className="text-xs text-main-600 font-bold mr-2">Orden Variables ({"{{1}}, {{2}}..."}):</label>
-                                                        <input
-                                                            type="text"
-                                                            className="input-field text-xs inline-block w-48 py-1"
-                                                            placeholder="{patient_name}, {date}, {time}"
-                                                            value={settings.meta_reminder_params_order || ''}
-                                                            onChange={(e) => updateSetting('meta_reminder_params_order', e.target.value)}
-                                                        />
-                                                    </div>
-                                                </>)}
-                                            </div>
-
-                                            <div className="input-group">
-                                                <label className="input-label" htmlFor="reminder-virtual-template">🌐 Recordatorio Virtual (Telemedicina)</label>
-                                                <AutoTextarea
-                                                    id="reminder-virtual-template"
-                                                    className="input-field min-h-[160px]"
-                                                    placeholder="Hola {patient_name}, te recordamos tu turno virtual..."
-                                                    value={settings.appointment_reminder_virtual_template || ''}
-                                                    onChange={(e) => updateSetting('appointment_reminder_virtual_template', e.target.value)}
-                                                    disabled={user.role !== 'admin' && user.role !== 'secretary'}
-                                                />
-                                                <div className="mt-3 w-full">
-                                                    <p className="text-xs font-semibold text-main-600 mb-2">Variables disponibles (Haz clic para insertar):</p>
-                                                    <div className="flex flex-wrap gap-2 w-full">
-                                                        {['{patient_name}', '{date}', '{time}', '{doctor_name}', '{appointment_type}', '{appointment_location}', '{price}', '{secretary_name}'].map(v => (
-                                                            <button
-                                                                key={v}
-                                                                type="button"
-                                                                className="px-3 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg text-sm font-medium hover:bg-blue-100 hover:border-blue-300 transition-all shadow-sm active:scale-95 whitespace-nowrap"
-                                                                onClick={() => insertVariable('reminder-virtual-template', v, 'appointment_reminder_virtual_template')}
-                                                                title={`Insertar ${v}`}
-                                                            >
-                                                                {getFriendlyVarLabel(v)}
-                                                            </button>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Confirmation Template - NEW */}
-                                    <div className="space-y-4 pt-4 border-t border-gray-100">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <span className="text-xl">✅</span>
-                                            <h4 className="font-bold text-main-800">Confirmación de Turno (Al Crear)</h4>
-                                        </div>
-
-                                        <div className="flex flex-col gap-8">
-                                            <div className="input-group">
-                                                <label className="input-label" htmlFor="confirmation-template">📍 Confirmación Presencial (General)</label>
-                                                <AutoTextarea
-                                                    id="confirmation-template"
-                                                    className="input-field min-h-[160px]"
-                                                    placeholder="Tu turno presencial ha sido agendado..."
-                                                    value={settings.appointment_confirmation_template || ''}
-                                                    onChange={(e) => updateSetting('appointment_confirmation_template', e.target.value)}
-                                                    disabled={user.role !== 'admin' && user.role !== 'secretary'}
-                                                />
-                                                <div className="mt-3 w-full">
-                                                    <p className="text-xs font-semibold text-emerald-700 mb-2">Variables disponibles (Haz clic para insertar):</p>
-                                                    <div className="flex flex-wrap gap-2 w-full">
-                                                        {['{patient_name}', '{date}', '{time}', '{doctor_name}', '{appointment_type}', '{appointment_location}', '{price}', '{secretary_name}'].map(v => (
-                                                            <button
-                                                                key={v}
-                                                                type="button"
-                                                                className="px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg text-sm font-medium hover:bg-emerald-100 hover:border-emerald-300 transition-all shadow-sm active:scale-95 whitespace-nowrap"
-                                                                onClick={() => insertVariable('confirmation-template', v, 'appointment_confirmation_template')}
-                                                                title={`Insertar ${v}`}
-                                                            >
-                                                                {getFriendlyVarLabel(v)}
-                                                            </button>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                                {settings.meta_phone_number_id && (<>
-                                                    <div className="mt-2 text-right">
-                                                        <label className="text-xs text-emerald-700 font-bold mr-2">Nombre de Plantilla Meta (API):</label>
-                                                        <input
-                                                            type="text"
-                                                            className="input-field text-xs inline-block w-48 py-1"
-                                                            placeholder="ej: appointment_confirmation"
-                                                            value={settings.meta_confirmation_template_name || ''}
-                                                            onChange={(e) => updateSetting('meta_confirmation_template_name', e.target.value)}
-                                                        />
-                                                    </div>
-                                                    <div className="mt-1 text-right">
-                                                        <label className="text-xs text-emerald-700 font-bold mr-2">Orden Variables ({"{{1}}, {{2}}..."}):</label>
-                                                        <input
-                                                            type="text"
-                                                            className="input-field text-xs inline-block w-48 py-1"
-                                                            placeholder="{patient_name}, {date}, {time}"
-                                                            value={settings.meta_confirmation_params_order || ''}
-                                                            onChange={(e) => updateSetting('meta_confirmation_params_order', e.target.value)}
-                                                        />
-                                                    </div>
-                                                </>)}
-                                            </div>
-
-                                            <div className="input-group">
-                                                <label className="input-label" htmlFor="confirmation-virtual-template">🌐 Confirmación Virtual (Telemedicina)</label>
-                                                <AutoTextarea
-                                                    id="confirmation-virtual-template"
-                                                    className="input-field min-h-[160px]"
-                                                    placeholder="Tu turno virtual ha sido agendado..."
-                                                    value={settings.appointment_confirmation_virtual_template || ''}
-                                                    onChange={(e) => updateSetting('appointment_confirmation_virtual_template', e.target.value)}
-                                                    disabled={user.role !== 'admin' && user.role !== 'secretary'}
-                                                />
-                                                <div className="mt-3 w-full">
-                                                    <p className="text-xs font-semibold text-emerald-700 mb-2">Variables disponibles (Haz clic para insertar):</p>
-                                                    <div className="flex flex-wrap gap-2 w-full">
-                                                        {['{patient_name}', '{date}', '{time}', '{doctor_name}', '{appointment_type}', '{appointment_location}', '{price}', '{secretary_name}'].map(v => (
-                                                            <button
-                                                                key={v}
-                                                                type="button"
-                                                                className="px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg text-sm font-medium hover:bg-emerald-100 hover:border-emerald-300 transition-all shadow-sm active:scale-95 whitespace-nowrap"
-                                                                onClick={() => insertVariable('confirmation-virtual-template', v, 'appointment_confirmation_virtual_template')}
-                                                                title={`Insertar ${v}`}
-                                                            >
-                                                                {getFriendlyVarLabel(v)}
-                                                            </button>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <p className="text-xs text-muted mt-1 italic">
-                                            Este mensaje se ofrecerá enviar automáticamente al finalizar la creación de un nuevo turno.
-                                        </p>
-                                    </div>
-
-                                    {/* Edit Link */}
-                                    <div className="space-y-4">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <span className="text-xl">🔗</span>
-                                            <h4 className="font-bold text-main-800">Enlace de Edición de Perfil (QR/Link)</h4>
-                                        </div>
-                                        <div className="input-group">
-                                            <label className="input-label" htmlFor="edit-link-template">Plantilla de Mensaje</label>
-                                            <AutoTextarea
-                                                id="edit-link-template"
-                                                className="input-field min-h-[120px]"
-                                                placeholder="Hola {name}, por favor actualiza tus datos en el siguiente enlace: {link}"
-                                                value={settings.temp_access_message_template || ''}
-                                                onChange={(e) => updateSetting('temp_access_message_template', e.target.value)}
-                                                disabled={user.role !== 'admin' && user.role !== 'secretary'}
-                                            />
-
-                                            <div className="mt-3 w-full">
-                                                <p className="text-xs font-semibold text-purple-700 mb-2">Variables disponibles (Haz clic para insertar):</p>
-                                                <div className="flex flex-wrap gap-2 w-full">
-                                                    {['{name}', '{link}', '{doctor_name}', '{secretary_name}'].map(v => (
-                                                        <button
-                                                            key={v}
-                                                            type="button"
-                                                            className="px-3 py-1.5 bg-purple-50 text-purple-700 border border-purple-200 rounded-lg text-sm font-medium hover:bg-purple-100 hover:border-purple-300 transition-all shadow-sm active:scale-95 whitespace-nowrap"
-                                                            onClick={() => insertVariable('edit-link-template', v, 'temp_access_message_template')}
-                                                            title={`Insertar ${v}`}
-                                                        >
-                                                            {getFriendlyVarLabel(v)}
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                            <p className="text-xs text-muted mt-1 italic">
-                                                Este mensaje se usa al compartir el link o QR para que el paciente edite sus datos.
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    {/* Next Free Slot - NEW */}
-                                    <div className="space-y-4">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <span className="text-xl">🕒</span>
-                                            <h4 className="font-bold text-main-800">Próximo Turno Disponible</h4>
-                                        </div>
-                                        <div className="input-group">
-                                            <label className="input-label" htmlFor="next-free-template">Plantilla de Mensaje</label>
-                                            <AutoTextarea
-                                                id="next-free-template"
-                                                className="input-field min-h-[120px]"
-                                                placeholder="El próximo turno disponible para {doctor_name} es el {date} a las {time}."
-                                                value={settings.next_free_slot_template || ''}
-                                                onChange={(e) => updateSetting('next_free_slot_template', e.target.value)}
-                                                disabled={user.role !== 'admin' && user.role !== 'secretary'}
-                                            />
-
-                                            <div className="mt-3 w-full">
-                                                <p className="text-xs font-semibold text-indigo-700 mb-2">Variables disponibles (Haz clic para insertar):</p>
-                                                <div className="flex flex-wrap gap-2 w-full">
-                                                    {['{doctor_name}', '{date}', '{time}', '{appointment_type}', '{appointment_location}', '{price}', '{secretary_name}'].map(v => (
-                                                        <button
-                                                            key={v}
-                                                            type="button"
-                                                            className="px-3 py-1.5 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg text-sm font-medium hover:bg-indigo-100 hover:border-indigo-300 transition-all shadow-sm active:scale-95 whitespace-nowrap"
-                                                            onClick={() => insertVariable('next-free-template', v, 'next_free_slot_template')}
-                                                            title={`Insertar ${v}`}
-                                                        >
-                                                            {getFriendlyVarLabel(v)}
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* --- TAB: INTEGRATIONS --- */}
-                    {activeTab === 'integrations' && (user.role === 'admin' || user.role === 'secretary') && (
-                        <div className="tab-panel animate-in">
-                            {/* GOOGLE INTEGRATION */}
-                            <div className="card mb-8">
-                                <h2 className="text-xl font-bold text-main-800 mb-4 flex items-center gap-2">
-                                    <span className="text-2xl">📅</span> Integración con Google Calendar
-                                </h2>
-
-                                <div className="p-6 bg-slate-50 rounded-xl border border-slate-200">
-                                    <div className="flex justify-between items-start mb-6">
-                                        <div>
-                                            <p className="text-main-600 mb-2">
-                                                Conecta tu cuenta de Google para sincronizar turnos automáticamente.
-                                            </p>
-                                            <div className="flex items-center gap-2 mb-4">
-                                                <div className={`w-3 h-3 rounded-full ${googleUnlinked ? 'bg-slate-400' : 'bg-green-500 animate-pulse'}`}></div>
-                                                <span className="font-medium text-main-700">
-                                                    Estado: {googleUnlinked ? 'Desconectado' : 'Conectado'}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {!googleUnlinked && (
-                                            <div className="flex flex-col items-end gap-2">
-                                                <label className="flex items-center gap-3 bg-white px-4 py-2 rounded-lg border border-slate-200 shadow-sm cursor-pointer hover:bg-slate-50 transition-colors">
-                                                    <span className="text-sm font-semibold text-main-700">
-                                                        {localSettings.google_sync_enabled === 'false' ? '⏸️ Sincronización PAUSADA' : '✅ Sincronización ACTIVA'}
-                                                    </span>
-                                                    <div className="relative inline-flex items-center cursor-pointer">
-                                                        <input
-                                                            type="checkbox"
-                                                            className="sr-only peer"
-                                                            checked={localSettings.google_sync_enabled !== 'false'}
-                                                            onChange={(e) => updateSetting('google_sync_enabled', e.target.checked ? 'true' : 'false')}
-                                                        />
-                                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                                                    </div>
-                                                </label>
-                                                <p className="text-xs text-muted text-right">
-                                                    Si pausas, los cambios en la App no se enviarán a Google, pero la cuenta sigue conectada.
-                                                </p>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {!googleUnlinked ? (
-                                        <div className="flex flex-col gap-4">
-                                            <div className="flex flex-wrap gap-4">
-                                                <button
-                                                    onClick={handleRefreshToken}
-                                                    className="btn btn-secondary flex items-center gap-2"
-                                                >
-                                                    🔄 Refrescar Enlace
-                                                </button>
-                                                <button
-                                                    onClick={handleDisconnectGoogle}
-                                                    className="btn bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 flex items-center gap-2"
-                                                >
-                                                    ❌ Desconectar Cuenta
-                                                </button>
-                                            </div>
-
-                                            <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
-                                                <h4 className="text-sm font-bold text-orange-800 mb-2">¿Problemas de Sincronización?</h4>
-                                                <p className="text-xs text-orange-700 mb-3">
-                                                    Si los turnos no se están enviando a Google, puede que haya elementos atascados por errores de conexión antiguos.
-                                                    Primero asegúrese de Refrescar Enlace, y luego intente reintentar.
-                                                </p>
-                                                <button
-                                                    onClick={async () => {
-                                                        try {
-                                                            setLoading(true);
-                                                            const res = await api.post('/google/retry-failed');
-                                                            showMessage(res.data.message || 'Reintento iniciado.', 'success');
-                                                        } catch (err) {
-                                                            showMessage('Error al iniciar reintento.', 'error');
-                                                            console.error(err);
-                                                        } finally {
-                                                            setLoading(false);
-                                                        }
-                                                    }}
-                                                    className="btn bg-orange-100 text-orange-800 border border-orange-300 hover:bg-orange-200 text-xs px-3 py-1.5"
-                                                    disabled={loading}
-                                                >
-                                                    ⚡ Reintentar Elementos Fallidos
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <button
-                                            onClick={handleGoogleAuth}
-                                            className="btn btn-primary flex items-center gap-2 shadow-lg shadow-blue-200 hover:shadow-xl transition-all hover:-translate-y-0.5"
-                                        >
-                                            <img src="https://www.gstatic.com/images/branding/product/1x/calendar_2020q4_48dp.png" alt="Google Calendar" className="w-6 h-6" />
-                                            Conectar Google Calendar
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="card mb-8">
-                                <h3 className="config-section-title">💬 Meta Business (WhatsApp API)</h3>
-                                <p className="text-muted mb-6">Configure las credenciales de WhatsApp Cloud API para el envío automático de mensajes.</p>
-                                <div className="space-y-6">
-                                    <div className="input-group">
-                                        <label className="input-label" htmlFor="meta-phone-id">Identificador de número de teléfono (Phone Number ID)</label>
-                                        <input
-                                            type="text"
-                                            id="meta-phone-id"
-                                            className="input-field font-mono text-sm"
-                                            value={settings.meta_phone_number_id || ''}
-                                            onChange={(e) => updateSetting('meta_phone_number_id', e.target.value)}
-                                            placeholder="e.g. 100609346..."
-                                            disabled={user.role !== 'admin'}
-                                        />
-                                    </div>
-                                    <div className="input-group">
-                                        <label className="input-label" htmlFor="meta-token">Token de Acceso (Access Token)</label>
-                                        <div className="relative">
-                                            <input
-                                                type="password"
-                                                id="meta-token"
-                                                className="input-field font-mono text-sm pr-10"
-                                                value={settings.meta_access_token || ''}
-                                                onChange={(e) => updateSetting('meta_access_token', e.target.value)}
-                                                placeholder={settings.meta_access_token === 'MASKED_PRESENT' ? '•••••••• (Guardado)' : 'Pegar Token (Usuario del Sistema) aquí...'}
-                                                disabled={user.role !== 'admin'}
-                                            />
-                                        </div>
-                                        <p className="text-xs text-muted mt-1">
-                                            Se recomienda usar un Token Permanente de un Usuario del Sistema.
-                                        </p>
-                                    </div>
-                                    <div className="input-group">
-                                        <label className="input-label" htmlFor="meta-business-id">Identificador de cuenta comercial (Business Account ID)</label>
-                                        <input
-                                            type="text"
-                                            id="meta-business-id"
-                                            className="input-field font-mono text-sm"
-                                            value={settings.meta_business_id || ''}
-                                            onChange={(e) => updateSetting('meta_business_id', e.target.value)}
-                                            placeholder="Opcional"
-                                            disabled={user.role !== 'admin'}
-                                        />
-                                    </div>
-                                    <div className="pt-2 flex gap-4">
-                                        <button
-                                            className="btn btn-primary"
-                                            onClick={handleTestMeta}
-                                            disabled={loading || !settings.meta_phone_number_id || !settings.meta_access_token}
-                                        >
-                                            🧪 Probar Conexión
-                                        </button>
-                                        <button
-                                            className="btn btn-outline-secondary"
-                                            onClick={() => window.open('https://developers.facebook.com/apps/', '_blank')}
-                                        >
-                                            🛠️ Ir a Meta Developers
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="card mb-8">
-                                <h3 className="config-section-title">🌐 Conectividad Web (Cloudflare)</h3>
-                                <p className="text-muted mb-6">Administre el túnel que permite el acceso remoto seguro a la clínica.</p>
-
-                                <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 flex flex-wrap justify-between items-center gap-6">
-                                    <div className="flex flex-col flex-1 min-w-[280px]">
-                                        <span className="text-xs font-bold text-muted uppercase tracking-wider mb-2">Estado del Túnel</span>
-                                        <div className="flex flex-col gap-2">
-                                            <div className="chip-green status-chip w-fit">Túnel Activo</div>
-                                            <span className="text-sm font-mono text-main-600 break-all bg-white/50 p-2 rounded border border-slate-100">{settings.public_base_url || 'No detectada'}</span>
-                                        </div>
-                                    </div>
-                                    <button
-                                        className="btn btn-primary shadow-lg hover:scale-[1.02] transition-transform active:scale-95 flex items-center gap-2"
-                                        style={{ height: 'fit-content' }}
-                                        onClick={async () => {
-                                            if (!await confirm("¿Solicitar nuevo enlace a Cloudflare? Esto reiniciará el túnel y tardará unos segundos.")) return;
-                                            const oldUrl = settings.public_base_url;
-                                            try {
-                                                setLoading(true);
-                                                await api.post('/settings/refresh-tunnel');
-                                                showMessage('Solicitando nuevo enlace... por favor espere.', 'info');
-                                                let attempts = 0;
-                                                const interval = setInterval(async () => {
-                                                    attempts++;
-                                                    await refreshSettings();
-                                                    const res = await api.get('/settings');
-                                                    if (res.data.public_base_url !== oldUrl) {
-                                                        clearInterval(interval);
-                                                        setLoading(false);
-                                                        showMessage('¡Enlace actualizado con éxito!', 'success');
-                                                    }
-                                                    if (attempts > 15) {
-                                                        clearInterval(interval);
-                                                        setLoading(false);
-                                                        showMessage('El enlace está tardando en actualizarse.', 'warning');
-                                                    }
-                                                }, 3000);
-                                            } catch (err) {
-                                                showMessage('Error al refrescar túnel', 'error');
-                                                setLoading(false);
-                                            }
-                                        }}
-                                        disabled={loading}
-                                    >
-                                        {loading ? '⏳ Actualizando...' : '🔄 Refrescar Enlace Externo'}
-                                    </button>
-                                </div>
-                            </div>
-
-
-
-                            <div className="card">
-                                <h3 className="config-section-title">📱 Aplicación Móvil (APK)</h3>
-                                <p className="text-muted mb-6">
-                                    Descargue y distribuya la aplicación oficial para gestionar la clínica desde dispositivos Android.
-                                </p>
-
-                                <div className="grid-2-cols gap-6 mb-8">
-                                    <div className="p-6 bg-blue-50/50 rounded-xl border border-blue-100">
-                                        <h4 className="font-bold mb-2">Descarga Remota</h4>
-                                        <p className="text-sm text-main-600 mb-4">Para uso fuera de la clínica (requiere internet).</p>
-                                        <div className="flex gap-2">
-                                            <a
-                                                href={`${settings.public_base_url || window.location.origin}/uploads/secretary-app.apk`}
-                                                download="secretary-app.apk"
-                                                className="btn btn-primary btn-sm flex-1 no-decoration text-center shadow-sm hover:scale-[1.02] transition-transform"
-                                            >
-                                                📥 Descargar APK
-                                            </a>
-                                            <button
-                                                className="btn btn-secondary btn-sm shadow-sm hover:scale-105 transition-transform"
-                                                onClick={() => {
-                                                    const url = `${settings.public_base_url || window.location.origin}/uploads/secretary-app.apk`;
-                                                    setQrUrl(url); setQrExpiry(null); setQrModalOpen(true);
-                                                }}
-                                            >
-                                                📱 QR
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div className="p-6 bg-slate-50 rounded-xl border border-slate-200">
-                                        <h4 className="font-bold mb-2">Descarga Local</h4>
-                                        <p className="text-sm text-main-600 mb-4">Ideal para tablets dentro de la clínica (más rápido).</p>
-                                        <div className="flex gap-2">
-                                            <a
-                                                href={`${settings.staff_base_url || window.location.origin}/uploads/secretary-app.apk`}
-                                                download="secretary-app.apk"
-                                                className="btn btn-outline-secondary btn-sm flex-1 no-decoration text-center shadow-sm hover:scale-[1.02] transition-transform"
-                                            >
-                                                🏠 Descargar Local
-                                            </a>
-                                            <button
-                                                className="btn btn-secondary btn-sm shadow-sm hover:scale-105 transition-transform"
-                                                onClick={() => {
-                                                    const url = `${settings.staff_base_url || window.location.origin}/uploads/secretary-app.apk`;
-                                                    setQrUrl(url); setQrExpiry(null); setQrModalOpen(true);
-                                                }}
-                                            >
-                                                📱 QR
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="flex justify-between items-center text-xs text-muted">
-                                    <span>Clínica Flow Mobile Core</span>
-                                    <span className="chip-blue">v1.9.3.1</span>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* --- TAB: DATA --- */}
-                    {activeTab === 'data' && (user.role === 'admin' || user.role === 'secretary') && (
-                        <div className="tab-panel animate-in">
-                            <div className="card mb-8">
-                                <h3 className="config-section-title">💾 Operaciones de Datos</h3>
-                                <p className="text-muted mb-6">Herramientas de importación y mantenimiento.</p>
-
-                                <div className="space-y-8">
-                                    <div className="p-8 bg-slate-50/50 rounded-2xl border border-slate-200 shadow-sm">
-                                        <div className="flex items-center gap-4 mb-6">
-                                            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-2xl">📁</div>
-                                            <div>
-                                                <h4 className="font-bold text-main-800 text-lg">Importar Pacientes (CSV Contacts)</h4>
-                                                <p className="text-sm text-main-500">Carga masiva desde Google Contacts o archivos CSV compatibles.</p>
-                                            </div>
-                                        </div>
-
-                                        <div className="bg-white p-6 rounded-xl border border-dashed border-slate-300 flex flex-col items-center gap-4">
-                                            <div className="text-center">
-                                                <p className="text-sm text-main-600 mb-4 px-4">Seleccione su archivo <strong>.csv</strong> para iniciar el proceso de sincronización.</p>
-                                                <input
-                                                    type="file"
-                                                    id="csv-upload"
-                                                    accept=".csv"
-                                                    style={{ display: 'none' }}
-                                                    onChange={async (e) => {
-                                                        const file = e.target.files[0];
-                                                        if (!file) return;
-                                                        if (!await confirm(`¿Importar contactos desde ${file.name}?`)) {
-                                                            e.target.value = null;
-                                                            return;
-                                                        }
-                                                        const formData = new FormData();
-                                                        formData.append('file', file);
-                                                        setLoading(true);
-                                                        setSyncLogs([]);
-                                                        try {
-                                                            const token = localStorage.getItem('token');
-                                                            const response = await fetch(`http://${window.location.hostname}:5000/api/import/csv`, {
-                                                                method: 'POST',
-                                                                headers: { 'Authorization': `Bearer ${token}` },
-                                                                body: formData
-                                                            });
-                                                            if (!response.ok) throw new Error('Falló la importación');
-                                                            const reader = response.body.getReader();
-                                                            const decoder = new TextDecoder("utf-8");
-                                                            let finalResult = null;
-                                                            while (true) {
-                                                                const { done, value } = await reader.read();
-                                                                if (done) break;
-                                                                const chunk = decoder.decode(value, { stream: true });
-                                                                const lines = chunk.split('\n');
-                                                                for (const line of lines) {
-                                                                    if (!line.trim()) continue;
-                                                                    if (line.startsWith('JSON_RESULT:')) {
-                                                                        finalResult = JSON.parse(line.replace('JSON_RESULT:', ''));
-                                                                    } else if (line.startsWith('[LOG]')) {
-                                                                        setSyncLogs(prev => [...prev.slice(-99), line.replace('[LOG] ', '')]);
-                                                                    }
-                                                                }
-                                                            }
-                                                            if (finalResult) showMessage(`¡Importación Completa!\nNuevos: ${finalResult.created} | Actualizados: ${finalResult.updated}`, 'success');
-                                                        } catch (err) {
-                                                            showMessage('Error: ' + err.message, 'error');
-                                                        } finally {
-                                                            setLoading(false);
-                                                            e.target.value = null;
-                                                        }
-                                                    }}
-                                                />
-                                                <label htmlFor="csv-upload" className="btn btn-primary shadow-md hover:scale-105 transition-transform cursor-pointer inline-flex items-center gap-2">
-                                                    {loading ? '⏳ Procesando...' : '📄 Seleccionar Archivo'}
-                                                </label>
-                                            </div>
-                                        </div>
-
-                                        {syncLogs.length > 0 && (
-                                            <div className="mt-8">
-                                                <div className="flex items-center justify-between mb-2 px-1">
-                                                    <span className="text-xs font-bold text-muted uppercase tracking-widest">Logs de Sincronización</span>
-                                                    <span className="text-[10px] bg-emerald-100 text-emerald-600 px-2 py-0.5 rounded-full font-bold animate-pulse">LIVE</span>
-                                                </div>
-                                                <div className="bg-slate-900 text-emerald-400 p-5 rounded-xl font-mono text-xs h-64 overflow-y-auto whitespace-pre-wrap shadow-2xl border border-slate-800 custom-scrollbar">
-                                                    {syncLogs.map((log, i) => (
-                                                        <div key={i} className="mb-1 opacity-90 border-l-2 border-emerald-900/50 pl-3 hover:bg-emerald-400/5 transition-colors">
-                                                            <span className="text-emerald-800 mr-2">[{new Date().toLocaleTimeString([], { hour12: false })}]</span>
-                                                            {log}
-                                                        </div>
-                                                    ))}
-                                                    <div className="animate-pulse text-emerald-500 font-bold">_</div>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {user.role === 'admin' && (
-                                    <details className="p-4 border border-amber-100 bg-amber-50/50 rounded-lg">
-                                        <summary className="font-bold text-amber-800 cursor-pointer">⚠️ Detalles Técnicos (Avanzado)</summary>
-                                        <div className="mt-4 text-sm text-amber-900 space-y-2">
-                                            <p>Para soporte técnico: las credenciales de Google se configuran mediante el archivo <code>.env</code> del servidor.</p>
-                                            <p>Callback URL: <code>http://localhost:5000/api/google/callback</code></p>
-                                        </div>
-                                    </details>
-                                )}
-                            </div>
-                        </div>
-                    )}
+                    {/* Content Area */}
+                    <div className="tab-content relative min-h-[500px]">
+                        {renderTabContent()}
+                    </div>
                 </div>
-            </main >
+            </main>
 
+            {/* Global Modals for this Page */}
             <QRCodeModal
-                isOpen={qrModalOpen}
-                onClose={() => setQrModalOpen(false)}
-                url={qrUrl}
-                expiresAt={qrExpiry}
+                isOpen={qrModal.open}
+                onClose={() => setQrModal({ ...qrModal, open: false })}
+                url={qrModal.url}
+                expiresAt={qrModal.expiry}
             />
-        </div >
+        </div>
     );
 };
 

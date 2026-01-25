@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useMessage } from '../context/MessageContext';
@@ -43,7 +43,8 @@ export const usePatientsPageController = () => {
     const [showRatingInfo, setShowRatingInfo] = useState(false);
 
     // --- FETCH DATA ---
-    const fetchPatients = async () => {
+    // --- FETCH DATA ---
+    const fetchPatients = useCallback(async () => {
         try {
             const res = await api.get('/users/patients');
             setPatients(res.data);
@@ -53,41 +54,42 @@ export const usePatientsPageController = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [t, showMessage]);
 
-    const fetchDoctors = async () => {
+    const fetchDoctors = useCallback(async () => {
         try {
             const res = await api.get('/users/doctors');
             setDoctors(res.data);
         } catch (err) { console.error(err); }
-    };
+    }, []);
 
-    const fetchInsurances = async () => {
+    const fetchInsurances = useCallback(async () => {
         try {
             const res = await api.get('/insurances');
             setInsurances(res.data);
         } catch (err) { console.error(err); }
-    };
+    }, []);
 
-    const fetchRecycleBin = async () => {
+    const fetchRecycleBin = useCallback(async () => {
         if (user.role !== 'admin' && user.role !== 'secretary') return;
         try {
             const res = await api.get('/logs/recycle-bin');
             setRecycleItems(res.data);
         } catch (err) { console.error(err); }
-    };
+    }, [user.role]);
 
     useEffect(() => {
         fetchPatients();
         fetchDoctors();
         fetchInsurances();
         fetchRecycleBin();
-    }, []);
+    }, [fetchPatients, fetchDoctors, fetchInsurances, fetchRecycleBin]);
 
     // --- FILTER LOGIC ---
     const filteredPatients = useMemo(() => {
         const normalizeText = (text) => text ? text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : "";
 
+        // Sort first
         const sortedPatients = [...patients].sort((a, b) => {
             const debtA = Number(a.total_debt) || 0;
             const debtB = Number(b.total_debt) || 0;
@@ -97,7 +99,11 @@ export const usePatientsPageController = () => {
             return a.full_name.localeCompare(b.full_name);
         });
 
+        // Optimization: if no search, return sorted
+        if (!searchTerm) return sortedPatients;
+
         return sortedPatients.filter(p => {
+            // Optimization: Create searchable string once or lazily, but here inline is fine if not excessive
             const searchText = normalizeText(
                 [
                     p.full_name, p.first_name, p.last_name, p.dni,
@@ -109,6 +115,28 @@ export const usePatientsPageController = () => {
             return tokens.every(token => searchText.includes(token));
         });
     }, [patients, searchTerm]);
+
+    // --- PAGINATION ---
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 50;
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, patients]); // Reset page on filter/data change
+
+    const paginatedPatients = useMemo(() => {
+        const start = (currentPage - 1) * itemsPerPage;
+        return filteredPatients.slice(start, start + itemsPerPage);
+    }, [filteredPatients, currentPage]);
+
+    const totalPages = Math.ceil(filteredPatients.length / itemsPerPage);
+
+    const handlePageChange = useCallback((newPage) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }, [totalPages]);
 
     // --- ACTIONS ---
 
@@ -271,7 +299,9 @@ export const usePatientsPageController = () => {
     return {
         // State
         user, t, settings,
-        patients: filteredPatients,
+        patients: paginatedPatients, // Return paginated list as 'patients' to view
+        totalCount: filteredPatients.length,
+        currentPage, totalPages, handlePageChange,
         doctors, insurances, recycleItems,
         loading, detailsLoading,
         activeTab, setActiveTab,

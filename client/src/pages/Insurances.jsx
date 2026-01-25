@@ -3,7 +3,7 @@ import Sidebar from '../components/organisms/Sidebar';
 import Button from '../components/atoms/Button';
 import InsuranceList from '../components/organisms/InsuranceList';
 import InsuranceFormModal from '../components/organisms/InsuranceFormModal';
-import { useInsurancesController } from '../hooks/useInsurancesController';
+import { useInsurancesController } from '../controllers/useInsurancesController';
 
 const Insurances = () => {
     const {
