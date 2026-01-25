@@ -17,9 +17,10 @@ import Insurances from './pages/Insurances';
 import Institutions from './pages/Institutions'; // [NEW]
 import TempAccess from './pages/TempAccess'; // [NEW]
 
-import FloatingChat from './components/FloatingChat';
+import FloatingChat from './components/organisms/FloatingChat';
 import { useAuth } from './context/AuthContext';
 import { useLanguage } from './context/LanguageContext';
+import Button from './components/atoms/Button';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -40,15 +41,16 @@ const ProtectedRoute = ({ children }) => {
             <br /><br />
             Esta sección es de uso administrativo. Si necesitas realizar otra gestión, por favor utiliza el enlace enviado a tu dispositivo o escanea el QR en el consultorio.
           </p>
-          <button
-            className="btn btn-secondary w-full"
+          <Button
+            variant="secondary"
+            className="w-full"
             onClick={() => {
               localStorage.clear();
               window.location.href = '/';
             }}
           >
             Cerrar Sesión
-          </button>
+          </Button>
         </div>
       </div>
     );

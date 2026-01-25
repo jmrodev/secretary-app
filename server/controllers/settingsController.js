@@ -23,8 +23,14 @@ exports.getSettings = async (req, res) => {
                 }
             }
             // Block other sensitive google_ keys (access_token, client_secret, etc)
-            else if (!r.setting_key.startsWith('google_')) {
+            else if (!r.setting_key.startsWith('google_') && !r.setting_key.startsWith('meta_')) {
                 settings[r.setting_key] = r.setting_value;
+            }
+            // Mask Meta Token but show it exists
+            else if (r.setting_key === 'meta_access_token' || r.setting_key === 'meta_phone_number_id') {
+                if (r.setting_value && r.setting_value.length > 0) {
+                    settings[r.setting_key] = "MASKED_PRESENT";
+                }
             }
         });
         res.json(settings);

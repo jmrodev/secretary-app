@@ -8,7 +8,7 @@
  * @param {string} serviceType - 'consultation', 'prescription', 'medical_license', 'virtual_consultation'
  * @returns {Promise<{price: number, explanation: string}>}
  */
-async function calculatePrice(conn, doctorId, patientId, serviceType = 'consultation') {
+async function calculatePrice(conn, doctorId, patientId, serviceType = 'consultation', appointmentInstitutionId = null) {
     // Get Doctor Prices
     const docRows = await conn.query(
         "SELECT consultation_price, prescription_price, medical_license_price, virtual_consultation_price, certificate_price FROM doctors WHERE id = ?",
@@ -52,12 +52,22 @@ async function calculatePrice(conn, doctorId, patientId, serviceType = 'consulta
 
     // Get Patient Tariff & Institution Base Price
     if (patientId) {
-        const patRows = await conn.query(`
+        // If appointmentInstitutionId is provided, use it. Otherwise use patient's default.
+        // We can do this by just checking the ID if passed, or fetching patient's one if not.
+
+        // This query fetches patient settings AND the institution price if linked.
+        // If appointmentInstitutionId is passed, we should join on THAT id instead of p.institution_id
+
+        let query = `
             SELECT p.tariff_percent, p.tariff_override, i.base_price as inst_price 
             FROM patients p
-            LEFT JOIN institutions i ON p.institution_id = i.id
+            LEFT JOIN institutions i ON ${appointmentInstitutionId ? 'i.id = ?' : 'p.institution_id = i.id'}
             WHERE p.id = ?
-        `, [patientId]);
+        `;
+
+        const params = appointmentInstitutionId ? [appointmentInstitutionId, patientId] : [patientId];
+
+        const patRows = await conn.query(query, params);
 
         if (patRows.length > 0) {
             const { tariff_percent, tariff_override, inst_price } = patRows[0];

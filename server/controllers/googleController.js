@@ -795,6 +795,24 @@ exports.syncImportEvents = async (req, res) => {
     }
 };
 
+exports.retryFailedItems = async (req, res) => {
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        // Reset retries for all pending or failed items, effectively putting them back in the queue
+        // We set retries = 0. We can also reset status to 'pending' if it was 'failed'.
+        await conn.query("UPDATE google_sync_queue SET retries = 0, status = 'pending', updated_at = NOW() WHERE retries >= 5"); // Focus on the stalled ones
+
+        await logAction(req, 'GOOGLE_SYNC_RETRY', 'Reset retries for stalled sync items');
+        res.json({ message: "Retry initiated for stalled items." });
+    } catch (err) {
+        console.error("Retry Failed Items Error:", err);
+        res.status(500).json({ error: err.message });
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
 // --- Sanitization Tool ---
 
 exports.getAuditAppointments = async (req, res) => {

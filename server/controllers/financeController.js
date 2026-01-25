@@ -92,8 +92,38 @@ exports.createTransaction = async (req, res) => {
             // ----------------------------
         }
 
-        let logDetail = `${type}: $${amount} - ${description}`;
+        // Calculate total for logging if using multiple payments
+        let effectiveAmount = amount;
+        if (!effectiveAmount && Array.isArray(payments)) {
+            effectiveAmount = payments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+        }
+
+        let logDetail = `${type}: $${effectiveAmount} - ${description}`;
         if (Number(debt_amount) > 0) logDetail += ` (Debt: $${debt_amount})`;
+
+        // [NEW] Enrich Log with Appointment/Patient Details
+        if (appointment_id) {
+            try {
+                const [apptDetails] = await conn.query(`
+                    SELECT a.appointment_date, a.type, p.full_name as patient_name, d.full_name as doctor_name 
+                    FROM appointments a
+                    LEFT JOIN patients p ON a.patient_id = p.id
+                    LEFT JOIN doctors d ON a.doctor_id = d.id
+                    WHERE a.id = ?
+                `, [appointment_id]);
+
+                if (apptDetails) {
+                    const dateStr = new Date(apptDetails.appointment_date).toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
+                    logDetail += ` [Patient: ${apptDetails.patient_name}] [Dr: ${apptDetails.doctor_name}] [Type: ${apptDetails.type}] [Date: ${dateStr}]`;
+                }
+            } catch (e) { console.warn("Log enrichment failed", e); }
+        } else if (related_user_id) {
+            // Fallback if not linked to appointment directly but to user
+            try {
+                const [u] = await conn.query("SELECT username FROM users WHERE id = ?", [related_user_id]);
+                if (u) logDetail += ` [User: ${u.username}]`;
+            } catch (e) { }
+        }
 
         logAction(req, 'FINANCE_TRANSACTION', logDetail);
 
@@ -265,9 +295,10 @@ exports.payDebt = async (req, res) => {
         conn = await pool.getConnection();
 
         // 1. Get User ID linked to Patient
-        const pat = await conn.query("SELECT user_id FROM patients WHERE id = ?", [patient_id]);
+        const pat = await conn.query("SELECT user_id, full_name FROM patients WHERE id = ?", [patient_id]);
         if (pat.length === 0) return res.status(404).send("Patient not found");
         const userId = pat[0].user_id;
+        const patientName = pat[0].full_name;
 
         // 2. Fetch Pending Debt Transactions (oldest first)
         const debts = await conn.query(
@@ -386,7 +417,7 @@ exports.payDebt = async (req, res) => {
             totalPaid += remaining;
         }
 
-        logAction(req, 'PAY_DEBT', `Paid $${payAmount} (Applied: $${totalPaid}) for Patient ID ${patient_id}`);
+        logAction(req, 'PAY_DEBT', `Paid $${payAmount} (Applied: $${totalPaid}) for Patient: ${patientName} (ID: ${patient_id})`);
         res.json({ message: "Payment processed", paid: totalPaid });
 
     } catch (err) {

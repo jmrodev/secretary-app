@@ -1,0 +1,52 @@
+services:
+  db-prod:
+    image: mariadb:10.6
+    restart: always
+    container_name: secretary-db-prod
+    environment:
+      MYSQL_ROOT_PASSWORD: cima1255
+      MYSQL_DATABASE: clinical_management
+      TZ: America/Argentina/Buenos_Aires
+    volumes:
+      - ./mysql_data_prod:/var/lib/mysql
+      - ./server/01-schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./server/02-seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
+    ports:
+      - "3308:3306" # Puerto diferente para no chocar con Dev (3307)
+    healthcheck:
+      test: "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD"
+      timeout: 20s
+      retries: 10
+
+  server-prod:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.prod
+    restart: always
+    container_name: secretary-server-prod
+    ports:
+      - "5001:5000" # Puerto diferente para no chocar con Dev (5000)
+    environment:
+      - DB_HOST=db-prod
+      - DB_USER=root
+      - DB_PASSWORD=cima1255
+      - DB_NAME=clinical_management
+      - PORT=5000
+      - TZ=America/Argentina/Buenos_Aires
+      - NODE_ENV=production
+    depends_on:
+      db-prod:
+        condition: service_healthy
+    # SIN VOLÚMENES de código para que sea una "foto" fija
+
+  client-prod:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.prod
+    restart: always
+    container_name: secretary-client-prod
+    ports:
+      - "8080:80" # Producción corre en el 8080 (usando Nginx internamente)
+    depends_on:
+      - server-prod
+    # SIN VOLÚMENES de código

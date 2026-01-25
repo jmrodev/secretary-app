@@ -1,0 +1,16 @@
+# Dockerfile para Producción - Servidor
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Instalar dependencias primero para aprovechar cache
+COPY package*.json ./
+RUN npm install --omit=dev
+
+# Copiar el resto de los archivos
+COPY . .
+
+EXPOSE 5000
+
+# En producción no usamos nodemon
+CMD ["node", "app.js"]

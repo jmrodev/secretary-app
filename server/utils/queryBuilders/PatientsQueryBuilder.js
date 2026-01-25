@@ -48,6 +48,15 @@ class PatientsQueryBuilder extends BaseQueryBuilder {
     }
 
     /**
+     * Incluye el nombre de la institución
+     */
+    includeInstitution() {
+        this.leftJoin('institutions inst', 'p.institution_id = inst.id');
+        this.select('inst.name as institution_name');
+        return this;
+    }
+
+    /**
      * Incluye la deuda total del paciente
      */
     includeDebtStats() {
@@ -189,6 +198,7 @@ class PatientsQueryBuilder extends BaseQueryBuilder {
     withFullDetails() {
         return this
             .includeInsurance()
+            .includeInstitution()
             .includeDebtStats()
             .includeAppointmentStats();
     }

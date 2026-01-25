@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useNavigate, Link } from 'react-router-dom';
+import Button from '../components/atoms/Button';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -33,28 +34,28 @@ const Login = () => {
 
                 <form onSubmit={handleSubmit}>
                     <div className="input-group">
-                        <label className="input-label">{t('username')}</label>
+                        <label className="form-label">{t('username')}</label>
                         <input
                             type="text"
-                            className="input-field"
+                            className="form-control"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             required
                         />
                     </div>
                     <div className="input-group">
-                        <label className="input-label">{t('password')}</label>
+                        <label className="form-label">{t('password')}</label>
                         <input
                             type="password"
-                            className="input-field"
+                            className="form-control"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
                     </div>
-                    <button type="submit" className="btn btn-primary w-full">
+                    <Button type="submit" variant="primary" className="w-full">
                         {t('sign_in')}
-                    </button>
+                    </Button>
                 </form>
                 {/* Disabling public registration as per user request. Managed by Admin/Secretary. */}
                 {/* 

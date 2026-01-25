@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useRef } from 'react';
-import ConfirmModal from '../components/ConfirmModal';
+import ConfirmModal from '../components/molecules/ConfirmModal';
 
 const ModalContext = createContext();
 

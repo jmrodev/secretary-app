@@ -5,16 +5,17 @@ import { useAuth } from '../context/AuthContext';
 import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
-import Modal from '../components/Modal';
-import TransactionModal from '../components/TransactionModal';
-import PatientSearchSelect from '../components/PatientSearchSelect';
-import Sidebar from '../components/Sidebar';
+import Modal from '../components/molecules/Modal';
+import TransactionModal from '../components/molecules/TransactionModal';
+import PatientSearchSelect from '../components/molecules/PatientSearchSelect';
+import Sidebar from '../components/organisms/Sidebar';
 import { formatPrice } from '../utils/format';
 import { timeAgo, isToday } from '../utils/time';
-import MedicationAutocomplete from '../components/MedicationAutocomplete';
+import MedicationAutocomplete from '../components/molecules/MedicationAutocomplete';
+import Button from '../components/atoms/Button';
 
-import MedicalRequestForm from '../components/MedicalRequestForm';
-import MedicalRequestList from '../components/MedicalRequestList';
+import MedicalRequestForm from '../components/organisms/MedicalRequestForm';
+import MedicalRequestList from '../components/organisms/MedicalRequestList';
 
 const MedicalDocuments = () => {
     const { user } = useAuth();
@@ -388,8 +389,9 @@ const MedicalDocuments = () => {
 
                 <div className="tabs-container">
                     {['requests', 'files', 'prescriptions', 'licenses', 'certificates'].map(tab => (
-                        <button
+                        <Button
                             key={tab}
+                            variant="ghost"
                             onClick={() => setActiveTab(tab)}
                             className={`tab-btn ${activeTab === tab ? 'active' : ''}`}
                         >
@@ -404,7 +406,7 @@ const MedicalDocuments = () => {
                             ) : (
                                 <><span className="icon">📜</span> {t('certificates') || 'Certificados'}</>
                             )}
-                        </button>
+                        </Button>
                     ))}
                 </div>
 
@@ -424,20 +426,22 @@ const MedicalDocuments = () => {
                 {activeTab === 'requests' && (
                     <div className="flex flex-col gap-4">
                         <div className="flex gap-2 mb-2 p-1 bg-slate-100/50 rounded-lg w-fit">
-                            <button
+                            <Button
+                                variant="ghost"
                                 onClick={() => setRequestsSubTab('list')}
                                 className={`tab-btn-small ${requestsSubTab === 'list' ? 'active' : ''}`}
                                 style={{ border: 'none' }}
                             >
                                 <span className="icon">📋</span> {t('request_status')}
-                            </button>
-                            <button
+                            </Button>
+                            <Button
+                                variant="ghost"
                                 onClick={() => setRequestsSubTab('new')}
                                 className={`tab-btn-small ${requestsSubTab === 'new' ? 'active' : ''}`}
                                 style={{ border: 'none' }}
                             >
                                 <span className="icon">➕</span> {t('new_request')}
-                            </button>
+                            </Button>
                         </div>
 
                         {requestsSubTab === 'new' ? (
@@ -489,7 +493,7 @@ const MedicalDocuments = () => {
                                         <label className="input-label">{t('file')}</label>
                                         <input type="file" className="input-field" onChange={e => setSelectedFile(e.target.files[0])} required />
                                     </div>
-                                    <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>{t('upload_file')}</button>
+                                    <Button type="submit" style={{ width: '100%' }}>{t('upload_file')}</Button>
                                 </form>
                             </div>
 
@@ -524,7 +528,9 @@ const MedicalDocuments = () => {
                                                         <td>
                                                             <div className="flex justify-end gap-1">
                                                                 {(user.role === 'admin' || user.role === 'secretary') && (
-                                                                    <button
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="sm-compact"
                                                                         className="btn-icon-base btn-icon-red"
                                                                         onClick={(e) => {
                                                                             e.stopPropagation();
@@ -533,7 +539,7 @@ const MedicalDocuments = () => {
                                                                         title="Delete"
                                                                     >
                                                                         🗑️
-                                                                    </button>
+                                                                    </Button>
                                                                 )}
                                                             </div>
                                                         </td>
@@ -555,8 +561,8 @@ const MedicalDocuments = () => {
                     title={t('confirm_delete') || "Confirmar Eliminación"}
                     footer={
                         <>
-                            <button className="btn btn-secondary" onClick={() => setFileToDelete(null)}>{t('cancel')}</button>
-                            <button className="btn btn-danger" style={{ background: '#ef4444', color: 'white' }} onClick={confirmFileDelete}>{t('delete') || "Eliminar"}</button>
+                            <Button variant="secondary" onClick={() => setFileToDelete(null)}>{t('cancel')}</Button>
+                            <Button style={{ background: '#ef4444', color: 'white' }} onClick={confirmFileDelete}>{t('delete') || "Eliminar"}</Button>
                         </>
                     }
                 >
@@ -768,8 +774,8 @@ const MedicalDocuments = () => {
                 title={actionModal.type === 'completed' ? t('approve_request') : t('reject_request')}
                 footer={
                     <>
-                        <button className="btn btn-secondary" onClick={() => setActionModal({ open: false, type: '', id: null })}>{t('cancel')}</button>
-                        <button className="btn btn-primary" onClick={confirmAction}>{actionModal.type === 'completed' ? t('approve') : t('reject')}</button>
+                        <Button variant="secondary" onClick={() => setActionModal({ open: false, type: '', id: null })}>{t('cancel')}</Button>
+                        <Button onClick={confirmAction}>{actionModal.type === 'completed' ? t('approve') : t('reject')}</Button>
                     </>
                 }
             >
@@ -814,14 +820,14 @@ const MedicalDocuments = () => {
                     <div className="flex gap-2">
                         {isEditing ? (
                             <>
-                                <button className="btn btn-secondary" onClick={() => setIsEditing(false)}>{t('cancel')}</button>
-                                <button className="btn btn-primary" onClick={handleUpdatePrescription}>{t('save') || 'Guardar Changes'}</button>
+                                <Button variant="secondary" onClick={() => setIsEditing(false)}>{t('cancel')}</Button>
+                                <Button onClick={handleUpdatePrescription}>{t('save') || 'Guardar Changes'}</Button>
                             </>
                         ) : (
                             <>
                                 {(user.role === 'admin' || user.role === 'secretary' || (user.role === 'doctor' && myDoctorProfile?.id === selectedPrescription?.doctor_id)) && (
-                                    <button
-                                        className="btn btn-secondary"
+                                    <Button
+                                        variant="secondary"
                                         onClick={() => {
                                             setEditData({
                                                 medications: selectedPrescription.medications,
@@ -831,9 +837,9 @@ const MedicalDocuments = () => {
                                         }}
                                     >
                                         {t('edit') || 'Editar'}
-                                    </button>
+                                    </Button>
                                 )}
-                                <button className="btn btn-primary" onClick={() => setSelectedPrescription(null)}>{t('close')}</button>
+                                <Button onClick={() => setSelectedPrescription(null)}>{t('close')}</Button>
                             </>
                         )}
                     </div>
@@ -897,14 +903,14 @@ const MedicalDocuments = () => {
                     <div className="flex gap-2">
                         {isEditing ? (
                             <>
-                                <button className="btn btn-secondary" onClick={() => setIsEditing(false)}>{t('cancel')}</button>
-                                <button className="btn btn-primary" onClick={handleUpdateLicense}>{t('save') || 'Guardar Changes'}</button>
+                                <Button variant="secondary" onClick={() => setIsEditing(false)}>{t('cancel')}</Button>
+                                <Button onClick={handleUpdateLicense}>{t('save') || 'Guardar Changes'}</Button>
                             </>
                         ) : (
                             <>
                                 {(user.role === 'admin' || user.role === 'secretary' || (user.role === 'doctor' && myDoctorProfile?.id === selectedLicense?.doctor_id)) && (
-                                    <button
-                                        className="btn btn-secondary"
+                                    <Button
+                                        variant="secondary"
                                         onClick={() => {
                                             setLicenseEditData({
                                                 start_date: selectedLicense.start_date ? selectedLicense.start_date.split('T')[0] : '',
@@ -915,9 +921,9 @@ const MedicalDocuments = () => {
                                         }}
                                     >
                                         {t('edit') || 'Editar'}
-                                    </button>
+                                    </Button>
                                 )}
-                                <button className="btn btn-primary" onClick={() => setSelectedLicense(null)}>{t('close')}</button>
+                                <Button onClick={() => setSelectedLicense(null)}>{t('close')}</Button>
                             </>
                         )}
                     </div>
@@ -988,15 +994,15 @@ const MedicalDocuments = () => {
                     <div className="flex justify-end gap-2">
                         {isEditing ? (
                             <>
-                                <button className="btn btn-secondary" onClick={() => setIsEditing(false)}>{t('cancel')}</button>
-                                <button className="btn btn-primary" onClick={handleUpdateRequest}>{t('save')}</button>
+                                <Button variant="secondary" onClick={() => setIsEditing(false)}>{t('cancel')}</Button>
+                                <Button onClick={handleUpdateRequest}>{t('save')}</Button>
                             </>
                         ) : (
                             <>
                                 {(user.role === 'admin' || user.role === 'secretary' || (user.role === 'doctor' && (user.user_id || user.id) === selectedRequest?.doctor_user_id)) && (
-                                    <button className="btn btn-secondary" onClick={() => setIsEditing(true)}>{t('edit')}</button>
+                                    <Button variant="secondary" onClick={() => setIsEditing(true)}>{t('edit')}</Button>
                                 )}
-                                <button className="btn btn-primary" onClick={() => setSelectedRequest(null)}>{t('close')}</button>
+                                <Button onClick={() => setSelectedRequest(null)}>{t('close')}</Button>
                             </>
                         )}
                     </div>

@@ -25,6 +25,7 @@
 - [ ] Remove local MariaDB from host system <!-- id: 22 -->
 - [x] Restore 'ceci' user and doctor profile <!-- id: 23 -->
 - [x] Improve Google Calendar Connect UI/UX (Add instructions) <!-- id: 24 -->
+- [x] Fix stalled Google Sync queue (Added Retry & Logging) <!-- id: 43 -->
 - [x] Implement CSV Contact Import (Google Contacts format) <!-- id: 25 -->
     - [x] Create Backend Endpoint for CSV Upload <!-- id: 26 -->
     - [x] Implement CSV Parsing Logic (Google Contacts headers - Added Spanish support) <!-- id: 27 -->
@@ -36,7 +37,14 @@
     - [x] Disable submit button in MedicalDocuments.jsx <!-- id: 32 -->
     - [x] Clean up duplicate records in DB <!-- id: 33 -->
 
-- [x] Implement Overmedication Warning and Fix UI <!-- id: 34 -->
+
+- [ ] Implement Overmedication Warning and Fix UI <!-- id: 34 -->
     - [x] Clean up temporary scripts <!-- id: 35 -->
     - [x] Implement warning logic in MedicalDocuments.jsx <!-- id: 36 -->
     - [x] Fix checkbox UI issue <!-- id: 37 -->
+
+- [ ] Meta Business Integration (WhatsApp Cloud API) <!-- id: 38 -->
+    - [ ] Plan integration architecture <!-- id: 39 -->
+    - [ ] Create backend service for WhatsApp API <!-- id: 40 -->
+    - [ ] Implement message templates syncing <!-- id: 41 -->
+    - [ ] Update frontend to use server-side sending <!-- id: 42 -->

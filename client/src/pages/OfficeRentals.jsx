@@ -3,7 +3,7 @@ import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
-import Sidebar from '../components/Sidebar';
+import Sidebar from '../components/organisms/Sidebar';
 import { formatPrice } from '../utils/format';
 
 const OfficeRentals = () => {

@@ -1,8 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const whatsappController = require('../controllers/whatsappController');
+const { verifyToken } = require('../middleware/authMiddleware');
+const { authorize } = require('../middleware/authorize');
+const { ACCESS_LEVELS } = require('../constants/roles');
 
-// POST /api/whatsapp/broadcast
-router.post('/broadcast', whatsappController.broadcastMessage);
+// Apply generic token verification to all routes
+router.use(verifyToken);
+
+// Send a single message (e.g. from Appointment Flow) - Allowed for Secretary/Doctor
+router.post('/send', whatsappController.sendMessage);
+
+// Broadcast - Maybe restricted to higher roles? Let's keep it generally consistent for now.
+router.post('/broadcast', authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), whatsappController.broadcastMessage);
+
+// Test Connection - Admin Config only
+router.post('/test', authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), whatsappController.testConnection);
 
 module.exports = router;

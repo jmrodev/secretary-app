@@ -43,14 +43,15 @@ async function processSyncQueue() {
                 }
             } catch (err) {
                 console.error(`[GoogleSync] Error processing item ${item.id}:`, err.message);
+                await conn.query("UPDATE google_sync_queue SET retries = retries + 1, last_error = ?, updated_at = NOW() WHERE id = ?", [err.message, item.id]);
             }
 
             if (success) {
                 await conn.query("DELETE FROM google_sync_queue WHERE id = ?", [item.id]);
                 console.log(`[GoogleSync] Item ${item.id} processed successfully.`);
-            } else {
-                await conn.query("UPDATE google_sync_queue SET retries = retries + 1, updated_at = NOW() WHERE id = ?", [item.id]);
             }
+            // Error case already handled in catch block
+
         }
 
     } catch (err) {

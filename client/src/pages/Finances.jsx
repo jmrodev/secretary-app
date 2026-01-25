@@ -1,195 +1,60 @@
-import { useState, useEffect } from 'react';
-import api from '../api/axios';
-import { useAuth } from '../context/AuthContext';
-import { useLanguage } from '../context/LanguageContext';
-import { useModal } from '../context/ModalContext';
-import { useMessage } from '../context/MessageContext';
-import { useConfig } from '../context/ConfigContext';
-import Modal from '../components/Modal';
-import Sidebar from '../components/Sidebar';
-import { formatPrice } from '../utils/format';
-import CurrencyInput from '../components/CurrencyInput';
-import TransactionModal from '../components/TransactionModal';
+
+import React from 'react';
+import { useFinancesPageController } from '../hooks/useFinancesPageController';
+
+// Atomic Design Components
+import Card from '../components/atoms/Card';
+import Sidebar from '../components/organisms/Sidebar';
+
+// Extracted Molecules/Organisms
+import FinanceStatsCards from '../components/molecules/FinanceStatsCards';
+import FinanceDoctorFilter from '../components/molecules/FinanceDoctorFilter';
+import CashBoxSummary from '../components/molecules/CashBoxSummary';
+import CashBoxDeliveryModal from '../components/molecules/CashBoxDeliveryModal';
+import TransactionsTable from '../components/organisms/TransactionsTable';
+import EditTransactionModal from '../components/organisms/EditTransactionModal';
+import TransactionModal from '../components/molecules/TransactionModal'; // Already existed, reusing
 
 const Finances = () => {
-    const { user } = useAuth();
-    const { t } = useLanguage();
-    const { showMessage } = useMessage();
-    const { alert, confirm } = useModal();
-    const { settings } = useConfig();
-    const [transactions, setTransactions] = useState([]);
-    const [stats, setStats] = useState([]);
-    const [loading, setLoading] = useState(true);
+    // 1. Controller Hook
+    const {
+        transactions,
+        stats,
+        loading,
+        doctors,
+        selectedDoctorFilter,
+        modalOpen,
+        closeBoxModal,
+        closeAmount,
+        editingTx,
+        user,
+        settings,
+        t,
+        handlers
+    } = useFinancesPageController();
 
-    const [editingTx, setEditingTx] = useState(null);
+    if (loading) return <div className="p-8 text-center">{t('loading')}</div>;
 
-    // Lists
-    const [patients, setPatients] = useState([]);
-    const [doctors, setDoctors] = useState([]);
-
-    // Filters
-    const [selectedDoctorFilter, setSelectedDoctorFilter] = useState(localStorage.getItem('last_selected_doctor_id') || '');
-
-    // New Transaction Form State
-    const [modalOpen, setModalOpen] = useState(false);
-
-    // Cash Close State
-    const [closeBoxModal, setCloseBoxModal] = useState({ open: false, doctorId: '', doctorName: '', balance: 0 });
-    const [closeAmount, setCloseAmount] = useState('');
-
-    const fetchData = async () => {
-        setLoading(true);
-        try {
-            // Fetch Transactions (Corrected Endpoint)
-            const res = await api.get(`/finances/transactions?doctor_id=${selectedDoctorFilter}`);
-            setTransactions(res.data);
-
-            // Fetch Stats
-            // Only fetch stats if role allows
-            if (user.role === 'admin' || user.role === 'secretary') {
-                try {
-                    const statsRes = await api.get(`/finances/stats?doctor_id=${selectedDoctorFilter}`);
-                    setStats(statsRes.data);
-                } catch (statsErr) {
-                    console.error("Failed to fetch stats", statsErr);
-                }
-
-                // Fetch Lists if not already loaded (or should we reload always? safe to reload)
-                // Minimizing calls: check if empty? Nah, dashboard might change.
-                const pRes = await api.get('/users/patients');
-                setPatients(pRes.data);
-                const dRes = await api.get('/users/doctors');
-                setDoctors(dRes.data);
-            }
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchData();
-        localStorage.setItem('last_selected_doctor_id', selectedDoctorFilter);
-    }, [selectedDoctorFilter]);
-
-    const handleDeleteTransaction = async (id) => {
-        if (!await confirm(t('confirm_delete_transaction') || "¿Eliminar esta transacción? Esto podría afectar el estado de pago del turno.")) return;
-        try {
-            await api.delete(`/finances/transactions/${id}`);
-            showMessage(t('transaction_symbol_deleted') || "Transacción eliminada", 'success');
-            fetchData();
-        } catch (err) {
-            alert(t('failed_delete_transaction'));
-        }
-    };
-
-    const handleUpdateTransaction = async (e) => {
-        if (e) e.preventDefault();
-        try {
-            await api.put(`/finances/transactions/${editingTx.id}`, editingTx);
-            showMessage(t('transaction_updated') || "Transacción actualizada", 'success');
-            setEditingTx(null);
-            fetchData();
-        } catch (err) {
-            alert(t('failed_update_transaction'));
-        }
-    };
-
-    const handleCloseBox = async () => {
-        try {
-            await api.post('/finances/transactions/close', {
-                doctor_id: closeBoxModal.doctorId,
-                amount_delivered: closeAmount,
-                description: `Cash Box Delivery to Dr. ${closeBoxModal.doctorName}`
-            });
-
-            showMessage(t('box_closed_successfully'), 'success');
-            setCloseBoxModal({ ...closeBoxModal, open: false });
-            setCloseAmount('');
-            fetchData();
-        } catch (err) {
-            alert(t('failed_close_box'));
-        }
-    };
-
-    // Calculate Balance for a specific doctor from loaded transactions (Frontend Calc for instant feedback)
-    const calculateBalance = (docId) => {
-        return transactions
-            .filter(t => t.doctor_id == docId && t.status === 'paid')
-            .reduce((acc, t) => {
-                if (t.is_withdrawal) return acc - parseFloat(t.amount);
-                if (t.type.includes('income')) return acc + parseFloat(t.amount);
-                if (t.type.includes('expense')) return acc - parseFloat(t.amount);
-                return acc;
-            }, 0);
-    };
-
-    const translateDescription = (desc) => {
-        if (!desc) return "";
-        let d = desc;
-        d = d.replace("Consultation (Booking)", "Consulta (Reserva)");
-        d = d.replace("Payment for appointment on", "Pago por turno del");
-        d = d.replace("Cash Box Delivery to Dr.", "Entrega de Caja al Dr.");
-        d = d.replace("Request: license for", "Solicitud: licencia para");
-        d = d.replace("Request: prescription for", "Solicitud: receta para");
-        d = d.replace("- Paid", "- Pagado");
-        return d;
-    };
-
-    const formatDateUnambiguous = (dateStr) => {
-        if (!dateStr) return "-";
-        const d = new Date(dateStr);
-        if (isNaN(d.getTime())) return dateStr;
-        const day = d.getDate().toString().padStart(2, '0');
-        const months = [
-            t('january') || 'enero', t('february') || 'febrero', t('march') || 'marzo',
-            t('april') || 'abril', t('may') || 'mayo', t('june') || 'junio',
-            t('july') || 'julio', t('august') || 'agosto', t('september') || 'septiembre',
-            t('october') || 'octubre', t('november') || 'noviembre', t('december') || 'diciembre'
-        ];
-        const month = months[d.getMonth()];
-        const year = d.getFullYear();
-        return `${day} de ${month} ${year}`;
-    };
-
-    if (loading) return <div>{t('loading')}</div>;
+    const isAdminOrSecretary = user.role === 'admin' || user.role === 'secretary';
 
     return (
         <div className="app-layout">
             <Sidebar />
             <main className="main-content">
+
                 {/* Doctor Filter Tabs */}
-                {(user.role === 'admin' || user.role === 'secretary') && (
-                    <div className="tabs-container mb-6 max-w-full overflow-x-auto custom-scrollbar flex-nowrap pb-2">
-                        <button
-                            className={`tab-btn whitespace-nowrap ${selectedDoctorFilter === '' ? 'active' : ''}`}
-                            onClick={() => setSelectedDoctorFilter('')}
-                        >
-                            👥 {t('all_doctors')}
-                        </button>
-                        {doctors.map(d => (
-                            <button
-                                key={d.id}
-                                className={`tab-btn whitespace-nowrap ${selectedDoctorFilter == d.id ? 'active' : ''}`}
-                                onClick={() => setSelectedDoctorFilter(d.id.toString())}
-                            >
-                                👨‍⚕️ {d.full_name}
-                            </button>
-                        ))}
-                    </div>
+                {isAdminOrSecretary && (
+                    <FinanceDoctorFilter
+                        doctors={doctors}
+                        selectedDoctorFilter={selectedDoctorFilter}
+                        setSelectedDoctorFilter={handlers.onSelectDoctor}
+                        t={t}
+                    />
                 )}
 
                 {/* Stats (Admin/Secretary) */}
-                {(user.role === 'admin' || user.role === 'secretary') && (
-                    <div className="stats-grid mb-8">
-                        {stats.map((s, idx) => (
-                            <div key={idx} className="card text-center">
-                                <h3 className="text-sm-muted uppercase">{t(s.type) || s.type.replace('_', ' ')}</h3>
-                                <p className="stat-value">${s.total}</p>
-                            </div>
-                        ))}
-                    </div>
+                {isAdminOrSecretary && (
+                    <FinanceStatsCards stats={stats} t={t} />
                 )}
 
                 <div className={user.role !== 'patient' ? 'grid-Sidebar-2fr gap-8' : 'grid-1-col'}>
@@ -197,319 +62,88 @@ const Finances = () => {
                     {/* Sidebar / Controls for Staff */}
                     {user.role !== 'patient' && (
                         <div className="flex-col gap-8">
-                            <div className="card">
+                            <Card>
                                 <h3>🚀 {t('quick_actions') || 'Acciones Rápidas'}</h3>
                                 <div className="flex flex-wrap gap-3 mt-2">
-                                    <button className="btn btn-primary w-fit whitespace-nowrap" onClick={() => setModalOpen(true)}>
+                                    <button className="btn btn-primary w-fit whitespace-nowrap" onClick={handlers.onOpenNewTransaction}>
                                         ✨ {t('new_transaction')}
                                     </button>
 
+                                    {/* Logic for "Close Box" Button if a doctor is selected */}
                                     {selectedDoctorFilter && (() => {
                                         const d = doctors.find(doc => doc.id == selectedDoctorFilter);
-                                        const bal = calculateBalance(selectedDoctorFilter);
+                                        const bal = handlers.calculateBalance(selectedDoctorFilter);
                                         if (d && bal > 0) {
                                             return (
                                                 <button
                                                     className="btn btn-secondary w-fit border-green-200 text-green-700 hover:bg-green-50 whitespace-nowrap"
-                                                    onClick={() => {
-                                                        setCloseBoxModal({ open: true, doctorId: d.id, doctorName: d.full_name, balance: bal });
-                                                        setCloseAmount(bal);
-                                                    }}
+                                                    onClick={() => handlers.onOpenCloseBox(d, bal)}
                                                 >
-                                                    💰 {t('deliver')} a {d.full_name.split(' ')[0]}
+                                                    💰 {t('deliver')} a {d.full_name?.split(' ')[0]}
                                                 </button>
                                             );
                                         }
                                         return null;
                                     })()}
                                 </div>
-                            </div>
+                            </Card>
 
                             {/* Cash Box Summary (Per Doctor) */}
                             {user.role === 'secretary' && (
-                                <>
-                                    <div className="flex justify-between items-center mb-4">
-                                        <h3>{t('cash_boxes')}</h3>
-                                        {selectedDoctorFilter && (
-                                            <button className="btn-text" onClick={() => setSelectedDoctorFilter('')}>
-                                                {t('view_all') || 'View All'}
-                                            </button>
-                                        )}
-                                    </div>
-                                    <div className="grid-responsive">
-                                        {doctors
-                                            .filter(d => !selectedDoctorFilter || d.id == selectedDoctorFilter)
-                                            .map(d => {
-                                                const bal = calculateBalance(d.id);
-                                                return (
-                                                    <div key={d.id} className="card item-card p-4 flex flex-col justify-between">
-                                                        <div>
-                                                            <h4 className="font-bold text-main-800 m-0">{d.full_name}</h4>
-                                                            <p className={`text-2xl font-bold mt-2 ${bal >= 0 ? 'text-green-600' : 'text-red-500'}`}>
-                                                                ${bal.toLocaleString()}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                );
-                                            })}
-                                    </div>
-                                </>
+                                <CashBoxSummary
+                                    doctors={doctors}
+                                    selectedDoctorFilter={selectedDoctorFilter}
+                                    onSelectDoctor={handlers.onSelectDoctor}
+                                    calculateBalance={handlers.calculateBalance}
+                                    t={t}
+                                />
                             )}
                         </div>
                     )}
 
                     {/* Transaction Log */}
-                    <div className="card">
-                        <h3>{t('transaction_log')}</h3>
-                        <table className="table-base table-base-lg w-full">
-                            <thead className="bg-slate-50">
-                                <tr className="border-b text-left text-xs uppercase tracking-wider text-main-500">
-                                    <th className="py-3 px-4">{t('date_label')}</th>
-                                    <th className="py-3 px-4 w-1/3">{t('description')}</th>
-                                    <th className="py-3 px-4">{t('beneficiary')}</th>
-                                    <th className="py-3 px-4">{t('payment_method')}</th>
-                                    <th className="py-3 px-4 text-right">{t('amount')}</th>
-                                    <th className="py-3 px-4 text-center">{t('proof')}</th>
-                                    {(user.role === 'admin' || settings.enable_secretary_finance_crud === 'true') && (
-                                        <th className="py-3 px-4 text-center">{t('actions')}</th>
-                                    )}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {(() => {
-                                    // Grouping Logic
-                                    const groups = [];
-                                    let currentGroup = [];
-                                    let lastKey = null;
-
-                                    transactions.forEach(tx => {
-                                        // Create a unique key for grouping
-                                        // Priority: appointment_id -> request_id -> (date + doctor + description)
-                                        let key = null;
-                                        if (tx.appointment_id) key = `appt_${tx.appointment_id}`;
-                                        else if (tx.request_id) key = `req_${tx.request_id}`;
-                                        else key = `gen_${tx.transaction_date}_${tx.doctor_id}_${tx.description}`;
-
-                                        if (key !== lastKey) {
-                                            if (currentGroup.length > 0) groups.push(currentGroup);
-                                            currentGroup = [tx];
-                                            lastKey = key;
-                                        } else {
-                                            currentGroup.push(tx);
-                                        }
-                                    });
-                                    if (currentGroup.length > 0) groups.push(currentGroup);
-
-                                    return groups.map((group, gIdx) => (
-                                        <tr key={`group-${gIdx}`} className="hover:bg-slate-50 transition-colors">
-                                            {/* Render all rows for this group in a single TR? No, tbody cannot contain nested TRs directly like that cleanly with rowspan usually, but let's try rendering multiple TRs or use a fragment. 
-                                               Actually, mapping groups to fragments of TRs is better.
-                                             */}
-                                            <td colSpan="6" className="p-0 border-b border-slate-100">
-                                                {/* Inner table or just rows? If we output TRs here, we need to return an array of elements. React allows returning arrays. */}
-                                                <table className="w-full">
-                                                    <tbody>
-                                                        {group.map((tx, tIdx) => {
-                                                            const isDebt = tx.method === 'on_account' || tx.method === 'credit';
-                                                            const methodIcon = tx.method === 'cash' ? '💵' : (tx.method === 'transfer' ? '🏦' : (isDebt ? '⏳' : '💳'));
-                                                            const methodLabel = tx.method === 'cash' ? t('cash') : (tx.method === 'transfer' ? t('transfer') : (isDebt ? (t('on_account') || 'Cuenta Corriente') : t('card')));
-                                                            const isIncome = tx.type.includes('income') && !tx.is_withdrawal;
-                                                            // const isExpense = tx.type.includes('expense') || tx.is_withdrawal;
-                                                            const isGroupStart = tIdx === 0;
-                                                            const isGroupEnd = tIdx === group.length - 1;
-                                                            const groupSize = group.length;
-
-                                                            // Visual grouping: If groupSize > 1, add a colored identifying left border or background
-                                                            const groupClass = groupSize > 1 ? "bg-amber-50/50" : ""; // light amber background for groups
-
-                                                            return (
-                                                                <tr key={tx.id} className={`${groupClass} ${!isGroupEnd ? 'border-b border-amber-100' : ''}`}>
-                                                                    <td className="py-3 px-4 text-sm text-main-500 whitespace-nowrap w-[15%]">
-                                                                        {formatDateUnambiguous(tx.transaction_date)}
-                                                                        <div className="text-xs text-muted">{new Date(tx.transaction_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                                                                    </td>
-                                                                    <td className="py-3 px-4 w-1/3">
-                                                                        <div className="flex flex-col">
-                                                                            <span className={`text-xs font-bold uppercase mb-1 w-fit px-2 py-0.5 rounded ${isIncome ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                                                                                {t(tx.type) || tx.type.replace('_', ' ')}
-                                                                            </span>
-                                                                            <span className="text-sm text-main-700">{translateDescription(tx.description)}</span>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td className="py-3 px-4 text-sm font-medium text-main-600 w-[15%]">
-                                                                        <div className="flex flex-col">
-                                                                            <span>{tx.doctor_name || <span className="text-muted italic">{t('general')}</span>}</span>
-                                                                            {tx.patient_full_name && (
-                                                                                <span className="text-[10px] text-muted font-normal">
-                                                                                    👤 {tx.patient_full_name} {tx.patient_dni ? `(${tx.patient_dni})` : ''}
-                                                                                </span>
-                                                                            )}
-                                                                        </div>
-                                                                    </td>
-                                                                    <td className="py-3 px-4 w-[15%]">
-                                                                        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${tx.method === 'cash' ? 'bg-green-50 text-green-700 border-green-200' :
-                                                                            (tx.method === 'transfer' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                                                                                (isDebt ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-purple-50 text-purple-700 border-purple-200'))
-                                                                            }`}>
-                                                                            <span>{methodIcon}</span> {methodLabel || tx.method}
-                                                                        </span>
-                                                                    </td>
-                                                                    <td className={`py-3 px-4 text-sm font-bold text-right w-[10%] ${tx.is_withdrawal ? 'text-blue-600' : (isIncome ? 'text-green-600' : 'text-red-500')
-                                                                        }`}>
-                                                                        {tx.is_withdrawal ? '↩' : (isIncome ? '+' : '-')}${Math.abs(tx.amount).toLocaleString()}
-                                                                    </td>
-                                                                    <td className="py-3 px-4 text-center w-[10%]">
-                                                                        {tx.proof_file ? (
-                                                                            <a href={tx.proof_file} target="_blank" rel="noreferrer" className="text-blue-500 hover:text-blue-700 p-1" title={t('view')}>
-                                                                                📁
-                                                                            </a>
-                                                                        ) : <span className="text-main-300">-</span>}
-                                                                    </td>
-                                                                    {(user.role === 'admin' || settings.enable_secretary_finance_crud === 'true') && (
-                                                                        <td className="py-3 px-4 text-center w-[10%]">
-                                                                            <div className="flex gap-2 justify-center">
-                                                                                <button
-                                                                                    className="text-amber-500 hover:text-amber-700 p-1"
-                                                                                    onClick={() => {
-                                                                                        const d = new Date(tx.transaction_date);
-                                                                                        // Convert to local YYYY-MM-DDTHH:mm for input
-                                                                                        const Y = d.getFullYear();
-                                                                                        const M = (d.getMonth() + 1).toString().padStart(2, '0');
-                                                                                        const D = d.getDate().toString().padStart(2, '0');
-                                                                                        const H = d.getHours().toString().padStart(2, '0');
-                                                                                        const Min = d.getMinutes().toString().padStart(2, '0');
-                                                                                        const localStr = `${Y}-${M}-${D}T${H}:${Min}`;
-                                                                                        setEditingTx({ ...tx, transaction_date: localStr });
-                                                                                    }}
-                                                                                    title={t('edit')}
-                                                                                >
-                                                                                    ✏️
-                                                                                </button>
-                                                                                <button
-                                                                                    className="text-red-500 hover:text-red-700 p-1"
-                                                                                    onClick={() => handleDeleteTransaction(tx.id)}
-                                                                                    title={t('delete')}
-                                                                                >
-                                                                                    🗑️
-                                                                                </button>
-                                                                            </div>
-                                                                        </td>
-                                                                    )}
-                                                                </tr>
-                                                            );
-                                                        })}
-                                                    </tbody>
-                                                </table>
-                                                {/* Group total if > 1 */}
-                                                {group.length > 1 && (
-                                                    <div className="bg-amber-100/50 px-4 py-1 text-right text-xs font-bold text-amber-800 border-t border-amber-200">
-                                                        Total Group: ${group.reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0).toLocaleString()}
-                                                    </div>
-                                                )}
-                                            </td>
-                                        </tr>
-                                    ));
-                                })()}
-                            </tbody>
-                        </table>
-                    </div>
+                    <TransactionsTable
+                        transactions={transactions}
+                        user={user}
+                        settings={settings}
+                        t={t}
+                        onEdit={handlers.onEditTransaction}
+                        onDelete={handlers.onDeleteTransaction}
+                    />
                 </div>
 
-                {/* New Transaction Modal */}
+                {/* --- Modals managed by state --- */}
+
+                {/* New Transaction */}
                 <TransactionModal
                     isOpen={modalOpen}
-                    onClose={() => setModalOpen(false)}
-                    onSuccess={() => {
-                        fetchData();
-                    }}
+                    onClose={handlers.onCloseNewTransaction}
+                    onSuccess={handlers.onRefresh}
                 />
 
-                {/* Close Box Modal */}
-                <Modal
+                {/* Close Box (Deliver Cash) */}
+                <CashBoxDeliveryModal
                     isOpen={closeBoxModal.open}
-                    onClose={() => setCloseBoxModal({ ...closeBoxModal, open: false })}
-                    title={`${t('close_box')}: ${closeBoxModal.doctorName}`}
-                    footer={<><button className="btn btn-primary" onClick={handleCloseBox}>{t('confirm_delivery')}</button></>}
-                >
-                    <p>{t('current_system_balance')}: <strong>${closeBoxModal.balance?.toFixed(2)}</strong></p>
-                    <div className="input-group mt-4">
-                        <label className="input-label">{t('amount_delivered')}</label>
-                        <CurrencyInput className="input-field" value={closeAmount} onChange={e => setCloseAmount(e.target.value)} placeholder={closeBoxModal.balance} />
-                    </div>
-                    <p className="text-xs-muted">{t('close_box_warning')}</p>
-                </Modal>
+                    onClose={handlers.onCloseCloseBox}
+                    onConfirm={handlers.onCloseBox}
+                    doctorName={closeBoxModal.doctorName}
+                    balance={closeBoxModal.balance}
+                    amount={closeAmount}
+                    setAmount={handlers.setCloseAmount}
+                    t={t}
+                />
 
-                {/* Edit Transaction Modal */}
-                {editingTx && (
-                    <Modal
-                        isOpen={!!editingTx}
-                        onClose={() => setEditingTx(null)}
-                        title={t('edit_transaction') || "Editar Transacción"}
-                        footer={
-                            <div className="flex gap-2 justify-end w-full">
-                                <button className="btn btn-secondary" onClick={() => setEditingTx(null)}>{t('cancel')}</button>
-                                <button className="btn btn-primary" onClick={handleUpdateTransaction}>{t('save')}</button>
-                            </div>
-                        }
-                    >
-                        <form className="space-y-4">
-                            <div className="input-group">
-                                <label className="input-label">{t('amount')}</label>
-                                <CurrencyInput
-                                    className="input-field"
-                                    value={editingTx.amount}
-                                    onChange={e => setEditingTx({ ...editingTx, amount: e.target.value })}
-                                />
-                            </div>
-                            <div className="input-group">
-                                <label className="input-label">{t('description')}</label>
-                                <input
-                                    type="text"
-                                    className="input-field"
-                                    value={editingTx.description}
-                                    onChange={e => setEditingTx({ ...editingTx, description: e.target.value })}
-                                />
-                            </div>
-                            <div className="input-group">
-                                <label className="input-label">{t('payment_method')}</label>
-                                <select
-                                    className="input-field"
-                                    value={editingTx.method}
-                                    onChange={e => setEditingTx({ ...editingTx, method: e.target.value })}
-                                >
-                                    <option value="cash">{t('cash')}</option>
-                                    <option value="transfer">{t('transfer')}</option>
-                                    <option value="card">{t('card')}</option>
-                                    <option value="on_account">{t('on_account') || 'Cuenta Corriente'}</option>
-                                </select>
-                            </div>
-                            <div className="input-group">
-                                <label className="input-label">{t('status')}</label>
-                                <select
-                                    className="input-field"
-                                    value={editingTx.status}
-                                    onChange={e => setEditingTx({ ...editingTx, status: e.target.value })}
-                                >
-                                    <option value="paid">{t('paid')}</option>
-                                    <option value="pending">{t('pending')}</option>
-                                </select>
-                            </div>
-                            {(settings.allow_admin_edit_finance_date === 'true') && (
-                                <div className="input-group">
-                                    <label className="input-label">{t('transaction_date') || 'Fecha de Transacción'}</label>
-                                    <input
-                                        type="datetime-local"
-                                        className="input-field"
-                                        value={editingTx.transaction_date || ''}
-                                        onChange={e => setEditingTx({ ...editingTx, transaction_date: e.target.value })}
-                                    />
-                                    <p className="text-[10px] text-amber-600 mt-1">⚠️ El formato (Día/Mes o Mes/Día) depende de su navegador. Por favor verifique el nombre del mes al seleccionar.</p>
-                                    <p className="text-[10px] text-amber-600 mt-1">⚠️ Cuidado: Cambiar la fecha puede afectar el orden cronológico de la caja.</p>
-                                </div>
-                            )}
-                        </form>
-                    </Modal>
-                )}
+                {/* Edit Transaction */}
+                <EditTransactionModal
+                    isOpen={!!editingTx}
+                    onClose={() => handlers.setEditingTx(null)}
+                    onSave={handlers.onUpdateTransaction}
+                    transaction={editingTx}
+                    setTransaction={handlers.setEditingTx}
+                    settings={settings}
+                    t={t}
+                />
+
             </main>
         </div>
     );

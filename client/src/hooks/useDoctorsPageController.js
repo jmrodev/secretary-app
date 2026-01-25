@@ -1,0 +1,199 @@
+
+import { useState, useEffect } from 'react';
+import api from '../api/axios';
+import { useAuth } from '../context/AuthContext';
+import { useModal } from '../context/ModalContext';
+import { useMessage } from '../context/MessageContext';
+import { useLanguage } from '../context/LanguageContext';
+import { useUsers } from './useUsers';
+
+export const useDoctorsPageController = () => {
+    const { t } = useLanguage();
+    const { user: currentUser } = useAuth();
+    const { showMessage } = useMessage();
+    const { confirm } = useModal();
+    const { fetchUsers, updateUser, isSubmitting: isUpdating } = useUsers();
+
+    const [doctors, setDoctors] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [settings, setSettings] = useState({});
+
+    // Unified Modal State: type = 'EDIT'
+    const [modalState, setModalState] = useState({
+        isOpen: false,
+        activeTab: 'tariffs', // 'tariffs', 'schedule', 'google'
+        connected: false,
+        loadingGoogle: false,
+        loadingSchedule: false,
+        schedule: [],
+        data: {}
+    });
+
+    const loadData = async () => {
+        setLoading(true);
+        try {
+            const [docs, config] = await Promise.all([
+                api.get('/users/doctors'),
+                api.get('/settings')
+            ]);
+            setDoctors(docs.data);
+            setSettings(config.data);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        loadData();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        if (status === 'success') {
+            showMessage('Cuenta de Google conectada con éxito', 'success');
+            window.history.replaceState({}, document.title, window.location.pathname);
+        } else if (status === 'error') {
+            showMessage('Error al conectar con Google', 'error');
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    }, []);
+
+    const checkGoogleStatus = async (doctorId) => {
+        setModalState(prev => ({ ...prev, loadingGoogle: true }));
+        try {
+            const res = await api.get(`/google/status?doctorId=${doctorId}`);
+            setModalState(prev => ({ ...prev, connected: res.data.connected, loadingGoogle: false }));
+        } catch (err) {
+            console.error(err);
+            setModalState(prev => ({ ...prev, connected: false, loadingGoogle: false }));
+        }
+    };
+
+    const fetchSchedule = async (doctorId) => {
+        setModalState(prev => ({ ...prev, loadingSchedule: true }));
+        try {
+            const res = await api.get(`/schedules/${doctorId}`);
+            setModalState(prev => ({ ...prev, schedule: res.data, loadingSchedule: false }));
+        } catch (err) {
+            console.error("Failed to load schedule", err);
+            setModalState(prev => ({ ...prev, schedule: [], loadingSchedule: false }));
+        }
+    };
+
+    const handleEditClick = (doc) => {
+        const initialData = {
+            id: doc.id,
+            specialty: doc.specialty || '',
+            cbu: doc.cbu || '',
+            office_number: doc.office_number || '',
+            rental_type: doc.rental_type || 'monthly',
+            rental_cost: doc.rental_cost || 0,
+            consultation_price: doc.consultation_price || 0,
+            prescription_price: doc.prescription_price || 0,
+            medical_license_price: doc.medical_license_price || 0,
+            certificate_price: doc.certificate_price || 0,
+            virtual_consultation_price: doc.virtual_consultation_price || 0,
+            appointment_duration: doc.appointment_duration || 60,
+            break_duration: doc.break_duration || 0,
+            default_visit_interval_days: doc.default_visit_interval_days || 0,
+            default_prescription_interval_days: doc.default_prescription_interval_days || 0
+        };
+
+        setModalState({
+            isOpen: true,
+            activeTab: 'tariffs',
+            connected: false,
+            loadingGoogle: false,
+            loadingSchedule: false,
+            schedule: [],
+            data: initialData
+        });
+
+        checkGoogleStatus(doc.id);
+        fetchSchedule(doc.id);
+    };
+
+    const handleSaveEdit = async () => {
+        const { data, schedule } = modalState;
+        try {
+            await Promise.all([
+                api.put(`/users/doctors/${data.id}`, data),
+                api.put(`/schedules/${data.id}`, { schedule })
+            ]);
+            showMessage(t('doctor_updated') || "Doctor actualizado exitosamente", "success");
+            setModalState(prev => ({ ...prev, isOpen: false }));
+            loadData();
+        } catch (err) {
+            console.error("Failed to update doctor", err);
+            showMessage(err.response?.data?.message || t('error_update'), "error");
+        }
+    };
+
+    const handleConnectGoogle = async () => {
+        try {
+            const res = await api.get(`/google/auth-url?doctorId=${modalState.data.id}`);
+            window.location.href = res.data.url;
+        } catch (err) {
+            showMessage('Failed to initiate connection.', 'error');
+        }
+    };
+
+    const handleDisconnectGoogle = async () => {
+        if (!await confirm("¿Estás seguro? Se detendrá la sincronización.")) return;
+        try {
+            await api.post('/google/disconnect', { doctorId: modalState.data.id });
+            setModalState(prev => ({ ...prev, connected: false }));
+            showMessage('Desconectado', 'success');
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const filteredDoctors = doctors.filter(d => {
+        const term = searchTerm.toLowerCase();
+        return (d.full_name?.toLowerCase().includes(term) ||
+            d.specialty?.toLowerCase().includes(term) ||
+            d.phone?.includes(term));
+    });
+
+    const setFormData = (newData) => setModalState(prev => ({ ...prev, data: { ...prev.data, ...newData } }));
+
+    // Handlers mapped for cleaner component usage
+    const handlers = {
+        onEditDoctor: handleEditClick,
+        onSaveDoctor: handleSaveEdit,
+        onCloseModal: () => setModalState(prev => ({ ...prev, isOpen: false })),
+        onTabChange: (tab) => setModalState(prev => ({ ...prev, activeTab: tab })),
+        onConnectGoogle: handleConnectGoogle,
+        onDisconnectGoogle: handleDisconnectGoogle,
+        onFormDataChange: setFormData,
+        onScheduleChange: (s) => setModalState(prev => ({ ...prev, schedule: s })),
+        onVerifyGoogleEvents: async () => {
+            try {
+                const res = await api.get(`/google/appointments?doctorId=${modalState.data.id}`);
+                showMessage(`Encontrados ${res.data.events?.length || 0} turnos en Calendar.`, 'success');
+            } catch (e) { showMessage('Error al verificar calendar', 'error'); }
+        },
+        onImportContacts: async () => {
+            if (!await confirm("¿Importar contactos como pacientes?")) return;
+            try {
+                await api.post('/google/import', { doctorId: modalState.data.id });
+                showMessage('Importación completada con éxito', 'success');
+            } catch (e) { showMessage('Error al importar contactos', 'error'); }
+        }
+    };
+
+    return {
+        doctors,
+        loading,
+        searchTerm, setSearchTerm,
+        settings,
+        currentUser,
+        filteredDoctors,
+        modalState,
+        handlers,
+        t // pass translation helper
+    };
+};

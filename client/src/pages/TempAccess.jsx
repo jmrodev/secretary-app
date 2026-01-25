@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
-import PatientForm from '../components/PatientForm';
+import PatientForm from '../components/organisms/PatientForm';
 import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
 

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useNavigate, Link } from 'react-router-dom';
+import Button from '../components/atoms/Button';
 
 const Register = () => {
     const { register } = useAuth();
@@ -96,9 +97,9 @@ const Register = () => {
                         </>
                     )}
 
-                    <button type="submit" className="btn btn-accent w-full">
+                    <Button type="submit" variant="accent" className="w-full">
                         {t('register')}
-                    </button>
+                    </Button>
                 </form>
                 <div className="text-center mt-6">
                     <span className="subtitle">{t('already_account')} </span>

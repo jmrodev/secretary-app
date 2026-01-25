@@ -29,8 +29,8 @@ import api from '../api/axios';
 import { useLanguage } from '../context/LanguageContext';
 import { useMessage } from '../context/MessageContext';
 import { useConfig } from '../context/ConfigContext';
-import Sidebar from '../components/Sidebar';
-import QRCodeModal from '../components/QRCodeModal';
+import Sidebar from '../components/organisms/Sidebar';
+import QRCodeModal from '../components/molecules/QRCodeModal';
 import { useModal } from '../context/ModalContext';
 import { useAuth } from '../context/AuthContext';
 
@@ -124,6 +124,22 @@ const SystemConfig = () => {
     const handleRefreshToken = async () => {
         // Just re-trigger auth flow for now to refresh permissions
         handleGoogleAuth();
+    };
+
+    const handleTestMeta = async () => {
+        const phone = await prompt("Ingrese un número de teléfono de prueba (incluya código de país, ej: 549...):");
+        if (!phone) return;
+
+        try {
+            setLoading(true);
+            await api.post('/whatsapp/test', { to: phone });
+            showMessage('✅ Mensaje de prueba enviado. Verifique su WhatsApp.', 'success');
+        } catch (error) {
+            console.error(error);
+            showMessage(error.response?.data?.error || 'Error al enviar mensaje de prueba', 'error');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -373,6 +389,28 @@ const SystemConfig = () => {
                                                         ))}
                                                     </div>
                                                 </div>
+                                                {settings.meta_phone_number_id && (<>
+                                                    <div className="mt-2 text-right">
+                                                        <label className="text-xs text-main-600 font-bold mr-2">Nombre de Plantilla Meta (API):</label>
+                                                        <input
+                                                            type="text"
+                                                            className="input-field text-xs inline-block w-48 py-1"
+                                                            placeholder="ej: appointment_reminder"
+                                                            value={settings.meta_reminder_template_name || ''}
+                                                            onChange={(e) => updateSetting('meta_reminder_template_name', e.target.value)}
+                                                        />
+                                                    </div>
+                                                    <div className="mt-1 text-right">
+                                                        <label className="text-xs text-main-600 font-bold mr-2">Orden Variables ({"{{1}}, {{2}}..."}):</label>
+                                                        <input
+                                                            type="text"
+                                                            className="input-field text-xs inline-block w-48 py-1"
+                                                            placeholder="{patient_name}, {date}, {time}"
+                                                            value={settings.meta_reminder_params_order || ''}
+                                                            onChange={(e) => updateSetting('meta_reminder_params_order', e.target.value)}
+                                                        />
+                                                    </div>
+                                                </>)}
                                             </div>
 
                                             <div className="input-group">
@@ -439,6 +477,28 @@ const SystemConfig = () => {
                                                         ))}
                                                     </div>
                                                 </div>
+                                                {settings.meta_phone_number_id && (<>
+                                                    <div className="mt-2 text-right">
+                                                        <label className="text-xs text-emerald-700 font-bold mr-2">Nombre de Plantilla Meta (API):</label>
+                                                        <input
+                                                            type="text"
+                                                            className="input-field text-xs inline-block w-48 py-1"
+                                                            placeholder="ej: appointment_confirmation"
+                                                            value={settings.meta_confirmation_template_name || ''}
+                                                            onChange={(e) => updateSetting('meta_confirmation_template_name', e.target.value)}
+                                                        />
+                                                    </div>
+                                                    <div className="mt-1 text-right">
+                                                        <label className="text-xs text-emerald-700 font-bold mr-2">Orden Variables ({"{{1}}, {{2}}..."}):</label>
+                                                        <input
+                                                            type="text"
+                                                            className="input-field text-xs inline-block w-48 py-1"
+                                                            placeholder="{patient_name}, {date}, {time}"
+                                                            value={settings.meta_confirmation_params_order || ''}
+                                                            onChange={(e) => updateSetting('meta_confirmation_params_order', e.target.value)}
+                                                        />
+                                                    </div>
+                                                </>)}
                                             </div>
 
                                             <div className="input-group">
@@ -600,19 +660,47 @@ const SystemConfig = () => {
                                     </div>
 
                                     {!googleUnlinked ? (
-                                        <div className="flex flex-wrap gap-4">
-                                            <button
-                                                onClick={handleRefreshToken}
-                                                className="btn btn-secondary flex items-center gap-2"
-                                            >
-                                                🔄 Refrescar Enlace
-                                            </button>
-                                            <button
-                                                onClick={handleDisconnectGoogle}
-                                                className="btn bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 flex items-center gap-2"
-                                            >
-                                                ❌ Desconectar Cuenta
-                                            </button>
+                                        <div className="flex flex-col gap-4">
+                                            <div className="flex flex-wrap gap-4">
+                                                <button
+                                                    onClick={handleRefreshToken}
+                                                    className="btn btn-secondary flex items-center gap-2"
+                                                >
+                                                    🔄 Refrescar Enlace
+                                                </button>
+                                                <button
+                                                    onClick={handleDisconnectGoogle}
+                                                    className="btn bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 flex items-center gap-2"
+                                                >
+                                                    ❌ Desconectar Cuenta
+                                                </button>
+                                            </div>
+
+                                            <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                                                <h4 className="text-sm font-bold text-orange-800 mb-2">¿Problemas de Sincronización?</h4>
+                                                <p className="text-xs text-orange-700 mb-3">
+                                                    Si los turnos no se están enviando a Google, puede que haya elementos atascados por errores de conexión antiguos.
+                                                    Primero asegúrese de Refrescar Enlace, y luego intente reintentar.
+                                                </p>
+                                                <button
+                                                    onClick={async () => {
+                                                        try {
+                                                            setLoading(true);
+                                                            const res = await api.post('/google/retry-failed');
+                                                            showMessage(res.data.message || 'Reintento iniciado.', 'success');
+                                                        } catch (err) {
+                                                            showMessage('Error al iniciar reintento.', 'error');
+                                                            console.error(err);
+                                                        } finally {
+                                                            setLoading(false);
+                                                        }
+                                                    }}
+                                                    className="btn bg-orange-100 text-orange-800 border border-orange-300 hover:bg-orange-200 text-xs px-3 py-1.5"
+                                                    disabled={loading}
+                                                >
+                                                    ⚡ Reintentar Elementos Fallidos
+                                                </button>
+                                            </div>
                                         </div>
                                     ) : (
                                         <button
@@ -623,6 +711,69 @@ const SystemConfig = () => {
                                             Conectar Google Calendar
                                         </button>
                                     )}
+                                </div>
+                            </div>
+
+                            <div className="card mb-8">
+                                <h3 className="config-section-title">💬 Meta Business (WhatsApp API)</h3>
+                                <p className="text-muted mb-6">Configure las credenciales de WhatsApp Cloud API para el envío automático de mensajes.</p>
+                                <div className="space-y-6">
+                                    <div className="input-group">
+                                        <label className="input-label" htmlFor="meta-phone-id">Identificador de número de teléfono (Phone Number ID)</label>
+                                        <input
+                                            type="text"
+                                            id="meta-phone-id"
+                                            className="input-field font-mono text-sm"
+                                            value={settings.meta_phone_number_id || ''}
+                                            onChange={(e) => updateSetting('meta_phone_number_id', e.target.value)}
+                                            placeholder="e.g. 100609346..."
+                                            disabled={user.role !== 'admin'}
+                                        />
+                                    </div>
+                                    <div className="input-group">
+                                        <label className="input-label" htmlFor="meta-token">Token de Acceso (Access Token)</label>
+                                        <div className="relative">
+                                            <input
+                                                type="password"
+                                                id="meta-token"
+                                                className="input-field font-mono text-sm pr-10"
+                                                value={settings.meta_access_token || ''}
+                                                onChange={(e) => updateSetting('meta_access_token', e.target.value)}
+                                                placeholder={settings.meta_access_token === 'MASKED_PRESENT' ? '•••••••• (Guardado)' : 'Pegar Token (Usuario del Sistema) aquí...'}
+                                                disabled={user.role !== 'admin'}
+                                            />
+                                        </div>
+                                        <p className="text-xs text-muted mt-1">
+                                            Se recomienda usar un Token Permanente de un Usuario del Sistema.
+                                        </p>
+                                    </div>
+                                    <div className="input-group">
+                                        <label className="input-label" htmlFor="meta-business-id">Identificador de cuenta comercial (Business Account ID)</label>
+                                        <input
+                                            type="text"
+                                            id="meta-business-id"
+                                            className="input-field font-mono text-sm"
+                                            value={settings.meta_business_id || ''}
+                                            onChange={(e) => updateSetting('meta_business_id', e.target.value)}
+                                            placeholder="Opcional"
+                                            disabled={user.role !== 'admin'}
+                                        />
+                                    </div>
+                                    <div className="pt-2 flex gap-4">
+                                        <button
+                                            className="btn btn-primary"
+                                            onClick={handleTestMeta}
+                                            disabled={loading || !settings.meta_phone_number_id || !settings.meta_access_token}
+                                        >
+                                            🧪 Probar Conexión
+                                        </button>
+                                        <button
+                                            className="btn btn-outline-secondary"
+                                            onClick={() => window.open('https://developers.facebook.com/apps/', '_blank')}
+                                        >
+                                            🛠️ Ir a Meta Developers
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 

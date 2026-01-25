@@ -1,7 +1,7 @@
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import RequirementsList from '../components/RequirementsList';
-import Sidebar from '../components/Sidebar';
+import RequirementsList from '../components/organisms/RequirementsList';
+import Sidebar from '../components/organisms/Sidebar';
 
 const Requests = () => {
     const { user, logout } = useAuth();

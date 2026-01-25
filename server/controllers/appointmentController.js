@@ -2,11 +2,20 @@ const { pool } = require('../db');
 const { logAction } = require('../utils/audit');
 const googleController = require('./googleController');
 const { calculatePrice } = require('../utils/priceCalculator');
+const bcrypt = require('bcrypt'); // [NEW] For Admin Override
+
+// Helper to validate Admin Password for overrides
+const validateAdminPassword = async (conn, password) => {
+    if (!password) return false;
+    const adminUser = await conn.query("SELECT password_hash FROM users WHERE username = 'admin'");
+    if (adminUser.length === 0) return false;
+    return await bcrypt.compare(password, adminUser[0].password_hash);
+};
 
 exports.createAppointment = async (req, res) => {
     let conn;
     try {
-        const { doctor_id, appointment_date, reason, bonified, type = 'consultation' } = req.body; // type defaults to 'consultation'
+        const { doctor_id, appointment_date, reason, bonified, type = 'consultation', institution_id } = req.body; // type defaults to 'consultation'
         let patient_id = req.body.patient_id;
 
         if (req.user.role === 'patient') {
@@ -82,17 +91,31 @@ exports.createAppointment = async (req, res) => {
             }
         }
 
+
+
+        // [Moved Up] Fetch names for description and institution fallback
+        // We need this BEFORE inserting to know the default institution
+        const [patientData] = await conn.query("SELECT full_name, user_id, dni, phone, email, institution_id FROM patients WHERE id = ?", [patient_id]);
+
+        // Resolve Institution (Explicit > Patient Default)
+        let finalInstitutionId = institution_id;
+
+        if (finalInstitutionId === 'none') {
+            finalInstitutionId = null; // Explicitly 'Particular' / No Institution
+        } else if (!finalInstitutionId && patientData) {
+            // Fallback to Patient Default ONLY if not explicitly cleared
+            finalInstitutionId = patientData.institution_id;
+        }
+
         const result = await conn.query(
-            "INSERT INTO appointments (patient_id, doctor_id, appointment_date, reason, is_out_of_hours, type, status) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            [patient_id, doctor_id, formattedDate, reason, false, type, 'pending'] // Default to pending if not specified
+            "INSERT INTO appointments (patient_id, doctor_id, appointment_date, reason, is_out_of_hours, type, status, institution_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            [patient_id, doctor_id, formattedDate, reason, false, type, 'pending', finalInstitutionId] // Default to pending if not specified
         );
         const appointmentId = result.insertId;
 
-        // Fetch names for description (AND DETAILS FOR GOOGLE)
-        const [patientRows] = await conn.query("SELECT full_name, user_id, dni, phone, email, institution_id FROM patients WHERE id = ?", [patient_id]);
-        const pNameStr = patientRows ? patientRows.full_name : 'Unknown';
-        const relatedUserId = patientRows ? patientRows.user_id : null;
-        const pDetails = patientRows || {}; // Define pDetails for Google Logic
+        const pNameStr = patientData ? patientData.full_name : 'Unknown';
+        const relatedUserId = patientData ? patientData.user_id : null;
+        const pDetails = patientData || {}; // Define pDetails for Google Logic
 
         const [doctorRows] = await conn.query("SELECT full_name FROM doctors WHERE id = ?", [doctor_id]);
         const dNameStr = doctorRows ? doctorRows.full_name : 'Unknown';
@@ -104,7 +127,7 @@ exports.createAppointment = async (req, res) => {
                 // Determine service type for price calc
                 const serviceType = type === 'virtual' ? 'virtual_consultation' : 'consultation';
 
-                const priceInfo = await calculatePrice(conn, doctor_id, patient_id, serviceType);
+                const priceInfo = await calculatePrice(conn, doctor_id, patient_id, serviceType, finalInstitutionId);
 
                 // [NEW] Split Payment Logic
                 // priceInfo.price is the Patient's Share (after tariff/override)
@@ -113,9 +136,9 @@ exports.createAppointment = async (req, res) => {
                 const patientShare = priceInfo.price;
                 const basePrice = priceInfo.basePrice || patientShare; // Safety fallback
 
-                // Check if patient has institution
-                let institutionId = null;
-                if (patientRows) institutionId = patientRows.institution_id;
+                // Check if patient has institution (Use the one we decided on)
+                const institutionId = finalInstitutionId;
+
 
                 // Calculate Institution Share
                 let institutionDebt = 0;
@@ -177,7 +200,7 @@ exports.createAppointment = async (req, res) => {
         }
         // ---------------------------------
 
-        logAction(req, 'CREATE_APPOINTMENT', `Patient: ${pNameStr}, Doctor: ${dNameStr}`);
+        logAction(req, 'CREATE_APPOINTMENT', `Patient: ${pNameStr} [Dr: ${dNameStr}] [Type: ${type}] [Date: ${formattedDate}] [Institution: ${finalInstitutionId ? 'Yes' : 'No'}]`);
 
         res.status(201).json({ id: Number(result.insertId), message: "Appointment created" });
     } catch (err) {
@@ -277,26 +300,62 @@ exports.deleteAppointment = async (req, res) => {
 
         const appt = rows[0];
 
-        // 1. Block Deletion of Past Appointments
         const now = new Date();
         const apptDate = new Date(appt.appointment_date);
-        if (apptDate < now && req.user.role !== 'admin') {
-            if (req.user.role === 'secretary') {
-                const settingRows = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'allow_secretary_edit_past_appointments'");
-                const canEditPast = settingRows.length > 0 && (settingRows[0].setting_value === 'true' || settingRows[0].setting_value === '1');
-                if (!canEditPast) {
-                    return res.status(400).send("No tiene permisos para eliminar turnos anteriores (Consulte al administrador).");
-                }
-            } else {
-                return res.status(400).send("Cannot delete past appointments.");
-            }
-        }
 
-        // 2. Block Deletion of Completed/Arrived Appointments
-        // "si vino o completo" -> arrived, completed
-        if (['completed', 'attended', 'arrived'].includes(appt.status)) {
-            return res.status(400).send("Cannot delete an appointment that has been attended/completed.");
-        }
+        // This block is replaced by the centralized override check above
+        // We leave the variable definitions as they might be used earlier or later, but the logic flow is changed.
+        // Actually, to make it clean, I should have replaced the whole block. 
+        // Let's rely on the previous chunk to handle the logic insertion and just remove this old block validation here.
+        // BUT wait, I only inserted the check *after* the medical records check in the previous chunk. 
+        // And I did NOT remove lines 294-307. So I must remove them now to avoid duplication/conflicting logic.
+        // Wait, the ReplacementChunk I just wrote above targets lines 315-322 (Medical Records). 
+        // The "Past Block" is lines 294-307. 
+        // The "Completed Block" is lines 309-313.
+        // My previous chunk inserted the override Logic *after* Medical Records check (315-322).
+        // This means the code flow is:
+        // 1. Get Appt
+        // 2. [OLD] Block Past (294-307) <-- This will run BEFORE my new logic!
+        // 3. [OLD] Block Completed (309-313)
+        // 4. Medical Records Check (315-322)
+        // 5. [NEW] Override Check
+
+        // CORRECTION: I need to replace the EARLIER checks (294-313) with the new logic, or move them.
+        // Since I'm using `multi_replace`, I can replace 294-313 with an empty string or the new logic.
+
+        // Let's rewrite the plan for `deleteAppointment` in `appointmentController.js` to be safe.
+        // I will replace the entire block from line 294 to 313 with the new logic. 
+
+        // However, I already submitted the previous chunk which *appended* logic after 322. 
+        // I should have looked closer at line numbers. 
+        // If I run this tool call now, it will apply edits.
+        // Let's cancel this complicated thought and just use the tool call correctly.
+
+        // I will use ONE chunk to replace lines 294 to 322 with the NEW comprehensive logic.
+        // This covers Past, Completed, and Medical Records (we usually don't override medical records deletion protection unless explicit, but the plan said "bypass past/completed checks").
+        // I will keep Medical Records protection absolute (no override) for safety, or included? 
+        // The error message "Cannot delete... has associated medical records" implies data integrity. I should probably keep that check strict.
+        // So:
+        // 1. Medical Records Check (Strict)
+        // 2. Override Check
+        // 3. Past/Completed Checks (Conditioned on Override)
+
+        // Original code order:
+        // 294-307: Past Check
+        // 309-313: Completed Check
+        // 315-321: Medical Records Check
+
+        // New proposed order:
+        // 1. Medical Records Check (Move up or keep)
+        // 2. Override Check Logic
+        // 3. Past Check (if !override)
+        // 4. Completed Check (if !override)
+
+        // So I will replace 294 to 321 with the whole new block.
+        // Wait, 321 ends the medical check block.
+
+        // Let's retry the replacement chunks for clarity.
+
 
         // 3. Check for "Other Completed Actions" (Medical Records)
         const prescriptions = await conn.query("SELECT id FROM prescriptions WHERE appointment_id = ?", [id]);
@@ -304,6 +363,46 @@ exports.deleteAppointment = async (req, res) => {
 
         if (prescriptions.length > 0 || licenses.length > 0) {
             return res.status(400).send("Cannot delete appointment: It has associated medical records (Prescriptions/Licenses).");
+        }
+
+        // [NEW] ADMIN OVERRIDE CHECK
+        // If we are about to fail due to restrictions (Past or Completed), check for Admin Password
+        let override = false;
+        if (req.body.adminPassword) {
+            const isValid = await validateAdminPassword(conn, req.body.adminPassword);
+            if (isValid) {
+                override = true;
+                console.log(`[DeleteAppointment] Admin Override applied for User ${req.user.username}`);
+            } else {
+                return res.status(403).json({ error: "Contraseña de Administrador incorrecta.", type: 'AUTH_REQUIRED' });
+            }
+        }
+
+        // 1. Block Deletion of Past Appointments (if not overridden)
+        if (!override && req.user.role !== 'admin') {
+            // Re-evaluate past check logic
+            const now = new Date();
+            const apptDate = new Date(appt.appointment_date);
+            if (apptDate < now) {
+                if (req.user.role === 'secretary') {
+                    const settingRows = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'allow_secretary_edit_past_appointments'");
+                    const canEditPast = settingRows.length > 0 && (settingRows[0].setting_value === 'true' || settingRows[0].setting_value === '1');
+                    if (!canEditPast) {
+                        return res.status(403).json({ error: "Requiere autorización de Administrador (Turno Pasado).", type: 'AUTH_REQUIRED' });
+                    }
+                } else {
+                    return res.status(403).send("Cannot delete past appointments.");
+                }
+            }
+        }
+
+        // 2. Block Deletion of Completed/Arrived Appointments (if not overridden)
+        if (!override && ['completed', 'attended', 'arrived'].includes(appt.status)) {
+            if (settings.enable_secretary_unrestricted_crud === 'true') {
+                // permitted by global setting
+            } else {
+                return res.status(403).json({ error: "Requiere autorización de Administrador (Turno Completado/Atendido).", type: 'AUTH_REQUIRED' });
+            }
         }
 
         // 4. Handle Payment -> Convert to Credit or Delete Debt
@@ -347,7 +446,7 @@ exports.deleteAppointment = async (req, res) => {
         await conn.query("DELETE FROM appointments WHERE id = ?", [id]);
 
         const loggedName = appt.full_name || appt.reason || `Appt ID ${id}`;
-        logAction(req, 'DELETE_APPOINTMENT', `Deleted appointment ID ${id} (Secretary Error) for ${loggedName}`);
+        logAction(req, 'DELETE_APPOINTMENT', `Deleted appointment ID ${id} (Secretary Error) [Patient: ${loggedName}] [Date: ${apptFormatted}]`);
 
         res.json({ message: "Appointment deleted" });
     } catch (err) {
@@ -376,13 +475,25 @@ exports.updateAppointment = async (req, res) => {
         const oldDateObj = new Date(oldDate);
         const now = new Date();
 
-        // Block Editing of Past Appointments for non-admins
-        if ((oldDateObj < now || apptDate < now) && req.user.role !== 'admin') {
+        // [NEW] ADMIN OVERRIDE CHECK for UPDATE
+        let override = false;
+        if (req.body.adminPassword) {
+            const isValid = await validateAdminPassword(conn, req.body.adminPassword);
+            if (isValid) {
+                override = true;
+                console.log(`[UpdateAppointment] Admin Override applied for User ${req.user.username}`);
+            } else {
+                return res.status(403).json({ error: "Contraseña de Administrador incorrecta.", type: 'AUTH_REQUIRED' });
+            }
+        }
+
+        // Block Editing of Past Appointments for non-admins (if not overridden)
+        if (!override && (oldDateObj < now || apptDate < now) && req.user.role !== 'admin') {
             if (req.user.role === 'secretary') {
                 const settingRows = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'allow_secretary_edit_past_appointments'");
                 const canEditPast = settingRows.length > 0 && (settingRows[0].setting_value === 'true' || settingRows[0].setting_value === '1');
                 if (!canEditPast) {
-                    return res.status(400).send("No tiene permisos para editar o mover turnos al pasado (Consulte al administrador).");
+                    return res.status(403).json({ error: "Requiere autorización de Administrador (Turno Pasado).", type: 'AUTH_REQUIRED' });
                 }
             } else if (req.user.role === 'patient') {
                 return res.status(400).send("Cannot edit past appointments.");
@@ -603,9 +714,12 @@ exports.updateStatus = async (req, res) => {
         const pName = pat.length > 0 ? pat[0].full_name : pId;
         const pDetails = pat.length > 0 ? pat[0] : {};
 
-        let logMsg = `Appointment for ${pName} changed to ${status}`;
-        if (status === 'cancelled' && reason) {
-            logMsg += `. Reason: ${reason}`;
+        const [doc] = await conn.query("SELECT full_name FROM doctors WHERE id = ?", [exists[0].doctor_id]);
+        const docName = doc.length > 0 ? doc[0].full_name : 'Unknown Dr';
+
+        let logMsg = `[Status Change] ${status.toUpperCase()} - Patient: ${pName} [Dr: ${docName}]`;
+        if (reason) {
+            logMsg += ` [Reason: ${reason}]`;
         }
         logAction(req, 'UPDATE_APPOINTMENT_STATUS', logMsg);
 

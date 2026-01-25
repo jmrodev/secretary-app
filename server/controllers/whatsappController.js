@@ -1,44 +1,43 @@
-const axios = require('axios');
+const whatsappService = require('../services/whatsappService');
 
-const sendMessage = async (to, templateName, languageCode = 'es') => {
+/**
+ * Send a templated message (Generic Endpoint)
+ */
+const sendMessage = async (req, res) => {
+    const { to, templateName, languageCode, components } = req.body;
+
+    if (!to || !templateName) {
+        return res.status(400).json({ error: 'Missing required parameters (to, templateName)' });
+    }
+
     try {
-        const token = process.env.WHATSAPP_TOKEN;
-        const phoneId = process.env.WHATSAPP_PHONE_ID;
-
-        if (!token || !phoneId) {
-            throw new Error('WHATSAPP_TOKEN, WHATSAPP_PHONE_ID are required in .env');
-        }
-
-        const url = `https://graph.facebook.com/v21.0/${phoneId}/messages`;
-
-        const data = {
-            messaging_product: 'whatsapp',
-            to: to,
-            type: 'template',
-            template: {
-                name: templateName,
-                language: {
-                    code: languageCode
-                }
-            }
-        };
-
-        const response = await axios.post(url, data, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        });
-
-        return response.data;
+        const result = await whatsappService.sendTemplateMessage(to, templateName, languageCode, components);
+        res.json({ success: true, data: result });
     } catch (error) {
-        console.error('Error sending WhatsApp message:', error.response ? error.response.data : error.message);
-        throw error;
+        res.status(500).json({ error: error.message });
     }
 };
 
+/**
+ * Test the connection credentials
+ */
+const testConnection = async (req, res) => {
+    const { to } = req.body;
+    if (!to) return res.status(400).json({ error: 'Target phone number (to) is required for testing.' });
+
+    try {
+        const result = await whatsappService.sendTestMessage(to);
+        res.json({ success: true, message: 'Test message sent', data: result });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+/**
+ * Broadcast to multiple contacts (Sequential)
+ */
 const broadcastMessage = async (req, res) => {
-    const { contacts, templateName } = req.body;
+    const { contacts, templateName, languageCode, components } = req.body;
 
     if (!contacts || !Array.isArray(contacts) || contacts.length === 0) {
         return res.status(400).json({ error: 'Invalid or empty contacts list' });
@@ -53,16 +52,16 @@ const broadcastMessage = async (req, res) => {
         failed: []
     };
 
-    // Process sequentially to be gentle, though Axios can handle parallel. 
-    // For large lists, a queue system is better, but this suffices for a simple broadcast.
     for (const contact of contacts) {
         try {
-            const response = await sendMessage(contact.phone, templateName);
-            results.success.push({ phone: contact.phone, messageId: response.messages[0].id });
+            // If components need to be dynamic per user, this logic needs to be smarter.
+            // For now, assuming static components for broadcast or simple templates.
+            const response = await whatsappService.sendTemplateMessage(contact.phone, templateName, languageCode, components);
+            results.success.push({ phone: contact.phone, messageId: response.messages?.[0]?.id });
         } catch (error) {
             results.failed.push({
                 phone: contact.phone,
-                error: error.response?.data?.error?.message || error.message
+                error: error.message
             });
         }
     }
@@ -75,5 +74,6 @@ const broadcastMessage = async (req, res) => {
 
 module.exports = {
     sendMessage,
-    broadcastMessage
+    broadcastMessage,
+    testConnection
 };

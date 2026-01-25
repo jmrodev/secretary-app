@@ -379,28 +379,64 @@ a:hover {
 }
 
 /* Base Form Elements */
+/* Base Form Elements - Unified System */
+.form-control,
 .input-field,
+.form-input,
+.form-select-control,
+/* Mapping select control here too */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
 select,
 textarea {
   width: 100%;
-  padding: 0.75rem;
-  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  /* Standardized Padding */
+  border-radius: var(--radius-sm);
+  /* Standardized Radius */
   border: 1px solid var(--gray-300);
   background-color: white;
   color: var(--gray-800);
-  font-size: 1rem;
+  font-size: 0.95rem;
+  /* Standardized Font Size */
   font-family: inherit;
-  transition: all 0.2s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   box-sizing: border-box;
+  box-shadow: var(--shadow-sm);
+  outline: none;
 }
 
-input:focus,
+/* Focus State */
+.form-control:focus,
+.input-field:focus,
+.form-input:focus,
+.form-select-control.focused,
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
 select:focus,
 textarea:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+  border-color: var(--blue-500);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
   background-color: white;
+  transform: translateY(-1px);
+}
+
+/* Disabled State */
+.form-control:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  background-color: var(--gray-50);
+  color: var(--gray-500);
+  cursor: not-allowed;
+  transform: none;
+  /* Prevent hover lift on disabled */
+}
+
+/* Hover State */
+.form-control:hover:not(:disabled),
+input:hover:not(:disabled),
+select:hover:not(:disabled),
+textarea:hover:not(:disabled) {
+  border-color: var(--gray-400);
 }
 
 label {
@@ -412,6 +448,8 @@ label {
 }
 
 /* Base Buttons */
+/* Base Buttons - Unified System */
+.btn,
 button {
   display: inline-flex;
   align-items: center;
@@ -428,19 +466,103 @@ button {
   letter-spacing: -0.01em;
   user-select: none;
   outline: none;
+  /* Default to Primary */
   background: linear-gradient(135deg, var(--blue-500) 0%, var(--blue-700) 100%);
   color: white;
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-  border: none;
 }
 
+.btn:active,
 button:active {
   transform: scale(0.97);
 }
 
+.btn:disabled,
 button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  filter: grayscale(0.5);
+  box-shadow: none;
+}
+
+/* Button Variants */
+.btn-primary {
+  /* Default style, explicitly defined */
+  background: linear-gradient(135deg, var(--blue-500) 0%, var(--blue-700) 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.btn-secondary,
+.btn-simple-white {
+  background: white !important;
+  border: 1px solid var(--gray-300) !important;
+  color: var(--gray-800) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.btn-secondary:hover,
+.btn-simple-white:hover {
+  background: var(--gray-50) !important;
+  border-color: var(--gray-400) !important;
+  color: black !important;
+}
+
+.btn-danger,
+.btn-danger-custom {
+  background: linear-gradient(135deg, var(--red-500) 0%, var(--red-600) 100%) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2) !important;
+}
+
+.btn-danger:hover,
+.btn-danger-custom:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3) !important;
+}
+
+.btn-ghost,
+.btn-text,
+.btn-icon-base {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: var(--text-muted);
+  padding: 0.5rem;
+}
+
+.btn-ghost:hover,
+.btn-text:hover,
+.btn-icon-base:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: var(--primary-color);
+  transform: none;
+}
+
+/* Button Sizes */
+.btn-sm,
+.btn-sm-compact,
+.btn-sm-icon {
+  padding: 0.4rem 0.8rem !important;
+  font-size: 0.8rem !important;
+  min-height: auto;
+  border-radius: 0.5rem;
+}
+
+.btn-icon,
+.btn-logout-minimal,
+.btn-icon-delete,
+.control-btn,
+.btn-send-chat,
+.icon-btn {
+  padding: 0 !important;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Utilities */
@@ -675,6 +797,22 @@ button:disabled {
   cursor: pointer;
 }
 
+
+/* Doctors Page BEM */
+.doctors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.doctors-grid__no-results {
+  color: var(--text-muted);
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+
 .switch {
   position: relative;
   display: inline-block;
@@ -682,6 +820,7 @@ button:disabled {
   height: 24px;
   flex-shrink: 0;
 }
+
 
 .switch input {
   opacity: 0;
@@ -1252,26 +1391,23 @@ input:checked+.slider:before {
   text-transform: capitalize;
 }
 
+/* Legacy Mapping handled in Base Buttons */
 .btn-logout-minimal {
-  background: white;
-  border: 1px solid var(--gray-200);
-  color: var(--gray-400);
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  flex-shrink: 0;
+  /* Base styles inherited from .btn-icon group */
+  background: white !important;
+  border: 1px solid var(--gray-200) !important;
+  color: var(--gray-400) !important;
+  border-radius: 10px !important;
+  /* Specific override */
+  width: 34px !important;
+  height: 34px !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .btn-logout-minimal:hover {
-  background: var(--red-50);
-  color: var(--red-600);
-  border-color: var(--red-200);
+  background: var(--red-50) !important;
+  color: var(--red-600) !important;
+  border-color: var(--red-200) !important;
   transform: rotate(8deg) scale(1.1);
   box-shadow: 0 4px 8px rgba(220, 38, 38, 0.1);
 }
@@ -2401,44 +2537,8 @@ input:checked+.slider:before {
   color: var(--gray-200);
 }
 
-.btn-danger {
-  background: linear-gradient(135deg, var(--red-500) 0%, var(--red-600) 100%);
-  color: white;
-  border: none;
-  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
-}
-
-.btn-danger:hover {
-  filter: brightness(1.05);
-  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
-}
-
-.btn-sm-compact {
-  padding: 4px 8px;
-  font-size: 0.75rem;
-  min-height: auto;
-}
-
-.btn-text {
-  background: none;
-  border: none;
-  color: var(--blue-600);
-  font-weight: 500;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: all 0.2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.875rem;
-}
-
-.btn-text:hover {
-  background-color: var(--blue-50);
-  color: var(--blue-700);
-  text-decoration: none;
-}
+/* Legacy Button Classes mapped in Base Buttons System */
+/* .btn-danger, .btn-sm-compact, .btn-text are now handled in the main Button block */
 
 /* Shared Insurance/Doctor Helpers (Avatars/Icons) - Keeping these as helpers for now if needed by inner content */
 .avatar-tile {
@@ -2536,16 +2636,13 @@ input:checked+.slider:before {
   z-index: 5;
 }
 
+/* Inherits from Base Input but adds specific search padding/radius */
 .search-bar-input {
-  width: 100%;
+  /* Overrides */
   padding: 1rem 1.25rem 1rem 4rem;
+  /* Higher priority due to specificity/order */
   font-size: 1.1rem;
-  background-color: white;
-  border: 1px solid var(--gray-200);
   border-radius: 1.25rem;
-  color: var(--gray-800);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .search-bar-input:focus {
@@ -3054,19 +3151,12 @@ input:checked+.slider:before {
   box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
 }
 
+/* Chat send button specific overrides */
 .btn-send-chat {
-  width: 54px;
-  height: 54px;
-  border-radius: 50%;
+  width: 54px !important;
+  height: 54px !important;
+  /* Kept specific gradients/shadows */
   background: linear-gradient(135deg, var(--sky-500) 0%, var(--blue-600) 100%);
-  color: white;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s;
-  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
 }
 
 .btn-send-chat:hover {
@@ -3532,11 +3622,7 @@ input:checked+.slider:before {
 
 
 
-.btn-sm-compact {
-  padding: 0.4rem 0.75rem !important;
-  font-size: 0.8rem !important;
-  border-radius: 0.5rem !important;
-}
+/* Removed duplicate btn-sm-compact */
 
 .file-grid {
   display: grid;
@@ -3837,56 +3923,21 @@ input:checked+.slider:before {
   font-size: 0.9rem;
 }
 
-.form-input {
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--gray-300);
-  background-color: white;
-  color: var(--gray-800);
-  font-size: 0.95rem;
-  font-family: inherit;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: var(--shadow-sm);
-}
+/* .form-input mapped to Base Form Elements block */
 
-.form-input:hover {
-  border-color: var(--gray-400);
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: var(--blue-500);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-  transform: translateY(-1px);
-}
-
-.form-input:disabled {
-  background-color: var(--gray-50);
-  color: var(--gray-500);
-  cursor: not-allowed;
-}
-
+/* btn-icon-delete specific coloring override */
 .btn-icon-delete {
-  width: 2rem;
-  height: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 9999px;
-  background-color: white;
+  /* Size and shape handled by .btn-icon group */
+  background-color: white !important;
   color: var(--red-500);
-  border: 1px solid var(--red-100);
-  transition: all 0.2s;
-  box-shadow: var(--shadow-sm);
-  flex-shrink: 0;
+  border: 1px solid var(--red-100) !important;
+  width: 2rem !important;
+  height: 2rem !important;
 }
 
 .btn-icon-delete:hover {
-  background-color: var(--red-50);
-  border-color: var(--red-200);
+  background-color: var(--red-50) !important;
+  border-color: var(--red-200) !important;
 }
 
 .item-grid {
@@ -3960,25 +4011,12 @@ input:checked+.slider:before {
 
 /* --- Generic Form Select Styles (Vanilla CSS) --- */
 
+/* .form-select-control mapped to Base Form Elements block */
 .form-select-control {
-  background-color: white;
-  border: 1px solid var(--gray-300);
-  border-radius: var(--radius);
-  padding: 0.5rem;
+  /* Inherits base styles + specific overrides */
   display: flex;
-  min-height: 48px;
-  box-shadow: none;
-  cursor: pointer;
-  width: 100%;
-  box-sizing: border-box;
   align-items: center;
-  transition: all 0.2s ease;
-}
-
-.form-select-control.focused {
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
-  outline: none;
+  cursor: pointer;
 }
 
 .form-select-value-container {
@@ -4134,23 +4172,229 @@ input:checked+.slider:before {
   z-index: -1;
 }
 
-.btn-simple-white {
-  background: white !important;
-  /* Force override for global gradient */
-  background-color: white !important;
-  border: 1px solid #d1d5db !important;
-  /* gray-300 matches simple style */
-  color: #1f2937 !important;
-  /* gray-800 */
-  font-weight: 500;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
-  padding: 0.5rem 1rem;
+/* btn-simple-white is now part of the Button System as .btn-secondary */
+/* Doctor Specific Color System - Notable & Clean (Dark Mode Adapted) */
+.doctor-color-0 {
+  --doc-bg: rgba(14, 165, 233, 0.15);
+  --doc-border: rgba(14, 165, 233, 0.3);
+  --doc-text: #38bdf8;
+  --doc-accent: #0ea5e9;
 }
 
-.btn-simple-white:hover {
-  background-color: #f9fafb !important;
-  /* gray-50 */
-  border-color: #9ca3af !important;
-  /* gray-400 */
-  color: #000 !important;
+.doctor-color-1 {
+  --doc-bg: rgba(34, 197, 94, 0.15);
+  --doc-border: rgba(34, 197, 94, 0.3);
+  --doc-text: #4ade80;
+  --doc-accent: #22c55e;
+}
+
+.doctor-color-2 {
+  --doc-bg: rgba(168, 85, 247, 0.15);
+  --doc-border: rgba(168, 85, 247, 0.3);
+  --doc-text: #c084fc;
+  --doc-accent: #a855f7;
+}
+
+.doctor-color-3 {
+  --doc-bg: rgba(249, 115, 22, 0.15);
+  --doc-border: rgba(249, 115, 22, 0.3);
+  --doc-text: #fb923c;
+  --doc-accent: #f97316;
+}
+
+.doctor-color-4 {
+  --doc-bg: rgba(236, 72, 153, 0.15);
+  --doc-border: rgba(236, 72, 153, 0.3);
+  --doc-text: #f472b6;
+  --doc-accent: #ec4899;
+}
+
+.doctor-color-5 {
+  --doc-bg: rgba(6, 182, 212, 0.15);
+  --doc-border: rgba(6, 182, 212, 0.3);
+  --doc-text: #22d3ee;
+  --doc-accent: #06b6d4;
+}
+
+.doctor-color-6 {
+  --doc-bg: rgba(148, 163, 184, 0.15);
+  --doc-border: rgba(148, 163, 184, 0.3);
+  --doc-text: #94a3b8;
+  --doc-accent: #64748b;
+}
+
+.doctor-color-7 {
+  --doc-bg: rgba(234, 179, 8, 0.15);
+  --doc-border: rgba(234, 179, 8, 0.3);
+  --doc-text: #facc15;
+  --doc-accent: #eab308;
+}
+
+.doctor-color-8 {
+  --doc-bg: rgba(99, 102, 241, 0.15);
+  --doc-border: rgba(99, 102, 241, 0.3);
+  --doc-text: #818cf8;
+  --doc-accent: #6366f1;
+}
+
+.doctor-color-9 {
+  --doc-bg: rgba(20, 184, 166, 0.15);
+  --doc-border: rgba(20, 184, 166, 0.3);
+  --doc-text: #2dd4bf;
+  --doc-accent: #14b8a6;
+}
+
+.doctor-themed-bg {
+  background-color: var(--doc-bg) !important;
+  border-color: var(--doc-border) !important;
+}
+
+.doctor-themed-text {
+  color: var(--doc-text) !important;
+}
+
+.doctor-themed-accent {
+  background-color: var(--doc-accent) !important;
+  color: white !important;
+}
+
+/* Calendar Styles extracted from Calendar.jsx */
+.calendar-container {
+  padding: 1.5rem;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.calendar-nav-btn {
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  cursor: pointer;
+  font-size: 1rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.calendar-nav-btn:hover {
+  background: var(--blue-100);
+  border-color: var(--blue-300);
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-nav-btn:active {
+  transform: scale(0.95);
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+}
+
+.calendar-day-header {
+  text-align: center;
+  font-weight: 600;
+  color: #64748b;
+  font-size: 0.875rem;
+  padding-bottom: 0.5rem;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  font-size: 0.9rem;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.calendar-day:hover:not(.empty) {
+  background-color: #f1f5f9;
+}
+
+.calendar-day.selected {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.calendar-day.today {
+  border: 1px solid #3b82f6;
+}
+
+.appointment-dot {
+  width: 4px;
+  height: 4px;
+  background-color: #ef4444;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 6px;
+}
+
+.calendar-day.selected .appointment-dot {
+  background-color: white;
+}
+
+.calendar-day.holiday {
+  background-color: #fee2e2;
+  color: #991b1b;
+  cursor: not-allowed;
+}
+
+/* CalendarSection Organism - BEM */
+.calendar-section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.calendar-section__card {
+  /* Extends .card but specific to this section if needed */
+  display: flex;
+  flex-direction: column;
+}
+
+/* ScheduleSection Organism - BEM */
+.schedule-section {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.schedule-section__container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.schedule-section__header {
+  flex-shrink: 0;
+}
+
+.schedule-section__filters {
+  margin-bottom: 0.5rem;
+}
+
+.schedule-section__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.schedule-section__card {
+  /* For holiday list view */
 }

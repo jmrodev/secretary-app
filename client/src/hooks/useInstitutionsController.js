@@ -1,0 +1,125 @@
+import { useState, useEffect, useCallback } from 'react';
+import api from '../api/axios';
+import { useMessage } from '../context/MessageContext';
+import { useModal } from '../context/ModalContext';
+
+export const useInstitutionsController = () => {
+    const { showMessage } = useMessage();
+    const { confirm } = useModal();
+
+    // Data State
+    const [institutions, setInstitutions] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    // UI State
+    const [activeTab, setActiveTab] = useState('list'); // 'list' | 'finances'
+    const [editingInstitution, setEditingInstitution] = useState(null);
+    const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+
+    // Form Initial State
+    const initialFormState = {
+        name: '',
+        description: '',
+        status: 'active',
+        base_price: 0,
+        phoneNumbers: []
+    };
+    const [formData, setFormData] = useState(initialFormState);
+
+    // Fetch Data
+    const fetchInstitutions = async () => {
+        setLoading(true);
+        try {
+            const res = await api.get('/institutions');
+            setInstitutions(res.data);
+        } catch (err) {
+            console.error(err);
+            showMessage('Error al cargar instituciones', 'error');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchInstitutions();
+    }, []);
+
+    // Handlers
+    const handleOpenFormModal = useCallback((inst = null) => {
+        if (inst) {
+            setEditingInstitution(inst);
+            setFormData({
+                name: inst.name,
+                description: inst.description || '',
+                status: inst.status,
+                base_price: inst.base_price || 0,
+                phoneNumbers: inst.phoneNumbers || (inst.phone ? [{ phone_number: inst.phone, is_primary: true, label: 'Celular' }] : [])
+            });
+        } else {
+            setEditingInstitution(null);
+            setFormData(initialFormState);
+        }
+        setIsFormModalOpen(true);
+    }, []);
+
+    const handleCloseFormModal = useCallback(() => {
+        setIsFormModalOpen(false);
+        setEditingInstitution(null);
+        setFormData(initialFormState);
+    }, []);
+
+    const handleFormSubmit = useCallback(async (e) => {
+        e.preventDefault();
+        try {
+            if (editingInstitution) {
+                await api.put(`/institutions/${editingInstitution.id}`, formData);
+                showMessage('Institución actualizada', 'success');
+            } else {
+                await api.post('/institutions', formData);
+                showMessage('Institución creada', 'success');
+            }
+            fetchInstitutions();
+            handleCloseFormModal();
+        } catch (err) {
+            console.error(err);
+            showMessage('Error al guardar', 'error');
+        }
+    }, [editingInstitution, formData, showMessage, fetchInstitutions, handleCloseFormModal]);
+
+    const handleDelete = useCallback(async (id) => {
+        if (!await confirm('¿Seguro que deseas eliminar esta institución?')) return;
+        try {
+            await api.delete(`/institutions/${id}`);
+            showMessage('Institución eliminada', 'success');
+            fetchInstitutions();
+        } catch (err) {
+            console.error(err);
+            showMessage('Error al eliminar', 'error');
+        }
+    }, [confirm, showMessage, fetchInstitutions]);
+
+    const handleInputChange = useCallback((field, value) => {
+        setFormData(prev => ({ ...prev, [field]: value }));
+    }, []);
+
+    return {
+        // State
+        institutions,
+        loading,
+        activeTab,
+        isFormModalOpen,
+        editingInstitution,
+        formData,
+
+        // Setters
+        setActiveTab,
+
+        // Actions
+        fetchInstitutions,
+        handleOpenFormModal,
+        handleCloseFormModal,
+        handleFormSubmit,
+        handleDelete,
+        handleInputChange
+    };
+};
