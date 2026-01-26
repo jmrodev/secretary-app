@@ -4616,3 +4616,157 @@ input:checked+.slider:before {
 .auth-card__link:hover {
     color: var(--blue-700);
 }
+
+/* ==========================================================================
+   BEM COMPONENTS (REFACTORED)
+   ========================================================================== */
+
+/* --- Page Header Block --- */
+.page-header {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-header__title {
+  font-size: 2.25rem;
+  color: var(--gray-900);
+  margin: 0;
+  letter-spacing: -0.025em;
+  text-shadow: none;
+}
+
+.page-header__subtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin-top: 0.25rem;
+}
+
+/* --- Tab Navigation Block --- */
+.tab-nav {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 0.5rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-200);
+}
+
+.tab-nav__item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem !important;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: var(--text-secondary) !important;
+}
+
+.tab-nav__item:hover {
+  background: var(--gray-100) !important;
+  color: var(--text-main) !important;
+}
+
+.tab-nav__item--active {
+  background: white !important;
+  color: var(--blue-600) !important;
+  box-shadow: var(--shadow-sm) !important;
+  font-weight: 700 !important;
+}
+
+/* --- Search Box Block --- */
+.search-box {
+  margin-bottom: 2rem;
+}
+
+.search-box__wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-box__icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--gray-400);
+  font-size: 1.25rem;
+}
+
+.search-box__input {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3rem !important;
+  border-radius: var(--radius) !important;
+  border: 1px solid var(--gray-200) !important;
+  background: white !important;
+  box-shadow: var(--shadow-sm) !important;
+  font-size: 1.1rem !important;
+}
+
+.search-box__input:focus {
+  border-color: var(--blue-500) !important;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* --- Sub-Tab Navigation --- */
+.sub-tab-nav {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.25rem;
+  background: var(--gray-100);
+  border-radius: var(--radius-sm);
+  width: fit-content;
+}
+
+.sub-tab-nav__item {
+  padding: 0.5rem 1rem !important;
+  font-size: 0.875rem !important;
+  border-radius: var(--radius-sm) !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: var(--gray-500) !important;
+}
+
+.sub-tab-nav__item--active {
+  background: white !important;
+  color: var(--blue-600) !important;
+  box-shadow: var(--shadow-sm) !important;
+  font-weight: 600 !important;
+}
+
+/* --- Medical History Organism --- */
+.medical-history {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.medical-history__title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--gray-800);
+}
+
+/* --- Files Grid Block --- */
+.files-grid {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 1024px) {
+  .files-grid {
+    grid-template-columns: 1fr;
+  }
+}
