@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useSystemConfigController } from '../controllers/useSystemConfigController';
-import Sidebar from '../components/organisms/Sidebar';
+import MainLayout from '../components/templates/MainLayout';
 import GeneralSettings from '../components/organisms/GeneralSettings';
 import CommunicationSettings from '../components/organisms/CommunicationSettings';
 import IntegrationSettings from '../components/organisms/IntegrationSettings';
@@ -83,63 +83,56 @@ const SystemConfig = () => {
     };
 
     return (
-        <div className="app-layout">
-            <Sidebar />
-            <main className="main-content">
-                <header className="page-header">
-                    <div className="page-header__info">
-                        <h1 className="page-header__title">{t('system_config') || 'Configuración del Sistema'}</h1>
-                        <p className="page-header__subtitle">{t('system_config_subtitle') || 'Administre las preferencias globales de la aplicación.'}</p>
-                    </div>
-                </header>
+        <MainLayout
+            title={t('system_config') || 'Configuración del Sistema'}
+            subtitle={t('system_config_subtitle') || 'Administre las preferencias globales de la aplicación.'}
+        >
+            <nav className="tab-nav mb-8">
+                {(user.role === 'admin' || user.role === 'secretary') && (
+                    <>
+                        <Button
+                            variant="ghost"
+                            className={`tab-nav__item ${activeTab === 'general' ? 'tab-nav__item--active' : ''}`}
+                            onClick={() => setActiveTab('general')}
+                        >
+                            ⚙️ {t('general') || 'General'}
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            className={`tab-nav__item ${activeTab === 'communications' ? 'tab-nav__item--active' : ''}`}
+                            onClick={() => setActiveTab('communications')}
+                        >
+                            📢 {t('communications') || 'Comunicaciones'}
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            className={`tab-nav__item ${activeTab === 'integrations' ? 'tab-nav__item--active' : ''}`}
+                            onClick={() => setActiveTab('integrations')}
+                        >
+                            🔌 {t('integrations') || 'Integraciones'}
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            className={`tab-nav__item ${activeTab === 'data' ? 'tab-nav__item--active' : ''}`}
+                            onClick={() => setActiveTab('data')}
+                        >
+                            💾 {t('data') || 'Datos'}
+                        </Button>
+                    </>
+                )}
+            </nav>
 
-                <nav className="tab-nav mb-8">
-                    {(user.role === 'admin' || user.role === 'secretary') && (
-                        <>
-                            <Button
-                                variant="ghost"
-                                className={`tab-nav__item ${activeTab === 'general' ? 'tab-nav__item--active' : ''}`}
-                                onClick={() => setActiveTab('general')}
-                            >
-                                ⚙️ {t('general') || 'General'}
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                className={`tab-nav__item ${activeTab === 'communications' ? 'tab-nav__item--active' : ''}`}
-                                onClick={() => setActiveTab('communications')}
-                            >
-                                📢 {t('communications') || 'Comunicaciones'}
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                className={`tab-nav__item ${activeTab === 'integrations' ? 'tab-nav__item--active' : ''}`}
-                                onClick={() => setActiveTab('integrations')}
-                            >
-                                🔌 {t('integrations') || 'Integraciones'}
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                className={`tab-nav__item ${activeTab === 'data' ? 'tab-nav__item--active' : ''}`}
-                                onClick={() => setActiveTab('data')}
-                            >
-                                💾 {t('data') || 'Datos'}
-                            </Button>
-                        </>
-                    )}
-                </nav>
+            <div className="tab-content relative min-h-[500px] animate-fadeIn">
+                {renderTabContent()}
+            </div>
 
-                <div className="tab-content relative min-h-[500px] animate-fadeIn">
-                    {renderTabContent()}
-                </div>
-
-                <QRCodeModal
-                    isOpen={qrModal.open}
-                    onClose={() => setQrModal({ ...qrModal, open: false })}
-                    url={qrModal.url}
-                    expiresAt={qrModal.expiry}
-                />
-            </main>
-        </div>
+            <QRCodeModal
+                isOpen={qrModal.open}
+                onClose={() => setQrModal({ ...qrModal, open: false })}
+                url={qrModal.url}
+                expiresAt={qrModal.expiry}
+            />
+        </MainLayout>
     );
 };
 

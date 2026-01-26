@@ -71,6 +71,10 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
             autoComplete="chrome-off"
             inputId="patient-search-input"
             unstyled // Removes default styles so our classes take over
+            menuPortalTarget={document.body}
+            styles={{
+                menuPortal: (base) => ({ ...base, zIndex: 9999 })
+            }}
         />
     );
 };

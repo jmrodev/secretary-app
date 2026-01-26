@@ -2,10 +2,12 @@ import { useState, useEffect, useCallback } from 'react';
 import api from '../api/axios';
 import { useMessage } from '../context/MessageContext';
 import { useModal } from '../context/ModalContext';
+import { useLanguage } from '../context/LanguageContext';
 
 export const useInstitutionsController = () => {
     const { showMessage } = useMessage();
     const { confirm } = useModal();
+    const { t } = useLanguage();
 
     // Data State
     const [institutions, setInstitutions] = useState([]);
@@ -120,6 +122,7 @@ export const useInstitutionsController = () => {
         handleCloseFormModal,
         handleFormSubmit,
         handleDelete,
-        handleInputChange
+        handleInputChange,
+        t
     };
 };

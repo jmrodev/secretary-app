@@ -2,10 +2,12 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import api from '../api/axios';
 import { useMessage } from '../context/MessageContext';
 import { useModal } from '../context/ModalContext';
+import { useLanguage } from '../context/LanguageContext';
 
 export const useInsurancesController = () => {
     const { showMessage } = useMessage();
     const { confirm } = useModal();
+    const { t } = useLanguage();
 
     // Data State
     const [insurances, setInsurances] = useState([]);
@@ -113,6 +115,7 @@ export const useInsurancesController = () => {
         handleOpenCreate,
         handleOpenEdit,
         handleSubmit,
-        handleDelete
+        handleDelete,
+        t
     };
 };

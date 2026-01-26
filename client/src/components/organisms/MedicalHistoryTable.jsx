@@ -3,70 +3,94 @@ import React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { timeAgo } from '../../utils/time';
+import Button from '../atoms/Button';
+import Card from '../atoms/Card';
 
 const MedicalHistoryTable = ({ items, filterItem, onView, onDelete, icon, title, originLabel }) => {
     const { t } = useLanguage();
     const { user } = useAuth();
 
+    const filteredItems = items.filter(filterItem);
+
     return (
-        <div className="medical-history">
-            <h3 className="medical-history__title">
+        <div className="flex flex-col gap-4 animate-fadeIn">
+            <h3 className="section-title flex items-center gap-2 mb-0">
                 <span>{icon}</span> {title}
             </h3>
-            <div className="table-responsive">
-                <table className="table-base">
-                    <thead>
-                        <tr>
-                            <th>{t('date')}</th>
-                            <th>{t('patient')}</th>
-                            <th>{t('detail')}</th>
-                            <th>{t('doctor')}</th>
-                            <th className="text-right">{t('actions')}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {items.filter(filterItem).map(item => (
-                            <tr key={`${item._origin}_${item.id}`} className="hover:bg-slate-50">
-                                <td>
-                                    <div className="flex flex-col">
-                                        <span className="text-sm">{new Date(item.appointment_date || item.created_at).toLocaleDateString()}</span>
-                                        <span className="text-xs text-muted">{timeAgo(item.appointment_date || item.created_at)}</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div className="font-bold">{item.patient_name}</div>
-                                    {item._origin === 'request' && <span className="tag tag-slate text-[10px] py-0 px-1">{originLabel || t('request')}</span>}
-                                </td>
-                                <td>
-                                    <div className="text-sm italic truncate max-w-xs" title={item.medications || item.request_note || item.diagnosis || item.description}>
-                                        {item.medications || item.request_note || item.diagnosis || item.description}
-                                    </div>
-                                </td>
-                                <td>Dr. {item.doctor_name}</td>
-                                <td>
-                                    <div className="flex justify-end gap-1">
-                                        <button onClick={() => onView(item)} className="btn-icon-base btn-icon-blue" title={t('view')}>👁️</button>
-                                        {(user.role === 'admin' || user.role === 'secretary') && (
-                                            <button
-                                                onClick={() => onDelete(item.id, item)}
-                                                className="btn-icon-base btn-icon-red"
-                                                title="Delete"
-                                            >
-                                                🗑️
-                                            </button>
-                                        )}
-                                    </div>
-                                </td>
+
+            <Card className="p-0 overflow-hidden shadow-sm border-slate-200">
+                <div className="table-responsive">
+                    <table className="table-base w-full">
+                        <thead>
+                            <tr>
+                                <th className="pl-6">{t('date')}</th>
+                                <th>{t('patient')}</th>
+                                <th className="w-1/3">{t('detail')}</th>
+                                <th>{t('doctor')}</th>
+                                <th className="text-right pr-6">{t('actions')}</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-            {items.filter(filterItem).length === 0 && (
-                <div className="card text-center p-12">
-                    <p className="text-main-500">{t('none_found')}</p>
+                        </thead>
+                        <tbody>
+                            {filteredItems.map(item => (
+                                <tr key={`${item._origin}_${item.id}`} className="hover:bg-slate-50 transition-colors">
+                                    <td className="pl-6 py-4">
+                                        <div className="flex flex-col">
+                                            <span className="font-bold text-main-800">{new Date(item.appointment_date || item.created_at).toLocaleDateString()}</span>
+                                            <span className="text-xs text-muted">{timeAgo(item.appointment_date || item.created_at)}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div className="flex flex-col gap-1">
+                                            <span className="font-bold text-main-900">{item.patient_name}</span>
+                                            {item._origin === 'request' && (
+                                                <span className="tag tag-slate text-[10px] w-fit font-bold uppercase tracking-widest mt-0.5">
+                                                    {originLabel || t('request')}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div className="text-sm text-slate-600 italic line-clamp-2" title={item.medications || item.request_note || item.diagnosis || item.description}>
+                                            {item.medications || item.request_note || item.diagnosis || item.description}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div className="text-sm font-medium text-main-600">Dr. {item.doctor_name}</div>
+                                    </td>
+                                    <td className="pr-6 text-right">
+                                        <div className="flex justify-end gap-1">
+                                            <Button
+                                                variant="ghost"
+                                                size="sm-compact"
+                                                onClick={() => onView(item)}
+                                                className="text-blue-500 hover:bg-blue-50"
+                                                title={t('view')}
+                                                icon="👁️"
+                                            />
+                                            {(user.role === 'admin' || user.role === 'secretary') && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm-compact"
+                                                    onClick={() => onDelete(item.id, item)}
+                                                    className="text-red-400 hover:bg-red-50"
+                                                    title="Delete"
+                                                    icon="🗑️"
+                                                />
+                                            )}
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
-            )}
+
+                {filteredItems.length === 0 && (
+                    <div className="p-12 text-center text-muted border-dashed bg-slate-50/50">
+                        <p className="font-medium">{t('none_found')}</p>
+                    </div>
+                )}
+            </Card>
         </div>
     );
 };

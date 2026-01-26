@@ -11,6 +11,7 @@ import MedicalRequestForm from '../components/organisms/MedicalRequestForm';
 import MedicalRequestList from '../components/organisms/MedicalRequestList';
 import MedicalHistoryTable from '../components/organisms/MedicalHistoryTable';
 import MedicationAutocomplete from '../components/molecules/MedicationAutocomplete';
+import CurrencyInput from '../components/atoms/CurrencyInput';
 import Button from '../components/atoms/Button';
 
 // Utils
@@ -22,19 +23,17 @@ const MedicalDocuments = () => {
         user, t, activeTab, setActiveTab, requestsSubTab, setRequestsSubTab,
         searchTerm, setSearchTerm, isEditing, setIsEditing,
         requests, files, prescriptions, licenses, doctors,
-        selectedPatient, selectedDoctor,
         selectedFile, setSelectedFile, selectedPrescription, setSelectedPrescription,
         selectedLicense, setSelectedLicense, selectedRequest, setSelectedRequest,
-        reqType, setReqType, reqNote, setReqNote, bonified, setBonified,
-        sendToDoctor, setSendToDoctor, filePatient, setFilePatient, fileDesc, setFileDesc,
+        filePatient, setFilePatient, fileDesc, setFileDesc,
         fileToDelete, setFileToDelete, actionModal, setActionModal, actionNote, setActionNote,
         paymentModal, setPaymentModal, editData, setEditData, licenseEditData, setLicenseEditData,
         requestEditData, setRequestEditData,
 
         // Handlers
-        filterItem, handleCreateRequest, handleUpdateStatus, handleFileUpload, confirmFileDelete,
+        filterItem, handleUpdateStatus, handleFileUpload, confirmFileDelete,
         handleUpdatePrescription, handleUpdateLicense, handleUpdateRequest, handleDeleteRequest,
-        handleDeletePrescription, handleDeleteLicense, fetchRequests, fetchFiles
+        handleDeletePrescription, handleDeleteLicense, fetchRequests
     } = controller;
 
     // --- Derived Data for Combined Views ---
@@ -67,8 +66,20 @@ const MedicalDocuments = () => {
         }))
     ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-    const handleViewItem = (item) => {
-        handleEditItem(item); // Always open in edit mode for history items
+    const handleEditItem = (item) => {
+        if (item._origin === 'prescription') {
+            setEditData({ medications: item.medications, instructions: item.instructions });
+            setSelectedPrescription(item);
+            setIsEditing(true);
+        } else if (item._origin === 'license') {
+            setLicenseEditData({ start_date: item.start_date, days_duration: item.days_duration, diagnosis: item.diagnosis });
+            setSelectedLicense(item);
+            setIsEditing(true);
+        } else if (item._origin === 'request') {
+            setRequestEditData({ request_note: item.request_note, doctor_note: item.doctor_note, debt_amount: item.debt_amount || 0 });
+            setSelectedRequest(item);
+            setIsEditing(true);
+        }
     };
 
     return (
@@ -83,58 +94,62 @@ const MedicalDocuments = () => {
                     </div>
                 </header>
 
-                <nav className="tab-nav">
-                    {['requests', 'files', 'prescriptions', 'licenses', 'certificates'].map(tab => (
+                <nav className="tab-nav mb-8">
+                    {[
+                        { id: 'requests', label: t('requests_workflow'), icon: '⚡' },
+                        { id: 'files', label: t('file_repository'), icon: '📂' },
+                        { id: 'prescriptions', label: t('prescriptions'), icon: '💊' },
+                        { id: 'licenses', label: t('medical_licenses'), icon: '📄' },
+                        { id: 'certificates', label: t('certificates') || 'Certificados', icon: '📜' }
+                    ].map(tab => (
                         <Button
-                            key={tab}
+                            key={tab.id}
                             variant="ghost"
-                            onClick={() => setActiveTab(tab)}
-                            className={`tab-nav__item ${activeTab === tab ? 'tab-nav__item--active' : ''}`}
+                            onClick={() => setActiveTab(tab.id)}
+                            className={`tab-nav__item ${activeTab === tab.id ? 'tab-nav__item--active' : ''}`}
                         >
-                            <span className="tab-nav__icon">
-                                {tab === 'requests' ? '⚡' : tab === 'files' ? '📂' : tab === 'prescriptions' ? '💊' : tab === 'licenses' ? '📄' : '📜'}
-                            </span>
-                            <span className="tab-nav__label">
-                                {tab === 'requests' ? t('requests_workflow') : tab === 'files' ? t('file_repository') : tab === 'prescriptions' ? t('prescriptions') : tab === 'licenses' ? t('medical_licenses') : (t('certificates') || 'Certificados')}
-                            </span>
+                            <span className="mr-2">{tab.icon}</span>
+                            {tab.label}
                         </Button>
                     ))}
                 </nav>
 
-                <div className="search-box">
-                    <div className="search-box__wrapper">
-                        <span className="search-box__icon">🔍</span>
-                        <input
-                            type="text"
-                            placeholder={t('search_docs_placeholder')}
-                            className="search-box__input"
-                            value={searchTerm}
-                            onChange={e => setSearchTerm(e.target.value)}
-                        />
-                    </div>
-                </div>
-
-                {activeTab === 'requests' && (
-                    <div className="requests-container">
-                        <div className="sub-tab-nav">
-                            <Button
-                                variant="ghost"
-                                onClick={() => setRequestsSubTab('list')}
-                                className={`sub-tab-nav__item ${requestsSubTab === 'list' ? 'sub-tab-nav__item--active' : ''}`}
-                            >
-                                📋 {t('request_status')}
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                onClick={() => setRequestsSubTab('new')}
-                                className={`sub-tab-nav__item ${requestsSubTab === 'new' ? 'sub-tab-nav__item--active' : ''}`}
-                            >
-                                ➕ {t('new_request')}
-                            </Button>
+                <section className="action-bar mb-8">
+                    <div className="action-bar__search">
+                        <div className="search-box__wrapper">
+                            <span className="search-box__icon">🔍</span>
+                            <input
+                                type="text"
+                                placeholder={t('search_docs_placeholder')}
+                                className="search-box__input"
+                                value={searchTerm}
+                                onChange={e => setSearchTerm(e.target.value)}
+                            />
                         </div>
+                    </div>
+                </section>
 
-                        {requestsSubTab === 'new' ? (
-                            <div className="animate-fadeIn">
+                <div className="tab-content animate-fadeIn">
+                    {activeTab === 'requests' && (
+                        <div className="flex flex-col gap-6">
+                            <nav className="tab-nav tab-nav--sub mb-2">
+                                <Button
+                                    variant="ghost"
+                                    onClick={() => setRequestsSubTab('list')}
+                                    className={`tab-nav__item ${requestsSubTab === 'list' ? 'tab-nav__item--active' : ''}`}
+                                >
+                                    📋 {t('request_status')}
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    onClick={() => setRequestsSubTab('new')}
+                                    className={`tab-nav__item ${requestsSubTab === 'new' ? 'tab-nav__item--active' : ''}`}
+                                >
+                                    ➕ {t('new_request')}
+                                </Button>
+                            </nav>
+
+                            {requestsSubTab === 'new' ? (
                                 <MedicalRequestForm
                                     doctors={doctors}
                                     onRequestCreated={() => {
@@ -142,117 +157,129 @@ const MedicalDocuments = () => {
                                         setRequestsSubTab('list');
                                     }}
                                 />
-                            </div>
-                        ) : (
-                            <div className="card animate-fadeIn">
-                                <header className="card-header">
-                                    <h3 className="card-header__title">{user.role === 'doctor' ? t('pending_requests') : t('request_status')}</h3>
-                                </header>
-                                <MedicalRequestList
-                                    requests={requests}
-                                    filterItem={filterItem}
-                                    handleDeleteRequest={handleDeleteRequest}
-                                    openActionModal={(type, id) => setActionModal({ open: true, type, id })}
-                                    setPaymentModal={setPaymentModal}
-                                />
-                            </div>
-                        )}
-                    </div>
-                )}
+                            ) : (
+                                <div className="flex flex-col gap-4">
+                                    <h3 className="section-title mb-0">{user.role === 'doctor' ? t('pending_requests') : t('request_status')}</h3>
+                                    <MedicalRequestList
+                                        requests={requests}
+                                        filterItem={filterItem}
+                                        handleDeleteRequest={handleDeleteRequest}
+                                        openActionModal={(type, id) => setActionModal({ open: true, type, id })}
+                                        setPaymentModal={setPaymentModal}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    )}
 
-                {activeTab === 'files' && (
-                    <div className="files-grid">
-                        <section className="card">
-                            <h3 className="card__title">{t('upload_document')}</h3>
-                            <form className="file-upload-form" onSubmit={handleFileUpload}>
-                                <div className="input-group">
-                                    <label className="input-label">{t('patient_label')}</label>
-                                    <PatientSearchSelect value={filePatient} onChange={setFilePatient} placeholder={t('select_patient')} />
+                    {activeTab === 'files' && (
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                            <section className="lg:col-span-1">
+                                <div className="card">
+                                    <header className="card-header border-b-0 mb-4">
+                                        <h3 className="card-header__title">{t('upload_document')}</h3>
+                                    </header>
+                                    <form className="flex flex-col gap-4" onSubmit={handleFileUpload}>
+                                        <div className="input-group">
+                                            <label className="input-label">{t('patient_label')}</label>
+                                            <PatientSearchSelect value={filePatient} onChange={setFilePatient} placeholder={t('select_patient')} />
+                                        </div>
+                                        <div className="input-group">
+                                            <label className="input-label">{t('description')}</label>
+                                            <input className="input-field" value={fileDesc} onChange={e => setFileDesc(e.target.value)} placeholder="e.g. Lab Results PDF" required />
+                                        </div>
+                                        <div className="input-group">
+                                            <label className="input-label">{t('file')}</label>
+                                            <input type="file" className="input-field" onChange={e => setSelectedFile(e.target.files[0])} required />
+                                        </div>
+                                        <Button type="submit" className="w-full">{t('upload_file')}</Button>
+                                    </form>
                                 </div>
-                                <div className="input-group">
-                                    <label className="input-label">{t('description')}</label>
-                                    <input className="input-field" value={fileDesc} onChange={e => setFileDesc(e.target.value)} placeholder="e.g. Lab Results PDF" required />
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">{t('file')}</label>
-                                    <input type="file" className="input-field" onChange={e => setSelectedFile(e.target.files[0])} required />
-                                </div>
-                                <Button type="submit" className="w-full">{t('upload_file')}</Button>
-                            </form>
-                        </section>
+                            </section>
 
-                        <section className="card">
-                            <h3 className="card__title">{t('file_repository')}</h3>
-                            <div className="file-list">
-                                {files.filter(filterItem).length === 0 ? <p className="text-muted">{t('no_files')}</p> : (
-                                    <div className="table-responsive">
-                                        <table className="table-base">
-                                            <thead>
-                                                <tr>
-                                                    <th>{t('file')}</th>
-                                                    <th>{t('patient')}</th>
-                                                    <th className="text-right">{t('actions')}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {files.filter(filterItem).map(f => (
-                                                    <tr key={f.id} className="hover:bg-slate-50 cursor-pointer" onClick={() => window.open(f.file_url, '_blank')}>
-                                                        <td>
-                                                            <div className="flex items-center gap-2">
-                                                                <span>📄</span>
-                                                                <span className="font-bold">{f.description || f.file_name}</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>{f.patient_name}</td>
-                                                        <td className="text-right">
-                                                            {(user.role === 'admin' || user.role === 'secretary') && (
-                                                                <Button variant="ghost" onClick={(e) => { e.stopPropagation(); setFileToDelete(f); }}>🗑️</Button>
-                                                            )}
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
+                            <section className="lg:col-span-2">
+                                <div className="card p-0 overflow-hidden">
+                                    <header className="card-header border-b mb-0 p-6 bg-slate-50/50">
+                                        <h3 className="card-header__title">{t('file_repository')}</h3>
+                                    </header>
+                                    <div className="p-0">
+                                        {files.filter(filterItem).length === 0 ? (
+                                            <div className="p-12 text-center text-muted border-dashed">
+                                                <span className="text-4xl block mb-2">📂</span>
+                                                {t('no_files')}
+                                            </div>
+                                        ) : (
+                                            <div className="table-responsive">
+                                                <table className="table-base w-full">
+                                                    <thead>
+                                                        <tr>
+                                                            <th className="pl-6">{t('file')}</th>
+                                                            <th>{t('patient')}</th>
+                                                            <th className="pr-6 text-right">{t('actions')}</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {files.filter(filterItem).map(f => (
+                                                            <tr key={f.id} className="hover:bg-slate-50 transition-colors cursor-pointer" onClick={() => window.open(f.file_url, '_blank')}>
+                                                                <td className="pl-6 py-4">
+                                                                    <div className="flex items-center gap-3">
+                                                                        <span className="text-xl">📄</span>
+                                                                        <span className="font-bold text-main-800">{f.description || f.file_name}</span>
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <span className="font-medium text-main-600">{f.patient_name}</span>
+                                                                </td>
+                                                                <td className="pr-6 text-right">
+                                                                    {(user.role === 'admin' || user.role === 'secretary') && (
+                                                                        <Button
+                                                                            variant="ghost"
+                                                                            size="sm-compact"
+                                                                            className="text-red-400 hover:text-red-600 hover:bg-red-50"
+                                                                            onClick={(e) => { e.stopPropagation(); setFileToDelete(f); }}
+                                                                        >
+                                                                            🗑️
+                                                                        </Button>
+                                                                    )}
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        )}
                                     </div>
-                                )}
-                            </div>
-                        </section>
-                    </div>
-                )}
+                                </div>
+                            </section>
+                        </div>
+                    )}
 
-                {activeTab === 'prescriptions' && (
-                    <MedicalHistoryTable
-                        items={combinedPrescriptions}
-                        filterItem={filterItem}
-                        onView={handleViewItem}
-                        onDelete={handleDeletePrescription}
-                        icon="💊"
-                        title={t('recent_prescriptions')}
-                    />
-                )}
-
-                {activeTab === 'licenses' && (
-                    <MedicalHistoryTable
-                        items={combinedLicenses}
-                        filterItem={filterItem}
-                        onView={handleViewItem}
-                        onDelete={handleDeleteLicense}
-                        icon="📄"
-                        title={t('recent_licenses')}
-                    />
-                )}
-
-                {activeTab === 'certificates' && (
-                    <MedicalHistoryTable
-                        items={combinedCertificates}
-                        filterItem={filterItem}
-                        onView={handleViewItem}
-                        onDelete={(id, item) => handleDeleteRequest(id, item)}
-                        icon="📜"
-                        title={t('recent_certificates')}
-                        originLabel={t('certificate')}
-                    />
-                )}
+                    {['prescriptions', 'licenses', 'certificates'].includes(activeTab) && (
+                        <div className="animate-fadeIn">
+                            <MedicalHistoryTable
+                                items={
+                                    activeTab === 'prescriptions' ? combinedPrescriptions :
+                                        activeTab === 'licenses' ? combinedLicenses :
+                                            combinedCertificates
+                                }
+                                filterItem={filterItem}
+                                onView={handleEditItem}
+                                onDelete={
+                                    activeTab === 'prescriptions' ? handleDeletePrescription :
+                                        activeTab === 'licenses' ? handleDeleteLicense :
+                                            (id, item) => handleDeleteRequest(id, item)
+                                }
+                                icon={activeTab === 'prescriptions' ? '💊' : activeTab === 'licenses' ? '📄' : '📜'}
+                                title={
+                                    activeTab === 'prescriptions' ? t('recent_prescriptions') :
+                                        activeTab === 'licenses' ? t('recent_licenses') :
+                                            t('recent_certificates')
+                                }
+                                originLabel={activeTab === 'certificates' ? t('certificate') : undefined}
+                            />
+                        </div>
+                    )}
+                </div>
             </main>
 
             {/* --- Modals --- */}
@@ -294,6 +321,7 @@ const MedicalDocuments = () => {
             >
                 <p>¿Seguro que desea eliminar el archivo <strong>{fileToDelete?.file_name}</strong>?</p>
             </Modal>
+
             {/* --- Edit Modals --- */}
             {isEditing && selectedPrescription && (
                 <Modal
@@ -342,7 +370,7 @@ const MedicalDocuments = () => {
                     }
                 >
                     <div className="flex flex-col gap-4">
-                        <div className="form-row">
+                        <div className="grid grid-cols-2 gap-4">
                             <div className="input-group">
                                 <label className="input-label">{t('start_date')}</label>
                                 <input type="date" className="input-field" value={licenseEditData.start_date} onChange={e => setLicenseEditData({ ...licenseEditData, start_date: e.target.value })} />

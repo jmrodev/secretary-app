@@ -1,7 +1,7 @@
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { useConfig } from '../../context/ConfigContext';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Button from '../atoms/Button';
@@ -13,7 +13,6 @@ const Sidebar = () => {
     const location = useLocation();
 
     const isActive = (path) => location.pathname === path ? 'active' : '';
-    const API_URL = import.meta.env.VITE_API_URL || '/api';
 
     return (
         <aside className="sidebar">
@@ -22,81 +21,81 @@ const Sidebar = () => {
             </div>
 
             <nav className="sidebar-nav">
-                <a href="/dashboard" className={`sidebar-link ${isActive('/dashboard')}`}>
+                <Link to="/dashboard" className={`sidebar-link ${isActive('/dashboard')}`}>
                     <span>📊</span> {t('dashboard')}
-                </a>
+                </Link>
 
                 {user.role !== 'admin' && (
-                    <a href="/appointments" className={`sidebar-link ${isActive('/appointments')}`}>
+                    <Link to="/appointments" className={`sidebar-link ${isActive('/appointments')}`}>
                         <span>📅</span> {t('appointments')}
-                    </a>
+                    </Link>
                 )}
 
                 {user.role !== 'patient' && user.role !== 'admin' && (
-                    <a href="/patients" className={`sidebar-link ${isActive('/patients')}`}>
+                    <Link to="/patients" className={`sidebar-link ${isActive('/patients')}`}>
                         <span>👥</span> {t('patients')}
-                    </a>
+                    </Link>
                 )}
 
                 {user.role === 'secretary' && (
-                    <a href="/insurances" className={`sidebar-link ${isActive('/insurances')}`}>
+                    <Link to="/insurances" className={`sidebar-link ${isActive('/insurances')}`}>
                         <span>🏥</span> Obras Sociales
-                    </a>
+                    </Link>
                 )}
 
                 {settings.enable_office_rentals === 'true' && user.role !== 'admin' && (
-                    <a href="/rentals" className={`sidebar-link ${isActive('/rentals')}`}>
+                    <Link to="/rentals" className={`sidebar-link ${isActive('/rentals')}`}>
                         <span>🏢</span> {t('office_rentals')}
-                    </a>
+                    </Link>
                 )}
 
                 {user.role !== 'admin' && (
                     <>
-                        <a href="/requests" className={`sidebar-link ${isActive('/requests')}`}>
+                        <Link to="/requests" className={`sidebar-link ${isActive('/requests')}`}>
                             <span>📝</span> {t('requests_workflow')}
-                        </a>
-                        <a href="/documents" className={`sidebar-link ${isActive('/documents')}`}>
+                        </Link>
+                        <Link to="/documents" className={`sidebar-link ${isActive('/documents')}`}>
                             <span>📁</span> {t('medical_documents')}
-                        </a>
-                        <a href="/doctors" className={`sidebar-link ${isActive('/doctors')}`}>
+                        </Link>
+                        <Link to="/doctors" className={`sidebar-link ${isActive('/doctors')}`}>
                             <span>🩺</span> {t('doctors')}
-                        </a>
+                        </Link>
                     </>
                 )}
 
                 {user.role === 'secretary' && (
-                    <a href="/finances" className={`sidebar-link ${isActive('/finances')}`}>
+                    <Link to="/finances" className={`sidebar-link ${isActive('/finances')}`}>
                         <span>💰</span> {t('finances')}
-                    </a>
+                    </Link>
                 )}
 
                 {user.role === 'admin' && (
-                    <a href="/logs" className={`sidebar-link ${isActive('/logs')}`}>
+                    <Link to="/logs" className={`sidebar-link ${isActive('/logs')}`}>
                         <span>📜</span> {t('audit_logs')}
-                    </a>
+                    </Link>
                 )}
 
                 {user.role === 'admin' && (
-                    <a href="/admin/users" className={`sidebar-link ${isActive('/admin/users')}`}>
+                    <Link to="/admin/users" className={`sidebar-link ${isActive('/admin/users')}`}>
                         <span>👤</span> {t('users')}
-                    </a>
+                    </Link>
                 )}
 
                 {(user.role === 'admin' || user.role === 'secretary') && (
-                    <a href="/institutions" className={`sidebar-link ${isActive('/institutions')}`}>
+                    <Link to="/institutions" className={`sidebar-link ${isActive('/institutions')}`}>
                         <span>🏛️</span> Instituciones
-                    </a>
+                    </Link>
                 )}
 
                 {(user.role === 'admin' || user.role === 'secretary') && (
-                    <a href="/config" className={`sidebar-link ${isActive('/config')}`}>
+                    <Link to="/config" className={`sidebar-link ${isActive('/config')}`}>
                         <span>⚙️</span> {t('system_config')}
-                    </a>
+                    </Link>
                 )}
 
-                <a href="/profile" className={`sidebar-link ${isActive('/profile')}`}>
+                <Link to="/profile" className={`sidebar-link ${isActive('/profile')}`}>
                     <span>👤</span> {t('profile')}
-                </a>
+                </Link>
             </nav>
 
             <div className="sidebar-footer">
@@ -113,7 +112,7 @@ const Sidebar = () => {
                     </Button>
                 </div>
             </div>
-        </aside>
+        </aside >
     );
 };
 

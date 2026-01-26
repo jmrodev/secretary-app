@@ -1,18 +1,12 @@
 
 import React from 'react';
 import { useDoctorsPageController } from '../controllers/useDoctorsPageController';
-
-// Atomic Design Components
-import Input from '../components/atoms/Input';
 import Card from '../components/atoms/Card';
-import Sidebar from '../components/organisms/Sidebar';
-
-// New Extracted Components
+import MainLayout from '../components/templates/MainLayout';
 import DoctorCard from '../components/molecules/DoctorCard';
 import DoctorEditModal from '../components/organisms/DoctorEditModal';
 
 const Doctors = () => {
-    // 1. Controller Hook manages all state and logic
     const {
         t,
         currentUser,
@@ -21,35 +15,38 @@ const Doctors = () => {
         filteredDoctors,
         modalState,
         handlers,
-        settings // Needed for passing to modal
+        settings
     } = useDoctorsPageController();
 
-    if (loading) return <div className="p-8 text-center">{t('loading')}</div>;
+    if (loading) return <div className="status-display"><div className="status-display__spinner"></div></div>;
 
     return (
-        <div className="app-layout">
-            <Sidebar />
-            <main className="main-content">
-                <div className="flex justify-between items-center mb-6">
-                    <div>
-                        <h1 className="title">{t('doctors_title')}</h1>
-                        <p className="text-muted">Administra el personal médico y sus configuraciones.</p>
-                    </div>
-                </div>
-
-                <Card className="mb-6">
-                    <div className="max-w-[400px]">
-                        <Input
+        <MainLayout
+            title={t('doctors_title')}
+            subtitle={t('doctors_subtitle') || 'Administra el personal médico y sus configuraciones.'}
+            actions={null} // Future: Add actions here if needed
+        >
+            <section className="action-bar">
+                <div className="action-bar__search">
+                    <div className="search-box__wrapper">
+                        <span className="search-box__icon">🔍</span>
+                        <input
+                            type="text"
                             placeholder={t('search_doctors_placeholder')}
+                            className="search-box__input"
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
                         />
                     </div>
-                </Card>
+                </div>
+            </section>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="tab-content animate-fadeIn">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                     {filteredDoctors.length === 0 ? (
-                        <p className="text-muted col-span-full text-center py-8">{t('no_doctors_found')}</p>
+                        <div className="col-span-full card p-12 text-center border-dashed">
+                            <p className="text-muted">{t('no_doctors_found')}</p>
+                        </div>
                     ) : filteredDoctors.map(doctor => (
                         <DoctorCard
                             key={doctor.id}
@@ -60,33 +57,33 @@ const Doctors = () => {
                         />
                     ))}
                 </div>
+            </div>
 
-                {modalState.isOpen && (
-                    <DoctorEditModal
-                        isOpen={modalState.isOpen}
-                        onClose={handlers.onCloseModal}
-                        activeTab={modalState.activeTab}
-                        onTabChange={handlers.onTabChange}
-                        data={modalState.data}
-                        settings={settings}
-                        onChangeData={handlers.onFormDataChange}
-                        onSave={handlers.onSaveDoctor}
+            {modalState.isOpen && (
+                <DoctorEditModal
+                    isOpen={modalState.isOpen}
+                    onClose={handlers.onCloseModal}
+                    activeTab={modalState.activeTab}
+                    onTabChange={handlers.onTabChange}
+                    data={modalState.data}
+                    settings={settings}
+                    onChangeData={handlers.onFormDataChange}
+                    onSave={handlers.onSaveDoctor}
 
-                        schedule={modalState.schedule}
-                        setSchedule={handlers.onScheduleChange}
-                        loadingSchedule={modalState.loadingSchedule}
+                    schedule={modalState.schedule}
+                    setSchedule={handlers.onScheduleChange}
+                    loadingSchedule={modalState.loadingSchedule}
 
-                        connected={modalState.connected}
-                        onConnectGoogle={handlers.onConnectGoogle}
-                        onDisconnectGoogle={handlers.onDisconnectGoogle}
-                        onVerifyGoogleEvents={handlers.onVerifyGoogleEvents}
-                        onImportContacts={handlers.onImportContacts}
+                    connected={modalState.connected}
+                    onConnectGoogle={handlers.onConnectGoogle}
+                    onDisconnectGoogle={handlers.onDisconnectGoogle}
+                    onVerifyGoogleEvents={handlers.onVerifyGoogleEvents}
+                    onImportContacts={handlers.onImportContacts}
 
-                        t={t}
-                    />
-                )}
-            </main>
-        </div>
+                    t={t}
+                />
+            )}
+        </MainLayout>
     );
 };
 

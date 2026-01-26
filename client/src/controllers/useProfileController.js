@@ -40,11 +40,19 @@ export const useProfileController = () => {
                 }
             } catch (err) {
                 console.error(err);
+                showMessage("Error loading profile", "error");
             } finally {
                 setLoading(false);
             }
         };
         fetchProfile();
+
+        // Safety timeout
+        const timeoutId = setTimeout(() => {
+            setLoading(false);
+        }, 5000);
+
+        return () => clearTimeout(timeoutId);
     }, []);
 
     const handleChange = (field, value) => {
