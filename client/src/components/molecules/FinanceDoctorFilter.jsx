@@ -9,10 +9,10 @@ const FinanceDoctorFilter = ({
     t
 }) => {
     return (
-        <div className="tabs-container mb-6 max-w-full overflow-x-auto custom-scrollbar flex-nowrap pb-2">
+        <nav className="tab-nav">
             <Button
                 variant="ghost"
-                className={`tab-btn whitespace-nowrap ${selectedDoctorFilter === '' ? 'active' : ''}`}
+                className={`tab-nav__item ${selectedDoctorFilter === '' ? 'tab-nav__item--active' : ''}`}
                 onClick={() => setSelectedDoctorFilter('')}
             >
                 👥 {t('all_doctors')}
@@ -21,13 +21,13 @@ const FinanceDoctorFilter = ({
                 <Button
                     key={d.id}
                     variant="ghost"
-                    className={`tab-btn whitespace-nowrap ${selectedDoctorFilter == d.id ? 'active' : ''}`}
+                    className={`tab-nav__item ${selectedDoctorFilter == d.id ? 'tab-nav__item--active' : ''}`}
                     onClick={() => setSelectedDoctorFilter(String(d.id))}
                 >
                     👨‍⚕️ {d.full_name}
                 </Button>
             ))}
-        </div>
+        </nav>
     );
 };
 

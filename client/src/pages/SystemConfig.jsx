@@ -1,13 +1,12 @@
+
 import React from 'react';
 import { useSystemConfigController } from '../controllers/useSystemConfigController';
-
-// Organisms
 import Sidebar from '../components/organisms/Sidebar';
 import GeneralSettings from '../components/organisms/GeneralSettings';
 import CommunicationSettings from '../components/organisms/CommunicationSettings';
 import IntegrationSettings from '../components/organisms/IntegrationSettings';
 import QRCodeModal from '../components/molecules/QRCodeModal';
-import TabButton from '../components/atoms/TabButton';
+import Button from '../components/atoms/Button';
 
 const SystemConfig = () => {
     const {
@@ -25,12 +24,9 @@ const SystemConfig = () => {
         handleRetryGoogleFailed,
         handleTestMeta,
         insertVariable,
-        handleRefreshTunnel
+        handleRefreshTunnel,
+        t
     } = useSystemConfigController();
-
-    // Permission check for viewing settings
-    // If not admin/secretary, redirect or show denied is handled usually by router or layout, 
-    // but here we render conditional tabs.
 
     const renderTabContent = () => {
         switch (activeTab) {
@@ -73,11 +69,11 @@ const SystemConfig = () => {
                 );
             case 'data':
                 return (
-                    <div className="tab-panel animate-in">
-                        <div className="card text-center p-12 text-muted bg-slate-50 border border-dashed rounded-xl">
+                    <div className="tab-panel animate-fadeIn">
+                        <div className="card text-center p-12 text-muted border-dashed border-2">
                             <span className="text-4xl block mb-4">💾</span>
-                            <h3 className="font-bold text-slate-700">Gestión de Datos y Copias de Seguridad</h3>
-                            <p>Próximamente...</p>
+                            <h3 className="font-bold text-slate-700">{t('data_management_title') || 'Gestión de Datos y Copias de Seguridad'}</h3>
+                            <p>{t('coming_soon') || 'Próximamente...'}</p>
                         </div>
                     </div>
                 );
@@ -90,63 +86,59 @@ const SystemConfig = () => {
         <div className="app-layout">
             <Sidebar />
             <main className="main-content">
-                <div className="w-full max-w-5xl mx-auto">
-                    {/* Header / Title if needed */}
-                    <div className="mb-6">
-                        <h1 className="text-2xl font-bold text-slate-800">Configuración del Sistema</h1>
-                        <p className="text-slate-500">Administre las preferencias globales de la aplicación.</p>
+                <header className="page-header">
+                    <div className="page-header__info">
+                        <h1 className="page-header__title">{t('system_config') || 'Configuración del Sistema'}</h1>
+                        <p className="page-header__subtitle">{t('system_config_subtitle') || 'Administre las preferencias globales de la aplicación.'}</p>
                     </div>
+                </header>
 
-                    {/* Navigation Tabs */}
-                    <div className="tabs-container mb-8 border-b border-slate-200 sticky top-0 bg-white z-10 pt-4">
-                        {(user.role === 'admin' || user.role === 'secretary') && (
-                            <>
-                                <TabButton
-                                    isActive={activeTab === 'general'}
-                                    onClick={() => setActiveTab('general')}
-                                    activeColor="blue"
-                                >
-                                    ⚙️ General
-                                </TabButton>
-                                <TabButton
-                                    isActive={activeTab === 'communications'}
-                                    onClick={() => setActiveTab('communications')}
-                                    activeColor="purple"
-                                >
-                                    📢 Comunicaciones
-                                </TabButton>
-                                <TabButton
-                                    isActive={activeTab === 'integrations'}
-                                    onClick={() => setActiveTab('integrations')}
-                                    activeColor="green"
-                                >
-                                    🔌 Integraciones
-                                </TabButton>
-                                <TabButton
-                                    isActive={activeTab === 'data'}
-                                    onClick={() => setActiveTab('data')}
-                                    activeColor="amber"
-                                >
-                                    💾 Datos
-                                </TabButton>
-                            </>
-                        )}
-                    </div>
+                <nav className="tab-nav mb-8">
+                    {(user.role === 'admin' || user.role === 'secretary') && (
+                        <>
+                            <Button
+                                variant="ghost"
+                                className={`tab-nav__item ${activeTab === 'general' ? 'tab-nav__item--active' : ''}`}
+                                onClick={() => setActiveTab('general')}
+                            >
+                                ⚙️ {t('general') || 'General'}
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                className={`tab-nav__item ${activeTab === 'communications' ? 'tab-nav__item--active' : ''}`}
+                                onClick={() => setActiveTab('communications')}
+                            >
+                                📢 {t('communications') || 'Comunicaciones'}
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                className={`tab-nav__item ${activeTab === 'integrations' ? 'tab-nav__item--active' : ''}`}
+                                onClick={() => setActiveTab('integrations')}
+                            >
+                                🔌 {t('integrations') || 'Integraciones'}
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                className={`tab-nav__item ${activeTab === 'data' ? 'tab-nav__item--active' : ''}`}
+                                onClick={() => setActiveTab('data')}
+                            >
+                                💾 {t('data') || 'Datos'}
+                            </Button>
+                        </>
+                    )}
+                </nav>
 
-                    {/* Content Area */}
-                    <div className="tab-content relative min-h-[500px]">
-                        {renderTabContent()}
-                    </div>
+                <div className="tab-content relative min-h-[500px] animate-fadeIn">
+                    {renderTabContent()}
                 </div>
-            </main>
 
-            {/* Global Modals for this Page */}
-            <QRCodeModal
-                isOpen={qrModal.open}
-                onClose={() => setQrModal({ ...qrModal, open: false })}
-                url={qrModal.url}
-                expiresAt={qrModal.expiry}
-            />
+                <QRCodeModal
+                    isOpen={qrModal.open}
+                    onClose={() => setQrModal({ ...qrModal, open: false })}
+                    url={qrModal.url}
+                    expiresAt={qrModal.expiry}
+                />
+            </main>
         </div>
     );
 };

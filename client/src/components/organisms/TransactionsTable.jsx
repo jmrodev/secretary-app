@@ -1,6 +1,7 @@
 
 import React, { useMemo } from 'react';
 import Button from '../atoms/Button';
+import Card from '../atoms/Card';
 
 const TransactionsTable = ({
     transactions,
@@ -30,12 +31,17 @@ const TransactionsTable = ({
     const translateDescription = (desc) => {
         if (!desc) return "";
         let d = desc;
-        d = d.replace("Consultation (Booking)", "Consulta (Reserva)");
-        d = d.replace("Payment for appointment on", "Pago por turno del");
-        d = d.replace("Cash Box Delivery to Dr.", "Entrega de Caja al Dr.");
-        d = d.replace("Request: license for", "Solicitud: licencia para");
-        d = d.replace("Request: prescription for", "Solicitud: receta para");
-        d = d.replace("- Paid", "- Pagado");
+        const transTable = {
+            "Consultation (Booking)": "Consulta (Reserva)",
+            "Payment for appointment on": "Pago por turno del",
+            "Cash Box Delivery to Dr.": "Entrega de Caja al Dr.",
+            "Request: license for": "Solicitud: licencia para",
+            "Request: prescription for": "Solicitud: receta para",
+            "- Paid": "- Pagado"
+        };
+        Object.keys(transTable).forEach(k => {
+            if (d.includes(k)) d = d.replace(k, transTable[k]);
+        });
         return d;
     };
 
@@ -63,123 +69,112 @@ const TransactionsTable = ({
     }, [transactions]);
 
     return (
-        <div className="card">
-            <h3>{t('transaction_log')}</h3>
-            <div className="overflow-x-auto">
-                <table className="table-base table-base-lg w-full">
-                    <thead className="bg-slate-50">
-                        <tr className="border-b text-left text-xs uppercase tracking-wider text-main-500">
-                            <th className="py-3 px-4">{t('date_label')}</th>
-                            <th className="py-3 px-4 w-1/3">{t('description')}</th>
-                            <th className="py-3 px-4">{t('beneficiary')}</th>
-                            <th className="py-3 px-4">{t('payment_method')}</th>
-                            <th className="py-3 px-4 text-right">{t('amount')}</th>
-                            <th className="py-3 px-4 text-center">{t('proof')}</th>
+        <Card className="p-0 overflow-hidden" title={t('transaction_log')}>
+            <div className="table-responsive">
+                <table className="table-base table-base--lg w-full">
+                    <thead>
+                        <tr>
+                            <th className="pl-6">{t('date_label')}</th>
+                            <th className="w-1/3">{t('description')}</th>
+                            <th>{t('beneficiary')}</th>
+                            <th>{t('payment_method')}</th>
+                            <th className="text-right">{t('amount')}</th>
+                            <th className="text-center">{t('proof')}</th>
                             {(user.role === 'admin' || settings.enable_secretary_finance_crud === 'true') && (
-                                <th className="py-3 px-4 text-center">{t('actions')}</th>
+                                <th className="text-right pr-6">{t('actions')}</th>
                             )}
                         </tr>
                     </thead>
                     <tbody>
                         {groupedTransactions.map((group, gIdx) => (
-                            <tr key={`group-${gIdx}`} className="hover:bg-slate-50 transition-colors">
-                                <td colSpan={7} className="p-0 border-b border-slate-100">
-                                    <table className="w-full">
-                                        <tbody>
-                                            {group.map((tx, tIdx) => {
-                                                const isDebt = tx.method === 'on_account' || tx.method === 'credit';
-                                                const methodIcon = tx.method === 'cash' ? '💵' : (tx.method === 'transfer' ? '🏦' : (isDebt ? '⏳' : '💳'));
-                                                const methodLabel = tx.method === 'cash' ? t('cash') : (tx.method === 'transfer' ? t('transfer') : (isDebt ? (t('on_account') || 'Cuenta Corriente') : t('card')));
-                                                const isIncome = tx.type.includes('income') && !tx.is_withdrawal;
-                                                const isGroupEnd = tIdx === group.length - 1;
-                                                const groupSize = group.length;
-                                                const groupClass = groupSize > 1 ? "bg-amber-50/50" : "";
+                            <React.Fragment key={`group-${gIdx}`}>
+                                {group.map((tx, tIdx) => {
+                                    const isDebt = tx.method === 'on_account' || tx.method === 'credit';
+                                    const methodIcon = tx.method === 'cash' ? '💵' : (tx.method === 'transfer' ? '🏦' : (isDebt ? '⏳' : '💳'));
+                                    const methodLabel = tx.method === 'cash' ? t('cash') : (tx.method === 'transfer' ? t('transfer') : (isDebt ? (t('on_account') || 'Cuenta Corriente') : t('card')));
+                                    const isIncome = tx.type.includes('income') && !tx.is_withdrawal;
+                                    const isGrouped = group.length > 1;
 
-                                                return (
-                                                    <tr key={tx.id} className={`${groupClass} ${!isGroupEnd ? 'border-b border-amber-100' : ''}`}>
-                                                        <td className="py-3 px-4 text-sm text-main-500 whitespace-nowrap w-[15%]">
-                                                            {formatDateUnambiguous(tx.transaction_date)}
-                                                            <div className="text-xs text-muted">{new Date(tx.transaction_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                                                        </td>
-                                                        <td className="py-3 px-4 w-1/3">
-                                                            <div className="flex flex-col">
-                                                                <span className={`text-xs font-bold uppercase mb-1 w-fit px-2 py-0.5 rounded ${isIncome ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                                                                    {t(tx.type) || tx.type.replace('_', ' ')}
-                                                                </span>
-                                                                <span className="text-sm text-main-700">{translateDescription(tx.description)}</span>
-                                                            </div>
-                                                        </td>
-                                                        <td className="py-3 px-4 text-sm font-medium text-main-600 w-[15%]">
-                                                            <div className="flex flex-col">
-                                                                <span>{tx.doctor_name || <span className="text-muted italic">{t('general')}</span>}</span>
-                                                                {tx.patient_full_name && (
-                                                                    <span className="text-[10px] text-muted font-normal">
-                                                                        👤 {tx.patient_full_name} {tx.patient_dni ? `(${tx.patient_dni})` : ''}
-                                                                    </span>
-                                                                )}
-                                                            </div>
-                                                        </td>
-                                                        <td className="py-3 px-4 w-[15%]">
-                                                            <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${tx.method === 'cash' ? 'bg-green-50 text-green-700 border-green-200' :
-                                                                (tx.method === 'transfer' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                                                                    (isDebt ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-purple-50 text-purple-700 border-purple-200'))
-                                                                }`}>
-                                                                <span>{methodIcon}</span> {methodLabel || tx.method}
-                                                            </span>
-                                                        </td>
-                                                        <td className={`py-3 px-4 text-sm font-bold text-right w-[10%] ${tx.is_withdrawal ? 'text-blue-600' : (isIncome ? 'text-green-600' : 'text-red-500')
-                                                            }`}>
-                                                            {tx.is_withdrawal ? '↩' : (isIncome ? '+' : '-')}${Math.abs(tx.amount).toLocaleString()}
-                                                        </td>
-                                                        <td className="py-3 px-4 text-center w-[10%]">
-                                                            {tx.proof_file ? (
-                                                                <a href={tx.proof_file} target="_blank" rel="noreferrer" className="text-blue-500 hover:text-blue-700 p-1" title={t('view')}>
-                                                                    📁
-                                                                </a>
-                                                            ) : <span className="text-main-300">-</span>}
-                                                        </td>
-                                                        {(user.role === 'admin' || settings.enable_secretary_finance_crud === 'true') && (
-                                                            <td className="py-3 px-4 text-center w-[10%]">
-                                                                <div className="flex gap-2 justify-center">
-                                                                    <Button
-                                                                        variant="ghost"
-                                                                        size="sm-compact"
-                                                                        className="text-amber-500 hover:text-amber-700 p-1"
-                                                                        onClick={() => onEdit(tx)}
-                                                                        title={t('edit')}
-                                                                    >
-                                                                        ✏️
-                                                                    </Button>
-                                                                    <Button
-                                                                        variant="ghost"
-                                                                        size="sm-compact"
-                                                                        className="text-red-500 hover:text-red-700 p-1"
-                                                                        onClick={() => onDelete(tx.id)}
-                                                                        title={t('delete')}
-                                                                    >
-                                                                        🗑️
-                                                                    </Button>
-                                                                </div>
-                                                            </td>
-                                                        )}
-                                                    </tr>
-                                                );
-                                            })}
-                                        </tbody>
-                                    </table>
-                                    {/* Group total if > 1 */}
-                                    {group.length > 1 && (
-                                        <div className="bg-amber-100/50 px-4 py-1 text-right text-xs font-bold text-amber-800 border-t border-amber-200">
-                                            Total Group: ${group.reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0).toLocaleString()}
-                                        </div>
-                                    )}
-                                </td>
-                            </tr>
+                                    return (
+                                        <tr key={tx.id} className={`hover:bg-slate-50 transition-colors ${isGrouped ? 'bg-amber-50/20' : ''}`}>
+                                            <td className="pl-6 py-4">
+                                                <div className="font-bold text-main-800">{formatDateUnambiguous(tx.transaction_date)}</div>
+                                                <div className="text-xs text-muted">
+                                                    {new Date(tx.transaction_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div className="flex flex-col gap-1">
+                                                    <span className={`tag tag-${isIncome ? 'completed' : 'rejected'} w-fit`}>
+                                                        {t(tx.type) || tx.type.replace('_', ' ')}
+                                                    </span>
+                                                    <span className="text-sm font-medium">{translateDescription(tx.description)}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div className="flex flex-col">
+                                                    <span className="font-bold text-main-700">{tx.doctor_name || t('general')}</span>
+                                                    {tx.patient_full_name && (
+                                                        <span className="text-xs text-muted">
+                                                            👤 {tx.patient_full_name}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div className="flex items-center gap-2 text-sm">
+                                                    <span>{methodIcon}</span>
+                                                    <span className="font-medium">{methodLabel}</span>
+                                                </div>
+                                            </td>
+                                            <td className={`font-bold text-right text-base ${tx.is_withdrawal ? 'text-blue-600' : (isIncome ? 'text-green-600' : 'text-red-500')}`}>
+                                                {tx.is_withdrawal ? '↩' : (isIncome ? '+' : '-')}${Math.abs(tx.amount).toLocaleString()}
+                                            </td>
+                                            <td className="text-center">
+                                                {tx.proof_file ? (
+                                                    <a href={tx.proof_file} target="_blank" rel="noreferrer" className="text-blue-500 hover:text-blue-700" title={t('view')}>
+                                                        📁
+                                                    </a>
+                                                ) : <span className="text-slate-300">-</span>}
+                                            </td>
+                                            {(user.role === 'admin' || settings.enable_secretary_finance_crud === 'true') && (
+                                                <td className="text-right pr-6">
+                                                    <div className="flex gap-2 justify-end">
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm-compact"
+                                                            className="text-amber-500 hover:bg-amber-50"
+                                                            onClick={() => onEdit(tx)}
+                                                            title={t('edit')}
+                                                            icon="✏️"
+                                                        />
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm-compact"
+                                                            className="text-red-500 hover:bg-red-50"
+                                                            onClick={() => onDelete(tx.id)}
+                                                            title={t('delete')}
+                                                            icon="🗑️"
+                                                        />
+                                                    </div>
+                                                </td>
+                                            )}
+                                        </tr>
+                                    );
+                                })}
+                                {group.length > 1 && (
+                                    <tr className="bg-amber-100/30">
+                                        <td colSpan={7} className="px-6 py-2 text-right text-xs font-bold text-amber-800 uppercase tracking-wider">
+                                            {t('group_total') || 'Total Grupo'}: ${group.reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0).toLocaleString()}
+                                        </td>
+                                    </tr>
+                                )}
+                            </React.Fragment>
                         ))}
                     </tbody>
                 </table>
             </div>
-        </div>
+        </Card>
     );
 };
 

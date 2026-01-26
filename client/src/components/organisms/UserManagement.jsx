@@ -42,6 +42,12 @@ const UserManagement = ({ excludeRoles = [], role = null, title, subtitle }) => 
         loadData();
     }, [role, JSON.stringify(excludeRoles)]);
 
+    useEffect(() => {
+        const handler = (e) => openModal(e.detail);
+        window.addEventListener('OPEN_USER_MODAL', handler);
+        return () => window.removeEventListener('OPEN_USER_MODAL', handler);
+    }, []);
+
     // Handlers
     const openModal = (type, u = null) => {
         let initialData = {};
@@ -89,24 +95,25 @@ const UserManagement = ({ excludeRoles = [], role = null, title, subtitle }) => 
 
     return (
         <div className="user-management-organism">
-            <div className="flex justify-between items-center mb-6">
-                <div>
-                    <h1 className="title">{title}</h1>
-                    <p className="text-muted">{subtitle}</p>
+            <section className="action-bar">
+                <div className="action-bar__search">
+                    <div className="search-box__wrapper">
+                        <span className="search-box__icon">🔍</span>
+                        <input
+                            type="text"
+                            placeholder={t('search_users_placeholder')}
+                            className="search-box__input"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
                 </div>
-                <Button onClick={() => openModal('CREATE')}>+ {t('add_user')}</Button>
-            </div>
-
-            <Card>
-                <div className="mb-6">
-                    <Input
-                        placeholder={t('search_users_placeholder')}
-                        className="max-w-[400px]"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+                <div className="action-bar__tools">
+                    <Button variant="ghost" onClick={loadData}>🔄</Button>
                 </div>
+            </section>
 
+            <Card className="p-0 overflow-hidden">
                 {loading ? (
                     <div className="py-12 text-center text-muted animate-pulse">{t('loading_users')}</div>
                 ) : (

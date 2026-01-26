@@ -1,24 +1,25 @@
+
 import React from 'react';
 import { usePatientsPageController } from '../controllers/usePatientsPageController';
-import Button from '../components/atoms/Button';
+import Button from '../atoms/Button';
 
 // Organisms
 import Sidebar from '../components/organisms/Sidebar';
 import PatientList from '../components/organisms/PatientList';
 import PatientDetailsView from '../components/organisms/PatientDetailsView';
-import PatientRecycleBin from '../components/organisms/PatientRecycleBin'; // Will create this or inline if simple
-import PatientForm from '../components/organisms/PatientForm'; // Existing
-import PatientMedications from '../components/organisms/PatientMedications'; // Existing
+import PatientRecycleBin from '../components/organisms/PatientRecycleBin';
+import PatientForm from '../components/organisms/PatientForm';
+import PatientMedications from '../components/organisms/PatientMedications';
 
-// Modals
-import PatientManagerModal from '../components/molecules/PatientManagerModal'; // Existing
+// Molecules
+import PatientManagerModal from '../components/molecules/PatientManagerModal';
 import Modal from '../components/molecules/Modal';
 import CurrencyInput from '../components/atoms/CurrencyInput';
 import QRCodeModal from '../components/molecules/QRCodeModal';
 
 const Patients = () => {
+    const controller = usePatientsPageController();
     const {
-        // State
         user, t,
         patients, loading, detailsLoading,
         totalCount, currentPage, totalPages, handlePageChange,
@@ -26,10 +27,10 @@ const Patients = () => {
         activeTab, setActiveTab,
         searchTerm, setSearchTerm,
         showCreate, setShowCreate,
-        selectedPatientId, patientDetails,
+        selectedPatientId, setSelectedPatientId, patientDetails,
         showRatingInfo, setShowRatingInfo,
 
-        // Modals State
+        // Modals
         editModal, setEditModal,
         debtModal, setDebtModal,
         qrModal, setQrModal,
@@ -46,9 +47,9 @@ const Patients = () => {
         handleRatingChange,
         handleToggleNew,
         handleGenerateQR
-    } = usePatientsPageController();
+    } = controller;
 
-    // Helper functions for ratings view
+    // --- Rating Helpers ---
     const calculateFinancialRating = (debt) => {
         if (debt <= 0) return 5;
         if (debt < 1000) return 4;
@@ -67,19 +68,20 @@ const Patients = () => {
         return 1;
     };
 
-    if (loading) return <div className="p-8 text-center">{t('loading')}</div>;
+    if (loading) return <div className="status-display"><div className="status-display__spinner"></div><p>{t('loading')}</p></div>;
 
     if (detailsLoading) {
         return (
             <div className="app-layout">
                 <Sidebar />
                 <main className="main-content">
-                    <div className="loading-spinner mx-auto mt-20"></div>
+                    <div className="status-display"><div className="status-display__spinner"></div></div>
                 </main>
             </div>
         );
     }
 
+    // --- Details View Branch ---
     if (selectedPatientId && patientDetails) {
         return (
             <div className="app-layout">
@@ -89,15 +91,7 @@ const Patients = () => {
                         details={patientDetails}
                         t={t}
                         user={user}
-                        onBack={() => { /* reset details handled in controller but we need a setter there exposed? 
-                                          Actually controller has setSelectedPatientId(null) but it's not exposed directly as a clean reset handler.
-                                          Let's fix that or use existing. */
-                            // We can use handleViewDetails(null) or similar logic. 
-                            // Ah, I need to expose setSelectedPatientId from hook. Done.
-                            // Actually let's just use window.location.reload() style or simpler:
-                            // But wait, the hook exposes setSelectedPatientId
-                            // I should assume the hook is updated to handle 'null' or expose the setter.
-                        }}
+                        onBack={() => setSelectedPatientId(null)}
                         onEdit={() => handleEditClick(patientDetails)}
                         onDelete={handleDeletePatient}
                         onGenerateQR={handleGenerateQR}
@@ -107,77 +101,89 @@ const Patients = () => {
                         <PatientMedications patientId={patientDetails.id} />
                     </PatientDetailsView>
 
-                    {/* Modals for Details View */}
                     <PatientManagerModal
                         isOpen={editModal.open}
                         onClose={() => setEditModal({ ...editModal, open: false })}
                         patient={editModal.data}
-                        onUpdate={(u) => handleUpdatePatient(u)}
+                        onUpdate={handleUpdatePatient}
                         insurances={insurances}
                         doctors={doctors}
                     />
-                    {/* QR and Debt modals defined below shared */}
+                    <QRCodeModal
+                        isOpen={qrModal.open}
+                        onClose={() => setQrModal({ ...qrModal, open: false })}
+                        url={qrModal.url}
+                        expiresAt={qrModal.expiry}
+                    />
                 </main>
             </div>
         );
     }
 
+    // --- List View Branch ---
     return (
         <div className="app-layout">
             <Sidebar />
             <main className="main-content">
-                {/* Top Nav Tabs */}
-                <div className="flex gap-4 mb-6 border-b border-gray-200 pb-1">
-                    <button
-                        className={`pb-2 px-4 font-bold transition-all ${activeTab === 'list' ? 'border-b-2 border-blue-500 text-blue-600' : 'text-slate-500 hover:text-slate-800'}`}
+                <header className="page-header">
+                    <div className="page-header__info">
+                        <h1 className="page-header__title">{t('patients')}</h1>
+                        <p className="page-header__subtitle">{t('patients_subtitle') || 'Administración completa de fichas médicas de pacientes.'}</p>
+                    </div>
+                </header>
+
+                <nav className="tab-nav">
+                    <Button
+                        variant="ghost"
+                        className={`tab-nav__item ${activeTab === 'list' ? 'tab-nav__item--active' : ''}`}
                         onClick={() => setActiveTab('list')}
                     >
-                        📋 Lista Activa
-                    </button>
+                        📋 {t('active_list') || 'Lista Activa'}
+                    </Button>
                     {(user.role === 'admin' || user.role === 'secretary') && (
-                        <button
-                            className={`pb-2 px-4 font-bold transition-all ${activeTab === 'recycle' ? 'border-b-2 border-purple-500 text-purple-600' : 'text-slate-500 hover:text-slate-800'}`}
+                        <Button
+                            variant="ghost"
+                            className={`tab-nav__item ${activeTab === 'recycle' ? 'tab-nav__item--active' : ''}`}
                             onClick={() => { setActiveTab('recycle'); fetchRecycleBin(); }}
                         >
-                            🗑️ Papelera
-                            {recycleItems.length > 0 && <span className="ml-2 bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded-full text-xs">{recycleItems.length}</span>}
-                        </button>
+                            🗑️ {t('recycle_bin') || 'Papelera'}
+                            {recycleItems.length > 0 && <span className="dot-badge ml-2">{recycleItems.length}</span>}
+                        </Button>
                     )}
-                </div>
+                </nav>
 
-                {/* Filter & Actions Bar */}
-                <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
-                    {activeTab === 'list' && (
-                        <div className="w-full max-w-md relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
-                            <input
-                                type="text"
-                                placeholder={t('search_placeholder') || "Buscar..."}
-                                className="w-full pl-10 pr-4 py-2 rounded-full border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none"
-                                value={searchTerm}
-                                onChange={e => setSearchTerm(e.target.value)}
-                            />
-                        </div>
-                    )}
+                <section className="action-bar">
+                    <div className="action-bar__search">
+                        {activeTab === 'list' && (
+                            <div className="search-box__wrapper">
+                                <span className="search-box__icon">🔍</span>
+                                <input
+                                    type="text"
+                                    placeholder={t('search_placeholder') || "Buscar..."}
+                                    className="search-box__input"
+                                    value={searchTerm}
+                                    onChange={e => setSearchTerm(e.target.value)}
+                                />
+                            </div>
+                        )}
+                    </div>
 
-                    <div className="flex gap-2">
-                        <Button variant="ghost" className="text-slate-500" onClick={() => { fetchPatients(); fetchRecycleBin(); }}>🔄</Button>
-                        <Button variant="ghost" className="text-slate-500" onClick={() => setShowRatingInfo(true)}>ℹ️</Button>
+                    <div className="action-bar__tools">
+                        <Button variant="ghost" onClick={() => { fetchPatients(); fetchRecycleBin(); }}>🔄</Button>
+                        <Button variant="ghost" onClick={() => setShowRatingInfo(true)}>ℹ️</Button>
                         {user.role === 'secretary' && activeTab === 'list' && (
-                            <Button onClick={() => setShowCreate(!showCreate)}>
-                                {showCreate ? `❌ ${t('cancel')}` : `✨ ${t('new') || 'Nuevo'}`}
+                            <Button variant={showCreate ? 'secondary' : 'primary'} onClick={() => setShowCreate(!showCreate)}>
+                                {showCreate ? `❌ ${t('cancel')}` : `✨ ${t('new')}`}
                             </Button>
                         )}
                     </div>
-                </div>
+                </section>
 
-                {/* Create Form Area */}
                 {showCreate && (
-                    <div className="card mb-8 animate-fade-in-down">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3>{t('register_new_patient')}</h3>
-                            <button className="text-slate-400 hover:text-slate-600" onClick={() => setShowCreate(false)}>✕</button>
-                        </div>
+                    <div className="card mb-8 animate-fadeIn">
+                        <header className="card-header border-none pb-0">
+                            <h3 className="card-header__title">{t('register_new_patient')}</h3>
+                        </header>
                         <PatientForm
                             onSubmit={handleCreate}
                             isEdit={false}
@@ -188,9 +194,8 @@ const Patients = () => {
                     </div>
                 )}
 
-                {/* Main Content Area */}
                 {activeTab === 'list' ? (
-                    <>
+                    <div className="patients-list">
                         <PatientList
                             patients={patients}
                             t={t}
@@ -200,22 +205,22 @@ const Patients = () => {
                             calculateFinancialRating={calculateFinancialRating}
                             calculateAttendanceRating={calculateAttendanceRating}
                         />
-                        {/* Pagination Controls */}
+
                         {totalPages > 1 && (
-                            <div className="flex justify-between items-center mt-4 px-4 py-3 bg-white rounded-lg border border-slate-200 shadow-sm">
-                                <span className="text-sm text-slate-500">
-                                    {t('showing') || 'Mostrando'} {patients.length} {t('of') || 'de'} {totalCount} {t('patients') || 'pacientes'}
+                            <div className="pagination">
+                                <span className="pagination__info">
+                                    {t('showing')} {patients.length} {t('of')} {totalCount} {t('patients')}
                                 </span>
-                                <div className="flex gap-2">
+                                <div className="pagination__controls">
                                     <Button
                                         variant="secondary"
                                         size="sm"
                                         disabled={currentPage === 1}
                                         onClick={() => handlePageChange(currentPage - 1)}
                                     >
-                                        ← {t('previous') || 'Anterior'}
+                                        ← {t('previous')}
                                     </Button>
-                                    <span className="flex items-center px-4 font-mono text-slate-600 bg-slate-50 rounded border border-slate-100">
+                                    <span className="pagination__page-indicator">
                                         {currentPage} / {totalPages}
                                     </span>
                                     <Button
@@ -224,22 +229,21 @@ const Patients = () => {
                                         disabled={currentPage === totalPages}
                                         onClick={() => handlePageChange(currentPage + 1)}
                                     >
-                                        {t('next') || 'Siguiente'} →
+                                        {t('next')} →
                                     </Button>
                                 </div>
                             </div>
                         )}
-                    </>
+                    </div>
                 ) : (
-                    // Simple inline Recycle Bin for now (can be extracted)
                     <PatientRecycleBin
                         recycleItems={recycleItems}
                         loading={loading}
-                        onRestore={() => alert("Restore function pending implementation in controller")}
+                        onRestore={() => { /* Implementation pending */ }}
                     />
                 )}
 
-                {/* Global Modals */}
+                {/* --- Modals --- */}
                 <PatientManagerModal
                     isOpen={editModal.open}
                     onClose={() => setEditModal({ ...editModal, open: false })}
@@ -285,13 +289,6 @@ const Patients = () => {
                     </div>
                 </Modal>
 
-                <QRCodeModal
-                    isOpen={qrModal.open}
-                    onClose={() => setQrModal({ ...qrModal, open: false })}
-                    url={qrModal.url}
-                    expiresAt={qrModal.expiry}
-                />
-
                 <Modal
                     isOpen={showRatingInfo}
                     onClose={() => setShowRatingInfo(false)}
@@ -306,7 +303,6 @@ const Patients = () => {
                         </div>
                     </div>
                 </Modal>
-
             </main>
         </div>
     );

@@ -1,5 +1,5 @@
 
-import React, { Fragment } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppointmentsPageController } from '../controllers/useAppointmentsPageController';
 import Button from '../components/atoms/Button';
@@ -24,11 +24,9 @@ import WhatsAppModal from '../components/molecules/WhatsAppModal';
 import AdminAuthModal from '../components/molecules/AdminAuthModal';
 import PatientHistoryView from '../components/organisms/PatientHistoryView';
 import UpcomingAppointmentsView from '../components/organisms/UpcomingAppointmentsView';
-import PatientSearchSelect from '../components/molecules/PatientSearchSelect';
 
 const Appointments = () => {
     const navigate = useNavigate();
-    // Logic extracted to Custom Hook (Controller)
     const controller = useAppointmentsPageController();
     const {
         t, user,
@@ -36,7 +34,6 @@ const Appointments = () => {
         activeTab, setActiveTab,
         viewDoctorId, setViewDoctorId,
         doctors,
-        // Data
         selectedDate,
         filteredAppointments,
         appointments,
@@ -46,7 +43,7 @@ const Appointments = () => {
         searchPatientId, setSearchPatientId,
         patientAppointments, patientApptLoading,
 
-        // Modals State & Setters
+        // Modals State
         actionModal, setActionModal,
         historyModal, setHistoryModal,
         prescribeModal, setPrescribeModal,
@@ -64,7 +61,6 @@ const Appointments = () => {
         handleUpdateStatus,
         handleCancel,
         handleDelete,
-        handleReschedule,
         handleSyncGoogleEvent,
         handleSavePrescription,
         handleWhatsAppUniversal,
@@ -80,7 +76,7 @@ const Appointments = () => {
         exitRescheduleMode,
     } = controller;
 
-    if (loading) return <div>{t('loading')}</div>;
+    if (loading) return <div className="status-display"><div className="status-display__spinner"></div></div>;
 
     return (
         <div className="app-layout">
@@ -92,44 +88,55 @@ const Appointments = () => {
                     t={t}
                 />
 
-                <NavTabs
-                    activeTab={activeTab}
-                    setActiveTab={setActiveTab}
-                    userRole={user.role}
-                />
+                <header className="page-header">
+                    <div className="page-header__info">
+                        <h1 className="page-header__title">{t('appointments') || 'Agenda'}</h1>
+                        <p className="page-header__subtitle">
+                            {activeTab === 'calendar' ? t('calendar_view_subtitle') : t('upcoming_view_subtitle')}
+                        </p>
+                    </div>
+                </header>
 
-                <DoctorFilter
-                    activeTab={activeTab}
-                    userRole={user.role}
-                    viewDoctorId={viewDoctorId}
-                    setViewDoctorId={(val) => setViewDoctorId(val)}
-                    doctors={doctors}
-                />
+                <div className="appointments-nav-group">
+                    <NavTabs
+                        activeTab={activeTab}
+                        setActiveTab={setActiveTab}
+                        userRole={user.role}
+                    />
 
-                {searchPatientId ? (
-                    <PatientHistoryView
-                        patientAppointments={patientAppointments}
-                        loading={patientApptLoading}
-                        onClose={() => setSearchPatientId('')}
-                        t={t}
-                        setSelectedDate={controller.setSelectedDate}
+                    <DoctorFilter
+                        activeTab={activeTab}
+                        userRole={user.role}
+                        viewDoctorId={viewDoctorId}
                         setViewDoctorId={setViewDoctorId}
-                        setSelectedPatient={controller.booking.setSelectedPatient}
-                        setShowForm={controller.booking.setShowForm}
-                        setReason={controller.booking.setReason}
-                        searchPatientId={searchPatientId}
+                        doctors={doctors}
                     />
-                ) : activeTab === 'upcoming' ? (
-                    <UpcomingAppointmentsView
-                        appointments={filteredAppointments}
-                        loading={loading}
-                        t={t}
-                        onAction={(a) => setActionModal({ open: true, appt: a })}
-                        onWhatsApp={handleWhatsAppUniversal}
-                    />
-                ) : (
-                    <div className="appointments-tab-content">
-                        <div className="appointments-grid">
+                </div>
+
+                <div className="tab-content animate-fadeIn">
+                    {searchPatientId ? (
+                        <PatientHistoryView
+                            patientAppointments={patientAppointments}
+                            loading={patientApptLoading}
+                            onClose={() => setSearchPatientId('')}
+                            t={t}
+                            setSelectedDate={controller.setSelectedDate}
+                            setViewDoctorId={setViewDoctorId}
+                            setSelectedPatient={controller.booking.setSelectedPatient}
+                            setShowForm={controller.booking.setShowForm}
+                            setReason={controller.booking.setReason}
+                            searchPatientId={searchPatientId}
+                        />
+                    ) : activeTab === 'upcoming' ? (
+                        <UpcomingAppointmentsView
+                            appointments={filteredAppointments}
+                            loading={loading}
+                            t={t}
+                            onAction={(a) => setActionModal({ open: true, appt: a })}
+                            onWhatsApp={handleWhatsAppUniversal}
+                        />
+                    ) : (
+                        <div className="appointments-calendar-view flex flex-col gap-8">
                             <CalendarSection
                                 activeTab={activeTab}
                                 selectedDate={selectedDate}
@@ -164,11 +171,10 @@ const Appointments = () => {
                                 onRefreshGoogle={() => refreshGoogleEvents(false)}
                             />
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
 
-                {/* --- MODALS SECTION --- */}
-
+                {/* --- Modals --- */}
                 <AppointmentActionModal
                     isOpen={actionModal.open}
                     onClose={() => setActionModal({ ...actionModal, open: false })}
@@ -181,7 +187,7 @@ const Appointments = () => {
                     onCancel={handleCancel}
                     onDelete={handleDelete}
                     onSync={handleSyncGoogleEvent}
-                    onPay={(appt) => console.log("Pay not impl in controller yet, TODO")} // Simplify for now or pass handler
+                    onPay={(appt) => console.log("Pay TODO")}
                     onWhatsApp={handleWhatsAppUniversal}
                     fetchAppointments={controller.fetchAppointments}
                 />
@@ -189,38 +195,31 @@ const Appointments = () => {
                 <Modal
                     isOpen={prescribeModal.open}
                     onClose={() => setPrescribeModal({ ...prescribeModal, open: false })}
-                    title={`${t('prescription_for') || 'Receta para'} ${prescribeModal.patientName}`}
+                    title={`${t('prescription_for')} ${prescribeModal.patientName}`}
                     footer={
                         <>
                             <Button variant="secondary" onClick={() => setPrescribeModal({ ...prescribeModal, open: false })}>{t('cancel')}</Button>
-                            <Button variant="primary" onClick={handleSavePrescription} disabled={!prescribeModal.medications.trim()}>{t('create')}</Button>
+                            <Button onClick={handleSavePrescription} disabled={!prescribeModal.medications.trim()}>{t('create')}</Button>
                         </>
                     }
                 >
-                    <div className="flex-col-gap-4">
+                    <div className="flex flex-col gap-4">
                         <div className="input-group">
                             <label className="input-label">{t('medications')}</label>
                             <MedicationAutocomplete
                                 value=""
                                 onChange={() => { }}
-                                placeholder={t('search_medication') || "Buscar medicamento..."}
                                 onSelectMedication={(med) => {
                                     const current = prescribeModal.medications.trim();
                                     const newValue = current ? `${current}\n${med.full_label}` : med.full_label;
                                     setPrescribeModal({ ...prescribeModal, medications: newValue });
                                 }}
                             />
-                            <textarea
-                                className="input-field mt-2"
-                                rows="4"
-                                value={prescribeModal.medications}
-                                onChange={e => setPrescribeModal({ ...prescribeModal, medications: e.target.value })}
-                                placeholder={t('meds_placeholder') || "ej. Ibuprofeno 600mg"}
-                            />
+                            <textarea className="input-field mt-2" rows="4" value={prescribeModal.medications} onChange={e => setPrescribeModal({ ...prescribeModal, medications: e.target.value })} />
                         </div>
                         <div className="input-group">
                             <label className="input-label">{t('instructions')}</label>
-                            <textarea className="input-field" rows="3" value={prescribeModal.instructions} onChange={e => setPrescribeModal({ ...prescribeModal, instructions: e.target.value })} placeholder={t('instructions_placeholder') || "ej. Tomar cada 8 horas con comida."} />
+                            <textarea className="input-field" rows="3" value={prescribeModal.instructions} onChange={e => setPrescribeModal({ ...prescribeModal, instructions: e.target.value })} />
                         </div>
                     </div>
                 </Modal>
@@ -292,8 +291,8 @@ const Appointments = () => {
                     onClose={() => setAuthModalOpen(false)}
                     onConfirm={handleAdminAuthConfirm}
                 />
-            </main >
-        </div >
+            </main>
+        </div>
     );
 };
 

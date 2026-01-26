@@ -1,6 +1,7 @@
 import React from 'react';
+import Card from '../atoms/Card';
 import Button from '../atoms/Button';
-import Badge from '../atoms/Badge';
+import { useLanguage } from '../../context/LanguageContext';
 
 const PatientRecycleBin = ({
     recycleItems = [],
@@ -8,67 +9,60 @@ const PatientRecycleBin = ({
     onPermanentDelete,
     loading
 }) => {
+    const { t } = useLanguage();
+
     if (loading) {
-        return <div className="p-8 text-center text-muted">Cargando papelera...</div>;
+        return <div className="status-display"><div className="status-display__spinner"></div></div>;
     }
 
     if (recycleItems.length === 0) {
         return (
-            <div className="card p-12 text-center text-muted border-dashed border-2 border-slate-200">
+            <div className="card text-center p-12 border-dashed">
                 <span className="text-4xl block mb-2">🗑️</span>
-                <p>La papelera está vacía.</p>
+                <p className="text-muted">{t('recycle_bin_empty') || 'La papelera está vacía.'}</p>
             </div>
         );
     }
 
     return (
-        <div className="card overflow-hidden">
-            <div className="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
-                <h3 className="m-0 text-slate-700">Pacientes Eliminados</h3>
-                <span className="text-xs text-muted">Total: {recycleItems.length}</span>
-            </div>
-            <table className="table-base w-full">
-                <thead>
-                    <tr>
-                        <th>Paciente</th>
-                        <th>DNI</th>
-                        <th>Fecha Eliminación</th>
-                        <th className="text-right">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {recycleItems.map(item => (
-                        <tr key={item.id}>
-                            <td className="font-bold text-slate-700">{item.full_name || item.username}</td>
-                            <td>{item.dni || '-'}</td>
-                            <td className="text-sm text-slate-500">
-                                {new Date(item.deleted_at || item.created_at).toLocaleDateString()}
-                            </td>
-                            <td className="text-right flex justify-end gap-2">
-                                <Button
-                                    size="sm-compact"
-                                    variant="success"
-                                    onClick={() => onRestore && onRestore(item.id)}
-                                    title="Restaurar"
-                                >
-                                    ♻️ Restaurar
-                                </Button>
-                                {/* Permanent delete might not be implemented yet */}
-                                {/*
-                                <Button 
-                                    size="sm-compact" 
-                                    variant="danger" 
-                                    onClick={() => onPermanentDelete && onPermanentDelete(item.id)}
-                                >
-                                    ✕
-                                </Button>
-                                */}
-                            </td>
+        <Card className="p-0 overflow-hidden" title={`${t('deleted_patients') || 'Pacientes Eliminados'} (${recycleItems.length})`}>
+            <div className="table-responsive">
+                <table className="table-base w-full">
+                    <thead>
+                        <tr>
+                            <th>{t('patient')}</th>
+                            <th>{t('dni')}</th>
+                            <th>{t('deleted_date') || 'Fecha Eliminación'}</th>
+                            <th className="text-right">{t('actions')}</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        {recycleItems.map(item => (
+                            <tr key={item.id} className="hover:bg-slate-50 transition-colors">
+                                <td className="font-bold text-main-800">{item.full_name || item.username}</td>
+                                <td>{item.dni || '-'}</td>
+                                <td className="text-sm text-muted">
+                                    {new Date(item.deleted_at || item.created_at).toLocaleDateString()}
+                                </td>
+                                <td className="text-right">
+                                    <div className="flex justify-end gap-2">
+                                        <Button
+                                            size="sm-compact"
+                                            variant="secondary"
+                                            className="text-green-600 hover:bg-green-50"
+                                            onClick={() => onRestore && onRestore(item.id)}
+                                            title={t('restore')}
+                                        >
+                                            ♻️ {t('restore')}
+                                        </Button>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </Card>
     );
 };
 

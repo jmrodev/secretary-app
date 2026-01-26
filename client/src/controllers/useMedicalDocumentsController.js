@@ -298,6 +298,24 @@ export const useMedicalDocumentsController = () => {
         if (location.state?.tab) setActiveTab(location.state.tab);
     }, [location.state]);
 
+    const handleEditItem = (item) => {
+        setIsEditing(true);
+        if (item._origin === 'prescription') {
+            setSelectedPrescription(item);
+            setEditData({ medications: item.medications || '', instructions: item.instructions || '' });
+        } else if (item._origin === 'license') {
+            setSelectedLicense(item);
+            setLicenseEditData({ start_date: item.start_date ? item.start_date.split('T')[0] : '', days_duration: item.days_duration || '', diagnosis: item.diagnosis || '' });
+        } else if (item._origin === 'request') {
+            setSelectedRequest(item);
+            setRequestEditData({
+                request_note: item.request_note || '',
+                doctor_note: item.doctor_note || '',
+                debt_amount: item.debt_amount || ''
+            });
+        }
+    };
+
     return {
         // State
         user, t, showMessage, activeTab, setActiveTab, requestsSubTab, setRequestsSubTab,
@@ -315,6 +333,6 @@ export const useMedicalDocumentsController = () => {
         // Handlers
         filterItem, handleCreateRequest, handleUpdateStatus, handleFileUpload, confirmFileDelete,
         handleUpdatePrescription, handleUpdateLicense, handleUpdateRequest, handleDeleteRequest,
-        handleDeletePrescription, handleDeleteLicense, fetchRequests, fetchFiles, fetchHistory
+        handleDeletePrescription, handleEditItem, handleDeleteLicense, fetchRequests, fetchFiles, fetchHistory
     };
 };

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React from 'react';
 import Button from '../atoms/Button';
 import Badge from '../atoms/Badge';
 
@@ -12,31 +13,26 @@ const PatientList = ({
     calculateAttendanceRating
 }) => {
 
-    // Ratings helpers
-    const getFinStars = (debt) => {
-        const rating = calculateFinancialRating(debt);
-        return [1, 2, 3, 4, 5].map(s => <span key={s}>{s <= rating ? '★' : '☆'}</span>);
-    };
-
-    const getAttStars = (p) => {
-        const rating = calculateAttendanceRating(p.total_appointments, p.missed_appointments);
-        return [1, 2, 3, 4, 5].map(s => <span key={s}>{s <= rating ? '★' : '☆'}</span>);
-    };
-
-    const getBehStars = (rating) => {
-        return [1, 2, 3, 4, 5].map(s => <span key={s}>{s <= (rating || 5) ? '★' : '☆'}</span>);
+    const renderStars = (rating, colorClass) => {
+        return (
+            <div className={`rating-item__stars rating-item__stars--${colorClass}`}>
+                {[1, 2, 3, 4, 5].map(s => (
+                    <span key={s}>{s <= (rating || 5) ? '★' : '☆'}</span>
+                ))}
+            </div>
+        );
     };
 
     if (patients.length === 0) {
         return (
-            <div className="text-center p-12 text-muted bg-slate-50 border border-dashed rounded-xl">
-                {t('no_patients_found') || "No patients found"}
+            <div className="card text-center p-12 border-dashed">
+                <p className="text-muted">{t('no_patients_found') || "No patients found"}</p>
             </div>
         );
     }
 
     return (
-        <div className="table-responsive card p-0 overflow-hidden shadow-sm border border-slate-200">
+        <div className="table-responsive card p-0 overflow-hidden shadow-sm">
             <table className="table-base w-full">
                 <thead>
                     <tr>
@@ -56,13 +52,11 @@ const PatientList = ({
                             className="hover:bg-slate-50 transition-colors cursor-pointer group"
                         >
                             <td className="pl-6 py-4">
-                                <div className="flex flex-col gap-1">
-                                    <div className="flex items-center gap-2">
-                                        <strong className="text-main-800 capitalize leading-tight text-base group-hover:text-blue-700 transition-colors">
-                                            {p.full_name}
-                                        </strong>
-                                        {p.is_new_patient === 1 && <Badge variant="purple" size="sm">✨ NEW</Badge>}
-                                    </div>
+                                <div className="flex items-center gap-2">
+                                    <strong className="text-main-800 capitalize leading-tight text-base group-hover:text-blue-700 transition-colors">
+                                        {p.full_name}
+                                    </strong>
+                                    {p.is_new_patient === 1 && <Badge variant="purple" size="sm">✨ NEW</Badge>}
                                 </div>
                             </td>
                             <td>
@@ -85,28 +79,22 @@ const PatientList = ({
                                 ) : <span className="text-muted text-sm px-2">N/A</span>}
                             </td>
                             <td>
-                                <div className="flex items-center gap-4">
-                                    <div className="rating-container flex flex-col items-center" title={`${t('rating_financial_tooltip')}\nDeuda Actual: $${p.total_debt}`}>
-                                        <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">FIN</div>
-                                        <div className="rating-stars-gold text-xs tracking-tighter cursor-help">
-                                            {getFinStars(Number(p.total_debt))}
-                                        </div>
+                                <div className="rating-group">
+                                    <div className="rating-item" title={`${t('rating_financial_tooltip')}\nDeuda Actual: $${p.total_debt}`}>
+                                        <span className="rating-item__label">FIN</span>
+                                        {renderStars(calculateFinancialRating(Number(p.total_debt)), 'gold')}
                                     </div>
-                                    <div className="rating-container flex flex-col items-center" title={`${t('rating_attendance_tooltip')}\nResumen: ${p.total_appointments - p.missed_appointments}/${p.total_appointments}`}>
-                                        <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">ASIST</div>
-                                        <div className="rating-stars-blue text-xs tracking-tighter cursor-help">
-                                            {getAttStars(p)}
-                                        </div>
+                                    <div className="rating-item" title={`${t('rating_attendance_tooltip')}\nResumen: ${p.total_appointments - p.missed_appointments}/${p.total_appointments}`}>
+                                        <span className="rating-item__label">ASIST</span>
+                                        {renderStars(calculateAttendanceRating(p.total_appointments, p.missed_appointments), 'blue')}
                                     </div>
                                     <div
-                                        className="rating-container flex flex-col items-center cursor-pointer hover:bg-slate-100 p-1 rounded -my-1 transition-colors"
+                                        className="rating-item cursor-pointer hover:bg-slate-100 p-1 rounded transition-colors"
                                         onClick={(e) => { e.stopPropagation(); onToggleRating(p.id, ((p.behavior_rating || 5) % 5) + 1); }}
                                         title={`${t('rating_behavior_tooltip')}\nCalificación: ${p.behavior_rating || 5}/5 (Click para cambiar)`}
                                     >
-                                        <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">COND</div>
-                                        <div className="rating-stars-pink text-xs tracking-tighter">
-                                            {getBehStars(p.behavior_rating)}
-                                        </div>
+                                        <span className="rating-item__label">COND</span>
+                                        {renderStars(p.behavior_rating, 'pink')}
                                     </div>
                                 </div>
                             </td>

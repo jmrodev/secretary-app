@@ -68,20 +68,7 @@ const MedicalDocuments = () => {
     ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
     const handleViewItem = (item) => {
-        if (item._origin === 'prescription') {
-            setSelectedPrescription(item);
-            setEditData({ medications: item.medications || '', instructions: item.instructions || '' });
-        } else if (item._origin === 'license') {
-            setSelectedLicense(item);
-            setLicenseEditData({ start_date: item.start_date || '', days_duration: item.days_duration || '', diagnosis: item.diagnosis || '' });
-        } else if (item._origin === 'request') {
-            setSelectedRequest(item);
-            setRequestEditData({
-                request_note: item.request_note || '',
-                doctor_note: item.doctor_note || '',
-                debt_amount: item.debt_amount || ''
-            });
-        }
+        handleEditItem(item); // Always open in edit mode for history items
     };
 
     return (
@@ -307,6 +294,100 @@ const MedicalDocuments = () => {
             >
                 <p>¿Seguro que desea eliminar el archivo <strong>{fileToDelete?.file_name}</strong>?</p>
             </Modal>
+            {/* --- Edit Modals --- */}
+            {isEditing && selectedPrescription && (
+                <Modal
+                    isOpen={isEditing && !!selectedPrescription}
+                    onClose={() => { setIsEditing(false); setSelectedPrescription(null); }}
+                    title={`${t('prescription_for')} ${selectedPrescription.patient_name}`}
+                    footer={
+                        <>
+                            <Button variant="secondary" onClick={() => { setIsEditing(false); setSelectedPrescription(null); }}>{t('cancel')}</Button>
+                            <Button onClick={handleUpdatePrescription}>{t('save')}</Button>
+                        </>
+                    }
+                >
+                    <div className="flex flex-col gap-4">
+                        <div className="input-group">
+                            <label className="input-label">{t('medications')}</label>
+                            <MedicationAutocomplete
+                                value=""
+                                onChange={() => { }}
+                                onSelectMedication={(med) => {
+                                    const current = editData.medications.trim();
+                                    const newValue = current ? `${current}\n${med.full_label}` : med.full_label;
+                                    setEditData({ ...editData, medications: newValue });
+                                }}
+                            />
+                            <textarea className="input-field mt-2" rows="4" value={editData.medications} onChange={e => setEditData({ ...editData, medications: e.target.value })} />
+                        </div>
+                        <div className="input-group">
+                            <label className="input-label">{t('instructions')}</label>
+                            <textarea className="input-field" rows="3" value={editData.instructions} onChange={e => setEditData({ ...editData, instructions: e.target.value })} />
+                        </div>
+                    </div>
+                </Modal>
+            )}
+
+            {isEditing && selectedLicense && (
+                <Modal
+                    isOpen={isEditing && !!selectedLicense}
+                    onClose={() => { setIsEditing(false); setSelectedLicense(null); }}
+                    title={`${t('license_for')} ${selectedLicense.patient_name}`}
+                    footer={
+                        <>
+                            <Button variant="secondary" onClick={() => { setIsEditing(false); setSelectedLicense(null); }}>{t('cancel')}</Button>
+                            <Button onClick={handleUpdateLicense}>{t('save')}</Button>
+                        </>
+                    }
+                >
+                    <div className="flex flex-col gap-4">
+                        <div className="form-row">
+                            <div className="input-group">
+                                <label className="input-label">{t('start_date')}</label>
+                                <input type="date" className="input-field" value={licenseEditData.start_date} onChange={e => setLicenseEditData({ ...licenseEditData, start_date: e.target.value })} />
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">{t('days_duration')}</label>
+                                <input type="number" className="input-field" value={licenseEditData.days_duration} onChange={e => setLicenseEditData({ ...licenseEditData, days_duration: e.target.value })} />
+                            </div>
+                        </div>
+                        <div className="input-group">
+                            <label className="input-label">{t('diagnosis')}</label>
+                            <textarea className="input-field" rows="3" value={licenseEditData.diagnosis} onChange={e => setLicenseEditData({ ...licenseEditData, diagnosis: e.target.value })} />
+                        </div>
+                    </div>
+                </Modal>
+            )}
+
+            {isEditing && selectedRequest && (
+                <Modal
+                    isOpen={isEditing && !!selectedRequest}
+                    onClose={() => { setIsEditing(false); setSelectedRequest(null); }}
+                    title={t('edit_request')}
+                    footer={
+                        <>
+                            <Button variant="secondary" onClick={() => { setIsEditing(false); setSelectedRequest(null); }}>{t('cancel')}</Button>
+                            <Button onClick={handleUpdateRequest}>{t('save')}</Button>
+                        </>
+                    }
+                >
+                    <div className="flex flex-col gap-4">
+                        <div className="input-group">
+                            <label className="input-label">{t('request_note')}</label>
+                            <textarea className="input-field" rows="3" value={requestEditData.request_note} onChange={e => setRequestEditData({ ...requestEditData, request_note: e.target.value })} />
+                        </div>
+                        <div className="input-group">
+                            <label className="input-label">{t('doctor_reply')}</label>
+                            <textarea className="input-field" rows="3" value={requestEditData.doctor_note} onChange={e => setRequestEditData({ ...requestEditData, doctor_note: e.target.value })} />
+                        </div>
+                        <div className="input-group">
+                            <label className="input-label">{t('debt_amount')} ($)</label>
+                            <CurrencyInput className="input-field" value={requestEditData.debt_amount} onChange={e => setRequestEditData({ ...requestEditData, debt_amount: e.target.value })} />
+                        </div>
+                    </div>
+                </Modal>
+            )}
         </div>
     );
 };

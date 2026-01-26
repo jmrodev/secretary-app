@@ -5,18 +5,19 @@ import { useFinancesPageController } from '../controllers/useFinancesPageControl
 // Atomic Design Components
 import Card from '../components/atoms/Card';
 import Sidebar from '../components/organisms/Sidebar';
+import Button from '../components/atoms/Button';
 
-// Extracted Molecules/Organisms
+// Molecules/Organisms
 import FinanceStatsCards from '../components/molecules/FinanceStatsCards';
 import FinanceDoctorFilter from '../components/molecules/FinanceDoctorFilter';
 import CashBoxSummary from '../components/molecules/CashBoxSummary';
 import CashBoxDeliveryModal from '../components/molecules/CashBoxDeliveryModal';
 import TransactionsTable from '../components/organisms/TransactionsTable';
 import EditTransactionModal from '../components/organisms/EditTransactionModal';
-import TransactionModal from '../components/molecules/TransactionModal'; // Already existed, reusing
+import TransactionModal from '../components/molecules/TransactionModal';
 
 const Finances = () => {
-    // 1. Controller Hook
+    const controller = useFinancesPageController();
     const {
         transactions,
         stats,
@@ -31,9 +32,9 @@ const Finances = () => {
         settings,
         t,
         handlers
-    } = useFinancesPageController();
+    } = controller;
 
-    if (loading) return <div className="p-8 text-center">{t('loading')}</div>;
+    if (loading) return <div className="status-display"><div className="status-display__spinner"></div></div>;
 
     const isAdminOrSecretary = user.role === 'admin' || user.role === 'secretary';
 
@@ -41,8 +42,13 @@ const Finances = () => {
         <div className="app-layout">
             <Sidebar />
             <main className="main-content">
+                <header className="page-header">
+                    <div className="page-header__info">
+                        <h1 className="page-header__title">{t('finances')}</h1>
+                        <p className="page-header__subtitle">{t('finances_subtitle') || 'Control de caja y transacciones médicas.'}</p>
+                    </div>
+                </header>
 
-                {/* Doctor Filter Tabs */}
                 {isAdminOrSecretary && (
                     <FinanceDoctorFilter
                         doctors={doctors}
@@ -52,76 +58,73 @@ const Finances = () => {
                     />
                 )}
 
-                {/* Stats (Admin/Secretary) */}
-                {isAdminOrSecretary && (
+                {isAdminOrSecretary && stats.length > 0 && (
                     <FinanceStatsCards stats={stats} t={t} />
                 )}
 
-                <div className={user.role !== 'patient' ? 'grid-Sidebar-2fr gap-8' : 'grid-1-col'}>
+                <div className="files-grid">
+                    {/* Log Area */}
+                    <div className="flex flex-col gap-8 order-2 lg:order-1">
+                        <TransactionsTable
+                            transactions={transactions}
+                            user={user}
+                            settings={settings}
+                            t={t}
+                            onEdit={handlers.onEditTransaction}
+                            onDelete={handlers.onDeleteTransaction}
+                        />
+                    </div>
 
-                    {/* Sidebar / Controls for Staff */}
-                    {user.role !== 'patient' && (
-                        <div className="flex-col gap-8">
-                            <Card>
-                                <h3>🚀 {t('quick_actions') || 'Acciones Rápidas'}</h3>
-                                <div className="flex flex-wrap gap-3 mt-2">
-                                    <button className="btn btn-primary w-fit whitespace-nowrap" onClick={handlers.onOpenNewTransaction}>
-                                        ✨ {t('new_transaction')}
-                                    </button>
+                    {/* Quick Tools Area */}
+                    <aside className="flex flex-col gap-8 order-1 lg:order-2">
+                        {user.role !== 'patient' && (
+                            <>
+                                <Card title={t('quick_actions')}>
+                                    <div className="flex flex-col gap-3">
+                                        <Button onClick={handlers.onOpenNewTransaction}>
+                                            ✨ {t('new_transaction')}
+                                        </Button>
 
-                                    {/* Logic for "Close Box" Button if a doctor is selected */}
-                                    {selectedDoctorFilter && (() => {
-                                        const d = doctors.find(doc => doc.id == selectedDoctorFilter);
-                                        const bal = handlers.calculateBalance(selectedDoctorFilter);
-                                        if (d && bal > 0) {
-                                            return (
-                                                <button
-                                                    className="btn btn-secondary w-fit border-green-200 text-green-700 hover:bg-green-50 whitespace-nowrap"
-                                                    onClick={() => handlers.onOpenCloseBox(d, bal)}
-                                                >
-                                                    💰 {t('deliver')} a {d.full_name?.split(' ')[0]}
-                                                </button>
-                                            );
-                                        }
-                                        return null;
-                                    })()}
-                                </div>
-                            </Card>
+                                        {selectedDoctorFilter && (() => {
+                                            const d = doctors.find(doc => doc.id == selectedDoctorFilter);
+                                            const bal = handlers.calculateBalance(selectedDoctorFilter);
+                                            if (d && bal > 0) {
+                                                return (
+                                                    <Button
+                                                        variant="secondary"
+                                                        className="border-green-200 text-green-700 hover:bg-green-50"
+                                                        onClick={() => handlers.onOpenCloseBox(d, bal)}
+                                                    >
+                                                        💰 {t('deliver')} a {d.full_name?.split(' ')[0]}
+                                                    </Button>
+                                                );
+                                            }
+                                            return null;
+                                        })()}
+                                    </div>
+                                </Card>
 
-                            {/* Cash Box Summary (Per Doctor) */}
-                            {user.role === 'secretary' && (
-                                <CashBoxSummary
-                                    doctors={doctors}
-                                    selectedDoctorFilter={selectedDoctorFilter}
-                                    onSelectDoctor={handlers.onSelectDoctor}
-                                    calculateBalance={handlers.calculateBalance}
-                                    t={t}
-                                />
-                            )}
-                        </div>
-                    )}
-
-                    {/* Transaction Log */}
-                    <TransactionsTable
-                        transactions={transactions}
-                        user={user}
-                        settings={settings}
-                        t={t}
-                        onEdit={handlers.onEditTransaction}
-                        onDelete={handlers.onDeleteTransaction}
-                    />
+                                {user.role === 'secretary' && (
+                                    <CashBoxSummary
+                                        doctors={doctors}
+                                        selectedDoctorFilter={selectedDoctorFilter}
+                                        onSelectDoctor={handlers.onSelectDoctor}
+                                        calculateBalance={handlers.calculateBalance}
+                                        t={t}
+                                    />
+                                )}
+                            </>
+                        )}
+                    </aside>
                 </div>
 
-                {/* --- Modals managed by state --- */}
-
-                {/* New Transaction */}
+                {/* --- Modals --- */}
                 <TransactionModal
                     isOpen={modalOpen}
                     onClose={handlers.onCloseNewTransaction}
                     onSuccess={handlers.onRefresh}
                 />
 
-                {/* Close Box (Deliver Cash) */}
                 <CashBoxDeliveryModal
                     isOpen={closeBoxModal.open}
                     onClose={handlers.onCloseCloseBox}
@@ -133,7 +136,6 @@ const Finances = () => {
                     t={t}
                 />
 
-                {/* Edit Transaction */}
                 <EditTransactionModal
                     isOpen={!!editingTx}
                     onClose={() => handlers.setEditingTx(null)}
@@ -143,7 +145,6 @@ const Finances = () => {
                     settings={settings}
                     t={t}
                 />
-
             </main>
         </div>
     );
