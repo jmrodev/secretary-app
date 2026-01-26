@@ -47,7 +47,9 @@ export const useNextFreeSlot = (doctorId) => {
             const params = { doctor_id: doctorId, include_out_of_hours: useOutOfHours };
             if (startDate && typeof startDate === 'string') params.start_date = startDate;
 
+
             const res = await api.get('/appointments/next-free-batch', { params });
+
 
             if (res.data && res.data.results && res.data.results.length > 0) {
                 setNextSlotData(res.data);
@@ -64,7 +66,6 @@ export const useNextFreeSlot = (doctorId) => {
                 }
             }
         } catch (err) {
-            console.error(err);
             showMessage("Error buscando turnos libres.", 'error');
         } finally {
             setLoading(false);
@@ -101,6 +102,7 @@ export const useNextFreeSlot = (doctorId) => {
         fetchNextFreeSlots,
         handleNextPage,
         handlePrevPage,
-        slotHistory
+        slotHistory,
+        setSlotHistory
     };
 };

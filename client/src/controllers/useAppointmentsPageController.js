@@ -206,6 +206,7 @@ export const useAppointmentsPageController = () => {
         prescribeModal, setPrescribeModal,
         authModalOpen, setAuthModalOpen,
         whatsappModal, setWhatsappModal,
+        showNextSlotModal, setShowNextSlotModal,
 
         // Sub-Hooks Exports
         holidays, addHoliday, deleteHoliday,

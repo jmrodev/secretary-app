@@ -1105,6 +1105,8 @@ exports.getFreeSlotsBatch = async (req, res) => {
 
         conn = await pool.getConnection();
 
+
+
         // 1. Get Doctor Duration
         const [doc] = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [doctor_id]);
         const duration = (doc && doc.length > 0 && doc[0].appointment_duration) ? doc[0].appointment_duration : 60;
