@@ -28,8 +28,7 @@ const AppointmentFormModal = ({
     institutions,
     syncReferenceInfo,
     onOpenEditPatient,
-    missingData,
-    isSubmitting
+    missingData
 }) => {
     const { t } = useLanguage();
     const { user } = useAuth();
@@ -197,16 +196,8 @@ const AppointmentFormModal = ({
                     <button
                         type="submit"
                         className="btn btn-accent w-full flex items-center justify-center gap-2"
-                        disabled={isSubmitting}
                     >
-                        {isSubmitting ? (
-                            <>
-                                <span className="loading-spinner-small"></span>
-                                {t('booking_progress') || 'Reservando...'}
-                            </>
-                        ) : (
-                            t('confirm_booking')
-                        )}
+                        {t('confirm_booking')}
                     </button>
                 </div>
             </form>

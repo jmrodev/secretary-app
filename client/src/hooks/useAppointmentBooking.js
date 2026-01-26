@@ -163,9 +163,13 @@ export const useAppointmentBooking = (doctors) => {
 
             // 3. Confirmation Flow
             const context = getBookingContext();
-            if (context && selectedPatientData?.phone) {
+
+            // Resolve phone from any available field
+            const targetPhone = selectedPatientData?.phone || selectedPatientData?.mobile_phone || selectedPatientData?.contact_info;
+
+            if (context && targetPhone) {
                 // Try Meta API first
-                const sentViaMeta = await handleMetaSend(selectedPatientData.phone, context);
+                const sentViaMeta = await handleMetaSend(targetPhone, context);
 
                 // Fallback to manual WhatsApp Modal if Meta API failed or is not configured
                 if (!sentViaMeta) {
@@ -182,7 +186,7 @@ export const useAppointmentBooking = (doctors) => {
 
                     setWhatsappModal({
                         open: true,
-                        phone: selectedPatientData.phone,
+                        phone: targetPhone,
                         message: fillTemplate(template, context)
                     });
                 }

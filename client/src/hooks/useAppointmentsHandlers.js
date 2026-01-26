@@ -47,7 +47,8 @@ export const useAppointmentsHandlers = ({
     bookAppointment,
     fetchNextFreeSlots,
     selectedPatientData,
-    copyToClipboard // Dependency injected
+    copyToClipboard, // Dependency injected
+    booking
 }) => {
 
     const handleDateSelect = useCallback((date) => setSelectedDate(date), [setSelectedDate]);
@@ -164,13 +165,28 @@ export const useAppointmentsHandlers = ({
         showMessage("Ajuste iniciado: Por favor seleccione el paciente para este turno.", "info");
     };
 
-    const handleBook = async (bookingDate, e) => {
-        if (e) e.preventDefault();
-        const selectedDatePart = bookingDate.split('T')[0];
-        const isHoliday = holidays.find(h => h.date.startsWith(selectedDatePart));
-        if (isHoliday) {
-            showMessage(`Cannot book: ${isHoliday.description}`, 'error');
-            return;
+    const handleBook = async (arg1, arg2) => {
+        let e = arg2;
+        let dateToCheck = arg1;
+
+        // If called as form submit handler, arg1 is event
+        if (arg1 && arg1.preventDefault) {
+            e = arg1;
+            e.preventDefault();
+            dateToCheck = booking?.date;
+        } else if (e) {
+            e.preventDefault();
+        }
+
+        if (!dateToCheck) {
+            console.warn("No date to check for holiday");
+        } else {
+            const selectedDatePart = dateToCheck.split('T')[0];
+            const isHoliday = holidays.find(h => h.date.startsWith(selectedDatePart));
+            if (isHoliday) {
+                showMessage(`Cannot book: ${isHoliday.description}`, 'error');
+                return;
+            }
         }
         await bookAppointment(fetchAppointments);
     };

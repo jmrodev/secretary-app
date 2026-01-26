@@ -220,9 +220,13 @@ export const useAppointmentsPageController = () => {
         appointments,
         doctorSchedule,
 
+        // Patient Search (Safe Exposure)
+        searchPatientId, setSearchPatientId,
+        patientAppointments, patientApptLoading,
+
         // Spread Handlers
         ...handlers,
-        handleAdminAuthConfirm, // Override to pass closure variable retryAction if logic requires is (it does)
+        handleAdminAuthConfirm,
         handleWhatsAppUniversal,
         refreshGoogleEvents,
         cancelAppointment, fetchAppointments,

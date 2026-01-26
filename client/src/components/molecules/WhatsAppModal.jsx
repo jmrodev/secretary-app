@@ -1,5 +1,6 @@
 import React from 'react';
 import Modal from './Modal';
+import Button from '../atoms/Button';
 import { useLanguage } from '../../context/LanguageContext';
 import { useMessage } from '../../context/MessageContext';
 
@@ -8,50 +9,61 @@ const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange }) => 
     const { showMessage } = useMessage();
 
     const handleSend = () => {
-        let cleanPhone = phone.replace(/\D/g, '');
+        const safePhone = String(phone || '');
+        let cleanPhone = safePhone.replace(/\D/g, '');
+
+        console.log("Sending WhatsApp:", { phone, cleanPhone, message });
 
         // Standardize AR phones if needed
         if (!cleanPhone.startsWith('54') && cleanPhone.length >= 10) {
             cleanPhone = '549' + cleanPhone;
         }
 
-        const encodedText = encodeURIComponent(message);
+        const encodedText = encodeURIComponent(message || '');
 
         // Copy to clipboard for safety
-        navigator.clipboard.writeText(message).catch(err => console.error(err));
+        navigator.clipboard.writeText(message || '').catch(err => console.error("Clipboard error:", err));
 
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
         if (isMobile) {
             window.location.href = `https://wa.me/${cleanPhone}?text=${encodedText}`;
         } else {
+            // Desktop Strategy
             const appUrl = `whatsapp://send?phone=${cleanPhone}&text=${encodedText}`;
             const webUrl = `https://web.whatsapp.com/send?phone=${cleanPhone}&text=${encodedText}`;
 
+            console.log("Opening URLs:", { appUrl, webUrl });
+
+            // Try opening App, fall back to Web
+            // Using window.open for success feedback
+
             window.location.href = appUrl;
+
             setTimeout(() => {
                 window.open(webUrl, '_blank');
-            }, 2500);
+            }, 1000);
         }
 
         onClose();
-        showMessage("Mensaje copiado. Abriendo WhatsApp...", "success");
+        showMessage("Mensaje copiado. Intentando abrir WhatsApp...", "success");
     };
 
     return (
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title="Sugerencia de WhatsApp"
+            title="Confirmación por WhatsApp"
             footer={
                 <>
-                    <button className="btn btn-secondary" onClick={onClose}>{t('cancel')}</button>
-                    <button
-                        className="btn btn-emerald text-white"
+                    <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
+                    <Button
+                        variant="accent"
+                        className="btn-emerald text-white"
                         onClick={handleSend}
                     >
-                        📲 Enviar Mensaje (ZapZap)
-                    </button>
+                        📲 Enviar por WhatsApp
+                    </Button>
                 </>
             }
         >

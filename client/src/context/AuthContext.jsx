@@ -11,13 +11,29 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const storedToken = localStorage.getItem('token');
-        const userData = localStorage.getItem('user');
-        if (storedToken && userData) {
-            setUser(JSON.parse(userData));
-            setToken(storedToken);
-        }
-        setLoading(false);
+        const initAuth = async () => {
+            try {
+                const storedToken = localStorage.getItem('token');
+                const storedUser = localStorage.getItem('user');
+
+                if (storedToken && storedUser) {
+                    setUser(JSON.parse(storedUser));
+                    setToken(storedToken);
+
+                    // Optional: Background verification could go here
+                }
+            } catch (error) {
+                console.error("Error parsing user data from local storage:", error);
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                setUser(null);
+                setToken(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        initAuth();
     }, []);
 
     const login = async (username, password) => {
@@ -76,7 +92,7 @@ export const AuthProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider value={value}>
-            {!loading && children}
+            {children}
         </AuthContext.Provider>
     );
 };

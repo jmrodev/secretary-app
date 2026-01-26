@@ -26,7 +26,7 @@ const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
   const { t } = useLanguage();
 
-  if (loading) return <div>{t('loading')}</div>;
+  if (loading) return <div className="flex items-center justify-center h-screen text-2xl">Cargando aplicación...</div>;
   if (!user) return <Navigate to="/login" />;
 
   // Patients should not be able to access the management dashboard or other views

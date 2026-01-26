@@ -101,7 +101,7 @@ const Sidebar = () => {
             <div className="sidebar-footer">
                 <div className="user-profile-card">
                     <div className="user-avatar-mini">
-                        {user.username.charAt(0).toUpperCase()}
+                        {user?.username?.charAt(0)?.toUpperCase() || 'U'}
                     </div>
                     <div className="user-details">
                         <span className="username">{user.username}</span>
