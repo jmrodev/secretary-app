@@ -47,5 +47,7 @@ router.delete('/patients/medications/:id', verifyToken, medicalController.delete
 // Files
 router.post('/files', verifyToken, upload.single('file'), medicalController.uploadFile);
 router.get('/files', verifyToken, medicalController.getPatientFiles);
+router.get('/prescriptions/export/json', verifyToken, medicalController.exportPrescriptionsJSON);
+
 
 module.exports = router;

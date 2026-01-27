@@ -322,7 +322,7 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                     <h4 className="section-title">Administrative Settings</h4>
 
                     <div className="input-group mb-4">
-                        <label className="input-label">Assigned Doctors</label>
+                        <label className="input-label">{t('assigned_doctors')}</label>
                         <div className="doctor-selection-grid">
                             {doctors.map(doc => (
                                 <label key={doc.id} className="doctor-checkbox-label">

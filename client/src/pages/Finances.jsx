@@ -34,7 +34,7 @@ const Finances = () => {
         handlers
     } = controller;
 
-    if (loading) return <div className="status-display"><div className="status-display__spinner"></div></div>;
+    if (loading) return <div className="centered-loader"><div className="status-display__spinner"></div></div>;
 
     const isAdminOrSecretary = user.role === 'admin' || user.role === 'secretary';
 
@@ -143,6 +143,7 @@ const Finances = () => {
                     transaction={editingTx}
                     setTransaction={handlers.setEditingTx}
                     settings={settings}
+                    user={user}
                     t={t}
                 />
             </main>

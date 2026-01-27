@@ -1,0 +1,28 @@
+# Cloudflared Tunnel Configuration
+# ==================================
+# This file configures how the Cloudflare Tunnel directs traffic to your local services.
+
+# 1. FOR A STABLE/CUSTOM DOMAIN (Recommended):
+#    You need a Cloudflare account and a registered domain.
+#    Run: ./cloudflared tunnel login
+#    Run: ./cloudflared tunnel create "secretary-app"
+#    Copy the UUID below and the path to the credentials file generated.
+
+# tunnel: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+# credentials-file: /home/cima/Documentos/secretary-app/server/.cloudflared/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.json
+
+# 2. INGRESS RULES
+#    Map incoming hostnames to local services.
+
+ingress:
+  # Map specific path to Backend API
+  # Change 'your-domain.com' to your actual domain
+  # - hostname: api.your-domain.com
+  #   service: http://localhost:3000
+
+  # Map everything else to Frontend (Vite/React)
+  # - hostname: app.your-domain.com
+  #   service: http://localhost:5173
+
+  # Catch-all (required)
+  - service: http_status:404

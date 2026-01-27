@@ -12,7 +12,7 @@ const PatientRecycleBin = ({
     const { t } = useLanguage();
 
     if (loading) {
-        return <div className="status-display"><div className="status-display__spinner"></div></div>;
+        return <div className="centered-loader"><div className="status-display__spinner"></div></div>;
     }
 
     if (recycleItems.length === 0) {

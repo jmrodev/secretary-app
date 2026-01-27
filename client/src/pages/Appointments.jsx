@@ -24,6 +24,7 @@ import WhatsAppModal from '../components/molecules/WhatsAppModal';
 import AdminAuthModal from '../components/molecules/AdminAuthModal';
 import PatientHistoryView from '../components/organisms/PatientHistoryView';
 import UpcomingAppointmentsView from '../components/organisms/UpcomingAppointmentsView';
+import TransactionModal from '../components/molecules/TransactionModal';
 
 const Appointments = () => {
     const navigate = useNavigate();
@@ -44,6 +45,7 @@ const Appointments = () => {
         patientAppointments, patientApptLoading,
 
         // Modals State
+        paymentModal, setPaymentModal,
         actionModal, setActionModal,
         historyModal, setHistoryModal,
         prescribeModal, setPrescribeModal,
@@ -76,13 +78,10 @@ const Appointments = () => {
         exitRescheduleMode,
     } = controller;
 
-    if (loading) return <div className="status-display"><div className="status-display__spinner"></div></div>;
+    if (loading) return <div className="centered-loader"><div className="status-display__spinner"></div></div>;
 
     return (
-        <MainLayout
-            title={t('appointments') || 'Agenda'}
-            subtitle={activeTab === 'calendar' ? t('calendar_view_subtitle') : t('upcoming_view_subtitle')}
-        >
+        <MainLayout>
             <RescheduleBanner
                 rescheduleAppt={rescheduleAppt}
                 onExit={exitRescheduleMode}
@@ -179,7 +178,24 @@ const Appointments = () => {
                 onCancel={handleCancel}
                 onDelete={handleDelete}
                 onSync={handleSyncGoogleEvent}
-                onPay={(appt) => console.log("Pay TODO")}
+                onPay={(appt) => {
+                    setPaymentModal({
+                        open: true,
+                        initialData: {
+                            type: 'income_patient',
+                            amount: appt.cost || 0,
+                            patientId: appt.patient_id,
+                            patientName: appt.patient_name,
+                            patientDni: appt.patient_dni,
+                            patientUserId: appt.patient_user_id,
+                            doctorId: appt.doctor_id,
+                            description: `Payment for appointment on ${new Date(appt.appointment_date).toLocaleDateString()}`,
+                            apptId: appt.id
+                        },
+                        apptId: appt.id
+                    });
+                    setActionModal({ ...actionModal, open: false });
+                }}
                 onWhatsApp={handleWhatsAppUniversal}
                 fetchAppointments={controller.fetchAppointments}
             />
@@ -282,6 +298,15 @@ const Appointments = () => {
                 isOpen={authModalOpen}
                 onClose={() => setAuthModalOpen(false)}
                 onConfirm={handleAdminAuthConfirm}
+            />
+
+            <TransactionModal
+                isOpen={paymentModal.open}
+                onClose={() => setPaymentModal({ ...paymentModal, open: false })}
+                initialData={paymentModal.initialData}
+                onSuccess={async () => {
+                    controller.fetchAppointments();
+                }}
             />
         </MainLayout>
     );

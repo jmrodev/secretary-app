@@ -5,6 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Button from '../atoms/Button';
+import LanguageSelector from '../atoms/LanguageSelector';
 
 const Sidebar = () => {
     const { user, logout } = useAuth();
@@ -99,6 +100,9 @@ const Sidebar = () => {
             </nav>
 
             <div className="sidebar-footer">
+                <div className="mb-2">
+                    <LanguageSelector />
+                </div>
                 <div className="user-profile-card">
                     <div className="user-avatar-mini">
                         {user?.username?.charAt(0)?.toUpperCase() || 'U'}

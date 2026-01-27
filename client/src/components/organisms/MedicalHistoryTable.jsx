@@ -6,9 +6,14 @@ import { timeAgo } from '../../utils/time';
 import Button from '../atoms/Button';
 import Card from '../atoms/Card';
 
-const MedicalHistoryTable = ({ items, filterItem, onView, onDelete, icon, title, originLabel }) => {
+const MedicalHistoryTable = ({ items, filterItem, onView, onDelete, icon, title, originLabel, canDelete }) => {
     const { t } = useLanguage();
     const { user } = useAuth();
+
+    // Fallback if canDelete is not provided (backwards compatibility or default behavior)
+    // If canDelete is explicitly provided (boolean), use it. 
+    // Otherwise fallback to existing logic: admin or secretary can delete.
+    const showDelete = canDelete !== undefined ? canDelete : (user.role === 'admin' || user.role === 'secretary');
 
     const filteredItems = items.filter(filterItem);
 
@@ -67,7 +72,17 @@ const MedicalHistoryTable = ({ items, filterItem, onView, onDelete, icon, title,
                                                 title={t('view')}
                                                 icon="👁️"
                                             />
-                                            {(user.role === 'admin' || user.role === 'secretary') && (
+                                            {showDelete && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm-compact"
+                                                    onClick={() => onView(item)}
+                                                    className="text-indigo-500 hover:bg-indigo-50"
+                                                    title={t('edit')}
+                                                    icon="✏️"
+                                                />
+                                            )}
+                                            {showDelete && (
                                                 <Button
                                                     variant="ghost"
                                                     size="sm-compact"

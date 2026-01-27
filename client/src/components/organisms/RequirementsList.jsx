@@ -6,6 +6,7 @@ import { useRequirementsController } from '../../controllers/useRequirementsCont
 import Modal from '../molecules/Modal';
 import Button from '../atoms/Button';
 import TabButton from '../atoms/TabButton';
+import Badge from '../atoms/Badge';
 import MedicalRequestForm from './MedicalRequestForm';
 
 /**
@@ -34,7 +35,8 @@ const RequirementsList = ({ user }) => {
         openActionModal,
         confirmAction,
         handleDelete,
-        fetchRequests
+        fetchRequests,
+        canDeleteRequest
     } = useRequirementsController(user);
 
     const typeLabels = {
@@ -64,7 +66,7 @@ const RequirementsList = ({ user }) => {
                 >
                     ➕ {t('new_request')}
                 </TabButton>
-                {isAdminOrSecretary && (
+                {isAdminOrSecretary && canDeleteRequest && (
                     <TabButton
                         isActive={activeTab === 'recycle'}
                         onClick={() => setActiveTab('recycle')}
@@ -130,13 +132,14 @@ const RequirementsList = ({ user }) => {
                                     {requests.map(r => (
                                         <tr key={r.id}>
                                             <td>
-                                                <span
-                                                    className={`status-chip ${r.type === 'prescription' ? 'chip-blue' : 'chip-green'} type-chip-link cursor-pointer`}
+                                                <Badge
+                                                    variant={r.type === 'prescription' ? 'chip-blue' : 'chip-green'}
+                                                    className="type-chip-link cursor-pointer"
                                                     onClick={() => setSelectedRequest(r)}
                                                     title="Ver detalle"
                                                 >
                                                     {typeLabels[r.type] || r.type}
-                                                </span>
+                                                </Badge>
                                             </td>
                                             <td>{new Date(r.created_at).toLocaleDateString()}</td>
                                             <td><strong>{r.patient_name}</strong></td>
@@ -147,13 +150,13 @@ const RequirementsList = ({ user }) => {
                                                 </span>
                                             </td>
                                             <td>
-                                                <span className={`status-chip chip-yellow`}>
+                                                <Badge variant={r.status}>
                                                     {t(r.status) || r.status}
-                                                </span>
+                                                </Badge>
                                             </td>
                                             <td>
                                                 <div className="flex gap-1 justify-end">
-                                                    {isAdminOrSecretary && (
+                                                    {canDeleteRequest && (
                                                         <Button
                                                             variant="ghost"
                                                             size="sm-compact"

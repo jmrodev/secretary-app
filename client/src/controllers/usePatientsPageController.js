@@ -39,7 +39,7 @@ export const usePatientsPageController = () => {
     const [editModal, setEditModal] = useState({ open: false, data: {} });
     const [debtModal, setDebtModal] = useState({ open: false, params: { patientId: null, amount: '', method: 'cash' } });
     const [prescribeModal, setPrescribeModal] = useState({ open: false, data: { apptId: null, patientId: null, patientName: '', medications: '', instructions: '' } });
-    const [qrModal, setQrModal] = useState({ open: false, url: '', expiry: null });
+    const [qrModal, setQrModal] = useState({ open: false, url: '', expiry: null, patientName: '', patientPhone: '' });
     const [showRatingInfo, setShowRatingInfo] = useState(false);
 
     // --- FETCH DATA ---
@@ -284,9 +284,21 @@ export const usePatientsPageController = () => {
         try {
             const res = await api.post('/temp-access/generate', { patientId });
             const baseUrl = settings.public_base_url || window.location.origin;
-            setQrModal({ open: true, url: `${baseUrl}${res.data.url}`, expiry: res.data.expiresAt });
+
+            // Find patient info for WhatsApp
+            const patient = patients.find(p => p.id === patientId);
+            const patientName = patient ? patient.full_name : '';
+            const patientPhone = patient ? patient.phone : '';
+
+            setQrModal({
+                open: true,
+                url: `${baseUrl}${res.data.url}`,
+                expiry: res.data.expiresAt,
+                patientName,
+                patientPhone
+            });
         } catch (err) { showMessage('Error generating QR', 'error'); }
-    }, [settings.public_base_url, showMessage]);
+    }, [settings.public_base_url, showMessage, patients]);
 
     // Prescription
     const handleSavePrescription = useCallback(async () => {

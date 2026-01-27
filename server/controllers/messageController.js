@@ -198,20 +198,22 @@ exports.getConversations = async (req, res) => {
         const { user_id } = req.user;
         conn = await pool.getConnection();
 
+        // Optimized query compatible with strict SQL modes
+        // We select the logical 'other_user_id' by checking sender vs recipient.
         const conversations = await conn.query(
             `SELECT m.*, 
                     convo.other_user_id,
                     u.username as other_username,
-                    COALESCE(d.full_name, s.full_name, u.username) as other_display_name,
+                    COALESCE(d.full_name, s.full_name, p.full_name, u.username) as other_display_name,
                     COALESCE(d.phone, s.phone, p.phone) as other_phone,
                     (SELECT COUNT(*) FROM messages 
                      WHERE recipient_id = ? AND sender_id = convo.other_user_id AND read_status < 2) as unread_count
              FROM (
                 SELECT MAX(id) as last_id, 
-                       CASE WHEN sender_id = ? THEN recipient_id ELSE sender_id END as other_user_id
+                       IF(sender_id = ?, recipient_id, sender_id) as other_user_id
                 FROM messages
                 WHERE (sender_id = ? OR recipient_id = ?) AND recipient_type = 'individual'
-                GROUP BY other_user_id
+                GROUP BY IF(sender_id = ?, recipient_id, sender_id)
              ) convo
              JOIN messages m ON convo.last_id = m.id
              JOIN users u ON convo.other_user_id = u.id
@@ -219,14 +221,15 @@ exports.getConversations = async (req, res) => {
              LEFT JOIN secretaries s ON u.id = s.user_id
              LEFT JOIN patients p ON u.id = p.user_id
              ORDER BY m.created_at DESC`,
-            [user_id, user_id, user_id, user_id]
+            [user_id, user_id, user_id, user_id, user_id]
         );
 
         // Mark incoming messages as Delivered (1) if they are currently Sent (0)
-        await conn.query(
-            "UPDATE messages SET read_status = 1, delivered_at = COALESCE(delivered_at, NOW()) WHERE recipient_id = ? AND read_status = 0",
+        // We do this asynchronously to not block response
+        conn.query(
+            "UPDATE messages SET read_status = 1, delivered_at = NOW() WHERE recipient_id = ? AND read_status = 0",
             [user_id]
-        );
+        ).catch(e => console.error("Error updating delivered status:", e));
 
         res.json(conversations);
 

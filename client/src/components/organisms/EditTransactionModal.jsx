@@ -10,6 +10,7 @@ const EditTransactionModal = ({
     transaction,
     setTransaction,
     settings,
+    user,
     t
 }) => {
     if (!transaction) return null;
@@ -72,7 +73,7 @@ const EditTransactionModal = ({
                         <option value="pending">{t('pending')}</option>
                     </select>
                 </div>
-                {(settings.allow_admin_edit_finance_date === 'true') && (
+                {((settings.allow_admin_edit_finance_date === 'true') || (user && user.role === 'admin')) && (
                     <div className="input-group">
                         <label className="input-label">{t('transaction_date') || 'Fecha de Transacción'}</label>
                         <input

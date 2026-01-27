@@ -12,7 +12,9 @@ const MedicalRequestList = ({
     filterItem,
     handleDeleteRequest,
     openActionModal,
-    setPaymentModal
+    setPaymentModal,
+    canDelete,
+    handleEditRequest
 }) => {
     const { user } = useAuth();
     const { t } = useLanguage();
@@ -82,15 +84,35 @@ const MedicalRequestList = ({
                                         </div>
                                     </td>
                                     <td>
-                                        <span className={`tag font-mono text-[10px] ${r.payment_status === 'paid' ? 'tag-completed' : (r.payment_status === 'debt' ? 'tag-rejected' : 'tag-muted')}`}>
-                                            {r.payment_status === 'paid' ? `PAID` :
-                                                (r.payment_status === 'debt' ? `DEBT ${formatPrice(r.debt_amount)}` : 'PENDING')}
-                                        </span>
+                                        <div className="payment-info flex flex-col gap-1 items-start">
+                                            <div className={`payment-info__badge px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 shadow-sm border ${r.payment_status === 'paid'
+                                                ? 'bg-green-50 text-green-700 border-green-200'
+                                                : r.payment_status === 'debt'
+                                                    ? 'bg-red-50 text-red-700 border-red-200'
+                                                    : r.payment_status === 'bonified'
+                                                        ? 'bg-blue-50 text-blue-700 border-blue-200'
+                                                        : 'bg-slate-50 text-slate-500 border-slate-200'
+                                                }`}>
+                                                <span className="payment-info__status-dot w-1.5 h-1.5 rounded-full bg-current"></span>
+                                                {r.payment_status === 'paid' ? t('paid') :
+                                                    (r.payment_status === 'debt' ? `${t('debt')} ${formatPrice(r.debt_amount)}` :
+                                                        (r.payment_status === 'bonified' ? (t('bonified') || 'Bonificado') : t('pending')))}
+                                            </div>
+
+                                            {r.payment_method && (
+                                                <div className="payment-info__method flex items-center gap-1 text-[9px] font-bold text-slate-400 px-1 uppercase tracking-tighter">
+                                                    <span className="payment-info__method-icon opacity-80">
+                                                        {r.payment_method === 'cash' ? '💵' : r.payment_method === 'transfer' ? '🏦' : '💳'}
+                                                    </span>
+                                                    <span className="payment-info__method-label">{t(r.payment_method) || r.payment_method}</span>
+                                                </div>
+                                            )}
+                                        </div>
                                     </td>
                                     <td className="pr-6 text-right">
                                         <div className="flex justify-end gap-1">
                                             {/* Charge Button */}
-                                            {(r.payment_status !== 'paid') && (user.role === 'secretary' || user.role === 'doctor') && (
+                                            {(r.payment_status !== 'paid' && r.payment_status !== 'bonified') && (user.role === 'secretary' || user.role === 'doctor') && (
                                                 <Button
                                                     variant="ghost"
                                                     size="sm-compact"
@@ -98,11 +120,14 @@ const MedicalRequestList = ({
                                                         open: true,
                                                         initialData: {
                                                             type: 'income_patient',
-                                                            amount: '',
-                                                            description: `Request: ${r.type} for ${r.patient_name}`,
-                                                            patientId: r.patient_user_id,
+                                                            amount: r.debt_amount,
+                                                            description: `${t('request')}: ${t(r.type) || r.type} - ${r.patient_name}`,
+                                                            patientId: r.patient_id, // Important: using patient_id (id in patients table), not user_id
+                                                            patientUserId: r.patient_user_id,
                                                             patientName: r.patient_name,
-                                                            doctorId: r.doctor_id
+                                                            doctorId: r.doctor_id,
+                                                            method: r.payment_method,
+                                                            serviceType: r.type === 'license' ? 'medical_license' : (r.type === 'prescription' ? 'prescription' : 'certificate')
                                                         },
                                                         reqId: r.id
                                                     })}
@@ -136,18 +161,28 @@ const MedicalRequestList = ({
                                                 />
                                             )}
 
+                                            {/* Edit Button - Only if enabled */}
+                                            {(user.role === 'admin' || canDelete) && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm-compact"
+                                                    onClick={() => handleEditRequest({ ...r, _origin: 'request' })}
+                                                    className="text-blue-500 hover:bg-blue-50"
+                                                    title={t('edit')}
+                                                    icon="✏️"
+                                                />
+                                            )}
+
                                             {/* Delete Button */}
-                                            {(user.role === 'admin' || user.role === 'secretary' || user.role === 'doctor') && (
-                                                (user.role === 'admin' || isPending || isToday(r.completed_at || r.updated_at)) ? (
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm-compact"
-                                                        className="text-red-400 hover:bg-red-50"
-                                                        onClick={() => handleDeleteRequest(r.id, r)}
-                                                        title="Eliminar"
-                                                        icon="🗑️"
-                                                    />
-                                                ) : null
+                                            {(canDelete || user.role === 'admin' || (user.role === 'doctor' && (isPending || isToday(r.completed_at || r.updated_at)))) && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm-compact"
+                                                    className="text-red-400 hover:bg-red-50"
+                                                    onClick={() => handleDeleteRequest(r.id, r)}
+                                                    title="Eliminar"
+                                                    icon="🗑️"
+                                                />
                                             )}
                                         </div>
                                     </td>

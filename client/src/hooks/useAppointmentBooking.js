@@ -165,7 +165,15 @@ export const useAppointmentBooking = (doctors) => {
             const context = getBookingContext();
 
             // Resolve phone from any available field
-            const targetPhone = selectedPatientData?.phone || selectedPatientData?.mobile_phone || selectedPatientData?.contact_info;
+            // Resolve phone from any available field (including array from backend)
+            let targetPhone = selectedPatientData?.phone || selectedPatientData?.mobile_phone || selectedPatientData?.contact_info;
+
+            // Fallback to phoneNumbers array if primary phone is missing
+            if (!targetPhone && selectedPatientData?.phoneNumbers && Array.isArray(selectedPatientData.phoneNumbers)) {
+                const primary = selectedPatientData.phoneNumbers.find(p => p.is_primary);
+                if (primary) targetPhone = primary.phone_number;
+                else if (selectedPatientData.phoneNumbers.length > 0) targetPhone = selectedPatientData.phoneNumbers[0].phone_number;
+            }
 
             if (context && targetPhone) {
                 // Try Meta API first
@@ -190,6 +198,9 @@ export const useAppointmentBooking = (doctors) => {
                         message: fillTemplate(template, context)
                     });
                 }
+            } else if (!targetPhone) {
+                console.warn("No phone found for patient, skipping WhatsApp confirmation.");
+                showMessage(t('no_phone_for_warning') || "Turno creado, pero el paciente no tiene teléfono para enviar confirmación.", "warning");
             }
 
             resetForm();

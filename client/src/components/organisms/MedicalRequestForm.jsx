@@ -6,25 +6,29 @@ import { useMessage } from '../../context/MessageContext';
 import api from '../../api/axios';
 import PatientSearchSelect from '../molecules/PatientSearchSelect';
 import MedicationAutocomplete from '../molecules/MedicationAutocomplete';
-import Button from '../atoms/Button';
 import Card from '../atoms/Card';
+import Button from '../atoms/Button';
+import FormGroup from '../molecules/FormGroup';
+import Input from '../atoms/Input';
+import Select from '../atoms/Select';
 
-const MedicalRequestForm = ({ doctors, onRequestCreated }) => {
+const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSendToDoctor }) => {
     const { user } = useAuth();
     const { t } = useLanguage();
     const { showMessage } = useMessage();
 
-    const [reqType, setReqType] = useState('prescription');
+    const [paymentMethod, setPaymentMethod] = useState('cash');
+    const [selectedDoctor, setSelectedDoctor] = useState(localStorage.getItem('last_selected_doctor_id') || '');
     const [selectedPatient, setSelectedPatient] = useState('');
     const [patientData, setPatientData] = useState(null);
-    const [selectedDoctor, setSelectedDoctor] = useState(localStorage.getItem('last_selected_doctor_id') || '');
-    const [reqNote, setReqNote] = useState('');
-    const [bonified, setBonified] = useState(false);
-    const [sendToDoctor, setSendToDoctor] = useState(true);
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [patientMeds, setPatientMeds] = useState([]);
+    const [reqType, setReqType] = useState(initialType || 'prescription');
+    const [reqNote, setReqNote] = useState('');
     const [medicationItems, setMedicationItems] = useState([]);
     const [tempMed, setTempMed] = useState('');
+    const [bonified, setBonified] = useState(false);
+    const [sendToDoctor, setSendToDoctor] = useState(initialSendToDoctor !== undefined ? initialSendToDoctor : true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         if (selectedDoctor) {
@@ -62,10 +66,24 @@ const MedicalRequestForm = ({ doctors, onRequestCreated }) => {
             return;
         }
 
-        const finalNote = reqType === 'prescription' ? medicationItems.join('\n') : reqNote;
+        // [FIX] Auto-include text currently in the input field if the user forgot to click "+"
+        let finalItems = [...medicationItems];
+        if (reqType === 'prescription' && tempMed && tempMed.trim()) {
+            const val = tempMed.trim();
+            if (!finalItems.includes(val)) {
+                finalItems.push(val);
+            }
+        }
 
-        if (!finalNote) {
+        const finalNote = reqType === 'prescription' ? finalItems.join('\n') : reqNote;
+
+        if (!finalNote && reqType !== 'prescription') {
             showMessage(t('fill_required_fields') || 'Complete los campos requeridos', 'error');
+            return;
+        }
+
+        if (reqType === 'prescription' && finalItems.length === 0) {
+            showMessage(t('fill_required_fields') || 'Debe agregar al menos un medicamento', 'error');
             return;
         }
 
@@ -77,6 +95,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated }) => {
                 doctor_id: user.role === 'doctor' ? (user.user_id || user.id) : selectedDoctor,
                 request_note: finalNote,
                 bonified,
+                payment_method: bonified ? null : paymentMethod,
                 status: sendToDoctor ? 'pending' : 'completed'
             });
             showMessage(sendToDoctor ? t('request_sent') : (t('request_saved_completed') || 'Guardado como Completado'), 'success');
@@ -101,35 +120,41 @@ const MedicalRequestForm = ({ doctors, onRequestCreated }) => {
     if (user.role !== 'secretary' && user.role !== 'doctor') return null;
 
     return (
-        <Card title={t('new_request')} className="animate-fadeIn">
-            <form onSubmit={handleCreateRequest} className="flex flex-col gap-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="input-group">
-                        <label className="input-label">{t('request_type')}</label>
-                        <select className="input-field" value={reqType} onChange={e => setReqType(e.target.value)}>
-                            <option value="prescription">{t('prescription')}</option>
-                            <option value="license">{t('medical_license')}</option>
-                            <option value="certificate">{t('certificate') || 'Certificado'}</option>
-                        </select>
-                    </div>
+        <Card title={t('new_request')} className="animate-fadeIn shadow-lg border-slate-200">
+            <form onSubmit={handleCreateRequest} className="medical-request-form flex flex-col gap-6">
+                <div className="medical-request-form__row grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormGroup label={t('request_type')} required>
+                        <Select
+                            value={reqType}
+                            onChange={e => setReqType(e.target.value)}
+                            options={[
+                                { value: 'prescription', label: t('prescription') },
+                                { value: 'license', label: t('medical_license') },
+                                { value: 'certificate', label: t('certificate') || 'Certificado' }
+                            ]}
+                        />
+                    </FormGroup>
 
-                    <div className="input-group">
-                        <label className="input-label">{t('doctor_label')}</label>
+                    <FormGroup label={t('doctor_label')} required>
                         {user.role === 'doctor' ? (
-                            <div className="input-field bg-slate-50 text-main-500 font-medium">
+                            <div className="input-field bg-slate-50 text-main-500 font-medium py-2 px-3 rounded-lg border border-slate-200">
                                 Dr. {user.full_name || user.username}
                             </div>
                         ) : (
-                            <select className="input-field" value={selectedDoctor} onChange={e => setSelectedDoctor(e.target.value)} required>
-                                <option value="">{t('select_doctor')}</option>
-                                {doctors.map(d => <option key={d.id} value={d.id}>{d.full_name} - {d.specialty}</option>)}
-                            </select>
+                            <Select
+                                value={selectedDoctor}
+                                onChange={e => setSelectedDoctor(e.target.value)}
+                                required
+                                options={[
+                                    { value: '', label: t('select_doctor') },
+                                    ...doctors.map(d => ({ value: d.id, label: `${d.full_name} - ${d.specialty}` }))
+                                ]}
+                            />
                         )}
-                    </div>
+                    </FormGroup>
                 </div>
 
-                <div className="input-group">
-                    <label className="input-label">{t('patient_label')}</label>
+                <FormGroup label={t('patient_label')} required>
                     <PatientSearchSelect
                         value={selectedPatient}
                         onChange={(val, patient) => {
@@ -148,12 +173,12 @@ const MedicalRequestForm = ({ doctors, onRequestCreated }) => {
                             </div>
                         </div>
                     )}
-                </div>
+                </FormGroup>
 
-                <div className="input-group">
-                    <label className="input-label">
-                        {reqType === 'prescription' ? t('medication') : (reqType === 'license' ? t('diagnosis') : t('motive'))}
-                    </label>
+                <FormGroup
+                    label={reqType === 'prescription' ? t('medication') : (reqType === 'license' ? t('diagnosis') : t('motive'))}
+                    required
+                >
                     {reqType === 'prescription' ? (
                         <div className="flex flex-col gap-3">
                             <div className="flex gap-2">
@@ -227,29 +252,48 @@ const MedicalRequestForm = ({ doctors, onRequestCreated }) => {
                             )}
                         </div>
                     ) : (
-                        <textarea
-                            className="input-field min-h-[100px]"
+                        <Input
+                            type="textarea"
+                            className="min-h-[100px]"
                             value={reqNote}
                             onChange={e => setReqNote(e.target.value)}
                             placeholder={reqType === 'license' ? t('diagnosis_placeholder') : t('certificate_placeholder')}
                             required
                         />
                     )}
-                </div>
+                </FormGroup>
 
-                <div className="flex flex-col gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                <div className="flex flex-col gap-4 p-5 bg-slate-50/80 rounded-2xl border border-slate-200 shadow-inner">
                     <div className="flex items-center gap-3">
                         <input
                             type="checkbox"
                             id="req-bonified"
                             checked={bonified}
                             onChange={e => setBonified(e.target.checked)}
-                            className="w-4 h-4 cursor-pointer accent-blue-600"
+                            className="w-5 h-5 cursor-pointer accent-blue-600 transition-transform hover:scale-110"
                         />
-                        <label htmlFor="req-bonified" className="text-sm font-semibold text-main-700 cursor-pointer select-none">
+                        <label htmlFor="req-bonified" className="text-sm font-bold text-main-800 cursor-pointer select-none">
                             {t('bonificado') || 'Bonificado (Costo $0 para el paciente)'}
                         </label>
                     </div>
+
+                    {!bonified && (
+                        <div className="ml-8 animate-fadeIn">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1 block">{t('payment_method') || 'Tipo de Pago'}</label>
+                            <div className="flex flex-wrap gap-2">
+                                {['cash', 'transfer', 'debit', 'credit', 'mercadopago'].map(m => (
+                                    <button
+                                        key={m}
+                                        type="button"
+                                        onClick={() => setPaymentMethod(m)}
+                                        className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${paymentMethod === m ? 'bg-blue-600 text-white border-blue-600 shadow-md' : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300'}`}
+                                    >
+                                        {t(m) || m.charAt(0).toUpperCase() + m.slice(1)}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
                     <div className="flex items-center gap-3">
                         <input
@@ -257,9 +301,9 @@ const MedicalRequestForm = ({ doctors, onRequestCreated }) => {
                             id="req-forward"
                             checked={sendToDoctor}
                             onChange={e => setSendToDoctor(e.target.checked)}
-                            className="w-4 h-4 cursor-pointer accent-blue-600"
+                            className="w-5 h-5 cursor-pointer accent-blue-600 transition-transform hover:scale-110"
                         />
-                        <label htmlFor="req-forward" className="text-sm font-semibold text-main-700 cursor-pointer select-none">
+                        <label htmlFor="req-forward" className="text-sm font-bold text-main-800 cursor-pointer select-none">
                             {t('send_to_doctor') || 'Enviar a revisión médica'}
                         </label>
                     </div>

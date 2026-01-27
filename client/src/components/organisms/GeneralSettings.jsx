@@ -27,13 +27,46 @@ const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => {
                         label="Permitir a Secretarias editar turnos anteriores"
                     />
 
-                    <Switch
-                        id="enable-secretary-unrestricted-crud"
-                        checked={settings.enable_secretary_unrestricted_crud === 'true'}
-                        onChange={(val) => updateSetting('enable_secretary_unrestricted_crud', val)}
-                        disabled={!isAdmin}
-                        label="Habilitar Gestión Global (CRUD) de turnos en cualquier estado para Secretarias"
-                    />
+                    <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <h4 className="font-bold text-sm text-slate-500 uppercase tracking-wider mb-4">Gestión de Secretarias (CRUD)</h4>
+                        <div className="space-y-4">
+                            <Switch
+                                id="sec-crud-appointments"
+                                checked={settings.enable_secretary_crud_appointments === 'true'}
+                                onChange={(val) => updateSetting('enable_secretary_crud_appointments', val)}
+                                disabled={!isAdmin}
+                                label="Turnos (Cualquier estado)"
+                            />
+                            <Switch
+                                id="sec-crud-requests"
+                                checked={settings.enable_secretary_crud_requests === 'true'}
+                                onChange={(val) => updateSetting('enable_secretary_crud_requests', val)}
+                                disabled={!isAdmin}
+                                label="Flujo de Solicitudes (Requests)"
+                            />
+                            <Switch
+                                id="sec-crud-prescriptions"
+                                checked={settings.enable_secretary_crud_prescriptions === 'true'}
+                                onChange={(val) => updateSetting('enable_secretary_crud_prescriptions', val)}
+                                disabled={!isAdmin}
+                                label="Recetas (Modificar/Eliminar)"
+                            />
+                            <Switch
+                                id="sec-crud-licenses"
+                                checked={settings.enable_secretary_crud_licenses === 'true'}
+                                onChange={(val) => updateSetting('enable_secretary_crud_licenses', val)}
+                                disabled={!isAdmin}
+                                label="Licencias y Certificados"
+                            />
+                            <Switch
+                                id="sec-crud-files"
+                                checked={settings.enable_secretary_crud_files === 'true'}
+                                onChange={(val) => updateSetting('enable_secretary_crud_files', val)}
+                                disabled={!isAdmin}
+                                label="Archivos de Pacientes"
+                            />
+                        </div>
+                    </div>
 
                     <Switch
                         id="enable-secretary-finance-crud"

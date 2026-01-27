@@ -29,7 +29,7 @@ const Dashboard = () => {
         navigate
     } = controller;
 
-    if (!user) return <div className="status-display"><div className="status-display__spinner"></div></div>;
+    if (!user) return <div className="centered-loader"><div className="status-display__spinner"></div></div>;
 
     return (
         <div className="app-layout">

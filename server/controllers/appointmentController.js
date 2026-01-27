@@ -38,8 +38,12 @@ exports.createAppointment = async (req, res) => {
         // Convert UTC/ISO input -> Argentina Local Time for DB
         const formattedDate = new Date(appointment_date).toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace('T', ' ');
 
-        // [NEW] Remove from Recently Freed Slots if we are booking it (Confirmed/Pending OR Reserved)
-        await conn.query("DELETE FROM recently_freed_slots WHERE doctor_id = ? AND slot_date = ?", [doctor_id, formattedDate]);
+        // [NEW] Remove from Recently Freed Slots if we are booking it (Safe Wrap)
+        try {
+            await conn.query("DELETE FROM recently_freed_slots WHERE doctor_id = ? AND slot_date = ?", [doctor_id, formattedDate]);
+        } catch (dbErr) {
+            console.warn("[Soft Fail] recently_freed_slots delete failed:", dbErr.message);
+        }
 
         // [NEW] Check for Reserved Slot Overwrite
         // If a slot is 'reserved' (provisional), another user can book it (overwrite it).
@@ -64,11 +68,15 @@ exports.createAppointment = async (req, res) => {
                 const oldPatientName = oldPatient.length > 0 ? oldPatient[0].full_name : 'Paciente desconocido';
 
 
-                // 1. Move to overwritten list
-                await conn.query(
-                    "INSERT INTO overwritten_reservations (doctor_id, slot_date, patient_id, patient_name) VALUES (?, ?, ?, ?)",
-                    [oldAppt.doctor_id, oldAppt.appointment_date, oldAppt.patient_id, oldPatientName]
-                );
+                // 1. Move to overwritten list - Safe Wrap
+                try {
+                    await conn.query(
+                        "INSERT INTO overwritten_reservations (doctor_id, slot_date, patient_id, patient_name) VALUES (?, ?, ?, ?)",
+                        [oldAppt.doctor_id, oldAppt.appointment_date, oldAppt.patient_id, oldPatientName]
+                    );
+                } catch (dbErr) {
+                    console.warn("[Soft Fail] overwritten_reservations insert failed:", dbErr.message);
+                }
 
                 // 2. Delete the reserved appointment to allow new booking
                 await conn.query("DELETE FROM appointments WHERE id = ?", [oldAppt.id]);
@@ -302,60 +310,7 @@ exports.deleteAppointment = async (req, res) => {
 
         const now = new Date();
         const apptDate = new Date(appt.appointment_date);
-
-        // This block is replaced by the centralized override check above
-        // We leave the variable definitions as they might be used earlier or later, but the logic flow is changed.
-        // Actually, to make it clean, I should have replaced the whole block. 
-        // Let's rely on the previous chunk to handle the logic insertion and just remove this old block validation here.
-        // BUT wait, I only inserted the check *after* the medical records check in the previous chunk. 
-        // And I did NOT remove lines 294-307. So I must remove them now to avoid duplication/conflicting logic.
-        // Wait, the ReplacementChunk I just wrote above targets lines 315-322 (Medical Records). 
-        // The "Past Block" is lines 294-307. 
-        // The "Completed Block" is lines 309-313.
-        // My previous chunk inserted the override Logic *after* Medical Records check (315-322).
-        // This means the code flow is:
-        // 1. Get Appt
-        // 2. [OLD] Block Past (294-307) <-- This will run BEFORE my new logic!
-        // 3. [OLD] Block Completed (309-313)
-        // 4. Medical Records Check (315-322)
-        // 5. [NEW] Override Check
-
-        // CORRECTION: I need to replace the EARLIER checks (294-313) with the new logic, or move them.
-        // Since I'm using `multi_replace`, I can replace 294-313 with an empty string or the new logic.
-
-        // Let's rewrite the plan for `deleteAppointment` in `appointmentController.js` to be safe.
-        // I will replace the entire block from line 294 to 313 with the new logic. 
-
-        // However, I already submitted the previous chunk which *appended* logic after 322. 
-        // I should have looked closer at line numbers. 
-        // If I run this tool call now, it will apply edits.
-        // Let's cancel this complicated thought and just use the tool call correctly.
-
-        // I will use ONE chunk to replace lines 294 to 322 with the NEW comprehensive logic.
-        // This covers Past, Completed, and Medical Records (we usually don't override medical records deletion protection unless explicit, but the plan said "bypass past/completed checks").
-        // I will keep Medical Records protection absolute (no override) for safety, or included? 
-        // The error message "Cannot delete... has associated medical records" implies data integrity. I should probably keep that check strict.
-        // So:
-        // 1. Medical Records Check (Strict)
-        // 2. Override Check
-        // 3. Past/Completed Checks (Conditioned on Override)
-
-        // Original code order:
-        // 294-307: Past Check
-        // 309-313: Completed Check
-        // 315-321: Medical Records Check
-
-        // New proposed order:
-        // 1. Medical Records Check (Move up or keep)
-        // 2. Override Check Logic
-        // 3. Past Check (if !override)
-        // 4. Completed Check (if !override)
-
-        // So I will replace 294 to 321 with the whole new block.
-        // Wait, 321 ends the medical check block.
-
-        // Let's retry the replacement chunks for clarity.
-
+        const apptFormatted = apptDate.toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace('T', ' ');
 
         // 3. Check for "Other Completed Actions" (Medical Records)
         const prescriptions = await conn.query("SELECT id FROM prescriptions WHERE appointment_id = ?", [id]);
@@ -366,7 +321,6 @@ exports.deleteAppointment = async (req, res) => {
         }
 
         // [NEW] ADMIN OVERRIDE CHECK
-        // If we are about to fail due to restrictions (Past or Completed), check for Admin Password
         let override = false;
         if (req.body.adminPassword) {
             const isValid = await validateAdminPassword(conn, req.body.adminPassword);
@@ -380,9 +334,6 @@ exports.deleteAppointment = async (req, res) => {
 
         // 1. Block Deletion of Past Appointments (if not overridden)
         if (!override && req.user.role !== 'admin') {
-            // Re-evaluate past check logic
-            const now = new Date();
-            const apptDate = new Date(appt.appointment_date);
             if (apptDate < now) {
                 if (req.user.role === 'secretary') {
                     const settingRows = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'allow_secretary_edit_past_appointments'");
@@ -398,9 +349,10 @@ exports.deleteAppointment = async (req, res) => {
 
         // 2. Block Deletion of Completed/Arrived Appointments (if not overridden)
         if (!override && ['completed', 'attended', 'arrived'].includes(appt.status)) {
-            if (settings.enable_secretary_unrestricted_crud === 'true') {
-                // permitted by global setting
-            } else {
+            const crudSetting = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'enable_secretary_unrestricted_crud'");
+            const unrestrictedCrud = crudSetting.length > 0 && (crudSetting[0].setting_value === 'true' || crudSetting[0].setting_value === '1');
+
+            if (!unrestrictedCrud) {
                 return res.status(403).json({ error: "Requiere autorización de Administrador (Turno Completado/Atendido).", type: 'AUTH_REQUIRED' });
             }
         }
@@ -424,12 +376,13 @@ exports.deleteAppointment = async (req, res) => {
             await conn.query("DELETE FROM transactions WHERE appointment_id = ? AND status = 'pending'", [id]);
         }
 
-        // [NEW] Add to Recently Freed Slots (DB)
-        const apptMoment = new Date(appt.appointment_date);
-        const apptFormatted = apptMoment.toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace('T', ' ');
-
-        await conn.query("DELETE FROM recently_freed_slots WHERE doctor_id = ? AND slot_date = ?", [appt.doctor_id, apptFormatted]);
-        await conn.query("INSERT INTO recently_freed_slots (doctor_id, slot_date) VALUES (?, ?)", [appt.doctor_id, apptFormatted]);
+        // [NEW] Add to Recently Freed Slots (DB) - Safe Wrap
+        try {
+            await conn.query("DELETE FROM recently_freed_slots WHERE doctor_id = ? AND slot_date = ?", [appt.doctor_id, apptFormatted]);
+            await conn.query("INSERT INTO recently_freed_slots (doctor_id, slot_date) VALUES (?, ?)", [appt.doctor_id, apptFormatted]);
+        } catch (dbErr) {
+            console.warn("[Soft Fail] recently_freed_slots update failed:", dbErr.message);
+        }
 
 
         // --- Google Calendar Sync (Delete) ---
@@ -446,7 +399,7 @@ exports.deleteAppointment = async (req, res) => {
         await conn.query("DELETE FROM appointments WHERE id = ?", [id]);
 
         const loggedName = appt.full_name || appt.reason || `Appt ID ${id}`;
-        logAction(req, 'DELETE_APPOINTMENT', `Deleted appointment ID ${id} (Secretary Error) [Patient: ${loggedName}] [Date: ${apptFormatted}]`);
+        logAction(req, 'DELETE_APPOINTMENT', `Deleted appointment ID ${id} (Secretary) [Patient: ${loggedName}] [Date: ${apptFormatted}]`);
 
         res.json({ message: "Appointment deleted" });
     } catch (err) {
@@ -500,23 +453,41 @@ exports.updateAppointment = async (req, res) => {
             }
         }
 
+        // [NEW] Block Editing of Completed/Attended Appointments (if not overridden)
+        if (!override && req.user.role === 'secretary' && ['completed', 'attended', 'arrived'].includes(exists[0].status)) {
+            const crudSetting = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'enable_secretary_unrestricted_crud'");
+            const unrestrictedCrud = crudSetting.length > 0 && (crudSetting[0].setting_value === 'true' || crudSetting[0].setting_value === '1');
+
+            if (!unrestrictedCrud) {
+                return res.status(403).json({ error: "Requiere autorización de Administrador (Turno Completado/Atendido).", type: 'AUTH_REQUIRED' });
+            }
+        }
+
         // Only change status to 'rescheduled' if the date/time actually changed
         const isReschedule = apptDate.getTime() !== oldDateObj.getTime();
         const newStatus = isReschedule ? 'rescheduled' : exists[0].status;
 
         if (isReschedule) {
-            // [NEW] Add OLD date to Recently Freed Slots logic
-            const oldMoment = new Date(oldDate);
-            const oldFormatted = oldMoment.toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace('T', ' ');
+            // [NEW] Add OLD date to Recently Freed Slots logic - Safe Wrap
+            try {
+                const oldMoment = new Date(oldDate);
+                const oldFormatted = oldMoment.toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace('T', ' ');
 
-            await conn.query("DELETE FROM recently_freed_slots WHERE doctor_id = ? AND slot_date = ?", [exists[0].doctor_id, oldFormatted]);
-            await conn.query("INSERT INTO recently_freed_slots (doctor_id, slot_date) VALUES (?, ?)", [exists[0].doctor_id, oldFormatted]);
+                await conn.query("DELETE FROM recently_freed_slots WHERE doctor_id = ? AND slot_date = ?", [exists[0].doctor_id, oldFormatted]);
+                await conn.query("INSERT INTO recently_freed_slots (doctor_id, slot_date) VALUES (?, ?)", [exists[0].doctor_id, oldFormatted]);
+
+                // [NEW] Remove the NEW target slot from Recently Freed if it was there
+                const formattedNewDateSafe = new Date(appointment_date).toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace('T', ' ');
+                await conn.query("DELETE FROM recently_freed_slots WHERE doctor_id = ? AND slot_date = ?", [exists[0].doctor_id, formattedNewDateSafe]);
+            } catch (dbErr) {
+                console.warn("[Soft Fail] recently_freed_slots update failed (Reschedule):", dbErr.message);
+            }
 
             // [NEW] Check for Reserved Slot Overwrite on NEW date
             const formattedNewDate = new Date(appointment_date).toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace('T', ' ');
 
-            // [NEW] Remove the NEW target slot from Recently Freed if it was there
-            await conn.query("DELETE FROM recently_freed_slots WHERE doctor_id = ? AND slot_date = ?", [exists[0].doctor_id, formattedNewDate]);
+            // Note: skipping redundant DELETE here as it's inside the try block above or handled
+
 
             const existingReserved = await conn.query(
                 "SELECT id, doctor_id, appointment_date, patient_id, status, google_event_id FROM appointments WHERE doctor_id = ? AND appointment_date = ? AND status = 'reserved' AND id != ?",
@@ -528,11 +499,15 @@ exports.updateAppointment = async (req, res) => {
                 const oldPatient = await conn.query("SELECT full_name FROM patients WHERE id = ?", [oldAppt.patient_id]);
                 const oldPatientName = oldPatient.length > 0 ? oldPatient[0].full_name : 'Paciente desconocido';
 
-                // 1. Move to overwritten list
-                await conn.query(
-                    "INSERT INTO overwritten_reservations (doctor_id, slot_date, patient_id, patient_name) VALUES (?, ?, ?, ?)",
-                    [oldAppt.doctor_id, oldAppt.appointment_date, oldAppt.patient_id, oldPatientName]
-                );
+                // 1. Move to overwritten list - Safe Wrap
+                try {
+                    await conn.query(
+                        "INSERT INTO overwritten_reservations (doctor_id, slot_date, patient_id, patient_name) VALUES (?, ?, ?, ?)",
+                        [oldAppt.doctor_id, oldAppt.appointment_date, oldAppt.patient_id, oldPatientName]
+                    );
+                } catch (dbErr) {
+                    console.warn("[Soft Fail] overwritten_reservations insert failed (Update):", dbErr.message);
+                }
 
                 // 2. Delete the reserved appointment
                 await conn.query("DELETE FROM appointments WHERE id = ?", [oldAppt.id]);
@@ -653,7 +628,7 @@ exports.updateStatus = async (req, res) => {
 
         conn = await pool.getConnection();
 
-        const exists = await conn.query("SELECT * FROM appointments WHERE id = ?", [id]);
+        const [exists] = await conn.query("SELECT * FROM appointments WHERE id = ?", [id]);
         if (exists.length === 0) return res.status(404).send("Appointment not found");
 
         await conn.query("UPDATE appointments SET status = ?, cancellation_reason = ? WHERE id = ?", [status, reason || null, id]);
@@ -680,13 +655,17 @@ exports.updateStatus = async (req, res) => {
         }
 
         if (['cancelled', 'absent', 'suspended'].includes(status)) {
-            // [NEW] Add to Recently Freed Slots (DB)
-            const appt = exists[0];
-            const apptMoment = new Date(appt.appointment_date);
-            const apptFormatted = apptMoment.toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace('T', ' ');
+            // [NEW] Add to Recently Freed Slots (DB) - Safe Wrap
+            try {
+                const appt = exists[0];
+                const apptMoment = new Date(appt.appointment_date);
+                const apptFormatted = apptMoment.toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace('T', ' ');
 
-            await conn.query("DELETE FROM recently_freed_slots WHERE doctor_id = ? AND slot_date = ?", [appt.doctor_id, apptFormatted]);
-            await conn.query("INSERT INTO recently_freed_slots (doctor_id, slot_date) VALUES (?, ?)", [appt.doctor_id, apptFormatted]);
+                await conn.query("DELETE FROM recently_freed_slots WHERE doctor_id = ? AND slot_date = ?", [appt.doctor_id, apptFormatted]);
+                await conn.query("INSERT INTO recently_freed_slots (doctor_id, slot_date) VALUES (?, ?)", [appt.doctor_id, apptFormatted]);
+            } catch (dbErr) {
+                console.warn("[Soft Fail] recently_freed_slots update failed:", dbErr.message);
+            }
 
             const pId = exists[0].patient_id;
             const isError = reason && (
@@ -695,8 +674,9 @@ exports.updateStatus = async (req, res) => {
                 reason.toLowerCase().includes('prueba')
             );
 
-            if (pId && !isError) {
-                // Decrement behavior rating (min 0) for cancellations (non-error), absences, and suspensions
+            // ONLY decrement behavior rating for ABSENT (NO-SHOW)
+            // Cancelled and Suspended should NOT affect reputation as per user request.
+            if (pId && !isError && status === 'absent') {
                 await conn.query("UPDATE patients SET behavior_rating = GREATEST(0, behavior_rating - 1) WHERE id = ?", [pId]);
                 console.log(`DEBUG: Decremented behavior rating for patient ${pId} due to ${status}.`);
             }
@@ -714,8 +694,11 @@ exports.updateStatus = async (req, res) => {
         const pName = pat.length > 0 ? pat[0].full_name : pId;
         const pDetails = pat.length > 0 ? pat[0] : {};
 
-        const [doc] = await conn.query("SELECT full_name FROM doctors WHERE id = ?", [exists[0].doctor_id]);
-        const docName = doc.length > 0 ? doc[0].full_name : 'Unknown Dr';
+        const docData = await conn.query("SELECT full_name FROM doctors WHERE id = ?", [exists[0].doctor_id]);
+        // MySQL2 returns [rows, fields] but our pool wrapper might return just rows depending on config.
+        // Assuming standard behavior: Query result is an array of rows.
+        const doctor = Array.isArray(docData) && docData.length > 0 ? docData[0] : null;
+        const docName = doctor && doctor.full_name ? doctor.full_name : 'Unknown Dr';
 
         let logMsg = `[Status Change] ${status.toUpperCase()} - Patient: ${pName} [Dr: ${docName}]`;
         if (reason) {
@@ -728,8 +711,8 @@ exports.updateStatus = async (req, res) => {
         // --- Google Calendar Sync ---
         // --- Google Calendar Sync ---
         // Prepare Data
-        const [docData] = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [exists[0].doctor_id]);
-        const durationMinutes = (docData && docData.length > 0 && docData[0].appointment_duration) ? docData[0].appointment_duration : 60;
+        const [durationRows] = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [exists[0].doctor_id]);
+        const durationMinutes = (durationRows && durationRows.length > 0 && durationRows[0].appointment_duration) ? durationRows[0].appointment_duration : 60;
 
         const startTime = new Date(exists[0].appointment_date);
         const endTime = new Date(startTime.getTime() + durationMinutes * 60 * 1000);

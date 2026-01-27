@@ -68,12 +68,12 @@ const Patients = () => {
         return 1;
     };
 
-    if (loading) return <div className="status-display"><div className="status-display__spinner"></div><p>{t('loading')}</p></div>;
+    if (loading) return <div className="centered-loader"><div className="status-display__spinner"></div><p>{t('loading')}</p></div>;
 
     if (detailsLoading) {
         return (
             <MainLayout>
-                <div className="status-display"><div className="status-display__spinner"></div></div>
+                <div className="centered-loader"><div className="status-display__spinner"></div></div>
             </MainLayout>
         );
     }
@@ -109,6 +109,8 @@ const Patients = () => {
                     onClose={() => setQrModal({ ...qrModal, open: false })}
                     url={qrModal.url}
                     expiresAt={qrModal.expiry}
+                    patientName={qrModal.patientName}
+                    patientPhone={qrModal.patientPhone}
                 />
             </MainLayout>
         );

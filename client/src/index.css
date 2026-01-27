@@ -873,7 +873,9 @@ input:checked+.slider:before {
 /* Layout */
 .app-layout {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+  /* Prevent body scroll, layout handles it */
 }
 
 .sidebar {
@@ -886,12 +888,13 @@ input:checked+.slider:before {
   padding: 2.5rem 1.5rem;
   display: flex;
   flex-direction: column;
-  position: sticky;
-  top: 0;
-  height: 100vh;
+  height: 100%;
   overflow-y: auto;
+  /* Independent scroll for sidebar */
   box-sizing: border-box;
-  border-right: 1px solid var(--gray-200);
+  flex-shrink: 0;
+  /* Prevent sidebar from shrinking */
+  z-index: 10;
 }
 
 .sidebar-header {
@@ -4495,6 +4498,20 @@ input:checked+.slider:before {
   color: var(--green-500);
 }
 
+.centered-loader {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  width: 100%;
+  gap: 1rem;
+}
+
+.centered-loader .status-display__spinner {
+  margin: 0;
+}
+
 /* Requests Page & Requirements List - BEM Styles */
 .requests-page__header {
   border-bottom: 1px solid var(--gray-200);
@@ -4973,7 +4990,7 @@ input:checked+.slider:before {
 
 .stats-card {
   text-align: center;
-  padding: 1.5rem !important;
+  padding: 1.5rem;
 }
 
 .stats-card__title {
@@ -4990,4 +5007,141 @@ input:checked+.slider:before {
   font-weight: 800;
   color: var(--blue-600);
   letter-spacing: -0.02em;
+}
+
+/* Ensure print section is hidden on screen even if Tailwind 'hidden' fails */
+.print-section {
+  display: none;
+}
+
+/* --- Print Styles --- */
+@media print {
+
+  /* Hide all UI elements except the explicit print section */
+  .app-layout>*:not(.print-section),
+  .sidebar,
+  .no-print,
+  .modal,
+  .modal-overlay,
+  button {
+    display: none !important;
+  }
+
+  /* Show the print section */
+  .print-section {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    visibility: visible !important;
+    background: white !important;
+  }
+
+  /* Reset layout for print */
+  body,
+  .app-layout {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Ensure table prints well */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 10pt !important;
+  }
+
+  th,
+  td {
+    border: 1px solid #ddd !important;
+    padding: 6px !important;
+    text-align: left !important;
+    color: black !important;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+}
+/* Language Selector (Atom) */
+.language-selector {
+  width: 100%;
+}
+
+.language-selector__button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  transition: background-color 0.2s;
+  color: var(--gray-600);
+}
+
+.language-selector__button:hover {
+  background-color: var(--gray-100);
+  color: var(--gray-900);
+}
+
+.language-selector__icon {
+  font-size: 1.25rem;
+  margin-right: 0.75rem;
+}
+
+.language-selector__text {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Tooltip Styles */
+[data-tooltip] {
+  position: relative;
+  cursor: pointer;
+}
+
+[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 110%; /* Place it above the element */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--gray-800);
+  color: #fff;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  box-shadow: var(--shadow-md);
+  z-index: 1000;
+  opacity: 0;
+  animation: fadeInTooltip 0.2s forwards;
+  pointer-events: none; /* Prevent tooltip from blocking clicks */
+}
+
+/* Optional triangle for tooltip */
+[data-tooltip]:hover::before {
+  content: '';
+  position: absolute;
+  bottom: 100%; /* Slightly overlap trigger */
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--gray-800) transparent transparent transparent;
+  z-index: 1000;
+  opacity: 0;
+  animation: fadeInTooltip 0.2s forwards;
+}
+
+@keyframes fadeInTooltip {
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-5px);
+  }
 }

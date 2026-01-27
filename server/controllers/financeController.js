@@ -25,9 +25,12 @@ exports.createTransaction = async (req, res) => {
 
         conn = await pool.getConnection();
 
-        // [FIX] Clean up existing pending debt for this appointment (if any) to prevent duplicates
+        // [FIX] Clean up existing pending debt for this appointment/request (if any) to prevent duplicates
         if (appointment_id) {
             await conn.query("DELETE FROM transactions WHERE appointment_id = ? AND status = 'pending'", [appointment_id]);
+        }
+        if (req.body.request_id) {
+            await conn.query("DELETE FROM transactions WHERE request_id = ? AND status = 'pending'", [req.body.request_id]);
         }
 
         // 1. Register the Payments
@@ -58,38 +61,12 @@ exports.createTransaction = async (req, res) => {
 
         // 3. Update Appointment payment_status if apptId is provided
         if (appointment_id) {
-            const finalStatus = Number(debt_amount) > 0 ? (Number(amount) > 0 ? 'partial' : 'debt') : 'paid';
-            const isPaid = finalStatus === 'paid' ? 1 : 0;
-            await conn.query("UPDATE appointments SET payment_status = ?, is_paid = ? WHERE id = ?", [finalStatus, isPaid, appointment_id]);
+            await syncAppointmentPaymentStatus(conn, appointment_id, req.user?.user_id);
+        }
 
-            // --- Google Calendar Sync ---
-            const [appt] = await conn.query("SELECT * FROM appointments WHERE id = ?", [appointment_id]);
-            if (appt && appt.google_event_id) {
-                const patData = await conn.query("SELECT full_name, dni, phone, email FROM patients WHERE id = ?", [appt.patient_id]);
-                const pName = patData.length > 0 ? patData[0].full_name : appt.patient_id;
-                const pDetails = patData.length > 0 ? patData[0] : {};
-
-                const newDescription = `Motivo: ${appt.reason || 'N/A'}\nPaciente: ${pName} (DNI: ${pDetails.dni || 'N/A'})\nTeléfono: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nEstado: ${appt.status}\nPago: ${finalStatus}\nCreado por Aplicación de Secretaría`;
-
-                const updatePayload = {
-                    summary: `Consultorio: ${pName} [${finalStatus === 'debt' ? 'DEUDA' : (finalStatus === 'paid' ? 'PAGADO' : 'PARCIAL')}]`,
-                    status: appt.status,
-                    paymentStatus: finalStatus,
-                    description: newDescription
-                };
-
-                try {
-                    const result = await googleController.updateEventHelper(appt.doctor_id, appt.google_event_id, updatePayload, req.user?.user_id);
-                    if (!result) throw new Error("Sync failed (returned null)");
-                } catch (syncErr) {
-                    console.warn("Google Sync Failed (Finance Transaction Update), queueing retry:", syncErr.message);
-                    await conn.query(
-                        "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'update', ?, 'pending')",
-                        [appointment_id, appt.doctor_id, JSON.stringify({ eventId: appt.google_event_id, updates: updatePayload })]
-                    );
-                }
-            }
-            // ----------------------------
+        // 4. Update Request payment_status if request_id is provided
+        if (req.body.request_id) {
+            await syncRequestPaymentStatus(conn, req.body.request_id);
         }
 
         // Calculate total for logging if using multiple payments
@@ -564,6 +541,11 @@ exports.deleteTransaction = async (req, res) => {
             await syncAppointmentPaymentStatus(conn, oldTx.appointment_id, req.user?.user_id);
         }
 
+        // 4. If linked to a request, re-calculate
+        if (oldTx.request_id) {
+            await syncRequestPaymentStatus(conn, oldTx.request_id);
+        }
+
         logAction(req, 'FINANCE_DELETE', `Deleted transaction ${id}: $${oldTx.amount} - ${oldTx.description}`);
         res.json({ message: "Transaction deleted" });
     } catch (err) {
@@ -616,4 +598,22 @@ async function syncAppointmentPaymentStatus(conn, appointmentId, userId) {
             );
         }
     }
+}
+
+async function syncRequestPaymentStatus(conn, requestId) {
+    const txs = await conn.query("SELECT amount, status FROM transactions WHERE request_id = ?", [requestId]);
+
+    let totalPaid = 0;
+    let totalPending = 0;
+    txs.forEach(t => {
+        if (t.status === 'paid') totalPaid += Number(t.amount);
+        else if (t.status === 'pending') totalPending += Number(t.amount);
+    });
+
+    let finalStatus = 'pending'; // Default for no transactions
+    if (totalPaid > 0 && totalPending > 0) finalStatus = 'partial';
+    else if (totalPaid > 0 && totalPending === 0) finalStatus = 'paid';
+    else if (totalPaid === 0 && totalPending > 0) finalStatus = 'debt';
+
+    await conn.query("UPDATE medical_requests SET payment_status = ?, debt_amount = ? WHERE id = ?", [finalStatus, totalPending, requestId]);
 }

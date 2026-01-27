@@ -29,11 +29,17 @@ const MedicalDocuments = () => {
         fileToDelete, setFileToDelete, actionModal, setActionModal, actionNote, setActionNote,
         paymentModal, setPaymentModal, editData, setEditData, licenseEditData, setLicenseEditData,
         requestEditData, setRequestEditData,
+        reqType, setReqType, reqNote, setReqNote, bonified, setBonified,
+        sendToDoctor, setSendToDoctor,
 
         // Handlers
         filterItem, handleUpdateStatus, handleFileUpload, confirmFileDelete,
         handleUpdatePrescription, handleUpdateLicense, handleUpdateRequest, handleDeleteRequest,
-        handleDeletePrescription, handleDeleteLicense, fetchRequests
+        handleDeletePrescription, handleDeleteLicense, fetchRequests, handleEditItem,
+
+        // Permissions
+        canDeletePrescription, canDeleteLicense, canDeleteFile, canDeleteRequest,
+        printData
     } = controller;
 
     // --- Derived Data for Combined Views ---
@@ -66,27 +72,13 @@ const MedicalDocuments = () => {
         }))
     ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-    const handleEditItem = (item) => {
-        if (item._origin === 'prescription') {
-            setEditData({ medications: item.medications, instructions: item.instructions });
-            setSelectedPrescription(item);
-            setIsEditing(true);
-        } else if (item._origin === 'license') {
-            setLicenseEditData({ start_date: item.start_date, days_duration: item.days_duration, diagnosis: item.diagnosis });
-            setSelectedLicense(item);
-            setIsEditing(true);
-        } else if (item._origin === 'request') {
-            setRequestEditData({ request_note: item.request_note, doctor_note: item.doctor_note, debt_amount: item.debt_amount || 0 });
-            setSelectedRequest(item);
-            setIsEditing(true);
-        }
-    };
+
 
     return (
         <div className="app-layout">
             <Sidebar />
 
-            <main className="main-content">
+            <main className="main-content no-print">
                 <header className="page-header">
                     <div className="page-header__info">
                         <h1 className="page-header__title">{t('medical_documents')}</h1>
@@ -152,22 +144,47 @@ const MedicalDocuments = () => {
                             {requestsSubTab === 'new' ? (
                                 <MedicalRequestForm
                                     doctors={doctors}
+                                    initialType={reqType}
+                                    initialSendToDoctor={sendToDoctor}
                                     onRequestCreated={() => {
                                         fetchRequests();
                                         setRequestsSubTab('list');
                                     }}
                                 />
                             ) : (
-                                <div className="flex flex-col gap-4">
-                                    <h3 className="section-title mb-0">{user.role === 'doctor' ? t('pending_requests') : t('request_status')}</h3>
+                                <>
+                                    <div className="flex justify-between items-center mb-0">
+                                        <h3 className="section-title mb-0">{user.role === 'doctor' ? t('pending_requests') : t('request_status')}</h3>
+                                        <div className="flex gap-2">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={controller.handleExportJSON}
+                                                className="border-slate-300 text-slate-600 hover:bg-slate-50"
+                                            >
+                                                💾 {t('export_json')}
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={controller.handlePrintPrescriptions}
+                                                className="border-slate-300 text-slate-600 hover:bg-slate-50"
+                                            >
+                                                🖨️ {t('print_backup')}
+                                            </Button>
+                                        </div>
+                                    </div>
                                     <MedicalRequestList
                                         requests={requests}
                                         filterItem={filterItem}
                                         handleDeleteRequest={handleDeleteRequest}
                                         openActionModal={(type, id) => setActionModal({ open: true, type, id })}
                                         setPaymentModal={setPaymentModal}
+                                        canDelete={user.role === 'admin' || canDeleteRequest}
+                                        handleEditRequest={handleEditItem}
                                     />
-                                </div>
+                                </>
+
                             )}
                         </div>
                     )}
@@ -231,7 +248,7 @@ const MedicalDocuments = () => {
                                                                     <span className="font-medium text-main-600">{f.patient_name}</span>
                                                                 </td>
                                                                 <td className="pr-6 text-right">
-                                                                    {(user.role === 'admin' || user.role === 'secretary') && (
+                                                                    {(user.role === 'admin' || canDeleteFile) && (
                                                                         <Button
                                                                             variant="ghost"
                                                                             size="sm-compact"
@@ -255,7 +272,53 @@ const MedicalDocuments = () => {
                     )}
 
                     {['prescriptions', 'licenses', 'certificates'].includes(activeTab) && (
-                        <div className="animate-fadeIn">
+                        <div className="animate-fadeIn flex flex-col gap-4">
+                            <div className="flex justify-between items-center">
+                                <h2 className="section-title mb-0">
+                                    {activeTab === 'prescriptions' ? '💊 ' + t('prescriptions') :
+                                        activeTab === 'licenses' ? '📄 ' + t('medical_licenses') :
+                                            '📜 ' + (t('certificates') || 'Certificados')}
+                                </h2>
+                                {((activeTab === 'prescriptions' && canDeletePrescription) ||
+                                    (['licenses', 'certificates'].includes(activeTab) && canDeleteLicense) ||
+                                    user.role === 'admin') && (
+                                        <div className="flex gap-2">
+                                            {activeTab === 'prescriptions' && (
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={controller.handleExportJSON}
+                                                    className="border-slate-300 text-slate-600 hover:bg-slate-50"
+                                                >
+                                                    💾 {t('export_json')}
+                                                </Button>
+                                            )}
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={controller.handlePrintPrescriptions}
+                                                className="border-slate-300 text-slate-600 hover:bg-slate-50"
+                                            >
+                                                🖨️ {t('print_backup')}
+                                            </Button>
+                                            <Button
+                                                variant="primary"
+                                                size="sm"
+                                                onClick={() => {
+                                                    setReqType(activeTab === 'prescriptions' ? 'prescription' :
+                                                        activeTab === 'licenses' ? 'license' : 'certificate');
+                                                    setActiveTab('requests');
+                                                    setRequestsSubTab('new');
+                                                    // Pre-select direct completion if permitted
+                                                    setSendToDoctor(false);
+                                                }}
+                                            >
+                                                ➕ {t('add_new') || 'Agregar Nuevo'}
+                                            </Button>
+                                        </div>
+
+                                    )}
+                            </div>
                             <MedicalHistoryTable
                                 items={
                                     activeTab === 'prescriptions' ? combinedPrescriptions :
@@ -268,6 +331,11 @@ const MedicalDocuments = () => {
                                     activeTab === 'prescriptions' ? handleDeletePrescription :
                                         activeTab === 'licenses' ? handleDeleteLicense :
                                             (id, item) => handleDeleteRequest(id, item)
+                                }
+                                canDelete={
+                                    user.role === 'admin' ||
+                                    (activeTab === 'prescriptions' && canDeletePrescription) ||
+                                    (['licenses', 'certificates'].includes(activeTab) && canDeleteLicense)
                                 }
                                 icon={activeTab === 'prescriptions' ? '💊' : activeTab === 'licenses' ? '📄' : '📜'}
                                 title={
@@ -282,7 +350,63 @@ const MedicalDocuments = () => {
                 </div>
             </main>
 
+
+
+            {/* Print Section - Visible only on Print */}
+            <div className="print-section hidden print:block bg-white p-8 w-full absolute top-0 left-0 z-50">
+                <div className="text-center mb-8 border-b pb-4">
+                    <h1 className="text-2xl font-bold uppercase tracking-wide">Reporte de Recetas y Solicitudes</h1>
+                    <p className="text-sm text-gray-500">Generado el {new Date().toLocaleDateString()} a las {new Date().toLocaleTimeString()}</p>
+                </div>
+
+                <table className="w-full text-sm text-left border-collapse">
+                    <thead>
+                        <tr className="bg-gray-100 border-b-2 border-gray-300">
+                            <th className="py-2 px-2 border">Fecha</th>
+                            <th className="py-2 px-2 border">Paciente</th>
+                            <th className="py-2 px-2 border">Médico</th>
+                            <th className="py-2 px-2 border">Origen</th>
+                            <th className="py-2 px-2 border">Pago</th>
+                            <th className="py-2 px-2 border">Detalle / Medicamentos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {printData && printData.map((item, idx) => (
+                            <tr key={idx} className="border-b border-gray-200">
+                                <td className="py-2 px-2 border w-24">{new Date(item.date).toLocaleDateString()}</td>
+                                <td className="py-2 px-2 border font-medium">{item.patient_name}</td>
+                                <td className="py-2 px-2 border">{item.doctor_name}</td>
+                                <td className="py-2 px-2 border text-xs uppercase text-gray-500">
+                                    {item.source_type === 'direct' ? 'Consulta' : 'Solicitud'}
+                                </td>
+                                <td className="py-2 px-2 border w-24">
+                                    {item.source_type === 'request' ? (
+                                        <span className={`px-2 py-1 rounded text-xs font-bold ${item.payment_status === 'paid' ? 'bg-green-100 text-green-800' :
+                                            item.payment_status === 'debt' ? 'bg-red-100 text-red-800' :
+                                                item.payment_status === 'bonified' ? 'bg-blue-100 text-blue-800' :
+                                                    'bg-gray-100'
+                                            }`}>
+                                            {item.payment_status === 'paid' ? 'PAGADO' :
+                                                item.payment_status === 'debt' ? 'DEUDA' :
+                                                    item.payment_status === 'bonified' ? 'BONIF.' : item.payment_status}
+                                            {item.amount > 0 && ` $${item.amount}`}
+                                        </span>
+                                    ) : (
+                                        <span className="text-gray-400 text-xs">-</span>
+                                    )}
+                                </td>
+                                <td className="py-2 px-2 border text-xs">
+                                    <div className="font-mono whitespace-pre-wrap">{item.medications}</div>
+                                    {item.instructions && <div className="italic text-gray-500 mt-1">{item.instructions}</div>}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
             {/* --- Modals --- */}
+
             <Modal
                 isOpen={actionModal.open}
                 onClose={() => setActionModal({ open: false, type: '', id: null })}
@@ -409,10 +533,47 @@ const MedicalDocuments = () => {
                             <label className="input-label">{t('doctor_reply')}</label>
                             <textarea className="input-field" rows="3" value={requestEditData.doctor_note} onChange={e => setRequestEditData({ ...requestEditData, doctor_note: e.target.value })} />
                         </div>
-                        <div className="input-group">
-                            <label className="input-label">{t('debt_amount')} ($)</label>
-                            <CurrencyInput className="input-field" value={requestEditData.debt_amount} onChange={e => setRequestEditData({ ...requestEditData, debt_amount: e.target.value })} />
+                        <div className="flex items-center gap-3 p-3 bg-blue-50/50 rounded-lg border border-blue-100">
+                            <input
+                                type="checkbox"
+                                id="edit-req-bonified"
+                                checked={requestEditData.bonified}
+                                onChange={e => setRequestEditData({ ...requestEditData, bonified: e.target.checked })}
+                                className="w-5 h-5 cursor-pointer accent-blue-600"
+                            />
+                            <label htmlFor="edit-req-bonified" className="text-sm font-bold text-main-800 cursor-pointer select-none">
+                                {t('bonificado') || 'Bonificado (Costo $0)'}
+                            </label>
                         </div>
+
+                        {!requestEditData.bonified && (
+                            <>
+                                <div className="input-group form-field--amount">
+                                    <label className="input-label font-bold text-main-700">{t('debt_amount')} ($)</label>
+                                    <CurrencyInput
+                                        className="input-field border-slate-200"
+                                        value={requestEditData.debt_amount}
+                                        onChange={e => setRequestEditData({ ...requestEditData, debt_amount: e.target.value })}
+                                    />
+                                </div>
+
+                                <div className="input-group form-field--payment">
+                                    <label className="input-label font-bold text-main-700">{t('payment_method') || 'Tipo de Pago'}</label>
+                                    <div className="flex flex-wrap gap-2 mt-1">
+                                        {['cash', 'transfer', 'debit', 'credit', 'mercadopago'].map(m => (
+                                            <button
+                                                key={m}
+                                                type="button"
+                                                onClick={() => setRequestEditData({ ...requestEditData, payment_method: m })}
+                                                className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all duration-200 ${requestEditData.payment_method === m ? 'bg-blue-600 text-white border-blue-600 shadow-md ring-2 ring-blue-100' : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300'}`}
+                                            >
+                                                {t(m) || m.charAt(0).toUpperCase() + m.slice(1)}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </Modal>
             )}

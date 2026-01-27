@@ -9,6 +9,7 @@ const Button = ({
     disabled = false,
     className = '',
     title = '',
+    tooltip = null,
     icon = null
 }) => {
     const baseStyles = 'btn';
@@ -42,7 +43,8 @@ const Button = ({
             onClick={onClick}
             disabled={disabled}
             className={combinedClassName}
-            title={title}
+            title={title} // Native title as fallback
+            data-tooltip={tooltip}
         >
             {icon && <span className="btn-icon">{icon}</span>}
             {children}

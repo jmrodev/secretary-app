@@ -4,7 +4,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useModal } from '../../context/ModalContext';
 import { copyToClipboard } from '../../utils/clipboardUtils';
 
-const QRCodeModal = ({ isOpen, onClose, url, expiresAt }) => {
+const QRCodeModal = ({ isOpen, onClose, url, expiresAt, patientName, patientPhone }) => {
     const { t } = useLanguage();
     const { alert } = useModal();
 
@@ -27,6 +27,17 @@ const QRCodeModal = ({ isOpen, onClose, url, expiresAt }) => {
             footer={
                 <div className="flex gap-2 justify-end w-full">
                     <button className="btn btn-secondary" onClick={onClose}>{t('close')}</button>
+                    {patientPhone && (
+                        <a
+                            href={`https://wa.me/${patientPhone.replace(/\D/g, '')}?text=${encodeURIComponent(`Hola ${patientName}, por favor ingresa al siguiente enlace para completar tus datos: ${url}`)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-success"
+                            style={{ backgroundColor: '#25D366', borderColor: '#25D366', color: 'white' }}
+                        >
+                            📱 WhatsApp
+                        </a>
+                    )}
                     <button className="btn btn-accent" onClick={handleCopy}>📋 {t('copy_link') || 'Copiar Enlace'}</button>
                     <button className="btn btn-primary" onClick={handlePrint}>🖨️ {t('print')}</button>
                 </div>

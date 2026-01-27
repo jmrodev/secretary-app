@@ -269,6 +269,10 @@ export const translations = {
         certificate: "Certificado",
         certificate_details: "Detalles de Certificado",
         recent_certificates: "Certificados Recientes",
+        export_json: "Exportar JSON",
+        print_backup: "Imprimir Respaldo",
+        prescription_backup: "Respaldo de Recetas",
+
 
         // Finances
         actions: "Acciones",
@@ -435,6 +439,7 @@ export const translations = {
         virtual_consultation_price: "Consulta Virtual ($)",
         prescription_price: "Receta ($)",
         medical_license_price: "Licencia Médica ($)",
+        certificate_price: "Certificado ($)",
         hourly: "Por Hora",
         daily: "Diario",
         weekly: "Semanal",
@@ -596,6 +601,9 @@ export const translations = {
         // Calendar
         months_array: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
         days_short_array: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+        export_json: "Export JSON",
+        print_backup: "Print Backup",
+        prescription_backup: "Prescription Backup",
 
         // Auth
         welcome_back: "Welcome Back",
@@ -901,6 +909,7 @@ export const translations = {
         virtual_consultation_price: "Virtual Consult ($)",
         prescription_price: "Prescription ($)",
         medical_license_price: "Medical License ($)",
+        certificate_price: "Certificate ($)",
         hourly: "Hourly",
         daily: "Daily",
         weekly: "Weekly",

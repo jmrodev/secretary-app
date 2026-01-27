@@ -13,13 +13,13 @@ const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
         <div className="doctor-tariffs-form space-y-6">
             {settings.enable_office_rentals === 'true' && (
                 <div className="bg-slate-50 p-4 rounded-xl space-y-4">
-                    <h4 className="font-bold text-slate-700 uppercase p-0 m-0 text-xs tracking-wider">Configuración de Alquiler</h4>
+                    <h4 className="font-bold text-slate-700 uppercase p-0 m-0 text-xs tracking-wider">{t('rental_configuration') || 'Configuración de Alquiler'}</h4>
                     <div className="grid grid-cols-2 gap-4">
-                        <FormGroup label="Nro. de Consultorio">
+                        <FormGroup label={t('office_number')}>
                             <Input value={data.office_number} onChange={e => handleChange('office_number', e.target.value)} />
                         </FormGroup>
                         <div className="grid grid-cols-2 gap-2">
-                            <FormGroup label="Tipo">
+                            <FormGroup label={t('type')}>
                                 <Select
                                     value={data.rental_type}
                                     onChange={e => handleChange('rental_type', e.target.value)}
@@ -31,7 +31,7 @@ const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
                                     ]}
                                 />
                             </FormGroup>
-                            <FormGroup label="Costo">
+                            <FormGroup label={t('cost')}>
                                 <CurrencyInput className="input-field" value={data.rental_cost} onChange={e => handleChange('rental_cost', e.target.value)} />
                             </FormGroup>
                         </div>
@@ -40,31 +40,31 @@ const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
             )}
 
             <div>
-                <h4 className="font-bold text-slate-700 uppercase p-0 m-0 text-xs tracking-wider mb-4">Precios de Consulta ({data.appointment_duration}m)</h4>
+                <h4 className="font-bold text-slate-700 uppercase p-0 m-0 text-xs tracking-wider mb-4">{t('consultation_prices') || 'Precios de Consulta'} ({data.appointment_duration}m)</h4>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <FormGroup label={t('consultation_price')}>
                         <CurrencyInput className="input-field" value={data.consultation_price} onChange={e => handleChange('consultation_price', e.target.value)} />
                     </FormGroup>
-                    <FormGroup label="Consulta Virtual">
+                    <FormGroup label={t('virtual_consultation_price') || 'Consulta Virtual'}>
                         <CurrencyInput className="input-field" value={data.virtual_consultation_price} onChange={e => handleChange('virtual_consultation_price', e.target.value)} />
                     </FormGroup>
-                    <FormGroup label="Recetas">
+                    <FormGroup label={t('prescription_price') || 'Recetas'}>
                         <CurrencyInput className="input-field" value={data.prescription_price} onChange={e => handleChange('prescription_price', e.target.value)} />
                     </FormGroup>
-                    <FormGroup label="Licencia Médica">
+                    <FormGroup label={t('medical_license_price') || 'Licencia Médica'}>
                         <CurrencyInput className="input-field" value={data.medical_license_price} onChange={e => handleChange('medical_license_price', e.target.value)} />
                     </FormGroup>
-                    <FormGroup label="Certificados">
+                    <FormGroup label={t('certificate_price') || 'Certificados'}>
                         <CurrencyInput className="input-field" value={data.certificate_price} onChange={e => handleChange('certificate_price', e.target.value)} />
                     </FormGroup>
                 </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-                <FormGroup label="Especialidad">
+                <FormGroup label={t('specialty')}>
                     <Input value={data.specialty} onChange={e => handleChange('specialty', e.target.value)} />
                 </FormGroup>
-                <FormGroup label="CBU / Alias">
+                <FormGroup label={t('cbu')}>
                     <Input value={data.cbu} onChange={e => handleChange('cbu', e.target.value)} />
                 </FormGroup>
             </div>

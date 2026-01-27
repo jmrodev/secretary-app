@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon app.js",
-    "tunnel": "node utils/tunnel-manager.js"
+    "tunnel": "node utils/tunnel-manager.js",
+    "tunnel:config": "./cloudflared tunnel --config config.yml run"
   },
   "keywords": [],
   "author": "",

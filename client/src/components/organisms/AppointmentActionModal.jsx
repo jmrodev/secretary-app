@@ -8,6 +8,7 @@ import { copyToClipboard } from '../../utils/clipboardUtils';
 import { useMessage } from '../../context/MessageContext';
 import { useModal } from '../../context/ModalContext';
 import { useConfig } from '../../context/ConfigContext';
+import { usePermissions } from '../../hooks/usePermissions';
 import api from '../../api/axios';
 
 const AppointmentActionModal = ({
@@ -31,12 +32,15 @@ const AppointmentActionModal = ({
     const { showMessage } = useMessage();
     const { confirm } = useModal();
     const { settings } = useConfig();
+    const { canDeletePrescription, canDeleteFile } = usePermissions();
     const [note, setNote] = useState(appt?.reason || '');
 
     if (!appt) return null;
 
     const isGoogle = appt.source === 'google' || appt.source === 'google-incomplete';
     const canUnrestricted = settings.enable_secretary_unrestricted_crud === 'true';
+
+    const showMedicalPanel = user.role === 'doctor' || user.role === 'admin' || canDeletePrescription || canDeleteFile;
 
     return (
         <Modal
@@ -101,42 +105,48 @@ const AppointmentActionModal = ({
                     <p className="text-sm text-slate-700"><strong>{t('reason')}:</strong> {appt.reason || t('no_description') || 'No description'}</p>
                 </div>
 
-                {/* Doctor Workflow Panel */}
-                {user.role === 'doctor' && (
+                {/* Medical Panel - Now visible to permitted secretaries too */}
+                {showMedicalPanel && (
                     <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm">
                         <h4 className="text-xs font-bold text-main-500 mb-3 uppercase tracking-wider flex items-center gap-1">
                             👨‍⚕️ {t('medical_panel') || 'Panel Médico'}
                         </h4>
                         <div className="grid grid-cols-2 gap-3 mb-4">
-                            <Button
-                                variant="primary"
-                                size="sm"
-                                className="flex items-center justify-center gap-2"
-                                onClick={() => onHistory(appt)}
-                            >
-                                🩺 {t('view_history') || 'Ver H. Clínica'}
-                            </Button>
-                            <Button
-                                variant="accent"
-                                size="sm"
-                                className="flex items-center justify-center gap-2"
-                                onClick={() => onPrescribe(appt)}
-                            >
-                                💊 {t('prescribe') || 'Recetar'}
-                            </Button>
-                            <Button
-                                variant="status"
-                                size="sm"
-                                className="flex items-center justify-center gap-2 col-span-2 bg-green-600 hover:bg-green-700 text-white border-none"
-                                onClick={async () => {
-                                    if (await confirm(t('confirm_attended') || 'Mark as Attended/Completed?')) {
-                                        onUpdateStatus(appt.id, 'completed');
-                                        onClose();
-                                    }
-                                }}
-                            >
-                                ✅ {t('attended') || 'Atendido'}
-                            </Button>
+                            {(user.role === 'doctor' || user.role === 'admin' || canDeleteFile) && (
+                                <Button
+                                    variant="primary"
+                                    size="sm"
+                                    className="flex items-center justify-center gap-2"
+                                    onClick={() => onHistory(appt)}
+                                >
+                                    🩺 {t('view_history') || 'Ver H. Clínica'}
+                                </Button>
+                            )}
+                            {(user.role === 'doctor' || user.role === 'admin' || canDeletePrescription) && (
+                                <Button
+                                    variant="accent"
+                                    size="sm"
+                                    className="flex items-center justify-center gap-2"
+                                    onClick={() => onPrescribe(appt)}
+                                >
+                                    💊 {t('prescribe') || 'Recetar'}
+                                </Button>
+                            )}
+                            {(user.role === 'doctor' || user.role === 'admin') && (
+                                <Button
+                                    variant="status"
+                                    size="sm"
+                                    className="flex items-center justify-center gap-2 col-span-2 bg-green-600 hover:bg-green-700 text-white border-none"
+                                    onClick={async () => {
+                                        if (await confirm(t('confirm_attended') || 'Mark as Attended/Completed?')) {
+                                            onUpdateStatus(appt.id, 'completed');
+                                            onClose();
+                                        }
+                                    }}
+                                >
+                                    ✅ {t('attended') || 'Atendido'}
+                                </Button>
+                            )}
                         </div>
                         <div className="flex gap-2">
                             <input
@@ -181,36 +191,36 @@ const AppointmentActionModal = ({
                     <div className="flex flex-col gap-3">
                         <div className="grid grid-cols-2 gap-3">
                             {/* Pay Button */}
-                            {(appt.payment_status === 'pending' || appt.payment_status === 'debt') && !isGoogle && (
+                            {(appt.payment_status === 'pending' || appt.payment_status === 'debt' || appt.payment_status === 'partial') && !isGoogle && (
                                 <Button onClick={() => onPay(appt)}>
                                     💳 {t('pay')}
                                 </Button>
                             )}
 
-                            {!isGoogle && (appt.status !== 'completed' || (canUnrestricted && appt.payment_status !== 'paid')) && (
+                            {!isGoogle && (appt.status !== 'completed' || canUnrestricted) && (
                                 <>
                                     {appt.status !== 'arrived' && appt.type !== 'virtual' && (
                                         <Button onClick={() => { onUpdateStatus(appt.id, 'arrived'); onClose(); }}>
                                             🏥 {t('patient_arrived') || 'Asistió'}
                                         </Button>
                                     )}
-                                    <Button variant="secondary" onClick={() => onReschedule(appt)}>
+                                    <Button variant="secondary" onClick={() => { onReschedule(appt); onClose(); }} tooltip="Reprogramar fecha/hora">
                                         📅 {t('reschedule')}
                                     </Button>
-                                    {appt.status === 'pending' && (
-                                        <Button variant="outline" className="text-green-600 border-green-200 hover:bg-green-50" onClick={() => { onUpdateStatus(appt.id, 'confirmed'); onClose(); }}>
+                                    {(['pending', 'cancelled', 'suspended', 'absent'].includes(appt.status)) && (
+                                        <Button variant="outline" className="text-green-600 border-green-200 hover:bg-green-50" onClick={() => { onUpdateStatus(appt.id, 'confirmed'); onClose(); }} tooltip="Confirmar asistencia (Restaurar)">
                                             ✅ {t('confirm')}
                                         </Button>
                                     )}
                                     {(['confirmed', 'pending', 'rescheduled', 'arrived'].includes(appt.status)) && (
-                                        <Button variant="outline" className="text-green-600 border-green-200 hover:bg-green-50" onClick={() => { onUpdateStatus(appt.id, 'completed'); onClose(); }}>
+                                        <Button variant="outline" className="text-green-600 border-green-200 hover:bg-green-50" onClick={() => { onUpdateStatus(appt.id, 'completed'); onClose(); }} tooltip="Marcar como atendido">
                                             🏆 {t('attended') || 'Atendido'}
                                         </Button>
                                     )}
-                                    <Button variant="outline" className="text-amber-600 border-amber-200 hover:bg-amber-50" onClick={() => { onUpdateStatus(appt.id, 'suspended'); onClose(); }}>
+                                    <Button variant="outline" className="text-amber-600 border-amber-200 hover:bg-amber-50" onClick={() => { onUpdateStatus(appt.id, 'suspended'); onClose(); }} tooltip="Suspendido por la oficina. Cancela momentáneamente sin afectar reputación." >
                                         ⏸ {t('suspend')}
                                     </Button>
-                                    <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-50" onClick={() => { onUpdateStatus(appt.id, 'absent'); onClose(); }}>
+                                    <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-50" onClick={() => { onUpdateStatus(appt.id, 'absent'); onClose(); }} tooltip="El paciente faltó sin aviso. BAJA reputación (-1).">
                                         🚫 {t('absent')}
                                     </Button>
                                 </>
@@ -218,13 +228,15 @@ const AppointmentActionModal = ({
                         </div>
 
                         {!isGoogle && (
-                            <div className="grid grid-cols-2 gap-3 mt-2 border-t border-slate-100 pt-3">
-                                <Button variant="outline-danger" onClick={() => { onCancel(appt.id); onClose(); }}>
-                                    ❌ {t('cancel')}
-                                </Button>
-                                <Button style={{ background: '#ef4444', color: 'white' }} onClick={() => { onDelete(appt.id, appt.status); onClose(); }}>
-                                    🗑 {t('delete_error')}
-                                </Button>
+                            <div className="mt-4 border-t border-slate-100 pt-3">
+                                <div className="grid grid-cols-2 gap-3">
+                                    <Button variant="outline-danger" onClick={() => { onCancel(appt.id); onClose(); }} tooltip="Queda en historial como 'Cancelado'. No afecta reputación." >
+                                        ❌ {t('cancel')}
+                                    </Button>
+                                    <Button style={{ background: '#ef4444', color: 'white' }} onClick={() => { onDelete(appt.id, appt.status); onClose(); }} tooltip="Borra permanentemente (Solo errores de carga). No afecta reputación." >
+                                        🗑 {t('delete_error')}
+                                    </Button>
+                                </div>
                             </div>
                         )}
                     </div>

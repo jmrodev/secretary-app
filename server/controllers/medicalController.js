@@ -162,19 +162,22 @@ exports.createPrescription = async (req, res) => {
             return res.status(404).send("Appointment not found");
         }
 
-        // Verify user is the doctor of this appointment
-        // We need to match req.user.user_id -> doctor_id
-        const docInfo = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [req.user.user_id]);
+        // Verify user is the doctor of this appointment OR is Admin/Secretary
+        if (req.user.role === 'doctor') {
+            const docInfo = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [req.user.user_id]);
 
-        if (docInfo.length === 0) {
-            console.log("DEBUG: Doctor profile not found for user", req.user.user_id);
-            return res.status(403).send("Unauthorized");
-        }
+            if (docInfo.length === 0) {
+                console.log("DEBUG: Doctor profile not found for user", req.user.user_id);
+                return res.status(403).send("Unauthorized");
+            }
 
-        console.log(`DEBUG: Checking match. UserDocID: ${docInfo[0].id}, ApptDocID: ${appt[0].doctor_id}`);
+            console.log(`DEBUG: Checking match. UserDocID: ${docInfo[0].id}, ApptDocID: ${appt[0].doctor_id}`);
 
-        if (docInfo[0].id !== appt[0].doctor_id) {
-            console.log("DEBUG: Mismatch in doctor ownership");
+            if (docInfo[0].id !== appt[0].doctor_id) {
+                console.log("DEBUG: Mismatch in doctor ownership");
+                return res.status(403).send("Unauthorized");
+            }
+        } else if (req.user.role !== 'admin' && req.user.role !== 'secretary') {
             return res.status(403).send("Unauthorized");
         }
 
@@ -312,8 +315,15 @@ exports.updatePrescription = async (req, res) => {
             return res.status(404).send("Prescription not found");
         }
 
-        // Authorization: Admin, Secretary or the Doctor who wrote it
-        let authorized = (role === 'admin' || role === 'secretary');
+        // Authorization: Admin, Secretary (if permitted) or the Doctor who wrote it
+        let authorized = (role === 'admin');
+
+        if (role === 'secretary') {
+            const settings = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'enable_secretary_crud_prescriptions'");
+            const canEdit = settings.length > 0 && settings[0].setting_value === 'true';
+            authorized = canEdit;
+        }
+
         if (role === 'doctor') {
             const docInfo = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [user_id]);
             if (docInfo.length > 0 && docInfo[0].id === prescription[0].doctor_id) {
@@ -474,8 +484,15 @@ exports.updateLicense = async (req, res) => {
             return res.status(404).send("License not found");
         }
 
-        // Authorization: Admin, Secretary or the Doctor who wrote it
-        let authorized = (role === 'admin' || role === 'secretary');
+        // Authorization: Admin, Secretary (if permitted) or the Doctor who wrote it
+        let authorized = (role === 'admin');
+
+        if (role === 'secretary') {
+            const settings = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'enable_secretary_crud_licenses'");
+            const canEdit = settings.length > 0 && settings[0].setting_value === 'true';
+            authorized = canEdit;
+        }
+
         if (role === 'doctor') {
             const docInfo = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [user_id]);
             if (docInfo.length > 0 && docInfo[0].id === license[0].doctor_id) {
@@ -505,14 +522,20 @@ exports.updateLicense = async (req, res) => {
 exports.deletePrescription = async (req, res) => {
     let conn;
     try {
+        conn = await pool.getConnection();
         const { id } = req.params;
         const { role } = req.user;
 
-        if (role !== 'admin' && role !== 'secretary') {
-            return res.status(403).send("Unauthorized");
+        if (role !== 'admin') {
+            if (role === 'secretary') {
+                const settings = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'enable_secretary_crud_prescriptions'");
+                if (settings.length === 0 || settings[0].setting_value !== 'true') {
+                    return res.status(403).send("Unauthorized. Ask admin to enable unrestricted CRUD.");
+                }
+            } else {
+                return res.status(403).send("Unauthorized");
+            }
         }
-
-        conn = await pool.getConnection();
         const result = await conn.query("DELETE FROM prescriptions WHERE id = ?", [id]);
 
         if (result.affectedRows === 0) {
@@ -532,14 +555,20 @@ exports.deletePrescription = async (req, res) => {
 exports.deleteLicense = async (req, res) => {
     let conn;
     try {
+        conn = await pool.getConnection();
         const { id } = req.params;
         const { role } = req.user;
 
-        if (role !== 'admin' && role !== 'secretary') {
-            return res.status(403).send("Unauthorized");
+        if (role !== 'admin') {
+            if (role === 'secretary') {
+                const settings = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'enable_secretary_crud_licenses'");
+                if (settings.length === 0 || settings[0].setting_value !== 'true') {
+                    return res.status(403).send("Unauthorized. Ask admin to enable unrestricted CRUD.");
+                }
+            } else {
+                return res.status(403).send("Unauthorized");
+            }
         }
-
-        conn = await pool.getConnection();
         const result = await conn.query("DELETE FROM medical_licenses WHERE id = ?", [id]);
 
         if (result.affectedRows === 0) {
@@ -560,7 +589,7 @@ exports.deleteLicense = async (req, res) => {
 exports.createRequest = async (req, res) => {
     let conn;
     try {
-        const { type, patient_id, doctor_id, request_note, bonified, status } = req.body; // type: 'prescription', 'license', 'certificate'
+        const { type, patient_id, doctor_id, request_note, bonified, status, payment_method } = req.body; // type: 'prescription', 'license', 'certificate'
 
         if (!['prescription', 'license', 'certificate'].includes(type)) return res.status(400).send("Invalid type");
 
@@ -573,15 +602,15 @@ exports.createRequest = async (req, res) => {
         const initialStatus = status || 'pending';
 
         let completedAtQueryPart = '?';
-        let queryParams = [type, patient_id, doctor_id, request_note, initialStatus, null];
+        let queryParams = [type, patient_id, doctor_id, request_note, initialStatus, payment_method || 'cash', null];
 
         if (initialStatus === 'completed') {
             completedAtQueryPart = 'NOW()';
-            queryParams = [type, patient_id, doctor_id, request_note, initialStatus];
+            queryParams = [type, patient_id, doctor_id, request_note, initialStatus, payment_method || 'cash'];
         }
 
         const result = await conn.query(
-            `INSERT INTO medical_requests (type, patient_id, doctor_id, request_note, status, created_at, completed_at) VALUES (?, ?, ?, ?, ?, NOW(), ${completedAtQueryPart})`,
+            `INSERT INTO medical_requests (type, patient_id, doctor_id, request_note, status, payment_method, created_at, completed_at) VALUES (?, ?, ?, ?, ?, ?, NOW(), ${completedAtQueryPart})`,
             queryParams
         );
 
@@ -597,7 +626,7 @@ exports.createRequest = async (req, res) => {
             if (priceInfo.price > 0) {
                 await conn.query(
                     "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, transaction_date, request_id) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)",
-                    ['income_patient', priceInfo.price, `Request: ${type} for ${pat[0].full_name}`, pat[0].user_id, doctor_id, 'credit', 'pending', result.insertId]
+                    ['income_patient', priceInfo.price, `Request: ${type} for ${pat[0].full_name}`, pat[0].user_id, doctor_id, payment_method || 'cash', 'pending', result.insertId]
                 );
                 // Update request with debt status
                 await conn.query("UPDATE medical_requests SET payment_status = 'debt', debt_amount = ? WHERE id = ?", [priceInfo.price, result.insertId]);
@@ -681,11 +710,18 @@ exports.updateRequestStatus = async (req, res) => {
 
         conn = await pool.getConnection();
 
-        // [RULE] If completed/rejected before today, only admin can touch it
+        // Check permission if secretary
+        let isUnrestrictedSecretary = false;
+        if (role === 'secretary') {
+            const settings = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'enable_secretary_crud_requests'");
+            isUnrestrictedSecretary = settings.length > 0 && settings[0].setting_value === 'true';
+        }
+
+        // [RULE] If completed/rejected before today, only admin or unrestricted secretary can touch it
         const reqInfo = await conn.query("SELECT * FROM medical_requests WHERE id = ?", [id]);
         if (reqInfo.length === 0) return res.status(404).json({ message: "Request not found" });
 
-        if (role !== 'admin' && (reqInfo[0].status === 'completed' || reqInfo[0].status === 'rejected')) {
+        if (role !== 'admin' && !isUnrestrictedSecretary && (reqInfo[0].status === 'completed' || reqInfo[0].status === 'rejected')) {
             const completedDate = new Date(reqInfo[0].completed_at || reqInfo[0].updated_at).toLocaleDateString();
             const todayDate = new Date().toLocaleDateString();
             if (completedDate !== todayDate) {
@@ -731,25 +767,32 @@ exports.updateRequest = async (req, res) => {
     let conn;
     try {
         const { id } = req.params;
-        const { request_note, doctor_note, debt_amount } = req.body;
+        const { request_note, doctor_note, debt_amount, payment_method } = req.body;
         const { role } = req.user;
 
         conn = await pool.getConnection();
+
+        // Check permission if secretary
+        let isUnrestrictedSecretary = false;
+        if (role === 'secretary') {
+            const settings = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'enable_secretary_crud_requests'");
+            isUnrestrictedSecretary = settings.length > 0 && settings[0].setting_value === 'true';
+        }
 
         // Check if request exists
         const reqInfo = await conn.query("SELECT * FROM medical_requests WHERE id = ?", [id]);
         if (reqInfo.length === 0) return res.status(404).send("Request not found");
 
-        // Authorization: Admin, Secretary or the Doctor of the request
-        if (role !== 'admin' && role !== 'secretary') {
+        // Authorization: Admin, Secretary (if permitted) or the Doctor of the request
+        if (role !== 'admin' && !isUnrestrictedSecretary) {
             const docInfo = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [req.user.user_id]);
             if (docInfo.length === 0 || docInfo[0].id !== reqInfo[0].doctor_id) {
                 return res.status(403).send("Unauthorized");
             }
         }
 
-        // [RULE] If completed/rejected before today, only admin can touch it
-        if (role !== 'admin' && (reqInfo[0].status === 'completed' || reqInfo[0].status === 'rejected')) {
+        // [RULE] If completed/rejected before today, only admin or unrestricted secretary can touch it (bypass for unrestr sec)
+        if (role !== 'admin' && !isUnrestrictedSecretary && (reqInfo[0].status === 'completed' || reqInfo[0].status === 'rejected')) {
             const completedDate = new Date(reqInfo[0].completed_at || reqInfo[0].updated_at).toLocaleDateString();
             const todayDate = new Date().toLocaleDateString();
             if (completedDate !== todayDate) {
@@ -772,11 +815,50 @@ exports.updateRequest = async (req, res) => {
             setClause += ", debt_amount = ?";
             params.push(debt_amount);
         }
+        if (payment_method !== undefined) {
+            setClause += ", payment_method = ?";
+            params.push(payment_method);
+        }
+
+        // [NEW] Handle bonified status Update
+        const isBonified = req.body.bonified === true || req.body.bonified === 'true';
+        const isUnbonified = req.body.bonified === false || req.body.bonified === 'false';
+
+        if (isBonified) {
+            setClause += ", payment_status = 'bonified', debt_amount = 0";
+        } else if (isUnbonified && reqInfo[0].payment_status === 'bonified' && Number(debt_amount) > 0) {
+            setClause += ", payment_status = 'debt'";
+        }
 
         const query = `UPDATE medical_requests SET ${setClause} WHERE id = ?`;
         params.push(id);
 
         await conn.query(query, params);
+
+        // [SYNC] Update associated pending transaction amount if debt_amount changed
+        if (debt_amount !== undefined && req.body.bonified !== true) {
+            await conn.query("UPDATE transactions SET amount = ? WHERE request_id = ? AND status = 'pending'", [debt_amount, id]);
+        }
+        if (payment_method !== undefined) {
+            await conn.query("UPDATE transactions SET method = ? WHERE request_id = ? AND status = 'pending'", [payment_method, id]);
+        }
+
+        // [NEW] If bonified, delete pending debt transactions
+        if (isBonified) {
+            await conn.query("DELETE FROM transactions WHERE request_id = ? AND status = 'pending'", [id]);
+        }
+
+        // [NEW] If un-bonified and returning to debt, create transaction
+        if (isUnbonified && reqInfo[0].payment_status === 'bonified' && Number(debt_amount) > 0) {
+            const pat = await conn.query("SELECT user_id FROM patients WHERE id = ?", [reqInfo[0].patient_id]);
+            if (pat.length > 0) {
+                await conn.query(
+                    "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, transaction_date, request_id) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)",
+                    ['income_patient', debt_amount, `Request: ${reqInfo[0].type}`, pat[0].user_id, reqInfo[0].doctor_id, payment_method || 'cash', 'pending', id]
+                );
+            }
+        }
+
         logAction(req, 'MANUAL_EDIT_REQUEST', `Request ${id} edited manually`);
         res.json({ message: "Request updated" });
     } catch (err) {
@@ -865,52 +947,74 @@ exports.getPatientFiles = async (req, res) => {
 exports.deleteRequest = async (req, res) => {
     let conn;
     try {
+        conn = await pool.getConnection();
         const { id } = req.params;
         const { role } = req.user;
 
-        if (role !== 'admin' && role !== 'secretary') {
-            return res.status(403).send("Only admins and secretaries can delete requests");
-        }
-
-        conn = await pool.getConnection();
-
-        // [RULE] Same-day rule for deletion
-        const reqInfo = await conn.query("SELECT * FROM medical_requests WHERE id = ?", [id]);
-        if (reqInfo.length === 0) return res.status(404).send("Request not found");
-
-        if (role !== 'admin' && (reqInfo[0].status === 'completed' || reqInfo[0].status === 'rejected')) {
-            const completedDate = new Date(reqInfo[0].completed_at || reqInfo[0].updated_at).toLocaleDateString();
-            const todayDate = new Date().toLocaleDateString();
-            if (completedDate !== todayDate) {
-                return res.status(403).send("Only administrators can delete completed requests from previous days.");
+        if (role !== 'admin') {
+            if (role === 'secretary') {
+                const settings = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'enable_secretary_crud_requests'");
+                if (settings.length === 0 || settings[0].setting_value !== 'true') {
+                    return res.status(403).send("Unauthorized. Ask admin to enable unrestricted CRUD.");
+                }
+            } else {
+                return res.status(403).send("Only admins and secretaries can delete requests");
             }
         }
 
-        // Backup
-        const requestData = reqInfo[0];
-        // Fetch patient Name for the backup label
-        const [pat] = await conn.query("SELECT full_name FROM patients WHERE id = ?", [requestData.patient_id]);
-        const patientName = pat.length > 0 ? pat[0].full_name : "Unknown";
+        // [RULE] Same-day rule for deletion (Only if NOT unrestricted, but if enabled above, sec is like admin)
+        // Actually, if enabled, secretaries bypass the same-day rule? 
+        // Let's assume enabling CRUD gives full power, mimicking admin logic for deletion.
 
-        await saveToRecycleBin(req, 'medical_request', id, `${requestData.type} - ${patientName}`, requestData);
+        const reqInfo = await conn.query("SELECT * FROM medical_requests WHERE id = ?", [id]);
+        if (reqInfo.length === 0) return res.status(404).send("Request not found");
+
+        if (role !== 'admin' && role !== 'secretary') {
+            // Standard user logic (doctors might delete if pending? logic below was mostly admin/sec)
+            if (reqInfo[0].status === 'completed' || reqInfo[0].status === 'rejected') {
+                return res.status(403).send("Cannot delete completed requests");
+            }
+        }
+
+        // If secretary didn't have the setting, they would have been blocked at start.
+        // If they have it, they proceed.
+
+        // Backup
+        console.log(`DEBUG: Deleting request ${id}`);
+        const requestData = reqInfo[0];
+        if (!requestData.patient_id) {
+            throw new Error("Request has no patient_id associated");
+        }
+
+        const patRows = await conn.query("SELECT full_name FROM patients WHERE id = ?", [requestData.patient_id]);
+        const patientName = patRows.length > 0 ? patRows[0].full_name : "Unknown";
+        console.log(`DEBUG: Found patient ${patientName} for request ${id}`);
+
+        try {
+            await saveToRecycleBin(req, 'medical_request', id, `${requestData.type} - ${patientName}`, requestData);
+            console.log(`DEBUG: Saved request ${id} to recycle bin`);
+        } catch (rbErr) {
+            console.error("DEBUG: RecycleBin error (non-fatal)", rbErr);
+        }
 
         // 1. Delete associated PENDING transactions (cleanup debt)
-        await conn.query("DELETE FROM transactions WHERE request_id = ? AND status = 'pending'", [id]);
+        const transResult = await conn.query("DELETE FROM transactions WHERE request_id = ? AND status = 'pending'", [id]);
+        console.log(`DEBUG: Deleted ${transResult.affectedRows} pending transactions for request ${id}`);
 
         // 2. Delete the request
         const result = await conn.query("DELETE FROM medical_requests WHERE id = ?", [id]);
+        console.log(`DEBUG: Delete result for request ${id}:`, result);
 
         if (result.affectedRows === 0) {
-            return res.status(404).send("Request not found");
+            return res.status(404).send("Request not found during final deletion");
         }
-
 
         logAction(req, 'DELETE_MEDICAL_REQUEST', `Deleted Request ID: ${id}`);
         res.json({ message: "Request deleted successfully" });
 
     } catch (err) {
-        console.error(err);
-        res.status(500).send("Error deleting request: " + err.message);
+        console.error("CRITICAL DELETE ERROR:", err);
+        res.status(500).send("Error deleting request: " + err.message + (err.code ? ` (${err.code})` : ""));
     } finally {
         if (conn) conn.release();
     }
@@ -919,14 +1023,20 @@ exports.deleteRequest = async (req, res) => {
 exports.deleteFile = async (req, res) => {
     let conn;
     try {
+        conn = await pool.getConnection();
         const { id } = req.params;
         const { role } = req.user;
 
-        if (role !== 'admin' && role !== 'secretary') {
-            return res.status(403).send("Unauthorized. Only admins and secretaries can delete files.");
+        if (role !== 'admin') {
+            if (role === 'secretary') {
+                const settings = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'enable_secretary_crud_files'");
+                if (settings.length === 0 || settings[0].setting_value !== 'true') {
+                    return res.status(403).send("Unauthorized. Ask admin to enable unrestricted CRUD.");
+                }
+            } else {
+                return res.status(403).send("Unauthorized. Only admins and secretaries can delete files.");
+            }
         }
-
-        conn = await pool.getConnection();
         const file = await conn.query("SELECT file_url FROM patient_files WHERE id = ?", [id]);
 
         if (file.length === 0) {
@@ -949,3 +1059,79 @@ exports.deleteFile = async (req, res) => {
     }
 };
 
+// --- Exports ---
+exports.exportPrescriptionsJSON = async (req, res) => {
+    let conn;
+    try {
+        const { role, user_id } = req.user;
+        const { preview } = req.query; // Check for preview flag
+
+        conn = await pool.getConnection();
+
+        // We want to export both direct prescriptions and completed prescription requests
+        let query = `
+            (SELECT 
+                'direct' as source_type,
+                pr.id,
+                pr.medications,
+                pr.instructions,
+                a.appointment_date as date,
+                d.full_name as doctor_name,
+                p.full_name as patient_name,
+                p.dni as patient_dni,
+                'paid' as payment_status, 
+                 0 as amount, 
+                 'N/A' as payment_method
+            FROM prescriptions pr
+            JOIN appointments a ON pr.appointment_id = a.id
+            JOIN doctors d ON a.doctor_id = d.id
+            JOIN patients p ON a.patient_id = p.id
+            ${role === 'doctor' ? 'WHERE a.doctor_id = (SELECT id FROM doctors WHERE user_id = ?)' : ''}
+            ${role === 'patient' ? 'WHERE a.patient_id = (SELECT id FROM patients WHERE user_id = ?)' : ''}
+            )
+            UNION ALL
+            (SELECT 
+                'request' as source_type,
+                r.id,
+                r.request_note as medications,
+                r.doctor_note as instructions,
+                r.completed_at as date,
+                d.full_name as doctor_name,
+                p.full_name as patient_name,
+                p.dni as patient_dni,
+                r.payment_status,
+                COALESCE(NULLIF(r.debt_amount, 0), (SELECT amount FROM transactions WHERE request_id = r.id LIMIT 1), 0) as amount,
+                r.payment_method
+            FROM medical_requests r
+            JOIN doctors d ON r.doctor_id = d.id
+            JOIN patients p ON r.patient_id = p.id
+            WHERE r.type = 'prescription' AND r.status = 'completed'
+            ${role === 'doctor' ? 'AND r.doctor_id = (SELECT id FROM doctors WHERE user_id = ?)' : ''}
+            ${role === 'patient' ? 'AND r.patient_id = (SELECT id FROM patients WHERE user_id = ?)' : ''}
+            )
+            ORDER BY date DESC
+        `;
+
+        let params = [];
+        if (role === 'doctor' || role === 'patient') {
+            params.push(user_id, user_id);
+        }
+
+        const rows = await conn.query(query, params);
+
+        if (preview === 'true') {
+            return res.json(rows);
+        }
+
+        res.setHeader('Content-disposition', 'attachment; filename=prescriptions_backup.json');
+        res.setHeader('Content-type', 'application/json');
+        res.write(JSON.stringify(rows, null, 2));
+        res.end();
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};

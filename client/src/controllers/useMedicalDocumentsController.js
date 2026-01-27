@@ -7,6 +7,7 @@ import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
 import { isToday } from '../utils/time';
+import { usePermissions } from '../hooks/usePermissions';
 
 export const useMedicalDocumentsController = () => {
     const { user } = useAuth();
@@ -14,6 +15,7 @@ export const useMedicalDocumentsController = () => {
     const { t } = useLanguage();
     const { confirm, doubleConfirm } = useModal();
     const location = useLocation();
+    const { canDeletePrescription, canDeleteLicense, canDeleteFile, canDeleteRequest } = usePermissions();
 
     // --- State ---
     const [activeTab, setActiveTab] = useState('requests'); // requests | files | prescriptions | licenses | certificates
@@ -54,7 +56,7 @@ export const useMedicalDocumentsController = () => {
     // Edit Data
     const [editData, setEditData] = useState({ medications: '', instructions: '' });
     const [licenseEditData, setLicenseEditData] = useState({ start_date: '', days_duration: '', diagnosis: '' });
-    const [requestEditData, setRequestEditData] = useState({ request_note: '', doctor_note: '', debt_amount: '' });
+    const [requestEditData, setRequestEditData] = useState({ request_note: '', doctor_note: '', debt_amount: '', payment_method: 'cash', bonified: false });
 
     // --- Helpers ---
     const normalizeText = (text) => {
@@ -227,7 +229,7 @@ export const useMedicalDocumentsController = () => {
     };
 
     const handleDeleteRequest = async (id, r) => {
-        if (user.role !== 'admin' && (r.status === 'completed' || r.status === 'rejected')) {
+        if (user.role !== 'admin' && !canDeleteRequest && (r.status === 'completed' || r.status === 'rejected')) {
             if (!isToday(r.completed_at || r.updated_at)) {
                 showMessage("Solo administradores pueden eliminar solicitudes finalizadas de días anteriores.", "warning");
                 return;
@@ -247,7 +249,10 @@ export const useMedicalDocumentsController = () => {
         }
     };
 
-    const handleDeletePrescription = async (id) => {
+    const handleDeletePrescription = async (id, item) => {
+        if (item && item._origin === 'request') {
+            return handleDeleteRequest(id, item);
+        }
         if (!await confirm(t('confirm_delete_prescription') || '¿Seguro que desea eliminar esta receta?')) return;
         try {
             await api.delete(`/medical/prescriptions/${id}`);
@@ -258,7 +263,10 @@ export const useMedicalDocumentsController = () => {
         }
     };
 
-    const handleDeleteLicense = async (id) => {
+    const handleDeleteLicense = async (id, item) => {
+        if (item && item._origin === 'request') {
+            return handleDeleteRequest(id, item);
+        }
         if (!await confirm(t('confirm_delete_license') || '¿Seguro que desea eliminar esta licencia?')) return;
         try {
             await api.delete(`/medical/licenses/${id}`);
@@ -269,7 +277,40 @@ export const useMedicalDocumentsController = () => {
         }
     };
 
+    const handleExportJSON = async () => {
+        try {
+            const response = await api.get('/medical/prescriptions/export/json', { responseType: 'blob' });
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'prescriptions_backup.json');
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            showMessage(t('export_success') || 'Exportación exitosa', 'success');
+        } catch (err) {
+            showMessage(t('export_failed') || 'Error al exportar', 'error');
+        }
+    };
+
+    const [printData, setPrintData] = useState([]);
+
+    // ... State ... (this line is just for context, don't include in replacement if not needed, I will replace the block)
+
+    const handlePrintPrescriptions = async () => {
+        try {
+            const res = await api.get('/medical/prescriptions/export/json?preview=true');
+            setPrintData(res.data);
+            setTimeout(() => {
+                window.print();
+            }, 500);
+        } catch (err) {
+            showMessage(t('print_error') || 'Error al preparar impresión', 'error');
+        }
+    };
+
     // --- Effects ---
+
     useEffect(() => {
         if (activeTab === 'requests') {
             fetchResources();
@@ -299,20 +340,38 @@ export const useMedicalDocumentsController = () => {
     }, [location.state]);
 
     const handleEditItem = (item) => {
+        console.log("DEBUG: handleEditItem CALLED with:", item);
+        if (!item) return;
+
         setIsEditing(true);
+
         if (item._origin === 'prescription') {
+            console.log("DEBUG: Editing Prescription");
             setSelectedPrescription(item);
-            setEditData({ medications: item.medications || '', instructions: item.instructions || '' });
+            setEditData({
+                medications: item.medications || '',
+                instructions: item.instructions || ''
+            });
         } else if (item._origin === 'license') {
+            console.log("DEBUG: Editing License");
             setSelectedLicense(item);
-            setLicenseEditData({ start_date: item.start_date ? item.start_date.split('T')[0] : '', days_duration: item.days_duration || '', diagnosis: item.diagnosis || '' });
+            setLicenseEditData({
+                start_date: item.start_date ? item.start_date.split('T')[0] : '',
+                days_duration: item.days_duration || '',
+                diagnosis: item.diagnosis || ''
+            });
         } else if (item._origin === 'request') {
+            console.log("DEBUG: Editing Request");
             setSelectedRequest(item);
             setRequestEditData({
                 request_note: item.request_note || '',
                 doctor_note: item.doctor_note || '',
-                debt_amount: item.debt_amount || ''
+                debt_amount: item.debt_amount || 0,
+                payment_method: item.payment_method || 'cash',
+                bonified: item.payment_status === 'bonified'
             });
+        } else {
+            console.warn("DEBUG: handleEditItem CALLED with unknown _origin:", item._origin);
         }
     };
 
@@ -330,9 +389,16 @@ export const useMedicalDocumentsController = () => {
         paymentModal, setPaymentModal, editData, setEditData, licenseEditData, setLicenseEditData,
         requestEditData, setRequestEditData,
 
+        // Permissions
+        canDeletePrescription,
+        canDeleteLicense,
+        canDeleteFile,
+        canDeleteRequest,
+
         // Handlers
         filterItem, handleCreateRequest, handleUpdateStatus, handleFileUpload, confirmFileDelete,
         handleUpdatePrescription, handleUpdateLicense, handleUpdateRequest, handleDeleteRequest,
-        handleDeletePrescription, handleEditItem, handleDeleteLicense, fetchRequests, fetchFiles, fetchHistory
+        handleDeletePrescription, handleEditItem, handleDeleteLicense, fetchRequests, fetchFiles, fetchHistory,
+        handleExportJSON, handlePrintPrescriptions, printData
     };
 };

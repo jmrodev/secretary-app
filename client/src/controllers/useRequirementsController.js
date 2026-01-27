@@ -3,6 +3,7 @@ import api from '../api/axios';
 import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
+import { usePermissions } from '../hooks/usePermissions';
 
 /**
  * Controller hook for the Requests page and RequirementsList component.
@@ -145,6 +146,8 @@ export const useRequirementsController = (user) => {
         }
     };
 
+    const { canDeleteRequest } = usePermissions();
+
     return {
         // State
         requests,
@@ -161,6 +164,9 @@ export const useRequirementsController = (user) => {
         doctors,
         filter,
         setFilter,
+
+        // Permissions
+        canDeleteRequest,
 
         // Handlers
         handleRestore,

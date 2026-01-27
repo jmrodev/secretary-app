@@ -18,7 +18,7 @@ const Doctors = () => {
         settings
     } = useDoctorsPageController();
 
-    if (loading) return <div className="status-display"><div className="status-display__spinner"></div></div>;
+    if (loading) return <div className="centered-loader"><div className="status-display__spinner"></div></div>;
 
     return (
         <MainLayout

@@ -57,7 +57,11 @@ const PatientManagerModal = ({
                 const updatedPatient = {
                     ...patient,
                     ...formData,
-                    insurance_name: insurances.find(i => i.id == formData.insurance_id)?.name
+                    insurance_name: insurances.find(i => i.id == formData.insurance_id)?.name,
+                    assignedDoctors: formData.assignedDoctors ? formData.assignedDoctors.map(id => {
+                        const doc = doctors.find(d => d.id === id);
+                        return doc ? { id: doc.id, full_name: doc.full_name } : { id };
+                    }) : []
                 };
 
                 showMessage(t('patient_updated') || 'Patient updated successfully', 'success');
