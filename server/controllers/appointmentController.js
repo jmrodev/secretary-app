@@ -414,7 +414,7 @@ exports.updateAppointment = async (req, res) => {
     let conn;
     try {
         const { id } = req.params;
-        const { appointment_date, reason } = req.body;
+        const { appointment_date, reason, adminPassword } = req.body;
 
         conn = await pool.getConnection();
 
@@ -423,15 +423,12 @@ exports.updateAppointment = async (req, res) => {
         if (exists.length === 0) return res.status(404).send("Appointment not found");
 
         const oldDate = exists[0].appointment_date;
-
-        const apptDate = new Date(appointment_date);
         const oldDateObj = new Date(oldDate);
         const now = new Date();
 
-        // [NEW] ADMIN OVERRIDE CHECK for UPDATE
         let override = false;
-        if (req.body.adminPassword) {
-            const isValid = await validateAdminPassword(conn, req.body.adminPassword);
+        if (adminPassword) {
+            const isValid = await validateAdminPassword(conn, adminPassword);
             if (isValid) {
                 override = true;
                 console.log(`[UpdateAppointment] Admin Override applied for User ${req.user.username}`);
@@ -440,34 +437,44 @@ exports.updateAppointment = async (req, res) => {
             }
         }
 
-        // Block Editing of Past Appointments for non-admins (if not overridden)
-        if (!override && (oldDateObj < now || apptDate < now) && req.user.role !== 'admin') {
-            if (req.user.role === 'secretary') {
-                const settingRows = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'allow_secretary_edit_past_appointments'");
-                const canEditPast = settingRows.length > 0 && (settingRows[0].setting_value === 'true' || settingRows[0].setting_value === '1');
-                if (!canEditPast) {
-                    return res.status(403).json({ error: "Requiere autorización de Administrador (Turno Pasado).", type: 'AUTH_REQUIRED' });
+        const updates = {};
+        let newStatus = exists[0].status;
+        let isReschedule = false;
+
+        if (appointment_date) {
+            const apptDate = new Date(appointment_date);
+            if (!override && (oldDateObj < now || apptDate < now) && req.user.role !== 'admin') {
+                if (req.user.role === 'secretary') {
+                    const settingRows = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'allow_secretary_edit_past_appointments'");
+                    const canEditPast = settingRows.length > 0 && (settingRows[0].setting_value === 'true' || settingRows[0].setting_value === '1');
+                    if (!canEditPast) {
+                        return res.status(403).json({ error: "Requiere autorización de Administrador (Turno Pasado).", type: 'AUTH_REQUIRED' });
+                    }
+                } else if (req.user.role === 'patient') {
+                    return res.status(400).send("Cannot edit past appointments.");
                 }
-            } else if (req.user.role === 'patient') {
-                return res.status(400).send("Cannot edit past appointments.");
+            }
+            if (apptDate.getTime() !== oldDateObj.getTime()) {
+                isReschedule = true;
+                updates.appointment_date = apptDate;
+                newStatus = 'rescheduled';
             }
         }
-
-        // [NEW] Block Editing of Completed/Attended Appointments (if not overridden)
+        
         if (!override && req.user.role === 'secretary' && ['completed', 'attended', 'arrived'].includes(exists[0].status)) {
-            const crudSetting = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'enable_secretary_unrestricted_crud'");
-            const unrestrictedCrud = crudSetting.length > 0 && (crudSetting[0].setting_value === 'true' || crudSetting[0].setting_value === '1');
-
-            if (!unrestrictedCrud) {
+             const crudSetting = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'enable_secretary_unrestricted_crud'");
+             const unrestrictedCrud = crudSetting.length > 0 && (crudSetting[0].setting_value === 'true' || crudSetting[0].setting_value === '1');
+             if (!unrestrictedCrud) {
                 return res.status(403).json({ error: "Requiere autorización de Administrador (Turno Completado/Atendido).", type: 'AUTH_REQUIRED' });
             }
         }
-
-        // Only change status to 'rescheduled' if the date/time actually changed
-        const isReschedule = apptDate.getTime() !== oldDateObj.getTime();
-        const newStatus = isReschedule ? 'rescheduled' : exists[0].status;
+        
+        if (reason !== undefined) { // Allow reason to be explicitly set to null/empty string
+            updates.reason = reason;
+        }
 
         if (isReschedule) {
+            updates.status = newStatus;
             // [NEW] Add OLD date to Recently Freed Slots logic - Safe Wrap
             try {
                 const oldMoment = new Date(oldDate);
@@ -485,13 +492,10 @@ exports.updateAppointment = async (req, res) => {
 
             // [NEW] Check for Reserved Slot Overwrite on NEW date
             const formattedNewDate = new Date(appointment_date).toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace('T', ' ');
-
-            // Note: skipping redundant DELETE here as it's inside the try block above or handled
-
-
+            
             const existingReserved = await conn.query(
                 "SELECT id, doctor_id, appointment_date, patient_id, status, google_event_id FROM appointments WHERE doctor_id = ? AND appointment_date = ? AND status = 'reserved' AND id != ?",
-                [exists[0].doctor_id, formattedNewDate, id]
+                [exists[0].doctor_id, formattedNewDate, id] // Don't block self
             );
 
             if (existingReserved.length > 0) {
@@ -541,10 +545,15 @@ exports.updateAppointment = async (req, res) => {
             }
         }
 
-        await conn.query(
-            "UPDATE appointments SET appointment_date = ?, reason = ?, status = ? WHERE id = ?",
-            [apptDate, reason || exists[0].reason, newStatus, id]
-        );
+        if (Object.keys(updates).length === 0) {
+            return res.status(200).json({ message: "No changes detected" });
+        }
+
+        const setClauses = Object.keys(updates).map(key => `${key} = ?`).join(', ');
+        const values = [...Object.values(updates), id];
+
+        await conn.query(`UPDATE appointments SET ${setClauses} WHERE id = ?`, values);
+
 
         // Log
         logAction(req, 'RESCHEDULE_APPOINTMENT', `Rescheduled Appt ID ${id} from ${oldDate} to ${appointment_date}`);
@@ -638,7 +647,7 @@ exports.updateStatus = async (req, res) => {
             const intervalRows = await conn.query(`
                 SELECT 
                     COALESCE(p.visit_interval_days, d.default_visit_interval_days) as interval_days,
-                    p.id as patient_id, d.id as doctor_id
+                    p.id as patient_id, d.id as doctor_id, a.appointment_date
                 FROM appointments a
                 JOIN patients p ON a.patient_id = p.id
                 JOIN doctors d ON a.doctor_id = d.id
@@ -648,11 +657,13 @@ exports.updateStatus = async (req, res) => {
             if (intervalRows.length > 0) {
                 const intervals = intervalRows[0];
                 if (intervals.interval_days > 0) {
-                    const nextDate = new Date();
+                    // Calculate next visit from the appointment date, not current date
+                    const appointmentDate = new Date(intervals.appointment_date);
+                    const nextDate = new Date(appointmentDate);
                     nextDate.setDate(nextDate.getDate() + Number(intervals.interval_days));
                     const nextDateStr = nextDate.toISOString().split('T')[0];
                     await conn.query("UPDATE patients SET next_suggested_visit_date = ? WHERE id = ?", [nextDateStr, intervals.patient_id]);
-                    console.log(`DEBUG: Set next suggested visit date to ${nextDateStr} for appointment ${id}`);
+                    console.log(`DEBUG: Set next suggested visit date to ${nextDateStr} for patient ${intervals.patient_id} (appointment ${id} on ${appointmentDate.toISOString().split('T')[0]})`);
                 }
             }
         }
@@ -681,14 +692,12 @@ exports.updateStatus = async (req, res) => {
             // Cancelled and Suspended should NOT affect reputation as per user request.
             if (pId && !isError && status === 'absent') {
                 await conn.query("UPDATE patients SET behavior_rating = GREATEST(0, behavior_rating - 1) WHERE id = ?", [pId]);
-                console.log(`DEBUG: Decremented behavior rating for patient ${pId} due to ${status}.`);
             }
 
             if (status === 'cancelled' || status === 'suspended') {
                 // If cancelled or suspended, clear the pending debt associated with it
                 await conn.query("DELETE FROM transactions WHERE appointment_id = ? AND status = 'pending'", [id]);
-                console.log(`DEBUG: Cleared pending debt for appointment ${id} due to ${status}.`);
-                await conn.query("UPDATE appointments SET payment_status = 'none' WHERE id = ? AND payment_status = 'debt'", [id]);
+                await conn.query("UPDATE appointments SET payment_status = 'pending' WHERE id = ? AND payment_status = 'debt'", [id]);
             }
         }
 
@@ -707,6 +716,7 @@ exports.updateStatus = async (req, res) => {
         if (reason) {
             logMsg += ` [Reason: ${reason}]`;
         }
+
         logAction(req, 'UPDATE_APPOINTMENT_STATUS', logMsg);
 
         res.json({ message: "Status updated" });

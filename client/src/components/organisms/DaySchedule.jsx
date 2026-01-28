@@ -9,6 +9,7 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule }) => {
     const { confirm } = useModal();
     const { settings } = useConfig();
     const [showOutOfHours, setShowOutOfHours] = React.useState(false);
+    const [showCancelled, setShowCancelled] = React.useState(false); // Show cancelled by default as hidden
 
     // 1. Determine Base Range (Schedule or Default 8-20)
     let startHour = 8;
@@ -99,17 +100,30 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule }) => {
                 <h3 className="m-0">
                     {date.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
                 </h3>
-                <label className="switch-container">
-                    <span className="text-xs font-bold text-muted uppercase tracking-wider">{t('show_out_of_hours') || 'Mostrar fuera de horario'}</span>
-                    <div className="switch">
-                        <input
-                            type="checkbox"
-                            checked={showOutOfHours}
-                            onChange={(e) => setShowOutOfHours(e.target.checked)}
-                        />
-                        <span className="slider round"></span>
-                    </div>
-                </label>
+                <div className="flex gap-4">
+                    <label className="switch-container">
+                        <span className="text-xs font-bold text-muted uppercase tracking-wider">{t('show_out_of_hours') || 'Mostrar fuera de horario'}</span>
+                        <div className="switch">
+                            <input
+                                type="checkbox"
+                                checked={showOutOfHours}
+                                onChange={(e) => setShowOutOfHours(e.target.checked)}
+                            />
+                            <span className="slider round"></span>
+                        </div>
+                    </label>
+                    <label className="switch-container">
+                        <span className="text-xs font-bold text-muted uppercase tracking-wider">Mostrar Cancelados</span>
+                        <div className="switch">
+                            <input
+                                type="checkbox"
+                                checked={showCancelled}
+                                onChange={(e) => setShowCancelled(e.target.checked)}
+                            />
+                            <span className="slider round"></span>
+                        </div>
+                    </label>
+                </div>
             </div>
 
             <div className="schedule-timeline">
@@ -124,37 +138,44 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule }) => {
                         return slot.slotApps.length > 0;
                     })
                     .map((slot, index) => {
-                        const { slotApps } = slot;
-                        const isOccupied = slotApps.length > 0;
-                        const isClosed = slot.type === 'closed';
-                        const isBreak = slot.type === 'break'; // Legacy
+                        const { slotApps, type } = slot; // Destructure type here to be explicit
+
+                        // Explicitly define variables in current scope to avoid reference errors
+                        const isSlotClosed = type === 'closed';
+                        const isSlotBreak = type === 'break';
+
+                        // Logic: Blocked if there is a 'blocking' status appointment
+                        const isBlocked = slotApps.some(a => !['cancelled', 'suspended', 'absent'].includes(a.status));
 
                         const slotStyle = {};
-                        if (isClosed) {
+                        if (isSlotClosed) {
                             slotStyle.backgroundColor = '#f1f5f9'; // Slate-100
                             slotStyle.opacity = 0.6;
                             slotStyle.borderLeft = '4px solid #cbd5e1';
-                        } else if (isBreak) {
+                        } else if (isSlotBreak) {
                             slotStyle.backgroundColor = '#fffbeb'; // Amber-50
                         }
 
                         return (
                             <div key={index} className="time-slot" style={slotStyle}>
                                 <div className="slot-content">
-                                    {isOccupied ? (
-                                        slotApps.map(appt => (
-                                            <AppointmentCard
-                                                key={appt.id}
-                                                appt={appt}
-                                                onClick={() => onSlotClick(slot.time.getHours(), appt)}
-                                            />
-                                        ))
-                                    ) : (
+                                    {slotApps
+                            .filter(appt => showCancelled || !['cancelled', 'suspended', 'absent'].includes(appt.status))
+                            .map(appt => (
+                                <AppointmentCard
+                                    key={appt.id}
+                                    appt={appt}
+                                    onClick={() => onSlotClick(slot.time.getHours(), appt)}
+                                />
+                            ))}
+
+                                    {!isBlocked && (
                                         <div
-                                            className={`available-slot ${isClosed ? 'cursor-warning' : ''}`}
+                                            className={`available-slot ${isSlotClosed ? 'cursor-warning' : ''}`}
                                             onClick={async () => {
-                                                if (isClosed) {
-                                                    if (await confirm("⚠️ Este horario está marcado como NO LABORABLE. ¿Desea asignar un turno de todas formas?")) {
+                                                if (isSlotClosed) {
+                                                    const confirmed = await confirm("⚠️ Este horario está marcado como NO LABORABLE. ¿Desea asignar un turno de todas formas?");
+                                                    if (confirmed) {
                                                         onSlotClick(slot.time.getHours(), null, slot.time.getMinutes());
                                                     }
                                                 } else {
@@ -162,10 +183,10 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule }) => {
                                                 }
                                             }}
                                         >
-                                            <span className="plus-icon">{isClosed ? '🚫' : '+'}</span>
+                                            <span className="plus-icon">{isSlotClosed ? '🚫' : '+'}</span>
                                             <div className="flex-between w-full">
                                                 <span className="text-sm font-bold opacity-80 font-mono">{slot.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                                                <span className="text-xs">{isClosed ? (t('closed_hours') || 'Fuera de Horario') : (t('available') || 'Disponible')}</span>
+                                                <span className="text-xs">{isSlotClosed ? (t('closed_hours') || 'Fuera de Horario') : (t('available') || 'Disponible')}</span>
                                             </div>
                                         </div>
                                     )}
@@ -179,4 +200,3 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule }) => {
 };
 
 export default DaySchedule;
-

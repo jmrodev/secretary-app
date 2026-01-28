@@ -66,17 +66,28 @@ const MedicationAutocomplete = ({ value, onChange, placeholder, className, onSel
     };
 
     const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            // Always prevent form submission when Enter is pressed in autocomplete
+            e.preventDefault();
+
+            if (showSuggestions && cursor >= 0 && cursor < suggestions.length) {
+                // Select the highlighted suggestion
+                handleSelect(suggestions[cursor]);
+            } else if (showSuggestions && suggestions.length > 0) {
+                // If no cursor but we have suggestions, select the first one
+                handleSelect(suggestions[0]);
+            }
+            return;
+        }
+
         if (!showSuggestions) return;
 
         if (e.key === "ArrowDown") {
+            e.preventDefault();
             setCursor(prev => (prev < suggestions.length - 1 ? prev + 1 : prev));
         } else if (e.key === "ArrowUp") {
+            e.preventDefault();
             setCursor(prev => (prev > 0 ? prev - 1 : 0));
-        } else if (e.key === "Enter") {
-            if (cursor >= 0 && cursor < suggestions.length) {
-                e.preventDefault();
-                handleSelect(suggestions[cursor]);
-            }
         } else if (e.key === "Escape") {
             setShowSuggestions(false);
         }

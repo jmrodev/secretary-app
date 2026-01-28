@@ -19,7 +19,7 @@ import Modal from '../components/molecules/Modal';
 import PatientHistoryModal from '../components/molecules/PatientHistoryModal';
 import PatientEditModal from '../components/molecules/PatientEditModal';
 import MedicationAutocomplete from '../components/molecules/MedicationAutocomplete';
-import NextSlotModal from '../components/molecules/NextSlotModal';
+import NextSlotCalendarModal from '../components/molecules/NextSlotCalendarModal';
 import WhatsAppModal from '../components/molecules/WhatsAppModal';
 import AdminAuthModal from '../components/molecules/AdminAuthModal';
 import PatientHistoryView from '../components/organisms/PatientHistoryView';
@@ -247,7 +247,7 @@ const Appointments = () => {
                 onMessageChange={(msg) => setWhatsappModal({ ...whatsappModal, message: msg })}
             />
 
-            <NextSlotModal
+            <NextSlotCalendarModal
                 isOpen={showNextSlotModal}
                 onClose={() => setShowNextSlotModal(false)}
                 loading={nextSlot.loading}
@@ -257,15 +257,10 @@ const Appointments = () => {
                     nextSlot.setIncludeOutOfHours(val);
                     handleNextFreeSlot(null, val);
                 }}
-                slotsPage={nextSlot.slotsPage}
-                setSlotsPage={nextSlot.setSlotsPage}
-                slotPages={nextSlot.slotPages}
                 onSelect={confirmNextSlot}
                 onWhatsApp={handleWhatsAppSlot}
-                onNextGroup={handleNextPage}
-                onPrevGroup={handlePrevPage}
-                hasPrevGroup={nextSlot.slotHistory.length > 0}
-                hasNextGroup={!!nextSlot.nextSlotData?.nextStartDate}
+                onLoadMore={nextSlot.loadMoreSlots}
+                hasMore={!!nextSlot.nextSlotData?.nextStartDate}
             />
 
             {editPatientModalOpen && (

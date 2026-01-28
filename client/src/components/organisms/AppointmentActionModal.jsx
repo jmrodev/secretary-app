@@ -230,7 +230,7 @@ const AppointmentActionModal = ({
                         {!isGoogle && (
                             <div className="mt-4 border-t border-slate-100 pt-3">
                                 <div className="grid grid-cols-2 gap-3">
-                                    <Button variant="outline-danger" onClick={() => { onCancel(appt.id); onClose(); }} tooltip="Queda en historial como 'Cancelado'. No afecta reputación." >
+                                    <Button variant="outline-danger" onClick={() => { onCancel(appt.id, note); onClose(); }} tooltip="Queda en historial como 'Cancelado'. No afecta reputación." >
                                         ❌ {t('cancel')}
                                     </Button>
                                     <Button style={{ background: '#ef4444', color: 'white' }} onClick={() => { onDelete(appt.id, appt.status); onClose(); }} tooltip="Borra permanentemente (Solo errores de carga). No afecta reputación." >

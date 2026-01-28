@@ -34,7 +34,7 @@ export const useNextFreeSlot = (doctorId) => {
         return pages;
     }, [nextSlotData, slotsPerPage]);
 
-    const fetchNextFreeSlots = async (startDate = null, overrideOutOfHours = null) => {
+    const fetchNextFreeSlots = async (startDate = null, overrideOutOfHours = null, append = false) => {
         if (!doctorId) {
             showMessage("Por favor, selecciona un médico primero para buscar turnos.", 'warning');
             return;
@@ -47,28 +47,43 @@ export const useNextFreeSlot = (doctorId) => {
             const params = { doctor_id: doctorId, include_out_of_hours: useOutOfHours };
             if (startDate && typeof startDate === 'string') params.start_date = startDate;
 
-
             const res = await api.get('/appointments/next-free-batch', { params });
 
-
             if (res.data && res.data.results && res.data.results.length > 0) {
-                setNextSlotData(res.data);
+                if (append && nextSlotData) {
+                    // Append new results to existing ones (for calendar view)
+                    setNextSlotData({
+                        results: [...nextSlotData.results, ...res.data.results],
+                        nextStartDate: res.data.nextStartDate
+                    });
+                } else {
+                    // Replace data (for initial load or when changing filters)
+                    setNextSlotData(res.data);
+                }
                 setSlotsPage(0);
                 setShowModal(true);
             } else {
-                if (useOutOfHours) {
-                    showMessage("No se encontraron turnos libres (ni siquiera fuera de horario).", 'info');
-                } else {
-                    showMessage("No se encontraron turnos libres. Prueba activando 'Fuera de Horario'.", 'info');
-                }
-                if (showModal) {
-                    setNextSlotData({ results: [] });
+                if (!append) {
+                    if (useOutOfHours) {
+                        showMessage("No se encontraron turnos libres (ni siquiera fuera de horario).", 'info');
+                    } else {
+                        showMessage("No se encontraron turnos libres. Prueba activando 'Fuera de Horario'.", 'info');
+                    }
+                    if (showModal) {
+                        setNextSlotData({ results: [] });
+                    }
                 }
             }
         } catch (err) {
             showMessage("Error buscando turnos libres.", 'error');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const loadMoreSlots = async () => {
+        if (nextSlotData?.nextStartDate) {
+            await fetchNextFreeSlots(nextSlotData.nextStartDate, null, true);
         }
     };
 
@@ -100,6 +115,7 @@ export const useNextFreeSlot = (doctorId) => {
         setSlotsPage,
         slotPages,
         fetchNextFreeSlots,
+        loadMoreSlots,
         handleNextPage,
         handlePrevPage,
         slotHistory,

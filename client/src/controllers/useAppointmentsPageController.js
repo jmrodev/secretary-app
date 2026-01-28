@@ -225,7 +225,7 @@ export const useAppointmentsPageController = () => {
         handleWhatsAppUniversal,
         syncDayToGoogle,
         cancelAppointment, fetchAppointments,
-        handleCancel: cancelAppointment,
+        handleCancel: (id, reason) => cancelAppointment(id, fetchAppointments, reason),
 
         // Misc
         rescheduleAppt,

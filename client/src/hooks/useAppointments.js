@@ -34,14 +34,24 @@ export const useAppointments = () => {
         }
     };
 
-    const cancelAppointment = async (id, onUpdate) => {
-        const reason = await prompt(t('cancellation_reason_prompt') || "Please enter a reason for cancellation:");
-        if (!reason) return;
+    const cancelAppointment = async (id, onUpdate, providedReason = null) => {
+        let reason = providedReason;
+
+        if (!reason) {
+            reason = await prompt(t('cancellation_reason_prompt') || "Please enter a reason for cancellation:");
+        }
+
+        if (!reason || reason.trim() === '') {
+            showMessage(t('reason_required') || 'Debe ingresar un motivo para cancelar.', 'warning');
+            return { success: false };
+        }
+
         if (!await confirm(t('confirm_cancel'))) return;
 
         try {
             setIsSubmitting(true);
             await api.put(`/appointments/${id}/status`, { status: 'cancelled', reason });
+
             showMessage(t('appointment_cancelled'), 'success');
             if (onUpdate) onUpdate(id, 'cancelled');
             return { success: true };

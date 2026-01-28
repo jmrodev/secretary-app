@@ -6,6 +6,14 @@ import { useModal } from '../context/ModalContext';
 import { useConfig } from '../context/ConfigContext';
 import api from '../api/axios';
 
+/**
+ * System Configuration Controller
+ * 
+ * Manages all state and business logic for the SystemConfig page
+ * Follows single responsibility principle - each function has one clear purpose
+ * 
+ * @returns {Object} Controller state and handlers
+ */
 export const useSystemConfigController = () => {
     // Contexts
     const { user } = useAuth();
@@ -24,6 +32,9 @@ export const useSystemConfigController = () => {
     // --- Google Auth Logic ---
     const googleUnlinked = !settings?.google_refresh_token;
 
+    /**
+     * Single Responsibility: Handle OAuth callback status from URL params
+     */
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const status = urlParams.get('status');
@@ -36,6 +47,9 @@ export const useSystemConfigController = () => {
         }
     }, [showMessage]);
 
+    /**
+     * Single Responsibility: Initiate Google OAuth flow
+     */
     const handleGoogleAuth = useCallback(async () => {
         try {
             const { data } = await api.get('/google/auth-url');
@@ -45,6 +59,9 @@ export const useSystemConfigController = () => {
         }
     }, [showMessage]);
 
+    /**
+     * Single Responsibility: Disconnect Google Calendar integration
+     */
     const handleDisconnectGoogle = useCallback(async () => {
         if (!await confirm('¿Estás seguro de desconectar Google Calendar? Se dejarán de sincronizar los turnos.')) return;
         try {
@@ -56,6 +73,9 @@ export const useSystemConfigController = () => {
         }
     }, [confirm, refreshSettings, showMessage]);
 
+    /**
+     * Single Responsibility: Retry failed Google Calendar sync items
+     */
     const handleRetryGoogleFailed = useCallback(async () => {
         try {
             setLoading(true);
@@ -69,7 +89,9 @@ export const useSystemConfigController = () => {
         }
     }, [showMessage]);
 
-    // --- Communications Logic ---
+    /**
+     * Single Responsibility: Test Meta WhatsApp connection
+     */
     const handleTestMeta = useCallback(async () => {
         const phone = await prompt("Ingrese un número de teléfono de prueba (incluya código de país, ej: 549...):");
         if (!phone) return;
@@ -86,7 +108,13 @@ export const useSystemConfigController = () => {
         }
     }, [showMessage]);
 
-    // --- Template Editing Logic ---
+    /**
+     * Single Responsibility: Insert variable into textarea at cursor position
+     * 
+     * @param {string} textareaId - ID of the textarea element
+     * @param {string} variable - Variable to insert (e.g., '{patient_name}')
+     * @param {string} settingKey - Setting key to update
+     */
     const insertVariable = useCallback((textareaId, variable, settingKey) => {
         const textarea = document.getElementById(textareaId);
         if (!textarea) return;
@@ -109,10 +137,9 @@ export const useSystemConfigController = () => {
         }, 0);
     }, [updateSetting]);
 
-    // --- Data/Backup Logic (Placeholder for future expansion) ---
-    // If you add backup logic later, place it here.
-
-    // --- Integrations / Tunnel ---
+    /**
+     * Single Responsibility: Refresh Cloudflare tunnel
+     */
     const handleRefreshTunnel = useCallback(async () => {
         if (!await confirm("¿Solicitar nuevo enlace a Cloudflare? Esto reiniciará el túnel y tardará unos segundos.")) return;
         try {

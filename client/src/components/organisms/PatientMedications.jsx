@@ -11,18 +11,23 @@ const PatientMedications = ({ patientId }) => {
     const [recentRequests, setRecentRequests] = useState([]); // [NEW] History
     const [loading, setLoading] = useState(false);
     const [isAdding, setIsAdding] = useState(false);
-    const [newMed, setNewMed] = useState({
+
+    // State for multiple medications being added
+    const [pendingMedications, setPendingMedications] = useState([]);
+
+    // State for the current medication being configured
+    const [currentMed, setCurrentMed] = useState({
         medication_name: '',
         presentation: '',
         monodroga: '',
         dose: '',
-        frequency: '',
-        is_chronic: true, // [user-request] Default to chronic
+        frequency: '', // Now optional
+        is_chronic: true,
         next_refill_date: '',
         notes: '',
         daily_intake: '',
         units_per_box: '',
-        boxes_count: '1' // [NEW] Multiplier
+        boxes_count: '1'
     });
 
     // [NEW] Helper calculate date based on explicit units and boxes
@@ -59,14 +64,30 @@ const PatientMedications = ({ patientId }) => {
 
     const handleAddMedication = async (e) => {
         e.preventDefault();
+
+        // If no pending medications, nothing to save
+        if (pendingMedications.length === 0) {
+            showMessage(t('no_medications_to_add') || 'No hay medicamentos para agregar', 'warning');
+            return;
+        }
+
         try {
-            await api.post('/medical/patients/medications', {
-                ...newMed,
-                patient_id: patientId
-            });
-            showMessage(t('medication_added') || 'Medicamento agregado', 'success');
+            // Save all pending medications
+            for (const med of pendingMedications) {
+                await api.post('/medical/patients/medications', {
+                    ...med,
+                    patient_id: patientId
+                });
+            }
+
+            showMessage(
+                t('medications_added') || `${pendingMedications.length} medicamento(s) agregado(s)`,
+                'success'
+            );
+
             setIsAdding(false);
-            setNewMed({
+            setPendingMedications([]);
+            setCurrentMed({
                 medication_name: '',
                 presentation: '',
                 monodroga: '',
@@ -102,21 +123,50 @@ const PatientMedications = ({ patientId }) => {
         const match = med.presentation.match(/x\s*(\d+)/i);
         if (match && match[1]) extractedUnits = match[1];
 
-        const date = calculateRefillDate(extractedUnits, newMed.daily_intake, newMed.boxes_count);
+        const date = calculateRefillDate(extractedUnits, currentMed.daily_intake, currentMed.boxes_count);
 
-        setNewMed({
-            ...newMed,
+        // Update current medication form with selected data
+        setCurrentMed(prev => ({
+            ...prev,
             medication_name: `${med.name} ${med.presentation}`,
             presentation: med.presentation,
             monodroga: med.drug,
             units_per_box: extractedUnits,
-            next_refill_date: date || ''
+            next_refill_date: date || prev.next_refill_date || ''
+        }));
+    };
+
+    const handleAddToPending = (e) => {
+        if (e) e.preventDefault();
+
+        if (!currentMed.medication_name) return;
+
+        // Add to pending list
+        setPendingMedications(prev => [...prev, { ...currentMed }]);
+
+        // Reset form for next entry
+        setCurrentMed({
+            medication_name: '',
+            presentation: '',
+            monodroga: '',
+            dose: '',
+            frequency: '',
+            is_chronic: true,
+            next_refill_date: '',
+            notes: '',
+            daily_intake: '',
+            units_per_box: '',
+            boxes_count: '1'
         });
     };
 
+    const handleRemovePendingMedication = (index) => {
+        setPendingMedications(prev => prev.filter((_, i) => i !== index));
+    };
+
     const handleDailyIntakeChange = (val) => {
-        const date = calculateRefillDate(newMed.units_per_box, val, newMed.boxes_count);
-        setNewMed(prev => ({
+        const date = calculateRefillDate(currentMed.units_per_box, val, currentMed.boxes_count);
+        setCurrentMed(prev => ({
             ...prev,
             daily_intake: val,
             dose: val ? `${val} por día` : '', // Auto-fill dose text
@@ -125,8 +175,8 @@ const PatientMedications = ({ patientId }) => {
     };
 
     const handleUnitsChange = (val) => {
-        const date = calculateRefillDate(val, newMed.daily_intake, newMed.boxes_count);
-        setNewMed(prev => ({
+        const date = calculateRefillDate(val, currentMed.daily_intake, currentMed.boxes_count);
+        setCurrentMed(prev => ({
             ...prev,
             units_per_box: val,
             next_refill_date: date || ''
@@ -134,8 +184,8 @@ const PatientMedications = ({ patientId }) => {
     };
 
     const handleBoxesChange = (val) => {
-        const date = calculateRefillDate(newMed.units_per_box, newMed.daily_intake, val);
-        setNewMed(prev => ({
+        const date = calculateRefillDate(currentMed.units_per_box, currentMed.daily_intake, val);
+        setCurrentMed(prev => ({
             ...prev,
             boxes_count: val,
             next_refill_date: date || ''
@@ -197,101 +247,178 @@ const PatientMedications = ({ patientId }) => {
                 {/* Adding Form */}
                 {isAdding && (
                     <form onSubmit={handleAddMedication} className="bg-slate-50 p-4 rounded-lg border border-slate-200 mb-4 animate-fade-in">
-                        {/* Row 1: Medication */}
-                        <div className="input-group mb-3">
-                            <label className="input-label">{t('medication')}</label>
-                            <MedicationAutocomplete
-                                value={newMed.medication_name}
-                                onChange={(val) => setNewMed({ ...newMed, medication_name: val })}
-                                onSelectMedication={handleSelectFromVademecum}
-                            />
+                        {/* Box 1: Search & List */}
+                        <div className="bg-white p-3 rounded-xl border border-blue-100 shadow-sm mb-4">
+                            {/* Medication Search */}
+                            <div className="input-group mb-3">
+                                <label className="input-label font-bold text-main-800">{t('search_medication') || 'Buscar Medicamento'}</label>
+                                <MedicationAutocomplete
+                                    value={currentMed.medication_name}
+                                    onChange={(val) => setCurrentMed({ ...currentMed, medication_name: val })}
+                                    onSelectMedication={handleSelectFromVademecum}
+                                    placeholder={t('search_add_medication') || "Buscar y seleccionar..."}
+                                />
+                            </div>
+
+                            {/* Show Pending Medications */}
+                            {pendingMedications.length > 0 && (
+                                <div className="mt-3 pt-3 border-t border-slate-100">
+                                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
+                                        {t('medications_to_add') || 'Lista a Guardar'} ({pendingMedications.length})
+                                    </label>
+                                    <div className="flex flex-col gap-2">
+                                        {pendingMedications.map((med, idx) => (
+                                            <div key={idx} className="flex justify-between items-center p-2 bg-blue-50/50 rounded-lg border border-blue-100">
+                                                <div>
+                                                    <div className="font-bold text-sm text-blue-900">{med.medication_name}</div>
+                                                    <div className="text-xs text-slate-500">
+                                                        {med.daily_intake && `${med.daily_intake} u/día`}
+                                                        {med.frequency && ` • ${med.frequency}`}
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    onClick={() => handleRemovePendingMedication(idx)}
+                                                    className="w-6 h-6 flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                                                    type="button"
+                                                >
+                                                    ✕
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
-                        {/* Row 2: Calculator (3 Cols) */}
-                        <div className="grid grid-cols-3 gap-3 mb-3 bg-blue-50/50 p-3 rounded-lg border border-blue-100">
-                            <div className="input-group">
-                                <label className="input-label text-xs">📦 {t('units_per_box')}</label>
-                                <input
-                                    type="number"
-                                    className="input-field text-center font-bold text-slate-700"
-                                    value={newMed.units_per_box}
-                                    onChange={e => handleUnitsChange(e.target.value)}
-                                    placeholder="Ej: 30"
-                                />
-                            </div>
-                            <div className="input-group">
-                                <label className="input-label text-xs">📦 {t('boxes_count')}</label>
-                                <input
-                                    type="number"
-                                    min="1"
-                                    className="input-field text-center font-bold text-slate-700"
-                                    value={newMed.boxes_count}
-                                    onChange={e => handleBoxesChange(e.target.value)}
-                                    placeholder="1"
-                                />
-                            </div>
-                            <div className="input-group">
-                                <label className="input-label text-xs">💊 {t('daily_intake') || 'Dosis x Día'}</label>
-                                <input
-                                    type="number"
-                                    min="0.1"
-                                    step="0.1"
-                                    className="input-field text-center font-bold text-blue-600"
-                                    value={newMed.daily_intake}
-                                    onChange={e => handleDailyIntakeChange(e.target.value)}
-                                    placeholder="Ej: 1"
-                                />
+                        {/* Box 2: Configuration (Only visible when med is selected or typing) */}
+                        <div className={`transition-all duration-300 ${currentMed.medication_name ? 'opacity-100 translate-y-0' : 'opacity-50 translate-y-2 grayscale pointer-events-none'}`}>
+                            <div className="bg-slate-100/50 p-3 rounded-xl border border-slate-200 mb-3">
+                                <h5 className="text-sm font-bold text-slate-600 mb-3 flex items-center gap-2">
+                                    ⚙️ {t('configuration') || 'Configuración'}
+                                    <span className="text-[10px] font-normal text-slate-400 bg-white px-2 py-0.5 rounded border border-slate-200">
+                                        {currentMed.medication_name || 'Seleccione un medicamento'}
+                                    </span>
+                                </h5>
+
+                                {/* Row 1: Calculator */}
+                                <div className="grid grid-cols-3 gap-3 mb-3">
+                                    <div className="input-group mb-0">
+                                        <label className="input-label text-xs">📦 {t('units_per_box')}</label>
+                                        <input
+                                            type="number"
+                                            className="input-field text-center font-bold text-slate-700 h-9"
+                                            value={currentMed.units_per_box}
+                                            onChange={e => handleUnitsChange(e.target.value)}
+                                            onKeyDown={(e) => e.key === 'Enter' && handleAddToPending(e)}
+                                            placeholder="Ej: 30"
+                                        />
+                                    </div>
+                                    <div className="input-group mb-0">
+                                        <label className="input-label text-xs">📦 {t('boxes_count')}</label>
+                                        <input
+                                            type="number"
+                                            min="1"
+                                            className="input-field text-center font-bold text-slate-700 h-9"
+                                            value={currentMed.boxes_count}
+                                            onChange={e => handleBoxesChange(e.target.value)}
+                                            onKeyDown={(e) => e.key === 'Enter' && handleAddToPending(e)}
+                                            placeholder="1"
+                                        />
+                                    </div>
+                                    <div className="input-group mb-0">
+                                        <label className="input-label text-xs">💊 {t('daily_intake')}</label>
+                                        <input
+                                            type="number"
+                                            min="0.1"
+                                            step="0.1"
+                                            className="input-field text-center font-bold text-blue-600 h-9"
+                                            value={currentMed.daily_intake}
+                                            onChange={e => handleDailyIntakeChange(e.target.value)}
+                                            onKeyDown={(e) => e.key === 'Enter' && handleAddToPending(e)}
+                                            placeholder="Ej: 1"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Row 2: Details */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                                    <div className="input-group mb-0">
+                                        <label className="input-label text-xs">
+                                            {t('frequency')} <span className="text-slate-400 font-normal">(Opcional)</span>
+                                        </label>
+                                        <input
+                                            className="input-field h-9 text-sm"
+                                            value={currentMed.frequency}
+                                            onChange={e => setCurrentMed({ ...currentMed, frequency: e.target.value })}
+                                            onKeyDown={(e) => e.key === 'Enter' && handleAddToPending(e)}
+                                            placeholder="Ej: cada 8 hs"
+                                        />
+                                    </div>
+                                    <div className="input-group mb-0">
+                                        <label className="input-label text-xs font-bold text-blue-700">📅 {t('next_refill_date')}</label>
+                                        <input
+                                            type="date"
+                                            className="input-field h-9 text-sm font-semibold bg-blue-50 border-blue-200"
+                                            value={currentMed.next_refill_date}
+                                            onChange={e => setCurrentMed({ ...currentMed, next_refill_date: e.target.value })}
+                                            onKeyDown={(e) => e.key === 'Enter' && handleAddToPending(e)}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Row 3: Notes & Chronic */}
+                                <div className="flex gap-3 items-center">
+                                    <div className="input-group mb-0 flex-grow">
+                                        <input
+                                            className="input-field h-9 text-sm"
+                                            value={currentMed.notes}
+                                            onChange={e => setCurrentMed({ ...currentMed, notes: e.target.value })}
+                                            onKeyDown={(e) => e.key === 'Enter' && handleAddToPending(e)}
+                                            placeholder={t('notes_placeholder') || "Notas (opcional)"}
+                                        />
+                                    </div>
+                                    <div className="flex items-center gap-2 pt-1 min-w-max">
+                                        <input
+                                            type="checkbox"
+                                            id="is_chronic"
+                                            checked={currentMed.is_chronic}
+                                            onChange={e => setCurrentMed({ ...currentMed, is_chronic: e.target.checked })}
+                                            className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
+                                        />
+                                        <label htmlFor="is_chronic" className="input-label mb-0 cursor-pointer text-xs font-bold text-slate-600">
+                                            {t('chronic') || 'Crónico'}
+                                        </label>
+                                    </div>
+                                </div>
+
+                                {/* Add Button */}
+                                <div className="mt-3 flex justify-end">
+                                    <button
+                                        type="button"
+                                        onClick={handleAddToPending}
+                                        disabled={!currentMed.medication_name}
+                                        className="btn btn-sm btn-secondary w-full md:w-auto text-blue-600 border-blue-200 hover:bg-blue-50"
+                                    >
+                                        ⬇️ {t('add_to_list') || 'Confirmar y Agregar a Lista'}
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
-                        {/* Row 3: Details & Result */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div className="input-group">
-                                <label className="input-label">{t('frequency') || 'Instrucciones / Frecuencia'}</label>
-                                <input
-                                    className="input-field"
-                                    value={newMed.frequency}
-                                    onChange={e => setNewMed({ ...newMed, frequency: e.target.value })}
-                                    placeholder="Ej: cada 8 horas, con las comidas..."
-                                />
-                            </div>
-                            <div className="input-group">
-                                <label className="input-label text-blue-800 font-bold">📅 {t('next_refill_date')}</label>
-                                <input
-                                    type="date"
-                                    className="input-field font-semibold bg-blue-50 border-blue-200"
-                                    value={newMed.next_refill_date}
-                                    onChange={e => setNewMed({ ...newMed, next_refill_date: e.target.value })}
-                                />
-                            </div>
-                        </div>
-                        <div className="input-group mt-3">
-                            <label className="input-label">{t('notes')}</label>
-                            <input
-                                className="input-field"
-                                value={newMed.notes}
-                                onChange={e => setNewMed({ ...newMed, notes: e.target.value })}
-                                placeholder="Ej: No suspender sin consulta previa"
-                            />
-                        </div>
-                        <div className="flex items-center gap-2 mt-4 ml-1">
-                            <input
-                                type="checkbox"
-                                id="is_chronic"
-                                checked={newMed.is_chronic}
-                                onChange={e => setNewMed({ ...newMed, is_chronic: e.target.checked })}
-                                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
-                            />
-                            <label htmlFor="is_chronic" className="input-label mb-0 cursor-pointer text-sm font-medium text-slate-700">
-                                {t('chronic') || 'Tratamiento Crónico'}
-                            </label>
-                        </div>
-                        <div className="flex justify-end gap-2 mt-4">
-                            <button type="button" className="btn btn-secondary" onClick={() => setIsAdding(false)}>
+                        {/* Footer Actions */}
+                        <div className="flex justify-between items-center pt-2 border-t border-slate-100">
+                            <button type="button" className="text-slate-400 hover:text-slate-600 text-sm underline" onClick={() => {
+                                setIsAdding(false);
+                                setPendingMedications([]);
+                            }}>
                                 {t('cancel')}
                             </button>
-                            <button type="submit" className="btn btn-primary">
-                                {t('save')}
+                            <button
+                                type="submit"
+                                className="btn btn-primary"
+                                disabled={pendingMedications.length === 0}
+                            >
+                                {t('save_all')} {pendingMedications.length > 0 ? `(${pendingMedications.length})` : ''}
                             </button>
                         </div>
                     </form>

@@ -21,8 +21,13 @@ const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange }) => 
 
         const encodedText = encodeURIComponent(message || '');
 
-        // Copy to clipboard for safety
-        navigator.clipboard.writeText(message || '').catch(err => console.error("Clipboard error:", err));
+        // Copy to clipboard for safety (with error handling)
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+            navigator.clipboard.writeText(message || '').catch(err => console.error("Clipboard error:", err));
+        } else {
+            // Fallback for browsers that don't support clipboard API or when not in secure context
+            console.warn("Clipboard API not available, falling back to manual copy");
+        }
 
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 

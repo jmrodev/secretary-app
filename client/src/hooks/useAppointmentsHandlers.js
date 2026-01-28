@@ -196,8 +196,12 @@ export const useAppointmentsHandlers = ({
     };
 
     const handleWhatsAppSlot = (slot) => {
-        const dateStr = new Date(slot.iso).toLocaleDateString();
-        const timeStr = new Date(slot.iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const dateObj = new Date(slot.iso);
+        const dateStr = dateObj.toLocaleDateString('es-AR'); // 29/1/2026
+        const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // 09:00
+
+        // Calculate day name properly if missing
+        const dayName = slot.dayName || dateObj.toLocaleDateString('es-AR', { weekday: 'long' });
 
         const docId = Number(viewDoctorId || selectedDoctor);
         const doctor = doctors.find(d => Number(d.id) === docId);
@@ -213,14 +217,14 @@ export const useAppointmentsHandlers = ({
 
             message = settings.next_free_slot_template
                 .replace(/{[\s]*doctor_name[\s]*}/gi, doctorName)
-                .replace(/{[\s]*date[\s]*}/gi, `${slot.dayName} ${dateStr}`)
+                .replace(/{[\s]*date[\s]*}/gi, `${dayName} ${dateStr}`)
                 .replace(/{[\s]*time[\s]*}/gi, timeStr)
                 .replace(/{[\s]*appointment_type[\s]*}/gi, isVirtualSlot ? 'VIRTUAL' : 'PRESENCIAL')
                 .replace(/{[\s]*appointment_location[\s]*}/gi, address)
                 .replace(/{[\s]*price[\s]*}/gi, formatPrice(slotPrice))
                 .replace(/{[\s]*secretary_name[\s]*}/gi, user.name || 'Secretaría');
         } else {
-            message = `Hola, tenemos un turno disponible el ${slot.dayName} ${dateStr} a las ${timeStr} con el/la Dr/a. ${doctorName}. ¿Le gustaría reservarlo?`;
+            message = `Hola, tenemos un turno disponible el ${dayName} ${dateStr} a las ${timeStr} con el/la Dr/a. ${doctorName}. ¿Le gustaría reservarlo?`;
         }
 
         // 2. Determine target phone

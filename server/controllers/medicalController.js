@@ -216,19 +216,23 @@ exports.createPrescription = async (req, res) => {
             // --- REMINDER LOGIC: Update next suggested prescription date ---
             const [intervals] = await conn.query(`
                 SELECT 
-                    COALESCE(p.prescription_interval_days, d.default_prescription_interval_days) as interval_days
+                    COALESCE(p.prescription_interval_days, d.default_prescription_interval_days) as interval_days,
+                    a.appointment_date
                 FROM patients p
                 JOIN patient_doctors pd ON p.id = pd.patient_id
                 JOIN doctors d ON pd.doctor_id = d.id
+                JOIN appointments a ON a.id = ?
                 WHERE p.id = ? AND d.id = ?
-            `, [patientId, doctorId]);
+            `, [appointment_id, patientId, doctorId]);
 
             if (intervals && intervals.interval_days > 0) {
-                const nextDate = new Date();
+                // Calculate next prescription from the appointment date, not current date
+                const appointmentDate = new Date(intervals.appointment_date);
+                const nextDate = new Date(appointmentDate);
                 nextDate.setDate(nextDate.getDate() + Number(intervals.interval_days));
                 const nextDateStr = nextDate.toISOString().split('T')[0];
                 await conn.query("UPDATE patients SET next_suggested_prescription_date = ? WHERE id = ?", [nextDateStr, patientId]);
-                console.log(`DEBUG: Set next suggested prescription date to ${nextDateStr}`);
+                console.log(`DEBUG: Set next suggested prescription date to ${nextDateStr} for patient ${patientId} (appointment ${appointment_id} on ${appointmentDate.toISOString().split('T')[0]})`);
             }
         }
 
