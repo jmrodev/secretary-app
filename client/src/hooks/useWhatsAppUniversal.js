@@ -125,10 +125,9 @@ export const useWhatsAppUniversal = (doctors) => {
             if (isMobile) {
                 window.location.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
             } else {
-                const appUrl = `whatsapp://send?phone=${phone}&text=${encodeURIComponent(message)}`;
                 const webUrl = `https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
-                window.location.href = appUrl;
-                setTimeout(() => { window.open(webUrl, '_blank'); }, 2500);
+                // Open directly to avoid popup blockers caused by timeouts
+                window.open(webUrl, '_blank');
             }
         } catch (err) {
             showMessage("Error al procesar WhatsApp", "error");

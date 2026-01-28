@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useRequirementsController } from '../../controllers/useRequirementsController';
+import api from '../../api/axios';
 
 // Components
 import Modal from '../molecules/Modal';
 import Button from '../atoms/Button';
 import TabButton from '../atoms/TabButton';
 import Badge from '../atoms/Badge';
+import Input from '../atoms/Input';
 import MedicalRequestForm from './MedicalRequestForm';
 
 /**
@@ -39,6 +41,163 @@ const RequirementsList = ({ user }) => {
         canDeleteRequest
     } = useRequirementsController(user);
 
+    // New state for medication validation & editing
+    const [patientMeds, setPatientMeds] = useState([]);
+    const [fetchingMeds, setFetchingMeds] = useState(false);
+
+    // Edit Mode State
+    const [isEditing, setIsEditing] = useState(false);
+    const [editMeds, setEditMeds] = useState([]); // Array of objects {name, dose, frequency, quantity}
+    const [editNotes, setEditNotes] = useState('');
+    const [newMedInput, setNewMedInput] = useState({ name: '', dose: '', frequency: '', quantity: '' });
+
+    useEffect(() => {
+        if (selectedRequest) {
+            setIsEditing(false);
+            setEditMeds([]);
+            setEditNotes('');
+
+            // Extract current values for edit mode init
+            const { meds, notes } = extractDetails(selectedRequest);
+            setEditMeds(meds);
+            setEditNotes(notes);
+
+            if (selectedRequest.patient_id) {
+                fetchPatientMeds(selectedRequest.patient_id);
+            } else {
+                setPatientMeds([]);
+            }
+        }
+    }, [selectedRequest]);
+
+    const fetchPatientMeds = (patientId) => {
+        setFetchingMeds(true);
+        api.get(`/medical/patients/${patientId}/medications`)
+            .then(res => setPatientMeds(res.data || []))
+            .catch(err => {
+                console.error("Error fetching patient meds:", err);
+                setPatientMeds([]);
+            })
+            .finally(() => setFetchingMeds(false));
+    };
+
+    const addToChronic = async (medName) => {
+        if (!confirm(`¿Desea agregar "${medName}" a la lista de medicación crónica del paciente?`)) return;
+
+        try {
+            await api.post('/medical/patients/medications', {
+                patient_id: selectedRequest.patient_id,
+                medication_name: medName,
+                is_chronic: true,
+                status: 'active'
+            });
+            // Refresh patient meds to update UI (move to blue list)
+            fetchPatientMeds(selectedRequest.patient_id);
+        } catch (e) {
+            console.error(e);
+            alert("Error al agregar medicación");
+        }
+    };
+
+    const extractDetails = (req) => {
+        let meds = [];
+        let notes = '';
+
+        // Try structured data
+        if (req.raw_medication_data) {
+            try {
+                const parsed = typeof req.raw_medication_data === 'string'
+                    ? JSON.parse(req.raw_medication_data)
+                    : req.raw_medication_data;
+
+                // Normalize to objects
+                if (Array.isArray(parsed)) {
+                    meds = parsed.map(item => {
+                        if (typeof item === 'string') return { name: item, dose: '', frequency: '', quantity: '' };
+                        return item;
+                    });
+                }
+            } catch (e) {
+                console.error("Error parsing raw_medication_data", e);
+            }
+        }
+
+        let noteContent = req.request_note || '';
+        const isPublic = noteContent.includes('[Solicitud Paciente]');
+
+        if (isPublic) {
+            const content = noteContent.replace('[Solicitud Paciente]', '').trim();
+            const parts = content.split(/\n?Notas:\s?/i);
+            const medsPart = parts[0].trim();
+            if (parts.length > 1) {
+                notes = parts.slice(1).join('Notas: ').trim();
+            }
+            if (!meds || meds.length === 0) {
+                if (medsPart) meds = medsPart.split(',').map(m => m.trim()).filter(Boolean);
+            }
+        } else {
+            notes = noteContent;
+        }
+
+        // Final normalization to ensure everything is an object
+        if (Array.isArray(meds)) {
+            meds = meds.map(item => {
+                if (!item) return { name: 'Desconocido', dose: '', frequency: '', quantity: '' };
+                if (typeof item === 'string') return { name: item, dose: '', frequency: '', quantity: '' };
+                return item;
+            });
+        } else {
+            meds = [];
+        }
+
+        return { meds: meds || [], notes: notes || '' };
+    };
+
+    const handleSaveEdit = async () => {
+        try {
+            // Reconstruct note for legacy
+            const medsString = editMeds.map(m => {
+                let s = m.name;
+                if (m.dose) s += ` ${m.dose}`;
+                if (m.frequency) s += ` (${m.frequency})`;
+                if (m.quantity) s += ` [Qty: ${m.quantity}]`;
+                return s;
+            }).join(', ');
+
+            const newRequestNote = `[Solicitud Paciente] ${medsString}\nNotas: ${editNotes}`;
+
+            const payload = {
+                raw_medication_data: JSON.stringify(editMeds),
+                request_note: newRequestNote
+            };
+
+            await api.put(`/medical/requests/${selectedRequest.id}`, payload);
+
+            // Update UI
+            setSelectedRequest(prev => ({
+                ...prev,
+                ...payload,
+                raw_medication_data: JSON.stringify(editMeds)
+            }));
+            fetchRequests(); // Background refresh
+            setIsEditing(false);
+        } catch (error) {
+            console.error(error);
+            alert("Error al guardar cambios"); // Simple alert for now
+        }
+    };
+
+    const handleAddMed = () => {
+        if (newMedInput.name.trim()) {
+            setEditMeds([...editMeds, { ...newMedInput, name: newMedInput.name.trim() }]);
+            setNewMedInput({ name: '', dose: '', frequency: '', quantity: '' });
+        }
+    };
+
+    const handleRemoveMed = (index) => {
+        setEditMeds(prev => prev.filter((_, i) => i !== index));
+    };
+
     const typeLabels = {
         'prescription': 'Receta 💊',
         'license': 'Licencia 📄',
@@ -49,6 +208,43 @@ const RequirementsList = ({ user }) => {
     if (loading) return <div className="requirements-list__loading">Cargando requerimientos...</div>;
 
     const isAdminOrSecretary = ['admin', 'secretary'].includes(user.role);
+    const canEdit = user.role === 'admin' || user.role === 'secretary' || user.role === 'doctor';
+
+    // Helper for validation logic
+    const checkIsKnown = (medName) => {
+        if (!medName) return false;
+        return patientMeds.some(pm => {
+            const pmName = (pm.medication_name || pm.name || '').toLowerCase();
+            const reqName = medName.toLowerCase();
+            return pmName.includes(reqName) || reqName.includes(pmName);
+        });
+    };
+
+    const calculateDuration = (qty, freq) => {
+        if (!qty || !freq) return null;
+        const q = parseInt(qty, 10);
+        if (isNaN(q)) return null;
+
+        // Try to parse frequency
+        // Case: "1 cada 8 hs" or "1/8h"
+        const hourlyMatch = freq.match(/(\d+)?\s*(?:cada|\/)\s*(\d+)\s*(?:hs|h|horas)/i);
+        if (hourlyMatch) {
+            const amount = hourlyMatch[1] ? parseInt(hourlyMatch[1], 10) : 1;
+            const hours = parseInt(hourlyMatch[2], 10);
+            if (hours > 0) {
+                const daily = (24 / hours) * amount;
+                return Math.round(q / daily);
+            }
+        }
+        // Case: "3 al día" or "3 daily"
+        const dailyMatch = freq.match(/(\d+)\s*(?:al día|por día|daily|xdia)/i);
+        if (dailyMatch) {
+            const daily = parseInt(dailyMatch[1], 10);
+            return daily > 0 ? Math.round(q / daily) : null;
+        }
+
+        return null;
+    };
 
     return (
         <div className="requirements-list">
@@ -72,7 +268,7 @@ const RequirementsList = ({ user }) => {
                         onClick={() => setActiveTab('recycle')}
                     >
                         🗑️ Papelera {recycleRequests.length > 0 && (
-                            <span className="requirements-list__count ml-2 bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded-full text-xs">
+                            <span className="requirements-list__count-badge">
                                 {recycleRequests.length}
                             </span>
                         )}
@@ -81,7 +277,7 @@ const RequirementsList = ({ user }) => {
             </nav>
 
             {activeTab === 'new' ? (
-                <div className="requirements-list__form-view animate-fadeIn mt-4">
+                <div className="requirements-list__form-view">
                     <MedicalRequestForm
                         doctors={doctors}
                         onRequestCreated={() => {
@@ -93,7 +289,7 @@ const RequirementsList = ({ user }) => {
             ) : activeTab === 'list' ? (
                 <div className="requirements-list__list-view">
                     {/* Status Filters */}
-                    <div className="requirements-list__filters flex gap-2 mb-4">
+                    <div className="requirements-list__filters">
                         <TabButton
                             variant="pill"
                             isActive={filter === 'active'}
@@ -111,7 +307,7 @@ const RequirementsList = ({ user }) => {
                     </div>
 
                     {requests.length === 0 ? (
-                        <div className="requirements-list__empty no-requirements-msg mt-4">
+                        <div className="requirements-list__empty no-requirements-msg">
                             {t('no_requests') || (filter === 'active' ? 'No hay requerimientos pendientes.' : 'No hay historial.')}
                         </div>
                     ) : (
@@ -145,7 +341,7 @@ const RequirementsList = ({ user }) => {
                                             <td><strong>{r.patient_name}</strong></td>
                                             <td><span className="text-muted">Dr. {r.doctor_name}</span></td>
                                             <td>
-                                                <span className="requirements-list__author text-xs text-slate-500">
+                                                <span className="requirements-list__author">
                                                     {r.secretary_name || 'Secretaría'}
                                                 </span>
                                             </td>
@@ -155,7 +351,7 @@ const RequirementsList = ({ user }) => {
                                                 </Badge>
                                             </td>
                                             <td>
-                                                <div className="flex gap-1 justify-end">
+                                                <div className="requirements-list__actions">
                                                     {canDeleteRequest && (
                                                         <Button
                                                             variant="ghost"
@@ -221,8 +417,8 @@ const RequirementsList = ({ user }) => {
             ) : (
                 <div className="requirements-list__recycle-view">
                     {recycleRequests.length === 0 ? (
-                        <div className="requirements-list__recycle-empty text-center p-12 bg-slate-50 rounded-lg border border-dashed border-slate-300 text-muted">
-                            <span className="text-4xl block mb-2">🗑️</span>
+                        <div className="requirements-list__recycle-empty">
+                            <span className="requirements-list__recycle-empty-icon">🗑️</span>
                             No hay elementos en la papelera.
                         </div>
                     ) : (
@@ -239,17 +435,17 @@ const RequirementsList = ({ user }) => {
                                 </thead>
                                 <tbody>
                                     {recycleRequests.map(item => (
-                                        <tr key={item.id} className="bg-red-50/30">
+                                        <tr key={item.id} className="requirements-list__recycle-row">
                                             <td><strong>{item.entity_name}</strong></td>
                                             <td>{item.deleted_by_name}</td>
                                             <td>{new Date(item.deleted_at).toLocaleString()}</td>
-                                            <td className="text-red-600 font-bold">
+                                            <td className="requirements-list__recycle-expires">
                                                 {new Date(item.expires_at).toLocaleDateString()}
                                             </td>
                                             <td>
                                                 <Button
                                                     size="sm"
-                                                    className="text-green-600 bg-green-100 hover:bg-green-200"
+                                                    className="requirements-list__restore-btn"
                                                     onClick={() => handleRestore(item)}
                                                 >
                                                     ♻️ Restaurar
@@ -272,44 +468,292 @@ const RequirementsList = ({ user }) => {
             >
                 {selectedRequest && (
                     <div className="requirements-list__detail">
-                        <div className="mb-4">
+                        <div className="requirements-list__detail-section">
                             <strong>Paciente:</strong> {selectedRequest.patient_name} <br />
                             <small className="text-muted">DNI: {selectedRequest.patient_dni}</small>
                         </div>
-                        <div className="mb-4">
+                        <div className="requirements-list__detail-section">
                             <strong>Doctor:</strong> {selectedRequest.doctor_name}
                         </div>
-                        <div className="mb-4">
-                            <strong>Tipo:</strong> {typeLabels[selectedRequest.type] || selectedRequest.type}
-                        </div>
-                        <div className="requirements-list__timestamps mb-4 text-sm text-slate-700">
-                            <div><strong>Solicitado:</strong> {new Date(selectedRequest.created_at).toLocaleString()}</div>
-                            {selectedRequest.completed_at && (
-                                <>
-                                    <div><strong>Respuesta:</strong> {new Date(selectedRequest.completed_at).toLocaleString()}</div>
-                                    <div className="text-blue-600 font-bold">
-                                        Tiempo Transcurrido: {(() => {
-                                            const start = new Date(selectedRequest.created_at);
-                                            const end = new Date(selectedRequest.completed_at);
-                                            const diff = end - start;
-                                            const minutes = Math.floor(diff / 60000);
-                                            const hours = Math.floor(minutes / 60);
-                                            if (hours > 0) return `${hours} h ${minutes % 60} min`;
-                                            return `${minutes} min`;
-                                        })()}
-                                    </div>
-                                </>
+                        <div className="requirements-list__detail-header">
+                            <div>
+                                <strong>Tipo:</strong> {typeLabels[selectedRequest.type] || selectedRequest.type}
+                            </div>
+                            {canEdit && !isEditing && (
+                                <Button size="sm-compact" variant="secondary" onClick={() => setIsEditing(true)}>
+                                    ✏️ Editar Lista
+                                </Button>
                             )}
                         </div>
-                        <div className="requirements-list__note-box p-4 bg-slate-50 border border-slate-200 rounded-lg mb-4">
-                            <strong>Detalle / Medicación:</strong>
-                            <pre className="requirements-list__note-pre whitespace-pre-wrap mt-2 font-sans text-sm">
-                                {selectedRequest.request_note || "Sin detalles adicionales."}
-                            </pre>
+
+                        {/* Note Box / Edit Box */}
+                        <div className={`requirements-list__note-box ${isEditing ? 'requirements-list__note-box--editing' : 'requirements-list__note-box--readonly'}`}>
+                            {isEditing ? (
+                                <div className="requirements-list__edit-container">
+                                    <h4 className="requirements-list__edit-title">📝 Editando Medicación</h4>
+
+                                    {/* MEdication List Editor */}
+                                    <div className="requirements-list__med-editor">
+                                        {editMeds.map((med, idx) => (
+                                            <div key={idx} className="requirements-list__med-item">
+                                                <div className="requirements-list__med-grid">
+                                                    <div>
+                                                        <Input
+                                                            type="text"
+                                                            placeholder="Nombre"
+                                                            value={med.name}
+                                                            onChange={(e) => {
+                                                                const newMeds = [...editMeds];
+                                                                newMeds[idx] = { ...med, name: e.target.value };
+                                                                setEditMeds(newMeds);
+                                                            }}
+                                                            className="requirements-list__med-input requirements-list__med-input--name"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Input
+                                                            type="text"
+                                                            placeholder="Dosis"
+                                                            value={med.dose}
+                                                            onChange={(e) => {
+                                                                const newMeds = [...editMeds];
+                                                                newMeds[idx] = { ...med, dose: e.target.value };
+                                                                setEditMeds(newMeds);
+                                                            }}
+                                                            className="requirements-list__med-input"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Input
+                                                            type="text"
+                                                            placeholder="Frec (Ej: 1/8h)"
+                                                            value={med.frequency}
+                                                            onChange={(e) => {
+                                                                const newMeds = [...editMeds];
+                                                                newMeds[idx] = { ...med, frequency: e.target.value };
+                                                                setEditMeds(newMeds);
+                                                            }}
+                                                            className="requirements-list__med-input"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Input
+                                                            type="number"
+                                                            placeholder="Cant"
+                                                            value={med.quantity}
+                                                            onChange={(e) => {
+                                                                const newMeds = [...editMeds];
+                                                                newMeds[idx] = { ...med, quantity: e.target.value };
+                                                                setEditMeds(newMeds);
+                                                            }}
+                                                            className="requirements-list__med-input"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <Button
+                                                    size="sm-compact"
+                                                    variant="ghost"
+                                                    className="text-red-500"
+                                                    onClick={() => handleRemoveMed(idx)}
+                                                >
+                                                    ❌
+                                                </Button>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* Add Med */}
+                                    <div className="requirements-list__med-add-section">
+                                        <div className="requirements-list__med-add-grid">
+                                            <div>
+                                                <Input
+                                                    type="text"
+                                                    placeholder="Nuevo medicamento..."
+                                                    value={newMedInput.name}
+                                                    onChange={(e) => setNewMedInput({ ...newMedInput, name: e.target.value })}
+                                                    onKeyDown={(e) => e.key === 'Enter' && handleAddMed()}
+                                                    className="requirements-list__med-input--add requirements-list__med-input--add-name"
+                                                />
+                                            </div>
+                                            <div>
+                                                <Input
+                                                    type="text"
+                                                    placeholder="Dosis"
+                                                    value={newMedInput.dose}
+                                                    onChange={(e) => setNewMedInput({ ...newMedInput, dose: e.target.value })}
+                                                    className="requirements-list__med-input--add requirements-list__med-input--add-small"
+                                                />
+                                            </div>
+                                            <div>
+                                                <Input
+                                                    type="text"
+                                                    placeholder="Frecuencia"
+                                                    value={newMedInput.frequency}
+                                                    onChange={(e) => setNewMedInput({ ...newMedInput, frequency: e.target.value })}
+                                                    className="requirements-list__med-input--add requirements-list__med-input--add-small"
+                                                />
+                                            </div>
+                                            <div>
+                                                <Input
+                                                    type="number"
+                                                    placeholder="Cant"
+                                                    value={newMedInput.quantity}
+                                                    onChange={(e) => setNewMedInput({ ...newMedInput, quantity: e.target.value })}
+                                                    onKeyDown={(e) => e.key === 'Enter' && handleAddMed()}
+                                                    className="requirements-list__med-input--add requirements-list__med-input--add-small"
+                                                />
+                                            </div>
+                                        </div>
+                                        <Button size="sm" onClick={handleAddMed} disabled={!newMedInput.name.trim()}>
+                                            ➕
+                                        </Button>
+                                    </div>
+
+                                    {/* Notes Editor */}
+                                    <div className="requirements-list__notes-editor">
+                                        <label className="requirements-list__notes-label">Notas Adicionales</label>
+                                        <textarea
+                                            value={editNotes}
+                                            onChange={(e) => setEditNotes(e.target.value)}
+                                            className="requirements-list__notes-textarea"
+                                            rows="2"
+                                        ></textarea>
+                                    </div>
+
+                                    {/* Actions */}
+                                    <div className="requirements-list__edit-actions">
+                                        <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)}>
+                                            Cancelar
+                                        </Button>
+                                        <Button size="sm" onClick={handleSaveEdit}>
+                                            💾 Guardar Cambios
+                                        </Button>
+                                    </div>
+                                </div>
+                            ) : (
+                                // READ ONLY VIEW (Validated Split)
+                                (() => {
+                                    const { meds, notes } = extractDetails(selectedRequest);
+
+                                    // Separate into Known and Unknown
+                                    const knownMeds = [];
+                                    const unknownMeds = [];
+
+                                    meds.forEach(m => {
+                                        if (checkIsKnown(m.name)) knownMeds.push(m);
+                                        else unknownMeds.push(m);
+                                    });
+
+                                    return (
+                                        <div>
+                                            {meds && meds.length > 0 ? (
+                                                <div className="requirements-list__med-section">
+                                                    <div className="requirements-list__med-header">
+                                                        <strong className="requirements-list__med-title">💊 Medicación Solicitada:</strong>
+                                                        {fetchingMeds && <span className="requirements-list__med-loading">Verificando historial...</span>}
+                                                    </div>
+
+                                                    {/* NEW / UNKNOWN SECTION */}
+                                                    {unknownMeds.length > 0 && (
+                                                        <div className="requirements-list__med-unknown">
+                                                            <h4 className="requirements-list__med-unknown-title">
+                                                                ⚠️ Nuevos / No Habituales
+                                                            </h4>
+                                                            <div className="requirements-list__med-list">
+                                                                {unknownMeds.map((m, i) => (
+                                                                    <div key={i} className="requirements-list__med-card">
+                                                                        <div className="requirements-list__med-card-header">
+                                                                            <span className="requirements-list__med-name">{m.name}</span>
+                                                                            {canEdit && (
+                                                                                <Button
+                                                                                    size="sm-compact"
+                                                                                    className="requirements-list__med-save-btn"
+                                                                                    onClick={() => addToChronic(m.name)}
+                                                                                    title="Agregar a ficha del paciente"
+                                                                                >
+                                                                                    📥 Guardar
+                                                                                </Button>
+                                                                            )}
+                                                                        </div>
+                                                                        <div className="requirements-list__med-details">
+                                                                            {m.dose && <span className="requirements-list__med-badge">D: {m.dose}</span>}
+                                                                            {m.frequency && <span className="requirements-list__med-badge">F: {m.frequency}</span>}
+                                                                            {m.quantity && <span className="requirements-list__med-badge requirements-list__med-badge--quantity">Cant: {m.quantity}</span>}
+
+                                                                            {m.quantity && m.frequency && (
+                                                                                (() => {
+                                                                                    const days = calculateDuration(m.quantity, m.frequency);
+                                                                                    if (days) return <span className="requirements-list__med-duration">⏱️ ~{days} días</span>
+                                                                                    return null;
+                                                                                })()
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                            <p className="requirements-list__med-warning">
+                                                                Estos medicamentos no figuran en el historial crónico. Verifique con la doctora o agreguelos a la ficha si corresponde.
+                                                            </p>
+                                                        </div>
+                                                    )}
+
+                                                    {/* KNOWN SECTION */}
+                                                    {knownMeds.length > 0 && (
+                                                        <div className="requirements-list__med-known">
+                                                            {unknownMeds.length > 0 && <h4 className="requirements-list__med-known-title">Habituales (Validado)</h4>}
+                                                            <div className="requirements-list__med-known-list">
+                                                                {knownMeds.map((m, i) => (
+                                                                    <div key={i} className="requirements-list__med-known-card">
+                                                                        <div className="requirements-list__med-known-header">
+                                                                            <span className="requirements-list__med-known-name">{m.name}</span>
+                                                                            <span className="requirements-list__med-known-check" title="En lista crónica">✓</span>
+                                                                        </div>
+                                                                        {(m.dose || m.frequency || m.quantity) && (
+                                                                            <div className="requirements-list__med-known-details">
+                                                                                {m.dose && <span>{m.dose}</span>}
+                                                                                {m.frequency && <span>• {m.frequency}</span>}
+                                                                                {m.quantity && <span>• x{m.quantity}</span>}
+                                                                                {m.quantity && m.frequency && (
+                                                                                    (() => {
+                                                                                        const days = calculateDuration(m.quantity, m.frequency);
+                                                                                        if (days) return <span className="requirements-list__med-known-duration">({days}d)</span>
+                                                                                        return null;
+                                                                                    })()
+                                                                                )}
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    {!fetchingMeds && patientMeds.length === 0 && meds.length > 0 && (
+                                                        <p className="requirements-list__med-empty-note">El paciente no tiene medicación crónica registrada. Todos aparecen como nuevos.</p>
+                                                    )}
+                                                </div>
+                                            ) : null}
+
+                                            {notes && (
+                                                <div className={meds && meds.length > 0 ? 'requirements-list__notes-section' : ''}>
+                                                    <strong className="requirements-list__notes-title">
+                                                        {meds && meds.length > 0 ? '📝 Notas Adicionales:' : 'Detalle / Motivo:'}
+                                                    </strong>
+                                                    <div className="requirements-list__notes-content">
+                                                        {notes}
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {!meds?.length && !notes && <span className="text-muted italic">Sin detalles adicionales.</span>}
+                                        </div>
+                                    );
+                                })()
+                            )}
                         </div>
 
                         {selectedRequest.doctor_note && (
-                            <div className="requirements-list__note-box p-4 bg-green-50 rounded border border-green-200 mb-4 text-sm">
+                            <div className="requirements-list__doctor-note">
                                 <strong>{t('doctor_note')}:</strong>
                                 <pre className="requirements-list__note-pre whitespace-pre-wrap mt-2 font-sans">
                                     {selectedRequest.doctor_note}
@@ -317,7 +761,7 @@ const RequirementsList = ({ user }) => {
                             </div>
                         )}
                         {selectedRequest.secretary_note && (
-                            <div className="requirements-list__note-box p-4 bg-blue-50 rounded border border-blue-200 mb-4 text-sm">
+                            <div className="requirements-list__secretary-note">
                                 <strong>{t('secretary_reply')}:</strong>
                                 <pre className="requirements-list__note-pre whitespace-pre-wrap mt-2 font-sans">
                                     {selectedRequest.secretary_note}
@@ -325,7 +769,7 @@ const RequirementsList = ({ user }) => {
                             </div>
                         )}
 
-                        <div className="flex justify-end mt-4">
+                        <div className="requirements-list__modal-footer">
                             <Button onClick={() => setSelectedRequest(null)} variant="secondary">
                                 Cerrar
                             </Button>

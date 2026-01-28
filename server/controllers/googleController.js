@@ -161,16 +161,30 @@ const getColorForStatus = (status, paymentStatus) => {
     // 1: Lavender, 2: Sage, 3: Grape, 4: Flamingo, 5: Banana, 6: Tangerine, 
     // 7: Peacock (Blue), 8: Graphite, 9: Blueberry, 10: Basil (Green), 11: Tomato (Red)
 
-    if (paymentStatus === 'paid') return '10'; // Basil (Green) for Paid
-    if (paymentStatus === 'debt' || paymentStatus === 'partial') return '11'; // Tomato (Red) for Debt
-
     switch (status) {
-        case 'confirmed': return '7'; // Peacock (Blue)
-        case 'completed': return '10'; // Basil (Green)
-        case 'cancelled': return '8'; // Graphite (Gray)
-        case 'absent': return '4'; // Flamingo (Pink/Red)
-        case 'pending': return '5'; // Banana (Yellow)
-        default: return null;
+        case 'confirmed':
+            return '10'; // Basil (Green) - Confirmado
+
+        case 'arrived':
+            return '5'; // Banana (Yellow) - Llegó / En sala
+
+        case 'completed':
+            // For completed, payment status matters
+            if (paymentStatus === 'paid') return '10'; // Basil (Green) - Pagado
+            if (paymentStatus === 'debt' || paymentStatus === 'partial') return '11'; // Tomato (Red) - Deuda
+            return '9'; // Blueberry (Blue) - Completado sin info de pago
+
+        case 'absent':
+            return '6'; // Tangerine (Orange) - Ausente
+
+        case 'pending':
+            return '2'; // Sage (soft green-gray) - Pendiente
+
+        case 'cancelled':
+            return null; // Cancelled appointments are not synced
+
+        default:
+            return null;
     }
 };
 
@@ -530,8 +544,8 @@ exports.createEventHelper = async (doctorId, eventData, userId = null) => {
         conn = await pool.getConnection();
 
         // Check global sync setting
-        const [syncSetting] = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'google_sync_enabled'");
-        const isSyncEnabled = (!syncSetting.length) || (syncSetting[0].setting_value === 'true' || syncSetting[0].setting_value === '1');
+        const syncSetting = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'google_sync_enabled'");
+        const isSyncEnabled = (syncSetting.length === 0) || (syncSetting[0].setting_value === 'true' || syncSetting[0].setting_value === '1');
 
         if (!isSyncEnabled) {
             console.log(`[Google] Sync PAUSED. Skipping createEvent for Doc ${doctorId}`);
@@ -650,8 +664,8 @@ exports.updateEventHelper = async (doctorId, eventId, updates, userId = null) =>
     try {
         conn = await pool.getConnection();
         // Check global sync setting
-        const [syncSetting] = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'google_sync_enabled'");
-        const isSyncEnabled = (!syncSetting.length) || (syncSetting[0].setting_value === 'true' || syncSetting[0].setting_value === '1');
+        const syncSetting = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'google_sync_enabled'");
+        const isSyncEnabled = (syncSetting.length === 0) || (syncSetting[0].setting_value === 'true' || syncSetting[0].setting_value === '1');
 
         if (!isSyncEnabled) {
             console.log(`[Google] Sync PAUSED. Skipping updateEvent for Doc ${doctorId}`);
@@ -683,7 +697,7 @@ exports.updateEventHelper = async (doctorId, eventId, updates, userId = null) =>
 
         // Status/Payment based color
         const colorId = getColorForStatus(updates.status, updates.paymentStatus);
-        if (colorId) resource.colorId = colorId;
+        resource.colorId = colorId || '0'; // '0' for default if no color defined
 
         const result = await calendar.events.patch({
             calendarId: 'primary',
@@ -710,8 +724,8 @@ exports.deleteEventHelper = async (doctorId, eventId, userId = null) => {
     try {
         conn = await pool.getConnection();
         // Check global sync setting
-        const [syncSetting] = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'google_sync_enabled'");
-        const isSyncEnabled = (!syncSetting.length) || (syncSetting[0].setting_value === 'true' || syncSetting[0].setting_value === '1');
+        const syncSetting = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'google_sync_enabled'");
+        const isSyncEnabled = (syncSetting.length === 0) || (syncSetting[0].setting_value === 'true' || syncSetting[0].setting_value === '1');
 
         if (!isSyncEnabled) {
             console.log(`[Google] Sync PAUSED. Skipping deleteEvent for Doc ${doctorId}`);
@@ -981,7 +995,7 @@ exports.sanitizeAppointment = async (req, res) => {
         // 4. Update Google Calendar (Sanitize Description)
         // Recalculate everything for the clean format
         // Duration
-        const [docData] = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [appt.doctor_id]);
+        const docData = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [appt.doctor_id]);
         const durationMinutes = (docData && docData.length > 0 && docData[0].appointment_duration) ? docData[0].appointment_duration : 60;
 
         const startTime = new Date(appt.appointment_date);
@@ -1098,3 +1112,198 @@ exports.sanitizeAppointment = async (req, res) => {
         if (conn) conn.release();
     }
 };
+
+/**
+ * Sync Day to Google Calendar
+ * Pushes all appointments from a specific date to Google Calendar
+ * Creates new events or updates existing ones
+ */
+exports.syncDayToGoogle = async (req, res) => {
+    const { doctorId, date } = req.body; // date: 'YYYY-MM-DD'
+    let conn;
+
+    try {
+        if (!doctorId || !date) {
+            return res.status(400).json({ error: "Doctor ID and date are required" });
+        }
+
+        conn = await pool.getConnection();
+
+        // Check if sync is enabled globally
+        const syncSetting = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'google_sync_enabled'");
+        const isSyncEnabled = (syncSetting.length === 0) || (syncSetting[0].setting_value === 'true' || syncSetting[0].setting_value === '1');
+
+        if (!isSyncEnabled) {
+            return res.status(400).json({ error: "Google sync is currently disabled in system settings" });
+        }
+
+        // Check if doctor is connected to Google
+        const tokens = await getTokens(conn, doctorId);
+        if (!tokens.google_refresh_token) {
+            return res.status(400).json({ error: "Doctor is not connected to Google Calendar" });
+        }
+
+        // Get all appointments for this doctor on this date (excluding cancelled)
+        const appointments = await conn.query(`
+            SELECT a.*, 
+                   p.full_name as patient_name, 
+                   p.phone as patient_phone,
+                   COALESCE(SUM(CASE WHEN t.status = 'paid' THEN t.amount ELSE 0 END), 0) as amount_paid,
+                   COALESCE(SUM(CASE WHEN t.status = 'pending' THEN t.amount ELSE 0 END), 0) as amount_debt
+            FROM appointments a
+            LEFT JOIN patients p ON a.patient_id = p.id
+            LEFT JOIN transactions t ON t.appointment_id = a.id
+            WHERE a.doctor_id = ?
+            AND DATE(a.appointment_date) = ?
+            AND a.status != 'cancelled'
+            GROUP BY a.id
+            ORDER BY a.appointment_date ASC
+        `, [doctorId, date]);
+
+        console.log(`[SyncDay] Found ${appointments.length} appointments for doctor ${doctorId} on ${date}`);
+
+        if (!appointments || appointments.length === 0) {
+            console.log(`[SyncDay] No appointments to sync`);
+            return res.json({
+                message: "No appointments found for this date",
+                created: 0,
+                updated: 0,
+                errors: 0,
+                total: 0
+            });
+        }
+
+        const results = { created: 0, updated: 0, errors: 0, total: appointments.length };
+        console.log(`[SyncDay] Starting sync of ${appointments.length} appointments...`);
+
+        // Process each appointment
+        for (const appt of appointments) {
+            try {
+                console.log(`[SyncDay] Processing appt ${appt.id}: duration=${appt.duration}, amount_paid=${appt.amount_paid}, amount_debt=${appt.amount_debt}, payment_status=${appt.payment_status}`);
+                const startTime = new Date(appt.appointment_date);
+                const duration = appt.duration || 60; // Default to 60 minutes if not set
+                const endTime = new Date(startTime.getTime() + duration * 60000); // duration in minutes
+
+                // Build description in Spanish with all relevant info
+                const statusLabels = {
+                    'pending': 'Pendiente',
+                    'confirmed': 'Confirmado',
+                    'arrived': 'En sala',
+                    'completed': 'Completado',
+                    'absent': 'Ausente',
+                    'cancelled': 'Cancelado'
+                };
+
+                const typeLabels = {
+                    'consultation': 'Consulta',
+                    'control': 'Control',
+                    'procedure': 'Procedimiento',
+                    'emergency': 'Emergencia'
+                };
+
+                let description = `Motivo: ${appt.reason || 'Consulta'}`;
+                description += `\nEstado: ${statusLabels[appt.status] || appt.status}`;
+                description += `\nTipo: ${typeLabels[appt.type] || appt.type || 'Consulta'}`;
+
+                if (appt.patient_phone) {
+                    description += `\nTeléfono: ${appt.patient_phone}`;
+                }
+
+                // Add payment information
+                if (appt.payment_status === 'paid' && appt.amount_paid > 0) {
+                    description += `\n💰 $${appt.amount_paid}`;
+                } else if (appt.payment_status === 'debt' && appt.amount_debt > 0) {
+                    description += `\n⚠️ $${appt.amount_debt}`;
+                } else if (appt.payment_status === 'partial') {
+                    if (appt.amount_paid > 0) description += `\n💰 $${appt.amount_paid}`;
+                    if (appt.amount_debt > 0) description += `\n⚠️ $${appt.amount_debt}`;
+                }
+
+                const eventData = {
+                    summary: appt.patient_name || 'Turno',
+                    description: description,
+                    start: {
+                        dateTime: startTime.toISOString(),
+                        timeZone: 'America/Argentina/Buenos_Aires'
+                    },
+                    end: {
+                        dateTime: endTime.toISOString(),
+                        timeZone: 'America/Argentina/Buenos_Aires'
+                    }
+                };
+
+                // Add color based on status and payment
+                const colorId = getColorForStatus(appt.status, appt.payment_status);
+                eventData.colorId = colorId || '0'; // '0' for default if no color
+
+                if (appt.google_event_id) {
+                    // Update existing event
+                    console.log(`[SyncDay] Updating existing event ${appt.google_event_id} for appointment ${appt.id}`);
+                    const updateResult = await exports.updateEventHelper(
+                        doctorId,
+                        appt.google_event_id,
+                        {
+                            summary: eventData.summary,
+                            description: eventData.description,
+                            start: eventData.start,
+                            end: eventData.end,
+                            status: appt.status,
+                            paymentStatus: appt.payment_status
+                        },
+                        req.user.user_id
+                    );
+
+                    if (updateResult) {
+                        console.log(`[SyncDay] ✅ Successfully updated event ${appt.google_event_id}`);
+                        results.updated++;
+                    } else {
+                        console.log(`[SyncDay] ⚠️ Update failed, trying to create new event for appointment ${appt.id}`);
+                        // If update failed (maybe event was deleted), try creating new one
+                        const createResult = await exports.createEventHelper(doctorId, eventData, req.user.user_id);
+                        if (createResult) {
+                            // Update appointment with new google_event_id
+                            await conn.query("UPDATE appointments SET google_event_id = ? WHERE id = ?", [createResult.id, appt.id]);
+                            console.log(`[SyncDay] ✅ Created new event ${createResult.id} for appointment ${appt.id}`);
+                            results.created++;
+                        } else {
+                            console.log(`[SyncDay] ❌ Failed to create event for appointment ${appt.id}`);
+                            results.errors++;
+                        }
+                    }
+                } else {
+                    // Create new event
+                    console.log(`[SyncDay] Creating new event for appointment ${appt.id} (${appt.patient_name})`);
+                    const createResult = await exports.createEventHelper(doctorId, eventData, req.user.user_id);
+                    if (createResult) {
+                        // Save google_event_id to appointment
+                        await conn.query("UPDATE appointments SET google_event_id = ? WHERE id = ?", [createResult.id, appt.id]);
+                        console.log(`[SyncDay] ✅ Created event ${createResult.id} for appointment ${appt.id}`);
+                        results.created++;
+                    } else {
+                        console.log(`[SyncDay] ❌ Failed to create event for appointment ${appt.id}`);
+                        results.errors++;
+                    }
+                }
+            } catch (err) {
+                console.error(`Error syncing appointment ${appt.id}:`, err.message);
+                results.errors++;
+            }
+        }
+
+        console.log(`[SyncDay] Sync completed: ${results.created} created, ${results.updated} updated, ${results.errors} errors out of ${results.total} total`);
+
+        await logAction(req, 'GOOGLE_SYNC_DAY', `Synced ${date} for Doctor ${doctorId}: ${results.created} created, ${results.updated} updated, ${results.errors} errors`);
+
+        res.json({
+            message: "Day sync completed",
+            ...results
+        });
+
+    } catch (err) {
+        console.error("Sync Day Error:", err);
+        res.status(500).json({ error: err.message });
+    } finally {
+        if (conn) conn.release();
+    }
+};
+

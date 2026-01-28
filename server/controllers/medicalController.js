@@ -589,7 +589,7 @@ exports.deleteLicense = async (req, res) => {
 exports.createRequest = async (req, res) => {
     let conn;
     try {
-        const { type, patient_id, doctor_id, request_note, bonified, status, payment_method } = req.body; // type: 'prescription', 'license', 'certificate'
+        const { type, patient_id, doctor_id, request_note, bonified, status, payment_method, raw_medication_data } = req.body; // type: 'prescription', 'license', 'certificate'
 
         if (!['prescription', 'license', 'certificate'].includes(type)) return res.status(400).send("Invalid type");
 
@@ -602,17 +602,44 @@ exports.createRequest = async (req, res) => {
         const initialStatus = status || 'pending';
 
         let completedAtQueryPart = '?';
-        let queryParams = [type, patient_id, doctor_id, request_note, initialStatus, payment_method || 'cash', null];
+        // Add raw_medication_data to params
+        let queryParams = [type, patient_id, doctor_id, request_note, initialStatus, payment_method || 'cash', raw_medication_data || null, null];
 
         if (initialStatus === 'completed') {
             completedAtQueryPart = 'NOW()';
-            queryParams = [type, patient_id, doctor_id, request_note, initialStatus, payment_method || 'cash'];
+            queryParams = [type, patient_id, doctor_id, request_note, initialStatus, payment_method || 'cash', raw_medication_data || null];
         }
 
         const result = await conn.query(
-            `INSERT INTO medical_requests (type, patient_id, doctor_id, request_note, status, payment_method, created_at, completed_at) VALUES (?, ?, ?, ?, ?, ?, NOW(), ${completedAtQueryPart})`,
+            `INSERT INTO medical_requests (type, patient_id, doctor_id, request_note, status, payment_method, raw_medication_data, created_at, completed_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ${completedAtQueryPart})`,
             queryParams
         );
+
+        // --- Store items in normalized table ---
+        if (raw_medication_data) {
+            try {
+                let items = typeof raw_medication_data === 'string' ? JSON.parse(raw_medication_data) : raw_medication_data;
+                if (Array.isArray(items) && items.length > 0) {
+                    for (const item of items) {
+                        const name = typeof item === 'string' ? item : (item.medication_name || item.name);
+                        // If object, try to get dose/qty (if frontend sends them later)
+                        const dose = typeof item === 'object' ? item.dose : null;
+                        const frequency = typeof item === 'object' ? item.frequency : null;
+                        const quantity = typeof item === 'object' ? item.quantity : null;
+
+                        if (name) {
+                            await conn.query(
+                                "INSERT INTO medical_request_items (request_id, medication_name, dose, frequency, quantity, status) VALUES (?, ?, ?, ?, ?, ?)",
+                                [result.insertId, name, dose, frequency, quantity, 'pending']
+                            );
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error("Error storing request items:", e);
+            }
+        }
+        // ----------------------------------------
 
         // --- Debt Generation for Request ---
         // If not bonified, generate debt immediately for the request
@@ -767,7 +794,7 @@ exports.updateRequest = async (req, res) => {
     let conn;
     try {
         const { id } = req.params;
-        const { request_note, doctor_note, debt_amount, payment_method } = req.body;
+        const { request_note, doctor_note, debt_amount, payment_method, raw_medication_data } = req.body;
         const { role } = req.user;
 
         conn = await pool.getConnection();
@@ -807,6 +834,10 @@ exports.updateRequest = async (req, res) => {
             setClause += ", request_note = ?";
             params.push(request_note);
         }
+        if (raw_medication_data !== undefined) {
+            setClause += ", raw_medication_data = ?";
+            params.push(raw_medication_data);
+        }
         if (doctor_note !== undefined) {
             setClause += ", doctor_note = ?";
             params.push(doctor_note);
@@ -834,6 +865,33 @@ exports.updateRequest = async (req, res) => {
         params.push(id);
 
         await conn.query(query, params);
+
+        // [SYNC] If raw_medication_data changed, sync items table
+        if (raw_medication_data !== undefined) {
+            try {
+                await conn.query("DELETE FROM medical_request_items WHERE request_id = ?", [id]);
+
+                let items = typeof raw_medication_data === 'string' ? JSON.parse(raw_medication_data) : raw_medication_data;
+                if (Array.isArray(items) && items.length > 0) {
+                    for (const item of items) {
+                        const name = typeof item === 'string' ? item : (item.medication_name || item.name);
+                        const dose = typeof item === 'object' ? item.dose : null;
+                        const frequency = typeof item === 'object' ? item.frequency : null;
+                        const quantity = typeof item === 'object' ? item.quantity : null;
+                        const status = typeof item === 'object' ? (item.status || 'pending') : 'pending';
+
+                        if (name) {
+                            await conn.query(
+                                "INSERT INTO medical_request_items (request_id, medication_name, dose, frequency, quantity, status) VALUES (?, ?, ?, ?, ?, ?)",
+                                [id, name, dose, frequency, quantity, status]
+                            );
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error("Error syncing request items:", e);
+            }
+        }
 
         // [SYNC] Update associated pending transaction amount if debt_amount changed
         if (debt_amount !== undefined && req.body.bonified !== true) {
@@ -1131,6 +1189,194 @@ exports.exportPrescriptionsJSON = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+// --- Prescription Request Token & Public Access ---
+
+exports.generatePrescriptionRequestToken = async (req, res) => {
+    let conn;
+    try {
+        const { patientId, doctorId } = req.body;
+        if (!patientId) return res.status(400).json({ error: "Patient ID is required" });
+
+        conn = await pool.getConnection();
+
+        // If doctorId is not provided, try to find the last doctor who saw this patient
+        let finalDoctorId = doctorId;
+        if (!finalDoctorId) {
+            const [lastAppointment] = await conn.query(
+                "SELECT doctor_id FROM appointments WHERE patient_id = ? ORDER BY appointment_date DESC LIMIT 1",
+                [patientId]
+            );
+            if (lastAppointment) {
+                finalDoctorId = lastAppointment.doctor_id;
+            } else {
+                // Last fallback: get the first doctor in the system
+                const [firstDoctor] = await conn.query("SELECT id FROM doctors LIMIT 1");
+                if (firstDoctor) finalDoctorId = firstDoctor.id;
+            }
+        }
+
+        const crypto = require('crypto');
+        const token = crypto.randomBytes(32).toString('hex');
+        const expiresAt = new Date(Date.now() + 48 * 60 * 60000); // 48 hours
+
+        await conn.query(
+            "INSERT INTO prescription_request_tokens (patient_id, doctor_id, token, expires_at) VALUES (?, ?, ?, ?)",
+            [patientId, finalDoctorId || null, token, expiresAt]
+        );
+
+        res.json({ token, url: `/p/request-recipe/${token}`, expiresAt });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server Error" });
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.getPublicPrescriptionRequestData = async (req, res) => {
+    let conn;
+    try {
+        const { token } = req.params;
+        conn = await pool.getConnection();
+
+        const [tokenData] = await conn.query(
+            "SELECT * FROM prescription_request_tokens WHERE token = ? AND expires_at > NOW() AND used = FALSE",
+            [token]
+        );
+
+        if (!tokenData) return res.status(404).json({ error: "Link inválido o expirado" });
+
+        const [patient] = await conn.query("SELECT id, full_name FROM patients WHERE id = ?", [tokenData.patient_id]);
+
+        // Get unique medication names from history (last 10 unique meds)
+        const historyRows = await conn.query(`
+            SELECT medications as name FROM prescriptions pr 
+            JOIN appointments a ON pr.appointment_id = a.id 
+            WHERE a.patient_id = ?
+            UNION
+            SELECT medication_name as name FROM patient_medications 
+            WHERE patient_id = ?
+        `, [tokenData.patient_id, tokenData.patient_id]);
+
+        // Split and clean medications (prescriptions often have blocks of text)
+        const medSet = new Set();
+        historyRows.forEach(row => {
+            if (!row.name) return;
+            // Split by comma, newline, or semicolon
+            const parts = row.name.split(/[,\n;]/);
+            parts.forEach(p => {
+                const trimmed = p.trim();
+                if (trimmed && trimmed.length > 2) {
+                    medSet.add(trimmed);
+                }
+            });
+        });
+
+        const sortedMeds = Array.from(medSet).slice(0, 15);
+
+        res.json({
+            patientName: patient.full_name,
+            recentMeds: sortedMeds,
+            doctorId: tokenData.doctor_id
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server Error" });
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.submitPublicPrescriptionRequest = async (req, res) => {
+    let conn;
+    try {
+        const { token } = req.params;
+        const { medications, notes, doctorId } = req.body;
+
+        if (!medications || medications.length === 0) {
+            return res.status(400).json({ error: "Debe seleccionar al menos una medicación" });
+        }
+
+        conn = await pool.getConnection();
+
+        const [tokenData] = await conn.query(
+            "SELECT * FROM prescription_request_tokens WHERE token = ? AND expires_at > NOW() AND used = FALSE",
+            [token]
+        );
+
+        if (!tokenData) return res.status(404).json({ error: "Link inválido o expirado" });
+
+        // Resolve Doctor ID
+        let finalDoctorId = doctorId || tokenData.doctor_id;
+
+        if (!finalDoctorId) {
+            // Fallback: try to find the last doctor for this patient
+            const [lastApp] = await conn.query(
+                "SELECT doctor_id FROM appointments WHERE patient_id = ? ORDER BY appointment_date DESC LIMIT 1",
+                [tokenData.patient_id]
+            );
+            if (lastApp) {
+                finalDoctorId = lastApp.doctor_id;
+            } else {
+                // Secondary fallback: get first available doctor
+                const [firstDoc] = await conn.query("SELECT id FROM doctors LIMIT 1");
+                if (firstDoc) finalDoctorId = firstDoc.id;
+            }
+        }
+
+        if (!finalDoctorId) {
+            return res.status(400).json({ error: "No se pudo asignar un médico a la solicitud" });
+        }
+
+        const medList = Array.isArray(medications) ? medications : [medications];
+        const medString = medList.map(m => (typeof m === 'string' ? m : m.name)).join(', ');
+
+        // Normalize for storage
+        const rawMeds = medList.map(m => {
+            if (typeof m === 'string') return { name: m, dose: '', frequency: '', quantity: '' };
+            return {
+                name: m.name || m.medication_name, // Handle variations
+                dose: m.dose || '',
+                frequency: m.frequency || '',
+                quantity: m.quantity || ''
+            };
+        });
+
+        const combinedNote = `[Solicitud Paciente] ${medString}${notes ? '\nNotas: ' + notes : ''}`;
+
+        // Create the medical request
+        const result = await conn.query(
+            "INSERT INTO medical_requests (type, patient_id, doctor_id, request_note, status, created_at, raw_medication_data, is_patient_submitted) VALUES (?, ?, ?, ?, 'pending', NOW(), ?, TRUE)",
+            ['prescription', tokenData.patient_id, finalDoctorId, combinedNote, JSON.stringify(rawMeds)]
+        );
+
+        const requestId = result.insertId;
+
+        // [SYNC] Insert items into normalized table
+        if (requestId && rawMeds.length > 0) {
+            for (const item of rawMeds) {
+                if (item.name) {
+                    await conn.query(
+                        "INSERT INTO medical_request_items (request_id, medication_name, dose, frequency, quantity, status) VALUES (?, ?, ?, ?, ?, ?)",
+                        [requestId, item.name, item.dose || null, item.frequency || null, item.quantity || null, 'pending']
+                    );
+                }
+            }
+        }
+
+        // Optional: Mark token as used? User said "pacientes agregan pero no borran", 
+        // maybe let them use the link multiple times within the 48h?
+        // Let's keep it unused for now or mark it. The user didn't specify.
+
+        res.json({ success: true, message: "Solicitud enviada con éxito" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server Error" });
     } finally {
         if (conn) conn.release();
     }

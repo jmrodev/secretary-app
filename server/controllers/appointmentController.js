@@ -554,7 +554,7 @@ exports.updateAppointment = async (req, res) => {
         // --- Google Calendar Sync ---
         // --- Google Calendar Sync ---
         // Prepare data for Sync (Create or Update)
-        const [docData] = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [exists[0].doctor_id]);
+        const docData = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [exists[0].doctor_id]);
         const durationMinutes = (docData && docData.length > 0 && docData[0].appointment_duration) ? docData[0].appointment_duration : 60;
 
         const finalDate = appointment_date ? new Date(appointment_date) : new Date(exists[0].appointment_date);
@@ -628,14 +628,14 @@ exports.updateStatus = async (req, res) => {
 
         conn = await pool.getConnection();
 
-        const [exists] = await conn.query("SELECT * FROM appointments WHERE id = ?", [id]);
+        const exists = await conn.query("SELECT * FROM appointments WHERE id = ?", [id]);
         if (exists.length === 0) return res.status(404).send("Appointment not found");
 
         await conn.query("UPDATE appointments SET status = ?, cancellation_reason = ? WHERE id = ?", [status, reason || null, id]);
 
         // --- REMINDER LOGIC: Update next suggested visit date if completed ---
         if (status === 'completed') {
-            const [intervals] = await conn.query(`
+            const intervalRows = await conn.query(`
                 SELECT 
                     COALESCE(p.visit_interval_days, d.default_visit_interval_days) as interval_days,
                     p.id as patient_id, d.id as doctor_id
@@ -645,12 +645,15 @@ exports.updateStatus = async (req, res) => {
                 WHERE a.id = ?
             `, [id]);
 
-            if (intervals && intervals.interval_days > 0) {
-                const nextDate = new Date();
-                nextDate.setDate(nextDate.getDate() + Number(intervals.interval_days));
-                const nextDateStr = nextDate.toISOString().split('T')[0];
-                await conn.query("UPDATE patients SET next_suggested_visit_date = ? WHERE id = ?", [nextDateStr, intervals.patient_id]);
-                console.log(`DEBUG: Set next suggested visit date to ${nextDateStr} for appointment ${id}`);
+            if (intervalRows.length > 0) {
+                const intervals = intervalRows[0];
+                if (intervals.interval_days > 0) {
+                    const nextDate = new Date();
+                    nextDate.setDate(nextDate.getDate() + Number(intervals.interval_days));
+                    const nextDateStr = nextDate.toISOString().split('T')[0];
+                    await conn.query("UPDATE patients SET next_suggested_visit_date = ? WHERE id = ?", [nextDateStr, intervals.patient_id]);
+                    console.log(`DEBUG: Set next suggested visit date to ${nextDateStr} for appointment ${id}`);
+                }
             }
         }
 
@@ -711,7 +714,7 @@ exports.updateStatus = async (req, res) => {
         // --- Google Calendar Sync ---
         // --- Google Calendar Sync ---
         // Prepare Data
-        const [durationRows] = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [exists[0].doctor_id]);
+        const durationRows = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [exists[0].doctor_id]);
         const durationMinutes = (durationRows && durationRows.length > 0 && durationRows[0].appointment_duration) ? durationRows[0].appointment_duration : 60;
 
         const startTime = new Date(exists[0].appointment_date);
@@ -796,7 +799,7 @@ exports.updatePaymentStatus = async (req, res) => {
         res.json({ message: "Payment status updated" });
 
         // --- Google Calendar Sync ---
-        const [appt] = await conn.query("SELECT * FROM appointments WHERE id = ?", [id]);
+        const appt = await conn.query("SELECT * FROM appointments WHERE id = ?", [id]);
         if (appt && appt.google_event_id) {
             const patData = await conn.query("SELECT full_name, dni, phone, email FROM patients WHERE id = ?", [appt.patient_id]);
             const pName = patData.length > 0 ? patData[0].full_name : appt.patient_id;
@@ -892,7 +895,7 @@ exports.getNextFreeSlot = async (req, res) => {
         conn = await pool.getConnection();
 
         // 1. Get Doctor Config
-        const [doc] = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [doctor_id]);
+        const doc = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [doctor_id]);
         const duration = (doc && doc.length > 0 && doc[0].appointment_duration) ? doc[0].appointment_duration : 60;
 
         // 2. Setup Loop
@@ -1091,7 +1094,7 @@ exports.getFreeSlotsBatch = async (req, res) => {
 
 
         // 1. Get Doctor Duration
-        const [doc] = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [doctor_id]);
+        const doc = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [doctor_id]);
         const duration = (doc && doc.length > 0 && doc[0].appointment_duration) ? doc[0].appointment_duration : 60;
 
         // 2. Setup Loop
@@ -1287,7 +1290,7 @@ exports.bulkUpdateType = async (req, res) => {
         // Check permissions
         if (role !== 'admin' && role !== 'secretary') {
             if (role === 'doctor') {
-                const [docRows] = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [user_id]);
+                const docRows = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [user_id]);
                 if (!docRows || docRows.length === 0 || docRows[0].id != doctorId) {
                     return res.status(403).json({ error: "No autorizado para este médico" });
                 }

@@ -29,41 +29,42 @@ const Institutions = () => {
             title={t('institutions') || 'Instituciones'}
             subtitle={t('institutions_subtitle') || 'Gestiona instituciones pagadoras y convenios.'}
         >
-            <nav className="tab-nav mb-8">
+            <nav className="institutions__nav">
                 <Button
                     variant="ghost"
                     className={`tab-nav__item ${activeTab === 'list' ? 'tab-nav__item--active' : ''}`}
                     onClick={() => setActiveTab('list')}
                 >
-                    📋 {t('list') || 'Listado'}
+                    📋 {t('list')}
                 </Button>
                 <Button
                     variant="ghost"
                     className={`tab-nav__item ${activeTab === 'finances' ? 'tab-nav__item--active' : ''}`}
                     onClick={() => setActiveTab('finances')}
                 >
-                    📊 {t('finances') || 'Finanzas'}
+                    📊 {t('finances')}
                 </Button>
             </nav>
 
-            <header className="page-header__actions flex justify-end mb-4">
+            <header className="institutions__actions">
                 {activeTab === 'list' && (
                     <Button onClick={() => handleOpenFormModal()}>
-                        + {t('new_institution') || 'Nueva Institución'}
+                        + {t('new_institution')}
                     </Button>
                 )}
             </header>
 
-            <div className="tab-content animate-fadeIn">
+            <div className="institutions__content animate-fadeIn">
                 {activeTab === 'list' ? (
                     <InstitutionList
                         institutions={institutions}
                         loading={loading}
                         onEdit={handleOpenFormModal}
                         onDelete={handleDelete}
+                        t={t}
                     />
                 ) : (
-                    <InstitutionFinances institutions={institutions} />
+                    <InstitutionFinances institutions={institutions} t={t} />
                 )}
             </div>
 
@@ -74,6 +75,7 @@ const Institutions = () => {
                 formData={formData}
                 onChange={handleInputChange}
                 isEditing={!!editingInstitution}
+                t={t}
             />
         </MainLayout>
     );

@@ -7,6 +7,7 @@ export const useInstitutionFinances = (institutions) => {
 
     const [selectedInstId, setSelectedInstId] = useState('');
     const [report, setReport] = useState(null);
+    const [patients, setPatients] = useState([]);
     const [loadingReport, setLoadingReport] = useState(false);
 
     // Payment State
@@ -19,8 +20,12 @@ export const useInstitutionFinances = (institutions) => {
     const fetchReport = async (id) => {
         setLoadingReport(true);
         try {
-            const res = await api.get(`/institutions/${id}/finances`);
-            setReport(res.data);
+            const [reportRes, patientsRes] = await Promise.all([
+                api.get(`/institutions/${id}/finances`),
+                api.get(`/institutions/${id}/patients`)
+            ]);
+            setReport(reportRes.data);
+            setPatients(patientsRes.data);
         } catch (err) {
             console.error(err);
         } finally {
@@ -33,6 +38,7 @@ export const useInstitutionFinances = (institutions) => {
             fetchReport(selectedInstId);
         } else {
             setReport(null);
+            setPatients([]);
         }
     }, [selectedInstId]);
 
@@ -57,6 +63,7 @@ export const useInstitutionFinances = (institutions) => {
         selectedInstId,
         setSelectedInstId,
         report,
+        patients,
         loadingReport,
         isPayModalOpen,
         setIsPayModalOpen,

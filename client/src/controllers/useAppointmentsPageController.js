@@ -52,7 +52,7 @@ export const useAppointmentsPageController = () => {
     const patientSearch = usePatientSearch();
     const { searchTerm, setSearchTerm, searchPatientId, setSearchPatientId, appointments, setAppointments, patientAppointments, patientApptLoading, fetchAppointments } = patientSearch;
 
-    const { googleEvents, doctorSchedule, refreshGoogleEvents } = useGoogleEvents(viewDoctorId, selectedDate, user.role);
+    const { doctorSchedule, syncDayToGoogle } = useGoogleEvents(viewDoctorId, selectedDate, user.role);
     const { handleWhatsAppUniversal } = useWhatsAppUniversal(doctors);
 
     const booking = useAppointmentBooking(doctors);
@@ -142,14 +142,9 @@ export const useAppointmentsPageController = () => {
         if (searchPatientId) return app.patient_id === Number(searchPatientId);
         if (viewDoctorId) return app.doctor_id === Number(viewDoctorId);
         return true;
-    }).map(app => (!app.patient_id && app.google_event_id) ? { ...app, source: 'google-incomplete', status: 'external' } : app);
-
-    const uniqueGoogleEvents = googleEvents.filter(ge => {
-        const originalId = ge.id.replace('goo_', '');
-        return !appointments.some(appt => appt.google_event_id === originalId);
     });
 
-    const filteredAppointments = [...localFiltered, ...uniqueGoogleEvents].filter(app => {
+    const filteredAppointments = localFiltered.filter(app => {
         if (!searchTerm) return true;
         const term = searchTerm.toLowerCase();
         return (app.patient_name || app.full_name || '').toLowerCase().includes(term) ||
@@ -228,7 +223,7 @@ export const useAppointmentsPageController = () => {
         ...handlers,
         handleAdminAuthConfirm,
         handleWhatsAppUniversal,
-        refreshGoogleEvents,
+        syncDayToGoogle,
         cancelAppointment, fetchAppointments,
         handleCancel: cancelAppointment,
 

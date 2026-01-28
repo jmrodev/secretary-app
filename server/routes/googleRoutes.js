@@ -12,6 +12,7 @@ router.get('/status', verifyToken, googleController.getStatus);
 router.post('/disconnect', verifyToken, googleController.disconnect);
 router.post('/import', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), googleController.importContacts);
 router.post('/sync-import', verifyToken, googleController.syncImportEvents); // Import events from Google
+router.post('/sync-day', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), googleController.syncDayToGoogle); // Sync specific day to Google
 router.post('/retry-failed', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), googleController.retryFailedItems); // Retry stalled items
 router.get('/appointments', verifyToken, googleController.listAppointments);
 router.post('/appointments', verifyToken, googleController.createAppointment);

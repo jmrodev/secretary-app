@@ -22,4 +22,16 @@ export const LanguageProvider = ({ children }) => {
     );
 };
 
-export const useLanguage = () => useContext(LanguageContext);
+export const useLanguage = () => {
+    const context = useContext(LanguageContext);
+    if (!context) {
+        // Fallback to avoid crashes if provider is missing
+        return {
+            language: 'es',
+            setLanguage: () => { },
+            toggleLanguage: () => { },
+            t: (key) => key
+        };
+    }
+    return context;
+};

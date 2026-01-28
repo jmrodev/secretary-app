@@ -26,6 +26,9 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
     const [reqNote, setReqNote] = useState('');
     const [medicationItems, setMedicationItems] = useState([]);
     const [tempMed, setTempMed] = useState('');
+    const [tempDose, setTempDose] = useState('');
+    const [tempFreq, setTempFreq] = useState('');
+    const [tempQty, setTempQty] = useState('');
     const [bonified, setBonified] = useState(false);
     const [sendToDoctor, setSendToDoctor] = useState(initialSendToDoctor !== undefined ? initialSendToDoctor : true);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -69,13 +72,28 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
         // [FIX] Auto-include text currently in the input field if the user forgot to click "+"
         let finalItems = [...medicationItems];
         if (reqType === 'prescription' && tempMed && tempMed.trim()) {
-            const val = tempMed.trim();
-            if (!finalItems.includes(val)) {
-                finalItems.push(val);
+            const newItem = {
+                name: tempMed.trim(),
+                dose: tempDose.trim(),
+                frequency: tempFreq.trim(),
+                quantity: tempQty.trim()
+            };
+            // Check if name already exists
+            if (!finalItems.some(i => i.name === newItem.name)) {
+                finalItems.push(newItem);
             }
         }
 
-        const finalNote = reqType === 'prescription' ? finalItems.join('\n') : reqNote;
+        // Create a string representation for the note (legacy support)
+        const finalNoteItems = finalItems.map(i => {
+            let str = i.name;
+            if (i.dose) str += ` ${i.dose}`;
+            if (i.frequency) str += ` (${i.frequency})`;
+            if (i.quantity) str += ` [Qty: ${i.quantity}]`;
+            return str;
+        });
+
+        const finalNote = reqType === 'prescription' ? finalNoteItems.join('\n') : reqNote;
 
         if (!finalNote && reqType !== 'prescription') {
             showMessage(t('fill_required_fields') || 'Complete los campos requeridos', 'error');
@@ -94,6 +112,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                 patient_id: selectedPatient,
                 doctor_id: user.role === 'doctor' ? (user.user_id || user.id) : selectedDoctor,
                 request_note: finalNote,
+                raw_medication_data: JSON.stringify(finalItems),
                 bonified,
                 payment_method: bonified ? null : paymentMethod,
                 status: sendToDoctor ? 'pending' : 'completed'
@@ -103,6 +122,9 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
             setReqNote('');
             setMedicationItems([]);
             setTempMed('');
+            setTempDose('');
+            setTempFreq('');
+            setTempQty('');
             setBonified(false);
             setSendToDoctor(true);
             setSelectedPatient('');
@@ -181,27 +203,65 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                 >
                     {reqType === 'prescription' ? (
                         <div className="flex flex-col gap-3">
-                            <div className="flex gap-2">
-                                <div className="flex-1">
-                                    <MedicationAutocomplete
-                                        value={tempMed}
-                                        onChange={setTempMed}
-                                        placeholder={t('medication_placeholder') || "Ej: Ibuprofeno 600mg"}
-                                        onSelectMedication={(med) => {
-                                            if (!medicationItems.includes(med.full_label)) {
-                                                setMedicationItems([...medicationItems, med.full_label]);
-                                            }
-                                            setTempMed('');
-                                        }}
-                                    />
+                            {/* Input Row */}
+                            <div className="flex flex-col md:flex-row gap-2 items-end">
+                                <div className="flex-grow grid grid-cols-1 md:grid-cols-12 gap-2 w-full">
+                                    <div className="md:col-span-5">
+                                        <MedicationAutocomplete
+                                            value={tempMed}
+                                            onChange={setTempMed}
+                                            placeholder={t('medication_placeholder') || "Nombre (Ej: Ibuprofeno)"}
+                                            onSelectMedication={(med) => {
+                                                // Avoid adding directly, let user fill details
+                                                // Just unpack name and maybe defaults if we had them
+                                            }}
+                                        />
+                                    </div>
+                                    <div className="md:col-span-2">
+                                        <Input
+                                            placeholder="Dosis"
+                                            value={tempDose}
+                                            onChange={e => setTempDose(e.target.value)}
+                                            className="text-xs"
+                                        />
+                                    </div>
+                                    <div className="md:col-span-3">
+                                        <Input
+                                            placeholder="Frecuencia (Ej: c/8hs)"
+                                            value={tempFreq}
+                                            onChange={e => setTempFreq(e.target.value)}
+                                            className="text-xs"
+                                        />
+                                    </div>
+                                    <div className="md:col-span-2">
+                                        <Input
+                                            placeholder="Cant."
+                                            type="number"
+                                            value={tempQty}
+                                            onChange={e => setTempQty(e.target.value)}
+                                            className="text-xs"
+                                        />
+                                    </div>
                                 </div>
                                 <Button
                                     type="button"
                                     variant="secondary"
+                                    className="h-[42px] px-4"
                                     onClick={() => {
-                                        if (tempMed.trim() && !medicationItems.includes(tempMed.trim())) {
-                                            setMedicationItems([...medicationItems, tempMed.trim()]);
-                                            setTempMed('');
+                                        if (tempMed.trim()) {
+                                            const newItem = {
+                                                name: tempMed.trim(),
+                                                dose: tempDose.trim(),
+                                                frequency: tempFreq.trim(),
+                                                quantity: tempQty.trim()
+                                            };
+                                            if (!medicationItems.some(i => i.name === newItem.name)) {
+                                                setMedicationItems([...medicationItems, newItem]);
+                                                setTempMed('');
+                                                setTempDose('');
+                                                setTempFreq('');
+                                                setTempQty('');
+                                            }
                                         }
                                     }}
                                 >
@@ -213,7 +273,12 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                                 <ul className="flex flex-col gap-1 bg-slate-50/50 p-2 rounded-xl border border-slate-100 max-h-40 overflow-y-auto">
                                     {medicationItems.map((item, idx) => (
                                         <li key={idx} className="flex justify-between items-center px-3 py-2 bg-white rounded-lg border border-slate-100 text-sm shadow-sm animate-fadeIn">
-                                            <span className="font-medium text-main-700">{item}</span>
+                                            <div className="flex gap-2 items-center">
+                                                <span className="font-bold text-main-700">{item.name}</span>
+                                                {item.dose && <span className="text-xs bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded">{item.dose}</span>}
+                                                {item.frequency && <span className="text-xs text-slate-500 italic">{item.frequency}</span>}
+                                                {item.quantity && <span className="text-xs font-bold text-slate-700 border border-slate-200 px-1 rounded">x{item.quantity}</span>}
+                                            </div>
                                             <button
                                                 type="button"
                                                 onClick={() => setMedicationItems(medicationItems.filter((_, i) => i !== idx))}
@@ -236,15 +301,21 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                                             <button
                                                 key={m.id}
                                                 type="button"
-                                                className="px-3 py-1.5 bg-blue-50 text-blue-700 text-xs font-bold rounded-full border border-blue-100 hover:bg-blue-100 transition-all"
+                                                className="px-3 py-1.5 bg-blue-50 text-blue-700 text-xs font-bold rounded-full border border-blue-100 hover:bg-blue-100 transition-all flex flex-col items-start gap-0.5"
                                                 onClick={() => {
-                                                    const label = `${m.medication_name} ${m.dose} (${m.frequency})`;
-                                                    if (!medicationItems.includes(label)) {
-                                                        setMedicationItems([...medicationItems, label]);
+                                                    const newItem = {
+                                                        name: m.medication_name,
+                                                        dose: m.dose || '',
+                                                        frequency: m.frequency || '',
+                                                        quantity: '' // Default quantity clear
+                                                    };
+                                                    if (!medicationItems.some(i => i.name === newItem.name)) {
+                                                        setMedicationItems([...medicationItems, newItem]);
                                                     }
                                                 }}
                                             >
-                                                {m.medication_name} {m.dose}
+                                                <span>{m.medication_name} {m.dose}</span>
+                                                <span className="text-[10px] opacity-70 font-normal">{m.frequency}</span>
                                             </button>
                                         ))}
                                     </div>

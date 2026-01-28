@@ -120,6 +120,31 @@ export const useFinancesPageController = () => {
             }, 0);
     };
 
+    // Calculate Balance by method (cash/transfer)
+    const calculateBalanceByMethod = (docId) => {
+        const docTxs = transactions.filter(t => t.doctor_id == docId && t.status === 'paid');
+
+        const cashBalance = docTxs
+            .filter(t => t.method === 'cash')
+            .reduce((acc, t) => {
+                if (t.is_withdrawal) return acc - parseFloat(t.amount);
+                if (t.type.includes('income')) return acc + parseFloat(t.amount);
+                if (t.type.includes('expense')) return acc - parseFloat(t.amount);
+                return acc;
+            }, 0);
+
+        const transferBalance = docTxs
+            .filter(t => t.method === 'transfer')
+            .reduce((acc, t) => {
+                if (t.is_withdrawal) return acc - parseFloat(t.amount);
+                if (t.type.includes('income')) return acc + parseFloat(t.amount);
+                if (t.type.includes('expense')) return acc - parseFloat(t.amount);
+                return acc;
+            }, 0);
+
+        return { cash: cashBalance, transfer: transferBalance, total: cashBalance + transferBalance };
+    };
+
     const handlers = {
         onRefresh: fetchData,
         onDeleteTransaction: handleDeleteTransaction,
@@ -136,7 +161,8 @@ export const useFinancesPageController = () => {
         onCloseCloseBox: () => setCloseBoxModal(prev => ({ ...prev, open: false })),
         setCloseAmount,
         setEditingTx,
-        calculateBalance
+        calculateBalance,
+        calculateBalanceByMethod
     };
 
     return {

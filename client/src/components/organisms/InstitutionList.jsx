@@ -2,47 +2,55 @@ import React from 'react';
 import Button from '../atoms/Button';
 import Badge from '../atoms/Badge';
 
-const InstitutionList = ({ institutions, loading, onEdit, onDelete }) => {
-    if (loading) return <div>Cargando...</div>;
+const InstitutionList = ({ institutions, loading, onEdit, onDelete, t }) => {
+    if (loading) return <div className="loading-state">{t('loading')}</div>;
 
     if (institutions.length === 0) {
         return (
             <div className="card p-8 text-center text-main-500">
-                <p>No hay instituciones registradas.</p>
+                <p>{t('no_institutions')}</p>
             </div>
         );
     }
 
     return (
-        <div className="card overflow-hidden">
-            <table className="table-base w-full">
+        <div className="institution-list">
+            <table className="institution-list__table">
                 <thead>
                     <tr>
-                        <th>Nombre</th>
-                        <th>Monto Base</th>
-                        <th>Deuda Pendiente</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
+                        <th className="institution-list__th">{t('name')}</th>
+                        <th className="institution-list__th">{t('base_amount')}</th>
+                        <th className="institution-list__th">{t('pending_debt')}</th>
+                        <th className="institution-list__th">{t('status')}</th>
+                        <th className="institution-list__th">{t('actions')}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {institutions.map(inst => (
                         <tr key={inst.id}>
-                            <td className="font-medium text-main-800">{inst.name}</td>
-                            <td className="font-mono text-blue-700">${inst.base_price}</td>
-                            <td className="font-mono text-red-600 font-bold">${inst.total_debt}</td>
-                            <td>
+                            <td className="institution-list__td">
+                                <span className="institution-list__name">{inst.name}</span>
+                            </td>
+                            <td className="institution-list__td">
+                                <span className="institution-list__price">${inst.base_price}</span>
+                            </td>
+                            <td className="institution-list__td">
+                                <span className="institution-list__debt">${inst.total_debt}</span>
+                            </td>
+                            <td className="institution-list__td">
                                 <Badge variant={inst.status === 'active' ? 'green' : 'red'}>
-                                    {inst.status === 'active' ? 'Activo' : 'Inactivo'}
+                                    {t(inst.status)}
                                 </Badge>
                             </td>
-                            <td className="flex gap-2">
-                                <Button variant="ghost" size="sm-compact" onClick={() => onEdit(inst)}>
-                                    ✏️
-                                </Button>
-                                <Button variant="ghost" size="sm-compact" className="text-red-500 hover:text-red-700" onClick={() => onDelete(inst.id)}>
-                                    🗑️
-                                </Button>
+                            <td className="institution-list__td">
+                                <div className="institution-list__actions">
+                                    <Button variant="ghost" size="sm-compact" onClick={() => onEdit(inst)}>
+                                        ✏️
+                                    </Button>
+                                    <Button variant="ghost" size="sm-compact" className="btn--danger-ghost" onClick={() => onDelete(inst.id)}>
+                                        🗑️
+                                    </Button>
+                                </div>
                             </td>
                         </tr>
                     ))}

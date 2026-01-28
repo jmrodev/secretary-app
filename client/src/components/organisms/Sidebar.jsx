@@ -18,7 +18,7 @@ const Sidebar = () => {
     return (
         <aside className="sidebar">
             <div className="sidebar-header">
-                <h2 className="sidebar-title">ClinicFlow</h2>
+                <h2 className="sidebar-title">{t('app_name')}</h2>
             </div>
 
             <nav className="sidebar-nav">
@@ -40,7 +40,7 @@ const Sidebar = () => {
 
                 {user.role === 'secretary' && (
                     <Link to="/insurances" className={`sidebar-link ${isActive('/insurances')}`}>
-                        <span>🏥</span> Obras Sociales
+                        <span>🏥</span> {t('insurances') || 'Obras Sociales'}
                     </Link>
                 )}
 
@@ -84,7 +84,7 @@ const Sidebar = () => {
 
                 {(user.role === 'admin' || user.role === 'secretary') && (
                     <Link to="/institutions" className={`sidebar-link ${isActive('/institutions')}`}>
-                        <span>🏛️</span> Instituciones
+                        <span>🏛️</span> {t('institutions')}
                     </Link>
                 )}
 

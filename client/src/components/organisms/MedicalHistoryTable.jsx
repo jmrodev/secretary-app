@@ -88,7 +88,7 @@ const MedicalHistoryTable = ({ items, filterItem, onView, onDelete, icon, title,
                                                     size="sm-compact"
                                                     onClick={() => onDelete(item.id, item)}
                                                     className="text-red-400 hover:bg-red-50"
-                                                    title="Delete"
+                                                    title={t('delete')}
                                                     icon="🗑️"
                                                 />
                                             )}

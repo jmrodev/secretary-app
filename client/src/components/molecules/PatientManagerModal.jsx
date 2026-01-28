@@ -142,7 +142,7 @@ const PatientManagerModal = ({
                 />
             ) : (
                 <div className="p-8 flex justify-center text-gray-400">
-                    Loading resources...
+                    {t('loading')}
                 </div>
             )}
         </Modal>

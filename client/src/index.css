@@ -224,6 +224,10 @@ screen and (max-height: 800px) {
   animation: fadeIn 0.3s ease-out forwards;
 }
 
+.overflow-visible {
+  overflow: visible !important;
+}
+
 /* Atomic Utilities */
 .text-center {
   text-align: center;
@@ -952,11 +956,10 @@ input:checked+.slider:before {
 .main-content {
   flex: 1;
   padding: 2rem;
+  padding-bottom: 4rem;
   overflow-y: auto;
-  /* Layout constraint for "delicate" look */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  min-height: 0;
+  /* Critical for flex scroll */
 }
 
 .main-content>* {
@@ -1520,7 +1523,247 @@ input:checked+.slider:before {
 
 
 
-/* Specific Config Styles */
+/* ============================================
+   CONTROL PANEL (SYSTEM CONFIG) - BEM
+   ============================================ */
+
+/* Block: config-panel */
+.config-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Block: config-section */
+.config-section {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.config-section:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent-color);
+}
+
+.config-section__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--gray-100);
+}
+
+.config-section__icon {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.config-section__title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  margin: 0;
+}
+
+.config-section__subtitle {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+.config-section__body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.config-section__divider {
+  height: 1px;
+  background: var(--gray-200);
+  margin: 1.5rem 0;
+}
+
+/* Block: config-group */
+.config-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: var(--gray-50);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--gray-200);
+}
+
+.config-group__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.config-group__title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--gray-600);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.config-group__items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Block: config-field */
+.config-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.config-field__label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--gray-600);
+}
+
+.config-field__hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.config-field--inline {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Block: config-status */
+.config-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.config-status__indicator {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+}
+
+.config-status--connected {
+  background: var(--green-50);
+  color: var(--green-700);
+  border: 1px solid var(--green-200);
+}
+
+.config-status--connected .config-status__indicator {
+  background: var(--green-500);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.config-status--disconnected {
+  background: var(--gray-50);
+  color: var(--gray-600);
+  border: 1px solid var(--gray-200);
+}
+
+.config-status--disconnected .config-status__indicator {
+  background: var(--gray-400);
+}
+
+/* Block: config-actions */
+.config-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.config-actions--end {
+  justify-content: flex-end;
+}
+
+/* Block: config-alert */
+.config-alert {
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.config-alert__title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.config-alert__message {
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.config-alert--info {
+  background: var(--blue-50);
+  border-color: var(--blue-200);
+  color: var(--blue-800);
+}
+
+.config-alert--warning {
+  background: var(--orange-50);
+  border-color: var(--orange-200);
+  color: var(--orange-800);
+}
+
+.config-alert--success {
+  background: var(--green-50);
+  border-color: var(--green-200);
+  color: var(--green-800);
+}
+
+/* Block: config-grid */
+.config-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.config-grid--2col {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (max-width: 768px) {
+  .config-grid--2col {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Block: config-url-display */
+.config-url-display {
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: var(--gray-700);
+  background: white;
+  padding: 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--gray-200);
+  word-break: break-all;
+}
+
+/* Legacy Config Styles (kept for backward compatibility) */
 .config-section-title {
   display: flex;
   align-items: center;
@@ -1532,8 +1775,6 @@ input:checked+.slider:before {
   border-bottom: 2px solid var(--gray-100);
   padding-bottom: 0.75rem;
 }
-
-
 
 .google-status-bar {
   display: flex;
@@ -4549,6 +4790,471 @@ input:checked+.slider:before {
   font-weight: 700;
 }
 
+/* Requirements List - Medication Editor */
+.requirements-list__med-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.requirements-list__med-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  background-color: white;
+  padding: 0.5rem;
+  border: 1px solid var(--gray-300);
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.requirements-list__med-grid {
+  display: grid;
+  grid-template-columns: 5fr 2fr 3fr 2fr;
+  gap: 0.5rem;
+  flex-grow: 1;
+}
+
+.requirements-list__med-input {
+  width: 100%;
+  padding: 0.25rem;
+  border: 1px solid var(--gray-300);
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--gray-900);
+  background-color: white;
+}
+
+.requirements-list__med-input--name {
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
+.requirements-list__med-input:focus {
+  outline: none;
+  border-color: var(--blue-400);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.requirements-list__med-add-section {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--gray-100);
+}
+
+.requirements-list__med-add-grid {
+  display: grid;
+  grid-template-columns: 5fr 2fr 3fr 2fr;
+  gap: 0.5rem;
+  flex-grow: 1;
+}
+
+.requirements-list__med-input--add {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--gray-300);
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--gray-900);
+  background-color: white;
+}
+
+.requirements-list__med-input--add:focus {
+  outline: none;
+  border-color: var(--blue-400);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.requirements-list__med-input--add-name {
+  font-size: 0.875rem;
+}
+
+.requirements-list__med-input--add-small {
+  font-size: 0.75rem;
+}
+
+/* Requirements List - Filters */
+.requirements-list__filters {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Requirements List - Empty States */
+.requirements-list__empty {
+  margin-top: 1rem;
+}
+
+.requirements-list__recycle-empty {
+  text-align: center;
+  padding: 3rem;
+  background-color: var(--gray-50);
+  border-radius: 0.5rem;
+  border: 2px dashed var(--gray-300);
+  color: var(--text-muted);
+}
+
+.requirements-list__recycle-empty-icon {
+  font-size: 2.25rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+/* Requirements List - Table Actions */
+.requirements-list__actions {
+  display: flex;
+  gap: 0.25rem;
+  justify-content: flex-end;
+}
+
+/* Requirements List - Detail Modal */
+.requirements-list__detail-section {
+  margin-bottom: 1rem;
+}
+
+.requirements-list__detail-header {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.requirements-list__note-box {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--gray-200);
+}
+
+.requirements-list__note-box--editing {
+  background-color: var(--amber-50);
+  border-color: var(--amber-200);
+}
+
+.requirements-list__note-box--readonly {
+  background-color: var(--gray-50);
+  border-color: var(--gray-200);
+}
+
+.requirements-list__edit-title {
+  font-weight: 700;
+  color: var(--amber-800);
+  font-size: 0.875rem;
+}
+
+.requirements-list__edit-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.requirements-list__med-save-btn {
+  font-size: 0.625rem;
+  background-color: var(--amber-100);
+  color: var(--amber-700);
+  border: none;
+  padding: 0.125rem 0.5rem;
+  height: auto;
+}
+
+.requirements-list__med-save-btn:hover {
+  background-color: var(--amber-200);
+}
+
+.requirements-list__notes-editor {
+  margin-top: 0.5rem;
+}
+
+.requirements-list__edit-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--amber-200);
+}
+
+.requirements-list__notes-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--gray-500);
+  text-transform: uppercase;
+}
+
+.requirements-list__notes-textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--gray-300);
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Requirements List - Medication Display (Read-only) */
+.requirements-list__med-section {
+  margin-bottom: 0.75rem;
+}
+
+.requirements-list__med-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.requirements-list__med-title {
+  font-size: 0.875rem;
+  color: var(--gray-700);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+.requirements-list__med-loading {
+  font-size: 0.75rem;
+  color: var(--gray-400);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Unknown Medications Section */
+.requirements-list__med-unknown {
+  background-color: var(--amber-50);
+  border: 1px solid var(--amber-200);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.requirements-list__med-unknown-title {
+  color: var(--amber-800);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.requirements-list__med-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.requirements-list__med-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  background-color: white;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--amber-100);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+
+.requirements-list__med-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.requirements-list__med-name {
+  font-weight: 700;
+  color: var(--amber-900);
+}
+
+.requirements-list__med-details {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--gray-600);
+}
+
+.requirements-list__med-badge {
+  background-color: var(--gray-100);
+  padding: 0 0.25rem;
+  border-radius: 0.25rem;
+}
+
+.requirements-list__med-badge--quantity {
+  color: var(--amber-700);
+  font-weight: 700;
+  border: 1px solid var(--amber-200);
+}
+
+.requirements-list__med-duration {
+  margin-left: auto;
+  font-weight: 700;
+  color: var(--blue-600);
+}
+
+.requirements-list__med-warning {
+  font-size: 0.625rem;
+  color: var(--amber-600);
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+/* Known Medications Section */
+.requirements-list__med-known {
+  margin-bottom: 0.5rem;
+}
+
+.requirements-list__med-known-title {
+  color: var(--gray-500);
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.requirements-list__med-known-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.requirements-list__med-known-card {
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  background-color: var(--blue-50);
+  color: var(--blue-700);
+  border-left: 4px solid var(--blue-500);
+}
+
+.requirements-list__med-known-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.requirements-list__med-known-name {
+  font-weight: 700;
+}
+
+.requirements-list__med-known-check {
+  color: var(--blue-500);
+}
+
+.requirements-list__med-known-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.625rem;
+  opacity: 0.8;
+}
+
+.requirements-list__med-known-duration {
+  font-weight: 700;
+  margin-left: 0.25rem;
+}
+
+.requirements-list__med-empty-note {
+  font-size: 0.75rem;
+  color: var(--gray-400);
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
+/* Notes Section */
+.requirements-list__notes-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--gray-200);
+}
+
+.requirements-list__notes-title {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--gray-700);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+.requirements-list__notes-content {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+  background-color: white;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--gray-200);
+  white-space: pre-wrap;
+  font-style: italic;
+}
+
+.requirements-list__doctor-note {
+  padding: 1rem;
+  background-color: var(--green-50);
+  border-radius: 0.5rem;
+  border: 1px solid var(--green-200);
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.requirements-list__secretary-note {
+  padding: 1rem;
+  background-color: var(--blue-50);
+  border-radius: 0.5rem;
+  border: 1px solid var(--blue-200);
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.requirements-list__modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+/* Recycle Bin */
+.requirements-list__recycle-row {
+  background-color: rgba(254, 242, 242, 0.3);
+}
+
+.requirements-list__recycle-expires {
+  color: var(--red-600);
+  font-weight: 700;
+}
+
+.requirements-list__restore-btn {
+  color: var(--green-600);
+  background-color: var(--green-100);
+}
+
+.requirements-list__restore-btn:hover {
+  background-color: var(--green-200);
+}
+
+/* Count Badge */
+.requirements-list__count-badge {
+  margin-left: 0.5rem;
+  background-color: var(--purple-100);
+  color: var(--purple-600);
+  padding: 0.125rem 0.375rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+}
+
+/* Form View */
+.requirements-list__form-view {
+  animation: fadeIn 0.3s ease-out forwards;
+  margin-top: 1rem;
+}
+
 /* Authentication Pages - BEM Methodology */
 .auth-layout {
   min-height: 100vh;
@@ -4791,6 +5497,27 @@ input:checked+.slider:before {
 @media (max-width: 1024px) {
   .files-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* --- Finances Header Block --- */
+.finances-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.finances-header__actions {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .finances-header {
+    flex-direction: column;
   }
 }
 
@@ -5068,6 +5795,7 @@ input:checked+.slider:before {
     page-break-inside: avoid;
   }
 }
+
 /* Language Selector (Atom) */
 .language-selector {
   width: 100%;
@@ -5108,7 +5836,8 @@ input:checked+.slider:before {
 [data-tooltip]:hover::after {
   content: attr(data-tooltip);
   position: absolute;
-  bottom: 110%; /* Place it above the element */
+  bottom: 110%;
+  /* Place it above the element */
   left: 50%;
   transform: translateX(-50%);
   background-color: var(--gray-800);
@@ -5121,14 +5850,16 @@ input:checked+.slider:before {
   z-index: 1000;
   opacity: 0;
   animation: fadeInTooltip 0.2s forwards;
-  pointer-events: none; /* Prevent tooltip from blocking clicks */
+  pointer-events: none;
+  /* Prevent tooltip from blocking clicks */
 }
 
 /* Optional triangle for tooltip */
 [data-tooltip]:hover::before {
   content: '';
   position: absolute;
-  bottom: 100%; /* Slightly overlap trigger */
+  bottom: 100%;
+  /* Slightly overlap trigger */
   left: 50%;
   transform: translateX(-50%);
   border-width: 5px;
@@ -5144,4 +5875,693 @@ input:checked+.slider:before {
     opacity: 1;
     transform: translateX(-50%) translateY(-5px);
   }
+}
+
+/* --- Finance Module (BEM + Atomic) --- */
+.finance-stats {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.finance-stats__card {
+  min-width: 180px;
+  flex: 1 1 auto;
+}
+
+.finance-stats__title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+  display: block;
+  letter-spacing: 0.05em;
+}
+
+.finance-stats__breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.finance-stats__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.15rem 0;
+}
+
+.finance-stats__label {
+  font-size: 0.7rem;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.finance-stats__value {
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.finance-stats__value--blue {
+  color: var(--blue-600);
+}
+
+.finance-stats__value--gray {
+  color: var(--gray-600);
+}
+
+.finance-stats__value--muted {
+  color: var(--gray-400);
+}
+
+.finance-stats__value--green {
+  color: var(--success);
+}
+
+.finance-stats__value--red {
+  color: var(--error);
+}
+
+.finance-stats__value--purple {
+  color: var(--purple-600);
+}
+
+.finance-stats__value--large {
+  font-size: 1.5rem;
+  display: block;
+}
+
+.finance-stats__table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.25rem;
+}
+
+.finance-stats__table-header {
+  font-size: 0.65rem;
+  color: var(--gray-400);
+  border-bottom: 1px solid var(--gray-100);
+  text-transform: uppercase;
+  text-align: left;
+  padding-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.finance-stats__table-cell {
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--gray-50);
+  font-size: 0.7rem;
+}
+
+/* Cash Box System */
+.cash-box {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.cash-box--compact {
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 1rem;
+  gap: 1.5rem;
+}
+
+.cash-box__header {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--gray-800);
+}
+
+.cash-box__header--compact {
+  font-size: 0.8rem;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cash-box__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.cash-box__item {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  transition: all 0.2s ease !important;
+}
+
+.cash-box__item:hover {
+  border-color: var(--blue-400) !important;
+  transform: translateY(-2px) !important;
+}
+
+.cash-box__item--compact {
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  padding: 0.5rem 1rem !important;
+  background-color: var(--gray-50) !important;
+  border-radius: var(--radius-sm) !important;
+  border: 1px solid var(--gray-100) !important;
+}
+
+.cash-box__name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--gray-700);
+  margin: 0 0 0.75rem 0;
+}
+
+.cash-box__name--compact {
+  margin: 0;
+}
+
+.cash-box__values {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.cash-box__values--compact {
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cash-box__method {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.cash-box__method--cash {
+  color: var(--success);
+}
+
+.cash-box__method--transfer {
+  color: var(--blue-600);
+}
+
+.cash-box__separator {
+  color: var(--gray-200);
+  font-weight: 300;
+}
+
+.finances-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.finances-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.transactions-table__date {
+  font-weight: 700;
+  color: var(--gray-800);
+}
+
+.transactions-table__time {
+  font-size: 0.75rem;
+  color: var(--gray-400);
+}
+
+.transactions-table__type-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.transactions-table__description {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--gray-700);
+}
+
+.transactions-table__beneficiary {
+  display: flex;
+  flex-direction: column;
+}
+
+.transactions-table__beneficiary-name {
+  font-weight: 700;
+  color: var(--gray-700);
+}
+
+.transactions-table__patient {
+  font-size: 0.75rem;
+  color: var(--gray-400);
+}
+
+.transactions-table__method {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.transactions-table__amount {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.transactions-table__amount--withdrawal {
+  color: var(--blue-600);
+}
+
+.transactions-table__amount--income {
+  color: var(--success);
+}
+
+.transactions-table__amount--expense {
+  color: var(--error);
+}
+
+/* --- Table Refinements --- */
+.transactions-table__header-cell--right {
+  text-align: right;
+}
+
+.transactions-table__header-cell--center {
+  text-align: center;
+}
+
+.transactions-table__cell--right {
+  text-align: right;
+}
+
+.transactions-table__cell--center {
+  text-align: center;
+}
+
+.transactions-table__row--grouped {
+  background-color: rgba(245, 158, 11, 0.05);
+  /* Very light amber */
+}
+
+.transactions-table__description-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.transactions-table__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.25rem;
+}
+
+.transactions-table__no-proof {
+  color: var(--gray-300);
+}
+
+.transactions-table__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.transactions-table__table th {
+  padding: 1rem 0.75rem;
+  background-color: var(--gray-50);
+  color: var(--gray-500);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.transactions-table__table td {
+  padding: 1rem 0.75rem;
+  border-bottom: 1px solid var(--gray-50);
+  vertical-align: middle;
+}
+
+/* Modals & Currency Input Atomic Fixes */
+.finance-stats__row--divider {
+  border-top: 1px solid var(--gray-100);
+  padding-top: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+/* Atomic Helpers (No !important) */
+.pl-6-bem {
+  padding-left: 1.5rem;
+}
+
+.pr-6-bem {
+  padding-right: 1.5rem;
+}
+
+.btn-text--xs {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.transactions-table__table .pl-6-bem {
+  padding-left: 1.5rem;
+}
+
+.transactions-table__table .pr-6-bem {
+  padding-right: 1.5rem;
+}
+
+.transactions-table__group-footer {
+  background-color: rgba(245, 158, 11, 0.1);
+}
+
+.transactions-table__group-total {
+  padding: 0.5rem 1.5rem;
+  text-align: right;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--amber-700);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* --- Institutions Refactor (BEM) --- */
+.institutions__nav {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.institutions__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.institution-list {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  background: white;
+  border: 1px solid var(--gray-100);
+}
+
+.institution-list__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.institution-list__th {
+  padding: 1rem;
+  background-color: var(--gray-50);
+  color: var(--gray-500);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  border-bottom: 1px solid var(--gray-100);
+  text-align: left;
+}
+
+.institution-list__td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--gray-50);
+  vertical-align: middle;
+}
+
+.institution-list__name {
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+.institution-list__price {
+  font-family: var(--font-mono);
+  color: var(--blue-600);
+}
+
+.institution-list__debt {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--error);
+}
+
+.institution-list__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Institution Finances BEM */
+.inst-finances {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.inst-finances__selector-bar {
+  padding: 1rem;
+  background-color: var(--gray-50);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--gray-200);
+}
+
+.inst-finances__label {
+  font-weight: 700;
+  color: var(--gray-800);
+  font-size: 1.125rem;
+}
+
+.inst-finances__select {
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--gray-200);
+  font-size: 1rem;
+}
+
+.inst-finances__view-toggle {
+  display: flex;
+  background-color: var(--gray-200);
+  padding: 0.25rem;
+  border-radius: var(--radius-lg);
+  gap: 0.25rem;
+}
+
+.inst-finances__toggle-btn {
+  padding: 0.375rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: all 0.2s;
+  border: none;
+  background: transparent;
+  color: var(--gray-500);
+  cursor: pointer;
+}
+
+.inst-finances__toggle-btn--active {
+  background-color: white;
+  box-shadow: var(--shadow-sm);
+  color: var(--gray-800);
+}
+
+.inst-header-bar {
+  background: white;
+  padding: 0.75rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.inst-stats {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  overflow-x: auto;
+}
+
+.inst-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-right: 1rem;
+  border-right: 1px solid var(--gray-100);
+}
+
+.inst-stat-item:last-child {
+  border-right: none;
+}
+
+.inst-stat-icon {
+  padding: 0.375rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inst-stat-icon--blue {
+  background-color: var(--blue-50);
+  color: var(--blue-600);
+}
+
+.inst-stat-icon--red {
+  background-color: var(--error-light);
+  color: var(--error);
+}
+
+.inst-stat-icon--orange {
+  background-color: var(--amber-50);
+  color: var(--amber-600);
+}
+
+.inst-stat-label {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--gray-400);
+  margin-bottom: 0.125rem;
+}
+
+.inst-stat-value {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--gray-800);
+}
+
+.inst-stat-value--red {
+  color: var(--error);
+}
+
+.inst-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.inst-table-container {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  height: 500px;
+  /* Base height for scrolling */
+}
+
+.inst-table-header {
+  padding: 0.75rem 1rem;
+  background-color: var(--gray-50);
+  border-bottom: 1px solid var(--gray-100);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.inst-table-title {
+  font-weight: 700;
+  color: var(--gray-700);
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.inst-table-badge {
+  background-color: var(--gray-200);
+  color: var(--gray-600);
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+}
+
+.inst-table-wrapper {
+  overflow: auto;
+  flex-grow: 1;
+}
+
+.inst-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.inst-data-table th {
+  position: sticky;
+  top: 0;
+  background-color: var(--gray-50);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--gray-200);
+  z-index: 10;
+}
+
+.inst-data-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.inst-data-table tr:hover {
+  background-color: var(--gray-50);
+}
+
+.inst-data-table tr--pending {
+  background-color: rgba(239, 68, 68, 0.05);
+}
+
+.inst-patient-link {
+  font-weight: 700;
+  color: var(--gray-800);
+  text-decoration: none;
+}
+
+.inst-patient-link:hover {
+  color: var(--blue-600);
+  text-decoration: underline;
+}
+
+.inst-age-badge {
+  font-weight: 700;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+}
+
+.inst-age-badge--critical {
+  background-color: var(--error-light);
+  color: var(--error);
+}
+
+.inst-age-badge--warning {
+  background-color: var(--amber-50);
+  color: var(--amber-600);
 }

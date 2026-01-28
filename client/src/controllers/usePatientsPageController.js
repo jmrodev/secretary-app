@@ -285,7 +285,6 @@ export const usePatientsPageController = () => {
             const res = await api.post('/temp-access/generate', { patientId });
             const baseUrl = settings.public_base_url || window.location.origin;
 
-            // Find patient info for WhatsApp
             const patient = patients.find(p => p.id === patientId);
             const patientName = patient ? patient.full_name : '';
             const patientPhone = patient ? patient.phone : '';
@@ -298,6 +297,26 @@ export const usePatientsPageController = () => {
                 patientPhone
             });
         } catch (err) { showMessage('Error generating QR', 'error'); }
+    }, [settings.public_base_url, showMessage, patients]);
+
+    const handleGeneratePrescriptionLink = useCallback(async (patientId) => {
+        try {
+            const res = await api.post('/medical/prescription-request/generate', { patientId });
+            const baseUrl = settings.public_base_url || window.location.origin;
+
+            const patient = patients.find(p => p.id === patientId);
+            const patientName = patient ? patient.full_name : '';
+            const patientPhone = patient ? patient.phone : '';
+
+            setQrModal({
+                open: true,
+                url: `${baseUrl}${res.data.url}`,
+                expiry: res.data.expiresAt,
+                patientName,
+                patientPhone,
+                type: 'prescription'
+            });
+        } catch (err) { showMessage('Error generating prescription link', 'error'); }
     }, [settings.public_base_url, showMessage, patients]);
 
     // Prescription
@@ -341,6 +360,7 @@ export const usePatientsPageController = () => {
         handleRatingChange,
         handleToggleNew,
         handleGenerateQR,
+        handleGeneratePrescriptionLink,
         handleSavePrescription,
     };
 };

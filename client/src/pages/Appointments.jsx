@@ -71,7 +71,7 @@ const Appointments = () => {
         handleNextPage, handlePrevPage,
         handleAdminAuthConfirm,
         handleNextFreeSlot,
-        refreshGoogleEvents,
+        syncDayToGoogle,
 
         // Misc
         rescheduleAppt,
@@ -159,7 +159,7 @@ const Appointments = () => {
                                 nextSlot.setSlotHistory([]);
                                 handleNextFreeSlot(null);
                             }}
-                            onRefreshGoogle={() => refreshGoogleEvents(false)}
+                            onSyncDayToGoogle={() => syncDayToGoogle(viewDoctorId, selectedDate)}
                         />
                     </div>
                 )}

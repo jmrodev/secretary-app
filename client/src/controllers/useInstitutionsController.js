@@ -75,30 +75,30 @@ export const useInstitutionsController = () => {
         try {
             if (editingInstitution) {
                 await api.put(`/institutions/${editingInstitution.id}`, formData);
-                showMessage('Institución actualizada', 'success');
+                showMessage(t('update_success'), 'success');
             } else {
                 await api.post('/institutions', formData);
-                showMessage('Institución creada', 'success');
+                showMessage(t('save_success'), 'success');
             }
             fetchInstitutions();
             handleCloseFormModal();
         } catch (err) {
             console.error(err);
-            showMessage('Error al guardar', 'error');
+            showMessage(t('error_saving'), 'error');
         }
-    }, [editingInstitution, formData, showMessage, fetchInstitutions, handleCloseFormModal]);
+    }, [editingInstitution, formData, showMessage, fetchInstitutions, handleCloseFormModal, t]);
 
     const handleDelete = useCallback(async (id) => {
-        if (!await confirm('¿Seguro que deseas eliminar esta institución?')) return;
+        if (!await confirm(t('delete_confirm_msg'))) return;
         try {
             await api.delete(`/institutions/${id}`);
-            showMessage('Institución eliminada', 'success');
+            showMessage(t('delete_success'), 'success');
             fetchInstitutions();
         } catch (err) {
             console.error(err);
-            showMessage('Error al eliminar', 'error');
+            showMessage(t('error_deleting') || 'Error al eliminar', 'error');
         }
-    }, [confirm, showMessage, fetchInstitutions]);
+    }, [confirm, showMessage, fetchInstitutions, t]);
 
     const handleInputChange = useCallback((field, value) => {
         setFormData(prev => ({ ...prev, [field]: value }));

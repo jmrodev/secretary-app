@@ -1,0 +1,1 @@
+-- Placeholder seed file to prevent Docker from creating a directory

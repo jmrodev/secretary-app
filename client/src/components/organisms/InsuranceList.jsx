@@ -19,7 +19,7 @@ const InsuranceList = ({ insurances, loading, onEdit, onDelete, hasFilter }) => 
         return (
             <div className="flex-center py-20">
                 <div className="loading-spinner"></div>
-                <p className="text-muted ml-3">Cargando obras sociales...</p>
+                <p className="text-muted ml-3">{t('loading')}</p>
             </div>
         );
     }
@@ -28,7 +28,7 @@ const InsuranceList = ({ insurances, loading, onEdit, onDelete, hasFilter }) => 
         return (
             <div className="text-center py-12 bg-slate-50 rounded-xl border-dashed border-2 border-slate-200">
                 <p className="text-muted text-lg">
-                    {hasFilter ? "No insurances found matching filter" : "No hay obras sociales registradas"}
+                    {hasFilter ? t('no_results_found') : t('no_insurances_registered')}
                 </p>
             </div>
         );
@@ -46,7 +46,7 @@ const InsuranceList = ({ insurances, loading, onEdit, onDelete, hasFilter }) => 
                             <h3 className="font-bold text-lg text-main-800 m-0 leading-tight">{ins.name}</h3>
                             <p className="text-sm text-main-500 m-0 mt-1">CUIT: {ins.cuit || 'N/A'}</p>
                             <Badge variant={ins.status === 'active' ? 'green' : 'gray'} className="mt-1">
-                                {ins.status || 'Active'}
+                                {t(ins.status || 'active')}
                             </Badge>
                         </div>
                     </div>
@@ -61,7 +61,7 @@ const InsuranceList = ({ insurances, loading, onEdit, onDelete, hasFilter }) => 
                                     rel="noreferrer"
                                     className="font-medium text-main-800 hover:text-blue-600 hover:underline text-sm truncate"
                                 >
-                                    {ins.address || 'Buscar en mapa'}
+                                    {ins.address || t('search_on_map')}
                                 </a>
                             </div>
                             <div className="info-row">
@@ -74,13 +74,13 @@ const InsuranceList = ({ insurances, loading, onEdit, onDelete, hasFilter }) => 
                                                     {p.phone_number} {p.label && <span className="text-[10px] text-muted normal-case font-normal">({p.label})</span>}
                                                 </a>
                                             ))}
-                                            {ins.phoneNumbers.length > 1 && <span className="text-[10px] text-blue-500">+{ins.phoneNumbers.length - 1} más</span>}
+                                            {ins.phoneNumbers.length > 1 && <span className="text-[10px] text-blue-500">+{ins.phoneNumbers.length - 1} {t('more')}</span>}
                                         </div>
                                     ) : (ins.phone ? (
                                         <a href={`tel:${ins.phone.replace(/[^0-9+]/g, '')}`} className="text-main-800 hover:text-blue-600 hover:underline">
                                             {ins.phone}
                                         </a>
-                                    ) : 'No phone')}
+                                    ) : t('no_phone'))}
                                 </span>
                             </div>
                             <div className="info-row">
@@ -90,7 +90,7 @@ const InsuranceList = ({ insurances, loading, onEdit, onDelete, hasFilter }) => 
                                         <a href={`mailto:${ins.email}`} className="text-main-600 hover:text-blue-600 hover:underline">
                                             {ins.email}
                                         </a>
-                                    ) : 'No email'}
+                                    ) : t('no_email')}
                                 </span>
                             </div>
                             {ins.website && (
@@ -110,14 +110,14 @@ const InsuranceList = ({ insurances, loading, onEdit, onDelete, hasFilter }) => 
                             size="sm-compact"
                             onClick={() => onEdit(ins)}
                         >
-                            Editar
+                            {t('edit')}
                         </Button>
                         <Button
                             variant="danger"
                             size="sm-compact"
                             onClick={() => onDelete(ins.id)}
                         >
-                            Eliminar
+                            {t('delete')}
                         </Button>
                     </div>
                 </div>

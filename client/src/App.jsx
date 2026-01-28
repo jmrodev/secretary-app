@@ -16,6 +16,7 @@ import Requests from './pages/Requests';
 import Insurances from './pages/Insurances';
 import Institutions from './pages/Institutions'; // [NEW]
 import TempAccess from './pages/TempAccess'; // [NEW]
+import PublicPrescriptionRequest from './pages/PublicPrescriptionRequest'; // [NEW]
 
 import FloatingChat from './components/organisms/FloatingChat';
 import { useAuth } from './context/AuthContext';
@@ -139,6 +140,7 @@ function App() {
           </ProtectedRoute>
         } />
         <Route path="/patient-access/:token" element={<TempAccess />} />
+        <Route path="/p/request-recipe/:token" element={<PublicPrescriptionRequest />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       <FloatingChat />

@@ -28,36 +28,38 @@ const ConfirmModal = ({
     };
 
     return ReactDOM.createPortal(
-        <div className="modal-overlay" style={{ zIndex: 100000 }}>
-            <div className="modal-content animate-fadeIn" style={{ maxWidth: '400px' }}>
-                <div className="modal-header">
-                    <h3 className="font-bold text-lg">{title || (type === 'alert' ? t('alert') : t('confirm'))}</h3>
-                    <button className="modal-close text-2xl" onClick={() => onCancel()}>&times;</button>
+        <div className="modal-overlay-bem" style={{ zIndex: 100000 }}>
+            <div className="modal-content-bem animate-fadeIn" style={{ maxWidth: '400px' }}>
+                <div className="modal-header-bem">
+                    <h3 className="modal-header-bem__title">
+                        {title || (type === 'alert' ? t('alert') : t('confirm'))}
+                    </h3>
+                    <button className="modal-header-bem__close" onClick={() => onCancel()}>&times;</button>
                 </div>
-                <div className="modal-body py-4">
-                    <p className="text-gray-700 leading-relaxed" style={{ whiteSpace: 'pre-wrap', marginBottom: type === 'prompt' ? '1rem' : '0' }}>
+                <div className="modal-body-bem">
+                    <p className="modal-body-bem__text" style={{ whiteSpace: 'pre-wrap', marginBottom: type === 'prompt' ? '1rem' : '0' }}>
                         {message}
                     </p>
                     {type === 'prompt' && (
-                        <form onSubmit={handleConfirm} className="mt-4">
+                        <form onSubmit={handleConfirm} className="modal-form-bem">
                             <input
                                 autoFocus
                                 type="text"
-                                className="input-field border-blue-200 focus:border-blue-500 transition-all"
+                                className="input-field"
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
                             />
                         </form>
                     )}
                 </div>
-                <div className="modal-footer flex justify-end gap-2 pt-4 border-t border-gray-100">
+                <div className="modal-footer-bem modal-footer-bem--right">
                     {type !== 'alert' && (
-                        <button className="btn btn-secondary px-6 py-2" onClick={() => onCancel()}>
-                            {t('cancel') || 'Cancelar'}
+                        <button className="btn-text btn-text--secondary" onClick={() => onCancel()}>
+                            {t('cancel')}
                         </button>
                     )}
-                    <button className="btn btn-primary px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-bold shadow-md" onClick={handleConfirm}>
-                        {t('accept') || 'Aceptar'}
+                    <button className="btn-base btn-base--primary" onClick={handleConfirm}>
+                        {t('accept')}
                     </button>
                 </div>
             </div>

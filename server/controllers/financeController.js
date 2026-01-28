@@ -190,18 +190,296 @@ exports.getStats = async (req, res) => {
         const { doctor_id } = req.query;
         conn = await pool.getConnection();
 
-        let query = `SELECT type, SUM(amount) as total FROM transactions`;
-        let params = [];
+        const now = new Date();
+        const todayStr = now.toISOString().split('T')[0];
+        const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const monthStr = firstDayOfMonth.toISOString().split('T')[0];
 
-        if (doctor_id) {
-            query += " WHERE doctor_id = ?";
-            params.push(doctor_id);
-        }
+        let doctorFilter = doctor_id ? " AND doctor_id = ?" : "";
 
-        query += " GROUP BY type";
+        // --- TODAY's Stats (separated by payment method) ---
+        let todayParams = doctor_id ? [todayStr, doctor_id] : [todayStr];
 
-        const rows = await conn.query(query, params);
-        res.json(rows);
+        // Cash today
+        const todayCashQuery = `
+            SELECT SUM(amount) as total 
+            FROM transactions 
+            WHERE status = 'paid' 
+              AND DATE(transaction_date) = ?
+              AND is_withdrawal = 0
+              AND method = 'cash'
+              ${doctorFilter}
+        `;
+        const [todayCashRow] = await conn.query(todayCashQuery, todayParams);
+        const todayCashTotal = todayCashRow?.total || 0;
+
+        // Transfer today
+        const todayTransferQuery = `
+            SELECT SUM(amount) as total 
+            FROM transactions 
+            WHERE status = 'paid' 
+              AND DATE(transaction_date) = ?
+              AND is_withdrawal = 0
+              AND method = 'transfer'
+              ${doctorFilter}
+        `;
+        const [todayTransferRow] = await conn.query(todayTransferQuery, todayParams);
+        const todayTransferTotal = todayTransferRow?.total || 0;
+
+        // Withdrawals today
+        const todayWithdrawalQuery = `
+            SELECT SUM(amount) as total 
+            FROM transactions 
+            WHERE is_withdrawal = 1 
+              AND DATE(transaction_date) = ?
+              ${doctorFilter}
+        `;
+        const [todayWithdrawalRow] = await conn.query(todayWithdrawalQuery, todayParams);
+        const todayWithdrawalTotal = todayWithdrawalRow?.total || 0;
+
+        // --- MONTH Stats (by method) ---
+        let monthParams = doctor_id ? [monthStr, doctor_id] : [monthStr];
+
+        const monthCashQuery = `
+            SELECT SUM(amount) as total 
+            FROM transactions 
+            WHERE status = 'paid' 
+              AND transaction_date >= ?
+              AND is_withdrawal = 0
+              AND method = 'cash'
+              ${doctorFilter}
+        `;
+        const [monthCashRow] = await conn.query(monthCashQuery, monthParams);
+        const monthCashTotal = monthCashRow?.total || 0;
+
+        const monthTransferQuery = `
+            SELECT SUM(amount) as total 
+            FROM transactions 
+            WHERE status = 'paid' 
+              AND transaction_date >= ?
+              AND is_withdrawal = 0
+              AND method = 'transfer'
+              ${doctorFilter}
+        `;
+        const [monthTransferRow] = await conn.query(monthTransferQuery, monthParams);
+        const monthTransferTotal = monthTransferRow?.total || 0;
+
+        const monthWithdrawalQuery = `
+            SELECT SUM(amount) as total 
+            FROM transactions 
+            WHERE is_withdrawal = 1 
+              AND transaction_date >= ?
+              ${doctorFilter}
+        `;
+        const [monthWithdrawalRow] = await conn.query(monthWithdrawalQuery, monthParams);
+        const monthWithdrawalTotal = monthWithdrawalRow?.total || 0;
+
+        // --- YEAR Stats (by method) ---
+        const firstDayOfYear = new Date(now.getFullYear(), 0, 1);
+        const yearStr = firstDayOfYear.toISOString().split('T')[0];
+        let yearParams = doctor_id ? [yearStr, doctor_id] : [yearStr];
+
+        const yearCashQuery = `
+            SELECT SUM(amount) as total 
+            FROM transactions 
+            WHERE status = 'paid' 
+              AND transaction_date >= ?
+              AND is_withdrawal = 0
+              AND method = 'cash'
+              ${doctorFilter}
+        `;
+        const [yearCashRow] = await conn.query(yearCashQuery, yearParams);
+        const yearCashTotal = yearCashRow?.total || 0;
+
+        const yearTransferQuery = `
+            SELECT SUM(amount) as total 
+            FROM transactions 
+            WHERE status = 'paid' 
+              AND transaction_date >= ?
+              AND is_withdrawal = 0
+              AND method = 'transfer'
+              ${doctorFilter}
+        `;
+        const [yearTransferRow] = await conn.query(yearTransferQuery, yearParams);
+        const yearTransferTotal = yearTransferRow?.total || 0;
+
+        const yearWithdrawalQuery = `
+            SELECT SUM(amount) as total 
+            FROM transactions 
+            WHERE is_withdrawal = 1 
+              AND transaction_date >= ?
+              ${doctorFilter}
+        `;
+        const [yearWithdrawalRow] = await conn.query(yearWithdrawalQuery, yearParams);
+        const yearWithdrawalTotal = yearWithdrawalRow?.total || 0;
+
+        // --- Total pending debts (all time) ---
+        let debtParams = doctor_id ? [doctor_id] : [];
+        const debtQuery = `
+            SELECT SUM(amount) as total 
+            FROM transactions 
+            WHERE status = 'pending'
+              ${doctor_id ? " AND doctor_id = ?" : ""}
+        `;
+        const [debtRow] = await conn.query(debtQuery, debtParams);
+        const debtTotal = debtRow?.total || 0;
+
+        const firstDayOfWeek = new Date(now);
+        const day = now.getDay();
+        const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+        firstDayOfWeek.setDate(diff);
+        const weekStr = firstDayOfWeek.toISOString().split('T')[0];
+
+        // Helper for appointment stats (Count: only finalized/past, Paid: from transactions)
+        const getApptStats = async (startDate, isToday = false) => {
+            const dateClause = isToday ? "DATE(appointment_date) = ?" : "(appointment_date >= ? AND appointment_date <= NOW())";
+            const qParams = doctor_id ? [startDate, doctor_id] : [startDate];
+
+            const countQuery = `
+                SELECT COUNT(*) as count 
+                FROM appointments 
+                WHERE ${dateClause} 
+                  AND status NOT IN ('cancelled', 'absent', 'reserved')
+                  ${doctor_id ? " AND doctor_id = ?" : ""}
+            `;
+            const [cRow] = await conn.query(countQuery, qParams);
+
+            const paidQuery = `
+                SELECT SUM(amount) as total 
+                FROM transactions 
+                WHERE appointment_id IS NOT NULL 
+                  AND status = 'paid' 
+                  AND ${isToday ? "DATE(transaction_date) = ?" : "transaction_date >= ?"} 
+                  ${doctorFilter}
+            `;
+            const [pRow] = await conn.query(paidQuery, qParams);
+
+            return { count: cRow?.count || 0, paid: pRow?.total || 0 };
+        };
+
+        const apptToday = await getApptStats(todayStr, true);
+        const apptWeek = await getApptStats(weekStr);
+        const apptMonth = await getApptStats(monthStr);
+        const apptYear = await getApptStats(yearStr);
+
+        // DEBT: Only count pending transactions for appointments that ALREADY HAPPENED (avoid counting future bookings)
+        const apptDebtQuery = `
+            SELECT SUM(t.amount) as total 
+            FROM transactions t
+            JOIN appointments a ON t.appointment_id = a.id
+            WHERE t.status = 'pending' 
+              AND a.appointment_date <= NOW()
+              AND a.status NOT IN ('cancelled', 'absent', 'reserved')
+              ${doctor_id ? " AND t.doctor_id = ?" : ""}
+        `;
+        const [apptDebtRow] = await conn.query(apptDebtQuery, debtParams);
+        const apptDebt = apptDebtRow?.total || 0;
+
+        // Helper for prescription stats
+        const getRxStats = async (startDate, isToday = false) => {
+            const dateClause = isToday ? "DATE(created_at) = ?" : "(created_at >= ? AND created_at <= NOW())";
+            const qParams = doctor_id ? [startDate, doctor_id] : [startDate];
+
+            const countQuery = `
+                SELECT COUNT(*) as count 
+                FROM medical_requests 
+                WHERE type = 'prescription' 
+                  AND ${dateClause} 
+                  AND status != 'rejected'
+                  ${doctor_id ? " AND doctor_id = ?" : ""}
+            `;
+            const [cRow] = await conn.query(countQuery, qParams);
+
+            const paidQuery = `
+                SELECT SUM(amount) as total 
+                FROM transactions 
+                WHERE request_id IS NOT NULL 
+                  AND status = 'paid' 
+                  AND ${isToday ? "DATE(transaction_date) = ?" : "transaction_date >= ?"} 
+                  ${doctorFilter}
+            `;
+            const [pRow] = await conn.query(paidQuery, qParams);
+
+            return { count: cRow?.count || 0, paid: pRow?.total || 0 };
+        };
+
+        const rxToday = await getRxStats(todayStr, true);
+        const rxWeek = await getRxStats(weekStr);
+        const rxMonth = await getRxStats(monthStr);
+        const rxYear = await getRxStats(yearStr);
+
+        const rxDebtQuery = `
+            SELECT SUM(t.amount) as total 
+            FROM transactions t
+            JOIN medical_requests r ON t.request_id = r.id
+            WHERE t.status = 'pending' 
+              AND r.status != 'rejected'
+              ${doctor_id ? " AND t.doctor_id = ?" : ""}
+        `;
+        const [rxDebtRow] = await conn.query(rxDebtQuery, debtParams);
+        const rxDebt = rxDebtRow?.total || 0;
+
+        // Total Debt (all time, but excluding future pending from total too)
+        const totalDebtQuery = `
+            SELECT SUM(amount) as total 
+            FROM transactions t
+            LEFT JOIN appointments a ON t.appointment_id = a.id
+            WHERE t.status = 'pending'
+              AND (t.appointment_id IS NULL OR (a.appointment_date <= NOW() AND a.status NOT IN ('cancelled', 'absent', 'reserved')))
+              ${doctor_id ? " AND t.doctor_id = ?" : ""}
+        `;
+        const [totalDebtRow] = await conn.query(totalDebtQuery, debtParams);
+        const totalDebtVal = totalDebtRow?.total || 0;
+
+        // Return grouped structure
+        const result = [
+            {
+                type: 'cash',
+                label: '💵 Efectivo',
+                today: todayCashTotal,
+                month: monthCashTotal,
+                year: yearCashTotal
+            },
+            {
+                type: 'transfer',
+                label: '🏦 Transferencia',
+                today: todayTransferTotal,
+                month: monthTransferTotal,
+                year: yearTransferTotal
+            },
+            {
+                type: 'withdrawal',
+                label: '📤 Retiros',
+                today: todayWithdrawalTotal,
+                month: monthWithdrawalTotal,
+                year: yearWithdrawalTotal
+            },
+            {
+                type: 'appointments',
+                label: '🗓️ Turnos',
+                today: apptToday,
+                week: apptWeek,
+                month: apptMonth,
+                year: apptYear,
+                debt: apptDebt
+            },
+            {
+                type: 'prescriptions',
+                label: '💊 Recetas',
+                today: rxToday,
+                week: rxWeek,
+                month: rxMonth,
+                year: rxYear,
+                debt: rxDebt
+            },
+            {
+                type: 'pending_debt',
+                label: '⚠️ Deuda Total',
+                total: totalDebtVal
+            }
+        ];
+
+        res.json(result);
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");

@@ -145,3 +145,21 @@ exports.getInstitutionFinances = async (req, res) => {
         res.status(500).json({ error: "Failed to fetch finances" });
     }
 };
+exports.getInstitutionPatients = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const query = `
+            SELECT p.id, p.full_name, p.dni, p.next_suggested_visit_date,
+                   p.tariff_percent, p.tariff_override,
+                   (SELECT MAX(appointment_date) FROM appointments WHERE patient_id = p.id AND status = 'completed') as last_visit_date
+            FROM patients p
+            WHERE p.institution_id = ?
+            ORDER BY p.full_name ASC
+        `;
+        const rows = await pool.query(query, [id]);
+        res.json(rows);
+    } catch (err) {
+        console.error("Institution Patients Error:", err);
+        res.status(500).json({ error: "Failed to fetch institution patients" });
+    }
+};

@@ -10,6 +10,7 @@ const PatientDetailsView = ({
     onEdit,
     onDelete,
     onGenerateQR,
+    onGeneratePrescriptionLink,
     onToggleNew,
     onPayDebt,
     children
@@ -166,6 +167,9 @@ const PatientDetailsView = ({
                         <div className="card-body flex flex-col gap-3">
                             <Button variant="secondary" className="justify-start gap-3" onClick={() => onGenerateQR(details.id)}>
                                 📱 Generar QR Acceso
+                            </Button>
+                            <Button variant="secondary" className="justify-start gap-3" onClick={() => onGeneratePrescriptionLink(details.id)}>
+                                💊 Solicitar Receta (Link)
                             </Button>
                             {(user.role === 'admin' || user.role === 'secretary') && (
                                 <Button

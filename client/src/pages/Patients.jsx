@@ -46,7 +46,8 @@ const Patients = () => {
         handlePayDebt,
         handleRatingChange,
         handleToggleNew,
-        handleGenerateQR
+        handleGenerateQR,
+        handleGeneratePrescriptionLink
     } = controller;
 
     // --- Rating Helpers ---
@@ -90,6 +91,7 @@ const Patients = () => {
                     onEdit={() => handleEditClick(patientDetails)}
                     onDelete={handleDeletePatient}
                     onGenerateQR={handleGenerateQR}
+                    onGeneratePrescriptionLink={handleGeneratePrescriptionLink}
                     onToggleNew={handleToggleNew}
                     onPayDebt={handleOpenDebtModal}
                 >

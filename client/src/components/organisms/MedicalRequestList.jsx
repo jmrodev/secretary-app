@@ -54,9 +54,16 @@ const MedicalRequestList = ({
                             return (
                                 <tr key={r.id} className={`hover:bg-slate-50 transition-colors ${!isPending ? 'bg-slate-50/50' : ''}`}>
                                     <td className="pl-6 py-4">
-                                        <span className={`tag tag-${r.type === 'prescription' ? 'blue' : 'purple'} font-bold`}>
-                                            {r.type === 'prescription' ? t('prescription') : (r.type === 'license' ? t('license') : (r.type === 'certificate' ? t('certificate') : r.type))}
-                                        </span>
+                                        <div className="flex flex-col gap-1 items-start">
+                                            <span className={`tag tag-${r.type === 'prescription' ? 'blue' : 'purple'} font-bold`}>
+                                                {r.type === 'prescription' ? t('prescription') : (r.type === 'license' ? t('license') : (r.type === 'certificate' ? t('certificate') : r.type))}
+                                            </span>
+                                            {r.is_patient_submitted && (
+                                                <span className="text-[9px] font-black bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-md uppercase tracking-tighter shadow-sm">
+                                                    📱 Paciente
+                                                </span>
+                                            )}
+                                        </div>
                                     </td>
                                     <td>
                                         <div className="font-bold text-main-800">{r.patient_name}</div>

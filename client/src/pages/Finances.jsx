@@ -41,7 +41,7 @@ const Finances = () => {
     return (
         <div className="app-layout">
             <Sidebar />
-            <main className="main-content">
+            <main className="main-content dashboard-wide">
                 <header className="page-header">
                     <div className="page-header__info">
                         <h1 className="page-header__title">{t('finances')}</h1>
@@ -58,65 +58,62 @@ const Finances = () => {
                     />
                 )}
 
-                {isAdminOrSecretary && stats.length > 0 && (
-                    <FinanceStatsCards stats={stats} t={t} />
-                )}
+                {/* Finance Controls Header Row */}
+                <div className="finances-header">
+                    {/* Stats Cards */}
+                    {isAdminOrSecretary && stats.length > 0 && (
+                        <FinanceStatsCards stats={stats} t={t} />
+                    )}
 
-                <div className="files-grid">
-                    {/* Log Area */}
-                    <div className="flex flex-col gap-8 order-2 lg:order-1">
-                        <TransactionsTable
-                            transactions={transactions}
-                            user={user}
-                            settings={settings}
-                            t={t}
-                            onEdit={handlers.onEditTransaction}
-                            onDelete={handlers.onDeleteTransaction}
-                        />
-                    </div>
+                    {/* Quick Actions */}
+                    {user.role !== 'patient' && (
+                        <Card className="finances-actions">
+                            <Button size="sm" onClick={handlers.onOpenNewTransaction}>
+                                ✨ {t('new_transaction')}
+                            </Button>
 
-                    {/* Quick Tools Area */}
-                    <aside className="flex flex-col gap-8 order-1 lg:order-2">
-                        {user.role !== 'patient' && (
-                            <>
-                                <Card title={t('quick_actions')}>
-                                    <div className="flex flex-col gap-3">
-                                        <Button onClick={handlers.onOpenNewTransaction}>
-                                            ✨ {t('new_transaction')}
+                            {selectedDoctorFilter && (() => {
+                                const d = doctors.find(doc => doc.id == selectedDoctorFilter);
+                                const balances = handlers.calculateBalanceByMethod(selectedDoctorFilter);
+                                if (d && balances.cash > 0) {
+                                    return (
+                                        <Button
+                                            variant="secondary"
+                                            size="sm"
+                                            onClick={() => handlers.onOpenCloseBox(d, balances.cash)}
+                                        >
+                                            💰 {t('deliver')} a {d.full_name?.split(' ')[0]}
                                         </Button>
+                                    );
+                                }
+                                return null;
+                            })()}
+                        </Card>
+                    )}
 
-                                        {selectedDoctorFilter && (() => {
-                                            const d = doctors.find(doc => doc.id == selectedDoctorFilter);
-                                            const bal = handlers.calculateBalance(selectedDoctorFilter);
-                                            if (d && bal > 0) {
-                                                return (
-                                                    <Button
-                                                        variant="secondary"
-                                                        className="border-green-200 text-green-700 hover:bg-green-50"
-                                                        onClick={() => handlers.onOpenCloseBox(d, bal)}
-                                                    >
-                                                        💰 {t('deliver')} a {d.full_name?.split(' ')[0]}
-                                                    </Button>
-                                                );
-                                            }
-                                            return null;
-                                        })()}
-                                    </div>
-                                </Card>
-
-                                {user.role === 'secretary' && (
-                                    <CashBoxSummary
-                                        doctors={doctors}
-                                        selectedDoctorFilter={selectedDoctorFilter}
-                                        onSelectDoctor={handlers.onSelectDoctor}
-                                        calculateBalance={handlers.calculateBalance}
-                                        t={t}
-                                    />
-                                )}
-                            </>
-                        )}
-                    </aside>
+                    {/* Cash Box Summary */}
+                    {user.role === 'secretary' && (
+                        <CashBoxSummary
+                            doctors={doctors}
+                            selectedDoctorFilter={selectedDoctorFilter}
+                            onSelectDoctor={handlers.onSelectDoctor}
+                            calculateBalance={handlers.calculateBalance}
+                            calculateBalanceByMethod={handlers.calculateBalanceByMethod}
+                            t={t}
+                            compact
+                        />
+                    )}
                 </div>
+
+                {/* Transactions Table - Full Width */}
+                <TransactionsTable
+                    transactions={transactions}
+                    user={user}
+                    settings={settings}
+                    t={t}
+                    onEdit={handlers.onEditTransaction}
+                    onDelete={handlers.onDeleteTransaction}
+                />
 
                 {/* --- Modals --- */}
                 <TransactionModal

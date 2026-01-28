@@ -50,4 +50,10 @@ router.get('/files', verifyToken, medicalController.getPatientFiles);
 router.get('/prescriptions/export/json', verifyToken, medicalController.exportPrescriptionsJSON);
 
 
+// Prescription Requests (Public & Protected)
+router.post('/prescription-request/generate', verifyToken, medicalController.generatePrescriptionRequestToken);
+router.get('/public/prescription-request/:token', medicalController.getPublicPrescriptionRequestData);
+router.post('/public/prescription-request/:token', medicalController.submitPublicPrescriptionRequest);
+router.get('/public/vademecum/search', medicalController.searchVademecum);
+
 module.exports = router;

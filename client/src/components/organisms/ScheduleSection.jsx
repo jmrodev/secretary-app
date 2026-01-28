@@ -19,7 +19,7 @@ const ScheduleSection = ({
     searchPatientId,
     onCreatePatient,
     onNextFreeSlot,
-    onRefreshGoogle,
+    onSyncDayToGoogle,
     onClearSlotHistory,
 
 }) => {
@@ -66,8 +66,8 @@ const ScheduleSection = ({
                             </Button>
                             <Button
                                 variant="secondary"
-                                onClick={onRefreshGoogle}
-                                title="Refrescar Google Calendar"
+                                onClick={() => onSyncDayToGoogle && onSyncDayToGoogle()}
+                                title="Actualizar Google Calendar con los turnos del día"
                                 style={{ maxWidth: '50px' }}
                             >
                                 🔄

@@ -3,16 +3,16 @@ import Modal from '../molecules/Modal';
 import Button from '../atoms/Button';
 import PhoneNumbersManager from '../molecules/PhoneNumbersManager';
 
-const InstitutionFormModal = ({ isOpen, onClose, onSubmit, formData, onChange, isEditing }) => {
+const InstitutionFormModal = ({ isOpen, onClose, onSubmit, formData, onChange, isEditing, t }) => {
     return (
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={isEditing ? 'Editar Institución' : 'Nueva Institución'}
+            title={isEditing ? t('edit_institution') : t('new_institution')}
         >
             <form onSubmit={onSubmit} className="flex flex-col gap-4">
-                <div className="input-group">
-                    <label className="input-label">Nombre *</label>
+                <div className="form-group-bem">
+                    <label className="input-label">{t('institution_name')} *</label>
                     <input
                         type="text"
                         className="input-field"
@@ -21,8 +21,8 @@ const InstitutionFormModal = ({ isOpen, onClose, onSubmit, formData, onChange, i
                         required
                     />
                 </div>
-                <div className="input-group">
-                    <label className="input-label">Monto que paga esta Institución (Monto Base)</label>
+                <div className="form-group-bem">
+                    <label className="input-label">{t('base_amount_label')}</label>
                     <input
                         type="number"
                         className="input-field"
@@ -37,8 +37,8 @@ const InstitutionFormModal = ({ isOpen, onClose, onSubmit, formData, onChange, i
                         onChange={(newContext) => onChange('phoneNumbers', newContext)}
                     />
                 </div>
-                <div className="input-group">
-                    <label className="input-label">Descripción</label>
+                <div className="form-group-bem">
+                    <label className="input-label">{t('description')}</label>
                     <textarea
                         className="input-field"
                         rows="3"
@@ -46,23 +46,23 @@ const InstitutionFormModal = ({ isOpen, onClose, onSubmit, formData, onChange, i
                         onChange={e => onChange('description', e.target.value)}
                     />
                 </div>
-                <div className="input-group">
-                    <label className="input-label">Estado</label>
+                <div className="form-group-bem">
+                    <label className="input-label">{t('status')}</label>
                     <select
                         className="input-field"
                         value={formData.status}
                         onChange={e => onChange('status', e.target.value)}
                     >
-                        <option value="active">Activo</option>
-                        <option value="inactive">Inactivo</option>
+                        <option value="active">{t('active')}</option>
+                        <option value="inactive">{t('inactive')}</option>
                     </select>
                 </div>
-                <div className="mt-4 flex justify-end gap-2">
+                <div className="modal-footer modal-footer--right mt-4">
                     <Button variant="secondary" onClick={onClose}>
-                        Cancelar
+                        {t('cancel')}
                     </Button>
                     <Button type="submit">
-                        Guardar
+                        {t('save')}
                     </Button>
                 </div>
             </form>

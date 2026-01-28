@@ -7,7 +7,8 @@ const { ROLES, ACCESS_LEVELS } = require('../constants/roles');
 
 router.get('/', verifyToken, institutionController.getAllInstitutions);
 router.post('/', verifyToken, authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), institutionController.createInstitution);
-router.get('/:id/finances', verifyToken, authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), institutionController.getInstitutionFinances); // [NEW] Report
+router.get('/:id/finances', verifyToken, authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), institutionController.getInstitutionFinances);
+router.get('/:id/patients', verifyToken, authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), institutionController.getInstitutionPatients);
 router.put('/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), institutionController.updateInstitution);
 router.delete('/:id', verifyToken, authorize(ACCESS_LEVELS.SYSTEM_ADMIN), institutionController.deleteInstitution);
 

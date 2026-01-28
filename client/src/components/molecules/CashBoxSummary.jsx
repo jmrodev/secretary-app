@@ -1,40 +1,80 @@
-
 import React from 'react';
+import Card from '../atoms/Card';
 
 const CashBoxSummary = ({
     doctors,
     selectedDoctorFilter,
-    filterDoctorId, // function to filter or just the id?
-    onSelectDoctor, // handler to clear filter
+    onSelectDoctor,
     calculateBalance,
-    t
+    calculateBalanceByMethod,
+    t,
+    compact = false
 }) => {
+    const filteredDoctors = doctors.filter(d => !selectedDoctorFilter || d.id == selectedDoctorFilter);
+
+    if (compact) {
+        return (
+            <div className="cash-box cash-box--compact">
+                <h3 className="cash-box__header--compact">{t('cash_boxes')}:</h3>
+                {filteredDoctors.map(d => {
+                    const balances = calculateBalanceByMethod ? calculateBalanceByMethod(d.id) : { cash: 0, transfer: 0, total: calculateBalance(d.id) };
+                    return (
+                        <div key={d.id} className="cash-box__item--compact">
+                            <span className="cash-box__name--compact">{d.full_name?.split(' ')[0]}</span>
+                            <div className="cash-box__values--compact">
+                                <span className="cash-box__method cash-box__method--cash">
+                                    💵 ${balances.cash.toLocaleString()}
+                                </span>
+                                <span className="cash-box__separator">|</span>
+                                <span className="cash-box__method cash-box__method--transfer">
+                                    🏦 ${balances.transfer.toLocaleString()}
+                                </span>
+                            </div>
+                        </div>
+                    );
+                })}
+                {selectedDoctorFilter && (
+                    <button className="btn-text btn-text--xs" onClick={() => onSelectDoctor('')}>
+                        {t('view_all') || 'Ver todos'}
+                    </button>
+                )}
+            </div>
+        );
+    }
+
     return (
-        <div className="flex-col gap-8">
-            <div className="flex justify-between items-center mb-4">
-                <h3>{t('cash_boxes')}</h3>
+        <div className="cash-box">
+            <div className="flex justify-between items-center mb-2">
+                <h3 className="cash-box__header">{t('cash_boxes')}</h3>
                 {selectedDoctorFilter && (
                     <button className="btn-text" onClick={() => onSelectDoctor('')}>
                         {t('view_all') || 'View All'}
                     </button>
                 )}
             </div>
-            <div className="grid-responsive">
-                {doctors
-                    .filter(d => !selectedDoctorFilter || d.id == selectedDoctorFilter)
-                    .map(d => {
-                        const bal = calculateBalance(d.id);
-                        return (
-                            <div key={d.id} className="card item-card p-4 flex flex-col justify-between">
-                                <div>
-                                    <h4 className="font-bold text-main-800 m-0">{d.full_name}</h4>
-                                    <p className={`text-2xl font-bold mt-2 ${bal >= 0 ? 'text-green-600' : 'text-red-500'}`}>
-                                        ${bal.toLocaleString()}
-                                    </p>
+            <div className="cash-box__grid">
+                {filteredDoctors.map(d => {
+                    const balances = calculateBalanceByMethod ? calculateBalanceByMethod(d.id) : { cash: 0, transfer: 0, total: calculateBalance(d.id) };
+                    return (
+                        <Card key={d.id} className="cash-box__item">
+                            <h4 className="cash-box__name">{d.full_name}</h4>
+                            <div className="cash-box__values">
+                                <div className="flex justify-between items-center">
+                                    <span className="finance-stats__label">Efectivo</span>
+                                    <span className="cash-box__method cash-box__method--cash">
+                                        ${balances.cash.toLocaleString()}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="finance-stats__label">Transferencia</span>
+                                    <span className="cash-box__method cash-box__method--transfer">
+                                        ${balances.transfer.toLocaleString()}
+                                    </span>
                                 </div>
                             </div>
-                        );
-                    })}
+                        </Card>
+                    );
+                })}
             </div>
         </div>
     );
