@@ -10,11 +10,20 @@ import TabButton from '../atoms/TabButton';
 import Badge from '../atoms/Badge';
 import Input from '../atoms/Input';
 import MedicalRequestForm from './MedicalRequestForm';
+import MedicationCard from '../molecules/MedicationCard';
+import MedicationEditor from '../molecules/MedicationEditor';
+import RequirementItem from '../molecules/RequirementItem';
+
+// Helpers
+import { extractMedicationDetails, calculateDuration } from '../../utils/medicationHelpers';
+
+// Styles
+import './RequirementsList.css';
 
 /**
  * RequirementsList Organism.
  * Displays and manages medical requests with list, new, and recycle bin views.
- * Uses BEM naming convention.
+ * Refactored to follow Atomic Design and BEM conventions.
  */
 const RequirementsList = ({ user }) => {
     const { t } = useLanguage();
@@ -38,165 +47,16 @@ const RequirementsList = ({ user }) => {
         confirmAction,
         handleDelete,
         fetchRequests,
-        canDeleteRequest
+        checkIsKnown
     } = useRequirementsController(user);
 
-    // New state for medication validation & editing
-    const [patientMeds, setPatientMeds] = useState([]);
-    const [fetchingMeds, setFetchingMeds] = useState(false);
-
-    // Edit Mode State
-    const [isEditing, setIsEditing] = useState(false);
-    const [editMeds, setEditMeds] = useState([]); // Array of objects {name, dose, frequency, quantity}
-    const [editNotes, setEditNotes] = useState('');
-    const [newMedInput, setNewMedInput] = useState({ name: '', dose: '', frequency: '', quantity: '' });
-
-    useEffect(() => {
-        if (selectedRequest) {
-            setIsEditing(false);
-            setEditMeds([]);
-            setEditNotes('');
-
-            // Extract current values for edit mode init
-            const { meds, notes } = extractDetails(selectedRequest);
-            setEditMeds(meds);
-            setEditNotes(notes);
-
-            if (selectedRequest.patient_id) {
-                fetchPatientMeds(selectedRequest.patient_id);
-            } else {
-                setPatientMeds([]);
-            }
-        }
-    }, [selectedRequest]);
-
-    const fetchPatientMeds = (patientId) => {
-        setFetchingMeds(true);
-        api.get(`/medical/patients/${patientId}/medications`)
-            .then(res => setPatientMeds(res.data || []))
-            .catch(err => {
-                console.error("Error fetching patient meds:", err);
-                setPatientMeds([]);
-            })
-            .finally(() => setFetchingMeds(false));
-    };
-
-    const addToChronic = async (medName) => {
-        if (!confirm(`¿Desea agregar "${medName}" a la lista de medicación crónica del paciente?`)) return;
-
-        try {
-            await api.post('/medical/patients/medications', {
-                patient_id: selectedRequest.patient_id,
-                medication_name: medName,
-                is_chronic: true,
-                status: 'active'
-            });
-            // Refresh patient meds to update UI (move to blue list)
-            fetchPatientMeds(selectedRequest.patient_id);
-        } catch (e) {
-            console.error(e);
-            alert("Error al agregar medicación");
-        }
-    };
-
-    const extractDetails = (req) => {
-        let meds = [];
-        let notes = '';
-
-        // Try structured data
-        if (req.raw_medication_data) {
-            try {
-                const parsed = typeof req.raw_medication_data === 'string'
-                    ? JSON.parse(req.raw_medication_data)
-                    : req.raw_medication_data;
-
-                // Normalize to objects
-                if (Array.isArray(parsed)) {
-                    meds = parsed.map(item => {
-                        if (typeof item === 'string') return { name: item, dose: '', frequency: '', quantity: '' };
-                        return item;
-                    });
-                }
-            } catch (e) {
-                console.error("Error parsing raw_medication_data", e);
-            }
-        }
-
-        let noteContent = req.request_note || '';
-        const isPublic = noteContent.includes('[Solicitud Paciente]');
-
-        if (isPublic) {
-            const content = noteContent.replace('[Solicitud Paciente]', '').trim();
-            const parts = content.split(/\n?Notas:\s?/i);
-            const medsPart = parts[0].trim();
-            if (parts.length > 1) {
-                notes = parts.slice(1).join('Notas: ').trim();
-            }
-            if (!meds || meds.length === 0) {
-                if (medsPart) meds = medsPart.split(',').map(m => m.trim()).filter(Boolean);
-            }
-        } else {
-            notes = noteContent;
-        }
-
-        // Final normalization to ensure everything is an object
-        if (Array.isArray(meds)) {
-            meds = meds.map(item => {
-                if (!item) return { name: 'Desconocido', dose: '', frequency: '', quantity: '' };
-                if (typeof item === 'string') return { name: item, dose: '', frequency: '', quantity: '' };
-                return item;
-            });
-        } else {
-            meds = [];
-        }
-
-        return { meds: meds || [], notes: notes || '' };
-    };
-
-    const handleSaveEdit = async () => {
-        try {
-            // Reconstruct note for legacy
-            const medsString = editMeds.map(m => {
-                let s = m.name;
-                if (m.dose) s += ` ${m.dose}`;
-                if (m.frequency) s += ` (${m.frequency})`;
-                if (m.quantity) s += ` [Qty: ${m.quantity}]`;
-                return s;
-            }).join(', ');
-
-            const newRequestNote = `[Solicitud Paciente] ${medsString}\nNotas: ${editNotes}`;
-
-            const payload = {
-                raw_medication_data: JSON.stringify(editMeds),
-                request_note: newRequestNote
-            };
-
-            await api.put(`/medical/requests/${selectedRequest.id}`, payload);
-
-            // Update UI
-            setSelectedRequest(prev => ({
-                ...prev,
-                ...payload,
-                raw_medication_data: JSON.stringify(editMeds)
-            }));
-            fetchRequests(); // Background refresh
-            setIsEditing(false);
-        } catch (error) {
-            console.error(error);
-            alert("Error al guardar cambios"); // Simple alert for now
-        }
-    };
-
-    const handleAddMed = () => {
-        if (newMedInput.name.trim()) {
-            setEditMeds([...editMeds, { ...newMedInput, name: newMedInput.name.trim() }]);
-            setNewMedInput({ name: '', dose: '', frequency: '', quantity: '' });
-        }
-    };
-
-    const handleRemoveMed = (index) => {
-        setEditMeds(prev => prev.filter((_, i) => i !== index));
-    };
+    const handleCloseDetail = () => setSelectedRequest(null);
+    const handleCloseAction = () => setActionModal({ open: false, type: '', id: null });
+    const handleOpenEdit = () => setIsEditing(true);
+    const handleCancelEdit = () => setIsEditing(false);
+    const handleNewTab = () => setActiveTab('new');
+    const handleListTab = () => setActiveTab('list');
+    const handleRecycleTab = () => setActiveTab('recycle');
 
     const typeLabels = {
         'prescription': 'Receta 💊',
@@ -205,75 +65,41 @@ const RequirementsList = ({ user }) => {
         'referral': 'Derivación 📋'
     };
 
-    if (loading) return <div className="requirements-list__loading">Cargando requerimientos...</div>;
+    if (loading) return <div className="requirements-list__loading">{t('loading') || 'Cargando...'}</div>;
 
     const isAdminOrSecretary = ['admin', 'secretary'].includes(user.role);
     const canEdit = user.role === 'admin' || user.role === 'secretary' || user.role === 'doctor';
 
-    // Helper for validation logic
-    const checkIsKnown = (medName) => {
-        if (!medName) return false;
-        return patientMeds.some(pm => {
-            const pmName = (pm.medication_name || pm.name || '').toLowerCase();
-            const reqName = medName.toLowerCase();
-            return pmName.includes(reqName) || reqName.includes(pmName);
-        });
-    };
-
-    const calculateDuration = (qty, freq) => {
-        if (!qty || !freq) return null;
-        const q = parseInt(qty, 10);
-        if (isNaN(q)) return null;
-
-        // Try to parse frequency
-        // Case: "1 cada 8 hs" or "1/8h"
-        const hourlyMatch = freq.match(/(\d+)?\s*(?:cada|\/)\s*(\d+)\s*(?:hs|h|horas)/i);
-        if (hourlyMatch) {
-            const amount = hourlyMatch[1] ? parseInt(hourlyMatch[1], 10) : 1;
-            const hours = parseInt(hourlyMatch[2], 10);
-            if (hours > 0) {
-                const daily = (24 / hours) * amount;
-                return Math.round(q / daily);
-            }
-        }
-        // Case: "3 al día" or "3 daily"
-        const dailyMatch = freq.match(/(\d+)\s*(?:al día|por día|daily|xdia)/i);
-        if (dailyMatch) {
-            const daily = parseInt(dailyMatch[1], 10);
-            return daily > 0 ? Math.round(q / daily) : null;
-        }
-
-        return null;
-    };
-
     return (
         <div className="requirements-list">
-            {/* Top Level Navigation */}
-            <nav className="requirements-list__nav tabs-container">
-                <TabButton
-                    isActive={activeTab === 'list'}
-                    onClick={() => setActiveTab('list')}
-                >
-                    📋 {t('request_status')}
-                </TabButton>
-                <TabButton
-                    isActive={activeTab === 'new'}
-                    onClick={() => setActiveTab('new')}
-                >
-                    ➕ {t('new_request')}
-                </TabButton>
-                {isAdminOrSecretary && canDeleteRequest && (
+            <nav className="requirements-list__nav nav-tabs nav-tabs--requirements">
+                <div className="nav-tabs__container">
                     <TabButton
-                        isActive={activeTab === 'recycle'}
-                        onClick={() => setActiveTab('recycle')}
+                        isActive={activeTab === 'list'}
+                        onClick={handleListTab}
+                        variant="pill"
                     >
-                        🗑️ Papelera {recycleRequests.length > 0 && (
-                            <span className="requirements-list__count-badge">
-                                {recycleRequests.length}
-                            </span>
-                        )}
+                        📋 {t('request_status')}
                     </TabButton>
-                )}
+                    <TabButton
+                        isActive={activeTab === 'new'}
+                        onClick={handleNewTab}
+                        variant="pill"
+                    >
+                        ➕ {t('new_request')}
+                    </TabButton>
+                    {isAdminOrSecretary && canDeleteRequest && (
+                        <TabButton
+                            isActive={activeTab === 'recycle'}
+                            onClick={handleRecycleTab}
+                            variant="pill"
+                        >
+                            🗑️ {t('recycle_bin') || 'Papelera'} {recycleRequests.length > 0 && (
+                                <span className="dashboard__nav-badge">{recycleRequests.length}</span>
+                            )}
+                        </TabButton>
+                    )}
+                </div>
             </nav>
 
             {activeTab === 'new' ? (
@@ -288,126 +114,56 @@ const RequirementsList = ({ user }) => {
                 </div>
             ) : activeTab === 'list' ? (
                 <div className="requirements-list__list-view">
-                    {/* Status Filters */}
-                    <div className="requirements-list__filters">
-                        <TabButton
-                            variant="pill"
-                            isActive={filter === 'active'}
-                            onClick={() => setFilter('active')}
-                        >
-                            {t('pending') || 'Pendientes'}
-                        </TabButton>
-                        <TabButton
-                            variant="pill"
-                            isActive={filter === 'history'}
-                            onClick={() => setFilter('history')}
-                        >
-                            {t('history') || 'Historial'}
-                        </TabButton>
+                    <div className="nav-tabs nav-tabs--filters mb-4">
+                        <div className="nav-tabs__container">
+                            <TabButton
+                                variant="pill"
+                                isActive={filter === 'active'}
+                                onClick={() => setFilter('active')}
+                            >
+                                {t('pending') || 'Pendientes'}
+                            </TabButton>
+                            <TabButton
+                                variant="pill"
+                                isActive={filter === 'history'}
+                                onClick={() => setFilter('history')}
+                            >
+                                {t('history') || 'Historial'}
+                            </TabButton>
+                        </div>
                     </div>
 
                     {requests.length === 0 ? (
-                        <div className="requirements-list__empty no-requirements-msg">
+                        <div className="requirements-list__empty">
                             {t('no_requests') || (filter === 'active' ? 'No hay requerimientos pendientes.' : 'No hay historial.')}
                         </div>
                     ) : (
-                        <div className="table-responsive">
-                            <table className="table-base requirements-list__table">
+                        <div className="table-container">
+                            <table className="table">
                                 <thead>
                                     <tr>
-                                        <th>Tipo</th>
-                                        <th>Fecha</th>
-                                        <th>Paciente</th>
-                                        <th>Doctor</th>
-                                        <th>Solicitado Por</th>
-                                        <th>Estado</th>
-                                        <th>Acciones</th>
+                                        <th>{t('type') || 'Tipo'}</th>
+                                        <th>{t('date') || 'Fecha'}</th>
+                                        <th>{t('patient') || 'Paciente'}</th>
+                                        <th>{t('doctor') || 'Doctor'}</th>
+                                        <th>{t('requested_by') || 'Solicitado Por'}</th>
+                                        <th>{t('status') || 'Estado'}</th>
+                                        <th>{t('actions') || 'Acciones'}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {requests.map(r => (
-                                        <tr key={r.id}>
-                                            <td>
-                                                <Badge
-                                                    variant={r.type === 'prescription' ? 'chip-blue' : 'chip-green'}
-                                                    className="type-chip-link cursor-pointer"
-                                                    onClick={() => setSelectedRequest(r)}
-                                                    title="Ver detalle"
-                                                >
-                                                    {typeLabels[r.type] || r.type}
-                                                </Badge>
-                                            </td>
-                                            <td>{new Date(r.created_at).toLocaleDateString()}</td>
-                                            <td><strong>{r.patient_name}</strong></td>
-                                            <td><span className="text-muted">Dr. {r.doctor_name}</span></td>
-                                            <td>
-                                                <span className="requirements-list__author">
-                                                    {r.secretary_name || 'Secretaría'}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <Badge variant={r.status}>
-                                                    {t(r.status) || r.status}
-                                                </Badge>
-                                            </td>
-                                            <td>
-                                                <div className="requirements-list__actions">
-                                                    {canDeleteRequest && (
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm-compact"
-                                                            className="btn-icon-base btn-icon-red"
-                                                            onClick={() => handleDelete(r.id)}
-                                                            title="Eliminar"
-                                                        >
-                                                            🗑️
-                                                        </Button>
-                                                    )}
-                                                    {isAdminOrSecretary && r.status === 'consult' && (
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm-compact"
-                                                            className="btn-icon-base btn-icon-blue"
-                                                            onClick={() => openActionModal('reply', r.id)}
-                                                            title={t('reply')}
-                                                        >
-                                                            💬
-                                                        </Button>
-                                                    )}
-                                                    {(r.status === 'pending' || r.status === 'consult') && (
-                                                        <>
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="sm-compact"
-                                                                className="btn-icon-base btn-icon-green"
-                                                                onClick={() => openActionModal('completed', r.id)}
-                                                                title={t('mark_as_done')}
-                                                            >
-                                                                ✅
-                                                            </Button>
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="sm-compact"
-                                                                className="btn-icon-base btn-icon-yellow"
-                                                                onClick={() => openActionModal('consult', r.id)}
-                                                                title={t('consult_secretary')}
-                                                            >
-                                                                ❓
-                                                            </Button>
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="sm-compact"
-                                                                className="btn-icon-base btn-icon-red"
-                                                                onClick={() => openActionModal('rejected', r.id)}
-                                                                title={t('reject')}
-                                                            >
-                                                                ❌
-                                                            </Button>
-                                                        </>
-                                                    )}
-                                                </div>
-                                            </td>
-                                        </tr>
+                                        <RequirementItem
+                                            key={r.id}
+                                            request={r}
+                                            typeLabel={typeLabels[r.type] || r.type}
+                                            onSelect={setSelectedRequest}
+                                            onDelete={handleDelete}
+                                            onAction={openActionModal}
+                                            canDelete={canDeleteRequest}
+                                            isAdminOrSecretary={isAdminOrSecretary}
+                                            t={t}
+                                        />
                                     ))}
                                 </tbody>
                             </table>
@@ -417,38 +173,31 @@ const RequirementsList = ({ user }) => {
             ) : (
                 <div className="requirements-list__recycle-view">
                     {recycleRequests.length === 0 ? (
-                        <div className="requirements-list__recycle-empty">
-                            <span className="requirements-list__recycle-empty-icon">🗑️</span>
-                            No hay elementos en la papelera.
+                        <div className="requirements-list__empty">
+                            🗑️ {t('recycle_empty') || 'No hay elementos en la papelera.'}
                         </div>
                     ) : (
-                        <div className="table-responsive">
-                            <table className="table-base requirements-list__table">
+                        <div className="table-container">
+                            <table className="table">
                                 <thead>
                                     <tr>
-                                        <th>Elemento</th>
-                                        <th>Eliminado Por</th>
-                                        <th>Fecha Eliminación</th>
-                                        <th>Expira</th>
-                                        <th>Acciones</th>
+                                        <th>{t('element') || 'Elemento'}</th>
+                                        <th>{t('deleted_by') || 'Eliminado Por'}</th>
+                                        <th>{t('delete_date') || 'Fecha Eliminación'}</th>
+                                        <th>{t('expires') || 'Expira'}</th>
+                                        <th>{t('actions') || 'Acciones'}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {recycleRequests.map(item => (
-                                        <tr key={item.id} className="requirements-list__recycle-row">
+                                        <tr key={item.id}>
                                             <td><strong>{item.entity_name}</strong></td>
                                             <td>{item.deleted_by_name}</td>
                                             <td>{new Date(item.deleted_at).toLocaleString()}</td>
-                                            <td className="requirements-list__recycle-expires">
-                                                {new Date(item.expires_at).toLocaleDateString()}
-                                            </td>
+                                            <td>{new Date(item.expires_at).toLocaleDateString()}</td>
                                             <td>
-                                                <Button
-                                                    size="sm"
-                                                    className="requirements-list__restore-btn"
-                                                    onClick={() => handleRestore(item)}
-                                                >
-                                                    ♻️ Restaurar
+                                                <Button size="sm" onClick={() => handleRestore(item)}>
+                                                    ♻️ {t('restore') || 'Restaurar'}
                                                 </Button>
                                             </td>
                                         </tr>
@@ -463,289 +212,128 @@ const RequirementsList = ({ user }) => {
             {/* Detail Modal */}
             <Modal
                 isOpen={!!selectedRequest}
-                onClose={() => setSelectedRequest(null)}
-                title="Detalle de Solicitud"
+                onClose={handleCloseDetail}
+                title={t('request_detail') || "Detalle de Solicitud"}
             >
                 {selectedRequest && (
-                    <div className="requirements-list__detail">
-                        <div className="requirements-list__detail-section">
-                            <strong>Paciente:</strong> {selectedRequest.patient_name} <br />
-                            <small className="text-muted">DNI: {selectedRequest.patient_dni}</small>
-                        </div>
-                        <div className="requirements-list__detail-section">
-                            <strong>Doctor:</strong> {selectedRequest.doctor_name}
-                        </div>
-                        <div className="requirements-list__detail-header">
-                            <div>
-                                <strong>Tipo:</strong> {typeLabels[selectedRequest.type] || selectedRequest.type}
+                    <div className="requirements-detail">
+                        <div className="requirements-detail__header">
+                            <div className="requirements-detail__patient">
+                                <span className="requirements-detail__patient-name">{selectedRequest.patient_name}</span>
+                                <small className="requirements-detail__patient-dni">DNI: {selectedRequest.patient_dni}</small>
                             </div>
+                            <div className="requirements-detail__doctor">
+                                <strong>{t('doctor')}:</strong>
+                                <span className="text-muted">Dr. {selectedRequest.doctor_name}</span>
+                            </div>
+                        </div>
+
+                        <div className="requirements-detail__info-bar">
+                            <Badge variant={selectedRequest.type === 'prescription' ? 'blue' : 'green'}>
+                                {typeLabels[selectedRequest.type] || selectedRequest.type}
+                            </Badge>
                             {canEdit && !isEditing && (
-                                <Button size="sm-compact" variant="secondary" onClick={() => setIsEditing(true)}>
-                                    ✏️ Editar Lista
+                                <Button size="sm-compact" variant="secondary" onClick={handleOpenEdit}>
+                                    ✏️ {t('edit_list') || 'Editar Lista'}
                                 </Button>
                             )}
                         </div>
 
-                        {/* Note Box / Edit Box */}
-                        <div className={`requirements-list__note-box ${isEditing ? 'requirements-list__note-box--editing' : 'requirements-list__note-box--readonly'}`}>
+                        <div className={`requirements-detail__note-box ${isEditing ? 'requirements-detail__note-box--editing' : ''}`}>
                             {isEditing ? (
-                                <div className="requirements-list__edit-container">
-                                    <h4 className="requirements-list__edit-title">📝 Editando Medicación</h4>
-
-                                    {/* MEdication List Editor */}
-                                    <div className="requirements-list__med-editor">
-                                        {editMeds.map((med, idx) => (
-                                            <div key={idx} className="requirements-list__med-item">
-                                                <div className="requirements-list__med-grid">
-                                                    <div>
-                                                        <Input
-                                                            type="text"
-                                                            placeholder="Nombre"
-                                                            value={med.name}
-                                                            onChange={(e) => {
-                                                                const newMeds = [...editMeds];
-                                                                newMeds[idx] = { ...med, name: e.target.value };
-                                                                setEditMeds(newMeds);
-                                                            }}
-                                                            className="requirements-list__med-input requirements-list__med-input--name"
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <Input
-                                                            type="text"
-                                                            placeholder="Dosis"
-                                                            value={med.dose}
-                                                            onChange={(e) => {
-                                                                const newMeds = [...editMeds];
-                                                                newMeds[idx] = { ...med, dose: e.target.value };
-                                                                setEditMeds(newMeds);
-                                                            }}
-                                                            className="requirements-list__med-input"
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <Input
-                                                            type="text"
-                                                            placeholder="Frec (Ej: 1/8h)"
-                                                            value={med.frequency}
-                                                            onChange={(e) => {
-                                                                const newMeds = [...editMeds];
-                                                                newMeds[idx] = { ...med, frequency: e.target.value };
-                                                                setEditMeds(newMeds);
-                                                            }}
-                                                            className="requirements-list__med-input"
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <Input
-                                                            type="number"
-                                                            placeholder="Cant"
-                                                            value={med.quantity}
-                                                            onChange={(e) => {
-                                                                const newMeds = [...editMeds];
-                                                                newMeds[idx] = { ...med, quantity: e.target.value };
-                                                                setEditMeds(newMeds);
-                                                            }}
-                                                            className="requirements-list__med-input"
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <Button
-                                                    size="sm-compact"
-                                                    variant="ghost"
-                                                    className="text-red-500"
-                                                    onClick={() => handleRemoveMed(idx)}
-                                                >
-                                                    ❌
-                                                </Button>
-                                            </div>
-                                        ))}
-                                    </div>
-
-                                    {/* Add Med */}
-                                    <div className="requirements-list__med-add-section">
-                                        <div className="requirements-list__med-add-grid">
-                                            <div>
-                                                <Input
-                                                    type="text"
-                                                    placeholder="Nuevo medicamento..."
-                                                    value={newMedInput.name}
-                                                    onChange={(e) => setNewMedInput({ ...newMedInput, name: e.target.value })}
-                                                    onKeyDown={(e) => e.key === 'Enter' && handleAddMed()}
-                                                    className="requirements-list__med-input--add requirements-list__med-input--add-name"
-                                                />
-                                            </div>
-                                            <div>
-                                                <Input
-                                                    type="text"
-                                                    placeholder="Dosis"
-                                                    value={newMedInput.dose}
-                                                    onChange={(e) => setNewMedInput({ ...newMedInput, dose: e.target.value })}
-                                                    className="requirements-list__med-input--add requirements-list__med-input--add-small"
-                                                />
-                                            </div>
-                                            <div>
-                                                <Input
-                                                    type="text"
-                                                    placeholder="Frecuencia"
-                                                    value={newMedInput.frequency}
-                                                    onChange={(e) => setNewMedInput({ ...newMedInput, frequency: e.target.value })}
-                                                    className="requirements-list__med-input--add requirements-list__med-input--add-small"
-                                                />
-                                            </div>
-                                            <div>
-                                                <Input
-                                                    type="number"
-                                                    placeholder="Cant"
-                                                    value={newMedInput.quantity}
-                                                    onChange={(e) => setNewMedInput({ ...newMedInput, quantity: e.target.value })}
-                                                    onKeyDown={(e) => e.key === 'Enter' && handleAddMed()}
-                                                    className="requirements-list__med-input--add requirements-list__med-input--add-small"
-                                                />
-                                            </div>
-                                        </div>
-                                        <Button size="sm" onClick={handleAddMed} disabled={!newMedInput.name.trim()}>
-                                            ➕
-                                        </Button>
-                                    </div>
-
-                                    {/* Notes Editor */}
-                                    <div className="requirements-list__notes-editor">
-                                        <label className="requirements-list__notes-label">Notas Adicionales</label>
-                                        <textarea
+                                <div className="requirements-edit">
+                                    <h4 className="requirements-detail__title">📝 {t('editing_medication') || 'Editando Medicación'}</h4>
+                                    <MedicationEditor
+                                        meds={editMeds}
+                                        onMedChange={updateEditMed}
+                                        onRemoveMed={(idx) => setEditMeds(prev => prev.filter((_, i) => i !== idx))}
+                                        newMed={newMedInput}
+                                        onNewMedChange={(field, val) => setNewMedInput(prev => ({ ...prev, [field]: val }))}
+                                        onAddMed={handleAddMed}
+                                        t={t}
+                                    />
+                                    <div className="requirements-detail__notes-section">
+                                        <label className="requirements-detail__notes-label">{t('additional_notes') || 'Notas Adicionales'}</label>
+                                        <Input
+                                            type="textarea"
                                             value={editNotes}
                                             onChange={(e) => setEditNotes(e.target.value)}
-                                            className="requirements-list__notes-textarea"
-                                            rows="2"
-                                        ></textarea>
+                                            rows={2}
+                                        />
                                     </div>
-
-                                    {/* Actions */}
-                                    <div className="requirements-list__edit-actions">
-                                        <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)}>
-                                            Cancelar
+                                    <div className="requirements-detail__edit-actions">
+                                        <Button size="sm" variant="ghost" onClick={handleCancelEdit}>
+                                            {t('cancel')}
                                         </Button>
-                                        <Button size="sm" onClick={handleSaveEdit}>
-                                            💾 Guardar Cambios
+                                        <Button size="sm" variant="primary" onClick={handleSaveEdit}>
+                                            💾 {t('save_changes')}
                                         </Button>
                                     </div>
                                 </div>
                             ) : (
-                                // READ ONLY VIEW (Validated Split)
                                 (() => {
-                                    const { meds, notes } = extractDetails(selectedRequest);
-
-                                    // Separate into Known and Unknown
-                                    const knownMeds = [];
-                                    const unknownMeds = [];
-
-                                    meds.forEach(m => {
-                                        if (checkIsKnown(m.name)) knownMeds.push(m);
-                                        else unknownMeds.push(m);
-                                    });
+                                    const { meds, notes } = extractMedicationDetails(selectedRequest);
+                                    const knownMeds = meds.filter(m => checkIsKnown(m.name));
+                                    const unknownMeds = meds.filter(m => !checkIsKnown(m.name));
 
                                     return (
-                                        <div>
-                                            {meds && meds.length > 0 ? (
-                                                <div className="requirements-list__med-section">
-                                                    <div className="requirements-list__med-header">
-                                                        <strong className="requirements-list__med-title">💊 Medicación Solicitada:</strong>
-                                                        {fetchingMeds && <span className="requirements-list__med-loading">Verificando historial...</span>}
-                                                    </div>
+                                        <div className="requirements-content">
+                                            {meds.length > 0 && (
+                                                <div className="medication-list">
+                                                    <h4 className="requirements-detail__title">💊 {t('requested_medication') || 'Medicación Solicitada'}</h4>
 
-                                                    {/* NEW / UNKNOWN SECTION */}
                                                     {unknownMeds.length > 0 && (
-                                                        <div className="requirements-list__med-unknown">
-                                                            <h4 className="requirements-list__med-unknown-title">
-                                                                ⚠️ Nuevos / No Habituales
-                                                            </h4>
-                                                            <div className="requirements-list__med-list">
+                                                        <div className="requirements-detail__group">
+                                                            <h5 className="requirements-detail__group-title requirements-detail__group-title--unknown">
+                                                                ⚠️ {t('new_meds_warning') || 'Nuevos / No Habituales'}
+                                                            </h5>
+                                                            <div className="requirements-detail__med-grid">
                                                                 {unknownMeds.map((m, i) => (
-                                                                    <div key={i} className="requirements-list__med-card">
-                                                                        <div className="requirements-list__med-card-header">
-                                                                            <span className="requirements-list__med-name">{m.name}</span>
-                                                                            {canEdit && (
-                                                                                <Button
-                                                                                    size="sm-compact"
-                                                                                    className="requirements-list__med-save-btn"
-                                                                                    onClick={() => addToChronic(m.name)}
-                                                                                    title="Agregar a ficha del paciente"
-                                                                                >
-                                                                                    📥 Guardar
-                                                                                </Button>
-                                                                            )}
-                                                                        </div>
-                                                                        <div className="requirements-list__med-details">
-                                                                            {m.dose && <span className="requirements-list__med-badge">D: {m.dose}</span>}
-                                                                            {m.frequency && <span className="requirements-list__med-badge">F: {m.frequency}</span>}
-                                                                            {m.quantity && <span className="requirements-list__med-badge requirements-list__med-badge--quantity">Cant: {m.quantity}</span>}
-
-                                                                            {m.quantity && m.frequency && (
-                                                                                (() => {
-                                                                                    const days = calculateDuration(m.quantity, m.frequency);
-                                                                                    if (days) return <span className="requirements-list__med-duration">⏱️ ~{days} días</span>
-                                                                                    return null;
-                                                                                })()
-                                                                            )}
-                                                                        </div>
-                                                                    </div>
+                                                                    <MedicationCard
+                                                                        key={i}
+                                                                        {...m}
+                                                                        isKnown={false}
+                                                                        canEdit={canEdit}
+                                                                        onSave={addToChronic}
+                                                                        duration={calculateDuration(m.quantity, m.frequency)}
+                                                                        t={t}
+                                                                    />
                                                                 ))}
                                                             </div>
-                                                            <p className="requirements-list__med-warning">
-                                                                Estos medicamentos no figuran en el historial crónico. Verifique con la doctora o agreguelos a la ficha si corresponde.
-                                                            </p>
                                                         </div>
                                                     )}
 
-                                                    {/* KNOWN SECTION */}
                                                     {knownMeds.length > 0 && (
-                                                        <div className="requirements-list__med-known">
-                                                            {unknownMeds.length > 0 && <h4 className="requirements-list__med-known-title">Habituales (Validado)</h4>}
-                                                            <div className="requirements-list__med-known-list">
+                                                        <div className="requirements-detail__group">
+                                                            <h5 className="requirements-detail__group-title requirements-detail__group-title--known">
+                                                                {t('habitual_meds') || 'Habituales (Validado)'}
+                                                            </h5>
+                                                            <div className="requirements-detail__med-grid">
                                                                 {knownMeds.map((m, i) => (
-                                                                    <div key={i} className="requirements-list__med-known-card">
-                                                                        <div className="requirements-list__med-known-header">
-                                                                            <span className="requirements-list__med-known-name">{m.name}</span>
-                                                                            <span className="requirements-list__med-known-check" title="En lista crónica">✓</span>
-                                                                        </div>
-                                                                        {(m.dose || m.frequency || m.quantity) && (
-                                                                            <div className="requirements-list__med-known-details">
-                                                                                {m.dose && <span>{m.dose}</span>}
-                                                                                {m.frequency && <span>• {m.frequency}</span>}
-                                                                                {m.quantity && <span>• x{m.quantity}</span>}
-                                                                                {m.quantity && m.frequency && (
-                                                                                    (() => {
-                                                                                        const days = calculateDuration(m.quantity, m.frequency);
-                                                                                        if (days) return <span className="requirements-list__med-known-duration">({days}d)</span>
-                                                                                        return null;
-                                                                                    })()
-                                                                                )}
-                                                                            </div>
-                                                                        )}
-                                                                    </div>
+                                                                    <MedicationCard
+                                                                        key={i}
+                                                                        {...m}
+                                                                        isKnown={true}
+                                                                        duration={calculateDuration(m.quantity, m.frequency)}
+                                                                        t={t}
+                                                                    />
                                                                 ))}
                                                             </div>
                                                         </div>
-                                                    )}
-
-                                                    {!fetchingMeds && patientMeds.length === 0 && meds.length > 0 && (
-                                                        <p className="requirements-list__med-empty-note">El paciente no tiene medicación crónica registrada. Todos aparecen como nuevos.</p>
                                                     )}
                                                 </div>
-                                            ) : null}
+                                            )}
 
                                             {notes && (
-                                                <div className={meds && meds.length > 0 ? 'requirements-list__notes-section' : ''}>
-                                                    <strong className="requirements-list__notes-title">
-                                                        {meds && meds.length > 0 ? '📝 Notas Adicionales:' : 'Detalle / Motivo:'}
+                                                <div className="requirements-detail__notes-section">
+                                                    <strong className="requirements-detail__notes-label">
+                                                        {meds.length > 0 ? '📝 ' + t('additional_notes') + ':' : t('detail_reason') + ':'}
                                                     </strong>
-                                                    <div className="requirements-list__notes-content">
+                                                    <div className="requirements-detail__notes-content">
                                                         {notes}
                                                     </div>
                                                 </div>
                                             )}
-
-                                            {!meds?.length && !notes && <span className="text-muted italic">Sin detalles adicionales.</span>}
                                         </div>
                                     );
                                 })()
@@ -753,35 +341,31 @@ const RequirementsList = ({ user }) => {
                         </div>
 
                         {selectedRequest.doctor_note && (
-                            <div className="requirements-list__doctor-note">
+                            <div className="requirements-detail__doctor-note">
                                 <strong>{t('doctor_note')}:</strong>
-                                <pre className="requirements-list__note-pre whitespace-pre-wrap mt-2 font-sans">
-                                    {selectedRequest.doctor_note}
-                                </pre>
+                                <div className="requirements-detail__notes-content mt-2">{selectedRequest.doctor_note}</div>
                             </div>
                         )}
                         {selectedRequest.secretary_note && (
-                            <div className="requirements-list__secretary-note">
+                            <div className="requirements-detail__secretary-note">
                                 <strong>{t('secretary_reply')}:</strong>
-                                <pre className="requirements-list__note-pre whitespace-pre-wrap mt-2 font-sans">
-                                    {selectedRequest.secretary_note}
-                                </pre>
+                                <div className="requirements-detail__notes-content mt-2">{selectedRequest.secretary_note}</div>
                             </div>
                         )}
 
-                        <div className="requirements-list__modal-footer">
-                            <Button onClick={() => setSelectedRequest(null)} variant="secondary">
-                                Cerrar
+                        <div className="requirements-detail__footer">
+                            <Button onClick={handleCloseDetail} variant="secondary">
+                                {t('close')}
                             </Button>
                         </div>
                     </div>
                 )}
             </Modal>
 
-            {/* Action Modal (Doctor/Secretary) */}
+            {/* Action Modal */}
             <Modal
                 isOpen={actionModal.open}
-                onClose={() => setActionModal({ open: false, type: '', id: null })}
+                onClose={handleCloseAction}
                 title={
                     actionModal.type === 'completed' ? t('mark_as_done') :
                         (actionModal.type === 'rejected' ? t('reject_request') :
@@ -790,7 +374,7 @@ const RequirementsList = ({ user }) => {
                 }
                 footer={
                     <>
-                        <Button variant="secondary" onClick={() => setActionModal({ open: false, type: '', id: null })}>
+                        <Button variant="secondary" onClick={handleCloseAction}>
                             {t('cancel')}
                         </Button>
                         <Button onClick={confirmAction}>
@@ -805,18 +389,12 @@ const RequirementsList = ({ user }) => {
                             (actionModal.type === 'reply' ? t('your_answer') : t('doctor_note'))}
                         {['rejected', 'consult', 'reply'].includes(actionModal.type) && <span className="text-red-500"> *</span>}
                     </label>
-                    <textarea
-                        className="input-field"
+                    <Input
+                        type="textarea"
                         rows="3"
                         value={actionNote}
-                        onChange={e => setActionNote(e.target.value)}
-                        placeholder={
-                            actionModal.type === 'consult' ? t('consult_placeholder') || "Escriba su consulta..." :
-                                (actionModal.type === 'rejected' ? t('reject_reason') || "Motivo del rechazo..." :
-                                    (actionModal.type === 'reply' ? t('reply_placeholder') || "Escriba su respuesta..." :
-                                        t('optional_note') || "Nota opcional..."))
-                        }
-                    ></textarea>
+                        onChange={(e) => setActionNote(e.target.value)}
+                    />
                 </div>
             </Modal>
         </div>

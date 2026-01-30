@@ -241,6 +241,14 @@ export const usePatientsPageController = () => {
         setDebtModal({ open: true, params: { patientId, amount: currentDebt, method: 'cash' } });
     }, []);
 
+    const handleDebtAmountChange = useCallback((val) => {
+        setDebtModal(prev => ({ ...prev, params: { ...prev.params, amount: val } }));
+    }, []);
+
+    const handleDebtMethodChange = useCallback((val) => {
+        setDebtModal(prev => ({ ...prev, params: { ...prev.params, method: val } }));
+    }, []);
+
     const handlePayDebt = useCallback(async () => {
         try {
             const { patientId, amount, method } = debtModal.params;
@@ -267,6 +275,12 @@ export const usePatientsPageController = () => {
             setPatients(prev => prev.map(p => p.id === patientId ? { ...p, behavior_rating: newRating } : p));
         } catch (err) { console.error(err); }
     }, []);
+
+    const handleCycleRating = useCallback((e, patientId, currentRating) => {
+        if (e) e.stopPropagation();
+        const nextRating = ((currentRating || 5) % 5) + 1;
+        handleRatingChange(patientId, nextRating);
+    }, [handleRatingChange]);
 
     // Toggle New
     const handleToggleNew = useCallback(async (patientId) => {
@@ -326,6 +340,25 @@ export const usePatientsPageController = () => {
             setPrescribeModal({ open: false, data: { ...prescribeModal.data, medications: '', instructions: '' } });
         });
     }, [prescribeModal.data, savePrescription]);
+    // --- RATING HELPERS ---
+    const calculateFinancialRating = useCallback((debt) => {
+        const d = Number(debt) || 0;
+        if (d <= 0) return 5;
+        if (d < 1000) return 4;
+        if (d < 5000) return 3;
+        if (d < 10000) return 2;
+        return 1;
+    }, []);
+
+    const calculateAttendanceRating = useCallback((total, missed) => {
+        if (!total || total === 0) return 5;
+        const ratio = (total - missed) / total;
+        if (ratio >= 0.95) return 5;
+        if (ratio >= 0.85) return 4;
+        if (ratio >= 0.70) return 3;
+        if (ratio >= 0.50) return 2;
+        return 1;
+    }, []);
 
     return {
         // State
@@ -356,11 +389,16 @@ export const usePatientsPageController = () => {
         handleEditClick,
         handleUpdatePatient,
         handleOpenDebtModal,
+        handleDebtAmountChange,
+        handleDebtMethodChange,
         handlePayDebt,
         handleRatingChange,
+        handleCycleRating,
         handleToggleNew,
         handleGenerateQR,
         handleGeneratePrescriptionLink,
         handleSavePrescription,
+        calculateFinancialRating,
+        calculateAttendanceRating,
     };
 };

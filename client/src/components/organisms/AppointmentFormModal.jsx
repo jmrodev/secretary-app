@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Modal from '../molecules/Modal';
 import PatientSearchSelect from '../molecules/PatientSearchSelect';
 import { useLanguage } from '../../context/LanguageContext';
@@ -9,30 +9,34 @@ const AppointmentFormModal = ({
     onClose,
     onSubmit,
     selectedDoctor,
-    setSelectedDoctor,
     doctors,
     type,
-    setType,
     selectedPatient,
-    setSelectedPatient,
     selectedPatientData,
-    setSelectedPatientData,
     date,
-    setDate,
     reason,
-    setReason,
     bonified,
-    setBonified,
     selectedInstitution,
-    setSelectedInstitution,
     institutions,
     syncReferenceInfo,
     onOpenEditPatient,
     missingData,
-    editModeId
+    editModeId,
+    handlers
 }) => {
     const { t } = useLanguage();
     const { user } = useAuth();
+
+    const {
+        handleDateChange,
+        handleDoctorChange,
+        handlePatientChange,
+        handleTypeChange,
+        handleInstitutionChange,
+        handleReasonChange,
+        handleBonifiedChange,
+        handlePhoneChange
+    } = handlers;
 
     return (
         <Modal
@@ -64,7 +68,7 @@ const AppointmentFormModal = ({
                             {doctors.find(d => d.id === Number(selectedDoctor))?.full_name || 'You'}
                         </div>
                     ) : (
-                        <select className="form-control" value={selectedDoctor || ''} onChange={e => setSelectedDoctor(e.target.value)} required>
+                        <select className="form-control" value={selectedDoctor || ''} onChange={e => handleDoctorChange(e.target.value)} required>
                             <option value="">{t('select_doctor')}</option>
                             {doctors.map(d => (
                                 <option key={d.id} value={d.id}>{d.full_name} ({d.specialty})</option>
@@ -79,14 +83,14 @@ const AppointmentFormModal = ({
                         <button
                             type="button"
                             className={`btn btn-sm ${type === 'consultation' ? 'btn-primary' : 'btn-secondary'}`}
-                            onClick={() => setType('consultation')}
+                            onClick={() => handleTypeChange('consultation')}
                         >
                             🏢 Presencial
                         </button>
                         <button
                             type="button"
                             className={`btn btn-sm ${type === 'virtual' ? 'btn-primary' : 'btn-secondary'}`}
-                            onClick={() => setType('virtual')}
+                            onClick={() => handleTypeChange('virtual')}
                         >
                             📹 Videollamada
                         </button>
@@ -102,13 +106,10 @@ const AppointmentFormModal = ({
                             autoFocus={true}
                             placeholder={t('select_patient')}
                             onCreatePatient={async (name) => {
-                                setSelectedPatientData({ full_name: name });
+                                handlePatientChange(null, { full_name: name });
                                 onOpenEditPatient();
                             }}
-                            onChange={(val, obj) => {
-                                setSelectedPatient(val);
-                                setSelectedPatientData(obj);
-                            }}
+                            onChange={handlePatientChange}
                         />
                         {missingData.length > 0 && (
                             <div className="mt-2 text-sm text-yellow-700 bg-yellow-100 p-2 rounded border border-yellow-200 flex justify-between items-center">
@@ -133,7 +134,7 @@ const AppointmentFormModal = ({
                                         type="text"
                                         className="text-sm font-bold text-emerald-900 bg-transparent border-b border-emerald-200 focus:border-emerald-500 focus:outline-none w-full py-0.5"
                                         value={selectedPatientData?.phone || ''}
-                                        onChange={e => setSelectedPatientData(prev => ({ ...prev, phone: e.target.value }))}
+                                        onChange={e => handlePhoneChange(e.target.value)}
                                         placeholder={t('no_phone') || 'Sin teléfono'}
                                     />
                                 </div>
@@ -148,14 +149,14 @@ const AppointmentFormModal = ({
 
                 <div className="input-group">
                     <label className="form-label">{t('date_time')}</label>
-                    <input type="datetime-local" className="form-control" value={date} onChange={e => setDate(e.target.value)} required />
+                    <input type="datetime-local" className="form-control" value={date} onChange={e => handleDateChange(e.target.value)} required />
                 </div>
 
 
 
                 <div className="input-group">
                     <label className="form-label">{t('reason')}</label>
-                    <textarea className="form-control" rows="3" value={reason} onChange={e => setReason(e.target.value)} required></textarea>
+                    <textarea className="form-control" rows="3" value={reason} onChange={e => handleReasonChange(e.target.value)} required></textarea>
                 </div>
 
                 <div className="input-group">
@@ -163,7 +164,7 @@ const AppointmentFormModal = ({
                     <select
                         className="form-control"
                         value={selectedInstitution}
-                        onChange={e => setSelectedInstitution(e.target.value)}
+                        onChange={e => handleInstitutionChange(e.target.value)}
                     >
                         <option value="">
                             {selectedPatientData
@@ -187,7 +188,7 @@ const AppointmentFormModal = ({
                         type="checkbox"
                         id="bonified"
                         checked={bonified}
-                        onChange={e => setBonified(e.target.checked)}
+                        onChange={e => handleBonifiedChange(e.target.checked)}
                         className="w-auto"
                     />
                     <label htmlFor="bonified" className="input-label checkbox-label">

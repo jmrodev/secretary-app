@@ -7,7 +7,6 @@ import { useMessage } from '../../context/MessageContext';
 import { useModal } from '../../context/ModalContext';
 import { useConfig } from '../../context/ConfigContext';
 import { usePermissions } from '../../hooks/usePermissions';
-import api from '../../api/axios';
 import AppointmentHeader from '../molecules/AppointmentHeader';
 import AppointmentMedicalPanel from '../molecules/AppointmentMedicalPanel';
 import AppointmentAdminPanel from '../molecules/AppointmentAdminPanel';
@@ -27,6 +26,7 @@ const AppointmentActionModal = ({
     onWhatsApp,
     onUpdateType,
     onHardEdit,
+    onSaveNote,
     fetchAppointments
 }) => {
     const { t } = useLanguage();
@@ -54,12 +54,9 @@ const AppointmentActionModal = ({
     // We will STRICTLY check for doctor/admin role for the panel.
     const showMedicalPanel = (user.role === 'doctor' || user.role === 'admin');
 
-    const handleSaveNote = async () => {
-        try {
-            await api.put(`/appointments/${appt.id}`, { reason: note, appointment_date: appt.appointment_date });
-            showMessage(t('note_saved') || 'Nota actualizada', 'success');
-            fetchAppointments();
-        } catch (e) { console.error(e); }
+    // Business Logic moved to onSaveNote prop
+    const handleSaveNoteAction = async () => {
+        await onSaveNote(appt.id, note, appt.appointment_date);
     };
 
     return (
@@ -93,7 +90,7 @@ const AppointmentActionModal = ({
                         onUpdateStatus={onUpdateStatus}
                         note={note}
                         setNote={setNote}
-                        onSaveNote={handleSaveNote}
+                        onSaveNote={handleSaveNoteAction}
                         confirm={confirm}
                         onClose={onClose}
                     />

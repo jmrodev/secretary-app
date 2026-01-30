@@ -3,8 +3,8 @@ import TabButton from '../atoms/TabButton';
 
 const NavTabs = ({ activeTab, setActiveTab, userRole }) => {
     return (
-        <div className="top-nav-tabs mb-6" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div className="tabs-container" style={{ margin: 0 }}>
+        <div className="nav-tabs nav-tabs--top mb-6">
+            <div className="nav-tabs__container">
                 <TabButton
                     isActive={activeTab === 'calendar'}
                     onClick={() => setActiveTab('calendar')}
@@ -36,7 +36,7 @@ const NavTabs = ({ activeTab, setActiveTab, userRole }) => {
                     </TabButton>
                 )}
             </div>
-            <div className="action-bar-buttons-container">
+            <div className="nav-tabs__actions">
             </div>
         </div>
     );

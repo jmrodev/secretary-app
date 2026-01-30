@@ -178,3 +178,74 @@
     border: none !important;
     color: white !important;
 }
+
+/* Button Modifiers */
+.btn--success-light {
+    color: var(--green-600) !important;
+    border-color: var(--green-200) !important;
+    background: white !important;
+}
+
+.btn--success-light:hover {
+    background-color: var(--green-50) !important;
+}
+
+.btn--indigo-light {
+    color: var(--indigo-600) !important;
+    border-color: var(--indigo-200) !important;
+    background: white !important;
+}
+
+.btn--indigo-light:hover {
+    background-color: var(--indigo-50) !important;
+}
+
+.btn--slate-light {
+    color: var(--slate-600) !important;
+    border-color: var(--slate-200) !important;
+    background: white !important;
+}
+
+.btn--slate-light:hover {
+    background-color: var(--slate-50) !important;
+}
+
+.btn--amber-light {
+    color: var(--amber-600) !important;
+    border-color: var(--amber-200) !important;
+    background: white !important;
+}
+
+.btn--amber-light:hover {
+    background-color: var(--amber-50) !important;
+}
+
+.btn--red-light {
+    color: var(--red-600) !important;
+    border-color: var(--red-200) !important;
+    background: white !important;
+}
+
+.btn--red-light:hover {
+    background-color: var(--red-50) !important;
+}
+
+.btn--solid-success {
+    background-color: var(--green-600) !important;
+    color: white !important;
+    border: none !important;
+}
+
+.btn--solid-success:hover {
+    background-color: var(--green-700) !important;
+}
+
+.btn--solid-danger {
+    background-color: var(--red-500) !important;
+    color: white !important;
+    border: none !important;
+}
+
+.btn--solid-danger:hover {
+    background-color: var(--red-600) !important;
+}

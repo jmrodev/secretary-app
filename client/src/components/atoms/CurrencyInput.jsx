@@ -1,11 +1,28 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const CurrencyInput = ({ value, onChange, placeholder, className, required, ...props }) => {
-    // Local state for display value
+/**
+ * CurrencyInput Atom follows Atomic Design & BEM.
+ * Reuses the 'input' base class from design-system.
+ */
+const CurrencyInput = ({
+    value,
+    onChange,
+    placeholder,
+    className = '',
+    required,
+    size = 'md',
+    variant = 'default',
+    ...props
+}) => {
     const [displayValue, setDisplayValue] = useState('');
 
+    const baseClass = 'input';
+    const variantClass = variant !== 'default' ? `${baseClass}--${variant}` : '';
+    const sizeClass = size !== 'md' ? `${baseClass}--${size}` : '';
+
+    const combinedClassName = `${baseClass} ${variantClass} ${sizeClass} ${className}`.trim();
+
     useEffect(() => {
-        // Update display value when prop value changes externally
         if (value !== undefined && value !== null) {
             setDisplayValue(format(value));
         } else {
@@ -15,8 +32,6 @@ const CurrencyInput = ({ value, onChange, placeholder, className, required, ...p
 
     const format = (val) => {
         if (!val && val !== 0) return '';
-        // Convert to number and format with dots
-        // Note: Using es-AR locale for 10.000 style
         return new Intl.NumberFormat('es-AR', {
             style: 'decimal',
             minimumFractionDigits: 0,
@@ -26,23 +41,16 @@ const CurrencyInput = ({ value, onChange, placeholder, className, required, ...p
 
     const handleChange = (e) => {
         const inputVal = e.target.value;
-
-        // Remove non-numeric chars (except potentially a comma if we supported decimals, 
-        // but user requested simple "mil" differentiation, so integers are safer for now unless specified).
-        // Let's assume integers for "prices" as requested context usually implies.
-        const rawValue = inputVal.replace(/\D/g, ''); // Remove all non-digits
+        const rawValue = inputVal.replace(/\D/g, '');
 
         if (rawValue === '') {
             setDisplayValue('');
-            onChange({ target: { value: '' } }); // Mimic event object
+            onChange({ target: { value: '' } });
             return;
         }
 
         const numValue = Number(rawValue);
         setDisplayValue(format(numValue));
-
-        // Propagate changes to parent as standard event or value
-        // To be compatible with existing code expecting e.target.value
         onChange({ target: { value: numValue } });
     };
 
@@ -50,7 +58,7 @@ const CurrencyInput = ({ value, onChange, placeholder, className, required, ...p
         <input
             {...props}
             type="text"
-            className={className}
+            className={combinedClassName}
             placeholder={placeholder}
             required={required}
             value={displayValue}

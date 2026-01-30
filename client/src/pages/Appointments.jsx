@@ -58,7 +58,7 @@ const Appointments = () => {
         // Handlers
         handleDateSelect,
         handleSlotClick,
-        addHoliday, deleteHoliday,
+        handleAddHoliday, handleDeleteHoliday,
         booking,
         nextSlot,
         handleUpdateStatus,
@@ -69,16 +69,22 @@ const Appointments = () => {
         handleWhatsAppUniversal,
         handleWhatsAppSlot,
         confirmNextSlot,
-        handleNextPage, handlePrevPage,
-        handleAdminAuthConfirm,
-        handleNextFreeSlot,
-        handleUpdateType,
         handleHardEdit,
+        handleOpenPayment,
+        handleOpenHistory,
+        handleOpenPrescribe,
+        handleOpenReschedule,
+        handleOpenSync,
+        handleSelectMedication,
         syncDayToGoogle,
+        handleUpdateType,
+        handleSaveNote,
+        handleAdminAuthConfirm,
 
         // Misc
         rescheduleAppt,
         exitRescheduleMode,
+        fetchAppointments
     } = controller;
 
     if (loading) return <div className="centered-loader"><div className="status-display__spinner"></div></div>;
@@ -114,12 +120,8 @@ const Appointments = () => {
                         loading={patientApptLoading}
                         onClose={() => setSearchPatientId('')}
                         t={t}
-                        setSelectedDate={controller.setSelectedDate}
-                        setViewDoctorId={setViewDoctorId}
-                        setSelectedPatient={controller.booking.setSelectedPatient}
-                        setShowForm={controller.booking.setShowForm}
-                        setReason={controller.booking.setReason}
                         searchPatientId={searchPatientId}
+                        handlers={controller}
                     />
                 ) : activeTab === 'upcoming' ? (
                     <UpcomingAppointmentsView
@@ -138,7 +140,7 @@ const Appointments = () => {
                             appointments={filteredAppointments}
                             calendarStats={calendarStats}
                             holidays={holidays}
-                            onAddHoliday={addHoliday}
+                            onAddHoliday={handleAddHoliday}
                         />
 
                         {activeTab !== 'monthly' && (
@@ -152,19 +154,13 @@ const Appointments = () => {
                                 doctorSchedule={doctorSchedule}
                                 holidays={holidays}
                                 onSlotClick={handleSlotClick}
-                                onDeleteHoliday={deleteHoliday}
+                                onDeleteHoliday={handleDeleteHoliday}
                                 showForm={booking.showForm}
-                                onToggleForm={() => booking.setShowForm(!booking.showForm)}
-                                onSearchPatientId={(val) => setSearchPatientId(val)}
+                                onToggleForm={booking.toggleForm}
+                                onSearchPatientId={setSearchPatientId}
                                 searchPatientId={searchPatientId}
-                                onCreatePatient={() => {
-                                    booking.setSelectedPatientData(null);
-                                    setEditPatientModalOpen(true);
-                                }}
-                                onNextFreeSlot={() => {
-                                    nextSlot.setSlotHistory([]);
-                                    handleNextFreeSlot(null);
-                                }}
+                                onCreatePatient={booking.createPatient}
+                                onNextFreeSlot={nextSlot.openNextSlot}
                                 onSyncDayToGoogle={() => syncDayToGoogle(viewDoctorId, selectedDate)}
                             />
                         )}
@@ -178,35 +174,19 @@ const Appointments = () => {
                 onClose={() => setActionModal({ ...actionModal, open: false })}
                 appt={actionModal.appt}
                 doctors={doctors}
-                onHistory={(appt) => setHistoryModal({ open: true, patientId: appt.patient_id, patientName: appt.patient_name })}
-                onPrescribe={(appt) => setPrescribeModal({ open: true, apptId: appt.id, patientName: appt.patient_name, medications: '', instructions: '' })}
+                onHistory={handleOpenHistory}
+                onPrescribe={handleOpenPrescribe}
                 onUpdateStatus={handleUpdateStatus}
-                onReschedule={(appt) => navigate('/appointments', { state: { rescheduleAppt: appt } })}
+                onReschedule={handleOpenReschedule}
                 onCancel={handleCancel}
                 onDelete={handleDelete}
-                onSync={handleSyncGoogleEvent}
-                onPay={(appt) => {
-                    setPaymentModal({
-                        open: true,
-                        initialData: {
-                            type: 'income_patient',
-                            amount: appt.cost || 0,
-                            patientId: appt.patient_id,
-                            patientName: appt.patient_name,
-                            patientDni: appt.patient_dni,
-                            patientUserId: appt.patient_user_id,
-                            doctorId: appt.doctor_id,
-                            description: `Payment for appointment on ${new Date(appt.appointment_date).toLocaleDateString()}`,
-                            apptId: appt.id
-                        },
-                        apptId: appt.id
-                    });
-                    setActionModal({ ...actionModal, open: false });
-                }}
+                onSync={handleOpenSync}
+                onPay={handleOpenPayment}
                 onWhatsApp={handleWhatsAppUniversal}
                 onUpdateType={handleUpdateType}
                 onHardEdit={handleHardEdit}
-                fetchAppointments={controller.fetchAppointments}
+                onSaveNote={handleSaveNote}
+                fetchAppointments={fetchAppointments}
             />
 
             <Modal
@@ -226,11 +206,7 @@ const Appointments = () => {
                         <MedicationAutocomplete
                             value=""
                             onChange={() => { }}
-                            onSelectMedication={(med) => {
-                                const current = prescribeModal.medications.trim();
-                                const newValue = current ? `${current}\n${med.full_label}` : med.full_label;
-                                setPrescribeModal({ ...prescribeModal, medications: newValue });
-                            }}
+                            onSelectMedication={handleSelectMedication}
                         />
                         <textarea className="input-field mt-2" rows="4" value={prescribeModal.medications} onChange={e => setPrescribeModal({ ...prescribeModal, medications: e.target.value })} />
                     </div>
@@ -295,6 +271,7 @@ const Appointments = () => {
                     institutions={controller.institutions}
                     onOpenEditPatient={() => setEditPatientModalOpen(true)}
                     t={t}
+                    handlers={booking.handlers}
                 />
             )}
 

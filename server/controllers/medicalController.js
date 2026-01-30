@@ -1435,14 +1435,14 @@ exports.submitPublicPrescriptionRequest = async (req, res) => {
 
         // --- [NEW] Debt Generation for public request ---
         try {
-            const { calculatePrice } = require('../utils/priceCalculator');
             const priceInfo = await calculatePrice(conn, finalDoctorId, tokenData.patient_id, 'prescription');
 
             if (priceInfo && priceInfo.price > 0) {
-                // Get patient user_id 
-                const [pat] = await conn.query("SELECT user_id, full_name FROM patients WHERE id = ?", [tokenData.patient_id]);
+                // Get patient user_id
+                const patRows = await conn.query("SELECT user_id, full_name FROM patients WHERE id = ?", [tokenData.patient_id]);
 
-                if (pat) {
+                if (patRows.length > 0) {
+                    const pat = patRows[0];
                     await conn.query(
                         "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, transaction_date, request_id) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)",
                         ['income_patient', priceInfo.price, `Public Request: prescription for ${pat.full_name}`, pat.user_id, finalDoctorId, 'cash', 'pending', requestId]

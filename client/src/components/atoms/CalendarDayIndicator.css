@@ -1,0 +1,44 @@
+.calendar-day-indicator {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: auto;
+}
+
+.calendar-day-indicator__appointment-badge,
+.calendar-day-indicator__holiday-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 700;
+}
+
+.calendar-day-indicator__holiday-badge {
+    background: var(--red-500);
+    color: white;
+}
+
+.calendar-day-indicator__appointment-badge--free-normal {
+    background: var(--green-500);
+    color: white;
+}
+
+.calendar-day-indicator__appointment-badge--free-extra {
+    background: var(--amber-400);
+    color: white;
+}
+
+.calendar-day-indicator__appointment-badge--booked-normal {
+    background: var(--blue-500);
+    color: white;
+}
+
+.calendar-day-indicator__appointment-badge--booked-extra {
+    background: var(--indigo-500);
+    color: white;
+}

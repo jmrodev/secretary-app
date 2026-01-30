@@ -4,6 +4,7 @@ import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
 import { usePermissions } from '../hooks/usePermissions';
+import { extractMedicationDetails } from '../utils/medicationHelpers';
 
 /**
  * Controller hook for the Requests page and RequirementsList component.
@@ -21,6 +22,14 @@ export const useRequirementsController = (user) => {
     const [recycleRequests, setRecycleRequests] = useState([]);
     const [doctors, setDoctors] = useState([]);
     const [filter, setFilter] = useState('active'); // 'active' | 'history'
+
+    // Medication/Edit State (Moved from Component)
+    const [patientMeds, setPatientMeds] = useState([]);
+    const [fetchingMeds, setFetchingMeds] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editMeds, setEditMeds] = useState([]);
+    const [editNotes, setEditNotes] = useState('');
+    const [newMedInput, setNewMedInput] = useState({ name: '', dose: '', frequency: '', quantity: '' });
 
     // Contexts
     const { showMessage } = useMessage();
@@ -86,6 +95,21 @@ export const useRequirementsController = (user) => {
         }
     }, [activeTab, fetchRecycleBin]);
 
+    useEffect(() => {
+        if (selectedRequest) {
+            setIsEditing(false);
+            const { meds, notes } = extractMedicationDetails(selectedRequest);
+            setEditMeds(meds);
+            setEditNotes(notes);
+
+            if (selectedRequest.patient_id) {
+                fetchPatientMeds(selectedRequest.patient_id);
+            } else {
+                setPatientMeds([]);
+            }
+        }
+    }, [selectedRequest]);
+
     // --- Actions ---
 
     const handleRestore = async (item) => {
@@ -146,6 +170,93 @@ export const useRequirementsController = (user) => {
         }
     };
 
+    // --- Medication Handlers (Moved from Component) ---
+
+    const fetchPatientMeds = async (patientId) => {
+        setFetchingMeds(true);
+        try {
+            const res = await api.get(`/medical/patients/${patientId}/medications`);
+            setPatientMeds(res.data || []);
+        } catch (err) {
+            console.error("Error fetching patient meds:", err);
+            setPatientMeds([]);
+        } finally {
+            setFetchingMeds(false);
+        }
+    };
+
+    const addToChronic = async (medName) => {
+        if (!await confirm(`¿Desea agregar "${medName}" a la lista de medicación crónica del paciente?`)) return;
+
+        try {
+            await api.post('/medical/patients/medications', {
+                patient_id: selectedRequest.patient_id,
+                medication_name: medName,
+                is_chronic: true,
+                status: 'active'
+            });
+            fetchPatientMeds(selectedRequest.patient_id);
+            showMessage('Medicación agregada exitosamente', 'success');
+        } catch (e) {
+            console.error(e);
+            showMessage("Error al agregar medicación", 'error');
+        }
+    };
+
+    const handleSaveEdit = async () => {
+        try {
+            const medsString = editMeds.map(m => {
+                let s = m.name;
+                if (m.dose) s += ` ${m.dose}`;
+                if (m.frequency) s += ` (${m.frequency})`;
+                if (m.quantity) s += ` [Qty: ${m.quantity}]`;
+                return s;
+            }).join(', ');
+
+            const newRequestNote = `[Solicitud Paciente] ${medsString}\nNotas: ${editNotes}`;
+            const payload = {
+                raw_medication_data: JSON.stringify(editMeds),
+                request_note: newRequestNote
+            };
+
+            await api.put(`/medical/requests/${selectedRequest.id}`, payload);
+
+            setSelectedRequest(prev => ({
+                ...prev,
+                ...payload,
+                raw_medication_data: JSON.stringify(editMeds)
+            }));
+            fetchRequests();
+            setIsEditing(false);
+            showMessage('Cambios guardados correctamente', 'success');
+        } catch (error) {
+            console.error(error);
+            showMessage("Error al guardar cambios", 'error');
+        }
+    };
+
+    const updateEditMed = (index, field, value) => {
+        const newMeds = [...editMeds];
+        newMeds[index] = { ...newMeds[index], [field]: value };
+        setEditMeds(newMeds);
+    };
+
+    const handleAddMed = () => {
+        if (newMedInput.name.trim()) {
+            setEditMeds([...editMeds, { ...newMedInput, name: newMedInput.name.trim() }]);
+            setNewMedInput({ name: '', dose: '', frequency: '', quantity: '' });
+        }
+    };
+
+    const checkIsKnown = (medName) => {
+        if (!medName) return false;
+        return patientMeds.some(pm => {
+            const pmName = (pm.medication_name || pm.name || '').toLowerCase();
+            const reqName = medName.toLowerCase();
+            return pmName.includes(reqName) || reqName.includes(pmName);
+        });
+    };
+
     const { canDeleteRequest } = usePermissions();
 
     return {
@@ -173,6 +284,16 @@ export const useRequirementsController = (user) => {
         openActionModal,
         confirmAction,
         handleDelete,
-        fetchRequests
+        fetchRequests,
+
+        // Medication Handlers/State
+        patientMeds, fetchingMeds,
+        isEditing, setIsEditing,
+        editMeds, setEditMeds,
+        editNotes, setEditNotes,
+        newMedInput, setNewMedInput,
+        addToChronic, handleSaveEdit,
+        updateEditMed, handleAddMed,
+        checkIsKnown
     };
 };

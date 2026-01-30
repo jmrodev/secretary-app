@@ -1,26 +1,26 @@
 import React from 'react';
+import './Badge.css';
 
 const Badge = ({
     children,
-    variant = 'gray',
+    variant = 'default', // default, danger, success, warning, blue, accent, status-pending, etc.
     className = '',
-    onClick = null
+    onClick = null,
+    title = ''
 }) => {
-    // Map role/status names to status-chip classes if common
-    let variantClass = 'status-chip';
+    const baseClass = 'badge';
 
-    if (variant.startsWith('status-')) {
-        variantClass = variant; // Full class provided (legacy)
-    } else if (variant.startsWith('chip-')) {
-        variantClass = `status-chip ${variant}`; // e.g., "status-chip chip-blue"
-    } else {
-        variantClass = `status-chip status-${variant}`; // e.g., "status-chip status-pending"
-    }
+    // Normalize variant for BEM
+    // Support legacy "status-" or "chip-" if needed, but moving towards "badge--variant"
+    const normalizedVariant = variant.replace('status-', '').replace('chip-', '');
+    const variantClass = `${baseClass}--${normalizedVariant}`;
+    const interactiveClass = onClick ? `${baseClass}--interactive` : '';
 
     return (
         <span
-            className={`${variantClass} ${className} ${onClick ? 'cursor-pointer' : ''}`}
+            className={`${baseClass} ${variantClass} ${interactiveClass} ${className}`}
             onClick={onClick}
+            title={title}
         >
             {children}
         </span>

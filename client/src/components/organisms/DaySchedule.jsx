@@ -3,13 +3,16 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useModal } from '../../context/ModalContext';
 import { useConfig } from '../../context/ConfigContext';
 import AppointmentCard from '../molecules/AppointmentCard';
+import Button from '../atoms/Button';
+import Switch from '../atoms/Switch';
+import './DaySchedule.css';
 
 const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDateSelect }) => {
     const { t } = useLanguage();
     const { confirm } = useModal();
     const { settings } = useConfig();
     const [showOutOfHours, setShowOutOfHours] = React.useState(false);
-    const [showCancelled, setShowCancelled] = React.useState(false); // Show cancelled by default as hidden
+    const [showCancelled, setShowCancelled] = React.useState(false);
 
     const handlePrint = () => {
         const printWindow = window.open('', '_blank');
@@ -18,7 +21,6 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
         const dayName = date.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
         const doctorName = doctor ? (doctor.full_name || doctor.username) : '';
 
-        // Filter and sort appointments for printing
         const appsToPrint = appointments
             .filter(appt => {
                 const d = new Date(appt.appointment_date);
@@ -105,8 +107,29 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
         printWindow.document.write(htmlContent);
         printWindow.document.close();
     };
+    const handlePrevDay = () => {
+        const prev = new Date(date);
+        prev.setDate(date.getDate() - 1);
+        onDateSelect(prev);
+    };
 
-    // 1. Determine Base Range (Schedule or Default 8-20)
+    const handleNextDay = () => {
+        const next = new Date(date);
+        next.setDate(date.getDate() + 1);
+        onDateSelect(next);
+    };
+
+    const handleSlotAction = async (slot) => {
+        if (slot.type === 'closed') {
+            const confirmed = await confirm(t('confirm_out_of_hours') || "⚠️ Este horario está marcado como NO LABORABLE. ¿Desea asignar un turno de todas formas?");
+            if (confirmed) {
+                onSlotClick(slot.time.getHours(), null, slot.time.getMinutes());
+            }
+        } else {
+            onSlotClick(slot.time.getHours(), null, slot.time.getMinutes());
+        }
+    };
+
     let startHour = 8;
     let endHour = 20;
     let daysConfig = [];
@@ -119,7 +142,6 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
         daysConfig = schedule.filter(s => s.day_of_week === date.getDay() && s.is_break === 0);
     }
 
-    // 2. Expand Range based on Existing Appointments (Always show what exists)
     const dayApps = appointments.filter(appt => {
         const d = new Date(appt.appointment_date);
         return d.getFullYear() === date.getFullYear() && d.getMonth() === date.getMonth() && d.getDate() === date.getDate();
@@ -133,7 +155,6 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
         });
     }
 
-    // 3. If Toggle is ON, show Full 24h. If OFF, use Logical Range.
     const finalStart = showOutOfHours ? 0 : startHour;
     const finalEnd = showOutOfHours ? 24 : endHour;
 
@@ -156,7 +177,6 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
             });
             if (!isOpen) type = 'closed';
         } else {
-            // Default logical working hours if no schedule
             const hour = currentTime.getHours();
             if (hour < 8 || hour >= 20) type = 'closed';
         }
@@ -190,70 +210,56 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
     };
 
     return (
-        <div className="day-schedule card">
-            <div className="flex-between items-center mb-4 border-b pb-4 px-2">
-                <div className="flex items-center gap-4">
-                    <button
-                        className="btn btn-ghost btn-sm p-2 hover:bg-slate-100 rounded-full transition-colors"
-                        onClick={() => {
-                            const prev = new Date(date);
-                            prev.setDate(date.getDate() - 1);
-                            onDateSelect(prev);
-                        }}
-                        title="Día Anterior"
+        <div className="day-schedule">
+            <header className="day-schedule__header">
+                <div className="day-schedule__nav">
+                    <Button
+                        variant="ghost"
+                        size="sm-compact"
+                        onClick={handlePrevDay}
+                        title={t('prev_day') || "Día Anterior"}
                     >
-                        <span className="text-lg">⬅️</span>
-                    </button>
+                        ⬅️
+                    </Button>
 
-                    <h3 className="m-0 select-none">
+                    <h3 className="day-schedule__title">
                         {date.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
                     </h3>
 
-                    <button
-                        className="btn btn-ghost btn-sm p-2 hover:bg-slate-100 rounded-full transition-colors"
-                        onClick={() => {
-                            const next = new Date(date);
-                            next.setDate(date.getDate() + 1);
-                            onDateSelect(next);
-                        }}
-                        title="Día Siguiente"
+                    <Button
+                        variant="ghost"
+                        size="sm-compact"
+                        onClick={handleNextDay}
+                        title={t('next_day') || "Día Siguiente"}
                     >
-                        <span className="text-lg">➡️</span>
-                    </button>
+                        ➡️
+                    </Button>
 
-                    <button
-                        className="btn btn-ghost btn-sm p-2 hover:bg-slate-100 rounded-md transition-colors flex items-center gap-2 text-indigo-600 font-bold border border-indigo-100 bg-indigo-50/30"
+                    <Button
+                        variant="ghost"
+                        size="sm-compact"
                         onClick={handlePrint}
-                        title="Imprimir lista del día"
+                        className="day-schedule__print-btn"
+                        title={t('print_list_tooltip') || "Imprimir lista del día"}
+                        icon="🖨️"
                     >
-                        <span>🖨️</span> {t('print') || 'Imprimir'}
-                    </button>
+                        {t('print') || 'Imprimir'}
+                    </Button>
                 </div>
-                <div className="flex gap-4">
-                    <label className="switch-container">
-                        <span className="text-xs font-bold text-muted uppercase tracking-wider">{t('show_out_of_hours') || 'Mostrar fuera de horario'}</span>
-                        <div className="switch">
-                            <input
-                                type="checkbox"
-                                checked={showOutOfHours}
-                                onChange={(e) => setShowOutOfHours(e.target.checked)}
-                            />
-                            <span className="slider round"></span>
-                        </div>
-                    </label>
-                    <label className="switch-container">
-                        <span className="text-xs font-bold text-muted uppercase tracking-wider">Mostrar Cancelados</span>
-                        <div className="switch">
-                            <input
-                                type="checkbox"
-                                checked={showCancelled}
-                                onChange={(e) => setShowCancelled(e.target.checked)}
-                            />
-                            <span className="slider round"></span>
-                        </div>
-                    </label>
+
+                <div className="day-schedule__controls">
+                    <Switch
+                        label={t('show_out_of_hours') || 'Mostrar fuera de horario'}
+                        checked={showOutOfHours}
+                        onChange={setShowOutOfHours}
+                    />
+                    <Switch
+                        label={t('show_cancelled') || 'Mostrar Cancelados'}
+                        checked={showCancelled}
+                        onChange={setShowCancelled}
+                    />
                 </div>
-            </div>
+            </header>
 
             <div className="schedule-timeline">
                 {timeSlots
@@ -267,26 +273,15 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
                         return slot.slotApps.length > 0;
                     })
                     .map((slot, index) => {
-                        const { slotApps, type } = slot; // Destructure type here to be explicit
-
-                        // Explicitly define variables in current scope to avoid reference errors
+                        const { slotApps, type } = slot;
                         const isSlotClosed = type === 'closed';
                         const isSlotBreak = type === 'break';
-
-                        // Logic: Blocked if there is a 'blocking' status appointment
                         const isBlocked = slotApps.some(a => !['cancelled', 'suspended', 'absent'].includes(a.status));
 
-                        const slotStyle = {};
-                        if (isSlotClosed) {
-                            slotStyle.backgroundColor = '#f1f5f9'; // Slate-100
-                            slotStyle.opacity = 0.6;
-                            slotStyle.borderLeft = '4px solid #cbd5e1';
-                        } else if (isSlotBreak) {
-                            slotStyle.backgroundColor = '#fffbeb'; // Amber-50
-                        }
+                        const slotClasses = `time-slot ${isSlotClosed ? 'time-slot--closed' : ''} ${isSlotBreak ? 'time-slot--break' : ''}`;
 
                         return (
-                            <div key={index} className="time-slot" style={slotStyle}>
+                            <div key={index} className={slotClasses}>
                                 <div className="slot-content">
                                     {slotApps
                                         .filter(appt => showCancelled || !['cancelled', 'suspended', 'absent'].includes(appt.status))
@@ -300,22 +295,17 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
 
                                     {!isBlocked && (
                                         <div
-                                            className={`available-slot ${isSlotClosed ? 'cursor-warning' : ''}`}
-                                            onClick={async () => {
-                                                if (isSlotClosed) {
-                                                    const confirmed = await confirm("⚠️ Este horario está marcado como NO LABORABLE. ¿Desea asignar un turno de todas formas?");
-                                                    if (confirmed) {
-                                                        onSlotClick(slot.time.getHours(), null, slot.time.getMinutes());
-                                                    }
-                                                } else {
-                                                    onSlotClick(slot.time.getHours(), null, slot.time.getMinutes());
-                                                }
-                                            }}
+                                            className={`available-slot ${isSlotClosed ? 'available-slot--closed' : ''}`}
+                                            onClick={() => handleSlotAction(slot)}
                                         >
-                                            <span className="plus-icon">{isSlotClosed ? '🚫' : '+'}</span>
-                                            <div className="flex-between w-full">
-                                                <span className="text-sm font-bold opacity-80 font-mono">{slot.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                                                <span className="text-xs">{isSlotClosed ? (t('closed_hours') || 'Fuera de Horario') : (t('available') || 'Disponible')}</span>
+                                            <span className="available-slot__icon">{isSlotClosed ? '🚫' : '+'}</span>
+                                            <div className="available-slot__info">
+                                                <span className="available-slot__time">
+                                                    {slot.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                </span>
+                                                <span className="available-slot__label">
+                                                    {isSlotClosed ? (t('closed_hours') || 'Fuera de Horario') : (t('available') || 'Disponible')}
+                                                </span>
                                             </div>
                                         </div>
                                     )}

@@ -255,6 +255,27 @@ export const useAppointmentBooking = (doctors) => {
 
         // Actions
         bookAppointment,
-        resetForm
+        resetForm,
+
+        // Handlers (Moved from Component)
+        handlers: {
+            handleDateChange: (val) => setDate(val),
+            handleDoctorChange: (val) => setSelectedDoctor(val),
+            handlePatientChange: (val, obj) => {
+                setSelectedPatient(val);
+                setSelectedPatientData(obj);
+            },
+            handleTypeChange: (val) => setType(val),
+            handleInstitutionChange: (val) => setSelectedInstitution(val),
+            handleReasonChange: (val) => setReason(val),
+            handleBonifiedChange: (val) => setBonified(val),
+            handlePhoneChange: (val) => setSelectedPatientData(prev => ({ ...prev, phone: val })),
+            toggleForm: () => setShowForm(prev => !prev),
+            createPatient: () => {
+                setSelectedPatientData(null);
+                // The parent component should handle opening the actual modal if needed,
+                // or we can expose a state like 'openEditPatientModal'
+            }
+        }
     };
 };

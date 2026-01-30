@@ -1,4 +1,5 @@
 import React from 'react';
+import './Input.css';
 
 const Select = ({
     value,
@@ -8,15 +9,29 @@ const Select = ({
     disabled = false,
     id,
     name,
-    required = false
+    required = false,
+    variant = 'default', // 'default', 'error'
+    size = 'md' // 'sm', 'md', 'lg'
 }) => {
+    const baseClass = 'select';
+
+    const variantClass = variant !== 'default' ? `${baseClass}--${variant}` : '';
+    const sizeClass = size !== 'md' ? `${baseClass}--${size}` : '';
+
+    const combinedClassName = `
+        ${baseClass} 
+        ${variantClass} 
+        ${sizeClass} 
+        ${className}
+    `.trim().replace(/\s+/g, ' ');
+
     return (
         <select
             id={id}
             name={name}
             value={value}
             onChange={onChange}
-            className={`input-field ${className}`}
+            className={combinedClassName}
             disabled={disabled}
             required={required}
         >

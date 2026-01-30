@@ -184,13 +184,15 @@ export const useAppointmentsPageController = () => {
         setDate, setShowForm, setBonified, setSelectedInstitution,
         setReason, setSyncReferenceInfo, setSyncingZombieId,
 
-        setActionModal, setPrescribeModal, setAuthModalOpen,
+        setActionModal, setPrescribeModal, setHistoryModal, setPaymentModal, setAuthModalOpen,
         setRetryAction, setShowNextSlotModal, booking, // pass booking object if needed for whatsapp modal but setter is simpler
         setWhatsappModal: booking.setWhatsappModal, // Booking owns whatsapp modal state
+        setEditPatientModalOpen,
 
         updateStatus, updateAppointment, fetchAppointments, savePrescription,
         deleteAppointment, rescheduleAppointment, bookAppointment,
         fetchNextFreeSlots,
+        addHoliday, deleteHoliday,
         copyToClipboard
     });
 
@@ -221,7 +223,7 @@ export const useAppointmentsPageController = () => {
         showNextSlotModal, setShowNextSlotModal,
 
         // Sub-Hooks Exports
-        holidays, addHoliday, deleteHoliday,
+        holidays,
         booking,
         patientSearch,
         nextSlot,
@@ -229,7 +231,6 @@ export const useAppointmentsPageController = () => {
         // Data
         currentDoctor,
         filteredAppointments,
-        appointments,
         appointments,
         calendarStats,
         doctorSchedule,
@@ -240,13 +241,17 @@ export const useAppointmentsPageController = () => {
 
         // Spread Handlers
         ...handlers,
-        handleUpdateType: handlers.handleUpdateType,
-        handleHardEdit: handlers.handleHardEdit,
         handleAdminAuthConfirm,
         handleWhatsAppUniversal,
         syncDayToGoogle,
         cancelAppointment, fetchAppointments,
         handleCancel: (id, reason) => cancelAppointment(id, fetchAppointments, reason),
+        handleOpenPayment: handlers.handleOpenPayment,
+        handleOpenHistory: handlers.handleOpenHistory,
+        handleOpenPrescribe: handlers.handleOpenPrescribe,
+        handleOpenReschedule: handlers.handleOpenReschedule,
+        handleOpenSync: handlers.handleOpenSync,
+        handleSelectMedication: handlers.handleSelectMedication,
 
         // Misc
         rescheduleAppt,

@@ -1,16 +1,8 @@
 import React from 'react';
+import './Alert.css';
 
 /**
- * Alert Atom
- * 
- * Single Responsibility: Display alert/info boxes with different variants
- * 
- * @param {Object} props
- * @param {'info' | 'warning' | 'success'} props.variant - Alert variant
- * @param {string} [props.title] - Alert title
- * @param {string} [props.message] - Alert message
- * @param {React.ReactNode} [props.children] - Alert content (alternative to message)
- * @param {string} [props.className] - Additional CSS classes
+ * Alert Atom follows Atomic Design & BEM.
  */
 const Alert = ({
     variant = 'info',
@@ -19,13 +11,14 @@ const Alert = ({
     children,
     className = ''
 }) => {
-    const variantClass = `config-alert--${variant}`;
+    const baseClass = 'alert';
+    const variantClass = `${baseClass}--${variant}`;
 
     return (
-        <div className={`config-alert ${variantClass} ${className}`}>
-            {title && <h4 className="config-alert__title">{title}</h4>}
-            {message && <p className="config-alert__message">{message}</p>}
-            {children && <div className="config-alert__message">{children}</div>}
+        <div className={`${baseClass} ${variantClass} ${className}`}>
+            {title && <h4 className={`${baseClass}__title`}>{title}</h4>}
+            {message && <p className={`${baseClass}__message`}>{message}</p>}
+            {children && <div className={`${baseClass}__message`}>{children}</div>}
         </div>
     );
 };

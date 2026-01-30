@@ -1,11 +1,11 @@
 import React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import Button from './Button';
+import './LanguageSelector.css';
 
 /**
- * Atom component for switching languages.
- * Follows Atomic Design principles.
- * Uses BEM naming convention: .language-selector
+ * LanguageSelector Atom follows Atomic Design & BEM.
+ * Removed Tailwind utility classes.
  */
 const LanguageSelector = () => {
     const { language, toggleLanguage } = useLanguage();
@@ -14,14 +14,14 @@ const LanguageSelector = () => {
         <div className="language-selector">
             <Button
                 variant="ghost"
-                className="language-selector__button w-full justify-start !px-3"
+                className="language-selector__button"
                 onClick={toggleLanguage}
                 title={language === 'es' ? 'Switch to English' : 'Cambiar a Español'}
             >
-                <span className="language-selector__icon text-xl mr-2">
+                <span className="language-selector__icon">
                     {language === 'es' ? '🇪🇸' : '🇺🇸'}
                 </span>
-                <span className="language-selector__text text-sm font-medium text-slate-600">
+                <span className="language-selector__text">
                     {language === 'es' ? 'Español' : 'English'}
                 </span>
             </Button>

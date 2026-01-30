@@ -120,6 +120,17 @@ export const useDashboardController = () => {
         });
     };
 
+    const handleSaveNote = async (id, note, date) => {
+        try {
+            await api.put(`/appointments/${id}`, { reason: note, appointment_date: date });
+            showMessage(t('note_saved') || 'Nota actualizada', 'success');
+            refreshDashboard();
+        } catch (e) {
+            console.error(e);
+            showMessage('Error al guardar nota', 'error');
+        }
+    };
+
     const handleDelete = async (id, status) => {
         await deleteAppointment(id, actionModal.appt, {
             onUpdate: () => {
@@ -136,6 +147,70 @@ export const useDashboardController = () => {
                 setActionModal(prev => ({ ...prev, appt: { ...prev.appt, status: 'cancelled' } }));
             }
         });
+    };
+
+    const handleOpenPayment = (appt) => {
+        setPaymentModal({
+            open: true,
+            initialData: {
+                type: 'income_patient',
+                amount: appt.cost || 0,
+                patientId: appt.patient_id,
+                patientName: appt.patient_name,
+                patientDni: appt.patient_dni,
+                patientUserId: appt.patient_user_id,
+                doctorId: appt.doctor_id,
+                description: `Payment for appointment on ${new Date(appt.appointment_date).toLocaleDateString()}`,
+                apptId: appt.id
+            },
+            apptId: appt.id
+        });
+        setActionModal({ ...actionModal, open: false });
+    };
+
+    const handleOpenHistory = (appt) => {
+        setHistoryModal({
+            open: true,
+            patientId: appt.patient_id,
+            patientName: appt.patient_name
+        });
+        setActionModal({ ...actionModal, open: false });
+    };
+
+    const handleOpenPrescribe = (appt) => {
+        setPrescribeModal({
+            open: true,
+            apptId: appt.id,
+            patientName: appt.patient_name,
+            medications: '',
+            instructions: ''
+        });
+        setActionModal({ ...actionModal, open: false });
+    };
+
+    const handleOpenReschedule = (appt) => {
+        navigate('/appointments', { state: { rescheduleAppt: appt } });
+    };
+
+    const handleOpenSync = (appt) => {
+        navigate('/appointments', { state: { syncAppt: appt } });
+    };
+
+    const handleHardEdit = (appt) => {
+        navigate('/appointments', { state: { editAppt: appt } });
+    };
+
+    const handleUpdateType = async (id, type) => {
+        try {
+            await api.put(`/appointments/${id}`, { type });
+            showMessage(t('status_updated'), 'success');
+            refreshDashboard();
+            if (actionModal.open && actionModal.appt?.id === id) {
+                setActionModal(prev => ({ ...prev, appt: { ...prev.appt, type } }));
+            }
+        } catch (err) {
+            showMessage(t('failed_update'), 'error');
+        }
     };
 
     const handleWhatsApp = (appt, type) => {
@@ -226,6 +301,14 @@ export const useDashboardController = () => {
         handleCancel,
         handleWhatsApp,
         handlePrescriptionSubmit,
+        handleOpenPayment,
+        handleOpenHistory,
+        handleOpenPrescribe,
+        handleOpenReschedule,
+        handleOpenSync,
+        handleHardEdit,
+        handleUpdateType,
+        handleSaveNote,
         navigate
     };
 };

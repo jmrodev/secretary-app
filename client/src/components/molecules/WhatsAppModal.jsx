@@ -12,7 +12,6 @@ const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange }) => 
         const safePhone = String(phone || '');
         let cleanPhone = safePhone.replace(/\D/g, '');
 
-        console.log("Sending WhatsApp:", { phone, cleanPhone, message });
 
         // Standardize AR phones if needed
         if (!cleanPhone.startsWith('54') && cleanPhone.length >= 10) {
@@ -26,7 +25,6 @@ const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange }) => 
             navigator.clipboard.writeText(message || '').catch(err => console.error("Clipboard error:", err));
         } else {
             // Fallback for browsers that don't support clipboard API or when not in secure context
-            console.warn("Clipboard API not available, falling back to manual copy");
         }
 
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -38,7 +36,6 @@ const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange }) => 
             const appUrl = `whatsapp://send?phone=${cleanPhone}&text=${encodedText}`;
             const webUrl = `https://web.whatsapp.com/send?phone=${cleanPhone}&text=${encodedText}`;
 
-            console.log("Opening URLs:", { appUrl, webUrl });
 
             // Try opening App, fall back to Web
             // Using window.open for success feedback

@@ -1,24 +1,17 @@
 import React from 'react';
+import './StatusIndicator.css';
 
 /**
- * StatusIndicator Atom
- * 
- * Single Responsibility: Display connection/status indicator with label
- * 
- * @param {Object} props
- * @param {'connected' | 'disconnected'} props.status - Connection status
- * @param {string} props.label - Status label text
- * @param {string} [props.className] - Additional CSS classes
+ * StatusIndicator Atom follows Atomic Design & BEM.
  */
 const StatusIndicator = ({ status, label, className = '' }) => {
-    const statusClass = status === 'connected'
-        ? 'config-status--connected'
-        : 'config-status--disconnected';
+    const baseClass = 'status-indicator';
+    const statusClass = `${baseClass}--${status}`;
 
     return (
-        <div className={`config-status ${statusClass} ${className}`}>
-            <span className="config-status__indicator" aria-hidden="true"></span>
-            <span>{label}</span>
+        <div className={`${baseClass} ${statusClass} ${className}`}>
+            <span className={`${baseClass}__dot`} aria-hidden="true"></span>
+            <span className={`${baseClass}__label`}>{label}</span>
         </div>
     );
 };

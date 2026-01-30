@@ -1,0 +1,75 @@
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.badge--interactive {
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.badge--interactive:hover {
+    opacity: 0.8;
+}
+
+.badge--sm {
+    padding: 0.125rem 0.625rem;
+    font-size: 0.6875rem;
+}
+
+/* Variants */
+.badge--default {
+    background: var(--gray-100);
+    color: var(--gray-600);
+}
+
+.badge--blue {
+    background: var(--blue-100);
+    color: var(--blue-700);
+}
+
+.badge--green {
+    background: var(--green-100);
+    color: var(--green-700);
+}
+
+.badge--success {
+    background: var(--green-100);
+    color: var(--green-700);
+}
+
+.badge--danger {
+    background: var(--red-100);
+    color: var(--red-700);
+}
+
+.badge--rejected {
+    background: var(--red-100);
+    color: var(--red-700);
+}
+
+.badge--warning {
+    background: var(--amber-100);
+    color: var(--amber-700);
+}
+
+.badge--pending {
+    background: var(--amber-100);
+    color: var(--amber-700);
+}
+
+.badge--consult {
+    background: var(--purple-100);
+    color: var(--purple-700);
+}
+
+.badge--accent {
+    background: var(--blue-600);
+    color: white;
+}

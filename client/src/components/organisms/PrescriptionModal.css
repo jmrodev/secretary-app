@@ -1,0 +1,24 @@
+.prescription-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.prescription-modal__group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.prescription-modal__label {
+    font-weight: 700;
+    color: var(--color-primary-dark, #1e40af);
+    font-size: 0.9rem;
+}
+
+.prescription-modal__textarea {
+    min-height: 100px;
+    resize: vertical;
+    margin-top: 8px;
+    /* Replacement for mt-2 */
+}

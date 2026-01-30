@@ -340,20 +340,17 @@ export const useMedicalDocumentsController = () => {
     }, [location.state]);
 
     const handleEditItem = (item) => {
-        console.log("DEBUG: handleEditItem CALLED with:", item);
         if (!item) return;
 
         setIsEditing(true);
 
         if (item._origin === 'prescription') {
-            console.log("DEBUG: Editing Prescription");
             setSelectedPrescription(item);
             setEditData({
                 medications: item.medications || '',
                 instructions: item.instructions || ''
             });
         } else if (item._origin === 'license') {
-            console.log("DEBUG: Editing License");
             setSelectedLicense(item);
             setLicenseEditData({
                 start_date: item.start_date ? item.start_date.split('T')[0] : '',
@@ -361,7 +358,6 @@ export const useMedicalDocumentsController = () => {
                 diagnosis: item.diagnosis || ''
             });
         } else if (item._origin === 'request') {
-            console.log("DEBUG: Editing Request");
             setSelectedRequest(item);
             setRequestEditData({
                 request_note: item.request_note || '',
@@ -370,9 +366,41 @@ export const useMedicalDocumentsController = () => {
                 payment_method: item.payment_method || 'cash',
                 bonified: item.payment_status === 'bonified'
             });
-        } else {
-            console.warn("DEBUG: handleEditItem CALLED with unknown _origin:", item._origin);
         }
+    };
+
+    const handlers = {
+        handleSearchChange: (val) => setSearchTerm(val),
+        handleTabChange: (val) => setActiveTab(val),
+        handleSubTabChange: (val) => setRequestsSubTab(val),
+        handleFileDescChange: (val) => setFileDesc(val),
+        handleFilePatientChange: (val) => setFilePatient(val),
+        handleFileUploadChange: (file) => setSelectedFile(file),
+        handleActionNoteChange: (val) => setActionNote(val),
+        handleEditDataChange: (field, val) => setEditData(prev => ({ ...prev, [field]: val })),
+        handleLicenseEditDataChange: (field, val) => setLicenseEditData(prev => ({ ...prev, [field]: val })),
+        handleRequestEditDataChange: (field, val) => setRequestEditData(prev => ({ ...prev, [field]: val })),
+        handleSelectMedication: (med) => {
+            setEditData(prev => {
+                const current = prev.medications.trim();
+                const newValue = current ? `${current}\n${med.full_label}` : med.full_label;
+                return { ...prev, medications: newValue };
+            });
+        },
+        toggleEditing: (val) => {
+            setIsEditing(val);
+            if (!val) {
+                setSelectedPrescription(null);
+                setSelectedLicense(null);
+                setSelectedRequest(null);
+            }
+        },
+        closeActionModal: () => setActionModal({ open: false, type: '', id: null }),
+        openActionModal: (type, id) => setActionModal({ open: true, type, id }),
+        closePaymentModal: () => setPaymentModal(prev => ({ ...prev, open: false })),
+        openPaymentModal: (data) => setPaymentModal({ open: true, ...data }),
+        closeDeleteFileModal: () => setFileToDelete(null),
+        openDeleteFileModal: (f) => setFileToDelete(f),
     };
 
     return {
@@ -399,6 +427,7 @@ export const useMedicalDocumentsController = () => {
         filterItem, handleCreateRequest, handleUpdateStatus, handleFileUpload, confirmFileDelete,
         handleUpdatePrescription, handleUpdateLicense, handleUpdateRequest, handleDeleteRequest,
         handleDeletePrescription, handleEditItem, handleDeleteLicense, fetchRequests, fetchFiles, fetchHistory,
-        handleExportJSON, handlePrintPrescriptions, printData
+        handleExportJSON, handlePrintPrescriptions, printData,
+        handlers
     };
 };

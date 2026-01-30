@@ -1,92 +1,32 @@
-import { useState, useEffect } from 'react';
-import { useLanguage } from '../../context/LanguageContext';
+import React, { useState } from 'react';
 import CurrencyInput from '../atoms/CurrencyInput';
-import api from '../../api/axios';
 import PhoneNumbersManager from '../molecules/PhoneNumbersManager';
 
-const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmin = false, insurances = [], doctors = [] }) => {
-    const { t } = useLanguage();
+const PatientForm = ({
+    controller,
+    onCancel,
+    isEdit = false,
+    isAdmin = false
+}) => {
+    const {
+        formData,
+        insurances,
+        doctors,
+        institutions,
+        coveredByInstitution,
+        isSubmitting,
+        t,
+        handlers
+    } = controller;
 
-    const [formData, setFormData] = useState({
-        username: '',
-        password: '',
-        full_name: '',
-        first_name: '',
-        last_name: '',
-        dni: '',
-        phoneNumbers: [],
-        email: '',
-        address: '',
-        dob: '',
-        insurance_id: '',
-        institution_id: '',
-        affiliate_number: '',
-        medical_history: '',
-        assignedDoctors: [],
-        tariff_percent: '',
-        tariff_override: '',
-        visit_interval_days: '',
-        prescription_interval_days: '',
-        next_suggested_visit_date: '',
-        next_suggested_prescription_date: '',
-        license_expiry_date: ''
-    });
-
-    const [institutions, setInstitutions] = useState([]);
-    const [coveredByInstitution, setCoveredByInstitution] = useState(false);
-
-    useEffect(() => {
-        const fetchInstitutions = async () => {
-            try {
-                const res = await api.get('/institutions');
-                setInstitutions(res.data);
-            } catch (err) {
-                console.error("Failed to fetch institutions", err);
-            }
-        };
-        fetchInstitutions();
-    }, []);
-
-    useEffect(() => {
-        if (initialValues) {
-            setFormData(prev => ({
-                ...prev,
-                ...initialValues,
-                // Ensure arrays are initialized if missing in initialValues
-                phoneNumbers: initialValues.phoneNumbers || [],
-                assignedDoctors: initialValues.assignedDoctors ?
-                    (Array.isArray(initialValues.assignedDoctors) && typeof initialValues.assignedDoctors[0] === 'object'
-                        ? initialValues.assignedDoctors.map(d => d.id)
-                        : initialValues.assignedDoctors)
-                    : []
-            }));
-
-            if (initialValues.institution_id) {
-                setCoveredByInstitution(true);
-            }
-        }
-    }, [initialValues]);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleDoctorToggle = (doctorId) => {
-        setFormData(prev => {
-            const current = prev.assignedDoctors || [];
-            if (current.includes(doctorId)) {
-                return { ...prev, assignedDoctors: current.filter(id => id !== doctorId) };
-            } else {
-                return { ...prev, assignedDoctors: [...current, doctorId] };
-            }
-        });
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onSubmit(formData);
-    };
+    const {
+        handleChange,
+        handleManualValueChange,
+        handleDoctorToggle,
+        handlePhoneChange,
+        handleInstitutionToggle,
+        handleSubmit
+    } = handlers;
 
     return (
         <form onSubmit={handleSubmit} className="patient-form" autoComplete="off">
@@ -109,8 +49,6 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                             required
                             autoComplete="off"
                             data-lpignore="true"
-                            readOnly={!!formData.id} // heuristic
-                            onFocus={(e) => e.target.removeAttribute('readonly')}
                         />
                     </div>
                     <div className="input-group">
@@ -131,62 +69,22 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
 
             <div className="form-row">
                 <div className="input-group">
-                    <label className="input-label">Nombre</label>
+                    <label className="input-label">{t('first_name') || 'Nombre'}</label>
                     <input
                         name="first_name"
                         className="input-field"
                         value={formData.first_name || ''}
-                        onChange={(e) => {
-                            const val = e.target.value;
-                            setFormData(prev => {
-                                const newFirstName = val.trim();
-                                const newLastName = (prev.last_name || '').trim();
-                                const autoValue = `${newFirstName}${newLastName}`.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
-
-                                const oldAuto = `${(prev.first_name || '').trim()}${(prev.last_name || '').trim()}`.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
-
-                                const shouldUpdateUser = !isEdit && (!prev.username || prev.username === oldAuto);
-                                const shouldUpdatePass = !isEdit && (!prev.password || prev.password === oldAuto);
-
-                                return {
-                                    ...prev,
-                                    first_name: val,
-                                    full_name: `${val} ${prev.last_name || ''}`.trim(),
-                                    username: shouldUpdateUser ? autoValue : prev.username,
-                                    password: shouldUpdatePass ? autoValue : prev.password
-                                };
-                            });
-                        }}
+                        onChange={handleChange}
                         required
                     />
                 </div>
                 <div className="input-group">
-                    <label className="input-label">Apellido</label>
+                    <label className="input-label">{t('last_name') || 'Apellido'}</label>
                     <input
                         name="last_name"
                         className="input-field"
                         value={formData.last_name || ''}
-                        onChange={(e) => {
-                            const val = e.target.value;
-                            setFormData(prev => {
-                                const newFirstName = (prev.first_name || '').trim();
-                                const newLastName = val.trim();
-                                const autoValue = `${newFirstName}${newLastName}`.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
-
-                                const oldAuto = `${(prev.first_name || '').trim()}${(prev.last_name || '').trim()}`.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
-
-                                const shouldUpdateUser = !isEdit && (!prev.username || prev.username === oldAuto);
-                                const shouldUpdatePass = !isEdit && (!prev.password || prev.password === oldAuto);
-
-                                return {
-                                    ...prev,
-                                    last_name: val,
-                                    full_name: `${prev.first_name || ''} ${val}`.trim(),
-                                    username: shouldUpdateUser ? autoValue : prev.username,
-                                    password: shouldUpdatePass ? autoValue : prev.password
-                                };
-                            });
-                        }}
+                        onChange={handleChange}
                     />
                 </div>
             </div>
@@ -202,14 +100,14 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                     />
                 </div>
                 <div className="input-group">
-                    <label className="input-label">Obra Social</label>
+                    <label className="input-label">{t('insurance') || 'Obra Social'}</label>
                     <select
                         name="insurance_id"
                         className="input-field"
                         value={formData.insurance_id}
                         onChange={handleChange}
                     >
-                        <option value="">Seleccionar...</option>
+                        <option value="">{t('select_choice') || 'Seleccionar...'}</option>
                         {insurances.map(ins => (
                             <option key={ins.id} value={ins.id}>{ins.name}</option>
                         ))}
@@ -235,29 +133,24 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                     <input
                         type="checkbox"
                         checked={coveredByInstitution}
-                        onChange={(e) => {
-                            setCoveredByInstitution(e.target.checked);
-                            if (!e.target.checked) {
-                                setFormData(prev => ({ ...prev, institution_id: '' }));
-                            }
-                        }}
+                        onChange={(e) => handleInstitutionToggle(e.target.checked)}
                         id="pf_institution"
                     />
                     <label htmlFor="pf_institution" className="checkbox-label">
-                        ¿Cubierto por una Institución? (Municipio, Hospital, etc.)
+                        {t('covered_by_institution_prompt') || '¿Cubierto por una Institución? (Municipio, Hospital, etc.)'}
                     </label>
                 </div>
 
                 {coveredByInstitution && (
                     <div className="input-group">
-                        <label className="input-label">Institución Pagadora</label>
+                        <label className="input-label">{t('paying_institution') || 'Institución Pagadora'}</label>
                         <select
                             name="institution_id"
                             className="input-field"
                             value={formData.institution_id}
                             onChange={handleChange}
                         >
-                            <option value="">Seleccionar Institución...</option>
+                            <option value="">{t('select_institution') || 'Seleccionar Institución...'}</option>
                             {institutions.filter(i => i.status === 'active').map(inst => (
                                 <option key={inst.id} value={inst.id}>{inst.name}</option>
                             ))}
@@ -270,7 +163,7 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
             <div className="section-divider">
                 <PhoneNumbersManager
                     phoneNumbers={formData.phoneNumbers}
-                    onChange={(newPhones) => setFormData(prev => ({ ...prev, phoneNumbers: newPhones }))}
+                    onChange={handlePhoneChange}
                 />
             </div>
 
@@ -286,7 +179,7 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                     />
                 </div>
                 <div className="input-group">
-                    <label className="input-label">Nro Afiliado</label>
+                    <label className="input-label">{t('affiliate_number') || 'Nro Afiliado'}</label>
                     <input
                         name="affiliate_number"
                         className="input-field"
@@ -319,7 +212,7 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
 
             {isAdmin && (
                 <div className="admin-section">
-                    <h4 className="section-title">Administrative Settings</h4>
+                    <h4 className="section-title">{t('admin_settings') || 'Administrative Settings'}</h4>
 
                     <div className="input-group mb-4">
                         <label className="input-label">{t('assigned_doctors')}</label>
@@ -339,7 +232,7 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
 
                     <div className="form-row">
                         <div className="input-group">
-                            <label className="input-label">Tariff Adjustment (%)</label>
+                            <label className="input-label">{t('tariff_adjustment') || 'Tariff Adjustment (%)'}</label>
                             <input
                                 type="number"
                                 name="tariff_percent"
@@ -350,11 +243,11 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                             />
                         </div>
                         <div className="input-group">
-                            <label className="input-label">Tariff Override ($)</label>
+                            <label className="input-label">{t('tariff_override') || 'Tariff Override ($)'}</label>
                             <CurrencyInput
                                 className="input-field"
                                 value={formData.tariff_override}
-                                onChange={(e) => handleChange({ target: { name: 'tariff_override', value: e.target.value } })}
+                                onChange={(e) => handleManualValueChange('tariff_override', e.target.value)}
                                 placeholder="e.g. 5000"
                             />
                         </div>
@@ -394,7 +287,7 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, isEdit = false, isAdmi
                         {t('cancel')}
                     </button>
                 )}
-                <button type="submit" className="btn btn-primary w-full md:w-auto">
+                <button type="submit" className="btn btn-primary w-full md:w-auto" disabled={isSubmitting}>
                     {isEdit ? t('save_changes') : t('create_account')}
                 </button>
             </div>

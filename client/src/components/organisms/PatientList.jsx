@@ -2,6 +2,7 @@
 import React from 'react';
 import Button from '../atoms/Button';
 import Badge from '../atoms/Badge';
+import './PatientList.css';
 
 const PatientList = ({
     patients,
@@ -32,16 +33,16 @@ const PatientList = ({
     }
 
     return (
-        <div className="table-responsive card p-0 overflow-hidden shadow-sm">
-            <table className="table-base w-full">
+        <div className="patient-list-container">
+            <table className="patient-table">
                 <thead>
                     <tr>
-                        <th className="pl-6">{t('patient')}</th>
+                        <th>{t('patient')}</th>
                         <th>{t('identification')} / OS</th>
                         <th>{t('contact')}</th>
                         <th>{t('ratings')}</th>
                         <th>{t('debt')}</th>
-                        <th className="text-right pr-6">{t('actions')}</th>
+                        <th className="patient-table__actions">{t('actions')}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,20 +50,20 @@ const PatientList = ({
                         <tr
                             key={p.id}
                             onClick={() => onViewDetails(p.id)}
-                            className="hover:bg-slate-50 transition-colors cursor-pointer group"
+                            className="patient-table__row"
                         >
-                            <td className="pl-6 py-4">
-                                <div className="flex items-center gap-2">
-                                    <strong className="text-main-800 capitalize leading-tight text-base group-hover:text-blue-700 transition-colors">
+                            <td>
+                                <div className="patient-table__name-cell">
+                                    <strong className="patient-table__name">
                                         {p.full_name}
                                     </strong>
-                                    {p.is_new_patient === 1 && <Badge variant="purple" size="sm">✨ NEW</Badge>}
+                                    {p.is_new_patient === 1 && <Badge variant="blue" size="sm">NEW</Badge>}
                                 </div>
                             </td>
                             <td>
-                                <div className="flex flex-col text-xs gap-1 text-slate-600">
-                                    {p.dni && <span><span className="font-semibold text-slate-400 w-8 inline-block">DNI:</span> {p.dni}</span>}
-                                    {(p.insurance_name || p.insurance) && <span><span className="font-semibold text-slate-400 w-8 inline-block">OS:</span> {p.insurance_name || p.insurance}</span>}
+                                <div className="patient-table__id-info">
+                                    {p.dni && <span><span className="patient-table__id-label">DNI:</span> {p.dni}</span>}
+                                    {(p.insurance_name || p.insurance) && <span><span className="patient-table__id-label">OS:</span> {p.insurance_name || p.insurance}</span>}
                                 </div>
                             </td>
                             <td>
@@ -71,12 +72,12 @@ const PatientList = ({
                                         href={`https://wa.me/${p.phone.replace(/[^0-9]/g, '')}`}
                                         target="_blank"
                                         rel="noreferrer"
-                                        className="text-blue-600 font-bold hover:underline py-1 px-2 rounded hover:bg-blue-50 inline-block"
+                                        className="patient-table__contact-link"
                                         onClick={(e) => e.stopPropagation()}
                                     >
                                         📱 {p.phone}
                                     </a>
-                                ) : <span className="text-muted text-sm px-2">N/A</span>}
+                                ) : <span className="text-muted text-sm">N/A</span>}
                             </td>
                             <td>
                                 <div className="rating-group">
@@ -89,8 +90,8 @@ const PatientList = ({
                                         {renderStars(calculateAttendanceRating(p.total_appointments, p.missed_appointments), 'blue')}
                                     </div>
                                     <div
-                                        className="rating-item cursor-pointer hover:bg-slate-100 p-1 rounded transition-colors"
-                                        onClick={(e) => { e.stopPropagation(); onToggleRating(p.id, ((p.behavior_rating || 5) % 5) + 1); }}
+                                        className="rating-item rating-item--interactive"
+                                        onClick={(e) => onToggleRating(e, p.id, p.behavior_rating)}
                                         title={`${t('rating_behavior_tooltip')}\nCalificación: ${p.behavior_rating || 5}/5 (Click para cambiar)`}
                                     >
                                         <span className="rating-item__label">COND</span>
@@ -104,19 +105,19 @@ const PatientList = ({
                                         size="sm-compact"
                                         variant="ghost"
                                         onClick={(e) => onOpenDebt(e, p.id, p.total_debt)}
-                                        className="bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 font-bold"
+                                        className="patient-table__debt-badge"
                                     >
                                         💸 ${p.total_debt}
                                     </Button>
                                 ) : (
-                                    <span className="text-xs text-green-600 font-bold bg-green-50 px-2 py-1 rounded border border-green-100">$0.00</span>
+                                    <span className="patient-table__zero-debt">$0.00</span>
                                 )}
                             </td>
-                            <td className="text-right pr-6">
+                            <td className="patient-table__actions">
                                 <Button
                                     variant="ghost"
                                     size="sm-compact"
-                                    className="text-blue-600 bg-blue-50 border-blue-100 hover:bg-blue-100"
+                                    className="patient-table__view-btn"
                                 >
                                     🆔 {t('view_details') || 'Ficha'}
                                 </Button>

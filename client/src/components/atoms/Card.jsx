@@ -1,18 +1,21 @@
 import React from 'react';
+import './Card.css';
 
 const Card = ({ children, className = '', title = '', footer = null }) => {
+    const baseClass = 'card';
+
     return (
-        <div className={`card ${className}`}>
+        <div className={`${baseClass} ${className}`}>
             {title && (
-                <div className="card-header mb-4">
-                    <h3 className="font-bold text-lg text-main-900">{title}</h3>
+                <div className={`${baseClass}__header`}>
+                    <h3 className={`${baseClass}__title`}>{title}</h3>
                 </div>
             )}
-            <div className="card-body">
+            <div className={`${baseClass}__content`}>
                 {children}
             </div>
             {footer && (
-                <div className="card-footer mt-6 pt-4 border-t border-divider">
+                <div className={`${baseClass}__footer`}>
                     {footer}
                 </div>
             )}

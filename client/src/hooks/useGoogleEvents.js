@@ -15,10 +15,10 @@ export const useGoogleEvents = (viewDoctorId, selectedDate, userRole) => {
             }
 
             try {
-                const schedRes = await api.get(`/schedules/${viewDoctorId}`);
-                setDoctorSchedule(schedRes.data);
+                const res = await api.get(`/schedules/${viewDoctorId}`);
+                setDoctorSchedule(res.data);
             } catch (err) {
-                console.log("Schedule fetch failed", err);
+                // Schedule fetch failed silently or handled by UI
             }
         };
 

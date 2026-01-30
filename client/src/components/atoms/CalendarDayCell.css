@@ -1,0 +1,70 @@
+.calendar-day-cell {
+    aspect-ratio: 1 / 1;
+    border: 1px solid var(--gray-100);
+    padding: 0.5rem;
+    background: white;
+    transition: all 0.2s ease;
+    cursor: default;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.calendar-day-cell--interactive {
+    cursor: pointer;
+}
+
+.calendar-day-cell--interactive:hover {
+    background: var(--gray-50);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+    border-color: var(--blue-200);
+    z-index: 10;
+}
+
+.calendar-day-cell--other-month {
+    background: var(--gray-50);
+    color: var(--gray-300);
+}
+
+.calendar-day-cell--today {
+    background: var(--blue-50);
+    border-color: var(--blue-300);
+}
+
+.calendar-day-cell--selected {
+    background: var(--blue-100);
+    border-color: var(--blue-500);
+    box-shadow: inset 0 0 0 1px var(--blue-500);
+}
+
+.calendar-day-cell--holiday {
+    background: var(--red-50);
+}
+
+.calendar-day-cell--disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.calendar-day-cell__date {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.calendar-day-cell__number {
+    font-weight: 700;
+    font-size: 0.875rem;
+}
+
+.calendar-day-cell__today-marker {
+    font-size: 0.625rem;
+    font-weight: 800;
+    color: var(--blue-600);
+    background: white;
+    padding: 1px 4px;
+    border-radius: 4px;
+    border: 1px solid var(--blue-200);
+}

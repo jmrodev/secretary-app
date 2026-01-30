@@ -1,7 +1,6 @@
 import React from 'react';
 import Modal from '../molecules/Modal';
-import Button from '../atoms/Button';
-import PhoneNumbersManager from '../molecules/PhoneNumbersManager';
+import InstitutionForm from './InstitutionForm';
 
 const InstitutionFormModal = ({ isOpen, onClose, onSubmit, formData, onChange, isEditing, t }) => {
     return (
@@ -10,62 +9,13 @@ const InstitutionFormModal = ({ isOpen, onClose, onSubmit, formData, onChange, i
             onClose={onClose}
             title={isEditing ? t('edit_institution') : t('new_institution')}
         >
-            <form onSubmit={onSubmit} className="flex flex-col gap-4">
-                <div className="form-group-bem">
-                    <label className="input-label">{t('institution_name')} *</label>
-                    <input
-                        type="text"
-                        className="input-field"
-                        value={formData.name}
-                        onChange={e => onChange('name', e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="form-group-bem">
-                    <label className="input-label">{t('base_amount_label')}</label>
-                    <input
-                        type="number"
-                        className="input-field"
-                        value={formData.base_price}
-                        onChange={e => onChange('base_price', e.target.value)}
-                        placeholder="0.00"
-                    />
-                </div>
-                <div className="mb-4">
-                    <PhoneNumbersManager
-                        phoneNumbers={formData.phoneNumbers}
-                        onChange={(newContext) => onChange('phoneNumbers', newContext)}
-                    />
-                </div>
-                <div className="form-group-bem">
-                    <label className="input-label">{t('description')}</label>
-                    <textarea
-                        className="input-field"
-                        rows="3"
-                        value={formData.description}
-                        onChange={e => onChange('description', e.target.value)}
-                    />
-                </div>
-                <div className="form-group-bem">
-                    <label className="input-label">{t('status')}</label>
-                    <select
-                        className="input-field"
-                        value={formData.status}
-                        onChange={e => onChange('status', e.target.value)}
-                    >
-                        <option value="active">{t('active')}</option>
-                        <option value="inactive">{t('inactive')}</option>
-                    </select>
-                </div>
-                <div className="modal-footer modal-footer--right mt-4">
-                    <Button variant="secondary" onClick={onClose}>
-                        {t('cancel')}
-                    </Button>
-                    <Button type="submit">
-                        {t('save')}
-                    </Button>
-                </div>
-            </form>
+            <InstitutionForm
+                formData={formData}
+                onChange={onChange}
+                onSubmit={onSubmit}
+                onCancel={onClose}
+                isEditing={isEditing}
+            />
         </Modal>
     );
 };

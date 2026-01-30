@@ -1,5 +1,6 @@
 import React from 'react';
 import CalendarDayIndicator from './CalendarDayIndicator';
+import './CalendarDayCell.css';
 
 const CalendarDayCell = ({
   day,

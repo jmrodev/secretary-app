@@ -1,5 +1,6 @@
 
 import { useCallback } from 'react';
+import api from '../api/axios';
 
 export const useAppointmentsHandlers = ({
     // Contexts/External
@@ -36,6 +37,7 @@ export const useAppointmentsHandlers = ({
     setRetryAction,
     setShowNextSlotModal,
     setWhatsappModal,
+    setEditPatientModalOpen,
     exitRescheduleMode,
 
     // Actions (from other hooks)
@@ -47,6 +49,8 @@ export const useAppointmentsHandlers = ({
     rescheduleAppointment,
     bookAppointment,
     fetchNextFreeSlots,
+    addHoliday: addHolidayAction,
+    deleteHoliday: deleteHolidayAction,
     selectedPatientData,
     copyToClipboard, // Dependency injected
     booking
@@ -114,6 +118,17 @@ export const useAppointmentsHandlers = ({
         });
     };
 
+    const handleSaveNote = async (apptId, note, date) => {
+        try {
+            await api.put(`/appointments/${apptId}`, { reason: note, appointment_date: date });
+            showMessage(t('note_saved') || 'Nota actualizada', 'success');
+            fetchAppointments();
+        } catch (e) {
+            console.error(e);
+            showMessage('Error al guardar nota', 'error');
+        }
+    };
+
     const handleSavePrescription = async (prescribeModal) => {
         await savePrescription({
             apptId: prescribeModal.apptId,
@@ -121,6 +136,14 @@ export const useAppointmentsHandlers = ({
             instructions: prescribeModal.instructions
         }, () => {
             setPrescribeModal({ open: false, apptId: null, patientName: '', medications: '', instructions: '' });
+        });
+    };
+
+    const handleSelectMedication = (med) => {
+        setPrescribeModal(prev => {
+            const current = (prev.medications || '').trim();
+            const newValue = current ? `${current}\n${med.full_label}` : med.full_label;
+            return { ...prev, medications: newValue };
         });
     };
 
@@ -324,6 +347,74 @@ export const useAppointmentsHandlers = ({
         booking.setShowForm(true);
     };
 
+    const handleAddHoliday = async (date, description) => {
+        return await addHolidayAction(date, description);
+    };
+
+    const handleDeleteHoliday = async (id) => {
+        if (!await confirm(t('confirm_delete_holiday') || "¿Eliminar este feriado?")) return;
+        await deleteHolidayAction(id);
+    };
+
+    const handleOpenPayment = (appt) => {
+        setPaymentModal({
+            open: true,
+            initialData: {
+                type: 'income_patient',
+                amount: appt.cost || 0,
+                patientId: appt.patient_id,
+                patientName: appt.patient_name,
+                patientDni: appt.patient_dni,
+                patientUserId: appt.patient_user_id,
+                doctorId: appt.doctor_id,
+                description: `Payment for appointment on ${new Date(appt.appointment_date).toLocaleDateString()}`,
+                apptId: appt.id
+            },
+            apptId: appt.id
+        });
+        setActionModal({ open: false, appt: null });
+    };
+
+    const handleOpenHistory = (appt) => {
+        setHistoryModal({
+            open: true,
+            patientId: appt.patient_id,
+            patientName: appt.patient_name
+        });
+        setActionModal({ open: false, appt: null });
+    };
+
+    const handleOpenPrescribe = (appt) => {
+        setPrescribeModal({
+            open: true,
+            apptId: appt.id,
+            patientName: appt.patient_name,
+            medications: '',
+            instructions: ''
+        });
+        setActionModal({ open: false, appt: null });
+    };
+
+    const handleOpenReschedule = (appt) => {
+        navigate('/appointments', { state: { rescheduleAppt: appt } });
+    };
+
+    const handleOpenSync = (appt) => {
+        navigate('/appointments', { state: { syncAppt: appt } });
+    };
+
+    const toggleForm = () => setShowForm(prev => !prev);
+
+    const createPatient = () => {
+        booking.setSelectedPatientData(null);
+        setEditPatientModalOpen(true);
+    };
+
+    const openNextSlot = () => {
+        booking.setSlotHistory && booking.setSlotHistory([]); // If booking hook owns history
+        handleNextFreeSlot(null);
+    };
+
     return {
         handleDateSelect,
         handleSlotClick,
@@ -338,6 +429,31 @@ export const useAppointmentsHandlers = ({
         confirmNextSlot,
         handleAdminAuthConfirm,
         handleUpdateType,
-        handleHardEdit
+        handleHardEdit,
+        handleAddHoliday,
+        handleDeleteHoliday,
+        handleOpenPayment,
+        handleOpenHistory,
+        handleOpenPrescribe,
+        handleOpenReschedule,
+        handleOpenSync,
+        handleSelectMedication,
+        toggleForm,
+        createPatient,
+        openNextSlot,
+        handleSaveNote,
+        handleGoToAppointment: (apptId, doctorId, date, onClose) => {
+            const apptDate = new Date(date);
+            const offset = apptDate.getTimezoneOffset() * 60000;
+            const localDate = new Date(apptDate.getTime() + offset);
+            setSelectedDate(localDate);
+            setViewDoctorId(doctorId);
+            if (onClose) onClose();
+        },
+        handleRepeatAppointment: (patientId, reason) => {
+            setSelectedPatient(patientId);
+            setReason(reason);
+            setShowForm(true);
+        }
     };
 };

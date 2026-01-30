@@ -46,7 +46,7 @@ const AppointmentAdminPanel = ({
                     <>
                         {/* 1. Confirm (Restaurar) */}
                         {canConfirm && (
-                            <Button variant="outline" className="text-green-600 border-green-200 hover:bg-green-50" onClick={() => { onUpdateStatus(appt.id, 'confirmed'); onClose(); }} tooltip="Confirmar asistencia (Restaurar)">
+                            <Button variant="outline" className="btn--success-light" onClick={() => { onUpdateStatus(appt.id, 'confirmed'); onClose(); }} tooltip="Confirmar asistencia (Restaurar)">
                                 ✅ {t('confirm')}
                             </Button>
                         )}
@@ -60,20 +60,20 @@ const AppointmentAdminPanel = ({
 
                         {/* 3. Attended (Completed) - ONLY if Arrived */}
                         {canAttend && (
-                            <Button variant="outline" className="text-green-600 border-green-200 hover:bg-green-50" onClick={() => { onUpdateStatus(appt.id, 'completed'); onClose(); }} tooltip="Marcar como atendido">
+                            <Button variant="outline" className="btn--success-light" onClick={() => { onUpdateStatus(appt.id, 'completed'); onClose(); }} tooltip="Marcar como atendido">
                                 🏆 {t('attended') || 'Atendido'}
                             </Button>
                         )}
 
                         {/* [NEW] Switch to Virtual */}
                         {appt.type !== 'virtual' && (
-                            <Button variant="outline" className="text-indigo-600 border-indigo-200 hover:bg-indigo-50" onClick={() => { onUpdateType(appt.id, 'virtual'); onClose(); }} tooltip="Cambiar tipo a Videollamada">
+                            <Button variant="outline" className="btn--indigo-light" onClick={() => { onUpdateType(appt.id, 'virtual'); onClose(); }} tooltip="Cambiar tipo a Videollamada">
                                 📹 {t('pass_to_video') || 'Pasar a Video'}
                             </Button>
                         )}
 
                         {/* [NEW] Hard Edit (Always available in Admin Panel) */}
-                        <Button variant="outline" className="text-slate-600 border-slate-200 hover:bg-slate-50" onClick={() => { onHardEdit(appt); onClose(); }} tooltip="Editar detalles del turno">
+                        <Button variant="outline" className="btn--slate-light" onClick={() => { onHardEdit(appt); onClose(); }} tooltip="Editar detalles del turno">
                             ✏️ {t('edit') || 'Editar'}
                         </Button>
 
@@ -83,13 +83,13 @@ const AppointmentAdminPanel = ({
                         </Button>
 
                         {canSuspend && (
-                            <Button variant="outline" className="text-amber-600 border-amber-200 hover:bg-amber-50" onClick={() => { onUpdateStatus(appt.id, 'suspended'); onClose(); }} tooltip="Suspendido por la oficina. Cancela momentáneamente sin afectar reputación." >
+                            <Button variant="outline" className="btn--amber-light" onClick={() => { onUpdateStatus(appt.id, 'suspended'); onClose(); }} tooltip="Suspendido por la oficina. Cancela momentáneamente sin afectar reputación." >
                                 ⏸ {t('suspend')}
                             </Button>
                         )}
 
                         {canMarkAbsent && (
-                            <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-50" onClick={() => { onUpdateStatus(appt.id, 'absent'); onClose(); }} tooltip="El paciente faltó sin aviso. BAJA reputación (-1).">
+                            <Button variant="outline" className="btn--red-light" onClick={() => { onUpdateStatus(appt.id, 'absent'); onClose(); }} tooltip="El paciente faltó sin aviso. BAJA reputación (-1).">
                                 🚫 {t('absent')}
                             </Button>
                         )}
@@ -103,7 +103,7 @@ const AppointmentAdminPanel = ({
                         <Button variant="outline-danger" onClick={() => { onCancel(appt.id, note); onClose(); }} tooltip="Queda en historial como 'Cancelado'. No afecta reputación." >
                             ❌ {t('cancel')}
                         </Button>
-                        <Button style={{ background: '#ef4444', color: 'white' }} onClick={() => { onDelete(appt.id, appt.status); onClose(); }} tooltip="Borra permanentemente (Solo errores de carga). No afecta reputación." >
+                        <Button className="btn--solid-danger" onClick={() => { onDelete(appt.id, appt.status); onClose(); }} tooltip="Borra permanentemente (Solo errores de carga). No afecta reputación." >
                             🗑 {t('delete_error')}
                         </Button>
                     </div>

@@ -142,9 +142,9 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
     if (user.role !== 'secretary' && user.role !== 'doctor') return null;
 
     return (
-        <Card title={t('new_request')} className="animate-fadeIn shadow-lg border-slate-200">
-            <form onSubmit={handleCreateRequest} className="medical-request-form flex flex-col gap-6">
-                <div className="medical-request-form__row grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card title={t('new_request')} className="medical-request-card">
+            <form onSubmit={handleCreateRequest} className="form">
+                <div className="form-row form-row--2">
                     <FormGroup label={t('request_type')} required>
                         <Select
                             value={reqType}
@@ -159,7 +159,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
 
                     <FormGroup label={t('doctor_label')} required>
                         {user.role === 'doctor' ? (
-                            <div className="input-field bg-slate-50 text-main-500 font-medium py-2 px-3 rounded-lg border border-slate-200">
+                            <div className="input input--readonly bg-gray-50">
                                 Dr. {user.full_name || user.username}
                             </div>
                         ) : (
@@ -187,12 +187,8 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                     />
 
                     {patientData && reqType === 'prescription' && patientData.next_suggested_prescription_date && new Date(patientData.next_suggested_prescription_date) > new Date() && (
-                        <div className="mt-2 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-start gap-2 animate-fadeIn">
-                            <span className="text-lg leading-none">⚠️</span>
-                            <div>
-                                <strong className="block mb-1">{t('possible_overmedication') || 'Posible Sobrefrecuencia'}</strong>
-                                {t('patient_has_valid_until') || 'Paciente tiene cobertura sugerida hasta'}: <b>{new Date(patientData.next_suggested_prescription_date).toLocaleDateString()}</b>
-                            </div>
+                        <div className="badge badge--warning mt-1 py-1 px-3">
+                            ⚠️ {t('patient_has_valid_until') || 'Cobertura sugerida hasta'}: {new Date(patientData.next_suggested_prescription_date).toLocaleDateString()}
                         </div>
                     )}
                 </FormGroup>
@@ -202,51 +198,39 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                     required
                 >
                     {reqType === 'prescription' ? (
-                        <div className="flex flex-col gap-3">
+                        <div className="flex flex-col gap-4">
                             {/* Input Row */}
                             <div className="flex flex-col md:flex-row gap-2 items-end">
-                                <div className="flex-grow grid grid-cols-1 md:grid-cols-12 gap-2 w-full">
-                                    <div className="md:col-span-5">
-                                        <MedicationAutocomplete
-                                            value={tempMed}
-                                            onChange={setTempMed}
-                                            placeholder={t('medication_placeholder') || "Nombre (Ej: Ibuprofeno)"}
-                                            onSelectMedication={(med) => {
-                                                // Avoid adding directly, let user fill details
-                                                // Just unpack name and maybe defaults if we had them
-                                            }}
-                                        />
-                                    </div>
-                                    <div className="md:col-span-2">
-                                        <Input
-                                            placeholder="Dosis"
-                                            value={tempDose}
-                                            onChange={e => setTempDose(e.target.value)}
-                                            className="text-xs"
-                                        />
-                                    </div>
-                                    <div className="md:col-span-3">
-                                        <Input
-                                            placeholder="Frecuencia (Ej: c/8hs)"
-                                            value={tempFreq}
-                                            onChange={e => setTempFreq(e.target.value)}
-                                            className="text-xs"
-                                        />
-                                    </div>
-                                    <div className="md:col-span-2">
-                                        <Input
-                                            placeholder="Cant."
-                                            type="number"
-                                            value={tempQty}
-                                            onChange={e => setTempQty(e.target.value)}
-                                            className="text-xs"
-                                        />
-                                    </div>
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-2 flex-grow">
+                                    <MedicationAutocomplete
+                                        value={tempMed}
+                                        onChange={setTempMed}
+                                        placeholder={t('medication_placeholder') || "Nombre..."}
+                                    />
+                                    <Input
+                                        size="sm"
+                                        placeholder="Dosis"
+                                        value={tempDose}
+                                        onChange={e => setTempDose(e.target.value)}
+                                    />
+                                    <Input
+                                        size="sm"
+                                        placeholder="Frecuencia"
+                                        value={tempFreq}
+                                        onChange={e => setTempFreq(e.target.value)}
+                                    />
+                                    <Input
+                                        size="sm"
+                                        placeholder="Cant."
+                                        type="number"
+                                        value={tempQty}
+                                        onChange={e => setTempQty(e.target.value)}
+                                    />
                                 </div>
                                 <Button
                                     type="button"
                                     variant="secondary"
-                                    className="h-[42px] px-4"
+                                    size="md"
                                     onClick={() => {
                                         if (tempMed.trim()) {
                                             const newItem = {
@@ -334,47 +318,45 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                     )}
                 </FormGroup>
 
-                <div className="flex flex-col gap-4 p-5 bg-slate-50/80 rounded-2xl border border-slate-200 shadow-inner">
-                    <div className="flex items-center gap-3">
+                <div className="form-panel">
+                    <div className="form-panel__item">
                         <input
                             type="checkbox"
                             id="req-bonified"
                             checked={bonified}
                             onChange={e => setBonified(e.target.checked)}
-                            className="w-5 h-5 cursor-pointer accent-blue-600 transition-transform hover:scale-110"
                         />
-                        <label htmlFor="req-bonified" className="text-sm font-bold text-main-800 cursor-pointer select-none">
-                            {t('bonificado') || 'Bonificado (Costo $0 para el paciente)'}
+                        <label htmlFor="req-bonified" className="form-panel__label">
+                            {t('bonificado') || 'Bonificado (Costo $0)'}
                         </label>
                     </div>
 
                     {!bonified && (
-                        <div className="ml-8 animate-fadeIn">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1 block">{t('payment_method') || 'Tipo de Pago'}</label>
+                        <div className="ml-8">
+                            <label className="text-xs font-bold text-gray-500 mb-2 block">{t('payment_method') || 'Tipo de Pago'}</label>
                             <div className="flex flex-wrap gap-2">
                                 {['cash', 'transfer', 'debit', 'credit', 'mercadopago'].map(m => (
-                                    <button
+                                    <TabButton
                                         key={m}
-                                        type="button"
+                                        variant="pill"
+                                        isActive={paymentMethod === m}
                                         onClick={() => setPaymentMethod(m)}
-                                        className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${paymentMethod === m ? 'bg-blue-600 text-white border-blue-600 shadow-md' : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300'}`}
                                     >
                                         {t(m) || m.charAt(0).toUpperCase() + m.slice(1)}
-                                    </button>
+                                    </TabButton>
                                 ))}
                             </div>
                         </div>
                     )}
 
-                    <div className="flex items-center gap-3">
+                    <div className="form-panel__item">
                         <input
                             type="checkbox"
                             id="req-forward"
                             checked={sendToDoctor}
                             onChange={e => setSendToDoctor(e.target.checked)}
-                            className="w-5 h-5 cursor-pointer accent-blue-600 transition-transform hover:scale-110"
                         />
-                        <label htmlFor="req-forward" className="text-sm font-bold text-main-800 cursor-pointer select-none">
+                        <label htmlFor="req-forward" className="form-panel__label">
                             {t('send_to_doctor') || 'Enviar a revisión médica'}
                         </label>
                     </div>

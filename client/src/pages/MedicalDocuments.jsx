@@ -20,27 +20,37 @@ import { timeAgo } from '../utils/time';
 const MedicalDocuments = () => {
     const controller = useMedicalDocumentsController();
     const {
-        user, t, activeTab, setActiveTab, requestsSubTab, setRequestsSubTab,
-        searchTerm, setSearchTerm, isEditing, setIsEditing,
+        user, t, activeTab, requestsSubTab,
+        searchTerm, isEditing,
         requests, files, prescriptions, licenses, doctors,
-        selectedFile, setSelectedFile, selectedPrescription, setSelectedPrescription,
-        selectedLicense, setSelectedLicense, selectedRequest, setSelectedRequest,
-        filePatient, setFilePatient, fileDesc, setFileDesc,
-        fileToDelete, setFileToDelete, actionModal, setActionModal, actionNote, setActionNote,
-        paymentModal, setPaymentModal, editData, setEditData, licenseEditData, setLicenseEditData,
-        requestEditData, setRequestEditData,
-        reqType, setReqType, reqNote, setReqNote, bonified, setBonified,
-        sendToDoctor, setSendToDoctor,
+        selectedFile, selectedPrescription,
+        selectedLicense, selectedRequest,
+        filePatient, fileDesc,
+        fileToDelete, actionModal, actionNote,
+        paymentModal, editData, licenseEditData,
+        requestEditData,
+        reqType, reqNote, bonified,
+        sendToDoctor,
 
         // Handlers
         filterItem, handleUpdateStatus, handleFileUpload, confirmFileDelete,
         handleUpdatePrescription, handleUpdateLicense, handleUpdateRequest, handleDeleteRequest,
-        handleDeletePrescription, handleDeleteLicense, fetchRequests, handleEditItem,
+        handleDeletePrescription, handleEditItem, handleDeleteLicense, fetchRequests,
 
         // Permissions
         canDeletePrescription, canDeleteLicense, canDeleteFile, canDeleteRequest,
-        printData
+        printData,
+        handlers
     } = controller;
+
+    const {
+        handleSearchChange, handleTabChange, handleSubTabChange,
+        handleFileDescChange, handleFilePatientChange, handleFileUploadChange,
+        handleActionNoteChange, handleEditDataChange, handleLicenseEditDataChange,
+        handleRequestEditDataChange, handleSelectMedication, toggleEditing,
+        closeActionModal, openActionModal, closePaymentModal, openPaymentModal,
+        closeDeleteFileModal, openDeleteFileModal
+    } = handlers;
 
     // --- Derived Data for Combined Views ---
     const combinedPrescriptions = [
@@ -97,7 +107,7 @@ const MedicalDocuments = () => {
                         <Button
                             key={tab.id}
                             variant="ghost"
-                            onClick={() => setActiveTab(tab.id)}
+                            onClick={() => handleTabChange(tab.id)}
                             className={`tab-nav__item ${activeTab === tab.id ? 'tab-nav__item--active' : ''}`}
                         >
                             <span className="mr-2">{tab.icon}</span>
@@ -115,7 +125,7 @@ const MedicalDocuments = () => {
                                 placeholder={t('search_docs_placeholder')}
                                 className="search-box__input"
                                 value={searchTerm}
-                                onChange={e => setSearchTerm(e.target.value)}
+                                onChange={e => handleSearchChange(e.target.value)}
                             />
                         </div>
                     </div>
@@ -127,14 +137,14 @@ const MedicalDocuments = () => {
                             <nav className="tab-nav tab-nav--sub mb-2">
                                 <Button
                                     variant="ghost"
-                                    onClick={() => setRequestsSubTab('list')}
+                                    onClick={() => handleSubTabChange('list')}
                                     className={`tab-nav__item ${requestsSubTab === 'list' ? 'tab-nav__item--active' : ''}`}
                                 >
                                     📋 {t('request_status')}
                                 </Button>
                                 <Button
                                     variant="ghost"
-                                    onClick={() => setRequestsSubTab('new')}
+                                    onClick={() => handleSubTabChange('new')}
                                     className={`tab-nav__item ${requestsSubTab === 'new' ? 'tab-nav__item--active' : ''}`}
                                 >
                                     ➕ {t('new_request')}
@@ -148,7 +158,7 @@ const MedicalDocuments = () => {
                                     initialSendToDoctor={sendToDoctor}
                                     onRequestCreated={() => {
                                         fetchRequests();
-                                        setRequestsSubTab('list');
+                                        handleSubTabChange('list');
                                     }}
                                 />
                             ) : (
@@ -178,8 +188,8 @@ const MedicalDocuments = () => {
                                         requests={requests}
                                         filterItem={filterItem}
                                         handleDeleteRequest={handleDeleteRequest}
-                                        openActionModal={(type, id) => setActionModal({ open: true, type, id })}
-                                        setPaymentModal={setPaymentModal}
+                                        openActionModal={openActionModal}
+                                        setPaymentModal={openPaymentModal}
                                         canDelete={user.role === 'admin' || canDeleteRequest}
                                         handleEditRequest={handleEditItem}
                                     />
@@ -199,15 +209,15 @@ const MedicalDocuments = () => {
                                     <form className="flex flex-col gap-4" onSubmit={handleFileUpload}>
                                         <div className="input-group">
                                             <label className="input-label">{t('patient_label')}</label>
-                                            <PatientSearchSelect value={filePatient} onChange={setFilePatient} placeholder={t('select_patient')} />
+                                            <PatientSearchSelect value={filePatient} onChange={handleFilePatientChange} placeholder={t('select_patient')} />
                                         </div>
                                         <div className="input-group">
                                             <label className="input-label">{t('description')}</label>
-                                            <input className="input-field" value={fileDesc} onChange={e => setFileDesc(e.target.value)} placeholder="e.g. Lab Results PDF" required />
+                                            <input className="input-field" value={fileDesc} onChange={e => handleFileDescChange(e.target.value)} placeholder="e.g. Lab Results PDF" required />
                                         </div>
                                         <div className="input-group">
                                             <label className="input-label">{t('file')}</label>
-                                            <input type="file" className="input-field" onChange={e => setSelectedFile(e.target.files[0])} required />
+                                            <input type="file" className="input-field" onChange={e => handleFileUploadChange(e.target.files[0])} required />
                                         </div>
                                         <Button type="submit" className="w-full">{t('upload_file')}</Button>
                                     </form>
@@ -253,7 +263,7 @@ const MedicalDocuments = () => {
                                                                             variant="ghost"
                                                                             size="sm-compact"
                                                                             className="text-red-400 hover:text-red-600 hover:bg-red-50"
-                                                                            onClick={(e) => { e.stopPropagation(); setFileToDelete(f); }}
+                                                                            onClick={(e) => { e.stopPropagation(); openDeleteFileModal(f); }}
                                                                         >
                                                                             🗑️
                                                                         </Button>
@@ -307,8 +317,8 @@ const MedicalDocuments = () => {
                                                 onClick={() => {
                                                     setReqType(activeTab === 'prescriptions' ? 'prescription' :
                                                         activeTab === 'licenses' ? 'license' : 'certificate');
-                                                    setActiveTab('requests');
-                                                    setRequestsSubTab('new');
+                                                    handleTabChange('requests');
+                                                    handleSubTabChange('new');
                                                     // Pre-select direct completion if permitted
                                                     setSendToDoctor(false);
                                                 }}
@@ -409,24 +419,24 @@ const MedicalDocuments = () => {
 
             <Modal
                 isOpen={actionModal.open}
-                onClose={() => setActionModal({ open: false, type: '', id: null })}
+                onClose={closeActionModal}
                 title={actionModal.type === 'completed' ? t('approve_request') : t('reject_request')}
                 footer={
                     <>
-                        <Button variant="secondary" onClick={() => setActionModal({ open: false, type: '', id: null })}>{t('cancel')}</Button>
+                        <Button variant="secondary" onClick={closeActionModal}>{t('cancel')}</Button>
                         <Button onClick={() => handleUpdateStatus(actionModal.id, actionModal.type, actionNote)}>{actionModal.type === 'completed' ? t('approve') : t('reject')}</Button>
                     </>
                 }
             >
                 <div className="input-group">
                     <label className="input-label">{actionModal.type === 'completed' ? t('message_optional') : t('reason_rejection')}</label>
-                    <textarea className="input-field" rows="3" value={actionNote} onChange={e => setActionNote(e.target.value)} autoFocus />
+                    <textarea className="input-field" rows="3" value={actionNote} onChange={e => handleActionNoteChange(e.target.value)} autoFocus />
                 </div>
             </Modal>
 
             <TransactionModal
                 isOpen={paymentModal.open}
-                onClose={() => setPaymentModal({ ...paymentModal, open: false })}
+                onClose={closePaymentModal}
                 initialData={paymentModal.initialData}
                 requestId={paymentModal.reqId}
                 onSuccess={fetchRequests}
@@ -434,11 +444,11 @@ const MedicalDocuments = () => {
 
             <Modal
                 isOpen={!!fileToDelete}
-                onClose={() => setFileToDelete(null)}
+                onClose={closeDeleteFileModal}
                 title={t('confirm_delete')}
                 footer={
                     <>
-                        <Button variant="secondary" onClick={() => setFileToDelete(null)}>{t('cancel')}</Button>
+                        <Button variant="secondary" onClick={closeDeleteFileModal}>{t('cancel')}</Button>
                         <Button variant="danger" onClick={confirmFileDelete}>{t('delete')}</Button>
                     </>
                 }
@@ -450,11 +460,11 @@ const MedicalDocuments = () => {
             {isEditing && selectedPrescription && (
                 <Modal
                     isOpen={isEditing && !!selectedPrescription}
-                    onClose={() => { setIsEditing(false); setSelectedPrescription(null); }}
+                    onClose={() => toggleEditing(false)}
                     title={`${t('prescription_for')} ${selectedPrescription.patient_name}`}
                     footer={
                         <>
-                            <Button variant="secondary" onClick={() => { setIsEditing(false); setSelectedPrescription(null); }}>{t('cancel')}</Button>
+                            <Button variant="secondary" onClick={() => toggleEditing(false)}>{t('cancel')}</Button>
                             <Button onClick={handleUpdatePrescription}>{t('save')}</Button>
                         </>
                     }
@@ -465,17 +475,13 @@ const MedicalDocuments = () => {
                             <MedicationAutocomplete
                                 value=""
                                 onChange={() => { }}
-                                onSelectMedication={(med) => {
-                                    const current = editData.medications.trim();
-                                    const newValue = current ? `${current}\n${med.full_label}` : med.full_label;
-                                    setEditData({ ...editData, medications: newValue });
-                                }}
+                                onSelectMedication={handleSelectMedication}
                             />
-                            <textarea className="input-field mt-2" rows="4" value={editData.medications} onChange={e => setEditData({ ...editData, medications: e.target.value })} />
+                            <textarea className="input-field mt-2" rows="4" value={editData.medications} onChange={e => handleEditDataChange('medications', e.target.value)} />
                         </div>
                         <div className="input-group">
                             <label className="input-label">{t('instructions')}</label>
-                            <textarea className="input-field" rows="3" value={editData.instructions} onChange={e => setEditData({ ...editData, instructions: e.target.value })} />
+                            <textarea className="input-field" rows="3" value={editData.instructions} onChange={e => handleEditDataChange('instructions', e.target.value)} />
                         </div>
                     </div>
                 </Modal>
@@ -484,11 +490,11 @@ const MedicalDocuments = () => {
             {isEditing && selectedLicense && (
                 <Modal
                     isOpen={isEditing && !!selectedLicense}
-                    onClose={() => { setIsEditing(false); setSelectedLicense(null); }}
+                    onClose={() => toggleEditing(false)}
                     title={`${t('license_for')} ${selectedLicense.patient_name}`}
                     footer={
                         <>
-                            <Button variant="secondary" onClick={() => { setIsEditing(false); setSelectedLicense(null); }}>{t('cancel')}</Button>
+                            <Button variant="secondary" onClick={() => toggleEditing(false)}>{t('cancel')}</Button>
                             <Button onClick={handleUpdateLicense}>{t('save')}</Button>
                         </>
                     }
@@ -497,16 +503,16 @@ const MedicalDocuments = () => {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="input-group">
                                 <label className="input-label">{t('start_date')}</label>
-                                <input type="date" className="input-field" value={licenseEditData.start_date} onChange={e => setLicenseEditData({ ...licenseEditData, start_date: e.target.value })} />
+                                <input type="date" className="input-field" value={licenseEditData.start_date} onChange={e => handleLicenseEditDataChange('start_date', e.target.value)} />
                             </div>
                             <div className="input-group">
                                 <label className="input-label">{t('days_duration')}</label>
-                                <input type="number" className="input-field" value={licenseEditData.days_duration} onChange={e => setLicenseEditData({ ...licenseEditData, days_duration: e.target.value })} />
+                                <input type="number" className="input-field" value={licenseEditData.days_duration} onChange={e => handleLicenseEditDataChange('days_duration', e.target.value)} />
                             </div>
                         </div>
                         <div className="input-group">
                             <label className="input-label">{t('diagnosis')}</label>
-                            <textarea className="input-field" rows="3" value={licenseEditData.diagnosis} onChange={e => setLicenseEditData({ ...licenseEditData, diagnosis: e.target.value })} />
+                            <textarea className="input-field" rows="3" value={licenseEditData.diagnosis} onChange={e => handleLicenseEditDataChange('diagnosis', e.target.value)} />
                         </div>
                     </div>
                 </Modal>
@@ -515,11 +521,11 @@ const MedicalDocuments = () => {
             {isEditing && selectedRequest && (
                 <Modal
                     isOpen={isEditing && !!selectedRequest}
-                    onClose={() => { setIsEditing(false); setSelectedRequest(null); }}
+                    onClose={() => toggleEditing(false)}
                     title={t('edit_request')}
                     footer={
                         <>
-                            <Button variant="secondary" onClick={() => { setIsEditing(false); setSelectedRequest(null); }}>{t('cancel')}</Button>
+                            <Button variant="secondary" onClick={() => toggleEditing(false)}>{t('cancel')}</Button>
                             <Button onClick={handleUpdateRequest}>{t('save')}</Button>
                         </>
                     }
@@ -527,18 +533,18 @@ const MedicalDocuments = () => {
                     <div className="flex flex-col gap-4">
                         <div className="input-group">
                             <label className="input-label">{t('request_note')}</label>
-                            <textarea className="input-field" rows="3" value={requestEditData.request_note} onChange={e => setRequestEditData({ ...requestEditData, request_note: e.target.value })} />
+                            <textarea className="input-field" rows="3" value={requestEditData.request_note} onChange={e => handleRequestEditDataChange('request_note', e.target.value)} />
                         </div>
                         <div className="input-group">
                             <label className="input-label">{t('doctor_reply')}</label>
-                            <textarea className="input-field" rows="3" value={requestEditData.doctor_note} onChange={e => setRequestEditData({ ...requestEditData, doctor_note: e.target.value })} />
+                            <textarea className="input-field" rows="3" value={requestEditData.doctor_note} onChange={e => handleRequestEditDataChange('doctor_note', e.target.value)} />
                         </div>
                         <div className="flex items-center gap-3 p-3 bg-blue-50/50 rounded-lg border border-blue-100">
                             <input
                                 type="checkbox"
                                 id="edit-req-bonified"
                                 checked={requestEditData.bonified}
-                                onChange={e => setRequestEditData({ ...requestEditData, bonified: e.target.checked })}
+                                onChange={e => handleRequestEditDataChange('bonified', e.target.checked)}
                                 className="w-5 h-5 cursor-pointer accent-blue-600"
                             />
                             <label htmlFor="edit-req-bonified" className="text-sm font-bold text-main-800 cursor-pointer select-none">
@@ -553,7 +559,7 @@ const MedicalDocuments = () => {
                                     <CurrencyInput
                                         className="input-field border-slate-200"
                                         value={requestEditData.debt_amount}
-                                        onChange={e => setRequestEditData({ ...requestEditData, debt_amount: e.target.value })}
+                                        onChange={e => handleRequestEditDataChange('debt_amount', e.target.value)}
                                     />
                                 </div>
 
@@ -564,7 +570,7 @@ const MedicalDocuments = () => {
                                             <button
                                                 key={m}
                                                 type="button"
-                                                onClick={() => setRequestEditData({ ...requestEditData, payment_method: m })}
+                                                onClick={() => handleRequestEditDataChange('payment_method', m)}
                                                 className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all duration-200 ${requestEditData.payment_method === m ? 'bg-blue-600 text-white border-blue-600 shadow-md ring-2 ring-blue-100' : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300'}`}
                                             >
                                                 {t(m) || m.charAt(0).toUpperCase() + m.slice(1)}

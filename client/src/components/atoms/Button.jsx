@@ -1,41 +1,33 @@
 import React from 'react';
+import './Button.css';
 
 const Button = ({
     children,
     onClick,
     type = 'button',
-    variant = 'primary',
-    size = 'md',
+    variant = 'primary', // primary, secondary, danger, outline-danger, accent, link, ghost, status
+    size = 'md', // sm, sm-compact, md, lg
     disabled = false,
     className = '',
     title = '',
     tooltip = null,
-    icon = null
+    icon = null,
+    active = false
 }) => {
-    const baseStyles = 'btn';
-    const variantStyles = {
-        primary: 'btn-primary',
-        secondary: 'btn-secondary',
-        danger: 'btn-danger',
-        'outline-danger': 'btn-outline-danger',
-        accent: 'btn-accent',
-        link: 'btn-link',
-        status: 'btn-status-complete'
-    };
+    const baseClass = 'btn';
 
-    const sizeStyles = {
-        sm: 'btn-sm',
-        'sm-compact': 'btn-sm-compact',
-        md: '',
-        lg: 'btn-lg'
-    };
+    // Construct BEM classes
+    const variantClass = variant ? `${baseClass}--${variant}` : '';
+    const sizeClass = size && size !== 'md' ? `${baseClass}--${size}` : '';
+    const activeClass = active ? `${baseClass}--active` : '';
 
     const combinedClassName = `
-        ${baseStyles} 
-        ${variantStyles[variant] || variantStyles.primary} 
-        ${sizeStyles[size] || ''} 
+        ${baseClass} 
+        ${variantClass} 
+        ${sizeClass} 
+        ${activeClass}
         ${className}
-    `.trim();
+    `.trim().replace(/\s+/g, ' ');
 
     return (
         <button
@@ -43,11 +35,11 @@ const Button = ({
             onClick={onClick}
             disabled={disabled}
             className={combinedClassName}
-            title={title} // Native title as fallback
+            title={title}
             data-tooltip={tooltip}
         >
-            {icon && <span className="btn-icon">{icon}</span>}
-            {children}
+            {icon && <span className="btn__icon">{icon}</span>}
+            {children && <span className="btn__content">{children}</span>}
         </button>
     );
 };

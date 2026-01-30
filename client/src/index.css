@@ -499,39 +499,39 @@ button:disabled {
 
 .btn-secondary,
 .btn-simple-white {
-  background: white !important;
-  border: 1px solid var(--gray-300) !important;
-  color: var(--gray-800) !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  background: white;
+  border: 1px solid var(--gray-300);
+  color: var(--gray-800);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .btn-secondary:hover,
 .btn-simple-white:hover {
-  background: var(--gray-50) !important;
-  border-color: var(--gray-400) !important;
-  color: black !important;
+  background: var(--gray-50);
+  border-color: var(--gray-400);
+  color: black;
 }
 
 .btn-danger,
 .btn-danger-custom {
-  background: linear-gradient(135deg, var(--red-500) 0%, var(--red-600) 100%) !important;
-  color: white !important;
-  border: none !important;
-  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2) !important;
+  background: linear-gradient(135deg, var(--red-500) 0%, var(--red-600) 100%);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
 }
 
 .btn-danger:hover,
 .btn-danger-custom:hover {
   filter: brightness(1.05);
-  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3) !important;
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
 }
 
 .btn-ghost,
 .btn-text,
 .btn-icon-base {
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
+  background: none;
+  border: none;
+  box-shadow: none;
   color: var(--text-muted);
   padding: 0.5rem;
 }
@@ -539,7 +539,7 @@ button:disabled {
 .btn-ghost:hover,
 .btn-text:hover,
 .btn-icon-base:hover {
-  background: rgba(0, 0, 0, 0.05) !important;
+  background: rgba(0, 0, 0, 0.05);
   color: var(--primary-color);
   transform: none;
 }
@@ -548,8 +548,8 @@ button:disabled {
 .btn-sm,
 .btn-sm-compact,
 .btn-sm-icon {
-  padding: 0.4rem 0.8rem !important;
-  font-size: 0.8rem !important;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
   min-height: auto;
   border-radius: 0.5rem;
 }

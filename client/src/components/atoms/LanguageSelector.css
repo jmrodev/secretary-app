@@ -1,0 +1,23 @@
+.language-selector {
+    width: 100%;
+}
+
+.language-selector__button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+}
+
+.language-selector__icon {
+    font-size: 1.25rem;
+    margin-right: 0.5rem;
+}
+
+.language-selector__text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary, #475569);
+}

@@ -1,205 +1,27 @@
-import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useMessage } from '../../context/MessageContext';
-import api from '../../api/axios';
+import { useFloatingChatController } from '../../controllers/useFloatingChatController';
 
 const FloatingChat = () => {
     const { user } = useAuth();
     const { showMessage } = useMessage();
-    const [isOpen, setIsOpen] = useState(false);
-    const [selectedConvo, setSelectedConvo] = useState(null);
-    const [conversations, setConversations] = useState([]);
-    const [thread, setThread] = useState([]);
-    const [unreadCount, setUnreadCount] = useState(0);
-    const [messageText, setMessageText] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [sending, setSending] = useState(false);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [recipients, setRecipients] = useState([]);
-    const [isOtherTyping, setIsOtherTyping] = useState(false);
-
-    const [permissionGranted, setPermissionGranted] = useState(false);
-
-    const scrollRef = useRef(null);
-    const typingTimeoutRef = useRef(null);
-    const notificationSound = useRef(new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3')); // Notification sound
-
-
-    useEffect(() => {
-        if (!user || user.role === 'patient') return;
-
-        // Request notification permission
-        if ("Notification" in window && Notification.permission !== "granted") {
-            Notification.requestPermission().then(permission => {
-                setPermissionGranted(permission === "granted");
-            });
-        }
-
-        loadConversations();
-        loadUnreadCount();
-        loadRecipients();
-
-        const interval = setInterval(() => {
-            loadConversations();
-            loadUnreadCount();
-        }, 15000);
-
-        return () => clearInterval(interval);
-    }, [user]);
-
-    useEffect(() => {
-        if (selectedConvo) {
-            loadThread(selectedConvo.other_user_id);
-            const threadInterval = setInterval(() => {
-                loadThread(selectedConvo.other_user_id, true);
-                checkTypingStatus(selectedConvo.other_user_id);
-            }, 5000);
-            return () => clearInterval(threadInterval);
-        }
-    }, [selectedConvo]);
-
-    useEffect(() => {
-        if (scrollRef.current) {
-            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-        }
-    }, [thread]);
-
-    const loadConversations = async () => {
-        try {
-            const res = await api.get('/messages/conversations');
-            const newData = Array.isArray(res.data) ? res.data : [];
-
-            // Check for new messages to notify
-            if (conversations.length > 0 && newData.length > 0) {
-                const totalUnreadNew = newData.reduce((acc, c) => acc + (c.unread_count || 0), 0);
-                const totalUnreadOld = conversations.reduce((acc, c) => acc + (c.unread_count || 0), 0);
-
-                if (totalUnreadNew > totalUnreadOld) {
-                    const latestMsg = newData.find(c => (c.unread_count || 0) > 0);
-                    if (latestMsg && (!selectedConvo || selectedConvo.other_user_id !== latestMsg.other_user_id)) {
-                        playNotification(latestMsg);
-                    }
-                }
-            }
-
-            setConversations(newData);
-        } catch (err) {
-            console.error('Error loading conversations:', err);
-        }
-    };
-
-    const playNotification = (convo) => {
-        // Play sound
-        notificationSound.current.play().catch(e => console.log('Sound blocked'));
-
-        // Browser notification
-        if ("Notification" in window && Notification.permission === "granted") {
-            new Notification(`Mensaje de ${convo.other_display_name}`, {
-                body: convo.message,
-                icon: '/logo.png'
-            });
-        }
-    };
-
-    const loadThread = async (otherId, silent = false) => {
-        if (!silent) setLoading(true);
-        try {
-            const res = await api.get(`/messages/thread/${otherId}`);
-            setThread(Array.isArray(res.data) ? res.data : []);
-        } catch (err) {
-            console.error('Error loading thread:', err);
-        } finally {
-            if (!silent) setLoading(false);
-        }
-    };
-
-    const loadUnreadCount = async () => {
-        try {
-            const res = await api.get('/messages/unread-count');
-            setUnreadCount(res.data.unread_count || 0);
-        } catch (err) {
-            console.error('Error loading unread count:', err);
-        }
-    };
-
-    const loadRecipients = async () => {
-        try {
-            const res = await api.get('/messages/recipients');
-            setRecipients(res.data || []);
-        } catch (err) {
-            console.error('Error loading recipients:', err);
-        }
-    };
-
-    const checkTypingStatus = async (otherId) => {
-        try {
-            const res = await api.get(`/messages/typing/${otherId}`);
-            setIsOtherTyping(res.data.is_typing);
-        } catch (err) {
-            console.error('Error checking typing status:', err);
-        }
-    };
-
-    const notifyTyping = async () => {
-        if (!selectedConvo) return;
-        try {
-            await api.post('/messages/typing', { target_id: selectedConvo.other_user_id });
-        } catch (err) {
-            console.error('Error notifying typing:', err);
-        }
-    };
-
-    const handleTyping = (e) => {
-        setMessageText(e.target.value);
-        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-
-        // Notify once every 3 seconds while typing
-        if (!typingTimeoutRef.current) {
-            notifyTyping();
-            typingTimeoutRef.current = setTimeout(() => {
-                typingTimeoutRef.current = null;
-            }, 3000);
-        }
-    };
-
-    const handleSendMessage = async (e) => {
-        e.preventDefault();
-        if (!messageText.trim() || !selectedConvo) return;
-
-        setSending(true);
-        try {
-            await api.post('/messages', {
-                recipient_id: selectedConvo.other_user_id,
-                recipient_type: 'individual',
-                subject: selectedConvo.subject?.startsWith('Re:') ? selectedConvo.subject : `Re: ${selectedConvo.subject || ''}`,
-                message: messageText
-            });
-
-            setMessageText('');
-            loadThread(selectedConvo.other_user_id, true);
-            loadConversations();
-        } catch (err) {
-            console.error('Error sending message:', err);
-            showMessage('Error al enviar mensaje', 'error');
-        } finally {
-            setSending(false);
-        }
-    };
-
-    const startNewChat = (recipient) => {
-        const existing = conversations.find(c => c.other_user_id === recipient.id);
-        if (existing) {
-            setSelectedConvo(existing);
-        } else {
-            setSelectedConvo({
-                other_user_id: recipient.id,
-                other_display_name: recipient.display_name,
-                subject: 'Nuevo Mensaje'
-            });
-            setThread([]);
-        }
-        setSearchTerm('');
-    };
+    const {
+        isOpen, toggleChat, closeChat,
+        selectedConvo, backToList,
+        conversations,
+        thread,
+        unreadCount,
+        messageText,
+        loading,
+        sending,
+        searchTerm, setSearchTerm,
+        recipients,
+        isOtherTyping,
+        scrollRef,
+        handleTyping,
+        handleSendMessage,
+        startNewChat
+    } = useFloatingChatController(user, showMessage);
 
     const formatDate = (dateString = '') => {
         if (!dateString) return '';
@@ -220,10 +42,10 @@ const FloatingChat = () => {
         <div className="floating-chat-container">
             {isOpen ? (
                 <div className="chat-widget-window">
-                    <div className="widget-header" onClick={() => !selectedConvo && setIsOpen(false)}>
+                    <div className="widget-header" onClick={() => !selectedConvo && closeChat()}>
                         <h4>
                             {selectedConvo ? (
-                                <span onClick={(e) => { e.stopPropagation(); setSelectedConvo(null); setThread([]); setIsOtherTyping(false); }}>
+                                <span onClick={(e) => { e.stopPropagation(); backToList(); }}>
                                     ⬅️ {selectedConvo.other_display_name}
                                 </span>
                             ) : (
@@ -231,7 +53,7 @@ const FloatingChat = () => {
                             )}
                         </h4>
                         <div className="widget-controls">
-                            <button className="control-btn" onClick={() => setIsOpen(false)}>➖</button>
+                            <button className="control-btn" onClick={closeChat}>➖</button>
                         </div>
                     </div>
 

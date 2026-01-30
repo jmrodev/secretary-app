@@ -9,6 +9,7 @@ import AppointmentActionModal from '../components/organisms/AppointmentActionMod
 import PrescriptionModal from '../components/organisms/PrescriptionModal';
 import PatientHistoryModal from '../components/molecules/PatientHistoryModal';
 import TransactionModal from '../components/molecules/TransactionModal';
+import './Dashboard.css';
 
 const Dashboard = () => {
     const controller = useDashboardController();
@@ -26,28 +27,42 @@ const Dashboard = () => {
         handleCancel,
         handleWhatsApp,
         handlePrescriptionSubmit,
+        handleOpenPayment,
+        handleOpenHistory,
+        handleOpenPrescribe,
+        handleOpenReschedule,
+        handleOpenSync,
+        handleUpdateType,
+        handleHardEdit,
+        handleSaveNote,
         navigate
     } = controller;
 
-    if (!user) return <div className="centered-loader"><div className="status-display__spinner"></div></div>;
+    if (!user) {
+        return (
+            <div className="centered-loader">
+                <div className="status-display__spinner"></div>
+            </div>
+        );
+    }
 
     return (
         <div className="app-layout">
             <Sidebar />
 
-            <main className="main-content">
-                <header className="page-header">
-                    <div className="page-header__info">
-                        <h1 className="page-header__title">{t('dashboard') || 'Panel de Control'}</h1>
-                        <p className="page-header__subtitle">
-                            {t('welcome_back') || 'Hola'}, <span className="font-bold text-main-800">{user.full_name || user.username}</span>. {t('dashboard_subtitle') || 'Aquí tienes un resumen de la actividad de hoy.'}
+            <main className="dashboard">
+                <header className="dashboard__header">
+                    <div className="dashboard__header-info">
+                        <h1 className="dashboard__title">{t('dashboard') || 'Panel de Control'}</h1>
+                        <p className="dashboard__subtitle">
+                            {t('welcome_back') || 'Hola'}, <span className="font-bold">{user.full_name || user.username}</span>. {t('dashboard_subtitle') || 'Aquí tienes un resumen de la actividad de hoy.'}
                         </p>
                     </div>
                 </header>
 
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+                <div className="dashboard__grid">
                     {/* Sidebar Stats */}
-                    <div className="lg:col-span-1">
+                    <aside className="dashboard__sidebar">
                         <DashboardSidebar
                             stats={stats}
                             newPatientStats={newPatientStats}
@@ -55,33 +70,34 @@ const Dashboard = () => {
                             user={user}
                             t={t}
                         />
-                    </div>
+                    </aside>
 
                     {/* Main Content Area */}
-                    <div className="lg:col-span-3 flex flex-col gap-8">
+                    <div className="dashboard__content">
                         {(user.role === 'secretary' || user.role === 'doctor' || user.role === 'admin') && (
-                            <nav className="tab-nav">
-                                <Button
-                                    variant="ghost"
-                                    className={`tab-nav__item ${activeTab === 'requirements' ? 'tab-nav__item--active' : ''}`}
-                                    onClick={() => setActiveTab('requirements')}
-                                >
-                                    📋 {t('ongoing_requirements')}
+                            <nav className="dashboard__nav">
+                                <div className="dashboard__nav-item">
+                                    <Button
+                                        variant="ghost"
+                                        active={activeTab === 'requirements'}
+                                        onClick={() => setActiveTab('requirements')}
+                                    >
+                                        📋 {t('ongoing_requirements')}
+                                    </Button>
                                     {pendingReqCount > 0 && (
-                                        <span className="dot-badge ml-2 bg-red-500 text-white">{pendingReqCount}</span>
+                                        <span className="dashboard__nav-badge">{pendingReqCount}</span>
                                     )}
-                                </Button>
+                                </div>
                             </nav>
                         )}
 
-                        <section className="tab-content animate-fadeIn">
+                        <section className="dashboard__tab-content animate-fadeIn">
                             {activeTab === 'requirements' && (user.role === 'secretary' || user.role === 'doctor' || user.role === 'admin') && (
-                                <div className="flex flex-col gap-4">
-                                    <div className="flex items-center justify-end">
+                                <div className="requirements-section">
+                                    <div className="dashboard__section-header">
                                         <Button
                                             variant="ghost"
                                             size="sm-compact"
-                                            className="text-blue-600 hover:bg-blue-50"
                                             onClick={() => navigate('/requests')}
                                         >
                                             {t('view_all')} →
@@ -102,45 +118,15 @@ const Dashboard = () => {
                     onUpdateStatus={handleUpdateStatus}
                     onDelete={handleDelete}
                     onCancel={handleCancel}
-                    onPay={(appt) => {
-                        setPaymentModal({
-                            open: true,
-                            initialData: {
-                                type: 'income_patient',
-                                amount: appt.cost || 0,
-                                patientId: appt.patient_id,
-                                patientName: appt.patient_name,
-                                patientDni: appt.patient_dni,
-                                patientUserId: appt.patient_user_id,
-                                doctorId: appt.doctor_id,
-                                description: `Payment for appointment on ${new Date(appt.appointment_date).toLocaleDateString()}`,
-                                apptId: appt.id
-                            },
-                            apptId: appt.id
-                        });
-                        setActionModal({ ...actionModal, open: false });
-                    }}
+                    onPay={handleOpenPayment}
                     onWhatsApp={handleWhatsApp}
-                    onHistory={(appt) => {
-                        setHistoryModal({
-                            open: true,
-                            patientId: appt.patient_id,
-                            patientName: appt.patient_name
-                        });
-                        setActionModal({ ...actionModal, open: false });
-                    }}
-                    onPrescribe={(appt) => {
-                        setPrescribeModal({
-                            open: true,
-                            apptId: appt.id,
-                            patientName: appt.patient_name,
-                            medications: '',
-                            instructions: ''
-                        });
-                        setActionModal({ ...actionModal, open: false });
-                    }}
-                    onReschedule={(appt) => navigate('/appointments', { state: { rescheduleAppt: appt } })}
-                    onSync={(appt) => navigate('/appointments', { state: { syncAppt: appt } })}
+                    onUpdateType={handleUpdateType}
+                    onHardEdit={handleHardEdit}
+                    onHistory={handleOpenHistory}
+                    onPrescribe={handleOpenPrescribe}
+                    onReschedule={handleOpenReschedule}
+                    onSync={handleOpenSync}
+                    onSaveNote={handleSaveNote}
                     fetchAppointments={refreshDashboard}
                 />
 
@@ -174,3 +160,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+

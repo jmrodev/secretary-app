@@ -6,13 +6,10 @@ const PatientHistoryView = ({
     loading,
     onClose,
     t,
-    setSelectedDate,
-    setViewDoctorId,
-    setSelectedPatient,
-    setShowForm,
-    setReason,
-    searchPatientId
+    searchPatientId,
+    handlers
 }) => {
+    const { handleGoToAppointment, handleRepeatAppointment } = handlers;
     if (loading) return <p className="p-8 text-center">Cargando...</p>;
 
     const upcoming = patientAppointments.filter(a => new Date(a.appointment_date) >= new Date());
@@ -62,14 +59,7 @@ const PatientHistoryView = ({
                                     </div>
                                     <button
                                         className="btn btn-sm btn-outline-primary w-full flex items-center justify-center gap-2 mt-1"
-                                        onClick={() => {
-                                            const apptDate = new Date(appt.appointment_date);
-                                            const offset = apptDate.getTimezoneOffset() * 60000;
-                                            const localDate = new Date(apptDate.getTime() + offset);
-                                            setSelectedDate(localDate);
-                                            setViewDoctorId(appt.doctor_id);
-                                            onClose();
-                                        }}
+                                        onClick={() => handleGoToAppointment(appt.id, appt.doctor_id, appt.appointment_date, onClose)}
                                     >
                                         ➡️ Ir al Turno
                                     </button>
@@ -79,10 +69,7 @@ const PatientHistoryView = ({
                     )}
                     <button
                         className="btn btn-primary mt-4 w-full"
-                        onClick={() => {
-                            setSelectedPatient(searchPatientId);
-                            setShowForm(true);
-                        }}
+                        onClick={() => handleRepeatAppointment(searchPatientId, 'Consulta')}
                     >
                         + {t('new_appointment') || 'Nuevo Turno'}
                     </button>
@@ -114,11 +101,7 @@ const PatientHistoryView = ({
                                     <div className="flex gap-2 justify-end border-t border-slate-200 pt-2">
                                         <button
                                             className="text-xs text-blue-600 hover:underline flex items-center gap-1 font-medium"
-                                            onClick={() => {
-                                                setSelectedPatient(searchPatientId);
-                                                setReason(appt.reason);
-                                                setShowForm(true);
-                                            }}
+                                            onClick={() => handleRepeatAppointment(searchPatientId, appt.reason)}
                                             title={t('repeat_appointment')}
                                         >
                                             🔄 {t('repeat_appointment')}

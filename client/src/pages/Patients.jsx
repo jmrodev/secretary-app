@@ -44,31 +44,17 @@ const Patients = () => {
         handleEditClick,
         handleUpdatePatient,
         handleOpenDebtModal,
+        handleDebtAmountChange,
+        handleDebtMethodChange,
         handlePayDebt,
         handleRatingChange,
+        handleCycleRating,
         handleToggleNew,
         handleGenerateQR,
-        handleGeneratePrescriptionLink
+        handleGeneratePrescriptionLink,
+        calculateFinancialRating,
+        calculateAttendanceRating,
     } = controller;
-
-    // --- Rating Helpers ---
-    const calculateFinancialRating = (debt) => {
-        if (debt <= 0) return 5;
-        if (debt < 1000) return 4;
-        if (debt < 5000) return 3;
-        if (debt < 10000) return 2;
-        return 1;
-    };
-
-    const calculateAttendanceRating = (total, missed) => {
-        if (!total || total === 0) return 5;
-        const ratio = (total - missed) / total;
-        if (ratio >= 0.95) return 5;
-        if (ratio >= 0.85) return 4;
-        if (ratio >= 0.70) return 3;
-        if (ratio >= 0.50) return 2;
-        return 1;
-    };
 
     if (loading) return <div className="centered-loader"><div className="status-display__spinner"></div><p>{t('loading')}</p></div>;
 
@@ -171,7 +157,7 @@ const Patients = () => {
                                 t={t}
                                 onViewDetails={handleViewDetails}
                                 onOpenDebt={handleOpenDebtModal}
-                                onToggleRating={handleRatingChange}
+                                onToggleRating={handleCycleRating}
                                 calculateFinancialRating={calculateFinancialRating}
                                 calculateAttendanceRating={calculateAttendanceRating}
                             />
@@ -239,9 +225,9 @@ const Patients = () => {
                 onClose={() => setDebtModal({ ...debtModal, open: false })}
                 onConfirm={handlePayDebt}
                 amount={debtModal.params.amount}
-                onAmountChange={val => setDebtModal(prev => ({ ...prev, params: { ...prev.params, amount: val } }))}
+                onAmountChange={handleDebtAmountChange}
                 method={debtModal.params.method}
-                onMethodChange={val => setDebtModal(prev => ({ ...prev, params: { ...prev.params, method: val } }))}
+                onMethodChange={handleDebtMethodChange}
                 t={t}
             />
 

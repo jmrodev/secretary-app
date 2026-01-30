@@ -25,7 +25,6 @@ const NextSlotCalendarModal = ({
     const slotsByDate = useMemo(() => {
         const grouped = {};
         if (nextSlotData?.results) {
-            console.log('📅 NextSlotData:', nextSlotData);
             nextSlotData.results.forEach(day => {
                 const inHours = day.slots.filter(s => !s.is_out_of_hours).length;
                 const outHours = day.slots.filter(s => s.is_out_of_hours).length;
@@ -37,7 +36,6 @@ const NextSlotCalendarModal = ({
                     dayName: day.dayName
                 };
             });
-            console.log('📊 Slots grouped by date:', grouped);
         } else {
             // console.log('⚠️ No nextSlotData or results');
         }
@@ -100,7 +98,6 @@ const NextSlotCalendarModal = ({
                 const [year, month] = firstDate.split('-');
                 const firstDataMonth = new Date(parseInt(year), parseInt(month) - 1, 1);
                 setCurrentMonth(firstDataMonth);
-                console.log('📍 Navegando al primer mes con datos:', firstDate);
             }
         }
     }, [nextSlotData, isOpen]);
