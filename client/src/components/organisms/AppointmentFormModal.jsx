@@ -28,7 +28,8 @@ const AppointmentFormModal = ({
     institutions,
     syncReferenceInfo,
     onOpenEditPatient,
-    missingData
+    missingData,
+    editModeId
 }) => {
     const { t } = useLanguage();
     const { user } = useAuth();
@@ -37,7 +38,7 @@ const AppointmentFormModal = ({
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={t('new_appointment')}
+            title={editModeId ? (t('edit_appointment') || 'Editar Turno') : t('new_appointment')}
         >
             <form onSubmit={onSubmit} id="new-appointment-form" autoComplete="off">
                 {/* Fake fields to stop Chrome Autosave */}
@@ -97,6 +98,7 @@ const AppointmentFormModal = ({
                         <label className="form-label">{t('patients')}</label>
                         <PatientSearchSelect
                             value={selectedPatient}
+                            selectedData={selectedPatientData}
                             autoFocus={true}
                             placeholder={t('select_patient')}
                             onCreatePatient={async (name) => {
@@ -123,15 +125,21 @@ const AppointmentFormModal = ({
                             </div>
                         )}
 
-                        {selectedPatientData?.phone && (
+                        {selectedPatient && (
                             <div className="mt-2 p-3 bg-emerald-50 border border-emerald-100 rounded-xl flex items-center justify-between">
-                                <div className="flex flex-col">
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">📱 Teléfono Contacto</span>
-                                    <span className="text-sm font-bold text-emerald-900">{selectedPatientData.phone}</span>
+                                <div className="flex flex-col flex-1">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">📱 {t('phone') || 'Teléfono'}</span>
+                                    <input
+                                        type="text"
+                                        className="text-sm font-bold text-emerald-900 bg-transparent border-b border-emerald-200 focus:border-emerald-500 focus:outline-none w-full py-0.5"
+                                        value={selectedPatientData?.phone || ''}
+                                        onChange={e => setSelectedPatientData(prev => ({ ...prev, phone: e.target.value }))}
+                                        placeholder={t('no_phone') || 'Sin teléfono'}
+                                    />
                                 </div>
-                                <div className="flex items-center gap-1 text-[10px] font-black text-emerald-600 bg-white px-2 py-1 rounded-full shadow-sm">
-                                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-                                    WHATSAPP OK
+                                <div className="flex items-center gap-1 text-[10px] font-black text-emerald-600 bg-white px-2 py-1 rounded-full shadow-sm ml-2 shrink-0">
+                                    <span className={`w-1.5 h-1.5 rounded-full ${selectedPatientData?.phone ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`}></span>
+                                    {selectedPatientData?.phone ? 'WHATSAPP OK' : 'SIN TEL.'}
                                 </div>
                             </div>
                         )}
@@ -143,13 +151,7 @@ const AppointmentFormModal = ({
                     <input type="datetime-local" className="form-control" value={date} onChange={e => setDate(e.target.value)} required />
                 </div>
 
-                <div className="input-group">
-                    <label className="form-label">{t('appointment_type') || 'Tipo de Consulta'}</label>
-                    <select className="form-control" value={type} onChange={e => setType(e.target.value)}>
-                        <option value="consultation">{t('presencial') || 'Presencial (Consultorio)'}</option>
-                        <option value="virtual">{t('virtual') || 'Virtual (Remoto)'}</option>
-                    </select>
-                </div>
+
 
                 <div className="input-group">
                     <label className="form-label">{t('reason')}</label>
@@ -197,7 +199,7 @@ const AppointmentFormModal = ({
                         type="submit"
                         className="btn btn-accent w-full flex items-center justify-center gap-2"
                     >
-                        {t('confirm_booking')}
+                        {editModeId ? (t('save_changes') || 'Guardar Cambios') : t('confirm_booking')}
                     </button>
                 </div>
             </form>

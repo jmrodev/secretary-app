@@ -6,7 +6,7 @@ import { components } from 'react-select';
 
 import { useLanguage } from '../../context/LanguageContext';
 
-const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, autoFocus = false }) => {
+const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, autoFocus = false, selectedData }) => {
     const { t } = useLanguage();
     const finalPlaceholder = placeholder || t('search_placeholder');
 
@@ -17,7 +17,7 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
             return res.data.map(p => ({
                 value: p.id,
                 label: `${p.full_name} - DNI: ${p.dni || 'N/A'} - ${p.address || ''}`,
-                patient: p // Pass full object if needed
+                patient: p
             }));
         } catch (err) {
             console.error("Error searching patients", err);
@@ -29,8 +29,16 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
         onChange(selectedOption ? selectedOption.value : '', selectedOption ? selectedOption.patient : null);
     };
 
+    // Construct the selected option object if we have selectedData
+    const selectedOption = selectedData ? {
+        value: selectedData.id || value,
+        label: selectedData.full_name ? `${selectedData.full_name}${selectedData.dni ? ` - DNI: ${selectedData.dni}` : ''}` : '',
+        patient: selectedData
+    } : (value ? { value, label: 'Cargando...' } : null);
+
     return (
         <AsyncSelect
+            value={selectedOption}
             classNames={{
                 control: ({ isFocused }) => `input-field input-flex-container ${isFocused ? 'focus-ring' : ''}`,
                 input: () => 'no-style-input',
@@ -46,6 +54,7 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
             onChange={handleChange}
             autoFocus={autoFocus}
             placeholder={finalPlaceholder}
+            isClearable={true}
             noOptionsMessage={({ inputValue }) => (
                 <div className="form-select-no-results">
                     <p>

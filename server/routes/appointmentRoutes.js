@@ -14,4 +14,8 @@ router.patch('/:id/type', verifyToken, appointmentController.updateType);
 router.post('/bulk-update-type', verifyToken, appointmentController.bulkUpdateType);
 router.delete('/:id', verifyToken, appointmentController.deleteAppointment);
 
+router.get('/stats', verifyToken, appointmentController.getCalendarStats);
+
+router.get('/month-report', verifyToken, appointmentController.getMonthlyReport);
+
 module.exports = router;

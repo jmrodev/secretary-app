@@ -22,6 +22,8 @@ export const useAppointments = () => {
         try {
             setIsSubmitting(true);
             await api.put(`/appointments/${id}/status`, { status, reason });
+            // Don't show generic success message for status updates unless it's a critical one?
+            // User feedback: "al apretar en sala" probably means something is slow or double-triggered.
             showMessage(t('status_updated'), 'success');
             if (onUpdate) onUpdate(id, status);
             return { success: true };
@@ -149,13 +151,46 @@ export const useAppointments = () => {
             setIsSubmitting(false);
         }
     };
+    const getMonthlyReport = async (month, year, doctorId = null) => {
+        try {
+            const params = { month, year };
+            if (doctorId) params.doctorId = doctorId;
+            const response = await api.get('/appointments/month-report', { params });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            showMessage('Error al obtener el reporte', 'error');
+            return null;
+        }
+    };
+
+    const updateAppointment = async (id, data, onUpdate) => {
+        try {
+            setIsSubmitting(true);
+            await api.put(`/appointments/${id}`, data);
+            showMessage(t('appointment_updated') || 'Turno actualizado', 'success');
+            if (onUpdate) onUpdate();
+            return { success: true };
+        } catch (err) {
+            console.error(err);
+            if (err.response?.data?.type === 'AUTH_REQUIRED') {
+                return { type: 'AUTH_REQUIRED' };
+            }
+            showMessage(t('failed_update'), 'error');
+            return { success: false };
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     return {
         updateStatus,
+        updateAppointment,
         cancelAppointment,
         deleteAppointment,
         rescheduleAppointment,
         savePrescription,
+        getMonthlyReport,
         isSubmitting
     };
 };

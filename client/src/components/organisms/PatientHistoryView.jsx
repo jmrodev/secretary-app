@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatDate } from '../../utils/format';
 
 const PatientHistoryView = ({
     patientAppointments,
@@ -44,9 +45,15 @@ const PatientHistoryView = ({
                                     <div className="flex justify-between items-center">
                                         <div>
                                             <div className="font-bold text-main-800">
-                                                {new Date(appt.appointment_date).toLocaleDateString()} {new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                {formatDate(appt.appointment_date, true)}
                                             </div>
                                             <div className="text-main-600 text-sm">Dr. {appt.doctor_name}</div>
+                                            <div className="flex gap-4 my-1 text-[11px] font-bold">
+                                                <span className="text-green-600">Pagado: ${appt.paid_amount || 0}</span>
+                                                <span className={Number(appt.pending_amount) > 0 ? 'text-red-500' : 'text-slate-400'}>
+                                                    Deuda: ${appt.pending_amount || 0}
+                                                </span>
+                                            </div>
                                             <div className="text-xs text-main-500 italic">{appt.reason}</div>
                                         </div>
                                         <span className={`tag tag-${appt.status === 'confirmed' ? 'green' : 'amber'}`}>
@@ -91,12 +98,18 @@ const PatientHistoryView = ({
                             {past.map(appt => (
                                 <div key={appt.id} className="p-3 bg-slate-50 border border-slate-100 rounded-lg hover:shadow-md transition-all">
                                     <div className="flex justify-between mb-1">
-                                        <span className="font-semibold text-main-700">{new Date(appt.appointment_date).toLocaleDateString()}</span>
+                                        <span className="font-semibold text-main-700">{formatDate(appt.appointment_date)}</span>
                                         <span className={`text-xs uppercase font-bold text-${appt.status === 'completed' ? 'green-600' : 'slate-500'}`}>
                                             {t(appt.status)}
                                         </span>
                                     </div>
-                                    <div className="text-sm text-main-600 mb-2">Dr. {appt.doctor_name}</div>
+                                    <div className="text-sm text-main-600 mb-1">Dr. {appt.doctor_name}</div>
+                                    <div className="flex gap-4 mb-2 text-xs font-bold">
+                                        <span className="text-green-600">Pagado: ${appt.paid_amount || 0}</span>
+                                        <span className={Number(appt.pending_amount) > 0 ? 'text-red-500' : 'text-slate-400'}>
+                                            Deuda: ${appt.pending_amount || 0}
+                                        </span>
+                                    </div>
                                     <div className="text-sm italic text-main-500 mb-3">"{appt.reason}"</div>
                                     <div className="flex gap-2 justify-end border-t border-slate-200 pt-2">
                                         <button

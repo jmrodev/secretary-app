@@ -21,6 +21,7 @@ const ScheduleSection = ({
     onNextFreeSlot,
     onSyncDayToGoogle,
     onClearSlotHistory,
+    onDateSelect,
 
 }) => {
     // Helper to determine styling based on doctor ID
@@ -77,6 +78,7 @@ const ScheduleSection = ({
 
                     <DaySchedule
                         date={selectedDate}
+                        onDateSelect={onDateSelect}
                         appointments={selectedDoctor ? appointments.filter(a => a.doctor_id === selectedDoctor.id) : appointments}
                         onSlotClick={onSlotClick}
                         doctor={selectedDoctor}

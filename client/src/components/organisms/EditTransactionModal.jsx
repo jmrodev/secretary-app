@@ -79,7 +79,7 @@ const EditTransactionModal = ({
                         <input
                             type="datetime-local"
                             className="input-field"
-                            value={transaction.transaction_date || ''}
+                            value={transaction.transaction_date ? new Date(transaction.transaction_date).toLocaleString('sv').slice(0, 16).replace(' ', 'T') : ''}
                             onChange={e => handleChange('transaction_date', e.target.value)}
                         />
                         <p className="text-[10px] text-amber-600 mt-1">⚠️ El formato (Día/Mes o Mes/Día) depende de su navegador. Por favor verifique el nombre del mes al seleccionar.</p>

@@ -1131,6 +1131,42 @@ exports.exportPrescriptionsJSON = async (req, res) => {
         conn = await pool.getConnection();
 
         // We want to export both direct prescriptions and completed prescription requests
+        const { month, year, doctorId } = req.query; // Added filtering params
+
+        let dateFilterPr = "";
+        let dateFilterReq = "";
+        let paramsPr = [];
+        let paramsReq = [];
+
+        let doctorFilterPr = "";
+        let doctorFilterReq = "";
+
+        if (role === 'doctor') {
+            doctorFilterPr = "AND a.doctor_id = (SELECT id FROM doctors WHERE user_id = ?)";
+            doctorFilterReq = "AND r.doctor_id = (SELECT id FROM doctors WHERE user_id = ?)";
+            paramsPr.push(user_id);
+            paramsReq.push(user_id);
+        } else if (doctorId) {
+            doctorFilterPr = "AND a.doctor_id = ?";
+            doctorFilterReq = "AND r.doctor_id = ?";
+            paramsPr.push(doctorId);
+            paramsReq.push(doctorId);
+        }
+
+        if (role === 'patient') {
+            doctorFilterPr += " AND a.patient_id = (SELECT id FROM patients WHERE user_id = ?)";
+            doctorFilterReq += " AND r.patient_id = (SELECT id FROM patients WHERE user_id = ?)";
+            paramsPr.push(user_id);
+            paramsReq.push(user_id);
+        }
+
+        if (month && year) {
+            dateFilterPr = "AND MONTH(a.appointment_date) = ? AND YEAR(a.appointment_date) = ?";
+            dateFilterReq = "AND MONTH(r.completed_at) = ? AND YEAR(r.completed_at) = ?";
+            paramsPr.push(month, year);
+            paramsReq.push(month, year);
+        }
+
         let query = `
             (SELECT 
                 'direct' as source_type,
@@ -1148,8 +1184,7 @@ exports.exportPrescriptionsJSON = async (req, res) => {
             JOIN appointments a ON pr.appointment_id = a.id
             JOIN doctors d ON a.doctor_id = d.id
             JOIN patients p ON a.patient_id = p.id
-            ${role === 'doctor' ? 'WHERE a.doctor_id = (SELECT id FROM doctors WHERE user_id = ?)' : ''}
-            ${role === 'patient' ? 'WHERE a.patient_id = (SELECT id FROM patients WHERE user_id = ?)' : ''}
+            WHERE 1=1 ${doctorFilterPr} ${dateFilterPr}
             )
             UNION ALL
             (SELECT 
@@ -1167,27 +1202,64 @@ exports.exportPrescriptionsJSON = async (req, res) => {
             FROM medical_requests r
             JOIN doctors d ON r.doctor_id = d.id
             JOIN patients p ON r.patient_id = p.id
-            WHERE r.type = 'prescription' AND r.status = 'completed'
-            ${role === 'doctor' ? 'AND r.doctor_id = (SELECT id FROM doctors WHERE user_id = ?)' : ''}
-            ${role === 'patient' ? 'AND r.patient_id = (SELECT id FROM patients WHERE user_id = ?)' : ''}
+            WHERE r.type = 'prescription' AND r.status = 'completed' ${doctorFilterReq} ${dateFilterReq}
             )
             ORDER BY date DESC
         `;
 
-        let params = [];
-        if (role === 'doctor' || role === 'patient') {
-            params.push(user_id, user_id);
-        }
+        const finalParams = [...paramsPr, ...paramsReq];
+        const rows = await conn.query(query, finalParams);
 
-        const rows = await conn.query(query, params);
+        // --- ADDED: Fetch Withdrawals and Appointment Income for consistency ---
+        let targetMonth = month ? parseInt(month) : new Date().getMonth() + 1;
+        let targetYear = year ? parseInt(year) : new Date().getFullYear();
+
+        // 1. Withdrawals
+        let withdrawalsQuery = `
+            SELECT amount, transaction_date, description FROM transactions 
+            WHERE (type = 'withdrawal' OR type = 'payout') 
+            AND MONTH(transaction_date) = ? AND YEAR(transaction_date) = ?
+        `;
+        let wParams = [targetMonth, targetYear];
+        if (doctorId) {
+            withdrawalsQuery += " AND doctor_id = ?";
+            wParams.push(doctorId);
+        }
+        withdrawalsQuery += " ORDER BY transaction_date ASC";
+        const withdrawals = await conn.query(withdrawalsQuery, wParams);
+        const withdrawalList = withdrawals.map(w => ({
+            fecha: new Date(w.transaction_date).toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' }),
+            monto: w.amount,
+            descripcion: w.description
+        }));
+
+        // 2. Appointment Income (Other income for this report)
+        let appIncomeQuery = `
+            SELECT COALESCE(SUM(amount), 0) as total FROM transactions 
+            WHERE type = 'income_patient' AND status = 'paid' AND appointment_id IS NOT NULL
+            AND MONTH(transaction_date) = ? AND YEAR(transaction_date) = ?
+        `;
+        let aParams = [targetMonth, targetYear];
+        if (doctorId) {
+            appIncomeQuery += " AND doctor_id = ?";
+            aParams.push(doctorId);
+        }
+        const appIncomeRes = await conn.query(appIncomeQuery, aParams);
+        const appIncome = Number(appIncomeRes[0].total);
+
+        const result = {
+            prescriptions: rows,
+            withdrawals: withdrawalList,
+            appointment_income: appIncome
+        };
 
         if (preview === 'true') {
-            return res.json(rows);
+            return res.json(result);
         }
 
         res.setHeader('Content-disposition', 'attachment; filename=prescriptions_backup.json');
         res.setHeader('Content-type', 'application/json');
-        res.write(JSON.stringify(rows, null, 2));
+        res.write(JSON.stringify(result, null, 2));
         res.end();
 
     } catch (err) {
@@ -1360,6 +1432,31 @@ exports.submitPublicPrescriptionRequest = async (req, res) => {
         );
 
         const requestId = result.insertId;
+
+        // --- [NEW] Debt Generation for public request ---
+        try {
+            const { calculatePrice } = require('../utils/priceCalculator');
+            const priceInfo = await calculatePrice(conn, finalDoctorId, tokenData.patient_id, 'prescription');
+
+            if (priceInfo && priceInfo.price > 0) {
+                // Get patient user_id 
+                const [pat] = await conn.query("SELECT user_id, full_name FROM patients WHERE id = ?", [tokenData.patient_id]);
+
+                if (pat) {
+                    await conn.query(
+                        "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, transaction_date, request_id) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)",
+                        ['income_patient', priceInfo.price, `Public Request: prescription for ${pat.full_name}`, pat.user_id, finalDoctorId, 'cash', 'pending', requestId]
+                    );
+                    // Update request with debt status
+                    await conn.query("UPDATE medical_requests SET payment_status = 'debt', debt_amount = ? WHERE id = ?", [priceInfo.price, requestId]);
+                    console.log(`DEBUG: Generated auto-debt of $${priceInfo.price} for public request ${requestId}`);
+                }
+            }
+        } catch (e) {
+            console.error("Error generating auto-debt for public request:", e);
+            // Non-fatal, just log it
+        }
+        // ------------------------------------------------
 
         // [SYNC] Insert items into normalized table
         if (requestId && rawMeds.length > 0) {

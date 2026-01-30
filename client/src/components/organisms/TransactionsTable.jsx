@@ -84,6 +84,7 @@ const TransactionsTable = ({
                             <th className="w-1/3">{t('description')}</th>
                             <th>{t('beneficiary')}</th>
                             <th>{t('payment_method')}</th>
+                            <th>{t('status') || 'Estado'}</th>
                             <th className="transactions-table__header-cell--right">{t('amount')}</th>
                             <th className="transactions-table__header-cell--center">{t('proof')}</th>
                             {(user.role === 'admin' || settings.enable_secretary_finance_crud === 'true') && (
@@ -131,6 +132,11 @@ const TransactionsTable = ({
                                                     <span>{t(tx.method) || tx.method}</span>
                                                 </div>
                                             </td>
+                                            <td>
+                                                <span className={`status-badge-mini status-${tx.status}`}>
+                                                    {t(tx.status) || (tx.status === 'paid' ? 'Pagado' : 'Pendiente')}
+                                                </span>
+                                            </td>
                                             <td className={`transactions-table__amount ${tx.is_withdrawal ? 'transactions-table__amount--withdrawal' : (isIncome ? 'transactions-table__amount--income' : 'transactions-table__amount--expense')}`}>
                                                 {tx.is_withdrawal ? '↩' : (isIncome ? '+' : '-')}${Math.abs(tx.amount).toLocaleString()}
                                             </td>
@@ -158,7 +164,7 @@ const TransactionsTable = ({
                                 })}
                                 {group.length > 1 && (
                                     <tr className="transactions-table__group-footer">
-                                        <td colSpan={(user.role === 'admin' || settings.enable_secretary_finance_crud === 'true') ? 7 : 6} className="transactions-table__group-total">
+                                        <td colSpan={(user.role === 'admin' || settings.enable_secretary_finance_crud === 'true') ? 8 : 7} className="transactions-table__group-total">
                                             {t('group_total')}: ${group.reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0).toLocaleString()}
                                         </td>
                                     </tr>

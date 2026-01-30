@@ -15,8 +15,10 @@ import SystemConfig from './pages/SystemConfig';
 import Requests from './pages/Requests';
 import Insurances from './pages/Insurances';
 import Institutions from './pages/Institutions'; // [NEW]
+import Reports from './pages/Reports'; // [NEW]
 import TempAccess from './pages/TempAccess'; // [NEW]
 import PublicPrescriptionRequest from './pages/PublicPrescriptionRequest'; // [NEW]
+import MonthlyView from './pages/MonthlyView';
 
 import FloatingChat from './components/organisms/FloatingChat';
 import { useAuth } from './context/AuthContext';
@@ -137,6 +139,16 @@ function App() {
         <Route path="/institutions" element={
           <ProtectedRoute>
             <Institutions />
+          </ProtectedRoute>
+        } />
+        <Route path="/monthly-view" element={
+          <ProtectedRoute>
+            <MonthlyView />
+          </ProtectedRoute>
+        } />
+        <Route path="/reports" element={
+          <ProtectedRoute>
+            <Reports />
           </ProtectedRoute>
         } />
         <Route path="/patient-access/:token" element={<TempAccess />} />

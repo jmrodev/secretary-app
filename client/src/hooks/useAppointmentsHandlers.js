@@ -40,6 +40,7 @@ export const useAppointmentsHandlers = ({
 
     // Actions (from other hooks)
     updateStatus,
+    updateAppointment,
     fetchAppointments,
     savePrescription,
     deleteAppointment,
@@ -291,6 +292,38 @@ export const useAppointmentsHandlers = ({
         }
     };
 
+    const handleUpdateType = async (id, type) => {
+        await updateAppointment(id, { type }, fetchAppointments);
+    };
+
+    const handleHardEdit = (appt) => {
+        // Prepare booking state for editing
+        booking.setSelectedDoctor(appt.doctor_id);
+        booking.setType(appt.type);
+        booking.setSelectedPatient(appt.patient_id);
+        booking.setSelectedPatientData({
+            id: appt.patient_id,
+            full_name: appt.patient_name,
+            phone: appt.patient_phone,
+            dni: appt.patient_dni
+        });
+
+        // Format date for datetime-local input
+        const d = new Date(appt.appointment_date);
+        const offset = d.getTimezoneOffset() * 60000;
+        const localISOTime = (new Date(d - offset)).toISOString().slice(0, 16);
+        booking.setDate(localISOTime);
+
+        booking.setReason(appt.reason);
+        booking.setBonified(appt.bonified === 1 || appt.bonified === true);
+        booking.setSelectedInstitution(appt.institution_id || '');
+        booking.setSyncReferenceInfo(appt.patient_name || appt.reason);
+
+        // We use editModeId to signal booking hook that this is an UPDATE, not a CREATE.
+        booking.setEditModeId(appt.id);
+        booking.setShowForm(true);
+    };
+
     return {
         handleDateSelect,
         handleSlotClick,
@@ -303,6 +336,8 @@ export const useAppointmentsHandlers = ({
         handleNextFreeSlot,
         handleWhatsAppSlot,
         confirmNextSlot,
-        handleAdminAuthConfirm
+        handleAdminAuthConfirm,
+        handleUpdateType,
+        handleHardEdit
     };
 };

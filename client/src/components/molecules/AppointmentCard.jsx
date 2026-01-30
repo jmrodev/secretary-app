@@ -5,10 +5,11 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
     const { t } = useLanguage();
 
     const isExternal = appt.source === 'google' || appt.source === 'google-incomplete' || appt.status === 'external';
+    const isAnonymous = !appt.patient_id;
 
     return (
         <div
-            className={`appointment-card group status-${appt.status} ${isExternal ? 'status-external' : ''}`}
+            className={`appointment-card group status-${appt.status} ${isExternal ? 'status-external' : ''} ${isAnonymous ? 'status-anonymous' : ''}`}
             onClick={onClick}
             style={isExternal ? { borderLeft: '4px solid var(--amber-500)' } : {}}
         >

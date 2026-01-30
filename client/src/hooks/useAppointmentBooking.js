@@ -26,6 +26,7 @@ export const useAppointmentBooking = (doctors) => {
     const [selectedInstitution, setSelectedInstitution] = useState('');
     const [syncingZombieId, setSyncingZombieId] = useState(null);
     const [syncReferenceInfo, setSyncReferenceInfo] = useState(null);
+    const [editModeId, setEditModeId] = useState(null);
     const [showForm, setShowForm] = useState(false);
     const [missingData, setMissingData] = useState([]);
     const [whatsappModal, setWhatsappModal] = useState({ open: false, phone: '', message: '' });
@@ -132,6 +133,7 @@ export const useAppointmentBooking = (doctors) => {
         setSelectedInstitution('');
         setSyncReferenceInfo(null);
         setSyncingZombieId(null);
+        setEditModeId(null);
         setBonified(false);
     }, []);
 
@@ -141,16 +143,34 @@ export const useAppointmentBooking = (doctors) => {
         try {
             setIsSubmitting(true);
 
-            // 1. Create Appointment
-            await api.post('/appointments', {
-                doctor_id: selectedDoctor,
-                patient_id: (user.role === 'secretary' || user.role === 'doctor') ? selectedPatient : undefined,
-                appointment_date: new Date(date).toISOString(),
-                reason: reason || 'Consulta',
-                bonified,
-                type,
-                institution_id: selectedInstitution || null
-            });
+            // 1. Create or Update Appointment
+            if (editModeId) {
+                await api.put(`/appointments/${editModeId}`, {
+                    doctor_id: selectedDoctor,
+                    patient_id: (user.role === 'secretary' || user.role === 'doctor') ? selectedPatient : undefined,
+                    appointment_date: new Date(date).toISOString(),
+                    reason: reason || 'Consulta',
+                    bonified,
+                    type,
+                    institution_id: selectedInstitution || null
+                });
+            } else {
+                await api.post('/appointments', {
+                    doctor_id: selectedDoctor,
+                    patient_id: (user.role === 'secretary' || user.role === 'doctor') ? selectedPatient : undefined,
+                    appointment_date: new Date(date).toISOString(),
+                    reason: reason || 'Consulta',
+                    bonified,
+                    type,
+                    institution_id: selectedInstitution || null
+                });
+            }
+
+            // Update patient phone if it was edited in the modal
+            if (selectedPatient && selectedPatientData?.id) {
+                api.put(`/users/patients/${selectedPatientData.id}`, { phone: selectedPatientData.phone })
+                    .catch(e => console.warn("Auto-updating patient phone failed (swallowed):", e));
+            }
 
             // 2. Cleanup Zombie (if from Google Sync)
             if (syncingZombieId) {
@@ -225,6 +245,7 @@ export const useAppointmentBooking = (doctors) => {
         selectedInstitution, setSelectedInstitution,
         syncingZombieId, setSyncingZombieId,
         syncReferenceInfo, setSyncReferenceInfo,
+        editModeId, setEditModeId,
         showForm, setShowForm,
 
         // Computed/Status

@@ -40,6 +40,7 @@ const Appointments = () => {
         appointments,
         doctorSchedule,
         holidays,
+        calendarStats,
         currentDoctor,
         searchPatientId, setSearchPatientId,
         patientAppointments, patientApptLoading,
@@ -71,6 +72,8 @@ const Appointments = () => {
         handleNextPage, handlePrevPage,
         handleAdminAuthConfirm,
         handleNextFreeSlot,
+        handleUpdateType,
+        handleHardEdit,
         syncDayToGoogle,
 
         // Misc
@@ -127,40 +130,44 @@ const Appointments = () => {
                         onWhatsApp={handleWhatsAppUniversal}
                     />
                 ) : (
-                    <div className="appointments-grid">
+                    <div className="appointments-grid" style={activeTab === 'monthly' ? { gridTemplateColumns: '1fr' } : {}}>
                         <CalendarSection
                             activeTab={activeTab}
                             selectedDate={selectedDate}
                             onDateSelect={handleDateSelect}
                             appointments={filteredAppointments}
+                            calendarStats={calendarStats}
                             holidays={holidays}
                             onAddHoliday={addHoliday}
                         />
 
-                        <ScheduleSection
-                            activeTab={activeTab}
-                            selectedDate={selectedDate}
-                            selectedDoctor={currentDoctor}
-                            viewDoctorId={viewDoctorId}
-                            appointments={appointments}
-                            doctorSchedule={doctorSchedule}
-                            holidays={holidays}
-                            onSlotClick={handleSlotClick}
-                            onDeleteHoliday={deleteHoliday}
-                            showForm={booking.showForm}
-                            onToggleForm={() => booking.setShowForm(!booking.showForm)}
-                            onSearchPatientId={(val) => setSearchPatientId(val)}
-                            searchPatientId={searchPatientId}
-                            onCreatePatient={() => {
-                                booking.setSelectedPatientData(null);
-                                setEditPatientModalOpen(true);
-                            }}
-                            onNextFreeSlot={() => {
-                                nextSlot.setSlotHistory([]);
-                                handleNextFreeSlot(null);
-                            }}
-                            onSyncDayToGoogle={() => syncDayToGoogle(viewDoctorId, selectedDate)}
-                        />
+                        {activeTab !== 'monthly' && (
+                            <ScheduleSection
+                                activeTab={activeTab}
+                                selectedDate={selectedDate}
+                                onDateSelect={handleDateSelect}
+                                selectedDoctor={currentDoctor}
+                                viewDoctorId={viewDoctorId}
+                                appointments={appointments}
+                                doctorSchedule={doctorSchedule}
+                                holidays={holidays}
+                                onSlotClick={handleSlotClick}
+                                onDeleteHoliday={deleteHoliday}
+                                showForm={booking.showForm}
+                                onToggleForm={() => booking.setShowForm(!booking.showForm)}
+                                onSearchPatientId={(val) => setSearchPatientId(val)}
+                                searchPatientId={searchPatientId}
+                                onCreatePatient={() => {
+                                    booking.setSelectedPatientData(null);
+                                    setEditPatientModalOpen(true);
+                                }}
+                                onNextFreeSlot={() => {
+                                    nextSlot.setSlotHistory([]);
+                                    handleNextFreeSlot(null);
+                                }}
+                                onSyncDayToGoogle={() => syncDayToGoogle(viewDoctorId, selectedDate)}
+                            />
+                        )}
                     </div>
                 )}
             </div>
@@ -197,6 +204,8 @@ const Appointments = () => {
                     setActionModal({ ...actionModal, open: false });
                 }}
                 onWhatsApp={handleWhatsAppUniversal}
+                onUpdateType={handleUpdateType}
+                onHardEdit={handleHardEdit}
                 fetchAppointments={controller.fetchAppointments}
             />
 

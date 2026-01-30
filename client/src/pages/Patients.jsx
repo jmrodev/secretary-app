@@ -16,6 +16,7 @@ import PatientManagerModal from '../components/molecules/PatientManagerModal';
 import Modal from '../components/molecules/Modal';
 import CurrencyInput from '../components/atoms/CurrencyInput';
 import QRCodeModal from '../components/molecules/QRCodeModal';
+import DebtPaymentModal from '../components/molecules/DebtPaymentModal';
 
 const Patients = () => {
     const controller = usePatientsPageController();
@@ -71,18 +72,12 @@ const Patients = () => {
 
     if (loading) return <div className="centered-loader"><div className="status-display__spinner"></div><p>{t('loading')}</p></div>;
 
-    if (detailsLoading) {
-        return (
-            <MainLayout>
+    return (
+        <MainLayout>
+            {detailsLoading ? (
                 <div className="centered-loader"><div className="status-display__spinner"></div></div>
-            </MainLayout>
-        );
-    }
-
-    // --- Details View Branch ---
-    if (selectedPatientId && patientDetails) {
-        return (
-            <MainLayout>
+            ) : (selectedPatientId && patientDetails) ? (
+                // --- DETAILS VIEW ---
                 <PatientDetailsView
                     details={patientDetails}
                     t={t}
@@ -97,145 +92,130 @@ const Patients = () => {
                 >
                     <PatientMedications patientId={patientDetails.id} />
                 </PatientDetailsView>
+            ) : (
+                // --- LIST VIEW ---
+                <>
+                    <header className="page-header mb-6">
+                        <div>
+                            <h1 className="page-header__title text-2xl font-bold text-slate-800">{t('patients')}</h1>
+                            <p className="page-header__subtitle text-slate-500">{t('patients_subtitle') || 'Administración completa de fichas médicas de pacientes.'}</p>
+                        </div>
+                    </header>
 
-                <PatientManagerModal
-                    isOpen={editModal.open}
-                    onClose={() => setEditModal({ ...editModal, open: false })}
-                    patient={editModal.data}
-                    onUpdate={handleUpdatePatient}
-                    insurances={insurances}
-                    doctors={doctors}
-                />
-                <QRCodeModal
-                    isOpen={qrModal.open}
-                    onClose={() => setQrModal({ ...qrModal, open: false })}
-                    url={qrModal.url}
-                    expiresAt={qrModal.expiry}
-                    patientName={qrModal.patientName}
-                    patientPhone={qrModal.patientPhone}
-                />
-            </MainLayout>
-        );
-    }
+                    <nav className="tab-nav mb-6">
+                        <Button
+                            variant="ghost"
+                            className={`tab-nav__item ${activeTab === 'list' ? 'tab-nav__item--active' : ''}`}
+                            onClick={() => setActiveTab('list')}
+                        >
+                            📋 {t('active_list') || 'Lista Activa'}
+                        </Button>
+                        {(user.role === 'admin' || user.role === 'secretary') && (
+                            <Button
+                                variant="ghost"
+                                className={`tab-nav__item ${activeTab === 'recycle' ? 'tab-nav__item--active' : ''}`}
+                                onClick={() => { setActiveTab('recycle'); fetchRecycleBin(); }}
+                            >
+                                🗑️ {t('recycle_bin') || 'Papelera'}
+                                {recycleItems.length > 0 && <span className="dot-badge ml-2">{recycleItems.length}</span>}
+                            </Button>
+                        )}
+                    </nav>
 
-    // --- List View Branch ---
-    return (
-        <MainLayout
-            title={t('patients')}
-            subtitle={t('patients_subtitle') || 'Administración completa de fichas médicas de pacientes.'}
-        >
-            <nav className="tab-nav">
-                <Button
-                    variant="ghost"
-                    className={`tab-nav__item ${activeTab === 'list' ? 'tab-nav__item--active' : ''}`}
-                    onClick={() => setActiveTab('list')}
-                >
-                    📋 {t('active_list') || 'Lista Activa'}
-                </Button>
-                {(user.role === 'admin' || user.role === 'secretary') && (
-                    <Button
-                        variant="ghost"
-                        className={`tab-nav__item ${activeTab === 'recycle' ? 'tab-nav__item--active' : ''}`}
-                        onClick={() => { setActiveTab('recycle'); fetchRecycleBin(); }}
-                    >
-                        🗑️ {t('recycle_bin') || 'Papelera'}
-                        {recycleItems.length > 0 && <span className="dot-badge ml-2">{recycleItems.length}</span>}
-                    </Button>
-                )}
-            </nav>
+                    <section className="action-bar mb-6">
+                        <div className="action-bar__search">
+                            {activeTab === 'list' && (
+                                <div className="search-box__wrapper">
+                                    <span className="search-box__icon">🔍</span>
+                                    <input
+                                        type="text"
+                                        placeholder={t('search_placeholder') || "Buscar..."}
+                                        className="search-box__input"
+                                        value={searchTerm}
+                                        onChange={e => setSearchTerm(e.target.value)}
+                                    />
+                                </div>
+                            )}
+                        </div>
 
-            <section className="action-bar">
-                <div className="action-bar__search">
-                    {activeTab === 'list' && (
-                        <div className="search-box__wrapper">
-                            <span className="search-box__icon">🔍</span>
-                            <input
-                                type="text"
-                                placeholder={t('search_placeholder') || "Buscar..."}
-                                className="search-box__input"
-                                value={searchTerm}
-                                onChange={e => setSearchTerm(e.target.value)}
+                        <div className="action-bar__tools">
+                            <Button variant="ghost" onClick={() => { fetchPatients(); fetchRecycleBin(); }}>🔄</Button>
+                            <Button variant="ghost" onClick={() => setShowRatingInfo(true)}>ℹ️</Button>
+                            {user.role === 'secretary' && activeTab === 'list' && (
+                                <Button variant={showCreate ? 'secondary' : 'primary'} onClick={() => setShowCreate(!showCreate)}>
+                                    {showCreate ? `❌ ${t('cancel')}` : `✨ ${t('new')}`}
+                                </Button>
+                            )}
+                        </div>
+                    </section>
+
+                    {showCreate && (
+                        <div className="card mb-8 animate-fadeIn">
+                            <header className="card-header border-none pb-0">
+                                <h3 className="card-header__title">{t('register_new_patient')}</h3>
+                            </header>
+                            <PatientForm
+                                onSubmit={handleCreate}
+                                isEdit={false}
+                                isAdmin={true}
+                                insurances={insurances}
+                                doctors={doctors}
                             />
                         </div>
                     )}
-                </div>
 
-                <div className="action-bar__tools">
-                    <Button variant="ghost" onClick={() => { fetchPatients(); fetchRecycleBin(); }}>🔄</Button>
-                    <Button variant="ghost" onClick={() => setShowRatingInfo(true)}>ℹ️</Button>
-                    {user.role === 'secretary' && activeTab === 'list' && (
-                        <Button variant={showCreate ? 'secondary' : 'primary'} onClick={() => setShowCreate(!showCreate)}>
-                            {showCreate ? `❌ ${t('cancel')}` : `✨ ${t('new')}`}
-                        </Button>
-                    )}
-                </div>
-            </section>
+                    {activeTab === 'list' ? (
+                        <div className="patients-list">
+                            <PatientList
+                                patients={patients}
+                                t={t}
+                                onViewDetails={handleViewDetails}
+                                onOpenDebt={handleOpenDebtModal}
+                                onToggleRating={handleRatingChange}
+                                calculateFinancialRating={calculateFinancialRating}
+                                calculateAttendanceRating={calculateAttendanceRating}
+                            />
 
-            {showCreate && (
-                <div className="card mb-8 animate-fadeIn">
-                    <header className="card-header border-none pb-0">
-                        <h3 className="card-header__title">{t('register_new_patient')}</h3>
-                    </header>
-                    <PatientForm
-                        onSubmit={handleCreate}
-                        isEdit={false}
-                        isAdmin={true}
-                        insurances={insurances}
-                        doctors={doctors}
-                    />
-                </div>
-            )}
-
-            {activeTab === 'list' ? (
-                <div className="patients-list">
-                    <PatientList
-                        patients={patients}
-                        t={t}
-                        onViewDetails={handleViewDetails}
-                        onOpenDebt={handleOpenDebtModal}
-                        onToggleRating={handleRatingChange}
-                        calculateFinancialRating={calculateFinancialRating}
-                        calculateAttendanceRating={calculateAttendanceRating}
-                    />
-
-                    {totalPages > 1 && (
-                        <div className="pagination">
-                            <span className="pagination__info">
-                                {t('showing')} {patients.length} {t('of')} {totalCount} {t('patients')}
-                            </span>
-                            <div className="pagination__controls">
-                                <Button
-                                    variant="secondary"
-                                    size="sm"
-                                    disabled={currentPage === 1}
-                                    onClick={() => handlePageChange(currentPage - 1)}
-                                >
-                                    ← {t('previous')}
-                                </Button>
-                                <span className="pagination__page-indicator">
-                                    {currentPage} / {totalPages}
-                                </span>
-                                <Button
-                                    variant="secondary"
-                                    size="sm"
-                                    disabled={currentPage === totalPages}
-                                    onClick={() => handlePageChange(currentPage + 1)}
-                                >
-                                    {t('next')} →
-                                </Button>
-                            </div>
+                            {totalPages > 1 && (
+                                <div className="pagination">
+                                    <span className="pagination__info">
+                                        {t('showing')} {patients.length} {t('of')} {totalCount} {t('patients')}
+                                    </span>
+                                    <div className="pagination__controls">
+                                        <Button
+                                            variant="secondary"
+                                            size="sm"
+                                            disabled={currentPage === 1}
+                                            onClick={() => handlePageChange(currentPage - 1)}
+                                        >
+                                            ← {t('previous')}
+                                        </Button>
+                                        <span className="pagination__page-indicator">
+                                            {currentPage} / {totalPages}
+                                        </span>
+                                        <Button
+                                            variant="secondary"
+                                            size="sm"
+                                            disabled={currentPage === totalPages}
+                                            onClick={() => handlePageChange(currentPage + 1)}
+                                        >
+                                            {t('next')} →
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
+                    ) : (
+                        <PatientRecycleBin
+                            recycleItems={recycleItems}
+                            loading={loading}
+                            onRestore={() => { /* Implementation pending */ }}
+                        />
                     )}
-                </div>
-            ) : (
-                <PatientRecycleBin
-                    recycleItems={recycleItems}
-                    loading={loading}
-                    onRestore={() => { /* Implementation pending */ }}
-                />
+                </>
             )}
 
-            {/* --- Modals --- */}
+            {/* --- GLOBALLY HOISTED MODALS --- */}
             <PatientManagerModal
                 isOpen={editModal.open}
                 onClose={() => setEditModal({ ...editModal, open: false })}
@@ -245,41 +225,25 @@ const Patients = () => {
                 doctors={doctors}
             />
 
-            <Modal
+            <QRCodeModal
+                isOpen={qrModal.open}
+                onClose={() => setQrModal({ ...qrModal, open: false })}
+                url={qrModal.url}
+                expiresAt={qrModal.expiry}
+                patientName={qrModal.patientName}
+                patientPhone={qrModal.patientPhone}
+            />
+
+            <DebtPaymentModal
                 isOpen={debtModal.open}
                 onClose={() => setDebtModal({ ...debtModal, open: false })}
-                title={t('pay_debt')}
-                footer={
-                    <>
-                        <Button variant="secondary" onClick={() => setDebtModal({ ...debtModal, open: false })}>{t('cancel')}</Button>
-                        <Button onClick={handlePayDebt}>{t('confirm_payment')}</Button>
-                    </>
-                }
-            >
-                <div className="flex flex-col gap-4">
-                    <div className="input-group">
-                        <label className="input-label">{t('amount')} ($)</label>
-                        <CurrencyInput
-                            className="input-field"
-                            value={debtModal.params.amount}
-                            onChange={e => setDebtModal(prev => ({ ...prev, params: { ...prev.params, amount: e.target.value } }))}
-                        />
-                    </div>
-                    <div className="input-group">
-                        <label className="input-label">{t('payment_method')}</label>
-                        <select
-                            className="input-field"
-                            value={debtModal.params.method}
-                            onChange={e => setDebtModal(prev => ({ ...prev, params: { ...prev.params, method: e.target.value } }))}
-                        >
-                            <option value="cash">Cash</option>
-                            <option value="transfer">Transfer</option>
-                            <option value="credit_card">Credit Card</option>
-                            <option value="debit_card">Debit Card</option>
-                        </select>
-                    </div>
-                </div>
-            </Modal>
+                onConfirm={handlePayDebt}
+                amount={debtModal.params.amount}
+                onAmountChange={val => setDebtModal(prev => ({ ...prev, params: { ...prev.params, amount: val } }))}
+                method={debtModal.params.method}
+                onMethodChange={val => setDebtModal(prev => ({ ...prev, params: { ...prev.params, method: val } }))}
+                t={t}
+            />
 
             <Modal
                 isOpen={showRatingInfo}

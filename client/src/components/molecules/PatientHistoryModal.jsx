@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
 import Button from '../atoms/Button';
+import TabButton from '../atoms/TabButton';
 import api from '../../api/axios';
 import { useLanguage } from '../../context/LanguageContext';
 
@@ -60,20 +61,18 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
             size="lg"
         >
             <div className="tabs-container" style={{ margin: 0, padding: 0, borderBottom: '1px solid #e2e8f0' }}>
-                <Button
-                    variant="ghost"
-                    className={`tab-btn ${activeTab === 'appointments' ? 'active' : ''}`}
+                <TabButton
+                    isActive={activeTab === 'appointments'}
                     onClick={() => setActiveTab('appointments')}
                 >
                     📅 {t('appointments') || 'Appointments'}
-                </Button>
-                <Button
-                    variant="ghost"
-                    className={`tab-btn ${activeTab === 'medical' ? 'active' : ''}`}
+                </TabButton>
+                <TabButton
+                    isActive={activeTab === 'medical'}
                     onClick={() => setActiveTab('medical')}
                 >
                     💊 {t('medical_records') || 'Medical Records'} (Rx, Requests, Lic)
-                </Button>
+                </TabButton>
             </div>
 
             <div className="modal-body-scrollable" style={{ maxHeight: '60vh', overflowY: 'auto', padding: '1rem 0' }}>

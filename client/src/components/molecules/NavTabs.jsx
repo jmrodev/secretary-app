@@ -1,28 +1,39 @@
 import React from 'react';
+import TabButton from '../atoms/TabButton';
 
 const NavTabs = ({ activeTab, setActiveTab, userRole }) => {
     return (
         <div className="top-nav-tabs mb-6" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div className="tabs-container" style={{ margin: 0 }}>
-                <button
-                    className={`tab-btn ${activeTab === 'calendar' ? 'active' : ''}`}
+                <TabButton
+                    isActive={activeTab === 'calendar'}
                     onClick={() => setActiveTab('calendar')}
+                    variant="pill"
                 >
                     📅 Agenda
-                </button>
-                <button
-                    className={`tab-btn ${activeTab === 'upcoming' ? 'active' : ''}`}
+                </TabButton>
+                <TabButton
+                    isActive={activeTab === 'upcoming'}
                     onClick={() => setActiveTab('upcoming')}
+                    variant="pill"
                 >
                     📋 Próximos Turnos
-                </button>
+                </TabButton>
+                <TabButton
+                    isActive={activeTab === 'monthly'}
+                    onClick={() => setActiveTab('monthly')}
+                    variant="pill"
+                >
+                    🗓️ Vista Mensual
+                </TabButton>
                 {(userRole === 'admin' || userRole === 'secretary') && (
-                    <button
-                        className={`tab-btn ${activeTab === 'holidays' ? 'active' : ''}`}
+                    <TabButton
+                        isActive={activeTab === 'holidays'}
                         onClick={() => setActiveTab('holidays')}
+                        variant="pill"
                     >
                         🏖️ Feriados
-                    </button>
+                    </TabButton>
                 )}
             </div>
             <div className="action-bar-buttons-container">

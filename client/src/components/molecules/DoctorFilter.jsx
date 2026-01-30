@@ -1,7 +1,9 @@
 import React from 'react';
+import TabButton from '../atoms/TabButton';
 
 const DoctorFilter = ({ activeTab, userRole, viewDoctorId, setViewDoctorId, doctors }) => {
-    if ((activeTab !== 'calendar' && activeTab !== 'upcoming') || userRole !== 'secretary') {
+    // Show filter on monthly view as well
+    if ((activeTab !== 'calendar' && activeTab !== 'upcoming' && activeTab !== 'monthly') || userRole !== 'secretary') {
         return null;
     }
 
@@ -11,21 +13,23 @@ const DoctorFilter = ({ activeTab, userRole, viewDoctorId, setViewDoctorId, doct
             style={viewDoctorId ? { borderRadius: '1rem', padding: '1rem 1.5rem', marginTop: '-1.5rem', borderTop: 'none' } : { marginTop: '-1.5rem', borderTop: 'none' }}
         >
             <div className="tabs-container" style={{ margin: 0, padding: '0.25rem' }}>
-                <button
-                    className={`tab-btn-small ${!viewDoctorId ? 'active' : ''}`}
+                <TabButton
+                    isActive={!viewDoctorId}
                     onClick={() => setViewDoctorId('')}
+                    className="tab-btn-small"
                 >
                     🏢 Todos
-                </button>
+                </TabButton>
                 {doctors.map(d => (
-                    <button
+                    <TabButton
                         key={d.id}
-                        className={`tab-btn-small ${viewDoctorId == d.id ? 'active' : ''}`}
+                        isActive={viewDoctorId == d.id}
                         onClick={() => setViewDoctorId(d.id)}
+                        className="tab-btn-small"
                         title={d.specialty}
                     >
                         👨‍⚕️ {d.full_name.split(' ').slice(0, 2).join(' ')}
-                    </button>
+                    </TabButton>
                 ))}
             </div>
         </div>

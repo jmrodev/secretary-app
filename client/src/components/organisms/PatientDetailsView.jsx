@@ -1,6 +1,7 @@
 
 import React from 'react';
 import Button from '../atoms/Button';
+import { formatDate } from '../../utils/format';
 
 const PatientDetailsView = ({
     details,
@@ -54,7 +55,21 @@ const PatientDetailsView = ({
                             </div>
                             <div className="info-group">
                                 <label className="info-group__label text-xs uppercase text-slate-400 font-bold">OS</label>
-                                <p className="info-group__value text-lg font-semibold">{details.insurance_name || 'N/A'}</p>
+                                <p className="info-group__value text-lg font-semibold">
+                                    {details.insurance_name || 'Particular'}
+                                    {details.affiliate_number && <span className="text-sm font-normal text-slate-500 ml-2">({details.affiliate_number})</span>}
+                                </p>
+                            </div>
+                            <div className="info-group">
+                                <label className="info-group__label text-xs uppercase text-slate-400 font-bold">{t('dob') || 'Fecha Nac.'}</label>
+                                <p className="info-group__value text-lg font-semibold">
+                                    {formatDate(details.dob)}
+                                    {details.dob && <span className="text-sm font-normal text-slate-500 ml-2">({Math.floor((new Date() - new Date(details.dob)) / 31557600000)} años)</span>}
+                                </p>
+                            </div>
+                            <div className="info-group md:col-span-2 border-t border-slate-100 pt-4">
+                                <label className="info-group__label text-xs uppercase text-slate-400 font-bold">{t('address') || 'Dirección'}</label>
+                                <p className="info-group__value font-medium text-slate-700">{details.address || <span className="italic text-slate-400">Sin dirección cargada</span>}</p>
                             </div>
                             <div className="info-group md:col-span-2">
                                 <label className="info-group__label text-xs uppercase text-slate-400 font-bold">{t('contact')}</label>
@@ -84,6 +99,30 @@ const PatientDetailsView = ({
                         </div>
                     </article>
 
+                    {/* Important Dates Section (Only if they exist) */}
+                    {(details.license_expiry_date || details.next_suggested_visit_date || details.next_suggested_prescription_date) && (
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {details.license_expiry_date && (
+                                <div className="p-3 bg-rose-50 border border-rose-100 rounded-xl">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-rose-600">Venc. Certificado</span>
+                                    <p className="text-sm font-bold text-rose-900">{formatDate(details.license_expiry_date)}</p>
+                                </div>
+                            )}
+                            {details.next_suggested_visit_date && (
+                                <div className="p-3 bg-amber-50 border border-amber-100 rounded-xl">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-amber-600">Próximo Control</span>
+                                    <p className="text-sm font-bold text-amber-900">{formatDate(details.next_suggested_visit_date)}</p>
+                                </div>
+                            )}
+                            {details.next_suggested_prescription_date && (
+                                <div className="p-3 bg-indigo-50 border border-indigo-100 rounded-xl">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-indigo-600">Próxima Receta</span>
+                                    <p className="text-sm font-bold text-indigo-900">{formatDate(details.next_suggested_prescription_date)}</p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     {/* Appointments Table */}
                     <section className="card">
                         <header className="card-header">
@@ -98,6 +137,8 @@ const PatientDetailsView = ({
                                                 <th>Fecha</th>
                                                 <th>Doctor</th>
                                                 <th>Estado</th>
+                                                <th>Pago</th>
+                                                <th>Saldo</th>
                                                 <th>Motivo</th>
                                             </tr>
                                         </thead>
@@ -105,9 +146,9 @@ const PatientDetailsView = ({
                                             {details.appointments.map(app => (
                                                 <tr key={app.id} className="hover:bg-slate-50 transition-colors">
                                                     <td className="whitespace-nowrap">
-                                                        <div className="font-bold">{new Date(app.appointment_date).toLocaleDateString()}</div>
+                                                        <div className="font-bold">{formatDate(app.appointment_date)}</div>
                                                         <div className="text-xs text-slate-400">
-                                                            {new Date(app.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                            {new Date(app.appointment_date).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
                                                         </div>
                                                     </td>
                                                     <td className="whitespace-nowrap">{app.doctor_name}</td>
@@ -115,6 +156,12 @@ const PatientDetailsView = ({
                                                         <span className={`tag tag-${app.status}`}>
                                                             {t(app.status) || app.status}
                                                         </span>
+                                                    </td>
+                                                    <td className="text-green-600 font-bold whitespace-nowrap">
+                                                        {Number(app.paid_amount) > 0 ? `$${app.paid_amount}` : '-'}
+                                                    </td>
+                                                    <td className={`font-bold whitespace-nowrap ${Number(app.pending_amount) > 0 ? 'text-red-500' : 'text-slate-400'}`}>
+                                                        {Number(app.pending_amount) > 0 ? `$${app.pending_amount}` : '$0'}
                                                     </td>
                                                     <td className="text-xs italic text-slate-500">
                                                         {app.reason}

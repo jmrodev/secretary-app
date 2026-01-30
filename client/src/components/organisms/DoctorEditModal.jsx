@@ -4,10 +4,9 @@ import Modal from '../molecules/Modal';
 import Button from '../atoms/Button';
 import FormGroup from '../molecules/FormGroup';
 import Input from '../atoms/Input';
+import TabButton from '../atoms/TabButton';
 import DoctorTariffsForm from '../molecules/DoctorTariffsForm';
 import DoctorGoogleSettings from '../molecules/DoctorGoogleSettings';
-// Note: reusing the existing organism/molecule for schedule if suitable, or checking if I need to refactor it. 
-// DoctorScheduleSettings seems to already exist as organism.
 import DoctorScheduleSettings from '../organisms/DoctorScheduleSettings';
 
 const DoctorEditModal = ({
@@ -53,27 +52,24 @@ const DoctorEditModal = ({
             }
         >
             <div className="tabs-container mb-6">
-                <Button
-                    variant="ghost"
-                    className={`tab-btn ${activeTab === 'tariffs' ? 'active' : ''}`}
+                <TabButton
+                    isActive={activeTab === 'tariffs'}
                     onClick={() => onTabChange('tariffs')}
                 >
                     💰 Tarifas
-                </Button>
-                <Button
-                    variant="ghost"
-                    className={`tab-btn ${activeTab === 'schedule' ? 'active' : ''}`}
+                </TabButton>
+                <TabButton
+                    isActive={activeTab === 'schedule'}
                     onClick={() => onTabChange('schedule')}
                 >
                     📅 Horarios
-                </Button>
-                <Button
-                    variant="ghost"
-                    className={`tab-btn ${activeTab === 'google' ? 'active' : ''}`}
+                </TabButton>
+                <TabButton
+                    isActive={activeTab === 'google'}
                     onClick={() => onTabChange('google')}
                 >
                     🌐 Google
-                </Button>
+                </TabButton>
             </div>
 
             <div className="animate-fadeIn">

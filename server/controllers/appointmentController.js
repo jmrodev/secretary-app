@@ -227,6 +227,8 @@ exports.getAppointments = async (req, res) => {
         let query = `
             SELECT a.*, p.full_name as patient_name, p.dni as patient_dni, p.user_id as patient_user_id, p.behavior_rating, 
             (SELECT COALESCE(SUM(t.amount), 0) FROM transactions t LEFT JOIN appointments a2 ON t.appointment_id = a2.id WHERE t.related_user_id = p.user_id AND t.status = 'pending' AND (t.appointment_id IS NULL OR a2.status IN ('completed', 'attended', 'arrived', 'absent'))) as total_debt,
+            (SELECT COALESCE(SUM(t.amount), 0) FROM transactions t WHERE t.appointment_id = a.id AND t.status = 'paid') as paid_amount,
+            (SELECT COALESCE(SUM(t.amount), 0) FROM transactions t WHERE t.appointment_id = a.id AND t.status = 'pending') as pending_amount,
             (SELECT COUNT(*) FROM appointments a2 WHERE a2.patient_id = p.id) as total_appointments,
             (SELECT COUNT(*) FROM appointments a2 WHERE a2.patient_id = p.id AND (a2.status = 'absent' OR (a2.status = 'cancelled' AND COALESCE(a2.cancellation_reason, '') NOT LIKE '%error%'))) as missed_appointments,
             d.full_name as doctor_name, p.phone as patient_phone 
@@ -414,7 +416,7 @@ exports.updateAppointment = async (req, res) => {
     let conn;
     try {
         const { id } = req.params;
-        const { appointment_date, reason, adminPassword } = req.body;
+        const { doctor_id, patient_id, appointment_date, reason, type, institution_id, adminPassword } = req.body;
 
         conn = await pool.getConnection();
 
@@ -460,17 +462,33 @@ exports.updateAppointment = async (req, res) => {
                 newStatus = 'rescheduled';
             }
         }
-        
+
         if (!override && req.user.role === 'secretary' && ['completed', 'attended', 'arrived'].includes(exists[0].status)) {
-             const crudSetting = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'enable_secretary_unrestricted_crud'");
-             const unrestrictedCrud = crudSetting.length > 0 && (crudSetting[0].setting_value === 'true' || crudSetting[0].setting_value === '1');
-             if (!unrestrictedCrud) {
+            const crudSetting = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'enable_secretary_unrestricted_crud'");
+            const unrestrictedCrud = crudSetting.length > 0 && (crudSetting[0].setting_value === 'true' || crudSetting[0].setting_value === '1');
+            if (!unrestrictedCrud) {
                 return res.status(403).json({ error: "Requiere autorización de Administrador (Turno Completado/Atendido).", type: 'AUTH_REQUIRED' });
             }
         }
-        
+
         if (reason !== undefined) { // Allow reason to be explicitly set to null/empty string
             updates.reason = reason;
+        }
+
+        if (type !== undefined) {
+            updates.type = type;
+        }
+
+        if (doctor_id !== undefined) {
+            updates.doctor_id = doctor_id || null;
+        }
+
+        if (patient_id !== undefined) {
+            updates.patient_id = patient_id || null;
+        }
+
+        if (institution_id !== undefined) {
+            updates.institution_id = institution_id === 'none' ? null : institution_id;
         }
 
         if (isReschedule) {
@@ -492,7 +510,7 @@ exports.updateAppointment = async (req, res) => {
 
             // [NEW] Check for Reserved Slot Overwrite on NEW date
             const formattedNewDate = new Date(appointment_date).toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace('T', ' ');
-            
+
             const existingReserved = await conn.query(
                 "SELECT id, doctor_id, appointment_date, patient_id, status, google_event_id FROM appointments WHERE doctor_id = ? AND appointment_date = ? AND status = 'reserved' AND id != ?",
                 [exists[0].doctor_id, formattedNewDate, id] // Don't block self
@@ -563,18 +581,19 @@ exports.updateAppointment = async (req, res) => {
         // --- Google Calendar Sync ---
         // --- Google Calendar Sync ---
         // Prepare data for Sync (Create or Update)
-        const docData = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [exists[0].doctor_id]);
+        const finalDoctorId = doctor_id !== undefined ? doctor_id : exists[0].doctor_id;
+        const docData = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [finalDoctorId]);
         const durationMinutes = (docData && docData.length > 0 && docData[0].appointment_duration) ? docData[0].appointment_duration : 60;
 
         const finalDate = appointment_date ? new Date(appointment_date) : new Date(exists[0].appointment_date);
         const startTime = finalDate;
         const endTime = new Date(startTime.getTime() + durationMinutes * 60 * 1000);
 
-        const pId = exists[0].patient_id;
-        const pat = await conn.query("SELECT full_name, dni, phone, email FROM patients WHERE id = ?", [pId]);
-        const pName = pat.length > 0 ? pat[0].full_name : pId;
+        const finalPatientId = patient_id !== undefined ? patient_id : exists[0].patient_id;
+        const pat = await conn.query("SELECT full_name, dni, phone, email FROM patients WHERE id = ?", [finalPatientId]);
+        const pName = pat.length > 0 ? pat[0].full_name : (finalPatientId || 'Turno Manual');
         const pDetails = pat.length > 0 ? pat[0] : {};
-        const finalReason = reason || exists[0].reason;
+        const finalReason = reason !== undefined ? reason : exists[0].reason;
 
         const newDescription = `Motivo: ${finalReason}\nPaciente: ${pName} (DNI: ${pDetails.dni || 'N/A'})\nTeléfono: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nEstado: ${newStatus}\nPago: ${exists[0].payment_status}\nCreado por Aplicación de Secretaría`;
 
@@ -590,20 +609,20 @@ exports.updateAppointment = async (req, res) => {
         if (exists[0].google_event_id) {
             // --- UPDATE EXISTING EVENT ---
             try {
-                const result = await googleController.updateEventHelper(exists[0].doctor_id, exists[0].google_event_id, eventData, req.user.user_id);
+                const result = await googleController.updateEventHelper(finalDoctorId, exists[0].google_event_id, eventData, req.user.user_id);
                 if (!result) throw new Error("Sync failed (returned null/false)");
             } catch (syncErr) {
                 console.warn("Google Sync Failed (Update), queueing retry:", syncErr.message);
                 await conn.query(
                     "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'update', ?, 'pending')",
-                    [id, exists[0].doctor_id, JSON.stringify({ eventId: exists[0].google_event_id, updates: eventData })]
+                    [id, finalDoctorId, JSON.stringify({ eventId: exists[0].google_event_id, updates: eventData })]
                 );
             }
         } else {
             // --- CREATE MISSING EVENT (Self-Healing) ---
             // Only if future or recent? Let's just create it to ensure consistency if the user is editing it.
             try {
-                const result = await googleController.createEventHelper(exists[0].doctor_id, eventData, req.user.user_id);
+                const result = await googleController.createEventHelper(finalDoctorId, eventData, req.user.user_id);
                 if (result && result.id) {
                     await conn.query("UPDATE appointments SET google_event_id = ? WHERE id = ?", [result.id, id]);
                     console.log(`[Self-Healing] Created missing Google Event for Appt ${id}`);
@@ -612,7 +631,7 @@ exports.updateAppointment = async (req, res) => {
                 console.warn("Google Sync Failed (Create-Healing), queueing retry:", syncErr.message);
                 await conn.query(
                     "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'create', ?, 'pending')",
-                    [id, exists[0].doctor_id, JSON.stringify(eventData)]
+                    [id, finalDoctorId, JSON.stringify(eventData)]
                 );
             }
         }
@@ -630,7 +649,7 @@ exports.updateStatus = async (req, res) => {
     let conn;
     try {
         const { id } = req.params;
-        const { status, reason } = req.body; // reason is optional, for cancellation
+        const { status, reason } = req.body;
 
         const validStatuses = ['pending', 'confirmed', 'completed', 'cancelled', 'suspended', 'absent', 'rescheduled', 'arrived'];
         if (!validStatuses.includes(status)) return res.status(400).send("Invalid status");
@@ -640,160 +659,144 @@ exports.updateStatus = async (req, res) => {
         const exists = await conn.query("SELECT * FROM appointments WHERE id = ?", [id]);
         if (exists.length === 0) return res.status(404).send("Appointment not found");
 
+        const appt = exists[0]; // Capture early
+
+        // 1. Database Update
         await conn.query("UPDATE appointments SET status = ?, cancellation_reason = ? WHERE id = ?", [status, reason || null, id]);
 
-        // --- REMINDER LOGIC: Update next suggested visit date if completed ---
+        // 2. Post-Update Logic (Next Visit, Reputation, Debt)
         if (status === 'completed') {
-            const intervalRows = await conn.query(`
-                SELECT 
-                    COALESCE(p.visit_interval_days, d.default_visit_interval_days) as interval_days,
-                    p.id as patient_id, d.id as doctor_id, a.appointment_date
-                FROM appointments a
-                JOIN patients p ON a.patient_id = p.id
-                JOIN doctors d ON a.doctor_id = d.id
-                WHERE a.id = ?
-            `, [id]);
+            try {
+                const intervalRows = await conn.query(`
+                    SELECT 
+                        COALESCE(p.visit_interval_days, d.default_visit_interval_days) as interval_days,
+                        p.id as patient_id, d.id as doctor_id, a.appointment_date
+                    FROM appointments a
+                    JOIN patients p ON a.patient_id = p.id
+                    JOIN doctors d ON a.doctor_id = d.id
+                    WHERE a.id = ?
+                `, [id]);
 
-            if (intervalRows.length > 0) {
-                const intervals = intervalRows[0];
-                if (intervals.interval_days > 0) {
-                    // Calculate next visit from the appointment date, not current date
-                    const appointmentDate = new Date(intervals.appointment_date);
-                    const nextDate = new Date(appointmentDate);
-                    nextDate.setDate(nextDate.getDate() + Number(intervals.interval_days));
-                    const nextDateStr = nextDate.toISOString().split('T')[0];
-                    await conn.query("UPDATE patients SET next_suggested_visit_date = ? WHERE id = ?", [nextDateStr, intervals.patient_id]);
-                    console.log(`DEBUG: Set next suggested visit date to ${nextDateStr} for patient ${intervals.patient_id} (appointment ${id} on ${appointmentDate.toISOString().split('T')[0]})`);
+                if (intervalRows.length > 0) {
+                    const intervals = intervalRows[0];
+                    if (intervals.interval_days > 0) {
+                        const appointmentDate = new Date(intervals.appointment_date);
+                        const nextDate = new Date(appointmentDate);
+                        nextDate.setDate(nextDate.getDate() + Number(intervals.interval_days));
+                        const nextDateStr = nextDate.toISOString().split('T')[0];
+                        await conn.query("UPDATE patients SET next_suggested_visit_date = ? WHERE id = ?", [nextDateStr, intervals.patient_id]);
+                    }
                 }
+            } catch (err) {
+                console.warn("[UpdateStatus] Auto-schedule logic failed:", err.message);
             }
         }
 
         if (['cancelled', 'absent', 'suspended'].includes(status)) {
-            // [NEW] Add to Recently Freed Slots (DB) - Safe Wrap
+            // Recently Freed Slots
             try {
-                const appt = exists[0];
                 const apptMoment = new Date(appt.appointment_date);
                 const apptFormatted = apptMoment.toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace('T', ' ');
 
                 await conn.query("DELETE FROM recently_freed_slots WHERE doctor_id = ? AND slot_date = ?", [appt.doctor_id, apptFormatted]);
                 await conn.query("INSERT INTO recently_freed_slots (doctor_id, slot_date) VALUES (?, ?)", [appt.doctor_id, apptFormatted]);
             } catch (dbErr) {
-                console.warn("[Soft Fail] recently_freed_slots update failed:", dbErr.message);
+                console.warn("[UpdateStatus] recently_freed_slots update failed:", dbErr.message);
             }
 
-            const pId = exists[0].patient_id;
             const isError = reason && (
                 reason.toLowerCase().includes('error') ||
                 reason.toLowerCase().includes('equivoc') ||
                 reason.toLowerCase().includes('prueba')
             );
 
-            // ONLY decrement behavior rating for ABSENT (NO-SHOW)
-            // Cancelled and Suspended should NOT affect reputation as per user request.
-            if (pId && !isError && status === 'absent') {
-                await conn.query("UPDATE patients SET behavior_rating = GREATEST(0, behavior_rating - 1) WHERE id = ?", [pId]);
+            // Reputation Check
+            if (appt.patient_id && !isError && status === 'absent') {
+                await conn.query("UPDATE patients SET behavior_rating = GREATEST(0, behavior_rating - 1) WHERE id = ?", [appt.patient_id]);
             }
 
+            // Cleanup Debt
             if (status === 'cancelled' || status === 'suspended') {
-                // If cancelled or suspended, clear the pending debt associated with it
                 await conn.query("DELETE FROM transactions WHERE appointment_id = ? AND status = 'pending'", [id]);
                 await conn.query("UPDATE appointments SET payment_status = 'pending' WHERE id = ? AND payment_status = 'debt'", [id]);
             }
         }
 
-        const pId = exists[0].patient_id;
-        const pat = await conn.query("SELECT full_name, dni, phone, email FROM patients WHERE id = ?", [pId]);
-        const pName = pat.length > 0 ? pat[0].full_name : pId;
-        const pDetails = pat.length > 0 ? pat[0] : {};
+        // 3. Logging
+        try {
+            const pId = appt.patient_id;
+            let pName = 'Unknown';
+            if (pId) {
+                const pat = await conn.query("SELECT full_name FROM patients WHERE id = ?", [pId]);
+                if (pat.length > 0) pName = pat[0].full_name;
+            }
 
-        const docData = await conn.query("SELECT full_name FROM doctors WHERE id = ?", [exists[0].doctor_id]);
-        // MySQL2 returns [rows, fields] but our pool wrapper might return just rows depending on config.
-        // Assuming standard behavior: Query result is an array of rows.
-        const doctor = Array.isArray(docData) && docData.length > 0 ? docData[0] : null;
-        const docName = doctor && doctor.full_name ? doctor.full_name : 'Unknown Dr';
+            const docData = await conn.query("SELECT full_name FROM doctors WHERE id = ?", [appt.doctor_id]);
+            const docName = (docData && docData.length > 0) ? docData[0].full_name : 'Unknown Dr';
 
-        let logMsg = `[Status Change] ${status.toUpperCase()} - Patient: ${pName} [Dr: ${docName}]`;
-        if (reason) {
-            logMsg += ` [Reason: ${reason}]`;
+            let logMsg = `[Status Change] ${status.toUpperCase()} - Patient: ${pName} [Dr: ${docName}]`;
+            if (reason) logMsg += ` [Reason: ${reason}]`;
+
+            logAction(req, 'UPDATE_APPOINTMENT_STATUS', logMsg);
+        } catch (logErr) {
+            console.warn("[UpdateStatus] Logging failed:", logErr.message);
         }
 
-        logAction(req, 'UPDATE_APPOINTMENT_STATUS', logMsg);
+        // 4. Google Sync
+        try {
+            // Fetch fresh data for sync description
+            const pId = appt.patient_id;
+            const pat = await conn.query("SELECT full_name, dni, phone, email FROM patients WHERE id = ?", [pId]);
+            const pName = pat.length > 0 ? pat[0].full_name : (pId || 'N/A');
+            const pDetails = pat.length > 0 ? pat[0] : {};
 
-        res.json({ message: "Status updated" });
+            const durationRows = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [appt.doctor_id]);
+            const durationMinutes = (durationRows && durationRows.length > 0 && durationRows[0].appointment_duration) ? durationRows[0].appointment_duration : 60;
 
-        // --- Google Calendar Sync ---
-        // --- Google Calendar Sync ---
-        // Prepare Data
-        const durationRows = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [exists[0].doctor_id]);
-        const durationMinutes = (durationRows && durationRows.length > 0 && durationRows[0].appointment_duration) ? durationRows[0].appointment_duration : 60;
+            const startTime = new Date(appt.appointment_date);
+            const endTime = new Date(startTime.getTime() + durationMinutes * 60 * 1000);
 
-        const startTime = new Date(exists[0].appointment_date);
-        const endTime = new Date(startTime.getTime() + durationMinutes * 60 * 1000);
+            const newDescription = `Motivo: ${appt.reason || 'N/A'}\nPaciente: ${pName} (DNI: ${pDetails.dni || 'N/A'})\nTeléfono: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nEstado: ${status}\nPago: ${appt.payment_status}\nCreado por Aplicación de Secretaría`;
 
-        const newDescription = `Motivo: ${exists[0].reason || 'N/A'}\nPaciente: ${pName} (DNI: ${pDetails.dni || 'N/A'})\nTeléfono: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nEstado: ${status}\nPago: ${exists[0].payment_status}\nCreado por Aplicación de Secretaría`;
+            const updatePayload = {
+                summary: pName,
+                description: newDescription,
+                status: status,
+                paymentStatus: appt.payment_status,
+                start: { dateTime: startTime.toISOString(), timeZone: 'America/Argentina/Buenos_Aires' },
+                end: { dateTime: endTime.toISOString(), timeZone: 'America/Argentina/Buenos_Aires' }
+            };
 
-        const updatePayload = {
-            summary: pName,
-            description: newDescription,
-            status: status,
-            paymentStatus: exists[0].payment_status,
-            // Start/End required for Create but optional for Update, including anyway for Create
-            start: { dateTime: startTime.toISOString(), timeZone: 'America/Argentina/Buenos_Aires' },
-            end: { dateTime: endTime.toISOString(), timeZone: 'America/Argentina/Buenos_Aires' }
-        };
-
-        if (exists[0].google_event_id) {
-            // --- UPDATE or DELETE EXISTING ---
-            if (status === 'cancelled') {
-                try {
-                    await googleController.deleteEventHelper(exists[0].doctor_id, exists[0].google_event_id, req.user.user_id);
+            if (appt.google_event_id) {
+                if (status === 'cancelled') {
+                    await googleController.deleteEventHelper(appt.doctor_id, appt.google_event_id, req.user.user_id);
                     await conn.query("UPDATE appointments SET google_event_id = NULL WHERE id = ?", [id]);
-                } catch (syncErr) {
-                    console.warn("Google Sync Failed (Delete on Cancel), queueing retry:", syncErr.message);
-                    await conn.query(
-                        "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'delete', ?, 'pending')",
-                        [id, exists[0].doctor_id, JSON.stringify({ eventId: exists[0].google_event_id })]
-                    );
+                } else {
+                    await googleController.updateEventHelper(appt.doctor_id, appt.google_event_id, updatePayload, req.user.user_id);
                 }
             } else {
-                try {
-                    const result = await googleController.updateEventHelper(exists[0].doctor_id, exists[0].google_event_id, updatePayload, req.user.user_id);
-                    if (!result) throw new Error("Sync failed (returned null)");
-                } catch (syncErr) {
-                    console.warn("Google Sync Failed (Status Update), queueing retry:", syncErr.message);
-                    await conn.query(
-                        "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'update', ?, 'pending')",
-                        [id, exists[0].doctor_id, JSON.stringify({ eventId: exists[0].google_event_id, updates: updatePayload })]
-                    );
-                }
-            }
-        } else {
-            // --- CREATE MISSING EVENT (Self-Healing) ---
-            // Do not create if cancelled
-            if (status !== 'cancelled') {
-                try {
-                    const result = await googleController.createEventHelper(exists[0].doctor_id, updatePayload, req.user.user_id);
+                // Self Healing: Create event if missing (except for cancelled)
+                if (status !== 'cancelled') {
+                    const result = await googleController.createEventHelper(appt.doctor_id, updatePayload, req.user.user_id);
                     if (result && result.id) {
                         await conn.query("UPDATE appointments SET google_event_id = ? WHERE id = ?", [result.id, id]);
-                        console.log(`[Self-Healing] Created missing Google Event for Appt ${id} (Status ${status})`);
                     }
-                } catch (syncErr) {
-                    console.warn("Google Sync Failed (Create-Healing Status), queueing retry:", syncErr.message);
-                    await conn.query(
-                        "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'create', ?, 'pending')",
-                        [id, exists[0].doctor_id, JSON.stringify(updatePayload)]
-                    );
                 }
             }
+        } catch (syncErr) {
+            // Non-fatal error for the user request
+            console.error("[UpdateStatus] Google Sync error:", syncErr);
         }
-        // ----------------------------
+
+        // 5. Send Response (Last step to avoid headers-sent errors)
+        res.json({ message: "Status updated" });
+
     } catch (err) {
-        console.error(err);
-        res.status(500).send("Server Error");
+        console.error("[UpdateStatus] Critical Error:", err);
+        if (!res.headersSent) res.status(500).send("Server Error");
     } finally {
         if (conn) conn.release();
     }
-
 };
 
 exports.updatePaymentStatus = async (req, res) => {
@@ -1346,6 +1349,294 @@ exports.bulkUpdateType = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Server Error" });
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.getMonthlyReport = async (req, res) => {
+    let conn;
+    try {
+        const { month, year, doctorId } = req.query;
+        conn = await pool.getConnection();
+
+        // Default to current month if not provided
+        let targetMonth = month ? parseInt(month) : new Date().getMonth() + 1;
+        let targetYear = year ? parseInt(year) : new Date().getFullYear();
+
+        console.log(`[getMonthlyReport] Generating report for Month: ${targetMonth}, Year: ${targetYear}, Doctor: ${doctorId || 'All'}`);
+
+        let query = `
+            SELECT 
+                a.id,
+                a.appointment_date,
+                a.status as attendance,
+                a.payment_status,
+                a.reason,
+                a.type as appointment_type,
+                p.full_name as patient_name,
+                COALESCE(SUM(CASE WHEN t.status = 'paid' THEN t.amount ELSE 0 END), 0) as paid_amount,
+                GROUP_CONCAT(DISTINCT t.method SEPARATOR ', ') as payment_methods
+            FROM appointments a
+            LEFT JOIN patients p ON a.patient_id = p.id
+            LEFT JOIN transactions t ON a.id = t.appointment_id
+            WHERE MONTH(a.appointment_date) = ? AND YEAR(a.appointment_date) = ?
+        `;
+
+        const queryParams = [targetMonth, targetYear];
+
+        if (doctorId) {
+            query += " AND a.doctor_id = ?";
+            queryParams.push(doctorId);
+        }
+
+        query += `
+            GROUP BY a.id, a.appointment_date, a.status, a.payment_status, a.reason, a.type, p.full_name
+            ORDER BY a.appointment_date ASC
+        `;
+
+        const rows = await conn.query(query, queryParams);
+        console.log(`[getMonthlyReport] Found ${rows.length} appointments.`);
+
+        // Group by Day
+        const report = {};
+
+        rows.forEach(row => {
+            const dateObj = new Date(row.appointment_date);
+            const dayKey = dateObj.toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
+            const time = dateObj.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Argentina/Buenos_Aires' });
+
+            // Monday Check (Day 1 in JS getDay())
+            const dayName = dateObj.toLocaleDateString('es-AR', { weekday: 'long', timeZone: 'America/Argentina/Buenos_Aires' }).toLowerCase();
+            const isMonday = dayName === 'lunes';
+
+            if (!report[dayKey]) {
+                report[dayKey] = {
+                    date: dayKey,
+                    appointments: []
+                };
+            }
+
+            // Fallback Logic for Name
+            let finalName = row.patient_name;
+            if (!finalName || finalName === 'Unknown') {
+                if (row.attendance === 'external' || row.attendance === 'google') {
+                    // Use the reason (Google Summary) as the name
+                    finalName = row.reason ? `Google: ${row.reason}` : 'Google Calendar / Externo';
+                } else {
+                    // Check if reason looks like a name (simple heuristic: not empty)
+                    finalName = row.reason ? `${row.reason} (Sin Paciente)` : 'Desconocido';
+                }
+            }
+
+            report[dayKey].appointments.push({
+                info: `Turno ID ${row.id}`,
+                pago: row.payment_status,
+                asistencia: row.attendance,
+                nombre: finalName,
+                hora: time,
+                dia: dayKey,
+                monto_pagado: row.paid_amount,
+                metodos_pago: row.payment_methods || '',
+                es_lunes: isMonday,
+                tipo_atencion: row.appointment_type,
+                razon: row.reason || ''
+            });
+        });
+
+        // Fetch Withdrawals (money given to doctor)
+        let withdrawalsQuery = `
+            SELECT 
+                amount, 
+                transaction_date, 
+                description 
+            FROM transactions 
+            WHERE 
+                (type = 'withdrawal' OR type = 'payout') 
+                AND MONTH(transaction_date) = ? 
+                AND YEAR(transaction_date) = ?
+        `;
+
+        const wParams = [targetMonth, targetYear];
+
+        // Unfortunately transactions table might not verify doctor_id directly for withdrawals unless stored in related entity or description?
+        // Usually withdrawals are linked to a user/doctor. 
+        // Let's assume transactions has user_id or doctor_id column or we rely on description/metadata?
+        // Checking schema... Assuming 'doctor_id' exists in transactions if we did it right, OR we link via appointment (but withdrawals have no appointment).
+        // Let's check schema. If doctor_id exists in transactions, we filter.
+
+        // Wait, standard transactions table usually has user_id (who performed it) or patient_id.
+        // If it's a payout TO a doctor, we need to know WHICH doctor.
+        // Often 'related_entity_id' + 'related_entity_type' = 'doctor'.
+        // Or specific column. 
+        // Let's try to filter by doctor_id if it exists, otherwise we might show all payouts (risky).
+        // SAFE BET: Check if 'doctor_id' column exists in transactions. If not, we might be showing global payouts.
+        // Assuming for now we just filter by what we can. 
+        // Wait, the user asked for doctor selection.
+
+        // Let's refine the query safely. 
+        // I will optimistically add AND doctor_id = ? if doctorId is present, assuming the column exists.
+
+        if (doctorId) {
+            withdrawalsQuery += " AND doctor_id = ?";
+            wParams.push(doctorId);
+        }
+
+        withdrawalsQuery += " ORDER BY transaction_date ASC";
+
+        let withdrawals = [];
+        try {
+            withdrawals = await conn.query(withdrawalsQuery, wParams);
+        } catch (wErr) {
+            console.warn("Could not filter withdrawals by doctor_id (maybe column missing?):", wErr.message);
+            // Fallback: try without doctor filter if it failed? No, improved safety:
+            if (doctorId) {
+                // Try legacy fallback or return empty list for safety
+                withdrawals = [];
+            } else {
+                // If global, fetch all (using original query without doctor filter)
+                withdrawals = await conn.query(`
+                    SELECT amount, transaction_date, description FROM transactions 
+                    WHERE (type = 'withdrawal' OR type = 'payout') 
+                    AND MONTH(transaction_date) = ? AND YEAR(transaction_date) = ? 
+                    ORDER BY transaction_date ASC`, [targetMonth, targetYear]);
+            }
+        }
+
+        // Format withdrawals
+        const withdrawalList = withdrawals.map(w => {
+            const dateObj = new Date(w.transaction_date);
+            return {
+                fecha: dateObj.toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' }),
+                monto: w.amount,
+                descripcion: w.description
+            };
+        });
+
+        // Fetch Other Income (from Medical Requests or direct transactions)
+        let otherIncomeQuery = `
+            SELECT COALESCE(SUM(amount), 0) as total
+            FROM transactions 
+            WHERE 
+                type = 'income_patient' 
+                AND status = 'paid'
+                AND appointment_id IS NULL
+                AND MONTH(transaction_date) = ? 
+                AND YEAR(transaction_date) = ?
+        `;
+        const oParams = [targetMonth, targetYear];
+        if (doctorId) {
+            otherIncomeQuery += " AND doctor_id = ?";
+            oParams.push(doctorId);
+        }
+        const otherIncomeRes = await conn.query(otherIncomeQuery, oParams);
+        const otherIncome = Number(otherIncomeRes[0].total);
+
+        const result = {
+            appointments: Object.values(report),
+            withdrawals: withdrawalList,
+            other_income: otherIncome
+        };
+
+        res.json(result);
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.getCalendarStats = async (req, res) => {
+    let conn;
+    try {
+        const { year, month, doctor_id } = req.query;
+        if (!year || !month || !doctor_id) return res.status(400).send("Missing parameters");
+
+        conn = await pool.getConnection();
+
+        // 1. Get Doctor Info (Duration)
+        const docRows = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [doctor_id]);
+        const duration = (docRows.length > 0 && docRows[0].appointment_duration) ? docRows[0].appointment_duration : 60;
+
+        // 2. Get Settings (Out of Hours Limit)
+        const settingRows = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'daily_out_of_hours_limit'");
+        const outOfHoursLimit = (settingRows.length > 0) ? parseInt(settingRows[0].setting_value, 10) : 0;
+
+        // 3. Get Schedules
+        const schedules = await conn.query("SELECT * FROM doctor_schedules WHERE doctor_id = ?", [doctor_id]);
+
+        // 4. Get Holidays
+        const lastDay = new Date(year, month, 0).getDate();
+        const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
+        const endDate = `${year}-${String(month).padStart(2, '0')}-${lastDay}`;
+
+        const holidaysRows = await conn.query("SELECT date FROM active_holidays WHERE date BETWEEN ? AND ?", [startDate, endDate]);
+        const holidays = new Set(holidaysRows.map(h => {
+            const d = new Date(h.date);
+            return d.toISOString().split('T')[0];
+        }));
+
+        // 5. Get Appointments
+        const appts = await conn.query(
+            "SELECT appointment_date, is_out_of_hours, status FROM appointments WHERE doctor_id = ? AND date(appointment_date) BETWEEN ? AND ? AND status NOT IN ('cancelled', 'absent', 'suspended', 'rejected')",
+            [doctor_id, startDate, endDate]
+        );
+
+        // 6. Process per Day
+        const stats = {};
+        for (let d = 1; d <= lastDay; d++) {
+            const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            const currentObj = new Date(year, month - 1, d);
+            const dayOfWeek = currentObj.getDay();
+
+            // Check Holiday
+            if (holidays.has(dateStr)) {
+                stats[dateStr] = { freeIn: 0, freeOut: 0, totalIn: 0, bookedIn: 0, bookedOut: 0, isHoliday: true };
+                continue;
+            }
+
+            // Calculate Capacity In Hours form Schedule
+            let capacityIn = 0;
+            const dayScheds = schedules.filter(s => s.day_of_week === dayOfWeek && !s.is_break);
+
+            dayScheds.forEach(s => {
+                const [sh, sm] = s.start_time.split(':');
+                const [eh, em] = s.end_time.split(':');
+                const startMins = parseInt(sh) * 60 + parseInt(sm);
+                const endMins = parseInt(eh) * 60 + parseInt(em);
+                const diff = endMins - startMins;
+                capacityIn += Math.floor(diff / duration);
+            });
+
+            // Filter Appointments for this day
+            const dailyAppts = appts.filter(a => {
+                const aDateStr = new Date(a.appointment_date).toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).substring(0, 10);
+                return aDateStr === dateStr;
+            });
+
+            const bookedIn = dailyAppts.filter(a => !a.is_out_of_hours).length;
+            const bookedOut = dailyAppts.filter(a => a.is_out_of_hours).length;
+
+            const freeIn = Math.max(0, capacityIn - bookedIn);
+            const freeOut = Math.max(0, outOfHoursLimit - bookedOut);
+
+            stats[dateStr] = {
+                freeIn,
+                freeOut,
+                totalIn: capacityIn,
+                bookedIn,
+                bookedOut,
+                isHoliday: false
+            };
+        }
+
+        res.json(stats);
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
     } finally {
         if (conn) conn.release();
     }

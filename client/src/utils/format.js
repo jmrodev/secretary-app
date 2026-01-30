@@ -20,3 +20,29 @@ export const formatPrice = (value) => {
         maximumFractionDigits: 0
     }).format(num);
 };
+
+/**
+ * Formats a Date object or ISO string to Argentina locale format (DD/MM/YYYY).
+ * 
+ * @param {Date|string} date - The date to format.
+ * @param {boolean} includeTime - Whether to include hours and minutes.
+ * @returns {string} - Formatted date string.
+ */
+export const formatDate = (date, includeTime = false) => {
+    if (!date) return 'N/A';
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return 'N/A';
+
+    const options = {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+    };
+
+    if (includeTime) {
+        options.hour = '2-digit';
+        options.minute = '2-digit';
+    }
+
+    return d.toLocaleDateString('es-AR', options);
+};

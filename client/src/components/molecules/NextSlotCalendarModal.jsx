@@ -39,7 +39,7 @@ const NextSlotCalendarModal = ({
             });
             console.log('📊 Slots grouped by date:', grouped);
         } else {
-            console.log('⚠️ No nextSlotData or results');
+            // console.log('⚠️ No nextSlotData or results');
         }
         return grouped;
     }, [nextSlotData]);

@@ -41,11 +41,20 @@ function startTunnelManager() {
 
     async function processData(text) {
         // Look for the Cloudflare URL pattern
-        const match = text.match(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/);
-        if (match) {
-            const newUrl = match[0];
-            console.log(`✨ New Tunnel URL detected: ${newUrl}`);
+        const match = text.match(/https:\/\/(?!api)[a-z0-9-]+\.[a-z0-9-]+\.trycloudflare\.com/) || text.match(/https:\/\/(?!api)[a-z0-9-]{10,}\.trycloudflare\.com/);
+        if (!match) {
+            // Fallback to a slightly more specific one if needed
+            const quickTunnelMatch = text.match(/https:\/\/[a-z0-9]+-[a-z0-9-]+\.trycloudflare\.com/);
+            if (quickTunnelMatch && !quickTunnelMatch[0].includes('api.trycloudflare.com')) {
+                const newUrl = quickTunnelMatch[0];
+                updateUrl(newUrl);
+            }
+        } else {
+            updateUrl(match[0]);
+        }
 
+        async function updateUrl(newUrl) {
+            console.log(`✨ New Tunnel URL detected: ${newUrl}`);
             try {
                 const key = 'public_base_url';
                 await pool.query(

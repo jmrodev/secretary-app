@@ -2090,6 +2090,17 @@ input:checked+.slider:before {
   border-left: 4px solid var(--amber-500) !important;
 }
 
+.status-anonymous {
+  background-color: #fff1f2 !important;
+  /* rose-50 */
+  border: 1px solid #fecdd3 !important;
+  /* rose-200 */
+  color: #9f1239 !important;
+  /* rose-800 */
+  border-left: 4px solid #f43f5e !important;
+  /* rose-500 */
+}
+
 @media (max-width: 768px) {
 
   .calendar-container,
@@ -2271,6 +2282,8 @@ input:checked+.slider:before {
   grid-template-columns: 1fr 2fr;
   gap: 1.5rem;
   height: 100%;
+  min-width: 700px;
+  /* Ensure enough space for 7-day calendar */
 }
 
 .top-nav-tabs {
@@ -4235,6 +4248,42 @@ input:checked+.slider:before {
   flex-shrink: 0;
 }
 
+/* Status Variants for Appointment Card */
+.appointment-card.status-pending {
+  border-left: 4px solid var(--blue-500);
+}
+
+.appointment-card.status-confirmed {
+  border-left: 4px solid var(--green-500);
+}
+
+.appointment-card.status-arrived {
+  border-left: 4px solid var(--amber-500);
+  background-color: var(--amber-50);
+}
+
+.appointment-card.status-completed {
+  border-left: 4px solid var(--gray-500);
+  opacity: 0.8;
+  background-color: var(--gray-50);
+}
+
+.appointment-card.status-cancelled {
+  border-left: 4px solid var(--red-500);
+  opacity: 0.6;
+  background-color: var(--red-50);
+}
+
+.appointment-card.status-suspended {
+  border-left: 4px solid var(--orange-500);
+  opacity: 0.7;
+}
+
+.appointment-card.status-absent {
+  border-left: 4px solid var(--red-700);
+  opacity: 0.7;
+}
+
 @media screen and (max-width: 640px) {
   .appointment-card {
     grid-template-columns: auto 1fr;
@@ -4506,7 +4555,10 @@ input:checked+.slider:before {
 .calendar-container {
   padding: 0.75rem;
   width: 100%;
-  max-width: 310px;
+  max-width: 100%;
+  /* Allow full width for 7-day display */
+  min-width: 310px;
+  /* Minimum width to ensure readability */
   margin: 0;
 }
 
@@ -5523,7 +5575,10 @@ input:checked+.slider:before {
 
 .appointments-grid {
   display: grid;
-  grid-template-columns: 320px 1fr;
+  grid-template-columns: 1fr 2fr;
+  /* Give calendar 33% and schedule 66% of space */
+  min-width: 700px;
+  /* Ensure enough space for 7-day calendar */
   gap: 1.5rem;
   align-items: start;
 }
@@ -7011,6 +7066,8 @@ input:checked+.slider:before {
   border-radius: 1rem;
   border: 1px solid var(--gray-300);
   overflow: hidden;
+  min-width: 300px;
+  /* Ensure minimum width for readability */
 }
 
 .calendar-grid__header {
@@ -7124,32 +7181,438 @@ input:checked+.slider:before {
   margin-top: -2px;
 }
 
+/* Improved Calendar Components */
+
+/* Calendar Day Cell - Atomic Component */
+.calendar-day-cell {
+  background-color: white;
+  aspect-ratio: 1;
+  min-height: 60px;
+  padding: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+  position: relative;
+  cursor: default;
+  border-radius: 0.375rem;
+}
+
+.calendar-day-cell--interactive {
+  cursor: pointer;
+}
+
+.calendar-day-cell--interactive:hover {
+  background-color: var(--blue-50);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.calendar-day-cell--other-month {
+  background-color: var(--gray-50);
+  opacity: 0.6;
+}
+
+.calendar-day-cell--today {
+  box-shadow: inset 0 0 0 2px var(--blue-500);
+  background-color: var(--blue-25);
+}
+
+.calendar-day-cell--selected {
+  background-color: var(--blue-100);
+  box-shadow: inset 0 0 0 2px var(--blue-600);
+}
+
+.calendar-day-cell--holiday {
+  background-color: var(--red-25);
+}
+
+.calendar-day-cell--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.calendar-day-cell__content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.calendar-day-cell__date {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.calendar-day-cell__number {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  line-height: 1;
+}
+
+.calendar-day-cell--today .calendar-day-cell__number {
+  color: var(--blue-700);
+  font-weight: 800;
+}
+
+.calendar-day-cell--other-month .calendar-day-cell__number {
+  color: var(--gray-400);
+}
+
+.calendar-day-cell--selected .calendar-day-cell__number {
+  color: var(--blue-800);
+}
+
+.calendar-day-cell__today-marker {
+  font-size: 0.45rem;
+  background-color: var(--blue-600);
+  color: white;
+  padding: 0.05rem 0.2rem;
+  border-radius: 9999px;
+  font-weight: 800;
+  line-height: 1;
+  align-self: flex-end;
+}
+
+/* Calendar Day Indicator - Atomic Component */
+.calendar-day-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+  width: 100%;
+  margin-top: auto;
+}
+
+.calendar-day-indicator__holiday-badge {
+  width: 12px;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--red-400);
+  font-size: 0.5rem;
+}
+
+.calendar-day-indicator__appointment-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 950;
+  line-height: 1;
+  padding: 0 1px;
+}
+
+.calendar-day-indicator__appointment-badge--high {
+  color: var(--blue-700);
+  text-decoration: underline;
+}
+
+.calendar-day-indicator__count {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/* Calendar Header - Molecule Component */
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 0.5rem;
+}
+
+.calendar-header__nav-button {
+  background: none;
+  border: 1px solid var(--gray-200);
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+}
+
+.calendar-header__nav-button:hover {
+  background-color: var(--gray-50);
+  border-color: var(--gray-300);
+}
+
+.calendar-header__nav-button:active {
+  transform: scale(0.95);
+}
+
+.calendar-header__title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  margin: 0;
+  text-align: center;
+  flex-grow: 1;
+  padding: 0 1rem;
+}
+
+/* Day Headers - Molecule Component */
+.day-headers {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background-color: var(--gray-100);
+  border-radius: 0.375rem 0.375rem 0 0;
+  overflow: hidden;
+}
+
+.day-headers__day {
+  text-align: center;
+  padding: 0.5rem 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--gray-700);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: var(--gray-100);
+}
+
+/* Enhanced Calendar Grid */
+.calendar-grid {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--gray-200);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.calendar-grid__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background-color: white;
+  border-radius: 0.5rem 0.5rem 0 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-grid__nav-btn {
+  background: none;
+  border: 1px solid var(--gray-200);
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+}
+
+.calendar-grid__nav-btn:hover {
+  background-color: var(--gray-50);
+  border-color: var(--gray-300);
+}
+
+.calendar-grid__title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  margin: 0;
+  text-align: center;
+  flex-grow: 1;
+  padding: 0 1rem;
+}
+
+.calendar-grid__days-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background-color: var(--gray-100);
+}
+
+.calendar-grid__day-name {
+  text-align: center;
+  padding: 0.5rem 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--gray-700);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.calendar-grid__body {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background-color: var(--gray-200);
+}
+
+.calendar-grid__cell {
+  background-color: white;
+  aspect-ratio: 1;
+  min-height: 60px;
+  padding: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s;
+  position: relative;
+  cursor: default;
+  border-radius: 0.125rem;
+}
+
+.calendar-grid__cell--empty {
+  background-color: var(--gray-50);
+}
+
+.calendar-grid__cell--past {
+  opacity: 0.4;
+}
+
+.calendar-grid__cell--interactive {
+  cursor: pointer;
+}
+
+.calendar-grid__cell--interactive:hover {
+  background-color: var(--blue-50);
+  z-index: 1;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-grid__cell--today {
+  box-shadow: inset 0 0 0 2px var(--blue-500);
+  background-color: var(--blue-25);
+}
+
+.calendar-grid__date-number {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  margin-bottom: 0.125rem;
+  line-height: 1;
+}
+
+.calendar-grid__cell--today .calendar-grid__date-number {
+  color: var(--blue-700);
+  font-weight: 800;
+}
+
+.calendar-grid__today-badge {
+  font-size: 0.45rem;
+  background-color: var(--blue-600);
+  color: white;
+  padding: 0.05rem 0.2rem;
+  border-radius: 9999px;
+  font-weight: 800;
+  margin-top: -2px;
+  align-self: flex-end;
+}
+
 .calendar-grid__indicators {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 0.125rem;
   width: 100%;
+  margin-top: auto;
 }
 
 .calendar-grid__badge {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.1rem 0.3rem;
-  border-radius: 0.25rem;
-  font-size: 0.65rem;
-  font-weight: 800;
-  line-height: 1;
-  width: 100%;
   justify-content: center;
-  border: 1px solid transparent;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 0.25rem;
+  border-radius: 9999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 1;
+  background-color: var(--green-100);
+  color: var(--green-800);
+  border: 1px solid var(--green-200);
 }
 
 .calendar-grid__badge--normal {
   background-color: var(--green-100);
-  color: var(--green-700);
-  border-color: var(--green-200);
+}
+
+/* Upcoming Appointments View - Organism Component */
+.upcoming-appointments-view {
+  width: 100%;
+}
+
+.upcoming-appointments-view__container {
+  background-color: white;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid var(--gray-200);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.upcoming-appointments-view__loading {
+  padding: 2rem;
+  text-align: center;
+  color: var(--gray-500);
+  font-style: italic;
+}
+
+.upcoming-appointments-view__empty {
+  padding: 3rem;
+  text-align: center;
+  background-color: var(--gray-25);
+}
+
+.upcoming-appointments-view__empty-text {
+  color: var(--gray-500);
+  margin: 0;
+  font-size: 1rem;
+}
+
+.upcoming-appointments-view__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.upcoming-appointments-view__date-header {
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0 0.5rem 0;
+  padding: 0 0.5rem;
+}
+
+.upcoming-appointments-view__date-text {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--indigo-700);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: var(--indigo-50);
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+.upcoming-appointments-view__divider {
+  flex-grow: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--indigo-100), transparent);
+  margin-left: 0.5rem;
 }
 
 .calendar-grid__badge--extra {
@@ -7311,18 +7774,24 @@ input:checked+.slider:before {
   font-weight: 700;
   letter-spacing: 0.025em;
 }
+
 /* Fix for Calendar Grid Separation Issue */
 .calendar-grid {
   display: flex !important;
   flex-direction: column !important;
-  gap: 0 !important; /* Force no gap between header, days row and body */
-  background-color: white; /* Ensure background connects them */
+  gap: 0 !important;
+  /* Force no gap between header, days row and body */
+  background-color: white;
+  /* Ensure background connects them */
+  min-width: 300px;
+  /* Ensure minimum width for readability */
 }
 
 .calendar-grid__header,
 .calendar-grid__days-row,
 .calendar-grid__body {
-  margin: 0 !important; /* Remove any unexpected margins */
+  margin: 0 !important;
+  /* Remove any unexpected margins */
   width: 100%;
 }
 
@@ -7332,7 +7801,8 @@ input:checked+.slider:before {
 }
 
 .calendar-grid__days-row {
-  border-bottom: 1px solid var(--gray-200); /* Add separation line between days and grid */
+  border-bottom: 1px solid var(--gray-200);
+  /* Add separation line between days and grid */
 }
 
 /* ==========================================================================
@@ -7343,22 +7813,24 @@ input:checked+.slider:before {
   /* Layout: Flex Column to stack children perfectly without gaps */
   display: flex;
   flex-direction: column;
-  align-items: stretch; /* Force children to full width */
+  align-items: stretch;
+  /* Force children to full width */
   gap: 0;
-  
+
   /* Container Style */
   width: 100%;
   background-color: white;
   border: 1px solid var(--gray-300);
-  border-radius: 1rem; /* Rounded corners for the whole container */
+  border-radius: 1rem;
+  /* Rounded corners for the whole container */
   box-shadow: var(--shadow-sm);
-  
+
   /* Clip content that overflows rounded corners */
   overflow: hidden;
 }
 
 /* Reset margins for direct children to prevent separation */
-.calendar-grid > div {
+.calendar-grid>div {
   margin: 0;
 }
 
@@ -7368,17 +7840,18 @@ input:checked+.slider:before {
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 1rem;
-  
+
   background-color: var(--gray-50);
   border-bottom: 1px solid var(--gray-200);
-  z-index: 2; /* Ensure header shadow/border sits on top if needed */
+  z-index: 2;
+  /* Ensure header shadow/border sits on top if needed */
 }
 
 /* --- Days Row (Lun, Mar, etc) --- */
 .calendar-grid__days-row {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  
+
   background-color: var(--gray-50);
   border-bottom: 1px solid var(--gray-200);
   padding: 0.5rem 0;
@@ -7397,25 +7870,33 @@ input:checked+.slider:before {
 .calendar-grid__body {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 1px; /* The internal grid gap for lines */
-  background-color: var(--gray-200); /* Color of the gap lines */
-  border-top: none; /* Already separated by days-row border */
+  gap: 1px;
+  /* The internal grid gap for lines */
+  background-color: var(--gray-200);
+  /* Color of the gap lines */
+  border-top: none;
+  /* Already separated by days-row border */
 }
 
 /* Cell Overrides for perfect fit */
 .calendar-grid__cell {
   background-color: white;
-  min-height: 60px; /* Reduced specific height */
-  aspect-ratio: auto; /* Let it flow naturally or force square if preferred */
+  min-height: 60px;
+  /* Reduced specific height */
+  aspect-ratio: auto;
+  /* Let it flow naturally or force square if preferred */
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Space number at top, badges at bottom */
+  justify-content: space-between;
+  /* Space number at top, badges at bottom */
 }
 
 /* Limit Calendar Width to make cells narrower */
 .calendar-grid {
-  max-width: 650px; /* Prevents cells from being too wide */
-  margin: 0 auto;   /* Centers the calendar in the modal */
+  max-width: 650px;
+  /* Prevents cells from being too wide */
+  margin: 0 auto;
+  /* Centers the calendar in the modal */
 }
 
 /* --- Holiday & Text Size Updates --- */
@@ -7426,7 +7907,8 @@ input:checked+.slider:before {
 }
 
 .calendar-grid__date-number {
-  font-size: 1rem !important; /* Increased from 0.75rem/0.85rem */
+  font-size: 1rem !important;
+  /* Increased from 0.75rem/0.85rem */
   font-weight: 700;
   margin-bottom: 0.25rem;
 }
@@ -7437,10 +7919,258 @@ input:checked+.slider:before {
 
 /* Allow main page calendar to be wider */
 .appointments-grid .calendar-grid {
-  max-width: 100% !important; /* Use full width available in the layout */
+  max-width: 100% !important;
+  /* Use full width available in the layout */
 }
 
 /* Keep modal calendar compact (optional reinforcement) */
 .calendar-slot-modal .calendar-grid {
   max-width: 650px;
+}
+
+/* --- Appointment Action Modal (BEM) --- */
+
+.appointment-modal__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Header */
+.appointment-modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.appointment-modal__patient-info {
+  flex: 1;
+}
+
+.appointment-modal__text {
+  font-size: 0.95rem;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+}
+
+.appointment-modal__strong {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.appointment-modal__phone-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-block: 0.25rem;
+  color: var(--blue-600);
+}
+
+.appointment-modal__phone-number {
+  font-family: monospace;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.appointment-modal__phone-actions {
+  display: flex;
+  gap: 0.25rem;
+  margin-left: 0.5rem;
+}
+
+.appointment-modal__icon-btn {
+  border-radius: 9999px !important;
+  padding: 0.2rem !important;
+  height: 24px;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.appointment-modal__icon-btn--whatsapp {
+  color: var(--green-600) !important;
+}
+
+.appointment-modal__icon-btn--whatsapp:hover {
+  background-color: var(--green-50) !important;
+  color: var(--green-700) !important;
+}
+
+.appointment-modal__icon-btn--magic {
+  color: var(--indigo-600) !important;
+}
+
+.appointment-modal__icon-btn--magic:hover {
+  background-color: var(--indigo-50) !important;
+  color: var(--indigo-700) !important;
+}
+
+.appointment-modal__date {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  color: var(--text-muted);
+}
+
+.appointment-modal__badges {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Reason Box */
+.section-card {
+  background-color: var(--gray-50);
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--gray-100);
+}
+
+/* Medical Panel */
+.appointment-modal__medical-panel {
+  background-color: var(--gray-50);
+  padding: 1.25rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
+}
+
+.appointment-modal__section-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.appointment-modal__medical-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.appointment-modal__action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.appointment-modal__action-btn--full {
+  grid-column: span 2;
+}
+
+.appointment-modal__note-section {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.appointment-modal__note-input {
+  font-size: 0.9rem !important;
+  padding: 0.5rem !important;
+  flex: 1;
+}
+
+.appointment-modal__save-note-btn {
+  padding-inline: 1rem !important;
+}
+
+/* Admin Panel */
+.appointment-modal__admin-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.appointment-modal__admin-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.appointment-modal__danger-zone {
+  margin-top: 1rem;
+  border-top: 1px solid var(--gray-100);
+  padding-top: 1rem;
+}
+
+.appointment-modal__sync-btn {
+  width: 100%;
+  padding-block: 0.8rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, var(--amber-500) 0%, var(--orange-600) 100%) !important;
+  border: none !important;
+  color: white !important;
+}
+
+/* Calendar Day Indicator Styles - Updated to match NextSlotModal styles */
+
+.calendar-day-indicator {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: auto;
+  overflow: hidden;
+}
+
+.calendar-day-indicator__holiday-badge {
+  font-size: 1.2rem;
+  color: var(--red-600);
+  font-weight: 950;
+}
+
+.calendar-day-indicator__appointment-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 950;
+  line-height: 1;
+  padding: 0 1px;
+  max-width: 100%;
+}
+
+
+/* Normal (Green) - Free Slots */
+.calendar-day-indicator__appointment-badge--free-normal {
+  color: var(--green-600);
+}
+
+/* Extra (Yellow/Orange) - Free Slots */
+.calendar-day-indicator__appointment-badge--free-extra {
+  color: var(--amber-600);
+}
+
+/* Booked (Blue/Normal) */
+.calendar-day-indicator__appointment-badge--normal {
+  color: var(--blue-600);
+}
+
+.calendar-day-indicator__appointment-badge--high {
+  color: var(--blue-700);
+  text-decoration: underline;
+}
+
+/* Booked Extra (Occupied out of hours) - Indigo/Purpleish */
+.calendar-day-indicator__appointment-badge--booked-extra {
+  color: var(--indigo-600);
+}
+
+.calendar-day-indicator__appointment-badge--booked-normal {
+  color: var(--blue-600);
+}
+
+.calendar-day-indicator__holiday-badge {
+  color: var(--red-600);
+  font-weight: 900;
 }

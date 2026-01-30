@@ -142,7 +142,9 @@ exports.getPatientDetails = async (req, res) => {
 
         // 2. Get History (Appointments)
         const apps = await conn.query(`
-            SELECT a.*, d.full_name as doctor_name 
+            SELECT a.*, d.full_name as doctor_name,
+            (SELECT COALESCE(SUM(t.amount), 0) FROM transactions t WHERE t.appointment_id = a.id AND t.status = 'paid') as paid_amount,
+            (SELECT COALESCE(SUM(t.amount), 0) FROM transactions t WHERE t.appointment_id = a.id AND t.status = 'pending') as pending_amount
             FROM appointments a 
             JOIN doctors d ON a.doctor_id = d.id 
             WHERE a.patient_id = ?

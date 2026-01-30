@@ -287,7 +287,7 @@ export const translations = {
         export_json: "Exportar JSON",
         print_backup: "Imprimir Respaldo",
         prescription_backup: "Respaldo de Recetas",
-
+        print: "Imprimir",
 
         // Finances
         actions: "Acciones",
@@ -1146,5 +1146,6 @@ export const translations = {
         update_success: "Institution updated successfully",
         delete_success: "Institution deleted",
         error_saving: "Error saving changes",
+        print: "Print",
     }
 };

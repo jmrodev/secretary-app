@@ -8,16 +8,18 @@ const CalendarSection = ({
     selectedDate,
     onDateSelect,
     appointments = [],
+    calendarStats = {},
     holidays = [],
     onAddHoliday
 }) => {
     return (
         <div className="calendar-section">
-            {activeTab === 'calendar' ? (
+            {(activeTab === 'calendar' || activeTab === 'monthly') ? (
                 <Calendar
                     selectedDate={selectedDate}
                     onDateSelect={onDateSelect}
                     appointments={appointments}
+                    calendarStats={calendarStats}
                     holidays={holidays}
                 />
             ) : (

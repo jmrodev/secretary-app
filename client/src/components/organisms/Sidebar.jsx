@@ -32,6 +32,12 @@ const Sidebar = () => {
                     </Link>
                 )}
 
+                {user.role !== 'patient' && (
+                    <Link to="/monthly-view" className={`sidebar-link ${isActive('/monthly-view')}`}>
+                        <span>🗓️</span> {t('monthly_view') || 'Vista Mensual'}
+                    </Link>
+                )}
+
                 {user.role !== 'patient' && user.role !== 'admin' && (
                     <Link to="/patients" className={`sidebar-link ${isActive('/patients')}`}>
                         <span>👥</span> {t('patients')}
@@ -67,6 +73,12 @@ const Sidebar = () => {
                 {user.role === 'secretary' && (
                     <Link to="/finances" className={`sidebar-link ${isActive('/finances')}`}>
                         <span>💰</span> {t('finances')}
+                    </Link>
+                )}
+
+                {(user.role === 'admin' || user.role === 'secretary') && (
+                    <Link to="/reports" className={`sidebar-link ${isActive('/reports')}`}>
+                        <span>📑</span> {t('reports') || 'Reportes'}
                     </Link>
                 )}
 

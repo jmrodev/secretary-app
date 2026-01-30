@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-
+import CalendarDayCell from '../atoms/CalendarDayCell';
+import CalendarHeader from '../molecules/CalendarHeader';
+import DayHeaders from '../molecules/DayHeaders';
 import { useLanguage } from '../../context/LanguageContext';
 
-const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = [] }) => {
+const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = [], calendarStats = {}, hideNavigation = false }) => {
     const [viewDate, setViewDate] = useState(new Date(selectedDate || new Date()));
     const { t } = useLanguage();
 
@@ -62,50 +64,37 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
             const isToday = isSameDay(new Date(), currentDay);
 
             // Count appointments for this day
+            const dateStr = [currentDay.getFullYear(), String(currentDay.getMonth() + 1).padStart(2, '0'), String(currentDay.getDate()).padStart(2, '0')].join('-');
+            const dayStats = calendarStats[dateStr] || {};
+
             const dayAppts = appointments.filter(appt =>
                 isSameDay(new Date(appt.appointment_date), currentDay)
             );
-            const count = dayAppts.length;
 
-            // Check if holiday
-            const dateStr = currentDay.toISOString().split('T')[0];
+            // Priority: Use dayStats if provided (better for summary views) 
+            // otherwise compute from appointments array (better for interactive daily view)
+            const bookedInCount = (dayStats.bookedIn !== undefined) ? dayStats.bookedIn : dayAppts.filter(a => !a.is_out_of_hours).length;
+            const bookedOutCount = (dayStats.bookedOut !== undefined) ? dayStats.bookedOut : dayAppts.filter(a => a.is_out_of_hours).length;
+            const count = (dayStats.bookedIn !== undefined && dayStats.bookedOut !== undefined) ? (dayStats.bookedIn + dayStats.bookedOut) : dayAppts.length;
+
             const isHolidayObj = holidays && holidays.find(h => h.date.startsWith(dateStr));
 
-            let cellClasses = 'calendar-grid__cell calendar-grid__cell--interactive';
-            if (isSelected) cellClasses += ' calendar-grid__cell--selected';
-            if (isToday) cellClasses += ' calendar-grid__cell--today';
-            if (isHolidayObj) cellClasses += ' calendar-grid__cell--holiday';
-
-            // Inline style for selected state fallback if class missing in new CSS
-            const selectedStyle = isSelected ? { ring: '2px solid var(--blue-600)', backgroundColor: 'var(--blue-50)' } : {};
-            const holidayStyle = isHolidayObj ? { backgroundColor: 'var(--red-50)' } : {};
-
             dayElements.push(
-                <div
+                <CalendarDayCell
                     key={i}
-                    className={cellClasses}
+                    day={i}
+                    isSelected={isSelected}
+                    isToday={isToday}
+                    isHoliday={!!isHolidayObj}
+                    holidayDescription={isHolidayObj ? isHolidayObj.description : ''}
+                    appointmentCount={count}
+                    bookedInCount={bookedInCount}
+                    bookedOutCount={bookedOutCount}
+                    freeInCount={dayStats.freeIn}
+                    freeOutCount={dayStats.freeOut}
                     onClick={() => onDateSelect(currentDay)}
-                    title={isHolidayObj ? isHolidayObj.description : ''}
-                    style={{ ...selectedStyle, ...holidayStyle }}
-                >
-                    <div className="flex flex-col items-center">
-                        <span className={`calendar-grid__date-number ${isSelected ? 'text-blue-700' : ''}`}>{i}</span>
-                        {isToday && <span className="calendar-grid__today-badge">HOY</span>}
-                    </div>
-
-                    {count > 0 && (
-                        <div className="calendar-grid__indicators">
-                            <div className="calendar-grid__badge calendar-grid__badge--normal">
-                                <span>📅</span><span>{count}</span>
-                            </div>
-                        </div>
-                    )}
-                    {isHolidayObj && (
-                        <div className="calendar-grid__indicators">
-                            <span style={{ fontSize: '0.6rem', color: 'var(--red-500)' }}>🏖️</span>
-                        </div>
-                    )}
-                </div>
+                    isCurrentMonth={true}
+                />
             );
         }
         return dayElements;
@@ -113,30 +102,24 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
 
     return (
         <div className="calendar-grid">
-            <div className="calendar-grid__header">
-                <button className="calendar-grid__nav-btn" onClick={handlePrevMonth}>⬅️</button>
-                <h3 className="calendar-grid__title">{months[viewDate.getMonth()]} {viewDate.getFullYear()}</h3>
-                <button className="calendar-grid__nav-btn" onClick={handleNextMonth}>➡️</button>
-            </div>
+            {!hideNavigation && (
+                <CalendarHeader
+                    month={months[viewDate.getMonth()]}
+                    year={viewDate.getFullYear()}
+                    onPrevMonth={handlePrevMonth}
+                    onNextMonth={handleNextMonth}
+                />
+            )}
+            {hideNavigation && (
+                <div className="calendar-grid__simple-title">
+                    {months[viewDate.getMonth()]} {viewDate.getFullYear()}
+                </div>
+            )}
 
-            <div className="calendar-grid__days-row">
-                {daysOfWeek.map(day => (
-                    <div key={day} className="calendar-grid__day-name">{day}</div>
-                ))}
-            </div>
+            <DayHeaders daysOfWeek={daysOfWeek} />
 
             <div className="calendar-grid__body">
-                {renderDays().map((dayElement, index) => {
-                    // Need to adapt the rendered day elements to new classes if possible, 
-                    // or wrap them. renderDays returns elements with 'calendar-day' class.
-                    // It's cleaner to rewrite renderDays logic here or modify renderDays function.
-                    // But for now, let's map properties if possible or just use the existing renderDays result 
-                    // and hope the .calendar-grid__body > * styles apply correctly.
-                    // Wait, my CSS targets .calendar-grid__cell specifically.
-                    // The old code returns <div className="calendar-day ...">
-                    // I should Update renderDays too.
-                    return dayElement;
-                })}
+                {renderDays()}
             </div>
         </div>
     );

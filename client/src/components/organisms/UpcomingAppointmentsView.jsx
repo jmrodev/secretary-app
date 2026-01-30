@@ -13,16 +13,20 @@ const UpcomingAppointmentsView = ({
         .sort((a, b) => new Date(a.appointment_date) - new Date(b.appointment_date));
 
     return (
-        <div className="upcoming-list-view animate-in">
-            <section className="card p-0 overflow-hidden border-slate-200 shadow-sm transition-all">
+        <div className="upcoming-appointments-view">
+            <section className="upcoming-appointments-view__container">
                 {loading ? (
-                    <div className="p-8 text-center text-muted">{t('loading')}</div>
+                    <div className="upcoming-appointments-view__loading">
+                        <span>{t('loading')}</span>
+                    </div>
                 ) : upcoming.length === 0 ? (
-                    <div className="text-center p-12 bg-white">
-                        <p className="text-muted m-0">{t('no_upcoming_appointments') || 'No hay próximos turnos.'}</p>
+                    <div className="upcoming-appointments-view__empty">
+                        <p className="upcoming-appointments-view__empty-text">
+                            {t('no_upcoming_appointments') || 'No hay próximos turnos.'}
+                        </p>
                     </div>
                 ) : (
-                    <div className="flex flex-col gap-2 p-4">
+                    <div className="upcoming-appointments-view__list">
                         {upcoming.map((a, index, arr) => {
                             const dateObj = new Date(a.appointment_date);
                             const dateStr = dateObj.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
@@ -36,11 +40,11 @@ const UpcomingAppointmentsView = ({
                             return (
                                 <Fragment key={a.id}>
                                     {showHeader && (
-                                        <div className="flex items-center gap-3 mt-4 mb-2 first:mt-0">
-                                            <span className="text-[10px] font-bold text-indigo-700 uppercase tracking-widest bg-indigo-50 px-2 py-0.5 rounded">
+                                        <div className="upcoming-appointments-view__date-header">
+                                            <span className="upcoming-appointments-view__date-text">
                                                 {headerDate}
                                             </span>
-                                            <div className="h-[1px] flex-1 bg-gradient-to-r from-indigo-100 to-transparent"></div>
+                                            <div className="upcoming-appointments-view__divider"></div>
                                         </div>
                                     )}
                                     <AppointmentCard

@@ -29,12 +29,12 @@ export const useAppointmentsPageController = () => {
     const location = useLocation();
 
     // --- Local State ---
-    const [viewDoctorId, setViewDoctorId] = useState(localStorage.getItem('last_selected_doctor_id') || '');
+    const [viewDoctorId, setViewDoctorId] = useState(location.state?.viewDoctorId || localStorage.getItem('last_selected_doctor_id') || '');
     const [doctors, setDoctors] = useState([]);
     const [institutions, setInstitutions] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [selectedDate, setSelectedDate] = useState(new Date());
-    const [activeTab, setActiveTab] = useState('calendar');
+    const [selectedDate, setSelectedDate] = useState(location.state?.selectedDate ? new Date(location.state.selectedDate) : new Date());
+    const [activeTab, setActiveTab] = useState(location.state?.activeTab || 'calendar');
 
     // --- Modals State ---
     const [editPatientModalOpen, setEditPatientModalOpen] = useState(false);
@@ -44,9 +44,10 @@ export const useAppointmentsPageController = () => {
     const [prescribeModal, setPrescribeModal] = useState({ open: false, apptId: null, patientName: '', medications: '', instructions: '' });
     const [authModalOpen, setAuthModalOpen] = useState(false);
     const [retryAction, setRetryAction] = useState(null);
+    const [calendarStats, setCalendarStats] = useState({});
 
     // --- Sub-Hooks ---
-    const { updateStatus, cancelAppointment, deleteAppointment, rescheduleAppointment, savePrescription } = useAppointments();
+    const { updateStatus, updateAppointment, cancelAppointment, deleteAppointment, rescheduleAppointment, savePrescription } = useAppointments();
     const { holidays, addHoliday, deleteHoliday } = useHolidays();
 
     const patientSearch = usePatientSearch();
@@ -109,7 +110,23 @@ export const useAppointmentsPageController = () => {
             } catch (err) { console.error(err); }
         };
         updateType();
+        updateType();
     }, [selectedDoctor, booking.date, doctorSchedule]);
+
+    // Fetch Calendar Stats (Slots Count)
+    useEffect(() => {
+        if (!viewDoctorId) return;
+        const year = selectedDate.getFullYear();
+        const month = selectedDate.getMonth() + 1;
+
+        const fetchStats = async () => {
+            try {
+                const res = await api.get(`/appointments/stats?year=${year}&month=${month}&doctor_id=${viewDoctorId}`);
+                setCalendarStats(res.data);
+            } catch (e) { console.error("Stats fetch error:", e); }
+        };
+        fetchStats();
+    }, [viewDoctorId, selectedDate.getMonth(), selectedDate.getFullYear(), appointments.length]);
 
     const rescheduleAppt = location.state?.rescheduleAppt;
     const syncAppt = location.state?.syncAppt;
@@ -171,7 +188,7 @@ export const useAppointmentsPageController = () => {
         setRetryAction, setShowNextSlotModal, booking, // pass booking object if needed for whatsapp modal but setter is simpler
         setWhatsappModal: booking.setWhatsappModal, // Booking owns whatsapp modal state
 
-        updateStatus, fetchAppointments, savePrescription,
+        updateStatus, updateAppointment, fetchAppointments, savePrescription,
         deleteAppointment, rescheduleAppointment, bookAppointment,
         fetchNextFreeSlots,
         copyToClipboard
@@ -213,6 +230,8 @@ export const useAppointmentsPageController = () => {
         currentDoctor,
         filteredAppointments,
         appointments,
+        appointments,
+        calendarStats,
         doctorSchedule,
 
         // Patient Search (Safe Exposure)
@@ -221,6 +240,8 @@ export const useAppointmentsPageController = () => {
 
         // Spread Handlers
         ...handlers,
+        handleUpdateType: handlers.handleUpdateType,
+        handleHardEdit: handlers.handleHardEdit,
         handleAdminAuthConfirm,
         handleWhatsAppUniversal,
         syncDayToGoogle,

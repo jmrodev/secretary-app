@@ -25,6 +25,12 @@ exports.createTransaction = async (req, res) => {
 
         conn = await pool.getConnection();
 
+        // Format date for MariaDB if it's a string (e.g. ISO format from frontend)
+        let finalDate = transaction_date || new Date();
+        if (finalDate && typeof finalDate === 'string' && finalDate.includes('T')) {
+            finalDate = new Date(finalDate).toISOString().slice(0, 19).replace('T', ' ');
+        }
+
         // [FIX] Clean up existing pending debt for this appointment/request (if any) to prevent duplicates
         if (appointment_id) {
             await conn.query("DELETE FROM transactions WHERE appointment_id = ? AND status = 'pending'", [appointment_id]);
@@ -39,7 +45,7 @@ exports.createTransaction = async (req, res) => {
                 if (Number(p.amount) > 0) {
                     await conn.query(
                         "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, institution_id, method, status, proof_file, request_id, appointment_id, transaction_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                        [type, p.amount, description, related_user_id || null, doctor_id || null, req.body.institution_id || null, p.method || 'cash', status || 'paid', proof_file, req.body.request_id || null, appointment_id || null, transaction_date || new Date()]
+                        [type, p.amount, description, related_user_id || null, doctor_id || null, req.body.institution_id || null, p.method || 'cash', status || 'paid', proof_file, req.body.request_id || null, appointment_id || null, finalDate]
                     );
                 }
             }
@@ -47,7 +53,7 @@ exports.createTransaction = async (req, res) => {
             // Fallback for single payment
             await conn.query(
                 "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, institution_id, method, status, proof_file, request_id, appointment_id, transaction_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                [type, amount, description, related_user_id || null, doctor_id || null, req.body.institution_id || null, method || 'cash', status || 'paid', proof_file, req.body.request_id || null, appointment_id || null, transaction_date || new Date()]
+                [type, amount, description, related_user_id || null, doctor_id || null, req.body.institution_id || null, method || 'cash', status || 'paid', proof_file, req.body.request_id || null, appointment_id || null, finalDate]
             );
         }
 
@@ -55,7 +61,7 @@ exports.createTransaction = async (req, res) => {
         if (Number(debt_amount) > 0) {
             await conn.query(
                 "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, institution_id, method, status, proof_file, request_id, appointment_id, transaction_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                [type, debt_amount, `DEBT: ${description}`, related_user_id || null, doctor_id || null, req.body.institution_id || null, 'on_account', 'pending', null, req.body.request_id || null, appointment_id || null, transaction_date || new Date()]
+                [type, debt_amount, `DEBT: ${description}`, related_user_id || null, doctor_id || null, req.body.institution_id || null, 'on_account', 'pending', null, req.body.request_id || null, appointment_id || null, finalDate]
             );
         }
 
@@ -576,36 +582,39 @@ exports.payDebt = async (req, res) => {
                     [method, debt.id]
                 );
 
-                // If this debt was linked to an appointment, it's now 'paid'
+                // If this debt was linked to an appointment, re-calculate its status properly
                 if (debt.appointment_id) {
-                    await conn.query("UPDATE appointments SET payment_status = 'paid', is_paid = 1 WHERE id = ?", [debt.appointment_id]);
+                    await syncAppointmentPaymentStatus(conn, debt.appointment_id, req.user?.user_id);
+                }
+                if (debt.request_id) {
+                    await syncRequestPaymentStatus(conn, debt.request_id);
+                }
 
-                    // Sync to Google
-                    const [appt] = await conn.query("SELECT * FROM appointments WHERE id = ?", [debt.appointment_id]);
-                    if (appt && appt.google_event_id) {
-                        const patData = await conn.query("SELECT full_name, dni, phone, email FROM patients WHERE id = ?", [patient_id]);
-                        const pName = patData.length > 0 ? patData[0].full_name : patient_id;
-                        const pDetails = patData.length > 0 ? patData[0] : {};
+                // Sync to Google
+                const [appt] = await conn.query("SELECT * FROM appointments WHERE id = ?", [debt.appointment_id]);
+                if (appt && appt.google_event_id) {
+                    const patData = await conn.query("SELECT full_name, dni, phone, email FROM patients WHERE id = ?", [patient_id]);
+                    const pName = patData.length > 0 ? patData[0].full_name : patient_id;
+                    const pDetails = patData.length > 0 ? patData[0] : {};
 
-                        const newDescription = `Motivo: ${appt.reason || 'N/A'}\nPaciente: ${pName} (DNI: ${pDetails.dni || 'N/A'})\nTeléfono: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nEstado: ${appt.status}\nPago: pagado\nCreado por Aplicación de Secretaría`;
+                    const newDescription = `Motivo: ${appt.reason || 'N/A'}\nPaciente: ${pName} (DNI: ${pDetails.dni || 'N/A'})\nTeléfono: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nEstado: ${appt.status}\nPago: pagado\nCreado por Aplicación de Secretaría`;
 
-                        const updatePayload = {
-                            summary: `Consultorio: ${pName} [PAGADO]`,
-                            status: appt.status,
-                            paymentStatus: 'paid',
-                            description: newDescription
-                        };
+                    const updatePayload = {
+                        summary: `Consultorio: ${pName} [PAGADO]`,
+                        status: appt.status,
+                        paymentStatus: 'paid',
+                        description: newDescription
+                    };
 
-                        try {
-                            const result = await googleController.updateEventHelper(appt.doctor_id, appt.google_event_id, updatePayload, req.user?.user_id);
-                            if (!result) throw new Error("Sync failed (returned null)");
-                        } catch (syncErr) {
-                            console.warn("Google Sync Failed (Finance Update - Paid), queueing retry:", syncErr.message);
-                            await conn.query(
-                                "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'update', ?, 'pending')",
-                                [debt.appointment_id, appt.doctor_id, JSON.stringify({ eventId: appt.google_event_id, updates: updatePayload })]
-                            );
-                        }
+                    try {
+                        const result = await googleController.updateEventHelper(appt.doctor_id, appt.google_event_id, updatePayload, req.user?.user_id);
+                        if (!result) throw new Error("Sync failed (returned null)");
+                    } catch (syncErr) {
+                        console.warn("Google Sync Failed (Finance Update - Paid), queueing retry:", syncErr.message);
+                        await conn.query(
+                            "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'update', ?, 'pending')",
+                            [debt.appointment_id, appt.doctor_id, JSON.stringify({ eventId: appt.google_event_id, updates: updatePayload })]
+                        );
                     }
                 }
                 remaining -= debtAmount;
@@ -627,37 +636,38 @@ exports.payDebt = async (req, res) => {
 
                 // If this debt was linked to an appointment, it's now 'partial'
                 if (debt.appointment_id) {
-                    await conn.query("UPDATE appointments SET payment_status = 'partial', is_paid = 0 WHERE id = ?", [debt.appointment_id]);
+                    await syncAppointmentPaymentStatus(conn, debt.appointment_id, req.user?.user_id);
+                }
+                if (debt.request_id) {
+                    await syncRequestPaymentStatus(conn, debt.request_id);
+                }
+                // Sync to Google
+                const [appt] = await conn.query("SELECT * FROM appointments WHERE id = ?", [debt.appointment_id]);
+                if (appt && appt.google_event_id) {
+                    const patData = await conn.query("SELECT full_name, dni, phone, email FROM patients WHERE id = ?", [patient_id]);
+                    const pName = patData.length > 0 ? patData[0].full_name : patient_id;
+                    const pDetails = patData.length > 0 ? patData[0] : {};
 
-                    // Sync to Google
-                    const [appt] = await conn.query("SELECT * FROM appointments WHERE id = ?", [debt.appointment_id]);
-                    if (appt && appt.google_event_id) {
-                        const patData = await conn.query("SELECT full_name, dni, phone, email FROM patients WHERE id = ?", [patient_id]);
-                        const pName = patData.length > 0 ? patData[0].full_name : patient_id;
-                        const pDetails = patData.length > 0 ? patData[0] : {};
+                    const newDescription = `Motivo: ${appt.reason || 'N/A'}\nPaciente: ${pName} (DNI: ${pDetails.dni || 'N/A'})\nTeléfono: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nEstado: ${appt.status}\nPago: parcial\nCreado por Aplicación de Secretaría`;
 
-                        const newDescription = `Motivo: ${appt.reason || 'N/A'}\nPaciente: ${pName} (DNI: ${pDetails.dni || 'N/A'})\nTeléfono: ${pDetails.phone || 'N/A'}\nEmail: ${pDetails.email || 'N/A'}\nEstado: ${appt.status}\nPago: parcial\nCreado por Aplicación de Secretaría`;
+                    const updatePayload = {
+                        summary: `Consultorio: ${pName} [PARCIAL]`,
+                        status: appt.status,
+                        paymentStatus: 'partial',
+                        description: newDescription
+                    };
 
-                        const updatePayload = {
-                            summary: `Consultorio: ${pName} [PARCIAL]`,
-                            status: appt.status,
-                            paymentStatus: 'partial',
-                            description: newDescription
-                        };
-
-                        try {
-                            const result = await googleController.updateEventHelper(appt.doctor_id, appt.google_event_id, updatePayload, req.user?.user_id);
-                            if (!result) throw new Error("Sync failed (returned null)");
-                        } catch (syncErr) {
-                            console.warn("Google Sync Failed (Finance Update - Partial), queueing retry:", syncErr.message);
-                            await conn.query(
-                                "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'update', ?, 'pending')",
-                                [debt.appointment_id, appt.doctor_id, JSON.stringify({ eventId: appt.google_event_id, updates: updatePayload })]
-                            );
-                        }
+                    try {
+                        const result = await googleController.updateEventHelper(appt.doctor_id, appt.google_event_id, updatePayload, req.user?.user_id);
+                        if (!result) throw new Error("Sync failed (returned null)");
+                    } catch (syncErr) {
+                        console.warn("Google Sync Failed (Finance Update - Partial), queueing retry:", syncErr.message);
+                        await conn.query(
+                            "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'update', ?, 'pending')",
+                            [debt.appointment_id, appt.doctor_id, JSON.stringify({ eventId: appt.google_event_id, updates: updatePayload })]
+                        );
                     }
                 }
-
                 totalPaid += remaining;
                 remaining = 0;
             }
@@ -715,6 +725,14 @@ exports.payInstitutionDebt = async (req, res) => {
                     "UPDATE transactions SET status = 'paid', method = ?, description = CONCAT(description, ' - Paid by Inst') WHERE id = ?",
                     [method, debt.id]
                 );
+
+                if (debt.appointment_id) {
+                    await syncAppointmentPaymentStatus(conn, debt.appointment_id, req.user?.user_id);
+                }
+                if (debt.request_id) {
+                    await syncRequestPaymentStatus(conn, debt.request_id);
+                }
+
                 remaining -= debtAmount;
                 totalPaid += debtAmount;
             } else {
@@ -730,8 +748,12 @@ exports.payInstitutionDebt = async (req, res) => {
                     [debt.type, remainder, debt.description, debt.related_user_id, debt.doctor_id, debt.institution_id, debt.transaction_date, debt.request_id, debt.appointment_id || null]
                 );
 
-                totalPaid += remaining;
-                remaining = 0;
+                if (debt.appointment_id) {
+                    await syncAppointmentPaymentStatus(conn, debt.appointment_id, req.user?.user_id);
+                }
+                if (debt.request_id) {
+                    await syncRequestPaymentStatus(conn, debt.request_id);
+                }
             }
         }
 
@@ -773,10 +795,16 @@ exports.updateTransaction = async (req, res) => {
             }
         }
 
+        // Format date for MariaDB if it's a string (e.g. ISO format from frontend)
+        let finalDate = transaction_date || oldTx.transaction_date;
+        if (finalDate && typeof finalDate === 'string' && finalDate.includes('T')) {
+            finalDate = new Date(finalDate).toISOString().slice(0, 19).replace('T', ' ');
+        }
+
         // 2. Update the transaction
         await conn.query(
             "UPDATE transactions SET amount = ?, description = ?, method = ?, status = ?, transaction_date = ? WHERE id = ?",
-            [amount, description, method, status, transaction_date || oldTx.transaction_date, id]
+            [amount, description, method, status, finalDate, id]
         );
 
         // 3. If linked to an appointment, re-calculate the payment status
@@ -847,7 +875,7 @@ async function syncAppointmentPaymentStatus(conn, appointmentId, userId) {
         else if (t.status === 'pending') totalPending += Number(t.amount);
     });
 
-    let finalStatus = 'unpaid';
+    let finalStatus = 'pending';
     if (totalPaid > 0 && totalPending > 0) finalStatus = 'partial';
     else if (totalPaid > 0 && totalPending === 0) finalStatus = 'paid';
     else if (totalPaid === 0 && totalPending > 0) finalStatus = 'debt';
