@@ -130,45 +130,63 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
         }
     };
 
-    const overturnStartHour = (doctor && doctor.overturn_start_time) ? parseInt(doctor.overturn_start_time.split(':')[0]) : 8;
-    const overturnEndHour = (doctor && doctor.overturn_end_time) ? parseInt(doctor.overturn_end_time.split(':')[0]) + (parseInt(doctor.overturn_end_time.split(':')[1]) > 0 ? 1 : 0) : 21;
+    const overturnStart = doctor?.overturn_start_time || '08:00';
+    const overturnEnd = doctor?.overturn_end_time || '21:00';
 
-    let startHour = overturnStartHour;
-    let endHour = overturnEndHour;
-    let daysConfig = [];
-
-    if (schedule && schedule.length > 0) {
-        const starts = schedule.map(s => parseInt(s.start_time.split(':')[0]));
-        const ends = schedule.map(s => parseInt(s.end_time.split(':')[0]) + (parseInt(s.end_time.split(':')[1]) > 0 ? 1 : 0));
-        startHour = Math.min(...starts, overturnStartHour);
-        endHour = Math.max(...ends, overturnEndHour);
-        daysConfig = schedule.filter(s => s.day_of_week === date.getDay() && s.is_break === 0);
-    }
+    let daysConfig = (schedule || []).filter(s => s.day_of_week === date.getDay() && s.is_break === 0);
 
     const dayApps = appointments.filter(appt => {
         const d = new Date(appt.appointment_date);
         return d.getFullYear() === date.getFullYear() && d.getMonth() === date.getMonth() && d.getDate() === date.getDate();
     });
 
-    if (dayApps.length > 0) {
-        dayApps.forEach(a => {
-            const h = new Date(a.appointment_date).getHours();
-            if (h < startHour) startHour = h;
-            if (h + 1 > endHour) endHour = h + 1;
+    // Precise calculation of bounds
+    const parseTime = (timeStr, baseDate) => {
+        if (!timeStr) return null;
+        const [h, m] = timeStr.split(':').map(Number);
+        const d = new Date(baseDate);
+        d.setHours(h, m, 0, 0);
+        return d;
+    };
+
+    let startLimit = new Date(date);
+    startLimit.setHours(8, 0, 0, 0);
+
+    let endLimit = new Date(date);
+    endLimit.setHours(21, 0, 0, 0);
+
+    // If showing out of hours, try to snap to the EXACT minute of the overturn start
+    const oStart = parseTime(overturnStart, date);
+    const oEnd = parseTime(overturnEnd, date);
+
+    if (showOutOfHours) {
+        startLimit = oStart;
+        endLimit = oEnd;
+    }
+
+    // Expand if there are earlier/later blocks or appointments
+    if (schedule && schedule.length > 0) {
+        schedule.forEach(s => {
+            const bStart = parseTime(s.start_time, date);
+            const bEnd = parseTime(s.end_time, date);
+            if (bStart < startLimit) startLimit = bStart;
+            if (bEnd > endLimit) endLimit = bEnd;
         });
     }
 
-    const finalStart = showOutOfHours ? Math.min(overturnStartHour, startHour) : startHour;
-    const finalEnd = showOutOfHours ? Math.max(overturnEndHour, endHour) : endHour;
+    if (dayApps.length > 0) {
+        dayApps.forEach(a => {
+            const aStart = new Date(a.appointment_date);
+            const aEnd = new Date(aStart.getTime() + duration * 60000);
+            if (aStart < startLimit) startLimit = aStart;
+            if (aEnd > endLimit) endLimit = aEnd;
+        });
+    }
 
     const duration = (doctor && doctor.appointment_duration) ? doctor.appointment_duration : 60;
-
     const timeSlots = [];
-    let currentTime = new Date(date);
-    currentTime.setHours(finalStart, 0, 0, 0);
-
-    const endTime = new Date(date);
-    endTime.setHours(finalEnd, 0, 0, 0);
+    let currentTime = new Date(startLimit);
+    const endTime = new Date(endLimit);
 
     while (currentTime < endTime) {
         const timeStr = currentTime.toTimeString().split(' ')[0];
@@ -189,8 +207,7 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
 
             if (!currentBlock) type = 'closed';
         } else {
-            const hour = currentTime.getHours();
-            if (hour < overturnStartHour || hour >= overturnEndHour) type = 'closed';
+            if (timeStr < overturnStart || timeStr >= overturnEnd) type = 'closed';
         }
 
         const slotStart = new Date(currentTime);
