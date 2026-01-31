@@ -5,7 +5,7 @@ import { useModal } from '../../context/ModalContext';
 import { useMessage } from '../../context/MessageContext';
 import Button from '../atoms/Button';
 
-const DoctorScheduleSettings = ({ doctorId, schedule, setSchedule, loading }) => {
+const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading }) => {
     const { t } = useLanguage();
     const { confirm } = useModal();
     const { showMessage } = useMessage();
@@ -150,7 +150,7 @@ const DoctorScheduleSettings = ({ doctorId, schedule, setSchedule, loading }) =>
 
             <div className="space-y-4">
                 {DAYS.map(day => {
-                    const dayBlocks = schedule
+                    const dayBlocks = (Array.isArray(schedule) ? schedule : [])
                         .map((s, originalIndex) => ({ ...s, originalIndex })) // Track original index for editing
                         .filter(s => s.day_of_week === day.id)
                         .sort((a, b) => a.start_time.localeCompare(b.start_time));

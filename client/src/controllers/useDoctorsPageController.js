@@ -75,7 +75,7 @@ export const useDoctorsPageController = () => {
         setModalState(prev => ({ ...prev, loadingSchedule: true }));
         try {
             const res = await api.get(`/schedules/${doctorId}`);
-            setModalState(prev => ({ ...prev, schedule: res.data, loadingSchedule: false }));
+            setModalState(prev => ({ ...prev, schedule: Array.isArray(res.data) ? res.data : [], loadingSchedule: false }));
         } catch (err) {
             console.error("Failed to load schedule", err);
             setModalState(prev => ({ ...prev, schedule: [], loadingSchedule: false }));
