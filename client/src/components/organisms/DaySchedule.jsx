@@ -174,6 +174,8 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
         });
     }
 
+    const duration = (doctor && doctor.appointment_duration) ? doctor.appointment_duration : 60;
+
     if (dayApps.length > 0) {
         dayApps.forEach(a => {
             const aStart = new Date(a.appointment_date);
@@ -183,7 +185,6 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
         });
     }
 
-    const duration = (doctor && doctor.appointment_duration) ? doctor.appointment_duration : 60;
     const timeSlots = [];
     let currentTime = new Date(startLimit);
     const endTime = new Date(endLimit);
