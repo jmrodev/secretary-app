@@ -151,9 +151,13 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
             <div className="space-y-4">
                 {DAYS.map(day => {
                     const dayBlocks = (Array.isArray(schedule) ? schedule : [])
-                        .map((s, originalIndex) => ({ ...s, originalIndex })) // Track original index for editing
+                        .map((s, idx) => ({ ...s, originalIndex: idx }))
                         .filter(s => s.day_of_week === day.id)
-                        .sort((a, b) => a.start_time.localeCompare(b.start_time));
+                        .sort((a, b) => {
+                            const timeA = a.start_time || '00:00';
+                            const timeB = b.start_time || '00:00';
+                            return timeA.localeCompare(timeB);
+                        });
 
                     const isActive = dayBlocks.length > 0;
 
@@ -176,8 +180,8 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
 
                                     {isActive && (
                                         <div className="space-y-2">
-                                            {dayBlocks.map((block, idx) => (
-                                                <div key={idx} className="flex flex-wrap items-center gap-3 bg-slate-50 p-2 rounded border border-gray-100">
+                                            {dayBlocks.map((block) => (
+                                                <div key={block.originalIndex} className="flex flex-wrap items-center gap-3 bg-slate-50 p-2 rounded border border-gray-100">
                                                     <div className="flex items-center gap-2">
                                                         <input
                                                             type="time"
