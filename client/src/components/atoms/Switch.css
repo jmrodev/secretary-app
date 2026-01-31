@@ -3,6 +3,7 @@
     align-items: center;
     gap: 0.75rem;
     cursor: pointer;
+    flex-wrap: nowrap;
 }
 
 .switch__toggle {
@@ -10,6 +11,7 @@
     display: inline-block;
     width: 44px;
     height: 24px;
+    flex-shrink: 0;
 }
 
 .switch__input {
@@ -60,6 +62,7 @@
     font-weight: 600;
     color: var(--text-main, #1e293b);
     user-select: none;
+    white-space: nowrap;
 }
 
 .switch--disabled {

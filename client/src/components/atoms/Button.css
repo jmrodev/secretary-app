@@ -76,4 +76,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
+}
+
+.btn__content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
 }

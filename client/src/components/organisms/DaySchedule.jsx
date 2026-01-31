@@ -212,6 +212,10 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
     return (
         <div className="day-schedule">
             <header className="day-schedule__header">
+                <h3 className="day-schedule__title">
+                    {date.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
+                </h3>
+
                 <div className="day-schedule__nav">
                     <Button
                         variant="ghost"
@@ -222,10 +226,6 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
                         ⬅️
                     </Button>
 
-                    <h3 className="day-schedule__title">
-                        {date.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
-                    </h3>
-
                     <Button
                         variant="ghost"
                         size="sm-compact"
@@ -234,6 +234,21 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
                     >
                         ➡️
                     </Button>
+                </div>
+
+                <div className="day-schedule__toolbar">
+                    <div className="day-schedule__controls">
+                        <Switch
+                            label={t('show_out_of_hours') || 'Mostrar fuera de horario'}
+                            checked={showOutOfHours}
+                            onChange={setShowOutOfHours}
+                        />
+                        <Switch
+                            label={t('show_cancelled') || 'Mostrar Cancelados'}
+                            checked={showCancelled}
+                            onChange={setShowCancelled}
+                        />
+                    </div>
 
                     <Button
                         variant="ghost"
@@ -245,19 +260,6 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
                     >
                         {t('print') || 'Imprimir'}
                     </Button>
-                </div>
-
-                <div className="day-schedule__controls">
-                    <Switch
-                        label={t('show_out_of_hours') || 'Mostrar fuera de horario'}
-                        checked={showOutOfHours}
-                        onChange={setShowOutOfHours}
-                    />
-                    <Switch
-                        label={t('show_cancelled') || 'Mostrar Cancelados'}
-                        checked={showCancelled}
-                        onChange={setShowCancelled}
-                    />
                 </div>
             </header>
 
