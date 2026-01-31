@@ -4,12 +4,31 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useModal } from '../../context/ModalContext';
 import { useMessage } from '../../context/MessageContext';
 import Button from '../atoms/Button';
+import Input from '../atoms/Input';
 
 const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading }) => {
     const { t } = useLanguage();
     const { confirm } = useModal();
     const { showMessage } = useMessage();
     const [updatingBulk, setUpdatingBulk] = useState(false);
+    const [focusedIndex, setFocusedIndex] = useState(null);
+
+    // Initialize schedule with unique keys if missing
+    useEffect(() => {
+        if (Array.isArray(schedule) && schedule.length > 0) {
+            const needsKeys = schedule.some(s => !s._key);
+            if (needsKeys) {
+                const withKeys = schedule.map((s, idx) => ({
+                    ...s,
+                    _key: s._key || s.id || `new-${Date.now()}-${idx}`
+                }));
+                // Only update if something changed to avoid loop
+                if (JSON.stringify(withKeys) !== JSON.stringify(schedule)) {
+                    setSchedule(withKeys);
+                }
+            }
+        }
+    }, [schedule, setSchedule]);
 
     const DAYS = [
         { id: 1, name: 'Lunes' },
@@ -45,6 +64,7 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
         setSchedule(prev => [
             ...prev,
             {
+                _key: `new-${Date.now()}`,
                 day_of_week: dayId,
                 start_time: '14:00',
                 end_time: '18:00',
@@ -152,12 +172,16 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                 {DAYS.map(day => {
                     const dayBlocks = (Array.isArray(schedule) ? schedule : [])
                         .map((s, idx) => ({ ...s, originalIndex: idx }))
-                        .filter(s => s.day_of_week === day.id)
-                        .sort((a, b) => {
-                            const timeA = a.start_time || '00:00';
-                            const timeB = b.start_time || '00:00';
+                        .filter(s => s.day_of_week === day.id);
+
+                    // Only sort if we are NOT actively typing to prevent jumping
+                    if (focusedIndex === null) {
+                        dayBlocks.sort((a, b) => {
+                            const timeA = String(a.start_time || '00:00');
+                            const timeB = String(b.start_time || '00:00');
                             return timeA.localeCompare(timeB);
                         });
+                    }
 
                     const isActive = dayBlocks.length > 0;
 
@@ -181,19 +205,23 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                                     {isActive && (
                                         <div className="space-y-2">
                                             {dayBlocks.map((block) => (
-                                                <div key={block.originalIndex} className="flex flex-wrap items-center gap-3 bg-slate-50 p-2 rounded border border-gray-100">
+                                                <div key={block._key || block.originalIndex} className="flex flex-wrap items-center gap-3 bg-slate-50 p-2 rounded border border-gray-100">
                                                     <div className="flex items-center gap-2">
-                                                        <input
+                                                        <Input
                                                             type="time"
-                                                            className="input-field py-1 px-2 w-32 text-sm bg-white"
-                                                            value={block.start_time ? block.start_time.slice(0, 5) : ''}
+                                                            size="sm"
+                                                            value={String(block.start_time || '').slice(0, 5)}
+                                                            onFocus={() => setFocusedIndex(block.originalIndex)}
+                                                            onBlur={() => setFocusedIndex(null)}
                                                             onChange={(e) => handleBlockChange(block.originalIndex, 'start_time', e.target.value)}
                                                         />
                                                         <span className="text-muted text-sm px-1">a</span>
-                                                        <input
+                                                        <Input
                                                             type="time"
-                                                            className="input-field py-1 px-2 w-32 text-sm bg-white"
-                                                            value={block.end_time ? block.end_time.slice(0, 5) : ''}
+                                                            size="sm"
+                                                            value={String(block.end_time || '').slice(0, 5)}
+                                                            onFocus={() => setFocusedIndex(block.originalIndex)}
+                                                            onBlur={() => setFocusedIndex(null)}
                                                             onChange={(e) => handleBlockChange(block.originalIndex, 'end_time', e.target.value)}
                                                         />
                                                     </div>
