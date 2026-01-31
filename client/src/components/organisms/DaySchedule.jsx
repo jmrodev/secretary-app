@@ -184,13 +184,23 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
             if (hour < overturnStartHour || hour >= overturnEndHour) type = 'closed';
         }
 
+        const slotStart = new Date(currentTime);
+        let slotDuration = duration;
+
+        // If the slot starts offset from the hour (e.g. 8:15), 
+        // the first slot should end at the next full hour (9:00) 
+        // to "coordinate with the zero minutes of the hour".
+        if (doctor?.force_hour_alignment && slotStart.getMinutes() !== 0) {
+            slotDuration = 60 - slotStart.getMinutes();
+        }
+
         timeSlots.push({
-            time: new Date(currentTime),
+            time: slotStart,
             type: type,
-            duration: duration
+            duration: slotDuration
         });
 
-        currentTime = new Date(currentTime.getTime() + duration * 60000);
+        currentTime = new Date(slotStart.getTime() + slotDuration * 60000);
     }
 
     const isSameDay = (d1, d2) => {

@@ -50,7 +50,7 @@ exports.getAllDoctors = async (req, res) => {
     let conn;
     try {
         conn = await pool.getConnection();
-        const rows = await conn.query("SELECT id, user_id, full_name, specialty, phone, office_number, rental_type, rental_cost, consultation_price, prescription_price, medical_license_price, certificate_price, virtual_consultation_price, default_visit_interval_days, default_prescription_interval_days, appointment_duration, break_duration, overturn_start_time, overturn_end_time FROM doctors");
+        const rows = await conn.query("SELECT id, user_id, full_name, specialty, phone, office_number, rental_type, rental_cost, consultation_price, prescription_price, medical_license_price, certificate_price, virtual_consultation_price, default_visit_interval_days, default_prescription_interval_days, appointment_duration, break_duration, overturn_start_time, overturn_end_time, force_hour_alignment FROM doctors");
 
         for (let r of rows) {
             const phones = await conn.query("SELECT * FROM phone_numbers WHERE entity_type = 'doctor' AND entity_id = ?", [r.id]);
@@ -277,6 +277,7 @@ exports.updateProfile = async (req, res) => {
             if (updates.default_prescription_interval_days !== undefined) { fields.push("default_prescription_interval_days = ?"); params.push(updates.default_prescription_interval_days); }
             if (updates.overturn_start_time !== undefined) { fields.push("overturn_start_time = ?"); params.push(updates.overturn_start_time); }
             if (updates.overturn_end_time !== undefined) { fields.push("overturn_end_time = ?"); params.push(updates.overturn_end_time); }
+            if (updates.force_hour_alignment !== undefined) { fields.push("force_hour_alignment = ?"); params.push(updates.force_hour_alignment ? 1 : 0); }
             if (fields.length > 0) {
                 query = `UPDATE doctors SET ${fields.join(', ')} WHERE user_id = ? `;
                 params.push(user_id);
@@ -585,6 +586,7 @@ exports.updateDoctor = async (req, res) => {
         if (updates.break_duration !== undefined) { fields.push("break_duration = ?"); params.push(updates.break_duration); }
         if (updates.overturn_start_time !== undefined) { fields.push("overturn_start_time = ?"); params.push(updates.overturn_start_time); }
         if (updates.overturn_end_time !== undefined) { fields.push("overturn_end_time = ?"); params.push(updates.overturn_end_time); }
+        if (updates.force_hour_alignment !== undefined) { fields.push("force_hour_alignment = ?"); params.push(updates.force_hour_alignment ? 1 : 0); }
 
         if (fields.length > 0) {
             const query = `UPDATE doctors SET ${fields.join(', ')} WHERE id = ? `;

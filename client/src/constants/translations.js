@@ -481,6 +481,8 @@ export const translations = {
         overturn_start_label: "Inicio Sobreturnos",
         overturn_end_label: "Fin Sobreturnos",
         overturn_help_text: "* Este rango define cuándo se buscan turnos al activar 'Ver fuera de horario'.",
+        force_hour_alignment_label: "Coordinar con minuto cero (:00)",
+        force_hour_alignment_help: "Si un turno arranca 8:15, el siguiente será clavado a las 9:00, luego 10:00, etc.",
 
         // New Features i18n
         create_new_patient: "+ Crear nuevo paciente",
@@ -1150,10 +1152,13 @@ export const translations = {
         no_patients_found: "No patients registered with this institution.",
         antiquity: "Antiquity",
         delete_confirm_msg: "Are you sure you want to delete this institution?",
-        save_success: "Institution created successfully",
-        update_success: "Institution updated successfully",
-        delete_success: "Institution deleted",
         error_saving: "Error saving changes",
+        overturn_range_title: "🕒 Overturn Range (Out of Hours)",
+        overturn_start_label: "Overturn Start",
+        overturn_end_label: "Overturn End",
+        overturn_help_text: "* This range defines when to search for slots when 'Show Out of Hours' is active.",
+        force_hour_alignment_label: "Coordinate with hour zero (:00)",
+        force_hour_alignment_help: "If a slot starts at 8:15, the next one will snap to 9:00, then 10:00, etc.",
         print: "Print",
     }
 };

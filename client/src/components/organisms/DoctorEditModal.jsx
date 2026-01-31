@@ -103,9 +103,16 @@ const DoctorEditModal = ({
                                     <Input type="time" value={data.overturn_end_time} onChange={e => onChangeData({ overturn_end_time: e.target.value })} />
                                 </FormGroup>
                             </div>
-                            <p className="text-[10px] text-blue-600 mt-2 italic">
-                                {t('overturn_help_text') || '* Este rango define cuándo se buscan turnos al activar "Ver fuera de horario".'}
-                            </p>
+                            <div className="mt-4 pt-3 border-t border-blue-100">
+                                <Switch
+                                    label={t('force_hour_alignment_label') || "Coordinar con minuto cero (:00)"}
+                                    checked={data.force_hour_alignment}
+                                    onChange={val => onChangeData({ force_hour_alignment: val })}
+                                />
+                                <p className="text-[10px] text-blue-500 mt-1 italic ml-11">
+                                    {t('force_hour_alignment_help') || "Si un turno arranca 8:15, el siguiente será clavado a las 9:00, luego 10:00, etc."}
+                                </p>
+                            </div>
                         </div>
                         <DoctorScheduleSettings
                             doctorId={data.id}

@@ -908,8 +908,9 @@ exports.getNextFreeSlot = async (req, res) => {
         conn = await pool.getConnection();
 
         // 1. Get Doctor Config
-        const doc = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [doctor_id]);
+        const doc = await conn.query("SELECT appointment_duration, force_hour_alignment FROM doctors WHERE id = ?", [doctor_id]);
         const duration = (doc && doc.length > 0 && doc[0].appointment_duration) ? doc[0].appointment_duration : 60;
+        const forceAlignment = (doc && doc.length > 0 && doc[0].force_hour_alignment) === 1;
 
         // 2. Setup Loop
         let currentDay = start_date ? new Date(start_date) : new Date();
@@ -1020,9 +1021,14 @@ exports.getNextFreeSlot = async (req, res) => {
                 }
 
                 if (direction === 'next') {
-                    while (timeCursor.getTime() + duration * 60000 <= blockEnd.getTime()) {
+                    while (timeCursor.getTime() < blockEnd.getTime()) {
                         const slotStartMs = timeCursor.getTime();
-                        const slotEndMs = slotStartMs + duration * 60000;
+                        let currentSlotDuration = duration;
+                        if (forceAlignment && timeCursor.getMinutes() !== 0) {
+                            currentSlotDuration = 60 - timeCursor.getMinutes();
+                        }
+                        const slotEndMs = slotStartMs + currentSlotDuration * 60000;
+                        if (slotEndMs > blockEnd.getTime()) break;
 
                         const isBusy =
                             apptTimes.some(appStart => (slotStartMs < (appStart + duration * 60000) && slotEndMs > appStart)) ||
@@ -1040,7 +1046,7 @@ exports.getNextFreeSlot = async (req, res) => {
                             }
                         }
                         if (foundRegular || foundBreak) break;
-                        timeCursor = new Date(timeCursor.getTime() + duration * 60000);
+                        timeCursor = new Date(slotEndMs);
                     }
                 } else {
                     while (timeCursor.getTime() >= blockStart.getTime() && timeCursor.getTime() >= now.getTime()) {
@@ -1107,10 +1113,11 @@ exports.getFreeSlotsBatch = async (req, res) => {
 
 
         // 1. Get Doctor Duration
-        const doc = await conn.query("SELECT appointment_duration, overturn_start_time, overturn_end_time FROM doctors WHERE id = ?", [doctor_id]);
+        const doc = await conn.query("SELECT appointment_duration, overturn_start_time, overturn_end_time, force_hour_alignment FROM doctors WHERE id = ?", [doctor_id]);
         const duration = (doc && doc.length > 0 && doc[0].appointment_duration) ? doc[0].appointment_duration : 60;
         const overturnStart = (doc && doc.length > 0 && doc[0].overturn_start_time) ? doc[0].overturn_start_time : '08:00:00';
         const overturnEnd = (doc && doc.length > 0 && doc[0].overturn_end_time) ? doc[0].overturn_end_time : '21:00:00';
+        const forceAlignment = (doc && doc.length > 0 && doc[0].force_hour_alignment) === 1;
 
         // 2. Setup Loop
         let currentDay = start_date ? new Date(start_date) : new Date();
@@ -1212,9 +1219,14 @@ exports.getFreeSlotsBatch = async (req, res) => {
                         }
                     }
 
-                    while (timeCursor.getTime() + duration * 60000 <= blockEnd.getTime()) {
+                    while (timeCursor.getTime() < blockEnd.getTime()) {
                         const slotStartMs = timeCursor.getTime();
-                        const slotEndMs = slotStartMs + duration * 60000;
+                        let currentSlotDuration = duration;
+                        if (forceAlignment && timeCursor.getMinutes() !== 0) {
+                            currentSlotDuration = 60 - timeCursor.getMinutes();
+                        }
+                        const slotEndMs = slotStartMs + currentSlotDuration * 60000;
+                        if (slotEndMs > blockEnd.getTime()) break;
 
                         const isBusy =
                             apptTimes.some(appStart => (slotStartMs < (appStart + duration * 60000) && slotEndMs > appStart)) ||
