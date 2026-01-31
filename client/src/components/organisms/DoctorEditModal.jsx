@@ -4,6 +4,7 @@ import Modal from '../molecules/Modal';
 import Button from '../atoms/Button';
 import FormGroup from '../molecules/FormGroup';
 import Input from '../atoms/Input';
+import Switch from '../atoms/Switch';
 import TabButton from '../atoms/TabButton';
 import DoctorTariffsForm from '../molecules/DoctorTariffsForm';
 import DoctorGoogleSettings from '../molecules/DoctorGoogleSettings';
