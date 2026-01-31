@@ -174,7 +174,6 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                         .map((s, idx) => ({ ...s, originalIndex: idx }))
                         .filter(s => s.day_of_week === day.id);
 
-                    // Only sort if we are NOT actively typing to prevent jumping
                     if (focusedIndex === null) {
                         dayBlocks.sort((a, b) => {
                             const timeA = String(a.start_time || '00:00');

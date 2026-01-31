@@ -172,7 +172,10 @@ export const useDoctorsPageController = () => {
         onConnectGoogle: handleConnectGoogle,
         onDisconnectGoogle: handleDisconnectGoogle,
         onFormDataChange: setFormData,
-        onScheduleChange: (s) => setModalState(prev => ({ ...prev, schedule: s })),
+        onScheduleChange: (s) => setModalState(prev => ({
+            ...prev,
+            schedule: typeof s === 'function' ? s(prev.schedule) : s
+        })),
         onVerifyGoogleEvents: async () => {
             try {
                 const res = await api.get(`/google/appointments?doctorId=${modalState.data.id}`);
