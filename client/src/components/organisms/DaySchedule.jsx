@@ -175,10 +175,18 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
         let type = 'regular';
 
         let currentBlock = null;
+        let nextBlock = null;
+
         if (daysConfig.length > 0) {
             currentBlock = daysConfig.find(block => {
                 return timeStr >= block.start_time && timeStr < block.end_time;
             });
+
+            // Find if a block starts after current time but before we'd finish a full duration
+            nextBlock = daysConfig
+                .filter(b => b.start_time > timeStr)
+                .sort((a, b) => a.start_time.localeCompare(b.start_time))[0];
+
             if (!currentBlock) type = 'closed';
         } else {
             const hour = currentTime.getHours();
@@ -188,12 +196,37 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
         const slotStart = new Date(currentTime);
         let slotDuration = duration;
 
-        // Determine if we should force alignment based on block setting or doctor setting
+        // 1. If we are in a gap (closed) and a block starts soon, snap to it
+        if (type === 'closed' && nextBlock) {
+            const [nh, nm] = nextBlock.start_time.split(':');
+            const nextStartTime = new Date(currentTime);
+            nextStartTime.setHours(nh, nm, 0, 0);
+            const diffMin = (nextStartTime.getTime() - currentTime.getTime()) / 60000;
+            if (diffMin > 0 && diffMin < slotDuration) {
+                slotDuration = diffMin;
+            }
+        }
+
+        // 2. Determine if we should force alignment based on block setting or doctor setting
         const blockForce = currentBlock ? (currentBlock.force_hour_alignment === 1) : doctor?.force_hour_alignment;
 
         if (blockForce && slotStart.getMinutes() !== 0) {
             slotDuration = 60 - slotStart.getMinutes();
         }
+
+        // 3. Ensure we don't overflow the current block's end
+        if (currentBlock) {
+            const [eh, em] = currentBlock.end_time.split(':');
+            const blockEndTime = new Date(currentTime);
+            blockEndTime.setHours(eh, em, 0, 0);
+            const remainingMin = (blockEndTime.getTime() - currentTime.getTime()) / 60000;
+            if (remainingMin > 0 && remainingMin < slotDuration) {
+                slotDuration = remainingMin;
+            }
+        }
+
+        // Avoid infinite loops/zero duration
+        if (slotDuration <= 0) slotDuration = 15;
 
         timeSlots.push({
             time: slotStart,
