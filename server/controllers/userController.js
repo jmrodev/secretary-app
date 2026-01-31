@@ -50,7 +50,7 @@ exports.getAllDoctors = async (req, res) => {
     let conn;
     try {
         conn = await pool.getConnection();
-        const rows = await conn.query("SELECT id, user_id, full_name, specialty, phone, office_number, rental_type, rental_cost, consultation_price, prescription_price, medical_license_price, certificate_price, virtual_consultation_price, default_visit_interval_days, default_prescription_interval_days, appointment_duration, break_duration FROM doctors");
+        const rows = await conn.query("SELECT id, user_id, full_name, specialty, phone, office_number, rental_type, rental_cost, consultation_price, prescription_price, medical_license_price, certificate_price, virtual_consultation_price, default_visit_interval_days, default_prescription_interval_days, appointment_duration, break_duration, overturn_start_time, overturn_end_time FROM doctors");
 
         for (let r of rows) {
             const phones = await conn.query("SELECT * FROM phone_numbers WHERE entity_type = 'doctor' AND entity_id = ?", [r.id]);

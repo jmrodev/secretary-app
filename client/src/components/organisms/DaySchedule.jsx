@@ -130,15 +130,18 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
         }
     };
 
-    let startHour = 8;
-    let endHour = 20;
+    const overturnStartHour = (doctor && doctor.overturn_start_time) ? parseInt(doctor.overturn_start_time.split(':')[0]) : 8;
+    const overturnEndHour = (doctor && doctor.overturn_end_time) ? parseInt(doctor.overturn_end_time.split(':')[0]) + (parseInt(doctor.overturn_end_time.split(':')[1]) > 0 ? 1 : 0) : 21;
+
+    let startHour = overturnStartHour;
+    let endHour = overturnEndHour;
     let daysConfig = [];
 
     if (schedule && schedule.length > 0) {
         const starts = schedule.map(s => parseInt(s.start_time.split(':')[0]));
         const ends = schedule.map(s => parseInt(s.end_time.split(':')[0]) + (parseInt(s.end_time.split(':')[1]) > 0 ? 1 : 0));
-        startHour = Math.min(...starts, 8);
-        endHour = Math.max(...ends, 20);
+        startHour = Math.min(...starts, overturnStartHour);
+        endHour = Math.max(...ends, overturnEndHour);
         daysConfig = schedule.filter(s => s.day_of_week === date.getDay() && s.is_break === 0);
     }
 
@@ -155,8 +158,8 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
         });
     }
 
-    const finalStart = showOutOfHours ? 0 : startHour;
-    const finalEnd = showOutOfHours ? 24 : endHour;
+    const finalStart = showOutOfHours ? Math.min(overturnStartHour, startHour) : startHour;
+    const finalEnd = showOutOfHours ? Math.max(overturnEndHour, endHour) : endHour;
 
     const duration = (doctor && doctor.appointment_duration) ? doctor.appointment_duration : 60;
 
@@ -178,7 +181,7 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
             if (!isOpen) type = 'closed';
         } else {
             const hour = currentTime.getHours();
-            if (hour < 8 || hour >= 20) type = 'closed';
+            if (hour < overturnStartHour || hour >= overturnEndHour) type = 'closed';
         }
 
         timeSlots.push({
