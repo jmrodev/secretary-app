@@ -53,7 +53,8 @@ export const useAppointmentsHandlers = ({
     deleteHoliday: deleteHolidayAction,
     selectedPatientData,
     copyToClipboard, // Dependency injected
-    booking
+    booking,
+    setSlotHistory
 }) => {
 
     const handleDateSelect = useCallback((date) => setSelectedDate(date), [setSelectedDate]);
@@ -411,7 +412,7 @@ export const useAppointmentsHandlers = ({
     };
 
     const openNextSlot = () => {
-        booking.setSlotHistory && booking.setSlotHistory([]); // If booking hook owns history
+        if (setSlotHistory) setSlotHistory([]);
         handleNextFreeSlot(null);
     };
 

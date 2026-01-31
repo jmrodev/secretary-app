@@ -1024,7 +1024,8 @@ exports.getNextFreeSlot = async (req, res) => {
                     while (timeCursor.getTime() < blockEnd.getTime()) {
                         const slotStartMs = timeCursor.getTime();
                         let currentSlotDuration = duration;
-                        if (forceAlignment && timeCursor.getMinutes() !== 0) {
+                        const blockForce = (block.force_hour_alignment !== undefined) ? (block.force_hour_alignment === 1) : forceAlignment;
+                        if (blockForce && timeCursor.getMinutes() !== 0) {
                             currentSlotDuration = 60 - timeCursor.getMinutes();
                         }
                         const slotEndMs = slotStartMs + currentSlotDuration * 60000;
@@ -1222,7 +1223,8 @@ exports.getFreeSlotsBatch = async (req, res) => {
                     while (timeCursor.getTime() < blockEnd.getTime()) {
                         const slotStartMs = timeCursor.getTime();
                         let currentSlotDuration = duration;
-                        if (forceAlignment && timeCursor.getMinutes() !== 0) {
+                        const blockForce = (block.force_hour_alignment !== undefined) ? (block.force_hour_alignment === 1) : forceAlignment;
+                        if (blockForce && timeCursor.getMinutes() !== 0) {
                             currentSlotDuration = 60 - timeCursor.getMinutes();
                         }
                         const slotEndMs = slotStartMs + currentSlotDuration * 60000;

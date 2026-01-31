@@ -174,11 +174,12 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
         const timeStr = currentTime.toTimeString().split(' ')[0];
         let type = 'regular';
 
+        let currentBlock = null;
         if (daysConfig.length > 0) {
-            const isOpen = daysConfig.some(block => {
+            currentBlock = daysConfig.find(block => {
                 return timeStr >= block.start_time && timeStr < block.end_time;
             });
-            if (!isOpen) type = 'closed';
+            if (!currentBlock) type = 'closed';
         } else {
             const hour = currentTime.getHours();
             if (hour < overturnStartHour || hour >= overturnEndHour) type = 'closed';
@@ -187,10 +188,10 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
         const slotStart = new Date(currentTime);
         let slotDuration = duration;
 
-        // If the slot starts offset from the hour (e.g. 8:15), 
-        // the first slot should end at the next full hour (9:00) 
-        // to "coordinate with the zero minutes of the hour".
-        if (doctor?.force_hour_alignment && slotStart.getMinutes() !== 0) {
+        // Determine if we should force alignment based on block setting or doctor setting
+        const blockForce = currentBlock ? (currentBlock.force_hour_alignment === 1) : doctor?.force_hour_alignment;
+
+        if (blockForce && slotStart.getMinutes() !== 0) {
             slotDuration = 60 - slotStart.getMinutes();
         }
 

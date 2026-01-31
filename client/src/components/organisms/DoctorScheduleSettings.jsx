@@ -202,12 +202,23 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                                                             value={block.default_type || 'consultation'}
                                                             onChange={(e) => {
                                                                 handleBlockChange(block.originalIndex, 'default_type', e.target.value);
-                                                                // Optional: Trigger confirmation for existing appts update if needed, similar to old logic
                                                             }}
                                                         >
                                                             <option value="consultation">🏥 Presencial</option>
                                                             <option value="virtual">📹 Videollamada</option>
                                                         </select>
+                                                    </div>
+
+                                                    <div className="flex items-center gap-2 ml-2">
+                                                        <label className="flex items-center gap-1 cursor-pointer select-none">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="w-4 h-4 cursor-pointer accent-blue-600"
+                                                                checked={block.force_hour_alignment === 1}
+                                                                onChange={(e) => handleBlockChange(block.originalIndex, 'force_hour_alignment', e.target.checked ? 1 : 0)}
+                                                            />
+                                                            <span className="text-[10px] uppercase font-bold text-gray-400">🕒 Coord. :00</span>
+                                                        </label>
                                                     </div>
 
                                                     <Button

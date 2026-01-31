@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
@@ -72,7 +72,7 @@ export const useAppointmentsPageController = () => {
 
     // --- Effects ---
 
-    const fetchAllData = async () => {
+    const fetchAllData = useCallback(async () => {
         await fetchAppointments();
         try {
             const [dRes, iRes] = await Promise.all([api.get('/users/doctors'), api.get('/institutions')]);
@@ -80,19 +80,28 @@ export const useAppointmentsPageController = () => {
             setInstitutions(iRes.data);
         } catch (err) { console.error(err); }
         finally { setLoading(false); }
-    };
+    }, [fetchAppointments]);
 
-    useEffect(() => { fetchAllData(); }, [user.role]);
+    useEffect(() => { fetchAllData(); }, [fetchAllData]);
 
+    // Consolidated effect to sync viewDoctorId and selectedDoctor (prevents infinite loop)
     useEffect(() => {
-        localStorage.setItem('last_selected_doctor_id', viewDoctorId);
-        if (!selectedDoctor && viewDoctorId) setSelectedDoctor(viewDoctorId);
+        // Save to localStorage whenever either changes
+        const doctorId = viewDoctorId || selectedDoctor;
+        if (doctorId) {
+            localStorage.setItem('last_selected_doctor_id', doctorId);
+        }
+
+        // Sync viewDoctorId -> selectedDoctor (only if selectedDoctor is empty)
+        if (viewDoctorId && !selectedDoctor) {
+            setSelectedDoctor(viewDoctorId);
+        }
+
+        // Sync selectedDoctor -> viewDoctorId (only if viewDoctorId is empty)
+        if (selectedDoctor && !viewDoctorId) {
+            setViewDoctorId(selectedDoctor);
+        }
     }, [viewDoctorId, selectedDoctor]);
-
-    useEffect(() => {
-        localStorage.setItem('last_selected_doctor_id', selectedDoctor);
-        if (!viewDoctorId) setViewDoctorId(selectedDoctor);
-    }, [selectedDoctor, viewDoctorId]);
 
     useEffect(() => {
         if (!selectedDoctor || !booking.date) return;
@@ -138,12 +147,6 @@ export const useAppointmentsPageController = () => {
         if (syncAppt) {
             setViewDoctorId(syncAppt.doctor_id);
             setSelectedDate(new Date(syncAppt.appointment_date));
-            // We need to call the handler here, but handlers are defined below.
-            // This is a circular dependency if we aren't careful.
-            // Ideally, we move this logic or allow the handler to be called.
-            // For now, let's defer the call or re-implement simple setter here.
-            // Actually, handleSyncGoogleEvent IS complex.
-            // Let's instantiate handlers first!
         }
         if (user.role === 'doctor' && doctors.length > 0) {
             const profile = doctors.find(d => d.user_id === (user.user_id || user.id));
@@ -171,7 +174,7 @@ export const useAppointmentsPageController = () => {
 
     // --- Using the Handlers Hook ---
     // We pass EVERYTHING the handlers might need.
-    const handlers = useAppointmentsHandlers({
+    const hookHandlers = useAppointmentsHandlers({
         user, t, showMessage, confirm, navigate,
 
         selectedDate, setSelectedDate,
@@ -191,7 +194,7 @@ export const useAppointmentsPageController = () => {
 
         updateStatus, updateAppointment, fetchAppointments, savePrescription,
         deleteAppointment, rescheduleAppointment, bookAppointment,
-        fetchNextFreeSlots,
+        fetchNextFreeSlots, setSlotHistory,
         addHoliday, deleteHoliday,
         copyToClipboard
     });
@@ -199,11 +202,24 @@ export const useAppointmentsPageController = () => {
     // Handle the effect that needed the handler
     useEffect(() => {
         if (syncAppt) {
-            handlers.handleSyncGoogleEvent(syncAppt);
+            hookHandlers.handleSyncGoogleEvent(syncAppt);
         }
     }, [syncAppt]);
 
-    const handleAdminAuthConfirm = (password) => handlers.handleAdminAuthConfirm(retryAction, password);
+    const handleAdminAuthConfirm = (password) => hookHandlers.handleAdminAuthConfirm(retryAction, password);
+
+    // Grouping handlers for "handlers aparte" request
+    const handlers = {
+        ...hookHandlers,
+        handleAdminAuthConfirm,
+        handleWhatsAppUniversal,
+        syncDayToGoogle,
+        cancelAppointment,
+        fetchAppointments,
+        handleCancel: (id, reason) => cancelAppointment(id, fetchAppointments, reason),
+        exitRescheduleMode,
+        rescheduleAppt, // Exposing state as prop in handlers if needed, or keep in state
+    };
 
     return {
         // Wrapper State
@@ -211,6 +227,7 @@ export const useAppointmentsPageController = () => {
         doctors, institutions, loading,
         selectedDate, setSelectedDate,
         activeTab, setActiveTab,
+        t, user,
 
         // Modals
         editPatientModalOpen, setEditPatientModalOpen,
@@ -239,23 +256,10 @@ export const useAppointmentsPageController = () => {
         searchPatientId, setSearchPatientId,
         patientAppointments, patientApptLoading,
 
-        // Spread Handlers
-        ...handlers,
-        handleAdminAuthConfirm,
-        handleWhatsAppUniversal,
-        syncDayToGoogle,
-        cancelAppointment, fetchAppointments,
-        handleCancel: (id, reason) => cancelAppointment(id, fetchAppointments, reason),
-        handleOpenPayment: handlers.handleOpenPayment,
-        handleOpenHistory: handlers.handleOpenHistory,
-        handleOpenPrescribe: handlers.handleOpenPrescribe,
-        handleOpenReschedule: handlers.handleOpenReschedule,
-        handleOpenSync: handlers.handleOpenSync,
-        handleSelectMedication: handlers.handleSelectMedication,
+        // Handlers Group
+        handlers,
 
-        // Misc
+        // Legacy/Direct State Access (for backward compat if needed, but prefer handlers)
         rescheduleAppt,
-        exitRescheduleMode,
-        t, user,
     };
 };

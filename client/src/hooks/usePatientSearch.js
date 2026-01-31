@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
 import api from '../api/axios';
@@ -12,7 +12,7 @@ export const usePatientSearch = () => {
     const { showMessage } = useMessage();
     const { t } = useLanguage();
 
-    const fetchAppointments = async () => {
+    const fetchAppointments = useCallback(async () => {
         try {
             const params = {};
             if (searchTerm) params.search = searchTerm;
@@ -21,7 +21,7 @@ export const usePatientSearch = () => {
         } catch (err) {
             console.error("Failed to fetch appointments", err);
         }
-    };
+    }, [searchTerm]);
 
     const fetchPatientAppointments = async (pId) => {
         setPatientApptLoading(true);

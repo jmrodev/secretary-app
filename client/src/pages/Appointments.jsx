@@ -18,13 +18,15 @@ import AppointmentFormModal from '../components/organisms/AppointmentFormModal';
 import Modal from '../components/molecules/Modal';
 import PatientHistoryModal from '../components/molecules/PatientHistoryModal';
 import PatientEditModal from '../components/molecules/PatientEditModal';
-import MedicationAutocomplete from '../components/molecules/MedicationAutocomplete';
+import PrescriptionModal from '../components/organisms/PrescriptionModal';
 import NextSlotCalendarModal from '../components/molecules/NextSlotCalendarModal';
 import WhatsAppModal from '../components/molecules/WhatsAppModal';
 import AdminAuthModal from '../components/molecules/AdminAuthModal';
 import PatientHistoryView from '../components/organisms/PatientHistoryView';
 import UpcomingAppointmentsView from '../components/organisms/UpcomingAppointmentsView';
 import TransactionModal from '../components/molecules/TransactionModal';
+
+import './Appointments.css';
 
 const Appointments = () => {
     const navigate = useNavigate();
@@ -55,42 +57,22 @@ const Appointments = () => {
         editPatientModalOpen, setEditPatientModalOpen,
         authModalOpen, setAuthModalOpen,
 
-        // Handlers
-        handleDateSelect,
-        handleSlotClick,
-        handleAddHoliday, handleDeleteHoliday,
+        // Handlers Group
+        handlers,
+
+        // Sub-hooks exposed for specific components if needed directly
         booking,
         nextSlot,
-        handleUpdateStatus,
-        handleCancel,
-        handleDelete,
-        handleSyncGoogleEvent,
-        handleSavePrescription,
-        handleWhatsAppUniversal,
-        handleWhatsAppSlot,
-        confirmNextSlot,
-        handleHardEdit,
-        handleOpenPayment,
-        handleOpenHistory,
-        handleOpenPrescribe,
-        handleOpenReschedule,
-        handleOpenSync,
-        handleSelectMedication,
-        syncDayToGoogle,
-        handleUpdateType,
-        handleSaveNote,
-        handleAdminAuthConfirm,
 
         // Misc
         rescheduleAppt,
         exitRescheduleMode,
-        fetchAppointments
     } = controller;
 
     if (loading) return <div className="centered-loader"><div className="status-display__spinner"></div></div>;
 
     return (
-        <MainLayout>
+        <MainLayout wide>
             <RescheduleBanner
                 rescheduleAppt={rescheduleAppt}
                 onExit={exitRescheduleMode}
@@ -129,39 +111,39 @@ const Appointments = () => {
                         loading={loading}
                         t={t}
                         onAction={(a) => setActionModal({ open: true, appt: a })}
-                        onWhatsApp={handleWhatsAppUniversal}
+                        onWhatsApp={handlers.handleWhatsAppUniversal}
                     />
                 ) : (
-                    <div className="appointments-grid" style={activeTab === 'monthly' ? { gridTemplateColumns: '1fr' } : {}}>
+                    <div className={`appointments-grid ${activeTab === 'monthly' ? 'appointments-grid--monthly' : ''}`}>
                         <CalendarSection
                             activeTab={activeTab}
                             selectedDate={selectedDate}
-                            onDateSelect={handleDateSelect}
+                            onDateSelect={handlers.handleDateSelect}
                             appointments={filteredAppointments}
                             calendarStats={calendarStats}
                             holidays={holidays}
-                            onAddHoliday={handleAddHoliday}
+                            onAddHoliday={handlers.handleAddHoliday}
                         />
 
                         {activeTab !== 'monthly' && (
                             <ScheduleSection
                                 activeTab={activeTab}
                                 selectedDate={selectedDate}
-                                onDateSelect={handleDateSelect}
+                                onDateSelect={handlers.handleDateSelect}
                                 selectedDoctor={currentDoctor}
                                 viewDoctorId={viewDoctorId}
                                 appointments={appointments}
                                 doctorSchedule={doctorSchedule}
                                 holidays={holidays}
-                                onSlotClick={handleSlotClick}
-                                onDeleteHoliday={handleDeleteHoliday}
+                                onSlotClick={handlers.handleSlotClick}
+                                onDeleteHoliday={handlers.handleDeleteHoliday}
                                 showForm={booking.showForm}
                                 onToggleForm={booking.toggleForm}
                                 onSearchPatientId={setSearchPatientId}
                                 searchPatientId={searchPatientId}
                                 onCreatePatient={booking.createPatient}
-                                onNextFreeSlot={nextSlot.openNextSlot}
-                                onSyncDayToGoogle={() => syncDayToGoogle(viewDoctorId, selectedDate)}
+                                onNextFreeSlot={handlers.openNextSlot}
+                                onSyncDayToGoogle={() => handlers.syncDayToGoogle(viewDoctorId, selectedDate)}
                             />
                         )}
                     </div>
@@ -174,48 +156,29 @@ const Appointments = () => {
                 onClose={() => setActionModal({ ...actionModal, open: false })}
                 appt={actionModal.appt}
                 doctors={doctors}
-                onHistory={handleOpenHistory}
-                onPrescribe={handleOpenPrescribe}
-                onUpdateStatus={handleUpdateStatus}
-                onReschedule={handleOpenReschedule}
-                onCancel={handleCancel}
-                onDelete={handleDelete}
-                onSync={handleOpenSync}
-                onPay={handleOpenPayment}
-                onWhatsApp={handleWhatsAppUniversal}
-                onUpdateType={handleUpdateType}
-                onHardEdit={handleHardEdit}
-                onSaveNote={handleSaveNote}
-                fetchAppointments={fetchAppointments}
+                onHistory={handlers.handleOpenHistory}
+                onPrescribe={handlers.handleOpenPrescribe}
+                onUpdateStatus={handlers.handleUpdateStatus}
+                onReschedule={handlers.handleOpenReschedule}
+                onCancel={handlers.handleCancel}
+                onDelete={handlers.handleDelete}
+                onSync={handlers.handleOpenSync}
+                onPay={handlers.handleOpenPayment}
+                onWhatsApp={handlers.handleWhatsAppUniversal}
+                onUpdateType={handlers.handleUpdateType}
+                onHardEdit={handlers.handleHardEdit}
+                onSaveNote={handlers.handleSaveNote}
+                fetchAppointments={handlers.fetchAppointments}
             />
 
-            <Modal
+            <PrescriptionModal
                 isOpen={prescribeModal.open}
                 onClose={() => setPrescribeModal({ ...prescribeModal, open: false })}
-                title={`${t('prescription_for')} ${prescribeModal.patientName}`}
-                footer={
-                    <>
-                        <Button variant="secondary" onClick={() => setPrescribeModal({ ...prescribeModal, open: false })}>{t('cancel')}</Button>
-                        <Button onClick={handleSavePrescription} disabled={!prescribeModal.medications.trim()}>{t('create')}</Button>
-                    </>
-                }
-            >
-                <div className="flex flex-col gap-4">
-                    <div className="input-group">
-                        <label className="input-label">{t('medications')}</label>
-                        <MedicationAutocomplete
-                            value=""
-                            onChange={() => { }}
-                            onSelectMedication={handleSelectMedication}
-                        />
-                        <textarea className="input-field mt-2" rows="4" value={prescribeModal.medications} onChange={e => setPrescribeModal({ ...prescribeModal, medications: e.target.value })} />
-                    </div>
-                    <div className="input-group">
-                        <label className="input-label">{t('instructions')}</label>
-                        <textarea className="input-field" rows="3" value={prescribeModal.instructions} onChange={e => setPrescribeModal({ ...prescribeModal, instructions: e.target.value })} />
-                    </div>
-                </div>
-            </Modal>
+                patientName={prescribeModal.patientName}
+                onSubmit={(data) => handlers.handleSavePrescription({ ...prescribeModal, ...data })}
+                t={t}
+                isSubmitting={loading}
+            />
 
             <PatientHistoryModal
                 isOpen={historyModal.open}
@@ -240,10 +203,10 @@ const Appointments = () => {
                 includeOutOfHours={nextSlot.includeOutOfHours}
                 onToggleOutOfHours={(val) => {
                     nextSlot.setIncludeOutOfHours(val);
-                    handleNextFreeSlot(null, val);
+                    handlers.handleNextFreeSlot(null, val);
                 }}
-                onSelect={confirmNextSlot}
-                onWhatsApp={handleWhatsAppSlot}
+                onSelect={handlers.confirmNextSlot}
+                onWhatsApp={handlers.handleWhatsAppSlot}
                 onLoadMore={nextSlot.loadMoreSlots}
                 hasMore={!!nextSlot.nextSlotData?.nextStartDate}
             />
@@ -266,7 +229,7 @@ const Appointments = () => {
                     isOpen={booking.showForm}
                     onClose={() => booking.setShowForm(false)}
                     {...booking}
-                    onSubmit={controller.handleBook}
+                    onSubmit={handlers.handleBook}
                     doctors={doctors}
                     institutions={controller.institutions}
                     onOpenEditPatient={() => setEditPatientModalOpen(true)}
@@ -278,7 +241,7 @@ const Appointments = () => {
             <AdminAuthModal
                 isOpen={authModalOpen}
                 onClose={() => setAuthModalOpen(false)}
-                onConfirm={handleAdminAuthConfirm}
+                onConfirm={handlers.handleAdminAuthConfirm}
             />
 
             <TransactionModal

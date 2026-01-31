@@ -47,7 +47,15 @@ const RequirementsList = ({ user }) => {
         confirmAction,
         handleDelete,
         fetchRequests,
-        checkIsKnown
+        checkIsKnown,
+        canDeleteRequest,
+        // Medication / Edit
+        isEditing, setIsEditing,
+        editMeds, setEditMeds,
+        editNotes, setEditNotes,
+        newMedInput, setNewMedInput,
+        addToChronic, handleSaveEdit,
+        updateEditMed, handleAddMed
     } = useRequirementsController(user);
 
     const handleCloseDetail = () => setSelectedRequest(null);

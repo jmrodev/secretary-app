@@ -59,7 +59,7 @@ const Patients = () => {
     if (loading) return <div className="centered-loader"><div className="status-display__spinner"></div><p>{t('loading')}</p></div>;
 
     return (
-        <MainLayout>
+        <MainLayout wide>
             {detailsLoading ? (
                 <div className="centered-loader"><div className="status-display__spinner"></div></div>
             ) : (selectedPatientId && patientDetails) ? (

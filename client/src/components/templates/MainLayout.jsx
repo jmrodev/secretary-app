@@ -1,11 +1,11 @@
 import React from 'react';
 import Sidebar from '../organisms/Sidebar';
 
-const MainLayout = ({ children }) => {
+const MainLayout = ({ children, wide = false }) => {
     return (
         <div className="app-layout">
             <Sidebar />
-            <main className="main-content">
+            <main className={`main-content ${wide ? 'dashboard-wide' : ''}`}>
                 {children}
             </main>
         </div>

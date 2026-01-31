@@ -122,7 +122,8 @@ export const useFloatingChatController = (user, showMessage) => {
         }, 15000);
 
         return () => clearInterval(interval);
-    }, [user, loadConversations, loadUnreadCount, loadRecipients]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user]);
 
     useEffect(() => {
         if (selectedConvo) {

@@ -1179,7 +1179,8 @@ exports.exportPrescriptionsJSON = async (req, res) => {
                 p.dni as patient_dni,
                 'paid' as payment_status, 
                  0 as amount, 
-                 'N/A' as payment_method
+                 'N/A' as payment_method,
+                 'prescription' as request_type
             FROM prescriptions pr
             JOIN appointments a ON pr.appointment_id = a.id
             JOIN doctors d ON a.doctor_id = d.id
@@ -1198,11 +1199,12 @@ exports.exportPrescriptionsJSON = async (req, res) => {
                 p.dni as patient_dni,
                 r.payment_status,
                 COALESCE(NULLIF(r.debt_amount, 0), (SELECT amount FROM transactions WHERE request_id = r.id LIMIT 1), 0) as amount,
-                r.payment_method
+                r.payment_method,
+                r.type as request_type
             FROM medical_requests r
             JOIN doctors d ON r.doctor_id = d.id
             JOIN patients p ON r.patient_id = p.id
-            WHERE r.type = 'prescription' AND r.status = 'completed' ${doctorFilterReq} ${dateFilterReq}
+            WHERE r.status = 'completed' ${doctorFilterReq} ${dateFilterReq}
             )
             ORDER BY date DESC
         `;

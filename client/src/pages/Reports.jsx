@@ -246,7 +246,6 @@ const Reports = () => {
             let list = [];
             let appointmentsList = [];
             let withdrawalsList = (reportData.withdrawals || []);
-            let crossIncome = (activeTab === 'prescriptions') ? (reportData.appointment_income || 0) : (reportData.other_income || 0);
 
             if (activeTab === 'prescriptions') {
                 list = reportData.prescriptions || [];
@@ -393,6 +392,20 @@ const Reports = () => {
             let totalDebt = 0;
             const uniquePatients = new Set();
 
+            // --- Payment Method Breakdown by Type ---
+            let cashBreakdown = {
+                turnos: { count: 0, amount: 0 },
+                recetas: { count: 0, amount: 0 },
+                certificados: { count: 0, amount: 0 },
+                licencias: { count: 0, amount: 0 }
+            };
+            let transferBreakdown = {
+                turnos: { count: 0, amount: 0 },
+                recetas: { count: 0, amount: 0 },
+                certificados: { count: 0, amount: 0 },
+                licencias: { count: 0, amount: 0 }
+            };
+
             // --- Debts List Collection ---
             let debtList = [];
 
@@ -431,11 +444,22 @@ const Reports = () => {
 
                         totalAmount += payment; // Total accumulated paid
 
-                        // Payment Methods
+                        // Payment Methods with Breakdown
                         if (payment > 0) {
-                            if (methods.includes('cash') || methods.includes('efectivo')) totalCash += payment;
-                            else if (methods.includes('transfer') || methods.includes('transferencia')) totalTransfer += payment;
-                            else totalOther += payment;
+                            const isCash = methods.includes('cash') || methods.includes('efectivo');
+                            const isTransfer = methods.includes('transfer') || methods.includes('transferencia');
+
+                            if (isCash) {
+                                totalCash += payment;
+                                cashBreakdown.turnos.count++;
+                                cashBreakdown.turnos.amount += payment;
+                            } else if (isTransfer) {
+                                totalTransfer += payment;
+                                transferBreakdown.turnos.count++;
+                                transferBreakdown.turnos.amount += payment;
+                            } else {
+                                totalOther += payment;
+                            }
                         }
 
                         // Collect Debt
@@ -458,12 +482,33 @@ const Reports = () => {
                     const amount = Number(item.amount || 0);
                     const status = (item.payment_status || '').toLowerCase();
                     const method = (item.payment_method || '').toLowerCase();
+                    const requestType = (item.request_type || 'prescription').toLowerCase();
+
+                    // Determine type: receta, certificado, or licencia
+                    let itemType = 'recetas'; // default
+                    if (requestType === 'certificate' || requestType === 'certificado') {
+                        itemType = 'certificados';
+                    } else if (requestType === 'license' || requestType === 'licencia') {
+                        itemType = 'licencias';
+                    }
 
                     if (status === 'paid' || status === 'pagado') {
                         totalAmount += amount;
-                        if (method.includes('cash') || method.includes('efectivo')) totalCash += amount;
-                        else if (method.includes('transfer') || method.includes('transferencia')) totalTransfer += amount;
-                        else totalOther += amount;
+
+                        const isCash = method.includes('cash') || method.includes('efectivo');
+                        const isTransfer = method.includes('transfer') || method.includes('transferencia');
+
+                        if (isCash) {
+                            totalCash += amount;
+                            cashBreakdown[itemType].count++;
+                            cashBreakdown[itemType].amount += amount;
+                        } else if (isTransfer) {
+                            totalTransfer += amount;
+                            transferBreakdown[itemType].count++;
+                            transferBreakdown[itemType].amount += amount;
+                        } else {
+                            totalOther += amount;
+                        }
                     } else if (status === 'debt' || status === 'debe') {
                         totalDebt += amount;
                         debtList.push({
@@ -531,16 +576,6 @@ const Reports = () => {
                                     <td style="padding: 10px; border: 1px solid #ccc;">INGRESOS POR ${activeTab === 'appointments' ? 'TURNOS' : 'RECETAS'} (BRUTO)</td>
                                     <td style="padding: 10px; text-align: right; border: 1px solid #ccc;">$${totalAmount.toLocaleString()}</td>
                                 </tr>
-                                ${crossIncome > 0 ? `
-                                <tr>
-                                    <td style="padding: 10px; border: 1px solid #ccc;">INGRESOS POR ${activeTab === 'appointments' ? 'RECETAS / OTROS' : 'TURNOS'} (BRUTO)</td>
-                                    <td style="padding: 10px; text-align: right; border: 1px solid #ccc;">$${Number(crossIncome).toLocaleString()}</td>
-                                </tr>
-                                <tr style="font-weight: bold; background: #e0f2fe;">
-                                    <td style="padding: 10px; border: 1px solid #ccc;">TOTAL INGRESOS BRUTOS DEL MES</td>
-                                    <td style="padding: 10px; text-align: right; border: 1px solid #ccc;">$${(totalAmount + Number(crossIncome)).toLocaleString()}</td>
-                                </tr>
-                                ` : ''}
                                 ${withdrawalsList.length > 0 ? `
                                 <tr style="color: #c2410c;">
                                     <td style="padding: 10px; border: 1px solid #ccc;">Total Entregado / Retirado a Doctora</td>
@@ -548,7 +583,7 @@ const Reports = () => {
                                 </tr>
                                 <tr style="font-weight: 900; background: #fffbeb; font-size: 1.3em;">
                                     <td style="padding: 10px; border: 2px solid #000;">SALDO NETO FINAL EN CAJA</td>
-                                    <td style="padding: 10px; text-align: right; border: 2px solid #000;">$${(totalAmount + Number(crossIncome) - withdrawalsList.reduce((acc, w) => acc + Number(w.monto || 0), 0)).toLocaleString()}</td>
+                                    <td style="padding: 10px; text-align: right; border: 2px solid #000;">$${(totalAmount - withdrawalsList.reduce((acc, w) => acc + Number(w.monto || 0), 0)).toLocaleString()}</td>
                                 </tr>
                                 ` : ''}
                                  ${activeTab === 'prescriptions' && totalDebt > 0 ? `
@@ -557,6 +592,92 @@ const Reports = () => {
                                     <td style="padding: 10px; border: 1px solid #ccc;">Deuda Pendiente (Recetas)</td>
                                     <td style="padding: 10px; text-align: right; border: 1px solid #ccc;">$${totalDebt.toLocaleString()}</td>
                                 </tr>` : ''}
+                            </tbody>
+                        </table>
+
+                        <h3 style="margin-top: 40px; color: #059669;">Detalle por Método de Pago</h3>
+                        
+                        <h4 style="margin-top: 20px; color: #047857;">💵 Efectivo - Total: $${totalCash.toLocaleString()}</h4>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 20px;">
+                            <thead>
+                                <tr style="background: #d1fae5;">
+                                    <th style="padding: 10px; text-align: left; border: 1px solid #6ee7b7;">Concepto</th>
+                                    <th style="padding: 10px; text-align: center; border: 1px solid #6ee7b7;">Cantidad</th>
+                                    <th style="padding: 10px; text-align: right; border: 1px solid #6ee7b7;">Monto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${cashBreakdown.turnos.amount > 0 ? `
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #6ee7b7;">Turnos</td>
+                                    <td style="padding: 8px; text-align: center; border: 1px solid #6ee7b7;">${cashBreakdown.turnos.count}</td>
+                                    <td style="padding: 8px; text-align: right; border: 1px solid #6ee7b7;">$${cashBreakdown.turnos.amount.toLocaleString()}</td>
+                                </tr>` : ''}
+                                ${cashBreakdown.recetas.amount > 0 ? `
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #6ee7b7;">Recetas</td>
+                                    <td style="padding: 8px; text-align: center; border: 1px solid #6ee7b7;">${cashBreakdown.recetas.count}</td>
+                                    <td style="padding: 8px; text-align: right; border: 1px solid #6ee7b7;">$${cashBreakdown.recetas.amount.toLocaleString()}</td>
+                                </tr>` : ''}
+                                ${cashBreakdown.certificados.amount > 0 ? `
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #6ee7b7;">Certificados</td>
+                                    <td style="padding: 8px; text-align: center; border: 1px solid #6ee7b7;">${cashBreakdown.certificados.count}</td>
+                                    <td style="padding: 8px; text-align: right; border: 1px solid #6ee7b7;">$${cashBreakdown.certificados.amount.toLocaleString()}</td>
+                                </tr>` : ''}
+                                ${cashBreakdown.licencias.amount > 0 ? `
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #6ee7b7;">Licencias</td>
+                                    <td style="padding: 8px; text-align: center; border: 1px solid #6ee7b7;">${cashBreakdown.licencias.count}</td>
+                                    <td style="padding: 8px; text-align: right; border: 1px solid #6ee7b7;">$${cashBreakdown.licencias.amount.toLocaleString()}</td>
+                                </tr>` : ''}
+                                <tr style="font-weight: bold; background: #a7f3d0;">
+                                    <td style="padding: 10px; border: 2px solid #059669;">TOTAL EFECTIVO</td>
+                                    <td style="padding: 10px; text-align: center; border: 2px solid #059669;">${cashBreakdown.turnos.count + cashBreakdown.recetas.count + cashBreakdown.certificados.count + cashBreakdown.licencias.count}</td>
+                                    <td style="padding: 10px; text-align: right; border: 2px solid #059669;">$${totalCash.toLocaleString()}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4 style="margin-top: 20px; color: #0369a1;">🏦 Transferencias - Total: $${totalTransfer.toLocaleString()}</h4>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                            <thead>
+                                <tr style="background: #bae6fd;">
+                                    <th style="padding: 10px; text-align: left; border: 1px solid #7dd3fc;">Concepto</th>
+                                    <th style="padding: 10px; text-align: center; border: 1px solid #7dd3fc;">Cantidad</th>
+                                    <th style="padding: 10px; text-align: right; border: 1px solid #7dd3fc;">Monto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${transferBreakdown.turnos.amount > 0 ? `
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #7dd3fc;">Turnos</td>
+                                    <td style="padding: 8px; text-align: center; border: 1px solid #7dd3fc;">${transferBreakdown.turnos.count}</td>
+                                    <td style="padding: 8px; text-align: right; border: 1px solid #7dd3fc;">$${transferBreakdown.turnos.amount.toLocaleString()}</td>
+                                </tr>` : ''}
+                                ${transferBreakdown.recetas.amount > 0 ? `
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #7dd3fc;">Recetas</td>
+                                    <td style="padding: 8px; text-align: center; border: 1px solid #7dd3fc;">${transferBreakdown.recetas.count}</td>
+                                    <td style="padding: 8px; text-align: right; border: 1px solid #7dd3fc;">$${transferBreakdown.recetas.amount.toLocaleString()}</td>
+                                </tr>` : ''}
+                                ${transferBreakdown.certificados.amount > 0 ? `
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #7dd3fc;">Certificados</td>
+                                    <td style="padding: 8px; text-align: center; border: 1px solid #7dd3fc;">${transferBreakdown.certificados.count}</td>
+                                    <td style="padding: 8px; text-align: right; border: 1px solid #7dd3fc;">$${transferBreakdown.certificados.amount.toLocaleString()}</td>
+                                </tr>` : ''}
+                                ${transferBreakdown.licencias.amount > 0 ? `
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #7dd3fc;">Licencias</td>
+                                    <td style="padding: 8px; text-align: center; border: 1px solid #7dd3fc;">${transferBreakdown.licencias.count}</td>
+                                    <td style="padding: 8px; text-align: right; border: 1px solid #7dd3fc;">$${transferBreakdown.licencias.amount.toLocaleString()}</td>
+                                </tr>` : ''}
+                                <tr style="font-weight: bold; background: #7dd3fc;">
+                                    <td style="padding: 10px; border: 2px solid #0369a1;">TOTAL TRANSFERENCIAS</td>
+                                    <td style="padding: 10px; text-align: center; border: 2px solid #0369a1;">${transferBreakdown.turnos.count + transferBreakdown.recetas.count + transferBreakdown.certificados.count + transferBreakdown.licencias.count}</td>
+                                    <td style="padding: 10px; text-align: right; border: 2px solid #0369a1;">$${totalTransfer.toLocaleString()}</td>
+                                </tr>
                             </tbody>
                         </table>
                         

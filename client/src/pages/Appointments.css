@@ -1,0 +1,47 @@
+/* Client/src/pages/Appointments.css */
+
+.appointments-tab-content {
+    height: calc(100vh - 180px);
+    /* Adjust based on header/tabs height */
+    min-height: 600px;
+    overflow-y: auto;
+}
+
+.appointments-grid {
+    display: grid;
+    grid-template-columns: minmax(350px, 1fr) 2fr;
+    /* Ensure calendar has min width, schedule takes rest */
+    gap: 2rem;
+    /* Increase gap for better separation */
+    height: 100%;
+    min-width: 0;
+    /* reset min-width to avoid overflow issues, handle with media queries */
+    align-items: start;
+    /* Align to top */
+}
+
+.appointments-grid--monthly {
+    grid-template-columns: 1fr;
+}
+
+@media (max-width: 900px) {
+    .appointments-grid {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+}
+
+.appointments-nav-group {
+    background: var(--card-bg);
+    padding: 1.5rem 2rem;
+    margin: -2rem -2rem 2rem -2rem;
+    /* Adjusted to match standard padding usually found in main-content */
+    border-bottom: 2px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    /* Add subtle shadow for "organized" feel */
+}
