@@ -143,6 +143,8 @@ export const translations = {
         doctor: "Doctor",
         secretary: "Secretario/a",
         invalid_credentials: "Credenciales inválidas",
+        show_out_of_hours: "Ver Fuera de Horario",
+        show_cancelled: "Ver Cancelados",
 
         // Appointments
         select_doctor: "-- Seleccionar Doctor --",
@@ -475,6 +477,10 @@ export const translations = {
         next_suggested_visit: "Próxima Visita Sugerida",
         next_suggested_prescription: "Próxima Receta Sugerida",
         license_expiry: "Vencimiento de Licencia",
+        overturn_range_title: "🕒 Horario Sobreturnos (Fuera de Horario)",
+        overturn_start_label: "Inicio Sobreturnos",
+        overturn_end_label: "Fin Sobreturnos",
+        overturn_help_text: "* Este rango define cuándo se buscan turnos al activar 'Ver fuera de horario'.",
 
         // New Features i18n
         create_new_patient: "+ Crear nuevo paciente",
@@ -730,6 +736,8 @@ export const translations = {
         doctor: "Doctor",
         secretary: "Secretary",
         invalid_credentials: "Invalid credentials",
+        show_out_of_hours: "Show Out of Hours",
+        show_cancelled: "Show Cancelled",
 
         // Appointments
         select_doctor: "-- Select Doctor --",

@@ -98,7 +98,9 @@ export const useDoctorsPageController = () => {
             appointment_duration: doc.appointment_duration || 60,
             break_duration: doc.break_duration || 0,
             default_visit_interval_days: doc.default_visit_interval_days || 0,
-            default_prescription_interval_days: doc.default_prescription_interval_days || 0
+            default_prescription_interval_days: doc.default_prescription_interval_days || 0,
+            overturn_start_time: doc.overturn_start_time || '08:00:00',
+            overturn_end_time: doc.overturn_end_time || '21:00:00'
         };
 
         setModalState({

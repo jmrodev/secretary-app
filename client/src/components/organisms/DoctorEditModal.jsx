@@ -92,6 +92,21 @@ const DoctorEditModal = ({
                                 <Input type="number" value={data.break_duration} onChange={e => onChangeData({ break_duration: e.target.value })} />
                             </FormGroup>
                         </div>
+
+                        <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+                            <h4 className="text-sm font-bold text-blue-700 mb-3">{t('overturn_range_title') || '🕒 Horario Sobreturnos (Fuera de Horario)'}</h4>
+                            <div className="grid grid-cols-2 gap-4">
+                                <FormGroup label={t('overturn_start_label') || 'Inicio Sobreturnos'}>
+                                    <Input type="time" value={data.overturn_start_time} onChange={e => onChangeData({ overturn_start_time: e.target.value })} />
+                                </FormGroup>
+                                <FormGroup label={t('overturn_end_label') || 'Fin Sobreturnos'}>
+                                    <Input type="time" value={data.overturn_end_time} onChange={e => onChangeData({ overturn_end_time: e.target.value })} />
+                                </FormGroup>
+                            </div>
+                            <p className="text-[10px] text-blue-600 mt-2 italic">
+                                {t('overturn_help_text') || '* Este rango define cuándo se buscan turnos al activar "Ver fuera de horario".'}
+                            </p>
+                        </div>
                         <DoctorScheduleSettings
                             doctorId={data.id}
                             schedule={schedule}

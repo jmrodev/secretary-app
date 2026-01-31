@@ -1107,8 +1107,10 @@ exports.getFreeSlotsBatch = async (req, res) => {
 
 
         // 1. Get Doctor Duration
-        const doc = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [doctor_id]);
+        const doc = await conn.query("SELECT appointment_duration, overturn_start_time, overturn_end_time FROM doctors WHERE id = ?", [doctor_id]);
         const duration = (doc && doc.length > 0 && doc[0].appointment_duration) ? doc[0].appointment_duration : 60;
+        const overturnStart = (doc && doc.length > 0 && doc[0].overturn_start_time) ? doc[0].overturn_start_time : '08:00:00';
+        const overturnEnd = (doc && doc.length > 0 && doc[0].overturn_end_time) ? doc[0].overturn_end_time : '21:00:00';
 
         // 2. Setup Loop
         let currentDay = start_date ? new Date(start_date) : new Date();
@@ -1177,10 +1179,10 @@ exports.getFreeSlotsBatch = async (req, res) => {
             // Get Schedule from Cache
             let dayBlocks = [];
             if (req.query.include_out_of_hours === 'true') {
-                // Synthetic block 08:00 - 21:00
+                // Synthetic block using doctor's overturn settings
                 dayBlocks = [{
-                    start_time: '08:00:00',
-                    end_time: '21:00:00',
+                    start_time: overturnStart,
+                    end_time: overturnEnd,
                     is_break: 0
                 }];
             } else {

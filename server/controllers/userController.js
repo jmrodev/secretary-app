@@ -275,6 +275,8 @@ exports.updateProfile = async (req, res) => {
             if (updates.rental_cost !== undefined) { fields.push("rental_cost = ?"); params.push(updates.rental_cost); }
             if (updates.default_visit_interval_days !== undefined) { fields.push("default_visit_interval_days = ?"); params.push(updates.default_visit_interval_days); }
             if (updates.default_prescription_interval_days !== undefined) { fields.push("default_prescription_interval_days = ?"); params.push(updates.default_prescription_interval_days); }
+            if (updates.overturn_start_time !== undefined) { fields.push("overturn_start_time = ?"); params.push(updates.overturn_start_time); }
+            if (updates.overturn_end_time !== undefined) { fields.push("overturn_end_time = ?"); params.push(updates.overturn_end_time); }
             if (fields.length > 0) {
                 query = `UPDATE doctors SET ${fields.join(', ')} WHERE user_id = ? `;
                 params.push(user_id);
@@ -581,6 +583,8 @@ exports.updateDoctor = async (req, res) => {
         if (updates.default_prescription_interval_days !== undefined) { fields.push("default_prescription_interval_days = ?"); params.push(updates.default_prescription_interval_days); }
         if (updates.appointment_duration !== undefined) { fields.push("appointment_duration = ?"); params.push(updates.appointment_duration); }
         if (updates.break_duration !== undefined) { fields.push("break_duration = ?"); params.push(updates.break_duration); }
+        if (updates.overturn_start_time !== undefined) { fields.push("overturn_start_time = ?"); params.push(updates.overturn_start_time); }
+        if (updates.overturn_end_time !== undefined) { fields.push("overturn_end_time = ?"); params.push(updates.overturn_end_time); }
 
         if (fields.length > 0) {
             const query = `UPDATE doctors SET ${fields.join(', ')} WHERE id = ? `;
