@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '../atoms/Button';
+import './ChatWindow.css';
 
 const ChatWindow = ({
     selectedConvo,
@@ -24,36 +25,36 @@ const ChatWindow = ({
 
     if (!selectedConvo) {
         return (
-            <div className="chat-main flex flex-col items-center justify-center bg-slate-50 h-full text-center p-8">
-                <div className="text-6xl mb-4 opacity-20">💬</div>
-                <h2 className="text-2xl font-bold text-slate-700 mb-2">Tus Mensajes</h2>
-                <p className="text-slate-500 max-w-md">Selecciona una conversación de la lista para empezar a chatear o busca un contacto para iniciar un nuevo chat.</p>
+            <div className="chat-main chat-main--empty">
+                <div className="chat-main__empty-icon">💬</div>
+                <h2 className="chat-main__empty-title">Tus Mensajes</h2>
+                <p className="chat-main__empty-text">Selecciona una conversación de la lista para empezar a chatear o busca un contacto para iniciar un nuevo chat.</p>
             </div>
         );
     }
 
     return (
-        <div className="chat-main flex flex-col h-full bg-white relative">
+        <div className="chat-main">
             {/* Header */}
-            <div className="chat-header flex items-center gap-4 p-4 border-b border-slate-100 bg-white z-10 shadow-sm">
-                <div className="convo-avatar w-10 h-10 text-lg">
+            <div className="chat-header">
+                <div className="convo-avatar">
                     {selectedConvo.other_display_name ? selectedConvo.other_display_name[0].toUpperCase() : '?'}
                 </div>
                 <div>
-                    <h3 className="text-lg font-bold text-slate-800 m-0 leading-tight">{selectedConvo.other_display_name || selectedConvo.other_username}</h3>
-                    <small className="text-slate-500 text-xs">{selectedConvo.subject || 'Conversación activa'}</small>
+                    <h3 className="chat-header__title">{selectedConvo.other_display_name || selectedConvo.other_username}</h3>
+                    <small className="chat-header__subtitle">{selectedConvo.subject || 'Conversación activa'}</small>
                 </div>
             </div>
 
             {/* Messages Area */}
-            <div className="chat-messages flex-1 overflow-y-auto p-4 custom-scrollbar bg-slate-50" ref={scrollRef}>
+            <div className="chat-messages" ref={scrollRef}>
                 {loading ? (
-                    <div className="flex justify-center items-center h-full">
+                    <div className="chat-messages--loading">
                         <div className="loading-spinner"></div>
                     </div>
                 ) : thread.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center h-full opacity-50">
-                        <div className="text-4xl">👋</div>
+                    <div className="chat-messages--empty">
+                        <div className="chat-messages__empty-icon">👋</div>
                         <p>¡Dile hola!</p>
                     </div>
                 ) : (
@@ -69,12 +70,12 @@ const ChatWindow = ({
             </div>
 
             {/* Input Area */}
-            <form className="chat-input-area p-4 bg-white border-t border-slate-100 flex gap-2 items-center" onSubmit={onSendMessage}>
-                <div className="chat-input-wrapper flex-1 relative">
+            <form className="chat-input-area" onSubmit={onSendMessage}>
+                <div className="chat-input-wrapper">
                     <input
                         type="text"
                         placeholder="Escribe un mensaje aquí..."
-                        className="w-full py-3 px-4 rounded-full bg-slate-100 border-none focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+                        className="chat-input"
                         value={messageText}
                         onChange={(e) => setMessageText(e.target.value)}
                         disabled={sending}
@@ -82,11 +83,11 @@ const ChatWindow = ({
                 </div>
                 <Button
                     type="submit"
-                    className="w-12 h-12 rounded-full p-0 flex items-center justify-center shadow-lg hover:shadow-xl transition-transform active:scale-95"
+                    className="chat-send-button"
                     disabled={sending || !messageText.trim()}
                     variant="primary"
                 >
-                    {sending ? <div className="loading-spinner w-4 h-4 border-2 border-white"></div> : '➤'}
+                    {sending ? <div className="loading-spinner"></div> : '➤'}
                 </Button>
             </form>
         </div>

@@ -8,7 +8,14 @@ const RescheduleBanner = ({ rescheduleAppt, onExit, t }) => {
             <div>
                 🚀 {t('rescheduling_mode')}: <strong>{rescheduleAppt.patient_name}</strong>. {t('reschedule_instruction')}
             </div>
-            <button className="reschedule-exit-btn" onClick={onExit}>
+            <button
+                type="button"
+                className="reschedule-exit-btn"
+                onClick={(e) => {
+                    e.preventDefault();
+                    onExit();
+                }}
+            >
                 {t('exit_reschedule')}
             </button>
         </div>

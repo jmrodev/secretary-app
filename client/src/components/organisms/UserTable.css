@@ -1,0 +1,67 @@
+/* User Table Component Styles */
+.user-table {
+    overflow-x: auto;
+}
+
+.user-table__table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.user-table__header {
+    text-align: left;
+    background: #f8fafc;
+}
+
+.user-table__header-cell {
+    padding: 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+    font-weight: 600;
+    color: #475569;
+}
+
+.user-table__row {
+    border-bottom: 1px solid #e2e8f0;
+    transition: background-color 0.15s ease;
+}
+
+.user-table__row:hover {
+    background: #f8fafc;
+}
+
+.user-table__cell {
+    padding: 0.75rem;
+    vertical-align: middle;
+}
+
+.user-table__username {
+    font-weight: bold;
+    color: #0f172a;
+}
+
+.user-table__dni {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+}
+
+.user-table__full-name {
+    font-weight: 500;
+    color: #0f172a;
+}
+
+.user-table__phone-container {
+    font-size: 0.75rem;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.user-table__actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}

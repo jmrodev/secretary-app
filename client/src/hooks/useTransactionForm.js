@@ -62,7 +62,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
             type: data.type || 'income_patient',
             payments: data.payments || [{ amount: data.amount || '', method: data.method || 'cash' }],
             description: data.description || '',
-            related_user_id: data.patientUserId || data.patientId || '',
+            related_user_id: data.related_user_id || data.patientUserId || data.patientId || '',
             doctor_id: data.doctorId || '',
             status: data.status || 'paid',
             service_type: initialServiceType,
@@ -231,7 +231,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
             }
 
             if (requestId) payload.append('request_id', requestId);
-            if (initialData?.apptId) payload.append('appointment_id', initialData.apptId);
+            if (initialData?.appointment_id) payload.append('appointment_id', initialData.appointment_id);
 
             const data = await financeService.createTransaction(payload);
             if (onSuccess) onSuccess(data);

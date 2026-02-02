@@ -4,6 +4,7 @@ import { useLanguage } from '../context/LanguageContext';
 // Atomic Design Components
 import Sidebar from '../components/organisms/Sidebar';
 import UserManagement from '../components/organisms/UserManagement';
+import Button from '../components/atoms/Button';
 
 const AdminUsers = () => {
     const { user: currentUser } = useAuth();

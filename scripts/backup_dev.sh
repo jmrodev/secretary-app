@@ -4,7 +4,8 @@
 PROJECT_DIR="/home/cima/Documentos/secretary-app"
 BACKUP_DIR="$PROJECT_DIR/backup_ddbb"
 DATE=$(date +"%Y%m%d_%H%M%S")
-CONTAINER_NAME="secretary-app-db-1"
+# Updated to match docker-compose.yml dev container name
+CONTAINER_NAME="secretary-db-dev" 
 DB_USER="root"
 DB_PASS="cima1255"
 DB_NAME="clinical_management"
@@ -14,7 +15,7 @@ mkdir -p "$BACKUP_DIR/structure"
 mkdir -p "$BACKUP_DIR/data"
 mkdir -p "$BACKUP_DIR/full"
 
-echo "[$(date)] Starting backup..."
+echo "[$(date)] Starting DEV backup..."
 
 # 1. Structure only
 echo "Backing up structure..."
@@ -28,11 +29,12 @@ docker exec "$CONTAINER_NAME" mysqldump -u "$DB_USER" -p"$DB_PASS" --no-create-i
 echo "Backing up full database..."
 docker exec "$CONTAINER_NAME" mysqldump -u "$DB_USER" -p"$DB_PASS" --skip-lock-tables "$DB_NAME" > "$BACKUP_DIR/full/backup_full_$DATE.sql"
 
-# 4. Update the "latest" files used by Docker (optional, but requested by user to keep "latest version")
-cp "$BACKUP_DIR/structure/backup_schema_$DATE.sql" "$PROJECT_DIR/server/01-schema.sql"
-cp "$BACKUP_DIR/data/backup_data_$DATE.sql" "$PROJECT_DIR/server/02-seed.sql"
-
 # Cleanup old backups (keep last 30 days)
 find "$BACKUP_DIR" -name "*.sql" -type f -mtime +30 -delete
 
-echo "[$(date)] Backup completed successfully."
+# Compress and Copy to Desktop
+echo "Compressing and copying to Desktop..."
+gzip -c "$BACKUP_DIR/full/backup_full_$DATE.sql" > "$BACKUP_DIR/full/backup_full_$DATE.sql.gz"
+cp "$BACKUP_DIR/full/backup_full_$DATE.sql.gz" "/home/cima/Escritorio/BACKUP_SISTEMA_RECIENTE_DEV.sql.gz"
+
+echo "[$(date)] DEV Backup completed successfully."

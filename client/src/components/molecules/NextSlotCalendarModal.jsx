@@ -26,12 +26,14 @@ const NextSlotCalendarModal = ({
         const grouped = {};
         if (nextSlotData?.results) {
             nextSlotData.results.forEach(day => {
-                const inHours = day.slots.filter(s => !s.is_out_of_hours).length;
+                const inHours = day.slots.filter(s => !s.is_out_of_hours && !s.is_break).length;
                 const outHours = day.slots.filter(s => s.is_out_of_hours).length;
+                const breakSlotsCount = day.slots.filter(s => s.is_break).length;
                 grouped[day.date] = {
                     total: day.slots.length,
                     inHours,
                     outHours,
+                    breakSlotsCount,
                     slots: day.slots,
                     dayName: day.dayName
                 };
@@ -129,7 +131,7 @@ const NextSlotCalendarModal = ({
                     checked={includeOutOfHours}
                     onChange={(e) => onToggleOutOfHours(e.target.checked)}
                 />
-                <span className="calendar-slot-controls__label">🔓 Incluir fuera de horario (08:00 - 21:00)</span>
+                <span className="calendar-slot-controls__label">🔓 Incluir sobreturnos / fuera de horario</span>
             </label>
 
             <div className="calendar-slot-controls__toggle-group">
@@ -204,6 +206,11 @@ const NextSlotCalendarModal = ({
                                             <span>🔓</span><span>{slots.outHours}</span>
                                         </div>
                                     )}
+                                    {slots.breakSlotsCount > 0 && (
+                                        <div className="calendar-grid__badge calendar-grid__badge--break">
+                                            <span>☕</span><span>{slots.breakSlotsCount}</span>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -246,7 +253,8 @@ const NextSlotCalendarModal = ({
             );
         }
 
-        const normalSlots = selectedSlots.filter(s => !s.is_out_of_hours);
+        const normalSlots = selectedSlots.filter(s => !s.is_out_of_hours && !s.is_break);
+        const breakSlots = selectedSlots.filter(s => s.is_break);
         // Identify "Before" and "After" slots relative to normal hours
         let beforeSlots = [];
         let afterSlots = [];
@@ -274,10 +282,12 @@ const NextSlotCalendarModal = ({
                                 <tr key={`${type}-${slot.iso}-${idx}`} className={type !== 'normal' ? 'slots-list__row--extra' : ''}>
                                     <td className="slots-list__row-cell">
                                         <div className="flex items-center gap-2">
-                                            <span className={`slots-list__time ${type === 'normal' ? 'slots-list__time--normal' : 'slots-list__time--extra'}`}>
+                                            <span className={`slots-list__time slots-list__time--${type}`}>
                                                 {slot.time}
                                             </span>
-                                            {type !== 'normal' && <span className="slots-list__tag-extra">EXTRA</span>}
+                                            {type === 'before' && <span className="slots-list__tag-extra">EXTRA</span>}
+                                            {type === 'after' && <span className="slots-list__tag-extra">EXTRA</span>}
+                                            {type === 'break' && <span className="slots-list__tag-break">EXT</span>}
                                         </div>
                                     </td>
                                     <td className="slots-list__row-cell text-right">
@@ -291,10 +301,10 @@ const NextSlotCalendarModal = ({
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z" /></svg>
                                             </button>
                                             <button
-                                                className={`slots-list__action-btn ${type === 'normal' ? 'slots-list__action-btn--normal' : 'slots-list__action-btn--extra'}`}
+                                                className={`slots-list__action-btn slots-list__action-btn--${type}`}
                                                 onClick={() => onSelect(slot.iso)}
                                             >
-                                                {type === 'normal' ? 'Seleccionar' : 'Asignar Extra'}
+                                                {type === 'normal' ? 'Seleccionar' : (type === 'break' ? 'Asignar Ext' : 'Asignar Extra')}
                                             </button>
                                         </div>
                                     </td>
@@ -319,6 +329,7 @@ const NextSlotCalendarModal = ({
                 <div className="slots-list__content">
                     {renderSection('🔓 Antes del Horario (Extra)', beforeSlots, 'before')}
                     {renderSection('✅ Horario de Atención', normalSlots, 'normal')}
+                    {renderSection('☕ Descansos / Cupos Especiales', breakSlots, 'break')}
                     {renderSection('🔓 Después del Horario (Extra)', afterSlots, 'after')}
                 </div>
             </div>

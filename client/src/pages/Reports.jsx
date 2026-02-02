@@ -27,19 +27,31 @@ const Reports = () => {
         setReportData(null);
         if (activeTab === 'appointments') {
             const data = await getMonthlyReport(month, year, selectedDoctorId);
-            if (data) {
-                setReportData(data);
-            }
-        } else {
-            // Fetch prescription report as JSON for preview, using same filters
+            if (data) setReportData(data);
+        } else if (activeTab === 'prescriptions') {
             try {
                 const params = { preview: true, month, year };
                 if (selectedDoctorId) params.doctorId = selectedDoctorId;
-
                 const response = await api.get('/medical/prescriptions/export/json', { params });
-                setReportData(response.data);
+                setReportData({ prescriptions: response.data || [] });
             } catch (err) {
                 console.error("Error fetching prescription report", err);
+            }
+        } else if (activeTab === 'balance') {
+            try {
+                // Fetch BOTH
+                const [apptData, presResponse] = await Promise.all([
+                    getMonthlyReport(month, year, selectedDoctorId),
+                    api.get('/medical/prescriptions/export/json', { params: { preview: true, month, year, doctorId: selectedDoctorId || undefined } })
+                ]);
+
+                setReportData({
+                    appointments: apptData?.appointments || [],
+                    withdrawals: apptData?.withdrawals || [],
+                    prescriptions: presResponse.data?.prescriptions || []
+                });
+            } catch (err) {
+                console.error("Error fetching balance report", err);
             }
         }
     };
@@ -122,25 +134,7 @@ const Reports = () => {
                         ))}
                     </tbody>
                 </table>
-                {reportData?.withdrawals && reportData.withdrawals.length > 0 && (
-                    <div className="mt-8 p-6 bg-rose-50 rounded-2xl border border-rose-100">
-                        <h3 className="text-rose-900 font-bold mb-4 flex items-center gap-2">
-                            💰 {t('withdrawals_doctor') || 'Retiros a Doctora / Pagos Realizados'}
-                        </h3>
-                        <div className="space-y-2">
-                            {reportData.withdrawals.map((w, idx) => (
-                                <div key={idx} className="flex justify-between items-center py-2 border-b border-rose-100 last:border-0 text-sm">
-                                    <span className="text-rose-700 font-medium">{w.fecha} - {w.descripcion}</span>
-                                    <span className="text-rose-900 font-bold font-mono">-${Number(w.monto).toLocaleString()}</span>
-                                </div>
-                            ))}
-                            <div className="flex justify-between items-center pt-4 mt-2 border-t-2 border-rose-200 text-lg">
-                                <span className="font-black text-rose-900 uppercase tracking-tight">Total Entregado / Retirado:</span>
-                                <span className="font-black text-rose-900 font-mono">-${reportData.withdrawals.reduce((acc, w) => acc + Number(w.monto || 0), 0).toLocaleString()}</span>
-                            </div>
-                        </div>
-                    </div>
-                )}
+
             </div>
         );
     };
@@ -207,6 +201,123 @@ const Reports = () => {
         );
     };
 
+    const renderBalanceView = () => {
+        if (!reportData) return null;
+        const appts = reportData.appointments || [];
+        const pres = reportData.prescriptions || [];
+        const withdrawals = reportData.withdrawals || [];
+
+        // Calculate Totals
+        let totalAppts = 0;
+        let totalPres = 0;
+        let totalWithdrawals = withdrawals.reduce((acc, w) => acc + Number(w.monto || 0), 0);
+
+        let allDebts = [];
+
+        // Process Appointments
+        appts.forEach(day => {
+            day.appointments.forEach(a => {
+                if (Number(a.monto_pagado) > 0) {
+                    totalAppts += Number(a.monto_pagado);
+                }
+                const debtAmt = Number(a.debt_amount || 0);
+                if ((a.pago === 'debt' || a.pago === 'debe') || debtAmt > 0) {
+                    allDebts.push({
+                        date: day.date,
+                        type: 'Turno',
+                        patient: a.nombre,
+                        amount: debtAmt
+                    });
+                }
+            });
+        });
+
+        // Process Prescriptions
+        pres.forEach(p => {
+            const amt = Number(p.amount || 0);
+            const status = (p.payment_status || '').toLowerCase();
+            if (status === 'paid' || status === 'pagado') {
+                totalPres += amt;
+            } else if (status === 'debt' || status === 'debe') {
+                allDebts.push({
+                    date: p.date ? new Date(p.date).toLocaleDateString() : '-',
+                    type: 'Receta/Solicitud',
+                    patient: p.patient_name,
+                    amount: amt
+                });
+            }
+        });
+
+        const totalIncome = totalAppts + totalPres;
+        const netTotal = totalIncome - totalWithdrawals;
+
+        return (
+            <div className="balance-container p-6 bg-white rounded shadow">
+                <h2 className="text-2xl font-bold mb-6 text-slate-800">Balance General - {t('months_array')[month - 1]} {year}</h2>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="summary-card bg-slate-50 p-6 rounded-xl border border-slate-200">
+                        <h3 className="text-lg font-bold text-slate-700 mb-4 border-b pb-2">Resumen Financiero</h3>
+                        <div className="flex justify-between py-2 border-b border-slate-100">
+                            <span className="text-slate-600">Total Turnos:</span>
+                            <span className="font-bold text-emerald-600">$ {totalAppts.toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between py-2 border-b border-slate-100">
+                            <span className="text-slate-600">Total Recetas:</span>
+                            <span className="font-bold text-emerald-600">$ {totalPres.toLocaleString()}</span>
+                        </div>
+
+                        <div className="flex justify-between py-2 mt-2 bg-emerald-50 px-2 rounded font-bold">
+                            <span className="text-emerald-800">SUBTOTAL INGRESOS:</span>
+                            <span className="text-emerald-800">$ {totalIncome.toLocaleString()}</span>
+                        </div>
+
+                        <div className="flex justify-between py-2 mt-4 text-rose-700">
+                            <span>(-) Retiros Doctora:</span>
+                            <span>$ {totalWithdrawals.toLocaleString()}</span>
+                        </div>
+
+                        <div className="flex justify-between py-4 mt-4 border-t-2 border-slate-800 text-xl font-black">
+                            <span>RESULTADO NETO:</span>
+                            <span>$ {netTotal.toLocaleString()}</span>
+                        </div>
+                    </div>
+
+                    <div className="debts-card bg-orange-50 p-6 rounded-xl border border-orange-100">
+                        <h3 className="text-lg font-bold text-orange-800 mb-4 border-b border-orange-200 pb-2">Deudas Pendientes</h3>
+                        {allDebts.length === 0 ? <p className="text-gray-500 italic">No hay deudas registradas.</p> : (
+                            <div className="overflow-auto max-h-[300px]">
+                                <table className="w-full text-sm">
+                                    <thead>
+                                        <tr className="text-left text-orange-900">
+                                            <th className="pb-2">Fecha</th>
+                                            <th className="pb-2">Paciente</th>
+                                            <th className="pb-2">Origen</th>
+                                            <th className="pb-2 text-right">Monto</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {allDebts.map((d, i) => (
+                                            <tr key={i} className="border-b border-orange-100">
+                                                <td className="py-2">{d.date}</td>
+                                                <td className="py-2 font-medium">{d.patient}</td>
+                                                <td className="py-2 text-gray-500 text-xs">{d.type}</td>
+                                                <td className="py-2 text-right font-mono">{d.amount > 0 ? `$${d.amount.toLocaleString()}` : '-'}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                        <div className="mt-4 pt-2 border-t border-orange-200 text-right font-bold text-orange-900">
+                            Total Deuda Detectada: $ {allDebts.reduce((a, b) => a + b.amount, 0).toLocaleString()}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     const handlePrint = () => {
         if (!reportData) return;
 
@@ -215,6 +326,116 @@ const Reports = () => {
             if (!printWindow) return alert("Por favor permita ventanas emergentes para imprimir.");
 
             const monthName = t('months_array')[month - 1] || 'Mes';
+
+            if (activeTab === 'balance') {
+                const appts = reportData.appointments || [];
+                const pres = reportData.prescriptions || [];
+                const withdrawals = reportData.withdrawals || [];
+
+                let totalAppts = 0;
+                let totalPres = 0;
+                let totalWithdrawals = withdrawals.reduce((acc, w) => acc + Number(w.monto || 0), 0);
+                let allDebts = [];
+
+                appts.forEach(day => {
+                    day.appointments.forEach(a => {
+                        if (Number(a.monto_pagado) > 0) totalAppts += Number(a.monto_pagado);
+                        const debtAmt = Number(a.debt_amount || 0);
+                        if ((a.pago === 'debt' || a.pago === 'debe') || debtAmt > 0) {
+                            allDebts.push({ date: day.date, type: 'Turno', patient: a.nombre, amount: debtAmt });
+                        }
+                    });
+                });
+
+                pres.forEach(p => {
+                    const amt = Number(p.amount || 0);
+                    const status = (p.payment_status || '').toLowerCase();
+                    if (status === 'paid' || status === 'pagado') totalPres += amt;
+                    else if (status === 'debt' || status === 'debe') {
+                        allDebts.push({ date: p.date ? new Date(p.date).toLocaleDateString() : '-', type: 'Receta', patient: p.patient_name, amount: amt });
+                    }
+                });
+
+                const totalIncome = totalAppts + totalPres;
+                const netTotal = totalIncome - totalWithdrawals;
+
+                const htmlContent = `
+                    <html>
+                    <head>
+                        <title>Balance General - ${monthName} ${year}</title>
+                        <style>
+                            body { font-family: 'Courier New', monospace; padding: 40px; max-width: 800px; margin: 0 auto; }
+                            h1 { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 40px; }
+                            .summary-box { border: 2px solid #000; padding: 20px; margin-bottom: 40px; }
+                            .row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 1.2em; }
+                            .row.total { font-weight: bold; border-top: 1px dashed #000; padding-top: 10px; margin-top: 10px; }
+                            .row.net { font-size: 1.5em; font-weight: 900; border-top: 3px double #000; padding-top: 15px; margin-top: 15px; }
+                            table { width: 100%; border-collapse: collapse; }
+                            th { text-align: left; border-bottom: 2px solid #000; padding: 5px; }
+                            td { border-bottom: 1px dotted #ccc; padding: 5px; }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>Balance General: ${monthName} ${year}</h1>
+                        
+                        <div class="summary-box">
+                            <div class="row">
+                                <span>Ingresos Turnos:</span>
+                                <span>$${totalAppts.toLocaleString()}</span>
+                            </div>
+                            <div class="row">
+                                <span>Ingresos Recetas:</span>
+                                <span>$${totalPres.toLocaleString()}</span>
+                            </div>
+                            <div class="row total">
+                                <span>SUBTOTAL INGRESOS:</span>
+                                <span>$${totalIncome.toLocaleString()}</span>
+                            </div>
+                            <div class="row" style="color: red; margin-top: 15px;">
+                                <span>(-) Retiros Doctora:</span>
+                                <span>-$${totalWithdrawals.toLocaleString()}</span>
+                            </div>
+                            <div class="row net">
+                                <span>RESULTADO NETO:</span>
+                                <span>$${netTotal.toLocaleString()}</span>
+                            </div>
+                        </div>
+
+                        <h2>Deudas Pendientes</h2>
+                        ${allDebts.length > 0 ? `
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Paciente</th>
+                                    <th>Origen</th>
+                                    <th style="text-align:right;">Monto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${allDebts.map(d => `
+                                <tr>
+                                    <td>${d.date}</td>
+                                    <td>${d.patient}</td>
+                                    <td>${d.type}</td>
+                                    <td style="text-align:right;">${d.amount > 0 ? '$' + d.amount.toLocaleString() : '-'}</td>
+                                </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                        <div style="text-align: right; margin-top: 20px; font-weight: bold;">
+                            Total Deuda Visible: $${allDebts.reduce((a, b) => a + b.amount, 0).toLocaleString()}
+                        </div>
+                        ` : '<p>No se encontraron deudas.</p>'}
+
+                        <script>window.onload = function() { window.print(); }</script>
+                    </body>
+                    </html>
+                `;
+                printWindow.document.write(htmlContent);
+                printWindow.document.close();
+                return;
+            }
             const pageTitle = activeTab === 'prescriptions' ? 'Reporte de Recetas' : 'Reporte de Turnos';
 
             let htmlContent = `
@@ -356,24 +577,6 @@ const Reports = () => {
                     `;
                 });
 
-                if (withdrawalsList.length > 0) {
-                    const totalWithdrawals = withdrawalsList.reduce((acc, w) => acc + Number(w.monto || 0), 0);
-                    htmlContent += `
-                        <div class="day-group" style="margin-top: 40px; border-top: 2px dashed #000; padding-top: 20px;">
-                            <h2>Retiros a Doctora</h2>
-                            ${withdrawalsList.map(w => `
-                                <div class="withdrawal">
-                                    <span>${w.fecha} - ${w.descripcion}</span>
-                                    <span style="font-weight: bold;"> - $${w.monto}</span>
-                                </div>
-                            `).join('')}
-                            <div class="withdrawal" style="margin-top: 10px; border-top: 1px solid #000; padding-top: 5px; font-size: 1.1em;">
-                                <span style="font-weight: 900;">TOTAL RETIRADO / ENTREGADO:</span>
-                                <span style="font-weight: 900;">$${totalWithdrawals.toLocaleString()}</span>
-                            </div>
-                        </div>
-                    `;
-                }
             }
 
 
@@ -405,9 +608,24 @@ const Reports = () => {
                 certificados: { count: 0, amount: 0 },
                 licencias: { count: 0, amount: 0 }
             };
+            let otherBreakdown = {
+                turnos: { count: 0, amount: 0 },
+                recetas: { count: 0, amount: 0 },
+                certificados: { count: 0, amount: 0 },
+                licencias: { count: 0, amount: 0 }
+            };
+            let onAccountBreakdown = {
+                turnos: { count: 0, amount: 0 },
+                recetas: { count: 0, amount: 0 },
+                certificados: { count: 0, amount: 0 },
+                licencias: { count: 0, amount: 0 }
+            };
+            let totalOnAccount = 0;
+            let onAccountFiltered = 0;
 
             // --- Debts List Collection ---
             let debtList = [];
+            let otherItemsList = [];
 
             if (activeTab === 'appointments') {
                 appointmentsList.forEach(day => {
@@ -457,8 +675,21 @@ const Reports = () => {
                                 totalTransfer += payment;
                                 transferBreakdown.turnos.count++;
                                 transferBreakdown.turnos.amount += payment;
+                            } else if (methods.includes('on_account') || methods.includes('cuenta')) {
+                                totalOnAccount += payment;
+                                onAccountBreakdown.turnos.count++;
+                                onAccountBreakdown.turnos.amount += payment;
                             } else {
                                 totalOther += payment;
+                                otherBreakdown.turnos.count++;
+                                otherBreakdown.turnos.amount += payment;
+                                otherItemsList.push({
+                                    date: day.date,
+                                    time: appt.hora,
+                                    patient: appt.nombre,
+                                    method: methods || 'No especificado',
+                                    amount: payment
+                                });
                             }
                         }
 
@@ -506,8 +737,26 @@ const Reports = () => {
                             totalTransfer += amount;
                             transferBreakdown[itemType].count++;
                             transferBreakdown[itemType].amount += amount;
+                        } else if (method.includes('on_account') || method.includes('cuenta')) {
+                            totalOnAccount += amount;
+                            onAccountBreakdown[itemType].count++;
+                            onAccountBreakdown[itemType].amount += amount;
                         } else {
                             totalOther += amount;
+                            otherBreakdown[itemType].count++;
+                            otherBreakdown[itemType].amount += amount;
+                            let formattedDate = '-';
+                            try {
+                                if (item.date) formattedDate = new Date(item.date).toLocaleDateString();
+                            } catch (e) { }
+
+                            otherItemsList.push({
+                                date: formattedDate,
+                                time: '-',
+                                patient: item.patient_name,
+                                method: method || 'No especificado',
+                                amount: amount
+                            });
                         }
                     } else if (status === 'debt' || status === 'debe') {
                         totalDebt += amount;
@@ -576,16 +825,7 @@ const Reports = () => {
                                     <td style="padding: 10px; border: 1px solid #ccc;">INGRESOS POR ${activeTab === 'appointments' ? 'TURNOS' : 'RECETAS'} (BRUTO)</td>
                                     <td style="padding: 10px; text-align: right; border: 1px solid #ccc;">$${totalAmount.toLocaleString()}</td>
                                 </tr>
-                                ${withdrawalsList.length > 0 ? `
-                                <tr style="color: #c2410c;">
-                                    <td style="padding: 10px; border: 1px solid #ccc;">Total Entregado / Retirado a Doctora</td>
-                                    <td style="padding: 10px; text-align: right; border: 1px solid #ccc;">-$${withdrawalsList.reduce((acc, w) => acc + Number(w.monto || 0), 0).toLocaleString()}</td>
-                                </tr>
-                                <tr style="font-weight: 900; background: #fffbeb; font-size: 1.3em;">
-                                    <td style="padding: 10px; border: 2px solid #000;">SALDO NETO FINAL EN CAJA</td>
-                                    <td style="padding: 10px; text-align: right; border: 2px solid #000;">$${(totalAmount - withdrawalsList.reduce((acc, w) => acc + Number(w.monto || 0), 0)).toLocaleString()}</td>
-                                </tr>
-                                ` : ''}
+
                                  ${activeTab === 'prescriptions' && totalDebt > 0 ? `
                                 <tr><td colspan="2" style="border:none; height:20px;"></td></tr>
                                  <tr style="color:red;">
@@ -679,7 +919,102 @@ const Reports = () => {
                                     <td style="padding: 10px; text-align: right; border: 2px solid #0369a1;">$${totalTransfer.toLocaleString()}</td>
                                 </tr>
                             </tbody>
+                            </tbody>
                         </table>
+
+                        ${totalOnAccount > 0 ? `
+                        <h4 style="margin-top: 20px; color: #d97706;">📂 Mal Imputado (Cta. Cte.) - Total: $${totalOnAccount.toLocaleString()}</h4>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                            <thead>
+                                <tr style="background: #ffedd5;">
+                                    <th style="padding: 10px; text-align: left; border: 1px solid #fdba74;">Concepto</th>
+                                    <th style="padding: 10px; text-align: center; border: 1px solid #fdba74;">Cantidad</th>
+                                    <th style="padding: 10px; text-align: right; border: 1px solid #fdba74;">Monto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${onAccountBreakdown.turnos.amount > 0 ? `
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #fdba74;">Turnos</td>
+                                    <td style="padding: 8px; text-align: center; border: 1px solid #fdba74;">${onAccountBreakdown.turnos.count}</td>
+                                    <td style="padding: 8px; text-align: right; border: 1px solid #fdba74;">$${onAccountBreakdown.turnos.amount.toLocaleString()}</td>
+                                </tr>` : ''}
+                                ${onAccountBreakdown.recetas.amount > 0 ? `
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #fdba74;">Recetas</td>
+                                    <td style="padding: 8px; text-align: center; border: 1px solid #fdba74;">${onAccountBreakdown.recetas.count}</td>
+                                    <td style="padding: 8px; text-align: right; border: 1px solid #fdba74;">$${onAccountBreakdown.recetas.amount.toLocaleString()}</td>
+                                </tr>` : ''}
+                            </tbody>
+                        </table>` : ''}
+
+                        ${totalOther > 0 ? `
+                        <h4 style="margin-top: 20px; color: #7c3aed;">💳 Otros Métodos / Sin Especificar - Total: $${totalOther.toLocaleString()}</h4>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                            <thead>
+                                <tr style="background: #ddd6fe;">
+                                    <th style="padding: 10px; text-align: left; border: 1px solid #c4b5fd;">Concepto</th>
+                                    <th style="padding: 10px; text-align: center; border: 1px solid #c4b5fd;">Cantidad</th>
+                                    <th style="padding: 10px; text-align: right; border: 1px solid #c4b5fd;">Monto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${otherBreakdown.turnos.amount > 0 ? `
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #c4b5fd;">Turnos</td>
+                                    <td style="padding: 8px; text-align: center; border: 1px solid #c4b5fd;">${otherBreakdown.turnos.count}</td>
+                                    <td style="padding: 8px; text-align: right; border: 1px solid #c4b5fd;">$${otherBreakdown.turnos.amount.toLocaleString()}</td>
+                                </tr>` : ''}
+                                ${otherBreakdown.recetas.amount > 0 ? `
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #c4b5fd;">Recetas</td>
+                                    <td style="padding: 8px; text-align: center; border: 1px solid #c4b5fd;">${otherBreakdown.recetas.count}</td>
+                                    <td style="padding: 8px; text-align: right; border: 1px solid #c4b5fd;">$${otherBreakdown.recetas.amount.toLocaleString()}</td>
+                                </tr>` : ''}
+                                ${otherBreakdown.certificados.amount > 0 ? `
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #c4b5fd;">Certificados</td>
+                                    <td style="padding: 8px; text-align: center; border: 1px solid #c4b5fd;">${otherBreakdown.certificados.count}</td>
+                                    <td style="padding: 8px; text-align: right; border: 1px solid #c4b5fd;">$${otherBreakdown.certificados.amount.toLocaleString()}</td>
+                                </tr>` : ''}
+                                ${otherBreakdown.licencias.amount > 0 ? `
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #c4b5fd;">Licencias</td>
+                                    <td style="padding: 8px; text-align: center; border: 1px solid #c4b5fd;">${otherBreakdown.licencias.count}</td>
+                                    <td style="padding: 8px; text-align: right; border: 1px solid #c4b5fd;">$${otherBreakdown.licencias.amount.toLocaleString()}</td>
+                                </tr>` : ''}
+                                <tr style="font-weight: bold; background: #c4b5fd;">
+                                    <td style="padding: 10px; border: 2px solid #7c3aed;">TOTAL OTROS</td>
+                                    <td style="padding: 10px; text-align: center; border: 2px solid #7c3aed;">${otherBreakdown.turnos.count + otherBreakdown.recetas.count + otherBreakdown.certificados.count + otherBreakdown.licencias.count}</td>
+                                    <td style="padding: 10px; text-align: right; border: 2px solid #7c3aed;">$${totalOther.toLocaleString()}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        ` : ''}
+
+                        ${otherItemsList.length > 0 ? `
+                        <h4 style="margin-top: 20px; color: #7c3aed;">📋 Detalle de Items "Otros / Sin Especificar"</h4>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                            <thead>
+                                <tr style="background: #f3e8ff;">
+                                    <th style="padding: 10px; text-align: left; border: 1px solid #d8b4fe;">Fecha</th>
+                                    <th style="padding: 10px; text-align: left; border: 1px solid #d8b4fe;">Paciente</th>
+                                    <th style="padding: 10px; text-align: left; border: 1px solid #d8b4fe;">Método Detectado</th>
+                                    <th style="padding: 10px; text-align: right; border: 1px solid #d8b4fe;">Monto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${otherItemsList.map(item => `
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #d8b4fe;">${item.date}</td>
+                                    <td style="padding: 8px; border: 1px solid #d8b4fe;">${item.patient}</td>
+                                    <td style="padding: 8px; border: 1px solid #d8b4fe; font-style: italic;">${item.method}</td>
+                                    <td style="padding: 8px; text-align: right; border: 1px solid #d8b4fe;">$${item.amount.toLocaleString()}</td>
+                                </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                        ` : ''}
                         
                         ${debtList.length > 0 ? `
                         <h3 style="margin-top: 40px; color: #d32f2f;">Detalle de Deudas / Pendientes</h3>
@@ -748,6 +1083,13 @@ const Reports = () => {
                         onClick={() => { setActiveTab('prescriptions'); setReportData(null); }}
                     >
                         💊 {t('prescription_reports') || 'Reporte de Recetas'}
+                    </button>
+                    <button
+                        className={`reports-tab ${activeTab === 'balance' ? 'reports-tab--active' : ''}`}
+                        onClick={() => { setActiveTab('balance'); setReportData(null); }}
+                        style={{ borderBottomColor: activeTab === 'balance' ? '#0ea5e9' : 'transparent', color: activeTab === 'balance' ? '#0ea5e9' : 'inherit' }}
+                    >
+                        ⚖️ Balance General
                     </button>
                 </div>
 
@@ -868,7 +1210,9 @@ const Reports = () => {
 
                 {/* Results/Display */}
                 <div className="reports-results">
-                    {activeTab === 'appointments' ? renderAppointmentTable() : renderPrescriptionTable()}
+                    {activeTab === 'appointments' ? renderAppointmentTable() :
+                        activeTab === 'prescriptions' ? renderPrescriptionTable() :
+                            renderBalanceView()}
                 </div>
 
             </main>

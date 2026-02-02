@@ -17,7 +17,7 @@ import AppointmentActionModal from '../components/organisms/AppointmentActionMod
 import AppointmentFormModal from '../components/organisms/AppointmentFormModal';
 import Modal from '../components/molecules/Modal';
 import PatientHistoryModal from '../components/molecules/PatientHistoryModal';
-import PatientEditModal from '../components/molecules/PatientEditModal';
+import PatientManagerModal from '../components/molecules/PatientManagerModal';
 import PrescriptionModal from '../components/organisms/PrescriptionModal';
 import NextSlotCalendarModal from '../components/molecules/NextSlotCalendarModal';
 import WhatsAppModal from '../components/molecules/WhatsAppModal';
@@ -103,7 +103,7 @@ const Appointments = () => {
                         onClose={() => setSearchPatientId('')}
                         t={t}
                         searchPatientId={searchPatientId}
-                        handlers={controller}
+                        handlers={handlers}
                     />
                 ) : activeTab === 'upcoming' ? (
                     <UpcomingAppointmentsView
@@ -137,8 +137,7 @@ const Appointments = () => {
                                 holidays={holidays}
                                 onSlotClick={handlers.handleSlotClick}
                                 onDeleteHoliday={handlers.handleDeleteHoliday}
-                                showForm={booking.showForm}
-                                onToggleForm={booking.toggleForm}
+
                                 onSearchPatientId={setSearchPatientId}
                                 searchPatientId={searchPatientId}
                                 onCreatePatient={booking.createPatient}
@@ -212,7 +211,7 @@ const Appointments = () => {
             />
 
             {editPatientModalOpen && (
-                <PatientEditModal
+                <PatientManagerModal
                     isOpen={editPatientModalOpen}
                     onClose={() => setEditPatientModalOpen(false)}
                     patient={booking.selectedPatientData}
@@ -221,6 +220,7 @@ const Appointments = () => {
                         booking.setSelectedPatient(updatedData.id);
                         booking.setSelectedPatientData(updatedData);
                     }}
+                    doctors={doctors}
                 />
             )}
 
@@ -249,7 +249,7 @@ const Appointments = () => {
                 onClose={() => setPaymentModal({ ...paymentModal, open: false })}
                 initialData={paymentModal.initialData}
                 onSuccess={async () => {
-                    controller.fetchAppointments();
+                    handlers.fetchAppointments();
                 }}
             />
         </MainLayout>

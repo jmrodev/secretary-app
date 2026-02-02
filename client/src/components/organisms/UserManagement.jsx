@@ -110,6 +110,9 @@ const UserManagement = ({ excludeRoles = [], role = null, title, subtitle }) => 
                 </div>
                 <div className="action-bar__tools">
                     <Button variant="ghost" onClick={loadData}>🔄</Button>
+                    <Button variant="primary" onClick={() => openModal('CREATE')}>
+                        ✨ {t('new') || 'Nuevo'}
+                    </Button>
                 </div>
             </section>
 

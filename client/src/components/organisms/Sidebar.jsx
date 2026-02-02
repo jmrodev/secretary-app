@@ -32,11 +32,7 @@ const Sidebar = () => {
                     </Link>
                 )}
 
-                {user.role !== 'patient' && (
-                    <Link to="/monthly-view" className={getLinkClass('/monthly-view')}>
-                        <span className="sidebar__link-icon">🗓️</span> {t('monthly_view') || 'Vista Mensual'}
-                    </Link>
-                )}
+
 
                 {user.role !== 'patient' && user.role !== 'admin' && (
                     <Link to="/patients" className={getLinkClass('/patients')}>

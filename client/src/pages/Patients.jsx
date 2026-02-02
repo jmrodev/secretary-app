@@ -27,7 +27,6 @@ const Patients = () => {
         doctors, insurances, recycleItems,
         activeTab, setActiveTab,
         searchTerm, setSearchTerm,
-        showCreate, setShowCreate,
         selectedPatientId, setSelectedPatientId, patientDetails,
         showRatingInfo, setShowRatingInfo,
 
@@ -36,9 +35,12 @@ const Patients = () => {
         debtModal, setDebtModal,
         qrModal, setQrModal,
 
-        // Handlers
+        handlers,
+    } = controller;
+
+    const {
         fetchPatients, fetchRecycleBin,
-        handleCreate,
+        handleNewClick,
         handleViewDetails,
         handleDeletePatient,
         handleEditClick,
@@ -54,7 +56,7 @@ const Patients = () => {
         handleGeneratePrescriptionLink,
         calculateFinancialRating,
         calculateAttendanceRating,
-    } = controller;
+    } = handlers;
 
     if (loading) return <div className="centered-loader"><div className="status-display__spinner"></div><p>{t('loading')}</p></div>;
 
@@ -127,28 +129,14 @@ const Patients = () => {
                         <div className="action-bar__tools">
                             <Button variant="ghost" onClick={() => { fetchPatients(); fetchRecycleBin(); }}>🔄</Button>
                             <Button variant="ghost" onClick={() => setShowRatingInfo(true)}>ℹ️</Button>
-                            {user.role === 'secretary' && activeTab === 'list' && (
-                                <Button variant={showCreate ? 'secondary' : 'primary'} onClick={() => setShowCreate(!showCreate)}>
-                                    {showCreate ? `❌ ${t('cancel')}` : `✨ ${t('new')}`}
+                            {(user.role === 'admin' || user.role === 'secretary') && activeTab === 'list' && (
+                                <Button variant="primary" onClick={handleNewClick}>
+                                    ✨ {t('new') || 'Nuevo'}
                                 </Button>
                             )}
                         </div>
                     </section>
 
-                    {showCreate && (
-                        <div className="card mb-8 animate-fadeIn">
-                            <header className="card-header border-none pb-0">
-                                <h3 className="card-header__title">{t('register_new_patient')}</h3>
-                            </header>
-                            <PatientForm
-                                onSubmit={handleCreate}
-                                isEdit={false}
-                                isAdmin={true}
-                                insurances={insurances}
-                                doctors={doctors}
-                            />
-                        </div>
-                    )}
 
                     {activeTab === 'list' ? (
                         <div className="patients-list">

@@ -255,13 +255,18 @@ export const useDashboardController = () => {
                 phone = '549' + phone;
             }
             const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-            let url;
+
             if (isMobile) {
-                url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+                const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+                window.open(url, '_blank');
             } else {
-                url = `https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
+                const appUrl = `whatsapp://send?phone=${phone}&text=${encodeURIComponent(message)}`;
+                const webUrl = `https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
+
+                // Priority ZapZap/Desktop App -> Web
+                window.location.href = appUrl;
+                setTimeout(() => window.open(webUrl, '_blank'), 2500);
             }
-            window.open(url, '_blank');
         }).catch(err => {
             console.error(err);
             showMessage("Error al copiar texto", "error");

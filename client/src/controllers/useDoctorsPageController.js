@@ -83,6 +83,10 @@ export const useDoctorsPageController = () => {
     };
 
     const handleEditClick = (doc) => {
+        if (!doc) {
+            // Logic for NEW doctor if needed, or just return
+            return;
+        }
         const initialData = {
             id: doc.id,
             specialty: doc.specialty || '',
@@ -165,6 +169,7 @@ export const useDoctorsPageController = () => {
 
     // Handlers mapped for cleaner component usage
     const handlers = {
+        fetchDoctors: loadData,
         onEditDoctor: handleEditClick,
         onSaveDoctor: handleSaveEdit,
         onCloseModal: () => setModalState(prev => ({ ...prev, isOpen: false })),

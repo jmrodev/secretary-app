@@ -32,11 +32,6 @@ const MedicalDocuments = () => {
         reqType, reqNote, bonified,
         sendToDoctor,
 
-        // Handlers
-        filterItem, handleUpdateStatus, handleFileUpload, confirmFileDelete,
-        handleUpdatePrescription, handleUpdateLicense, handleUpdateRequest, handleDeleteRequest,
-        handleDeletePrescription, handleEditItem, handleDeleteLicense, fetchRequests,
-
         // Permissions
         canDeletePrescription, canDeleteLicense, canDeleteFile, canDeleteRequest,
         printData,
@@ -49,7 +44,11 @@ const MedicalDocuments = () => {
         handleActionNoteChange, handleEditDataChange, handleLicenseEditDataChange,
         handleRequestEditDataChange, handleSelectMedication, toggleEditing,
         closeActionModal, openActionModal, closePaymentModal, openPaymentModal,
-        closeDeleteFileModal, openDeleteFileModal
+        closeDeleteFileModal, openDeleteFileModal,
+        handleCreateRequest, handleUpdateStatus, handleFileUpload, confirmFileDelete,
+        handleUpdatePrescription, handleUpdateLicense, handleUpdateRequest, handleDeleteRequest,
+        handleDeletePrescription, handleEditItem, handleDeleteLicense, fetchRequests,
+        handleExportJSON, handlePrintPrescriptions, filterItem
     } = handlers;
 
     // --- Derived Data for Combined Views ---
@@ -157,7 +156,7 @@ const MedicalDocuments = () => {
                                     initialType={reqType}
                                     initialSendToDoctor={sendToDoctor}
                                     onRequestCreated={() => {
-                                        fetchRequests();
+                                        handlers.fetchRequests();
                                         handleSubTabChange('list');
                                     }}
                                 />
@@ -311,22 +310,7 @@ const MedicalDocuments = () => {
                                             >
                                                 🖨️ {t('print_backup')}
                                             </Button>
-                                            <Button
-                                                variant="primary"
-                                                size="sm"
-                                                onClick={() => {
-                                                    setReqType(activeTab === 'prescriptions' ? 'prescription' :
-                                                        activeTab === 'licenses' ? 'license' : 'certificate');
-                                                    handleTabChange('requests');
-                                                    handleSubTabChange('new');
-                                                    // Pre-select direct completion if permitted
-                                                    setSendToDoctor(false);
-                                                }}
-                                            >
-                                                ➕ {t('add_new') || 'Agregar Nuevo'}
-                                            </Button>
                                         </div>
-
                                     )}
                             </div>
                             <MedicalHistoryTable

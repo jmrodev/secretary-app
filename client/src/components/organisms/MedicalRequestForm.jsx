@@ -11,6 +11,7 @@ import Button from '../atoms/Button';
 import FormGroup from '../molecules/FormGroup';
 import Input from '../atoms/Input';
 import Select from '../atoms/Select';
+import TabButton from '../atoms/TabButton';
 
 const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSendToDoctor }) => {
     const { user } = useAuth();
@@ -179,6 +180,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                 <FormGroup label={t('patient_label')} required>
                     <PatientSearchSelect
                         value={selectedPatient}
+                        selectedData={patientData}
                         onChange={(val, patient) => {
                             setSelectedPatient(val);
                             setPatientData(patient);
@@ -229,7 +231,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                                 </div>
                                 <Button
                                     type="button"
-                                    variant="secondary"
+                                    variant="primary"
                                     size="md"
                                     onClick={() => {
                                         if (tempMed.trim()) {

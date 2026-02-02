@@ -25,6 +25,7 @@ const TabButton = ({
 
     return (
         <button
+            type="button"
             className={combinedClassName}
             onClick={onClick}
         >

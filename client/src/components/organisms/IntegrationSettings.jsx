@@ -86,11 +86,29 @@ const renderGoogleIntegration = ({
                                     ⚡ Reintentar Elementos Fallidos
                                 </Button>
                             </Alert>
+
+                            <hr style={{ margin: '1.5rem 0', opacity: 0.1 }} />
+
+                            <div className="config-field">
+                                <label className="config-field__label">Google Sheets - ID de Hoja de Cálculo (Finanzas)</label>
+                                <p className="config-field__hint">
+                                    Pega el ID de la hoja de cálculo de Google donde deseas respaldar las transacciones.
+                                    <br />
+                                    <small>El ID se encuentra en la URL: docs.google.com/spreadsheets/d/<b>ID_AQUI</b>/edit</small>
+                                </p>
+                                <ConfigField
+                                    id="finance-spreadsheet-id"
+                                    value={settings.finance_spreadsheet_id || ''}
+                                    onChange={(e) => updateSetting('finance_spreadsheet_id', e.target.value)}
+                                    placeholder="e.g. 1aBCdEfGhIjKlMnOpQrStUvWxYz1234567890"
+                                    className="font-mono text-sm"
+                                />
+                            </div>
                         </div>
                     ) : (
                         <div className="config-actions">
                             <Button onClick={onGoogleAuth}>
-                                Conectar Google Calendar
+                                Conectar Google Workspaces
                             </Button>
                         </div>
                     )}

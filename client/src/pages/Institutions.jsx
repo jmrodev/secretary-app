@@ -16,13 +16,17 @@ const Institutions = () => {
         isFormModalOpen,
         editingInstitution,
         formData,
+        handlers,
+        t
+    } = useInstitutionsController();
+
+    const {
         handleOpenFormModal,
         handleCloseFormModal,
         handleFormSubmit,
         handleDelete,
         handleInputChange,
-        t
-    } = useInstitutionsController();
+    } = handlers;
 
     return (
         <MainLayout

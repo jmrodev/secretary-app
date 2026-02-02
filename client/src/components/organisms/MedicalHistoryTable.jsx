@@ -10,7 +10,10 @@ const MedicalHistoryTable = ({ items, filterItem, onView, onDelete, icon, title,
     const { user } = useAuth();
 
     const showDelete = canDelete !== undefined ? canDelete : (user.role === 'admin' || user.role === 'secretary');
-    const filteredItems = items.filter(filterItem);
+
+    // Safety check for items and filterItem function
+    const safeItems = Array.isArray(items) ? items : [];
+    const filteredItems = typeof filterItem === 'function' ? safeItems.filter(filterItem) : safeItems;
 
     return (
         <div className="medical-history">

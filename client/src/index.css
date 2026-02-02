@@ -259,6 +259,31 @@ body {
   line-height: 1.5;
 }
 
+body.dev-mode {
+  background-color: #dcfce7 !important;
+  /* green-100 */
+  background-image: none !important;
+  border-left: 10px solid #16a34a;
+  /* green-600 */
+  border-right: 10px solid #16a34a;
+}
+
+body.dev-mode::after {
+  content: "MODO DESARROLLO";
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #16a34a;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  z-index: 99999;
+  font-weight: bold;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+}
+
 .type-chip-link {
   cursor: pointer;
   transition: opacity 0.2s;
@@ -7410,8 +7435,14 @@ input:checked+.slider:before {
 
 .calendar-grid__badge--extra {
   background-color: var(--amber-100);
-  color: var(--amber-700);
-  border-color: var(--amber-200);
+  color: var(--amber-800);
+  border: 1px solid var(--amber-200);
+}
+
+.calendar-grid__badge--break {
+  background-color: var(--indigo-100);
+  color: var(--indigo-800);
+  border: 1px solid var(--indigo-200);
 }
 
 /* -- List View -- */
@@ -7473,6 +7504,13 @@ input:checked+.slider:before {
   color: var(--amber-700);
 }
 
+.slots-list__section-header--break {
+  background-color: var(--indigo-50);
+  border-bottom: 1px solid var(--indigo-200);
+  border-top: 1px solid var(--indigo-200);
+  color: var(--indigo-700);
+}
+
 .slots-list__table {
   width: 100%;
   border-collapse: collapse;
@@ -7488,6 +7526,17 @@ input:checked+.slider:before {
   border-bottom: 1px solid var(--amber-100);
 }
 
+.slots-list__row--break {
+  background-color: var(--indigo-50);
+  border-bottom: 1px solid var(--indigo-100);
+}
+
+.slots-list__row--before,
+.slots-list__row--after {
+  background-color: var(--amber-50);
+  border-bottom: 1px solid var(--amber-100);
+}
+
 .slots-list__time {
   font-size: 0.875rem;
   font-weight: 800;
@@ -7497,14 +7546,31 @@ input:checked+.slider:before {
   color: var(--gray-900);
 }
 
-.slots-list__time--extra {
+.slots-list__time--extra,
+.slots-list__time--before,
+.slots-list__time--after {
   color: var(--amber-900);
+}
+
+.slots-list__time--break {
+  color: var(--indigo-900);
 }
 
 .slots-list__tag-extra {
   font-size: 0.5rem;
   background-color: var(--orange-200);
   color: var(--orange-800);
+  padding: 0.125rem 0.375rem;
+  border-radius: 9999px;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-left: 0.5rem;
+}
+
+.slots-list__tag-break {
+  font-size: 0.5rem;
+  background-color: var(--indigo-200);
+  color: var(--indigo-800);
   padding: 0.125rem 0.375rem;
   border-radius: 9999px;
   font-weight: 800;
@@ -7533,9 +7599,16 @@ input:checked+.slider:before {
   background-color: var(--gray-900);
 }
 
-.slots-list__action-btn--extra {
+.slots-list__action-btn--extra,
+.slots-list__action-btn--before,
+.slots-list__action-btn--after {
   background-color: var(--amber-600);
   box-shadow: 0 2px 4px rgba(217, 119, 6, 0.3);
+}
+
+.slots-list__action-btn--break {
+  background-color: var(--indigo-600);
+  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.3);
 }
 
 /* -- Empty States & Loaders -- */

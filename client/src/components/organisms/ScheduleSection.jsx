@@ -15,8 +15,7 @@ const ScheduleSection = ({
     holidays = [],
     onSlotClick,
     onDeleteHoliday,
-    showForm,
-    onToggleForm,
+
     onSearchPatientId,
     searchPatientId,
     onCreatePatient,
@@ -51,13 +50,7 @@ const ScheduleSection = ({
                             />
                         </div>
                         <div className="schedule-section__actions">
-                            <Button
-                                variant="secondary"
-                                className={`schedule-section__action-btn ${showForm ? 'schedule-section__action-btn--highlight' : ''}`}
-                                onClick={onToggleForm}
-                            >
-                                {showForm ? <span>❌ Cancelar</span> : <span>✨ Nuevo Turno</span>}
-                            </Button>
+
                             <Button
                                 variant="secondary"
                                 className="schedule-section__action-btn"

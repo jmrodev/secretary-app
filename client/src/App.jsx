@@ -18,7 +18,7 @@ import Institutions from './pages/Institutions'; // [NEW]
 import Reports from './pages/Reports'; // [NEW]
 import TempAccess from './pages/TempAccess'; // [NEW]
 import PublicPrescriptionRequest from './pages/PublicPrescriptionRequest'; // [NEW]
-import MonthlyView from './pages/MonthlyView';
+
 
 import FloatingChat from './components/organisms/FloatingChat';
 import { useAuth } from './context/AuthContext';
@@ -64,7 +64,18 @@ const ProtectedRoute = ({ children }) => {
 
 import { Toaster } from 'react-hot-toast';
 
+import { useEffect } from 'react';
+
 function App() {
+  useEffect(() => {
+    // Visual indicator for Development Mode
+    if (import.meta.env.DEV) {
+      document.body.classList.add('dev-mode');
+    } else {
+      document.body.classList.remove('dev-mode');
+    }
+  }, []);
+
   return (
     <>
       <Toaster position="top-right" containerStyle={{ zIndex: 9999 }} />
@@ -141,11 +152,7 @@ function App() {
             <Institutions />
           </ProtectedRoute>
         } />
-        <Route path="/monthly-view" element={
-          <ProtectedRoute>
-            <MonthlyView />
-          </ProtectedRoute>
-        } />
+
         <Route path="/reports" element={
           <ProtectedRoute>
             <Reports />

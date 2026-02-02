@@ -17,20 +17,24 @@ const Insurances = () => {
         setSearchTerm,
         setModalOpen,
         setFormData,
+        handlers,
+        t
+    } = useInsurancesController();
+
+    const {
         handleOpenCreate,
         handleOpenEdit,
         handleSubmit,
         handleDelete,
-        t
-    } = useInsurancesController();
+    } = handlers;
 
     return (
         <MainLayout
             title={t('insurances') || 'Obras Sociales'}
             subtitle={t('insurances_subtitle') || 'Gestione las obras sociales y prepagas del sistema.'}
         >
-            <div className="flex justify-between items-center mb-8">
-                <div className="action-bar__search flex-1 max-w-lg">
+            <section className="action-bar mb-8">
+                <div className="action-bar__search">
                     <div className="search-box__wrapper">
                         <span className="search-box__icon">🔍</span>
                         <input
@@ -45,12 +49,13 @@ const Insurances = () => {
                         )}
                     </div>
                 </div>
-                <div className="page-header__actions ml-4">
-                    <Button onClick={handleOpenCreate}>
-                        + {t('new_insurance') || 'Nueva Obra Social'}
+                <div className="action-bar__tools">
+                    <Button variant="ghost" onClick={handlers.fetchInsurances || (() => window.location.reload())}>🔄</Button>
+                    <Button variant="primary" onClick={handleOpenCreate}>
+                        ✨ {t('new_insurance') || 'Nueva Obra Social'}
                     </Button>
                 </div>
-            </div>
+            </section>
 
             <div className="tab-content animate-fadeIn">
                 <InsuranceList

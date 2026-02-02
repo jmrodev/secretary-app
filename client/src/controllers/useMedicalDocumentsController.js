@@ -8,6 +8,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
 import { isToday } from '../utils/time';
 import { usePermissions } from '../hooks/usePermissions';
+import { useMedicalDocumentsHandlers } from '../hooks/useMedicalDocumentsHandlers';
 
 export const useMedicalDocumentsController = () => {
     const { user } = useAuth();
@@ -118,196 +119,6 @@ export const useMedicalDocumentsController = () => {
         } catch (err) { console.error(err); }
     };
 
-    // --- Handlers ---
-    const handleCreateRequest = async (e) => {
-        if (e) e.preventDefault();
-        if (isSubmitting) return;
-
-        setIsSubmitting(true);
-        try {
-            await api.post('/medical/requests', {
-                type: reqType,
-                patient_id: selectedPatient,
-                doctor_id: user.role === 'doctor' ? (user.user_id || user.id) : selectedDoctor,
-                request_note: reqNote,
-                bonified,
-                status: sendToDoctor ? 'pending' : 'completed'
-            });
-            showMessage(sendToDoctor ? t('request_sent') : (t('request_saved_completed') || 'Guardado como Completado'), 'success');
-            setReqNote('');
-            setBonified(false);
-            setSendToDoctor(true);
-            fetchRequests();
-        } catch (err) {
-            const errorMsg = err.response?.data || err.message || t('request_failed');
-            showMessage(`${t('request_failed')}: ${errorMsg}`, 'error');
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    const handleUpdateStatus = async (id, status, note = '') => {
-        try {
-            await api.patch(`/medical/requests/${id}`, { status, doctor_note: note });
-            fetchRequests();
-            showMessage(t('status_updated'), 'success');
-        } catch (err) {
-            showMessage(t('update_failed'), 'error');
-        }
-    };
-
-    const handleFileUpload = async (e) => {
-        if (e) e.preventDefault();
-        if (!selectedFile || !filePatient) return;
-
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-        formData.append('patient_id', filePatient);
-        formData.append('description', fileDesc);
-
-        try {
-            await api.post('/medical/files', formData);
-            showMessage(t('file_uploaded'), 'success');
-            setFileDesc('');
-            setSelectedFile(null);
-            fetchFiles();
-        } catch (err) {
-            showMessage(t('upload_failed'), 'error');
-        }
-    };
-
-    const confirmFileDelete = async () => {
-        if (!fileToDelete) return;
-        try {
-            await api.delete(`/medical/files/${fileToDelete.id}`);
-            showMessage(t('file_deleted') || 'Archivo eliminado correctamente', 'success');
-            fetchFiles();
-        } catch (err) {
-            showMessage(`${t('error')}: ${err.response?.data?.message || err.message}`, 'error');
-        } finally {
-            setFileToDelete(null);
-        }
-    };
-
-    const handleUpdatePrescription = async () => {
-        if (!selectedPrescription) return;
-        try {
-            await api.put(`/medical/prescriptions/${selectedPrescription.id}`, editData);
-            showMessage(t('prescription_updated') || 'Receta actualizada', 'success');
-            setIsEditing(false);
-            fetchHistory();
-            setSelectedPrescription({ ...selectedPrescription, ...editData });
-        } catch (err) {
-            showMessage(`${t('error')}: ${err.response?.data || err.message}`, 'error');
-        }
-    };
-
-    const handleUpdateLicense = async () => {
-        if (!selectedLicense) return;
-        try {
-            await api.put(`/medical/licenses/${selectedLicense.id}`, licenseEditData);
-            showMessage(t('license_updated') || 'Licencia actualizada', 'success');
-            setIsEditing(false);
-            fetchHistory();
-            setSelectedLicense({ ...selectedLicense, ...licenseEditData });
-        } catch (err) {
-            showMessage(`${t('error')}: ${err.response?.data || err.message}`, 'error');
-        }
-    };
-
-    const handleUpdateRequest = async () => {
-        if (!selectedRequest) return;
-        try {
-            await api.put(`/medical/requests/${selectedRequest.id}`, requestEditData);
-            showMessage(t('request_updated') || 'Solicitud actualizada', 'success');
-            setIsEditing(false);
-            fetchRequests();
-            setSelectedRequest({ ...selectedRequest, ...requestEditData });
-        } catch (err) {
-            showMessage(`${t('error')}: ${err.response?.data || err.message}`, 'error');
-        }
-    };
-
-    const handleDeleteRequest = async (id, r) => {
-        if (user.role !== 'admin' && !canDeleteRequest && (r.status === 'completed' || r.status === 'rejected')) {
-            if (!isToday(r.completed_at || r.updated_at)) {
-                showMessage("Solo administradores pueden eliminar solicitudes finalizadas de días anteriores.", "warning");
-                return;
-            }
-        }
-
-        if (!await doubleConfirm(
-            t('confirm_delete') || '¿Seguro que desea eliminar?',
-            t('confirm_permanent_delete') || 'Esta acción eliminará el registro permanentemente. ¿Confirmar segunda vez?'
-        )) return;
-        try {
-            await api.delete(`/medical/requests/${id}`);
-            showMessage(t('deleted_success') || 'Eliminado correctamente', 'success');
-            fetchRequests();
-        } catch (err) {
-            showMessage(`${t('error')}: ${err.response?.data || err.message}`, 'error');
-        }
-    };
-
-    const handleDeletePrescription = async (id, item) => {
-        if (item && item._origin === 'request') {
-            return handleDeleteRequest(id, item);
-        }
-        if (!await confirm(t('confirm_delete_prescription') || '¿Seguro que desea eliminar esta receta?')) return;
-        try {
-            await api.delete(`/medical/prescriptions/${id}`);
-            showMessage(t('prescription_deleted') || 'Receta eliminada', 'success');
-            fetchHistory();
-        } catch (err) {
-            showMessage(`${t('error')}: ${err.response?.data || err.message}`, 'error');
-        }
-    };
-
-    const handleDeleteLicense = async (id, item) => {
-        if (item && item._origin === 'request') {
-            return handleDeleteRequest(id, item);
-        }
-        if (!await confirm(t('confirm_delete_license') || '¿Seguro que desea eliminar esta licencia?')) return;
-        try {
-            await api.delete(`/medical/licenses/${id}`);
-            showMessage(t('license_deleted') || 'Licencia eliminada', 'success');
-            fetchHistory();
-        } catch (err) {
-            showMessage(`${t('error')}: ${err.response?.data || err.message}`, 'error');
-        }
-    };
-
-    const handleExportJSON = async () => {
-        try {
-            const response = await api.get('/medical/prescriptions/export/json', { responseType: 'blob' });
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'prescriptions_backup.json');
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-            showMessage(t('export_success') || 'Exportación exitosa', 'success');
-        } catch (err) {
-            showMessage(t('export_failed') || 'Error al exportar', 'error');
-        }
-    };
-
-    const [printData, setPrintData] = useState([]);
-
-    // ... State ... (this line is just for context, don't include in replacement if not needed, I will replace the block)
-
-    const handlePrintPrescriptions = async () => {
-        try {
-            const res = await api.get('/medical/prescriptions/export/json?preview=true');
-            setPrintData(res.data);
-            setTimeout(() => {
-                window.print();
-            }, 500);
-        } catch (err) {
-            showMessage(t('print_error') || 'Error al preparar impresión', 'error');
-        }
-    };
 
     // --- Effects ---
 
@@ -330,46 +141,23 @@ export const useMedicalDocumentsController = () => {
         }
     }, [selectedDoctor]);
 
-    useEffect(() => {
-        if (location.state?.patientName) setSearchTerm(location.state.patientName);
-        if (location.state?.patientId) {
-            setSelectedPatient(location.state.patientId);
-            setFilePatient(location.state.patientId);
-        }
-        if (location.state?.tab) setActiveTab(location.state.tab);
-    }, [location.state]);
+    const [printData, setPrintData] = useState([]);
 
-    const handleEditItem = (item) => {
-        if (!item) return;
-
-        setIsEditing(true);
-
-        if (item._origin === 'prescription') {
-            setSelectedPrescription(item);
-            setEditData({
-                medications: item.medications || '',
-                instructions: item.instructions || ''
-            });
-        } else if (item._origin === 'license') {
-            setSelectedLicense(item);
-            setLicenseEditData({
-                start_date: item.start_date ? item.start_date.split('T')[0] : '',
-                days_duration: item.days_duration || '',
-                diagnosis: item.diagnosis || ''
-            });
-        } else if (item._origin === 'request') {
-            setSelectedRequest(item);
-            setRequestEditData({
-                request_note: item.request_note || '',
-                doctor_note: item.doctor_note || '',
-                debt_amount: item.debt_amount || 0,
-                payment_method: item.payment_method || 'cash',
-                bonified: item.payment_status === 'bonified'
-            });
-        }
-    };
+    // --- Handlers Hook ---
+    const hookHandlers = useMedicalDocumentsHandlers({
+        user, t, showMessage, confirm, doubleConfirm, canDeleteRequest,
+        reqType, selectedPatient, selectedDoctor, reqNote, bonified, sendToDoctor,
+        selectedFile, filePatient, fileDesc, fileToDelete, editData, licenseEditData,
+        requestEditData, selectedPrescription, selectedLicense, selectedRequest,
+        setReqNote, setBonified, setSendToDoctor, setFiles, setRequests, setPrescriptions,
+        setLicenses, setFileDesc, setSelectedFile, setFileToDelete, setIsSubmitting,
+        setIsEditing, setSelectedPrescription, setSelectedLicense, setSelectedRequest,
+        setEditData, setLicenseEditData, setRequestEditData, setActionModal, setPaymentModal,
+        fetchRequests, fetchFiles, fetchHistory,
+    });
 
     const handlers = {
+        ...hookHandlers,
         handleSearchChange: (val) => setSearchTerm(val),
         handleTabChange: (val) => setActiveTab(val),
         handleSubTabChange: (val) => setRequestsSubTab(val),
@@ -401,6 +189,8 @@ export const useMedicalDocumentsController = () => {
         openPaymentModal: (data) => setPaymentModal({ open: true, ...data }),
         closeDeleteFileModal: () => setFileToDelete(null),
         openDeleteFileModal: (f) => setFileToDelete(f),
+        handlePrintPrescriptions: () => hookHandlers.handlePrintPrescriptions(setPrintData),
+        filterItem
     };
 
     return {
@@ -424,10 +214,8 @@ export const useMedicalDocumentsController = () => {
         canDeleteRequest,
 
         // Handlers
-        filterItem, handleCreateRequest, handleUpdateStatus, handleFileUpload, confirmFileDelete,
-        handleUpdatePrescription, handleUpdateLicense, handleUpdateRequest, handleDeleteRequest,
-        handleDeletePrescription, handleEditItem, handleDeleteLicense, fetchRequests, fetchFiles, fetchHistory,
-        handleExportJSON, handlePrintPrescriptions, printData,
+        ...hookHandlers,
+        printData,
         handlers
     };
 };

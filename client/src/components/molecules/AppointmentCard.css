@@ -1,0 +1,41 @@
+/* AppointmentCard.css */
+
+.appointment-card {
+    /* Base styles imported or defined here if isolated, currently in index.css */
+    /* Only specific modifiers here for now to avoid duplication conflict */
+}
+
+/* Payment Status Modifiers (BEM) */
+.appt-status__amount--pending {
+    color: var(--amber-500);
+    /* Orange/Amber */
+}
+
+.appt-status__amount--paid {
+    color: var(--emerald-600);
+    /* Green */
+}
+
+.appt-status__amount--debt {
+    color: var(--rose-600);
+    /* Red */
+}
+
+.appt-status__text {
+    font-weight: 800;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.appt-status__icon-group {
+    font-size: 9px;
+    opacity: 0.7;
+}
+
+.appt-status__col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}

@@ -12,20 +12,6 @@ const NavTabs = ({ activeTab, setActiveTab, userRole }) => {
                 >
                     📅 Agenda
                 </TabButton>
-                <TabButton
-                    isActive={activeTab === 'upcoming'}
-                    onClick={() => setActiveTab('upcoming')}
-                    variant="pill"
-                >
-                    📋 Próximos Turnos
-                </TabButton>
-                <TabButton
-                    isActive={activeTab === 'monthly'}
-                    onClick={() => setActiveTab('monthly')}
-                    variant="pill"
-                >
-                    🗓️ Vista Mensual
-                </TabButton>
                 {(userRole === 'admin' || userRole === 'secretary') && (
                     <TabButton
                         isActive={activeTab === 'holidays'}

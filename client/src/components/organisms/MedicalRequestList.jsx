@@ -18,7 +18,7 @@ const MedicalRequestList = ({
     const { user } = useAuth();
     const { t } = useLanguage();
 
-    const filteredRequests = requests.filter(filterItem);
+    const filteredRequests = (requests || []).filter(filterItem || (() => true));
 
     if (filteredRequests.length === 0) {
         return (

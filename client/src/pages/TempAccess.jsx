@@ -2,6 +2,18 @@ import React from 'react';
 import PatientForm from '../components/organisms/PatientForm';
 import StatusDisplay from '../components/molecules/StatusDisplay';
 import { useTempAccessController } from '../controllers/useTempAccessController';
+import { usePatientFormController } from '../controllers/usePatientFormController';
+
+const TempAccessFormWrapper = ({ initialData, insurances, onSubmit, isEdit }) => {
+    const controller = usePatientFormController({
+        initialValues: initialData,
+        providedInsurances: insurances,
+        isEdit: isEdit,
+        onUpdate: onSubmit // Redirect update to the page handler
+    });
+
+    return <PatientForm controller={controller} isAdmin={false} />;
+};
 
 /**
  * TempAccess Page Component.
@@ -59,12 +71,11 @@ const TempAccess = () => {
                     </header>
 
                     <section className="temp-access__form-section">
-                        <PatientForm
-                            initialValues={initialData}
+                        <TempAccessFormWrapper
+                            initialData={initialData}
+                            insurances={insurances}
                             onSubmit={handleSubmit}
                             isEdit={!isNew}
-                            isAdmin={false}
-                            insurances={insurances}
                         />
                     </section>
                 </article>

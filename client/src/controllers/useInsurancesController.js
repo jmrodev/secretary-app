@@ -111,11 +111,12 @@ export const useInsurancesController = () => {
         setModalOpen,
         setFormData,
 
-        // Actions
-        handleOpenCreate,
-        handleOpenEdit,
-        handleSubmit,
-        handleDelete,
-        t
+        // Handlers
+        handlers: {
+            handleOpenCreate,
+            handleOpenEdit,
+            handleSubmit,
+            handleDelete,
+        }
     };
 };

@@ -116,13 +116,14 @@ export const useInstitutionsController = () => {
         // Setters
         setActiveTab,
 
-        // Actions
-        fetchInstitutions,
-        handleOpenFormModal,
-        handleCloseFormModal,
-        handleFormSubmit,
-        handleDelete,
-        handleInputChange,
-        t
+        // Handlers
+        handlers: {
+            fetchInstitutions,
+            handleOpenFormModal,
+            handleCloseFormModal,
+            handleFormSubmit,
+            handleDelete,
+            handleInputChange,
+        }
     };
 };

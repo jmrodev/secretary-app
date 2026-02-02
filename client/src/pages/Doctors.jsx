@@ -2,6 +2,7 @@
 import React from 'react';
 import { useDoctorsPageController } from '../controllers/useDoctorsPageController';
 import Card from '../components/atoms/Card';
+import Button from '../components/atoms/Button';
 import MainLayout from '../components/templates/MainLayout';
 import DoctorCard from '../components/molecules/DoctorCard';
 import DoctorEditModal from '../components/organisms/DoctorEditModal';
@@ -38,6 +39,12 @@ const Doctors = () => {
                             onChange={e => setSearchTerm(e.target.value)}
                         />
                     </div>
+                </div>
+                <div className="action-bar__tools">
+                    <Button variant="ghost" onClick={handlers.fetchDoctors}>🔄</Button>
+                    <Button variant="primary" onClick={() => handlers.onEditDoctor(null)}>
+                        ✨ {t('new') || 'Nuevo'}
+                    </Button>
                 </div>
             </section>
 

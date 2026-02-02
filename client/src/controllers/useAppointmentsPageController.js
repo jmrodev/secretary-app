@@ -139,7 +139,9 @@ export const useAppointmentsPageController = () => {
 
     const rescheduleAppt = location.state?.rescheduleAppt;
     const syncAppt = location.state?.syncAppt;
-    const exitRescheduleMode = () => navigate(location.pathname, { replace: true, state: {} });
+    const exitRescheduleMode = useCallback(() => {
+        navigate(location.pathname, { replace: true, state: {} });
+    }, [navigate, location.pathname]);
 
     // We can't move this effect to handlers easily as it runs on mount/update logic logic
     useEffect(() => {
@@ -178,7 +180,7 @@ export const useAppointmentsPageController = () => {
         user, t, showMessage, confirm, navigate,
 
         selectedDate, setSelectedDate,
-        viewDoctorId, selectedDoctor, setSelectedDoctor,
+        viewDoctorId, setViewDoctorId, selectedDoctor, setSelectedDoctor,
         rescheduleAppt, exitRescheduleMode,
         holidays, doctors, settings,
         appointments, filteredAppointments,
@@ -190,7 +192,7 @@ export const useAppointmentsPageController = () => {
         setActionModal, setPrescribeModal, setHistoryModal, setPaymentModal, setAuthModalOpen,
         setRetryAction, setShowNextSlotModal, booking, // pass booking object if needed for whatsapp modal but setter is simpler
         setWhatsappModal: booking.setWhatsappModal, // Booking owns whatsapp modal state
-        setEditPatientModalOpen,
+        setEditPatientModalOpen, setSelectedPatient,
 
         updateStatus, updateAppointment, fetchAppointments, savePrescription,
         deleteAppointment, rescheduleAppointment, bookAppointment,
@@ -261,5 +263,6 @@ export const useAppointmentsPageController = () => {
 
         // Legacy/Direct State Access (for backward compat if needed, but prefer handlers)
         rescheduleAppt,
+        exitRescheduleMode // [FIX] Expose this directly
     };
 };
