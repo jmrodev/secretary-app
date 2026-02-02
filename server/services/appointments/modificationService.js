@@ -47,25 +47,56 @@ class ModificationService {
 
             await appointmentRepository.update(id, { status, cancellation_reason: reason || null }, conn);
 
+            // 1. Logic for Completing Appointment: Calculate next suggested visit
             if (status === 'completed') {
-                // ... visit interval logic (omitted for brevity but functional)
+                const intervalRows = await conn.query(`
+                    SELECT 
+                        COALESCE(p.visit_interval_days, d.default_visit_interval_days) as interval_days,
+                        p.id as patient_id, d.id as doctor_id, a.appointment_date
+                    FROM appointments a
+                    JOIN patients p ON a.patient_id = p.id
+                    JOIN doctors d ON a.doctor_id = d.id
+                    WHERE a.id = ?
+                `, [id]);
+
+                if (intervalRows.length > 0) {
+                    const intervals = intervalRows[0];
+                    if (intervals.interval_days > 0) {
+                        const nextDate = new Date(appt.appointment_date);
+                        nextDate.setDate(nextDate.getDate() + Number(intervals.interval_days));
+                        await conn.query("UPDATE patients SET next_suggested_visit_date = ? WHERE id = ?", [nextDate.toISOString().split('T')[0], intervals.patient_id]);
+                    }
+                }
             }
 
+            // 2. Logic for Non-Attendance/Cancellation
             if (['cancelled', 'absent', 'suspended'].includes(status)) {
                 await helper.freeSlot(conn, appt.doctor_id, appt.appointment_date);
-                if (status === 'absent') await conn.query("UPDATE patients SET behavior_rating = GREATEST(0, behavior_rating - 1) WHERE id = ?", [appt.patient_id]);
-                if (status === 'cancelled') await conn.query("DELETE FROM transactions WHERE appointment_id = ? AND status = 'pending'", [id]);
+
+                if (status === 'absent') {
+                    // Lower patient reputation
+                    await conn.query("UPDATE patients SET behavior_rating = GREATEST(0, behavior_rating - 1) WHERE id = ?", [appt.patient_id]);
+                }
+
+                if (status === 'cancelled') {
+                    // Delete pending transactions to clear debt
+                    await conn.query("DELETE FROM transactions WHERE appointment_id = ? AND status = 'pending'", [id]);
+                }
             }
 
             await conn.commit();
 
+            // 3. Google Calendar Sync
             if (appt.google_event_id) {
                 if (status === 'cancelled') {
                     await googleSyncService.syncDelete(id, appt.doctor_id, appt.google_event_id, userId);
                 } else {
                     const [patient] = await conn.query("SELECT * FROM patients WHERE id = ?", [appt.patient_id]);
-                    const description = googleSyncService.buildDescription(appt, patient, { status });
-                    await googleSyncService.syncUpdate(id, appt.doctor_id, appt.google_event_id, { status, description }, userId);
+                    const eventData = {
+                        status: status,
+                        description: googleSyncService.buildDescription(appt, patient, { status })
+                    };
+                    await googleSyncService.syncUpdate(id, appt.doctor_id, appt.google_event_id, eventData, userId);
                 }
             }
             return true;
