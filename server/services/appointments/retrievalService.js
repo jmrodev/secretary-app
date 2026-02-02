@@ -26,15 +26,15 @@ class RetrievalService {
 
         let query = `
             SELECT 
-                a.id, a.appointment_date, a.reason, a.status, a.payment_status,
+                a.id, a.appointment_date, a.reason, a.status, a.payment_status, a.type,
                 p.full_name as patient_name, d.full_name as doctor_name,
                 (SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE appointment_id = a.id AND type = 'income_patient' AND status = 'paid') as paid_amount,
+                (SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE appointment_id = a.id AND type = 'income_patient' AND status = 'pending') as debt_amount,
                 (SELECT GROUP_CONCAT(method) FROM transactions WHERE appointment_id = a.id AND type = 'income_patient' AND status = 'paid') as methods
             FROM appointments a
-            JOIN patients p ON a.patient_id = p.id
+            LEFT JOIN patients p ON a.patient_id = p.id
             JOIN doctors d ON a.doctor_id = d.id
             WHERE MONTH(a.appointment_date) = ? AND YEAR(a.appointment_date) = ?
-            AND a.status NOT IN ('cancelled', 'rescheduled')
         `;
         const params = [targetMonth, targetYear];
         if (doctorId) {
@@ -47,18 +47,37 @@ class RetrievalService {
 
         const report = {};
         appointments.forEach(a => {
-            const dateStr = new Date(a.appointment_date).toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
-            if (!report[dateStr]) report[dateStr] = { fecha: dateStr, turnos: [], total_dia: 0 };
+            const dateObj = new Date(a.appointment_date);
+            const dateStr = dateObj.toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
 
-            report[dateStr].turnos.push({
+            if (!report[dateStr]) {
+                report[dateStr] = {
+                    date: dateStr,
+                    appointments: [],
+                    total_dia: 0
+                };
+            }
+
+            let finalName = a.patient_name || (a.reason ? `(Sin Paciente) ${a.reason}` : 'Desconocido');
+
+            const typeLabel = a.type === 'virtual' ? 'Virtual' : 'Presencial';
+            let detail = `Consulta ${typeLabel}`;
+            if (a.reason && a.reason.toLowerCase() !== 'consulta' && a.reason !== detail) {
+                detail = a.reason;
+            }
+
+            report[dateStr].appointments.push({
                 id: a.id,
-                hora: new Date(a.appointment_date).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Argentina/Buenos_Aires' }),
-                paciente: a.patient_name,
-                motivo: a.reason,
-                estado: a.status,
+                hora: dateObj.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Argentina/Buenos_Aires' }),
+                nombre: finalName || 'Desconocido',
+                info: detail,
+                asistencia: a.status,
                 pago: a.payment_status,
-                monto: a.paid_amount,
-                metodos: a.methods
+                monto_pagado: a.paid_amount,
+                debt_amount: a.debt_amount,
+                metodos_pago: a.methods || '',
+                dia: dateStr,
+                tipo_atencion: a.type
             });
             report[dateStr].total_dia += Number(a.paid_amount);
         });
