@@ -1,5 +1,5 @@
-const appointmentRepository = require('../../repositories/appointmentRepository');
-const { pool } = require('../../db');
+const appointmentRepository = require('../../../repositories/appointmentRepository');
+const { pool } = require('../../../db');
 
 class ScheduleProvider {
     async getDoctorSchedule(doctorId, dayOfWeek, conn) {
