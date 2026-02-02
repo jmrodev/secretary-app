@@ -78,6 +78,15 @@ class BookingService {
             "INSERT INTO overwritten_reservations (doctor_id, slot_date, patient_id, patient_name) VALUES (?, ?, ?, ?)",
             [oldAppt.doctor_id, oldAppt.appointment_date, oldAppt.patient_id, oldPatientName]
         );
+        if (oldAppt.google_event_id) {
+            try {
+                const googleSyncService = require('./googleSyncService');
+                await googleSyncService.syncDelete(oldAppt.id, oldAppt.doctor_id, oldAppt.google_event_id, userId);
+            } catch (syncErr) {
+                console.warn(`[handleOverwrite] Google Sync deletion failed: ${syncErr.message}`);
+            }
+        }
+
         await appointmentRepository.delete(oldAppt.id, conn);
 
         // Note: The sync deletion could also be an event, but usually overwrite is synchronous enough

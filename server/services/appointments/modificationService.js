@@ -126,8 +126,51 @@ class ModificationService {
             await appointmentRepository.update(id, updates, conn);
             await conn.commit();
 
-            // Sync logic using buildDescription...
+            // 3. Google Calendar Sync
+            if (appt.google_event_id) {
+                const updatedAppt = { ...appt, ...updates };
+                const [patient] = await conn.query("SELECT * FROM patients WHERE id = ?", [appt.patient_id]);
+
+                const eventData = {
+                    summary: patient.full_name,
+                    description: googleSyncService.buildDescription(updatedAppt, patient),
+                };
+
+                // If date changed, update start/end
+                if (updates.appointment_date) {
+                    const startTime = new Date(updates.appointment_date);
+                    const endTime = new Date(startTime.getTime() + (updates.duration || appt.duration || 30) * 60000);
+                    eventData.start = { dateTime: startTime.toISOString(), timeZone: 'America/Argentina/Buenos_Aires' };
+                    eventData.end = { dateTime: endTime.toISOString(), timeZone: 'America/Argentina/Buenos_Aires' };
+                }
+
+                await googleSyncService.syncUpdate(id, appt.doctor_id, appt.google_event_id, eventData, userId);
+            }
             return true;
+        } catch (err) {
+            await conn.rollback();
+            throw err;
+        } finally {
+            conn.release();
+        }
+    }
+    async bulkUpdateType(dayOfWeek, type, doctorId, fromDate, toDate, userId, userRole) {
+        const conn = await pool.getConnection();
+        try {
+            await conn.beginTransaction();
+            if (userRole === 'doctor') {
+                const docRows = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [userId]);
+                if (!docRows || docRows.length === 0 || docRows[0].id != doctorId) throw new Error("Unauthorized");
+            }
+            const mysqlDay = Number(dayOfWeek) + 1;
+            let query = "UPDATE appointments SET type = ? WHERE DAYOFWEEK(appointment_date) = ?";
+            let params = [type, mysqlDay];
+            if (doctorId) { query += " AND doctor_id = ?"; params.push(doctorId); }
+            if (fromDate) { query += " AND appointment_date >= ?"; params.push(fromDate); }
+            if (toDate) { query += " AND appointment_date <= ?"; params.push(toDate); }
+            const result = await conn.query(query, params);
+            await conn.commit();
+            return result.affectedRows;
         } catch (err) {
             await conn.rollback();
             throw err;

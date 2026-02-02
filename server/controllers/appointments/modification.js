@@ -57,6 +57,12 @@ exports.updateType = async (req, res) => {
 };
 
 exports.bulkUpdateType = async (req, res) => {
-    // This could also be moved to a service, but for now keeping it in controller or demonstrating the pattern
-    res.status(501).send("Not implemented in refactored version yet");
+    try {
+        const { dayOfWeek, type, doctorId, fromDate, toDate } = req.body;
+        const affectedRows = await modificationService.bulkUpdateType(dayOfWeek, type, doctorId, fromDate, toDate, req.user.user_id, req.user.role);
+        res.json({ message: "Bulk update successful", affectedRows: Number(affectedRows) });
+    } catch (err) {
+        console.error(err);
+        res.status(400).send(err.message || "Server Error");
+    }
 };
