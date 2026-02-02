@@ -227,7 +227,9 @@ export const useAppointmentBooking = (doctors) => {
             if (onSuccess) onSuccess();
         } catch (err) {
             console.error(err);
-            showMessage(err.response?.data?.error || t('failed_book'), 'error');
+            const errorMsg = err.response?.data?.error ||
+                (typeof err.response?.data === 'string' ? err.response.data : t('failed_book'));
+            showMessage(errorMsg, 'error');
         } finally {
             setIsSubmitting(false);
         }

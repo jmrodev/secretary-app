@@ -1,5 +1,8 @@
 
 import { useCallback } from 'react';
+import { useAppointmentActions } from './useAppointmentActions';
+import { useAppointmentUIHandlers } from './useAppointmentUIHandlers';
+import { useHolidayHandlers } from './useHolidayHandlers';
 import api from '../api/axios';
 
 export const useAppointmentsHandlers = ({
@@ -13,7 +16,9 @@ export const useAppointmentsHandlers = ({
     // Data/State
     selectedDate,
     viewDoctorId,
+    setViewDoctorId,
     selectedDoctor,
+    setSelectedDoctor,
     rescheduleAppt,
     holidays,
     appointments,
@@ -24,7 +29,6 @@ export const useAppointmentsHandlers = ({
     // Setters
     setSelectedDate,
     setDate,
-    setSelectedDoctor,
     setShowForm,
     setBonified,
     setSelectedInstitution,
@@ -38,6 +42,9 @@ export const useAppointmentsHandlers = ({
     setShowNextSlotModal,
     setWhatsappModal,
     setEditPatientModalOpen,
+    setPaymentModal,
+    setHistoryModal,
+    setSelectedPatient,
     exitRescheduleMode,
 
     // Actions (from other hooks)
@@ -52,10 +59,65 @@ export const useAppointmentsHandlers = ({
     addHoliday: addHolidayAction,
     deleteHoliday: deleteHolidayAction,
     selectedPatientData,
-    copyToClipboard, // Dependency injected
+    copyToClipboard,
     booking,
     setSlotHistory
 }) => {
+
+    // Use specialized hooks for better separation of concerns
+    const appointmentActions = useAppointmentActions({
+        user,
+        t,
+        showMessage,
+        confirm,
+        navigate,
+        updateStatus,
+        updateAppointment,
+        deleteAppointment,
+        rescheduleAppointment,
+        bookAppointment,
+        savePrescription,
+        fetchAppointments
+    });
+
+    const uiHandlers = useAppointmentUIHandlers({
+        selectedDate,
+        setSelectedDate,
+        setDate,
+        setSelectedDoctor,
+        setShowForm,
+        setBonified,
+        setSelectedInstitution,
+        setReason,
+        setSyncReferenceInfo,
+        setSyncingZombieId,
+        setActionModal,
+        setPrescribeModal,
+        setAuthModalOpen,
+        setRetryAction,
+        setShowNextSlotModal,
+        setWhatsappModal,
+        setEditPatientModalOpen,
+        setPaymentModal,
+        setHistoryModal,
+        exitRescheduleMode,
+        viewDoctorId,
+        rescheduleAppt,
+        holidays,
+        user,
+        confirm,
+        showMessage,
+        t,
+        doctors
+    });
+
+    const holidayHandlers = useHolidayHandlers({
+        addHoliday: addHolidayAction,
+        deleteHoliday: deleteHolidayAction,
+        confirm,
+        showMessage,
+        t
+    });
 
     const handleDateSelect = useCallback((date) => setSelectedDate(date), [setSelectedDate]);
 
@@ -69,7 +131,7 @@ export const useAppointmentsHandlers = ({
             const localISOTime = (new Date(newDate - offset)).toISOString().slice(0, 16);
 
             if (await confirm(t('confirm_reschedule_to').replace('{date}', new Date(localISOTime).toLocaleString()))) {
-                handleReschedule(rescheduleAppt.id, localISOTime);
+                appointmentActions.handleReschedule(rescheduleAppt.id, localISOTime);
                 exitRescheduleMode();
             }
             return;
@@ -108,14 +170,13 @@ export const useAppointmentsHandlers = ({
     };
 
     const handleUpdateStatus = async (id, status) => {
-        await updateStatus(id, status, (id, newStatus) => {
-            fetchAppointments();
-            setActionModal(prev => {
-                if (prev.open && prev.appt && prev.appt.id === id) {
-                    return { ...prev, appt: { ...prev.appt, status: newStatus } };
-                }
-                return prev;
-            });
+        await appointmentActions.handleStatusUpdate(id, status);
+        fetchAppointments();
+        setActionModal(prev => {
+            if (prev.open && prev.appt && prev.appt.id === id) {
+                return { ...prev, appt: { ...prev.appt, status: status } };
+            }
+            return prev;
         });
     };
 
@@ -131,13 +192,17 @@ export const useAppointmentsHandlers = ({
     };
 
     const handleSavePrescription = async (prescribeModal) => {
-        await savePrescription({
-            apptId: prescribeModal.apptId,
-            medications: prescribeModal.medications,
-            instructions: prescribeModal.instructions
-        }, () => {
+        try {
+            await savePrescription({
+                apptId: prescribeModal.apptId,
+                medications: prescribeModal.medications,
+                instructions: prescribeModal.instructions
+            });
             setPrescribeModal({ open: false, apptId: null, patientName: '', medications: '', instructions: '' });
-        });
+            showMessage(t('prescription_saved') || 'Receta guardada', 'success');
+        } catch (error) {
+            showMessage(t('prescription_error') || 'Error al guardar receta', 'error');
+        }
     };
 
     const handleSelectMedication = (med) => {
@@ -242,14 +307,14 @@ export const useAppointmentsHandlers = ({
 
             message = settings.next_free_slot_template
                 .replace(/{[\s]*doctor_name[\s]*}/gi, doctorName)
-                .replace(/{[\s]*date[\s]*}/gi, `${dayName} ${dateStr}`)
+                .replace(/{[\s]*date[\s]*}/gi, slot.formattedDate ? `${dayName} ${slot.formattedDate}` : `${dayName} ${dateStr}`)
                 .replace(/{[\s]*time[\s]*}/gi, timeStr)
                 .replace(/{[\s]*appointment_type[\s]*}/gi, isVirtualSlot ? 'VIRTUAL' : 'PRESENCIAL')
                 .replace(/{[\s]*appointment_location[\s]*}/gi, address)
                 .replace(/{[\s]*price[\s]*}/gi, formatPrice(slotPrice))
                 .replace(/{[\s]*secretary_name[\s]*}/gi, user.name || 'Secretaría');
         } else {
-            message = `Hola, tenemos un turno disponible el ${dayName} ${dateStr} a las ${timeStr} con el/la Dr/a. ${doctorName}. ¿Le gustaría reservarlo?`;
+            message = `Hola, tenemos un turno disponible el ${slot.formattedDate ? `${dayName} ${slot.formattedDate}` : `${dayName} ${dateStr}`} a las ${timeStr} con el/la Dr/a. ${doctorName}. ¿Le gustaría reservarlo?`;
         }
 
         // 2. Determine target phone
@@ -352,49 +417,10 @@ export const useAppointmentsHandlers = ({
         return await addHolidayAction(date, description);
     };
 
-    const handleDeleteHoliday = async (id) => {
-        if (!await confirm(t('confirm_delete_holiday') || "¿Eliminar este feriado?")) return;
-        await deleteHolidayAction(id);
-    };
-
-    const handleOpenPayment = (appt) => {
-        setPaymentModal({
-            open: true,
-            initialData: {
-                type: 'income_patient',
-                amount: appt.cost || 0,
-                patientId: appt.patient_id,
-                patientName: appt.patient_name,
-                patientDni: appt.patient_dni,
-                patientUserId: appt.patient_user_id,
-                doctorId: appt.doctor_id,
-                description: `Payment for appointment on ${new Date(appt.appointment_date).toLocaleDateString()}`,
-                apptId: appt.id
-            },
-            apptId: appt.id
-        });
-        setActionModal({ open: false, appt: null });
-    };
-
-    const handleOpenHistory = (appt) => {
-        setHistoryModal({
-            open: true,
-            patientId: appt.patient_id,
-            patientName: appt.patient_name
-        });
-        setActionModal({ open: false, appt: null });
-    };
-
-    const handleOpenPrescribe = (appt) => {
-        setPrescribeModal({
-            open: true,
-            apptId: appt.id,
-            patientName: appt.patient_name,
-            medications: '',
-            instructions: ''
-        });
-        setActionModal({ open: false, appt: null });
-    };
+    const handleOpenPayment = uiHandlers.handleOpenPayment;
+    const handleOpenHistory = uiHandlers.handleOpenHistory;
+    const handleOpenPrescribe = uiHandlers.handleOpenPrescribe;
+    const handleDeleteHoliday = holidayHandlers.handleDeleteHoliday;
 
     const handleOpenReschedule = (appt) => {
         navigate('/appointments', { state: { rescheduleAppt: appt } });

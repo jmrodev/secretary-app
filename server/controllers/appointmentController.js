@@ -58,6 +58,7 @@ exports.createAppointment = async (req, res) => {
 
             if (oldAppt.status !== 'reserved' && oldAppt.status !== 'cancelled' && oldAppt.status !== 'absent') {
                 // It's a real appointment (confirmed, completed, etc) -> BLOCK
+                console.warn(`[CreateAppointment] Blocked double booking on ${formattedDate} for Dr ${doctor_id}. Existing Appt ID: ${oldAppt.id}, Status: ${oldAppt.status}`);
                 return res.status(400).send("Ya existe un turno confirmado en este horario.");
             }
 
@@ -231,6 +232,7 @@ exports.getAppointments = async (req, res) => {
             (SELECT COALESCE(SUM(t.amount), 0) FROM transactions t WHERE t.appointment_id = a.id AND t.status = 'pending') as pending_amount,
             (SELECT COUNT(*) FROM appointments a2 WHERE a2.patient_id = p.id) as total_appointments,
             (SELECT COUNT(*) FROM appointments a2 WHERE a2.patient_id = p.id AND (a2.status = 'absent' OR (a2.status = 'cancelled' AND COALESCE(a2.cancellation_reason, '') NOT LIKE '%error%'))) as missed_appointments,
+            (SELECT GROUP_CONCAT(DISTINCT t.method) FROM transactions t WHERE t.appointment_id = a.id AND t.status = 'paid') as payment_methods,
             d.full_name as doctor_name, p.phone as patient_phone 
             FROM appointments a 
             LEFT JOIN patients p ON a.patient_id = p.id 
@@ -812,7 +814,7 @@ exports.updatePaymentStatus = async (req, res) => {
         res.json({ message: "Payment status updated" });
 
         // --- Google Calendar Sync ---
-        const appt = await conn.query("SELECT * FROM appointments WHERE id = ?", [id]);
+        const [appt] = await conn.query("SELECT * FROM appointments WHERE id = ?", [id]);
         if (appt && appt.google_event_id) {
             const patData = await conn.query("SELECT full_name, dni, phone, email FROM patients WHERE id = ?", [appt.patient_id]);
             const pName = patData.length > 0 ? patData[0].full_name : appt.patient_id;
@@ -902,14 +904,16 @@ exports.updateType = async (req, res) => {
 exports.getNextFreeSlot = async (req, res) => {
     let conn;
     try {
-        const { doctor_id, start_date, direction = 'next' } = req.query;
+        const { doctor_id, start_date, direction = 'next', include_out_of_hours = 'false' } = req.query;
         if (!doctor_id) return res.status(400).send("Doctor ID is required");
 
         conn = await pool.getConnection();
 
         // 1. Get Doctor Config
-        const doc = await conn.query("SELECT appointment_duration, force_hour_alignment FROM doctors WHERE id = ?", [doctor_id]);
+        const doc = await conn.query("SELECT appointment_duration, overturn_start_time, overturn_end_time, force_hour_alignment FROM doctors WHERE id = ?", [doctor_id]);
         const duration = (doc && doc.length > 0 && doc[0].appointment_duration) ? doc[0].appointment_duration : 60;
+        const overturnStart = (doc && doc.length > 0 && doc[0].overturn_start_time) ? doc[0].overturn_start_time : '08:00:00';
+        const overturnEnd = (doc && doc.length > 0 && doc[0].overturn_end_time) ? doc[0].overturn_end_time : '21:00:00';
         const forceAlignment = (doc && doc.length > 0 && doc[0].force_hour_alignment) === 1;
 
         // 2. Setup Loop
@@ -958,10 +962,13 @@ exports.getNextFreeSlot = async (req, res) => {
 
         // 4. Fetch Appointments (range)
         const existingApptsAll = await conn.query(
-            "SELECT appointment_date FROM appointments WHERE doctor_id = ? AND appointment_date >= ? AND appointment_date <= ? AND status NOT IN ('cancelled', 'rescheduled')",
+            "SELECT appointment_date, duration FROM appointments WHERE doctor_id = ? AND appointment_date >= ? AND appointment_date <= ? AND status NOT IN ('cancelled', 'rescheduled')",
             [doctor_id, tMin, tMax]
         );
-        const apptTimes = existingApptsAll.map(a => new Date(a.appointment_date).getTime());
+        const apptIntervals = existingApptsAll.map(a => ({
+            start: new Date(a.appointment_date).getTime(),
+            end: new Date(a.appointment_date).getTime() + (a.duration || duration) * 60000
+        }));
 
         // --- End Optimization ---
 
@@ -981,13 +988,54 @@ exports.getNextFreeSlot = async (req, res) => {
                 continue;
             }
 
+            // 3. Fetch Schedules (All for doctor)
+            const schedulesAll = await conn.query("SELECT * FROM doctor_schedules WHERE doctor_id = ?", [doctor_id]);
+
             // Get Schedule from Cache
-            let dayBlocks = schedulesAll
+            const standardBlocks = schedulesAll
                 .filter(s => s.day_of_week === dayOfWeek)
                 .sort((a, b) => direction === 'next'
                     ? a.start_time.localeCompare(b.start_time)
                     : b.start_time.localeCompare(a.start_time)
                 );
+
+            let dayBlocks = [];
+            if (include_out_of_hours === 'true') {
+                // Merge overturn range with regular blocks
+                let cursor = (direction === 'next') ? overturnStart : overturnEnd;
+                const sortedStandard = [...standardBlocks].sort((a, b) => a.start_time.localeCompare(b.start_time));
+
+                if (direction === 'next') {
+                    for (const sb of sortedStandard) {
+                        if (sb.start_time > cursor) {
+                            dayBlocks.push({ start_time: cursor, end_time: sb.start_time, is_break: 0, is_out_of_hours_gap: true });
+                        }
+                        dayBlocks.push(sb);
+                        cursor = (sb.end_time > cursor) ? sb.end_time : cursor;
+                    }
+                    if (overturnEnd > cursor) {
+                        dayBlocks.push({ start_time: cursor, end_time: overturnEnd, is_break: 0, is_out_of_hours_gap: true });
+                    }
+                } else {
+                    // Reverse search logic for 'prev'
+                    const revSorted = [...sortedStandard].reverse();
+                    let revCursor = overturnEnd;
+                    for (const sb of revSorted) {
+                        if (sb.end_time < revCursor) {
+                            dayBlocks.push({ start_time: sb.end_time, end_time: revCursor, is_break: 0, is_out_of_hours_gap: true });
+                        }
+                        dayBlocks.push(sb);
+                        revCursor = (sb.start_time < revCursor) ? sb.start_time : revCursor;
+                    }
+                    if (overturnStart < revCursor) {
+                        dayBlocks.push({ start_time: overturnStart, end_time: revCursor, is_break: 0, is_out_of_hours_gap: true });
+                    }
+                    // Sort dayBlocks desc for 'prev'
+                    dayBlocks.sort((a, b) => b.start_time.localeCompare(a.start_time));
+                }
+            } else {
+                dayBlocks = standardBlocks;
+            }
 
             if (dayBlocks.length === 0) {
                 currentDay.setDate(currentDay.getDate() + (direction === 'next' ? 1 : -1));
@@ -1032,7 +1080,7 @@ exports.getNextFreeSlot = async (req, res) => {
                         if (slotEndMs > blockEnd.getTime()) break;
 
                         const isBusy =
-                            apptTimes.some(appStart => (slotStartMs < (appStart + duration * 60000) && slotEndMs > appStart)) ||
+                            apptIntervals.some(app => (slotStartMs < app.end && slotEndMs > app.start)) ||
                             googleBusyAll.some(b => {
                                 const bStart = new Date(b.start).getTime();
                                 const bEnd = new Date(b.end).getTime();
@@ -1055,7 +1103,7 @@ exports.getNextFreeSlot = async (req, res) => {
                         const slotEndMs = slotStartMs + duration * 60000;
 
                         const isBusy =
-                            apptTimes.some(appStart => (slotStartMs < (appStart + duration * 60000) && slotEndMs > appStart)) ||
+                            apptIntervals.some(app => (slotStartMs < app.end && slotEndMs > app.start)) ||
                             googleBusyAll.some(b => {
                                 const bStart = new Date(b.start).getTime();
                                 const bEnd = new Date(b.end).getTime();
@@ -1161,10 +1209,13 @@ exports.getFreeSlotsBatch = async (req, res) => {
 
         // 4. Fetch Appointments (range)
         const existingApptsAll = await conn.query(
-            "SELECT appointment_date FROM appointments WHERE doctor_id = ? AND appointment_date >= ? AND appointment_date <= ? AND status NOT IN ('cancelled', 'rescheduled')",
+            "SELECT appointment_date, duration FROM appointments WHERE doctor_id = ? AND appointment_date >= ? AND appointment_date <= ? AND status NOT IN ('cancelled')",
             [doctor_id, tMin, tMax]
         );
-        const apptTimes = existingApptsAll.map(a => new Date(a.appointment_date).getTime());
+        const apptIntervals = existingApptsAll.map(a => ({
+            start: new Date(a.appointment_date).getTime(),
+            end: new Date(a.appointment_date).getTime() + (a.duration || duration) * 60000
+        }));
 
         const results = [];
 
@@ -1185,18 +1236,35 @@ exports.getFreeSlotsBatch = async (req, res) => {
             }
 
             // Get Schedule from Cache
+            const standardBlocks = schedulesAll
+                .filter(s => s.day_of_week === dayOfWeek)
+                .sort((a, b) => a.start_time.localeCompare(b.start_time));
+
             let dayBlocks = [];
             if (req.query.include_out_of_hours === 'true') {
-                // Synthetic block using doctor's overturn settings
-                dayBlocks = [{
-                    start_time: overturnStart,
-                    end_time: overturnEnd,
-                    is_break: 0
-                }];
+                let cursor = overturnStart;
+                for (const sb of standardBlocks) {
+                    if (sb.start_time > cursor) {
+                        dayBlocks.push({
+                            start_time: cursor,
+                            end_time: sb.start_time,
+                            is_break: 0,
+                            is_out_of_hours_gap: true
+                        });
+                    }
+                    dayBlocks.push(sb);
+                    cursor = (sb.end_time > cursor) ? sb.end_time : cursor;
+                }
+                if (overturnEnd > cursor) {
+                    dayBlocks.push({
+                        start_time: cursor,
+                        end_time: overturnEnd,
+                        is_break: 0,
+                        is_out_of_hours_gap: true
+                    });
+                }
             } else {
-                dayBlocks = schedulesAll
-                    .filter(s => s.day_of_week === dayOfWeek)
-                    .sort((a, b) => a.start_time.localeCompare(b.start_time));
+                dayBlocks = standardBlocks;
             }
 
             if (dayBlocks.length > 0) {
@@ -1231,7 +1299,7 @@ exports.getFreeSlotsBatch = async (req, res) => {
                         if (slotEndMs > blockEnd.getTime()) break;
 
                         const isBusy =
-                            apptTimes.some(appStart => (slotStartMs < (appStart + duration * 60000) && slotEndMs > appStart)) ||
+                            apptIntervals.some(app => (slotStartMs < app.end && slotEndMs > app.start)) ||
                             googleBusyAll.some(b => {
                                 const bStart = new Date(b.start).getTime();
                                 const bEnd = new Date(b.end).getTime();
@@ -1239,40 +1307,14 @@ exports.getFreeSlotsBatch = async (req, res) => {
                             });
 
                         if (!isBusy) {
-                            // [NEW] Calculate is_out_of_hours
-                            // It is out of hours if it does NOT intersect/cover any of the REAL blocks for this day.
-                            let isOutOfHours = false;
-
-                            if (req.query.include_out_of_hours === 'true') {
-                                // Re-parse standard day blocks for validation
-                                const standardDayBlocks = schedulesAll
-                                    .filter(s => s.day_of_week === dayOfWeek)
-                                    .sort((a, b) => a.start_time.localeCompare(b.start_time));
-
-                                // Check if this slot fits in any standard block
-                                const fitsInStandard = standardDayBlocks.some(sb => {
-                                    const [sbSh, sbSm] = sb.start_time.split(':');
-                                    const sbStart = new Date(currentDay); sbStart.setHours(sbSh, sbSm, 0, 0);
-
-                                    const [sbEh, sbEm] = sb.end_time.split(':');
-                                    const sbEnd = new Date(currentDay); sbEnd.setHours(sbEh, sbEm, 0, 0);
-
-                                    // Slot must be fully contained (or at least valid start?)
-                                    // Let's say valid start is enough for availability logic usually, but here we want strict containment
-                                    return (slotStartMs >= sbStart.getTime() && (slotStartMs + duration * 60000) <= sbEnd.getTime());
-                                });
-
-                                isOutOfHours = !fitsInStandard;
-                            }
-
                             daySlots.push({
                                 time: timeCursor.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                                 iso: timeCursor.toISOString(),
                                 is_break: block.is_break === 1,
-                                is_out_of_hours: isOutOfHours
+                                is_out_of_hours: block.is_out_of_hours_gap || false
                             });
                         }
-                        timeCursor = new Date(timeCursor.getTime() + duration * 60000);
+                        timeCursor = new Date(slotEndMs);
                     }
                 }
 
@@ -1392,6 +1434,7 @@ exports.getMonthlyReport = async (req, res) => {
                 a.type as appointment_type,
                 p.full_name as patient_name,
                 COALESCE(SUM(CASE WHEN t.status = 'paid' THEN t.amount ELSE 0 END), 0) as paid_amount,
+                COALESCE(SUM(CASE WHEN t.status = 'pending' OR t.status = 'debt' THEN t.amount ELSE 0 END), 0) as debt_amount,
                 GROUP_CONCAT(DISTINCT t.method SEPARATOR ', ') as payment_methods
             FROM appointments a
             LEFT JOIN patients p ON a.patient_id = p.id
@@ -1445,9 +1488,14 @@ exports.getMonthlyReport = async (req, res) => {
                 }
             }
 
+            // Derive payment label from sums for robustness
+            const calculatedStatus = (Number(row.paid_amount) > 0 && Number(row.debt_amount) > 0) ? 'partial' :
+                (Number(row.paid_amount) > 0) ? 'paid' :
+                    (Number(row.debt_amount) > 0) ? 'debt' : 'pending';
+
             report[dayKey].appointments.push({
                 info: `Turno ID ${row.id}`,
-                pago: row.payment_status,
+                pago: calculatedStatus,
                 asistencia: row.attendance,
                 nombre: finalName,
                 hora: time,
