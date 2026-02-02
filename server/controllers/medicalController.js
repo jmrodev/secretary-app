@@ -627,9 +627,9 @@ exports.createRequest = async (req, res) => {
                     for (const item of items) {
                         const name = typeof item === 'string' ? item : (item.medication_name || item.name);
                         // If object, try to get dose/qty (if frontend sends them later)
-                        const dose = typeof item === 'object' ? item.dose : null;
-                        const frequency = typeof item === 'object' ? item.frequency : null;
-                        const quantity = typeof item === 'object' ? item.quantity : null;
+                        const dose = (typeof item === 'object' && item.dose !== '') ? item.dose : null;
+                        const frequency = (typeof item === 'object' && item.frequency !== '') ? item.frequency : null;
+                        const quantity = (typeof item === 'object' && item.quantity !== '') ? item.quantity : null;
 
                         if (name) {
                             await conn.query(
@@ -879,9 +879,9 @@ exports.updateRequest = async (req, res) => {
                 if (Array.isArray(items) && items.length > 0) {
                     for (const item of items) {
                         const name = typeof item === 'string' ? item : (item.medication_name || item.name);
-                        const dose = typeof item === 'object' ? item.dose : null;
-                        const frequency = typeof item === 'object' ? item.frequency : null;
-                        const quantity = typeof item === 'object' ? item.quantity : null;
+                        const dose = (typeof item === 'object' && item.dose !== '') ? item.dose : null;
+                        const frequency = (typeof item === 'object' && item.frequency !== '') ? item.frequency : null;
+                        const quantity = (typeof item === 'object' && item.quantity !== '') ? item.quantity : null;
                         const status = typeof item === 'object' ? (item.status || 'pending') : 'pending';
 
                         if (name) {

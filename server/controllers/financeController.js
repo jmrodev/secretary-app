@@ -8,12 +8,17 @@ const { calculatePrice } = require('../utils/priceCalculator');
 exports.createTransaction = async (req, res) => {
     let conn;
     try {
+        // Log incoming data for debugging
+        console.log('Create transaction request body:', JSON.stringify(req.body, null, 2));
+        console.log('Request file:', req.file);
+
         // type: income_patient, income_rental, expense_general, payment_doctor, withdrawal
         // related_user_id: Patient or Doctor interacting
         // doctor_id: Beneficiary of the cash box
         const { type, amount, description, related_user_id, doctor_id, method, status, debt_amount, appointment_id, transaction_date } = req.body;
         let { payments } = req.body;
         const proof_file = req.file ? `/uploads/${req.file.filename}` : null;
+        let result = {};
 
         if (payments && typeof payments === 'string') {
             try {
@@ -43,7 +48,7 @@ exports.createTransaction = async (req, res) => {
         if (Array.isArray(payments) && payments.length > 0) {
             for (const p of payments) {
                 if (Number(p.amount) > 0) {
-                    await conn.query(
+                    result = await conn.query(
                         "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, institution_id, method, status, proof_file, request_id, appointment_id, transaction_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                         [type, p.amount, description, related_user_id || null, doctor_id || null, req.body.institution_id || null, p.method || 'cash', status || 'paid', proof_file, req.body.request_id || null, appointment_id || null, finalDate]
                     );
@@ -51,7 +56,7 @@ exports.createTransaction = async (req, res) => {
             }
         } else if (Number(amount) > 0) {
             // Fallback for single payment
-            await conn.query(
+            result = await conn.query(
                 "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, institution_id, method, status, proof_file, request_id, appointment_id, transaction_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 [type, amount, description, related_user_id || null, doctor_id || null, req.body.institution_id || null, method || 'cash', status || 'paid', proof_file, req.body.request_id || null, appointment_id || null, finalDate]
             );
@@ -59,10 +64,12 @@ exports.createTransaction = async (req, res) => {
 
         // 2. Register the Debt (if debt_amount > 0)
         if (Number(debt_amount) > 0) {
-            await conn.query(
+            const debtResult = await conn.query(
                 "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, institution_id, method, status, proof_file, request_id, appointment_id, transaction_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 [type, debt_amount, `DEBT: ${description}`, related_user_id || null, doctor_id || null, req.body.institution_id || null, 'on_account', 'pending', null, req.body.request_id || null, appointment_id || null, finalDate]
             );
+            // If we haven't set a main result yet (e.g. only debt was recorded), use this one
+            if (!result) result = debtResult;
         }
 
         // 3. Update Appointment payment_status if apptId is provided
@@ -108,12 +115,21 @@ exports.createTransaction = async (req, res) => {
             } catch (e) { }
         }
 
-        logAction(req, 'FINANCE_TRANSACTION', logDetail);
+        logAction(req, 'FINANCE_CREATE', logDetail);
+        res.status(201).json({ message: 'Transaction created successfully', id: result.insertId });
 
-        res.status(201).json({ message: "Transaction recorded", status: status || 'paid' });
+        // [NEW] Sync to Spreadsheet (Async/Background)
+        if (result.insertId) {
+            googleController.syncToSpreadsheetHelper(result.insertId, req.user?.user_id).catch(e => console.error("Sheet sync failed", e));
+        }
     } catch (err) {
-        console.error(err);
-        res.status(500).send("Server Error");
+        console.error('Create transaction error:', err);
+        console.error('Error stack:', err.stack);
+        res.status(500).json({
+            error: 'Server Error',
+            message: err.message,
+            details: process.env.NODE_ENV === 'development' ? err.stack : undefined
+        });
     } finally {
         if (conn) conn.release();
     }
@@ -152,7 +168,7 @@ exports.getTransactions = async (req, res) => {
             whereClauses.push("t.related_user_id = ?");
             params.push(user_id);
         } else {
-            // Secretary
+            // Secretary - by default, show all transactions or filter by parameters
             if (doctor_id) {
                 whereClauses.push("t.doctor_id = ?");
                 params.push(doctor_id);
@@ -170,6 +186,10 @@ exports.getTransactions = async (req, res) => {
             if (req.query.institution_id) {
                 whereClauses.push("t.institution_id = ?");
                 params.push(req.query.institution_id);
+            }
+            // If no filters for secretary, show only last 30 days to avoid performance issues
+            if (whereClauses.length === 0) {
+                whereClauses.push("t.transaction_date >= DATE_SUB(NOW(), INTERVAL 30 DAY)");
             }
         }
 
@@ -812,8 +832,12 @@ exports.updateTransaction = async (req, res) => {
             await syncAppointmentPaymentStatus(conn, oldTx.appointment_id, req.user?.user_id);
         }
 
-        logAction(req, 'FINANCE_UPDATE', `Updated transaction ${id}: $${amount} - ${description}`);
-        res.json({ message: "Transaction updated" });
+        const logDetail = `$${amount} - ${description}`; // Define logDetail here
+        logAction(req, 'FINANCE_UPDATE', `Updated transaction ${id}: ${logDetail}`);
+        res.json({ message: 'Transaction updated successfully' });
+
+        // [NEW] Sync to Spreadsheet (Async/Background)
+        googleController.syncToSpreadsheetHelper(id, req.user?.user_id).catch(e => console.error("Sheet sync failed", e));
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");

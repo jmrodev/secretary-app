@@ -9,11 +9,19 @@ BigInt.prototype.toJSON = function () { return Number(this); };
 const authRoutes = require('./routes/authRoutes');
 const institutionRoutes = require('./routes/institutionRoutes'); // [NEW]
 
+const morgan = require('morgan');
 dotenv.config();
+
+// Register Event Listeners
+require('./listeners/appointmentListeners');
 
 const { initScheduler } = require('./utils/scheduler');
 
 const app = express();
+
+// Professional HTTP Logging
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+
 // Initialize Scheduler
 initScheduler();
 
@@ -21,6 +29,11 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+
+// Health Check Endpoint for Monitoring/Docker
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'OK', timestamp: new Date(), uptime: process.uptime() });
+});
 
 // Add bypass header for Cloudflare Tunnel and Auto-detect Staff IP
 app.use(async (req, res, next) => {
@@ -101,7 +114,7 @@ app.get('/api/debug/dump-appointments', async (req, res) => {
 app.use('/api/auth', authRoutes);
 
 // Start server
-app.listen(PORT, '0.0.0.0', async () => {
+const server = app.listen(PORT, '0.0.0.0', async () => {
     console.log(`Server running on port ${PORT}`);
     try {
         const conn = await pool.getConnection();
@@ -129,3 +142,24 @@ app.listen(PORT, '0.0.0.0', async () => {
         console.error('Failed to connect to MariaDB:', err);
     }
 });
+
+// Graceful Shutdown Logic
+const gracefulShutdown = async (signal) => {
+    console.log(`\n🛑 Received ${signal}. Shutting down gracefully...`);
+    server.close(() => {
+        console.log('👋 HTTP server closed.');
+        pool.end().then(() => {
+            console.log('💾 Database connections closed.');
+            process.exit(0);
+        });
+    });
+
+    // Force shutdown after 10s
+    setTimeout(() => {
+        console.error('⚠️ Could not close connections in time, forceful shutdown.');
+        process.exit(1);
+    }, 10000);
+};
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));

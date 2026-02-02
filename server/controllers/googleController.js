@@ -5,7 +5,8 @@ const bcrypt = require('bcrypt');
 
 const SCOPES = [
     'https://www.googleapis.com/auth/contacts',
-    'https://www.googleapis.com/auth/calendar' // Added Calendar Scope
+    'https://www.googleapis.com/auth/calendar',
+    'https://www.googleapis.com/auth/spreadsheets'
 ];
 
 const getOAuthClient = () => {
@@ -1307,3 +1308,167 @@ exports.syncDayToGoogle = async (req, res) => {
     }
 };
 
+exports.syncToSpreadsheetHelper = async (transactionId, userId = null) => {
+    let conn;
+    try {
+        conn = await pool.getConnection();
+
+        // 1. Get Transaction Details with enriched info
+        const [rows] = await conn.query(`
+            SELECT t.*, 
+                   p.full_name as patient_name,
+                   a.type as appt_type,
+                   r.type as req_type,
+                   d.full_name as doctor_name
+            FROM transactions t
+            LEFT JOIN users u ON t.related_user_id = u.id
+            LEFT JOIN patients p ON u.id = p.user_id
+            LEFT JOIN appointments a ON t.appointment_id = a.id
+            LEFT JOIN medical_requests r ON t.request_id = r.id
+            LEFT JOIN doctors d ON t.doctor_id = d.id
+            WHERE t.id = ?
+        `, [transactionId]);
+
+        if (!rows || rows.length === 0) return;
+        const tx = rows[0];
+
+        // 2. Determine Spreadsheet ID from settings
+        const [settingRows] = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'finance_spreadsheet_id'");
+        const spreadsheetId = settingRows && settingRows.length > 0 ? settingRows[0].setting_value : null;
+
+        if (!spreadsheetId) {
+            console.log("[SpreadsheetSync] No finance_spreadsheet_id set. Skipping.");
+            return;
+        }
+
+        // 3. Get Tokens (Try Doctor first, then Global)
+        let tokens = {};
+        if (tx.doctor_id) {
+            tokens = await getTokens(conn, tx.doctor_id);
+            // If doctor has tokens but NO spreadsheet ID specific to them... wait. 
+            // Current Logic: Spreadsheet ID is GLOBAL (system_settings). 
+            // So if we use Doctor Tokens, we are writing to the GLOBAL Sheet using DOCTOR'S credentials?
+            // That might be wrong if the user wants separate sheets per doctor. 
+            // BUT, the request implies 'a calculation table' (singular). 
+            // IF the sheet is shared with the doctor, using their token works. 
+            // IF the sheet is owned by the clinic (Global), we should prefer Global Tokens.
+
+            // Let's stick to Global Tokens for the "Master Sheet" unless strictly necessary.
+            // However, the user mentioned "Dos integraciones". If they want to use the Doctor's integration to write to the sheet, 
+            // the sheet must be accessible to them.
+
+            // Re-reading: "tengo dos integraciones , la general y la de doctor"
+            // If the goal is a Single Master Sheet, we should use the Global Integration (Secretary/Clinic Account).
+            // If we use Doctor's token, we might get 403 Forbidden if the sheet wasn't shared with them.
+
+            // DECISION: Prefer GLOBAL tokens for the Finance Spreadsheet to ensure consistency.
+            // Why? Because "Finanzas" is usually a clinic-wide concern managed by the Secretary.
+
+            // However, if Global is missing, maybe fallback to Doctor? Unlikely to have perms.
+            // Let's keep it Global for now. 
+            // If the user meant "I want it to sync to the Doctor's Calendar using Doctor Token AND to the Sheet using...?"
+            // Calendar uses Doctor Token. Sheet uses Global Token. This is correct for a centralized sheet.
+        }
+
+        tokens = await getTokens(conn, null); // Force Global for Spreadsheet Sync
+
+        if (!tokens.google_refresh_token) {
+            console.log("[SpreadsheetSync] No Global Google account connected. Skipping.");
+            return;
+        }
+
+        const oauth2Client = getOAuthClient();
+        oauth2Client.setCredentials({
+            refresh_token: tokens.google_refresh_token,
+            access_token: tokens.google_access_token,
+            expiry_date: parseInt(tokens.google_token_expiry)
+        });
+
+        const sheets = google.sheets({ version: 'v4', auth: oauth2Client });
+
+        // 4. Prepare Data
+        const dateObj = new Date(tx.transaction_date);
+        const day = dateObj.toLocaleDateString('es-AR');
+        const hour = dateObj.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+
+        // Determine Specific Type
+        let specificType = 'Otro';
+        if (tx.appointment_id) specificType = 'Turno';
+        else if (tx.request_id) {
+            if (tx.req_type === 'prescription') specificType = 'Receta';
+            else if (tx.req_type === 'license') specificType = 'Licencia';
+            else if (tx.req_type === 'certificate') specificType = 'Certificado';
+            else specificType = `Solicitud (${tx.req_type})`;
+        } else if (tx.type === 'income_rental') specificType = 'Alquiler';
+        else if (tx.type === 'withdrawal') specificType = 'Retiro';
+        else if (tx.type === 'expense_general') specificType = 'Gasto';
+
+        const amount = Number(tx.amount);
+        const cobrado = tx.status === 'paid' ? amount : 0;
+        const debe = tx.status === 'pending' ? amount : 0;
+
+        // Final Value (Total? If it's a debt we might not have the "total" here, but usually amount is the transaction value)
+        // For this sync, we'll put transaction amount as "Valor" as well if it represents the full thing.
+        const valor = amount;
+
+        const rowValues = [
+            day,
+            hour,
+            tx.patient_name || tx.description || 'N/A',
+            valor,
+            specificType,
+            amount,
+            cobrado,
+            debe,
+            tx.doctor_name || 'N/A',
+            tx.id // To help with updates/tracking
+        ];
+
+        // 5. Update or Append
+        // Strategy: Search for ID in Column J (Index 9)
+        // Note: BatchGet is cheap.
+        const range = 'Sheet1!J:J';
+        const result = await sheets.spreadsheets.values.get({
+            spreadsheetId: spreadsheetId,
+            range: range,
+        });
+
+        const ids = result.data.values ? result.data.values.map(row => row[0]) : [];
+        const rowIndex = ids.findIndex(id => id == tx.id); // Loose comparison for string/number
+
+        if (rowIndex !== -1) {
+            // Update Existing Row (rowIndex is 0-indexed relative to J:J, so row number is rowIndex + 1)
+            // Range A{row}:J{row}
+            const updateRange = `Sheet1!A${rowIndex + 1}:J${rowIndex + 1}`;
+            await sheets.spreadsheets.values.update({
+                spreadsheetId: spreadsheetId,
+                range: updateRange,
+                valueInputOption: 'USER_ENTERED',
+                requestBody: {
+                    values: [rowValues]
+                }
+            });
+            console.log(`[SpreadsheetSync] Transaction ${transactionId} updated at row ${rowIndex + 1}.`);
+        } else {
+            // Append New Row
+            await sheets.spreadsheets.values.append({
+                spreadsheetId: spreadsheetId,
+                range: 'Sheet1!A:J',
+                valueInputOption: 'USER_ENTERED',
+                insertDataOption: 'INSERT_ROWS',
+                requestBody: {
+                    values: [rowValues]
+                }
+            });
+            console.log(`[SpreadsheetSync] Transaction ${transactionId} appended to sheet.`);
+        }
+
+        const mockReq = { user: { user_id: userId, username: 'System' }, ip: 'SYSTEM' };
+        if (userId) await logAction(mockReq, 'SPREADSHEET_SYNC', `Synced Tx ${transactionId} to Google Sheet`);
+
+    } catch (err) {
+        console.error("[SpreadsheetSync] Error:", err.message);
+    } finally {
+        if (conn) conn.release();
+    }
+};

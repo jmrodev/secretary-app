@@ -1,0 +1,106 @@
+const { pool } = require('../db');
+
+class AppointmentRepository {
+    async findById(id, conn) {
+        const connection = conn || await pool.getConnection();
+        try {
+            const rows = await connection.query(`
+                SELECT a.*, p.full_name as patient_name, p.dni as patient_dni, p.user_id as patient_user_id, p.behavior_rating
+                FROM appointments a 
+                LEFT JOIN patients p ON a.patient_id = p.id 
+                WHERE a.id = ?
+            `, [id]);
+            return rows.length > 0 ? rows[0] : null;
+        } finally {
+            if (!conn) connection.release();
+        }
+    }
+
+    async findBySlot(doctorId, slotDate, conn) {
+        const connection = conn || await pool.getConnection();
+        try {
+            const rows = await connection.query(
+                "SELECT * FROM appointments WHERE doctor_id = ? AND appointment_date = ?",
+                [doctorId, slotDate]
+            );
+            return rows;
+        } finally {
+            if (!conn) connection.release();
+        }
+    }
+
+    async create(data, conn) {
+        const connection = conn || await pool.getConnection();
+        try {
+            const result = await connection.query(
+                "INSERT INTO appointments (patient_id, doctor_id, appointment_date, reason, is_out_of_hours, type, status, institution_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                [data.patient_id, data.doctor_id, data.appointment_date, data.reason, data.is_out_of_hours || false, data.type || 'consultation', data.status || 'pending', data.institution_id]
+            );
+            return result.insertId;
+        } finally {
+            if (!conn) connection.release();
+        }
+    }
+
+    async update(id, updates, conn) {
+        const connection = conn || await pool.getConnection();
+        try {
+            const setClauses = Object.keys(updates).map(key => `${key} = ?`).join(', ');
+            const values = [...Object.values(updates), id];
+            const result = await connection.query(`UPDATE appointments SET ${setClauses} WHERE id = ?`, values);
+            return result.affectedRows;
+        } finally {
+            if (!conn) connection.release();
+        }
+    }
+
+    async delete(id, conn) {
+        const connection = conn || await pool.getConnection();
+        try {
+            const result = await connection.query("DELETE FROM appointments WHERE id = ?", [id]);
+            return result.affectedRows;
+        } finally {
+            if (!conn) connection.release();
+        }
+    }
+
+    async getHistory(filters, conn) {
+        const connection = conn || await pool.getConnection();
+        try {
+            let query = `
+                SELECT a.*, p.full_name as patient_name, p.dni as patient_dni, p.user_id as patient_user_id, p.behavior_rating, 
+                d.full_name as doctor_name, p.phone as patient_phone 
+                FROM appointments a 
+                LEFT JOIN patients p ON a.patient_id = p.id 
+                JOIN doctors d ON a.doctor_id = d.id
+            `;
+            let params = [];
+            let whereClauses = [];
+
+            if (filters.patient_id) {
+                whereClauses.push("a.patient_id = ?");
+                params.push(filters.patient_id);
+            }
+            if (filters.doctor_id) {
+                whereClauses.push("a.doctor_id = ?");
+                params.push(filters.doctor_id);
+            }
+            if (filters.search) {
+                const searchTerm = `%${filters.search}%`;
+                whereClauses.push("(p.full_name LIKE ? OR a.reason LIKE ? OR p.phone LIKE ?)");
+                params.push(searchTerm, searchTerm, searchTerm);
+            }
+
+            if (whereClauses.length > 0) {
+                query += " WHERE " + whereClauses.join(" AND ");
+            }
+
+            query += " ORDER BY a.appointment_date DESC";
+            return await connection.query(query, params);
+        } finally {
+            if (!conn) connection.release();
+        }
+    }
+}
+
+module.exports = new AppointmentRepository();
