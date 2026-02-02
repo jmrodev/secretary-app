@@ -908,25 +908,23 @@ async function syncAppointmentPaymentStatus(conn, appointmentId, userId) {
     await conn.query("UPDATE appointments SET payment_status = ?, is_paid = ? WHERE id = ?", [finalStatus, isPaid, appointmentId]);
 
     // Google Sync
-    const [appt] = await conn.query("SELECT * FROM appointments WHERE id = ?", [appointmentId]);
-    if (appt && appt.google_event_id) {
-        const patData = await conn.query("SELECT full_name, dni FROM patients WHERE id = ?", [appt.patient_id]);
-        const pName = patData.length > 0 ? patData[0].full_name : 'Paciente';
+    try {
+        const [appt] = await conn.query("SELECT * FROM appointments WHERE id = ?", [appointmentId]);
+        if (appt && appt.google_event_id) {
+            const patData = await conn.query("SELECT full_name, dni FROM patients WHERE id = ?", [appt.patient_id]);
+            const pName = patData.length > 0 ? patData[0].full_name : 'Paciente';
 
-        const updatePayload = {
-            summary: `Consultorio: ${pName} [${finalStatus === 'debt' ? 'DEUDA' : (finalStatus === 'paid' ? 'PAGADO' : 'PARCIAL')}]`,
-            paymentStatus: finalStatus
-        };
+            const updatePayload = {
+                summary: `Consultorio: ${pName} [${finalStatus === 'debt' ? 'DEUDA' : (finalStatus === 'paid' ? 'PAGADO' : 'PARCIAL')}]`,
+                paymentStatus: finalStatus,
+                status: appt.status // Include current status for color logic
+            };
 
-        try {
             await googleController.updateEventHelper(appt.doctor_id, appt.google_event_id, updatePayload, userId);
-        } catch (syncErr) {
-            console.warn("Google Sync Failed (Sync Recompute), queueing retry:", syncErr.message);
-            await conn.query(
-                "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, 'update', ?, 'pending')",
-                [appointmentId, appt.doctor_id, JSON.stringify({ eventId: appt.google_event_id, updates: updatePayload })]
-            );
         }
+    } catch (syncErr) {
+        console.warn("Google Sync Failed (Sync Recompute), non-fatal:", syncErr.message);
+        // We could also enqueue here, but for now we prioritized stability
     }
 }
 

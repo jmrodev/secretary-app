@@ -85,13 +85,21 @@ class ModificationService {
             }
 
             await conn.commit();
+        } catch (err) {
+            await conn.rollback();
+            throw err;
+        } finally {
+            conn.release();
+        }
 
-            // 3. Google Calendar Sync
-            if (appt.google_event_id) {
+        // 3. Google Calendar Sync (Non-blocking)
+        try {
+            const appt = await appointmentRepository.findById(id);
+            if (appt && appt.google_event_id) {
                 if (status === 'cancelled') {
                     await googleSyncService.syncDelete(id, appt.doctor_id, appt.google_event_id, userId);
                 } else {
-                    const [patient] = await conn.query("SELECT * FROM patients WHERE id = ?", [appt.patient_id]);
+                    const patient = { id: appt.patient_id, full_name: appt.patient_name };
                     const eventData = {
                         status: status,
                         description: googleSyncService.buildDescription(appt, patient, { status })
@@ -99,13 +107,10 @@ class ModificationService {
                     await googleSyncService.syncUpdate(id, appt.doctor_id, appt.google_event_id, eventData, userId);
                 }
             }
-            return true;
-        } catch (err) {
-            await conn.rollback();
-            throw err;
-        } finally {
-            conn.release();
+        } catch (syncErr) {
+            console.warn(`[ModificationService] Non-fatal Sync Error: ${syncErr.message}`);
         }
+        return true;
     }
 
     async updateAppointment(id, updates, userId, role, adminPassword) {
@@ -125,18 +130,25 @@ class ModificationService {
 
             await appointmentRepository.update(id, updates, conn);
             await conn.commit();
+        } catch (err) {
+            await conn.rollback();
+            throw err;
+        } finally {
+            conn.release();
+        }
 
-            // 3. Google Calendar Sync
-            if (appt.google_event_id) {
+        // 3. Google Calendar Sync
+        try {
+            const appt = await appointmentRepository.findById(id);
+            if (appt && appt.google_event_id) {
                 const updatedAppt = { ...appt, ...updates };
-                const [patient] = await conn.query("SELECT * FROM patients WHERE id = ?", [appt.patient_id]);
+                const patient = { id: appt.patient_id, full_name: appt.patient_name };
 
                 const eventData = {
                     summary: patient.full_name,
                     description: googleSyncService.buildDescription(updatedAppt, patient),
                 };
 
-                // If date changed, update start/end
                 if (updates.appointment_date) {
                     const startTime = new Date(updates.appointment_date);
                     const endTime = new Date(startTime.getTime() + (updates.duration || appt.duration || 30) * 60000);
@@ -146,13 +158,10 @@ class ModificationService {
 
                 await googleSyncService.syncUpdate(id, appt.doctor_id, appt.google_event_id, eventData, userId);
             }
-            return true;
-        } catch (err) {
-            await conn.rollback();
-            throw err;
-        } finally {
-            conn.release();
+        } catch (syncErr) {
+            console.warn(`[ModificationService] Non-fatal Update Sync Error: ${syncErr.message}`);
         }
+        return true;
     }
     async bulkUpdateType(dayOfWeek, type, doctorId, fromDate, toDate, userId, userRole) {
         const conn = await pool.getConnection();
