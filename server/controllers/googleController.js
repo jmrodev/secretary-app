@@ -1334,26 +1334,7 @@ exports.syncToSpreadsheetHelper = async (transactionId, userId = null) => {
         if (!rows || rows.length === 0) return;
         const tx = rows[0];
 
-        // 2. Determine Spreadsheet ID (Prefer Doctor specific, then Global)
-        let spreadsheetId = null;
-        if (tx.doctor_id) {
-            const [docInt] = await conn.query("SELECT spreadsheet_id FROM doctor_integrations WHERE doctor_id = ?", [tx.doctor_id]);
-            if (docInt && docInt.spreadsheet_id) {
-                spreadsheetId = docInt.spreadsheet_id;
-            }
-        }
-
-        if (!spreadsheetId) {
-            const [settingRows] = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'finance_spreadsheet_id'");
-            spreadsheetId = settingRows && settingRows.length > 0 ? settingRows[0].setting_value : null;
-        }
-
-        if (!spreadsheetId) {
-            console.log(`[SpreadsheetSync] No spreadsheet_id set for Doctor ${tx.doctor_id} or Global. Skipping.`);
-            return;
-        }
-
-        // 3. Get Tokens (Try Doctor first, then Global)
+        // 2. Get Tokens (Try Doctor first, then Global)
         let tokens = {};
         if (tx.doctor_id) {
             tokens = await getTokens(conn, tx.doctor_id);
@@ -1376,6 +1357,55 @@ exports.syncToSpreadsheetHelper = async (transactionId, userId = null) => {
         });
 
         const sheets = google.sheets({ version: 'v4', auth: oauth2Client });
+
+        // 3. Determine Spreadsheet ID (Prefer Doctor specific, then Global)
+        let spreadsheetId = null;
+        if (tx.doctor_id) {
+            const [docInt] = await conn.query("SELECT spreadsheet_id FROM doctor_integrations WHERE doctor_id = ?", [tx.doctor_id]);
+            if (docInt && docInt.spreadsheet_id) {
+                spreadsheetId = docInt.spreadsheet_id;
+            }
+        }
+
+        if (!spreadsheetId) {
+            const [settingRows] = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'finance_spreadsheet_id'");
+            spreadsheetId = settingRows && settingRows.length > 0 ? settingRows[0].setting_value : null;
+        }
+
+        // AUTO-CREATE IF MISSING (Only if it's for a doctor who is connected)
+        if (!spreadsheetId && tx.doctor_id) {
+            try {
+                console.log(`[SpreadsheetSync] Creating new spreadsheet for Doctor ${tx.doctor_id}...`);
+                const createResponse = await sheets.spreadsheets.create({
+                    resource: {
+                        properties: { title: `Finanzas - Secretaría App / ${tx.doctor_name || 'Dr.'} (ID ${tx.doctor_id})` },
+                        sheets: [{ properties: { title: 'Pagos', gridProperties: { frozenRowCount: 1 } } }]
+                    }
+                });
+
+                spreadsheetId = createResponse.data.spreadsheetId;
+                await conn.query("UPDATE doctor_integrations SET spreadsheet_id = ? WHERE doctor_id = ?", [spreadsheetId, tx.doctor_id]);
+
+                // Add header row
+                await sheets.spreadsheets.values.update({
+                    spreadsheetId,
+                    range: 'Pagos!A1:L1',
+                    valueInputOption: 'RAW',
+                    resource: {
+                        values: [['Fecha', 'Hora', 'Año', 'Mes', 'Semana', 'Paciente/Detalle', 'Valor', 'Tipo', 'Cobrado', 'Pendiente', 'Médico', 'ID Interno']]
+                    }
+                });
+                console.log(`[SpreadsheetSync] Created new sheet: ${spreadsheetId}`);
+            } catch (createErr) {
+                console.error("[SpreadsheetSync] Failed to create spreadsheet:", createErr.message);
+                return;
+            }
+        }
+
+        if (!spreadsheetId) {
+            console.log(`[SpreadsheetSync] No spreadsheet_id set and cannot create. Skipping.`);
+            return;
+        }
 
         // 4. Prepare Data
         const dateObj = new Date(tx.transaction_date);
