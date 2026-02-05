@@ -766,10 +766,11 @@ exports.updateTransaction = async (req, res) => {
             }
         }
 
-        // Format date for MariaDB if it's a string (e.g. ISO format from frontend)
+        // Format date for MariaDB: keep local time instead of shifting to UTC
         let finalDate = transaction_date || oldTx.transaction_date;
-        if (finalDate && typeof finalDate === 'string' && finalDate.includes('T')) {
-            finalDate = new Date(finalDate).toISOString().slice(0, 19).replace('T', ' ');
+        if (finalDate && typeof finalDate === 'string') {
+            // Keep the local time from the frontend picker
+            finalDate = finalDate.replace('T', ' ').slice(0, 19);
         }
 
         // 2. Update the transaction
