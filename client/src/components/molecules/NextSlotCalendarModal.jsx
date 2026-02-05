@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Modal from './Modal';
+import { useLanguage } from '../../context/LanguageContext';
 
 const NextSlotCalendarModal = ({
     isOpen,
@@ -13,12 +14,13 @@ const NextSlotCalendarModal = ({
     onLoadMore,
     hasMore
 }) => {
+    const { t } = useLanguage();
     const [selectedDate, setSelectedDate] = useState(null);
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [viewMode, setViewMode] = useState('calendar'); // 'calendar' or 'list'
 
-    const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-    const dayNames = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+    const monthNames = t('months_array') || ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+    const dayNames = t('days_short_array') || ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
     const todayIso = new Date().toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).split(' ')[0];
 
     // Group slots by date
@@ -131,7 +133,7 @@ const NextSlotCalendarModal = ({
                     checked={includeOutOfHours}
                     onChange={(e) => onToggleOutOfHours(e.target.checked)}
                 />
-                <span className="calendar-slot-controls__label">🔓 Incluir sobreturnos / fuera de horario</span>
+                <span className="calendar-slot-controls__label">🔓 {t('include_overtime')}</span>
             </label>
 
             <div className="calendar-slot-controls__toggle-group">
@@ -139,13 +141,13 @@ const NextSlotCalendarModal = ({
                     className={`calendar-slot-controls__toggle-btn ${viewMode === 'calendar' ? 'calendar-slot-controls__toggle-btn--active' : ''}`}
                     onClick={() => setViewMode('calendar')}
                 >
-                    📅 Calendario
+                    📅 {t('calendar')}
                 </button>
                 <button
                     className={`calendar-slot-controls__toggle-btn ${viewMode === 'list' ? 'calendar-slot-controls__toggle-btn--active' : ''}`}
                     onClick={() => setViewMode('list')}
                 >
-                    📋 Lista
+                    📋 {t('list')}
                 </button>
             </div>
         </div>
@@ -155,11 +157,11 @@ const NextSlotCalendarModal = ({
         <div className="calendar-grid">
             {/* Header */}
             <div className="calendar-grid__header">
-                <button onClick={handlePrevMonth} className="calendar-grid__nav-btn" title="Mes anterior">⬅️</button>
+                <button onClick={handlePrevMonth} className="calendar-grid__nav-btn" title={t('previous_month')}>⬅️</button>
                 <h3 className="calendar-grid__title">
                     {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
                 </h3>
-                <button onClick={handleNextMonth} className="calendar-grid__nav-btn" title="Mes siguiente">➡️</button>
+                <button onClick={handleNextMonth} className="calendar-grid__nav-btn" title={t('next_month')}>➡️</button>
             </div>
 
             {/* Days Header */}
@@ -191,7 +193,7 @@ const NextSlotCalendarModal = ({
                         >
                             <div className="flex flex-col items-center">
                                 <span className="calendar-grid__date-number">{day}</span>
-                                {isToday && <span className="calendar-grid__today-badge">HOY</span>}
+                                {isToday && <span className="calendar-grid__today-badge">{t('today')}</span>}
                             </div>
 
                             {hasSlots && (
@@ -221,11 +223,11 @@ const NextSlotCalendarModal = ({
             <div className="calendar-slot__legend" style={{ padding: '0.5rem' }}>
                 <div className="calendar-slot__legend-item">
                     <div className="calendar-slot__legend-box calendar-slot__legend-box--in-hours"></div>
-                    <span>Turnos en horario</span>
+                    <span>{t('appointments_in_hours')}</span>
                 </div>
                 <div className="calendar-slot__legend-item">
                     <div className="calendar-slot__legend-box calendar-slot__legend-box--out-hours"></div>
-                    <span>Turnos fuera de horario</span>
+                    <span>{t('appointments_out_hours')}</span>
                 </div>
             </div>
             {/* Load More Button inside Calendar View */}
@@ -236,7 +238,7 @@ const NextSlotCalendarModal = ({
                         disabled={loading}
                         className="btn btn-secondary btn-sm"
                     >
-                        {loading ? 'Cargando...' : '🔍 Cargar más fechas'}
+                        {loading ? t('loading') : `🔍 ${t('load_more_dates')}`}
                     </button>
                 </div>
             )}
@@ -247,8 +249,8 @@ const NextSlotCalendarModal = ({
         if (!selectedDate || selectedSlots.length === 0) {
             return (
                 <div className="calendar-empty">
-                    <p className="font-bold text-lg">Selecciona una fecha del calendario para ver los horarios disponibles</p>
-                    <button onClick={() => setViewMode('calendar')} className="btn btn-secondary mt-4">Ver Calendario</button>
+                    <p className="font-bold text-lg">{t('select_date_to_view')}</p>
+                    <button onClick={() => setViewMode('calendar')} className="btn btn-secondary mt-4">{t('view_calendar')}</button>
                 </div>
             );
         }
@@ -304,7 +306,7 @@ const NextSlotCalendarModal = ({
                                                 className={`slots-list__action-btn slots-list__action-btn--${type}`}
                                                 onClick={() => onSelect(slot.iso)}
                                             >
-                                                {type === 'normal' ? 'Seleccionar' : (type === 'break' ? 'Asignar Ext' : 'Asignar Extra')}
+                                                {type === 'normal' ? t('select') : (type === 'break' ? t('assign_ext') : t('assign_extra'))}
                                             </button>
                                         </div>
                                     </td>
@@ -323,14 +325,14 @@ const NextSlotCalendarModal = ({
                         {slotsByDate[selectedDate]?.dayName}
                     </h3>
                     <button onClick={() => setViewMode('calendar')} className="slots-list__back-btn">
-                        ← Volver al calendario
+                        ← {t('back_to_calendar')}
                     </button>
                 </div>
                 <div className="slots-list__content">
-                    {renderSection('🔓 Antes del Horario (Extra)', beforeSlots, 'before')}
-                    {renderSection('✅ Horario de Atención', normalSlots, 'normal')}
-                    {renderSection('☕ Descansos / Cupos Especiales', breakSlots, 'break')}
-                    {renderSection('🔓 Después del Horario (Extra)', afterSlots, 'after')}
+                    {renderSection(`🔓 ${t('before_hours_extra')}`, beforeSlots, 'before')}
+                    {renderSection(`✅ ${t('attention_hours')}`, normalSlots, 'normal')}
+                    {renderSection(`☕ ${t('breaks_special_slots')}`, breakSlots, 'break')}
+                    {renderSection(`🔓 ${t('after_hours_extra')}`, afterSlots, 'after')}
                 </div>
             </div>
         );
@@ -340,7 +342,7 @@ const NextSlotCalendarModal = ({
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title="🔍 Búsqueda de Turnos Libres"
+            title={`🔍 ${t('search_free_slots')}`}
             size="lg"
         >
             <div className="calendar-slot-modal">
@@ -349,12 +351,12 @@ const NextSlotCalendarModal = ({
                 {loading && !nextSlotData ? (
                     <div className="calendar-loader">
                         <div className="loading-spinner-small"></div>
-                        <p className="font-bold mt-3">Explorando agenda en busca de huecos...</p>
+                        <p className="font-bold mt-3">{t('exploring_schedule')}</p>
                     </div>
                 ) : !nextSlotData || !nextSlotData.results || nextSlotData.results.length === 0 ? (
                     <div className="calendar-empty">
-                        <p className="text-lg font-bold mb-2">No hay datos de turnos disponibles</p>
-                        <p className="text-sm">Intenta activar "Incluir fuera de horario" o selecciona otro médico</p>
+                        <p className="text-lg font-bold mb-2">{t('no_slots_available')}</p>
+                        <p className="text-sm">{t('try_out_of_hours')}</p>
                     </div>
                 ) : viewMode === 'calendar' ? (
                     renderCalendarView()
@@ -363,8 +365,8 @@ const NextSlotCalendarModal = ({
                 )}
 
                 <div className="calendar-footer">
-                    <span>Haz clic en un día con turnos para ver los horarios</span>
-                    <button className="btn btn-sm btn-ghost" onClick={onClose}>Cerrar</button>
+                    <span>{t('click_day_to_view')}</span>
+                    <button className="btn btn-sm btn-ghost" onClick={onClose}>{t('close')}</button>
                 </div>
             </div>
         </Modal>

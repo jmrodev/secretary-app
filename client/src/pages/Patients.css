@@ -1,0 +1,70 @@
+.patients__header {
+    margin-bottom: 1.5rem;
+}
+
+.patients__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--slate-800, #1e293b);
+    margin: 0;
+}
+
+.patients__subtitle {
+    font-size: 0.875rem;
+    color: var(--slate-500, #64748b);
+    margin-top: 0.25rem;
+}
+
+.patients__nav {
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.patients__action-bar {
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.patients__rating-guide-content {
+    padding: 0.5rem;
+}
+
+.patients__rating-guide-text {
+    white-space: pre-line;
+    color: var(--main-600, #4b5563);
+}
+
+.patients__modal-actions {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.patients__dot-badge {
+    background: var(--rose-500, #f43f5e);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 999px;
+    font-size: 0.65rem;
+    font-weight: 700;
+}
+
+.pagination__info {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.pagination__controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.pagination__page-indicator {
+    font-weight: 600;
+    font-size: 0.875rem;
+}

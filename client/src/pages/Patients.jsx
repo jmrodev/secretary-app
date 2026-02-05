@@ -10,6 +10,7 @@ import PatientDetailsView from '../components/organisms/PatientDetailsView';
 import PatientRecycleBin from '../components/organisms/PatientRecycleBin';
 import PatientForm from '../components/organisms/PatientForm';
 import PatientMedications from '../components/organisms/PatientMedications';
+import './Patients.css';
 
 // Molecules
 import PatientManagerModal from '../components/molecules/PatientManagerModal';
@@ -83,14 +84,14 @@ const Patients = () => {
             ) : (
                 // --- LIST VIEW ---
                 <>
-                    <header className="page-header mb-6">
+                    <header className="patients__header">
                         <div>
-                            <h1 className="page-header__title text-2xl font-bold text-slate-800">{t('patients')}</h1>
-                            <p className="page-header__subtitle text-slate-500">{t('patients_subtitle') || 'Administración completa de fichas médicas de pacientes.'}</p>
+                            <h1 className="patients__title">{t('patients')}</h1>
+                            <p className="patients__subtitle">{t('patients_subtitle') || 'Administración completa de fichas médicas de pacientes.'}</p>
                         </div>
                     </header>
 
-                    <nav className="tab-nav mb-6">
+                    <nav className="patients__nav">
                         <Button
                             variant="ghost"
                             className={`tab-nav__item ${activeTab === 'list' ? 'tab-nav__item--active' : ''}`}
@@ -105,12 +106,12 @@ const Patients = () => {
                                 onClick={() => { setActiveTab('recycle'); fetchRecycleBin(); }}
                             >
                                 🗑️ {t('recycle_bin') || 'Papelera'}
-                                {recycleItems.length > 0 && <span className="dot-badge ml-2">{recycleItems.length}</span>}
+                                {recycleItems.length > 0 && <span className="patients__dot-badge">{recycleItems.length}</span>}
                             </Button>
                         )}
                     </nav>
 
-                    <section className="action-bar mb-6">
+                    <section className="patients__action-bar">
                         <div className="action-bar__search">
                             {activeTab === 'list' && (
                                 <div className="search-box__wrapper">
@@ -224,11 +225,11 @@ const Patients = () => {
                 onClose={() => setShowRatingInfo(false)}
                 title={t('rating_guide_title')}
             >
-                <div className="p-2">
-                    <p className="whitespace-pre-line text-main-600">
+                <div className="patients__rating-guide-content">
+                    <p className="patients__rating-guide-text">
                         {t('rating_guide_body')}
                     </p>
-                    <div className="mt-6 flex justify-end">
+                    <div className="patients__modal-actions">
                         <Button onClick={() => setShowRatingInfo(false)}>{t('close')}</Button>
                     </div>
                 </div>

@@ -15,30 +15,30 @@ const PatientHistoryView = ({
 }) => {
     const { alert } = useModal();
     const { handleGoToAppointment, handleRepeatAppointment } = handlers;
-    if (loading) return <p className="p-8 text-center">Cargando...</p>;
+    if (loading) return <p className="p-8 text-center">{t('loading')}</p>;
 
     const upcoming = patientAppointments.filter(a => new Date(a.appointment_date) >= new Date());
     const past = patientAppointments.filter(a => new Date(a.appointment_date) < new Date());
 
     return (
-        <div className="patient-history-view animate-fade-in card p-4">
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-main-700">
+        <div className="patient-history-view animate-fadeIn card" style={{ padding: '1rem' }}>
+            <div className="config-flex config-flex--gap-4" style={{ justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <h2 className="patient-history-view__title">
                     {t('results_for')}: {patientAppointments[0]?.patient_name || t('patient')}
                 </h2>
-                <button className="btn btn-secondary btn-sm" onClick={onClose}>
+                <Button variant="secondary" size="sm" onClick={onClose}>
                     🔙 {t('back_to_calendar')}
-                </button>
+                </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="config-grid config-grid--2col" style={{ gap: '1.5rem' }}>
                 {/* Future Appointments */}
-                <div className="card bg-blue-50/50 border-blue-100">
-                    <h3 className="mb-4 text-blue-600 font-bold border-b border-blue-200 pb-2">📅 {t('upcoming_appointments')}</h3>
+                <div className="card" style={{ backgroundColor: 'var(--blue-50)', borderColor: 'var(--blue-100)' }}>
+                    <h3 className="patient-history-view__section-title" style={{ color: 'var(--blue-600)', borderColor: 'var(--blue-200)' }}>📅 {t('upcoming_appointments')}</h3>
                     {upcoming.length === 0 ? (
-                        <div className="text-center py-8">
-                            <p className="text-main-500 text-lg mb-4">{t('no_patient_history')}</p>
-                            <p className="text-sm text-blue-600 mb-2 font-medium">{t('create_one_now')}</p>
+                        <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+                            <p className="patient-history-view__empty-text">{t('no_patient_history')}</p>
+                            <p className="patient-history-view__hint">{t('create_one_now')}</p>
                         </div>
                     ) : (
                         <div className="space-y-3">
@@ -46,17 +46,17 @@ const PatientHistoryView = ({
                                 <div key={appt.id} className="p-3 bg-white border border-blue-100 rounded-lg shadow-sm flex flex-col gap-2">
                                     <div className="flex justify-between items-center">
                                         <div>
-                                            <div className="font-bold text-main-800">
+                                            <div className="patient-history-view__appt-date">
                                                 {formatDate(appt.appointment_date, true)}
                                             </div>
-                                            <div className="text-main-600 text-sm">Dr. {appt.doctor_name}</div>
-                                            <div className="flex gap-4 my-1 text-[11px] font-bold">
-                                                <span className="text-green-600">Pagado: ${appt.paid_amount || 0}</span>
-                                                <span className={Number(appt.pending_amount) > 0 ? 'text-red-500' : 'text-slate-400'}>
-                                                    Deuda: ${appt.pending_amount || 0}
+                                            <div className="patient-history-view__appt-doctor">Dr. {appt.doctor_name}</div>
+                                            <div className="patient-history-view__amounts">
+                                                <span className="text-success">{t('paid')}: ${appt.paid_amount || 0}</span>
+                                                <span className={Number(appt.pending_amount) > 0 ? 'text-danger' : 'text-muted'}>
+                                                    {t('debt')}: ${appt.pending_amount || 0}
                                                 </span>
                                             </div>
-                                            <div className="text-xs text-main-500 italic">{appt.reason}</div>
+                                            <div className="patient-history-view__appt-reason">{appt.reason}</div>
                                         </div>
                                         <span className={`tag tag-${appt.status === 'confirmed' ? 'green' : 'amber'}`}>
                                             {t(appt.status)}
@@ -66,7 +66,7 @@ const PatientHistoryView = ({
                                         className="btn btn-sm btn-outline-primary w-full flex items-center justify-center gap-2 mt-1"
                                         onClick={() => handleGoToAppointment(appt.id, appt.doctor_id, appt.appointment_date, onClose)}
                                     >
-                                        ➡️ Ir al Turno
+                                        ➡️ {t('go_to_appointment') || 'Ir al Turno'}
                                     </button>
                                 </div>
                             ))}
@@ -89,20 +89,20 @@ const PatientHistoryView = ({
                         <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                             {past.map(appt => (
                                 <div key={appt.id} className="p-3 bg-slate-50 border border-slate-100 rounded-lg hover:shadow-md transition-all">
-                                    <div className="flex justify-between mb-1">
-                                        <span className="font-semibold text-main-700">{formatDate(appt.appointment_date)}</span>
-                                        <span className={`text-xs uppercase font-bold text-${appt.status === 'completed' ? 'green-600' : 'slate-500'}`}>
+                                    <div className="config-flex" style={{ justifyContent: 'space-between', marginBottom: '0.25rem' }}>
+                                        <span className="patient-history-view__appt-date-small">{formatDate(appt.appointment_date)}</span>
+                                        <span className={`tag tag-${appt.status === 'completed' ? 'green' : 'gray'}`}>
                                             {t(appt.status)}
                                         </span>
                                     </div>
-                                    <div className="text-sm text-main-600 mb-1">Dr. {appt.doctor_name}</div>
-                                    <div className="flex gap-4 mb-2 text-xs font-bold">
-                                        <span className="text-green-600">Pagado: ${appt.paid_amount || 0}</span>
-                                        <span className={Number(appt.pending_amount) > 0 ? 'text-red-500' : 'text-slate-400'}>
-                                            Deuda: ${appt.pending_amount || 0}
+                                    <div className="patient-history-view__appt-doctor-small">Dr. {appt.doctor_name}</div>
+                                    <div className="patient-history-view__amounts-small">
+                                        <span className="text-success">{t('paid')}: ${appt.paid_amount || 0}</span>
+                                        <span className={Number(appt.pending_amount) > 0 ? 'text-danger' : 'text-muted'}>
+                                            {t('debt')}: ${appt.pending_amount || 0}
                                         </span>
                                     </div>
-                                    <div className="text-sm italic text-main-500 mb-3">"{appt.reason}"</div>
+                                    <div className="patient-history-view__appt-reason-small">"{appt.reason}"</div>
                                     <div className="flex gap-2 justify-end border-t border-slate-200 pt-2">
                                         <button
                                             className="text-xs text-blue-600 hover:underline flex items-center gap-1 font-medium"
@@ -145,7 +145,7 @@ const PatientHistoryView = ({
                                                                     amount: appt.paid_amount
                                                                 })}
                                                             >
-                                                                🖨️ Imprimir Factura
+                                                                🖨️ {t('print_invoice') || 'Imprimir Factura'}
                                                             </Button>
                                                         </div>
                                                     </div>

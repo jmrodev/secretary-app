@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Modal from '../molecules/Modal';
 import Button from '../atoms/Button';
 import MedicationAutocomplete from '../molecules/MedicationAutocomplete';
+import { capitalizeFirst } from '../../utils/stringUtils';
 import './PrescriptionModal.css';
 
 const PrescriptionModal = ({ isOpen, onClose, patientName, onSubmit, t, isSubmitting }) => {
@@ -58,7 +59,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, onSubmit, t, isSubmit
                         className="input-field"
                         rows="3"
                         value={instructions}
-                        onChange={e => setInstructions(e.target.value)}
+                        onChange={e => setInstructions(capitalizeFirst(e.target.value))}
                         placeholder={t('instructions_placeholder') || "ej. Tomar cada 8 horas con comida."}
                     />
                 </div>

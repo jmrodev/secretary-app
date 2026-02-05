@@ -3,6 +3,7 @@ import api from '../api/axios';
 import { useMessage } from '../context/MessageContext';
 import { useModal } from '../context/ModalContext';
 import { useLanguage } from '../context/LanguageContext';
+import { capitalizeWords } from '../utils/stringUtils';
 
 export const useInstitutionsController = () => {
     const { showMessage } = useMessage();
@@ -101,6 +102,9 @@ export const useInstitutionsController = () => {
     }, [confirm, showMessage, fetchInstitutions, t]);
 
     const handleInputChange = useCallback((field, value) => {
+        if (field === 'name' && typeof value === 'string') {
+            value = capitalizeWords(value);
+        }
         setFormData(prev => ({ ...prev, [field]: value }));
     }, []);
 
@@ -124,6 +128,7 @@ export const useInstitutionsController = () => {
             handleFormSubmit,
             handleDelete,
             handleInputChange,
-        }
+        },
+        t
     };
 };

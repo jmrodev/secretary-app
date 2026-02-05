@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { financeService } from '../services/financeService';
 import { userService } from '../services/userService';
 import { getServiceTypes } from '../constants/transactionOptions';
+import { capitalizeFirst } from '../utils/stringUtils';
 
 export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, onClose) => {
     const { t } = useLanguage();
@@ -141,6 +142,9 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
 
     // --- Handlers ---
     const updateField = (field, value) => {
+        if (field === 'description' && typeof value === 'string') {
+            value = capitalizeFirst(value);
+        }
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 

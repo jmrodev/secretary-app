@@ -5,6 +5,7 @@ import Button from '../components/atoms/Button';
 import InsuranceList from '../components/organisms/InsuranceList';
 import InsuranceFormModal from '../components/organisms/InsuranceFormModal';
 import { useInsurancesController } from '../controllers/useInsurancesController';
+import './Insurances.css';
 
 const Insurances = () => {
     const {
@@ -33,7 +34,7 @@ const Insurances = () => {
             title={t('insurances') || 'Obras Sociales'}
             subtitle={t('insurances_subtitle') || 'Gestione las obras sociales y prepagas del sistema.'}
         >
-            <section className="action-bar mb-8">
+            <section className="insurances__action-bar">
                 <div className="action-bar__search">
                     <div className="search-box__wrapper">
                         <span className="search-box__icon">🔍</span>

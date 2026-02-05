@@ -1,0 +1,21 @@
+/* InsuranceFormModal.css */
+
+.insurance-modal__link {
+    font-size: 0.75rem;
+    color: var(--blue-600);
+    text-decoration: none;
+    margin-top: 0.25rem;
+    display: inline-block;
+    transition: all 0.2s;
+}
+
+.insurance-modal__link:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+.insurance-modal__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}

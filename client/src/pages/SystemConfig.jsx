@@ -7,6 +7,7 @@ import IntegrationSettings from '../components/organisms/IntegrationSettings';
 import BillingSettings from '../components/organisms/BillingSettings';
 import QRCodeModal from '../components/molecules/QRCodeModal';
 import Button from '../components/atoms/Button';
+import './SystemConfig.css';
 
 /**
  * SystemConfig Page
@@ -119,7 +120,7 @@ const SystemConfig = () => {
             subtitle={t('system_config_subtitle') || 'Administre las preferencias globales de la aplicación.'}
         >
             {/* Tab Navigation with BEM CSS */}
-            <nav className="tab-nav mb-8">
+            <nav className="tab-nav">
                 {(user.role === 'admin' || user.role === 'secretary') && (
                     <>
                         <Button
@@ -162,7 +163,7 @@ const SystemConfig = () => {
             </nav>
 
             {/* Tab Content */}
-            <div className="tab-content relative min-h-[500px] animate-fadeIn">
+            <div className="tab-content relative min-h-500 animate-fadeIn">
                 {renderTabContent(activeTab, controller)}
             </div>
 

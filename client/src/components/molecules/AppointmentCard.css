@@ -1,24 +1,101 @@
 /* AppointmentCard.css */
 
 .appointment-card {
-    /* Base styles imported or defined here if isolated, currently in index.css */
-    /* Only specific modifiers here for now to avoid duplication conflict */
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid var(--gray-100);
+    gap: 1rem;
 }
 
-/* Payment Status Modifiers (BEM) */
-.appt-status__amount--pending {
-    color: var(--amber-500);
-    /* Orange/Amber */
+.appointment-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    background-color: var(--gray-50);
 }
 
-.appt-status__amount--paid {
-    color: var(--emerald-600);
-    /* Green */
+.appointment-card--external {
+    border-left: 4px solid var(--amber-500);
 }
 
-.appt-status__amount--debt {
-    color: var(--rose-600);
-    /* Red */
+/* Col 1: Time */
+.appointment-card__time-box {
+    min-width: 50px;
+    display: flex;
+    align-items: center;
+}
+
+.appointment-card__time {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--slate-900);
+}
+
+/* Col 2: Info */
+.appointment-card__info {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.appointment-card__patient-name {
+    font-weight: 700;
+    color: var(--slate-800);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.appointment-card__phone {
+    font-size: 10px;
+    color: var(--indigo-600);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.appointment-card__phone:hover {
+    text-decoration: underline;
+}
+
+.appointment-card__details {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 11px;
+    color: var(--slate-500);
+}
+
+.appointment-card__doctor,
+.appointment-card__reason {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.appointment-card__reason {
+    font-style: italic;
+    opacity: 0.75;
+}
+
+/* Col 3: Status */
+.appointment-card__status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    min-width: 80px;
+}
+
+.appt-status__col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
 }
 
 .appt-status__text {
@@ -29,13 +106,72 @@
     gap: 2px;
 }
 
+.appt-status__check {
+    font-size: 12px;
+}
+
+.appt-status__amount--pending {
+    color: var(--amber-500);
+}
+
+.appt-status__amount--paid {
+    color: var(--emerald-600);
+}
+
+.appt-status__amount--debt {
+    color: var(--rose-600);
+}
+
 .appt-status__icon-group {
     font-size: 9px;
     opacity: 0.7;
 }
 
-.appt-status__col {
+.appointment-card__status-chip {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    margin-top: 4px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+/* Col 4: Actions */
+.appointment-card__actions {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.appointment-card__action-btn {
+    padding: 0.375rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.appointment-card__action-btn--whatsapp {
+    background: var(--green-50);
+    color: var(--green-600);
+    border: 1px solid var(--green-100);
+}
+
+.appointment-card__action-btn--whatsapp:hover {
+    background: var(--green-600);
+    color: white;
+}
+
+.appointment-card__action-btn--receipt {
+    background: var(--blue-50);
+    color: var(--blue-600);
+    border: 1px solid var(--blue-100);
+}
+
+.appointment-card__action-btn--receipt:hover {
+    background: var(--blue-600);
+    color: white;
 }

@@ -2,8 +2,12 @@ import React from 'react';
 import Modal from '../molecules/Modal';
 import Button from '../atoms/Button';
 import PhoneNumbersManager from '../molecules/PhoneNumbersManager';
+import { capitalizeWords } from '../../utils/stringUtils';
+import { useLanguage } from '../../context/LanguageContext';
+import './InsuranceFormModal.css';
 
 const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFormData, isEditing }) => {
+    const { t } = useLanguage();
     return (
         <Modal
             isOpen={isOpen}
@@ -16,10 +20,10 @@ const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFormData, 
                 </>
             }
         >
-            <div className="flex flex-col gap-4">
+            <div className="insurance-modal__form">
                 <div className="input-group">
                     <label className="input-label">Name *</label>
-                    <input className="input-field" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} autoFocus />
+                    <input className="input-field" value={formData.name} onChange={e => setFormData({ ...formData, name: capitalizeWords(e.target.value) })} autoFocus />
                 </div>
                 <div className="input-group">
                     <label className="input-label">CUIT</label>
@@ -38,18 +42,59 @@ const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFormData, 
                 <div className="input-group">
                     <label className="input-label">Email</label>
                     <input className="input-field" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
+                    {formData.email && (
+                        <a href={`mailto:${formData.email}`} className="insurance-modal__link">
+                            {t('send_email')} ↗
+                        </a>
+                    )}
                 </div>
+                <div className="form-section-title">Dirección</div>
+                <div className="form-row">
+                    <div className="input-group" style={{ flex: 3 }}>
+                        <label className="input-label">Nombre de Calle</label>
+                        <input className="input-field" value={formData.street_name || ''} onChange={e => setFormData({ ...formData, street_name: capitalizeWords(e.target.value) })} placeholder="Ej: Av. Rivadavia" />
+                    </div>
+                    <div className="input-group" style={{ flex: 1 }}>
+                        <label className="input-label">Nro</label>
+                        <input className="input-field" value={formData.street_number || ''} onChange={e => setFormData({ ...formData, street_number: e.target.value })} placeholder="123" />
+                    </div>
+                </div>
+
+                <div className="form-row">
+                    <div className="input-group">
+                        <label className="input-label">Piso</label>
+                        <input className="input-field" value={formData.floor || ''} onChange={e => setFormData({ ...formData, floor: e.target.value })} />
+                    </div>
+                    <div className="input-group">
+                        <label className="input-label">Depto</label>
+                        <input className="input-field" value={formData.apartment || ''} onChange={e => setFormData({ ...formData, apartment: e.target.value })} />
+                    </div>
+                </div>
+
+                <div className="form-row">
+                    <div className="input-group">
+                        <label className="input-label">Ciudad</label>
+                        <input className="input-field" value={formData.city || ''} onChange={e => setFormData({ ...formData, city: capitalizeWords(e.target.value) })} />
+                    </div>
+                    <div className="input-group">
+                        <label className="input-label">Provincia</label>
+                        <input className="input-field" value={formData.province || ''} onChange={e => setFormData({ ...formData, province: capitalizeWords(e.target.value) })} />
+                    </div>
+                </div>
+
                 <div className="input-group">
-                    <label className="input-label">Dirección</label>
-                    <input className="input-field" value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} />
-                    {formData.address && (
+                    <label className="input-label">Notas de Dirección / Referencias</label>
+                    <input className="input-field" value={formData.address} onChange={e => setFormData({ ...formData, address: capitalizeWords(e.target.value) })} />
+                    {(formData.street_name || formData.address) && (
                         <a
-                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(formData.address)}`}
+                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                `${formData.street_name || ''} ${formData.street_number || ''}, ${formData.city || ''}, ${formData.province || ''}, ${formData.country || ''} ${formData.address || ''}`.trim()
+                            )}`}
                             target="_blank"
                             rel="noreferrer"
-                            className="text-xs text-blue-600 hover:underline mt-1 inline-block"
+                            className="insurance-modal__link"
                         >
-                            Ver en mapa ↗
+                            {t('view_on_map')} ↗
                         </a>
                     )}
                 </div>

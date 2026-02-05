@@ -80,11 +80,11 @@ const renderUrlConfiguration = (settings, updateSetting, isAdmin, onShowQr) => {
                 <label className="config-field__label" htmlFor="staff-base-url">
                     URL Local (Red Clínica)
                 </label>
-                <div className="flex gap-2">
+                <div className="config-flex config-flex--gap-2">
                     <input
                         type="text"
                         id="staff-base-url"
-                        className="input-field flex-1"
+                        className="input-field config-flex__item--grow"
                         placeholder="http://192.168.0.x:5173"
                         value={settings.staff_base_url || ''}
                         onChange={(e) => updateSetting('staff_base_url', e.target.value)}
@@ -110,7 +110,7 @@ const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => {
     const isAdmin = user.role === 'admin';
 
     return (
-        <div className="tab-panel animate-in">
+        <div className="tab-panel animate-fadeIn">
             {/* Functionalities and Permissions */}
             <div className="config-section">
                 <div className="config-section__header">

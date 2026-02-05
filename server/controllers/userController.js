@@ -470,6 +470,13 @@ exports.updatePatientDetails = async (req, res) => {
 
         if (updates.dob !== undefined) { fields.push("dob = ?"); params.push(updates.dob === '' ? null : updates.dob); }
         if (updates.address !== undefined) { fields.push("address = ?"); params.push(updates.address); }
+        if (updates.street_name !== undefined) { fields.push("street_name = ?"); params.push(updates.street_name); }
+        if (updates.street_number !== undefined) { fields.push("street_number = ?"); params.push(updates.street_number); }
+        if (updates.floor !== undefined) { fields.push("floor = ?"); params.push(updates.floor); }
+        if (updates.apartment !== undefined) { fields.push("apartment = ?"); params.push(updates.apartment); }
+        if (updates.city !== undefined) { fields.push("city = ?"); params.push(updates.city); }
+        if (updates.province !== undefined) { fields.push("province = ?"); params.push(updates.province); }
+        if (updates.country !== undefined) { fields.push("country = ?"); params.push(updates.country); }
         if (updates.medical_history !== undefined) { fields.push("medical_history = ?"); params.push(updates.medical_history); }
         if (updates.tariff_percent !== undefined) { fields.push("tariff_percent = ?"); params.push(updates.tariff_percent); }
         if (updates.tariff_override !== undefined) { fields.push("tariff_override = ?"); params.push(updates.tariff_override === '' ? null : updates.tariff_override); }

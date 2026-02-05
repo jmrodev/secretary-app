@@ -294,6 +294,7 @@ export const useRequirementsController = (user) => {
         newMedInput, setNewMedInput,
         addToChronic, handleSaveEdit,
         updateEditMed, handleAddMed,
-        checkIsKnown
+        checkIsKnown,
+        t
     };
 };

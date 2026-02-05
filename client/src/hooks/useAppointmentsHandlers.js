@@ -125,6 +125,18 @@ export const useAppointmentsHandlers = ({
         if (rescheduleAppt) {
             if (existingAppt) return;
 
+            const toLocalYMD = (d) => {
+                const date = new Date(d);
+                return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+            };
+            const selectedYMD = toLocalYMD(selectedDate);
+            const isHoliday = holidays.find(h => toLocalYMD(h.date) === selectedYMD);
+
+            if (isHoliday) {
+                showMessage((t('cannot_reschedule_holiday') || 'No se puede reprogramar a un feriado: {description}').replace('{description}', isHoliday.description), 'error');
+                return;
+            }
+
             const newDate = new Date(selectedDate);
             newDate.setHours(hour, minute, 0, 0);
             const offset = newDate.getTimezoneOffset() * 60000;
@@ -153,7 +165,7 @@ export const useAppointmentsHandlers = ({
             const isHoliday = holidays.find(h => toLocalYMD(h.date) === selectedYMD);
 
             if (isHoliday) {
-                showMessage(`Cannot book on ${selectedYMD}: ${isHoliday.description}`, 'error');
+                showMessage((t('cannot_book_holiday') || 'No se puede reservar en un feriado: {description}').replace('{description}', isHoliday.description), 'error');
                 return;
             }
 
@@ -280,7 +292,7 @@ export const useAppointmentsHandlers = ({
             const selectedDatePart = dateToCheck.split('T')[0];
             const isHoliday = holidays.find(h => h.date.startsWith(selectedDatePart));
             if (isHoliday) {
-                showMessage(`Cannot book: ${isHoliday.description}`, 'error');
+                showMessage((t('cannot_book_holiday') || 'No se puede reservar en un feriado: {description}').replace('{description}', isHoliday.description), 'error');
                 return;
             }
         }

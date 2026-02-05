@@ -6,6 +6,7 @@ import Button from '../components/atoms/Button';
 import MainLayout from '../components/templates/MainLayout';
 import DoctorCard from '../components/molecules/DoctorCard';
 import DoctorEditModal from '../components/organisms/DoctorEditModal';
+import './Doctors.css';
 
 const Doctors = () => {
     const {
@@ -49,10 +50,10 @@ const Doctors = () => {
             </section>
 
             <div className="tab-content animate-fadeIn">
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                <div className="doctors__grid">
                     {filteredDoctors.length === 0 ? (
-                        <div className="col-span-full card p-12 text-center border-dashed">
-                            <p className="text-muted">{t('no_doctors_found')}</p>
+                        <div className="doctors__empty-state">
+                            <p className="doctors__empty-text">{t('no_doctors_found')}</p>
                         </div>
                     ) : filteredDoctors.map(doctor => (
                         <DoctorCard

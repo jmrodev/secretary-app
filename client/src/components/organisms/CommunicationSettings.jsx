@@ -35,12 +35,12 @@ const renderVariableButtons = (variables, insertVariable, textareaId, settingKey
     return (
         <div className="config-field">
             <p className="config-field__label">Variables disponibles (Haz clic para insertar):</p>
-            <div className="flex flex-wrap gap-2 w-full">
+            <div className="variable-buttons">
                 {variables.map(v => (
                     <button
                         key={v}
                         type="button"
-                        className="px-3 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg text-sm font-medium hover:bg-blue-100 hover:border-blue-300 transition-all shadow-sm active:scale-95 whitespace-nowrap"
+                        className="variable-button"
                         onClick={() => insertVariable(textareaId, v, settingKey)}
                         title={`Insertar ${v}`}
                     >
@@ -131,7 +131,7 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
     ], []);
 
     return (
-        <div className="tab-panel animate-in w-full overflow-hidden">
+        <div className="tab-panel animate-fadeIn">
             {/* Clinic Address */}
             <div className="config-section">
                 <div className="config-section__header">

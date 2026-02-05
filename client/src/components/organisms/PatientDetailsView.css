@@ -1,0 +1,227 @@
+/* PatientDetailsView Styles (BEM) */
+
+.patient-details {
+    padding: 1.5rem;
+}
+
+.patient-details__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.patient-details__title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    text-transform: capitalize;
+    margin-bottom: 2rem;
+    color: var(--text-main);
+}
+
+.patient-details__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+    .patient-details__grid {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+.patient-details__main {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.patient-details__sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Info Cards */
+.info-card {
+    border-left: 4px solid var(--blue-500);
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+    .info-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .info-grid__full {
+        grid-column: span 2;
+    }
+}
+
+.info-item__label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--slate-400);
+    margin-bottom: 0.25rem;
+}
+
+.info-item__value {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.info-item__hint {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--slate-500);
+    margin-left: 0.5rem;
+}
+
+.info-item--divider {
+    border-top: 1px solid var(--slate-100);
+    padding-top: 1rem;
+}
+
+/* Contact List */
+.contact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-top: 0.25rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.contact-item__indicator {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background-color: var(--slate-300);
+}
+
+.contact-item__indicator--primary {
+    background-color: var(--green-500);
+}
+
+.contact-item__link {
+    color: var(--blue-600);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.contact-item__link:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+.contact-item__link--email {
+    font-size: 1rem;
+}
+
+.contact-item--email {
+    margin-top: 0.5rem;
+}
+
+/* Indicators */
+.date-indicator {
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    border: 1px solid transparent;
+}
+
+.date-indicator--rose {
+    background-color: var(--rose-50);
+    border-color: var(--rose-100);
+}
+
+.date-indicator--rose .date-indicator__label {
+    color: var(--rose-600);
+}
+
+.date-indicator--rose .date-indicator__value {
+    color: var(--rose-900);
+}
+
+.date-indicator--amber {
+    background-color: var(--amber-50);
+    border-color: var(--amber-100);
+}
+
+.date-indicator--amber .date-indicator__label {
+    color: var(--amber-600);
+}
+
+.date-indicator--amber .date-indicator__value {
+    color: var(--amber-900);
+}
+
+.date-indicator--indigo {
+    background-color: var(--indigo-50);
+    border-color: var(--indigo-100);
+}
+
+.date-indicator--indigo .date-indicator__label {
+    color: var(--indigo-600);
+}
+
+.date-indicator--indigo .date-indicator__value {
+    color: var(--indigo-900);
+}
+
+.date-indicator__label {
+    display: block;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.date-indicator__value {
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+/* Financial Card */
+.financial-card {
+    background-color: var(--slate-50);
+    border: 1px solid var(--slate-200);
+    text-align: center;
+    padding: 1rem;
+}
+
+.financial-card__amount {
+    display: block;
+    font-size: 2.25rem;
+    font-weight: 900;
+    margin: 1rem 0;
+}
+
+.financial-card__amount--debt {
+    color: var(--red-500);
+}
+
+.financial-card__amount--clear {
+    color: var(--green-500);
+}
+
+/* Tools */
+.tools-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}

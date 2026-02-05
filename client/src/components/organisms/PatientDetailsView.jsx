@@ -1,7 +1,7 @@
-
 import React from 'react';
 import Button from '../atoms/Button';
 import { formatDate } from '../../utils/format';
+import './PatientDetailsView.css';
 
 const PatientDetailsView = ({
     details,
@@ -18,11 +18,11 @@ const PatientDetailsView = ({
 }) => {
     return (
         <div className="patient-details animate-fadeIn">
-            <header className="page-header">
-                <Button variant="secondary" onClick={onBack} className="flex items-center gap-2">
+            <header className="patient-details__header">
+                <Button variant="secondary" onClick={onBack}>
                     &larr; {t('back_to_list')}
                 </Button>
-                <div className="flex gap-2">
+                <div className="config-flex config-flex--gap-2">
                     {user.role === 'secretary' && (
                         <Button
                             size="sm"
@@ -36,88 +36,130 @@ const PatientDetailsView = ({
                 </div>
             </header>
 
-            <h1 className="page-header__title capitalize mb-8">{details.full_name}</h1>
+            <h1 className="patient-details__title">{details.full_name}</h1>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="patient-details__grid">
                 {/* Main Content Area */}
-                <div className="lg:col-span-2 flex flex-col gap-8">
+                <div className="patient-details__main">
 
                     {/* Information Card */}
-                    <article className="card border-l-4 border-blue-500">
-                        <header className="card-header border-none pb-0">
+                    <article className="card info-card">
+                        <header className="card-header" style={{ border: 'none', paddingBottom: 0 }}>
                             <h3 className="card-header__title">{t('patient_info')}</h3>
                         </header>
 
-                        <div className="card-body grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                            <div className="info-group">
-                                <label className="info-group__label text-xs uppercase text-slate-400 font-bold">{t('dni')}</label>
-                                <p className="info-group__value text-lg font-semibold">{details.dni || 'N/A'}</p>
+                        <div className="card-body info-grid">
+                            <div className="info-item">
+                                <label className="info-item__label">{t('dni')}</label>
+                                <p className="info-item__value">{details.dni || 'N/A'}</p>
                             </div>
-                            <div className="info-group">
-                                <label className="info-group__label text-xs uppercase text-slate-400 font-bold">OS</label>
-                                <p className="info-group__value text-lg font-semibold">
+                            <div className="info-item">
+                                <label className="info-item__label">OS</label>
+                                <p className="info-item__value">
                                     {details.insurance_name || 'Particular'}
-                                    {details.affiliate_number && <span className="text-sm font-normal text-slate-500 ml-2">({details.affiliate_number})</span>}
+                                    {details.affiliate_number && <span className="info-item__hint">({details.affiliate_number})</span>}
                                 </p>
                             </div>
-                            <div className="info-group">
-                                <label className="info-group__label text-xs uppercase text-slate-400 font-bold">{t('dob') || 'Fecha Nac.'}</label>
-                                <p className="info-group__value text-lg font-semibold">
+                            <div className="info-item">
+                                <label className="info-item__label">{t('dob') || 'Fecha Nac.'}</label>
+                                <p className="info-item__value">
                                     {formatDate(details.dob)}
-                                    {details.dob && <span className="text-sm font-normal text-slate-500 ml-2">({Math.floor((new Date() - new Date(details.dob)) / 31557600000)} años)</span>}
+                                    {details.dob && <span className="info-item__hint">({Math.floor((new Date() - new Date(details.dob)) / 31557600000)} años)</span>}
                                 </p>
                             </div>
-                            <div className="info-group md:col-span-2 border-t border-slate-100 pt-4">
-                                <label className="info-group__label text-xs uppercase text-slate-400 font-bold">{t('address') || 'Dirección'}</label>
-                                <p className="info-group__value font-medium text-slate-700">{details.address || <span className="italic text-slate-400">Sin dirección cargada</span>}</p>
+                            <div className="info-item info-grid__full info-item--divider">
+                                <label className="info-item__label">{t('address') || 'Dirección'}</label>
+                                <p className="info-item__value" style={{ fontWeight: 500, color: 'var(--slate-700)' }}>
+                                    {[
+                                        details.street_name && `${details.street_name} ${details.street_number || ''}`,
+                                        details.floor && `Piso ${details.floor}`,
+                                        details.apartment && `Depto ${details.apartment}`,
+                                        details.city,
+                                        details.province,
+                                        details.address && `(${details.address})`
+                                    ].filter(Boolean).join(', ') || <span style={{ fontStyle: 'italic', color: 'var(--slate-400)' }}>{t('no_address_loaded')}</span>}
+                                </p>
+                                {(details.street_name || details.address) && (
+                                    <a
+                                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                            `${details.street_name || ''} ${details.street_number || ''}, ${details.city || ''}, ${details.province || ''}, ${details.country || ''} ${details.address || ''}`.trim()
+                                        )}`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="text-xs text-blue-600 hover:underline mt-1 inline-block"
+                                    >
+                                        {t('view_on_map')} ↗
+                                    </a>
+                                )}
                             </div>
-                            <div className="info-group md:col-span-2">
-                                <label className="info-group__label text-xs uppercase text-slate-400 font-bold">{t('contact')}</label>
-                                <div className="info-group__list flex flex-col gap-1 mt-1">
+                            <div className="info-item info-grid__full">
+                                <label className="info-item__label">{t('contact')}</label>
+                                <div className="contact-list">
                                     {details.phoneNumbers && details.phoneNumbers.length > 0 ? (
                                         details.phoneNumbers.map((p, idx) => (
-                                            <div key={idx} className="flex items-center gap-2">
-                                                <span className={`w-2 h-2 rounded-full ${p.is_primary ? 'bg-green-500' : 'bg-slate-300'}`}></span>
-                                                <span className="font-mono">{p.phone_number}</span>
-                                                {p.label && <span className="text-xs text-slate-400">({p.label})</span>}
+                                            <div key={idx} className="contact-item">
+                                                <span className={`contact-item__indicator ${p.is_primary ? 'contact-item__indicator--primary' : ''}`}></span>
+                                                <a
+                                                    href={`tel:${p.phone_number.replace(/[^0-9+]/g, '')}`}
+                                                    className="contact-item__link"
+                                                >
+                                                    {p.phone_number}
+                                                </a>
+                                                {p.label && <span className="info-item__hint">({p.label})</span>}
                                             </div>
                                         ))
                                     ) : (
-                                        <span>{details.phone || 'N/A'}</span>
+                                        details.phone ? (
+                                            <a
+                                                href={`tel:${details.phone.replace(/[^0-9+]/g, '')}`}
+                                                className="contact-item__link"
+                                            >
+                                                {details.phone}
+                                            </a>
+                                        ) : <span>N/A</span>
                                     )}
-                                    {details.email && <div className="text-blue-600 font-medium">{details.email}</div>}
+                                    {details.email && (
+                                        <div className="contact-item contact-item--email">
+                                            <a
+                                                href={`mailto:${details.email}`}
+                                                className="contact-item__link contact-item__link--email"
+                                            >
+                                                {details.email}
+                                            </a>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
-                            <div className="info-group md:col-span-2 border-t border-slate-100 pt-4">
-                                <label className="info-group__label text-xs uppercase text-slate-400 font-bold">{t('assigned_doctors')}</label>
-                                <p className="info-group__value text-main-700">
+                            <div className="info-item info-grid__full info-item--divider">
+                                <label className="info-item__label">{t('assigned_doctors')}</label>
+                                <p className="info-item__value" style={{ fontWeight: 400 }}>
                                     {details.assignedDoctors && details.assignedDoctors.length > 0
                                         ? details.assignedDoctors.map(d => d.full_name).join(', ')
-                                        : <span className="italic text-slate-400">{t('none')}</span>}
+                                        : <span style={{ fontStyle: 'italic', color: 'var(--slate-400)' }}>{t('none')}</span>}
                                 </p>
                             </div>
                         </div>
                     </article>
 
-                    {/* Important Dates Section (Only if they exist) */}
+                    {/* Important Dates Section */}
                     {(details.license_expiry_date || details.next_suggested_visit_date || details.next_suggested_prescription_date) && (
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="config-grid config-grid--3col">
                             {details.license_expiry_date && (
-                                <div className="p-3 bg-rose-50 border border-rose-100 rounded-xl">
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-rose-600">Venc. Certificado</span>
-                                    <p className="text-sm font-bold text-rose-900">{formatDate(details.license_expiry_date)}</p>
+                                <div className="date-indicator date-indicator--rose">
+                                    <span className="date-indicator__label">Venc. Certificado</span>
+                                    <p className="date-indicator__value">{formatDate(details.license_expiry_date)}</p>
                                 </div>
                             )}
                             {details.next_suggested_visit_date && (
-                                <div className="p-3 bg-amber-50 border border-amber-100 rounded-xl">
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-amber-600">Próximo Control</span>
-                                    <p className="text-sm font-bold text-amber-900">{formatDate(details.next_suggested_visit_date)}</p>
+                                <div className="date-indicator date-indicator--amber">
+                                    <span className="date-indicator__label">Próximo Control</span>
+                                    <p className="date-indicator__value">{formatDate(details.next_suggested_visit_date)}</p>
                                 </div>
                             )}
                             {details.next_suggested_prescription_date && (
-                                <div className="p-3 bg-indigo-50 border border-indigo-100 rounded-xl">
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-indigo-600">Próxima Receta</span>
-                                    <p className="text-sm font-bold text-indigo-900">{formatDate(details.next_suggested_prescription_date)}</p>
+                                <div className="date-indicator date-indicator--indigo">
+                                    <span className="date-indicator__label">Próxima Receta</span>
+                                    <p className="date-indicator__value">{formatDate(details.next_suggested_prescription_date)}</p>
                                 </div>
                             )}
                         </div>
@@ -128,11 +170,11 @@ const PatientDetailsView = ({
                         <header className="card-header">
                             <h3 className="card-header__title">{t('appointment_history')}</h3>
                         </header>
-                        <div className="card-body p-0">
+                        <div className="card-body" style={{ padding: 0 }}>
                             {details.appointments && details.appointments.length > 0 ? (
-                                <div className="table-responsive max-h-[400px]">
-                                    <table className="table-base w-full">
-                                        <thead className="sticky top-0 bg-white">
+                                <div className="table-container" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                                    <table className="table">
+                                        <thead style={{ position: 'sticky', top: 0, background: 'white', zIndex: 1 }}>
                                             <tr>
                                                 <th>Fecha</th>
                                                 <th>Doctor</th>
@@ -144,28 +186,30 @@ const PatientDetailsView = ({
                                         </thead>
                                         <tbody>
                                             {details.appointments.map(app => (
-                                                <tr key={app.id} className="hover:bg-slate-50 transition-colors">
-                                                    <td className="whitespace-nowrap">
-                                                        <div className="font-bold">{formatDate(app.appointment_date)}</div>
-                                                        <div className="text-xs text-slate-400">
+                                                <tr key={app.id}>
+                                                    <td style={{ whiteSpace: 'nowrap' }}>
+                                                        <div style={{ fontWeight: 700 }}>{formatDate(app.appointment_date)}</div>
+                                                        <div className="config-field__hint" style={{ fontSize: '0.75rem' }}>
                                                             {new Date(app.appointment_date).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
                                                         </div>
                                                     </td>
-                                                    <td className="whitespace-nowrap">{app.doctor_name}</td>
+                                                    <td style={{ whiteSpace: 'nowrap' }}>{app.doctor_name}</td>
                                                     <td>
                                                         <span className={`tag tag-${app.status}`}>
                                                             {t(app.status) || app.status}
                                                         </span>
                                                     </td>
-                                                    <td className="text-green-600 font-bold whitespace-nowrap">
+                                                    <td className="text-success" style={{ fontWeight: 700, whiteSpace: 'nowrap' }}>
                                                         {Number(app.paid_amount) > 0 ? `$${app.paid_amount}` : '-'}
                                                     </td>
-                                                    <td className={`font-bold whitespace-nowrap ${Number(app.pending_amount) > 0 ? 'text-red-500' : 'text-slate-400'}`}>
+                                                    <td style={{ fontWeight: 700, whiteSpace: 'nowrap' }} className={Number(app.pending_amount) > 0 ? 'text-danger' : 'text-muted'}>
                                                         {Number(app.pending_amount) > 0 ? `$${app.pending_amount}` : '$0'}
                                                     </td>
-                                                    <td className="text-xs italic text-slate-500">
+                                                    <td style={{ fontSize: '0.75rem', fontStyle: 'italic', color: 'var(--slate-500)' }}>
                                                         {app.reason}
-                                                        {app.cancellation_reason && <div className="text-red-500 font-bold mt-1">🚫 {app.cancellation_reason}</div>}
+                                                        {app.cancellation_reason && (
+                                                            <div className="text-danger" style={{ fontWeight: 700, marginTop: '0.25rem' }}>🚫 {app.cancellation_reason}</div>
+                                                        )}
                                                     </td>
                                                 </tr>
                                             ))}
@@ -173,7 +217,7 @@ const PatientDetailsView = ({
                                     </table>
                                 </div>
                             ) : (
-                                <div className="p-8 text-center text-slate-400 italic">
+                                <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--slate-400)', fontStyle: 'italic' }}>
                                     {t('no_history')}
                                 </div>
                             )}
@@ -184,20 +228,23 @@ const PatientDetailsView = ({
                 </div>
 
                 {/* Sidebar Info Area */}
-                <aside className="flex flex-col gap-8">
+                <aside className="patient-details__sidebar">
                     {/* Financial Status Block */}
-                    <div className="card bg-slate-50 border-slate-200">
-                        <header className="card-header border-none pb-2 text-center">
-                            <h4 className="text-xs uppercase tracking-widest text-slate-400 font-bold">{t('financial_history_debt')}</h4>
+                    <div className="card financial-card">
+                        <header className="card-header" style={{ border: 'none', paddingBottom: '0.5rem', textAlign: 'center' }}>
+                            <h4 style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--slate-400)', fontWeight: 700, margin: 0 }}>
+                                {t('financial_history_debt')}
+                            </h4>
                         </header>
-                        <div className="flex flex-col items-center gap-4 p-4">
-                            <span className={`text-4xl font-black ${Number(details.total_debt) > 0 ? 'text-red-500' : 'text-green-500'}`}>
+                        <div className="config-flex config-flex--column config-flex--gap-4" style={{ alignItems: 'center', padding: '1rem' }}>
+                            <span className={`financial-card__amount ${Number(details.total_debt) > 0 ? 'financial-card__amount--debt' : 'financial-card__amount--clear'}`}>
                                 ${Number(details.total_debt).toFixed(2)}
                             </span>
                             {Number(details.total_debt) > 0 && (
                                 <Button
                                     variant="primary"
-                                    className="w-full bg-red-600 hover:bg-red-700"
+                                    className="w-full"
+                                    style={{ backgroundColor: 'var(--red-600)' }}
                                     onClick={(e) => onPayDebt(e, details.id, details.total_debt)}
                                 >
                                     💸 {t('pay_debt')}
@@ -208,20 +255,21 @@ const PatientDetailsView = ({
 
                     {/* Quick Tools Block */}
                     <div className="card">
-                        <header className="card-header border-none">
-                            <h3 className="card-header__title text-base">{t('tools')}</h3>
+                        <header className="card-header" style={{ border: 'none' }}>
+                            <h3 className="card-header__title" style={{ fontSize: '1rem' }}>{t('tools')}</h3>
                         </header>
-                        <div className="card-body flex flex-col gap-3">
-                            <Button variant="secondary" className="justify-start gap-3" onClick={() => onGenerateQR(details.id)}>
+                        <div className="card-body tools-list" style={{ padding: '1.25rem' }}>
+                            <Button variant="secondary" style={{ justifyContent: 'flex-start', gap: '0.75rem' }} onClick={() => onGenerateQR(details.id)}>
                                 📱 Generar QR Acceso
                             </Button>
-                            <Button variant="secondary" className="justify-start gap-3" onClick={() => onGeneratePrescriptionLink(details.id)}>
+                            <Button variant="secondary" style={{ justifyContent: 'flex-start', gap: '0.75rem' }} onClick={() => onGeneratePrescriptionLink(details.id)}>
                                 💊 Solicitar Receta (Link)
                             </Button>
                             {(user.role === 'admin' || user.role === 'secretary') && (
                                 <Button
                                     variant="ghost"
-                                    className="justify-start gap-3 text-red-600 hover:bg-red-50 mt-4"
+                                    className="text-danger"
+                                    style={{ justifyContent: 'flex-start', gap: '0.75rem', marginTop: '1rem' }}
                                     onClick={() => onDelete(details)}
                                 >
                                     🗑️ Eliminar Paciente

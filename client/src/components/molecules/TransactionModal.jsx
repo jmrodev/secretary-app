@@ -18,6 +18,7 @@ import Button from '../atoms/Button';
 import CurrencyInput from '../atoms/CurrencyInput';
 import FormGroup from './FormGroup';
 import PrescriptionSection from './PrescriptionSection';
+import './TransactionModal.css';
 
 const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requestId }) => {
     const { t } = useLanguage();
@@ -68,7 +69,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
             onClose={onClose}
             title={t('record_payment')}
             footer={
-                <div className="flex justify-end gap-2">
+                <div className="transaction-modal-footer">
                     <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
                     <Button onClick={handleSubmit} disabled={loading} variant="primary">
                         {loading ? t('processing') : t('confirm_payment')}
@@ -76,7 +77,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                 </div>
             }
         >
-            <div className="flex flex-col gap-4">
+            <div className="transaction-modal">
                 {/* Transaction Type */}
                 <FormGroup label={t('type')}>
                     <Select
@@ -89,7 +90,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                 {/* Patient Search (Autocomplete) */}
                 {formData.type === 'income_patient' && (
                     <FormGroup label={t('patient')}>
-                        <div className="relative">
+                        <div style={{ position: 'relative' }}>
                             <Input
                                 value={patientSearch}
                                 onChange={(e) => {
@@ -99,11 +100,11 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                                 }}
                                 onFocus={() => !initialData?.patientId && setShowPatientList(true)}
                                 placeholder={t('search_name_dni')}
-                                className={initialData?.patientId ? 'bg-gray-100 cursor-not-allowed' : ''}
+                                className={initialData?.patientId ? 'input-field--disabled' : ''}
                                 disabled={!!initialData?.patientId}
                             />
                             {showPatientList && patientSearch && !formData.related_user_id && (
-                                <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto mt-1">
+                                <ul className="autocomplete-results">
                                     {patients.filter(p =>
                                         p.full_name.toLowerCase().includes(patientSearch.toLowerCase()) ||
                                         (p.dni && p.dni.includes(patientSearch))
@@ -111,9 +112,9 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                                         <li
                                             key={p.id}
                                             onClick={() => selectPatient(p)}
-                                            className="p-2 hover:bg-blue-50 cursor-pointer text-sm"
+                                            className="autocomplete-item"
                                         >
-                                            {p.full_name} <span className="text-gray-400 text-xs">{p.dni}</span>
+                                            {p.full_name} <span className="autocomplete-item__hint">{p.dni}</span>
                                         </li>
                                     ))}
                                 </ul>
@@ -164,37 +165,38 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                 )}
 
                 {/* Payments Section */}
-                <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-                    <div className="flex justify-between items-center mb-2">
-                        <label className="text-sm font-semibold text-gray-700">{t('payment_methods')}</label>
-                        <Button variant="ghost" size="sm-compact" onClick={addPaymentMethod} className="text-blue-600">
+                <div className="card payment-methods-card">
+                    <div className="payment-methods-card__header">
+                        <label className="config-group__title payment-methods-card__title">{t('payment_methods')}</label>
+                        <Button variant="ghost" size="sm-compact" onClick={addPaymentMethod} className="text-primary">
                             + {t('add_payment_method') || 'Agregar'}
                         </Button>
                     </div>
 
                     {formData.payments.map((payment, index) => (
-                        <div key={index} className="grid grid-cols-12 gap-2 mb-2 items-center animate-fadeIn">
-                            <div className="col-span-5">
+                        <div key={index} className="payment-row">
+                            <div className="payment-row__amount">
                                 <CurrencyInput
                                     placeholder={t('amount')}
-                                    className="input-field w-full text-right"
+                                    className="input-field"
+                                    style={{ textAlign: 'right' }}
                                     value={payment.amount}
                                     onChange={e => handlePaymentChange(index, 'amount', e.target.value)}
                                 />
                             </div>
-                            <div className="col-span-6">
+                            <div className="payment-row__method">
                                 <Select
                                     value={payment.method}
                                     onChange={e => handlePaymentChange(index, 'method', e.target.value)}
                                     options={paymentMethods}
                                 />
                             </div>
-                            <div className="col-span-1 flex justify-center">
+                            <div className="payment-row__action">
                                 {formData.payments.length > 1 && (
                                     <Button
                                         variant="ghost"
                                         size="sm-icon"
-                                        className="text-red-500 hover:bg-red-50"
+                                        className="text-danger"
                                         onClick={() => removePaymentMethod(index)}
                                     >
                                         ✕
@@ -204,21 +206,21 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                         </div>
                     ))}
 
-                    <div className="mt-2 text-right text-sm">
+                    <div className="payment-summary">
                         {pricingInfo && (
-                            <p className="text-xs text-gray-500 mb-1 italic">{pricingInfo}</p>
+                            <p className="payment-summary__pricing-info">{pricingInfo}</p>
                         )}
-                        <div className="flex justify-end items-center gap-3 font-medium">
+                        <div className="payment-summary__totals">
                             {totalPrice > 0 && (
                                 <>
-                                    <span className="text-gray-600">{t('total')}: {formatPrice(totalPrice)}</span>
-                                    <span className="text-green-600">{t('paid')}: {formatPrice(currentPaidTotal)}</span>
+                                    <span className="text-muted">{t('total')}: {formatPrice(totalPrice)}</span>
+                                    <span className="text-success">{t('paid')}: {formatPrice(currentPaidTotal)}</span>
                                     {debtAmount > 0 ? (
-                                        <span className="text-red-600 font-bold bg-red-50 px-2 py-0.5 rounded-full text-xs border border-red-100">
+                                        <span className="text-danger payment-summary__debt">
                                             {t('debt')}: {formatPrice(debtAmount)}
                                         </span>
                                     ) : (
-                                        <span className="text-green-600 font-bold">✓</span>
+                                        <span className="text-success" style={{ fontWeight: 700 }}>✓</span>
                                     )}
                                 </>
                             )}
@@ -237,13 +239,13 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
 
                 {/* Date */}
                 {settings.allow_admin_edit_finance_date === 'true' && (
-                    <FormGroup label={t('transaction_date') || 'Fecha de Transacción'} className="relative">
+                    <FormGroup label={t('transaction_date') || 'Fecha de Transacción'} style={{ position: 'relative' }}>
                         <Input
                             type="datetime-local"
                             value={formData.transaction_date}
                             onChange={e => updateField('transaction_date', e.target.value)}
                         />
-                        <p className="text-xs text-amber-600 mt-1">⚠️ {t('edit_date_warning') || 'Modificar la fecha afecta el orden en la caja diaria.'}</p>
+                        <p className="config-field__hint" style={{ color: 'var(--amber-600)', marginTop: '0.25rem' }}>⚠️ {t('edit_date_warning') || 'Modificar la fecha afecta el orden en la caja diaria.'}</p>
                     </FormGroup>
                 )}
 
@@ -261,7 +263,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                     <Input
                         type="file"
                         onChange={e => updateField('proof', e.target.files[0])}
-                        className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                        style={{ fontSize: '0.875rem' }}
                     />
                 </FormGroup>
             </div>

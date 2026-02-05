@@ -11,7 +11,7 @@ const AdminUsers = () => {
     const { t } = useLanguage();
 
     if (currentUser.role !== 'admin') {
-        return <div className="p-8 text-center text-red-500 font-bold">Access Denied</div>;
+        return <div className="p-8 text-center text-danger" style={{ fontWeight: 'bold' }}>Access Denied</div>;
     }
 
     return (

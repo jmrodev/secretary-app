@@ -6,21 +6,25 @@ import Button from '../atoms/Button';
 import PhoneNumbersManager from '../molecules/PhoneNumbersManager';
 import { useLanguage } from '../../context/LanguageContext';
 import api from '../../api/axios';
+import { capitalizeWords } from '../../utils/stringUtils';
 
 const UserForm = ({ type, formData, setFormData }) => {
     const { t } = useLanguage();
 
     const handleChange = (field, value) => {
+        if (['full_name', 'specialty'].includes(field) && typeof value === 'string') {
+            value = capitalizeWords(value);
+        }
         setFormData({ ...formData, [field]: value });
     };
 
     if (type === 'DELETE') {
         return (
             <div className="animate-fadeIn">
-                <p className="text-slate-600 mb-4">
+                <p className="config-field__hint" style={{ marginBottom: '1rem' }}>
                     {t('delete_confirmation') || '¿Eliminar usuario?'} <strong>{formData.username}</strong>?
                     <br />
-                    <span className="text-red-500 font-medium">{t('action_cannot_undone')}</span>
+                    <span className="text-danger" style={{ fontWeight: 500 }}>{t('action_cannot_undone')}</span>
                 </p>
                 <FormGroup label="Código de Seguridad (1234)">
                     <Input
@@ -36,8 +40,8 @@ const UserForm = ({ type, formData, setFormData }) => {
 
     if (type === 'RESET_DNI') {
         return (
-            <div className="animate-fadeIn p-4 bg-amber-50 rounded-xl border border-amber-100">
-                <p className="m-0 text-amber-800">
+            <div className="animate-fadeIn" style={{ padding: '1rem', backgroundColor: 'var(--amber-50)', borderRadius: '0.75rem', border: '1px solid var(--amber-100)' }}>
+                <p style={{ margin: 0, color: 'var(--amber-800)' }}>
                     ¿Reiniciar contraseña de <strong>{formData.username}</strong> al DNI (<strong>{formData.dni}</strong>)?
                 </p>
             </div>
@@ -59,8 +63,8 @@ const UserForm = ({ type, formData, setFormData }) => {
     }
 
     return (
-        <div className="flex flex-col gap-4 animate-fadeIn">
-            <div className="grid grid-cols-2 gap-4">
+        <div className="config-flex config-flex--column config-flex--gap-4 animate-fadeIn">
+            <div className="config-grid config-grid--2col">
                 <FormGroup label={t('username')} required>
                     <Input
                         value={formData.username}
@@ -104,7 +108,7 @@ const UserForm = ({ type, formData, setFormData }) => {
                 />
             </FormGroup>
 
-            <div className="py-2 border-y border-slate-100 my-2">
+            <div style={{ padding: '0.5rem 0', borderTop: '1px solid var(--gray-100)', borderBottom: '1px solid var(--gray-100)', margin: '0.5rem 0' }}>
                 <PhoneNumbersManager
                     phoneNumbers={formData.phoneNumbers}
                     onChange={(newPhones) => handleChange('phoneNumbers', newPhones)}

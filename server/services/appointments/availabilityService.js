@@ -4,6 +4,25 @@ const googleController = require('../../controllers/googleController');
 const { pool } = require('../../db');
 
 class AvailabilityService {
+    _getDateStr(date) {
+        return [
+            date.getFullYear(),
+            String(date.getMonth() + 1).padStart(2, '0'),
+            String(date.getDate()).padStart(2, '0')
+        ].join('-');
+    }
+
+    _parseLocalDate(dateInput) {
+        if (!dateInput) return new Date();
+        if (dateInput instanceof Date) return new Date(dateInput);
+
+        // Handle "YYYY-MM-DD" or "YYYY-MM-DD HH:mm:ss"
+        const [datePart] = dateInput.split(' ');
+        const [y, m, d] = datePart.split('-').map(Number);
+        if (isNaN(y) || isNaN(m) || isNaN(d)) return new Date();
+        return new Date(y, m - 1, d, 0, 0, 0, 0);
+    }
+
     async getNextFreeSlot({ doctor_id, start_date, direction = 'next', include_out_of_hours = 'false' }) {
         const conn = await pool.getConnection();
         try {
@@ -13,8 +32,10 @@ class AvailabilityService {
             const overturnEnd = doc.overturn_end_time || '21:00:00';
             const forceAlignment = doc.force_hour_alignment === 1;
 
-            let currentDay = start_date ? new Date(start_date) : new Date();
-            const initialSearchDate = new Date(currentDay);
+            let currentDay = this._parseLocalDate(start_date);
+            const initialSearchDate = (start_date && typeof start_date === 'string' && start_date.includes('T'))
+                ? new Date(start_date) // If it's a full ISO string, use it
+                : (start_date ? this._parseLocalDate(start_date) : new Date());
             const now = new Date();
 
             const maxDays = 90;
@@ -42,12 +63,8 @@ class AvailabilityService {
                 console.warn("Google Busy pre-fetch failed", gErr.message);
             }
 
-            const holidaysRows = await conn.query("SELECT date FROM active_holidays WHERE date >= ? AND date <= ?", [dMin, dMax]);
-            const holidayDates = new Set();
-            holidaysRows.forEach(h => {
-                const d = new Date(h.date);
-                holidayDates.add(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`);
-            });
+            const holidaysRows = await conn.query("SELECT DATE_FORMAT(date, '%Y-%m-%d') as dateStr FROM active_holidays WHERE date >= ? AND date <= ?", [dMin, dMax]);
+            const holidayDates = new Set(holidaysRows.map(h => h.dateStr));
 
             const schedulesAll = await conn.query("SELECT * FROM doctor_schedules WHERE doctor_id = ?", [doctor_id]);
 
@@ -62,11 +79,7 @@ class AvailabilityService {
 
             while (daysChecked < maxDays) {
                 const dayOfWeek = currentDay.getDay();
-                const dateStr = [
-                    currentDay.getFullYear(),
-                    String(currentDay.getMonth() + 1).padStart(2, '0'),
-                    String(currentDay.getDate()).padStart(2, '0')
-                ].join('-');
+                const dateStr = this._getDateStr(currentDay);
 
                 if (holidayDates.has(dateStr)) {
                     currentDay.setDate(currentDay.getDate() + (direction === 'next' ? 1 : -1));
@@ -232,7 +245,7 @@ class AvailabilityService {
             const overturnEnd = doc.overturn_end_time || '21:00:00';
             const forceAlignment = doc.force_hour_alignment === 1;
 
-            let currentDay = start_date ? new Date(start_date) : new Date();
+            let currentDay = this._parseLocalDate(start_date);
             const now = new Date();
             const todayZero = new Date(now); todayZero.setHours(0, 0, 0, 0);
             if (currentDay < todayZero) currentDay = new Date(todayZero);
@@ -257,12 +270,8 @@ class AvailabilityService {
                 console.warn("Google Busy pre-fetch failed", gErr.message);
             }
 
-            const holidaysRows = await conn.query("SELECT date FROM active_holidays WHERE date >= ? AND date <= ?", [dMin, dMax]);
-            const holidayDates = new Set();
-            holidaysRows.forEach(h => {
-                const d = new Date(h.date);
-                holidayDates.add(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`);
-            });
+            const holidaysRows = await conn.query("SELECT DATE_FORMAT(date, '%Y-%m-%d') as dateStr FROM active_holidays WHERE date >= ? AND date <= ?", [dMin, dMax]);
+            const holidayDates = new Set(holidaysRows.map(h => h.dateStr));
 
             const schedulesAll = await conn.query("SELECT * FROM doctor_schedules WHERE doctor_id = ?", [doctor_id]);
 
@@ -279,11 +288,7 @@ class AvailabilityService {
 
             while (daysChecked < maxDaysToCheck && daysFound < limitDaysWithSlots) {
                 const dayOfWeek = currentDay.getDay();
-                const dateStr = [
-                    currentDay.getFullYear(),
-                    String(currentDay.getMonth() + 1).padStart(2, '0'),
-                    String(currentDay.getDate()).padStart(2, '0')
-                ].join('-');
+                const dateStr = this._getDateStr(currentDay);
 
                 if (holidayDates.has(dateStr)) {
                     currentDay.setDate(currentDay.getDate() + 1);
@@ -402,11 +407,8 @@ class AvailabilityService {
             const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
             const endDate = `${year}-${String(month).padStart(2, '0')}-${lastDay}`;
 
-            const holidaysRows = await conn.query("SELECT date FROM active_holidays WHERE date BETWEEN ? AND ?", [startDate, endDate]);
-            const holidays = new Set(holidaysRows.map(h => {
-                const d = new Date(h.date);
-                return d.toISOString().split('T')[0];
-            }));
+            const holidaysRows = await conn.query("SELECT DATE_FORMAT(date, '%Y-%m-%d') as dateStr FROM active_holidays WHERE date BETWEEN ? AND ?", [startDate, endDate]);
+            const holidays = new Set(holidaysRows.map(h => h.dateStr));
 
             const appts = await conn.query(
                 "SELECT appointment_date, is_out_of_hours, status FROM appointments WHERE doctor_id = ? AND date(appointment_date) BETWEEN ? AND ? AND status NOT IN ('cancelled', 'absent', 'suspended', 'rejected')",

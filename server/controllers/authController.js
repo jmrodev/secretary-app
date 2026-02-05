@@ -6,7 +6,11 @@ const { logAction } = require('../utils/audit');
 exports.register = async (req, res) => {
     let conn;
     try {
-        let { username, password, role, fullName, phone, specialty, cbu, dob, address, medicalHistory, dni, insurance_id, institution_id, affiliate_number } = req.body;
+        let {
+            username, password, role, fullName, phone, specialty, cbu, dob, address,
+            medicalHistory, dni, insurance_id, institution_id, affiliate_number,
+            street_name, street_number, floor, apartment, city, province, country
+        } = req.body;
 
         // Fallback for fullName if coming as full_name
         if (!fullName && req.body.full_name) {
@@ -56,8 +60,19 @@ exports.register = async (req, res) => {
             const firstName = req.body.first_name || fullName; // Fallback to fullName (as migrated data)
             const lastName = req.body.last_name || '';
 
-            const pResult = await conn.query("INSERT INTO patients (user_id, full_name, first_name, last_name, dob, phone, address, medical_history, dni, insurance_id, institution_id, affiliate_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                [userId, fullName, firstName, lastName, dob || null, phone || null, address || null, medicalHistory || null, dni || null, insurance_id || null, institution_id || null, affiliate_number || null]);
+            const pResult = await conn.query(
+                `INSERT INTO patients (
+                    user_id, full_name, first_name, last_name, dob, phone, address, 
+                    medical_history, dni, insurance_id, institution_id, affiliate_number,
+                    street_name, street_number, floor, apartment, city, province, country
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [
+                    userId, fullName, firstName, lastName, dob || null, phone || null, address || null,
+                    medicalHistory || null, dni || null, insurance_id || null, institution_id || null, affiliate_number || null,
+                    street_name || null, street_number || null, floor || null, apartment || null,
+                    city || 'Tandil', province || 'Buenos Aires', country || 'Argentina'
+                ]
+            );
             patientId = pResult.insertId;
 
             // Handle Multiple Phone Numbers

@@ -10,74 +10,68 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
 
     return (
         <div
-            className={`appointment-card group status-${appt.status} ${isExternal ? 'status-external' : ''} ${isAnonymous ? 'status-anonymous' : ''}`}
+            className={`appointment-card status-${appt.status} ${isExternal ? 'appointment-card--external' : ''} ${isAnonymous ? 'appointment-card--anonymous' : ''}`}
             onClick={onClick}
-            style={isExternal ? { borderLeft: '4px solid var(--amber-500)' } : {}}
         >
             {/* Col 1: Time */}
-            <div className="appt-time-box">
-                <span className="text-sm font-bold text-main-900">
+            <div className="appointment-card__time-box">
+                <span className="appointment-card__time">
                     {new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
                 </span>
             </div>
 
             {/* Col 2: Info */}
-            <div className="appt-info">
-                <div className="font-bold text-main-800 truncate">
+            <div className="appointment-card__info">
+                <div className="appointment-card__patient-name">
                     {appt.type === 'virtual' && '📹 '}
                     {appt.patient_name || 'S/N'}
                 </div>
                 {appt.patient_phone && (
-                    <div className="text-[10px] text-indigo-600 font-medium">
+                    <a
+                        href={`tel:${appt.patient_phone.replace(/[^0-9+]/g, '')}`}
+                        className="appointment-card__phone"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         📱 {appt.patient_phone}
-                    </div>
+                    </a>
                 )}
-                <div className="flex items-center gap-2 text-[11px] text-muted truncate">
-                    <span className="flex items-center gap-1">👨‍⚕️ {appt.doctor_name}</span>
-                    {appt.reason && <span className="italic opacity-75 truncate">• {appt.reason}</span>}
+                <div className="appointment-card__details">
+                    <span className="appointment-card__doctor">👨‍⚕️ {appt.doctor_name}</span>
+                    {appt.reason && <span className="appointment-card__reason">• {appt.reason}</span>}
                 </div>
             </div>
 
             {/* Col 3: Status & Payment */}
-            <div className="appt-status">
+            <div className="appointment-card__status">
                 {(() => {
                     const isAttended = ['arrived', 'attended', 'completed'].includes(appt.status);
-                    // Transaction-based amounts
                     const paid = Number(appt.paid_amount || 0);
                     const pending = Number(appt.pending_amount || 0);
                     const txTotal = paid + pending;
-
-                    // Fallback to appointment cost if no transactions
                     const cost = Number(appt.cost || 0);
-
                     const hasTransactions = txTotal > 0;
                     const effectiveTotal = hasTransactions ? txTotal : cost;
 
                     if (effectiveTotal === 0 && !isAttended) return null;
 
-                    let colorClass = 'text-slate-400';
+                    let colorModifier = '';
                     let amountToDisplay = effectiveTotal;
                     let icon = '';
 
                     if (!isAttended) {
-                        colorClass = 'appt-status__amount--pending';
+                        colorModifier = 'pending';
                         amountToDisplay = hasTransactions ? txTotal : cost;
-                        icon = '';
                     } else {
-                        // Attended
                         if (paid >= effectiveTotal && effectiveTotal > 0) {
-                            // Fully paid
-                            colorClass = 'appt-status__amount--paid';
+                            colorModifier = 'paid';
                             amountToDisplay = paid;
                             icon = ' ✓';
                         } else if (pending > 0) {
-                            // Has recorded debt
-                            colorClass = 'appt-status__amount--debt';
+                            colorModifier = 'debt';
                             amountToDisplay = pending;
                             icon = ' ✘';
                         } else if (!hasTransactions && cost > 0) {
-                            // No transactions but has cost -> Implicit Debt
-                            colorClass = 'appt-status__amount--debt';
+                            colorModifier = 'debt';
                             amountToDisplay = cost;
                             icon = ' ✘';
                         }
@@ -87,9 +81,9 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
 
                     return (
                         <div className="appt-status__col">
-                            <div className={`appt-status__text ${colorClass}`}>
+                            <div className={`appt-status__text appt-status__amount--${colorModifier}`}>
                                 <span>${amountToDisplay.toLocaleString()}</span>
-                                {icon && <span style={{ fontSize: '12px' }}>{icon}</span>}
+                                {icon && <span className="appt-status__check">{icon}</span>}
                             </div>
                             {appt.payment_methods && paid > 0 && (
                                 <span className="appt-status__icon-group">
@@ -103,38 +97,35 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
                     );
                 })()}
 
-
-                <span className={`status-chip-mini status-${appt.status} inline-block mt-1`}>
+                <span className={`appointment-card__status-chip status-${appt.status}`}>
                     {t(appt.status) || appt.status}
                 </span>
             </div>
 
             {/* Col 4: Actions (Optional) */}
-            {
-                showActions && (
-                    <div className="appt-actions">
-                        <button onClick={(e) => {
-                            e.stopPropagation();
-                            onWhatsAppAction(appt, 'reminder');
-                        }}
-                            className="p-1.5 bg-green-50 text-green-600 rounded-lg hover:bg-green-600 hover:text-white transition-all shadow-sm border border-green-100"
-                            title="Enviar recordatorio"
-                        >
-                            📲
-                        </button>
-                        <button onClick={(e) => {
-                            e.stopPropagation();
-                            onWhatsAppAction(appt, 'confirmation');
-                        }}
-                            className="p-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all shadow-sm border border-blue-100"
-                            title="Enviar comprobante"
-                        >
-                            ✨
-                        </button>
-                    </div>
-                )
-            }
-        </div >
+            {showActions && (
+                <div className="appointment-card__actions">
+                    <button onClick={(e) => {
+                        e.stopPropagation();
+                        onWhatsAppAction(appt, 'reminder');
+                    }}
+                        className="appointment-card__action-btn appointment-card__action-btn--whatsapp"
+                        title="Enviar recordatorio"
+                    >
+                        📲
+                    </button>
+                    <button onClick={(e) => {
+                        e.stopPropagation();
+                        onWhatsAppAction(appt, 'confirmation');
+                    }}
+                        className="appointment-card__action-btn appointment-card__action-btn--receipt"
+                        title="Enviar comprobante"
+                    >
+                        ✨
+                    </button>
+                </div>
+            )}
+        </div>
     );
 };
 

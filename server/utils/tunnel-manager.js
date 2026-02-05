@@ -81,16 +81,21 @@ function startTunnelManager() {
     return tunnelProcess;
 }
 
-function refreshTunnel() {
-    console.log('🔄 Refreshing Tunnel...');
+function stopTunnelManager() {
     if (tunnelProcess) {
+        console.log('🛑 Stopping Cloudflare Tunnel...');
         tunnelProcess.kill();
         tunnelProcess = null;
     }
+}
+
+function refreshTunnel() {
+    console.log('🔄 Refreshing Tunnel...');
+    stopTunnelManager();
     // Wait a bit before restarting to ensure port is free or clean exit
     setTimeout(() => {
         startTunnelManager();
     }, 2000);
 }
 
-module.exports = { startTunnelManager, refreshTunnel };
+module.exports = { startTunnelManager, stopTunnelManager, refreshTunnel };

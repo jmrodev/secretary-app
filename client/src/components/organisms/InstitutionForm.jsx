@@ -2,6 +2,7 @@ import React from 'react';
 import Button from '../atoms/Button';
 import PhoneNumbersManager from '../molecules/PhoneNumbersManager';
 import { useLanguage } from '../../context/LanguageContext';
+import { capitalizeWords } from '../../utils/stringUtils';
 
 const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isEditing, isSubmitting = false }) => {
     const { t } = useLanguage();
@@ -14,7 +15,7 @@ const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isEditing, is
                     type="text"
                     className="input-field"
                     value={formData.name}
-                    onChange={e => onChange('name', e.target.value)}
+                    onChange={e => onChange('name', capitalizeWords(e.target.value))}
                     required
                 />
             </div>

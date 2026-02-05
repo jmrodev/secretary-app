@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Button from '../atoms/Button';
 import FormGroup from '../molecules/FormGroup';
 import Input from '../atoms/Input';
+import { capitalizeFirst } from '../../utils/stringUtils';
 
 const HolidayForm = ({ onAdd }) => {
     const [newDate, setNewDate] = useState('');
@@ -31,7 +32,7 @@ const HolidayForm = ({ onAdd }) => {
                 <Input
                     type="text"
                     value={newDesc}
-                    onChange={e => setNewDesc(e.target.value)}
+                    onChange={e => setNewDesc(capitalizeFirst(e.target.value))}
                     placeholder="Ej. Navidad"
                     required
                 />

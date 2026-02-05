@@ -4,6 +4,7 @@ import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useConfig } from '../context/ConfigContext';
 import { useAuth } from '../context/AuthContext';
+import { capitalizeFirst } from '../utils/stringUtils';
 
 /**
  * Hook to manage the appointment booking lifecycle.
@@ -269,7 +270,7 @@ export const useAppointmentBooking = (doctors) => {
             },
             handleTypeChange: (val) => setType(val),
             handleInstitutionChange: (val) => setSelectedInstitution(val),
-            handleReasonChange: (val) => setReason(val),
+            handleReasonChange: (val) => setReason(capitalizeFirst(val)),
             handleBonifiedChange: (val) => setBonified(val),
             handlePhoneChange: (val) => setSelectedPatientData(prev => ({ ...prev, phone: val })),
             toggleForm: () => setShowForm(prev => !prev),

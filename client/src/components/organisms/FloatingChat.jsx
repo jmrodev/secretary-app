@@ -178,7 +178,7 @@ const FloatingChat = () => {
                     </div>
                 </div>
             ) : (
-                <div className="widget-minimized" onClick={() => setIsOpen(true)}>
+                <div className="widget-minimized" onClick={toggleChat}>
                     <span>💬 Mensajes</span>
                     {unreadCount > 0 && <span className="widget-badge">{unreadCount}</span>}
                 </div>

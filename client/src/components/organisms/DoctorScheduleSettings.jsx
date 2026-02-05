@@ -5,6 +5,7 @@ import { useModal } from '../../context/ModalContext';
 import { useMessage } from '../../context/MessageContext';
 import Button from '../atoms/Button';
 import Input from '../atoms/Input';
+import './DoctorScheduleSettings.css';
 
 const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading }) => {
     const { t } = useLanguage();
@@ -123,33 +124,35 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
         });
     };
 
-    if (loading) return <div>Cargando horarios...</div>;
+    if (loading) return <div style={{ padding: '2rem', textAlign: 'center' }}>Cargando horarios...</div>;
 
     return (
-        <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: 'var(--radius)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--gray-200)' }}>
-            <h3 className="text-lg font-bold text-main-800 mb-4">Configuración de Horarios de Atención</h3>
-            <p className="text-sm text-main-500 mb-6">Defina los días y franjas horarias en las que este médico atiende.</p>
+        <div className="schedule-settings">
+            <h3 className="schedule-settings__title">Configuración de Horarios de Atención</h3>
+            <p className="schedule-settings__desc">Defina los días y franjas horarias en las que este médico atiende.</p>
 
             {/* Bulk Actions */}
-            <div style={{ marginBottom: '2rem', padding: '1rem', backgroundColor: 'var(--gray-50)', borderRadius: 'var(--radius)', border: '1px solid var(--gray-200)' }}>
-                <h4 className="text-sm font-bold text-main-700 mb-3">Aplicar a múltiples días (Sobrescribe horarios)</h4>
-                <div className="flex flex-wrap items-center gap-4">
-                    <div className="flex items-center gap-2">
+            <div className="schedule-bulk">
+                <h4 className="schedule-bulk__title">Aplicar a múltiples días (Sobrescribe horarios)</h4>
+                <div className="config-flex config-flex--gap-4" style={{ flexWrap: 'wrap', alignItems: 'center' }}>
+                    <div className="config-flex config-flex--gap-2" style={{ alignItems: 'center' }}>
                         <input
                             type="time"
-                            className="input-field py-1 px-2 w-28 text-sm"
+                            className="input-field"
+                            style={{ width: '110px', fontSize: '0.875rem', padding: '0.25rem 0.5rem' }}
                             value={bulkStart}
                             onChange={(e) => setBulkStart(e.target.value)}
                         />
-                        <span className="text-muted">a</span>
+                        <span style={{ color: 'var(--slate-400)', fontSize: '0.875rem' }}>a</span>
                         <input
                             type="time"
-                            className="input-field py-1 px-2 w-28 text-sm"
+                            className="input-field"
+                            style={{ width: '110px', fontSize: '0.875rem', padding: '0.25rem 0.5rem' }}
                             value={bulkEnd}
                             onChange={(e) => setBulkEnd(e.target.value)}
                         />
                     </div>
-                    <div className="flex gap-2">
+                    <div className="config-flex config-flex--gap-2">
                         <Button
                             variant="outline"
                             size="sm"
@@ -168,7 +171,7 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                 </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="config-flex config-flex--column config-flex--gap-4">
                 {DAYS.map(day => {
                     const dayBlocks = (Array.isArray(schedule) ? schedule : [])
                         .map((s, idx) => ({ ...s, originalIndex: idx }))
@@ -185,27 +188,27 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                     const isActive = dayBlocks.length > 0;
 
                     return (
-                        <div key={day.id} className={`p-4 rounded-lg border transition-all ${isActive ? 'bg-white border-blue-200 shadow-sm' : 'bg-gray-50 border-gray-100 opacity-75'}`}>
-                            <div className="flex items-start gap-4">
-                                <div className="pt-2">
+                        <div key={day.id} className={`schedule-day ${isActive ? 'schedule-day--active' : ''}`}>
+                            <div className="schedule-day__header">
+                                <div style={{ paddingTop: '0.5rem' }}>
                                     <input
                                         type="checkbox"
                                         id={`day-${day.id}`}
                                         checked={isActive}
                                         onChange={() => toggleDay(day.id)}
-                                        className="w-5 h-5 cursor-pointer accent-blue-600"
+                                        className="schedule-day__checkbox"
                                     />
                                 </div>
-                                <div className="flex-1">
-                                    <label htmlFor={`day-${day.id}`} className={`text-lg font-bold mb-2 block cursor-pointer ${isActive ? 'text-main-800' : 'text-main-400'}`}>
+                                <div className="config-flex__item--grow">
+                                    <label htmlFor={`day-${day.id}`} className="schedule-day__name">
                                         {day.name}
                                     </label>
 
                                     {isActive && (
-                                        <div className="space-y-2">
+                                        <div className="schedule-blocks">
                                             {dayBlocks.map((block) => (
-                                                <div key={block._key || block.originalIndex} className="flex flex-wrap items-center gap-3 bg-slate-50 p-2 rounded border border-gray-100">
-                                                    <div className="flex items-center gap-2">
+                                                <div key={block._key || block.originalIndex} className="time-block">
+                                                    <div className="time-block__inputs">
                                                         <Input
                                                             type="time"
                                                             size="sm"
@@ -214,7 +217,7 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                                                             onBlur={() => setFocusedIndex(null)}
                                                             onChange={(e) => handleBlockChange(block.originalIndex, 'start_time', e.target.value)}
                                                         />
-                                                        <span className="text-muted text-sm px-1">a</span>
+                                                        <span style={{ color: 'var(--slate-400)', fontSize: '0.875rem' }}>a</span>
                                                         <Input
                                                             type="time"
                                                             size="sm"
@@ -225,11 +228,11 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                                                         />
                                                     </div>
 
-                                                    <div className="h-6 w-px bg-gray-300 mx-2 hidden sm:block"></div>
+                                                    <div className="time-block__separator"></div>
 
-                                                    <div className="flex items-center gap-2">
+                                                    <div>
                                                         <select
-                                                            className={`input-field py-1 px-2 text-sm ${block.default_type === 'virtual' ? 'text-indigo-600 font-medium bg-indigo-50 border-indigo-200' : 'bg-white'}`}
+                                                            className={`time-block__type-select ${block.default_type === 'virtual' ? 'time-block__type-select--virtual' : ''}`}
                                                             value={block.default_type || 'consultation'}
                                                             onChange={(e) => {
                                                                 handleBlockChange(block.originalIndex, 'default_type', e.target.value);
@@ -240,15 +243,15 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                                                         </select>
                                                     </div>
 
-                                                    <div className="flex items-center gap-2 ml-2">
-                                                        <label className="flex items-center gap-1 cursor-pointer select-none">
+                                                    <div style={{ marginLeft: '0.5rem' }}>
+                                                        <label className="time-block__alignment">
                                                             <input
                                                                 type="checkbox"
-                                                                className="w-4 h-4 cursor-pointer accent-blue-600"
+                                                                style={{ width: '1rem', height: '1rem', cursor: 'pointer' }}
                                                                 checked={block.force_hour_alignment === 1}
                                                                 onChange={(e) => handleBlockChange(block.originalIndex, 'force_hour_alignment', e.target.checked ? 1 : 0)}
                                                             />
-                                                            <span className="text-[10px] uppercase font-bold text-gray-400">🕒 Coord. :00</span>
+                                                            <span className="time-block__alignment-text">🕒 Coord. :00</span>
                                                         </label>
                                                     </div>
 
@@ -256,7 +259,7 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                                                         variant="ghost"
                                                         size="sm-compact"
                                                         onClick={() => handleRemoveBlock(block.originalIndex)}
-                                                        className="ml-auto text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                                                        className="time-block__remove"
                                                         title="Eliminar franja"
                                                     >
                                                         🗑️
@@ -267,7 +270,8 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                                             <Button
                                                 variant="ghost"
                                                 onClick={() => handleAddBlock(day.id)}
-                                                className="mt-2 text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1 px-2 py-1 rounded hover:bg-blue-50 w-fit"
+                                                style={{ marginTop: '0.5rem', padding: '0.25rem 0.5rem', fontSize: '0.875rem' }}
+                                                className="config-flex config-flex--gap-1"
                                             >
                                                 <span>+</span> Agregar Turno Cortado / Extra
                                             </Button>

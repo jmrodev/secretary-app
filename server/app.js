@@ -136,9 +136,9 @@ const server = app.listen(PORT, '0.0.0.0', async () => {
         const { startSyncWorker } = require('./services/googleSyncService');
         startSyncWorker();
 
-        // Start Cloudflare Tunnel Manager (100% Automatic)
-        const { startTunnelManager } = require('./utils/tunnel-manager');
-        startTunnelManager();
+        // Start Remote Access Manager (Cloudflare or DuckDNS)
+        const { initRemoteAccess } = require('./utils/remoteAccessService');
+        initRemoteAccess();
 
     } catch (err) {
         console.error('Failed to connect to MariaDB:', err);

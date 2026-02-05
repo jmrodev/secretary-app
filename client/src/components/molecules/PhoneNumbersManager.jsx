@@ -1,4 +1,6 @@
+import React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
+import './PhoneNumbersManager.css';
 
 const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
     const { t } = useLanguage();
@@ -21,63 +23,64 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
     };
 
     return (
-        <div className="flex-col-gap-4">
-            <label className="form-label">
+        <div className="phone-manager">
+            <label className="phone-manager__label">
                 📱 {t('phone_numbers')}
             </label>
             {(phoneNumbers || []).map((pn, index) => (
-                <div key={index} style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: '0.5rem',
-                    alignItems: 'center',
-                    backgroundColor: 'var(--gray-50)',
-                    padding: '0.75rem',
-                    borderRadius: 'var(--radius-lg)',
-                    border: '1px solid var(--gray-200)'
-                }}>
+                <div key={index} className="phone-manager__item">
                     <input
-                        className="form-input"
-                        style={{ flex: '1', minWidth: '100px', fontSize: '0.875rem' }}
+                        className="form-input phone-manager__label-input"
                         value={pn.label}
                         onChange={(e) => handleUpdate(index, 'label', e.target.value)}
                         placeholder={t('label')}
                     />
-                    <input
-                        className="form-input"
-                        style={{ flex: '2', minWidth: '160px', fontSize: '0.875rem' }}
-                        value={pn.phone_number}
-                        onChange={(e) => handleUpdate(index, 'phone_number', e.target.value)}
-                        placeholder="+549..."
-                        required
-                    />
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0 0.5rem', whiteSpace: 'nowrap' }}>
-                        <label style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.25rem',
-                            fontSize: '0.6875rem',
-                            fontWeight: '700',
-                            textTransform: 'uppercase',
-                            letterSpacing: '-0.05em',
-                            cursor: 'pointer',
-                            userSelect: 'none',
-                            color: 'var(--gray-600)'
-                        }}>
+                    <div className="phone-manager__number-box">
+                        <input
+                            className="form-input phone-manager__number-input"
+                            value={pn.phone_number}
+                            onChange={(e) => handleUpdate(index, 'phone_number', e.target.value)}
+                            placeholder="+549..."
+                            required
+                        />
+                        {pn.phone_number && pn.phone_number.length > 5 && (
+                            <div className="phone-manager__quick-actions">
+                                <a
+                                    href={`tel:${pn.phone_number.replace(/[^0-9+]/g, '')}`}
+                                    title="Llamar"
+                                    className="phone-manager__action-link"
+                                >
+                                    📞
+                                </a>
+                                <a
+                                    href={`https://wa.me/${pn.phone_number.replace(/[^0-9]/g, '')}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    title="WhatsApp"
+                                    className="phone-manager__action-link"
+                                >
+                                    📱
+                                </a>
+                            </div>
+                        )}
+                    </div>
+                    <div className="phone-manager__primary-selector">
+                        <label className="phone-manager__primary-label">
                             <input
                                 type="radio"
-                                name="primary-phone-manager"
+                                className="phone-manager__radio"
+                                name={`primary-phone-${index}`}
                                 checked={pn.is_primary}
                                 onChange={() => handleUpdate(index, 'is_primary', true)}
-                                style={{ accentColor: 'var(--blue-600)' }}
                             />
                             {t('primary')}
                         </label>
                     </div>
                     <button
                         type="button"
-                        className="btn-icon-delete"
+                        className="phone-manager__delete-btn"
                         onClick={() => handleRemove(index)}
+                        title={t('delete')}
                     >
                         🗑️
                     </button>
@@ -85,7 +88,7 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
             ))}
             <button
                 type="button"
-                className="btn btn-secondary btn-sm"
+                className="btn btn-secondary btn-sm phone-manager__add-btn"
                 onClick={handleAdd}
             >
                 ➕ {t('add_phone')}

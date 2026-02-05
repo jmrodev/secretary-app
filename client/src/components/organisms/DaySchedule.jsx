@@ -9,7 +9,7 @@ import Button from '../atoms/Button';
 import Switch from '../atoms/Switch';
 import './DaySchedule.css';
 
-const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDateSelect }) => {
+const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDateSelect, holidays = [] }) => {
     const { t } = useLanguage();
     // const { confirm } = useModal(); // Moved to hook
     const { settings } = useConfig();
@@ -33,7 +33,10 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
     const overturnStart = doctor?.overturn_start_time || '08:00';
     const overturnEnd = doctor?.overturn_end_time || '21:00';
 
-    let daysConfig = (schedule || []).filter(s => s.day_of_week === date.getDay() && s.is_break === 0);
+    const dateStr = [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
+    const holiday = holidays && holidays.find(h => h.date.startsWith(dateStr));
+
+    let daysConfig = holiday ? [] : (schedule || []).filter(s => s.day_of_week === date.getDay() && s.is_break === 0);
 
     const dayApps = appointments.filter(appt => {
         const d = new Date(appt.appointment_date);
@@ -96,7 +99,9 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
         let currentBlock = null;
         let nextBlock = null;
 
-        if (daysConfig.length > 0) {
+        if (holiday) {
+            type = 'closed';
+        } else if (daysConfig.length > 0) {
             currentBlock = daysConfig.find(block => {
                 return timeStr >= block.start_time && timeStr < block.end_time;
             });
@@ -177,9 +182,16 @@ const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDate
     return (
         <div className="day-schedule">
             <header className="day-schedule__header">
-                <h3 className="day-schedule__title">
-                    {date.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
-                </h3>
+                <div className="day-schedule__title-group">
+                    <h3 className="day-schedule__title">
+                        {date.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
+                    </h3>
+                    {holiday && (
+                        <span className="day-schedule__holiday-badge">
+                            🏖️ {holiday.description}
+                        </span>
+                    )}
+                </div>
 
                 <div className="day-schedule__nav">
                     <Button

@@ -1,0 +1,159 @@
+/* DoctorScheduleSettings Styles (BEM) */
+
+.schedule-settings {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200);
+}
+
+.schedule-settings__title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
+
+.schedule-settings__desc {
+    font-size: 0.875rem;
+    color: var(--slate-500);
+    margin-bottom: 1.5rem;
+}
+
+/* Bulk Actions area */
+.schedule-bulk {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background-color: var(--gray-50);
+    border-radius: var(--radius);
+    border: 1px solid var(--gray-200);
+}
+
+.schedule-bulk__title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--slate-700);
+    margin-bottom: 0.75rem;
+}
+
+/* Day Block */
+.schedule-day {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--gray-100);
+    transition: all 0.2s ease;
+    background-color: var(--gray-50);
+    opacity: 0.75;
+}
+
+.schedule-day--active {
+    background-color: white;
+    border-color: var(--blue-200);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    opacity: 1;
+}
+
+.schedule-day__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.schedule-day__checkbox {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+}
+
+.schedule-day__name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    color: var(--slate-400);
+}
+
+.schedule-day--active .schedule-day__name {
+    color: var(--slate-800);
+}
+
+/* Time Blocks */
+.schedule-blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.time-block {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: var(--slate-50);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    border: 1px solid var(--gray-100);
+}
+
+.time-block__inputs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.time-block__separator {
+    height: 1.5rem;
+    width: 1px;
+    background-color: var(--gray-300);
+    margin: 0 0.5rem;
+}
+
+@media (max-width: 640px) {
+    .time-block__separator {
+        display: none;
+    }
+}
+
+.time-block__type-select {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    border-radius: 0.25rem;
+    border: 1px solid var(--gray-200);
+    background-color: white;
+}
+
+.time-block__type-select--virtual {
+    color: var(--indigo-600);
+    font-weight: 500;
+    background-color: var(--indigo-50);
+    border-color: var(--indigo-200);
+}
+
+.time-block__alignment {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.time-block__alignment-text {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--slate-400);
+}
+
+.time-block__remove {
+    margin-left: auto;
+    color: var(--slate-400);
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.time-block__remove:hover {
+    color: var(--red-500);
+    background-color: var(--red-50);
+}

@@ -46,15 +46,25 @@ exports.getInsuranceById = async (req, res) => {
 exports.createInsurance = async (req, res) => {
     let conn;
     try {
-        const { name, cuit, website, email, phone, address, status, phoneNumbers } = req.body;
+        const {
+            name, cuit, website, email, phone, address, status, phoneNumbers,
+            street_name, street_number, floor, apartment, city, province, country
+        } = req.body;
         if (!name) return res.status(400).send("Name is required");
 
         conn = await pool.getConnection();
         await conn.beginTransaction();
 
         const result = await conn.query(
-            "INSERT INTO insurances (name, cuit, website, email, phone, address, status) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            [name, cuit, website, email, phone, address, status || 'active']
+            `INSERT INTO insurances (
+                name, cuit, website, email, phone, address, status,
+                street_name, street_number, floor, apartment, city, province, country
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                name, cuit, website, email, phone, address, status || 'active',
+                street_name || null, street_number || null, floor || null, apartment || null,
+                city || 'Tandil', province || 'Buenos Aires', country || 'Argentina'
+            ]
         );
         const insId = Number(result.insertId);
 
@@ -94,7 +104,10 @@ exports.updateInsurance = async (req, res) => {
 
         let fields = [];
         let params = [];
-        const allowed = ['name', 'cuit', 'website', 'email', 'phone', 'address', 'status'];
+        const allowed = [
+            'name', 'cuit', 'website', 'email', 'phone', 'address', 'status',
+            'street_name', 'street_number', 'floor', 'apartment', 'city', 'province', 'country'
+        ];
 
         for (const key of allowed) {
             if (updates[key] !== undefined) {

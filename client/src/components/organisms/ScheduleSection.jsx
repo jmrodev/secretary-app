@@ -77,6 +77,7 @@ const ScheduleSection = ({
                         onSlotClick={onSlotClick}
                         doctor={selectedDoctor}
                         schedule={doctorSchedule}
+                        holidays={holidays}
                     />
                 </div>
             ) : (

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useNavigate } from 'react-router-dom';
+import { capitalizeWords } from '../utils/stringUtils';
 
 /**
  * Controller hook for the Register page.
@@ -30,7 +31,10 @@ export const useRegisterController = () => {
     const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        let { name, value } = e.target;
+        if (['fullName', 'address'].includes(name)) {
+            value = capitalizeWords(value);
+        }
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 

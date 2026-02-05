@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useLanguage } from '../context/LanguageContext';
 import { useMessage } from '../context/MessageContext';
+import { capitalizeWords } from '../utils/stringUtils';
 
 export const usePatientFormController = ({
     initialValues,
@@ -33,6 +34,13 @@ export const usePatientFormController = ({
         phoneNumbers: [],
         email: '',
         address: '',
+        street_name: '',
+        street_number: '',
+        floor: '',
+        apartment: '',
+        city: 'Tandil',
+        province: 'Buenos Aires',
+        country: 'Argentina',
         dob: '',
         insurance_id: '',
         institution_id: '',
@@ -98,15 +106,27 @@ export const usePatientFormController = ({
     // Handlers
     const handlers = {
         handleChange: (e) => {
-            const { name, value } = e.target;
+            let { name, value } = e.target;
+
+            // Apply capitalization if needed
+            if (['first_name', 'last_name', 'address', 'street_name', 'city', 'province', 'country'].includes(name)) {
+                value = capitalizeWords(value);
+            }
+
             setFormData(prev => {
                 // Specialized logic for auto-populating username/password from names
                 if (!isEdit && (name === 'first_name' || name === 'last_name')) {
                     const firstName = name === 'first_name' ? value : (prev.first_name || '');
                     const lastName = name === 'last_name' ? value : (prev.last_name || '');
 
-                    const autoValue = `${firstName.trim()}${lastName.trim()}`.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
-                    const oldAuto = `${(prev.first_name || '').trim()}${(prev.last_name || '').trim()}`.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
+                    // Username/Password should stay lowercase
+                    const normalizedFirst = firstName.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
+                    const normalizedLast = lastName.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
+                    const autoValue = `${normalizedFirst}${normalizedLast}`;
+
+                    const oldNormalizedFirst = (prev.first_name || '').trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
+                    const oldNormalizedLast = (prev.last_name || '').trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
+                    const oldAuto = `${oldNormalizedFirst}${oldNormalizedLast}`;
 
                     const shouldUpdate = !prev.username || prev.username === oldAuto;
 
@@ -118,6 +138,7 @@ export const usePatientFormController = ({
                         password: shouldUpdate ? autoValue : prev.password
                     };
                 }
+
                 return { ...prev, [name]: value };
             });
         },

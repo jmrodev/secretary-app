@@ -3,6 +3,7 @@ import api from '../api/axios';
 import { useMessage } from '../context/MessageContext';
 import { useModal } from '../context/ModalContext';
 import { useLanguage } from '../context/LanguageContext';
+import { capitalizeWords } from '../utils/stringUtils';
 
 export const useInsurancesController = () => {
     const { showMessage } = useMessage();
@@ -18,7 +19,8 @@ export const useInsurancesController = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [formData, setFormData] = useState({
-        name: '', cuit: '', website: '', email: '', phoneNumbers: [], address: '', status: 'active'
+        name: '', cuit: '', website: '', email: '', phoneNumbers: [], address: '', status: 'active',
+        street_name: '', street_number: '', floor: '', apartment: '', city: 'Tandil', province: 'Buenos Aires', country: 'Argentina'
     });
 
     // Fetch Data
@@ -41,7 +43,10 @@ export const useInsurancesController = () => {
     // Handlers
     const handleOpenCreate = useCallback(() => {
         setEditingId(null);
-        setFormData({ name: '', cuit: '', website: '', email: '', phoneNumbers: [], address: '', status: 'active' });
+        setFormData({
+            name: '', cuit: '', website: '', email: '', phoneNumbers: [], address: '', status: 'active',
+            street_name: '', street_number: '', floor: '', apartment: '', city: 'Tandil', province: 'Buenos Aires', country: 'Argentina'
+        });
         setModalOpen(true);
     }, []);
 
@@ -54,6 +59,13 @@ export const useInsurancesController = () => {
             email: ins.email || '',
             phoneNumbers: ins.phoneNumbers || (ins.phone ? [{ phone_number: ins.phone, is_primary: true, label: 'Celular' }] : []),
             address: ins.address || '',
+            street_name: ins.street_name || '',
+            street_number: ins.street_number || '',
+            floor: ins.floor || '',
+            apartment: ins.apartment || '',
+            city: ins.city || 'Tandil',
+            province: ins.province || 'Buenos Aires',
+            country: ins.country || 'Argentina',
             status: ins.status || 'active'
         });
         setModalOpen(true);
@@ -109,7 +121,29 @@ export const useInsurancesController = () => {
         // Setters
         setSearchTerm,
         setModalOpen,
-        setFormData,
+        setFormData: (data) => {
+            if (typeof data === 'function') {
+                setFormData(prev => {
+                    const next = data(prev);
+                    if (next.name) next.name = capitalizeWords(next.name);
+                    if (next.address) next.address = capitalizeWords(next.address);
+                    if (next.street_name) next.street_name = capitalizeWords(next.street_name);
+                    if (next.city) next.city = capitalizeWords(next.city);
+                    if (next.province) next.province = capitalizeWords(next.province);
+                    if (next.country) next.country = capitalizeWords(next.country);
+                    return next;
+                });
+            } else {
+                const updated = { ...data };
+                if (updated.name) updated.name = capitalizeWords(updated.name);
+                if (updated.address) updated.address = capitalizeWords(updated.address);
+                if (updated.street_name) updated.street_name = capitalizeWords(updated.street_name);
+                if (updated.city) updated.city = capitalizeWords(updated.city);
+                if (updated.province) updated.province = capitalizeWords(updated.province);
+                if (updated.country) updated.country = capitalizeWords(updated.country);
+                setFormData(updated);
+            }
+        },
 
         // Handlers
         handlers: {
@@ -117,6 +151,8 @@ export const useInsurancesController = () => {
             handleOpenEdit,
             handleSubmit,
             handleDelete,
-        }
+            fetchInsurances
+        },
+        t
     };
 };

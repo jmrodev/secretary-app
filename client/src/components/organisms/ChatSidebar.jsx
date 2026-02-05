@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLanguage } from '../../context/LanguageContext';
 
 const ChatSidebar = ({
     conversations,
@@ -10,6 +11,7 @@ const ChatSidebar = ({
     onStartNewChat,
     unreadCount
 }) => {
+    const { t } = useLanguage();
 
     // Formatting Helpers
     const formatDate = (dateString) => {
@@ -48,7 +50,7 @@ const ChatSidebar = ({
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
                     <input
                         type="text"
-                        placeholder="Buscar chats o contactos..."
+                        placeholder={t('search_chats_contacts') || "Buscar chats o contactos..."}
                         className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-blue-500 transition-all outline-none text-sm"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
@@ -59,7 +61,7 @@ const ChatSidebar = ({
             <div className="conversations-list overflow-y-auto custom-scrollbar h-full">
                 {filteredConvos.length === 0 && suggestedRecipients.length === 0 && (
                     <div className="p-8 text-center text-slate-400 text-sm">
-                        <p>{q ? 'No se encontraron resultados' : 'No hay conversaciones'}</p>
+                        <p>{q ? t('no_results_found') : t('no_conversations')}</p>
                     </div>
                 )}
 
@@ -87,7 +89,7 @@ const ChatSidebar = ({
 
                 {suggestedRecipients.length > 0 && (
                     <div className="px-4 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider mt-2 bg-slate-50">
-                        Contactos
+                        {t('contacts') || 'Contactos'}
                     </div>
                 )}
 
@@ -106,7 +108,7 @@ const ChatSidebar = ({
                                 <span className="convo-date text-xs text-slate-400 uppercase border border-slate-100 px-1 rounded">{r.role}</span>
                             </div>
                             <div className="convo-last-msg">
-                                <span className="last-text italic text-slate-400 text-xs">Iniciar chat ahora</span>
+                                <span className="last-text italic text-slate-400 text-xs">{t('start_chat_now')}</span>
                             </div>
                         </div>
                     </div>

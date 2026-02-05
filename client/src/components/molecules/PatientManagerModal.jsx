@@ -2,6 +2,7 @@ import React from 'react';
 import Modal from './Modal';
 import PatientForm from '../organisms/PatientForm';
 import { usePatientFormController } from '../../controllers/usePatientFormController';
+import './PatientManagerModal.css';
 
 const PatientManagerModal = ({
     isOpen,
@@ -42,9 +43,9 @@ const PatientManagerModal = ({
         >
             {/* Reference Info Block */}
             {referenceInfo && !isEdit && (
-                <div className="mb-6 p-4 bg-amber-50 border-2 border-amber-200 rounded-2xl flex flex-col gap-2 animate-in slide-in-from-top-4">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-amber-600">📄 Info de Turno (Referencia)</span>
-                    <div className="text-sm font-bold text-amber-900 leading-tight">
+                <div className="reference-box">
+                    <span className="reference-box__label">📄 Info de Turno (Referencia)</span>
+                    <div className="reference-box__content">
                         {referenceInfo}
                     </div>
                 </div>
@@ -58,7 +59,7 @@ const PatientManagerModal = ({
                     isAdmin={true}
                 />
             ) : (
-                <div className="p-8 flex justify-center text-gray-400">
+                <div className="patient-manager-modal__loading">
                     {t('loading')}
                 </div>
             )}

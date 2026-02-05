@@ -55,7 +55,7 @@ const Dashboard = () => {
                     <div className="dashboard__header-info">
                         <h1 className="dashboard__title">{t('dashboard') || 'Panel de Control'}</h1>
                         <p className="dashboard__subtitle">
-                            {t('welcome_back') || 'Hola'}, <span className="font-bold">{user.full_name || user.username}</span>. {t('dashboard_subtitle') || 'Aquí tienes un resumen de la actividad de hoy.'}
+                            {t('welcome_back') || 'Hola'}, <strong>{user.full_name || user.username}</strong>. {t('dashboard_subtitle') || 'Aquí tienes un resumen de la actividad de hoy.'}
                         </p>
                     </div>
                 </header>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import CurrencyInput from '../atoms/CurrencyInput';
 import PhoneNumbersManager from '../molecules/PhoneNumbersManager';
+import './PatientForm.css';
 
 const PatientForm = ({
     controller,
@@ -125,6 +126,11 @@ const PatientForm = ({
                         value={formData.email}
                         onChange={handleChange}
                     />
+                    {formData.email && (
+                        <a href={`mailto:${formData.email}`} className="patient-form__email-link">
+                            {t('send_email')} ↗
+                        </a>
+                    )}
                 </div>
             </div>
 
@@ -189,14 +195,105 @@ const PatientForm = ({
                 </div>
             </div>
 
+            <div className="form-section-title">{t('address_details') || 'Detalles de Dirección'}</div>
+            <div className="form-row">
+                <div className="input-group" style={{ flex: 3 }}>
+                    <label className="input-label">{t('street_name') || 'Nombre de Calle'}</label>
+                    <input
+                        name="street_name"
+                        className="input-field"
+                        value={formData.street_name || ''}
+                        onChange={handleChange}
+                        placeholder="Ej: Av. Rivadavia"
+                    />
+                </div>
+                <div className="input-group" style={{ flex: 1 }}>
+                    <label className="input-label">{t('street_number') || 'Número'}</label>
+                    <input
+                        name="street_number"
+                        className="input-field"
+                        value={formData.street_number || ''}
+                        onChange={handleChange}
+                        placeholder="1234"
+                    />
+                </div>
+            </div>
+
+            <div className="form-row">
+                <div className="input-group">
+                    <label className="input-label">{t('floor') || 'Piso'}</label>
+                    <input
+                        name="floor"
+                        className="input-field"
+                        value={formData.floor || ''}
+                        onChange={handleChange}
+                        placeholder="2"
+                    />
+                </div>
+                <div className="input-group">
+                    <label className="input-label">{t('apartment') || 'Depto/Oficina'}</label>
+                    <input
+                        name="apartment"
+                        className="input-field"
+                        value={formData.apartment || ''}
+                        onChange={handleChange}
+                        placeholder="B"
+                    />
+                </div>
+            </div>
+
+            <div className="form-row">
+                <div className="input-group">
+                    <label className="input-label">{t('city') || 'Ciudad'}</label>
+                    <input
+                        name="city"
+                        className="input-field"
+                        value={formData.city || ''}
+                        onChange={handleChange}
+                    />
+                </div>
+                <div className="input-group">
+                    <label className="input-label">{t('province') || 'Provincia'}</label>
+                    <input
+                        name="province"
+                        className="input-field"
+                        value={formData.province || ''}
+                        onChange={handleChange}
+                    />
+                </div>
+            </div>
+
             <div className="input-group">
-                <label className="input-label">{t('address')}</label>
+                <label className="input-label">{t('country') || 'País'}</label>
+                <input
+                    name="country"
+                    className="input-field"
+                    value={formData.country || ''}
+                    onChange={handleChange}
+                />
+            </div>
+
+            <div className="input-group">
+                <label className="input-label">{t('address_notes') || 'Notas de Dirección / Referencias'}</label>
                 <input
                     name="address"
                     className="input-field"
-                    value={formData.address}
+                    value={formData.address || ''}
                     onChange={handleChange}
+                    placeholder="Ej: Entre calles X e Y, timbre blanco..."
                 />
+                {(formData.street_name || formData.address) && (
+                    <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                            `${formData.street_name || ''} ${formData.street_number || ''}, ${formData.city || ''}, ${formData.province || ''}, ${formData.country || ''} ${formData.address || ''}`.trim()
+                        )}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs text-blue-600 hover:underline mt-1 inline-block"
+                    >
+                        {t('view_on_map')} ↗
+                    </a>
+                )}
             </div>
 
             <div className="input-group">

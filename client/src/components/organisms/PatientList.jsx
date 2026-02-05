@@ -67,17 +67,40 @@ const PatientList = ({
                                 </div>
                             </td>
                             <td>
-                                {p.phone ? (
-                                    <a
-                                        href={`https://wa.me/${p.phone.replace(/[^0-9]/g, '')}`}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="patient-table__contact-link"
-                                        onClick={(e) => e.stopPropagation()}
-                                    >
-                                        📱 {p.phone}
-                                    </a>
-                                ) : <span className="text-muted text-sm">N/A</span>}
+                                <div className="patient-table__contact-info">
+                                    {p.phone ? (
+                                        <div className="patient-table__contact-row">
+                                            <a
+                                                href={`https://wa.me/${p.phone.replace(/[^0-9]/g, '')}`}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="patient-table__whatsapp-link"
+                                                onClick={(e) => e.stopPropagation()}
+                                                title="WhatsApp"
+                                            >
+                                                📱
+                                            </a>
+                                            <a
+                                                href={`tel:${p.phone.replace(/[^0-9+]/g, '')}`}
+                                                className="patient-table__contact-link patient-table__contact-link--tel"
+                                                onClick={(e) => e.stopPropagation()}
+                                                title="Llamar"
+                                            >
+                                                {p.phone}
+                                            </a>
+                                        </div>
+                                    ) : <div className="patient-table__no-contact">{t('no_phone_short')}</div>}
+
+                                    {p.email && (
+                                        <a
+                                            href={`mailto:${p.email}`}
+                                            className="patient-table__contact-link patient-table__contact-link--email"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            ✉️ {p.email}
+                                        </a>
+                                    )}
+                                </div>
                             </td>
                             <td>
                                 <div className="rating-group">
