@@ -784,6 +784,10 @@ exports.updateRequestStatus = async (req, res) => {
 
         await conn.query(query, params);
 
+        if (status === 'rejected') {
+            await conn.query("DELETE FROM transactions WHERE request_id = ? AND status = 'pending'", [id]);
+        }
+
         logAction(req, 'UPDATE_MEDICAL_REQUEST', `Request ${id} updated to ${status}`);
         res.json({ message: "Request updated" });
     } catch (err) {

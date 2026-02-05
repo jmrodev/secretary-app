@@ -146,10 +146,14 @@ exports.getTransactions = async (req, res) => {
                      LEFT JOIN users u ON t.related_user_id = u.id
                      LEFT JOIN doctors d ON t.doctor_id = d.id
                      LEFT JOIN patients p ON p.user_id = u.id
-                     LEFT JOIN invoices i ON i.transaction_id = t.id`;
-        let params = [];
+                     LEFT JOIN invoices i ON i.transaction_id = t.id
+                     LEFT JOIN appointments a ON t.appointment_id = a.id`;
+        const today = nowLocalSQL().split(' ')[0];
+        let params = [today];
 
-        let whereClauses = [];
+        let whereClauses = [
+            "(t.status != 'pending' OR t.appointment_id IS NULL OR a.status = 'completed' OR (DATE(a.appointment_date) = ? AND a.status NOT IN ('cancelled', 'absent', 'reserved')))"
+        ];
 
         if (role === 'doctor') {
             // Doctor sees if they are related OR if it's their box (doctor_id)
@@ -342,8 +346,7 @@ exports.getStats = async (req, res) => {
             FROM transactions t
             JOIN appointments a ON t.appointment_id = a.id
             WHERE t.status = 'pending' 
-              AND a.appointment_date <= NOW()
-              AND a.status NOT IN ('cancelled', 'absent', 'reserved')
+              AND a.status = 'completed'
               ${doctor_id ? " AND t.doctor_id = ?" : ""}
         `;
         const [apptDebtRow] = await conn.query(apptDebtQuery, debtParams);
@@ -399,7 +402,7 @@ exports.getStats = async (req, res) => {
             FROM transactions t
             LEFT JOIN appointments a ON t.appointment_id = a.id
             WHERE t.status = 'pending'
-              AND (t.appointment_id IS NULL OR (a.appointment_date <= NOW() AND a.status NOT IN ('cancelled', 'absent', 'reserved')))
+              AND (t.appointment_id IS NULL OR a.status = 'completed')
               ${doctor_id ? " AND t.doctor_id = ?" : ""}
         `;
         const [totalDebtRow] = await conn.query(totalDebtQuery, debtParams);

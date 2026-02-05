@@ -78,7 +78,7 @@ class ModificationService {
                     await conn.query("UPDATE patients SET behavior_rating = GREATEST(0, behavior_rating - 1) WHERE id = ?", [appt.patient_id]);
                 }
 
-                if (status === 'cancelled') {
+                if (['cancelled', 'absent', 'suspended'].includes(status)) {
                     // Delete pending transactions to clear debt
                     await conn.query("DELETE FROM transactions WHERE appointment_id = ? AND status = 'pending'", [id]);
                 }
@@ -126,6 +126,10 @@ class ModificationService {
                 await helper.freeSlot(conn, appt.doctor_id, appt.appointment_date);
                 await helper.occupySlot(conn, appt.doctor_id, updates.appointment_date);
                 updates.status = 'rescheduled';
+            }
+
+            if (updates.appointment_date) {
+                updates.appointment_date = helper.formatDateForDB(updates.appointment_date);
             }
 
             await appointmentRepository.update(id, updates, conn);
