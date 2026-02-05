@@ -30,10 +30,11 @@ exports.createTransaction = async (req, res) => {
 
         conn = await pool.getConnection();
 
-        // Format date for MariaDB if it's a string (e.g. ISO format from frontend)
+        // Format date for MariaDB: keep local time instead of shifting to UTC
         let finalDate = transaction_date || new Date();
-        if (finalDate && typeof finalDate === 'string' && finalDate.includes('T')) {
-            finalDate = new Date(finalDate).toISOString().slice(0, 19).replace('T', ' ');
+        if (finalDate && typeof finalDate === 'string') {
+            // If it's an ISO format from <input type="datetime-local">, just clean it for SQL
+            finalDate = finalDate.replace('T', ' ').slice(0, 19);
         }
 
         // [FIX] Clean up existing pending debt for this appointment/request (if any) to prevent duplicates
@@ -142,11 +143,13 @@ exports.getTransactions = async (req, res) => {
         const { doctor_id } = req.query; // Admin/Secretary can filter by specific doctor
 
         conn = await pool.getConnection();
-        let query = `SELECT t.*, u.username as related_user_name, d.full_name as doctor_name, p.full_name as patient_full_name, p.dni as patient_dni
+        let query = `SELECT t.*, u.username as related_user_name, d.full_name as doctor_name, d.afip_cuit as doctor_cuit, p.full_name as patient_full_name, p.dni as patient_dni,
+                            i.cbte_nro as invoice_number, i.punto_vta as invoice_punto_vta, i.cae as invoice_cae, i.cae_vto as invoice_cae_vto, i.cbte_tipo as invoice_cbte_tipo
                      FROM transactions t 
                      LEFT JOIN users u ON t.related_user_id = u.id
                      LEFT JOIN doctors d ON t.doctor_id = d.id
-                     LEFT JOIN patients p ON p.user_id = u.id`;
+                     LEFT JOIN patients p ON p.user_id = u.id
+                     LEFT JOIN invoices i ON i.transaction_id = t.id`;
         let params = [];
 
         let whereClauses = [];
@@ -197,7 +200,7 @@ exports.getTransactions = async (req, res) => {
             query += " WHERE " + whereClauses.join(" AND ");
         }
 
-        query += " ORDER BY t.transaction_date DESC";
+        query += " ORDER BY t.transaction_date DESC LIMIT 1000";
 
         const rows = await conn.query(query, params);
         res.json(rows);
@@ -223,82 +226,30 @@ exports.getStats = async (req, res) => {
 
         let doctorFilter = doctor_id ? " AND doctor_id = ?" : "";
 
-        // --- TODAY's Stats (separated by payment method) ---
-        let todayParams = doctor_id ? [todayStr, doctor_id] : [todayStr];
-
-        // Cash today
-        const todayCashQuery = `
-            SELECT SUM(amount) as total 
+        // Optimized stats query: single pass over the table
+        const statsQuery = `
+            SELECT 
+                SUM(CASE WHEN status = 'paid' AND DATE(transaction_date) = ? AND is_withdrawal = 0 AND method = 'cash' THEN amount ELSE 0 END) as todayCash,
+                SUM(CASE WHEN status = 'paid' AND DATE(transaction_date) = ? AND is_withdrawal = 0 AND method = 'transfer' THEN amount ELSE 0 END) as todayTransfer,
+                SUM(CASE WHEN is_withdrawal = 1 AND DATE(transaction_date) = ? THEN amount ELSE 0 END) as todayWithdrawal,
+                SUM(CASE WHEN status = 'paid' AND transaction_date >= ? AND is_withdrawal = 0 AND method = 'cash' THEN amount ELSE 0 END) as monthCash,
+                SUM(CASE WHEN status = 'paid' AND transaction_date >= ? AND is_withdrawal = 0 AND method = 'transfer' THEN amount ELSE 0 END) as monthTransfer,
+                SUM(CASE WHEN is_withdrawal = 1 AND transaction_date >= ? THEN amount ELSE 0 END) as monthWithdrawal
             FROM transactions 
-            WHERE status = 'paid' 
-              AND DATE(transaction_date) = ?
-              AND is_withdrawal = 0
-              AND method = 'cash'
-              ${doctorFilter}
+            WHERE 1=1 ${doctorFilter}
         `;
-        const [todayCashRow] = await conn.query(todayCashQuery, todayParams);
-        const todayCashTotal = todayCashRow?.total || 0;
+        const statsParams = doctor_id
+            ? [todayStr, todayStr, todayStr, monthStr, monthStr, monthStr, doctor_id]
+            : [todayStr, todayStr, todayStr, monthStr, monthStr, monthStr];
 
-        // Transfer today
-        const todayTransferQuery = `
-            SELECT SUM(amount) as total 
-            FROM transactions 
-            WHERE status = 'paid' 
-              AND DATE(transaction_date) = ?
-              AND is_withdrawal = 0
-              AND method = 'transfer'
-              ${doctorFilter}
-        `;
-        const [todayTransferRow] = await conn.query(todayTransferQuery, todayParams);
-        const todayTransferTotal = todayTransferRow?.total || 0;
+        const [statsRow] = await conn.query(statsQuery, statsParams);
 
-        // Withdrawals today
-        const todayWithdrawalQuery = `
-            SELECT SUM(amount) as total 
-            FROM transactions 
-            WHERE is_withdrawal = 1 
-              AND DATE(transaction_date) = ?
-              ${doctorFilter}
-        `;
-        const [todayWithdrawalRow] = await conn.query(todayWithdrawalQuery, todayParams);
-        const todayWithdrawalTotal = todayWithdrawalRow?.total || 0;
-
-        // --- MONTH Stats (by method) ---
-        let monthParams = doctor_id ? [monthStr, doctor_id] : [monthStr];
-
-        const monthCashQuery = `
-            SELECT SUM(amount) as total 
-            FROM transactions 
-            WHERE status = 'paid' 
-              AND transaction_date >= ?
-              AND is_withdrawal = 0
-              AND method = 'cash'
-              ${doctorFilter}
-        `;
-        const [monthCashRow] = await conn.query(monthCashQuery, monthParams);
-        const monthCashTotal = monthCashRow?.total || 0;
-
-        const monthTransferQuery = `
-            SELECT SUM(amount) as total 
-            FROM transactions 
-            WHERE status = 'paid' 
-              AND transaction_date >= ?
-              AND is_withdrawal = 0
-              AND method = 'transfer'
-              ${doctorFilter}
-        `;
-        const [monthTransferRow] = await conn.query(monthTransferQuery, monthParams);
-        const monthTransferTotal = monthTransferRow?.total || 0;
-
-        const monthWithdrawalQuery = `
-            SELECT SUM(amount) as total 
-            FROM transactions 
-            WHERE is_withdrawal = 1 
-              AND transaction_date >= ?
-              ${doctorFilter}
-        `;
-        const [monthWithdrawalRow] = await conn.query(monthWithdrawalQuery, monthParams);
-        const monthWithdrawalTotal = monthWithdrawalRow?.total || 0;
+        const todayCashTotal = statsRow.todayCash || 0;
+        const todayTransferTotal = statsRow.todayTransfer || 0;
+        const todayWithdrawalTotal = statsRow.todayWithdrawal || 0;
+        const monthCashTotal = statsRow.monthCash || 0;
+        const monthTransferTotal = statsRow.monthTransfer || 0;
+        const monthWithdrawalTotal = statsRow.monthWithdrawal || 0;
 
         // --- YEAR Stats (by method) ---
         const firstDayOfYear = new Date(now.getFullYear(), 0, 1);
