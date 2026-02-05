@@ -9,6 +9,8 @@ const SCOPES = [
     'https://www.googleapis.com/auth/spreadsheets'
 ];
 
+let sheetNameCache = {};
+
 const getOAuthClient = () => {
     const clientId = process.env.GOOGLE_CLIENT_ID;
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
@@ -1314,7 +1316,7 @@ exports.syncToSpreadsheetHelper = async (transactionId, userId = null) => {
         conn = await pool.getConnection();
 
         // 1. Get Transaction Details with enriched info
-        const [rows] = await conn.query(`
+        const rows = await conn.query(`
             SELECT t.*, 
                    p.full_name as patient_name,
                    a.type as appt_type,
@@ -1332,12 +1334,22 @@ exports.syncToSpreadsheetHelper = async (transactionId, userId = null) => {
         if (!rows || rows.length === 0) return;
         const tx = rows[0];
 
-        // 2. Determine Spreadsheet ID from settings
-        const [settingRows] = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'finance_spreadsheet_id'");
-        const spreadsheetId = settingRows && settingRows.length > 0 ? settingRows[0].setting_value : null;
+        // 2. Determine Spreadsheet ID (Prefer Doctor specific, then Global)
+        let spreadsheetId = null;
+        if (tx.doctor_id) {
+            const [docInt] = await conn.query("SELECT spreadsheet_id FROM doctor_integrations WHERE doctor_id = ?", [tx.doctor_id]);
+            if (docInt && docInt.spreadsheet_id) {
+                spreadsheetId = docInt.spreadsheet_id;
+            }
+        }
 
         if (!spreadsheetId) {
-            console.log("[SpreadsheetSync] No finance_spreadsheet_id set. Skipping.");
+            const [settingRows] = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'finance_spreadsheet_id'");
+            spreadsheetId = settingRows && settingRows.length > 0 ? settingRows[0].setting_value : null;
+        }
+
+        if (!spreadsheetId) {
+            console.log(`[SpreadsheetSync] No spreadsheet_id set for Doctor ${tx.doctor_id} or Global. Skipping.`);
             return;
         }
 
@@ -1345,35 +1357,14 @@ exports.syncToSpreadsheetHelper = async (transactionId, userId = null) => {
         let tokens = {};
         if (tx.doctor_id) {
             tokens = await getTokens(conn, tx.doctor_id);
-            // If doctor has tokens but NO spreadsheet ID specific to them... wait. 
-            // Current Logic: Spreadsheet ID is GLOBAL (system_settings). 
-            // So if we use Doctor Tokens, we are writing to the GLOBAL Sheet using DOCTOR'S credentials?
-            // That might be wrong if the user wants separate sheets per doctor. 
-            // BUT, the request implies 'a calculation table' (singular). 
-            // IF the sheet is shared with the doctor, using their token works. 
-            // IF the sheet is owned by the clinic (Global), we should prefer Global Tokens.
-
-            // Let's stick to Global Tokens for the "Master Sheet" unless strictly necessary.
-            // However, the user mentioned "Dos integraciones". If they want to use the Doctor's integration to write to the sheet, 
-            // the sheet must be accessible to them.
-
-            // Re-reading: "tengo dos integraciones , la general y la de doctor"
-            // If the goal is a Single Master Sheet, we should use the Global Integration (Secretary/Clinic Account).
-            // If we use Doctor's token, we might get 403 Forbidden if the sheet wasn't shared with them.
-
-            // DECISION: Prefer GLOBAL tokens for the Finance Spreadsheet to ensure consistency.
-            // Why? Because "Finanzas" is usually a clinic-wide concern managed by the Secretary.
-
-            // However, if Global is missing, maybe fallback to Doctor? Unlikely to have perms.
-            // Let's keep it Global for now. 
-            // If the user meant "I want it to sync to the Doctor's Calendar using Doctor Token AND to the Sheet using...?"
-            // Calendar uses Doctor Token. Sheet uses Global Token. This is correct for a centralized sheet.
         }
 
-        tokens = await getTokens(conn, null); // Force Global for Spreadsheet Sync
+        if (!tokens.google_refresh_token) {
+            tokens = await getTokens(conn, null); // Fallback to Global
+        }
 
         if (!tokens.google_refresh_token) {
-            console.log("[SpreadsheetSync] No Global Google account connected. Skipping.");
+            console.log("[SpreadsheetSync] No valid Google account (Doctor or Global) connected. Skipping.");
             return;
         }
 
@@ -1390,6 +1381,18 @@ exports.syncToSpreadsheetHelper = async (transactionId, userId = null) => {
         const dateObj = new Date(tx.transaction_date);
         const day = dateObj.toLocaleDateString('es-AR');
         const hour = dateObj.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+
+        const year = dateObj.getFullYear();
+        const month = dateObj.getMonth() + 1;
+
+        const getWeekNumber = (d) => {
+            const date = new Date(d.getTime());
+            date.setHours(0, 0, 0, 0);
+            date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+            const week1 = new Date(date.getFullYear(), 0, 4);
+            return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+        };
+        const week = getWeekNumber(dateObj);
 
         // Determine Specific Type
         let specificType = 'Otro';
@@ -1414,10 +1417,12 @@ exports.syncToSpreadsheetHelper = async (transactionId, userId = null) => {
         const rowValues = [
             day,
             hour,
+            year,
+            month,
+            week,
             tx.patient_name || tx.description || 'N/A',
             valor,
             specificType,
-            amount,
             cobrado,
             debe,
             tx.doctor_name || 'N/A',
@@ -1425,9 +1430,15 @@ exports.syncToSpreadsheetHelper = async (transactionId, userId = null) => {
         ];
 
         // 5. Update or Append
-        // Strategy: Search for ID in Column J (Index 9)
-        // Note: BatchGet is cheap.
-        const range = 'Sheet1!J:J';
+        // Strategy: Get first sheet name dynamically (with cache)
+        if (!sheetNameCache[spreadsheetId]) {
+            const spreadsheet = await sheets.spreadsheets.get({ spreadsheetId });
+            sheetNameCache[spreadsheetId] = spreadsheet.data.sheets[0].properties.title;
+        }
+        const sheetName = sheetNameCache[spreadsheetId];
+
+        // Search for ID in Column L (Index 11)
+        const range = `${sheetName}!L:L`;
         const result = await sheets.spreadsheets.values.get({
             spreadsheetId: spreadsheetId,
             range: range,
@@ -1437,9 +1448,9 @@ exports.syncToSpreadsheetHelper = async (transactionId, userId = null) => {
         const rowIndex = ids.findIndex(id => id == tx.id); // Loose comparison for string/number
 
         if (rowIndex !== -1) {
-            // Update Existing Row (rowIndex is 0-indexed relative to J:J, so row number is rowIndex + 1)
-            // Range A{row}:J{row}
-            const updateRange = `Sheet1!A${rowIndex + 1}:J${rowIndex + 1}`;
+            // Update Existing Row (rowIndex is 0-indexed relative to L:L)
+            // Range A{row}:L{row}
+            const updateRange = `${sheetName}!A${rowIndex + 1}:L${rowIndex + 1}`;
             await sheets.spreadsheets.values.update({
                 spreadsheetId: spreadsheetId,
                 range: updateRange,
@@ -1453,7 +1464,7 @@ exports.syncToSpreadsheetHelper = async (transactionId, userId = null) => {
             // Append New Row
             await sheets.spreadsheets.values.append({
                 spreadsheetId: spreadsheetId,
-                range: 'Sheet1!A:J',
+                range: `${sheetName}!A:L`,
                 valueInputOption: 'USER_ENTERED',
                 insertDataOption: 'INSERT_ROWS',
                 requestBody: {
@@ -1472,3 +1483,26 @@ exports.syncToSpreadsheetHelper = async (transactionId, userId = null) => {
         if (conn) conn.release();
     }
 };
+
+exports.resetSpreadsheet = async (req, res) => {
+    const { doctorId } = req.body;
+    let conn;
+    try {
+        if (!doctorId) {
+            return res.status(400).json({ error: "Doctor ID is required" });
+        }
+
+        conn = await pool.getConnection();
+        await conn.query("UPDATE doctor_integrations SET spreadsheet_id = NULL WHERE doctor_id = ?", [doctorId]);
+
+        await logAction(req, 'GOOGLE_SPREADSHEET_RESET', `Reset Spreadsheet ID for Doctor ${doctorId}`);
+        res.json({ message: "Spreadsheet ID reset successfully. A new one will be created on the next transaction." });
+
+    } catch (err) {
+        console.error("Reset Spreadsheet Error:", err);
+        res.status(500).json({ error: err.message });
+    } finally {
+        if (conn) conn.release();
+    }
+};
+

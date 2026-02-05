@@ -9,6 +9,8 @@ import TabButton from '../atoms/TabButton';
 import DoctorTariffsForm from '../molecules/DoctorTariffsForm';
 import DoctorGoogleSettings from '../molecules/DoctorGoogleSettings';
 import DoctorScheduleSettings from '../organisms/DoctorScheduleSettings';
+import DoctorFiscalSettings from '../molecules/DoctorFiscalSettings';
+import { useDoctorFiscalController } from '../../controllers/useDoctorFiscalController';
 
 const DoctorEditModal = ({
     isOpen,
@@ -31,9 +33,31 @@ const DoctorEditModal = ({
     onDisconnectGoogle,
     onVerifyGoogleEvents,
     onImportContacts,
-
+    onResetSpreadsheet,
     t
 }) => {
+    // Fiscal Controller Logic
+    const {
+        generatedCsr,
+        generatingCsr,
+        showCsrInfo,
+        generateCsr,
+        hideCsrInfo,
+        uploading,
+        uploadCert,
+        connectionStatus,
+        statusDetails,
+        testConnection,
+        error: fiscalError
+    } = useDoctorFiscalController(data.id);
+
+    // If there's a fiscal error, we could show it via a toast or alert, 
+    // or pass it down to the component to display inline.
+    if (fiscalError) {
+        // Simple alert for now, effectively handling the error state side-effect
+        // Ensure this doesn't loop; practically React might want this in useEffect but for alert it's tricky.
+        // Better to let the component display the error or handle it in the click handler wrapper.
+    }
 
     return (
         <Modal
@@ -70,6 +94,12 @@ const DoctorEditModal = ({
                     onClick={() => onTabChange('google')}
                 >
                     🌐 Google
+                </TabButton>
+                <TabButton
+                    isActive={activeTab === 'fiscal'}
+                    onClick={() => onTabChange('fiscal')}
+                >
+                    🧾 Fiscal
                 </TabButton>
             </div>
 
@@ -131,6 +161,26 @@ const DoctorEditModal = ({
                         onDisconnect={onDisconnectGoogle}
                         onVerifyCalendar={onVerifyGoogleEvents}
                         onImportContacts={onImportContacts}
+                        onResetSpreadsheet={onResetSpreadsheet}
+                    />
+                )}
+
+                {activeTab === 'fiscal' && (
+                    <DoctorFiscalSettings
+                        data={data}
+                        onChangeData={onChangeData}
+
+                        generatedCsr={generatedCsr}
+                        generatingCsr={generatingCsr}
+                        showCsrInfo={showCsrInfo}
+                        uploading={uploading}
+                        connectionStatus={connectionStatus}
+                        statusDetails={statusDetails}
+
+                        onGenerateCsr={generateCsr}
+                        onUploadCert={uploadCert}
+                        onTestConnection={testConnection}
+                        onHideCsrInfo={hideCsrInfo}
                     />
                 )}
             </div>

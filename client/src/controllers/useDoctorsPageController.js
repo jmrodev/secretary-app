@@ -105,7 +105,10 @@ export const useDoctorsPageController = () => {
             default_prescription_interval_days: doc.default_prescription_interval_days || 0,
             overturn_start_time: doc.overturn_start_time || '08:00:00',
             overturn_end_time: doc.overturn_end_time || '21:00:00',
-            force_hour_alignment: doc.force_hour_alignment === 1
+            force_hour_alignment: doc.force_hour_alignment === 1,
+            afip_cuit: doc.afip_cuit || '',
+            afip_pto_vta: doc.afip_pto_vta || 1,
+            afip_enabled: doc.afip_enabled === 1 || doc.afip_enabled === true
         };
 
         setModalState({
@@ -193,6 +196,16 @@ export const useDoctorsPageController = () => {
                 await api.post('/google/import', { doctorId: modalState.data.id });
                 showMessage('Importación completada con éxito', 'success');
             } catch (e) { showMessage('Error al importar contactos', 'error'); }
+        },
+        onResetSpreadsheet: async () => {
+            if (!await confirm("¿Restablecer planilla de Finanzas? Se creará una nueva con el próximo pago.")) return;
+            try {
+                await api.post('/google/reset-spreadsheet', { doctorId: modalState.data.id });
+                showMessage('Planilla restablecida. Se creará una nueva automáticamente.', 'success');
+            } catch (e) {
+                console.error(e);
+                showMessage('Error al restablecer planilla', 'error');
+            }
         }
     };
 

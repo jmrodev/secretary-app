@@ -21,5 +21,6 @@ router.delete('/appointments/:eventId', verifyToken, googleController.deleteEven
 // Sanitization Tool
 router.get('/audit-appointments', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), googleController.getAuditAppointments);
 router.post('/sanitize/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), googleController.sanitizeAppointment);
+router.post('/reset-spreadsheet', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), googleController.resetSpreadsheet);
 
 module.exports = router;

@@ -86,6 +86,7 @@ const Doctors = () => {
                     onDisconnectGoogle={handlers.onDisconnectGoogle}
                     onVerifyGoogleEvents={handlers.onVerifyGoogleEvents}
                     onImportContacts={handlers.onImportContacts}
+                    onResetSpreadsheet={handlers.onResetSpreadsheet}
 
                     t={t}
                 />
