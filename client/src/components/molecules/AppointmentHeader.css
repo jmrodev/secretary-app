@@ -1,0 +1,34 @@
+.invoice-detail {
+    padding: 16px;
+    text-align: left;
+}
+
+.invoice-detail__title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 16px;
+    color: #1e293b;
+}
+
+.invoice-detail__content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.invoice-detail__row {
+    margin: 0;
+}
+
+.invoice-detail__divider {
+    margin: 8px 0;
+    border: 0;
+    border-top: 1px solid #e2e8f0;
+}
+
+.invoice-detail__actions {
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+}

@@ -1,0 +1,79 @@
+.modal-overlay-bem {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000;
+}
+
+.modal-content-bem {
+    background-color: white;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header-bem {
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header-bem__title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.modal-header-bem__close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0 8px;
+    line-height: 1;
+}
+
+.modal-body-bem {
+    margin-bottom: 20px;
+}
+
+.modal-body-bem__text {
+    white-space: pre-wrap;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.modal-body-bem__text--prompt {
+    margin-bottom: 1rem;
+}
+
+.modal-footer-bem {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

@@ -132,3 +132,18 @@
 .sidebar-user__logout:hover {
     opacity: 1;
 }
+
+.sidebar__section {
+    margin-top: 1.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-color, #f1f5f9);
+}
+
+.sidebar__section-title {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted, #94a3b8);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}

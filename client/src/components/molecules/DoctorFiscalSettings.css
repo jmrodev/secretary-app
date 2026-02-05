@@ -1,0 +1,208 @@
+.doctor-fiscal-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.doctor-fiscal-settings__card {
+    background-color: #f8fafc;
+    /* slate-50 */
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    /* slate-200 */
+}
+
+.doctor-fiscal-settings__header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.doctor-fiscal-settings__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.doctor-fiscal-settings__section {
+    border-top: 1px solid #e2e8f0;
+    /* slate-200 */
+    padding-top: 1rem;
+}
+
+.doctor-fiscal-settings__title {
+    font-weight: 500;
+    color: #334155;
+    /* slate-700 */
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    /* text-sm */
+}
+
+.doctor-fiscal-settings__description {
+    font-size: 0.75rem;
+    /* text-xs */
+    color: #64748b;
+    /* slate-500 */
+    margin-bottom: 0.75rem;
+}
+
+.doctor-fiscal-settings__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.doctor-fiscal-settings__csr-box {
+    background-color: #ffffff;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    margin-top: 1rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.doctor-fiscal-settings__csr-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.doctor-fiscal-settings__csr-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #334155;
+}
+
+.doctor-fiscal-settings__csr-close {
+    font-size: 0.75rem;
+    color: #ef4444;
+    /* red-500 */
+    cursor: pointer;
+    background: none;
+    border: none;
+    text-decoration: none;
+}
+
+.doctor-fiscal-settings__csr-close:hover {
+    text-decoration: underline;
+}
+
+.doctor-fiscal-settings__textarea {
+    width: 100%;
+    height: 8rem;
+    font-size: 0.65rem;
+    /* text-[10px] */
+    font-family: monospace;
+    padding: 0.5rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.25rem;
+    background-color: #f8fafc;
+    resize: none;
+    outline: none;
+}
+
+.doctor-fiscal-settings__textarea:focus {
+    box-shadow: 0 0 0 2px #bfdbfe;
+    /* ring-primary-200 */
+}
+
+.doctor-fiscal-settings__csr-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.doctor-fiscal-settings__hint {
+    font-size: 0.65rem;
+    color: #94a3b8;
+    /* slate-400 */
+    font-style: italic;
+    margin-right: 0.5rem;
+}
+
+.doctor-fiscal-settings__status-section {
+    border-top: 1px solid #e2e8f0;
+    margin-top: 1rem;
+    padding-top: 1rem;
+}
+
+.doctor-fiscal-settings__status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.doctor-fiscal-settings__status-box {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.8125rem;
+    border: 1px solid transparent;
+    margin-bottom: 1rem;
+}
+
+.doctor-fiscal-settings__status-box--success {
+    background-color: #f0fdf4;
+    border-color: #bbf7d0;
+    color: #166534;
+}
+
+.doctor-fiscal-settings__status-box--error {
+    background-color: #fef2f2;
+    border-color: #fecaca;
+    color: #991b1b;
+}
+
+.doctor-fiscal-settings__status-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.doctor-fiscal-settings__status-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    overflow: hidden;
+    width: 100%;
+}
+
+.doctor-fiscal-settings__status-details {
+    margin-top: 0.5rem;
+    font-size: 0.6875rem;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    background-color: rgba(0, 0, 0, 0.03);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.doctor-fiscal-settings__status-message {
+    margin-top: 0.25rem;
+    opacity: 0.9;
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.4s ease-out forwards;
+}

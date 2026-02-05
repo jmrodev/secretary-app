@@ -36,6 +36,8 @@ export const useAppointmentsPageController = () => {
     const [selectedDate, setSelectedDate] = useState(location.state?.selectedDate ? new Date(location.state.selectedDate) : new Date());
     const [activeTab, setActiveTab] = useState(location.state?.activeTab || 'calendar');
 
+    console.log("[Controller] selectedDate state:", selectedDate);
+
     // --- Modals State ---
     const [editPatientModalOpen, setEditPatientModalOpen] = useState(false);
     const [paymentModal, setPaymentModal] = useState({ open: false, initialData: {} });

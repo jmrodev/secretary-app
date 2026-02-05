@@ -10,10 +10,13 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
 
     // Sync viewDate when selectedDate changes (e.g. from parent or next/prev navigation)
     useEffect(() => {
+        console.log("[Calendar] selectedDate changed:", selectedDate);
         if (selectedDate) {
             setViewDate(new Date(selectedDate));
         }
     }, [selectedDate]);
+
+    console.log("[Calendar] Render. viewDate:", viewDate, "selectedDate:", selectedDate);
 
     const getDaysInMonth = (date) => {
         const year = date.getFullYear();
@@ -40,12 +43,14 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
 
     const handlePrevMonth = () => {
         const newDate = new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1);
+        console.log("[Calendar] handlePrevMonth calling onDateSelect with:", newDate);
         setViewDate(newDate);
         onDateSelect(newDate);
     };
 
     const handleNextMonth = () => {
         const newDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1);
+        console.log("[Calendar] handleNextMonth calling onDateSelect with:", newDate);
         setViewDate(newDate);
         onDateSelect(newDate);
     };

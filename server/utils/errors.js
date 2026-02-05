@@ -27,9 +27,17 @@ class NotFoundError extends AppError {
     }
 }
 
+class AuthRequiredError extends AppError {
+    constructor(message) {
+        super(message, 403);
+        this.type = 'AUTH_REQUIRED';
+    }
+}
+
 module.exports = {
     AppError,
     ValidationError,
     ConflictError,
-    NotFoundError
+    NotFoundError,
+    AuthRequiredError
 };

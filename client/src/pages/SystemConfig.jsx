@@ -4,6 +4,7 @@ import MainLayout from '../components/templates/MainLayout';
 import GeneralSettings from '../components/organisms/GeneralSettings';
 import CommunicationSettings from '../components/organisms/CommunicationSettings';
 import IntegrationSettings from '../components/organisms/IntegrationSettings';
+import BillingSettings from '../components/organisms/BillingSettings';
 import QRCodeModal from '../components/molecules/QRCodeModal';
 import Button from '../components/atoms/Button';
 
@@ -72,6 +73,14 @@ const renderTabContent = (activeTab, controller) => {
                     onTestMeta={handleTestMeta}
                 />
             );
+        case 'billing':
+            return (
+                <BillingSettings
+                    user={user}
+                    settings={settings}
+                    updateSetting={updateSetting}
+                />
+            );
         case 'data':
             return (
                 <div className="tab-panel animate-fadeIn">
@@ -133,6 +142,13 @@ const SystemConfig = () => {
                             onClick={() => setActiveTab('integrations')}
                         >
                             🔌 {t('integrations') || 'Integraciones'}
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            className={`tab-nav__item ${activeTab === 'billing' ? 'tab-nav__item--active' : ''}`}
+                            onClick={() => setActiveTab('billing')}
+                        >
+                            🧾 {t('billing') || 'Facturación'}
                         </Button>
                         <Button
                             variant="ghost"

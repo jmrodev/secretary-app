@@ -50,7 +50,18 @@ exports.getAllDoctors = async (req, res) => {
     let conn;
     try {
         conn = await pool.getConnection();
-        const rows = await conn.query("SELECT id, user_id, full_name, specialty, phone, office_number, rental_type, rental_cost, consultation_price, prescription_price, medical_license_price, certificate_price, virtual_consultation_price, default_visit_interval_days, default_prescription_interval_days, appointment_duration, break_duration, overturn_start_time, overturn_end_time, force_hour_alignment FROM doctors");
+        const rows = await conn.query(`
+            SELECT d.id, d.user_id, d.full_name, d.specialty, d.phone, d.office_number, 
+                   d.rental_type, d.rental_cost, d.consultation_price, d.prescription_price, 
+                   d.medical_license_price, d.certificate_price, d.virtual_consultation_price, 
+                   d.default_visit_interval_days, d.default_prescription_interval_days, 
+                   d.appointment_duration, d.break_duration, d.overturn_start_time, 
+                   d.overturn_end_time, d.force_hour_alignment,
+                   d.afip_cuit, d.afip_pto_vta, d.afip_enabled,
+                   di.spreadsheet_id
+            FROM doctors d
+            LEFT JOIN doctor_integrations di ON d.id = di.doctor_id
+        `);
 
         for (let r of rows) {
             const phones = await conn.query("SELECT * FROM phone_numbers WHERE entity_type = 'doctor' AND entity_id = ?", [r.id]);
@@ -587,6 +598,9 @@ exports.updateDoctor = async (req, res) => {
         if (updates.overturn_start_time !== undefined) { fields.push("overturn_start_time = ?"); params.push(updates.overturn_start_time); }
         if (updates.overturn_end_time !== undefined) { fields.push("overturn_end_time = ?"); params.push(updates.overturn_end_time); }
         if (updates.force_hour_alignment !== undefined) { fields.push("force_hour_alignment = ?"); params.push(updates.force_hour_alignment ? 1 : 0); }
+        if (updates.afip_cuit !== undefined) { fields.push("afip_cuit = ?"); params.push(updates.afip_cuit); }
+        if (updates.afip_pto_vta !== undefined) { fields.push("afip_pto_vta = ?"); params.push(updates.afip_pto_vta); }
+        if (updates.afip_enabled !== undefined) { fields.push("afip_enabled = ?"); params.push(updates.afip_enabled ? 1 : 0); }
 
         if (fields.length > 0) {
             const query = `UPDATE doctors SET ${fields.join(', ')} WHERE id = ? `;

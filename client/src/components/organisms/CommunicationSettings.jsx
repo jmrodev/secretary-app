@@ -226,24 +226,40 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
                 </div>
             </div>
 
-            {/* Next Free Slot Proposal */}
+            {/* Public Requests / QR Links */}
             <div className="config-section">
                 <div className="config-section__header">
-                    <span className="config-section__icon">🔍</span>
-                    <h4 className="config-section__title">Propuesta de Próximo Turno Libre</h4>
+                    <span className="config-section__icon">🔗</span>
+                    <h4 className="config-section__title">Solicitudes Públicas (Links/QR)</h4>
                 </div>
 
                 <div className="config-section__body">
                     <TemplateEditor
-                        id="next-free-slot-template"
-                        label="Mensaje de WhatsApp para ofrecer turno libre"
-                        value={settings.next_free_slot_template}
-                        settingKey="next_free_slot_template"
-                        variables={commonVars}
+                        id="whatsapp-prescription-template"
+                        label="💊 Solicitud de Receta (WhatsApp)"
+                        value={settings.whatsapp_prescription_request_template}
+                        settingKey="whatsapp_prescription_request_template"
+                        variables={['{patient_name}', '{link}']}
                         updateSetting={updateSetting}
                         insertVariable={insertVariable}
                         isAdmin={isAdmin}
-                        description="Este mensaje se generará al seleccionar un hueco libre en la búsqueda de próximos turnos."
+                        description="Mensaje que se envía al paciente junto con el link para receta."
+                        placeholder="Hola {patient_name}, por favor ingresa al siguiente enlace para solicitar tus recetas: {link}"
+                    />
+
+                    <div className="config-section__divider"></div>
+
+                    <TemplateEditor
+                        id="whatsapp-patient-data-template"
+                        label="👤 Actualización de Datos (WhatsApp)"
+                        value={settings.whatsapp_patient_data_request_template}
+                        settingKey="whatsapp_patient_data_request_template"
+                        variables={['{patient_name}', '{link}']}
+                        updateSetting={updateSetting}
+                        insertVariable={insertVariable}
+                        isAdmin={isAdmin}
+                        description="Mensaje para que el paciente complete su ficha médica."
+                        placeholder="Hola {patient_name}, por favor ingresa al siguiente enlace para completar tus datos: {link}"
                     />
                 </div>
             </div>

@@ -1,6 +1,7 @@
 # Dependency directories
 node_modules/
 **/node_modules/
+**/.package-lock.json
 
 # Build artifacts
 dist/
@@ -21,10 +22,23 @@ android_native/local.properties
 
 # Database and data
 /mysql_data
+/mysql_data_prod/
 # Backups
 backup_*.sql
+backups/
+backup_ddbb/
+backup.log
+*.csv
 contacts.csv
 extracted_patients.json
+
+# Keys and certs
+*.key
+*.csr
+*.pem
+*.crt
+*.cer
+server/certs/
 
 # Server uploads
 server/uploads/
@@ -40,4 +54,4 @@ android_sdk/tools.zip
 *.njsproj
 *.sln
 *.sw?
-.DS_Store
+*.DS_Store

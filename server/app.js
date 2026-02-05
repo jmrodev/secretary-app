@@ -48,10 +48,11 @@ app.use(async (req, res, next) => {
             const isPrivate = /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.)/.test(ipPart);
 
             if (isPrivate) {
-                const staffUrl = `http://${ipPart}:5173`; // We assume the client is on 5173
+                // Use the host as it came in (e.g. 192.168.1.50:8080 or 192.168.1.50:5173)
+                // This ensures we point to the correct port regardless of the environment
+                const staffUrl = `http://${host}`;
+
                 // Only update if different to avoid constant DB writes
-                // We should probably cache this in memory or just use a flag, 
-                // but for now, we'll let it run. A better way is to do it once per startup or on change.
                 if (global.lastDetectedStaffIp !== staffUrl) {
                     global.lastDetectedStaffIp = staffUrl;
                     const { pool } = require('./db');
@@ -89,6 +90,7 @@ app.use('/api/messages', require('./routes/messageRoutes'));
 app.use('/api/temp-access', require('./routes/tempAccessRoutes')); // [NEW] QR Access
 app.use('/api/institutions', institutionRoutes); // [NEW] Institutions
 app.use('/api/schedules', require('./routes/scheduleRoutes')); // [NEW] Schedules
+app.use('/api/billing', require('./routes/billingRoutes')); // [NEW] ARCA Billing
 app.use('/uploads', express.static('uploads'));
 
 

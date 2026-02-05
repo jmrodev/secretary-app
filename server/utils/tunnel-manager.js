@@ -16,10 +16,11 @@ function startTunnelManager() {
         return tunnelProcess;
     }
 
+    const isProd = process.env.NODE_ENV === 'production';
     const CLOUDFLARED_PATH = path.join(__dirname, '../cloudflared');
-    const TARGET_URL = 'http://client:5173';
+    const TARGET_URL = isProd ? 'http://client-prod:80' : 'http://client:5173';
 
-    console.log('🚀 Starting Tunnel Manager...');
+    console.log(`🚀 Starting Tunnel Manager (${isProd ? 'PROD' : 'DEV'})...`);
     console.log(`📍 Targeting: ${TARGET_URL}`);
 
     // Check if binary exists

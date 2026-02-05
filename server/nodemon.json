@@ -1,0 +1,19 @@
+{
+  "verbose": true,
+  "ignore": [
+    "node_modules",
+    "certs/*",
+    "**/certs/**",
+    "uploads/*",
+    "**/uploads/**",
+    "*.json",
+    "**/ta_*.json",
+    "**/ta_dev.json",
+    "**/ta_prod.json",
+    "certs/doctors/**/*.json"
+  ],
+  "watch": [
+    "."
+  ],
+  "ext": "js,mjs,cjs"
+}

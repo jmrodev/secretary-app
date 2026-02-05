@@ -89,7 +89,7 @@ export const useAppointmentUIHandlers = ({
                 patientId: appt.patient_id,
                 patientName: appt.patient_name || appt.full_name,
                 amount: appt.tariff,
-                description: `Turno - ${appt.patient_name || appt.full_name} - ${new Date(appt.date_time).toLocaleDateString()}`,
+                description: `Turno - ${appt.patient_name || appt.full_name} - ${appt.appointment_date ? new Date(appt.appointment_date).toLocaleDateString() : 'Sin Fecha'}`,
                 doctorId: appt.doctor_id,
                 appointment_id: appt.id,
                 // Convertir patient_id a user_id para la tabla transactions

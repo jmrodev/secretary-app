@@ -1,5 +1,9 @@
 import React from 'react';
+import Button from '../atoms/Button';
 import { formatDate } from '../../utils/format';
+import { useModal } from '../../context/ModalContext';
+import { printInvoice } from '../../utils/printInvoice';
+import './PatientHistoryView.css';
 
 const PatientHistoryView = ({
     patientAppointments,
@@ -9,6 +13,7 @@ const PatientHistoryView = ({
     searchPatientId,
     handlers
 }) => {
+    const { alert } = useModal();
     const { handleGoToAppointment, handleRepeatAppointment } = handlers;
     if (loading) return <p className="p-8 text-center">Cargando...</p>;
 
@@ -106,6 +111,50 @@ const PatientHistoryView = ({
                                         >
                                             🔄 {t('repeat_appointment')}
                                         </button>
+
+                                        {appt.invoice_number && (
+                                            <button
+                                                className="patient-history-view__invoice-btn"
+                                                onClick={() => alert(
+                                                    <div className="invoice-detail">
+                                                        <h3 className="invoice-detail__title">Comprobante Electrónico</h3>
+                                                        <div className="invoice-detail__content">
+                                                            <p className="invoice-detail__row"><strong>Tipo:</strong> Factura {appt.invoice_cbte_tipo === 11 ? 'C' : appt.invoice_cbte_tipo}</p>
+                                                            <p className="invoice-detail__row"><strong>Número:</strong> {String(appt.invoice_punto_vta).padStart(4, '0')}-{String(appt.invoice_number).padStart(8, '0')}</p>
+                                                            <p className="invoice-detail__row"><strong>CAE:</strong> {appt.invoice_cae}</p>
+                                                            <p className="invoice-detail__row"><strong>Vto. CAE:</strong> {appt.invoice_cae_vto ? new Date(appt.invoice_cae_vto).toLocaleDateString() : '-'}</p>
+                                                            <hr className="invoice-detail__divider" />
+                                                            <p className="invoice-detail__row"><strong>Paciente:</strong> {appt.patient_name}</p>
+                                                            <p className="invoice-detail__row"><strong>Médico:</strong> {appt.doctor_name}</p>
+                                                            <p className="invoice-detail__row"><strong>Monto Pagado:</strong> ${appt.paid_amount}</p>
+                                                        </div>
+                                                        <div className="invoice-detail__actions">
+                                                            <Button
+                                                                variant="primary"
+                                                                size="sm"
+                                                                onClick={() => printInvoice({
+                                                                    ptoVta: appt.invoice_punto_vta,
+                                                                    number: appt.invoice_number,
+                                                                    cbteTipo: appt.invoice_cbte_tipo,
+                                                                    cae: appt.invoice_cae,
+                                                                    vto: appt.invoice_cae_vto,
+                                                                    patient: appt.patient_name,
+                                                                    patientDni: appt.patient_dni,
+                                                                    doctor: appt.doctor_name,
+                                                                    doctorCuit: appt.doctor_cuit,
+                                                                    amount: appt.paid_amount
+                                                                })}
+                                                            >
+                                                                🖨️ Imprimir Factura
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                title="Ver Factura Electrónica"
+                                            >
+                                                🧾 {t('view_invoice') || 'Ver Factura'}
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             ))}

@@ -75,7 +75,12 @@ class AppointmentRepository {
                 (SELECT COUNT(*) FROM appointments a2 WHERE a2.patient_id = p.id) as total_appointments,
                 (SELECT COUNT(*) FROM appointments a2 WHERE a2.patient_id = p.id AND (a2.status = 'absent' OR (a2.status = 'cancelled' AND COALESCE(a2.cancellation_reason, '') NOT LIKE '%error%'))) as missed_appointments,
                 (SELECT GROUP_CONCAT(DISTINCT t.method) FROM transactions t WHERE t.appointment_id = a.id AND t.status = 'paid') as payment_methods,
-                d.full_name as doctor_name, p.phone as patient_phone 
+                (SELECT i.cbte_nro FROM invoices i JOIN transactions t ON i.transaction_id = t.id WHERE t.appointment_id = a.id LIMIT 1) as invoice_number,
+                (SELECT i.punto_vta FROM invoices i JOIN transactions t ON i.transaction_id = t.id WHERE t.appointment_id = a.id LIMIT 1) as invoice_punto_vta,
+                (SELECT i.cae FROM invoices i JOIN transactions t ON i.transaction_id = t.id WHERE t.appointment_id = a.id LIMIT 1) as invoice_cae,
+                (SELECT i.cae_vto FROM invoices i JOIN transactions t ON i.transaction_id = t.id WHERE t.appointment_id = a.id LIMIT 1) as invoice_cae_vto,
+                (SELECT i.cbte_tipo FROM invoices i JOIN transactions t ON i.transaction_id = t.id WHERE t.appointment_id = a.id LIMIT 1) as invoice_cbte_tipo,
+                d.full_name as doctor_name, d.afip_cuit as doctor_cuit, p.phone as patient_phone 
                 FROM appointments a 
                 LEFT JOIN patients p ON a.patient_id = p.id 
                 JOIN doctors d ON a.doctor_id = d.id

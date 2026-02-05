@@ -18,11 +18,14 @@ export const useAppointmentActions = ({
 
     const handleReschedule = useCallback(async (apptId, newDateTime) => {
         try {
-            await rescheduleAppointment(apptId, newDateTime);
-            showMessage(t('reschedule_success'), 'success');
-            fetchAppointments();
+            const result = await rescheduleAppointment(apptId, newDateTime);
+            if (result?.success) {
+                fetchAppointments();
+            }
+            return result;
         } catch (error) {
             showMessage(t('reschedule_error'), 'error');
+            return { success: false };
         }
     }, [rescheduleAppointment, showMessage, t, fetchAppointments]);
 

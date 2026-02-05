@@ -131,8 +131,13 @@ export const useAppointmentsHandlers = ({
             const localISOTime = (new Date(newDate - offset)).toISOString().slice(0, 16);
 
             if (await confirm(t('confirm_reschedule_to').replace('{date}', new Date(localISOTime).toLocaleString()))) {
-                appointmentActions.handleReschedule(rescheduleAppt.id, localISOTime);
-                exitRescheduleMode();
+                const result = await appointmentActions.handleReschedule(rescheduleAppt.id, localISOTime);
+                if (result?.success) {
+                    exitRescheduleMode();
+                } else if (result?.type === 'AUTH_REQUIRED') {
+                    setRetryAction({ type: 'reschedule', args: [rescheduleAppt.id, localISOTime] });
+                    setAuthModalOpen(true);
+                }
             }
             return;
         }
@@ -233,6 +238,7 @@ export const useAppointmentsHandlers = ({
             setRetryAction({ type: 'reschedule', args: [id, newDate] });
             setAuthModalOpen(true);
         }
+        return result;
     };
 
     const handleSyncGoogleEvent = (appt) => {
@@ -371,12 +377,15 @@ export const useAppointmentsHandlers = ({
         setShowForm(true);
     };
 
-    const handleAdminAuthConfirm = (retryAction, password) => {
+    const handleAdminAuthConfirm = async (retryAction, password) => {
         if (retryAction) {
             setAuthModalOpen(false);
             const { type, args } = retryAction;
-            if (type === 'delete') handleDelete(args[0], args[1], password);
-            if (type === 'reschedule') handleReschedule(args[0], args[1], password);
+            if (type === 'delete') await handleDelete(args[0], args[1], password);
+            if (type === 'reschedule') {
+                const result = await handleReschedule(args[0], args[1], password);
+                if (result?.success) exitRescheduleMode();
+            }
             setRetryAction(null);
         }
     };

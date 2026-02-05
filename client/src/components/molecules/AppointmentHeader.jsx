@@ -4,10 +4,14 @@ import Badge from '../atoms/Badge';
 import { copyToClipboard } from '../../utils/clipboardUtils';
 import { useMessage } from '../../context/MessageContext';
 
+import { useModal } from '../../context/ModalContext';
 import { formatDate } from '../../utils/format';
+import { printInvoice } from '../../utils/printInvoice';
+import './AppointmentHeader.css';
 
 const AppointmentHeader = ({ appt, t, onWhatsApp }) => {
     const { showMessage } = useMessage();
+    const { alert } = useModal();
 
     const handleCopyPhone = () => {
         copyToClipboard(appt.patient_phone).then(() => showMessage("Teléfono copiado", "success"));
@@ -51,6 +55,52 @@ const AppointmentHeader = ({ appt, t, onWhatsApp }) => {
                             >
                                 ✨
                             </Button>
+
+                            {appt.invoice_number && (
+                                <Button
+                                    variant="ghost"
+                                    size="sm-compact"
+                                    className="appointment-modal__icon-btn"
+                                    title="Ver Factura Electrónica"
+                                    onClick={() => alert(
+                                        <div className="invoice-detail">
+                                            <h3 className="invoice-detail__title">Comprobante Electrónico</h3>
+                                            <div className="invoice-detail__content">
+                                                <p className="invoice-detail__row"><strong>Tipo:</strong> Factura {appt.invoice_cbte_tipo === 11 ? 'C' : appt.invoice_cbte_tipo}</p>
+                                                <p className="invoice-detail__row"><strong>Número:</strong> {String(appt.invoice_punto_vta).padStart(4, '0')}-{String(appt.invoice_number).padStart(8, '0')}</p>
+                                                <p className="invoice-detail__row"><strong>CAE:</strong> {appt.invoice_cae}</p>
+                                                <p className="invoice-detail__row"><strong>Vto. CAE:</strong> {appt.invoice_cae_vto ? new Date(appt.invoice_cae_vto).toLocaleDateString() : '-'}</p>
+                                                <hr className="invoice-detail__divider" />
+                                                <p className="invoice-detail__row"><strong>Paciente:</strong> {appt.patient_name}</p>
+                                                <p className="invoice-detail__row"><strong>Médico:</strong> {appt.doctor_name}</p>
+                                                <p className="invoice-detail__row"><strong>Monto Pagado:</strong> ${appt.paid_amount}</p>
+                                            </div>
+                                            <div className="invoice-detail__actions">
+                                                <Button
+                                                    variant="primary"
+                                                    size="sm"
+                                                    onClick={() => printInvoice({
+                                                        ptoVta: appt.invoice_punto_vta,
+                                                        number: appt.invoice_number,
+                                                        cbteTipo: appt.invoice_cbte_tipo,
+                                                        cae: appt.invoice_cae,
+                                                        vto: appt.invoice_cae_vto,
+                                                        patient: appt.patient_name,
+                                                        patientDni: appt.patient_dni,
+                                                        doctor: appt.doctor_name,
+                                                        doctorCuit: appt.doctor_cuit,
+                                                        amount: appt.paid_amount
+                                                    })}
+                                                >
+                                                    🖨️ Imprimir Factura
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    )}
+                                >
+                                    🧾
+                                </Button>
+                            )}
                         </div>
                     </div>
                 )}

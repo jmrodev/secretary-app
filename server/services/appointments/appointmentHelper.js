@@ -1,7 +1,19 @@
 const { validateAdminPassword } = require('../../controllers/appointments/utils');
+const { AuthRequiredError } = require('../../utils/errors');
 
 const formatDateForDB = (date) => {
-    return new Date(date).toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace('T', ' ');
+    try {
+        if (!date) return null;
+        const d = new Date(date);
+        if (isNaN(d.getTime())) {
+            console.error("[formatDateForDB] Invalid date input:", date);
+            return null;
+        }
+        return d.toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace('T', ' ').slice(0, 19);
+    } catch (err) {
+        console.error("[formatDateForDB] Error formatting date:", date, err);
+        return null;
+    }
 };
 
 const freeSlot = async (conn, doctorId, appointmentDate) => {
@@ -33,14 +45,14 @@ const checkModificationPermissions = async (conn, appt, user, adminPassword) => 
     if (apptDate < now) {
         const setting = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'allow_secretary_edit_past_appointments'");
         const canEdit = setting.length > 0 && (setting[0].setting_value === 'true' || setting[0].setting_value === '1');
-        if (!canEdit) throw new Error("Requiere autorización de Administrador (Turno Pasado).");
+        if (!canEdit) throw new AuthRequiredError("Requiere autorización de Administrador (Turno Pasado).");
     }
 
     // Turnos Atendidos/Completados
     if (['completed', 'attended', 'arrived'].includes(appt.status)) {
         const setting = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'enable_secretary_unrestricted_crud'");
         const canEdit = setting.length > 0 && (setting[0].setting_value === 'true' || setting[0].setting_value === '1');
-        if (!canEdit) throw new Error("Requiere autorización de Administrador (Turno Completado/Atendido).");
+        if (!canEdit) throw new AuthRequiredError("Requiere autorización de Administrador (Turno Completado/Atendido).");
     }
 
     return true;

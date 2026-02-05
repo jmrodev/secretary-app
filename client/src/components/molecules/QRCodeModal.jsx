@@ -2,17 +2,25 @@ import { QRCodeSVG } from 'qrcode.react';
 import Modal from './Modal';
 import { useLanguage } from '../../context/LanguageContext';
 import { useModal } from '../../context/ModalContext';
+import { useConfig } from '../../context/ConfigContext';
 import { copyToClipboard } from '../../utils/clipboardUtils';
 
 const QRCodeModal = ({ isOpen, onClose, url, expiresAt, patientName, patientPhone, type }) => {
     const { t } = useLanguage();
     const { alert } = useModal();
+    const { settings } = useConfig();
 
     const isPrescription = type === 'prescription';
     const title = isPrescription ? "Solicitud de Receta" : "QR Acceso Paciente";
-    const waMessage = isPrescription
-        ? `Hola ${patientName}, por favor ingresa al siguiente enlace para solicitar tus recetas: ${url}`
-        : `Hola ${patientName}, por favor ingresa al siguiente enlace para completar tus datos: ${url}`;
+
+    // Dynamic message from settings or fallback
+    const template = isPrescription
+        ? (settings?.whatsapp_prescription_request_template || "Hola {patient_name}, por favor ingresa al siguiente enlace para solicitar tus recetas: {link}")
+        : (settings?.whatsapp_patient_data_request_template || "Hola {patient_name}, por favor ingresa al siguiente enlace para completar tus datos: {link}");
+
+    const waMessage = template
+        .replace(/{patient_name}/g, patientName || '')
+        .replace(/{link}/g, url);
 
     const handlePrint = () => {
         // ... (keeping existing print logic if it were here)
