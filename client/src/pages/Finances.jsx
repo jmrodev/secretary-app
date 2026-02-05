@@ -113,6 +113,9 @@ const Finances = () => {
                     t={t}
                     onEdit={handlers.onEditTransaction}
                     onDelete={handlers.onDeleteTransaction}
+                    onGenerateInvoice={handlers.onGenerateInvoice}
+                    onSync={handlers.onSyncTransaction}
+                    alert={controller.alert}
                 />
 
                 {/* --- Modals --- */}

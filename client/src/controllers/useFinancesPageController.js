@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -108,42 +108,67 @@ export const useFinancesPageController = () => {
         }
     };
 
-    // Calculate Balance for a specific doctor from loaded transactions (Frontend Calc for instant feedback)
-    const calculateBalance = (docId) => {
-        return transactions
-            .filter(t => t.doctor_id == docId && t.status === 'paid')
-            .reduce((acc, t) => {
-                if (t.is_withdrawal) return acc - parseFloat(t.amount);
-                if (t.type.includes('income')) return acc + parseFloat(t.amount);
-                if (t.type.includes('expense')) return acc - parseFloat(t.amount);
-                return acc;
-            }, 0);
+    const handleGenerateInvoice = async (transactionId) => {
+        if (!await confirm("¿Generar factura electrónica para esta transacción?")) return;
+        try {
+            const res = await api.post('/billing/invoice', { transactionId, cbteTipo: 11 }); // Default to Type 11 (C)
+            showMessage(`Factura Generada: ${res.data.invoice.number}`, 'success');
+            fetchData();
+        } catch (err) {
+            console.error(err);
+            showMessage(err.response?.data?.error || "Error al generar factura", 'error');
+        }
     };
 
-    // Calculate Balance by method (cash/transfer)
-    const calculateBalanceByMethod = (docId) => {
-        const docTxs = transactions.filter(t => t.doctor_id == docId && t.status === 'paid');
-
-        const cashBalance = docTxs
-            .filter(t => t.method === 'cash')
-            .reduce((acc, t) => {
-                if (t.is_withdrawal) return acc - parseFloat(t.amount);
-                if (t.type.includes('income')) return acc + parseFloat(t.amount);
-                if (t.type.includes('expense')) return acc - parseFloat(t.amount);
-                return acc;
-            }, 0);
-
-        const transferBalance = docTxs
-            .filter(t => t.method === 'transfer')
-            .reduce((acc, t) => {
-                if (t.is_withdrawal) return acc - parseFloat(t.amount);
-                if (t.type.includes('income')) return acc + parseFloat(t.amount);
-                if (t.type.includes('expense')) return acc - parseFloat(t.amount);
-                return acc;
-            }, 0);
-
-        return { cash: cashBalance, transfer: transferBalance, total: cashBalance + transferBalance };
+    const handleSyncTransaction = async (transactionId) => {
+        try {
+            await api.post(`/google/sync-transaction/${transactionId}`);
+            showMessage("Sincronización con Google Sheet completada", 'success');
+        } catch (err) {
+            console.error(err);
+            showMessage("Error al sincronizar con Google", 'error');
+        }
     };
+
+    // Optimized Pre-calculations
+    const balancesByDoctor = useMemo(() => {
+        const results = {};
+        transactions.forEach(t => {
+            if (t.status !== 'paid') return;
+            const docId = t.doctor_id;
+            if (!results[docId]) {
+                results[docId] = { cash: 0, transfer: 0, total: 0 };
+            }
+
+            const amount = parseFloat(t.amount) || 0;
+            const isWithdrawal = t.is_withdrawal;
+            const isIncome = t.type.includes('income');
+            const isExpense = t.type.includes('expense');
+
+            let delta = 0;
+            if (isWithdrawal) delta = -amount;
+            else if (isIncome) delta = amount;
+            else if (isExpense) delta = -amount;
+
+            if (t.method === 'cash') {
+                results[docId].cash += delta;
+            } else if (t.method === 'transfer') {
+                results[docId].transfer += delta;
+            }
+            results[docId].total += delta;
+        });
+        return results;
+    }, [transactions]);
+
+    // Fast lookups
+    const calculateBalance = useCallback((docId) => {
+        return balancesByDoctor[docId]?.total || 0;
+    }, [balancesByDoctor]);
+
+    const calculateBalanceByMethod = useCallback((docId) => {
+        const b = balancesByDoctor[docId] || { cash: 0, transfer: 0, total: 0 };
+        return b;
+    }, [balancesByDoctor]);
 
     const handlers = {
         onRefresh: fetchData,
@@ -159,6 +184,8 @@ export const useFinancesPageController = () => {
             setCloseAmount(balance);
         },
         onCloseCloseBox: () => setCloseBoxModal(prev => ({ ...prev, open: false })),
+        onGenerateInvoice: handleGenerateInvoice,
+        onSyncTransaction: handleSyncTransaction,
         setCloseAmount,
         setEditingTx,
         calculateBalance,
@@ -182,6 +209,10 @@ export const useFinancesPageController = () => {
         user,
         settings,
         t,
+
+        // Modals
+        alert,
+        confirm,
 
         // Handlers
         handlers

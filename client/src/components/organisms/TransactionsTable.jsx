@@ -12,6 +12,7 @@ const TransactionsTable = ({
     onEdit,
     onDelete,
     onGenerateInvoice,
+    onSync,
     alert
 }) => {
 
@@ -210,6 +211,11 @@ const TransactionsTable = ({
                                                         <Button size="sm" variant="ghost" onClick={() => onEdit(tx)} title={t('edit')}>
                                                             ✏️
                                                         </Button>
+                                                        {tx.status === 'paid' && (
+                                                            <Button size="sm" variant="ghost" onClick={() => onSync(tx.id)} title="Sincronizar con Google">
+                                                                ☁️
+                                                            </Button>
+                                                        )}
                                                         <Button size="sm" variant="ghost" className="btn-icon-delete" onClick={() => onDelete(tx.id)} title={t('delete')}>
                                                             🗑️
                                                         </Button>

@@ -22,5 +22,11 @@ router.delete('/appointments/:eventId', verifyToken, googleController.deleteEven
 router.get('/audit-appointments', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), googleController.getAuditAppointments);
 router.post('/sanitize/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), googleController.sanitizeAppointment);
 router.post('/reset-spreadsheet', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), googleController.resetSpreadsheet);
+router.post('/sync-transaction/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), (req, res) => {
+    const { id } = req.params;
+    googleController.syncToSpreadsheetHelper(id, req.user.id)
+        .then(() => res.json({ message: 'Sincronización manual completada' }))
+        .catch(err => res.status(500).json({ error: err.message }));
+});
 
 module.exports = router;
