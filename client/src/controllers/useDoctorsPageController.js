@@ -134,6 +134,7 @@ export const useDoctorsPageController = () => {
             ]);
             showMessage(t('doctor_updated') || "Doctor actualizado exitosamente", "success");
             setModalState(prev => ({ ...prev, isOpen: false }));
+            window.dispatchEvent(new CustomEvent('doctors-updated'));
             loadData();
         } catch (err) {
             console.error("Failed to update doctor", err);
@@ -155,6 +156,7 @@ export const useDoctorsPageController = () => {
         try {
             await api.post('/google/disconnect', { doctorId: modalState.data.id });
             setModalState(prev => ({ ...prev, connected: false }));
+            window.dispatchEvent(new CustomEvent('doctors-updated'));
             showMessage('Desconectado', 'success');
         } catch (err) {
             console.error(err);
@@ -201,6 +203,7 @@ export const useDoctorsPageController = () => {
             if (!await confirm("¿Restablecer planilla de Finanzas? Se creará una nueva con el próximo pago.")) return;
             try {
                 await api.post('/google/reset-spreadsheet', { doctorId: modalState.data.id });
+                window.dispatchEvent(new CustomEvent('doctors-updated'));
                 showMessage('Planilla restablecida. Se creará una nueva automáticamente.', 'success');
             } catch (e) {
                 console.error(e);

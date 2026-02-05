@@ -1,7 +1,8 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { useConfig } from '../../context/ConfigContext';
+import api from '../../api/axios';
 import { Link, useLocation } from 'react-router-dom';
 import Button from '../atoms/Button';
 import LanguageSelector from '../atoms/LanguageSelector';
@@ -12,6 +13,22 @@ const Sidebar = () => {
     const { t } = useLanguage();
     const { settings } = useConfig();
     const location = useLocation();
+    const [doctors, setDoctors] = useState([]);
+
+    const fetchSidebarDoctors = () => {
+        if (['admin', 'secretary', 'doctor'].includes(user.role)) {
+            api.get('/users/doctors')
+                .then(res => setDoctors(res.data))
+                .catch(err => console.error("Error fetching doctors in sidebar:", err));
+        }
+    };
+
+    useEffect(() => {
+        fetchSidebarDoctors();
+
+        window.addEventListener('doctors-updated', fetchSidebarDoctors);
+        return () => window.removeEventListener('doctors-updated', fetchSidebarDoctors);
+    }, [user.role]);
 
     const getLinkClass = (path) => `sidebar__link ${location.pathname === path ? 'sidebar__link--active' : ''}`;
 
@@ -105,6 +122,43 @@ const Sidebar = () => {
                 <Link to="/profile" className={getLinkClass('/profile')}>
                     <span className="sidebar__link-icon">👤</span> {t('profile')}
                 </Link>
+
+                {/* Spreadsheet Links */}
+                {doctors.length > 0 && (
+                    <div className="sidebar__section">
+                        <div className="sidebar__section-title">📊 {t('spreadsheets') || 'Planillas'}</div>
+                        {user.role === 'doctor' ? (
+                            doctors
+                                .filter(d => d.user_id === (user.user_id || user.id) && d.spreadsheet_id)
+                                .map(d => (
+                                    <a
+                                        key={d.id}
+                                        href={`https://docs.google.com/spreadsheets/d/${d.spreadsheet_id}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="sidebar__link"
+                                    >
+                                        <span className="sidebar__link-icon">📈</span> {t('my_spreadsheet') || 'Mi Planilla'}
+                                    </a>
+                                ))
+                        ) : (
+                            doctors
+                                .filter(d => d.spreadsheet_id)
+                                .map(d => (
+                                    <a
+                                        key={d.id}
+                                        href={`https://docs.google.com/spreadsheets/d/${d.spreadsheet_id}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="sidebar__link"
+                                        title={`Planilla de ${d.full_name}`}
+                                    >
+                                        <span className="sidebar__link-icon">📈</span> {d.full_name.split(' ')[0]}
+                                    </a>
+                                ))
+                        )}
+                    </div>
+                )}
             </nav>
 
             <div className="sidebar__footer">
