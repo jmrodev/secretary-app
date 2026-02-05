@@ -1,7 +1,8 @@
-
 import React, { useMemo } from 'react';
 import Button from '../atoms/Button';
 import Card from '../atoms/Card';
+import { printInvoice } from '../../utils/printInvoice';
+import './TransactionsTable.css';
 
 const TransactionsTable = ({
     transactions,
@@ -9,7 +10,9 @@ const TransactionsTable = ({
     settings,
     t,
     onEdit,
-    onDelete
+    onDelete,
+    onGenerateInvoice,
+    alert
 }) => {
 
     const formatDateUnambiguous = (dateStr) => {
@@ -141,7 +144,56 @@ const TransactionsTable = ({
                                                 {tx.is_withdrawal ? '↩' : (isIncome ? '+' : '-')}${Math.abs(tx.amount).toLocaleString()}
                                             </td>
                                             <td className="transactions-table__cell--center">
-                                                {tx.proof_file ? (
+                                                {tx.invoice_number ? (
+                                                    <div className="transactions-table__invoice-info">
+                                                        <span className="transactions-table__invoice-number">
+                                                            {String(tx.invoice_punto_vta).padStart(4, '0')}-{String(tx.invoice_number).padStart(8, '0')}
+                                                        </span>
+                                                        <Button
+                                                            size="sm-compact"
+                                                            variant="ghost"
+                                                            onClick={() => alert(
+                                                                <div className="invoice-detail">
+                                                                    <h3 className="invoice-detail__title">Comprobante Electrónico</h3>
+                                                                    <div className="invoice-detail__content">
+                                                                        <p className="invoice-detail__row"><strong>Tipo:</strong> Factura {tx.invoice_cbte_tipo === 11 ? 'C' : tx.invoice_cbte_tipo}</p>
+                                                                        <p className="invoice-detail__row"><strong>Número:</strong> {String(tx.invoice_punto_vta).padStart(4, '0')}-{String(tx.invoice_number).padStart(8, '0')}</p>
+                                                                        <p className="invoice-detail__row"><strong>CAE:</strong> {tx.invoice_cae}</p>
+                                                                        <p className="invoice-detail__row"><strong>Vto. CAE:</strong> {tx.invoice_cae_vto ? new Date(tx.invoice_cae_vto).toLocaleDateString() : '-'}</p>
+                                                                        <hr className="invoice-detail__divider" />
+                                                                        <p className="invoice-detail__row"><strong>Paciente:</strong> {tx.patient_full_name}</p>
+                                                                        <p className="invoice-detail__row"><strong>Médico:</strong> {tx.doctor_name}</p>
+                                                                        <p className="invoice-detail__row"><strong>Monto Total:</strong> ${tx.amount}</p>
+                                                                    </div>
+                                                                    <div className="invoice-detail__actions">
+                                                                        <Button
+                                                                            variant="primary"
+                                                                            size="sm"
+                                                                            onClick={() => printInvoice({
+                                                                                ptoVta: tx.invoice_punto_vta,
+                                                                                number: tx.invoice_number,
+                                                                                cbteTipo: tx.invoice_cbte_tipo,
+                                                                                cae: tx.invoice_cae,
+                                                                                vto: tx.invoice_cae_vto,
+                                                                                fecha: tx.transaction_date ? new Date(tx.transaction_date).toISOString().split('T')[0] : null,
+                                                                                patient: tx.patient_full_name,
+                                                                                patientDni: tx.patient_dni,
+                                                                                doctor: tx.doctor_name,
+                                                                                doctorCuit: tx.doctor_cuit,
+                                                                                amount: tx.amount
+                                                                            })}
+                                                                        >
+                                                                            🖨️ Imprimir Factura
+                                                                        </Button>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                            title="Ver Detalle"
+                                                        >
+                                                            📄 Ver
+                                                        </Button>
+                                                    </div>
+                                                ) : tx.proof_file ? (
                                                     <a href={tx.proof_file} target="_blank" rel="noreferrer" className="btn-text" title={t('view')}>
                                                         📁
                                                     </a>
@@ -150,6 +202,11 @@ const TransactionsTable = ({
                                             {(user.role === 'admin' || settings.enable_secretary_finance_crud === 'true') && (
                                                 <td className="transactions-table__cell--right pr-6-bem">
                                                     <div className="transactions-table__actions">
+                                                        {tx.type === 'income_patient' && tx.status === 'paid' && !tx.invoice_number && (
+                                                            <Button size="sm" variant="ghost" onClick={() => onGenerateInvoice(tx.id)} title="Generar Factura">
+                                                                🧾
+                                                            </Button>
+                                                        )}
                                                         <Button size="sm" variant="ghost" onClick={() => onEdit(tx)} title={t('edit')}>
                                                             ✏️
                                                         </Button>
