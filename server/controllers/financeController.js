@@ -2,6 +2,7 @@ const { pool } = require('../db');
 const { logAction } = require('../utils/audit');
 const googleController = require('./googleController');
 const { calculatePrice } = require('../utils/priceCalculator');
+const { formatLocalSQL, nowLocalSQL } = require('../utils/dateUtils');
 
 // --- Consolidated Finances ---
 
@@ -30,12 +31,8 @@ exports.createTransaction = async (req, res) => {
 
         conn = await pool.getConnection();
 
-        // Format date for MariaDB: keep local time instead of shifting to UTC
-        let finalDate = transaction_date || new Date();
-        if (finalDate && typeof finalDate === 'string') {
-            // If it's an ISO format from <input type="datetime-local">, just clean it for SQL
-            finalDate = finalDate.replace('T', ' ').slice(0, 19);
-        }
+        // Format date for MariaDB using centralized utility
+        const finalDate = formatLocalSQL(transaction_date) || nowLocalSQL();
 
         // [FIX] Clean up existing pending debt for this appointment/request (if any) to prevent duplicates
         if (appointment_id) {
@@ -766,12 +763,8 @@ exports.updateTransaction = async (req, res) => {
             }
         }
 
-        // Format date for MariaDB: keep local time instead of shifting to UTC
-        let finalDate = transaction_date || oldTx.transaction_date;
-        if (finalDate && typeof finalDate === 'string') {
-            // Keep the local time from the frontend picker
-            finalDate = finalDate.replace('T', ' ').slice(0, 19);
-        }
+        // Format date for MariaDB using centralized utility
+        const finalDate = formatLocalSQL(transaction_date) || formatLocalSQL(oldTx.transaction_date);
 
         // 2. Update the transaction
         await conn.query(
