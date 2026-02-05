@@ -34,7 +34,7 @@ exports.getAuthUrl = (req, res) => {
         const url = oauth2Client.generateAuthUrl({
             access_type: 'offline', // Critical for refresh token
             scope: SCOPES,
-            prompt: 'consent', // Force consent to ensure refresh token is returned
+            prompt: 'select_account consent', // Force account selection and consent
             state: state
         });
         res.json({ url });
