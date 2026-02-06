@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -137,20 +137,20 @@ export const useDoctors = () => {
     const [loading, setLoading] = useState(false);
     const [hasFetched, setHasFetched] = useState(false);
 
-    if (!hasFetched) {
-        setHasFetched(true);
-        setLoading(true);
-        // Use the dedicated doctors list endpoint which is accessible to more roles
-        api.get('/users/doctors')
-            .then(res => {
-                if (Array.isArray(res.data)) {
-                    // The /doctors endpoint returns doctors table data directly (id, user_id, full_name, etc)
-                    setDoctors(res.data);
-                }
-            })
-            .catch(err => console.error("Error fetching doctors:", err))
-            .finally(() => setLoading(false));
-    }
+    useEffect(() => {
+        if (!hasFetched) {
+            setHasFetched(true);
+            setLoading(true);
+            api.get('/users/doctors')
+                .then(res => {
+                    if (Array.isArray(res.data)) {
+                        setDoctors(res.data);
+                    }
+                })
+                .catch(err => console.error("Error fetching doctors:", err))
+                .finally(() => setLoading(false));
+        }
+    }, [hasFetched]);
 
     return { doctors, loading };
 };

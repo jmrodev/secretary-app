@@ -22,7 +22,8 @@ const ScheduleSection = ({
     onNextFreeSlot,
     onSyncDayToGoogle,
     onDateSelect,
-
+    showOutOfHours,
+    setShowOutOfHours
 }) => {
     // Helper to determine styling based on doctor ID
     const getDoctorThemeModifier = () => {
@@ -78,6 +79,8 @@ const ScheduleSection = ({
                         doctor={selectedDoctor}
                         schedule={doctorSchedule}
                         holidays={holidays}
+                        showOutOfHours={showOutOfHours}
+                        setShowOutOfHours={setShowOutOfHours}
                     />
                 </div>
             ) : (

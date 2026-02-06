@@ -1,0 +1,319 @@
+# Arquitectura del Proyecto - Secretary App
+
+## Principios Fundamentales
+
+### 1. DRY (Don't Repeat Yourself)
+- **No repetir código**: Extraer lógica común en funciones/componentes reutilizables
+- **Centralizar configuraciones**: Variables, constantes y configuraciones en un solo lugar
+- **Reutilizar componentes**: Crear componentes genéricos y parametrizables
+
+### 2. BEM CSS (Block Element Modifier)
+- **Nomenclatura estricta**: `block__element--modifier`
+- **Ejemplos**:
+  ```css
+  .appointment-report { }                    /* Block */
+  .appointment-report__table { }             /* Element */
+  .appointment-report__row--weekend { }      /* Modifier */
+  ```
+- **NO usar**: camelCase, PascalCase, o nombres genéricos en CSS
+
+### 3. Atomic Design
+- **Estructura de componentes**:
+  ```
+  atoms/       → Componentes básicos (Button, Input, Badge)
+  molecules/   → Combinación de átomos (SearchBar, FormField)
+  organisms/   → Secciones complejas (Header, ReportTable)
+  templates/   → Layouts de página
+  pages/       → Páginas completas
+  ```
+
+### 4. NO Tailwind CSS
+- **Solo CSS vanilla/puro**
+- **Cada componente tiene su propio archivo CSS**
+- **Variables CSS para temas**: Usar `var(--color-primary)` en lugar de valores hardcoded
+
+### 5. MVC (Model-View-Controller)
+- **Frontend**:
+  ```
+  components/  → View (presentación)
+  controllers/ → Controller (lógica de UI)
+  hooks/       → Model (estado y datos)
+  ```
+- **Backend**:
+  ```
+  routes/      → Rutas HTTP
+  controllers/ → Lógica de negocio
+  services/    → Servicios especializados
+  models/      → Acceso a datos (queries)
+  ```
+
+### 6. Un Componente = Un CSS
+- **Regla estricta**: Cada archivo `.jsx` tiene su correspondiente `.css`
+- **Ejemplo**:
+  ```
+  AppointmentReportTable.jsx
+  AppointmentReportTable.css
+  ```
+- **NO usar**: CSS inline, styled-components, o CSS-in-JS
+
+## Estructura del Proyecto
+
+```
+secretary-app/
+├── client/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── atoms/
+│   │   │   │   ├── Button.jsx
+│   │   │   │   ├── Button.css
+│   │   │   │   ├── TabButton.jsx
+│   │   │   │   └── TabButton.css
+│   │   │   ├── molecules/
+│   │   │   ├── organisms/
+│   │   │   │   ├── AppointmentReportTable.jsx
+│   │   │   │   ├── AppointmentReportTable.css
+│   │   │   │   ├── PrescriptionReportTable.jsx
+│   │   │   │   ├── PrescriptionReportTable.css
+│   │   │   │   ├── LicenseReportTable.jsx
+│   │   │   │   ├── CertificateReportTable.jsx
+│   │   │   │   └── MedicalReportTable.css (compartido)
+│   │   │   └── pages/
+│   │   │       ├── Reports.jsx
+│   │   │       └── Reports.css
+│   │   ├── controllers/
+│   │   │   └── useReportsController.js
+│   │   ├── hooks/
+│   │   ├── context/
+│   │   └── utils/
+│   └── public/
+├── server/
+│   ├── routes/
+│   │   ├── appointmentRoutes.js
+│   │   ├── medicalRoutes.js
+│   │   └── financeRoutes.js
+│   ├── controllers/
+│   │   ├── appointmentController.js
+│   │   ├── medicalController.js
+│   │   └── financeController.js
+│   ├── services/
+│   │   ├── appointments/
+│   │   │   ├── bookingService.js
+│   │   │   ├── modificationService.js
+│   │   │   └── retrievalService.js
+│   │   └── finance/
+│   └── middleware/
+└── docs/
+    ├── ARQUITECTURA.md (este archivo)
+    ├── MANUAL_OPERACIONES.html
+    └── GUIA_CONFIGURACION_GENERAL.md
+```
+
+## Reglas de Código
+
+### Frontend (React)
+
+#### Componentes
+```jsx
+// ✅ CORRECTO
+import React from 'react';
+import './ComponentName.css';
+
+const ComponentName = ({ prop1, prop2 }) => {
+    return (
+        <div className="component-name">
+            <h1 className="component-name__title">Título</h1>
+            <button className="component-name__button component-name__button--primary">
+                Acción
+            </button>
+        </div>
+    );
+};
+
+export default ComponentName;
+```
+
+```jsx
+// ❌ INCORRECTO
+const ComponentName = ({ prop1, prop2 }) => {
+    return (
+        <div className="flex justify-center bg-blue-500"> {/* NO Tailwind */}
+            <h1 style={{ color: 'red' }}> {/* NO inline styles */}
+                Título
+            </h1>
+        </div>
+    );
+};
+```
+
+#### CSS
+```css
+/* ✅ CORRECTO - BEM */
+.appointment-report { }
+.appointment-report__table { }
+.appointment-report__row { }
+.appointment-report__row--weekend { }
+.appointment-report__cell-amount { }
+
+/* ❌ INCORRECTO */
+.appointmentReport { }        /* NO camelCase */
+.AppointmentReport { }        /* NO PascalCase */
+.table { }                    /* NO nombres genéricos */
+.row-weekend { }              /* NO guiones simples para modificadores */
+```
+
+#### Controllers
+```javascript
+// ✅ CORRECTO - Custom Hook Controller
+export const useReportsController = () => {
+    const { t } = useLanguage();
+    const [activeTab, setActiveTab] = useState('appointments');
+    const [reportData, setReportData] = useState(null);
+
+    const handleGenerateReport = async () => {
+        // Lógica de negocio
+    };
+
+    return {
+        activeTab,
+        setActiveTab,
+        reportData,
+        handleGenerateReport
+    };
+};
+```
+
+### Backend (Node.js/Express)
+
+#### Rutas
+```javascript
+// ✅ CORRECTO
+const express = require('express');
+const router = express.Router();
+const controller = require('../controllers/controllerName');
+const { verifyToken } = require('../middleware/authMiddleware');
+
+router.get('/resource', verifyToken, controller.getResource);
+router.post('/resource', verifyToken, controller.createResource);
+
+module.exports = router;
+```
+
+#### Controladores
+```javascript
+// ✅ CORRECTO
+exports.getResource = async (req, res) => {
+    let conn;
+    try {
+        const { param1, param2 } = req.query;
+        conn = await pool.getConnection();
+        
+        // Lógica de negocio
+        const result = await service.getData(param1, param2);
+        
+        res.json(result);
+    } catch (err) {
+        console.error('Error:', err);
+        res.status(500).json({ error: 'Server Error' });
+    } finally {
+        if (conn) conn.release();
+    }
+};
+```
+
+#### Servicios
+```javascript
+// ✅ CORRECTO - Lógica de negocio separada
+const pool = require('../db');
+
+exports.getData = async (param1, param2) => {
+    const conn = await pool.getConnection();
+    try {
+        const query = `SELECT * FROM table WHERE field = ?`;
+        const result = await conn.query(query, [param1]);
+        return result;
+    } finally {
+        if (conn) conn.release();
+    }
+};
+```
+
+## Convenciones de Nombres
+
+### Archivos
+- **Componentes React**: `PascalCase.jsx` (ej: `AppointmentReportTable.jsx`)
+- **CSS**: `PascalCase.css` (ej: `AppointmentReportTable.css`)
+- **Controllers**: `camelCase.js` (ej: `useReportsController.js`)
+- **Services**: `camelCase.js` (ej: `bookingService.js`)
+- **Utilities**: `camelCase.js` (ej: `reportPrintHelper.js`)
+
+### Variables y Funciones
+- **JavaScript**: `camelCase` (ej: `handleGenerateReport`, `reportData`)
+- **Constantes**: `UPPER_SNAKE_CASE` (ej: `MAX_RETRIES`, `API_BASE_URL`)
+- **CSS Classes**: `kebab-case` con BEM (ej: `appointment-report__table`)
+
+### Base de Datos
+- **Tablas**: `snake_case` plural (ej: `appointments`, `medical_requests`)
+- **Columnas**: `snake_case` (ej: `patient_id`, `appointment_date`)
+
+## Patrones Comunes
+
+### Reportes
+Todos los reportes siguen la misma estructura:
+
+1. **Resumen Diario** (arriba):
+   - Tabla con totales por día
+   - Columnas: Fecha, Efectivo, Otros Métodos, Total
+   - Footer con subtotales mensuales
+
+2. **Detalle Diario** (abajo):
+   - Desglose completo por día
+   - Agrupado por fecha
+   - Información detallada de cada transacción
+
+### Componentes de Tabla
+```jsx
+<div className="report-name">
+    {/* Summary */}
+    <div className="report-name__summary">
+        <h3 className="report-name__summary-title">Resumen Diario</h3>
+        <table className="report-name__table">
+            {/* ... */}
+        </table>
+    </div>
+
+    {/* Detail */}
+    <div className="report-name__group">
+        <h3 className="report-name__date-header">Fecha</h3>
+        <table className="report-name__table">
+            {/* ... */}
+        </table>
+    </div>
+</div>
+```
+
+## Checklist de Revisión
+
+Antes de hacer commit, verificar:
+
+- [ ] ¿Sigue BEM CSS?
+- [ ] ¿Cada componente tiene su CSS?
+- [ ] ¿No usa Tailwind?
+- [ ] ¿No hay código repetido (DRY)?
+- [ ] ¿Sigue la estructura Atomic Design?
+- [ ] ¿Sigue el patrón MVC?
+- [ ] ¿Los nombres son consistentes?
+- [ ] ¿El código está documentado?
+- [ ] ¿Las variables CSS están centralizadas?
+- [ ] ¿Los estilos son reutilizables?
+
+## Recursos
+
+- [BEM Methodology](http://getbem.com/)
+- [Atomic Design](https://bradfrost.com/blog/post/atomic-web-design/)
+- [MVC Pattern](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)
+- [DRY Principle](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)
+
+---
+
+**Última actualización**: 2026-02-05
+**Mantenedor**: Equipo de Desarrollo

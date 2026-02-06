@@ -1,7 +1,8 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import Calendar from './Calendar';
 import HolidayForm from '../molecules/HolidayForm';
+import Switch from '../atoms/Switch';
 import './CalendarSection.css';
 
 const CalendarSection = ({
@@ -11,18 +12,22 @@ const CalendarSection = ({
     appointments = [],
     calendarStats = {},
     holidays = [],
-    onAddHoliday
+    onAddHoliday,
+    showOutOfHours
 }) => {
     return (
         <div className="calendar-section">
             {(activeTab === 'calendar' || activeTab === 'monthly') ? (
-                <Calendar
-                    selectedDate={selectedDate}
-                    onDateSelect={onDateSelect}
-                    appointments={appointments}
-                    calendarStats={calendarStats}
-                    holidays={holidays}
-                />
+                <>
+                    <Calendar
+                        selectedDate={selectedDate}
+                        onDateSelect={onDateSelect}
+                        appointments={appointments}
+                        calendarStats={calendarStats}
+                        holidays={holidays}
+                        showOutOfHours={showOutOfHours}
+                    />
+                </>
             ) : (
                 <div className="card holiday-card">
                     <h3 className="config-group__title holiday-card__title">🏖️ Agregar Feriado</h3>

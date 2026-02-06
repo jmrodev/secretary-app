@@ -453,6 +453,13 @@ exports.getStats = async (req, res) => {
                 type: 'pending_debt',
                 label: '⚠️ Deuda Total',
                 total: totalDebtVal
+            },
+            {
+                type: 'net_cash',
+                label: '💰 Saldo en Caja (Efectivo - Retiros)',
+                today: todayCashTotal - todayWithdrawalTotal,
+                month: monthCashTotal - monthWithdrawalTotal,
+                year: yearCashTotal - yearWithdrawalTotal
             }
         ];
 

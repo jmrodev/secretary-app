@@ -250,10 +250,8 @@ class AvailabilityService {
             const todayZero = new Date(now); todayZero.setHours(0, 0, 0, 0);
             if (currentDay < todayZero) currentDay = new Date(todayZero);
 
-            const limitDaysWithSlots = 20;
             const maxDaysToCheck = 90;
             let daysChecked = 0;
-            let daysFound = 0;
 
             const rangeMax = new Date(currentDay);
             rangeMax.setDate(rangeMax.getDate() + maxDaysToCheck);
@@ -286,7 +284,7 @@ class AvailabilityService {
 
             const results = [];
 
-            while (daysChecked < maxDaysToCheck && daysFound < limitDaysWithSlots) {
+            while (daysChecked < maxDaysToCheck) {
                 const dayOfWeek = currentDay.getDay();
                 const dateStr = this._getDateStr(currentDay);
 
@@ -374,7 +372,6 @@ class AvailabilityService {
                             dayName: currentDay.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }),
                             slots: daySlots
                         });
-                        daysFound++;
                     }
                 }
 
@@ -395,11 +392,14 @@ class AvailabilityService {
     async getCalendarStats(year, month, doctor_id) {
         const conn = await pool.getConnection();
         try {
-            const docRows = await conn.query("SELECT appointment_duration FROM doctors WHERE id = ?", [doctor_id]);
-            const duration = (docRows.length > 0 && docRows[0].appointment_duration) ? docRows[0].appointment_duration : 60;
-
-            const settingRows = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'daily_out_of_hours_limit'");
-            const outOfHoursLimit = (settingRows.length > 0) ? parseInt(settingRows[0].setting_value, 10) : 0;
+            const [docRows] = await conn.query(
+                "SELECT appointment_duration, overturn_start_time, overturn_end_time, force_hour_alignment FROM doctors WHERE id = ?",
+                [doctor_id]
+            );
+            const duration = docRows?.appointment_duration || 60;
+            const overturnStart = docRows?.overturn_start_time || '08:00:00';
+            const overturnEnd = docRows?.overturn_end_time || '21:00:00';
+            const forceAlignment = docRows?.force_hour_alignment === 1;
 
             const schedules = await conn.query("SELECT * FROM doctor_schedules WHERE doctor_id = ?", [doctor_id]);
 
@@ -422,36 +422,82 @@ class AvailabilityService {
                 const dayOfWeek = currentObj.getDay();
 
                 if (holidays.has(dateStr)) {
-                    stats[dateStr] = { freeIn: 0, freeOut: 0, totalIn: 0, bookedIn: 0, bookedOut: 0, isHoliday: true };
+                    stats[dateStr] = { freeIn: 0, freeOut: 0, totalIn: 0, totalOut: 0, bookedIn: 0, bookedOut: 0, isHoliday: true };
                     continue;
                 }
 
+                // --- 1. Calculate Capacities (Simulation Loop) ---
                 let capacityIn = 0;
-                const dayScheds = schedules.filter(s => s.day_of_week === dayOfWeek && !s.is_break);
-                dayScheds.forEach(s => {
-                    const [sh, sm] = s.start_time.split(':');
-                    const [eh, em] = s.end_time.split(':');
-                    const startMins = parseInt(sh) * 60 + parseInt(sm);
-                    const endMins = parseInt(eh) * 60 + parseInt(em);
-                    const diff = endMins - startMins;
-                    capacityIn += Math.floor(diff / duration);
-                });
+                let capacityOut = 0;
 
+                const dayBlocks = schedules.filter(s => s.day_of_week === dayOfWeek);
+                const officialBlocks = dayBlocks.filter(s => !s.is_break);
+
+                const [osh, osm] = overturnStart.split(':');
+                const [oeh, oem] = overturnEnd.split(':');
+                let cursorMins = parseInt(osh) * 60 + parseInt(osm);
+                const endMins = parseInt(oeh) * 60 + parseInt(oem);
+
+                while (cursorMins < endMins) {
+                    let slotDur = duration;
+                    if (forceAlignment && (cursorMins % 60) !== 0) {
+                        slotDur = 60 - (cursorMins % 60);
+                    }
+                    if (cursorMins + slotDur > endMins) break;
+
+                    const h = Math.floor(cursorMins / 60);
+                    const m = cursorMins % 60;
+                    const timeStr = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00`;
+
+                    const isOfficial = officialBlocks.some(s => timeStr >= s.start_time && timeStr < s.end_time);
+                    const isBreak = dayBlocks.some(s => s.is_break && timeStr >= s.start_time && timeStr < s.end_time);
+
+                    if (isOfficial) {
+                        capacityIn++;
+                    } else if (!isBreak) {
+                        capacityOut++;
+                    }
+                    cursorMins += slotDur;
+                }
+
+                // --- 2. Classify Booked Appointments ---
                 const dailyAppts = appts.filter(a => {
-                    const aDateStr = new Date(a.appointment_date).toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).substring(0, 10);
-                    return aDateStr === dateStr;
+                    const aD = new Date(a.appointment_date);
+                    const ds = aD.toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+                    return ds === dateStr;
                 });
 
-                const bookedIn = dailyAppts.filter(a => !a.is_out_of_hours).length;
-                const bookedOut = dailyAppts.filter(a => a.is_out_of_hours).length;
+                let bookedIn = 0;
+                let bookedOut = 0;
 
-                const freeIn = Math.max(0, capacityIn - bookedIn);
-                const freeOut = Math.max(0, outOfHoursLimit - bookedOut);
+                dailyAppts.forEach(a => {
+                    const apptDate = new Date(a.appointment_date);
+                    const apptTimeStr = apptDate.toLocaleTimeString('en-GB', {
+                        timeZone: 'America/Argentina/Buenos_Aires',
+                        hour12: false,
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }) + ':00';
+
+                    const isExplicitExtra = (a.is_out_of_hours === 1 || a.is_out_of_hours === true || String(a.is_out_of_hours) === 'true');
+                    const fallsInOfficial = officialBlocks.some(s => {
+                        const sStart = String(s.start_time).substring(0, 5) + ':00';
+                        const sEnd = String(s.end_time).substring(0, 5) + ':00';
+                        return apptTimeStr >= sStart && apptTimeStr < sEnd;
+                    });
+
+                    if (!isExplicitExtra && fallsInOfficial) {
+                        bookedIn++;
+                    } else {
+                        bookedOut++;
+                    }
+                });
 
                 stats[dateStr] = {
-                    freeIn,
-                    freeOut,
+                    freeIn: Math.max(0, capacityIn - bookedIn),
+                    freeOut: Math.max(0, capacityOut - bookedOut),
                     totalIn: capacityIn,
+                    totalOut: capacityOut,
                     bookedIn,
                     bookedOut,
                     isHoliday: false

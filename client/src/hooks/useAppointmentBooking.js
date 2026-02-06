@@ -28,6 +28,7 @@ export const useAppointmentBooking = (doctors) => {
     const [syncingZombieId, setSyncingZombieId] = useState(null);
     const [syncReferenceInfo, setSyncReferenceInfo] = useState(null);
     const [editModeId, setEditModeId] = useState(null);
+    const [isOutOfHours, setIsOutOfHours] = useState(false);
     const [showForm, setShowForm] = useState(false);
     const [missingData, setMissingData] = useState([]);
     const [whatsappModal, setWhatsappModal] = useState({ open: false, phone: '', message: '' });
@@ -135,6 +136,7 @@ export const useAppointmentBooking = (doctors) => {
         setSyncReferenceInfo(null);
         setSyncingZombieId(null);
         setEditModeId(null);
+        setIsOutOfHours(false);
         setBonified(false);
     }, []);
 
@@ -152,6 +154,7 @@ export const useAppointmentBooking = (doctors) => {
                     appointment_date: new Date(date).toISOString(),
                     reason: reason || 'Consulta',
                     bonified,
+                    is_out_of_hours: isOutOfHours,
                     type,
                     institution_id: selectedInstitution || null
                 });
@@ -162,6 +165,7 @@ export const useAppointmentBooking = (doctors) => {
                     appointment_date: new Date(date).toISOString(),
                     reason: reason || 'Consulta',
                     bonified,
+                    is_out_of_hours: isOutOfHours,
                     type,
                     institution_id: selectedInstitution || null
                 });
@@ -249,6 +253,7 @@ export const useAppointmentBooking = (doctors) => {
         syncingZombieId, setSyncingZombieId,
         syncReferenceInfo, setSyncReferenceInfo,
         editModeId, setEditModeId,
+        isOutOfHours, setIsOutOfHours,
         showForm, setShowForm,
 
         // Computed/Status

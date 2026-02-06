@@ -35,6 +35,7 @@ const Appointments = () => {
         t, user,
         loading,
         activeTab, setActiveTab,
+        showOutOfHours, setShowOutOfHours,
         viewDoctorId, setViewDoctorId,
         doctors,
         selectedDate,
@@ -123,6 +124,8 @@ const Appointments = () => {
                             calendarStats={calendarStats}
                             holidays={holidays}
                             onAddHoliday={handlers.handleAddHoliday}
+                            showOutOfHours={showOutOfHours}
+                            setShowOutOfHours={setShowOutOfHours}
                         />
 
                         {activeTab !== 'monthly' && (
@@ -143,6 +146,8 @@ const Appointments = () => {
                                 onCreatePatient={booking.createPatient}
                                 onNextFreeSlot={handlers.openNextSlot}
                                 onSyncDayToGoogle={() => handlers.syncDayToGoogle(viewDoctorId, selectedDate)}
+                                showOutOfHours={showOutOfHours}
+                                setShowOutOfHours={setShowOutOfHours}
                             />
                         )}
                     </div>

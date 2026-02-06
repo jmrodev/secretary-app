@@ -48,6 +48,8 @@ router.delete('/patients/medications/:id', verifyToken, medicalController.delete
 router.post('/files', verifyToken, upload.single('file'), medicalController.uploadFile);
 router.get('/files', verifyToken, medicalController.getPatientFiles);
 router.get('/prescriptions/export/json', verifyToken, medicalController.exportPrescriptionsJSON);
+router.get('/licenses/export/json', verifyToken, medicalController.exportLicensesJSON);
+router.get('/certificates/export/json', verifyToken, medicalController.exportCertificatesJSON);
 
 
 // Prescription Requests (Public & Protected)

@@ -1,0 +1,183 @@
+.balance-view {
+    background: var(--card-bg, #fff);
+    border-radius: var(--radius-lg, 12px);
+    padding: 2rem;
+    box-shadow: var(--shadow-md, 0 4px 6px rgba(0, 0, 0, 0.05));
+}
+
+.balance-view__title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-main, #1e293b);
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--border-color, #f1f5f9);
+    padding-bottom: 1rem;
+}
+
+.balance-view__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+}
+
+.balance-view__card {
+    padding: 1.5rem;
+    border-radius: var(--radius-md, 8px);
+    border: 1px solid var(--border-color, #e2e8f0);
+}
+
+.balance-view__card--summary {
+    background: #f8fafc;
+}
+
+.balance-view__card--debts {
+    background: #fffaf5;
+    border-color: #ffedd5;
+}
+
+.balance-view__card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main, #1e293b);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color, #e2e8f0);
+}
+
+.balance-view__summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 0.95rem;
+}
+
+.balance-view__amount--positive {
+    color: #059669;
+    font-weight: 700;
+}
+
+.balance-view__summary-item--subtotal {
+    margin-top: 1rem;
+    padding: 1rem 0.75rem;
+    background: #ecfdf5;
+    border-radius: 6px;
+    font-weight: 700;
+    color: #065f46;
+    border: none;
+}
+
+.balance-view__summary-item--withdrawals {
+    color: #b91c1c;
+    border-color: #fee2e2;
+}
+
+.balance-view__summary-item--net {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid #1e293b;
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: #1e293b;
+    border-bottom: none;
+}
+
+.balance-view__empty-msg {
+    font-style: italic;
+    color: var(--text-muted, #64748b);
+    text-align: center;
+    padding: 2rem;
+}
+
+.balance-view__table-wrapper {
+    width: 100%;
+}
+
+.balance-view__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.balance-view__table th {
+    text-align: left;
+    padding: 0.5rem;
+    color: #9a3412;
+    border-bottom: 1px solid #fed7aa;
+}
+
+.balance-view__table th.text-right {
+    text-align: right;
+}
+
+.balance-view__row {
+    border-bottom: 1px solid #ffedd5;
+}
+
+.balance-view__row td {
+    padding: 0.75rem 0.5rem;
+}
+
+.balance-view__cell-patient {
+    font-weight: 600;
+}
+
+.balance-view__cell-type {
+    font-size: 0.75rem;
+    color: #9a3412;
+    opacity: 0.7;
+}
+
+.balance-view__cell-amount {
+    font-family: var(--font-mono, monospace);
+    text-align: right;
+    font-weight: 600;
+}
+
+.balance-view__debt-total {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #fed7aa;
+    text-align: right;
+    font-weight: 800;
+    color: #9a3412;
+}
+
+@media (max-width: 1024px) {
+    .balance-view__grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Cash Rendition specific styles */
+.balance-view__card--cash {
+    background: #f0fdf4;
+    border-color: #dcfce7;
+}
+
+.balance-view__subtitle {
+    font-size: 0.8rem;
+    color: #065f46;
+    margin-top: -1rem;
+    margin-bottom: 1rem;
+    font-style: italic;
+}
+
+.balance-view__row--has-cash {
+    background: #ffffff;
+    font-weight: 500;
+}
+
+.balance-view__row-footer {
+    background: #059669;
+    color: white;
+    font-weight: 800;
+}
+
+.balance-view__row-footer td {
+    padding: 0.75rem 0.5rem;
+}
+
+.text-right {
+    text-align: right;
+}

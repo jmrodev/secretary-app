@@ -40,6 +40,7 @@ class BookingService {
                 doctor_id: data.doctor_id,
                 appointment_date: formattedDate,
                 reason: data.reason,
+                is_out_of_hours: data.is_out_of_hours === true || data.is_out_of_hours === 1 || data.is_out_of_hours === 'true',
                 type: data.type,
                 status: 'pending',
                 institution_id: finalInstitutionId
@@ -115,8 +116,8 @@ class BookingService {
         }
 
         if (patientShare > 0 || institutionDebt > 0) {
-            await appointmentRepository.update(appointmentId, { payment_status: 'debt' }, conn);
-            return 'debt';
+            await appointmentRepository.update(appointmentId, { payment_status: 'pending' }, conn);
+            return 'pending';
         }
         return 'pending';
     }

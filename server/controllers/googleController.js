@@ -1437,12 +1437,15 @@ exports.syncToSpreadsheetHelper = async (transactionId, userId = null) => {
         else if (tx.type === 'expense_general') specificType = 'Gasto';
 
         const amount = Number(tx.amount);
-        const cobrado = tx.status === 'paid' ? amount : 0;
+        const isWithdrawal = tx.type === 'withdrawal' || tx.is_withdrawal === 1;
+
+        // If it's a withdrawal, the money is leaving the box, so it should be negative
+        const cobrado = tx.status === 'paid' ? (isWithdrawal ? -amount : amount) : 0;
         const debe = tx.status === 'pending' ? amount : 0;
 
         // Final Value (Total? If it's a debt we might not have the "total" here, but usually amount is the transaction value)
         // For this sync, we'll put transaction amount as "Valor" as well if it represents the full thing.
-        const valor = amount;
+        const valor = isWithdrawal ? -amount : amount;
 
         const rowValues = [
             day,

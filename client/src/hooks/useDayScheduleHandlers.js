@@ -119,13 +119,14 @@ export const useDayScheduleHandlers = ({
     };
 
     const handleSlotAction = async (slot) => {
-        if (slot.type === 'closed') {
+        const isOutOfHours = slot.type === 'closed';
+        if (isOutOfHours) {
             const confirmed = await confirm(t('confirm_out_of_hours') || "⚠️ Este horario está marcado como NO LABORABLE. ¿Desea asignar un turno de todas formas?");
             if (confirmed) {
-                onSlotClick(slot.time.getHours(), null, slot.time.getMinutes());
+                onSlotClick(slot.time.getHours(), null, slot.time.getMinutes(), true);
             }
         } else {
-            onSlotClick(slot.time.getHours(), null, slot.time.getMinutes());
+            onSlotClick(slot.time.getHours(), null, slot.time.getMinutes(), false);
         }
     };
 

@@ -35,6 +35,7 @@ export const useAppointmentsPageController = () => {
     const [loading, setLoading] = useState(true);
     const [selectedDate, setSelectedDate] = useState(location.state?.selectedDate ? new Date(location.state.selectedDate) : new Date());
     const [activeTab, setActiveTab] = useState(location.state?.activeTab || 'calendar');
+    const [showOutOfHours, setShowOutOfHours] = useState(false);
 
     console.log("[Controller] selectedDate state:", selectedDate);
 
@@ -188,7 +189,7 @@ export const useAppointmentsPageController = () => {
         appointments, filteredAppointments,
         selectedPatientData,
 
-        setDate, setShowForm, setBonified, setSelectedInstitution,
+        setDate, setShowForm, setBonified, setSelectedInstitution, setIsOutOfHours: booking.setIsOutOfHours,
         setReason, setSyncReferenceInfo, setSyncingZombieId,
 
         setActionModal, setPrescribeModal, setHistoryModal, setPaymentModal, setAuthModalOpen,
@@ -231,6 +232,7 @@ export const useAppointmentsPageController = () => {
         doctors, institutions, loading,
         selectedDate, setSelectedDate,
         activeTab, setActiveTab,
+        showOutOfHours, setShowOutOfHours,
         t, user,
 
         // Modals

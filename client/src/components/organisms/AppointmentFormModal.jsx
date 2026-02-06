@@ -24,6 +24,7 @@ const AppointmentFormModal = ({
     onOpenEditPatient,
     missingData,
     editModeId,
+    isOutOfHours,
     handlers
 }) => {
     const { t } = useLanguage();
@@ -152,6 +153,11 @@ const AppointmentFormModal = ({
                 <div className="input-group">
                     <label className="form-label">{t('date_time')}</label>
                     <input type="datetime-local" className="form-control" value={date} onChange={e => handleDateChange(e.target.value)} required />
+                    {isOutOfHours && (
+                        <div className="appointment-form-modal__extra-badge animate-pulse">
+                            ⚠️ {t('extra_turn_warning') || 'Turno Fuera de Horario (Extra)'}
+                        </div>
+                    )}
                 </div>
 
                 <div className="input-group">

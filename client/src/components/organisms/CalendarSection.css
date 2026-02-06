@@ -4,6 +4,13 @@
     width: 100%;
 }
 
+.calendar-section__controls {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.5rem 0;
+    margin-bottom: 0.5rem;
+}
+
 .holiday-card {
     height: 100%;
     padding: 1.5rem;

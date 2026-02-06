@@ -10,7 +10,7 @@ const pool = mariadb.createPool({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME || 'clinical_management',
   port: process.env.DB_PORT || 3306,
-  connectionLimit: 5
+  connectionLimit: 50
 });
 
 async function getConnection() {

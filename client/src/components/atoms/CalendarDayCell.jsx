@@ -14,6 +14,7 @@ const CalendarDayCell = ({
   bookedOutCount = 0,
   freeInCount = 0,
   freeOutCount = 0,
+  showOutOfHours = false,
   onClick,
   disabled = false
 }) => {
@@ -54,6 +55,7 @@ const CalendarDayCell = ({
           isHoliday={isHoliday}
           holidayDescription={holidayDescription}
           variant={appointmentCount > 5 ? 'high' : 'normal'}
+          showOutOfHours={showOutOfHours}
         />
       </div>
     </div>

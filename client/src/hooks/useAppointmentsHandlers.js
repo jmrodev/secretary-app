@@ -55,6 +55,7 @@ export const useAppointmentsHandlers = ({
     deleteAppointment,
     rescheduleAppointment,
     bookAppointment,
+    setIsOutOfHours,
     fetchNextFreeSlots,
     addHoliday: addHolidayAction,
     deleteHoliday: deleteHolidayAction,
@@ -121,7 +122,7 @@ export const useAppointmentsHandlers = ({
 
     const handleDateSelect = useCallback((date) => setSelectedDate(date), [setSelectedDate]);
 
-    const handleSlotClick = async (hour, existingAppt, minute = 0) => {
+    const handleSlotClick = async (hour, existingAppt, minute = 0, isOutOfHours = false) => {
         if (rescheduleAppt) {
             if (existingAppt) return;
 
@@ -180,6 +181,7 @@ export const useAppointmentsHandlers = ({
                 else setSelectedDoctor('');
 
                 setShowForm(true);
+                setIsOutOfHours(isOutOfHours);
                 setBonified(false);
                 setSelectedInstitution('');
             }
@@ -377,7 +379,7 @@ export const useAppointmentsHandlers = ({
         });
     };
 
-    const confirmNextSlot = (dateIso) => {
+    const confirmNextSlot = (dateIso, isOutOfHours = false) => {
         const slotDate = new Date(dateIso);
         const offset = slotDate.getTimezoneOffset() * 60000;
         const localISOTime = (new Date(slotDate - offset)).toISOString().slice(0, 16);
@@ -385,6 +387,7 @@ export const useAppointmentsHandlers = ({
         setDate(localISOTime);
         // If doctor not matched, maybe alert or default? viewDoctorId usually set.
         setSelectedDoctor(viewDoctorId || selectedDoctor);
+        setIsOutOfHours(isOutOfHours === true || isOutOfHours === 1);
         setShowNextSlotModal(false);
         setShowForm(true);
     };
@@ -431,6 +434,7 @@ export const useAppointmentsHandlers = ({
 
         // We use editModeId to signal booking hook that this is an UPDATE, not a CREATE.
         booking.setEditModeId(appt.id);
+        booking.setIsOutOfHours(appt.is_out_of_hours === 1 || appt.is_out_of_hours === true || String(appt.is_out_of_hours) === 'true');
         booking.setShowForm(true);
     };
 

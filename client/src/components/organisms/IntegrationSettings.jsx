@@ -121,7 +121,7 @@ const renderGoogleIntegration = ({
 /**
  * Single Responsibility: Render Meta WhatsApp integration section
  */
-const renderMetaIntegration = ({ settings, updateSetting, onTestMeta, loading, isAdmin }) => {
+const renderMetaIntegration = ({ settings, updateSetting, onTestMeta, loading, isAuthorized }) => {
     return (
         <div className="config-section">
             <div className="config-section__header">
@@ -139,7 +139,7 @@ const renderMetaIntegration = ({ settings, updateSetting, onTestMeta, loading, i
                     label="Phone Number ID"
                     value={settings.meta_phone_number_id || ''}
                     onChange={(e) => updateSetting('meta_phone_number_id', e.target.value)}
-                    disabled={!isAdmin}
+                    disabled={!isAuthorized}
                     className="font-mono text-sm"
                 />
 
@@ -150,7 +150,7 @@ const renderMetaIntegration = ({ settings, updateSetting, onTestMeta, loading, i
                     value={settings.meta_access_token || ''}
                     onChange={(e) => updateSetting('meta_access_token', e.target.value)}
                     placeholder={settings.meta_access_token === 'MASKED_PRESENT' ? '•••••••• (Guardado)' : 'Pegar Token aquí...'}
-                    disabled={!isAdmin}
+                    disabled={!isAuthorized}
                     className="font-mono text-sm"
                 />
 
@@ -176,7 +176,7 @@ const renderMetaIntegration = ({ settings, updateSetting, onTestMeta, loading, i
 /**
  * Single Responsibility: Render Remote Access section (Cloudflare/DuckDNS)
  */
-const renderRemoteAccessSection = ({ settings, updateSetting, onRefreshTunnel, loading, isAdmin }) => {
+const renderRemoteAccessSection = ({ settings, updateSetting, onRefreshTunnel, loading, isAuthorized }) => {
     const method = settings.remote_access_method || 'cloudflare';
 
     return (
@@ -197,7 +197,7 @@ const renderRemoteAccessSection = ({ settings, updateSetting, onRefreshTunnel, l
                         className="input-field"
                         value={method}
                         onChange={(e) => updateSetting('remote_access_method', e.target.value)}
-                        disabled={!isAdmin}
+                        disabled={!isAuthorized}
                     >
                         <option value="cloudflare">Cloudflare Tunnel (Recomendado - Sin configurar router)</option>
                         <option value="duckdns">DuckDNS (Requiere configuración de Router / Port Forwarding)</option>
@@ -241,7 +241,7 @@ const renderRemoteAccessSection = ({ settings, updateSetting, onRefreshTunnel, l
                                 onChange={(e) => updateSetting('duckdns_domain', e.target.value)}
                                 placeholder="ej: mi-consultorio"
                                 hint="No incluya '.duckdns.org'"
-                                disabled={!isAdmin}
+                                disabled={!isAuthorized}
                             />
                             <ConfigField
                                 id="duckdns-token"
@@ -250,12 +250,22 @@ const renderRemoteAccessSection = ({ settings, updateSetting, onRefreshTunnel, l
                                 value={settings.duckdns_token || ''}
                                 onChange={(e) => updateSetting('duckdns_token', e.target.value)}
                                 placeholder={settings.duckdns_token === 'MASKED_PRESENT' ? '••••••••' : 'Pegar token...'}
-                                disabled={!isAdmin}
+                                disabled={!isAuthorized}
                             />
                         </div>
 
-                        <div className="config-url-display" style={{ marginTop: '1rem' }}>
-                            URL: {settings.duckdns_domain ? `http://${settings.duckdns_domain}.duckdns.org` : 'Configure su dominio'}
+                        <div className="config-flex config-flex--gap-2" style={{ marginTop: '1rem', alignItems: 'center' }}>
+                            <div className="config-url-display" style={{ flex: 1, margin: 0 }}>
+                                URL: {settings.duckdns_domain ? `http://${settings.duckdns_domain}.duckdns.org` : 'Configure su dominio'}
+                            </div>
+                            <Button
+                                size="sm"
+                                variant="secondary"
+                                onClick={onRefreshTunnel}
+                                disabled={loading || !settings.duckdns_domain || !settings.duckdns_token}
+                            >
+                                🔄 Renovar IP
+                            </Button>
                         </div>
 
                         <div className="config-section__divider"></div>
@@ -290,7 +300,8 @@ const IntegrationSettings = ({
     onRefreshTunnel,
     onTestMeta
 }) => {
-    const isAdmin = user.role === 'admin';
+    // Both admin and secretary can manage these integrations
+    const isAuthorized = user.role === 'admin' || user.role === 'secretary';
 
     return (
         <div className="tab-panel animate-fadeIn">
@@ -310,7 +321,7 @@ const IntegrationSettings = ({
                 updateSetting,
                 onTestMeta,
                 loading,
-                isAdmin
+                isAuthorized
             })}
 
             {renderRemoteAccessSection({
@@ -318,7 +329,7 @@ const IntegrationSettings = ({
                 updateSetting,
                 onRefreshTunnel,
                 loading,
-                isAdmin
+                isAuthorized
             })}
         </div>
     );

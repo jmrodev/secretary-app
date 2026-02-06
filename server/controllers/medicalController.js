@@ -1488,3 +1488,130 @@ exports.submitPublicPrescriptionRequest = async (req, res) => {
         if (conn) conn.release();
     }
 };
+
+exports.exportLicensesJSON = async (req, res) => {
+    let conn;
+    try {
+        const { role, user_id } = req.user;
+        const { month, year, doctorId } = req.query;
+
+        conn = await pool.getConnection();
+
+        let dateFilter = "";
+        let params = [];
+        let doctorFilter = "";
+
+        if (role === 'doctor') {
+            doctorFilter = "AND r.doctor_id = (SELECT id FROM doctors WHERE user_id = ?)";
+            params.push(user_id);
+        } else if (doctorId) {
+            doctorFilter = "AND r.doctor_id = ?";
+            params.push(doctorId);
+        }
+
+        if (role === 'patient') {
+            doctorFilter += " AND r.patient_id = (SELECT id FROM patients WHERE user_id = ?)";
+            params.push(user_id);
+        }
+
+        if (month && year) {
+            dateFilter = "AND MONTH(r.completed_at) = ? AND YEAR(r.completed_at) = ?";
+            params.push(month, year);
+        }
+
+        const query = `
+            SELECT 
+                r.id,
+                r.request_note as diagnosis,
+                r.doctor_note as days_duration,
+                r.completed_at as date,
+                d.full_name as doctor_name,
+                p.full_name as patient_name,
+                p.dni as patient_dni,
+                r.payment_status,
+                COALESCE(NULLIF(r.debt_amount, 0), (SELECT amount FROM transactions WHERE request_id = r.id LIMIT 1), 0) as amount,
+                r.payment_method
+            FROM medical_requests r
+            JOIN doctors d ON r.doctor_id = d.id
+            JOIN patients p ON r.patient_id = p.id
+            WHERE r.status = 'completed' 
+            AND r.type = 'license'
+            ${doctorFilter} 
+            ${dateFilter}
+            ORDER BY r.completed_at DESC
+        `;
+
+        const rows = await conn.query(query, params);
+
+        res.json({ licenses: rows || [] });
+    } catch (err) {
+        console.error("Error exporting licenses:", err);
+        res.status(500).json({ error: "Server Error" });
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.exportCertificatesJSON = async (req, res) => {
+    let conn;
+    try {
+        const { role, user_id } = req.user;
+        const { month, year, doctorId } = req.query;
+
+        conn = await pool.getConnection();
+
+        let dateFilter = "";
+        let params = [];
+        let doctorFilter = "";
+
+        if (role === 'doctor') {
+            doctorFilter = "AND r.doctor_id = (SELECT id FROM doctors WHERE user_id = ?)";
+            params.push(user_id);
+        } else if (doctorId) {
+            doctorFilter = "AND r.doctor_id = ?";
+            params.push(doctorId);
+        }
+
+        if (role === 'patient') {
+            doctorFilter += " AND r.patient_id = (SELECT id FROM patients WHERE user_id = ?)";
+            params.push(user_id);
+        }
+
+        if (month && year) {
+            dateFilter = "AND MONTH(r.completed_at) = ? AND YEAR(r.completed_at) = ?";
+            params.push(month, year);
+        }
+
+        const query = `
+            SELECT 
+                r.id,
+                r.type as certificate_type,
+                r.request_note as description,
+                r.doctor_note as additional_notes,
+                r.completed_at as date,
+                d.full_name as doctor_name,
+                p.full_name as patient_name,
+                p.dni as patient_dni,
+                r.payment_status,
+                COALESCE(NULLIF(r.debt_amount, 0), (SELECT amount FROM transactions WHERE request_id = r.id LIMIT 1), 0) as amount,
+                r.payment_method
+            FROM medical_requests r
+            JOIN doctors d ON r.doctor_id = d.id
+            JOIN patients p ON r.patient_id = p.id
+            WHERE r.status = 'completed' 
+            AND r.type = 'certificate'
+            ${doctorFilter} 
+            ${dateFilter}
+            ORDER BY r.completed_at DESC
+        `;
+
+        const rows = await conn.query(query, params);
+
+        res.json({ certificates: rows || [] });
+    } catch (err) {
+        console.error("Error exporting certificates:", err);
+        res.status(500).json({ error: "Server Error" });
+    } finally {
+        if (conn) conn.release();
+    }
+};

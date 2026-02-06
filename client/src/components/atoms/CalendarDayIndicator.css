@@ -1,8 +1,28 @@
 .calendar-day-indicator {
     display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
+    flex-direction: column;
+    gap: 2px;
     margin-top: auto;
+    width: 100%;
+}
+
+.calendar-day-indicator__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 100%;
+}
+
+.calendar-day-indicator__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+}
+
+.calendar-day-indicator__row--hidden {
+    /* Mantiene el espacio pero hace invisible el contenido */
+    opacity: 0;
+    pointer-events: none;
 }
 
 .calendar-day-indicator__appointment-badge,
@@ -11,34 +31,54 @@
     align-items: center;
     justify-content: center;
     min-width: 18px;
-    height: 18px;
-    padding: 0 4px;
-    border-radius: 4px;
-    font-size: 0.65rem;
-    font-weight: 700;
+    min-height: 18px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 0.85rem;
+    font-weight: 900;
+    line-height: 1;
 }
 
 .calendar-day-indicator__holiday-badge {
     background: var(--red-500);
     color: white;
+    margin-bottom: 2px;
 }
 
+/* Empty placeholder - invisible */
+.calendar-day-indicator__appointment-badge--empty {
+    visibility: hidden;
+}
+
+/* Turnos Libres Normales (Verde) - Arriba Izquierda */
 .calendar-day-indicator__appointment-badge--free-normal {
-    background: var(--green-500);
-    color: white;
+    color: var(--green-700);
+    font-weight: 900;
 }
 
-.calendar-day-indicator__appointment-badge--free-extra {
-    background: var(--amber-400);
-    color: white;
-}
-
+/* Turnos Ocupados Normales (Azul) - Arriba Derecha */
 .calendar-day-indicator__appointment-badge--booked-normal {
-    background: var(--blue-500);
-    color: white;
+    color: var(--blue-700);
+    font-weight: 900;
 }
 
+/* Turnos Libres Extra (Ámbar) - Abajo Izquierda */
+.calendar-day-indicator__appointment-badge--free-extra {
+    color: var(--amber-700);
+    font-weight: 900;
+}
+
+/* Turnos Ocupados Extra (Índigo) - Abajo Derecha */
 .calendar-day-indicator__appointment-badge--booked-extra {
-    background: var(--indigo-500);
-    color: white;
+    color: var(--indigo-700);
+    font-weight: 900;
+}
+
+.calendar-day-indicator__count {
+    font-size: 0.85rem;
+    font-weight: 900;
+}
+
+.calendar-day-indicator__appointment-badge--zero {
+    opacity: 0.25;
 }

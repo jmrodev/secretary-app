@@ -4,7 +4,7 @@ import CalendarHeader from '../molecules/CalendarHeader';
 import DayHeaders from '../molecules/DayHeaders';
 import { useLanguage } from '../../context/LanguageContext';
 
-const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = [], calendarStats = {}, hideNavigation = false }) => {
+const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = [], calendarStats = {}, hideNavigation = false, showOutOfHours = false }) => {
     const [viewDate, setViewDate] = useState(new Date(selectedDate || new Date()));
     const { t } = useLanguage();
 
@@ -92,6 +92,7 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
                     bookedOutCount={bookedOutCount}
                     freeInCount={dayStats.freeIn}
                     freeOutCount={dayStats.freeOut}
+                    showOutOfHours={showOutOfHours}
                     onClick={() => onDateSelect(currentDay)}
                     isCurrentMonth={true}
                 />

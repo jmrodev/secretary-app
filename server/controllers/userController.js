@@ -63,9 +63,22 @@ exports.getAllDoctors = async (req, res) => {
             LEFT JOIN doctor_integrations di ON d.id = di.doctor_id
         `);
 
-        for (let r of rows) {
-            const phones = await conn.query("SELECT * FROM phone_numbers WHERE entity_type = 'doctor' AND entity_id = ?", [r.id]);
-            r.phoneNumbers = phones;
+        if (rows.length > 0) {
+            const doctorIds = rows.map(r => r.id);
+            const allPhones = await conn.query(
+                "SELECT * FROM phone_numbers WHERE entity_type = 'doctor' AND entity_id IN (?)",
+                [doctorIds]
+            );
+
+            const phoneMap = allPhones.reduce((acc, phone) => {
+                if (!acc[phone.entity_id]) acc[phone.entity_id] = [];
+                acc[phone.entity_id].push(phone);
+                return acc;
+            }, {});
+
+            rows.forEach(r => {
+                r.phoneNumbers = phoneMap[r.id] || [];
+            });
         }
 
         res.json(rows);
@@ -88,6 +101,7 @@ exports.getAllPatients = async (req, res) => {
             return res.status(403).send("Unauthorized");
         }
 
+        console.log(`[getAllPatients] Starting for role ${role}, search: "${search}"`);
         conn = await pool.getConnection();
 
         // Build the query using PatientsQueryBuilder
@@ -105,17 +119,33 @@ exports.getAllPatients = async (req, res) => {
             .sortByName();            // Ordena por nombre
 
         const { query, params } = builder.build();
+        console.log(`[getAllPatients] Executing patients query...`);
         const rows = await conn.query(query, params);
+        console.log(`[getAllPatients] Found ${rows.length} patients`);
 
-        // Fetch phone numbers for each patient
-        for (let r of rows) {
-            const phones = await conn.query(
-                "SELECT * FROM phone_numbers WHERE entity_type = 'patient' AND entity_id = ?",
-                [r.id]
+        // Batch fetch phone numbers for all patients in one query
+        if (rows.length > 0) {
+            const patientIds = rows.map(r => r.id);
+            console.log(`[getAllPatients] Fetching phones for ${patientIds.length} patients...`);
+            const allPhones = await conn.query(
+                "SELECT * FROM phone_numbers WHERE entity_type = 'patient' AND entity_id IN (?)",
+                [patientIds]
             );
-            r.phoneNumbers = phones;
+            console.log(`[getAllPatients] Found ${allPhones.length} phones total`);
+
+            // Map phones back to patients
+            const phoneMap = allPhones.reduce((acc, phone) => {
+                if (!acc[phone.entity_id]) acc[phone.entity_id] = [];
+                acc[phone.entity_id].push(phone);
+                return acc;
+            }, {});
+
+            rows.forEach(r => {
+                r.phoneNumbers = phoneMap[r.id] || [];
+            });
         }
 
+        console.log(`[getAllPatients] Serializing results...`);
         // Serialize BigInts
         const serialized = rows.map(r => ({
             ...r,
@@ -124,10 +154,11 @@ exports.getAllPatients = async (req, res) => {
             missed_appointments: Number(r.missed_appointments)
         }));
 
+        console.log(`[getAllPatients] Sending response with ${serialized.length} items`);
         res.json(serialized);
     } catch (err) {
-        console.error(err);
-        res.status(500).send("Server Error");
+        console.error(`[getAllPatients] ERROR:`, err);
+        res.status(500).send("Server Error: " + err.message);
     } finally {
         if (conn) conn.release();
     }
@@ -398,15 +429,42 @@ exports.getUsersForAdmin = async (req, res) => {
             ORDER BY created_at DESC
         `);
 
-        for (let u of users) {
-            if (u.profile_id && u.role !== 'admin') {
-                u.phoneNumbers = await conn.query("SELECT * FROM phone_numbers WHERE entity_type = ? AND entity_id = ?", [u.role === 'admin' ? 'user' : u.role, u.profile_id]);
-            } else {
-                u.phoneNumbers = [];
+        const rows = users;
+        if (rows.length > 0) {
+            // Group profile IDs by role to batch fetch
+            const rolesToFetch = ['doctor', 'secretary']; // Users shown in admin are usually staff
+            for (const role of rolesToFetch) {
+                const entityIds = rows
+                    .filter(u => u.role === role && u.profile_id)
+                    .map(u => u.profile_id);
+
+                if (entityIds.length > 0) {
+                    const allPhones = await conn.query(
+                        "SELECT * FROM phone_numbers WHERE entity_type = ? AND entity_id IN (?)",
+                        [role, entityIds]
+                    );
+
+                    const phoneMap = allPhones.reduce((acc, phone) => {
+                        if (!acc[phone.entity_id]) acc[phone.entity_id] = [];
+                        acc[phone.entity_id].push(phone);
+                        return acc;
+                    }, {});
+
+                    rows.forEach(u => {
+                        if (u.role === role && u.profile_id) {
+                            u.phoneNumbers = phoneMap[u.profile_id] || [];
+                        }
+                    });
+                }
             }
+
+            // Ensure every user has at least an empty array for phoneNumbers
+            rows.forEach(u => {
+                if (!u.phoneNumbers) u.phoneNumbers = [];
+            });
         }
 
-        res.json(users);
+        res.json(rows);
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");
@@ -663,8 +721,23 @@ exports.createUser = async (req, res) => {
                 [userId, fullName, dni || null, phone || null]);
             profileId = Number(res.insertId);
         } else if (role === 'patient') {
-            const res = await conn.query("INSERT INTO patients (user_id, full_name, dni, phone) VALUES (?, ?, ?, ?)",
-                [userId, fullName, dni || null, phone || null]);
+            const {
+                street_name, street_number, floor, apartment,
+                city = 'Tandil', province = 'Buenos Aires', country = 'Argentina',
+                address
+            } = req.body;
+
+            const res = await conn.query(
+                `INSERT INTO patients (
+                    user_id, full_name, dni, phone, email, address,
+                    street_name, street_number, floor, apartment, city, province, country
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [
+                    userId, fullName, dni || null, phone || null, email || null, address || null,
+                    street_name || null, street_number || null, floor || null, apartment || null,
+                    city, province, country
+                ]
+            );
             profileId = Number(res.insertId);
 
             // Sync new patient to Google
@@ -727,8 +800,26 @@ exports.updateUser = async (req, res) => {
         } else if (role === 'patient') {
             const [p] = await conn.query("SELECT id FROM patients WHERE user_id = ?", [id]);
             profileId = p?.id; tableName = 'patients';
-            await conn.query("UPDATE patients SET full_name = ?, dni = ?, phone = ? WHERE id = ?",
-                [full_name, dni, phone, profileId]);
+            const {
+                street_name, street_number, floor, apartment,
+                city, province, country, address, email
+            } = req.body;
+
+            let fields = ["full_name = ?", "dni = ?", "phone = ?"];
+            let params = [full_name, dni, phone];
+
+            if (address !== undefined) { fields.push("address = ?"); params.push(address); }
+            if (email !== undefined) { fields.push("email = ?"); params.push(email); }
+            if (street_name !== undefined) { fields.push("street_name = ?"); params.push(street_name); }
+            if (street_number !== undefined) { fields.push("street_number = ?"); params.push(street_number); }
+            if (floor !== undefined) { fields.push("floor = ?"); params.push(floor); }
+            if (apartment !== undefined) { fields.push("apartment = ?"); params.push(apartment); }
+            if (city !== undefined) { fields.push("city = ?"); params.push(city); }
+            if (province !== undefined) { fields.push("province = ?"); params.push(province); }
+            if (country !== undefined) { fields.push("country = ?"); params.push(country); }
+
+            params.push(profileId);
+            await conn.query(`UPDATE patients SET ${fields.join(', ')} WHERE id = ?`, params);
         }
 
         // Handle Phone Numbers

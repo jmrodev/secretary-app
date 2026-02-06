@@ -1,0 +1,228 @@
+.appointment-report__table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-bg, #fff);
+    border-radius: var(--radius-lg, 12px);
+    overflow: hidden;
+}
+
+.appointment-report__table th {
+    text-align: left;
+    padding: 1rem;
+    background: var(--bg-surface, #f8fafc);
+    color: var(--text-muted, #64748b);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid var(--border-color, #e2e8f0);
+}
+
+.appointment-report__table th.text-right {
+    text-align: right;
+}
+
+.appointment-report__day-header td {
+    padding: 0.75rem 1rem;
+    background: var(--bg-surface, #f1f5f9);
+    font-weight: 700;
+    color: var(--main-800, #1e40af);
+}
+
+.appointment-report__row {
+    border-bottom: 1px solid var(--border-color, #f1f5f9);
+    transition: background 0.2s;
+}
+
+.appointment-report__row:hover {
+    background: var(--bg-hover, #f8fafc);
+}
+
+.appointment-report__row td {
+    padding: 1rem;
+    font-size: 0.875rem;
+}
+
+.appointment-report__cell-day {
+    padding-left: 2rem !important;
+    color: var(--text-muted, #64748b);
+    font-size: 0.8rem;
+}
+
+.appointment-report__cell-patient {
+    font-weight: 600;
+    color: var(--text-main, #1e293b);
+}
+
+.appointment-report__cell-time {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+.appointment-report__cell-amount {
+    font-family: var(--font-mono, monospace);
+    font-weight: 600;
+    text-align: right;
+}
+
+.appointment-report__badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* Status variants */
+.appointment-report__badge--status-completed,
+.appointment-report__badge--status-attended {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.appointment-report__badge--status-cancelled {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.appointment-report__badge--status-absent {
+    background: #ffedd5;
+    color: #9a3412;
+}
+
+/* Payment variants */
+.appointment-report__badge--payment-paid {
+    border: 1px solid #bbf7d0;
+    color: #166534;
+}
+
+.appointment-report__badge--payment-debt,
+.appointment-report__badge--payment-debe {
+    border: 1px solid #fecaca;
+    color: #991b1b;
+}
+
+.appointment-report__payment-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.appointment-report__methods {
+    font-size: 0.7rem;
+    color: var(--text-muted, #64748b);
+}
+
+.report-table-empty {
+    padding: 3rem;
+    text-align: center;
+    color: var(--text-muted, #64748b);
+    background: var(--card-bg, #fff);
+    border-radius: var(--radius-lg, 12px);
+}
+
+/* Weekends and Holidays */
+.appointment-report__day-header--weekend {
+    background: #fffbeb !important;
+    color: #92400e !important;
+}
+
+.appointment-report__day-header--holiday {
+    background: #fdf2f2 !important;
+    color: #991b1b !important;
+}
+
+.appointment-report__holiday-tag {
+    font-size: 0.7rem;
+    font-weight: 500;
+    margin-left: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    background: #fee2e2;
+    color: #991b1b;
+    border-radius: 4px;
+    border: 1px solid #fecaca;
+}
+
+/* Overturn (Sobreturno) styling */
+.appointment-report__row--overturn {
+    background-color: #f0f9ff !important;
+}
+
+.appointment-report__overturn-badge {
+    display: inline-block;
+    color: #0369a1;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    background: #e0f2fe;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+/* Summary Section */
+.appointment-report__summary {
+    margin-bottom: 3rem;
+    padding: 1.5rem;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 2px solid #e2e8f0;
+}
+
+.appointment-report__summary-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+}
+
+.appointment-report__footer {
+    background: #f1f5f9;
+    font-weight: 800;
+    font-size: 1rem;
+    text-transform: uppercase;
+    border-top: 3px solid #94a3b8;
+}
+
+.appointment-report__footer td {
+    padding: 1rem !important;
+}
+
+.appointment-report__footer-subtotal {
+    background: #f8fafc;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-top: 1px solid #cbd5e1;
+}
+
+.appointment-report__footer-subtotal td {
+    padding: 0.75rem !important;
+}
+
+.appointment-report__tag-small {
+    font-size: 0.8rem;
+    margin-left: 0.5rem;
+}
+
+.appointment-report__row--weekend {
+    background-color: #fffbeb;
+}
+
+.appointment-report__row--holiday {
+    background-color: #fef2f2;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.appointment-report__day-name {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 500;
+    margin-left: 0.5rem;
+}

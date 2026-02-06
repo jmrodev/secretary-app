@@ -45,7 +45,16 @@ class ModificationService {
             const appt = await appointmentRepository.findById(id, conn);
             if (!appt) throw new Error("Appointment not found");
 
-            await appointmentRepository.update(id, { status, cancellation_reason: reason || null }, conn);
+            const updates = { status, cancellation_reason: reason || null };
+
+            // Si el turno se cancela o no se asiste, el pago ya no puede quedar como "pendiente" o "deuda"
+            if (['cancelled', 'absent', 'suspended'].includes(status)) {
+                if (['pending', 'debt'].includes(appt.payment_status)) {
+                    updates.payment_status = null;
+                }
+            }
+
+            await appointmentRepository.update(id, updates, conn);
 
             // 1. Logic for Completing Appointment: Calculate next suggested visit
             if (status === 'completed') {

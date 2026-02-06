@@ -39,15 +39,39 @@ const renderTabContent = (activeTab, controller) => {
     switch (activeTab) {
         case 'general':
             return (
-                <GeneralSettings
-                    user={user}
-                    settings={settings}
-                    updateSetting={updateSetting}
-                    onShowQr={() => {
-                        const url = settings.staff_base_url || window.location.origin;
-                        setQrModal({ open: true, url, expiry: null });
-                    }}
-                />
+                <>
+                    <GeneralSettings
+                        user={user}
+                        settings={settings}
+                        updateSetting={updateSetting}
+                        onShowQr={() => {
+                            const url = settings.staff_base_url || window.location.origin;
+                            setQrModal({ open: true, url, expiry: null });
+                        }}
+                    />
+                    <div className="config-section" style={{ marginTop: '2rem' }}>
+                        <div className="config-section__header">
+                            <span className="config-section__icon">📖</span>
+                            <h3 className="config-section__title">Documentación y Ayuda</h3>
+                        </div>
+                        <div className="config-section__body">
+                            <div className="config-actions">
+                                <Button
+                                    variant="secondary"
+                                    onClick={() => window.open('/docs/MANUAL_OPERACIONES.html', '_blank')}
+                                >
+                                    📄 Ver Manual de Operaciones
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    onClick={() => window.open('/docs/GUIA_CONFIGURACION_GENERAL.md', '_blank')}
+                                >
+                                    ⚙️ Guía de Configuración
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </>
             );
         case 'communications':
             return (

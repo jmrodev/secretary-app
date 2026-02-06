@@ -60,9 +60,9 @@ const MedicalRequestList = ({
                                         <span className={`tag tag-${r.type === 'prescription' ? 'blue' : 'purple'} font-bold`}>
                                             {r.type === 'prescription' ? t('prescription') : (r.type === 'license' ? t('license') : (r.type === 'certificate' ? t('certificate') : r.type))}
                                         </span>
-                                        {r.is_patient_submitted && (
+                                        {!!r.is_patient_submitted && (
                                             <span className="medical-requests__patient-tag">
-                                                📱 Paciente
+                                                📲 App
                                             </span>
                                         )}
                                     </div>

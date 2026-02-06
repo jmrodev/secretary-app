@@ -9,11 +9,13 @@ import Button from '../atoms/Button';
 import Switch from '../atoms/Switch';
 import './DaySchedule.css';
 
-const DaySchedule = ({ date, appointments, onSlotClick, doctor, schedule, onDateSelect, holidays = [] }) => {
+const DaySchedule = ({
+    date, appointments, onSlotClick, doctor, schedule, onDateSelect,
+    holidays = [], showOutOfHours, setShowOutOfHours
+}) => {
     const { t } = useLanguage();
     // const { confirm } = useModal(); // Moved to hook
     const { settings } = useConfig();
-    const [showOutOfHours, setShowOutOfHours] = React.useState(false);
     const [showCancelled, setShowCancelled] = React.useState(false);
 
     const {

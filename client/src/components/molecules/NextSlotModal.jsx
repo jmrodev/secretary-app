@@ -49,6 +49,16 @@ const NextSlotModal = ({
             size="lg"
         >
             <div className="flex flex-col gap-6 max-h-[75vh] overflow-y-auto custom-scrollbar p-2">
+                {/* Info Banner */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 mx-2">
+                    <div className="flex items-center gap-2">
+                        <span className="text-blue-600 text-lg">ℹ️</span>
+                        <p className="text-xs font-semibold text-blue-800">
+                            Búsqueda hasta <span className="font-black">90 días</span> (3 meses) en el futuro
+                        </p>
+                    </div>
+                </div>
+
                 <div className="flex justify-end px-2">
                     <label className="flex items-center gap-2 cursor-pointer select-none bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-100 hover:bg-amber-100 transition-colors">
                         <input
@@ -150,7 +160,7 @@ const NextSlotModal = ({
                                                         </button>
                                                         <button
                                                             className={`px-5 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-md active:scale-95 ${slot.is_out_of_hours ? 'bg-amber-600 text-white hover:bg-amber-700' : 'bg-slate-900 text-white hover:bg-black'}`}
-                                                            onClick={() => onSelect(slot.iso)}
+                                                            onClick={() => onSelect(slot.iso, slot.is_out_of_hours)}
                                                         >
                                                             Seleccionar
                                                         </button>

@@ -299,6 +299,12 @@ export const translations = {
         print_backup: "Imprimir Respaldo",
         prescription_backup: "Respaldo de Recetas",
         print: "Imprimir",
+        reports_page_title: "Reportes y Exportaciones",
+        reports_page_subtitle: "Generación de reportes mensuales de turnos, recetas y balance económico.",
+        appointment_reports: "Reporte de Turnos",
+        prescription_reports: "Reporte de Recetas",
+        balance_report: "Balance General",
+        overturn: "Sobreturno",
 
         // Finances
         actions: "Acciones",
@@ -952,6 +958,12 @@ export const translations = {
         certificate: "Certificate",
         certificate_details: "Certificate Details",
         recent_certificates: "Recent Certificates",
+        reports_page_title: "Reports and Exports",
+        reports_page_subtitle: "Monthly reports for appointments, prescriptions, and economy.",
+        appointment_reports: "Appointment Report",
+        prescription_reports: "Prescription Report",
+        balance_report: "General Balance",
+        overturn: "Overturn",
 
         // Finances
         actions: "Actions",

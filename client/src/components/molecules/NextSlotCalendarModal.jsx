@@ -304,7 +304,7 @@ const NextSlotCalendarModal = ({
                                             </button>
                                             <button
                                                 className={`slots-list__action-btn slots-list__action-btn--${type}`}
-                                                onClick={() => onSelect(slot.iso)}
+                                                onClick={() => onSelect(slot.iso, slot.is_out_of_hours)}
                                             >
                                                 {type === 'normal' ? t('select') : (type === 'break' ? t('assign_ext') : t('assign_extra'))}
                                             </button>
