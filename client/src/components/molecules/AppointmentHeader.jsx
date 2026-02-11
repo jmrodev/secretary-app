@@ -26,7 +26,13 @@ const AppointmentHeader = ({ appt, t, onWhatsApp }) => {
                 {appt.patient_phone && (
                     <div className="appointment-modal__phone-row">
                         <strong className="appointment-modal__label">{t('phone') || 'Teléfono'}:</strong>
-                        <span className="appointment-modal__phone-number">{appt.patient_phone}</span>
+                        <a
+                            href={`tel:${appt.patient_phone.replace(/[^0-9+]/g, '')}`}
+                            className="appointment-modal__phone-link"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {appt.patient_phone}
+                        </a>
                         <div className="appointment-modal__phone-actions">
                             <Button
                                 variant="ghost"

@@ -6,6 +6,7 @@
     text-decoration: none;
     margin-top: 0.25rem;
     display: inline-block;
+    width: fit-content;
     transition: all 0.2s;
 }
 

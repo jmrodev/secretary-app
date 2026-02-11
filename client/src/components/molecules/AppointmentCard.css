@@ -58,6 +58,8 @@
     color: var(--indigo-600);
     font-weight: 500;
     text-decoration: none;
+    width: fit-content;
+    /* Solo el ancho del texto */
 }
 
 .appointment-card__phone:hover {

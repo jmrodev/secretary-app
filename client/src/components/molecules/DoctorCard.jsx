@@ -23,7 +23,19 @@ const DoctorCard = ({ doctor, currentUser, onEdit, t }) => {
             <div className="doctor-card__details space-y-3 mb-8">
                 <div className="flex items-center gap-3 text-sm text-slate-600">
                     <span className="text-lg">📞</span>
-                    <span className="font-medium">{doctor.phone || t('no_phone') || 'Sin teléfono'}</span>
+                    {doctor.phone ? (
+                        <a
+                            href={`tel:${doctor.phone.replace(/[^0-9+]/g, '')}`}
+                            className="font-medium text-main-800 hover:text-blue-600 hover:underline"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {doctor.phone}
+                        </a>
+                    ) : (
+                        <span className="font-medium text-slate-400 italic">
+                            {t('no_phone') || 'Sin teléfono'}
+                        </span>
+                    )}
                 </div>
                 <div className="flex items-center gap-3 text-sm text-slate-600">
                     <span className="text-lg">🏢</span>

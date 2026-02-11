@@ -123,7 +123,7 @@
 .patient-table__contact-link--email {
     font-size: 0.75rem;
     color: var(--blue-600);
-    display: block;
+    display: inline-flex;
     margin-top: 0.125rem;
 }
 
