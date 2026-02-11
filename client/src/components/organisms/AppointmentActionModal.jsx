@@ -10,6 +10,7 @@ import { usePermissions } from '../../hooks/usePermissions';
 import AppointmentHeader from '../molecules/AppointmentHeader';
 import AppointmentMedicalPanel from '../molecules/AppointmentMedicalPanel';
 import AppointmentAdminPanel from '../molecules/AppointmentAdminPanel';
+import './AppointmentActionModal.css';
 
 const AppointmentActionModal = ({
     isOpen,
