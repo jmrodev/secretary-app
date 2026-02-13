@@ -37,6 +37,28 @@ const PatientForm = ({
                 <input type="password" name="fake_pass_trap" autoComplete="new-password" tabIndex={-1} />
             </div>
 
+            <div className="form-row">
+                <div className="input-group">
+                    <label className="input-label">{t('first_name') || 'Nombre'}</label>
+                    <input
+                        name="first_name"
+                        className="input-field"
+                        value={formData.first_name || ''}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div className="input-group">
+                    <label className="input-label">{t('last_name') || 'Apellido'}</label>
+                    <input
+                        name="last_name"
+                        className="input-field"
+                        value={formData.last_name || ''}
+                        onChange={handleChange}
+                    />
+                </div>
+            </div>
+
             {!isEdit && (
                 <div className="form-row">
                     <div className="input-group">
@@ -67,28 +89,6 @@ const PatientForm = ({
                     </div>
                 </div>
             )}
-
-            <div className="form-row">
-                <div className="input-group">
-                    <label className="input-label">{t('first_name') || 'Nombre'}</label>
-                    <input
-                        name="first_name"
-                        className="input-field"
-                        value={formData.first_name || ''}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className="input-group">
-                    <label className="input-label">{t('last_name') || 'Apellido'}</label>
-                    <input
-                        name="last_name"
-                        className="input-field"
-                        value={formData.last_name || ''}
-                        onChange={handleChange}
-                    />
-                </div>
-            </div>
 
             <div className="form-row">
                 <div className="input-group">

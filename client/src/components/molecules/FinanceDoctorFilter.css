@@ -1,0 +1,17 @@
+/* FinanceDoctorFilter Component Styles */
+
+.finance-doctor-filter {
+    margin-bottom: 2rem;
+}
+
+.finance-doctor-filter__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.25rem;
+}
+
+.finance-doctor-filter__item {
+    font-size: 0.8125rem;
+    padding: 0.5rem 1rem;
+}

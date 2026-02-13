@@ -18,5 +18,34 @@
 .insurance-modal__form {
     display: flex;
     flex-direction: column;
+    gap: 1.25rem;
+}
+
+.insurance-modal__row {
+    display: flex;
     gap: 1rem;
+    width: 100%;
+}
+
+.insurance-modal__column--flex-3 {
+    flex: 3;
+}
+
+.insurance-modal__column--flex-1 {
+    flex: 1;
+}
+
+.insurance-modal__section-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--main-600);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    margin-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--slate-100);
+}
+
+.insurance-modal__manager-wrapper {
+    margin-bottom: 0.5rem;
 }

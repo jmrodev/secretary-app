@@ -1,7 +1,16 @@
 import { useAuth } from '../../context/AuthContext';
 import { useMessage } from '../../context/MessageContext';
 import { useFloatingChatController } from '../../controllers/useFloatingChatController';
+import Icon from '../atoms/Icon';
+import Button from '../atoms/Button';
+import Input from '../atoms/Input';
+import Badge from '../atoms/Badge';
+import './FloatingChat.css';
 
+/**
+ * FloatingChat Organism.
+ * Minimized chat widget for quick messaging between users.
+ */
 const FloatingChat = () => {
     const { user } = useAuth();
     const { showMessage } = useMessage();
@@ -30,86 +39,112 @@ const FloatingChat = () => {
     };
 
     const renderTicks = (status) => {
-        if (status === 0) return <span className="tick-grey">✓</span>;
-        if (status === 1) return <span className="tick-grey">✓✓</span>;
-        if (status === 2) return <span className="tick-blue">✓✓</span>;
+        if (status === 0) return (
+            <div className="floating-chat__ticks">
+                <Icon name="check" size="0.75rem" className="floating-chat__tick--grey" />
+            </div>
+        );
+        if (status === 1) return (
+            <div className="floating-chat__ticks">
+                <Icon name="done_all" size="0.75rem" className="floating-chat__tick--grey" />
+            </div>
+        );
+        if (status === 2) return (
+            <div className="floating-chat__ticks">
+                <Icon name="done_all" size="0.75rem" className="floating-chat__tick--blue" />
+            </div>
+        );
         return null;
     };
 
     if (!user || user.role === 'patient') return null;
 
+    const baseClass = 'floating-chat';
+
     return (
-        <div className="floating-chat-container">
+        <div className={baseClass}>
             {isOpen ? (
-                <div className="chat-widget-window">
-                    <div className="widget-header" onClick={() => !selectedConvo && closeChat()}>
-                        <h4>
+                <div className={`${baseClass}__window animate-fadeIn`}>
+                    <div className={`${baseClass}__header`} onClick={() => !selectedConvo && closeChat()}>
+                        <h4 className={`${baseClass}__title`}>
                             {selectedConvo ? (
-                                <span onClick={(e) => { e.stopPropagation(); backToList(); }}>
-                                    ⬅️ {selectedConvo.other_display_name}
+                                <span className={`${baseClass}__back`} onClick={(e) => { e.stopPropagation(); backToList(); }}>
+                                    <Icon name="arrow_back" size="1.1rem" />
+                                    {selectedConvo.other_display_name}
                                 </span>
                             ) : (
-                                <>💬 Mensajes {unreadCount > 0 && <span className="widget-badge">{unreadCount}</span>}</>
+                                <>
+                                    <Icon name="chat" size="1.1rem" />
+                                    Mensajes
+                                    {unreadCount > 0 && <span className={`${baseClass}__badge`}>{unreadCount}</span>}
+                                </>
                             )}
                         </h4>
-                        <div className="widget-controls">
-                            <button className="control-btn" onClick={closeChat}>➖</button>
+                        <div className={`${baseClass}__controls`}>
+                            <Button
+                                variant="ghost"
+                                size="sm-compact"
+                                onClick={closeChat}
+                                icon={<Icon name="remove" size="1.1rem" />}
+                            />
                         </div>
                     </div>
 
-                    <div className="widget-content">
+                    <div className={`${baseClass}__content`}>
                         {selectedConvo ? (
                             <>
-                                <div className="widget-chat-messages" ref={scrollRef}>
-                                    {loading && thread.length === 0 ? <p className="text-center p-4 text-muted">Cargando...</p> :
+                                <div className={`${baseClass}__messages`} ref={scrollRef}>
+                                    {loading && thread.length === 0 ? (
+                                        <p className="text-center p-4 text-muted">Cargando...</p>
+                                    ) : (
                                         thread.map(msg => (
-                                            <div key={msg.id} className={`widget-bubble ${msg.sender_id === user.user_id ? 'sent' : 'received'}`}>
-                                                <div className="bubble-text">{msg.message}</div>
-                                                <div className="bubble-footer">
-                                                    <span className="widget-time">{formatDate(msg.created_at)}</span>
+                                            <div
+                                                key={msg.id}
+                                                className={`${baseClass}__bubble ${msg.sender_id === user.user_id ? `${baseClass}__bubble--sent` : `${baseClass}__bubble--received`}`}
+                                            >
+                                                <div className={`${baseClass}__bubble-text`}>{msg.message}</div>
+                                                <div className={`${baseClass}__bubble-footer`}>
+                                                    <span className={`${baseClass}__time`}>{formatDate(msg.created_at)}</span>
                                                     {msg.sender_id === user.user_id && renderTicks(msg.read_status)}
                                                 </div>
                                             </div>
-                                        ))}
+                                        ))
+                                    )}
                                     {isOtherTyping && (
-                                        <div className="widget-bubble received typing-indicator">
+                                        <div className={`${baseClass}__bubble ${baseClass}__bubble--received typing-indicator`}>
                                             <em>Escribiendo...</em>
                                         </div>
                                     )}
                                 </div>
-                                <form className="widget-input-area" onSubmit={handleSendMessage}>
-                                    <div className="widget-input-wrapper">
-                                        <input
-                                            type="text"
+                                <form className={`${baseClass}__input-area`} onSubmit={handleSendMessage}>
+                                    <div className={`${baseClass}__input-wrapper`}>
+                                        <Input
                                             placeholder="Responde aquí..."
                                             value={messageText}
                                             onChange={handleTyping}
                                             disabled={sending}
+                                            size="sm"
                                             autoFocus
                                         />
                                     </div>
-                                    <button type="submit" className="widget-send-btn" disabled={sending || !messageText.trim()}>
-                                        {sending ? '...' : '➤'}
-                                    </button>
+                                    <Button
+                                        type="submit"
+                                        variant="primary"
+                                        size="sm"
+                                        disabled={sending || !messageText.trim()}
+                                        icon={<Icon name="send" size="1rem" />}
+                                    />
                                 </form>
                             </>
                         ) : (
-                            <div className="widget-convo-list">
-                                <div style={{ padding: '8px 12px', borderBottom: '1px solid #edf2f7' }}>
-                                    <input
-                                        type="text"
+                            <div className={`${baseClass}__list`}>
+                                <div className={`${baseClass}__search`}>
+                                    <Input
                                         placeholder="Buscar..."
-                                        style={{
-                                            width: '100%',
-                                            padding: '6px 12px',
-                                            borderRadius: '15px',
-                                            border: '1px solid #e2e8f0',
-                                            fontSize: '0.85rem',
-                                            outline: 'none',
-                                            background: '#f8fafc'
-                                        }}
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
+                                        size="sm"
+                                        icon={<Icon name="search" size="1rem" />}
                                     />
                                 </div>
                                 {(() => {
@@ -135,22 +170,22 @@ const FloatingChat = () => {
                                             {filteredConvos.map(convo => (
                                                 <div
                                                     key={`convo-${convo.id}`}
-                                                    className={`widget-convo-item ${convo.unread_count > 0 ? 'unread' : ''}`}
+                                                    className={`${baseClass}__item ${convo.unread_count > 0 ? `${baseClass}__item--unread` : ''}`}
                                                     onClick={() => setSelectedConvo(convo)}
                                                 >
-                                                    <div className="widget-avatar">
+                                                    <div className={`${baseClass}__avatar`}>
                                                         {convo.other_display_name ? convo.other_display_name[0].toUpperCase() : '?'}
                                                     </div>
-                                                    <div className="widget-convo-info">
-                                                        <span className="widget-convo-name">{convo.other_display_name}</span>
-                                                        <span className="widget-convo-last">{convo.message}</span>
+                                                    <div className={`${baseClass}__item-info`}>
+                                                        <span className={`${baseClass}__item-name`}>{convo.other_display_name}</span>
+                                                        <span className={`${baseClass}__item-last`}>{convo.message}</span>
                                                     </div>
-                                                    {convo.unread_count > 0 && <span className="widget-badge">{convo.unread_count}</span>}
+                                                    {convo.unread_count > 0 && <span className={`${baseClass}__badge`}>{convo.unread_count}</span>}
                                                 </div>
                                             ))}
 
                                             {suggestedRecipients.length > 0 && (
-                                                <div style={{ padding: '8px 16px', fontSize: '0.7rem', color: '#64748b', fontWeight: 'bold', textTransform: 'uppercase', background: '#f8fafc' }}>
+                                                <div className={`${baseClass}__section-title`}>
                                                     Contactos
                                                 </div>
                                             )}
@@ -158,15 +193,15 @@ const FloatingChat = () => {
                                             {suggestedRecipients.map(r => (
                                                 <div
                                                     key={`recipient-${r.id}`}
-                                                    className="widget-convo-item"
+                                                    className={`${baseClass}__item`}
                                                     onClick={() => startNewChat(r)}
                                                 >
-                                                    <div className="widget-avatar" style={{ background: '#e2e8f0', color: '#64748b' }}>
+                                                    <div className={`${baseClass}__avatar`} style={{ background: 'var(--gray-200)', color: 'var(--text-muted)' }}>
                                                         {r.display_name[0].toUpperCase()}
                                                     </div>
-                                                    <div className="widget-convo-info">
-                                                        <span className="widget-convo-name">{r.display_name}</span>
-                                                        <span className="widget-convo-last" style={{ fontStyle: 'italic' }}>Iniciar chat ahora</span>
+                                                    <div className={`${baseClass}__item-info`}>
+                                                        <span className={`${baseClass}__item-name`}>{r.display_name}</span>
+                                                        <span className={`${baseClass}__item-last`} style={{ fontStyle: 'italic' }}>Iniciar chat ahora</span>
                                                     </div>
                                                 </div>
                                             ))}
@@ -178,9 +213,10 @@ const FloatingChat = () => {
                     </div>
                 </div>
             ) : (
-                <div className="widget-minimized" onClick={toggleChat}>
-                    <span>💬 Mensajes</span>
-                    {unreadCount > 0 && <span className="widget-badge">{unreadCount}</span>}
+                <div className={`${baseClass}__minimized`} onClick={toggleChat}>
+                    <Icon name="chat" size="1.1rem" />
+                    <span>Mensajes</span>
+                    {unreadCount > 0 && <span className={`${baseClass}__badge`}>{unreadCount}</span>}
                 </div>
             )}
         </div>

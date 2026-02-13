@@ -71,7 +71,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
             footer={
                 <div className="transaction-modal-footer">
                     <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
-                    <Button onClick={handleSubmit} disabled={loading} variant="primary">
+                    <Button onClick={handleSubmit} disabled={loading} variant="primary" icon="✅">
                         {loading ? t('processing') : t('confirm_payment')}
                     </Button>
                 </div>
@@ -90,7 +90,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                 {/* Patient Search (Autocomplete) */}
                 {formData.type === 'income_patient' && (
                     <FormGroup label={t('patient')}>
-                        <div style={{ position: 'relative' }}>
+                        <div className="transaction-modal__autocomplete">
                             <Input
                                 value={patientSearch}
                                 onChange={(e) => {
@@ -100,11 +100,11 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                                 }}
                                 onFocus={() => !initialData?.patientId && setShowPatientList(true)}
                                 placeholder={t('search_name_dni')}
-                                className={initialData?.patientId ? 'input-field--disabled' : ''}
                                 disabled={!!initialData?.patientId}
+                                icon="🔍"
                             />
                             {showPatientList && patientSearch && !formData.related_user_id && (
-                                <ul className="autocomplete-results">
+                                <ul className="transaction-modal__results">
                                     {patients.filter(p =>
                                         p.full_name.toLowerCase().includes(patientSearch.toLowerCase()) ||
                                         (p.dni && p.dni.includes(patientSearch))
@@ -112,9 +112,9 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                                         <li
                                             key={p.id}
                                             onClick={() => selectPatient(p)}
-                                            className="autocomplete-item"
+                                            className="transaction-modal__item"
                                         >
-                                            {p.full_name} <span className="autocomplete-item__hint">{p.dni}</span>
+                                            {p.full_name} <span className="transaction-modal__hint">{p.dni}</span>
                                         </li>
                                     ))}
                                 </ul>
@@ -154,7 +154,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                     </FormGroup>
                 )}
 
-                {/* Medication Autocomplete (Only for prescriptions or consultations) */}
+                {/* Medication Autocomplete */}
                 {formData.type === 'income_patient' && (
                     <PrescriptionSection
                         medications={medications}
@@ -165,11 +165,11 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                 )}
 
                 {/* Payments Section */}
-                <div className="card payment-methods-card">
+                <div className="payment-methods-card">
                     <div className="payment-methods-card__header">
-                        <label className="config-group__title payment-methods-card__title">{t('payment_methods')}</label>
-                        <Button variant="ghost" size="sm-compact" onClick={addPaymentMethod} className="text-primary">
-                            + {t('add_payment_method') || 'Agregar'}
+                        <label className="payment-methods-card__title">{t('payment_methods')}</label>
+                        <Button variant="ghost" size="sm-compact" onClick={addPaymentMethod} icon="+">
+                            {t('add_payment_method') || 'Agregar'}
                         </Button>
                     </div>
 
@@ -178,8 +178,6 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                             <div className="payment-row__amount">
                                 <CurrencyInput
                                     placeholder={t('amount')}
-                                    className="input-field"
-                                    style={{ textAlign: 'right' }}
                                     value={payment.amount}
                                     onChange={e => handlePaymentChange(index, 'amount', e.target.value)}
                                 />
@@ -196,11 +194,9 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                                     <Button
                                         variant="ghost"
                                         size="sm-icon"
-                                        className="text-danger"
                                         onClick={() => removePaymentMethod(index)}
-                                    >
-                                        ✕
-                                    </Button>
+                                        icon="✕"
+                                    />
                                 )}
                             </div>
                         </div>
@@ -208,19 +204,19 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
 
                     <div className="payment-summary">
                         {pricingInfo && (
-                            <p className="payment-summary__pricing-info">{pricingInfo}</p>
+                            <p className="payment-summary__pricing-info">ℹ️ {pricingInfo}</p>
                         )}
                         <div className="payment-summary__totals">
                             {totalPrice > 0 && (
                                 <>
-                                    <span className="text-muted">{t('total')}: {formatPrice(totalPrice)}</span>
-                                    <span className="text-success">{t('paid')}: {formatPrice(currentPaidTotal)}</span>
+                                    <span className="payment-summary__total">{t('total')}: {formatPrice(totalPrice)}</span>
+                                    <span className="payment-summary__paid">{t('paid')}: {formatPrice(currentPaidTotal)}</span>
                                     {debtAmount > 0 ? (
-                                        <span className="text-danger payment-summary__debt">
+                                        <span className="payment-summary__debt">
                                             {t('debt')}: {formatPrice(debtAmount)}
                                         </span>
                                     ) : (
-                                        <span className="text-success" style={{ fontWeight: 700 }}>✓</span>
+                                        <span className="payment-summary__paid" style={{ fontWeight: 800 }}>✓ {t('completed')}</span>
                                     )}
                                 </>
                             )}
@@ -239,13 +235,15 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
 
                 {/* Date */}
                 {settings.allow_admin_edit_finance_date === 'true' && (
-                    <FormGroup label={t('transaction_date') || 'Fecha de Transacción'} style={{ position: 'relative' }}>
+                    <FormGroup label={t('transaction_date') || 'Fecha de Transacción'}>
                         <Input
                             type="datetime-local"
                             value={formData.transaction_date}
                             onChange={e => updateField('transaction_date', e.target.value)}
                         />
-                        <p className="config-field__hint" style={{ color: 'var(--amber-600)', marginTop: '0.25rem' }}>⚠️ {t('edit_date_warning') || 'Modificar la fecha afecta el orden en la caja diaria.'}</p>
+                        <p className="edit-transaction-form__warning">
+                            <span>⚠️</span> {t('edit_date_warning') || 'Modificar la fecha afecta el orden en la caja diaria.'}
+                        </p>
                     </FormGroup>
                 )}
 
@@ -263,7 +261,6 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                     <Input
                         type="file"
                         onChange={e => updateField('proof', e.target.files[0])}
-                        style={{ fontSize: '0.875rem' }}
                     />
                 </FormGroup>
             </div>

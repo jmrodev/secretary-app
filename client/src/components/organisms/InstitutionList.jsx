@@ -2,8 +2,7 @@ import React from 'react';
 import Button from '../atoms/Button';
 import Badge from '../atoms/Badge';
 
-const InstitutionList = ({ institutions, loading, onEdit, onDelete, t }) => {
-    if (loading) return <div className="loading-state">{t('loading')}</div>;
+const InstitutionList = ({ institutions, onEdit, onDelete, t }) => {
 
     if (institutions.length === 0) {
         return (

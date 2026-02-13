@@ -1,11 +1,12 @@
-
 import React from 'react';
 import { useFinancesPageController } from '../controllers/useFinancesPageController';
 
 // Atomic Design Components
-import Card from '../components/atoms/Card';
-import Sidebar from '../components/organisms/Sidebar';
+import MainLayout from '../components/templates/MainLayout';
 import Button from '../components/atoms/Button';
+import Loading from '../components/atoms/Loading';
+import Card from '../components/atoms/Card';
+import Icon from '../components/atoms/Icon';
 
 // Molecules/Organisms
 import FinanceStatsCards from '../components/molecules/FinanceStatsCards';
@@ -15,6 +16,8 @@ import CashBoxDeliveryModal from '../components/molecules/CashBoxDeliveryModal';
 import TransactionsTable from '../components/organisms/TransactionsTable';
 import EditTransactionModal from '../components/organisms/EditTransactionModal';
 import TransactionModal from '../components/molecules/TransactionModal';
+
+import './Finances.css';
 
 const Finances = () => {
     const controller = useFinancesPageController();
@@ -34,14 +37,11 @@ const Finances = () => {
         handlers
     } = controller;
 
-    if (loading) return <div className="centered-loader"><div className="status-display__spinner"></div></div>;
-
     const isAdminOrSecretary = user.role === 'admin' || user.role === 'secretary';
 
     return (
-        <div className="app-layout">
-            <Sidebar />
-            <main className="main-content dashboard-wide">
+        <MainLayout wide>
+            <div className="finances-page">
                 <header className="page-header">
                     <div className="page-header__info">
                         <h1 className="page-header__title">{t('finances')}</h1>
@@ -49,105 +49,115 @@ const Finances = () => {
                     </div>
                 </header>
 
-                {isAdminOrSecretary && (
-                    <FinanceDoctorFilter
-                        doctors={doctors}
-                        selectedDoctorFilter={selectedDoctorFilter}
-                        setSelectedDoctorFilter={handlers.onSelectDoctor}
-                        t={t}
-                    />
-                )}
+                {loading ? (
+                    <Loading variant="centered" text={t('loading') || "Cargando..."} />
+                ) : (
+                    <>
+                        <div className="finances-page__controls">
+                            {isAdminOrSecretary && (
+                                <FinanceDoctorFilter
+                                    doctors={doctors}
+                                    selectedDoctorFilter={selectedDoctorFilter}
+                                    setSelectedDoctorFilter={handlers.onSelectDoctor}
+                                    t={t}
+                                />
+                            )}
 
-                {/* Finance Controls Header Row */}
-                <div className="finances-header">
-                    {/* Stats Cards */}
-                    {isAdminOrSecretary && stats.length > 0 && (
-                        <FinanceStatsCards stats={stats} t={t} />
-                    )}
+                            <div className="finances-page__actions-row">
+                                <div className="finances-page__main-info">
+                                    {isAdminOrSecretary && stats.length > 0 && (
+                                        <FinanceStatsCards stats={stats} t={t} />
+                                    )}
 
-                    {/* Quick Actions */}
-                    {user.role !== 'patient' && (
-                        <Card className="finances-actions">
-                            <Button size="sm" onClick={handlers.onOpenNewTransaction}>
-                                ✨ {t('new_transaction')}
-                            </Button>
+                                    {user.role !== 'patient' && (
+                                        <Card className="finances-page__actions-card">
+                                            <Button size="sm" variant="primary" onClick={handlers.onOpenNewTransaction} icon={<Icon name="ADD" size="1.1rem" />}>
+                                                {t('new_transaction')}
+                                            </Button>
 
-                            {selectedDoctorFilter && (() => {
-                                const d = doctors.find(doc => doc.id == selectedDoctorFilter);
-                                const balances = handlers.calculateBalanceByMethod(selectedDoctorFilter);
-                                if (d && balances.cash > 0) {
-                                    return (
-                                        <Button
-                                            variant="secondary"
-                                            size="sm"
-                                            onClick={() => handlers.onOpenCloseBox(d, balances.cash)}
-                                        >
-                                            💰 {t('deliver')} a {d.full_name?.split(' ')[0]}
-                                        </Button>
-                                    );
-                                }
-                                return null;
-                            })()}
-                        </Card>
-                    )}
+                                            {selectedDoctorFilter && (() => {
+                                                const d = doctors.find(doc => doc.id == selectedDoctorFilter);
+                                                const balances = handlers.calculateBalanceByMethod(selectedDoctorFilter);
+                                                if (d && balances.cash > 0) {
+                                                    return (
+                                                        <Button
+                                                            variant="secondary"
+                                                            size="sm"
+                                                            onClick={() => handlers.onOpenCloseBox(d, balances.cash)}
+                                                            icon={<Icon name="FINANCES" size="1.1rem" />}
+                                                        >
+                                                            {t('deliver')} a {d.full_name?.split(' ')[0]}
+                                                        </Button>
+                                                    );
+                                                }
+                                                return null;
+                                            })()}
+                                        </Card>
+                                    )}
+                                </div>
 
-                    {/* Cash Box Summary */}
-                    {user.role === 'secretary' && (
-                        <CashBoxSummary
-                            doctors={doctors}
-                            selectedDoctorFilter={selectedDoctorFilter}
-                            onSelectDoctor={handlers.onSelectDoctor}
-                            calculateBalance={handlers.calculateBalance}
-                            calculateBalanceByMethod={handlers.calculateBalanceByMethod}
+                                {user.role === 'secretary' && (
+                                    <div className="finances-page__summary-section">
+                                        <CashBoxSummary
+                                            doctors={doctors}
+                                            selectedDoctorFilter={selectedDoctorFilter}
+                                            onSelectDoctor={handlers.onSelectDoctor}
+                                            calculateBalance={handlers.calculateBalance}
+                                            calculateBalanceByMethod={handlers.calculateBalanceByMethod}
+                                            t={t}
+                                            compact
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <TransactionsTable
+                            transactions={transactions}
+                            user={user}
+                            settings={settings}
                             t={t}
-                            compact
+                            onEdit={handlers.onEditTransaction}
+                            onDelete={handlers.onDeleteTransaction}
+                            onGenerateInvoice={handlers.onGenerateInvoice}
+                            onSync={handlers.onSyncTransaction}
+                            alert={controller.alert}
                         />
-                    )}
-                </div>
 
-                {/* Transactions Table - Full Width */}
-                <TransactionsTable
-                    transactions={transactions}
-                    user={user}
-                    settings={settings}
-                    t={t}
-                    onEdit={handlers.onEditTransaction}
-                    onDelete={handlers.onDeleteTransaction}
-                    onGenerateInvoice={handlers.onGenerateInvoice}
-                    onSync={handlers.onSyncTransaction}
-                    alert={controller.alert}
-                />
+                        {/* --- Modals --- */}
+                        <TransactionModal
+                            isOpen={modalOpen}
+                            onClose={handlers.onCloseNewTransaction}
+                            onSuccess={handlers.onRefresh}
+                        />
 
-                {/* --- Modals --- */}
-                <TransactionModal
-                    isOpen={modalOpen}
-                    onClose={handlers.onCloseNewTransaction}
-                    onSuccess={handlers.onRefresh}
-                />
+                        <CashBoxDeliveryModal
+                            isOpen={closeBoxModal.open}
+                            onClose={handlers.onCloseCloseBox}
+                            onConfirm={handlers.onCloseBox}
+                            doctorName={closeBoxModal.doctorName}
+                            balance={closeBoxModal.balance}
+                            amount={closeAmount}
+                            setAmount={handlers.setCloseAmount}
+                            t={t}
+                        />
 
-                <CashBoxDeliveryModal
-                    isOpen={closeBoxModal.open}
-                    onClose={handlers.onCloseCloseBox}
-                    onConfirm={handlers.onCloseBox}
-                    doctorName={closeBoxModal.doctorName}
-                    balance={closeBoxModal.balance}
-                    amount={closeAmount}
-                    setAmount={handlers.setCloseAmount}
-                    t={t}
-                />
-
-                <EditTransactionModal
-                    isOpen={!!editingTx}
-                    onClose={() => handlers.setEditingTx(null)}
-                    onSave={handlers.onUpdateTransaction}
-                    transaction={editingTx}
-                    setTransaction={handlers.setEditingTx}
-                    settings={settings}
-                    user={user}
-                    t={t}
-                />
-            </main>
-        </div>
+                        {editingTx && (
+                            <EditTransactionModal
+                                isOpen={!!editingTx}
+                                onClose={() => handlers.setEditingTx(null)}
+                                onSave={handlers.onUpdateTransaction}
+                                transaction={editingTx}
+                                setTransaction={handlers.setEditingTx}
+                                settings={settings}
+                                user={user}
+                                t={t}
+                            />
+                        )}
+                    </>
+                )}
+            </div>
+        </MainLayout>
     );
 };
 

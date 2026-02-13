@@ -12,6 +12,8 @@
     transition: all 0.2s ease;
     border: 1px solid var(--gray-100);
     gap: 1rem;
+    min-width: 0;
+    /* Critical for truncation in flex parents */
 }
 
 .appointment-card:hover {
@@ -43,6 +45,8 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    min-width: 0;
+    /* Force flex child to respect parent width */
 }
 
 .appointment-card__patient-name {
@@ -51,6 +55,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    min-width: 0;
 }
 
 .appointment-card__phone {
@@ -72,16 +77,26 @@
     gap: 0.5rem;
     font-size: 11px;
     color: var(--slate-500);
+    overflow: hidden;
+    min-width: 0;
 }
 
-.appointment-card__doctor,
+.appointment-card__doctor {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    flex-shrink: 0;
+    /* Keep doctor name if possible */
+}
+
 .appointment-card__reason {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-.appointment-card__reason {
+    min-width: 0;
+    flex: 1;
+    /* Take remaining space and yield to doctor */
     font-style: italic;
     opacity: 0.75;
 }

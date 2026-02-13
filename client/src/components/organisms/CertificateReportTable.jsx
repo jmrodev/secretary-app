@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { formatDate } from '../../utils/dateUtils';
 import './MedicalReportTable.css';
 
 const CertificateReportTable = ({ data, t }) => {
@@ -11,7 +12,7 @@ const CertificateReportTable = ({ data, t }) => {
 
     // Group by date and split by method
     const grouped = list.reduce((acc, item) => {
-        const dateStr = new Date(item.date).toLocaleDateString();
+        const dateStr = formatDate(item.date);
         if (!acc[dateStr]) {
             acc[dateStr] = {
                 date: dateStr,

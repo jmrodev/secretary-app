@@ -31,6 +31,8 @@
 - **Solo CSS vanilla/puro**
 - **Cada componente tiene su propio archivo CSS**
 - **Variables CSS para temas**: Usar `var(--color-primary)` en lugar de valores hardcoded
+- **Mantenimiento**: Revisar periódicamente `index.css` y extraer estilos específicos a sus respectivos componentes para evitar colisiones y mantener la modularidad.
+- **CSS Compartido**: Si un estilo o clase CSS se utiliza en más de una página, componente o átomo, DEBE estar en `index.css` (o en un archivo de utilidades global importado allí) para evitar duplicación, marcándolo claramente como compartido.
 
 ### 5. MVC (Model-View-Controller)
 - **Frontend**:
@@ -109,6 +111,9 @@ secretary-app/
 ```
 
 ## Reglas de Código
+
+## Reglas de Herramientas de IA
+- **Browser Tool**: NO utilizar la herramienta `browser` para observar la aplicación. Es un proceso lento. En su lugar, solicitar al usuario que describa lo que observa o pedir información específica.
 
 ### Frontend (React)
 

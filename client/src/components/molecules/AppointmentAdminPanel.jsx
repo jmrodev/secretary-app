@@ -1,6 +1,11 @@
 import React from 'react';
 import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
 
+/**
+ * AppointmentAdminPanel Molecule.
+ * Actions related to administrative flow (Payment, Status, Scheduling).
+ */
 const AppointmentAdminPanel = ({
     appt,
     user,
@@ -32,13 +37,19 @@ const AppointmentAdminPanel = ({
 
     if (!showAdminPanel && !isPendingPayment) return null;
 
+    const baseClass = 'appointment-admin-panel';
+
     return (
-        <div className="appointment-modal__admin-panel">
-            <div className="appointment-modal__admin-grid">
+        <div className={baseClass}>
+            <div className={`${baseClass}__grid`}>
                 {/* Pay Button */}
                 {isPendingPayment && !isGoogle && (
-                    <Button onClick={() => onPay(appt)}>
-                        💳 {t('pay')}
+                    <Button
+                        variant="primary"
+                        onClick={() => onPay(appt)}
+                        icon={<Icon name="payments" size="1rem" />}
+                    >
+                        {t('pay')}
                     </Button>
                 )}
 
@@ -46,51 +57,105 @@ const AppointmentAdminPanel = ({
                     <>
                         {/* 1. Confirm (Restaurar) */}
                         {canConfirm && (
-                            <Button variant="outline" className="btn--success-light" onClick={() => { onUpdateStatus(appt.id, 'confirmed'); onClose(); }} tooltip="Confirmar asistencia (Restaurar)">
-                                ✅ {t('confirm')}
+                            <Button
+                                variant="success"
+                                outline
+                                className={`${baseClass}__action`}
+                                onClick={() => { onUpdateStatus(appt.id, 'confirmed'); onClose(); }}
+                                tooltip="Confirmar asistencia (Restaurar)"
+                                icon={<Icon name="check_circle" size="1rem" />}
+                            >
+                                {t('confirm')}
                             </Button>
                         )}
 
                         {/* 2. Arrived (Asistió a Sala) - ONLY if Confirmed */}
                         {canArrive && (
-                            <Button onClick={() => { onUpdateStatus(appt.id, 'arrived'); onClose(); }}>
-                                🏥 {t('patient_arrived') || 'En Sala'}
+                            <Button
+                                variant="secondary"
+                                className={`${baseClass}__action`}
+                                onClick={() => { onUpdateStatus(appt.id, 'arrived'); onClose(); }}
+                                icon={<Icon name="meeting_room" size="1rem" />}
+                            >
+                                {t('patient_arrived') || 'En Sala'}
                             </Button>
                         )}
 
                         {/* 3. Attended (Completed) - ONLY if Arrived */}
                         {canAttend && (
-                            <Button variant="outline" className="btn--success-light" onClick={() => { onUpdateStatus(appt.id, 'completed'); onClose(); }} tooltip="Marcar como atendido">
-                                🏆 {t('attended') || 'Atendido'}
+                            <Button
+                                variant="success"
+                                outline
+                                className={`${baseClass}__action`}
+                                onClick={() => { onUpdateStatus(appt.id, 'completed'); onClose(); }}
+                                tooltip="Marcar como atendido"
+                                icon={<Icon name="task_alt" size="1rem" />}
+                            >
+                                {t('attended') || 'Atendido'}
                             </Button>
                         )}
 
                         {/* [NEW] Switch to Virtual */}
                         {appt.type !== 'virtual' && (
-                            <Button variant="outline" className="btn--indigo-light" onClick={() => { onUpdateType(appt.id, 'virtual'); onClose(); }} tooltip="Cambiar tipo a Videollamada">
-                                📹 {t('pass_to_video') || 'Pasar a Video'}
+                            <Button
+                                variant="accent"
+                                outline
+                                className={`${baseClass}__action`}
+                                onClick={() => { onUpdateType(appt.id, 'virtual'); onClose(); }}
+                                tooltip="Cambiar tipo a Videollamada"
+                                icon={<Icon name="videocam" size="1rem" />}
+                            >
+                                {t('pass_to_video') || 'Pasar a Video'}
                             </Button>
                         )}
 
                         {/* [NEW] Hard Edit (Always available in Admin Panel) */}
-                        <Button variant="outline" className="btn--slate-light" onClick={() => { onHardEdit(appt); onClose(); }} tooltip="Editar detalles del turno">
-                            ✏️ {t('edit') || 'Editar'}
+                        <Button
+                            variant="secondary"
+                            outline
+                            className={`${baseClass}__action`}
+                            onClick={() => { onHardEdit(appt); onClose(); }}
+                            tooltip="Editar detalles del turno"
+                            icon={<Icon name="edit" size="1rem" />}
+                        >
+                            {t('edit') || 'Editar'}
                         </Button>
 
                         {/* Common Actions */}
-                        <Button variant="secondary" onClick={() => { onReschedule(appt); onClose(); }} tooltip="Reprogramar fecha/hora">
-                            📅 {t('reschedule')}
+                        <Button
+                            variant="primary"
+                            outline
+                            className={`${baseClass}__action`}
+                            onClick={() => { onReschedule(appt); onClose(); }}
+                            tooltip="Reprogramar fecha/hora"
+                            icon={<Icon name="calendar_month" size="1rem" />}
+                        >
+                            {t('reschedule')}
                         </Button>
 
                         {canSuspend && (
-                            <Button variant="outline" className="btn--amber-light" onClick={() => { onUpdateStatus(appt.id, 'suspended'); onClose(); }} tooltip="Suspendido por la oficina. Cancela momentáneamente sin afectar reputación." >
-                                ⏸ {t('suspend')}
+                            <Button
+                                variant="warning"
+                                outline
+                                className={`${baseClass}__action`}
+                                onClick={() => { onUpdateStatus(appt.id, 'suspended'); onClose(); }}
+                                tooltip="Suspendido por la oficina. Cancela momentáneamente sin afectar reputación."
+                                icon={<Icon name="pause_circle" size="1rem" />}
+                            >
+                                {t('suspend')}
                             </Button>
                         )}
 
                         {canMarkAbsent && (
-                            <Button variant="outline" className="btn--red-light" onClick={() => { onUpdateStatus(appt.id, 'absent'); onClose(); }} tooltip="El paciente faltó sin aviso. BAJA reputación (-1).">
-                                🚫 {t('absent')}
+                            <Button
+                                variant="danger"
+                                outline
+                                className={`${baseClass}__action`}
+                                onClick={() => { onUpdateStatus(appt.id, 'absent'); onClose(); }}
+                                tooltip="El paciente faltó sin aviso. BAJA reputación (-1)."
+                                icon={<Icon name="block" size="1rem" />}
+                            >
+                                {t('absent')}
                             </Button>
                         )}
                     </>
@@ -98,13 +163,26 @@ const AppointmentAdminPanel = ({
             </div>
 
             {!isGoogle && (
-                <div className="appointment-modal__danger-zone">
-                    <div className="appointment-modal__admin-grid">
-                        <Button variant="outline-danger" onClick={() => { onCancel(appt.id, note); onClose(); }} tooltip="Queda en historial como 'Cancelado'. No afecta reputación." >
-                            ❌ {t('cancel')}
+                <div className={`${baseClass}__danger-zone`}>
+                    <div className={`${baseClass}__grid`}>
+                        <Button
+                            variant="danger"
+                            outline
+                            className={`${baseClass}__action`}
+                            onClick={() => { onCancel(appt.id, note); onClose(); }}
+                            tooltip="Queda en historial como 'Cancelado'. No afecta reputación."
+                            icon={<Icon name="cancel" size="1rem" />}
+                        >
+                            {t('cancel')}
                         </Button>
-                        <Button className="btn--solid-danger" onClick={() => { onDelete(appt.id, appt.status); onClose(); }} tooltip="Borra permanentemente (Solo errores de carga). No afecta reputación." >
-                            🗑 {t('delete_error')}
+                        <Button
+                            variant="danger"
+                            className={`${baseClass}__action`}
+                            onClick={() => { onDelete(appt.id, appt.status); onClose(); }}
+                            tooltip="Borra permanentemente (Solo errores de carga). No afecta reputación."
+                            icon={<Icon name="delete_forever" size="1rem" />}
+                        >
+                            {t('delete_error')}
                         </Button>
                     </div>
                 </div>

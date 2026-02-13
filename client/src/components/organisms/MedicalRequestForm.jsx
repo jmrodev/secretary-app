@@ -12,7 +12,13 @@ import FormGroup from '../molecules/FormGroup';
 import Input from '../atoms/Input';
 import Select from '../atoms/Select';
 import TabButton from '../atoms/TabButton';
+import Icon from '../atoms/Icon';
+import './MedicalRequestForm.css';
 
+/**
+ * MedicalRequestForm Organism.
+ * Form to create new medical requests (prescriptions, licenses, certificates).
+ */
 const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSendToDoctor }) => {
     const { user } = useAuth();
     const { t } = useLanguage();
@@ -70,7 +76,6 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
             return;
         }
 
-        // [FIX] Auto-include text currently in the input field if the user forgot to click "+"
         let finalItems = [...medicationItems];
         if (reqType === 'prescription' && tempMed && tempMed.trim()) {
             const newItem = {
@@ -79,13 +84,11 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                 frequency: tempFreq.trim(),
                 quantity: tempQty.trim()
             };
-            // Check if name already exists
             if (!finalItems.some(i => i.name === newItem.name)) {
                 finalItems.push(newItem);
             }
         }
 
-        // Create a string representation for the note (legacy support)
         const finalNoteItems = finalItems.map(i => {
             let str = i.name;
             if (i.dose) str += ` ${i.dose}`;
@@ -142,10 +145,12 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
 
     if (user.role !== 'secretary' && user.role !== 'doctor') return null;
 
+    const baseClass = 'medical-request-form';
+
     return (
         <Card title={t('new_request')} className="medical-request-card">
-            <form onSubmit={handleCreateRequest} className="form">
-                <div className="form-row form-row--2">
+            <form onSubmit={handleCreateRequest} className={baseClass}>
+                <div className={`${baseClass}__row ${baseClass}__row--2`}>
                     <FormGroup label={t('request_type')} required>
                         <Select
                             value={reqType}
@@ -160,7 +165,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
 
                     <FormGroup label={t('doctor_label')} required>
                         {user.role === 'doctor' ? (
-                            <div className="input input--readonly bg-gray-50">
+                            <div className={`${baseClass}__readonly-value`}>
                                 Dr. {user.full_name || user.username}
                             </div>
                         ) : (
@@ -189,8 +194,11 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                     />
 
                     {patientData && reqType === 'prescription' && patientData.next_suggested_prescription_date && new Date(patientData.next_suggested_prescription_date) > new Date() && (
-                        <div className="badge badge--warning mt-1 py-1 px-3">
-                            ⚠️ {t('patient_has_valid_until') || 'Cobertura sugerida hasta'}: {new Date(patientData.next_suggested_prescription_date).toLocaleDateString()}
+                        <div className={`${baseClass}__badge-wrapper`}>
+                            <Badge variant="warning">
+                                <Icon name="warning" size="1rem" />
+                                {t('patient_has_valid_until') || 'Cobertura sugerida hasta'}: {new Date(patientData.next_suggested_prescription_date).toLocaleDateString()}
+                            </Badge>
                         </div>
                     )}
                 </FormGroup>
@@ -200,10 +208,9 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                     required
                 >
                     {reqType === 'prescription' ? (
-                        <div className="flex flex-col gap-4">
-                            {/* Input Row */}
-                            <div className="flex flex-col md:flex-row gap-2 items-end">
-                                <div className="grid grid-cols-1 md:grid-cols-4 gap-2 flex-grow">
+                        <div className={`${baseClass}__medication-section`}>
+                            <div className={`${baseClass}__med-input-row`}>
+                                <div className={`${baseClass}__inputs-grid`}>
                                     <MedicationAutocomplete
                                         value={tempMed}
                                         onChange={setTempMed}
@@ -232,7 +239,6 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                                 <Button
                                     type="button"
                                     variant="primary"
-                                    size="md"
                                     onClick={() => {
                                         if (tempMed.trim()) {
                                             const newItem = {
@@ -250,58 +256,56 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                                             }
                                         }
                                     }}
-                                >
-                                    +
-                                </Button>
+                                    icon={<Icon name="add" />}
+                                />
                             </div>
 
                             {medicationItems.length > 0 && (
-                                <ul className="flex flex-col gap-1 bg-slate-50/50 p-2 rounded-xl border border-slate-100 max-h-40 overflow-y-auto">
+                                <ul className={`${baseClass}__med-list animate-fadeIn`}>
                                     {medicationItems.map((item, idx) => (
-                                        <li key={idx} className="flex justify-between items-center px-3 py-2 bg-white rounded-lg border border-slate-100 text-sm shadow-sm animate-fadeIn">
-                                            <div className="flex gap-2 items-center">
-                                                <span className="font-bold text-main-700">{item.name}</span>
-                                                {item.dose && <span className="text-xs bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded">{item.dose}</span>}
-                                                {item.frequency && <span className="text-xs text-slate-500 italic">{item.frequency}</span>}
-                                                {item.quantity && <span className="text-xs font-bold text-slate-700 border border-slate-200 px-1 rounded">x{item.quantity}</span>}
+                                        <li key={idx} className={`${baseClass}__med-item`}>
+                                            <div className={`${baseClass}__med-info`}>
+                                                <span className={`${baseClass}__med-name`}>{item.name}</span>
+                                                {item.dose && <span className={`${baseClass}__med-dose`}>{item.dose}</span>}
+                                                {item.frequency && <span className={`${baseClass}__med-freq`}>{item.frequency}</span>}
+                                                {item.quantity && <span className={`${baseClass}__med-qty`}>x{item.quantity}</span>}
                                             </div>
-                                            <button
-                                                type="button"
+                                            <Button
+                                                variant="ghost"
+                                                size="sm-compact"
                                                 onClick={() => setMedicationItems(medicationItems.filter((_, i) => i !== idx))}
-                                                className="text-red-400 hover:text-red-600 p-1"
-                                            >
-                                                ✕
-                                            </button>
+                                                icon={<Icon name="close" size="1rem" className="text-danger" />}
+                                            />
                                         </li>
                                     ))}
                                 </ul>
                             )}
 
                             {patientMeds.length > 0 && (
-                                <div className="mt-1">
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 block">
+                                <div className={`${baseClass}__habitual-section`}>
+                                    <span className={`${baseClass}__habitual-label`}>
                                         {t('patient_current_meds') || 'Medicación actual'}
                                     </span>
-                                    <div className="flex flex-wrap gap-2">
+                                    <div className={`${baseClass}__habitual-grid`}>
                                         {patientMeds.map(m => (
                                             <button
                                                 key={m.id}
                                                 type="button"
-                                                className="px-3 py-1.5 bg-blue-50 text-blue-700 text-xs font-bold rounded-full border border-blue-100 hover:bg-blue-100 transition-all flex flex-col items-start gap-0.5"
+                                                className={`${baseClass}__habitual-btn`}
                                                 onClick={() => {
                                                     const newItem = {
                                                         name: m.medication_name,
                                                         dose: m.dose || '',
                                                         frequency: m.frequency || '',
-                                                        quantity: '' // Default quantity clear
+                                                        quantity: ''
                                                     };
                                                     if (!medicationItems.some(i => i.name === newItem.name)) {
                                                         setMedicationItems([...medicationItems, newItem]);
                                                     }
                                                 }}
                                             >
-                                                <span>{m.medication_name} {m.dose}</span>
-                                                <span className="text-[10px] opacity-70 font-normal">{m.frequency}</span>
+                                                <span className={`${baseClass}__habitual-name`}>{m.medication_name} {m.dose}</span>
+                                                <span className={`${baseClass}__habitual-meta`}>{m.frequency}</span>
                                             </button>
                                         ))}
                                     </div>
@@ -311,7 +315,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                     ) : (
                         <Input
                             type="textarea"
-                            className="min-h-[100px]"
+                            className={`${baseClass}__textarea`}
                             value={reqNote}
                             onChange={e => setReqNote(e.target.value)}
                             placeholder={reqType === 'license' ? t('diagnosis_placeholder') : t('certificate_placeholder')}
@@ -320,23 +324,24 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                     )}
                 </FormGroup>
 
-                <div className="form-panel">
-                    <div className="form-panel__item">
+                <div className={`${baseClass}__panel`}>
+                    <div className={`${baseClass}__panel-item`}>
                         <input
                             type="checkbox"
+                            className={`${baseClass}__checkbox`}
                             id="req-bonified"
                             checked={bonified}
                             onChange={e => setBonified(e.target.checked)}
                         />
-                        <label htmlFor="req-bonified" className="form-panel__label">
+                        <label htmlFor="req-bonified" className={`${baseClass}__panel-label`}>
                             {t('bonificado') || 'Bonificado (Costo $0)'}
                         </label>
                     </div>
 
                     {!bonified && (
-                        <div className="ml-8">
-                            <label className="text-xs font-bold text-gray-500 mb-2 block">{t('payment_method') || 'Tipo de Pago'}</label>
-                            <div className="flex flex-wrap gap-2">
+                        <div className={`${baseClass}__panel-sub`}>
+                            <label className={`${baseClass}__panel-sub-label`}>{t('payment_method') || 'Tipo de Pago'}</label>
+                            <div className={`${baseClass}__pill-grid`}>
                                 {['cash', 'transfer', 'debit', 'credit', 'mercadopago'].map(m => (
                                     <TabButton
                                         key={m}
@@ -351,24 +356,26 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                         </div>
                     )}
 
-                    <div className="form-panel__item">
+                    <div className={`${baseClass}__panel-item`}>
                         <input
                             type="checkbox"
+                            className={`${baseClass}__checkbox`}
                             id="req-forward"
                             checked={sendToDoctor}
                             onChange={e => setSendToDoctor(e.target.checked)}
                         />
-                        <label htmlFor="req-forward" className="form-panel__label">
+                        <label htmlFor="req-forward" className={`${baseClass}__panel-label`}>
                             {t('send_to_doctor') || 'Enviar a revisión médica'}
                         </label>
                     </div>
                 </div>
 
-                <footer className="flex justify-end pt-2">
+                <footer className={`${baseClass}__footer`}>
                     <Button
                         type="submit"
-                        className="w-full md:w-auto"
                         disabled={isSubmitting}
+                        variant="primary"
+                        icon={<Icon name="send" />}
                     >
                         {isSubmitting ? (t('sending') || 'Enviando...') : t('send_request')}
                     </Button>

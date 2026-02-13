@@ -2,6 +2,9 @@
 import React from 'react';
 import MainLayout from '../components/templates/MainLayout';
 import Button from '../components/atoms/Button';
+import Loading from '../components/atoms/Loading';
+import TabButton from '../components/atoms/TabButton';
+import TabNav from '../components/molecules/TabNav';
 import InstitutionList from '../components/organisms/InstitutionList';
 import InstitutionFinances from '../components/organisms/InstitutionFinances';
 import InstitutionFormModal from '../components/organisms/InstitutionFormModal';
@@ -33,44 +36,47 @@ const Institutions = () => {
             title={t('institutions') || 'Instituciones'}
             subtitle={t('institutions_subtitle') || 'Gestiona instituciones pagadoras y convenios.'}
         >
-            <nav className="institutions__nav">
-                <Button
-                    variant="ghost"
-                    className={`tab-nav__item ${activeTab === 'list' ? 'tab-nav__item--active' : ''}`}
+            <TabNav className="institutions__nav">
+                <TabButton
+                    isActive={activeTab === 'list'}
                     onClick={() => setActiveTab('list')}
                 >
-                    📋 {t('list')}
-                </Button>
-                <Button
-                    variant="ghost"
-                    className={`tab-nav__item ${activeTab === 'finances' ? 'tab-nav__item--active' : ''}`}
+                    📋 {t('list') || 'Lista'}
+                </TabButton>
+                <TabButton
+                    isActive={activeTab === 'finances'}
                     onClick={() => setActiveTab('finances')}
                 >
-                    📊 {t('finances')}
-                </Button>
-            </nav>
+                    📊 {t('finances') || 'Finanzas'}
+                </TabButton>
+            </TabNav>
 
-            <header className="institutions__actions">
-                {activeTab === 'list' && (
-                    <Button onClick={() => handleOpenFormModal()}>
-                        + {t('new_institution')}
-                    </Button>
-                )}
-            </header>
+            {loading ? (
+                <Loading variant="centered" text={t('loading') || "Cargando..."} />
+            ) : (
+                <>
+                    <header className="institutions__actions" style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
+                        {activeTab === 'list' && (
+                            <Button variant="primary" onClick={() => handleOpenFormModal()}>
+                                ✨ {t('new_institution') || 'Nueva Institución'}
+                            </Button>
+                        )}
+                    </header>
 
-            <div className="institutions__content animate-fadeIn">
-                {activeTab === 'list' ? (
-                    <InstitutionList
-                        institutions={institutions}
-                        loading={loading}
-                        onEdit={handleOpenFormModal}
-                        onDelete={handleDelete}
-                        t={t}
-                    />
-                ) : (
-                    <InstitutionFinances institutions={institutions} t={t} />
-                )}
-            </div>
+                    <div className="institutions__content animate-fadeIn">
+                        {activeTab === 'list' ? (
+                            <InstitutionList
+                                institutions={institutions}
+                                onEdit={handleOpenFormModal}
+                                onDelete={handleDelete}
+                                t={t}
+                            />
+                        ) : (
+                            <InstitutionFinances institutions={institutions} t={t} />
+                        )}
+                    </div>
+                </>
+            )}
 
             <InstitutionFormModal
                 isOpen={isFormModalOpen}

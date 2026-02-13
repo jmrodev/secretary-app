@@ -2,6 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useRegisterController } from '../controllers/useRegisterController';
 import Button from '../components/atoms/Button';
+import Input from '../components/atoms/Input';
+import FormGroup from '../components/molecules/FormGroup';
+import './Register.css';
 
 /**
  * Register Page Component.
@@ -30,11 +33,10 @@ const Register = () => {
                 {error && <div className="auth-card__error">{error}</div>}
 
                 <form className="auth-card__form" onSubmit={handleSubmit}>
-                    <div className="input-group">
-                        <label className="input-label">{t('i_am')}</label>
+                    <FormGroup label={t('i_am')}>
                         <select
                             name="role"
-                            className="input-field"
+                            className="input"
                             value={formData.role}
                             onChange={handleChange}
                             disabled={loading}
@@ -43,107 +45,95 @@ const Register = () => {
                             <option value="doctor">{t('doctor')}</option>
                             <option value="secretary">{t('secretary')}</option>
                         </select>
-                    </div>
+                    </FormGroup>
 
-                    <div className="input-group">
-                        <label className="input-label">{t('full_name')}</label>
-                        <input
+                    <FormGroup label={t('full_name')}>
+                        <Input
                             name="fullName"
-                            className="input-field"
                             value={formData.fullName}
                             onChange={handleChange}
                             placeholder="Nombre completo"
                             disabled={loading}
                             required
                         />
-                    </div>
+                    </FormGroup>
 
-                    <div className="input-group">
-                        <label className="input-label">{t('dni')}</label>
-                        <input
+                    <FormGroup label={t('dni')}>
+                        <Input
                             name="dni"
-                            className="input-field"
                             value={formData.dni}
                             onChange={handleChange}
                             placeholder="DNI"
                             disabled={loading}
                             required
                         />
-                    </div>
+                    </FormGroup>
 
-                    <div className="input-group">
-                        <label className="input-label">{t('username')}</label>
-                        <input
+                    <FormGroup label={t('username')}>
+                        <Input
                             name="username"
-                            className="input-field"
                             value={formData.username}
                             onChange={handleChange}
                             placeholder="Usuario"
                             disabled={loading}
                             required
                         />
-                    </div>
+                    </FormGroup>
 
-                    <div className="input-group">
-                        <label className="input-label">{t('password')}</label>
-                        <input
+                    <FormGroup label={t('password')}>
+                        <Input
                             type="password"
                             name="password"
-                            className="input-field"
                             value={formData.password}
                             onChange={handleChange}
                             placeholder="••••••••"
                             disabled={loading}
                             required
                         />
-                    </div>
+                    </FormGroup>
 
                     {/* Role specific fields */}
                     {formData.role === 'doctor' && (
                         <div className="animate-fadeIn">
-                            <div className="input-group">
-                                <label className="input-label">{t('specialty')}</label>
-                                <input
+                            <FormGroup label={t('specialty')}>
+                                <Input
                                     name="specialty"
-                                    className="input-field"
                                     value={formData.specialty}
                                     onChange={handleChange}
                                     placeholder="Especialidad médica"
                                     disabled={loading}
                                 />
-                            </div>
-                            <div className="input-group">
-                                <label className="input-label">{t('cbu')}</label>
-                                <input
+                            </FormGroup>
+                            <FormGroup label={t('cbu')}>
+                                <Input
                                     name="cbu"
-                                    className="input-field"
                                     value={formData.cbu}
                                     onChange={handleChange}
                                     placeholder="CBU para transferencias"
                                     disabled={loading}
                                 />
-                            </div>
+                            </FormGroup>
                         </div>
                     )}
 
                     {formData.role === 'patient' && (
-                        <div className="input-group animate-fadeIn">
-                            <label className="input-label">{t('dob')}</label>
-                            <input
-                                type="date"
-                                name="dob"
-                                className="input-field"
-                                value={formData.dob}
-                                onChange={handleChange}
-                                disabled={loading}
-                            />
+                        <div className="animate-fadeIn">
+                            <FormGroup label={t('dob')}>
+                                <Input
+                                    type="date"
+                                    name="dob"
+                                    value={formData.dob}
+                                    onChange={handleChange}
+                                    disabled={loading}
+                                />
+                            </FormGroup>
                         </div>
                     )}
 
                     <Button
                         type="submit"
                         variant="primary"
-                        className="w-full mt-4"
+                        className="auth-card__button--submit"
                         disabled={loading}
                     >
                         {loading ? 'Preparando todo...' : t('register')}

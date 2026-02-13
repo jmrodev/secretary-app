@@ -1,5 +1,7 @@
 import React from 'react';
 import Card from '../atoms/Card';
+import Button from '../atoms/Button';
+import './CashBoxSummary.css';
 
 const CashBoxSummary = ({
     doctors,
@@ -34,9 +36,9 @@ const CashBoxSummary = ({
                     );
                 })}
                 {selectedDoctorFilter && (
-                    <button className="btn-text btn-text--xs" onClick={() => onSelectDoctor('')}>
+                    <Button variant="ghost" size="xs" onClick={() => onSelectDoctor('')} className="cash-box__view-all">
                         {t('view_all') || 'Ver todos'}
-                    </button>
+                    </Button>
                 )}
             </div>
         );
@@ -44,14 +46,14 @@ const CashBoxSummary = ({
 
     return (
         <div className="cash-box">
-            <div className="flex justify-between items-center mb-2">
+            <header className="flex justify-between items-center mb-2">
                 <h3 className="cash-box__header">{t('cash_boxes')}</h3>
                 {selectedDoctorFilter && (
-                    <button className="btn-text" onClick={() => onSelectDoctor('')}>
+                    <Button variant="ghost" size="sm" onClick={() => onSelectDoctor('')}>
                         {t('view_all') || 'View All'}
-                    </button>
+                    </Button>
                 )}
-            </div>
+            </header>
             <div className="cash-box__grid">
                 {filteredDoctors.map(d => {
                     const balances = calculateBalanceByMethod ? calculateBalanceByMethod(d.id) : { cash: 0, transfer: 0, total: calculateBalance(d.id) };

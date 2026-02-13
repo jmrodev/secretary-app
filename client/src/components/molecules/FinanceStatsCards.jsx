@@ -1,5 +1,6 @@
 import React from 'react';
 import Card from '../atoms/Card';
+import './FinanceStatsCards.css';
 
 const FinanceStatsCards = ({ stats, t }) => {
     return (

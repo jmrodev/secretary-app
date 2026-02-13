@@ -18,11 +18,7 @@ const CalendarDayIndicator = ({
 
   return (
     <div className="calendar-day-indicator">
-      {isHoliday && (
-        <div className="calendar-day-indicator__holiday-badge" title={holidayDescription}>
-          <span className="calendar-day-indicator__count">H</span>
-        </div>
-      )}
+
 
       {/* 2x2 Grid: Top row = In-hours, Bottom row = Out-of-hours */}
       <div className="calendar-day-indicator__grid">

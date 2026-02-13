@@ -1,0 +1,32 @@
+/* --- Search Box Block --- */
+.search-box {
+    margin-bottom: 2rem;
+}
+
+.search-box__wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-box__icon {
+    position: absolute;
+    left: 1rem;
+    color: var(--gray-400);
+    font-size: 1.25rem;
+}
+
+.search-box__input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem !important;
+    border-radius: var(--radius) !important;
+    border: 1px solid var(--gray-200) !important;
+    background: white !important;
+    box-shadow: var(--shadow-sm) !important;
+    font-size: 1.1rem !important;
+}
+
+.search-box__input:focus {
+    border-color: var(--blue-500) !important;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important;
+}

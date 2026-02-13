@@ -13,20 +13,20 @@
     font-weight: 800;
 }
 
-.medical-history-container {
+.medical-history__container {
     background: white;
-    border-radius: 1rem;
+    border-radius: var(--radius);
     overflow: hidden;
     box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border-color, #e2e8f0);
+    border: 1px solid var(--border-color);
 }
 
-.medical-history-table {
+.medical-history__table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.medical-history-table th {
+.medical-history__th {
     padding: 1rem;
     text-align: left;
     background: var(--gray-50);
@@ -38,68 +38,68 @@
     letter-spacing: 0.05em;
 }
 
-.medical-history-table th.medical-history-table__header-date {
+.medical-history__th--date {
     padding-left: 1.5rem;
 }
 
-.medical-history-table__header-detail {
-    width: 33.33%;
+.medical-history__th--detail {
+    width: 35%;
 }
 
-.medical-history-table th.medical-history-table__header-actions {
+.medical-history__th--actions {
     text-align: right;
     padding-right: 1.5rem;
 }
 
-.medical-history-table tr {
+.medical-history__row {
     transition: background 0.2s ease;
 }
 
-.medical-history-table tr:hover {
+.medical-history__row:hover {
     background-color: var(--gray-50);
 }
 
-.medical-history-table td {
+.medical-history__td {
     padding: 1rem;
     border-bottom: 1px solid var(--gray-100);
     vertical-align: top;
 }
 
-.medical-history-table td:first-child {
+.medical-history__td:first-child {
     padding-left: 1.5rem;
 }
 
-.medical-history-table td:last-child {
+.medical-history__td:last-child {
     padding-right: 1.5rem;
 }
 
-.medical-history-table__date-cell {
+.medical-history__date-cell {
     display: flex;
     flex-direction: column;
 }
 
-.medical-history-table__date {
+.medical-history__date {
     font-weight: 700;
     color: var(--text-main);
 }
 
-.medical-history-table__time-ago {
+.medical-history__time-ago {
     font-size: 0.75rem;
     color: var(--text-muted);
 }
 
-.medical-history-table__patient-cell {
+.medical-history__patient-cell {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
 }
 
-.medical-history-table__patient-name {
+.medical-history__patient-name {
     font-weight: 700;
     color: var(--text-main);
 }
 
-.medical-history-table__origin-tag {
+.medical-history__origin-tag {
     font-size: 0.65rem;
     font-weight: 800;
     color: var(--text-muted);
@@ -111,7 +111,7 @@
     width: fit-content;
 }
 
-.medical-history-table__detail {
+.medical-history__detail {
     font-size: 0.875rem;
     color: var(--text-secondary);
     font-style: italic;
@@ -122,19 +122,19 @@
     overflow: hidden;
 }
 
-.medical-history-table__doctor {
+.medical-history__doctor-name {
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--blue-700);
+    color: var(--accent-color);
 }
 
-.medical-history-table__actions {
+.medical-history__actions {
     display: flex;
     justify-content: flex-end;
     gap: 0.25rem;
 }
 
-.medical-history-table__empty {
+.medical-history__empty {
     padding: 3rem;
     text-align: center;
     color: var(--text-muted);

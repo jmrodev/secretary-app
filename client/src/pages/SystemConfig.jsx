@@ -7,6 +7,8 @@ import IntegrationSettings from '../components/organisms/IntegrationSettings';
 import BillingSettings from '../components/organisms/BillingSettings';
 import QRCodeModal from '../components/molecules/QRCodeModal';
 import Button from '../components/atoms/Button';
+import TabNav from '../components/molecules/TabNav';
+import TabButton from '../components/atoms/TabButton';
 import './SystemConfig.css';
 
 /**
@@ -144,47 +146,42 @@ const SystemConfig = () => {
             subtitle={t('system_config_subtitle') || 'Administre las preferencias globales de la aplicación.'}
         >
             {/* Tab Navigation with BEM CSS */}
-            <nav className="tab-nav">
+            <TabNav>
                 {(user.role === 'admin' || user.role === 'secretary') && (
                     <>
-                        <Button
-                            variant="ghost"
-                            className={`tab-nav__item ${activeTab === 'general' ? 'tab-nav__item--active' : ''}`}
+                        <TabButton
+                            isActive={activeTab === 'general'}
                             onClick={() => setActiveTab('general')}
                         >
                             ⚙️ {t('general') || 'General'}
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            className={`tab-nav__item ${activeTab === 'communications' ? 'tab-nav__item--active' : ''}`}
+                        </TabButton>
+                        <TabButton
+                            isActive={activeTab === 'communications'}
                             onClick={() => setActiveTab('communications')}
                         >
                             📢 {t('communications') || 'Comunicaciones'}
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            className={`tab-nav__item ${activeTab === 'integrations' ? 'tab-nav__item--active' : ''}`}
+                        </TabButton>
+                        <TabButton
+                            isActive={activeTab === 'integrations'}
                             onClick={() => setActiveTab('integrations')}
                         >
                             🔌 {t('integrations') || 'Integraciones'}
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            className={`tab-nav__item ${activeTab === 'billing' ? 'tab-nav__item--active' : ''}`}
+                        </TabButton>
+                        <TabButton
+                            isActive={activeTab === 'billing'}
                             onClick={() => setActiveTab('billing')}
                         >
                             🧾 {t('billing') || 'Facturación'}
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            className={`tab-nav__item ${activeTab === 'data' ? 'tab-nav__item--active' : ''}`}
+                        </TabButton>
+                        <TabButton
+                            isActive={activeTab === 'data'}
                             onClick={() => setActiveTab('data')}
                         >
                             💾 {t('data') || 'Datos'}
-                        </Button>
+                        </TabButton>
                     </>
                 )}
-            </nav>
+            </TabNav>
 
             {/* Tab Content */}
             <div className="tab-content relative min-h-500 animate-fadeIn">

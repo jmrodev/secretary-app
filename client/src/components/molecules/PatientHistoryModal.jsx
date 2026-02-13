@@ -4,6 +4,8 @@ import Button from '../atoms/Button';
 import TabButton from '../atoms/TabButton';
 import api from '../../api/axios';
 import { useLanguage } from '../../context/LanguageContext';
+import Icon from '../atoms/Icon';
+import './PatientHistoryModal.css';
 
 const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
     const { t } = useLanguage();
@@ -48,64 +50,72 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
 
     const formatDate = (dateStr) => {
         if (!dateStr) return '';
-        return new Date(dateStr).toLocaleDateString() + ' ' + new Date(dateStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const d = new Date(dateStr);
+        return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     };
 
     if (!isOpen) return null;
+
+    const baseClass = 'patient-history';
 
     return (
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={`${t('medical_history') || 'Medical History'}: ${patientName}`}
+            title={`${t('medical_history') || 'Historia Clínica'}: ${patientName}`}
             size="lg"
         >
-            <div className="tabs-container" style={{ margin: 0, padding: 0, borderBottom: '1px solid #e2e8f0' }}>
+            <div className={`${baseClass}__nav`}>
                 <TabButton
                     isActive={activeTab === 'appointments'}
                     onClick={() => setActiveTab('appointments')}
                 >
-                    📅 {t('appointments') || 'Appointments'}
+                    <Icon name="APPOINTMENTS" size="1.1rem" className="mr-1" />
+                    {t('appointments') || 'Turnos'}
                 </TabButton>
                 <TabButton
                     isActive={activeTab === 'medical'}
                     onClick={() => setActiveTab('medical')}
                 >
-                    💊 {t('medical_records') || 'Medical Records'} (Rx, Requests, Lic)
+                    <Icon name="PRESCRIPTION" size="1.1rem" className="mr-1" />
+                    {t('medical_records') || 'Registros Médicos'}
                 </TabButton>
             </div>
 
-            <div className="modal-body-scrollable" style={{ maxHeight: '60vh', overflowY: 'auto', padding: '1rem 0' }}>
+            <div className={`${baseClass}__body`}>
                 {loading ? (
-                    <div className="text-center p-4 text-muted">{t('loading') || 'Loading...'}</div>
+                    <div className="text-center p-8 text-muted">{t('loading')}...</div>
                 ) : (
                     <>
                         {activeTab === 'appointments' && (
-                            <div className="flex-col gap-4">
-                                {history.appointments.length === 0 ? <p className="text-muted italic">{t('no_history') || 'No records found.'}</p> : (
+                            <div className={`${baseClass}__list`}>
+                                {history.appointments.length === 0 ? (
+                                    <p className="text-muted italic p-4 text-center">{t('no_history')}</p>
+                                ) : (
                                     history.appointments.map(appt => (
-                                        <div key={appt.id} className={`p-3 border rounded ${appt.status === 'cancelled' ? 'bg-red-50' : 'bg-slate-50'}`}>
-                                            <div className="flex justify-between mb-1">
-                                                <strong>{formatDate(appt.appointment_date)}</strong>
+                                        <div key={appt.id} className={`${baseClass}__item ${appt.status === 'cancelled' ? baseClass + '__item--cancelled' : ''}`}>
+                                            <div className={`${baseClass}__item-header`}>
+                                                <span className={`${baseClass}__date`}>{formatDate(appt.appointment_date)}</span>
                                                 <span className={`status-chip status-${appt.status}`}>{t(appt.status) || appt.status}</span>
                                             </div>
-                                            <div className="text-sm text-main-600">
+                                            <div className={`${baseClass}__doctor`}>
                                                 Dr. {appt.doctor_name}
                                             </div>
                                             {appt.reason && (
-                                                <div className="text-sm mt-1 italic text-main-700">
+                                                <div className={`${baseClass}__reason`}>
                                                     "{appt.reason}"
                                                 </div>
                                             )}
                                             {appt.cancellation_reason && (
-                                                <div className="text-xs mt-1 text-red-600 bg-red-100 p-1 rounded inline-block">
-                                                    🚫 Reason: {appt.cancellation_reason}
+                                                <div className={`${baseClass}__cancellation`}>
+                                                    <Icon name="REJECT" size="0.9rem" className="mr-1" />
+                                                    {t('reason')}: {appt.cancellation_reason}
                                                 </div>
                                             )}
-                                            {/* Behavior Rating Display if useful */}
                                             {appt.behavior_rating && (
-                                                <div className="text-xs mt-1 text-blue-600">
-                                                    ⭐ Patient Rating: {appt.behavior_rating}/5
+                                                <div className="text-xs mt-2 text-blue-600 font-bold">
+                                                    <Icon name="NEW" size="0.9rem" className="mr-1" />
+                                                    {t('rating')}: {appt.behavior_rating}/5
                                                 </div>
                                             )}
                                         </div>
@@ -115,61 +125,67 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
                         )}
 
                         {activeTab === 'medical' && (
-                            <div className="flex-col gap-6">
+                            <div className={`${baseClass}__list`}>
                                 {/* Prescriptions */}
-                                <div>
-                                    <h4 className="text-main-700 font-bold border-b mb-2 pb-1">{t('prescriptions') || 'Prescriptions'}</h4>
-                                    {history.prescriptions.length === 0 ? <p className="text-sm text-muted">None</p> : (
-                                        <ul className="list-none flex-col gap-2">
+                                <section className={`${baseClass}__section`}>
+                                    <h4 className={`${baseClass}__section-title`}>{t('prescriptions') || 'Recetas'}</h4>
+                                    {history.prescriptions.length === 0 ? (
+                                        <p className="text-xs text-muted italic ml-2">{t('none') || 'Ninguna'}</p>
+                                    ) : (
+                                        <div className="flex-col gap-2">
                                             {history.prescriptions.map(p => (
-                                                <li key={p.id} className="bg-green-50 p-2 rounded border border-green-100 text-sm">
-                                                    <div className="flex justify-between font-medium text-green-800">
+                                                <div key={p.id} className={`${baseClass}__record ${baseClass}__record--rx`}>
+                                                    <div className={`${baseClass}__record-header`}>
                                                         <span>{formatDate(p.created_at || p.appointment_date)}</span>
                                                         <span>Dr. {p.doctor_name}</span>
                                                     </div>
                                                     <div className="mt-1 whitespace-pre-wrap">{p.medications}</div>
-                                                </li>
+                                                </div>
                                             ))}
-                                        </ul>
+                                        </div>
                                     )}
-                                </div>
+                                </section>
 
                                 {/* Requests */}
-                                <div>
-                                    <h4 className="text-main-700 font-bold border-b mb-2 pb-1">{t('requests') || 'Requests'}</h4>
-                                    {history.requests.length === 0 ? <p className="text-sm text-muted">None</p> : (
-                                        <ul className="list-none flex-col gap-2">
+                                <section className={`${baseClass}__section`}>
+                                    <h4 className={`${baseClass}__section-title`}>{t('requests') || 'Solicitudes'}</h4>
+                                    {history.requests.length === 0 ? (
+                                        <p className="text-xs text-muted italic ml-2">{t('none') || 'Ninguna'}</p>
+                                    ) : (
+                                        <div className="flex-col gap-2">
                                             {history.requests.map(r => (
-                                                <li key={r.id} className="bg-purple-50 p-2 rounded border border-purple-100 text-sm">
-                                                    <div className="flex justify-between font-medium text-purple-800">
+                                                <div key={r.id} className={`${baseClass}__record ${baseClass}__record--req`}>
+                                                    <div className={`${baseClass}__record-header`}>
                                                         <span>{formatDate(r.created_at)}</span>
-                                                        <span className="uppercase text-xs border border-purple-200 px-1 rounded">{r.type}</span>
+                                                        <span className={`${baseClass}__record-type`}>{r.type}</span>
                                                     </div>
                                                     <div className="mt-1">"{r.request_note}"</div>
-                                                    <div className="text-xs text-muted text-right mt-1">{t(r.status)}</div>
-                                                </li>
+                                                    <div className="text-xs opacity-70 text-right mt-1">{t(r.status)}</div>
+                                                </div>
                                             ))}
-                                        </ul>
+                                        </div>
                                     )}
-                                </div>
+                                </section>
 
                                 {/* Licenses */}
-                                <div>
-                                    <h4 className="text-main-700 font-bold border-b mb-2 pb-1">{t('licenses') || 'Medical Licenses'}</h4>
-                                    {history.licenses.length === 0 ? <p className="text-sm text-muted">None</p> : (
-                                        <ul className="list-none flex-col gap-2">
+                                <section className={`${baseClass}__section`}>
+                                    <h4 className={`${baseClass}__section-title`}>{t('licenses') || 'Licencias Médicas'}</h4>
+                                    {history.licenses.length === 0 ? (
+                                        <p className="text-xs text-muted italic ml-2">{t('none') || 'Ninguna'}</p>
+                                    ) : (
+                                        <div className="flex-col gap-2">
                                             {history.licenses.map(l => (
-                                                <li key={l.id} className="bg-orange-50 p-2 rounded border border-orange-100 text-sm">
-                                                    <div className="flex justify-between font-medium text-orange-800">
-                                                        <span>Start: {new Date(l.start_date).toLocaleDateString()}</span>
-                                                        <span>{l.days_duration} Days</span>
+                                                <div key={l.id} className={`${baseClass}__record ${baseClass}__record--lic`}>
+                                                    <div className={`${baseClass}__record-header`}>
+                                                        <span>Desde: {new Date(l.start_date).toLocaleDateString()}</span>
+                                                        <span>{l.days_duration} {t('days') || 'Días'}</span>
                                                     </div>
                                                     <div className="mt-1 italic">{l.diagnosis}</div>
-                                                </li>
+                                                </div>
                                             ))}
-                                        </ul>
+                                        </div>
                                     )}
-                                </div>
+                                </section>
                             </div>
                         )}
                     </>

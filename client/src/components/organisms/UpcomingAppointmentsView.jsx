@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import AppointmentCard from '../molecules/AppointmentCard';
+import './UpcomingAppointmentsView.css';
 
 const UpcomingAppointmentsView = ({
     appointments,

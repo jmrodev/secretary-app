@@ -3,6 +3,8 @@ import { useProfileController } from '../controllers/useProfileController';
 import MainLayout from '../components/templates/MainLayout';
 import PhoneNumbersManager from '../components/molecules/PhoneNumbersManager';
 import Button from '../components/atoms/Button';
+import Icon from '../components/atoms/Icon';
+import './Profile.css';
 
 const Profile = () => {
     const {
@@ -37,7 +39,8 @@ const Profile = () => {
                 </div>
                 <div className="card">
                     <div className="section-title">
-                        <span>🛡️</span> {t('admin_account_msg')}
+                        <Icon name="ADMIN" size="1.2rem" className="mr-2" />
+                        {t('admin_account_msg')}
                     </div>
                     <p><strong>{t('username')}:</strong> {user.username}</p>
                     <p><strong>{t('role_header')}:</strong> {user.role}</p>
@@ -71,7 +74,8 @@ const Profile = () => {
                     {/* LEFT COLUMN: Personal Info */}
                     <div className="card h-full">
                         <div className="section-title">
-                            <span>👤</span> {t('personal_information')}
+                            <Icon name="PROFILE" size="1.2rem" className="mr-2" />
+                            {t('personal_information')}
                         </div>
 
                         <div className="form-group">
@@ -121,7 +125,7 @@ const Profile = () => {
                     {/* RIGHT COLUMN: Professional / Medical Info */}
                     <div className="card h-full">
                         <div className="section-title">
-                            <span>{user.role === 'doctor' ? '🩺' : '📋'}</span>
+                            <Icon name={user.role === 'doctor' ? 'DOCTOR' : 'DOCUMENTS'} size="1.2rem" className="mr-2" />
                             {user.role === 'doctor' ? t('professional_details') : t('medical_data')}
                         </div>
 

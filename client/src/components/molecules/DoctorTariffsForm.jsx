@@ -1,24 +1,24 @@
-
 import React from 'react';
 import FormGroup from '../molecules/FormGroup';
 import Input from '../atoms/Input';
 import Select from '../atoms/Select';
 import CurrencyInput from '../atoms/CurrencyInput';
+import './DoctorTariffsForm.css';
 
 const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
     // Helper to update specific field
     const handleChange = (field, value) => onChange({ ...data, [field]: value });
 
     return (
-        <div className="doctor-tariffs-form space-y-6">
+        <div className="doctor-tariffs-form">
             {settings.enable_office_rentals === 'true' && (
-                <div className="bg-slate-50 p-4 rounded-xl space-y-4">
-                    <h4 className="font-bold text-slate-700 uppercase p-0 m-0 text-xs tracking-wider">{t('rental_configuration') || 'Configuración de Alquiler'}</h4>
-                    <div className="grid grid-cols-2 gap-4">
+                <div className="doctor-tariffs-form__section doctor-tariffs-form__section--rental">
+                    <h4 className="doctor-tariffs-form__title">{t('rental_configuration') || 'Configuración de Alquiler'}</h4>
+                    <div className="doctor-tariffs-form__grid">
                         <FormGroup label={t('office_number')}>
                             <Input value={data.office_number} onChange={e => handleChange('office_number', e.target.value)} />
                         </FormGroup>
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="doctor-tariffs-form__nested-grid">
                             <FormGroup label={t('type')}>
                                 <Select
                                     value={data.rental_type}
@@ -39,9 +39,11 @@ const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
                 </div>
             )}
 
-            <div>
-                <h4 className="font-bold text-slate-700 uppercase p-0 m-0 text-xs tracking-wider mb-4">{t('consultation_prices') || 'Precios de Consulta'} ({data.appointment_duration}m)</h4>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="doctor-tariffs-form__section">
+                <h4 className="doctor-tariffs-form__title">
+                    {t('consultation_prices') || 'Precios de Consulta'} ({data.appointment_duration}m)
+                </h4>
+                <div className="doctor-tariffs-form__grid doctor-tariffs-form__grid--3col">
                     <FormGroup label={t('consultation_price')}>
                         <CurrencyInput className="input-field" value={data.consultation_price} onChange={e => handleChange('consultation_price', e.target.value)} />
                     </FormGroup>
@@ -60,7 +62,7 @@ const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="doctor-tariffs-form__grid">
                 <FormGroup label={t('specialty')}>
                     <Input value={data.specialty} onChange={e => handleChange('specialty', e.target.value)} />
                 </FormGroup>

@@ -1,0 +1,203 @@
+/* Medical Documents Page Styles */
+
+.medical-documents {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.medical-documents__header {
+    margin-bottom: 2rem;
+}
+
+.medical-documents__title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
+
+.medical-documents__subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+/* Tabs and Subtabs Layout */
+.medical-documents__tabs-content {
+    margin-top: 1.5rem;
+}
+
+.medical-documents__subtabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Repository Section */
+.medical-documents__repository {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+    .medical-documents__repository {
+        grid-template-columns: 350px 1fr;
+    }
+}
+
+.medical-documents__upload-card {
+    height: fit-content;
+}
+
+.medical-documents__file-list {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.medical-documents__table-container {
+    overflow-x: auto;
+}
+
+.medical-documents__file-icon {
+    font-size: 1.25rem;
+    margin-right: 0.75rem;
+}
+
+.medical-documents__file-name {
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.medical-documents__patient-name {
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.medical-documents__empty-repository {
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.medical-documents__empty-icon {
+    font-size: 3rem;
+    opacity: 0.5;
+}
+
+/* Section Controls (Titles + Action Buttons) */
+.medical-documents__section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.medical-documents__section-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+/* Request Form & List Layout */
+.medical-documents__requests-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Payment Type Selector */
+.medical-documents__payment-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.medical-documents__payment-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 1px solid var(--border-color);
+    background: white;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.medical-documents__payment-btn:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+.medical-documents__payment-btn--active {
+    background: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Bonified Toggle Styling */
+.medical-documents__toggle-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--blue-50);
+    border-radius: 0.5rem;
+    border: 1px solid var(--blue-100);
+}
+
+.medical-documents__toggle-label {
+    font-weight: 700;
+    color: var(--blue-800);
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Print Section Mirror Styles */
+.medical-documents__print-container {
+    display: none;
+}
+
+@media print {
+    .medical-documents__print-container {
+        display: block;
+        background: white;
+        padding: 2rem;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 9999;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+}
+
+.print-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+
+.print-table th,
+.print-table td {
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+    text-align: left;
+}
+
+.print-table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}

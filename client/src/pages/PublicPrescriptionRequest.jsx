@@ -2,6 +2,7 @@ import React from 'react';
 import { usePublicPrescriptionRequestController } from '../controllers/usePublicPrescriptionRequestController';
 import StatusDisplay from '../components/molecules/StatusDisplay';
 import Button from '../components/atoms/Button';
+import Icon from '../components/atoms/Icon';
 import './PublicPrescriptionRequest.css';
 
 const PublicPrescriptionRequest = () => {
@@ -30,7 +31,9 @@ const PublicPrescriptionRequest = () => {
         <div className="public-prescription">
             <div className="public-prescription__container">
                 <header className="public-prescription__header">
-                    <div className="public-prescription__icon-wrapper">💊</div>
+                    <div className="public-prescription__icon-wrapper">
+                        <Icon name="PRESCRIPTION" size="2rem" />
+                    </div>
                     <h1 className="public-prescription__title">Solicitud de Recetas</h1>
                     <p className="public-prescription__subtitle">
                         Paciente: <span className="public-prescription__patient-name">{patientInfo?.patientName}</span>
@@ -41,7 +44,7 @@ const PublicPrescriptionRequest = () => {
                 {error && patientInfo && (
                     <div className="public-prescription__error-banner animate-fadeIn">
                         <p className="public-prescription__error-text">
-                            <span>⚠️</span> {error}
+                            <Icon name="WARNING" className="mr-1" /> {error}
                         </p>
                     </div>
                 )}
@@ -49,7 +52,10 @@ const PublicPrescriptionRequest = () => {
                 {/* Recent Medications */}
                 {patientInfo?.recentMeds?.length > 0 && (
                     <section className="public-prescription__section">
-                        <h2 className="public-prescription__section-title">📜 Medicación Reciente</h2>
+                        <h2 className="public-prescription__section-title">
+                            <Icon name="HISTORY" size="1.2rem" className="mr-2" />
+                            Medicación Reciente
+                        </h2>
                         <div className="med-chip-grid">
                             {patientInfo.recentMeds.map((med, idx) => (
                                 <button
@@ -68,7 +74,10 @@ const PublicPrescriptionRequest = () => {
                 {/* Selected List */}
                 {selectedMeds.length > 0 && (
                     <section className="public-prescription__section animate-fadeIn">
-                        <h2 className="public-prescription__section-title">✅ Seleccionados ({selectedMeds.length})</h2>
+                        <h2 className="public-prescription__section-title">
+                            <Icon name="CHECK" size="1.2rem" className="mr-2" />
+                            Seleccionados ({selectedMeds.length})
+                        </h2>
                         <ul className="selected-list list-none">
                             {selectedMeds.map((med, idx) => (
                                 <li key={idx} className="selected-item">
@@ -88,7 +97,10 @@ const PublicPrescriptionRequest = () => {
 
                 {/* Search Section */}
                 <section className="public-prescription__section">
-                    <h2 className="public-prescription__section-title">🔍 Buscar otra medicación</h2>
+                    <h2 className="public-prescription__section-title">
+                        <Icon name="SEARCH" size="1.2rem" className="mr-2" />
+                        Buscar otra medicación
+                    </h2>
                     <div className="search-wrapper">
                         <input
                             type="text"
@@ -124,8 +136,9 @@ const PublicPrescriptionRequest = () => {
                                 variant="secondary"
                                 size="sm"
                                 onClick={handleAddManualMed}
+                                icon={<Icon name="ADD" size="1rem" />}
                             >
-                                ➕ Agregar "{searchTerm}"
+                                Agregar "{searchTerm}"
                             </Button>
                         </div>
                     )}
@@ -133,7 +146,10 @@ const PublicPrescriptionRequest = () => {
 
                 {/* Notes Section */}
                 <section className="public-prescription__section">
-                    <h2 className="public-prescription__section-title">📝 Notas (Opcional)</h2>
+                    <h2 className="public-prescription__section-title">
+                        <Icon name="NOTES" size="1.2rem" className="mr-2" />
+                        Notas (Opcional)
+                    </h2>
                     <textarea
                         className="input-field"
                         style={{ minHeight: '120px' }}
@@ -151,8 +167,9 @@ const PublicPrescriptionRequest = () => {
                         className="w-full btn--submit"
                         disabled={selectedMeds.length === 0 || loading}
                         onClick={handleSubmit}
+                        icon={<Icon name="SEND" size="1.2rem" />}
                     >
-                        {loading ? 'Enviando...' : '🚀 Enviar Solicitud'}
+                        {loading ? 'Enviando...' : 'Enviar Solicitud'}
                     </Button>
                     <p className="public-prescription__brand">
                         Sistema Seguro de Gestión Médica • CIMA

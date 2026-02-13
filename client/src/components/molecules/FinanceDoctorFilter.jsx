@@ -1,6 +1,7 @@
-
 import React from 'react';
-import Button from '../atoms/Button';
+import TabButton from '../atoms/TabButton';
+import TabNav from './TabNav';
+import './FinanceDoctorFilter.css';
 
 const FinanceDoctorFilter = ({
     doctors,
@@ -9,25 +10,28 @@ const FinanceDoctorFilter = ({
     t
 }) => {
     return (
-        <nav className="tab-nav">
-            <Button
-                variant="ghost"
-                className={`tab-nav__item ${selectedDoctorFilter === '' ? 'tab-nav__item--active' : ''}`}
-                onClick={() => setSelectedDoctorFilter('')}
-            >
-                👥 {t('all_doctors')}
-            </Button>
-            {doctors.map(d => (
-                <Button
-                    key={d.id}
-                    variant="ghost"
-                    className={`tab-nav__item ${selectedDoctorFilter == d.id ? 'tab-nav__item--active' : ''}`}
-                    onClick={() => setSelectedDoctorFilter(String(d.id))}
+        <div className="finance-doctor-filter">
+            <TabNav className="finance-doctor-filter__list">
+                <TabButton
+                    isActive={selectedDoctorFilter === ''}
+                    onClick={() => setSelectedDoctorFilter('')}
+                    className="finance-doctor-filter__item"
                 >
-                    👨‍⚕️ {d.full_name}
-                </Button>
-            ))}
-        </nav>
+                    👥 {t('all_doctors')}
+                </TabButton>
+                {doctors.map(d => (
+                    <TabButton
+                        key={d.id}
+                        isActive={selectedDoctorFilter == d.id}
+                        onClick={() => setSelectedDoctorFilter(String(d.id))}
+                        className="finance-doctor-filter__item"
+                        title={d.specialty}
+                    >
+                        👨‍⚕️ {d.full_name.split(' ').slice(0, 2).join(' ')}
+                    </TabButton>
+                ))}
+            </TabNav>
+        </div>
     );
 };
 

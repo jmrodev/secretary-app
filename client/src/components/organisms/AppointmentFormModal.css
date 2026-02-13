@@ -154,9 +154,9 @@
     animation: pulse 2s infinite;
 }
 
+/* Relies on global .form-actions in index.css */
 .form-actions {
     margin-top: 1.5rem;
-    text-align: right;
 }
 
 .form-actions__submit {

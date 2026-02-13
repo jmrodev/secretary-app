@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { parseDate } from '../../utils/dateUtils';
 import './AppointmentReportTable.css';
 
 const AppointmentReportTable = ({ data, t }) => {
@@ -40,10 +41,10 @@ const AppointmentReportTable = ({ data, t }) => {
 
     // Helper to get day of week
     const getDayOfWeek = (dateStr) => {
-        const [day, month, year] = dateStr.split('/');
-        const date = new Date(year, month - 1, day);
+        const d = parseDate(dateStr);
+        if (!d) return '';
         const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-        return days[date.getDay()];
+        return days[d.getDay()];
     };
 
     return (

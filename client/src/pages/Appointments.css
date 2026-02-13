@@ -9,15 +9,12 @@
 
 .appointments-grid {
     display: grid;
-    grid-template-columns: minmax(350px, 1fr) 2fr;
-    /* Ensure calendar has min width, schedule takes rest */
-    gap: 2rem;
-    /* Increase gap for better separation */
+    grid-template-columns: minmax(300px, 1fr) minmax(0, 2fr);
+    /* Reduced calendar min-width and gap to prioritize schedule space */
+    gap: 1.5rem;
     height: 100%;
     min-width: 0;
-    /* reset min-width to avoid overflow issues, handle with media queries */
     align-items: start;
-    /* Align to top */
 }
 
 .appointments-grid--monthly {

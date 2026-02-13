@@ -3,6 +3,7 @@ import CalendarDayCell from '../atoms/CalendarDayCell';
 import CalendarHeader from '../molecules/CalendarHeader';
 import DayHeaders from '../molecules/DayHeaders';
 import { useLanguage } from '../../context/LanguageContext';
+import './Calendar.css';
 
 const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = [], calendarStats = {}, hideNavigation = false, showOutOfHours = false }) => {
     const [viewDate, setViewDate] = useState(new Date(selectedDate || new Date()));

@@ -1,10 +1,14 @@
 import React from 'react';
 import { useLoginController } from '../controllers/useLoginController';
 import Button from '../components/atoms/Button';
+import Input from '../components/atoms/Input';
+import FormGroup from '../components/molecules/FormGroup';
+import './Login.css';
 
 /**
  * Login Page Component.
  * Optimized for clarity and performance using BEM and Controller patterns.
+ * Compliant with project architecture.
  */
 const Login = () => {
     const {
@@ -28,36 +32,32 @@ const Login = () => {
                 {error && <div className="auth-card__error">{error}</div>}
 
                 <form className="auth-card__form" onSubmit={handleSubmit}>
-                    <div className="input-group">
-                        <label className="input-label">{t('username')}</label>
-                        <input
+                    <FormGroup label={t('username')}>
+                        <Input
                             type="text"
-                            className="input-field"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             placeholder="Usuario"
                             disabled={loading}
                             required
                         />
-                    </div>
+                    </FormGroup>
 
-                    <div className="input-group">
-                        <label className="input-label">{t('password')}</label>
-                        <input
+                    <FormGroup label={t('password')}>
+                        <Input
                             type="password"
-                            className="input-field"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="••••••••"
                             disabled={loading}
                             required
                         />
-                    </div>
+                    </FormGroup>
 
                     <Button
                         type="submit"
                         variant="primary"
-                        className="w-full mt-4"
+                        className="auth-card__button--submit"
                         disabled={loading}
                     >
                         {loading ? 'Accediendo...' : t('sign_in')}

@@ -1,10 +1,11 @@
 import React from 'react';
 import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
 import './MedicationCard.css';
 
 /**
- * MedicationCard molecule for displaying medication info with status.
- * Reused in RequirementsList.
+ * MedicationCard Molecule.
+ * Displays medication information with status indicators.
  */
 const MedicationCard = ({
     name,
@@ -25,16 +26,17 @@ const MedicationCard = ({
             <div className={`${baseClass}__header`}>
                 <span className={`${baseClass}__name`}>{name}</span>
                 {isKnown ? (
-                    <span className={`${baseClass}__status-icon`} title="En lista crónica">✓</span>
+                    <Icon name="check_circle" size="1.1rem" color="var(--success)" className={`${baseClass}__status-icon`} />
                 ) : (
                     canEdit && onSave && (
                         <Button
                             size="sm-compact"
                             variant="secondary"
                             onClick={() => onSave(name)}
-                            title="Agregar a ficha del paciente"
+                            title={t('save_to_patient_file') || "Guardar en ficha"}
+                            icon={<Icon name="save" size="0.9rem" />}
                         >
-                            📥 Guardar
+                            {t('save') || 'Guardar'}
                         </Button>
                     )
                 )}
@@ -44,12 +46,13 @@ const MedicationCard = ({
                 {frequency && <span className={`${baseClass}__badge`}>F: {frequency}</span>}
                 {quantity && (
                     <span className={`${baseClass}__badge ${isKnown ? 'badge--success' : 'badge--warning'}`}>
-                        Cant: {quantity}
+                        {t('qty_short') || 'Cant'}: {quantity}
                     </span>
                 )}
                 {duration && (
                     <span className={`${baseClass}__duration`}>
-                        ⏱️ ~{duration} días
+                        <Icon name="timer" size="0.9rem" />
+                        ~{duration} {t('days') || 'días'}
                     </span>
                 )}
             </div>

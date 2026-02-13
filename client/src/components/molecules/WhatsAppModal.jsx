@@ -1,8 +1,10 @@
 import React from 'react';
 import Modal from './Modal';
 import Button from '../atoms/Button';
+import FormGroup from './FormGroup';
 import { useLanguage } from '../../context/LanguageContext';
 import { useMessage } from '../../context/MessageContext';
+import './WhatsAppModal.css';
 
 const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange }) => {
     const { t } = useLanguage();
@@ -12,19 +14,14 @@ const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange }) => 
         const safePhone = String(phone || '');
         let cleanPhone = safePhone.replace(/\D/g, '');
 
-
-        // Standardize AR phones if needed
         if (!cleanPhone.startsWith('54') && cleanPhone.length >= 10) {
             cleanPhone = '549' + cleanPhone;
         }
 
         const encodedText = encodeURIComponent(message || '');
 
-        // Copy to clipboard for safety (with error handling)
         if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
             navigator.clipboard.writeText(message || '').catch(err => console.error("Clipboard error:", err));
-        } else {
-            // Fallback for browsers that don't support clipboard API or when not in secure context
         }
 
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -32,60 +29,55 @@ const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange }) => 
         if (isMobile) {
             window.location.href = `https://wa.me/${cleanPhone}?text=${encodedText}`;
         } else {
-            // Desktop Strategy
             const appUrl = `whatsapp://send?phone=${cleanPhone}&text=${encodedText}`;
             const webUrl = `https://web.whatsapp.com/send?phone=${cleanPhone}&text=${encodedText}`;
-
-
-            // Try opening App, fall back to Web
-            // Using window.open for success feedback
-
             window.location.href = appUrl;
-
             setTimeout(() => {
                 window.open(webUrl, '_blank');
             }, 1000);
         }
 
         onClose();
-        showMessage("Mensaje copiado. Intentando abrir WhatsApp...", "success");
+        showMessage(t('message_copied_opening_wa') || "Mensaje copiado. Intentando abrir WhatsApp...", "success");
     };
+
+    const baseClass = 'whatsapp-modal';
 
     return (
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title="Confirmación por WhatsApp"
+            title={t('whatsapp_confirmation') || "Confirmación por WhatsApp"}
             footer={
                 <>
                     <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
                     <Button
                         variant="accent"
-                        className="btn-emerald text-white"
+                        className="text-white"
+                        style={{ backgroundColor: '#10b981' }}
                         onClick={handleSend}
                     >
-                        📲 Enviar por WhatsApp
+                        📲 {t('send_via_whatsapp') || 'Enviar por WhatsApp'}
                     </Button>
                 </>
             }
         >
-            <div className="flex flex-col gap-4">
-                <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-lg flex items-center gap-3">
-                    <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-xl">📱</div>
+            <div className={baseClass}>
+                <div className={`${baseClass}__info`}>
+                    <div className={`${baseClass}__icon`}>📱</div>
                     <div>
-                        <p className="text-sm text-emerald-900 font-bold">Enviar a: {phone}</p>
-                        <p className="text-xs text-emerald-700">El mensaje se abrirá en WhatsApp Desktop/Web.</p>
+                        <p className={`${baseClass}__recipient`}>{t('sending_to') || 'Enviar a'}: {phone}</p>
+                        <p className={`${baseClass}__help`}>{t('wa_help_text') || 'El mensaje se abrirá en WhatsApp Desktop/Web.'}</p>
                     </div>
                 </div>
 
-                <div className="input-group">
-                    <label className="input-label">Mensaje a enviar</label>
+                <FormGroup label={t('message_to_send') || "Mensaje a enviar"}>
                     <textarea
-                        className="input-field min-h-[120px]"
+                        className={`input-field ${baseClass}__textarea`}
                         value={message}
                         onChange={(e) => onMessageChange(e.target.value)}
                     ></textarea>
-                </div>
+                </FormGroup>
             </div>
         </Modal>
     );

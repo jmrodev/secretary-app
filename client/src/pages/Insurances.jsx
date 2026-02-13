@@ -2,6 +2,8 @@
 import React from 'react';
 import MainLayout from '../components/templates/MainLayout';
 import Button from '../components/atoms/Button';
+import Loading from '../components/atoms/Loading';
+import SearchBar from '../components/molecules/SearchBar';
 import InsuranceList from '../components/organisms/InsuranceList';
 import InsuranceFormModal from '../components/organisms/InsuranceFormModal';
 import { useInsurancesController } from '../controllers/useInsurancesController';
@@ -34,39 +36,37 @@ const Insurances = () => {
             title={t('insurances') || 'Obras Sociales'}
             subtitle={t('insurances_subtitle') || 'Gestione las obras sociales y prepagas del sistema.'}
         >
-            <section className="insurances__action-bar">
-                <div className="action-bar__search">
-                    <div className="search-box__wrapper">
-                        <span className="search-box__icon">🔍</span>
-                        <input
-                            type="text"
-                            placeholder={t('search_insurances_placeholder') || 'Buscar por nombre, CUIT o web...'}
-                            className="search-box__input"
-                            value={searchTerm}
-                            onChange={e => setSearchTerm(e.target.value)}
-                        />
-                        {searchTerm && (
-                            <button className="search-box__clear" onClick={() => setSearchTerm('')}>✕</button>
-                        )}
-                    </div>
-                </div>
-                <div className="action-bar__tools">
-                    <Button variant="ghost" onClick={handlers.fetchInsurances || (() => window.location.reload())}>🔄</Button>
-                    <Button variant="primary" onClick={handleOpenCreate}>
-                        ✨ {t('new_insurance') || 'Nueva Obra Social'}
-                    </Button>
-                </div>
-            </section>
+            {loading ? (
+                <Loading variant="centered" text={t('loading') || "Cargando..."} />
+            ) : (
+                <>
+                    <section className="insurances__action-bar">
+                        <div className="insurances__search-container">
+                            <SearchBar
+                                value={searchTerm}
+                                onChange={e => setSearchTerm(e.target.value)}
+                                placeholder={t('search_insurances_placeholder') || 'Buscar por nombre, CUIT...'}
+                                className="insurances__search-bar"
+                            />
+                        </div>
+                        <div className="insurances__actions">
+                            <Button variant="ghost" onClick={handlers.fetchInsurances || (() => window.location.reload())}>🔄</Button>
+                            <Button variant="primary" onClick={handleOpenCreate}>
+                                ✨ {t('new_insurance') || 'Nueva Obra Social'}
+                            </Button>
+                        </div>
+                    </section>
 
-            <div className="tab-content animate-fadeIn">
-                <InsuranceList
-                    insurances={filteredInsurances}
-                    loading={loading}
-                    onEdit={handleOpenEdit}
-                    onDelete={handleDelete}
-                    hasFilter={searchTerm !== ''}
-                />
-            </div>
+                    <div className="insurances__content animate-fadeIn">
+                        <InsuranceList
+                            insurances={filteredInsurances}
+                            onEdit={handleOpenEdit}
+                            onDelete={handleDelete}
+                            hasFilter={searchTerm !== ''}
+                        />
+                    </div>
+                </>
+            )}
 
             <InsuranceFormModal
                 isOpen={modalOpen}

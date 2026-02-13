@@ -98,6 +98,9 @@
     font-size: 0.75rem;
     color: var(--slate-500);
     font-style: italic;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .patient-history-view__appt-date-small {

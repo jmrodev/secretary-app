@@ -1,0 +1,114 @@
+/* FinanceStatsCards Component Styles */
+
+.finance-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.finance-stats__card {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+}
+
+.finance-stats__title {
+    font-size: 0.75rem;
+    font-weight: 900;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1.25rem;
+    display: block;
+}
+
+.finance-stats__breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.finance-stats__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+}
+
+.finance-stats__row--divider {
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.finance-stats__label {
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.finance-stats__value {
+    font-weight: 800;
+    font-size: 1rem;
+}
+
+.finance-stats__value--large {
+    font-size: 1.75rem;
+    margin-top: 0.5rem;
+}
+
+.finance-stats__value--blue {
+    color: var(--accent-color);
+}
+
+.finance-stats__value--gray {
+    color: var(--gray-700);
+}
+
+.finance-stats__value--muted {
+    color: var(--text-muted);
+}
+
+.finance-stats__value--green {
+    color: var(--success);
+}
+
+.finance-stats__value--red {
+    color: var(--error);
+}
+
+.finance-stats__value--purple {
+    color: var(--purple-600);
+}
+
+.finance-stats__table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: -0.5rem;
+}
+
+.finance-stats__table-header {
+    font-size: 0.625rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-align: left;
+    padding-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.finance-stats__table-cell {
+    padding: 0.4rem 0;
+    border-bottom: 1px solid var(--gray-50);
+}
+
+.finance-stats__table-cell:last-child {
+    border-bottom: none;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.font-bold {
+    font-weight: 800;
+}

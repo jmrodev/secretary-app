@@ -11,7 +11,6 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
     const { t } = useLanguage();
     const { confirm } = useModal();
     const { showMessage } = useMessage();
-    const [updatingBulk, setUpdatingBulk] = useState(false);
     const [focusedIndex, setFocusedIndex] = useState(null);
 
     // Initialize schedule with unique keys if missing
@@ -40,26 +39,6 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
         { id: 6, name: 'Sábado' },
         { id: 0, name: 'Domingo' }
     ];
-
-    const handleBulkUpdateType = async (dayId, type) => {
-        const dayName = DAYS.find(d => d.id == dayId).name;
-        const typeName = type === 'virtual' ? 'VIDEOLLAMADA' : 'PRESENCIAL';
-
-        try {
-            setUpdatingBulk(true);
-            const res = await api.post('/appointments/bulk-update-type', {
-                dayOfWeek: dayId,
-                type: type,
-                doctorId: doctorId
-            });
-            showMessage(res.data.message, 'success');
-        } catch (err) {
-            console.error(err);
-            showMessage('Error al actualizar turnos', 'error');
-        } finally {
-            setUpdatingBulk(false);
-        }
-    };
 
     const handleAddBlock = (dayId) => {
         setSchedule(prev => [
@@ -124,44 +103,41 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
         });
     };
 
-    if (loading) return <div style={{ padding: '2rem', textAlign: 'center' }}>Cargando horarios...</div>;
+    if (loading) return <div className="schedule-settings__loading">Cargando horarios...</div>;
 
     return (
         <div className="schedule-settings">
             <h3 className="schedule-settings__title">Configuración de Horarios de Atención</h3>
             <p className="schedule-settings__desc">Defina los días y franjas horarias en las que este médico atiende.</p>
 
-            {/* Bulk Actions */}
             <div className="schedule-bulk">
                 <h4 className="schedule-bulk__title">Aplicar a múltiples días (Sobrescribe horarios)</h4>
-                <div className="config-flex config-flex--gap-4" style={{ flexWrap: 'wrap', alignItems: 'center' }}>
-                    <div className="config-flex config-flex--gap-2" style={{ alignItems: 'center' }}>
+                <div className="schedule-bulk__actions">
+                    <div className="schedule-bulk__time-inputs">
                         <input
                             type="time"
-                            className="input-field"
-                            style={{ width: '110px', fontSize: '0.875rem', padding: '0.25rem 0.5rem' }}
+                            className="input-field schedule-bulk__time-input"
                             value={bulkStart}
                             onChange={(e) => setBulkStart(e.target.value)}
                         />
-                        <span style={{ color: 'var(--slate-400)', fontSize: '0.875rem' }}>a</span>
+                        <span className="schedule-bulk__separator">a</span>
                         <input
                             type="time"
-                            className="input-field"
-                            style={{ width: '110px', fontSize: '0.875rem', padding: '0.25rem 0.5rem' }}
+                            className="input-field schedule-bulk__time-input"
                             value={bulkEnd}
                             onChange={(e) => setBulkEnd(e.target.value)}
                         />
                     </div>
-                    <div className="config-flex config-flex--gap-2">
+                    <div className="schedule-bulk__buttons">
                         <Button
-                            variant="outline"
+                            variant="secondary"
                             size="sm"
                             onClick={() => applyBulk([1, 2, 3, 4, 5])}
                         >
                             Lunes a Viernes
                         </Button>
                         <Button
-                            variant="outline"
+                            variant="secondary"
                             size="sm"
                             onClick={() => applyBulk([1, 2, 3, 4, 5, 6])}
                         >
@@ -171,7 +147,7 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                 </div>
             </div>
 
-            <div className="config-flex config-flex--column config-flex--gap-4">
+            <div className="schedule-settings__days">
                 {DAYS.map(day => {
                     const dayBlocks = (Array.isArray(schedule) ? schedule : [])
                         .map((s, idx) => ({ ...s, originalIndex: idx }))
@@ -190,7 +166,7 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                     return (
                         <div key={day.id} className={`schedule-day ${isActive ? 'schedule-day--active' : ''}`}>
                             <div className="schedule-day__header">
-                                <div style={{ paddingTop: '0.5rem' }}>
+                                <div className="schedule-day__toggle">
                                     <input
                                         type="checkbox"
                                         id={`day-${day.id}`}
@@ -199,7 +175,7 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                                         className="schedule-day__checkbox"
                                     />
                                 </div>
-                                <div className="config-flex__item--grow">
+                                <div className="schedule-day__content">
                                     <label htmlFor={`day-${day.id}`} className="schedule-day__name">
                                         {day.name}
                                     </label>
@@ -217,7 +193,7 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                                                             onBlur={() => setFocusedIndex(null)}
                                                             onChange={(e) => handleBlockChange(block.originalIndex, 'start_time', e.target.value)}
                                                         />
-                                                        <span style={{ color: 'var(--slate-400)', fontSize: '0.875rem' }}>a</span>
+                                                        <span className="time-block__connector">a</span>
                                                         <Input
                                                             type="time"
                                                             size="sm"
@@ -228,9 +204,9 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                                                         />
                                                     </div>
 
-                                                    <div className="time-block__separator"></div>
+                                                    <div className="time-block__divider" />
 
-                                                    <div>
+                                                    <div className="time-block__type">
                                                         <select
                                                             className={`time-block__type-select ${block.default_type === 'virtual' ? 'time-block__type-select--virtual' : ''}`}
                                                             value={block.default_type || 'consultation'}
@@ -243,11 +219,11 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                                                         </select>
                                                     </div>
 
-                                                    <div style={{ marginLeft: '0.5rem' }}>
+                                                    <div className="time-block__options">
                                                         <label className="time-block__alignment">
                                                             <input
                                                                 type="checkbox"
-                                                                style={{ width: '1rem', height: '1rem', cursor: 'pointer' }}
+                                                                className="time-block__checkbox"
                                                                 checked={block.force_hour_alignment === 1}
                                                                 onChange={(e) => handleBlockChange(block.originalIndex, 'force_hour_alignment', e.target.checked ? 1 : 0)}
                                                             />
@@ -261,19 +237,19 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                                                         onClick={() => handleRemoveBlock(block.originalIndex)}
                                                         className="time-block__remove"
                                                         title="Eliminar franja"
-                                                    >
-                                                        🗑️
-                                                    </Button>
+                                                        icon="🗑️"
+                                                    />
                                                 </div>
                                             ))}
 
                                             <Button
                                                 variant="ghost"
+                                                size="sm"
                                                 onClick={() => handleAddBlock(day.id)}
-                                                style={{ marginTop: '0.5rem', padding: '0.25rem 0.5rem', fontSize: '0.875rem' }}
-                                                className="config-flex config-flex--gap-1"
+                                                className="schedule-blocks__add-btn"
+                                                icon="+"
                                             >
-                                                <span>+</span> Agregar Turno Cortado / Extra
+                                                {t('add_extra_block') || 'Agregar Turno Cortado / Extra'}
                                             </Button>
                                         </div>
                                     )}

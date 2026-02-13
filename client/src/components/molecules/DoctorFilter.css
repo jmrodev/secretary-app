@@ -1,0 +1,26 @@
+/* DoctorFilter Component Styles */
+
+.doctor-filter {
+    margin-top: -1.5rem;
+    margin-bottom: 2rem;
+    border-top: none;
+    transition: all 0.3s ease;
+}
+
+.doctor-filter--themed {
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.5rem;
+}
+
+.doctor-filter__tabs {
+    margin: 0;
+    padding: 0.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.doctor-filter__tab {
+    font-size: 0.8125rem;
+    padding: 0.4rem 0.75rem;
+}

@@ -1,33 +1,182 @@
+/* TransactionsTable Component Styles */
+
+.transactions-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.transactions-table__container {
+    padding: 0;
+    overflow: hidden;
+    margin-top: 1rem;
+}
+
+.transactions-table__wrapper {
+    overflow-x: auto;
+}
+
+.transactions-table__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.transactions-table__table th {
+    background-color: var(--gray-50);
+    padding: 1rem;
+    text-align: left;
+    font-weight: 800;
+    color: var(--text-secondary);
+    border-bottom: 2px solid var(--border-color);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+.transactions-table__table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--gray-100);
+    vertical-align: middle;
+}
+
+.transactions-table__row--grouped {
+    background-color: var(--blue-50);
+}
+
+.transactions-table__date {
+    font-weight: 700;
+    color: var(--text-main);
+    white-space: nowrap;
+}
+
+.transactions-table__time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.transactions-table__description-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.transactions-table__type-tag {
+    align-self: flex-start;
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 0.1rem 0.6rem;
+    text-transform: uppercase;
+    border-radius: 1rem;
+}
+
+.transactions-table__description {
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+.transactions-table__beneficiary {
+    display: flex;
+    flex-direction: column;
+}
+
+.transactions-table__beneficiary-name {
+    font-weight: 600;
+}
+
+.transactions-table__patient {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.transactions-table__method {
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.transactions-table__amount {
+    font-weight: 800;
+    font-size: 1rem;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.transactions-table__amount--income {
+    color: var(--success);
+}
+
+.transactions-table__amount--expense {
+    color: var(--error);
+}
+
+.transactions-table__amount--withdrawal {
+    color: var(--amber-600);
+}
+
+.transactions-table__header-cell--right,
+.transactions-table__cell--right {
+    text-align: right;
+}
+
+.transactions-table__header-cell--center,
+.transactions-table__cell--center {
+    text-align: center;
+}
+
 .transactions-table__invoice-info {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: 0.25rem;
 }
 
 .transactions-table__invoice-number {
-    font-size: 12px;
-    font-weight: bold;
-    color: #2563eb;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--accent-color);
 }
 
+.transactions-table__no-proof {
+    color: var(--text-muted);
+    font-weight: 800;
+}
+
+.transactions-table__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.25rem;
+}
+
+.transactions-table__group-footer {
+    background-color: var(--gray-50);
+}
+
+.transactions-table__group-total {
+    padding: 0.75rem 1rem !important;
+    text-align: right;
+    font-weight: 800;
+    color: var(--text-main);
+    border-bottom: 2px solid var(--border-color);
+}
+
+/* Invoice Detail Popover/Modal Content */
 .invoice-detail {
-    padding: 16px;
+    padding: 1rem;
     text-align: left;
 }
 
 .invoice-detail__title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 16px;
-    color: #1e293b;
+    font-size: 1.125rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: var(--text-main);
 }
 
 .invoice-detail__content {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    font-size: 14px;
+    gap: 0.5rem;
+    font-size: 0.875rem;
 }
 
 .invoice-detail__row {
@@ -35,13 +184,21 @@
 }
 
 .invoice-detail__divider {
-    margin: 8px 0;
+    margin: 1rem 0;
     border: 0;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid var(--border-color);
 }
 
 .invoice-detail__actions {
-    margin-top: 24px;
+    margin-top: 1.5rem;
     display: flex;
     justify-content: center;
+}
+
+.pl-6-bem {
+    padding-left: 1.5rem !important;
+}
+
+.pr-6-bem {
+    padding-right: 1.5rem !important;
 }

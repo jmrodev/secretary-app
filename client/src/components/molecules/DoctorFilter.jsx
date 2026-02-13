@@ -1,5 +1,7 @@
 import React from 'react';
 import TabButton from '../atoms/TabButton';
+import TabNav from './TabNav';
+import './DoctorFilter.css';
 
 const DoctorFilter = ({ activeTab, userRole, viewDoctorId, setViewDoctorId, doctors }) => {
     // Show filter on monthly view as well
@@ -7,16 +9,17 @@ const DoctorFilter = ({ activeTab, userRole, viewDoctorId, setViewDoctorId, doct
         return null;
     }
 
+    const isThemed = !!viewDoctorId;
+    const themeClass = isThemed ? `doctor-color-${Number(viewDoctorId) % 10} doctor-themed-bg` : '';
+
     return (
-        <div
-            className={`header-actions-container mb-8 ${viewDoctorId ? `doctor-color-${Number(viewDoctorId) % 10} doctor-themed-bg` : ''}`}
-            style={viewDoctorId ? { borderRadius: '1rem', padding: '1rem 1.5rem', marginTop: '-1.5rem', borderTop: 'none' } : { marginTop: '-1.5rem', borderTop: 'none' }}
-        >
-            <div className="tabs-container" style={{ margin: 0, padding: '0.25rem' }}>
+        <div className={`doctor-filter ${isThemed ? 'doctor-filter--themed' : ''} ${themeClass}`}>
+            <TabNav className="doctor-filter__tabs">
                 <TabButton
                     isActive={!viewDoctorId}
                     onClick={() => setViewDoctorId('')}
-                    className="tab-btn-small"
+                    size="sm"
+                    className="doctor-filter__tab"
                 >
                     🏢 Todos
                 </TabButton>
@@ -25,13 +28,14 @@ const DoctorFilter = ({ activeTab, userRole, viewDoctorId, setViewDoctorId, doct
                         key={d.id}
                         isActive={viewDoctorId == d.id}
                         onClick={() => setViewDoctorId(d.id)}
-                        className="tab-btn-small"
+                        size="sm"
+                        className="doctor-filter__tab"
                         title={d.specialty}
                     >
                         👨‍⚕️ {d.full_name.split(' ').slice(0, 2).join(' ')}
                     </TabButton>
                 ))}
-            </div>
+            </TabNav>
         </div>
     );
 };

@@ -43,7 +43,14 @@ const CalendarDayCell = ({
       <div className="calendar-day-cell__content">
         <div className="calendar-day-cell__date">
           <span className="calendar-day-cell__number">{day}</span>
-          {isToday && <span className="calendar-day-cell__today-marker">HOY</span>}
+          <div className="calendar-day-cell__markers">
+            {isHoliday && (
+              <span className="calendar-day-cell__holiday-marker" title={holidayDescription}>
+                H
+              </span>
+            )}
+            {isToday && <span className="calendar-day-cell__today-marker">HOY</span>}
+          </div>
         </div>
 
         <CalendarDayIndicator

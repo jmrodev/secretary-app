@@ -1,20 +1,110 @@
+.appointment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.appointment-header__patient-info {
+    flex: 1;
+}
+
+.appointment-header__text {
+    font-size: 0.95rem;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
+
+.appointment-header__strong {
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.appointment-header__phone-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-block: 0.25rem;
+    color: var(--primary);
+}
+
+.appointment-header__phone-link {
+    font-family: monospace;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.appointment-header__phone-link:hover {
+    text-decoration: underline;
+    color: var(--primary-dark);
+}
+
+.appointment-header__phone-actions {
+    display: flex;
+    gap: 0.25rem;
+    margin-left: 0.5rem;
+}
+
+.appointment-header__icon-btn {
+    border-radius: 50% !important;
+    padding: 0.2rem !important;
+    height: 24px;
+    width: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.appointment-header__icon-btn--whatsapp {
+    color: var(--success) !important;
+}
+
+.appointment-header__icon-btn--whatsapp:hover {
+    background-color: var(--success-light) !important;
+    color: var(--success-dark) !important;
+}
+
+.appointment-header__icon-btn--magic {
+    color: var(--primary) !important;
+}
+
+.appointment-header__icon-btn--magic:hover {
+    background-color: var(--primary-light) !important;
+    color: var(--primary-dark) !important;
+}
+
+.appointment-header__date {
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    color: var(--text-muted);
+}
+
+.appointment-header__badges {
+    display: flex;
+    gap: 0.5rem;
+}
+
 .invoice-detail {
-    padding: 16px;
+    padding: 1rem;
     text-align: left;
 }
 
 .invoice-detail__title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 16px;
-    color: #1e293b;
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-main);
 }
 
 .invoice-detail__content {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    font-size: 14px;
+    gap: 0.5rem;
+    font-size: 0.875rem;
 }
 
 .invoice-detail__row {
@@ -22,13 +112,13 @@
 }
 
 .invoice-detail__divider {
-    margin: 8px 0;
+    margin: 0.5rem 0;
     border: 0;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid var(--border-color);
 }
 
 .invoice-detail__actions {
-    margin-top: 24px;
+    margin-top: 1.5rem;
     display: flex;
     justify-content: center;
 }

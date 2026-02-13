@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import AutoTextarea from '../atoms/AutoTextarea';
 import ConfigField from '../molecules/ConfigField';
+import Icon from '../atoms/Icon';
+import { useLanguage } from '../../context/LanguageContext';
 
 /**
  * CommunicationSettings Organism
@@ -12,18 +14,18 @@ import ConfigField from '../molecules/ConfigField';
 /**
  * Single Responsibility: Get friendly label for variable
  */
-const getFriendlyVarLabel = (variable) => {
+const getFriendlyVarLabel = (variable, t) => {
     const labels = {
-        '{patient_name}': 'Paciente',
-        '{name}': 'Nombre',
-        '{date}': 'Fecha',
-        '{time}': 'Hora',
-        '{doctor_name}': 'Doctor',
-        '{appointment_type}': 'Tipo Turno',
-        '{appointment_location}': 'Lugar',
-        '{price}': 'Precio',
-        '{secretary_name}': 'Secretaria',
-        '{link}': 'Enlace'
+        '{patient_name}': t('patient_var'),
+        '{name}': t('name_var'),
+        '{date}': t('date_var'),
+        '{time}': t('time_var'),
+        '{doctor_name}': t('doctor_var'),
+        '{appointment_type}': t('appointment_type_var'),
+        '{appointment_location}': t('location_var'),
+        '{price}': t('price_var'),
+        '{secretary_name}': t('secretary_var'),
+        '{link}': t('link_var')
     };
     return labels[variable] || variable;
 };
@@ -31,10 +33,10 @@ const getFriendlyVarLabel = (variable) => {
 /**
  * Single Responsibility: Render variable buttons
  */
-const renderVariableButtons = (variables, insertVariable, textareaId, settingKey) => {
+const renderVariableButtons = (variables, insertVariable, textareaId, settingKey, t) => {
     return (
         <div className="config-field">
-            <p className="config-field__label">Variables disponibles (Haz clic para insertar):</p>
+            <p className="config-field__label">{t('available_variables')}</p>
             <div className="variable-buttons">
                 {variables.map(v => (
                     <button
@@ -42,9 +44,9 @@ const renderVariableButtons = (variables, insertVariable, textareaId, settingKey
                         type="button"
                         className="variable-button"
                         onClick={() => insertVariable(textareaId, v, settingKey)}
-                        title={`Insertar ${v}`}
+                        title={t('insert_variable_title').replace('{variable}', v)}
                     >
-                        {getFriendlyVarLabel(v)}
+                        {getFriendlyVarLabel(v, t)}
                     </button>
                 ))}
             </div>
@@ -69,7 +71,8 @@ const TemplateEditor = ({
     isAdmin,
     metaTemplateName,
     metaParamsOrder,
-    description
+    description,
+    t
 }) => {
     return (
         <div className="config-field">
@@ -83,12 +86,12 @@ const TemplateEditor = ({
                 disabled={!isAdmin}
             />
 
-            {renderVariableButtons(variables, insertVariable, id, settingKey)}
+            {renderVariableButtons(variables, insertVariable, id, settingKey, t)}
 
             {(metaTemplateName !== undefined) && (
                 <div className="config-grid config-grid--2col" style={{ marginTop: '0.75rem' }}>
                     <ConfigField
-                        label="Nombre de Plantilla Meta (API)"
+                        label={t('meta_template_name')}
                         type="text"
                         placeholder="ej: reminder_template"
                         value={metaTemplateName || ''}
@@ -101,7 +104,7 @@ const TemplateEditor = ({
                     />
                     {metaParamsOrder !== undefined && (
                         <ConfigField
-                            label="Orden Variables"
+                            label={t('variable_order')}
                             type="text"
                             placeholder="{patient_name}, {date}..."
                             value={metaParamsOrder || ''}
@@ -124,6 +127,7 @@ const TemplateEditor = ({
 };
 
 const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }) => {
+    const { t } = useLanguage();
     const isAdmin = user.role === 'admin' || user.role === 'secretary';
     const commonVars = useMemo(() => [
         '{patient_name}', '{date}', '{time}', '{doctor_name}',
@@ -135,20 +139,20 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
             {/* Clinic Address */}
             <div className="config-section">
                 <div className="config-section__header">
-                    <span className="config-section__icon">📍</span>
-                    <h4 className="config-section__title">Dirección del Consultorio</h4>
+                    <Icon name="CONFIG" size="1.2rem" className="mr-2" />
+                    <h4 className="config-section__title">{t('clinic_address_title')}</h4>
                 </div>
 
                 <div className="config-section__body">
                     <ConfigField
                         id="clinic-address"
-                        label="Dirección Física (para turnos Presenciales)"
+                        label={t('physical_address_label')}
                         type="text"
                         placeholder="Calle X, Entre Y y Z"
                         value={settings.clinic_address || ''}
                         onChange={(e) => updateSetting('clinic_address', e.target.value)}
                         disabled={!isAdmin}
-                        hint="Esta dirección se usará para reemplazar la variable {appointment_location} si el turno es presencial."
+                        hint={t('physical_address_hint')}
                     />
                 </div>
             </div>
@@ -156,14 +160,14 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
             {/* Appointment Reminders */}
             <div className="config-section">
                 <div className="config-section__header">
-                    <span className="config-section__icon">📅</span>
-                    <h4 className="config-section__title">Recordatorios de Turno</h4>
+                    <Icon name="APPOINTMENTS" size="1.2rem" className="mr-2" />
+                    <h4 className="config-section__title">{t('appointment_reminders_title')}</h4>
                 </div>
 
                 <div className="config-section__body">
                     <TemplateEditor
                         id="reminder-template"
-                        label="📍 Recordatorio Presencial (General)"
+                        label={<span className="flex items-center gap-1"><Icon name="HISTORY" size="1rem" /> {t('presential_reminder_label')}</span>}
                         value={settings.appointment_reminder_template}
                         settingKey="appointment_reminder_template"
                         variables={commonVars}
@@ -172,19 +176,21 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
                         isAdmin={isAdmin}
                         metaTemplateName={settings.meta_phone_number_id ? settings.meta_reminder_template_name : undefined}
                         metaParamsOrder={settings.meta_phone_number_id ? settings.meta_reminder_params_order : undefined}
+                        t={t}
                     />
 
                     <div className="config-section__divider"></div>
 
                     <TemplateEditor
                         id="reminder-virtual-template"
-                        label="🌐 Recordatorio Virtual (Telemedicina)"
+                        label={<span className="flex items-center gap-1"><Icon name="VIRTUAL" size="1rem" /> {t('virtual_reminder_label')}</span>}
                         value={settings.appointment_reminder_virtual_template}
                         settingKey="appointment_reminder_virtual_template"
                         variables={commonVars}
                         updateSetting={updateSetting}
                         insertVariable={insertVariable}
                         isAdmin={isAdmin}
+                        t={t}
                     />
                 </div>
             </div>
@@ -192,14 +198,14 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
             {/* Appointment Confirmation */}
             <div className="config-section">
                 <div className="config-section__header">
-                    <span className="config-section__icon">✅</span>
-                    <h4 className="config-section__title">Confirmación de Turno (Al Crear)</h4>
+                    <Icon name="CHECK" size="1.2rem" className="mr-2" />
+                    <h4 className="config-section__title">{t('appointment_confirmation_title')}</h4>
                 </div>
 
                 <div className="config-section__body">
                     <TemplateEditor
                         id="confirmation-template"
-                        label="📍 Confirmación Presencial (General)"
+                        label={<span className="flex items-center gap-1"><Icon name="CHECK" size="1rem" /> {t('presential_confirmation_label')}</span>}
                         value={settings.appointment_confirmation_template}
                         settingKey="appointment_confirmation_template"
                         variables={commonVars}
@@ -208,20 +214,22 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
                         isAdmin={isAdmin}
                         metaTemplateName={settings.meta_phone_number_id ? settings.meta_confirmation_template_name : undefined}
                         metaParamsOrder={settings.meta_phone_number_id ? settings.meta_confirmation_params_order : undefined}
-                        description="Este mensaje se ofrecerá enviar automáticamente al finalizar la creación de un nuevo turno."
+                        description={t('confirmation_message_hint')}
+                        t={t}
                     />
 
                     <div className="config-section__divider"></div>
 
                     <TemplateEditor
                         id="confirmation-virtual-template"
-                        label="🌐 Confirmación Virtual (Telemedicina)"
+                        label={<span className="flex items-center gap-1"><Icon name="VIRTUAL" size="1rem" /> {t('virtual_confirmation_label')}</span>}
                         value={settings.appointment_confirmation_virtual_template}
                         settingKey="appointment_confirmation_virtual_template"
                         variables={commonVars}
                         updateSetting={updateSetting}
                         insertVariable={insertVariable}
                         isAdmin={isAdmin}
+                        t={t}
                     />
                 </div>
             </div>
@@ -229,37 +237,39 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
             {/* Public Requests / QR Links */}
             <div className="config-section">
                 <div className="config-section__header">
-                    <span className="config-section__icon">🔗</span>
-                    <h4 className="config-section__title">Solicitudes Públicas (Links/QR)</h4>
+                    <Icon name="DOCUMENTS" size="1.2rem" className="mr-2" />
+                    <h4 className="config-section__title">{t('public_requests_title')}</h4>
                 </div>
 
                 <div className="config-section__body">
                     <TemplateEditor
                         id="whatsapp-prescription-template"
-                        label="💊 Solicitud de Receta (WhatsApp)"
+                        label={<span className="flex items-center gap-1"><Icon name="PRESCRIPTION" size="1rem" /> {t('prescription_request_whatsapp')}</span>}
                         value={settings.whatsapp_prescription_request_template}
                         settingKey="whatsapp_prescription_request_template"
                         variables={['{patient_name}', '{link}']}
                         updateSetting={updateSetting}
                         insertVariable={insertVariable}
                         isAdmin={isAdmin}
-                        description="Mensaje que se envía al paciente junto con el link para receta."
-                        placeholder="Hola {patient_name}, por favor ingresa al siguiente enlace para solicitar tus recetas: {link}"
+                        description={t('prescription_request_hint')}
+                        placeholder={t('placeholder_prescription_req')}
+                        t={t}
                     />
 
                     <div className="config-section__divider"></div>
 
                     <TemplateEditor
                         id="whatsapp-patient-data-template"
-                        label="👤 Actualización de Datos (WhatsApp)"
+                        label={<span className="flex items-center gap-1"><Icon name="PROFILE" size="1rem" /> {t('data_update_whatsapp')}</span>}
                         value={settings.whatsapp_patient_data_request_template}
                         settingKey="whatsapp_patient_data_request_template"
                         variables={['{patient_name}', '{link}']}
                         updateSetting={updateSetting}
                         insertVariable={insertVariable}
                         isAdmin={isAdmin}
-                        description="Mensaje para que el paciente complete su ficha médica."
-                        placeholder="Hola {patient_name}, por favor ingresa al siguiente enlace para completar tus datos: {link}"
+                        description={t('data_update_hint')}
+                        placeholder={t('placeholder_data_req')}
+                        t={t}
                     />
                 </div>
             </div>

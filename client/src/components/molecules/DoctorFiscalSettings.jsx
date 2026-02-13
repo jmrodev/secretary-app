@@ -1,9 +1,9 @@
-
 import React from 'react';
 import Button from '../atoms/Button';
 import Input from '../atoms/Input';
 import Switch from '../atoms/Switch';
 import FormGroup from './FormGroup';
+import { useLanguage } from '../../context/LanguageContext';
 import './DoctorFiscalSettings.css';
 
 /**
@@ -27,12 +27,11 @@ const DoctorFiscalSettings = ({
     onTestConnection,
     onHideCsrInfo
 }) => {
+    const { t } = useLanguage();
 
     const handleCopyCsr = () => {
         if (generatedCsr) {
             navigator.clipboard.writeText(generatedCsr);
-            // Alert responsibility could be lifted up too, but for UI feedback copy is simple here.
-            // Ideally use a toast prop if available.
         }
     };
 
@@ -53,21 +52,21 @@ const DoctorFiscalSettings = ({
             <div className="doctor-fiscal-settings__card">
                 <div className="doctor-fiscal-settings__header">
                     <Switch
-                        label="Habilitar Facturación con ARCA/AFIP"
+                        label={t('enable_afip_billing')}
                         checked={data.afip_enabled === true || data.afip_enabled === 'true' || data.afip_enabled === 1}
                         onChange={(val) => onChangeData({ afip_enabled: val })}
                     />
                 </div>
 
                 <div className="doctor-fiscal-settings__grid">
-                    <FormGroup label="CUIT Facturación">
+                    <FormGroup label={t('billing_cuit')}>
                         <Input
                             value={data.afip_cuit || ''}
                             onChange={(e) => onChangeData({ afip_cuit: e.target.value })}
                             placeholder="20123456789"
                         />
                     </FormGroup>
-                    <FormGroup label="Punto de Venta">
+                    <FormGroup label={t('pto_vta')}>
                         <Input
                             value={data.afip_pto_vta || '1'}
                             onChange={(e) => onChangeData({ afip_pto_vta: e.target.value })}
@@ -78,14 +77,14 @@ const DoctorFiscalSettings = ({
             </div>
 
             <div className="doctor-fiscal-settings__section">
-                <h6 className="doctor-fiscal-settings__title">Certificados Digitales</h6>
+                <h6 className="doctor-fiscal-settings__title">{t('digital_certificates')}</h6>
                 <p className="doctor-fiscal-settings__description">
-                    Para facturar, necesitas un certificado válido (.crt) asociado a tu CUIT.
+                    {t('valid_certificate_needed')}
                 </p>
 
                 <div className="doctor-fiscal-settings__actions">
-                    <Button size="sm" variant="secondary" onClick={onGenerateCsr} loading={generatingCsr}>
-                        ⚙️ Generar CSR
+                    <Button size="sm" variant="secondary" onClick={onGenerateCsr} loading={generatingCsr} icon="⚙️">
+                        {t('generate_csr')}
                     </Button>
                     <input
                         type="file"
@@ -94,16 +93,16 @@ const DoctorFiscalSettings = ({
                         accept=".crt,.key"
                         style={{ display: 'none' }}
                     />
-                    <Button size="sm" variant="ghost" onClick={handleUploadClick} loading={uploading}>
-                        📤 Subir Certificado (.crt)
+                    <Button size="sm" variant="ghost" onClick={handleUploadClick} loading={uploading} icon="📤">
+                        {t('upload_certificate')}
                     </Button>
                 </div>
 
                 {generatedCsr && showCsrInfo && (
-                    <div className="doctor-fiscal-settings__csr-box animated fadeIn">
+                    <div className="doctor-fiscal-settings__csr-box animate-fadeIn">
                         <div className="doctor-fiscal-settings__csr-header">
-                            <h6 className="doctor-fiscal-settings__csr-title">CSR Generado (Copiar y pegar en AFIP)</h6>
-                            <button onClick={onHideCsrInfo} className="doctor-fiscal-settings__csr-close">Ocultar</button>
+                            <h6 className="doctor-fiscal-settings__csr-title">{t('csr_generated_title')}</h6>
+                            <button onClick={onHideCsrInfo} className="doctor-fiscal-settings__csr-close">{t('hide')}</button>
                         </div>
                         <textarea
                             readOnly
@@ -112,9 +111,9 @@ const DoctorFiscalSettings = ({
                             onClick={e => e.target.select()}
                         />
                         <div className="doctor-fiscal-settings__csr-footer">
-                            <span className="doctor-fiscal-settings__hint">Copia este texto en la web de AFIP WSASS</span>
-                            <Button size="xs" variant="primary" onClick={handleCopyCsr}>
-                                Copiar Texto
+                            <span className="doctor-fiscal-settings__hint">{t('copy_to_wsass')}</span>
+                            <Button size="sm" variant="primary" onClick={handleCopyCsr} icon="📋">
+                                {t('copy_text')}
                             </Button>
                         </div>
                     </div>
@@ -122,14 +121,15 @@ const DoctorFiscalSettings = ({
 
                 <div className="doctor-fiscal-settings__status-section">
                     <div className="doctor-fiscal-settings__status-header">
-                        <h6 className="doctor-fiscal-settings__title mb-0">Estado de Conexión y Pruebas</h6>
+                        <h6 className="doctor-fiscal-settings__title">{t('connection_test_title')}</h6>
                         <Button
                             size="sm"
                             variant="secondary"
                             onClick={onTestConnection}
                             loading={connectionStatus === 'checking'}
+                            icon="🔌"
                         >
-                            🔌 Testear Conexión
+                            {t('test_connection')}
                         </Button>
                     </div>
 
@@ -137,7 +137,7 @@ const DoctorFiscalSettings = ({
                         <div className="doctor-fiscal-settings__status-box doctor-fiscal-settings__status-box--success animate-fadeIn">
                             <div className="doctor-fiscal-settings__status-icon">✅</div>
                             <div className="doctor-fiscal-settings__status-content">
-                                <strong>Conexión Exitosa con AFIP</strong>
+                                <strong>{t('afip_connection_success')}</strong>
                                 <pre className="doctor-fiscal-settings__status-details">
                                     {JSON.stringify(statusDetails, null, 2)}
                                 </pre>
@@ -149,23 +149,23 @@ const DoctorFiscalSettings = ({
                         <div className="doctor-fiscal-settings__status-box doctor-fiscal-settings__status-box--error animate-fadeIn">
                             <div className="doctor-fiscal-settings__status-icon">❌</div>
                             <div className="doctor-fiscal-settings__status-content">
-                                <strong>Error de Conexión</strong>
+                                <strong>{t('afip_connection_error')}</strong>
                                 <p className="doctor-fiscal-settings__status-message">{String(statusDetails)}</p>
                             </div>
                         </div>
                     )}
 
-                    <details className="mt-2 text-xs text-slate-500 cursor-pointer">
-                        <summary className="hover:text-slate-700 font-medium">📜 Guía Rápida de Configuración (Click para ver)</summary>
-                        <ol className="list-decimal pl-5 mt-2 space-y-1">
-                            <li>Completa <strong>CUIT</strong> y <strong>Punto de Venta</strong> y Habilita la facturación arriba.</li>
-                            <li>Haz clic en <strong>Generar CSR</strong>. Copia el texto generado.</li>
-                            <li>Entra a AFIP con tu Clave Fiscal. Ve al servicio "Administración de Certificados Digitales".</li>
-                            <li>Crea un "Alias" y pega el CSR. Descarga el certificado (archivo <code>.crt</code>).</li>
-                            <li>Vuelve aquí y usa <strong>Subir Certificado (.crt)</strong> para cargar ese archivo.</li>
-                            <li>En AFIP, ve a "Administrador de Relaciones de Clave Fiscal".</li>
-                            <li>Nueva Relación → Busca tu Alias (Computador Fiscal) → Servicio "Facturación Electrónica" → Autorizar "Web Service de Factura Electrónica (wsfe)".</li>
-                            <li>Finalmente, haz clic en <strong>Testear Conexión</strong> para validar todo.</li>
+                    <details className="doctor-fiscal-settings__guide">
+                        <summary className="doctor-fiscal-settings__guide-summary">📜 {t('afip_setup_guide')}</summary>
+                        <ol className="doctor-fiscal-settings__guide-list">
+                            <li>{t('afip_guide_step_1')}</li>
+                            <li>{t('afip_guide_step_2')}</li>
+                            <li>{t('afip_guide_step_3')}</li>
+                            <li>{t('afip_guide_step_4')}</li>
+                            <li>{t('afip_guide_step_5')}</li>
+                            <li>{t('afip_guide_step_6')}</li>
+                            <li>{t('afip_guide_step_7')}</li>
+                            <li>{t('afip_guide_step_8')}</li>
                         </ol>
                     </details>
                 </div>

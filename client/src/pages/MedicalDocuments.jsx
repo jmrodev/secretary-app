@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { useMedicalDocumentsController } from '../controllers/useMedicalDocumentsController';
 
 // Components
-import Sidebar from '../components/organisms/Sidebar';
+import MainLayout from '../components/templates/MainLayout';
 import Modal from '../components/molecules/Modal';
 import TransactionModal from '../components/molecules/TransactionModal';
 import PatientSearchSelect from '../components/molecules/PatientSearchSelect';
@@ -13,9 +12,14 @@ import MedicalHistoryTable from '../components/organisms/MedicalHistoryTable';
 import MedicationAutocomplete from '../components/molecules/MedicationAutocomplete';
 import CurrencyInput from '../components/atoms/CurrencyInput';
 import Button from '../components/atoms/Button';
+import SearchBar from '../components/molecules/SearchBar';
+import TabNav from '../components/molecules/TabNav';
+import TabButton from '../components/atoms/TabButton';
+import Icon from '../components/atoms/Icon';
+import { formatDate } from '../utils/dateUtils';
 
-// Utils
-import { timeAgo } from '../utils/time';
+// Styles
+import './MedicalDocuments.css';
 
 const MedicalDocuments = () => {
     const controller = useMedicalDocumentsController();
@@ -48,7 +52,7 @@ const MedicalDocuments = () => {
         handleCreateRequest, handleUpdateStatus, handleFileUpload, confirmFileDelete,
         handleUpdatePrescription, handleUpdateLicense, handleUpdateRequest, handleDeleteRequest,
         handleDeletePrescription, handleEditItem, handleDeleteLicense, fetchRequests,
-        handleExportJSON, handlePrintPrescriptions, filterItem
+        filterItem
     } = handlers;
 
     // --- Derived Data for Combined Views ---
@@ -81,74 +85,65 @@ const MedicalDocuments = () => {
         }))
     ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-
-
     return (
-        <div className="app-layout">
-            <Sidebar />
-
-            <main className="main-content no-print">
+        <MainLayout wide>
+            <div className="medical-documents no-print">
                 <header className="page-header">
                     <div className="page-header__info">
                         <h1 className="page-header__title">{t('medical_documents')}</h1>
-                        <p className="page-header__subtitle">{t('medical_docs_subtitle') || 'Gestione requerimientos, archivos e historial de pacientes en un solo lugar.'}</p>
+                        <p className="page-header__subtitle">{t('medical_docs_subtitle') || 'Gestione requerimientos, archivos e historial de pacientes.'}</p>
                     </div>
                 </header>
 
-                <nav className="tab-nav mb-8">
+                <TabNav className="medical-documents__tabs">
                     {[
-                        { id: 'requests', label: t('requests_workflow'), icon: '⚡' },
-                        { id: 'files', label: t('file_repository'), icon: '📂' },
-                        { id: 'prescriptions', label: t('prescriptions'), icon: '💊' },
-                        { id: 'licenses', label: t('medical_licenses'), icon: '📄' },
-                        { id: 'certificates', label: t('certificates') || 'Certificados', icon: '📜' }
+                        { id: 'requests', label: t('requests_workflow'), icon: 'REQUESTS' },
+                        { id: 'files', label: t('file_repository'), icon: 'DOCUMENTS' },
+                        { id: 'prescriptions', label: t('prescriptions'), icon: 'PRESCRIPTION' },
+                        { id: 'licenses', label: t('medical_licenses'), icon: 'LICENSE' },
+                        { id: 'certificates', label: t('certificates') || 'Certificados', icon: 'CERTIFICATE' }
                     ].map(tab => (
-                        <Button
+                        <TabButton
                             key={tab.id}
-                            variant="ghost"
+                            isActive={activeTab === tab.id}
                             onClick={() => handleTabChange(tab.id)}
-                            className={`tab-nav__item ${activeTab === tab.id ? 'tab-nav__item--active' : ''}`}
                         >
-                            <span className="mr-2">{tab.icon}</span>
+                            <span className="medical-documents__tab-icon">
+                                <Icon name={tab.icon} size="1.2rem" />
+                            </span>
                             {tab.label}
-                        </Button>
+                        </TabButton>
                     ))}
-                </nav>
+                </TabNav>
 
-                <section className="action-bar mb-8">
+                <section className="action-bar">
                     <div className="action-bar__search">
-                        <div className="search-box__wrapper">
-                            <span className="search-box__icon">🔍</span>
-                            <input
-                                type="text"
-                                placeholder={t('search_docs_placeholder')}
-                                className="search-box__input"
-                                value={searchTerm}
-                                onChange={e => handleSearchChange(e.target.value)}
-                            />
-                        </div>
+                        <SearchBar
+                            value={searchTerm}
+                            onChange={e => handleSearchChange(e.target.value)}
+                            placeholder={t('search_docs_placeholder')}
+                        />
                     </div>
                 </section>
 
-                <div className="tab-content animate-fadeIn">
+                <div className="medical-documents__tabs-content animate-fadeIn">
                     {activeTab === 'requests' && (
-                        <div className="flex flex-col gap-6">
-                            <nav className="tab-nav tab-nav--sub mb-2">
-                                <Button
-                                    variant="ghost"
+                        <div className="medical-documents__requests-layout">
+                            <TabNav className="tab-nav--sub">
+                                <TabButton
+                                    isActive={requestsSubTab === 'list'}
                                     onClick={() => handleSubTabChange('list')}
-                                    className={`tab-nav__item ${requestsSubTab === 'list' ? 'tab-nav__item--active' : ''}`}
                                 >
-                                    📋 {t('request_status')}
-                                </Button>
-                                <Button
-                                    variant="ghost"
+                                    {t('request_status')}
+                                </TabButton>
+                                <TabButton
+                                    isActive={requestsSubTab === 'new'}
                                     onClick={() => handleSubTabChange('new')}
-                                    className={`tab-nav__item ${requestsSubTab === 'new' ? 'tab-nav__item--active' : ''}`}
+                                    icon={<Icon name="ADD" size="1rem" />}
                                 >
-                                    ➕ {t('new_request')}
-                                </Button>
-                            </nav>
+                                    {t('new_request')}
+                                </TabButton>
+                            </TabNav>
 
                             {requestsSubTab === 'new' ? (
                                 <MedicalRequestForm
@@ -162,24 +157,24 @@ const MedicalDocuments = () => {
                                 />
                             ) : (
                                 <>
-                                    <div className="flex justify-between items-center mb-0">
+                                    <div className="medical-documents__section-header">
                                         <h3 className="section-title mb-0">{user.role === 'doctor' ? t('pending_requests') : t('request_status')}</h3>
-                                        <div className="flex gap-2">
+                                        <div className="medical-documents__section-actions">
                                             <Button
-                                                variant="outline"
+                                                variant="secondary"
                                                 size="sm"
                                                 onClick={controller.handleExportJSON}
-                                                className="border-slate-300 text-slate-600 hover:bg-slate-50"
+                                                icon={<Icon name="SAVE" size="1rem" />}
                                             >
-                                                💾 {t('export_json')}
+                                                {t('export_json')}
                                             </Button>
                                             <Button
-                                                variant="outline"
+                                                variant="secondary"
                                                 size="sm"
                                                 onClick={controller.handlePrintPrescriptions}
-                                                className="border-slate-300 text-slate-600 hover:bg-slate-50"
+                                                icon={<Icon name="PRINT" size="1rem" />}
                                             >
-                                                🖨️ {t('print_backup')}
+                                                {t('print_backup')}
                                             </Button>
                                         </div>
                                     </div>
@@ -193,19 +188,18 @@ const MedicalDocuments = () => {
                                         handleEditRequest={handleEditItem}
                                     />
                                 </>
-
                             )}
                         </div>
                     )}
 
                     {activeTab === 'files' && (
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-                            <section className="lg:col-span-1">
-                                <div className="card">
+                        <div className="medical-documents__repository">
+                            <section className="medical-documents__upload-section">
+                                <div className="card medical-documents__upload-card">
                                     <header className="card-header border-b-0 mb-4">
                                         <h3 className="card-header__title">{t('upload_document')}</h3>
                                     </header>
-                                    <form className="flex flex-col gap-4" onSubmit={handleFileUpload}>
+                                    <form className="config-flex--column config-flex--gap-4" onSubmit={handleFileUpload}>
                                         <div className="input-group">
                                             <label className="input-label">{t('patient_label')}</label>
                                             <PatientSearchSelect value={filePatient} onChange={handleFilePatientChange} placeholder={t('select_patient')} />
@@ -223,56 +217,53 @@ const MedicalDocuments = () => {
                                 </div>
                             </section>
 
-                            <section className="lg:col-span-2">
-                                <div className="card p-0 overflow-hidden">
+                            <section className="medical-documents__list-section">
+                                <div className="medical-documents__file-list">
                                     <header className="card-header border-b mb-0 p-6 bg-slate-50/50">
                                         <h3 className="card-header__title">{t('file_repository')}</h3>
                                     </header>
-                                    <div className="p-0">
+                                    <div className="medical-documents__table-container">
                                         {files.filter(filterItem).length === 0 ? (
-                                            <div className="p-12 text-center text-muted border-dashed">
-                                                <span className="text-4xl block mb-2">📂</span>
+                                            <div className="medical-documents__empty-repository">
+                                                <Icon name="DOCUMENTS" size="3rem" className="medical-documents__empty-icon" />
                                                 {t('no_files')}
                                             </div>
                                         ) : (
-                                            <div className="table-responsive">
-                                                <table className="table-base w-full">
-                                                    <thead>
-                                                        <tr>
-                                                            <th className="pl-6">{t('file')}</th>
-                                                            <th>{t('patient')}</th>
-                                                            <th className="pr-6 text-right">{t('actions')}</th>
+                                            <table className="table-base w-full">
+                                                <thead>
+                                                    <tr>
+                                                        <th className="pl-6">{t('file')}</th>
+                                                        <th>{t('patient')}</th>
+                                                        <th className="pr-6 text-right">{t('actions')}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {files.filter(filterItem).map(f => (
+                                                        <tr key={f.id} className="hover:bg-slate-50 cursor-pointer" onClick={() => window.open(f.file_url, '_blank')}>
+                                                            <td className="pl-6 py-4">
+                                                                <div className="config-flex">
+                                                                    <Icon name="DOCUMENTS" size="1.2rem" className="medical-documents__file-icon" />
+                                                                    <span className="medical-documents__file-name">{f.description || f.file_name}</span>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <span className="medical-documents__patient-name">{f.patient_name}</span>
+                                                            </td>
+                                                            <td className="pr-6 text-right">
+                                                                {(user.role === 'admin' || canDeleteFile) && (
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="sm-compact"
+                                                                        className="text-danger"
+                                                                        onClick={(e) => { e.stopPropagation(); openDeleteFileModal(f); }}
+                                                                        icon={<Icon name="DELETE" size="1rem" />}
+                                                                    />
+                                                                )}
+                                                            </td>
                                                         </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {files.filter(filterItem).map(f => (
-                                                            <tr key={f.id} className="hover:bg-slate-50 transition-colors cursor-pointer" onClick={() => window.open(f.file_url, '_blank')}>
-                                                                <td className="pl-6 py-4">
-                                                                    <div className="flex items-center gap-3">
-                                                                        <span className="text-xl">📄</span>
-                                                                        <span className="font-bold text-main-800">{f.description || f.file_name}</span>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <span className="font-medium text-main-600">{f.patient_name}</span>
-                                                                </td>
-                                                                <td className="pr-6 text-right">
-                                                                    {(user.role === 'admin' || canDeleteFile) && (
-                                                                        <Button
-                                                                            variant="ghost"
-                                                                            size="sm-compact"
-                                                                            className="text-red-400 hover:text-red-600 hover:bg-red-50"
-                                                                            onClick={(e) => { e.stopPropagation(); openDeleteFileModal(f); }}
-                                                                        >
-                                                                            🗑️
-                                                                        </Button>
-                                                                    )}
-                                                                </td>
-                                                            </tr>
-                                                        ))}
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                                    ))}
+                                                </tbody>
+                                            </table>
                                         )}
                                     </div>
                                 </div>
@@ -281,37 +272,36 @@ const MedicalDocuments = () => {
                     )}
 
                     {['prescriptions', 'licenses', 'certificates'].includes(activeTab) && (
-                        <div className="animate-fadeIn flex flex-col gap-4">
-                            <div className="flex justify-between items-center">
+                        <div className="config-flex--column config-flex--gap-4">
+                            <div className="medical-documents__section-header">
                                 <h2 className="section-title mb-0">
-                                    {activeTab === 'prescriptions' ? '💊 ' + t('prescriptions') :
-                                        activeTab === 'licenses' ? '📄 ' + t('medical_licenses') :
-                                            '📜 ' + (t('certificates') || 'Certificados')}
+                                    <Icon
+                                        name={activeTab === 'prescriptions' ? 'PRESCRIPTION' : activeTab === 'licenses' ? 'LICENSE' : 'CERTIFICATE'}
+                                        size="1.5rem"
+                                        className="mr-2"
+                                    />
+                                    {activeTab === 'prescriptions' ? t('prescriptions') :
+                                        activeTab === 'licenses' ? t('medical_licenses') :
+                                            (t('certificates') || 'Certificados')}
                                 </h2>
-                                {((activeTab === 'prescriptions' && canDeletePrescription) ||
-                                    (['licenses', 'certificates'].includes(activeTab) && canDeleteLicense) ||
-                                    user.role === 'admin') && (
-                                        <div className="flex gap-2">
-                                            {activeTab === 'prescriptions' && (
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={controller.handleExportJSON}
-                                                    className="border-slate-300 text-slate-600 hover:bg-slate-50"
-                                                >
-                                                    💾 {t('export_json')}
-                                                </Button>
-                                            )}
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={controller.handlePrintPrescriptions}
-                                                className="border-slate-300 text-slate-600 hover:bg-slate-50"
-                                            >
-                                                🖨️ {t('print_backup')}
-                                            </Button>
-                                        </div>
+                                <div className="medical-documents__section-actions">
+                                    {activeTab === 'prescriptions' && (
+                                        <Button
+                                            variant="secondary"
+                                            size="sm"
+                                            onClick={controller.handleExportJSON}
+                                        >
+                                            💾 {t('export_json')}
+                                        </Button>
                                     )}
+                                    <Button
+                                        variant="secondary"
+                                        size="sm"
+                                        onClick={controller.handlePrintPrescriptions}
+                                    >
+                                        🖨️ {t('print_backup')}
+                                    </Button>
+                                </div>
                             </div>
                             <MedicalHistoryTable
                                 items={
@@ -331,7 +321,7 @@ const MedicalDocuments = () => {
                                     (activeTab === 'prescriptions' && canDeletePrescription) ||
                                     (['licenses', 'certificates'].includes(activeTab) && canDeleteLicense)
                                 }
-                                icon={activeTab === 'prescriptions' ? '💊' : activeTab === 'licenses' ? '📄' : '📜'}
+                                icon={activeTab === 'prescriptions' ? 'PRESCRIPTION' : activeTab === 'licenses' ? 'LICENSE' : 'CERTIFICATE'}
                                 title={
                                     activeTab === 'prescriptions' ? t('recent_prescriptions') :
                                         activeTab === 'licenses' ? t('recent_licenses') :
@@ -342,232 +332,226 @@ const MedicalDocuments = () => {
                         </div>
                     )}
                 </div>
-            </main>
 
+                {/* --- Modals --- */}
+                <Modal
+                    isOpen={actionModal.open}
+                    onClose={closeActionModal}
+                    title={actionModal.type === 'completed' ? t('approve_request') : t('reject_request')}
+                    footer={
+                        <>
+                            <Button variant="secondary" onClick={closeActionModal}>{t('cancel')}</Button>
+                            <Button onClick={() => handleUpdateStatus(actionModal.id, actionModal.type, actionNote)}>{actionModal.type === 'completed' ? t('approve') : t('reject')}</Button>
+                        </>
+                    }
+                >
+                    <div className="input-group">
+                        <label className="input-label">{actionModal.type === 'completed' ? t('message_optional') : t('reason_rejection')}</label>
+                        <textarea className="input-field" rows="3" value={actionNote} onChange={e => handleActionNoteChange(e.target.value)} autoFocus />
+                    </div>
+                </Modal>
 
+                <TransactionModal
+                    isOpen={paymentModal.open}
+                    onClose={closePaymentModal}
+                    initialData={paymentModal.initialData}
+                    requestId={paymentModal.reqId}
+                    onSuccess={fetchRequests}
+                />
 
-            {/* Print Section - Visible only on Print */}
-            <div className="print-section hidden print:block bg-white p-8 w-full absolute top-0 left-0 z-50">
-                <div className="text-center mb-8 border-b pb-4">
-                    <h1 className="text-2xl font-bold uppercase tracking-wide">Reporte de Recetas y Solicitudes</h1>
-                    <p className="text-sm text-gray-500">Generado el {new Date().toLocaleDateString()} a las {new Date().toLocaleTimeString()}</p>
-                </div>
+                <Modal
+                    isOpen={!!fileToDelete}
+                    onClose={closeDeleteFileModal}
+                    title={t('confirm_delete')}
+                    footer={
+                        <>
+                            <Button variant="secondary" onClick={closeDeleteFileModal}>{t('cancel')}</Button>
+                            <Button variant="danger" onClick={confirmFileDelete}>{t('delete')}</Button>
+                        </>
+                    }
+                >
+                    <p>¿Seguro que desea eliminar el archivo <strong>{fileToDelete?.file_name}</strong>?</p>
+                </Modal>
 
-                <table className="w-full text-sm text-left border-collapse">
+                {/* --- Edit Modals --- */}
+                {isEditing && selectedPrescription && (
+                    <Modal
+                        isOpen={isEditing && !!selectedPrescription}
+                        onClose={() => toggleEditing(false)}
+                        title={`${t('prescription_for')} ${selectedPrescription.patient_name}`}
+                        footer={
+                            <>
+                                <Button variant="secondary" onClick={() => toggleEditing(false)}>{t('cancel')}</Button>
+                                <Button onClick={handleUpdatePrescription}>{t('save')}</Button>
+                            </>
+                        }
+                    >
+                        <div className="config-flex--column config-flex--gap-4">
+                            <div className="input-group">
+                                <label className="input-label">{t('medications')}</label>
+                                <MedicationAutocomplete
+                                    value=""
+                                    onChange={() => { }}
+                                    onSelectMedication={handleSelectMedication}
+                                />
+                                <textarea className="input-field mt-4" rows="4" value={editData.medications} onChange={e => handleEditDataChange('medications', e.target.value)} />
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">{t('instructions')}</label>
+                                <textarea className="input-field" rows="3" value={editData.instructions} onChange={e => handleEditDataChange('instructions', e.target.value)} />
+                            </div>
+                        </div>
+                    </Modal>
+                )}
+
+                {isEditing && selectedLicense && (
+                    <Modal
+                        isOpen={isEditing && !!selectedLicense}
+                        onClose={() => toggleEditing(false)}
+                        title={`${t('license_for')} ${selectedLicense.patient_name}`}
+                        footer={
+                            <>
+                                <Button variant="secondary" onClick={() => toggleEditing(false)}>{t('cancel')}</Button>
+                                <Button onClick={handleUpdateLicense}>{t('save')}</Button>
+                            </>
+                        }
+                    >
+                        <div className="config-flex--column config-flex--gap-4">
+                            <div className="config-grid config-grid--2col">
+                                <div className="input-group">
+                                    <label className="input-label">{t('start_date')}</label>
+                                    <input type="date" className="input-field" value={licenseEditData.start_date} onChange={e => handleLicenseEditDataChange('start_date', e.target.value)} />
+                                </div>
+                                <div className="input-group">
+                                    <label className="input-label">{t('days_duration')}</label>
+                                    <input type="number" className="input-field" value={licenseEditData.days_duration} onChange={e => handleLicenseEditDataChange('days_duration', e.target.value)} />
+                                </div>
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">{t('diagnosis')}</label>
+                                <textarea className="input-field" rows="3" value={licenseEditData.diagnosis} onChange={e => handleLicenseEditDataChange('diagnosis', e.target.value)} />
+                            </div>
+                        </div>
+                    </Modal>
+                )}
+
+                {isEditing && selectedRequest && (
+                    <Modal
+                        isOpen={isEditing && !!selectedRequest}
+                        onClose={() => toggleEditing(false)}
+                        title={t('edit_request')}
+                        footer={
+                            <>
+                                <Button variant="secondary" onClick={() => toggleEditing(false)}>{t('cancel')}</Button>
+                                <Button onClick={handleUpdateRequest}>{t('save')}</Button>
+                            </>
+                        }
+                    >
+                        <div className="config-flex--column config-flex--gap-4">
+                            <div className="input-group">
+                                <label className="input-label">{t('request_note')}</label>
+                                <textarea className="input-field" rows="3" value={requestEditData.request_note} onChange={e => handleRequestEditDataChange('request_note', e.target.value)} />
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">{t('doctor_reply')}</label>
+                                <textarea className="input-field" rows="3" value={requestEditData.doctor_note} onChange={e => handleRequestEditDataChange('doctor_note', e.target.value)} />
+                            </div>
+
+                            <div className="medical-documents__toggle-wrapper">
+                                <input
+                                    type="checkbox"
+                                    id="edit-req-bonified"
+                                    checked={requestEditData.bonified}
+                                    onChange={e => handleRequestEditDataChange('bonified', e.target.checked)}
+                                    className="switch-input"
+                                />
+                                <label htmlFor="edit-req-bonified" className="medical-documents__toggle-label">
+                                    {t('bonificado') || 'Bonificado (Costo $0)'}
+                                </label>
+                            </div>
+
+                            {!requestEditData.bonified && (
+                                <div className="config-flex--column config-flex--gap-4">
+                                    <div className="input-group">
+                                        <label className="input-label">{t('debt_amount')} ($)</label>
+                                        <CurrencyInput
+                                            className="input-field"
+                                            value={requestEditData.debt_amount}
+                                            onChange={e => handleRequestEditDataChange('debt_amount', e.target.value)}
+                                        />
+                                    </div>
+
+                                    <div className="input-group">
+                                        <label className="input-label">{t('payment_method') || 'Método de Pago'}</label>
+                                        <div className="medical-documents__payment-selector">
+                                            {['cash', 'transfer', 'debit', 'credit', 'mercadopago'].map(m => (
+                                                <button
+                                                    key={m}
+                                                    type="button"
+                                                    onClick={() => handleRequestEditDataChange('payment_method', m)}
+                                                    className={`medical-documents__payment-btn ${requestEditData.payment_method === m ? 'medical-documents__payment-btn--active' : ''}`}
+                                                >
+                                                    {t(m) || m.charAt(0).toUpperCase() + m.slice(1)}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </Modal>
+                )}
+            </div>
+
+            {/* Print Section - BEM compliant */}
+            <div className="medical-documents__print-container">
+                <header className="medical-documents__print-header">
+                    <h1 className="medical-documents__print-title">Reporte de Recetas y Solicitudes</h1>
+                    <p className="medical-documents__print-date">Generado el {formatDate(new Date(), { time: true })}</p>
+                </header>
+
+                <table className="print-table">
                     <thead>
-                        <tr className="bg-gray-100 border-b-2 border-gray-300">
-                            <th className="py-2 px-2 border">Fecha</th>
-                            <th className="py-2 px-2 border">Paciente</th>
-                            <th className="py-2 px-2 border">Médico</th>
-                            <th className="py-2 px-2 border">Origen</th>
-                            <th className="py-2 px-2 border">Pago</th>
-                            <th className="py-2 px-2 border">Detalle / Medicamentos</th>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Paciente</th>
+                            <th>Médico</th>
+                            <th>Origen</th>
+                            <th>Pago</th>
+                            <th>Detalle / Medicamentos</th>
                         </tr>
                     </thead>
                     <tbody>
                         {printData && printData.map((item, idx) => (
-                            <tr key={idx} className="border-b border-gray-200">
-                                <td className="py-2 px-2 border w-24">{new Date(item.date).toLocaleDateString()}</td>
-                                <td className="py-2 px-2 border font-medium">{item.patient_name}</td>
-                                <td className="py-2 px-2 border">{item.doctor_name}</td>
-                                <td className="py-2 px-2 border text-xs uppercase text-gray-500">
+                            <tr key={idx}>
+                                <td>{formatDate(item.date)}</td>
+                                <td className="font-bold">{item.patient_name}</td>
+                                <td>{item.doctor_name}</td>
+                                <td>
                                     {item.source_type === 'direct' ? 'Consulta' : 'Solicitud'}
                                 </td>
-                                <td className="py-2 px-2 border w-24">
+                                <td>
                                     {item.source_type === 'request' ? (
-                                        <span className={`px-2 py-1 rounded text-xs font-bold ${item.payment_status === 'paid' ? 'bg-green-100 text-green-800' :
-                                            item.payment_status === 'debt' ? 'bg-red-100 text-red-800' :
-                                                item.payment_status === 'bonified' ? 'bg-blue-100 text-blue-800' :
-                                                    'bg-gray-100'
-                                            }`}>
+                                        <span className={`status-chip status-${item.payment_status}`}>
                                             {item.payment_status === 'paid' ? 'PAGADO' :
                                                 item.payment_status === 'debt' ? 'DEUDA' :
                                                     item.payment_status === 'bonified' ? 'BONIF.' : item.payment_status}
                                             {item.amount > 0 && ` $${item.amount}`}
                                         </span>
-                                    ) : (
-                                        <span className="text-gray-400 text-xs">-</span>
-                                    )}
+                                    ) : '-'}
                                 </td>
-                                <td className="py-2 px-2 border text-xs">
-                                    <div className="font-mono whitespace-pre-wrap">{item.medications}</div>
-                                    {item.instructions && <div className="italic text-gray-500 mt-1">{item.instructions}</div>}
+                                <td>
+                                    <div className="config-flex--column">
+                                        <span className="font-mono">{item.medications}</span>
+                                        {item.instructions && <span className="text-muted italic">{item.instructions}</span>}
+                                    </div>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
-
-            {/* --- Modals --- */}
-
-            <Modal
-                isOpen={actionModal.open}
-                onClose={closeActionModal}
-                title={actionModal.type === 'completed' ? t('approve_request') : t('reject_request')}
-                footer={
-                    <>
-                        <Button variant="secondary" onClick={closeActionModal}>{t('cancel')}</Button>
-                        <Button onClick={() => handleUpdateStatus(actionModal.id, actionModal.type, actionNote)}>{actionModal.type === 'completed' ? t('approve') : t('reject')}</Button>
-                    </>
-                }
-            >
-                <div className="input-group">
-                    <label className="input-label">{actionModal.type === 'completed' ? t('message_optional') : t('reason_rejection')}</label>
-                    <textarea className="input-field" rows="3" value={actionNote} onChange={e => handleActionNoteChange(e.target.value)} autoFocus />
-                </div>
-            </Modal>
-
-            <TransactionModal
-                isOpen={paymentModal.open}
-                onClose={closePaymentModal}
-                initialData={paymentModal.initialData}
-                requestId={paymentModal.reqId}
-                onSuccess={fetchRequests}
-            />
-
-            <Modal
-                isOpen={!!fileToDelete}
-                onClose={closeDeleteFileModal}
-                title={t('confirm_delete')}
-                footer={
-                    <>
-                        <Button variant="secondary" onClick={closeDeleteFileModal}>{t('cancel')}</Button>
-                        <Button variant="danger" onClick={confirmFileDelete}>{t('delete')}</Button>
-                    </>
-                }
-            >
-                <p>¿Seguro que desea eliminar el archivo <strong>{fileToDelete?.file_name}</strong>?</p>
-            </Modal>
-
-            {/* --- Edit Modals --- */}
-            {isEditing && selectedPrescription && (
-                <Modal
-                    isOpen={isEditing && !!selectedPrescription}
-                    onClose={() => toggleEditing(false)}
-                    title={`${t('prescription_for')} ${selectedPrescription.patient_name}`}
-                    footer={
-                        <>
-                            <Button variant="secondary" onClick={() => toggleEditing(false)}>{t('cancel')}</Button>
-                            <Button onClick={handleUpdatePrescription}>{t('save')}</Button>
-                        </>
-                    }
-                >
-                    <div className="flex flex-col gap-4">
-                        <div className="input-group">
-                            <label className="input-label">{t('medications')}</label>
-                            <MedicationAutocomplete
-                                value=""
-                                onChange={() => { }}
-                                onSelectMedication={handleSelectMedication}
-                            />
-                            <textarea className="input-field mt-2" rows="4" value={editData.medications} onChange={e => handleEditDataChange('medications', e.target.value)} />
-                        </div>
-                        <div className="input-group">
-                            <label className="input-label">{t('instructions')}</label>
-                            <textarea className="input-field" rows="3" value={editData.instructions} onChange={e => handleEditDataChange('instructions', e.target.value)} />
-                        </div>
-                    </div>
-                </Modal>
-            )}
-
-            {isEditing && selectedLicense && (
-                <Modal
-                    isOpen={isEditing && !!selectedLicense}
-                    onClose={() => toggleEditing(false)}
-                    title={`${t('license_for')} ${selectedLicense.patient_name}`}
-                    footer={
-                        <>
-                            <Button variant="secondary" onClick={() => toggleEditing(false)}>{t('cancel')}</Button>
-                            <Button onClick={handleUpdateLicense}>{t('save')}</Button>
-                        </>
-                    }
-                >
-                    <div className="flex flex-col gap-4">
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="input-group">
-                                <label className="input-label">{t('start_date')}</label>
-                                <input type="date" className="input-field" value={licenseEditData.start_date} onChange={e => handleLicenseEditDataChange('start_date', e.target.value)} />
-                            </div>
-                            <div className="input-group">
-                                <label className="input-label">{t('days_duration')}</label>
-                                <input type="number" className="input-field" value={licenseEditData.days_duration} onChange={e => handleLicenseEditDataChange('days_duration', e.target.value)} />
-                            </div>
-                        </div>
-                        <div className="input-group">
-                            <label className="input-label">{t('diagnosis')}</label>
-                            <textarea className="input-field" rows="3" value={licenseEditData.diagnosis} onChange={e => handleLicenseEditDataChange('diagnosis', e.target.value)} />
-                        </div>
-                    </div>
-                </Modal>
-            )}
-
-            {isEditing && selectedRequest && (
-                <Modal
-                    isOpen={isEditing && !!selectedRequest}
-                    onClose={() => toggleEditing(false)}
-                    title={t('edit_request')}
-                    footer={
-                        <>
-                            <Button variant="secondary" onClick={() => toggleEditing(false)}>{t('cancel')}</Button>
-                            <Button onClick={handleUpdateRequest}>{t('save')}</Button>
-                        </>
-                    }
-                >
-                    <div className="flex flex-col gap-4">
-                        <div className="input-group">
-                            <label className="input-label">{t('request_note')}</label>
-                            <textarea className="input-field" rows="3" value={requestEditData.request_note} onChange={e => handleRequestEditDataChange('request_note', e.target.value)} />
-                        </div>
-                        <div className="input-group">
-                            <label className="input-label">{t('doctor_reply')}</label>
-                            <textarea className="input-field" rows="3" value={requestEditData.doctor_note} onChange={e => handleRequestEditDataChange('doctor_note', e.target.value)} />
-                        </div>
-                        <div className="flex items-center gap-3 p-3 bg-blue-50/50 rounded-lg border border-blue-100">
-                            <input
-                                type="checkbox"
-                                id="edit-req-bonified"
-                                checked={requestEditData.bonified}
-                                onChange={e => handleRequestEditDataChange('bonified', e.target.checked)}
-                                className="w-5 h-5 cursor-pointer accent-blue-600"
-                            />
-                            <label htmlFor="edit-req-bonified" className="text-sm font-bold text-main-800 cursor-pointer select-none">
-                                {t('bonificado') || 'Bonificado (Costo $0)'}
-                            </label>
-                        </div>
-
-                        {!requestEditData.bonified && (
-                            <>
-                                <div className="input-group form-field--amount">
-                                    <label className="input-label font-bold text-main-700">{t('debt_amount')} ($)</label>
-                                    <CurrencyInput
-                                        className="input-field border-slate-200"
-                                        value={requestEditData.debt_amount}
-                                        onChange={e => handleRequestEditDataChange('debt_amount', e.target.value)}
-                                    />
-                                </div>
-
-                                <div className="input-group form-field--payment">
-                                    <label className="input-label font-bold text-main-700">{t('payment_method') || 'Tipo de Pago'}</label>
-                                    <div className="flex flex-wrap gap-2 mt-1">
-                                        {['cash', 'transfer', 'debit', 'credit', 'mercadopago'].map(m => (
-                                            <button
-                                                key={m}
-                                                type="button"
-                                                onClick={() => handleRequestEditDataChange('payment_method', m)}
-                                                className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all duration-200 ${requestEditData.payment_method === m ? 'bg-blue-600 text-white border-blue-600 shadow-md ring-2 ring-blue-100' : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300'}`}
-                                            >
-                                                {t(m) || m.charAt(0).toUpperCase() + m.slice(1)}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            </>
-                        )}
-                    </div>
-                </Modal>
-            )}
-        </div>
+        </MainLayout>
     );
 };
 

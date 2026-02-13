@@ -3,6 +3,7 @@ import api from '../../api/axios';
 import { useLanguage } from '../../context/LanguageContext';
 import { useMessage } from '../../context/MessageContext';
 import MedicationAutocomplete from '../molecules/MedicationAutocomplete';
+import Icon from '../atoms/Icon';
 
 const PatientMedications = ({ patientId }) => {
     const { t } = useLanguage();
@@ -197,13 +198,16 @@ const PatientMedications = ({ patientId }) => {
             {/* SECTION 1: Prescription History (Priority) */}
             <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-bold flex items-center gap-2 text-main-800">
-                    📜 {t('recent_prescriptions') || 'Historial de Recetas'}
+                    <Icon name="HISTORY" size="1.2rem" />
+                    {t('recent_prescriptions') || 'Historial de Recetas'}
                 </h3>
             </div>
 
             {recentRequests.length === 0 ? (
                 <div className="text-center p-6 bg-slate-50 rounded-lg border border-dashed border-slate-300 text-slate-500 mb-6">
-                    <div className="text-2xl mb-2">📭</div>
+                    <div className="text-2xl mb-2">
+                        <Icon name="DOCUMENTS" size="2rem" />
+                    </div>
                     <p>{t('no_history') || 'No se han generado recetas para este paciente.'}</p>
                 </div>
             ) : (
@@ -234,7 +238,8 @@ const PatientMedications = ({ patientId }) => {
             <div className="border-t border-slate-100 pt-6">
                 <div className="flex justify-between items-center mb-4">
                     <h4 className="text-sm font-bold flex items-center gap-2 text-slate-500 uppercase tracking-widest">
-                        💊 {t('patient_current_meds') || 'Medicación Habitual / Crónicos'}
+                        <Icon name="PRESCRIPTION" size="1rem" />
+                        {t('patient_current_meds') || 'Medicación Habitual / Crónicos'}
                         <span className="badge badge-neutral font-normal normal-case text-xs ml-2 opacity-50">Opcional</span>
                     </h4>
                     {!isAdding && (
@@ -294,7 +299,7 @@ const PatientMedications = ({ patientId }) => {
                         <div className={`transition-all duration-300 ${currentMed.medication_name ? 'opacity-100 translate-y-0' : 'opacity-50 translate-y-2 grayscale pointer-events-none'}`}>
                             <div className="bg-slate-100/50 p-3 rounded-xl border border-slate-200 mb-3">
                                 <h5 className="text-sm font-bold text-slate-600 mb-3 flex items-center gap-2">
-                                    ⚙️ {t('configuration') || 'Configuración'}
+                                    <Icon name="CONFIG" size="1rem" /> {t('configuration') || 'Configuración'}
                                     <span className="text-[10px] font-normal text-slate-400 bg-white px-2 py-0.5 rounded border border-slate-200">
                                         {currentMed.medication_name || 'Seleccione un medicamento'}
                                     </span>
@@ -303,7 +308,10 @@ const PatientMedications = ({ patientId }) => {
                                 {/* Row 1: Calculator */}
                                 <div className="grid grid-cols-3 gap-3 mb-3">
                                     <div className="input-group mb-0">
-                                        <label className="input-label text-xs">📦 {t('units_per_box')}</label>
+                                        <label className="input-label text-xs">
+                                            <Icon name="DOCUMENTS" size="0.8rem" className="mr-1" />
+                                            {t('units_per_box')}
+                                        </label>
                                         <input
                                             type="number"
                                             className="input-field text-center font-bold text-slate-700 h-9"
@@ -314,7 +322,10 @@ const PatientMedications = ({ patientId }) => {
                                         />
                                     </div>
                                     <div className="input-group mb-0">
-                                        <label className="input-label text-xs">📦 {t('boxes_count')}</label>
+                                        <label className="input-label text-xs">
+                                            <Icon name="DOCUMENTS" size="0.8rem" className="mr-1" />
+                                            {t('boxes_count')}
+                                        </label>
                                         <input
                                             type="number"
                                             min="1"
@@ -326,7 +337,10 @@ const PatientMedications = ({ patientId }) => {
                                         />
                                     </div>
                                     <div className="input-group mb-0">
-                                        <label className="input-label text-xs">💊 {t('daily_intake')}</label>
+                                        <label className="input-label text-xs">
+                                            <Icon name="PRESCRIPTION" size="0.8rem" className="mr-1" />
+                                            {t('daily_intake')}
+                                        </label>
                                         <input
                                             type="number"
                                             min="0.1"
@@ -355,7 +369,10 @@ const PatientMedications = ({ patientId }) => {
                                         />
                                     </div>
                                     <div className="input-group mb-0">
-                                        <label className="input-label text-xs font-bold text-blue-700">📅 {t('next_refill_date')}</label>
+                                        <label className="input-label text-xs font-bold text-blue-700">
+                                            <Icon name="TODAY" size="0.8rem" className="mr-1" />
+                                            {t('next_refill_date')}
+                                        </label>
                                         <input
                                             type="date"
                                             className="input-field h-9 text-sm font-semibold bg-blue-50 border-blue-200"
@@ -394,12 +411,11 @@ const PatientMedications = ({ patientId }) => {
                                 {/* Add Button */}
                                 <div className="mt-3 flex justify-end">
                                     <button
-                                        type="button"
-                                        onClick={handleAddToPending}
                                         disabled={!currentMed.medication_name}
                                         className="btn btn-sm btn-secondary w-full md:w-auto text-blue-600 border-blue-200 hover:bg-blue-50"
                                     >
-                                        ⬇️ {t('add_to_list') || 'Confirmar y Agregar a Lista'}
+                                        <Icon name="SAVE" size="1rem" className="mr-1" />
+                                        {t('add_to_list') || 'Confirmar y Agregar a Lista'}
                                     </button>
                                 </div>
                             </div>
@@ -453,7 +469,8 @@ const PatientMedications = ({ patientId }) => {
                                             </div>
                                             {med.next_refill_date && (
                                                 <div className="text-[10px] text-orange-600 font-medium mt-1 flex items-center gap-1">
-                                                    ⏰ Renovar: {new Date(med.next_refill_date).toLocaleDateString()}
+                                                    <Icon name="PENDING" size="0.8rem" />
+                                                    Renovar: {new Date(med.next_refill_date).toLocaleDateString()}
                                                 </div>
                                             )}
                                         </td>

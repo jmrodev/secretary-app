@@ -1,7 +1,11 @@
-
 import React from 'react';
 import Modal from '../molecules/Modal';
+import Button from '../atoms/Button';
+import Input from '../atoms/Input';
+import Select from '../atoms/Select';
 import CurrencyInput from '../atoms/CurrencyInput';
+import FormGroup from '../molecules/FormGroup';
+import './EditTransactionModal.css';
 
 const EditTransactionModal = ({
     isOpen,
@@ -19,72 +23,76 @@ const EditTransactionModal = ({
         setTransaction({ ...transaction, [field]: value });
     };
 
+    const paymentMethods = [
+        { value: 'cash', label: t('cash') },
+        { value: 'transfer', label: t('transfer') },
+        { value: 'card', label: t('card') },
+        { value: 'on_account', label: t('on_account') || 'Cuenta Corriente' }
+    ];
+
+    const statusOptions = [
+        { value: 'paid', label: t('paid') },
+        { value: 'pending', label: t('pending') }
+    ];
+
     return (
         <Modal
             isOpen={isOpen}
             onClose={onClose}
             title={t('edit_transaction') || "Editar Transacción"}
             footer={
-                <div className="flex gap-2 justify-end w-full">
-                    <button className="btn btn-secondary" onClick={onClose}>{t('cancel')}</button>
-                    <button className="btn btn-primary" onClick={onSave}>{t('save')}</button>
-                </div>
+                <>
+                    <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
+                    <Button onClick={onSave} variant="primary">{t('save')}</Button>
+                </>
             }
         >
-            <form className="space-y-4">
-                <div className="input-group">
-                    <label className="input-label">{t('amount')}</label>
+            <form className="edit-transaction-form" onSubmit={e => e.preventDefault()}>
+                <FormGroup label={t('amount')}>
                     <CurrencyInput
-                        className="input-field"
                         value={transaction.amount}
                         onChange={e => handleChange('amount', e.target.value)}
                     />
-                </div>
-                <div className="input-group">
-                    <label className="input-label">{t('description')}</label>
-                    <input
+                </FormGroup>
+
+                <FormGroup label={t('description')}>
+                    <Input
                         type="text"
-                        className="input-field"
                         value={transaction.description}
                         onChange={e => handleChange('description', e.target.value)}
                     />
-                </div>
-                <div className="input-group">
-                    <label className="input-label">{t('payment_method')}</label>
-                    <select
-                        className="input-field"
+                </FormGroup>
+
+                <FormGroup label={t('payment_method')}>
+                    <Select
                         value={transaction.method}
                         onChange={e => handleChange('method', e.target.value)}
-                    >
-                        <option value="cash">{t('cash')}</option>
-                        <option value="transfer">{t('transfer')}</option>
-                        <option value="card">{t('card')}</option>
-                        <option value="on_account">{t('on_account') || 'Cuenta Corriente'}</option>
-                    </select>
-                </div>
-                <div className="input-group">
-                    <label className="input-label">{t('status')}</label>
-                    <select
-                        className="input-field"
+                        options={paymentMethods}
+                    />
+                </FormGroup>
+
+                <FormGroup label={t('status')}>
+                    <Select
                         value={transaction.status}
                         onChange={e => handleChange('status', e.target.value)}
-                    >
-                        <option value="paid">{t('paid')}</option>
-                        <option value="pending">{t('pending')}</option>
-                    </select>
-                </div>
+                        options={statusOptions}
+                    />
+                </FormGroup>
+
                 {((settings.allow_admin_edit_finance_date === 'true') || (user && user.role === 'admin')) && (
-                    <div className="input-group">
-                        <label className="input-label">{t('transaction_date') || 'Fecha de Transacción'}</label>
-                        <input
+                    <FormGroup label={t('transaction_date') || 'Fecha de Transacción'}>
+                        <Input
                             type="datetime-local"
-                            className="input-field"
                             value={transaction.transaction_date ? new Date(transaction.transaction_date).toLocaleString('sv').slice(0, 16).replace(' ', 'T') : ''}
                             onChange={e => handleChange('transaction_date', e.target.value)}
                         />
-                        <p className="text-[10px] text-amber-600 mt-1">⚠️ El formato (Día/Mes o Mes/Día) depende de su navegador. Por favor verifique el nombre del mes al seleccionar.</p>
-                        <p className="text-[10px] text-amber-600 mt-1">⚠️ Cuidado: Cambiar la fecha puede afectar el orden cronológico de la caja.</p>
-                    </div>
+                        <p className="edit-transaction-form__warning">
+                            <span>⚠️</span> {t('date_browser_warning') || 'El formato (Día/Mes o Mes/Día) depende de su navegador. Por favor verifique el nombre del mes al seleccionar.'}
+                        </p>
+                        <p className="edit-transaction-form__warning">
+                            <span>⚠️</span> {t('date_order_warning') || 'Cuidado: Cambiar la fecha puede afectar el orden cronológico de la caja.'}
+                        </p>
+                    </FormGroup>
                 )}
             </form>
         </Modal>

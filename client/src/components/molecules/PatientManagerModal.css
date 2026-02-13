@@ -6,21 +6,32 @@
 }
 
 .patient-manager-modal__loading {
-    padding: 2rem;
+    padding: 3rem;
     display: flex;
     justify-content: center;
-    color: var(--slate-400);
+    align-items: center;
 }
 
-/* Reusing reference-box from AppointmentFormModal if possible, 
-   but it's better to define it here too if they are independent molecules.
-   Actually, consistency is good. */
-
-.patient-manager-modal .reference-box {
-    margin-bottom: 1.5rem;
-    padding: 1rem;
+.patient-manager-modal__reference {
+    margin-bottom: 2rem;
+    padding: 1.25rem;
     background-color: var(--amber-50);
-    border: 2px solid var(--amber-200);
-    border-radius: 1rem;
-    animation: fadeIn 0.3s ease-out;
+    border: 1px solid var(--amber-200);
+    border-radius: var(--radius);
+    animation: fadeIn 0.4s ease-out;
+}
+
+.patient-manager-modal__reference-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--amber-700);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.patient-manager-modal__reference-content {
+    font-size: 0.9rem;
+    color: var(--amber-900);
+    line-height: 1.5;
 }

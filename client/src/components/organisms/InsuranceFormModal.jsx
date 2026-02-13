@@ -33,7 +33,7 @@ const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFormData, 
                     <label className="input-label">Website</label>
                     <input className="input-field" value={formData.website} onChange={e => setFormData({ ...formData, website: e.target.value })} placeholder="e.g. www.osde.com.ar" />
                 </div>
-                <div className="mb-4">
+                <div className="insurance-modal__manager-wrapper">
                     <PhoneNumbersManager
                         phoneNumbers={formData.phoneNumbers}
                         onChange={(newPhones) => setFormData({ ...formData, phoneNumbers: newPhones })}
@@ -48,13 +48,13 @@ const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFormData, 
                         </a>
                     )}
                 </div>
-                <div className="form-section-title">Dirección</div>
-                <div className="form-row">
-                    <div className="input-group" style={{ flex: 3 }}>
+                <div className="insurance-modal__section-title">Dirección</div>
+                <div className="insurance-modal__row">
+                    <div className="input-group insurance-modal__column--flex-3">
                         <label className="input-label">Nombre de Calle</label>
                         <input className="input-field" value={formData.street_name || ''} onChange={e => setFormData({ ...formData, street_name: capitalizeWords(e.target.value) })} placeholder="Ej: Av. Rivadavia" />
                     </div>
-                    <div className="input-group" style={{ flex: 1 }}>
+                    <div className="input-group insurance-modal__column--flex-1">
                         <label className="input-label">Nro</label>
                         <input className="input-field" value={formData.street_number || ''} onChange={e => setFormData({ ...formData, street_number: e.target.value })} placeholder="123" />
                     </div>

@@ -5,21 +5,29 @@ import './PhoneNumbersManager.css';
 const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
     const { t } = useLanguage();
 
+    // Ensure we always have at least one item to render (Ghost item if list is empty)
+    const displayPhoneNumbers = (phoneNumbers && phoneNumbers.length > 0)
+        ? phoneNumbers
+        : [{ phone_number: '+549', label: 'Celular', is_primary: true }];
+
     const handleAdd = () => {
-        onChange([...(phoneNumbers || []), { phone_number: '+549', label: 'Celular', is_primary: (phoneNumbers || []).length === 0 }]);
+        onChange([...(phoneNumbers || []), { phone_number: '+549', label: 'Celular', is_primary: false }]);
     };
 
     const handleRemove = (index) => {
+        if (!phoneNumbers || phoneNumbers.length === 0) return;
         onChange(phoneNumbers.filter((_, i) => i !== index));
     };
 
     const handleUpdate = (index, field, value) => {
-        const next = [...phoneNumbers];
-        next[index][field] = value;
+        let currentList = (phoneNumbers && phoneNumbers.length > 0) ? [...phoneNumbers] : [{ phone_number: '+549', label: 'Celular', is_primary: true }];
+
+        currentList[index][field] = value;
+
         if (field === 'is_primary' && value === true) {
-            next.forEach((p, i) => { if (i !== index) p.is_primary = false; });
+            currentList.forEach((p, i) => { if (i !== index) p.is_primary = false; });
         }
-        onChange(next);
+        onChange(currentList);
     };
 
     return (
@@ -27,7 +35,7 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
             <label className="phone-manager__label">
                 📱 {t('phone_numbers')}
             </label>
-            {(phoneNumbers || []).map((pn, index) => (
+            {displayPhoneNumbers.map((pn, index) => (
                 <div key={index} className="phone-manager__item">
                     <input
                         className="form-input phone-manager__label-input"

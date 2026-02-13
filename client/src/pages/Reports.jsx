@@ -1,6 +1,6 @@
 
 import React from 'react';
-import Sidebar from '../components/organisms/Sidebar';
+import MainLayout from '../components/templates/MainLayout';
 import ReportTabs from '../components/organisms/ReportTabs';
 import ReportFilters from '../components/organisms/ReportFilters';
 import AppointmentReportTable from '../components/organisms/AppointmentReportTable';
@@ -38,64 +38,63 @@ const Reports = () => {
     };
 
     return (
-        <div className="reports-page">
-            <Sidebar />
-            <main className="reports-page__content">
-                <header className="reports-page__header">
-                    <h1 className="reports-page__title">
+        <MainLayout>
+            <header className="page-header">
+                <div className="page-header__info">
+                    <h1 className="page-header__title">
                         {t('reports_page_title') || 'Reportes y Exportaciones'}
                     </h1>
-                    <p className="reports-page__subtitle">
+                    <p className="page-header__subtitle">
                         {t('reports_page_subtitle') || 'Generación de reportes mensuales de turnos y recetas.'}
                     </p>
-                </header>
-
-                <ReportTabs
-                    activeTab={activeTab}
-                    onTabChange={(tab) => {
-                        setActiveTab(tab);
-                        // Reset data when switching tabs for clarity
-                    }}
-                    t={t}
-                />
-
-                <ReportFilters
-                    month={month}
-                    year={year}
-                    selectedDoctorId={selectedDoctorId}
-                    onMonthChange={setMonth}
-                    onYearChange={setYear}
-                    onDoctorChange={setSelectedDoctorId}
-                    onGenerate={handleGenerateReport}
-                    onDownload={handleDownloadJson}
-                    onPrint={handlePrint}
-                    onStepMonth={changeMonth}
-                    onStepYear={(d) => setYear(year + d)}
-                    isSubmitting={isSubmitting}
-                    hasData={!!reportData}
-                    doctors={doctors}
-                    t={t}
-                />
-
-                <div className="reports-page__results">
-                    {activeTab === 'appointments' && (
-                        <AppointmentReportTable data={reportData} t={t} />
-                    )}
-                    {activeTab === 'prescriptions' && (
-                        <PrescriptionReportTable data={reportData} t={t} />
-                    )}
-                    {activeTab === 'licenses' && (
-                        <LicenseReportTable data={reportData} t={t} />
-                    )}
-                    {activeTab === 'certificates' && (
-                        <CertificateReportTable data={reportData} t={t} />
-                    )}
-                    {activeTab === 'balance' && (
-                        <BalanceView reportData={reportData} month={month} year={year} t={t} />
-                    )}
                 </div>
-            </main>
-        </div>
+            </header>
+
+            <ReportTabs
+                activeTab={activeTab}
+                onTabChange={(tab) => {
+                    setActiveTab(tab);
+                    // Reset data when switching tabs for clarity
+                }}
+                t={t}
+            />
+
+            <ReportFilters
+                month={month}
+                year={year}
+                selectedDoctorId={selectedDoctorId}
+                onMonthChange={setMonth}
+                onYearChange={setYear}
+                onDoctorChange={setSelectedDoctorId}
+                onGenerate={handleGenerateReport}
+                onDownload={handleDownloadJson}
+                onPrint={handlePrint}
+                onStepMonth={changeMonth}
+                onStepYear={(d) => setYear(year + d)}
+                isSubmitting={isSubmitting}
+                hasData={!!reportData}
+                doctors={doctors}
+                t={t}
+            />
+
+            <div className="reports-page__results">
+                {activeTab === 'appointments' && (
+                    <AppointmentReportTable data={reportData} t={t} />
+                )}
+                {activeTab === 'prescriptions' && (
+                    <PrescriptionReportTable data={reportData} t={t} />
+                )}
+                {activeTab === 'licenses' && (
+                    <LicenseReportTable data={reportData} t={t} />
+                )}
+                {activeTab === 'certificates' && (
+                    <CertificateReportTable data={reportData} t={t} />
+                )}
+                {activeTab === 'balance' && (
+                    <BalanceView reportData={reportData} month={month} year={year} t={t} />
+                )}
+            </div>
+        </MainLayout>
     );
 };
 

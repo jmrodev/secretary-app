@@ -1,10 +1,12 @@
 import React from 'react';
 import Input from '../atoms/Input';
 import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
 import './MedicationEditor.css';
 
 /**
- * MedicationEditor molecule for editing medication lists.
+ * MedicationEditor Molecule.
+ * Facilitates editing of a medication list.
  */
 const MedicationEditor = ({
     meds,
@@ -52,12 +54,10 @@ const MedicationEditor = ({
                         <Button
                             variant="ghost"
                             size="sm-compact"
-                            className="btn--danger"
                             onClick={() => onRemoveMed(idx)}
-                            aria-label={t('remove') || "Eliminar"}
-                        >
-                            ❌
-                        </Button>
+                            title={t('remove') || "Eliminar"}
+                            icon={<Icon name="delete" size="1rem" color="var(--error)" />}
+                        />
                     </div>
                 ))}
             </div>
@@ -98,8 +98,9 @@ const MedicationEditor = ({
                     onClick={onAddMed}
                     disabled={!newMed.name.trim()}
                     className={`${baseClass}__add-btn`}
+                    icon={<Icon name="add" size="1rem" />}
                 >
-                    ➕ {t('add_to_list') || 'Agregar a la lista'}
+                    {t('add_to_list') || 'Agregar a la lista'}
                 </Button>
             </div>
         </div>

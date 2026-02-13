@@ -31,7 +31,7 @@ export const usePatientFormController = ({
         first_name: '',
         last_name: '',
         dni: '',
-        phoneNumbers: [],
+        phoneNumbers: [{ phone_number: '+549', label: 'Celular', is_primary: true }],
         email: '',
         address: '',
         street_name: '',
@@ -89,7 +89,9 @@ export const usePatientFormController = ({
             setFormData(prev => ({
                 ...prev,
                 ...initialValues,
-                phoneNumbers: initialValues.phoneNumbers || [],
+                phoneNumbers: (initialValues.phoneNumbers && initialValues.phoneNumbers.length > 0)
+                    ? initialValues.phoneNumbers
+                    : [{ phone_number: '+549', label: 'Celular', is_primary: true }],
                 assignedDoctors: initialValues.assignedDoctors ?
                     (Array.isArray(initialValues.assignedDoctors) && typeof initialValues.assignedDoctors[0] === 'object'
                         ? initialValues.assignedDoctors.map(d => d.id)

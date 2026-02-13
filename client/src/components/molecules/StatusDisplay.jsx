@@ -1,4 +1,5 @@
 import React from 'react';
+import './StatusDisplay.css';
 
 /**
  * Molecule component to display various page statuses (Loading, Error, Success).

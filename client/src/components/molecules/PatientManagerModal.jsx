@@ -1,6 +1,7 @@
 import React from 'react';
 import Modal from './Modal';
 import PatientForm from '../organisms/PatientForm';
+import Loading from '../atoms/Loading';
 import { usePatientFormController } from '../../controllers/usePatientFormController';
 import './PatientManagerModal.css';
 
@@ -25,14 +26,12 @@ const PatientManagerModal = ({
     });
 
     const {
-        insurances: controllerInsurances,
-        doctors: controllerDoctors,
         loadingData,
         t
     } = controller;
 
-    // Determine Modal Title
-    const title = isEdit ? (t('edit_patient') || 'Edit Patient') : (t('register_new_patient') || 'Register Patient');
+    const title = isEdit ? (t('edit_patient') || 'Editar Paciente') : (t('register_new_patient') || 'Registrar Nuevo Paciente');
+    const baseClass = 'patient-manager-modal';
 
     return (
         <Modal
@@ -41,28 +40,31 @@ const PatientManagerModal = ({
             title={title}
             size="lg"
         >
-            {/* Reference Info Block */}
-            {referenceInfo && !isEdit && (
-                <div className="reference-box">
-                    <span className="reference-box__label">📄 Info de Turno (Referencia)</span>
-                    <div className="reference-box__content">
-                        {referenceInfo}
+            <div className={baseClass}>
+                {referenceInfo && !isEdit && (
+                    <div className={`${baseClass}__reference`}>
+                        <span className={`${baseClass}__reference-label`}>
+                            📄 {t('appointment_info_reference') || 'Info de Turno (Referencia)'}
+                        </span>
+                        <div className={`${baseClass}__reference-content`}>
+                            {referenceInfo}
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
 
-            {!loadingData ? (
-                <PatientForm
-                    controller={controller}
-                    onCancel={onClose}
-                    isEdit={isEdit}
-                    isAdmin={true}
-                />
-            ) : (
-                <div className="patient-manager-modal__loading">
-                    {t('loading')}
-                </div>
-            )}
+                {!loadingData ? (
+                    <PatientForm
+                        controller={controller}
+                        onCancel={onClose}
+                        isEdit={isEdit}
+                        isAdmin={true}
+                    />
+                ) : (
+                    <div className={`${baseClass}__loading`}>
+                        <Loading variant="centered" text={t('loading')} />
+                    </div>
+                )}
+            </div>
         </Modal>
     );
 };

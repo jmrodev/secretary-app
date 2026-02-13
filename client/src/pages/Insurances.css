@@ -5,3 +5,18 @@
     align-items: center;
     gap: 1rem;
 }
+
+.insurances__search-container {
+    flex: 1;
+    max-width: 500px;
+}
+
+.insurances__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.insurances__content {
+    margin-top: 1rem;
+}

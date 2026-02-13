@@ -7,6 +7,7 @@ import { useConfig } from '../../context/ConfigContext';
 import AppointmentCard from '../molecules/AppointmentCard';
 import Button from '../atoms/Button';
 import Switch from '../atoms/Switch';
+import { formatDate, formatTime } from '../../utils/dateUtils';
 import './DaySchedule.css';
 
 const DaySchedule = ({
@@ -22,6 +23,7 @@ const DaySchedule = ({
         handlePrint,
         handlePrevDay,
         handleNextDay,
+        handleToday,
         handleSlotAction
     } = useDayScheduleHandlers({
         date,
@@ -186,7 +188,7 @@ const DaySchedule = ({
             <header className="day-schedule__header">
                 <div className="day-schedule__title-group">
                     <h3 className="day-schedule__title">
-                        {date.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
+                        {formatDate(date, { weekday: true, monthName: true, hideYear: true })}
                     </h3>
                     {holiday && (
                         <span className="day-schedule__holiday-badge">
@@ -203,6 +205,16 @@ const DaySchedule = ({
                         title={t('prev_day') || "Día Anterior"}
                     >
                         ⬅️
+                    </Button>
+
+                    <Button
+                        variant="ghost"
+                        size="sm-compact"
+                        onClick={handleToday}
+                        className="day-schedule__today-btn"
+                        title={t('today') || "Hoy"}
+                    >
+                        {t('today') || "Hoy"}
                     </Button>
 
                     <Button
@@ -282,7 +294,7 @@ const DaySchedule = ({
                                             <span className="available-slot__icon">{isSlotClosed ? '🚫' : '+'}</span>
                                             <div className="available-slot__info">
                                                 <span className="available-slot__time">
-                                                    {slot.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                    {formatTime(slot.time)}
                                                 </span>
                                                 <span className="available-slot__label">
                                                     {isSlotClosed ? (t('closed_hours') || 'Fuera de Horario') : (t('available') || 'Disponible')}

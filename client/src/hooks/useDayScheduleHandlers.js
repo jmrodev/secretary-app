@@ -14,7 +14,7 @@ export const useDayScheduleHandlers = ({
 
     const handlePrint = () => {
         const printWindow = window.open('', '_blank');
-        if (!printWindow) return alert("Por favor permita ventanas emergentes para imprimir.");
+        if (!printWindow) return alert(t('allow_popups'));
 
         const dayName = date.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
         const doctorName = doctor ? (doctor.full_name || doctor.username) : '';
@@ -29,18 +29,12 @@ export const useDayScheduleHandlers = ({
             .filter(appt => showCancelled || !['cancelled', 'suspended', 'absent'].includes(appt.status))
             .sort((a, b) => new Date(a.appointment_date) - new Date(b.appointment_date));
 
-        const statusMap = {
-            'confirmed': 'Confirmado', 'pending': 'Pendiente', 'arrived': 'En Sala',
-            'completed': 'Completado', 'attended': 'Atendido', 'cancelled': 'Cancelado',
-            'absent': 'Ausente', 'suspended': 'Suspendido', 'virtual': 'Virtual', 'external': 'Externo'
-        };
-
-        const translateStatus = (status) => statusMap[status] || t(status) || status;
+        const translateStatus = (status) => t(status) || status;
 
         let htmlContent = `
             <html>
             <head>
-                <title>Pacientes - ${dayName}</title>
+                <title>${t('patients')} - ${dayName}</title>
                 <style>
                     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px; color: #333; }
                     .header { text-align: center; border-bottom: 2px solid #4f46e5; padding-bottom: 20px; margin-bottom: 30px; }
@@ -63,18 +57,18 @@ export const useDayScheduleHandlers = ({
             </head>
             <body>
                 <div class="header">
-                    <h1>Lista de Pacientes</h1>
+                    <h1>${t('patient_list')}</h1>
                     <p>${dayName}</p>
-                    ${doctorName ? `<p>Dr/a: ${doctorName}</p>` : ''}
+                    ${doctorName ? `<p>${t('doctor_label')}: ${doctorName}</p>` : ''}
                 </div>
                 <table>
                     <thead>
                         <tr>
-                            <th>Hora</th>
-                            <th>Paciente</th>
-                            <th>Teléfono</th>
-                            <th>Motivo</th>
-                            <th>Estado</th>
+                            <th>${t('time_th')}</th>
+                            <th>${t('patient_th')}</th>
+                            <th>${t('phone_th')}</th>
+                            <th>${t('reason_th')}</th>
+                            <th>${t('status_th')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -86,11 +80,11 @@ export const useDayScheduleHandlers = ({
                                 <td>${appt.reason || '-'}</td>
                                 <td class="status ${appt.status}">${translateStatus(appt.status)}</td>
                             </tr>
-                        `).join('') : '<tr><td colspan="5" style="text-align:center;">No hay turnos para este día</td></tr>'}
+                        `).join('') : `<tr><td colspan="5" style="text-align:center;">${t('no_appointments_day')}</td></tr>`}
                     </tbody>
                 </table>
                 <div style="margin-top: 40px; font-size: 12px; color: #94a3b8; text-align: right;">
-                    Generado el ${new Date().toLocaleString()}
+                    ${t('generated_at')} ${new Date().toLocaleString()}
                 </div>
                 <script>
                     window.onload = function() { 
@@ -118,6 +112,10 @@ export const useDayScheduleHandlers = ({
         onDateSelect(next);
     };
 
+    const handleToday = () => {
+        onDateSelect(new Date());
+    };
+
     const handleSlotAction = async (slot) => {
         const isOutOfHours = slot.type === 'closed';
         if (isOutOfHours) {
@@ -134,6 +132,7 @@ export const useDayScheduleHandlers = ({
         handlePrint,
         handlePrevDay,
         handleNextDay,
+        handleToday,
         handleSlotAction
     };
 };

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Modal from '../molecules/Modal';
 import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { useMessage } from '../../context/MessageContext';
@@ -74,7 +75,7 @@ const AppointmentActionModal = ({
                     onWhatsApp={onWhatsApp}
                 />
 
-                <div className="appointment-modal__reason section-card">
+                <div className="appointment-modal__reason">
                     <p className="appointment-modal__text">
                         <strong className="appointment-modal__strong">{t('reason')}:</strong> {appt.reason || t('no_description') || 'No description'}
                     </p>
@@ -103,8 +104,9 @@ const AppointmentActionModal = ({
                         variant="accent"
                         className="appointment-modal__sync-btn"
                         onClick={() => onSync(appt)}
+                        icon={<Icon name="auto_awesome" size="1.1rem" />}
                     >
-                        ✨ {t('sync_db') || 'Ingresar Ajuste (Sincronizar BBDD)'}
+                        {t('sync_db') || 'Ingresar Ajuste (Sincronizar BBDD)'}
                     </Button>
                 )}
 

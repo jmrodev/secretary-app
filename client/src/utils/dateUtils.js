@@ -10,24 +10,44 @@
  * - Backend converts ISO UTC -> Argentina Time for storage.
  */
 
-// --- 1. Formatting for Display ---
+// --- 1. Parsing ---
+
+/**
+ * Safely parses "DD/MM/YYYY" or ISO strings into a Date object.
+ * @param {string|Date} input 
+ */
+export const parseDate = (input) => {
+    if (!input) return null;
+    if (input instanceof Date) return input;
+
+    // Check if it's DD/MM/YYYY
+    const ddmmyyyy = /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/;
+    const match = input.match(ddmmyyyy);
+    if (match) {
+        return new Date(match[3], match[2] - 1, match[1]);
+    }
+
+    const d = new Date(input);
+    return isNaN(d.getTime()) ? null : d;
+};
+
+// --- 2. Formatting for Display ---
 
 /**
  * Formats a date for user display (e.g. "10/03/2026")
  * @param {string|Date} date 
- * @param {Object} options - { time: boolean, weekday: boolean, monthName: boolean }
+ * @param {Object} options - { time: boolean, weekday: boolean, monthName: boolean, hideYear: boolean }
  */
 export const formatDate = (date, options = {}) => {
-    if (!date) return 'N/A';
-    const d = new Date(date);
-    if (isNaN(d.getTime())) return 'Inválida';
+    const d = parseDate(date);
+    if (!d) return options.fallback || 'N/A';
 
     const locale = 'es-AR';
     const opts = {
         timeZone: 'America/Argentina/Buenos_Aires',
         day: '2-digit',
         month: options.monthName ? 'long' : '2-digit',
-        year: 'numeric',
+        ...(options.hideYear ? {} : { year: 'numeric' }),
         ...(options.weekday && { weekday: 'long' }),
         ...(options.time && { hour: '2-digit', minute: '2-digit' })
     };
@@ -40,6 +60,20 @@ export const formatDate = (date, options = {}) => {
     return str;
 };
 
+/**
+ * Formats only the time (e.g. "14:30")
+ * @param {string|Date} date 
+ */
+export const formatTime = (date) => {
+    const d = parseDate(date);
+    if (!d) return '--:--';
+    return d.toLocaleTimeString('es-AR', {
+        timeZone: 'America/Argentina/Buenos_Aires',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+};
+
 // --- 2. Input Handling (<input type="datetime-local" />) ---
 
 /**
@@ -48,10 +82,8 @@ export const formatDate = (date, options = {}) => {
  * @param {Date|string} date 
  */
 export const toInputDateTime = (date) => {
-    if (!date) return '';
-    const d = new Date(date);
-    // Safety check
-    if (isNaN(d.getTime())) return '';
+    const d = parseDate(date);
+    if (!d) return '';
 
     // We need 'YYYY-MM-DDTHH:mm' in Local Time.
     // d.toISOString() gives UTC.
@@ -67,9 +99,8 @@ export const toInputDateTime = (date) => {
  * @param {Date|string} date 
  */
 export const toInputDate = (date) => {
-    if (!date) return '';
-    const d = new Date(date);
-    if (isNaN(d.getTime())) return '';
+    const d = parseDate(date);
+    if (!d) return '';
 
     // YYYY-MM-DD
     const offsetMs = d.getTimezoneOffset() * 60000;
@@ -85,9 +116,8 @@ export const toInputDate = (date) => {
  * @param {string|Date} input - Can be Date object or "YYYY-MM-DDTHH:mm" string
  */
 export const toApiDate = (input) => {
-    if (!input) return null;
-    const d = new Date(input);
-    if (isNaN(d.getTime())) return null;
+    const d = parseDate(input);
+    if (!d) return null;
     return d.toISOString();
 };
 

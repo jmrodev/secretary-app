@@ -1,0 +1,35 @@
+.app-layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--background-bg);
+}
+
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    padding-bottom: 4rem;
+    overflow-y: auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Base constraint for content inside main layout */
+.main-content>* {
+    width: 100%;
+    max-width: 1300px;
+    /* Slightly wider than before to accommodate grid */
+    margin: 0 auto;
+}
+
+.main-content.dashboard-wide>* {
+    max-width: 95%;
+}
+
+@media screen and (max-width: 1400px),
+screen and (max-height: 800px) {
+    .main-content {
+        padding: 1rem 1.5rem;
+    }
+}

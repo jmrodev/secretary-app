@@ -8,21 +8,31 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--slate-100);
 }
 
 .patient-details__title {
-    font-size: 2.25rem;
-    font-weight: 800;
+    font-size: 2.5rem;
+    font-weight: 900;
     text-transform: capitalize;
     margin-bottom: 2rem;
-    color: var(--text-main);
+    color: var(--slate-900);
+    letter-spacing: -0.04em;
+    line-height: 1;
 }
 
 .patient-details__grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+    .patient-details__grid {
+        grid-template-columns: 2fr 1fr;
+    }
 }
 
 @media (min-width: 1024px) {
@@ -45,98 +55,128 @@
 
 /* Info Cards */
 .info-card {
-    border-left: 4px solid var(--blue-500);
+    border-left: 6px solid var(--blue-500);
+    background: linear-gradient(to bottom right, #ffffff, #f8fafc);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.info-card:hover {
+    box-shadow: var(--shadow-xl);
 }
 
 .info-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1.5rem;
-    margin-top: 1rem;
+    gap: 1.75rem;
+    padding: 0.5rem 0;
 }
 
 @media (min-width: 768px) {
     .info-grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     }
 
     .info-grid__full {
-        grid-column: span 2;
+        grid-column: 1 / -1;
     }
+}
+
+.info-item {
+    position: relative;
+    padding-left: 0.75rem;
+    border-left: 2px solid transparent;
+    transition: border-color 0.2s ease;
+}
+
+.info-item:hover {
+    border-left-color: var(--blue-200);
 }
 
 .info-item__label {
     display: block;
-    font-size: 0.75rem;
-    font-weight: 700;
+    font-size: 0.7rem;
+    font-weight: 800;
     text-transform: uppercase;
+    letter-spacing: 0.05em;
     color: var(--slate-400);
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.35rem;
 }
 
 .info-item__value {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--text-main);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--slate-800);
+    line-height: 1.3;
 }
 
 .info-item__hint {
-    font-size: 0.875rem;
-    font-weight: 400;
-    color: var(--slate-500);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--slate-400);
     margin-left: 0.5rem;
 }
 
 .info-item--divider {
     border-top: 1px solid var(--slate-100);
-    padding-top: 1rem;
+    padding-top: 1.5rem;
+    margin-top: 0.5rem;
 }
 
 /* Contact List */
 .contact-list {
     display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    margin-top: 0.25rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.5rem;
 }
 
 .contact-item {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
+    background: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.6rem;
+    border: 1px solid var(--slate-100);
+    transition: all 0.2s ease;
+}
+
+.contact-item:hover {
+    border-color: var(--blue-200);
+    background: var(--blue-50);
 }
 
 .contact-item__indicator {
-    width: 0.5rem;
-    height: 0.5rem;
+    width: 0.6rem;
+    height: 0.6rem;
     border-radius: 50%;
-    background-color: var(--slate-300);
+    background-color: var(--slate-200);
 }
 
 .contact-item__indicator--primary {
     background-color: var(--green-500);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
 }
 
 .contact-item__link {
     color: var(--blue-600);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 1rem;
     transition: all 0.2s ease;
-    width: fit-content;
 }
 
 .contact-item__link:hover {
-    text-decoration: underline;
-    opacity: 0.8;
+    color: var(--blue-800);
 }
 
 .contact-item__link--email {
-    font-size: 1rem;
-    width: fit-content;
+    color: var(--indigo-600);
 }
 
-.contact-item--email {
-    margin-top: 0.5rem;
+.contact-item--email:hover {
+    background: var(--indigo-50);
+    border-color: var(--indigo-200);
 }
 
 /* Indicators */
@@ -226,4 +266,121 @@
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+}
+
+/* Card Headers Modifiers */
+.card-header--clean {
+    border: none;
+    padding-bottom: 0;
+}
+
+.card-header--clean-center {
+    border: none;
+    padding-bottom: 0.5rem;
+    text-align: center;
+}
+
+/* Typography Helpers */
+.text-address {
+    font-weight: 600;
+    color: var(--slate-700);
+    line-height: 1.5;
+    background: var(--slate-50);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px dashed var(--slate-200);
+    display: inline-block;
+    width: 100%;
+}
+
+.text-empty {
+    font-style: italic;
+    color: var(--slate-300);
+    font-weight: 400;
+}
+
+.text-doctor-list {
+    font-weight: 400;
+}
+
+.text-financial-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--slate-400);
+    font-weight: 700;
+    margin: 0;
+}
+
+/* Table Styling */
+.card-body--nopadding {
+    padding: 0;
+}
+
+.table-scroll-container {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.table__header-sticky {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+}
+
+.table__cell-date {
+    white-space: nowrap;
+}
+
+.table__cell-date-text {
+    font-weight: 700;
+}
+
+.table__date-hint {
+    font-size: 0.75rem;
+}
+
+.table__cell-nowrap {
+    white-space: nowrap;
+}
+
+.table__cell-bold {
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.table__cell-reason {
+    font-size: 0.75rem;
+    font-style: italic;
+    color: var(--slate-500);
+}
+
+.table__cancel-reason {
+    color: var(--red-500);
+    font-weight: 700;
+    margin-top: 0.25rem;
+}
+
+.history-empty-state {
+    padding: 2rem;
+    text-align: center;
+    color: var(--slate-400);
+    font-style: italic;
+}
+
+.financial-card-content {
+    align-items: center;
+    padding: 1rem;
+}
+
+.tools-card-body {
+    padding: 1.25rem;
+}
+
+.btn-delete-patient {
+    margin-top: 1rem;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    color: var(--red-600);
 }

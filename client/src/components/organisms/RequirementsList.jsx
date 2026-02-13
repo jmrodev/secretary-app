@@ -9,6 +9,7 @@ import Button from '../atoms/Button';
 import TabButton from '../atoms/TabButton';
 import Badge from '../atoms/Badge';
 import Input from '../atoms/Input';
+import Icon from '../atoms/Icon';
 import MedicalRequestForm from './MedicalRequestForm';
 import MedicationCard from '../molecules/MedicationCard';
 import MedicationEditor from '../molecules/MedicationEditor';
@@ -20,10 +21,11 @@ import { extractMedicationDetails, calculateDuration } from '../../utils/medicat
 // Styles
 import './RequirementsList.css';
 
+import Loading from '../atoms/Loading';
+
 /**
  * RequirementsList Organism.
  * Displays and manages medical requests with list, new, and recycle bin views.
- * Refactored to follow Atomic Design and BEM conventions.
  */
 const RequirementsList = ({ user }) => {
     const { t } = useLanguage();
@@ -67,51 +69,57 @@ const RequirementsList = ({ user }) => {
     const handleRecycleTab = () => setActiveTab('recycle');
 
     const typeLabels = {
-        'prescription': 'Receta 💊',
-        'license': 'Licencia 📄',
-        'certificate': 'Certificado 📜',
-        'referral': 'Derivación 📋'
+        'prescription': 'Receta',
+        'license': 'Licencia',
+        'certificate': 'Certificado',
+        'referral': 'Derivación'
     };
 
-    if (loading) return <div className="requirements-list__loading">{t('loading') || 'Cargando...'}</div>;
+    if (loading) return <Loading variant="centered" text={t('loading')} />;
 
     const isAdminOrSecretary = ['admin', 'secretary'].includes(user.role);
     const canEdit = user.role === 'admin' || user.role === 'secretary' || user.role === 'doctor';
 
+    const baseClass = 'requirements-list';
+
     return (
-        <div className="requirements-list">
-            <nav className="requirements-list__nav nav-tabs nav-tabs--requirements">
-                <div className="nav-tabs__container">
-                    <TabButton
-                        isActive={activeTab === 'list'}
-                        onClick={handleListTab}
-                        variant="pill"
-                    >
-                        📋 {t('request_status')}
-                    </TabButton>
-                    <TabButton
-                        isActive={activeTab === 'new'}
-                        onClick={handleNewTab}
-                        variant="pill"
-                    >
-                        ➕ {t('new_request')}
-                    </TabButton>
-                    {isAdminOrSecretary && canDeleteRequest && (
+        <div className={baseClass}>
+            <nav className={`${baseClass}__tabs`}>
+                <TabButton
+                    isActive={activeTab === 'list'}
+                    onClick={handleListTab}
+                    variant="pill"
+                    icon={<Icon name="view_list" />}
+                >
+                    {t('request_status')}
+                </TabButton>
+                <TabButton
+                    isActive={activeTab === 'new'}
+                    onClick={handleNewTab}
+                    variant="pill"
+                    icon={<Icon name="add_circle" />}
+                >
+                    {t('new_request')}
+                </TabButton>
+                {isAdminOrSecretary && canDeleteRequest && (
+                    <div className={`${baseClass}__tab-wrapper`}>
                         <TabButton
                             isActive={activeTab === 'recycle'}
                             onClick={handleRecycleTab}
                             variant="pill"
+                            icon={<Icon name="delete" />}
                         >
-                            🗑️ {t('recycle_bin') || 'Papelera'} {recycleRequests.length > 0 && (
-                                <span className="dashboard__nav-badge">{recycleRequests.length}</span>
-                            )}
+                            {t('recycle_bin') || 'Papelera'}
                         </TabButton>
-                    )}
-                </div>
+                        {recycleRequests.length > 0 && (
+                            <span className={`${baseClass}__badge`}>{recycleRequests.length}</span>
+                        )}
+                    </div>
+                )}
             </nav>
 
             {activeTab === 'new' ? (
-                <div className="requirements-list__form-view">
+                <div className={`${baseClass}__content animate-fadeIn`}>
                     <MedicalRequestForm
                         doctors={doctors}
                         onRequestCreated={() => {
@@ -121,45 +129,53 @@ const RequirementsList = ({ user }) => {
                     />
                 </div>
             ) : activeTab === 'list' ? (
-                <div className="requirements-list__list-view">
-                    <div className="nav-tabs nav-tabs--filters mb-4">
-                        <div className="nav-tabs__container">
-                            <TabButton
-                                variant="pill"
-                                isActive={filter === 'active'}
-                                onClick={() => setFilter('active')}
-                            >
-                                {t('pending') || 'Pendientes'}
-                            </TabButton>
-                            <TabButton
-                                variant="pill"
-                                isActive={filter === 'history'}
-                                onClick={() => setFilter('history')}
-                            >
-                                {t('history') || 'Historial'}
-                            </TabButton>
-                        </div>
+                <div className={`${baseClass}__content animate-fadeIn`}>
+                    <div className={`${baseClass}__filters`}>
+                        <TabButton
+                            variant="pill"
+                            isActive={filter === 'active'}
+                            onClick={() => setFilter('active')}
+                        >
+                            {t('pending') || 'Pendientes'}
+                        </TabButton>
+                        <TabButton
+                            variant="pill"
+                            isActive={filter === 'history'}
+                            onClick={() => setFilter('history')}
+                        >
+                            {t('history') || 'Historial'}
+                        </TabButton>
                     </div>
 
                     {requests.length === 0 ? (
-                        <div className="requirements-list__empty">
-                            {t('no_requests') || (filter === 'active' ? 'No hay requerimientos pendientes.' : 'No hay historial.')}
+                        <div className={`${baseClass}__empty`}>
+                            <Icon name="inbox" size="3rem" />
+                            <p>{t('no_requests') || (filter === 'active' ? 'No hay requerimientos pendientes.' : 'No hay historial.')}</p>
+                            {filter === 'active' && (
+                                <Button
+                                    variant="primary"
+                                    onClick={handleNewTab}
+                                    icon={<Icon name="add_circle" />}
+                                >
+                                    {t('create_first_request') || 'Crear primera solicitud'}
+                                </Button>
+                            )}
                         </div>
                     ) : (
-                        <div className="table-container">
-                            <table className="table">
-                                <thead>
-                                    <tr>
-                                        <th>{t('type') || 'Tipo'}</th>
-                                        <th>{t('date') || 'Fecha'}</th>
-                                        <th>{t('patient') || 'Paciente'}</th>
-                                        <th>{t('doctor') || 'Doctor'}</th>
-                                        <th>{t('requested_by') || 'Solicitado Por'}</th>
-                                        <th>{t('status') || 'Estado'}</th>
-                                        <th>{t('actions') || 'Acciones'}</th>
+                        <div className={`${baseClass}__table-container`}>
+                            <table className={`${baseClass}__table`}>
+                                <thead className={`${baseClass}__table-head`}>
+                                    <tr className={`${baseClass}__table-row`}>
+                                        <th className={`${baseClass}__table-header`}>{t('type') || 'Tipo'}</th>
+                                        <th className={`${baseClass}__table-header`}>{t('date') || 'Fecha'}</th>
+                                        <th className={`${baseClass}__table-header`}>{t('patient') || 'Paciente'}</th>
+                                        <th className={`${baseClass}__table-header`}>{t('doctor') || 'Doctor'}</th>
+                                        <th className={`${baseClass}__table-header`}>{t('requested_by') || 'Solicitado Por'}</th>
+                                        <th className={`${baseClass}__table-header`}>{t('status') || 'Estado'}</th>
+                                        <th className={`${baseClass}__table-header`}>{t('actions') || 'Acciones'}</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className={`${baseClass}__table-body`}>
                                     {requests.map(r => (
                                         <RequirementItem
                                             key={r.id}
@@ -179,34 +195,42 @@ const RequirementsList = ({ user }) => {
                     )}
                 </div>
             ) : (
-                <div className="requirements-list__recycle-view">
+                <div className={`${baseClass}__content animate-fadeIn`}>
                     {recycleRequests.length === 0 ? (
-                        <div className="requirements-list__empty">
-                            🗑️ {t('recycle_empty') || 'No hay elementos en la papelera.'}
+                        <div className={`${baseClass}__empty`}>
+                            <Icon name="delete_sweep" size="3rem" />
+                            <p>{t('recycle_empty') || 'No hay elementos en la papelera.'}</p>
                         </div>
                     ) : (
-                        <div className="table-container">
-                            <table className="table">
-                                <thead>
-                                    <tr>
-                                        <th>{t('element') || 'Elemento'}</th>
-                                        <th>{t('deleted_by') || 'Eliminado Por'}</th>
-                                        <th>{t('delete_date') || 'Fecha Eliminación'}</th>
-                                        <th>{t('expires') || 'Expira'}</th>
-                                        <th>{t('actions') || 'Acciones'}</th>
+                        <div className={`${baseClass}__table-container`}>
+                            <table className={`${baseClass}__table`}>
+                                <thead className={`${baseClass}__table-head`}>
+                                    <tr className={`${baseClass}__table-row`}>
+                                        <th className={`${baseClass}__table-header`}>{t('element') || 'Elemento'}</th>
+                                        <th className={`${baseClass}__table-header`}>{t('deleted_by') || 'Eliminado Por'}</th>
+                                        <th className={`${baseClass}__table-header`}>{t('delete_date') || 'Fecha Eliminación'}</th>
+                                        <th className={`${baseClass}__table-header`}>{t('expires') || 'Expira'}</th>
+                                        <th className={`${baseClass}__table-header`}>{t('actions') || 'Acciones'}</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className={`${baseClass}__table-body`}>
                                     {recycleRequests.map(item => (
-                                        <tr key={item.id}>
-                                            <td><strong>{item.entity_name}</strong></td>
-                                            <td>{item.deleted_by_name}</td>
-                                            <td>{new Date(item.deleted_at).toLocaleString()}</td>
-                                            <td>{new Date(item.expires_at).toLocaleDateString()}</td>
-                                            <td>
-                                                <Button size="sm" onClick={() => handleRestore(item)}>
-                                                    ♻️ {t('restore') || 'Restaurar'}
-                                                </Button>
+                                        <tr key={item.id} className="requirement-item">
+                                            <td className="requirement-item__cell requirement-item__patient-name">{item.entity_name}</td>
+                                            <td className="requirement-item__cell">{item.deleted_by_name}</td>
+                                            <td className="requirement-item__cell">{new Date(item.deleted_at).toLocaleString()}</td>
+                                            <td className="requirement-item__cell">{new Date(item.expires_at).toLocaleDateString()}</td>
+                                            <td className="requirement-item__cell">
+                                                <div className="requirement-item__actions">
+                                                    <Button
+                                                        size="sm"
+                                                        variant="secondary"
+                                                        onClick={() => handleRestore(item)}
+                                                        icon={<Icon name="restore" size="1rem" />}
+                                                    >
+                                                        {t('restore') || 'Restaurar'}
+                                                    </Button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
@@ -225,32 +249,35 @@ const RequirementsList = ({ user }) => {
             >
                 {selectedRequest && (
                     <div className="requirements-detail">
-                        <div className="requirements-detail__header">
+                        <header className="requirements-detail__header">
                             <div className="requirements-detail__patient">
                                 <span className="requirements-detail__patient-name">{selectedRequest.patient_name}</span>
                                 <small className="requirements-detail__patient-dni">DNI: {selectedRequest.patient_dni}</small>
                             </div>
                             <div className="requirements-detail__doctor">
-                                <strong>{t('doctor')}:</strong>
-                                <span className="text-muted">Dr. {selectedRequest.doctor_name}</span>
+                                <Icon name="medical_services" size="1rem" />
+                                <span>Dr. {selectedRequest.doctor_name}</span>
                             </div>
-                        </div>
+                        </header>
 
                         <div className="requirements-detail__info-bar">
                             <Badge variant={selectedRequest.type === 'prescription' ? 'blue' : 'green'}>
                                 {typeLabels[selectedRequest.type] || selectedRequest.type}
                             </Badge>
                             {canEdit && !isEditing && (
-                                <Button size="sm-compact" variant="secondary" onClick={handleOpenEdit}>
-                                    ✏️ {t('edit_list') || 'Editar Lista'}
+                                <Button size="sm-compact" variant="secondary" onClick={handleOpenEdit} icon={<Icon name="edit" size="0.9rem" />}>
+                                    {t('edit_list') || 'Editar Lista'}
                                 </Button>
                             )}
                         </div>
 
-                        <div className={`requirements-detail__note-box ${isEditing ? 'requirements-detail__note-box--editing' : ''}`}>
+                        <div className={`requirements-detail__body ${isEditing ? 'requirements-detail__body--editing' : ''}`}>
                             {isEditing ? (
                                 <div className="requirements-edit">
-                                    <h4 className="requirements-detail__title">📝 {t('editing_medication') || 'Editando Medicación'}</h4>
+                                    <h4 className="requirements-detail__section-title">
+                                        <Icon name="edit_note" />
+                                        {t('editing_medication') || 'Editando Medicación'}
+                                    </h4>
                                     <MedicationEditor
                                         meds={editMeds}
                                         onMedChange={updateEditMed}
@@ -260,8 +287,8 @@ const RequirementsList = ({ user }) => {
                                         onAddMed={handleAddMed}
                                         t={t}
                                     />
-                                    <div className="requirements-detail__notes-section">
-                                        <label className="requirements-detail__notes-label">{t('additional_notes') || 'Notas Adicionales'}</label>
+                                    <div className="requirements-detail__notes">
+                                        <label className="requirements-detail__label">{t('additional_notes') || 'Notas Adicionales'}</label>
                                         <Input
                                             type="textarea"
                                             value={editNotes}
@@ -269,12 +296,12 @@ const RequirementsList = ({ user }) => {
                                             rows={2}
                                         />
                                     </div>
-                                    <div className="requirements-detail__edit-actions">
-                                        <Button size="sm" variant="ghost" onClick={handleCancelEdit}>
+                                    <div className="requirements-detail__actions">
+                                        <Button variant="ghost" onClick={handleCancelEdit}>
                                             {t('cancel')}
                                         </Button>
-                                        <Button size="sm" variant="primary" onClick={handleSaveEdit}>
-                                            💾 {t('save_changes')}
+                                        <Button variant="primary" onClick={handleSaveEdit} icon={<Icon name="save" />}>
+                                            {t('save_changes')}
                                         </Button>
                                     </div>
                                 </div>
@@ -288,14 +315,18 @@ const RequirementsList = ({ user }) => {
                                         <div className="requirements-content">
                                             {meds.length > 0 && (
                                                 <div className="medication-list">
-                                                    <h4 className="requirements-detail__title">💊 {t('requested_medication') || 'Medicación Solicitada'}</h4>
+                                                    <h4 className="requirements-detail__section-title">
+                                                        <Icon name="medication" />
+                                                        {t('requested_medication') || 'Medicación Solicitada'}
+                                                    </h4>
 
                                                     {unknownMeds.length > 0 && (
-                                                        <div className="requirements-detail__group">
+                                                        <section className="requirements-detail__group">
                                                             <h5 className="requirements-detail__group-title requirements-detail__group-title--unknown">
-                                                                ⚠️ {t('new_meds_warning') || 'Nuevos / No Habituales'}
+                                                                <Icon name="warning" size="1rem" />
+                                                                {t('new_meds_warning') || 'Nuevos / No Habituales'}
                                                             </h5>
-                                                            <div className="requirements-detail__med-grid">
+                                                            <div className="requirements-detail__grid">
                                                                 {unknownMeds.map((m, i) => (
                                                                     <MedicationCard
                                                                         key={i}
@@ -308,15 +339,16 @@ const RequirementsList = ({ user }) => {
                                                                     />
                                                                 ))}
                                                             </div>
-                                                        </div>
+                                                        </section>
                                                     )}
 
                                                     {knownMeds.length > 0 && (
-                                                        <div className="requirements-detail__group">
+                                                        <section className="requirements-detail__group">
                                                             <h5 className="requirements-detail__group-title requirements-detail__group-title--known">
+                                                                <Icon name="verified" size="1rem" />
                                                                 {t('habitual_meds') || 'Habituales (Validado)'}
                                                             </h5>
-                                                            <div className="requirements-detail__med-grid">
+                                                            <div className="requirements-detail__grid">
                                                                 {knownMeds.map((m, i) => (
                                                                     <MedicationCard
                                                                         key={i}
@@ -327,15 +359,16 @@ const RequirementsList = ({ user }) => {
                                                                     />
                                                                 ))}
                                                             </div>
-                                                        </div>
+                                                        </section>
                                                     )}
                                                 </div>
                                             )}
 
                                             {notes && (
-                                                <div className="requirements-detail__notes-section">
-                                                    <strong className="requirements-detail__notes-label">
-                                                        {meds.length > 0 ? '📝 ' + t('additional_notes') + ':' : t('detail_reason') + ':'}
+                                                <div className="requirements-detail__notes">
+                                                    <strong className="requirements-detail__label">
+                                                        <Icon name="notes" size="1rem" />
+                                                        {meds.length > 0 ? t('additional_notes') : t('detail_reason')}:
                                                     </strong>
                                                     <div className="requirements-detail__notes-content">
                                                         {notes}
@@ -348,16 +381,20 @@ const RequirementsList = ({ user }) => {
                             )}
                         </div>
 
-                        {selectedRequest.doctor_note && (
-                            <div className="requirements-detail__doctor-note">
-                                <strong>{t('doctor_note')}:</strong>
-                                <div className="requirements-detail__notes-content mt-2">{selectedRequest.doctor_note}</div>
-                            </div>
-                        )}
-                        {selectedRequest.secretary_note && (
-                            <div className="requirements-detail__secretary-note">
-                                <strong>{t('secretary_reply')}:</strong>
-                                <div className="requirements-detail__notes-content mt-2">{selectedRequest.secretary_note}</div>
+                        {(selectedRequest.doctor_note || selectedRequest.secretary_note) && (
+                            <div className="requirements-detail__feedback">
+                                {selectedRequest.doctor_note && (
+                                    <div className="requirements-detail__feedback-item">
+                                        <strong>{t('doctor_note')}:</strong>
+                                        <p>{selectedRequest.doctor_note}</p>
+                                    </div>
+                                )}
+                                {selectedRequest.secretary_note && (
+                                    <div className="requirements-detail__feedback-item">
+                                        <strong>{t('secretary_reply')}:</strong>
+                                        <p>{selectedRequest.secretary_note}</p>
+                                    </div>
+                                )}
                             </div>
                         )}
 
@@ -391,11 +428,11 @@ const RequirementsList = ({ user }) => {
                     </>
                 }
             >
-                <div className="input-group">
-                    <label className="input-label">
+                <div className="requirements-list__form-group">
+                    <label className="requirements-list__form-label">
                         {actionModal.type === 'consult' ? t('your_question') :
                             (actionModal.type === 'reply' ? t('your_answer') : t('doctor_note'))}
-                        {['rejected', 'consult', 'reply'].includes(actionModal.type) && <span className="text-danger" style={{ fontWeight: 'bold' }}> *</span>}
+                        {['rejected', 'consult', 'reply'].includes(actionModal.type) && <span className="text-danger">*</span>}
                     </label>
                     <Input
                         type="textarea"

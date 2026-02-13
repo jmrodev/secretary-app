@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Modal from './Modal';
+import Button from '../atoms/Button';
 import { useLanguage } from '../../context/LanguageContext';
+import '../organisms/Calendar.css';
+import '../molecules/CalendarHeader.css';
+import '../molecules/DayHeaders.css';
+import './NextSlotCalendarModal.css';
 
 const NextSlotCalendarModal = ({
     isOpen,
@@ -40,8 +45,6 @@ const NextSlotCalendarModal = ({
                     dayName: day.dayName
                 };
             });
-        } else {
-            // console.log('⚠️ No nextSlotData or results');
         }
         return grouped;
     }, [nextSlotData]);
@@ -114,7 +117,6 @@ const NextSlotCalendarModal = ({
                 const lastDate = new Date(lastDateInData);
                 const viewingMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
 
-                // If viewing a month beyond our data, load more
                 if (viewingMonth > lastDate) {
                     onLoadMore();
                 }
@@ -155,35 +157,32 @@ const NextSlotCalendarModal = ({
 
     const renderCalendarView = () => (
         <div className="calendar-grid">
-            {/* Header */}
-            <div className="calendar-grid__header">
-                <button onClick={handlePrevMonth} className="calendar-grid__nav-btn" title={t('previous_month')}>⬅️</button>
-                <h3 className="calendar-grid__title">
+            <div className="calendar-header">
+                <button onClick={handlePrevMonth} className="calendar-header__nav-button" title={t('previous_month')}>⬅️</button>
+                <h3 className="calendar-header__title">
                     {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
                 </h3>
-                <button onClick={handleNextMonth} className="calendar-grid__nav-btn" title={t('next_month')}>➡️</button>
+                <button onClick={handleNextMonth} className="calendar-header__nav-button" title={t('next_month')}>➡️</button>
             </div>
 
-            {/* Days Header */}
-            <div className="calendar-grid__days-row">
+            <div className="day-headers">
                 {dayNames.map(day => (
-                    <div key={day} className="calendar-grid__day-name">{day}</div>
+                    <div key={day} className="day-headers__day">{day}</div>
                 ))}
             </div>
 
-            {/* Grid Body */}
             <div className="calendar-grid__body">
                 {calendarDays.map((dayData, idx) => {
-                    if (!dayData) return <div key={`empty-${idx}`} className="calendar-grid__cell calendar-grid__cell--empty"></div>;
+                    if (!dayData) return <div key={`empty-${idx}`} className="calendar-day-cell calendar-day-cell--other-month"></div>;
 
                     const { day, dateStr, isToday, slots } = dayData;
                     const isPast = dateStr < todayIso;
                     const hasSlots = slots && slots.total > 0;
 
-                    let cellClasses = 'calendar-grid__cell';
-                    if (isPast) cellClasses += ' calendar-grid__cell--past';
-                    if (hasSlots) cellClasses += ' calendar-grid__cell--interactive';
-                    if (isToday) cellClasses += ' calendar-grid__cell--today';
+                    let cellClasses = 'calendar-day-cell';
+                    if (isPast) cellClasses += ' calendar-day-cell--disabled';
+                    if (hasSlots) cellClasses += ' calendar-day-cell--interactive';
+                    if (isToday) cellClasses += ' calendar-day-cell--today';
 
                     return (
                         <div
@@ -191,26 +190,26 @@ const NextSlotCalendarModal = ({
                             className={cellClasses}
                             onClick={() => hasSlots && handleDateClick(dateStr)}
                         >
-                            <div className="flex flex-col items-center">
-                                <span className="calendar-grid__date-number">{day}</span>
-                                {isToday && <span className="calendar-grid__today-badge">{t('today')}</span>}
+                            <div className="calendar-day-cell__date">
+                                <span className="calendar-day-cell__number">{day}</span>
+                                {isToday && <span className="calendar-day-cell__today-marker">HOY</span>}
                             </div>
 
                             {hasSlots && (
-                                <div className="calendar-grid__indicators">
+                                <div className="calendar-slot__indicators">
                                     {slots.inHours > 0 && (
-                                        <div className="calendar-grid__badge calendar-grid__badge--normal">
-                                            <span>✓</span><span>{slots.inHours}</span>
+                                        <div className="calendar-slot__badge calendar-slot__badge--normal">
+                                            {slots.inHours}
                                         </div>
                                     )}
                                     {slots.outHours > 0 && (
-                                        <div className="calendar-grid__badge calendar-grid__badge--extra">
-                                            <span>🔓</span><span>{slots.outHours}</span>
+                                        <div className="calendar-slot__badge calendar-slot__badge--extra">
+                                            {slots.outHours}
                                         </div>
                                     )}
                                     {slots.breakSlotsCount > 0 && (
-                                        <div className="calendar-grid__badge calendar-grid__badge--break">
-                                            <span>☕</span><span>{slots.breakSlotsCount}</span>
+                                        <div className="calendar-slot__badge calendar-slot__badge--break">
+                                            {slots.breakSlotsCount}
                                         </div>
                                     )}
                                 </div>
@@ -219,8 +218,8 @@ const NextSlotCalendarModal = ({
                     );
                 })}
             </div>
-            {/* Legend */}
-            <div className="calendar-slot__legend" style={{ padding: '0.5rem' }}>
+
+            <div className="calendar-slot__legend">
                 <div className="calendar-slot__legend-item">
                     <div className="calendar-slot__legend-box calendar-slot__legend-box--in-hours"></div>
                     <span>{t('appointments_in_hours')}</span>
@@ -229,17 +228,22 @@ const NextSlotCalendarModal = ({
                     <div className="calendar-slot__legend-box calendar-slot__legend-box--out-hours"></div>
                     <span>{t('appointments_out_hours')}</span>
                 </div>
+                <div className="calendar-slot__legend-item">
+                    <div className="calendar-slot__legend-box calendar-slot__legend-box--break"></div>
+                    <span>{t('breaks_special_slots') || 'Ext. / Receso'}</span>
+                </div>
             </div>
-            {/* Load More Button inside Calendar View */}
+
             {hasMore && (
-                <div className="flex justify-center p-2">
-                    <button
+                <div className="calendar-slot__load-more">
+                    <Button
                         onClick={onLoadMore}
                         disabled={loading}
-                        className="btn btn-secondary btn-sm"
+                        variant="ghost"
+                        size="sm"
                     >
                         {loading ? t('loading') : `🔍 ${t('load_more_dates')}`}
-                    </button>
+                    </Button>
                 </div>
             )}
         </div>
@@ -250,14 +254,13 @@ const NextSlotCalendarModal = ({
             return (
                 <div className="calendar-empty">
                     <p className="font-bold text-lg">{t('select_date_to_view')}</p>
-                    <button onClick={() => setViewMode('calendar')} className="btn btn-secondary mt-4">{t('view_calendar')}</button>
+                    <Button onClick={() => setViewMode('calendar')} variant="secondary" className="mt-4">{t('view_calendar')}</Button>
                 </div>
             );
         }
 
         const normalSlots = selectedSlots.filter(s => !s.is_out_of_hours && !s.is_break);
         const breakSlots = selectedSlots.filter(s => s.is_break);
-        // Identify "Before" and "After" slots relative to normal hours
         let beforeSlots = [];
         let afterSlots = [];
 
@@ -267,7 +270,6 @@ const NextSlotCalendarModal = ({
             beforeSlots = selectedSlots.filter(s => s.is_out_of_hours && s.iso < firstNormalTime);
             afterSlots = selectedSlots.filter(s => s.is_out_of_hours && s.iso > lastNormalTime);
         } else {
-            // If no normal slots, treat all as generic "extra", put in 'before' for simplicity or a generic list
             beforeSlots = selectedSlots.filter(s => s.is_out_of_hours);
         }
 
@@ -276,14 +278,14 @@ const NextSlotCalendarModal = ({
             const headerClass = type === 'normal' ? 'slots-list__section-header--normal' : 'slots-list__section-header--extra';
 
             return (
-                <>
+                <div className="slots-list__section">
                     <div className={`slots-list__section-header ${headerClass}`}>{title}</div>
                     <table className="slots-list__table">
                         <tbody>
                             {slots.map((slot, idx) => (
-                                <tr key={`${type}-${slot.iso}-${idx}`} className={type !== 'normal' ? 'slots-list__row--extra' : ''}>
-                                    <td className="slots-list__row-cell">
-                                        <div className="flex items-center gap-2">
+                                <tr key={`${type}-${slot.iso}-${idx}`} className={`slots-list__row ${type !== 'normal' ? 'slots-list__row--extra' : ''}`}>
+                                    <td className="slots-list__cell">
+                                        <div className="slots-list__time-group">
                                             <span className={`slots-list__time slots-list__time--${type}`}>
                                                 {slot.time}
                                             </span>
@@ -292,29 +294,29 @@ const NextSlotCalendarModal = ({
                                             {type === 'break' && <span className="slots-list__tag-break">EXT</span>}
                                         </div>
                                     </td>
-                                    <td className="slots-list__row-cell text-right">
+                                    <td className="slots-list__cell slots-list__cell--actions">
                                         <div className="slots-list__actions">
                                             <button
-                                                className="btn-icon"
+                                                className="slots-list__wa-btn"
                                                 onClick={(e) => { e.stopPropagation(); onWhatsApp(slot); }}
                                                 title="WhatsApp"
-                                                style={{ color: 'var(--green-600)', background: 'var(--green-50)' }}
                                             >
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z" /></svg>
+                                                📲
                                             </button>
-                                            <button
-                                                className={`slots-list__action-btn slots-list__action-btn--${type}`}
+                                            <Button
+                                                variant={type === 'normal' ? 'primary' : 'secondary'}
+                                                size="sm-compact"
                                                 onClick={() => onSelect(slot.iso, slot.is_out_of_hours)}
                                             >
                                                 {type === 'normal' ? t('select') : (type === 'break' ? t('assign_ext') : t('assign_extra'))}
-                                            </button>
+                                            </Button>
                                         </div>
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
-                </>
+                </div>
             );
         };
 
@@ -322,13 +324,13 @@ const NextSlotCalendarModal = ({
             <div className="slots-list">
                 <div className="slots-list__header">
                     <h3 className="slots-list__title">
-                        {slotsByDate[selectedDate]?.dayName}
+                        {slotsByDate[selectedDate]?.dayName} - {new Date(selectedDate + 'T12:00:00').toLocaleDateString()}
                     </h3>
                     <button onClick={() => setViewMode('calendar')} className="slots-list__back-btn">
                         ← {t('back_to_calendar')}
                     </button>
                 </div>
-                <div className="slots-list__content">
+                <div className="slots-list__body">
                     {renderSection(`🔓 ${t('before_hours_extra')}`, beforeSlots, 'before')}
                     {renderSection(`✅ ${t('attention_hours')}`, normalSlots, 'normal')}
                     {renderSection(`☕ ${t('breaks_special_slots')}`, breakSlots, 'break')}
@@ -348,25 +350,27 @@ const NextSlotCalendarModal = ({
             <div className="calendar-slot-modal">
                 {renderControls()}
 
-                {loading && !nextSlotData ? (
-                    <div className="calendar-loader">
-                        <div className="loading-spinner-small"></div>
-                        <p className="font-bold mt-3">{t('exploring_schedule')}</p>
-                    </div>
-                ) : !nextSlotData || !nextSlotData.results || nextSlotData.results.length === 0 ? (
-                    <div className="calendar-empty">
-                        <p className="text-lg font-bold mb-2">{t('no_slots_available')}</p>
-                        <p className="text-sm">{t('try_out_of_hours')}</p>
-                    </div>
-                ) : viewMode === 'calendar' ? (
-                    renderCalendarView()
-                ) : (
-                    renderListView()
-                )}
+                <div className="calendar-slot-modal__content">
+                    {loading && !nextSlotData ? (
+                        <div className="calendar-loader">
+                            <div className="loading-spinner"></div>
+                            <p className="calendar-loader__text">{t('exploring_schedule')}</p>
+                        </div>
+                    ) : !nextSlotData || !nextSlotData.results || nextSlotData.results.length === 0 ? (
+                        <div className="calendar-empty">
+                            <p className="calendar-empty__text">{t('no_slots_available')}</p>
+                            <p className="calendar-empty__subtext">{t('try_out_of_hours')}</p>
+                        </div>
+                    ) : viewMode === 'calendar' ? (
+                        renderCalendarView()
+                    ) : (
+                        renderListView()
+                    )}
+                </div>
 
-                <div className="calendar-footer">
-                    <span>{t('click_day_to_view')}</span>
-                    <button className="btn btn-sm btn-ghost" onClick={onClose}>{t('close')}</button>
+                <div className="calendar-slot-modal__footer">
+                    <span className="calendar-slot-modal__hint">{t('click_day_to_view')}</span>
+                    <Button variant="secondary" outline size="sm" onClick={onClose}>{t('close')}</Button>
                 </div>
             </div>
         </Modal>

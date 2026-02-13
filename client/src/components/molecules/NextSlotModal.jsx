@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect } from 'react';
 import Modal from './Modal';
 import { formatDate } from '../../utils/dateUtils';
+import { useLanguage } from '../../context/LanguageContext';
 
 const NextSlotModal = ({
     isOpen,
@@ -19,6 +20,7 @@ const NextSlotModal = ({
     hasPrevGroup,
     hasNextGroup
 }) => {
+    const { t } = useLanguage();
 
     // Keyboard navigation
     useEffect(() => {
@@ -36,7 +38,7 @@ const NextSlotModal = ({
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [isOpen, hasPrevGroup, hasNextGroup, onPrevGroup, onNextGroup]);
 
-    const monthNames = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+    const monthNames = t('months_array');
     const todayIso = new Date().toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).split(' ')[0];
 
     const currentSlots = slotPages.length > 0 ? slotPages[Math.min(slotsPage, slotPages.length - 1)] : [];
@@ -45,7 +47,7 @@ const NextSlotModal = ({
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title="🔍 Búsqueda de Turnos Libres"
+            title={`🔍 ${t('search_free_slots')}`}
             size="lg"
         >
             <div className="flex flex-col gap-6 max-h-[75vh] overflow-y-auto custom-scrollbar p-2">
@@ -54,7 +56,7 @@ const NextSlotModal = ({
                     <div className="flex items-center gap-2">
                         <span className="text-blue-600 text-lg">ℹ️</span>
                         <p className="text-xs font-semibold text-blue-800">
-                            Búsqueda hasta <span className="font-black">90 días</span> (3 meses) en el futuro
+                            {t('search_limit_3_months')}
                         </p>
                     </div>
                 </div>
@@ -67,22 +69,22 @@ const NextSlotModal = ({
                             checked={includeOutOfHours}
                             onChange={(e) => onToggleOutOfHours(e.target.checked)}
                         />
-                        <span className="text-sm font-bold text-amber-800">🔓 Incluir sobreturnos / fuera de horario</span>
+                        <span className="text-sm font-bold text-amber-800">🔓 {t('include_overtime_short')}</span>
                     </label>
                 </div>
 
                 {(!nextSlotData || loading) ? (
                     <div className="text-center p-12 text-main-500 flex flex-col items-center gap-3">
                         <div className="loading-spinner-small"></div>
-                        <p className="font-medium">Explorando agenda en busca de huecos...</p>
+                        <p className="font-medium">{t('exploring_schedule')}</p>
                     </div>
                 ) : (
                     <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm">
                         <table className="w-full border-collapse">
                             <thead className="bg-slate-50/80 backdrop-blur-sm sticky top-0 z-10">
                                 <tr>
-                                    <th className="px-5 py-4 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-100">Horario / Fecha</th>
-                                    <th className="px-5 py-4 text-right text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-100">Acción</th>
+                                    <th className="px-5 py-4 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-100">{t('time_date')}</th>
+                                    <th className="px-5 py-4 text-right text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-100">{t('actions')}</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
@@ -114,7 +116,7 @@ const NextSlotModal = ({
                                                                 📅 {slot.dayName}
                                                             </span>
                                                             {isToday && (
-                                                                <span className="text-[9px] bg-blue-600 text-white px-1.5 py-0.5 rounded-full font-black uppercase">HOY</span>
+                                                                <span className="text-[9px] bg-blue-600 text-white px-1.5 py-0.5 rounded-full font-black uppercase">{t('today')}</span>
                                                             )}
                                                         </div>
                                                     </td>
@@ -152,7 +154,7 @@ const NextSlotModal = ({
                                                                     formattedDate: dateStr,
                                                                 });
                                                             }}
-                                                            title="Compartir por WhatsApp"
+                                                            title={t('share_whatsapp')}
                                                         >
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
                                                                 <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z" />
@@ -162,7 +164,7 @@ const NextSlotModal = ({
                                                             className={`px-5 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-md active:scale-95 ${slot.is_out_of_hours ? 'bg-amber-600 text-white hover:bg-amber-700' : 'bg-slate-900 text-white hover:bg-black'}`}
                                                             onClick={() => onSelect(slot.iso, slot.is_out_of_hours)}
                                                         >
-                                                            Seleccionar
+                                                            {t('select')}
                                                         </button>
                                                     </div>
                                                 </td>
@@ -183,15 +185,15 @@ const NextSlotModal = ({
                             onClick={() => setSlotsPage(p => Math.max(0, p - 1))}
                             disabled={slotsPage === 0}
                         >
-                            ⬅️ Anterior
+                            ⬅️ {t('previous_month') || 'Anterior'}
                         </button>
-                        <span className="text-xs font-bold text-slate-500">Página {slotsPage + 1}</span>
+                        <span className="text-xs font-bold text-slate-500">{t('page_x').replace('{page}', slotsPage + 1)}</span>
                         <button
                             className="btn btn-sm btn-secondary"
                             onClick={() => setSlotsPage(p => p + 1)}
                             disabled={slotsPage >= slotPages.length - 1}
                         >
-                            Siguiente ➡️
+                            {t('next_month') || 'Siguiente'} ➡️
                         </button>
                     </div>
                 )}
@@ -203,7 +205,7 @@ const NextSlotModal = ({
                             onClick={onPrevGroup}
                         >
                             <span className="text-xl">⬅️</span>
-                            <span className="text-xs uppercase tracking-widest text-muted">Anteriores</span>
+                            <span className="text-xs uppercase tracking-widest text-muted">{t('previous_month') || 'Anteriores'}</span>
                         </button>
                     )}
                     {hasNextGroup && (
@@ -212,14 +214,14 @@ const NextSlotModal = ({
                             onClick={onNextGroup}
                         >
                             <span className="text-xl group-hover:scale-125 transition-transform">🔍</span>
-                            <span className="text-xs uppercase tracking-widest font-black text-blue-600">Explorar más fechas</span>
+                            <span className="text-xs uppercase tracking-widest font-black text-blue-600">{t('explore_more_dates')}</span>
                         </button>
                     )}
                 </div>
 
                 <div className="mt-4 pt-4 border-t border-slate-100 flex justify-between items-center text-[10px] text-muted uppercase font-bold tracking-tighter">
-                    <span>Use las flechas del teclado para navegar</span>
-                    <button className="btn btn-sm btn-ghost" onClick={onClose}>Cerrar</button>
+                    <span>{t('keyboard_nav_help')}</span>
+                    <button className="btn btn-sm btn-ghost" onClick={onClose}>{t('close')}</button>
                 </div>
             </div>
         </Modal>

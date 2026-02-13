@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import RequirementsList from '../components/organisms/RequirementsList';
 import MainLayout from '../components/templates/MainLayout';
+import './Requests.css';
 
 /**
  * Requests Page Component.
@@ -17,9 +18,11 @@ const Requests = () => {
             title={t('requests_workflow')}
             subtitle="Gestione las solicitudes de recetas, certificados y licencias médicas."
         >
-            <section className="requests-page__section card overflow-visible">
-                <RequirementsList user={user} />
-            </section>
+            <div className="requests-page">
+                <section className="requests-page__section requests-page__section--overflow-visible">
+                    <RequirementsList user={user} />
+                </section>
+            </div>
         </MainLayout>
     );
 };

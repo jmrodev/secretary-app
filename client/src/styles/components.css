@@ -1,0 +1,38 @@
+/* Shared Generic Styles (Not tied to a specific component) */
+
+/* Toasts (MessageContext) */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow-md);
+    z-index: 99999;
+    font-weight: 500;
+    animation: slideInDown 0.3s ease-out;
+}
+
+.toast-info {
+    background-color: var(--green-100);
+    color: var(--green-800);
+    border: 1px solid var(--green-400);
+}
+
+.toast-error {
+    background-color: var(--red-100);
+    color: var(--red-800);
+    border: 1px solid var(--red-400);
+}
+
+@keyframes slideInDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

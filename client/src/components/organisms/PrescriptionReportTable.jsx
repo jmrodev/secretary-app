@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { formatDate, parseDate } from '../../utils/dateUtils';
 import './PrescriptionReportTable.css';
 
 const PrescriptionReportTable = ({ data, t }) => {
@@ -11,7 +12,7 @@ const PrescriptionReportTable = ({ data, t }) => {
 
     // Group by date
     const grouped = list.reduce((acc, item) => {
-        const dateStr = new Date(item.date).toLocaleDateString();
+        const dateStr = formatDate(item.date);
         if (!acc[dateStr]) {
             acc[dateStr] = {
                 date: dateStr,
@@ -37,10 +38,10 @@ const PrescriptionReportTable = ({ data, t }) => {
 
     // Helper to get day of week
     const getDayOfWeek = (dateStr) => {
-        const parts = dateStr.split('/');
-        const date = new Date(parts[2], parts[1] - 1, parts[0]);
+        const d = parseDate(dateStr);
+        if (!d) return '';
         const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-        return days[date.getDay()];
+        return days[d.getDay()];
     };
 
     return (

@@ -28,6 +28,8 @@ import TransactionModal from '../components/molecules/TransactionModal';
 
 import './Appointments.css';
 
+import Loading from '../components/atoms/Loading';
+
 const Appointments = () => {
     const navigate = useNavigate();
     const controller = useAppointmentsPageController();
@@ -70,7 +72,7 @@ const Appointments = () => {
         exitRescheduleMode,
     } = controller;
 
-    if (loading) return <div className="centered-loader"><div className="status-display__spinner"></div></div>;
+    if (loading) return <Loading variant="full-page" />;
 
     return (
         <MainLayout wide>

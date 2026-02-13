@@ -5,9 +5,15 @@ import { useConfig } from '../../context/ConfigContext';
 import api from '../../api/axios';
 import { Link, useLocation } from 'react-router-dom';
 import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
 import LanguageSelector from '../atoms/LanguageSelector';
+import { ICONS } from '../../constants/icons';
 import './Sidebar.css';
 
+/**
+ * Sidebar Organism.
+ * Main navigation component following BEM and Atomic patterns.
+ */
 const Sidebar = () => {
     const { user, logout } = useAuth();
     const { t } = useLanguage();
@@ -16,7 +22,7 @@ const Sidebar = () => {
     const [doctors, setDoctors] = useState([]);
 
     const fetchSidebarDoctors = () => {
-        if (['admin', 'secretary', 'doctor'].includes(user.role)) {
+        if (user && ['admin', 'secretary', 'doctor'].includes(user.role)) {
             api.get('/users/doctors')
                 .then(res => setDoctors(res.data))
                 .catch(err => console.error("Error fetching doctors in sidebar:", err));
@@ -28,105 +34,118 @@ const Sidebar = () => {
 
         window.addEventListener('doctors-updated', fetchSidebarDoctors);
         return () => window.removeEventListener('doctors-updated', fetchSidebarDoctors);
-    }, [user.role]);
+    }, [user?.role]);
 
     const getLinkClass = (path) => `sidebar__link ${location.pathname === path ? 'sidebar__link--active' : ''}`;
 
+    if (!user) return null;
+
     return (
         <aside className="sidebar">
-            <div className="sidebar__header">
+            <header className="sidebar__header">
                 <h2 className="sidebar__title">{t('app_name')}</h2>
-            </div>
+            </header>
 
             <nav className="sidebar__nav">
                 <Link to="/dashboard" className={getLinkClass('/dashboard')}>
-                    <span className="sidebar__link-icon">📊</span> {t('dashboard')}
+                    <Icon name="DASHBOARD" className="sidebar__link-icon" />
+                    {t('dashboard')}
                 </Link>
 
                 {user.role !== 'admin' && (
                     <Link to="/appointments" className={getLinkClass('/appointments')}>
-                        <span className="sidebar__link-icon">📅</span> {t('appointments')}
+                        <Icon name="APPOINTMENTS" className="sidebar__link-icon" />
+                        {t('appointments')}
                     </Link>
                 )}
 
-
-
                 {user.role !== 'patient' && user.role !== 'admin' && (
                     <Link to="/patients" className={getLinkClass('/patients')}>
-                        <span className="sidebar__link-icon">👥</span> {t('patients')}
+                        <Icon name="PATIENTS" className="sidebar__link-icon" />
+                        {t('patients')}
                     </Link>
                 )}
 
                 {user.role === 'secretary' && (
                     <Link to="/insurances" className={getLinkClass('/insurances')}>
-                        <span className="sidebar__link-icon">🏥</span> {t('insurances') || 'Obras Sociales'}
+                        <Icon name="INSURANCES" className="sidebar__link-icon" />
+                        {t('insurances') || 'Obras Sociales'}
                     </Link>
                 )}
 
                 {settings.enable_office_rentals === 'true' && user.role !== 'admin' && (
                     <Link to="/rentals" className={getLinkClass('/rentals')}>
-                        <span className="sidebar__link-icon">🏢</span> {t('office_rentals')}
+                        <Icon name="RENTALS" className="sidebar__link-icon" />
+                        {t('office_rentals')}
                     </Link>
                 )}
 
                 {user.role !== 'admin' && (
                     <>
                         <Link to="/requests" className={getLinkClass('/requests')}>
-                            <span className="sidebar__link-icon">📝</span> {t('requests_workflow')}
+                            <Icon name="REQUESTS" className="sidebar__link-icon" />
+                            {t('requests_workflow')}
                         </Link>
                         <Link to="/documents" className={getLinkClass('/documents')}>
-                            <span className="sidebar__link-icon">📁</span> {t('medical_documents')}
+                            <Icon name="DOCUMENTS" className="sidebar__link-icon" />
+                            {t('medical_documents')}
                         </Link>
                         <Link to="/doctors" className={getLinkClass('/doctors')}>
-                            <span className="sidebar__link-icon">🩺</span> {t('doctors')}
+                            <Icon name="DOCTORS" className="sidebar__link-icon" />
+                            {t('doctors')}
                         </Link>
                     </>
                 )}
 
                 {user.role === 'secretary' && (
                     <Link to="/finances" className={getLinkClass('/finances')}>
-                        <span className="sidebar__link-icon">💰</span> {t('finances')}
+                        <Icon name="FINANCES" className="sidebar__link-icon" />
+                        {t('finances')}
                     </Link>
                 )}
 
                 {(user.role === 'admin' || user.role === 'secretary') && (
                     <Link to="/reports" className={getLinkClass('/reports')}>
-                        <span className="sidebar__link-icon">📑</span> {t('reports') || 'Reportes'}
+                        <Icon name="REPORTS" className="sidebar__link-icon" />
+                        {t('reports') || 'Reportes'}
                     </Link>
                 )}
 
                 {user.role === 'admin' && (
-                    <Link to="/logs" className={getLinkClass('/logs')}>
-                        <span className="sidebar__link-icon">📜</span> {t('audit_logs')}
-                    </Link>
-                )}
-
-                {user.role === 'admin' && (
-                    <Link to="/admin/users" className={getLinkClass('/admin/users')}>
-                        <span className="sidebar__link-icon">👤</span> {t('users')}
-                    </Link>
-                )}
-
-                {(user.role === 'admin' || user.role === 'secretary') && (
-                    <Link to="/institutions" className={getLinkClass('/institutions')}>
-                        <span className="sidebar__link-icon">🏛️</span> {t('institutions')}
-                    </Link>
+                    <>
+                        <Link to="/logs" className={getLinkClass('/logs')}>
+                            <Icon name="LOGS" className="sidebar__link-icon" />
+                            {t('audit_logs')}
+                        </Link>
+                        <Link to="/admin/users" className={getLinkClass('/admin/users')}>
+                            <Icon name="USERS" className="sidebar__link-icon" />
+                            {t('users')}
+                        </Link>
+                    </>
                 )}
 
                 {(user.role === 'admin' || user.role === 'secretary') && (
-                    <Link to="/config" className={getLinkClass('/config')}>
-                        <span className="sidebar__link-icon">⚙️</span> {t('system_config')}
-                    </Link>
+                    <>
+                        <Link to="/institutions" className={getLinkClass('/institutions')}>
+                            <Icon name="INSTITUTIONS" className="sidebar__link-icon" />
+                            {t('institutions')}
+                        </Link>
+                        <Link to="/config" className={getLinkClass('/config')}>
+                            <Icon name="CONFIG" className="sidebar__link-icon" />
+                            {t('system_config')}
+                        </Link>
+                    </>
                 )}
 
                 <Link to="/profile" className={getLinkClass('/profile')}>
-                    <span className="sidebar__link-icon">👤</span> {t('profile')}
+                    <Icon name="PROFILE" className="sidebar__link-icon" />
+                    {t('profile')}
                 </Link>
 
                 {/* Spreadsheet Links */}
                 {doctors.length > 0 && (
                     <div className="sidebar__section">
-                        <div className="sidebar__section-title">📊 {t('spreadsheets') || 'Planillas'}</div>
+                        <div className="sidebar__section-title">{t('spreadsheets') || 'Planillas'}</div>
                         {user.role === 'doctor' ? (
                             doctors
                                 .filter(d => d.user_id === (user.user_id || user.id) && d.spreadsheet_id)
@@ -138,7 +157,8 @@ const Sidebar = () => {
                                         rel="noopener noreferrer"
                                         className="sidebar__link"
                                     >
-                                        <span className="sidebar__link-icon">📈</span> {t('my_spreadsheet') || 'Mi Planilla'}
+                                        <Icon name="SPREADSHEETS" className="sidebar__link-icon" />
+                                        {t('my_spreadsheet') || 'Mi Planilla'}
                                     </a>
                                 ))
                         ) : (
@@ -153,15 +173,18 @@ const Sidebar = () => {
                                         className="sidebar__link"
                                         title={`Planilla de ${d.full_name}`}
                                     >
-                                        <span className="sidebar__link-icon">📈</span> {d.full_name.split(' ')[0]}
+                                        <Icon name="SPREADSHEETS" className="sidebar__link-icon" />
+                                        {d.full_name.split(' ')[0]}
                                     </a>
                                 ))
                         )}
                     </div>
                 )}
+
+
             </nav>
 
-            <div className="sidebar__footer">
+            <footer className="sidebar__footer">
                 <LanguageSelector />
 
                 <div className="sidebar-user">
@@ -178,11 +201,10 @@ const Sidebar = () => {
                         onClick={logout}
                         className="sidebar-user__logout"
                         title={t('sign_out')}
-                    >
-                        🚪
-                    </Button>
+                        icon={<Icon name="logout" size="1.25rem" />}
+                    />
                 </div>
-            </div>
+            </footer>
         </aside>
     );
 };

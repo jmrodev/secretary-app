@@ -1,3 +1,4 @@
+/* ReportFilters Component Styles (BEM) */
 
 .report-filters {
     display: flex;
@@ -5,10 +6,11 @@
     gap: 1.5rem;
     align-items: flex-end;
     padding: 1.5rem;
-    background: var(--card-bg, #fff);
-    border-radius: var(--radius-lg, 12px);
-    box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,0.1));
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
     margin-bottom: 2rem;
+    border: 1px solid var(--border-color);
 }
 
 .report-filters__group {
@@ -18,9 +20,9 @@
 }
 
 .report-filters__label {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--text-muted, #64748b);
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -32,15 +34,15 @@
 }
 
 .report-filters__select {
-    min-width: 140px;
+    min-width: 150px;
 }
 
 .report-filters__select--doctor {
-    min-width: 220px;
+    min-width: 240px;
 }
 
 .report-filters__input {
-    width: 100px;
+    width: 110px;
     text-align: center;
 }
 
@@ -50,17 +52,36 @@
     margin-left: auto;
 }
 
+@media (max-width: 1024px) {
+    .report-filters__actions {
+        margin-left: 0;
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
 @media (max-width: 768px) {
     .report-filters {
         flex-direction: column;
         align-items: stretch;
+        padding: 1.25rem;
     }
-    
+
+    .report-filters__group {
+        width: 100%;
+    }
+
+    .report-filters__select,
+    .report-filters__select--doctor,
+    .report-filters__input {
+        width: 100%;
+        min-width: unset;
+    }
+
     .report-filters__actions {
-        margin-left: 0;
         flex-direction: column;
     }
-    
+
     .report-filters__btn {
         width: 100%;
     }

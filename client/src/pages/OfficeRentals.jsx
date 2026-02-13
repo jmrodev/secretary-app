@@ -3,8 +3,11 @@ import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
-import Sidebar from '../components/organisms/Sidebar';
+import MainLayout from '../components/templates/MainLayout';
+import Loading from '../components/atoms/Loading';
+import Button from '../components/atoms/Button';
 import { formatPrice } from '../utils/format';
+import { formatDate } from '../utils/dateUtils';
 
 const OfficeRentals = () => {
     const { t } = useLanguage();
@@ -57,93 +60,102 @@ const OfficeRentals = () => {
         }
     };
 
-    if (loading) return <div>{t('loading')}</div>;
-
     return (
-        <div className="app-layout">
-            <Sidebar />
-            <main className="main-content">
-                <h1 className="title">{t('office_rentals')}</h1>
+        <MainLayout>
+            <h1 className="title">{t('office_rentals')}</h1>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-                    {/* Booking Form (Doctors only) */}
-                    {user.role === 'doctor' && (
+            {loading ? (
+                <Loading variant="centered" text={t('loading_rentals')} />
+            ) : (
+                <>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                        {/* Booking Form (Doctors only) */}
+                        {user.role === 'doctor' && (
+                            <div className="card">
+                                <header className="card-header border-b-0 mb-4">
+                                    <h3 className="card-header__title">{t('book_office')}</h3>
+                                </header>
+                                <form onSubmit={handleRent} className="flex flex-col gap-4">
+                                    <div className="input-group">
+                                        <label className="input-label">{t('select_office')}</label>
+                                        <select className="input-field" value={selectedOffice} onChange={(e) => setSelectedOffice(e.target.value)} required>
+                                            <option value="">-- {t('select_office')} --</option>
+                                            {consultorios.map(c => (
+                                                <option key={c.id} value={c.id}>{c.name} - {t(c.status) || c.status}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div className="input-group">
+                                        <label className="input-label">{t('date')}</label>
+                                        <input type="date" className="input-field" value={date} onChange={(e) => setDate(e.target.value)} required />
+                                    </div>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                        <div className="input-group">
+                                            <label className="input-label">{t('start_time')}</label>
+                                            <input type="time" className="input-field" value={startTime} onChange={(e) => setStartTime(e.target.value)} required />
+                                        </div>
+                                        <div className="input-group">
+                                            <label className="input-label">{t('end_time')}</label>
+                                            <input type="time" className="input-field" value={endTime} onChange={(e) => setEndTime(e.target.value)} required />
+                                        </div>
+                                    </div>
+                                    <Button type="submit" className="w-full">{t('book_rental_btn')}</Button>
+                                </form>
+                            </div>
+                        )}
+
+                        {/* Available Offices List */}
                         <div className="card">
-                            <h3>{t('book_office')}</h3>
-                            <form onSubmit={handleRent}>
-                                <div className="input-group">
-                                    <label className="input-label">{t('select_office')}</label>
-                                    <select className="input-field" value={selectedOffice} onChange={(e) => setSelectedOffice(e.target.value)} required>
-                                        <option value="">-- {t('select_office')} --</option>
-                                        {consultorios.map(c => (
-                                            <option key={c.id} value={c.id}>{c.name} - {t(c.status) || c.status}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">{t('date')}</label>
-                                    <input type="date" className="input-field" value={date} onChange={(e) => setDate(e.target.value)} required />
-                                </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                                    <div className="input-group">
-                                        <label className="input-label">{t('start_time')}</label>
-                                        <input type="time" className="input-field" value={startTime} onChange={(e) => setStartTime(e.target.value)} required />
+                            <header className="card-header border-b-0 mb-4">
+                                <h3 className="card-header__title">{t('available_offices')}</h3>
+                            </header>
+                            <div className="flex flex-col gap-2">
+                                {consultorios.map(c => (
+                                    <div key={c.id} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                                        <strong className="text-main-800">{c.name}</strong>
+                                        <p className="text-sm text-slate-500 my-1">{c.description || 'No description'}</p>
+                                        <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${c.status === 'available' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                            {t(c.status) || c.status}
+                                        </span>
                                     </div>
-                                    <div className="input-group">
-                                        <label className="input-label">{t('end_time')}</label>
-                                        <input type="time" className="input-field" value={endTime} onChange={(e) => setEndTime(e.target.value)} required />
-                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* My Rentals List */}
+                    {user.role === 'doctor' && rentals.length > 0 && (
+                        <div className="mt-8">
+                            <h2 className="title mb-4">{t('my_rentals')}</h2>
+                            <div className="card p-0 overflow-hidden">
+                                <div className="table-responsive">
+                                    <table className="table-base w-full">
+                                        <thead>
+                                            <tr>
+                                                <th className="pl-6">{t('office')}</th>
+                                                <th>{t('date')}</th>
+                                                <th>{t('time')}</th>
+                                                <th className="pr-6 text-right">{t('cost')}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {rentals.map(r => (
+                                                <tr key={r.id}>
+                                                    <td className="pl-6 font-bold text-main-800">{r.consultorio_name}</td>
+                                                    <td>{formatDate(r.rental_date)}</td>
+                                                    <td>{r.start_time} - {r.end_time}</td>
+                                                    <td className="pr-6 text-right font-mono text-green-600">{formatPrice(r.cost)}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>{t('book_rental_btn')}</button>
-                            </form>
+                            </div>
                         </div>
                     )}
-
-                    {/* Available Offices List */}
-                    <div className="card">
-                        <h3>{t('available_offices')}</h3>
-                        {consultorios.map(c => (
-                            <div key={c.id} style={{ padding: '1rem', background: '#f8fafc', marginBottom: '0.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                                <strong>{c.name}</strong>
-                                <p style={{ margin: '0.25rem 0', fontSize: '0.9rem', color: '#64748b' }}>{c.description || 'No description'}</p>
-                                <span style={{ fontSize: '0.8rem', padding: '2px 6px', background: c.status === 'available' ? '#dcfce7' : '#fee2e2', color: c.status === 'available' ? '#166534' : '#991b1b', borderRadius: '4px' }}>
-                                    {t(c.status) || c.status}
-                                </span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* My Rentals List */}
-                {user.role === 'doctor' && rentals.length > 0 && (
-                    <div style={{ marginTop: '2rem' }}>
-                        <h2 className="title" style={{ fontSize: '1.5rem' }}>{t('my_rentals')}</h2>
-                        <div className="card">
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr style={{ textAlign: 'left', borderBottom: '1px solid #e2e8f0' }}>
-                                        <th style={{ padding: '1rem' }}>{t('office')}</th>
-                                        <th style={{ padding: '1rem' }}>{t('date')}</th>
-                                        <th style={{ padding: '1rem' }}>{t('time')}</th>
-                                        <th style={{ padding: '1rem' }}>{t('cost')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {rentals.map(r => (
-                                        <tr key={r.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                                            <td style={{ padding: '1rem' }}>{r.consultorio_name}</td>
-                                            <td style={{ padding: '1rem' }}>{new Date(r.rental_date).toLocaleDateString()}</td>
-                                            <td style={{ padding: '1rem' }}>{r.start_time} - {r.end_time}</td>
-                                            <td style={{ padding: '1rem' }}>{formatPrice(r.cost)}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                )}
-            </main>
-        </div>
+                </>
+            )}
+        </MainLayout>
     );
 };
 

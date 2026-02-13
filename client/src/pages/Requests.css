@@ -1,0 +1,18 @@
+/* Requests.css */
+
+.requests-page {
+    padding: 1.5rem;
+}
+
+.requests-page__section {
+    background: white;
+    border-radius: 1.25rem;
+    box-shadow: var(--shadow-md);
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+}
+
+/* Ensure child organisms don't overflow */
+.requests-page__section--overflow-visible {
+    overflow: visible;
+}

@@ -1,0 +1,16 @@
+.icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    vertical-align: middle;
+    transition: all 0.2s ease;
+}
+
+.icon--button {
+    cursor: pointer;
+}
+
+.icon--button:hover {
+    opacity: 0.8;
+}

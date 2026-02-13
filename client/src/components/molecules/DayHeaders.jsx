@@ -1,4 +1,5 @@
 import React from 'react';
+import './DayHeaders.css';
 
 const DayHeaders = ({ daysOfWeek }) => {
   return (

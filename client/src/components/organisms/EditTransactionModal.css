@@ -1,0 +1,18 @@
+/* EditTransactionModal Component Styles */
+
+.edit-transaction-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.edit-transaction-form__warning {
+    font-size: 0.7rem;
+    color: var(--amber-600);
+    margin-top: 0.5rem;
+    font-weight: 600;
+    line-height: 1.4;
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+}
