@@ -43,7 +43,6 @@ export const useMedicalDocumentsController = () => {
     // Form inputs
     const [reqType, setReqType] = useState('prescription');
     const [reqNote, setReqNote] = useState('');
-    const [bonified, setBonified] = useState(false);
     const [sendToDoctor, setSendToDoctor] = useState(true);
     const [filePatient, setFilePatient] = useState('');
     const [fileDesc, setFileDesc] = useState('');
@@ -57,7 +56,7 @@ export const useMedicalDocumentsController = () => {
     // Edit Data
     const [editData, setEditData] = useState({ medications: '', instructions: '' });
     const [licenseEditData, setLicenseEditData] = useState({ start_date: '', days_duration: '', diagnosis: '' });
-    const [requestEditData, setRequestEditData] = useState({ request_note: '', doctor_note: '', debt_amount: '', payment_method: 'cash', bonified: false });
+    const [requestEditData, setRequestEditData] = useState({ request_note: '', doctor_note: '' });
 
     // --- Helpers ---
     const normalizeText = (text) => {
@@ -146,10 +145,10 @@ export const useMedicalDocumentsController = () => {
     // --- Handlers Hook ---
     const hookHandlers = useMedicalDocumentsHandlers({
         user, t, showMessage, confirm, doubleConfirm, canDeleteRequest,
-        reqType, selectedPatient, selectedDoctor, reqNote, bonified, sendToDoctor,
+        reqType, selectedPatient, selectedDoctor, reqNote, sendToDoctor,
         selectedFile, filePatient, fileDesc, fileToDelete, editData, licenseEditData,
         requestEditData, selectedPrescription, selectedLicense, selectedRequest,
-        setReqNote, setBonified, setSendToDoctor, setFiles, setRequests, setPrescriptions,
+        setReqNote, setSendToDoctor, setFiles, setRequests, setPrescriptions,
         setLicenses, setFileDesc, setSelectedFile, setFileToDelete, setIsSubmitting,
         setIsEditing, setSelectedPrescription, setSelectedLicense, setSelectedRequest,
         setEditData, setLicenseEditData, setRequestEditData, setActionModal, setPaymentModal,
@@ -201,7 +200,7 @@ export const useMedicalDocumentsController = () => {
         selectedPatient, setSelectedPatient, selectedDoctor, setSelectedDoctor,
         selectedFile, setSelectedFile, selectedPrescription, setSelectedPrescription,
         selectedLicense, setSelectedLicense, selectedRequest, setSelectedRequest,
-        reqType, setReqType, reqNote, setReqNote, bonified, setBonified,
+        reqType, setReqType, reqNote, setReqNote,
         sendToDoctor, setSendToDoctor, filePatient, setFilePatient, fileDesc, setFileDesc,
         fileToDelete, setFileToDelete, actionModal, setActionModal, actionNote, setActionNote,
         paymentModal, setPaymentModal, editData, setEditData, licenseEditData, setLicenseEditData,

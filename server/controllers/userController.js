@@ -58,6 +58,9 @@ exports.getAllDoctors = async (req, res) => {
                    d.appointment_duration, d.break_duration, d.overturn_start_time, 
                    d.overturn_end_time, d.force_hour_alignment,
                    d.afip_cuit, d.afip_pto_vta, d.afip_enabled,
+                   d.cbu, d.alias, d.bio,
+                   d.reminder_template, d.confirmation_template,
+                   d.reminder_virtual_template, d.confirmation_virtual_template,
                    di.spreadsheet_id
             FROM doctors d
             LEFT JOIN doctor_integrations di ON d.id = di.doctor_id
@@ -648,6 +651,9 @@ exports.updateDoctor = async (req, res) => {
         if (updates.full_name !== undefined) { fields.push("full_name = ?"); params.push(updates.full_name); }
         if (updates.specialty !== undefined) { fields.push("specialty = ?"); params.push(updates.specialty); }
         if (updates.phone !== undefined) { fields.push("phone = ?"); params.push(updates.phone); }
+        if (updates.cbu !== undefined) { fields.push("cbu = ?"); params.push(updates.cbu); }
+        if (updates.alias !== undefined) { fields.push("alias = ?"); params.push(updates.alias); }
+        if (updates.bio !== undefined) { fields.push("bio = ?"); params.push(updates.bio); }
         if (updates.office_number !== undefined) { fields.push("office_number = ?"); params.push(updates.office_number); }
         if (updates.rental_type !== undefined) { fields.push("rental_type = ?"); params.push(updates.rental_type); }
         if (updates.rental_cost !== undefined) { fields.push("rental_cost = ?"); params.push(updates.rental_cost); }
@@ -666,6 +672,10 @@ exports.updateDoctor = async (req, res) => {
         if (updates.afip_cuit !== undefined) { fields.push("afip_cuit = ?"); params.push(updates.afip_cuit); }
         if (updates.afip_pto_vta !== undefined) { fields.push("afip_pto_vta = ?"); params.push(updates.afip_pto_vta); }
         if (updates.afip_enabled !== undefined) { fields.push("afip_enabled = ?"); params.push(updates.afip_enabled ? 1 : 0); }
+        if (updates.reminder_template !== undefined) { fields.push("reminder_template = ?"); params.push(updates.reminder_template); }
+        if (updates.confirmation_template !== undefined) { fields.push("confirmation_template = ?"); params.push(updates.confirmation_template); }
+        if (updates.reminder_virtual_template !== undefined) { fields.push("reminder_virtual_template = ?"); params.push(updates.reminder_virtual_template); }
+        if (updates.confirmation_virtual_template !== undefined) { fields.push("confirmation_virtual_template = ?"); params.push(updates.confirmation_virtual_template); }
 
         if (fields.length > 0) {
             const query = `UPDATE doctors SET ${fields.join(', ')} WHERE id = ? `;
@@ -863,19 +873,35 @@ exports.getReminders = async (req, res) => {
         }
 
         const query = `
-            SELECT p.id, p.full_name, p.phone, p.dni,
+            SELECT DISTINCT p.id, p.full_name, p.phone, p.dni,
             d.full_name as doctor_name,
-            p.next_suggested_visit_date,
-            p.next_suggested_prescription_date,
-            p.license_expiry_date
+            p.next_suggested_visit_date, p.visit_notified,
+            p.next_suggested_prescription_date, p.prescription_notified,
+            p.license_expiry_date, p.license_notified,
+            (
+                SELECT GROUP_CONCAT(medication_name SEPARATOR ', ')
+                FROM patient_medications 
+                WHERE patient_id = p.id AND next_refill_date <= CURRENT_DATE
+            ) as expiring_meds,
+            (
+                SELECT GROUP_CONCAT(id SEPARATOR ',')
+                FROM patient_medications 
+                WHERE patient_id = p.id AND next_refill_date <= CURRENT_DATE
+            ) as expiring_med_ids,
+            (
+                SELECT MIN(is_notified)
+                FROM patient_medications 
+                WHERE patient_id = p.id AND next_refill_date <= CURRENT_DATE
+            ) as meds_all_notified_min
             FROM patients p
             INNER JOIN patient_doctors pd ON p.id = pd.patient_id
             INNER JOIN doctors d ON pd.doctor_id = d.id
-        WHERE
-            (p.next_suggested_visit_date IS NOT NULL AND p.next_suggested_visit_date <= CURRENT_DATE)
-        OR(p.next_suggested_prescription_date IS NOT NULL AND p.next_suggested_prescription_date <= CURRENT_DATE)
-        OR(p.license_expiry_date IS NOT NULL AND p.license_expiry_date <= CURRENT_DATE)
-            `;
+            WHERE
+                (p.next_suggested_visit_date IS NOT NULL AND p.next_suggested_visit_date <= CURRENT_DATE)
+                OR (p.next_suggested_prescription_date IS NOT NULL AND p.next_suggested_prescription_date <= CURRENT_DATE)
+                OR (p.license_expiry_date IS NOT NULL AND p.license_expiry_date <= CURRENT_DATE)
+                OR EXISTS (SELECT 1 FROM patient_medications WHERE patient_id = p.id AND next_refill_date <= CURRENT_DATE)
+        `;
 
         let finalQuery = query;
         let params = [];
@@ -1152,6 +1178,50 @@ exports.getNewPatientStats = async (req, res) => {
         });
     } catch (err) {
         console.error("Get New Patient Stats Error:", err);
+        res.status(500).send("Server Error");
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+exports.completeReminder = async (req, res) => {
+    let conn;
+    try {
+        const { patientId, type, medIds, notified } = req.body;
+        conn = await pool.getConnection();
+
+        const val = notified ? 1 : 0;
+
+        if (type === 'visit') {
+            if (notified !== undefined) {
+                await conn.query("UPDATE patients SET visit_notified = ? WHERE id = ?", [val, patientId]);
+            } else {
+                await conn.query("UPDATE patients SET next_suggested_visit_date = NULL, visit_notified = 0 WHERE id = ?", [patientId]);
+            }
+        } else if (type === 'prescription') {
+            if (notified !== undefined) {
+                await conn.query("UPDATE patients SET prescription_notified = ? WHERE id = ?", [val, patientId]);
+            } else {
+                await conn.query("UPDATE patients SET next_suggested_prescription_date = NULL, prescription_notified = 0 WHERE id = ?", [patientId]);
+            }
+        } else if (type === 'license') {
+            if (notified !== undefined) {
+                await conn.query("UPDATE patients SET license_notified = ? WHERE id = ?", [val, patientId]);
+            } else {
+                await conn.query("UPDATE patients SET license_expiry_date = NULL, license_notified = 0 WHERE id = ?", [patientId]);
+            }
+        } else if (type === 'medication' && medIds) {
+            const ids = Array.isArray(medIds) ? medIds : String(medIds).split(',');
+            if (notified !== undefined) {
+                await conn.query("UPDATE patient_medications SET is_notified = ? WHERE id IN (?)", [val, ids]);
+            } else {
+                await conn.query("UPDATE patient_medications SET next_refill_date = NULL, is_notified = 0 WHERE id IN (?)", [ids]);
+            }
+        }
+
+        res.json({ message: notified !== undefined ? "Reminder notified status updated" : "Reminder marked as completed" });
+    } catch (err) {
+        console.error("Complete Reminder Error:", err);
         res.status(500).send("Server Error");
     } finally {
         if (conn) conn.release();

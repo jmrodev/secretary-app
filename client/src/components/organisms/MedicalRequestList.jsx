@@ -51,7 +51,7 @@ const MedicalRequestList = ({
                             const isRejected = r.status === 'rejected';
 
                             const paymentStatusClass = r.payment_status === 'paid' ? 'paid' :
-                                r.payment_status === 'debt' ? 'debt' :
+                                r.payment_status === 'debt' || r.payment_status === 'partial' ? 'debt' :
                                     r.payment_status === 'bonified' ? 'bonified' : 'pending';
 
                             return (
@@ -98,7 +98,7 @@ const MedicalRequestList = ({
                                             <div className={`medical-requests__payment-badge medical-requests__payment-badge--${paymentStatusClass}`}>
                                                 <span className="medical-requests__payment-dot"></span>
                                                 {r.payment_status === 'paid' ? t('paid') :
-                                                    (r.payment_status === 'debt' ? `${t('debt')} ${formatPrice(r.debt_amount)}` :
+                                                    ((r.payment_status === 'debt' || r.payment_status === 'partial') ? `${t(r.payment_status) || (r.payment_status === 'partial' ? 'Parcial' : 'Deuda')} ${formatPrice(r.debt_amount)}` :
                                                         (r.payment_status === 'bonified' ? (t('bonified') || 'Bonificado') : t('pending')))}
                                             </div>
 

@@ -86,13 +86,25 @@ exports.getPatientMedications = async (req, res) => {
 exports.addPatientMedication = async (req, res) => {
     let conn;
     try {
-        const { patient_id, medication_name, presentation, monodroga, dose, frequency, is_chronic, next_refill_date, notes } = req.body;
+        const {
+            patient_id, medication_name, presentation, monodroga, dose, frequency,
+            is_chronic, next_refill_date, notes, vademecum_id,
+            reminder_mode, reminder_day, units_per_box, daily_intake, boxes_count
+        } = req.body;
         const added_by = req.user.user_id;
 
         conn = await pool.getConnection();
         await conn.query(
-            "INSERT INTO patient_medications (patient_id, medication_name, presentation, monodroga, dose, frequency, is_chronic, added_by, next_refill_date, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            [patient_id, medication_name, presentation, monodroga, dose, frequency, is_chronic ? 1 : 0, added_by, next_refill_date || null, notes || null]
+            `INSERT INTO patient_medications (
+                patient_id, medication_name, presentation, monodroga, dose, frequency, 
+                is_chronic, added_by, next_refill_date, notes, vademecum_id,
+                reminder_mode, reminder_day, units_per_box, daily_intake, boxes_count
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                patient_id, medication_name, presentation, monodroga, dose, frequency,
+                is_chronic ? 1 : 0, added_by, next_refill_date || null, notes || null, vademecum_id || null,
+                reminder_mode || 'calculation', reminder_day || null, units_per_box || null, daily_intake || null, boxes_count || null
+            ]
         );
 
         res.status(201).json({ message: "Medication added to patient" });
@@ -108,12 +120,34 @@ exports.updatePatientMedication = async (req, res) => {
     let conn;
     try {
         const { id } = req.params;
-        const { dose, frequency, is_chronic, status } = req.body;
+        const {
+            dose, frequency, is_chronic, status,
+            next_refill_date, reminder_mode, reminder_day,
+            units_per_box, daily_intake, boxes_count
+        } = req.body;
 
         conn = await pool.getConnection();
+
+        // If next_refill_date is provided (even if null, but usually it means a manual update), we reset is_notified
+        let resetNotified = "";
+        let params = [
+            dose, frequency, is_chronic ? 1 : 0, status || 'active',
+            next_refill_date || null, reminder_mode || 'calculation', reminder_day || null,
+            units_per_box || null, daily_intake || null, boxes_count || null
+        ];
+
+        if (next_refill_date !== undefined) {
+            resetNotified = ", is_notified = 0";
+        }
+
         await conn.query(
-            "UPDATE patient_medications SET dose = ?, frequency = ?, is_chronic = ?, status = ? WHERE id = ?",
-            [dose, frequency, is_chronic ? 1 : 0, status || 'active', id]
+            `UPDATE patient_medications SET 
+                dose = ?, frequency = ?, is_chronic = ?, status = ?,
+                next_refill_date = ?, reminder_mode = ?, reminder_day = ?, 
+                units_per_box = ?, daily_intake = ?, boxes_count = ?
+                ${resetNotified}
+            WHERE id = ?`,
+            [...params, id]
         );
 
         res.json({ message: "Patient medication updated" });
@@ -145,10 +179,10 @@ exports.deletePatientMedication = async (req, res) => {
 exports.createPrescription = async (req, res) => {
     let conn;
     try {
-        const { appointment_id, medications, instructions } = req.body;
-        console.log("DEBUG: createPrescription called", { appointment_id, medications });
+        const { appointment_id, medications, instructions, items } = req.body;
+        console.log("DEBUG: createPrescription called", { appointment_id, medications, itemsCount: items?.length });
 
-        if (!medications || !medications.trim()) {
+        if ((!medications || !medications.trim()) && (!items || items.length === 0)) {
             return res.status(400).send("Medications are required");
         }
 
@@ -181,10 +215,34 @@ exports.createPrescription = async (req, res) => {
             return res.status(403).send("Unauthorized");
         }
 
-        await conn.query(
+        const result = await conn.query(
             "INSERT INTO prescriptions (appointment_id, medications, instructions) VALUES (?, ?, ?)",
-            [appointment_id, medications, instructions]
+            [appointment_id, medications || '', instructions]
         );
+
+        const prescriptionId = Number(result.insertId);
+
+        // --- Store structured items if provided ---
+        if (items && Array.isArray(items)) {
+            for (const item of items) {
+                await conn.query(
+                    `INSERT INTO prescription_items 
+                    (prescription_id, vademecum_id, medication_name, presentation, monodroga, dose, frequency, duration, quantity) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                    [
+                        prescriptionId,
+                        item.vademecum_id || null,
+                        item.name || item.medication_name,
+                        item.presentation || null,
+                        item.drug || item.monodroga || null,
+                        item.dose || null,
+                        item.frequency || null,
+                        item.duration || null,
+                        item.quantity || null
+                    ]
+                );
+            }
+        }
 
         console.log("DEBUG: Insert successful");
 
@@ -231,7 +289,7 @@ exports.createPrescription = async (req, res) => {
                 const nextDate = new Date(appointmentDate);
                 nextDate.setDate(nextDate.getDate() + Number(intervals.interval_days));
                 const nextDateStr = nextDate.toISOString().split('T')[0];
-                await conn.query("UPDATE patients SET next_suggested_prescription_date = ? WHERE id = ?", [nextDateStr, patientId]);
+                await conn.query("UPDATE patients SET next_suggested_prescription_date = ?, prescription_notified = 0 WHERE id = ?", [nextDateStr, patientId]);
                 console.log(`DEBUG: Set next suggested prescription date to ${nextDateStr} for patient ${patientId} (appointment ${appointment_id} on ${appointmentDate.toISOString().split('T')[0]})`);
             }
         }
@@ -405,7 +463,7 @@ exports.createLicense = async (req, res) => {
             const startDate = new Date(start_date);
             const expiryDate = new Date(startDate.getTime() + (Number(days_duration) * 24 * 60 * 60 * 1000));
             const expiryDateStr = expiryDate.toISOString().split('T')[0];
-            await conn.query("UPDATE patients SET license_expiry_date = ? WHERE id = ?", [expiryDateStr, patientId]);
+            await conn.query("UPDATE patients SET license_expiry_date = ?, license_notified = 0 WHERE id = ?", [expiryDateStr, patientId]);
             console.log(`DEBUG: Set license expiry date to ${expiryDateStr}`);
         }
 
@@ -607,16 +665,16 @@ exports.createRequest = async (req, res) => {
 
         let completedAtQueryPart = '?';
         // Add raw_medication_data to params
-        let queryParams = [type, patient_id, doctor_id, request_note, initialStatus, payment_method || 'cash', raw_medication_data || null, null];
+        let queryParams = [type, patient_id, doctor_id, request_note, initialStatus, raw_medication_data || null, null];
 
         if (initialStatus === 'completed') {
             completedAtQueryPart = 'NOW()';
-            queryParams = [type, patient_id, doctor_id, request_note, initialStatus, payment_method || 'cash', raw_medication_data || null];
+            queryParams = [type, patient_id, doctor_id, request_note, initialStatus, raw_medication_data || null];
         }
 
         const result = await conn.query(
-            `INSERT INTO medical_requests (type, patient_id, doctor_id, request_note, status, payment_method, raw_medication_data, created_at, completed_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ${completedAtQueryPart})`,
-            queryParams
+            `INSERT INTO medical_requests (type, patient_id, doctor_id, request_note, status, raw_medication_data, created_at, completed_at, payment_status) VALUES (?, ?, ?, ?, ?, ?, NOW(), ${completedAtQueryPart}, ?)`,
+            [...queryParams, bonified ? 'bonified' : 'pending']
         );
 
         // --- Store items in normalized table ---
@@ -633,8 +691,8 @@ exports.createRequest = async (req, res) => {
 
                         if (name) {
                             await conn.query(
-                                "INSERT INTO medical_request_items (request_id, medication_name, dose, frequency, quantity, status) VALUES (?, ?, ?, ?, ?, ?)",
-                                [result.insertId, name, dose, frequency, quantity, 'pending']
+                                "INSERT INTO medical_request_items (request_id, medication_name, dose, frequency, quantity, status, vademecum_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                                [result.insertId, name, dose, frequency, quantity, 'pending', item.vademecum_id || null]
                             );
                         }
                     }
@@ -645,28 +703,10 @@ exports.createRequest = async (req, res) => {
         }
         // ----------------------------------------
 
-        // --- Debt Generation for Request ---
-        // If not bonified, generate debt immediately for the request
-        if (!bonified) {
-            let serviceType = 'consultation';
-            if (type === 'prescription') serviceType = 'prescription';
-            else if (type === 'license') serviceType = 'medical_license';
-            else if (type === 'certificate') serviceType = 'certificate';
-
-            const priceInfo = await calculatePrice(conn, doctor_id, patient_id, serviceType);
-            if (priceInfo.price > 0) {
-                await conn.query(
-                    "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, transaction_date, request_id) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)",
-                    ['income_patient', priceInfo.price, `Request: ${type} for ${pat[0].full_name}`, pat[0].user_id, doctor_id, payment_method || 'cash', 'pending', result.insertId]
-                );
-                // Update request with debt status
-                await conn.query("UPDATE medical_requests SET payment_status = 'debt', debt_amount = ? WHERE id = ?", [priceInfo.price, result.insertId]);
-            }
-        } else {
-            await conn.query("UPDATE medical_requests SET payment_status = 'bonified' WHERE id = ?", [result.insertId]);
+        // Generate Debt if created as completed
+        if (initialStatus === 'completed' && !bonified) {
+            await generateRequestDebt(conn, result.insertId, req);
         }
-        // -----------------------------------
-
 
         logAction(req, 'CREATE_MEDICAL_REQUEST', `Type: ${type}, Patient: ${pat[0].full_name} (ID: ${patient_id}). Details: ${request_note}`);
 
@@ -783,6 +823,11 @@ exports.updateRequestStatus = async (req, res) => {
         params.push(id);
 
         await conn.query(query, params);
+
+        // [NEW] Debt Generation on Completion
+        if (status === 'completed' && reqInfo[0].payment_status !== 'bonified' && reqInfo[0].payment_status !== 'paid') {
+            await generateRequestDebt(conn, id, req);
+        }
 
         if (status === 'rejected') {
             await conn.query("DELETE FROM transactions WHERE request_id = ? AND status = 'pending'", [id]);

@@ -1,17 +1,43 @@
 import React from 'react';
 import './Badge.css';
 
+/**
+ * Badge Atom Component.
+ * Displays a badge or notification counter.
+ * 
+ * @param {React.ReactNode} children - Content to display in the badge
+ * @param {string} variant - Color variant: 'default', 'danger', 'success', 'warning', 'blue', 'accent', etc.
+ * @param {string} className - Additional CSS classes
+ * @param {function} onClick - Optional click handler
+ * @param {string} title - Optional tooltip text
+ * @param {number} count - For notification mode: the count to display
+ * @param {string} position - For notification mode: 'top-right', 'top-left', 'bottom-right', 'bottom-left'
+ */
 const Badge = ({
     children,
-    variant = 'default', // default, danger, success, warning, blue, accent, status-pending, etc.
+    variant = 'default',
     className = '',
     onClick = null,
-    title = ''
+    title = '',
+    count = null,
+    position = 'top-right'
 }) => {
-    const baseClass = 'badge';
+    // Notification mode: when count is provided
+    if (count !== null && count !== undefined) {
+        if (count <= 0) return null;
 
-    // Normalize variant for BEM
-    // Support legacy "status-" or "chip-" if needed, but moving towards "badge--variant"
+        return (
+            <span
+                className={`badge badge--notification badge--${position} ${className}`}
+                title={title}
+            >
+                {count > 99 ? '99+' : count}
+            </span>
+        );
+    }
+
+    // Standard badge mode
+    const baseClass = 'badge';
     const normalizedVariant = variant.replace('status-', '').replace('chip-', '');
     const variantClass = `${baseClass}--${normalizedVariant}`;
     const interactiveClass = onClick ? `${baseClass}--interactive` : '';
@@ -28,3 +54,4 @@ const Badge = ({
 };
 
 export default Badge;
+

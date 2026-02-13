@@ -10,6 +10,32 @@
     position: relative;
 }
 
+.transaction-modal__summary-header {
+    background-color: var(--blue-50);
+    border: 1px solid var(--blue-100);
+    border-radius: var(--radius);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.transaction-modal__summary-header .summary-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+}
+
+.transaction-modal__summary-header .summary-label {
+    font-weight: 600;
+    color: var(--blue-700);
+}
+
+.transaction-modal__summary-header .summary-value {
+    color: var(--text-main);
+    font-weight: 500;
+}
+
 .transaction-modal__results {
     position: absolute;
     z-index: 100;

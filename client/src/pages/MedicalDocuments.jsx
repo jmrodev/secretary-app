@@ -33,7 +33,7 @@ const MedicalDocuments = () => {
         fileToDelete, actionModal, actionNote,
         paymentModal, editData, licenseEditData,
         requestEditData,
-        reqType, reqNote, bonified,
+        reqType, reqNote,
         sendToDoctor,
 
         // Permissions
@@ -455,48 +455,6 @@ const MedicalDocuments = () => {
                                 <label className="input-label">{t('doctor_reply')}</label>
                                 <textarea className="input-field" rows="3" value={requestEditData.doctor_note} onChange={e => handleRequestEditDataChange('doctor_note', e.target.value)} />
                             </div>
-
-                            <div className="medical-documents__toggle-wrapper">
-                                <input
-                                    type="checkbox"
-                                    id="edit-req-bonified"
-                                    checked={requestEditData.bonified}
-                                    onChange={e => handleRequestEditDataChange('bonified', e.target.checked)}
-                                    className="switch-input"
-                                />
-                                <label htmlFor="edit-req-bonified" className="medical-documents__toggle-label">
-                                    {t('bonificado') || 'Bonificado (Costo $0)'}
-                                </label>
-                            </div>
-
-                            {!requestEditData.bonified && (
-                                <div className="config-flex--column config-flex--gap-4">
-                                    <div className="input-group">
-                                        <label className="input-label">{t('debt_amount')} ($)</label>
-                                        <CurrencyInput
-                                            className="input-field"
-                                            value={requestEditData.debt_amount}
-                                            onChange={e => handleRequestEditDataChange('debt_amount', e.target.value)}
-                                        />
-                                    </div>
-
-                                    <div className="input-group">
-                                        <label className="input-label">{t('payment_method') || 'Método de Pago'}</label>
-                                        <div className="medical-documents__payment-selector">
-                                            {['cash', 'transfer', 'debit', 'credit', 'mercadopago'].map(m => (
-                                                <button
-                                                    key={m}
-                                                    type="button"
-                                                    onClick={() => handleRequestEditDataChange('payment_method', m)}
-                                                    className={`medical-documents__payment-btn ${requestEditData.payment_method === m ? 'medical-documents__payment-btn--active' : ''}`}
-                                                >
-                                                    {t(m) || m.charAt(0).toUpperCase() + m.slice(1)}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
                         </div>
                     </Modal>
                 )}

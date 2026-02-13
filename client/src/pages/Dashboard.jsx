@@ -1,10 +1,11 @@
-
 import React from 'react';
 import { useDashboardController } from '../controllers/useDashboardController';
 import Button from '../components/atoms/Button';
 import Icon from '../components/atoms/Icon';
+import Badge from '../components/atoms/Badge';
 import RequirementsList from '../components/organisms/RequirementsList';
 import DashboardSidebar from '../components/organisms/DashboardSidebar';
+import DashboardReminders from '../components/organisms/DashboardReminders';
 import AppointmentActionModal from '../components/organisms/AppointmentActionModal';
 import PrescriptionModal from '../components/organisms/PrescriptionModal';
 import PatientHistoryModal from '../components/molecules/PatientHistoryModal';
@@ -41,6 +42,9 @@ const Dashboard = () => {
         handleUpdateType,
         handleHardEdit,
         handleSaveNote,
+        handleCompleteReminder,
+        handleWhatsAppReminder,
+        handleMarkNotified,
         navigate
     } = controller;
 
@@ -48,20 +52,23 @@ const Dashboard = () => {
         return <Loading variant="full-page" />;
     }
 
+    const isAdminOrSecretary = user.role === 'admin' || user.role === 'secretary';
+    const isDoctor = user.role === 'doctor';
+
     return (
         <MainLayout wide>
             <div className="dashboard-page">
                 <header className="dashboard-header animate-fadeIn">
                     <div className="flex-1">
                         <div className="flex items-center gap-3">
-                            <h1 className="dashboard-header__title">{t('dashboard') || 'Panel de Control'}</h1>
+                            <h1 className="dashboard-header__title">{t('dashboard')}</h1>
                             <div className="dashboard-live-indicator">
                                 <span className="dashboard-live-indicator__dot"></span>
                                 <span className="dashboard-live-indicator__text">LIVE</span>
                             </div>
                         </div>
                         <p className="dashboard-header__subtitle">
-                            {t('welcome_back') || 'Hola'}, <strong>{user.full_name || user.username}</strong>. {t('dashboard_subtitle') || 'Aquí tienes un resumen de la actividad de hoy.'}
+                            {t('welcome_back')}, <strong>{user.full_name || user.username}</strong>. {t('dashboard_subtitle')}
                         </p>
                     </div>
                     <div className="flex items-center gap-3">
@@ -71,74 +78,93 @@ const Dashboard = () => {
                             size="sm"
                             onClick={refreshDashboard}
                             icon={<Icon name="SYNC" size="1.1rem" />}
-                            tooltip={t('refresh') || 'Sincronizar Panel'}
+                            tooltip={t('refresh')}
                         />
-                        {(user.role === 'admin' || user.role === 'secretary') && (
+                        {isAdminOrSecretary && (
                             <Button
                                 variant="primary"
                                 size="sm"
                                 onClick={() => navigate('/patients', { state: { openNewPatient: true } })}
                                 icon={<Icon name="ADD" size="1.1rem" />}
                             >
-                                {t('new_patient') || 'Nuevo Paciente'}
+                                {t('new_patient')}
                             </Button>
                         )}
                     </div>
                 </header>
 
                 <div className="dashboard-grid animate-fadeIn">
-                    {/* Sidebar Stats - Now on the left consistent with 380px fixed width */}
+                    {/* Sidebar Stats */}
                     <aside className="dashboard-sidebar">
                         <DashboardSidebar
                             stats={stats}
                             newPatientStats={newPatientStats}
-                            reminders={reminders}
+                            reminders={[]} // No longer show reminders here
                             user={user}
                             t={t}
                         />
                     </aside>
 
-                    {/* Main Content Area - Primary focus, takes remaining 1fr */}
+                    {/* Main Content Area */}
                     <main className="dashboard-main">
-                        {(user.role === 'secretary' || user.role === 'doctor' || user.role === 'admin') && (
+                        {(isAdminOrSecretary || isDoctor) && (
                             <div className="dashboard-nav-bar dashboard-nav-bar--centered mb-6">
                                 <div className="flex items-center gap-6">
-                                    <Button
-                                        variant="ghost"
-                                        active={activeTab === 'requirements'}
-                                        onClick={() => setActiveTab('requirements')}
-                                        icon={<Icon name="DOCS" />}
-                                        className="relative"
-                                    >
-                                        {t('ongoing_requirements')}
-                                        {pendingReqCount > 0 && (
-                                            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center border-2 border-white">
-                                                {pendingReqCount}
-                                            </span>
-                                        )}
-                                    </Button>
+                                    <div className="dashboard-nav-bar__button-wrapper">
+                                        <Button
+                                            variant="ghost"
+                                            active={activeTab === 'requirements'}
+                                            onClick={() => setActiveTab('requirements')}
+                                            icon={<Icon name="DOCS" />}
+                                        >
+                                            {t('ongoing_requirements')}
+                                        </Button>
+                                        <Badge count={pendingReqCount} position="top-right" />
+                                    </div>
+                                    <div className="dashboard-nav-bar__button-wrapper">
+                                        <Button
+                                            variant="ghost"
+                                            active={activeTab === 'reminders'}
+                                            onClick={() => setActiveTab('reminders')}
+                                            icon={<Icon name="NOTIFICATIONS" />}
+                                        >
+                                            {t('reminders')}
+                                        </Button>
+                                        <Badge count={reminders.length} position="top-right" variant="danger" />
+                                    </div>
                                 </div>
                             </div>
                         )}
 
                         <div className="dashboard-card no-padding">
-                            <div className="p-6">
-                                {activeTab === 'requirements' && (user.role === 'secretary' || user.role === 'doctor' || user.role === 'admin') && (
+                            <div className="dashboard-card__content">
+                                {activeTab === 'requirements' && (isAdminOrSecretary || isDoctor) && (
                                     <div className="dashboard-requirements">
-                                        <div className="flex justify-between items-center mb-6">
-                                            <h3 className="text-lg font-bold text-slate-800">{t('pending_requests') || 'Solicitudes Pendientes'}</h3>
+                                        <div className="dashboard-requirements__header">
+                                            <h3 className="dashboard-requirements__title">{t('pending_requests')}</h3>
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
                                                 onClick={() => navigate('/requests')}
-                                                className="text-primary hover:bg-primary/5"
+                                                className="dashboard-requirements__view-all"
                                             >
                                                 {t('view_all')}
-                                                <Icon name="arrow_forward" size="1rem" className="ml-1" />
+                                                <Icon name="arrow_forward" size="1rem" />
                                             </Button>
                                         </div>
                                         <RequirementsList user={user} />
                                     </div>
+                                )}
+
+                                {activeTab === 'reminders' && (
+                                    <DashboardReminders
+                                        reminders={reminders}
+                                        t={t}
+                                        onWhatsApp={handleWhatsAppReminder}
+                                        onComplete={handleCompleteReminder}
+                                        onMarkNotified={handleMarkNotified}
+                                        onViewProfile={(id) => navigate('/patients', { state: { selectedPatientId: id } })}
+                                    />
                                 )}
                             </div>
                         </div>

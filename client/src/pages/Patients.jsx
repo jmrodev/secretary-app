@@ -86,7 +86,7 @@ const Patients = () => {
                     onToggleNew={handleToggleNew}
                     onPayDebt={handleOpenDebtModal}
                 >
-                    <PatientMedications patientId={patientDetails.id} />
+                    <PatientMedications patientId={patientDetails.id} patientName={patientDetails.full_name} />
                 </PatientDetailsView>
             ) : (
                 // --- LIST VIEW ---

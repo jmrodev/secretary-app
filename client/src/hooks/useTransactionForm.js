@@ -6,6 +6,7 @@ import { financeService } from '../services/financeService';
 import { userService } from '../services/userService';
 import { getServiceTypes } from '../constants/transactionOptions';
 import { capitalizeFirst } from '../utils/stringUtils';
+import { toInputDateTime } from '../utils/dateUtils';
 
 export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, onClose) => {
     const { t } = useLanguage();
@@ -22,7 +23,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         status: 'paid',
         service_type: 'consultation',
         proof: null,
-        transaction_date: new Date().toISOString().slice(0, 16)
+        transaction_date: toInputDateTime(new Date())
     });
 
     const [loading, setLoading] = useState(false);
@@ -56,8 +57,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
             initialServiceType = 'virtual_consultation';
         }
 
-        const tzOffset = new Date().getTimezoneOffset() * 60000;
-        const localIso = new Date(Date.now() - tzOffset).toISOString().slice(0, 16);
+        const localIso = toInputDateTime(new Date());
 
         const newFormState = {
             type: data.type || 'income_patient',
@@ -224,7 +224,12 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
             // Calculate Debt
             if (formData.type === 'income_patient' && totalPrice > 0) {
                 const debt = totalPrice - totalPaid;
-                if (debt > 0) payload.append('debt_amount', debt);
+                if (debt > 0) {
+                    payload.append('debt_amount', debt);
+                    // Enrich description with partial payment details
+                    const existingDesc = payload.get('description') || '';
+                    payload.set('description', `${existingDesc} [Pago Parcial: $${totalPaid} / Resto: $${debt}]`);
+                }
             }
 
             // Append meds description if present

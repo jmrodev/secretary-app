@@ -215,9 +215,10 @@ export const useAppointmentsHandlers = ({
             await savePrescription({
                 apptId: prescribeModal.apptId,
                 medications: prescribeModal.medications,
-                instructions: prescribeModal.instructions
+                instructions: prescribeModal.instructions,
+                items: prescribeModal.items
             });
-            setPrescribeModal({ open: false, apptId: null, patientName: '', medications: '', instructions: '' });
+            setPrescribeModal({ open: false, apptId: null, patientName: '', medications: '', instructions: '', items: [] });
             showMessage(t('prescription_saved') || 'Receta guardada', 'success');
         } catch (error) {
             showMessage(t('prescription_error') || 'Error al guardar receta', 'error');

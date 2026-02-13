@@ -45,3 +45,35 @@
 .dashboard-requirements {
     min-height: 300px;
 }
+
+.dashboard-requirements__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.dashboard-requirements__title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--slate-800, #1e293b);
+    margin: 0;
+}
+
+.dashboard-requirements__view-all {
+    color: var(--blue-600);
+}
+
+.dashboard-requirements__view-all:hover {
+    background: rgba(37, 99, 235, 0.05);
+}
+
+.dashboard-card__content {
+    padding: 1.5rem;
+}
+
+/* Dashboard Navigation Bar Button Wrapper */
+.dashboard-nav-bar__button-wrapper {
+    position: relative;
+    display: inline-block;
+}

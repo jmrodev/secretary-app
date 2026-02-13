@@ -17,7 +17,6 @@ export const useMedicalDocumentsHandlers = ({
     selectedPatient,
     selectedDoctor,
     reqNote,
-    bonified,
     sendToDoctor,
     selectedFile,
     filePatient,
@@ -32,7 +31,6 @@ export const useMedicalDocumentsHandlers = ({
 
     // Setters
     setReqNote,
-    setBonified,
     setSendToDoctor,
     setFiles,
     setRequests,
@@ -67,12 +65,10 @@ export const useMedicalDocumentsHandlers = ({
                 patient_id: selectedPatient,
                 doctor_id: user.role === 'doctor' ? (user.user_id || user.id) : selectedDoctor,
                 request_note: reqNote,
-                bonified,
                 status: sendToDoctor ? 'pending' : 'completed'
             });
             showMessage(sendToDoctor ? t('request_sent') : (t('request_saved_completed') || 'Guardado como Completado'), 'success');
             setReqNote('');
-            setBonified(false);
             setSendToDoctor(true);
             fetchRequests();
         } catch (err) {
@@ -81,7 +77,7 @@ export const useMedicalDocumentsHandlers = ({
         } finally {
             setIsSubmitting(false);
         }
-    }, [reqType, selectedPatient, user, selectedDoctor, reqNote, bonified, sendToDoctor, t, showMessage, fetchRequests, setIsSubmitting, setReqNote, setBonified, setSendToDoctor]);
+    }, [reqType, selectedPatient, user, selectedDoctor, reqNote, sendToDoctor, t, showMessage, fetchRequests, setIsSubmitting, setReqNote, setSendToDoctor]);
 
     const handleUpdateStatus = useCallback(async (id, status, note = '') => {
         try {
@@ -264,10 +260,7 @@ export const useMedicalDocumentsHandlers = ({
             setSelectedRequest(item);
             setRequestEditData({
                 request_note: item.request_note || '',
-                doctor_note: item.doctor_note || '',
-                debt_amount: item.debt_amount || 0,
-                payment_method: item.payment_method || 'cash',
-                bonified: item.payment_status === 'bonified'
+                doctor_note: item.doctor_note || ''
             });
         }
     }, [setIsEditing, setSelectedPrescription, setEditData, setSelectedLicense, setLicenseEditData, setSelectedRequest, setRequestEditData]);

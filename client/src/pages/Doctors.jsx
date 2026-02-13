@@ -101,6 +101,7 @@ const Doctors = () => {
                     modalState.isOpen && (
                         <DoctorEditModal
                             isOpen={modalState.isOpen}
+                            type={modalState.type}
                             onClose={handlers.onCloseModal}
                             activeTab={modalState.activeTab}
                             onTabChange={handlers.onTabChange}

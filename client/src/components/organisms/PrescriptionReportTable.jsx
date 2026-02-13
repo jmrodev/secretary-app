@@ -139,8 +139,9 @@ const PrescriptionReportTable = ({ data, t }) => {
                                         <td>
                                             <span className={`prescription-report__badge prescription-report__badge--${item.payment_status}`}>
                                                 {item.payment_status === 'paid' ? 'Pagado' :
-                                                    item.payment_status === 'debt' ? 'Debe' :
-                                                        item.payment_status === 'bonified' ? 'Bonificado' : item.payment_status}
+                                                    item.payment_status === 'debt' ? `Deuda ($${item.debt_amount || 0})` :
+                                                        item.payment_status === 'partial' ? `Parcial ($${item.debt_amount || 0})` :
+                                                            item.payment_status === 'bonified' ? 'Bonificado' : item.payment_status}
                                             </span>
                                         </td>
                                         <td className="prescription-report__cell-amount text-right">

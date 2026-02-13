@@ -126,7 +126,7 @@ export const useAppointments = () => {
     };
 
     const savePrescription = async (data, onUpdate) => {
-        if (!data.medications?.trim()) {
+        if (!data.medications?.trim() && (!data.items || data.items.length === 0)) {
             showMessage(t('please_enter_meds'), 'warning');
             return { success: false };
         }
@@ -137,7 +137,8 @@ export const useAppointments = () => {
                 appointment_id: data.apptId,
                 patient_id: data.patientId,
                 medications: data.medications,
-                instructions: data.instructions
+                instructions: data.instructions,
+                items: data.items
             });
             showMessage(t('prescription_created'), 'success');
             if (onUpdate) onUpdate();

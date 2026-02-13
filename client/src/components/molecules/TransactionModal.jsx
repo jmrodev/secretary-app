@@ -78,17 +78,33 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
             }
         >
             <div className="transaction-modal">
-                {/* Transaction Type */}
-                <FormGroup label={t('type')}>
-                    <Select
-                        value={formData.type}
-                        onChange={e => updateField('type', e.target.value)}
-                        options={transactionTypes}
-                    />
-                </FormGroup>
+                {/* Information Header for Requests/Known Transactions */}
+                {requestId && (
+                    <div className="transaction-modal__summary-header">
+                        <div className="summary-item">
+                            <span className="summary-label">{t('patient') || 'Paciente'}:</span>
+                            <span className="summary-value">{patientSearch}</span>
+                        </div>
+                        <div className="summary-item">
+                            <span className="summary-label">{t('doctor') || 'Doctor'}:</span>
+                            <span className="summary-value">{doctors.find(d => d.id === formData.doctor_id)?.full_name}</span>
+                        </div>
+                    </div>
+                )}
 
-                {/* Patient Search (Autocomplete) */}
-                {formData.type === 'income_patient' && (
+                {/* Transaction Type - Hidden for specific requests */}
+                {!requestId && (
+                    <FormGroup label={t('type')}>
+                        <Select
+                            value={formData.type}
+                            onChange={e => updateField('type', e.target.value)}
+                            options={transactionTypes}
+                        />
+                    </FormGroup>
+                )}
+
+                {/* Patient Search (Autocomplete) - Hidden for specific requests */}
+                {!requestId && formData.type === 'income_patient' && (
                     <FormGroup label={t('patient')}>
                         <div className="transaction-modal__autocomplete">
                             <Input
@@ -134,17 +150,19 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                     </FormGroup>
                 )}
 
-                {/* Beneficiary Doctor */}
-                <FormGroup label={t('beneficiary_doctor_cash_box')}>
-                    <Select
-                        value={formData.doctor_id}
-                        onChange={e => updateDoctor(e.target.value)}
-                        options={doctorOptions}
-                    />
-                </FormGroup>
+                {/* Beneficiary Doctor - Hidden for specific requests */}
+                {!requestId && (
+                    <FormGroup label={t('beneficiary_doctor_cash_box')}>
+                        <Select
+                            value={formData.doctor_id}
+                            onChange={e => updateDoctor(e.target.value)}
+                            options={doctorOptions}
+                        />
+                    </FormGroup>
+                )}
 
-                {/* Service Type */}
-                {formData.type === 'income_patient' && (
+                {/* Service Type - Hidden for specific requests */}
+                {!requestId && formData.type === 'income_patient' && (
                     <FormGroup label={t('service_type')}>
                         <Select
                             value={formData.service_type}
@@ -154,8 +172,8 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                     </FormGroup>
                 )}
 
-                {/* Medication Autocomplete */}
-                {formData.type === 'income_patient' && (
+                {/* Medication Autocomplete - Hidden for specific requests as it comes from the medical side */}
+                {!requestId && formData.type === 'income_patient' && (
                     <PrescriptionSection
                         medications={medications}
                         onAdd={addMedication}
@@ -224,17 +242,20 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                     </div>
                 </div>
 
-                {/* Status */}
-                <FormGroup label={t('status')}>
-                    <Select
-                        value={formData.status}
-                        onChange={e => updateField('status', e.target.value)}
-                        options={statusOptions}
-                    />
-                </FormGroup>
+                {/* Status - Hidden for specific requests as it defaults to 'paid' */}
+                {!requestId && (
+                    <FormGroup label={t('status')}>
+                        <Select
+                            value={formData.status}
+                            onChange={e => updateField('status', e.target.value)}
+                            options={statusOptions}
+                        />
+                    </FormGroup>
+                )}
 
                 {/* Date */}
-                {settings.allow_admin_edit_finance_date === 'true' && (
+                {/* Date - Hidden for specific requests as it defaults to NOW() */}
+                {!requestId && settings.allow_admin_edit_finance_date === 'true' && (
                     <FormGroup label={t('transaction_date') || 'Fecha de Transacción'}>
                         <Input
                             type="datetime-local"

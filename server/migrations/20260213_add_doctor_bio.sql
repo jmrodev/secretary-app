@@ -1,0 +1,1 @@
+ALTER TABLE doctors ADD COLUMN bio TEXT AFTER alias;

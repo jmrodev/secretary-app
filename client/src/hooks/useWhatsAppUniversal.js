@@ -70,7 +70,10 @@ export const useWhatsAppUniversal = (doctors) => {
                     appointment_type: isVirtual ? 'VIRTUAL' : 'PRESENCIAL',
                     appointment_location: address,
                     price: new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(consultationPrice),
-                    secretary_name: user.name || 'Secretaría'
+                    secretary_name: user.name || 'Secretaría',
+                    cbu: doctor?.cbu || '',
+                    alias: doctor?.alias || '',
+                    bio: doctor?.bio || ''
                 };
 
                 if (await handleMetaSend(phone, metaTemplateName, metaParamsOrder, context)) {
@@ -81,18 +84,23 @@ export const useWhatsAppUniversal = (doctors) => {
 
         const dateStr = new Date(appt.appointment_date).toLocaleDateString();
         const timeStr = new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+        const doctor = doctors.find(d => Number(d.id) === Number(appt.doctor_id));
         const isVirtual = appt.type === 'virtual';
 
         let messageTemplate = '';
         if (type === 'reminder') {
-            messageTemplate = isVirtual ? settings.appointment_reminder_virtual_template : settings.appointment_reminder_template;
+            const doctorTemplate = isVirtual ? doctor?.reminder_virtual_template : doctor?.reminder_template;
+            messageTemplate = doctorTemplate || (isVirtual ? settings.appointment_reminder_virtual_template : settings.appointment_reminder_template);
+
             if (!messageTemplate?.trim()) {
                 messageTemplate = isVirtual
                     ? `Hola {patient_name}, te recordamos tu turno VIRTUAL para el día {date} a las {time} con el/la Dr/a. {doctor_name}.`
                     : `Hola {patient_name}, te recordamos tu turno del día {date} a las {time} con el/la Dr/a. {doctor_name} en {appointment_location}. Por favor confirma asistencia.`;
             }
         } else {
-            messageTemplate = isVirtual ? settings.appointment_confirmation_virtual_template : settings.appointment_confirmation_template;
+            const doctorTemplate = isVirtual ? doctor?.confirmation_virtual_template : doctor?.confirmation_template;
+            messageTemplate = doctorTemplate || (isVirtual ? settings.appointment_confirmation_virtual_template : settings.appointment_confirmation_template);
+
             if (!messageTemplate?.trim()) {
                 messageTemplate = isVirtual
                     ? `Hola {patient_name}, te confirmamos tu turno VIRTUAL para el día {date} a las {time} con el/la Dr/a. {doctor_name}.`
@@ -100,7 +108,6 @@ export const useWhatsAppUniversal = (doctors) => {
             }
         }
 
-        const doctor = doctors.find(d => d.id === appt.doctor_id);
         const apptPrice = isVirtual ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0);
         const address = isVirtual ? 'Virtual (Cima Salud)' : (settings.clinic_address || 'Montiel 1255');
 
@@ -112,7 +119,10 @@ export const useWhatsAppUniversal = (doctors) => {
             .replace(/{appointment_type}/g, isVirtual ? 'VIRTUAL' : 'PRESENCIAL')
             .replace(/{appointment_location}/g, address)
             .replace(/{price}/g, new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(apptPrice))
-            .replace(/{secretary_name}/g, user.name || 'Secretaria');
+            .replace(/{secretary_name}/g, user.name || 'Secretaria')
+            .replace(/{cbu}/g, doctor?.cbu || '')
+            .replace(/{alias}/g, doctor?.alias || '')
+            .replace(/{bio}/g, doctor?.bio || '');
 
         try {
             await copyToClipboard(message);

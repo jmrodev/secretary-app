@@ -25,25 +25,25 @@ const DashboardSidebar = ({ stats, newPatientStats, reminders, user, t }) => {
                         <StatCard
                             size="sm"
                             icon={ICONS.TODAY}
-                            label={t('turnos_hoy') || 'Hoy'}
+                            label={t('turnos_hoy')}
                             value={stats.appointments_today}
                         />
                         <StatCard
                             size="sm"
                             icon={ICONS.WEEK}
-                            label={t('turnos_semana') || 'Semana'}
+                            label={t('turnos_semana')}
                             value={stats.appointments_week}
                         />
                         <StatCard
                             size="sm"
                             icon={ICONS.MONTH}
-                            label={t('turnos_mes') || 'Mes'}
+                            label={t('turnos_mes')}
                             value={stats.appointments_month}
                         />
                         <StatCard
                             size="sm"
                             icon={ICONS.PATIENTS}
-                            label={t('pacientes_label') || 'Pacientes'}
+                            label={t('pacientes_label')}
                             value={stats.total_patients}
                         />
                     </div>
@@ -55,32 +55,32 @@ const DashboardSidebar = ({ stats, newPatientStats, reminders, user, t }) => {
                 <section className="dashboard-sidebar__section">
                     <h4 className="dashboard-sidebar__title">
                         <Icon name={ICONS.NEW} size="1rem" />
-                        {t('new_patients_stat') || 'Nuevos Pacientes'}
+                        {t('new_patients_stat')}
                     </h4>
                     <div className="dashboard-sidebar__grid">
                         <StatCard
                             size="sm"
                             icon={ICONS.FLARE}
-                            label={t('this_day') || 'Hoy'}
+                            label={t('this_day')}
                             value={newPatientStats.currentDay}
                             variant="accent"
                         />
                         <StatCard
                             size="sm"
                             icon={ICONS.CALENDAR_TODAY}
-                            label={t('this_week') || 'Esta Sem.'}
+                            label={t('this_week')}
                             value={newPatientStats.currentWeek}
                         />
                         <StatCard
                             size="sm"
                             icon={ICONS.BAR_CHART}
-                            label={t('this_month') || 'Este Mes'}
+                            label={t('this_month')}
                             value={newPatientStats.currentMonth}
                         />
                         <StatCard
                             size="sm"
                             icon={ICONS.GROWTH}
-                            label={t('this_year') || 'Este Año'}
+                            label={t('this_year')}
                             value={newPatientStats.currentYear}
                             variant="dark"
                         />
@@ -88,31 +88,6 @@ const DashboardSidebar = ({ stats, newPatientStats, reminders, user, t }) => {
                 </section>
             )}
 
-            {/* Reminders Section */}
-            {user.role !== 'admin' && reminders.length > 0 && (
-                <section className="dashboard-sidebar__section dashboard-sidebar__section--reminders">
-                    <h4 className="dashboard-sidebar__title">
-                        <Icon name={ICONS.NOTIFICATIONS} size="1rem" />
-                        {t('reminders')}
-                    </h4>
-                    <div className="dashboard-sidebar__reminders">
-                        {reminders.slice(0, 3).map(r => (
-                            <div
-                                key={r.id}
-                                className="dashboard-sidebar__reminder"
-                                onClick={() => navigate('/patients', { state: { selectedPatientId: r.id } })}
-                            >
-                                <div className="dashboard-sidebar__reminder-name">{r.full_name}</div>
-                                {r.medical_history_evolution && (
-                                    <div className="dashboard-sidebar__reminder-evolution">
-                                        "{r.medical_history_evolution}"
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                </section>
-            )}
         </aside>
     );
 };

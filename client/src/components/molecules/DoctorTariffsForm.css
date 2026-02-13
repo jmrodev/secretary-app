@@ -49,3 +49,8 @@
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
 }
+
+.doctor-tariffs-form__bio-field {
+    min-height: 120px;
+    resize: vertical;
+}

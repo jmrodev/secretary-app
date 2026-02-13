@@ -24,7 +24,6 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
     const { t } = useLanguage();
     const { showMessage } = useMessage();
 
-    const [paymentMethod, setPaymentMethod] = useState('cash');
     const [selectedDoctor, setSelectedDoctor] = useState(localStorage.getItem('last_selected_doctor_id') || '');
     const [selectedPatient, setSelectedPatient] = useState('');
     const [patientData, setPatientData] = useState(null);
@@ -36,7 +35,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
     const [tempDose, setTempDose] = useState('');
     const [tempFreq, setTempFreq] = useState('');
     const [tempQty, setTempQty] = useState('');
-    const [bonified, setBonified] = useState(false);
+    const [currentVademecumId, setCurrentVademecumId] = useState(null);
     const [sendToDoctor, setSendToDoctor] = useState(initialSendToDoctor !== undefined ? initialSendToDoctor : true);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -82,7 +81,8 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                 name: tempMed.trim(),
                 dose: tempDose.trim(),
                 frequency: tempFreq.trim(),
-                quantity: tempQty.trim()
+                quantity: tempQty.trim(),
+                vademecum_id: currentVademecumId // I need to track this
             };
             if (!finalItems.some(i => i.name === newItem.name)) {
                 finalItems.push(newItem);
@@ -117,8 +117,6 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                 doctor_id: user.role === 'doctor' ? (user.user_id || user.id) : selectedDoctor,
                 request_note: finalNote,
                 raw_medication_data: JSON.stringify(finalItems),
-                bonified,
-                payment_method: bonified ? null : paymentMethod,
                 status: sendToDoctor ? 'pending' : 'completed'
             });
             showMessage(sendToDoctor ? t('request_sent') : (t('request_saved_completed') || 'Guardado como Completado'), 'success');
@@ -129,7 +127,6 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
             setTempDose('');
             setTempFreq('');
             setTempQty('');
-            setBonified(false);
             setSendToDoctor(true);
             setSelectedPatient('');
             setPatientData(null);
@@ -214,6 +211,10 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                                     <MedicationAutocomplete
                                         value={tempMed}
                                         onChange={setTempMed}
+                                        onSelectMedication={(med) => {
+                                            setTempMed(med.name);
+                                            setCurrentVademecumId(med.id);
+                                        }}
                                         placeholder={t('medication_placeholder') || "Nombre..."}
                                     />
                                     <Input
@@ -240,20 +241,20 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                                     type="button"
                                     variant="primary"
                                     onClick={() => {
-                                        if (tempMed.trim()) {
-                                            const newItem = {
-                                                name: tempMed.trim(),
-                                                dose: tempDose.trim(),
-                                                frequency: tempFreq.trim(),
-                                                quantity: tempQty.trim()
-                                            };
-                                            if (!medicationItems.some(i => i.name === newItem.name)) {
-                                                setMedicationItems([...medicationItems, newItem]);
-                                                setTempMed('');
-                                                setTempDose('');
-                                                setTempFreq('');
-                                                setTempQty('');
-                                            }
+                                        const newItem = {
+                                            name: tempMed.trim(),
+                                            dose: tempDose.trim(),
+                                            frequency: tempFreq.trim(),
+                                            quantity: tempQty.trim(),
+                                            vademecum_id: currentVademecumId
+                                        };
+                                        if (!medicationItems.some(i => i.name === newItem.name)) {
+                                            setMedicationItems([...medicationItems, newItem]);
+                                            setTempMed('');
+                                            setTempDose('');
+                                            setTempFreq('');
+                                            setTempQty('');
+                                            setCurrentVademecumId(null);
                                         }
                                     }}
                                     icon={<Icon name="add" />}
@@ -297,7 +298,8 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                                                         name: m.medication_name,
                                                         dose: m.dose || '',
                                                         frequency: m.frequency || '',
-                                                        quantity: ''
+                                                        quantity: '',
+                                                        vademecum_id: m.vademecum_id
                                                     };
                                                     if (!medicationItems.some(i => i.name === newItem.name)) {
                                                         setMedicationItems([...medicationItems, newItem]);
@@ -325,37 +327,6 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                 </FormGroup>
 
                 <div className={`${baseClass}__panel`}>
-                    <div className={`${baseClass}__panel-item`}>
-                        <input
-                            type="checkbox"
-                            className={`${baseClass}__checkbox`}
-                            id="req-bonified"
-                            checked={bonified}
-                            onChange={e => setBonified(e.target.checked)}
-                        />
-                        <label htmlFor="req-bonified" className={`${baseClass}__panel-label`}>
-                            {t('bonificado') || 'Bonificado (Costo $0)'}
-                        </label>
-                    </div>
-
-                    {!bonified && (
-                        <div className={`${baseClass}__panel-sub`}>
-                            <label className={`${baseClass}__panel-sub-label`}>{t('payment_method') || 'Tipo de Pago'}</label>
-                            <div className={`${baseClass}__pill-grid`}>
-                                {['cash', 'transfer', 'debit', 'credit', 'mercadopago'].map(m => (
-                                    <TabButton
-                                        key={m}
-                                        variant="pill"
-                                        isActive={paymentMethod === m}
-                                        onClick={() => setPaymentMethod(m)}
-                                    >
-                                        {t(m) || m.charAt(0).toUpperCase() + m.slice(1)}
-                                    </TabButton>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
                     <div className={`${baseClass}__panel-item`}>
                         <input
                             type="checkbox"

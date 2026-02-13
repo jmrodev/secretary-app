@@ -10,6 +10,7 @@ import TabButton from '../atoms/TabButton';
 import Badge from '../atoms/Badge';
 import Input from '../atoms/Input';
 import Icon from '../atoms/Icon';
+import FormGroup from '../molecules/FormGroup';
 import MedicalRequestForm from './MedicalRequestForm';
 import MedicationCard from '../molecules/MedicationCard';
 import MedicationEditor from '../molecules/MedicationEditor';
@@ -57,7 +58,8 @@ const RequirementsList = ({ user }) => {
         editNotes, setEditNotes,
         newMedInput, setNewMedInput,
         addToChronic, handleSaveEdit,
-        updateEditMed, handleAddMed
+        updateEditMed, handleAddMed,
+        editDoctorNote, setEditDoctorNote
     } = useRequirementsController(user);
 
     const handleCloseDetail = () => setSelectedRequest(null);
@@ -288,13 +290,24 @@ const RequirementsList = ({ user }) => {
                                         t={t}
                                     />
                                     <div className="requirements-detail__notes">
-                                        <label className="requirements-detail__label">{t('additional_notes') || 'Notas Adicionales'}</label>
-                                        <Input
-                                            type="textarea"
-                                            value={editNotes}
-                                            onChange={(e) => setEditNotes(e.target.value)}
-                                            rows={2}
-                                        />
+                                        <FormGroup label={t('request_note') || 'Nota del Paciente'}>
+                                            <Input
+                                                type="textarea"
+                                                value={editNotes}
+                                                onChange={(e) => setEditNotes(e.target.value)}
+                                                rows={2}
+                                            />
+                                        </FormGroup>
+
+                                        <FormGroup label={t('doctor_reply') || 'Respuesta del Doctor'}>
+                                            <Input
+                                                type="textarea"
+                                                value={editDoctorNote}
+                                                onChange={(e) => setEditDoctorNote(e.target.value)}
+                                                rows={2}
+                                                placeholder={t('doctor_note_placeholder') || "Añada una indicación o respuesta..."}
+                                            />
+                                        </FormGroup>
                                     </div>
                                     <div className="requirements-detail__actions">
                                         <Button variant="ghost" onClick={handleCancelEdit}>

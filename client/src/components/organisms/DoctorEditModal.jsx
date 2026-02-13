@@ -10,6 +10,8 @@ import DoctorTariffsForm from '../molecules/DoctorTariffsForm';
 import DoctorGoogleSettings from '../molecules/DoctorGoogleSettings';
 import DoctorScheduleSettings from './DoctorScheduleSettings';
 import DoctorFiscalSettings from '../molecules/DoctorFiscalSettings';
+import DoctorMessagesForm from '../molecules/DoctorMessagesForm';
+import UserForm from './UserForm';
 import { useDoctorFiscalController } from '../../controllers/useDoctorFiscalController';
 import './DoctorEditModal.css';
 
@@ -22,6 +24,7 @@ const DoctorEditModal = ({
     settings,
     onChangeData,
     onSave,
+    type = 'EDIT', // 'EDIT' or 'CREATE'
 
     // Schedule Props
     schedule,
@@ -54,7 +57,7 @@ const DoctorEditModal = ({
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={t('edit_doctor_details')}
+            title={type === 'CREATE' ? (t('add_new_user') || 'Agregar Nuevo Médico') : t('edit_doctor_details')}
             size="lg"
             footer={
                 <>
@@ -62,129 +65,151 @@ const DoctorEditModal = ({
                         {t('cancel')}
                     </Button>
                     <Button onClick={onSave} variant="primary">
-                        {t('save_changes')}
+                        {type === 'CREATE' ? t('confirm') : t('save_changes')}
                     </Button>
                 </>
             }
         >
-            <TabNav className="doctor-edit-modal__tabs">
-                {[
-                    { id: 'tariffs', label: '💰 Tarifas' },
-                    { id: 'schedule', label: '📅 Horarios' },
-                    { id: 'google', label: '🌐 Google' },
-                    { id: 'fiscal', label: '🧾 Fiscal' }
-                ].map(tab => (
-                    <TabButton
-                        key={tab.id}
-                        isActive={activeTab === tab.id}
-                        onClick={() => onTabChange(tab.id)}
-                    >
-                        {tab.label}
-                    </TabButton>
-                ))}
-            </TabNav>
+            {type === 'EDIT' && (
+                <TabNav className="doctor-edit-modal__tabs">
+                    {[
+                        { id: 'tariffs', label: '💰 Tarifas' },
+                        { id: 'schedule', label: '📅 Horarios' },
+                        { id: 'messages', label: '💬 Mensajes' },
+                        { id: 'google', label: '🌐 Google' },
+                        { id: 'fiscal', label: '🧾 Fiscal' }
+                    ].map(tab => (
+                        <TabButton
+                            key={tab.id}
+                            isActive={activeTab === tab.id}
+                            onClick={() => onTabChange(tab.id)}
+                        >
+                            {tab.label}
+                        </TabButton>
+                    ))}
+                </TabNav>
+            )}
 
-            <div className="doctor-edit-modal__content animate-fadeIn">
-                {activeTab === 'tariffs' && (
-                    <DoctorTariffsForm
-                        data={data}
-                        settings={settings}
-                        onChange={onChangeData}
-                        t={t}
+            {type === 'CREATE' && (
+                <div className="doctor-edit-modal__content animate-fadeIn">
+                    <UserForm
+                        type="CREATE"
+                        formData={data}
+                        setFormData={onChangeData}
                     />
-                )}
-
-                {activeTab === 'schedule' && (
-                    <div className="doctor-edit-modal__schedule-config">
-                        <div className="doctor-edit-modal__duration-grid">
-                            <FormGroup label="Duración Turno (min)">
-                                <Input
-                                    type="number"
-                                    value={data.appointment_duration}
-                                    onChange={e => onChangeData({ appointment_duration: e.target.value })}
-                                />
-                            </FormGroup>
-                            <FormGroup label="Descanso (min)">
-                                <Input
-                                    type="number"
-                                    value={data.break_duration}
-                                    onChange={e => onChangeData({ break_duration: e.target.value })}
-                                />
-                            </FormGroup>
-                        </div>
-
-                        <div className="doctor-edit-modal__overturn-section">
-                            <h4 className="doctor-edit-modal__overturn-title">
-                                <span>🕒</span> {t('overturn_range_title') || 'Horario Sobreturnos (Fuera de Horario)'}
-                            </h4>
-                            <div className="doctor-edit-modal__overturn-grid">
-                                <FormGroup label={t('overturn_start_label') || 'Inicio Sobreturnos'}>
-                                    <Input
-                                        type="time"
-                                        value={data.overturn_start_time}
-                                        onChange={e => onChangeData({ overturn_start_time: e.target.value })}
-                                    />
-                                </FormGroup>
-                                <FormGroup label={t('overturn_end_label') || 'Fin Sobreturnos'}>
-                                    <Input
-                                        type="time"
-                                        value={data.overturn_end_time}
-                                        onChange={e => onChangeData({ overturn_end_time: e.target.value })}
-                                    />
-                                </FormGroup>
-                            </div>
-                            <div className="doctor-edit-modal__overturn-footer">
-                                <Switch
-                                    label={t('force_hour_alignment_label') || "Coordinar con minuto cero (:00)"}
-                                    checked={data.force_hour_alignment}
-                                    onChange={val => onChangeData({ force_hour_alignment: val })}
-                                />
-                                <p className="doctor-edit-modal__overturn-help">
-                                    {t('force_hour_alignment_help') || "Si un turno arranca 8:15, el siguiente será clavado a las 9:00, luego 10:00, etc."}
-                                </p>
-                            </div>
-                        </div>
-
-                        <DoctorScheduleSettings
-                            doctorId={data.id}
-                            schedule={schedule}
-                            setSchedule={setSchedule}
-                            loading={loadingSchedule}
+                </div>
+            )}
+            {type === 'EDIT' && (
+                <div className="doctor-edit-modal__content animate-fadeIn">
+                    {activeTab === 'tariffs' && (
+                        <DoctorTariffsForm
+                            data={data}
+                            settings={settings}
+                            onChange={onChangeData}
+                            t={t}
                         />
-                    </div>
-                )}
+                    )}
 
-                {activeTab === 'google' && (
-                    <DoctorGoogleSettings
-                        connected={connected}
-                        onConnect={onConnectGoogle}
-                        onDisconnect={onDisconnectGoogle}
-                        onVerifyCalendar={onVerifyGoogleEvents}
-                        onImportContacts={onImportContacts}
-                        onResetSpreadsheet={onResetSpreadsheet}
-                    />
-                )}
+                    {activeTab === 'schedule' && (
+                        <div className="doctor-edit-modal__schedule-config">
+                            <div className="doctor-edit-modal__duration-grid">
+                                <FormGroup label="Duración Turno (min)">
+                                    <Input
+                                        type="number"
+                                        value={data.appointment_duration}
+                                        onChange={e => onChangeData({ appointment_duration: e.target.value })}
+                                    />
+                                </FormGroup>
+                                <FormGroup label="Descanso (min)">
+                                    <Input
+                                        type="number"
+                                        value={data.break_duration}
+                                        onChange={e => onChangeData({ break_duration: e.target.value })}
+                                    />
+                                </FormGroup>
+                            </div>
 
-                {activeTab === 'fiscal' && (
-                    <DoctorFiscalSettings
-                        data={data}
-                        onChangeData={onChangeData}
+                            <div className="doctor-edit-modal__overturn-section">
+                                <h4 className="doctor-edit-modal__overturn-title">
+                                    <span>🕒</span> {t('overturn_range_title') || 'Horario Sobreturnos (Fuera de Horario)'}
+                                </h4>
+                                <div className="doctor-edit-modal__overturn-grid">
+                                    <FormGroup label={t('overturn_start_label') || 'Inicio Sobreturnos'}>
+                                        <Input
+                                            type="time"
+                                            value={data.overturn_start_time}
+                                            onChange={e => onChangeData({ overturn_start_time: e.target.value })}
+                                        />
+                                    </FormGroup>
+                                    <FormGroup label={t('overturn_end_label') || 'Fin Sobreturnos'}>
+                                        <Input
+                                            type="time"
+                                            value={data.overturn_end_time}
+                                            onChange={e => onChangeData({ overturn_end_time: e.target.value })}
+                                        />
+                                    </FormGroup>
+                                </div>
+                                <div className="doctor-edit-modal__overturn-footer">
+                                    <Switch
+                                        label={t('force_hour_alignment_label') || "Coordinar con minuto cero (:00)"}
+                                        checked={data.force_hour_alignment}
+                                        onChange={val => onChangeData({ force_hour_alignment: val })}
+                                    />
+                                    <p className="doctor-edit-modal__overturn-help">
+                                        {t('force_hour_alignment_help') || "Si un turno arranca 8:15, el siguiente será clavado a las 9:00, luego 10:00, etc."}
+                                    </p>
+                                </div>
+                            </div>
 
-                        generatedCsr={generatedCsr}
-                        generatingCsr={generatingCsr}
-                        showCsrInfo={showCsrInfo}
-                        uploading={uploading}
-                        connectionStatus={connectionStatus}
-                        statusDetails={statusDetails}
+                            <DoctorScheduleSettings
+                                doctorId={data.id}
+                                schedule={schedule}
+                                setSchedule={setSchedule}
+                                loading={loadingSchedule}
+                            />
+                        </div>
+                    )}
 
-                        onGenerateCsr={generateCsr}
-                        onUploadCert={uploadCert}
-                        onTestConnection={testConnection}
-                        onHideCsrInfo={hideCsrInfo}
-                    />
-                )}
-            </div>
-        </Modal>
+                    {activeTab === 'messages' && (
+                        <DoctorMessagesForm
+                            data={data}
+                            onChange={onChangeData}
+                            t={t}
+                        />
+                    )}
+
+                    {activeTab === 'google' && (
+                        <DoctorGoogleSettings
+                            connected={connected}
+                            onConnect={onConnectGoogle}
+                            onDisconnect={onDisconnectGoogle}
+                            onVerifyCalendar={onVerifyGoogleEvents}
+                            onImportContacts={onImportContacts}
+                            onResetSpreadsheet={onResetSpreadsheet}
+                        />
+                    )}
+
+                    {activeTab === 'fiscal' && (
+                        <DoctorFiscalSettings
+                            data={data}
+                            onChangeData={onChangeData}
+
+                            generatedCsr={generatedCsr}
+                            generatingCsr={generatingCsr}
+                            showCsrInfo={showCsrInfo}
+                            uploading={uploading}
+                            connectionStatus={connectionStatus}
+                            statusDetails={statusDetails}
+
+                            onGenerateCsr={generateCsr}
+                            onUploadCert={uploadCert}
+                            onTestConnection={testConnection}
+                            onHideCsrInfo={hideCsrInfo}
+                        />
+                    )}
+                </div>
+            )}
+        </Modal >
     );
 };
 

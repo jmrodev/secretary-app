@@ -43,140 +43,187 @@ const PatientDetailsView = ({
             <div className="patient-details__grid">
                 {/* Main Content Area */}
                 <div className="patient-details__main">
-
-                    {/* Information Card */}
-                    <article className="card info-card">
-                        <header className="card-header card-header--clean">
-                            <h3 className="card-header__title">{t('patient_info')}</h3>
+                    {/* Block 1: Personal Info & Dates */}
+                    <section className="details-block details-block--info">
+                        <header className="details-block__header">
+                            <h3 className="details-block__title">
+                                <Icon name="PROFILE" size="1.2rem" />
+                                {t('patient_info')}
+                            </h3>
                         </header>
 
-                        <div className="card-body info-grid">
-                            <div className="info-item">
-                                <label className="info-item__label">{t('dni')}</label>
-                                <p className="info-item__value">{details.dni || 'N/A'}</p>
-                            </div>
-                            <div className="info-item">
-                                <label className="info-item__label">{t('insurance_short')}</label>
-                                <p className="info-item__value">
-                                    {details.insurance_name || t('particular')}
-                                    {details.affiliate_number && <span className="info-item__hint">({details.affiliate_number})</span>}
-                                </p>
-                            </div>
-                            <div className="info-item">
-                                <label className="info-item__label">{t('dob') || 'Fecha Nac.'}</label>
-                                <p className="info-item__value">
-                                    {formatDate(details.dob)}
-                                    {details.dob && <span className="info-item__hint">({Math.floor((new Date() - new Date(details.dob)) / 31557600000)} {t('years')})</span>}
-                                </p>
-                            </div>
-                            <div className="info-item info-grid__full info-item--divider">
-                                <label className="info-item__label">{t('address') || 'Dirección'}</label>
-                                <p className="info-item__value text-address">
-                                    {[
-                                        details.street_name && `${details.street_name} ${details.street_number || ''}`,
-                                        details.floor && `Piso ${details.floor}`,
-                                        details.apartment && `Depto ${details.apartment}`,
-                                        details.city,
-                                        details.province,
-                                        details.address && `(${details.address})`
-                                    ].filter(Boolean).join(', ') || <span className="text-empty">{t('no_address_loaded')}</span>}
-                                </p>
-                                {(details.street_name || details.address) && (
-                                    <a
-                                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                                            `${details.street_name || ''} ${details.street_number || ''}, ${details.city || ''}, ${details.province || ''}, ${details.country || ''} ${details.address || ''}`.trim()
-                                        )}`}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="text-xs text-blue-600 hover:underline mt-1 inline-block"
-                                    >
-                                        {t('view_on_map')} ↗
-                                    </a>
-                                )}
-                            </div>
-                            <div className="info-item info-grid__full">
-                                <label className="info-item__label">{t('contact')}</label>
-                                <div className="contact-list">
-                                    {details.phoneNumbers && details.phoneNumbers.length > 0 ? (
-                                        details.phoneNumbers.map((p, idx) => (
-                                            <div key={idx} className="contact-item">
-                                                <span className={`contact-item__indicator ${p.is_primary ? 'contact-item__indicator--primary' : ''}`}></span>
-                                                <a
-                                                    href={`tel:${p.phone_number.replace(/[^0-9+]/g, '')}`}
-                                                    className="contact-item__link"
-                                                >
-                                                    {p.phone_number}
-                                                </a>
-                                                {p.label && <span className="info-item__hint">({p.label})</span>}
+                        <div className="details-block__content">
+                            <table className="patient-details__info-table">
+                                <tbody>
+                                    <tr className="patient-details__info-row">
+                                        <th className="patient-details__info-label">{t('dni')}</th>
+                                        <td className="patient-details__info-value">{details.dni || 'N/A'}</td>
+                                    </tr>
+                                    <tr className="patient-details__info-row">
+                                        <th className="patient-details__info-label">{t('insurance_short')}</th>
+                                        <td className="patient-details__info-value">
+                                            {details.insurance_name || t('particular')}
+                                            {details.affiliate_number && <span className="patient-details__info-hint">({details.affiliate_number})</span>}
+                                        </td>
+                                    </tr>
+                                    <tr className="patient-details__info-row">
+                                        <th className="patient-details__info-label">{t('dob') || 'Fecha Nac.'}</th>
+                                        <td className="patient-details__info-value">
+                                            {formatDate(details.dob)}
+                                            {details.dob && <span className="patient-details__info-hint">({Math.floor((new Date() - new Date(details.dob)) / 31557600000)} {t('years')})</span>}
+                                        </td>
+                                    </tr>
+                                    <tr className="patient-details__info-row">
+                                        <th className="patient-details__info-label">{t('address') || 'Dirección'}</th>
+                                        <td className="patient-details__info-value">
+                                            <div className="patient-details__address-box">
+                                                {[
+                                                    details.street_name && `${details.street_name} ${details.street_number || ''}`,
+                                                    details.floor && `Piso ${details.floor}`,
+                                                    details.apartment && `Depto ${details.apartment}`,
+                                                    details.city,
+                                                    details.province,
+                                                    details.address && `(${details.address})`
+                                                ].filter(Boolean).join(', ') || <span className="patient-details__text-empty">{t('no_address_loaded')}</span>}
                                             </div>
-                                        ))
-                                    ) : (
-                                        details.phone ? (
-                                            <a
-                                                href={`tel:${details.phone.replace(/[^0-9+]/g, '')}`}
-                                                className="contact-item__link"
-                                            >
-                                                {details.phone}
-                                            </a>
-                                        ) : <span>N/A</span>
+                                            {(details.street_name || details.address) && (
+                                                <a
+                                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                                        `${details.street_name || ''} ${details.street_number || ''}, ${details.city || ''}, ${details.province || ''}, ${details.country || ''} ${details.address || ''}`.trim()
+                                                    )}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="patient-details__map-link"
+                                                >
+                                                    {t('view_on_map')} ↗
+                                                </a>
+                                            )}
+                                        </td>
+                                    </tr>
+                                    <tr className="patient-details__info-row">
+                                        <th className="patient-details__info-label">{t('contact')}</th>
+                                        <td className="patient-details__info-value">
+                                            <div className="patient-details__contact-list">
+                                                {details.phoneNumbers && details.phoneNumbers.length > 0 ? (
+                                                    details.phoneNumbers.map((p, idx) => (
+                                                        <div key={idx} className="patient-details__contact-item">
+                                                            <span className={`patient-details__contact-indicator ${p.is_primary ? 'patient-details__contact-indicator--primary' : ''}`}></span>
+                                                            <a
+                                                                href={`tel:${p.phone_number.replace(/[^0-9+]/g, '')}`}
+                                                                className="patient-details__contact-link"
+                                                            >
+                                                                {p.phone_number}
+                                                            </a>
+                                                            {p.label && <span className="patient-details__info-hint">({p.label})</span>}
+                                                        </div>
+                                                    ))
+                                                ) : (
+                                                    details.phone ? (
+                                                        <a
+                                                            href={`tel:${details.phone.replace(/[^0-9+]/g, '')}`}
+                                                            className="patient-details__contact-link"
+                                                        >
+                                                            {details.phone}
+                                                        </a>
+                                                    ) : <span>N/A</span>
+                                                )}
+                                                {details.email && (
+                                                    <div className="patient-details__contact-item patient-details__contact-item--email">
+                                                        <a
+                                                            href={`mailto:${details.email}`}
+                                                            className="patient-details__contact-link patient-details__contact-link--email"
+                                                        >
+                                                            {details.email}
+                                                        </a>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr className="patient-details__info-row">
+                                        <th className="patient-details__info-label">{t('assigned_doctors')}</th>
+                                        <td className="patient-details__info-value">
+                                            {details.assignedDoctors && details.assignedDoctors.length > 0
+                                                ? details.assignedDoctors.map(d => d.full_name).join(', ')
+                                                : <span className="patient-details__text-empty">{t('none')}</span>}
+                                        </td>
+                                    </tr>
+                                    {(details.license_expiry_date || details.next_suggested_visit_date || details.next_suggested_prescription_date) && (
+                                        <tr className="patient-details__info-row">
+                                            <th className="patient-details__info-label">{t('important_dates') || 'Plazos y Seguimiento'}</th>
+                                            <td className="patient-details__info-value">
+                                                <div className="patient-details__date-indicators">
+                                                    {details.license_expiry_date && (
+                                                        <div className="date-indicator date-indicator--rose">
+                                                            <span className="date-indicator__label">{t('license_expiry_date')}</span>
+                                                            <p className="date-indicator__value">{formatDate(details.license_expiry_date)}</p>
+                                                        </div>
+                                                    )}
+                                                    {details.next_suggested_visit_date && (
+                                                        <div className="date-indicator date-indicator--amber">
+                                                            <div className="config-flex config-flex--between">
+                                                                <div>
+                                                                    <span className="date-indicator__label">{t('next_visit_suggested')}</span>
+                                                                    <p className="date-indicator__value">{formatDate(details.next_suggested_visit_date)}</p>
+                                                                </div>
+                                                                <Button
+                                                                    size="xs"
+                                                                    variant="ghost"
+                                                                    className="date-indicator__action"
+                                                                    icon={<Icon name="CHAT" size="0.8rem" />}
+                                                                    onClick={() => {
+                                                                        const phone = details.phoneNumbers?.find(p => p.is_primary)?.phone_number || details.phone;
+                                                                        if (!phone) return alert(t('no_phone_available'));
+                                                                        const msg = `Hola ${details.full_name}, te escribimos de Cima Salud para recordarte que ya es tiempo de tu próximo control sugerido (${formatDate(details.next_suggested_visit_date)}). ¿Te gustaría agendar un turno?`;
+                                                                        window.open(`https://wa.me/${phone.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`, '_blank');
+                                                                    }}
+                                                                >
+                                                                    {t('remind')}
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                    {details.next_suggested_prescription_date && (
+                                                        <div className="date-indicator date-indicator--indigo">
+                                                            <div className="config-flex config-flex--between">
+                                                                <div>
+                                                                    <span className="date-indicator__label">{t('next_prescription_suggested')}</span>
+                                                                    <p className="date-indicator__value">{formatDate(details.next_suggested_prescription_date)}</p>
+                                                                </div>
+                                                                <Button
+                                                                    size="xs"
+                                                                    variant="ghost"
+                                                                    className="date-indicator__action"
+                                                                    icon={<Icon name="PRESCRIPTION" size="0.8rem" />}
+                                                                    onClick={() => onGeneratePrescriptionLink(details.id)}
+                                                                >
+                                                                    {t('send_link')}
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </td>
+                                        </tr>
                                     )}
-                                    {details.email && (
-                                        <div className="contact-item contact-item--email">
-                                            <a
-                                                href={`mailto:${details.email}`}
-                                                className="contact-item__link contact-item__link--email"
-                                            >
-                                                {details.email}
-                                            </a>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                            <div className="info-item info-grid__full info-item--divider">
-                                <label className="info-item__label">{t('assigned_doctors')}</label>
-                                <p className="info-item__value text-doctor-list">
-                                    {details.assignedDoctors && details.assignedDoctors.length > 0
-                                        ? details.assignedDoctors.map(d => d.full_name).join(', ')
-                                        : <span className="text-empty">{t('none')}</span>}
-                                </p>
-                            </div>
+                                </tbody>
+                            </table>
                         </div>
-                    </article>
+                    </section>
 
-                    {/* Important Dates Section */}
-                    {(details.license_expiry_date || details.next_suggested_visit_date || details.next_suggested_prescription_date) && (
-                        <div className="config-grid config-grid--3col">
-                            {details.license_expiry_date && (
-                                <div className="date-indicator date-indicator--rose">
-                                    <span className="date-indicator__label">{t('license_expiry_date')}</span>
-                                    <p className="date-indicator__value">{formatDate(details.license_expiry_date)}</p>
-                                </div>
-                            )}
-                            {details.next_suggested_visit_date && (
-                                <div className="date-indicator date-indicator--amber">
-                                    <span className="date-indicator__label">{t('next_visit_suggested')}</span>
-                                    <p className="date-indicator__value">{formatDate(details.next_suggested_visit_date)}</p>
-                                </div>
-                            )}
-                            {details.next_suggested_prescription_date && (
-                                <div className="date-indicator date-indicator--indigo">
-                                    <span className="date-indicator__label">{t('next_prescription_suggested')}</span>
-                                    <p className="date-indicator__value">{formatDate(details.next_suggested_prescription_date)}</p>
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {/* Appointments Table */}
-                    <section className="card">
-                        <header className="card-header">
-                            <h3 className="card-header__title">{t('appointment_history')}</h3>
+                    {/* Block 2: Historical Appointments */}
+                    <section className="details-block details-block--history">
+                        <header className="details-block__header">
+                            <h3 className="details-block__title">
+                                <Icon name="CALENDAR" size="1.2rem" />
+                                {t('appointment_history')}
+                            </h3>
                         </header>
-                        <div className="card-body card-body--nopadding">
+                        <div className="details-block__content">
                             {details.appointments && details.appointments.length > 0 ? (
-                                <div className="table-container table-scroll-container">
-                                    <table className="table">
-                                        <thead className="table__header-sticky">
+                                <div className="patient-details__history-container">
+                                    <table className="patient-details__history-table">
+                                        <thead className="patient-details__history-header">
                                             <tr>
                                                 <th>{t('appointment_date')}</th>
                                                 <th>{t('appointment_doctor')}</th>
@@ -188,44 +235,51 @@ const PatientDetailsView = ({
                                         </thead>
                                         <tbody>
                                             {details.appointments.map(app => (
-                                                <tr key={app.id}>
-                                                    <td className="table__cell-date">
-                                                        <div className="table__cell-date-text">{formatDate(app.appointment_date)}</div>
-                                                        <div className="config-field__hint table__date-hint">
-                                                            {formatTime(app.appointment_date)}
+                                                <tr key={app.id} className="patient-details__history-row">
+                                                    <td className="patient-details__history-cell">
+                                                        <div className="patient-details__table-cell-date-box">
+                                                            <div className="patient-details__table-cell-date-main">{formatDate(app.appointment_date)}</div>
+                                                            <div className="patient-details__table-cell-date-sub">
+                                                                {formatTime(app.appointment_date)}
+                                                            </div>
                                                         </div>
                                                     </td>
-                                                    <td className="table__cell-nowrap">{app.doctor_name}</td>
-                                                    <td>
+                                                    <td className="patient-details__history-cell">{app.doctor_name}</td>
+                                                    <td className="patient-details__history-cell">
                                                         <span className={`tag tag-${app.status}`}>
                                                             {t(app.status) || app.status}
                                                         </span>
                                                     </td>
-                                                    <td className="text-success table__cell-bold">
+                                                    <td className="patient-details__history-cell text-success patient-details__table-cell-bold">
                                                         {Number(app.paid_amount) > 0 ? `$${app.paid_amount}` : '-'}
                                                     </td>
-                                                    <td className={`table__cell-bold ${Number(app.pending_amount) > 0 ? 'text-danger' : 'text-muted'}`}>
-                                                        {Number(app.pending_amount) > 0 ? `$${app.pending_amount}` : '$0'}
-                                                        {Number(app.pending_amount) > 0 && (
-                                                            <div style={{ marginTop: '0.25rem' }}>
-                                                                <Button
-                                                                    size="sm-compact"
-                                                                    variant="ghost"
-                                                                    className="text-primary"
-                                                                    style={{ fontSize: '0.75rem', padding: '0.1rem 0.5rem', height: 'auto', border: '1px solid var(--blue-200)' }}
-                                                                    onClick={() => onPayDebt(null, details.id, app.pending_amount)}
-                                                                    icon={<Icon name="FINANCES" size="0.8rem" />}
-                                                                >
-                                                                    {t('pay')}
-                                                                </Button>
-                                                            </div>
-                                                        )}
+                                                    <td className="patient-details__history-cell">
+                                                        <div className={`patient-details__table-cell-bold ${Number(app.pending_amount) > 0 ? 'text-danger' : 'text-muted'}`}>
+                                                            {Number(app.pending_amount) > 0 ? `$${app.pending_amount}` : '$0'}
+                                                            {Number(app.pending_amount) > 0 && (
+                                                                <div className="patient-details__pay-action">
+                                                                    <Button
+                                                                        size="sm-compact"
+                                                                        variant="ghost"
+                                                                        className="patient-details__pay-btn-mini"
+                                                                        onClick={() => onPayDebt(null, details.id, app.pending_amount)}
+                                                                        icon={<Icon name="FINANCES" size="0.8rem" />}
+                                                                    >
+                                                                        {t('pay')}
+                                                                    </Button>
+                                                                </div>
+                                                            )}
+                                                        </div>
                                                     </td>
-                                                    <td className="table__cell-reason">
-                                                        {app.reason}
-                                                        <div className="table__cancel-reason">
-                                                            <Icon name="REJECT" size="0.8rem" className="mr-1" />
-                                                            {app.cancellation_reason}
+                                                    <td className="patient-details__history-cell">
+                                                        <div className="patient-details__table-cell-reason">
+                                                            {app.reason}
+                                                            {app.cancellation_reason && (
+                                                                <div className="patient-details__cancel-reason">
+                                                                    <Icon name="REJECT" size="0.8rem" className="mr-1" />
+                                                                    {app.cancellation_reason}
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -246,39 +300,59 @@ const PatientDetailsView = ({
 
                 {/* Sidebar Info Area */}
                 <aside className="patient-details__sidebar">
-                    {/* Financial Status Block */}
-                    <div className="card financial-card">
-                        <header className="card-header card-header--clean-center">
-                            <h4 className="text-financial-title">
+                    {/* Sidebar Block 1: Financial Status */}
+                    <div className="patient-details__financial-card">
+                        <header className="patient-details__financial-header">
+                            <h4 className="details-block__title" style={{ color: 'rgba(255,255,255,0.6)', justifyContent: 'center' }}>
                                 {t('financial_history_debt')}
                             </h4>
                         </header>
-                        <div className="config-flex config-flex--column config-flex--gap-4 financial-card-content">
-                            <span className={`financial-card__amount ${Number(details.total_debt) > 0 ? 'financial-card__amount--debt' : 'financial-card__amount--clear'}`}>
+                        <div className="patient-details__financial-content" style={{ padding: '2rem' }}>
+                            <span className={`patient-details__financial-amount ${Number(details.total_debt) > 0 ? 'patient-details__financial-amount--debt' : 'patient-details__financial-amount--clear'}`}>
                                 ${Number(details.total_debt).toFixed(2)}
                             </span>
                             {Number(details.total_debt) > 0 && (
-                                <Button
-                                    variant="primary"
-                                    className="w-full btn-danger-custom"
-                                    onClick={(e) => onPayDebt(e, details.id, details.total_debt)}
-                                    icon={<Icon name="FINANCES" size="1rem" />}
-                                >
-                                    {t('pay_debt')}
-                                </Button>
+                                <div className="config-flex config-flex--column config-flex--gap-1">
+                                    <Button
+                                        variant="primary"
+                                        className="patient-details__pay-debt-btn"
+                                        onClick={(e) => onPayDebt(e, details.id, details.total_debt)}
+                                        icon={<Icon name="FINANCES" size="1rem" />}
+                                    >
+                                        {t('pay_debt')}
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="patient-details__remind-debt-btn"
+                                        style={{ color: 'var(--red-300)', opacity: 0.8 }}
+                                        icon={<Icon name="CHAT" size="1rem" />}
+                                        onClick={() => {
+                                            const phone = details.phoneNumbers?.find(p => p.is_primary)?.phone_number || details.phone;
+                                            if (!phone) return alert(t('no_phone_available'));
+                                            const msg = `Hola ${details.full_name}, te escribimos de Cima Salud para informarte que figura un saldo pendiente de $${details.total_debt} en tu cuenta. ¿Podrías confirmarnos cuándo podrías regularizarlo? ¡Gracias!`;
+                                            window.open(`https://wa.me/${phone.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`, '_blank');
+                                        }}
+                                    >
+                                        {t('remind_debt') || 'Recordar Deuda'}
+                                    </Button>
+                                </div>
                             )}
                         </div>
                     </div>
 
-                    {/* Quick Tools Block */}
-                    <div className="card">
-                        <header className="card-header card-header--clean">
-                            <h3 className="card-header__title">{t('tools')}</h3>
+                    {/* Sidebar Block 2: Quick Tools */}
+                    <div className="details-block details-block--sidebar details-block--tools">
+                        <header className="details-block__header">
+                            <h3 className="details-block__title">
+                                <Icon name="CONFIG" size="1rem" />
+                                {t('tools')}
+                            </h3>
                         </header>
-                        <div className="card-body tools-card-body tools-list">
+                        <div className="details-block__content patient-details__tools-list">
                             <Button
                                 variant="secondary"
-                                className="justify-start gap-2"
+                                className="patient-details__tool-btn"
                                 onClick={() => onGenerateQR(details.id)}
                                 icon={<Icon name="CHAT" size="1.1rem" />}
                             >
@@ -286,7 +360,7 @@ const PatientDetailsView = ({
                             </Button>
                             <Button
                                 variant="secondary"
-                                className="justify-start gap-2"
+                                className="patient-details__tool-btn"
                                 onClick={() => onGeneratePrescriptionLink(details.id)}
                                 icon={<Icon name="PRESCRIPTION" size="1.1rem" />}
                             >
@@ -295,7 +369,7 @@ const PatientDetailsView = ({
                             {(user.role === 'admin' || user.role === 'secretary') && (
                                 <Button
                                     variant="ghost"
-                                    className="btn-delete-patient"
+                                    className="patient-details__delete-btn"
                                     onClick={() => onDelete(details)}
                                     icon={<Icon name="DELETE" size="1rem" />}
                                 >

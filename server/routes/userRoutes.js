@@ -19,6 +19,7 @@ router.get('/doctors', verifyToken, userController.getAllDoctors);
 router.put('/doctors/:id', verifyToken, userController.updateDoctor);
 router.get('/patients', verifyToken, userController.getAllPatients);
 router.get('/reminders', verifyToken, userController.getReminders);
+router.post('/reminders/complete', verifyToken, userController.completeReminder);
 router.get('/stats', verifyToken, userController.getStats);
 router.get('/patients/stats/new', verifyToken, userController.getNewPatientStats);
 

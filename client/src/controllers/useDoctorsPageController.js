@@ -22,6 +22,7 @@ export const useDoctorsPageController = () => {
     // Unified Modal State: type = 'EDIT'
     const [modalState, setModalState] = useState({
         isOpen: false,
+        type: 'EDIT', // 'EDIT' or 'CREATE'
         activeTab: 'tariffs', // 'tariffs', 'schedule', 'google'
         connected: false,
         loadingGoogle: false,
@@ -84,13 +85,31 @@ export const useDoctorsPageController = () => {
 
     const handleEditClick = (doc) => {
         if (!doc) {
-            // Logic for NEW doctor if needed, or just return
+            setModalState({
+                isOpen: true,
+                type: 'CREATE',
+                activeTab: 'tariffs',
+                connected: false,
+                loadingGoogle: false,
+                loadingSchedule: false,
+                schedule: [],
+                data: {
+                    username: '',
+                    password: '',
+                    role: 'doctor',
+                    full_name: '',
+                    dni: '',
+                    specialty: '',
+                    phoneNumbers: [{ phone_number: '+549', label: 'Celular', is_primary: true }]
+                }
+            });
             return;
         }
         const initialData = {
             id: doc.id,
             specialty: doc.specialty || '',
             cbu: doc.cbu || '',
+            bio: doc.bio || '',
             office_number: doc.office_number || '',
             rental_type: doc.rental_type || 'monthly',
             rental_cost: doc.rental_cost || 0,
@@ -105,14 +124,19 @@ export const useDoctorsPageController = () => {
             default_prescription_interval_days: doc.default_prescription_interval_days || 0,
             overturn_start_time: doc.overturn_start_time || '08:00:00',
             overturn_end_time: doc.overturn_end_time || '21:00:00',
-            force_hour_alignment: doc.force_hour_alignment === 1,
+            force_hour_alignment: doc.force_hour_alignment === 1 || doc.force_hour_alignment === true,
             afip_cuit: doc.afip_cuit || '',
             afip_pto_vta: doc.afip_pto_vta || 1,
-            afip_enabled: doc.afip_enabled === 1 || doc.afip_enabled === true
+            afip_enabled: doc.afip_enabled === 1 || doc.afip_enabled === true,
+            reminder_template: doc.reminder_template || '',
+            confirmation_template: doc.confirmation_template || '',
+            reminder_virtual_template: doc.reminder_virtual_template || '',
+            confirmation_virtual_template: doc.confirmation_virtual_template || ''
         };
 
         setModalState({
             isOpen: true,
+            type: 'EDIT',
             activeTab: 'tariffs',
             connected: false,
             loadingGoogle: false,
@@ -125,14 +149,22 @@ export const useDoctorsPageController = () => {
         fetchSchedule(doc.id);
     };
 
-    const handleSaveEdit = async () => {
-        const { data, schedule } = modalState;
+    const handleSaveDoctor = async () => {
+        const { type, data, schedule } = modalState;
         try {
-            await Promise.all([
-                api.put(`/users/doctors/${data.id}`, data),
-                api.put(`/schedules/${data.id}`, { schedule })
-            ]);
-            showMessage(t('doctor_updated') || "Doctor actualizado exitosamente", "success");
+            if (type === 'CREATE') {
+                const res = await api.post('/users', {
+                    ...data,
+                    fullName: data.full_name, // Backend expects fullName
+                });
+                showMessage(t('doctor_created') || "Doctor creado exitosamente", "success");
+            } else {
+                await Promise.all([
+                    api.put(`/users/doctors/${data.id}`, data),
+                    api.put(`/schedules/${data.id}`, { schedule })
+                ]);
+                showMessage(t('doctor_updated') || "Doctor actualizado exitosamente", "success");
+            }
             setModalState(prev => ({ ...prev, isOpen: false }));
             window.dispatchEvent(new CustomEvent('doctors-updated'));
             loadData();

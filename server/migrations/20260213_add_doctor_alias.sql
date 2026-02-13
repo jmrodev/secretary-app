@@ -1,0 +1,1 @@
+ALTER TABLE doctors ADD COLUMN alias VARCHAR(100) AFTER cbu;

@@ -29,6 +29,7 @@ export const useRequirementsController = (user) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editMeds, setEditMeds] = useState([]);
     const [editNotes, setEditNotes] = useState('');
+    const [editDoctorNote, setEditDoctorNote] = useState('');
     const [newMedInput, setNewMedInput] = useState({ name: '', dose: '', frequency: '', quantity: '' });
 
     // Contexts
@@ -101,6 +102,7 @@ export const useRequirementsController = (user) => {
             const { meds, notes } = extractMedicationDetails(selectedRequest);
             setEditMeds(meds);
             setEditNotes(notes);
+            setEditDoctorNote(selectedRequest.doctor_note || '');
 
             if (selectedRequest.patient_id) {
                 fetchPatientMeds(selectedRequest.patient_id);
@@ -216,7 +218,8 @@ export const useRequirementsController = (user) => {
             const newRequestNote = `[Solicitud Paciente] ${medsString}\nNotas: ${editNotes}`;
             const payload = {
                 raw_medication_data: JSON.stringify(editMeds),
-                request_note: newRequestNote
+                request_note: newRequestNote,
+                doctor_note: editDoctorNote
             };
 
             await api.put(`/medical/requests/${selectedRequest.id}`, payload);
@@ -294,6 +297,7 @@ export const useRequirementsController = (user) => {
         newMedInput, setNewMedInput,
         addToChronic, handleSaveEdit,
         updateEditMed, handleAddMed,
+        editDoctorNote, setEditDoctorNote,
         checkIsKnown,
         t
     };

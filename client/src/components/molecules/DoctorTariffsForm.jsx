@@ -66,8 +66,19 @@ const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
                 <FormGroup label={t('specialty')}>
                     <Input value={data.specialty} onChange={e => handleChange('specialty', e.target.value)} />
                 </FormGroup>
-                <FormGroup label={t('cbu')}>
-                    <Input value={data.cbu} onChange={e => handleChange('cbu', e.target.value)} />
+                <FormGroup label={t('cbu_label')}>
+                    <Input value={data.cbu || ''} onChange={(e) => handleChange('cbu', e.target.value)} placeholder="28500..." />
+                </FormGroup>
+                <FormGroup label={t('alias_label')}>
+                    <Input value={data.alias || ''} onChange={(e) => handleChange('alias', e.target.value)} placeholder="mi.alias.pago" />
+                </FormGroup>
+                <FormGroup label={t('professional_bio') || 'Bio Profesional'}>
+                    <textarea
+                        className="input-field doctor-tariffs-form__bio-field"
+                        value={data.bio || ''}
+                        onChange={(e) => handleChange('bio', e.target.value)}
+                        placeholder="Breve currículum o información relevante..."
+                    />
                 </FormGroup>
             </div>
         </div>

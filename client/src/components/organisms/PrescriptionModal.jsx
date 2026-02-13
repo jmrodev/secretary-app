@@ -8,18 +8,29 @@ import './PrescriptionModal.css';
 const PrescriptionModal = ({ isOpen, onClose, patientName, onSubmit, t, isSubmitting }) => {
     const [medications, setMedications] = useState('');
     const [instructions, setInstructions] = useState('');
+    const [items, setItems] = useState([]);
 
     const handleSelectMedication = (med) => {
+        // Add to text view for visual comfort
         const current = medications.trim();
         const newValue = current ? `${current}\n${med.full_label}` : med.full_label;
         setMedications(newValue);
+
+        // Add to structured items
+        setItems(prev => [...prev, {
+            vademecum_id: med.id,
+            name: med.name,
+            presentation: med.presentation,
+            drug: med.drug
+        }]);
     };
 
     const handleSubmit = () => {
-        if (!medications.trim()) return;
-        onSubmit({ medications, instructions });
+        if (!medications.trim() && items.length === 0) return;
+        onSubmit({ medications, instructions, items });
         setMedications('');
         setInstructions('');
+        setItems([]);
     };
 
     return (
