@@ -23,6 +23,7 @@ const NextSlotCalendarModal = ({
     const [selectedDate, setSelectedDate] = useState(null);
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [viewMode, setViewMode] = useState('calendar'); // 'calendar' or 'list'
+    const [hasInitialized, setHasInitialized] = useState(false);
 
     const monthNames = t('months_array') || ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
     const dayNames = t('days_short_array') || ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
@@ -97,27 +98,26 @@ const NextSlotCalendarModal = ({
         }
     };
 
-    // Auto-navigate to first month with data (only when modal first opens)
+
+    // Reset initialization flag when modal closes
     useEffect(() => {
-        if (nextSlotData?.results && nextSlotData.results.length > 0 && isOpen) {
+        if (!isOpen) {
+            setHasInitialized(false);
+        }
+    }, [isOpen]);
+
+    // Auto-navigate to first month with data when modal opens
+    useEffect(() => {
+        if (nextSlotData?.results && nextSlotData.results.length > 0 && isOpen && !hasInitialized) {
             const firstDate = nextSlotData.results[0].date;
             if (firstDate) {
                 const [year, month] = firstDate.split('-');
                 const firstDataMonth = new Date(parseInt(year), parseInt(month) - 1, 1);
-                // Only set if we haven't set a month yet (initial load)
-                setCurrentMonth(prev => {
-                    // If we're already viewing a future month, don't reset
-                    const prevTime = prev.getTime();
-                    const firstDataTime = firstDataMonth.getTime();
-                    // Only update if current month is before the first data month
-                    if (prevTime < firstDataTime) {
-                        return firstDataMonth;
-                    }
-                    return prev;
-                });
+                setCurrentMonth(firstDataMonth);
+                setHasInitialized(true);
             }
         }
-    }, [isOpen]); // Only depend on isOpen, not nextSlotData
+    }, [nextSlotData, isOpen, hasInitialized]);
 
     // Auto-load more data if viewing future months with no data
     useEffect(() => {
