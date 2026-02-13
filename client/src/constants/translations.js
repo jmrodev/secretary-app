@@ -211,11 +211,16 @@ export const translations = {
         confirm_attended: "¿Marcar como Atendido/Completado?",
         cannot_delete_attended: "No se puede eliminar un turno que ya fue atendido.",
         confirm_delete_appointment: "¿Está seguro? Esto eliminará el registro permanentemente.",
+        appointments_title: "Agenda de Turnos",
+        appointments_subtitle: "Gestiona tu agenda diaria y visualiza los próximos compromisos.",
 
         // Patients
         patients_list: "Pacientes",
         register_new_patient: "Registrar Nuevo Paciente",
         search_placeholder: "Buscar por nombre, DNI, obra social...",
+        active_list: "Lista Activa",
+        recycle_bin: "Papelera",
+        search: "Buscar",
         patient_info: "Info del Paciente",
         assigned_doctors: "Médicos Asignados",
         edit_info: "Editar Info",
@@ -588,6 +593,7 @@ export const translations = {
         partial: "Parcial",
         pending_payment: "Pendiente (Deuda)",
         proof_payment_optional: "Comprobante de Pago (Opcional)",
+        available_cash: "Efectivo Disponible",
 
         // Doctors
         doctors_title: "Médicos",

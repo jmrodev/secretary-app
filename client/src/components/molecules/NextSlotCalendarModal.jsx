@@ -97,17 +97,27 @@ const NextSlotCalendarModal = ({
         }
     };
 
-    // Auto-navigate to first month with data
+    // Auto-navigate to first month with data (only when modal first opens)
     useEffect(() => {
         if (nextSlotData?.results && nextSlotData.results.length > 0 && isOpen) {
             const firstDate = nextSlotData.results[0].date;
             if (firstDate) {
                 const [year, month] = firstDate.split('-');
                 const firstDataMonth = new Date(parseInt(year), parseInt(month) - 1, 1);
-                setCurrentMonth(firstDataMonth);
+                // Only set if we haven't set a month yet (initial load)
+                setCurrentMonth(prev => {
+                    // If we're already viewing a future month, don't reset
+                    const prevTime = prev.getTime();
+                    const firstDataTime = firstDataMonth.getTime();
+                    // Only update if current month is before the first data month
+                    if (prevTime < firstDataTime) {
+                        return firstDataMonth;
+                    }
+                    return prev;
+                });
             }
         }
-    }, [nextSlotData, isOpen]);
+    }, [isOpen]); // Only depend on isOpen, not nextSlotData
 
     // Auto-load more data if viewing future months with no data
     useEffect(() => {
