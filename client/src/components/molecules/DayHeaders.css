@@ -3,14 +3,16 @@
 .day-headers {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    background-color: var(--gray-50);
+    background-color: white;
+    border-left: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
     border-bottom: 1px solid var(--gray-200);
-    padding: 0.75rem 0;
+    padding: 0.25rem 0;
 }
 
 .day-headers__day {
     text-align: center;
-    font-size: 0.75rem;
+    font-size: 0.625rem;
     font-weight: 800;
     color: var(--text-muted);
     text-transform: uppercase;

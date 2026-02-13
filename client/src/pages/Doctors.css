@@ -1,19 +1,9 @@
-/* Doctors Page Styles */
-
-.doctors-page {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-}
-
-.doctors-page__header {
-    margin-bottom: 2rem;
-}
+/* Doctors-specific Styles */
 
 .doctors-page__grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
 @media (min-width: 768px) {
@@ -23,6 +13,13 @@
 }
 
 @media (min-width: 1280px) {
+    .doctors-page__grid {
+        grid-template-columns: repeat(2, 1fr);
+        /* 2 columns in main area is usually enough if sidebar exists */
+    }
+}
+
+@media (min-width: 1600px) {
     .doctors-page__grid {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -36,7 +33,7 @@
     justify-content: center;
     padding: 6rem 2rem;
     border: 2px dashed var(--border-color);
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
     background: var(--card-bg);
     text-align: center;
 }
@@ -45,6 +42,7 @@
     font-size: 3.5rem;
     margin-bottom: 1rem;
     opacity: 0.5;
+    color: var(--gray-400);
 }
 
 .doctors-page__empty-text {

@@ -1,8 +1,10 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import Calendar from './Calendar';
 import HolidayForm from '../molecules/HolidayForm';
-import Switch from '../atoms/Switch';
+import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
+import PatientSearchSelect from '../molecules/PatientSearchSelect';
 import './CalendarSection.css';
 
 const CalendarSection = ({
@@ -13,10 +15,18 @@ const CalendarSection = ({
     calendarStats = {},
     holidays = [],
     onAddHoliday,
-    showOutOfHours
+    showOutOfHours,
+    // New props for moved header
+    viewDoctorId,
+    onSearchPatientId,
+    searchPatientId,
+    onCreatePatient,
+    onNextFreeSlot,
+    onSyncDayToGoogle,
+    className = ""
 }) => {
     return (
-        <div className="calendar-section">
+        <div className={`calendar-section ${className}`}>
             {(activeTab === 'calendar' || activeTab === 'monthly') ? (
                 <>
                     <Calendar
@@ -27,12 +37,49 @@ const CalendarSection = ({
                         holidays={holidays}
                         showOutOfHours={showOutOfHours}
                     />
+
+                    {activeTab === 'calendar' && (
+                        <div className="flex flex-col gap-5 mt-5">
+                            <div className="dashboard-card">
+                                <h3 className="dashboard-card__title">🔍 Buscar Historial</h3>
+                                <div className="calendar-section__filter-group">
+                                    <PatientSearchSelect
+                                        value={searchPatientId}
+                                        placeholder="Nombre o DNI..."
+                                        onChange={onSearchPatientId}
+                                        onCreatePatient={onCreatePatient}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="dashboard-card">
+                                <h3 className="dashboard-card__title">🛠️ Herramientas</h3>
+                                <div className="flex gap-2">
+                                    <Button
+                                        variant="outline"
+                                        className="flex-1 justify-center"
+                                        onClick={onNextFreeSlot}
+                                        icon={<Icon name="SEARCH" size="1.1rem" />}
+                                    >
+                                        Próximo Libre
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => onSyncDayToGoogle && onSyncDayToGoogle()}
+                                        title="Sincronizar Google Calendar"
+                                        className="px-3"
+                                        icon={<Icon name="SYNC" size="1.1rem" />}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </>
             ) : (
-                <div className="card holiday-card">
-                    <h3 className="config-group__title holiday-card__title">🏖️ Agregar Feriado</h3>
-                    <p className="config-field__hint holiday-card__hint">
-                        Bloquea días específicos en la agenda.
+                <div className="dashboard-card holiday-card">
+                    <h3 className="dashboard-card__title">🏖️ Bloquear Agenda</h3>
+                    <p className="text-xs text-slate-500 mb-4 leading-relaxed">
+                        Crea un feriado o licencia para bloquear turnos en los días seleccionados.
                     </p>
                     <HolidayForm onAdd={onAddHoliday} />
                 </div>

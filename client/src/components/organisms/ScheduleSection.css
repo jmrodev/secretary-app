@@ -1,75 +1,20 @@
 /* Client/src/components/organisms/ScheduleSection.css */
 
 .schedule-section {
-    height: 100%;
     display: flex;
     flex-direction: column;
+    min-height: 0;
 }
 
 .schedule-section__container {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    min-height: 0;
     background: var(--card-bg);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-color);
     overflow: hidden;
-}
-
-/* Themed modifier can be used for doctor-specific styling if needed */
-.schedule-section__container--themed {
-    /* Example: background-color: var(--card-bg-alt); */
-    /* Intentionally empty for potential future overrides */
-    background-color: inherit;
-}
-
-.schedule-section__header {
-    margin-bottom: 1rem;
-    padding: 1rem;
-    background: var(--bg-secondary);
-    border-bottom: 1px solid var(--border-color);
-}
-
-.schedule-section__filter-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-}
-
-.schedule-section__label {
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: var(--gray-400);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding-left: 0.25rem;
-}
-
-.schedule-section__label--themed {
-    /* Add specific color if needed based on doctor theme context */
-    /* Intentionally empty for potential future overrides */
-    color: inherit;
-}
-
-.schedule-section__actions {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-    flex-wrap: wrap;
-}
-
-.schedule-section__action-btn {
-    flex: 1;
-}
-
-.schedule-section__action-btn--highlight {
-    box-shadow: 0 0 0 2px var(--blue-200);
-}
-
-.schedule-section__sync-btn {
-    max-width: 50px;
 }
 
 .schedule-section__card {

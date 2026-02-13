@@ -4,24 +4,31 @@
     width: 100%;
 }
 
-.calendar-section__controls {
+/* Ensure the calendar grid occupies the full width of its container */
+.calendar-section .calendar-grid {
+    width: 100%;
+    margin: 0;
+}
+
+.calendar-section__filter-group {
     display: flex;
-    justify-content: flex-end;
-    padding: 0.5rem 0;
-    margin-bottom: 0.5rem;
+    flex-direction: column;
+    gap: 0.25rem;
 }
 
 .holiday-card {
-    height: 100%;
-    padding: 1.5rem;
+    height: auto;
     animation: fadeIn 0.3s ease-out;
 }
 
-.holiday-card__title {
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
 
-.holiday-card__hint {
-    margin-bottom: 1.5rem;
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

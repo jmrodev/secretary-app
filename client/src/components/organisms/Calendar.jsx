@@ -56,7 +56,7 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
 
         // Empty slots for days before start of month
         for (let i = 0; i < firstDay; i++) {
-            dayElements.push(<div key={`empty-${i}`} className="calendar-grid__cell calendar-grid__cell--empty"></div>);
+            dayElements.push(<div key={`empty-pre-${i}`} className="calendar-grid__cell calendar-grid__cell--empty"></div>);
         }
 
         for (let i = 1; i <= days; i++) {
@@ -78,7 +78,14 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
             const bookedOutCount = (dayStats.bookedOut !== undefined) ? dayStats.bookedOut : dayAppts.filter(a => a.is_out_of_hours).length;
             const count = (dayStats.bookedIn !== undefined && dayStats.bookedOut !== undefined) ? (dayStats.bookedIn + dayStats.bookedOut) : dayAppts.length;
 
-            const isHolidayObj = holidays && holidays.find(h => h.date.startsWith(dateStr));
+            const isHolidayObj = holidays && holidays.find(h => {
+                if (!h.date) return false;
+                try {
+                    return isSameDay(new Date(h.date), currentDay);
+                } catch (e) {
+                    return false;
+                }
+            });
 
             dayElements.push(
                 <CalendarDayCell
@@ -99,6 +106,14 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
                 />
             );
         }
+
+        // Fill redundant rows to keep 6 rows (42 cells) always
+        const totalCells = 42;
+        const currentCount = dayElements.length;
+        for (let i = 0; i < (totalCells - currentCount); i++) {
+            dayElements.push(<div key={`empty-post-${i}`} className="calendar-grid__cell calendar-grid__cell--empty"></div>);
+        }
+
         return dayElements;
     };
 

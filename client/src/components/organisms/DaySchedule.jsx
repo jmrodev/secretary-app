@@ -190,11 +190,13 @@ const DaySchedule = ({
                     <h3 className="day-schedule__title">
                         {formatDate(date, { weekday: true, monthName: true, hideYear: true })}
                     </h3>
-                    {holiday && (
-                        <span className="day-schedule__holiday-badge">
-                            🏖️ {holiday.description}
-                        </span>
-                    )}
+                    <div className="day-schedule__holiday-container">
+                        {holiday && (
+                            <span className="day-schedule__holiday-badge">
+                                🏖️ {holiday.description}
+                            </span>
+                        )}
+                    </div>
                 </div>
 
                 <div className="day-schedule__nav">

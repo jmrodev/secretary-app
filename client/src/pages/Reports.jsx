@@ -38,61 +38,74 @@ const Reports = () => {
     };
 
     return (
-        <MainLayout>
-            <header className="page-header">
-                <div className="page-header__info">
-                    <h1 className="page-header__title">
+        <MainLayout wide>
+            <div className="reports-page">
+                <header className="dashboard-header animate-fadeIn">
+                    <h1 className="dashboard-header__title">
                         {t('reports_page_title') || 'Reportes y Exportaciones'}
                     </h1>
-                    <p className="page-header__subtitle">
+                    <p className="dashboard-header__subtitle">
                         {t('reports_page_subtitle') || 'Generación de reportes mensuales de turnos y recetas.'}
                     </p>
+                </header>
+
+                <div className="dashboard-nav-bar dashboard-nav-bar--centered animate-fadeIn">
+                    <ReportTabs
+                        activeTab={activeTab}
+                        onTabChange={(tab) => {
+                            setActiveTab(tab);
+                        }}
+                        t={t}
+                    />
                 </div>
-            </header>
 
-            <ReportTabs
-                activeTab={activeTab}
-                onTabChange={(tab) => {
-                    setActiveTab(tab);
-                    // Reset data when switching tabs for clarity
-                }}
-                t={t}
-            />
+                <div className="dashboard-grid animate-fadeIn">
+                    <aside className="dashboard-sidebar">
+                        <div className="dashboard-card">
+                            <h3 className="dashboard-card__title">⚙️ {t('filters') || 'Filtros'}</h3>
+                            <ReportFilters
+                                month={month}
+                                year={year}
+                                selectedDoctorId={selectedDoctorId}
+                                onMonthChange={setMonth}
+                                onYearChange={setYear}
+                                onDoctorChange={setSelectedDoctorId}
+                                onGenerate={handleGenerateReport}
+                                onDownload={handleDownloadJson}
+                                onPrint={handlePrint}
+                                onStepMonth={changeMonth}
+                                onStepYear={(d) => setYear(year + d)}
+                                isSubmitting={isSubmitting}
+                                hasData={!!reportData}
+                                doctors={doctors}
+                                t={t}
+                                vertical // Added hint for vertical layout in sidebar if supported
+                            />
+                        </div>
+                    </aside>
 
-            <ReportFilters
-                month={month}
-                year={year}
-                selectedDoctorId={selectedDoctorId}
-                onMonthChange={setMonth}
-                onYearChange={setYear}
-                onDoctorChange={setSelectedDoctorId}
-                onGenerate={handleGenerateReport}
-                onDownload={handleDownloadJson}
-                onPrint={handlePrint}
-                onStepMonth={changeMonth}
-                onStepYear={(d) => setYear(year + d)}
-                isSubmitting={isSubmitting}
-                hasData={!!reportData}
-                doctors={doctors}
-                t={t}
-            />
-
-            <div className="reports-page__results">
-                {activeTab === 'appointments' && (
-                    <AppointmentReportTable data={reportData} t={t} />
-                )}
-                {activeTab === 'prescriptions' && (
-                    <PrescriptionReportTable data={reportData} t={t} />
-                )}
-                {activeTab === 'licenses' && (
-                    <LicenseReportTable data={reportData} t={t} />
-                )}
-                {activeTab === 'certificates' && (
-                    <CertificateReportTable data={reportData} t={t} />
-                )}
-                {activeTab === 'balance' && (
-                    <BalanceView reportData={reportData} month={month} year={year} t={t} />
-                )}
+                    <main className="dashboard-main">
+                        <div className="dashboard-card no-padding">
+                            <div className="reports-page__results">
+                                {activeTab === 'appointments' && (
+                                    <AppointmentReportTable data={reportData} t={t} />
+                                )}
+                                {activeTab === 'prescriptions' && (
+                                    <PrescriptionReportTable data={reportData} t={t} />
+                                )}
+                                {activeTab === 'licenses' && (
+                                    <LicenseReportTable data={reportData} t={t} />
+                                )}
+                                {activeTab === 'certificates' && (
+                                    <CertificateReportTable data={reportData} t={t} />
+                                )}
+                                {activeTab === 'balance' && (
+                                    <BalanceView reportData={reportData} month={month} year={year} t={t} />
+                                )}
+                            </div>
+                        </div>
+                    </main>
+                </div>
             </div>
         </MainLayout>
     );

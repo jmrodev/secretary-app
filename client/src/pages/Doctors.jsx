@@ -24,45 +24,57 @@ const Doctors = () => {
     return (
         <MainLayout wide>
             <div className="doctors-page">
-                <header className="page-header">
-                    <div className="page-header__info">
-                        <h1 className="page-header__title">{t('doctors_title')}</h1>
-                        <p className="page-header__subtitle">{t('doctors_subtitle') || 'Administra el personal médico y sus configuraciones.'}</p>
-                    </div>
+                <header className="dashboard-header animate-fadeIn">
+                    <h1 className="dashboard-header__title">{t('doctors_title')}</h1>
+                    <p className="dashboard-header__subtitle">{t('doctors_subtitle') || 'Administra el personal médico y sus configuraciones.'}</p>
                 </header>
+
+                <div className="dashboard-nav-bar dashboard-nav-bar--centered animate-fadeIn">
+                    {/* Placeholder for future tabs if needed */}
+                    <div className="flex items-center gap-2 text-sm font-medium text-muted">
+                        <Icon name="DOCTOR" size="1.2rem" />
+                        {filteredDoctors.length} {t('doctors_count') || 'Médicos activos'}
+                    </div>
+                </div>
 
                 {loading ? (
                     <Loading variant="centered" text={t('loading_doctors') || "Cargando médicos..."} />
                 ) : (
-                    <>
-                        <section className="action-bar">
-                            <div className="action-bar__search">
+                    <div className="dashboard-grid animate-fadeIn">
+                        <aside className="dashboard-sidebar">
+                            <div className="dashboard-card">
+                                <h3 className="dashboard-card__title">🔍 {t('search') || 'Buscar'}</h3>
                                 <SearchBar
                                     value={searchTerm}
                                     onChange={e => setSearchTerm(e.target.value)}
                                     placeholder={t('search_doctors_placeholder')}
                                 />
                             </div>
-                            <div className="action-bar__tools">
-                                <Button
-                                    variant="secondary"
-                                    size="sm"
-                                    onClick={handlers.fetchDoctors}
-                                    icon={<Icon name="SYNC" size="1.2rem" />}
-                                >
-                                    {t('refresh') || 'Actualizar'}
-                                </Button>
-                                <Button
-                                    variant="primary"
-                                    onClick={() => handlers.onEditDoctor(null)}
-                                    icon={<Icon name="ADD" size="1.2rem" />}
-                                >
-                                    {t('new') || 'Nuevo'}
-                                </Button>
-                            </div>
-                        </section>
 
-                        <div className="doctors-page__content animate-fadeIn">
+                            <div className="dashboard-card">
+                                <h3 className="dashboard-card__title">🛠️ {t('actions') || 'Acciones'}</h3>
+                                <div className="flex flex-col gap-3">
+                                    <Button
+                                        variant="outline"
+                                        className="justify-start w-full"
+                                        onClick={handlers.fetchDoctors}
+                                        icon={<Icon name="SYNC" size="1.2rem" />}
+                                    >
+                                        {t('refresh') || 'Actualizar'}
+                                    </Button>
+                                    <Button
+                                        variant="primary"
+                                        className="justify-start w-full"
+                                        onClick={() => handlers.onEditDoctor(null)}
+                                        icon={<Icon name="ADD" size="1.2rem" />}
+                                    >
+                                        {t('new') || 'Nuevo'}
+                                    </Button>
+                                </div>
+                            </div>
+                        </aside>
+
+                        <main className="dashboard-main">
                             <div className="doctors-page__grid">
                                 {filteredDoctors.length === 0 ? (
                                     <div className="doctors-page__empty-state">
@@ -81,37 +93,39 @@ const Doctors = () => {
                                     />
                                 ))}
                             </div>
-                        </div>
-                    </>
+                        </main>
+                    </div>
                 )}
 
-                {modalState.isOpen && (
-                    <DoctorEditModal
-                        isOpen={modalState.isOpen}
-                        onClose={handlers.onCloseModal}
-                        activeTab={modalState.activeTab}
-                        onTabChange={handlers.onTabChange}
-                        data={modalState.data}
-                        settings={settings}
-                        onChangeData={handlers.onFormDataChange}
-                        onSave={handlers.onSaveDoctor}
+                {
+                    modalState.isOpen && (
+                        <DoctorEditModal
+                            isOpen={modalState.isOpen}
+                            onClose={handlers.onCloseModal}
+                            activeTab={modalState.activeTab}
+                            onTabChange={handlers.onTabChange}
+                            data={modalState.data}
+                            settings={settings}
+                            onChangeData={handlers.onFormDataChange}
+                            onSave={handlers.onSaveDoctor}
 
-                        schedule={modalState.schedule}
-                        setSchedule={handlers.onScheduleChange}
-                        loadingSchedule={modalState.loadingSchedule}
+                            schedule={modalState.schedule}
+                            setSchedule={handlers.onScheduleChange}
+                            loadingSchedule={modalState.loadingSchedule}
 
-                        connected={modalState.connected}
-                        onConnectGoogle={handlers.onConnectGoogle}
-                        onDisconnectGoogle={handlers.onDisconnectGoogle}
-                        onVerifyGoogleEvents={handlers.onVerifyGoogleEvents}
-                        onImportContacts={handlers.onImportContacts}
-                        onResetSpreadsheet={handlers.onResetSpreadsheet}
+                            connected={modalState.connected}
+                            onConnectGoogle={handlers.onConnectGoogle}
+                            onDisconnectGoogle={handlers.onDisconnectGoogle}
+                            onVerifyGoogleEvents={handlers.onVerifyGoogleEvents}
+                            onImportContacts={handlers.onImportContacts}
+                            onResetSpreadsheet={handlers.onResetSpreadsheet}
 
-                        t={t}
-                    />
-                )}
-            </div>
-        </MainLayout>
+                            t={t}
+                        />
+                    )
+                }
+            </div >
+        </MainLayout >
     );
 };
 

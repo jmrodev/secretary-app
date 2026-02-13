@@ -82,23 +82,12 @@ const Appointments = () => {
                 t={t}
             />
 
-            <div className="appointments-nav-group">
-                <NavTabs
-                    activeTab={activeTab}
-                    setActiveTab={setActiveTab}
-                    userRole={user.role}
-                />
+            <header className="dashboard-header animate-fadeIn">
+                <h1 className="dashboard-header__title">{t('appointments_title') || 'Agenda de Turnos'}</h1>
+                <p className="dashboard-header__subtitle">{t('appointments_subtitle') || 'Gestiona tu agenda diaria y visualiza los próximos compromisos.'}</p>
+            </header>
 
-                <DoctorFilter
-                    activeTab={activeTab}
-                    userRole={user.role}
-                    viewDoctorId={viewDoctorId}
-                    setViewDoctorId={setViewDoctorId}
-                    doctors={doctors}
-                />
-            </div>
-
-            <div className="tab-content animate-fadeIn">
+            <div className="appointments-tab-content animate-fadeIn">
                 {searchPatientId ? (
                     <PatientHistoryView
                         patientAppointments={patientAppointments}
@@ -117,40 +106,60 @@ const Appointments = () => {
                         onWhatsApp={handlers.handleWhatsAppUniversal}
                     />
                 ) : (
-                    <div className={`appointments-grid ${activeTab === 'monthly' ? 'appointments-grid--monthly' : ''}`}>
-                        <CalendarSection
-                            activeTab={activeTab}
-                            selectedDate={selectedDate}
-                            onDateSelect={handlers.handleDateSelect}
-                            appointments={filteredAppointments}
-                            calendarStats={calendarStats}
-                            holidays={holidays}
-                            onAddHoliday={handlers.handleAddHoliday}
-                            showOutOfHours={showOutOfHours}
-                            setShowOutOfHours={setShowOutOfHours}
-                        />
+                    <div className={activeTab === 'monthly' ? "appointments-grid--monthly" : "dashboard-grid"}>
+                        <aside className="dashboard-sidebar">
+                            <div className="dashboard-nav-bar animate-fadeIn">
+                                <NavTabs
+                                    activeTab={activeTab}
+                                    setActiveTab={setActiveTab}
+                                    userRole={user.role}
+                                />
 
-                        {activeTab !== 'monthly' && (
-                            <ScheduleSection
+                                <DoctorFilter
+                                    activeTab={activeTab}
+                                    userRole={user.role}
+                                    viewDoctorId={viewDoctorId}
+                                    setViewDoctorId={setViewDoctorId}
+                                    doctors={doctors}
+                                />
+                            </div>
+
+                            <CalendarSection
                                 activeTab={activeTab}
                                 selectedDate={selectedDate}
                                 onDateSelect={handlers.handleDateSelect}
-                                selectedDoctor={currentDoctor}
-                                viewDoctorId={viewDoctorId}
-                                appointments={appointments}
-                                doctorSchedule={doctorSchedule}
+                                appointments={filteredAppointments}
+                                calendarStats={calendarStats}
                                 holidays={holidays}
-                                onSlotClick={handlers.handleSlotClick}
-                                onDeleteHoliday={handlers.handleDeleteHoliday}
-
+                                onAddHoliday={handlers.handleAddHoliday}
+                                showOutOfHours={showOutOfHours}
+                                setShowOutOfHours={setShowOutOfHours}
+                                viewDoctorId={viewDoctorId}
                                 onSearchPatientId={setSearchPatientId}
                                 searchPatientId={searchPatientId}
                                 onCreatePatient={booking.createPatient}
                                 onNextFreeSlot={handlers.openNextSlot}
                                 onSyncDayToGoogle={() => handlers.syncDayToGoogle(viewDoctorId, selectedDate)}
-                                showOutOfHours={showOutOfHours}
-                                setShowOutOfHours={setShowOutOfHours}
                             />
+                        </aside>
+
+                        {activeTab !== 'monthly' && (
+                            <main className="dashboard-main">
+                                <ScheduleSection
+                                    activeTab={activeTab}
+                                    selectedDate={selectedDate}
+                                    onDateSelect={handlers.handleDateSelect}
+                                    selectedDoctor={currentDoctor}
+                                    viewDoctorId={viewDoctorId}
+                                    appointments={appointments}
+                                    doctorSchedule={doctorSchedule}
+                                    holidays={holidays}
+                                    onSlotClick={handlers.handleSlotClick}
+                                    onDeleteHoliday={handlers.handleDeleteHoliday}
+                                    showOutOfHours={showOutOfHours}
+                                    setShowOutOfHours={setShowOutOfHours}
+                                />
+                            </main>
                         )}
                     </div>
                 )}
@@ -217,33 +226,37 @@ const Appointments = () => {
                 hasMore={!!nextSlot.nextSlotData?.nextStartDate}
             />
 
-            {editPatientModalOpen && (
-                <PatientManagerModal
-                    isOpen={editPatientModalOpen}
-                    onClose={() => setEditPatientModalOpen(false)}
-                    patient={booking.selectedPatientData}
-                    referenceInfo={booking.syncReferenceInfo}
-                    onUpdate={(updatedData) => {
-                        booking.setSelectedPatient(updatedData.id);
-                        booking.setSelectedPatientData(updatedData);
-                    }}
-                    doctors={doctors}
-                />
-            )}
+            {
+                editPatientModalOpen && (
+                    <PatientManagerModal
+                        isOpen={editPatientModalOpen}
+                        onClose={() => setEditPatientModalOpen(false)}
+                        patient={booking.selectedPatientData}
+                        referenceInfo={booking.syncReferenceInfo}
+                        onUpdate={(updatedData) => {
+                            booking.setSelectedPatient(updatedData.id);
+                            booking.setSelectedPatientData(updatedData);
+                        }}
+                        doctors={doctors}
+                    />
+                )
+            }
 
-            {booking.showForm && (
-                <AppointmentFormModal
-                    isOpen={booking.showForm}
-                    onClose={() => booking.setShowForm(false)}
-                    {...booking}
-                    onSubmit={handlers.handleBook}
-                    doctors={doctors}
-                    institutions={controller.institutions}
-                    onOpenEditPatient={() => setEditPatientModalOpen(true)}
-                    t={t}
-                    handlers={booking.handlers}
-                />
-            )}
+            {
+                booking.showForm && (
+                    <AppointmentFormModal
+                        isOpen={booking.showForm}
+                        onClose={() => booking.setShowForm(false)}
+                        {...booking}
+                        onSubmit={handlers.handleBook}
+                        doctors={doctors}
+                        institutions={controller.institutions}
+                        onOpenEditPatient={() => setEditPatientModalOpen(true)}
+                        t={t}
+                        handlers={booking.handlers}
+                    />
+                )
+            }
 
             <AdminAuthModal
                 isOpen={authModalOpen}
@@ -259,7 +272,7 @@ const Appointments = () => {
                     handlers.fetchAppointments();
                 }}
             />
-        </MainLayout>
+        </MainLayout >
     );
 };
 

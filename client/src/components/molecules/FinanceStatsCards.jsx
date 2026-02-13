@@ -3,37 +3,87 @@ import Card from '../atoms/Card';
 import './FinanceStatsCards.css';
 
 const FinanceStatsCards = ({ stats, t }) => {
+    // Separate different types of stats
+    const paymentMethods = stats.filter(s => ['cash', 'transfer', 'withdrawal'].includes(s.type));
+    const financialSummary = stats.filter(s => s.type === 'net_cash'); // Only net_cash, debts are shown in other cards
+    const otherStats = stats.filter(s => !['cash', 'transfer', 'withdrawal', 'debts', 'net_cash', 'pending_debt'].includes(s.type));
+
     return (
         <div className="finance-stats">
-            {stats.map((s, idx) => (
+            {/* Combined Payment Methods Card with Financial Summary */}
+            {(paymentMethods.length > 0 || financialSummary.length > 0) && (
+                <Card className="finance-stats__card">
+                    <span className="finance-stats__title">{t('payment_methods') || 'Métodos de Pago'}</span>
+                    <div className="finance-stats__breakdown">
+                        <table className="finance-stats__table">
+                            <thead>
+                                <tr>
+                                    <th className="finance-stats__table-header">{t('method') || 'Método'}</th>
+                                    <th className="finance-stats__table-header text-right">{t('this_day')}</th>
+                                    <th className="finance-stats__table-header text-right">{t('this_month')}</th>
+                                    <th className="finance-stats__table-header text-right">{t('this_year')}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {paymentMethods.map((s, idx) => (
+                                    <tr key={idx}>
+                                        <td className="finance-stats__table-cell finance-stats__label">
+                                            {t(s.type) || s.label || s.type}
+                                        </td>
+                                        <td className="finance-stats__table-cell text-right font-bold finance-stats__value--blue">
+                                            ${Number(s.today).toLocaleString()}
+                                        </td>
+                                        <td className="finance-stats__table-cell text-right font-bold finance-stats__value--gray">
+                                            ${Number(s.month).toLocaleString()}
+                                        </td>
+                                        <td className="finance-stats__table-cell text-right font-bold finance-stats__value--muted">
+                                            ${Number(s.year).toLocaleString()}
+                                        </td>
+                                    </tr>
+                                ))}
+                                {financialSummary.map((s, idx) => (
+                                    <tr key={`summary-${idx}`} className="finance-stats__summary-row">
+                                        <td className="finance-stats__table-cell finance-stats__label">
+                                            {s.type === 'net_cash'
+                                                ? (t('available_cash') || 'Efectivo Disponible')
+                                                : s.type === 'debts'
+                                                    ? (t('pending_debt') || 'Deuda Pendiente')
+                                                    : (t(s.type) || s.label || s.type)
+                                            }
+                                        </td>
+                                        {s.today !== undefined && typeof s.today !== 'object' ? (
+                                            <>
+                                                <td className="finance-stats__table-cell text-right font-bold finance-stats__value--blue">
+                                                    ${Number(s.today).toLocaleString()}
+                                                </td>
+                                                <td className="finance-stats__table-cell text-right font-bold finance-stats__value--gray">
+                                                    ${Number(s.month).toLocaleString()}
+                                                </td>
+                                                <td className="finance-stats__table-cell text-right font-bold finance-stats__value--muted">
+                                                    ${Number(s.year).toLocaleString()}
+                                                </td>
+                                            </>
+                                        ) : (
+                                            <td colSpan="3" className="finance-stats__table-cell text-right font-bold finance-stats__value--red">
+                                                ${Number(s.total || 0).toLocaleString()}
+                                            </td>
+                                        )}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </Card>
+            )}
+
+            {/* Other Stats Cards (Appointments, Prescriptions) */}
+            {otherStats.map((s, idx) => (
                 <Card key={idx} className="finance-stats__card">
                     <span className="finance-stats__title">
                         {t(s.type) || s.label || s.type}
                     </span>
 
-                    {/* Standard Breakdown (Cash/Transfer/Withdrawal) */}
-                    {s.today !== undefined && typeof s.today !== 'object' ? (
-                        <div className="finance-stats__breakdown">
-                            <div className="finance-stats__row">
-                                <span className="finance-stats__label">{t('this_day')}</span>
-                                <span className="finance-stats__value finance-stats__value--blue">
-                                    ${Number(s.today).toLocaleString()}
-                                </span>
-                            </div>
-                            <div className="finance-stats__row">
-                                <span className="finance-stats__label">{t('this_month')}</span>
-                                <span className="finance-stats__value finance-stats__value--gray">
-                                    ${Number(s.month).toLocaleString()}
-                                </span>
-                            </div>
-                            <div className="finance-stats__row">
-                                <span className="finance-stats__label">{t('this_year')}</span>
-                                <span className="finance-stats__value finance-stats__value--muted">
-                                    ${Number(s.year).toLocaleString()}
-                                </span>
-                            </div>
-                        </div>
-                    ) : s.type === 'appointments' || s.type === 'prescriptions' ? (
+                    {s.type === 'appointments' || s.type === 'prescriptions' ? (
                         /* Turnos/Recetas - Advanced breakdown */
                         <div className="finance-stats__breakdown">
                             <table className="finance-stats__table">
@@ -72,12 +122,7 @@ const FinanceStatsCards = ({ stats, t }) => {
                                 </span>
                             </div>
                         </div>
-                    ) : (
-                        /* Total Debts */
-                        <span className="finance-stats__value finance-stats__value--large finance-stats__value--red">
-                            ${Number(s.total || 0).toLocaleString()}
-                        </span>
-                    )}
+                    ) : null}
                 </Card>
             ))}
         </div>

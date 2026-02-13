@@ -1,8 +1,10 @@
 .calendar-day-cell {
-    min-height: 85px;
-    border: 1px solid transparent;
+    min-height: 65px;
+    border: 2px solid var(--gray-200);
+    margin: -1px;
+    /* Prevent double borders */
     /* Keep space for borders to avoid layout shift */
-    padding: 0.5rem;
+    padding: 0;
     background: white;
     transition: all 0.2s ease;
     cursor: default;
@@ -20,13 +22,13 @@
     height: 100%;
     width: 100%;
     position: relative;
-    padding-top: 1.5rem;
+    padding-top: 1.45rem;
     /* Space for absolute header */
 }
 
 @media (max-width: 768px) {
     .calendar-day-cell {
-        padding: 0.25rem;
+        padding: 0;
     }
 }
 
@@ -61,7 +63,12 @@
 }
 
 .calendar-day-cell--holiday {
-    background: var(--red-50);
+    background: #fff5f5;
+    border-color: #feb2b2;
+}
+
+.calendar-day-cell--holiday .calendar-day-cell__number {
+    color: var(--red-600);
 }
 
 .calendar-day-cell--disabled {
@@ -71,9 +78,9 @@
 
 .calendar-day-cell__date {
     position: absolute;
-    top: 0.5rem;
-    left: 0.5rem;
-    right: 0.5rem;
+    top: 0.35rem;
+    left: 0.4rem;
+    right: 0.4rem;
     display: flex;
     justify-content: space-between;
     align-items: center;

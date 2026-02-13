@@ -1,44 +1,24 @@
-/* Client/src/pages/Appointments.css */
+/* Appointments-specific Styles */
 
 .appointments-tab-content {
-    height: calc(100vh - 180px);
-    /* Adjust based on header/tabs height */
-    min-height: 600px;
-    overflow-y: auto;
-}
-
-.appointments-grid {
-    display: grid;
-    grid-template-columns: minmax(300px, 1fr) minmax(0, 2fr);
-    /* Reduced calendar min-width and gap to prioritize schedule space */
-    gap: 1.5rem;
-    height: 100%;
-    min-width: 0;
-    align-items: start;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .appointments-grid--monthly {
     grid-template-columns: 1fr;
+    display: grid;
+    gap: 0.75rem;
 }
 
-@media (max-width: 900px) {
-    .appointments-grid {
-        grid-template-columns: 1fr;
-        height: auto;
-    }
+/* Ensure doctor filter inside standard nav bar looks correct */
+.dashboard-nav-bar .doctor-filter {
+    margin: 0;
 }
 
-.appointments-nav-group {
-    background: var(--card-bg);
-    padding: 1.5rem 2rem;
-    margin: -2rem -2rem 2rem -2rem;
-    /* Adjusted to match standard padding usually found in main-content */
-    border-bottom: 2px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 2rem;
-    flex-wrap: wrap;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    /* Add subtle shadow for "organized" feel */
+.dashboard-nav-bar .tab-nav {
+    margin-bottom: 0;
 }

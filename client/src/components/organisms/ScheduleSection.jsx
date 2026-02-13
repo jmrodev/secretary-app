@@ -15,12 +15,6 @@ const ScheduleSection = ({
     holidays = [],
     onSlotClick,
     onDeleteHoliday,
-
-    onSearchPatientId,
-    searchPatientId,
-    onCreatePatient,
-    onNextFreeSlot,
-    onSyncDayToGoogle,
     onDateSelect,
     showOutOfHours,
     setShowOutOfHours
@@ -38,39 +32,6 @@ const ScheduleSection = ({
         <div className={`schedule-section ${getDoctorThemeModifier()}`}>
             {activeTab === 'calendar' ? (
                 <div className={`schedule-section__container ${getContainerModifier()}`}>
-                    <div className="schedule-section__header">
-                        <div className="schedule-section__filter-group">
-                            <label className={`schedule-section__label ${viewDoctorId ? 'schedule-section__label--themed' : ''}`}>
-                                Buscar Historial de Paciente
-                            </label>
-                            <PatientSearchSelect
-                                value={searchPatientId}
-                                placeholder="🔍 Buscar por Nombre/DNI..."
-                                onChange={onSearchPatientId}
-                                onCreatePatient={onCreatePatient}
-                            />
-                        </div>
-                        <div className="schedule-section__actions">
-
-                            <Button
-                                variant="secondary"
-                                className="schedule-section__action-btn"
-                                onClick={onNextFreeSlot}
-                                title="Próximo turno libre"
-                            >
-                                <span>🔍</span> Próximo Libre
-                            </Button>
-                            <Button
-                                variant="secondary"
-                                onClick={() => onSyncDayToGoogle && onSyncDayToGoogle()}
-                                title="Actualizar Google Calendar con los turnos del día"
-                                className="schedule-section__sync-btn"
-                            >
-                                🔄
-                            </Button>
-                        </div>
-                    </div>
-
                     <DaySchedule
                         date={selectedDate}
                         onDateSelect={onDateSelect}

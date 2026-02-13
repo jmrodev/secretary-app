@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useDashboardController } from '../controllers/useDashboardController';
 import Button from '../components/atoms/Button';
@@ -47,31 +48,29 @@ const Dashboard = () => {
         return <Loading variant="full-page" />;
     }
 
-    const baseClass = 'dashboard';
-
     return (
-        <MainLayout>
-            <div className={baseClass}>
-                <header className={`${baseClass}__header`}>
-                    <div className={`${baseClass}__header-info`}>
-                        <div className={`${baseClass}__title-group`}>
-                            <h1 className={`${baseClass}__title`}>{t('dashboard') || 'Panel de Control'}</h1>
-                            <div className={`${baseClass}__live-indicator`}>
-                                <span className={`${baseClass}__dot`}></span>
-                                <span className={`${baseClass}__live-text`}>LIVE</span>
+        <MainLayout wide>
+            <div className="dashboard-page">
+                <header className="dashboard-header animate-fadeIn">
+                    <div className="flex-1">
+                        <div className="flex items-center gap-3">
+                            <h1 className="dashboard-header__title">{t('dashboard') || 'Panel de Control'}</h1>
+                            <div className="dashboard-live-indicator">
+                                <span className="dashboard-live-indicator__dot"></span>
+                                <span className="dashboard-live-indicator__text">LIVE</span>
                             </div>
                         </div>
-                        <p className={`${baseClass}__subtitle`}>
+                        <p className="dashboard-header__subtitle">
                             {t('welcome_back') || 'Hola'}, <strong>{user.full_name || user.username}</strong>. {t('dashboard_subtitle') || 'Aquí tienes un resumen de la actividad de hoy.'}
                         </p>
                     </div>
-                    <div className={`${baseClass}__header-actions`}>
+                    <div className="flex items-center gap-3">
                         <Button
                             variant="secondary"
                             outline
                             size="sm"
                             onClick={refreshDashboard}
-                            icon={<Icon name="sync" size="1.1rem" />}
+                            icon={<Icon name="SYNC" size="1.1rem" />}
                             tooltip={t('refresh') || 'Sincronizar Panel'}
                         />
                         {(user.role === 'admin' || user.role === 'secretary') && (
@@ -79,7 +78,7 @@ const Dashboard = () => {
                                 variant="primary"
                                 size="sm"
                                 onClick={() => navigate('/patients', { state: { openNewPatient: true } })}
-                                icon={<Icon name="person_add" size="1.1rem" />}
+                                icon={<Icon name="ADD" size="1.1rem" />}
                             >
                                 {t('new_patient') || 'Nuevo Paciente'}
                             </Button>
@@ -87,48 +86,9 @@ const Dashboard = () => {
                     </div>
                 </header>
 
-                <div className={`${baseClass}__grid`}>
-                    {/* Main Content Area - Primary focus */}
-                    <section className={`${baseClass}__content`}>
-                        {(user.role === 'secretary' || user.role === 'doctor' || user.role === 'admin') && (
-                            <nav className={`${baseClass}__nav`}>
-                                <div className={`${baseClass}__nav-item`}>
-                                    <Button
-                                        variant="ghost"
-                                        active={activeTab === 'requirements'}
-                                        onClick={() => setActiveTab('requirements')}
-                                        icon={<Icon name="assignment" />}
-                                    >
-                                        {t('ongoing_requirements')}
-                                    </Button>
-                                    {pendingReqCount > 0 && (
-                                        <span className={`${baseClass}__nav-badge`}>{pendingReqCount}</span>
-                                    )}
-                                </div>
-                            </nav>
-                        )}
-
-                        <div className={`${baseClass}__tab-content animate-fadeIn`}>
-                            {activeTab === 'requirements' && (user.role === 'secretary' || user.role === 'doctor' || user.role === 'admin') && (
-                                <div className={`${baseClass}__requirements`}>
-                                    <div className={`${baseClass}__section-header`}>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm-compact"
-                                            onClick={() => navigate('/requests')}
-                                        >
-                                            {t('view_all')}
-                                            <Icon name="arrow_forward" size="1rem" />
-                                        </Button>
-                                    </div>
-                                    <RequirementsList user={user} />
-                                </div>
-                            )}
-                        </div>
-                    </section>
-
-                    {/* Sidebar Stats - Secondary info */}
-                    <aside className={`${baseClass}__sidebar`}>
+                <div className="dashboard-grid animate-fadeIn">
+                    {/* Sidebar Stats - Now on the left consistent with 380px fixed width */}
+                    <aside className="dashboard-sidebar">
                         <DashboardSidebar
                             stats={stats}
                             newPatientStats={newPatientStats}
@@ -137,6 +97,52 @@ const Dashboard = () => {
                             t={t}
                         />
                     </aside>
+
+                    {/* Main Content Area - Primary focus, takes remaining 1fr */}
+                    <main className="dashboard-main">
+                        {(user.role === 'secretary' || user.role === 'doctor' || user.role === 'admin') && (
+                            <div className="dashboard-nav-bar dashboard-nav-bar--centered mb-6">
+                                <div className="flex items-center gap-6">
+                                    <Button
+                                        variant="ghost"
+                                        active={activeTab === 'requirements'}
+                                        onClick={() => setActiveTab('requirements')}
+                                        icon={<Icon name="DOCS" />}
+                                        className="relative"
+                                    >
+                                        {t('ongoing_requirements')}
+                                        {pendingReqCount > 0 && (
+                                            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center border-2 border-white">
+                                                {pendingReqCount}
+                                            </span>
+                                        )}
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="dashboard-card no-padding">
+                            <div className="p-6">
+                                {activeTab === 'requirements' && (user.role === 'secretary' || user.role === 'doctor' || user.role === 'admin') && (
+                                    <div className="dashboard-requirements">
+                                        <div className="flex justify-between items-center mb-6">
+                                            <h3 className="text-lg font-bold text-slate-800">{t('pending_requests') || 'Solicitudes Pendientes'}</h3>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => navigate('/requests')}
+                                                className="text-primary hover:bg-primary/5"
+                                            >
+                                                {t('view_all')}
+                                                <Icon name="arrow_forward" size="1rem" className="ml-1" />
+                                            </Button>
+                                        </div>
+                                        <RequirementsList user={user} />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </main>
                 </div>
 
                 {/* Modals */}
@@ -188,6 +194,4 @@ const Dashboard = () => {
     );
 };
 
-
 export default Dashboard;
-

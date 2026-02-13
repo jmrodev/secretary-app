@@ -1,38 +1,18 @@
-/* Finances Page Styles */
+/* Finances-specific Styles */
 
-.finances-page {
+.finances-page__main-info {
     display: flex;
-    flex-direction: column;
-    gap: 2rem;
-}
-
-.finances-page__controls {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-}
-
-.finances-page__actions-row {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-}
-
-@media (min-width: 1024px) {
-    .finances-page__actions-row {
-        grid-template-columns: 1fr 350px;
-    }
-}
-
-.finances-page__actions-card {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
     align-items: center;
-    padding: 1.25rem;
+    gap: 1.5rem;
+    flex-wrap: wrap;
 }
 
-.finances-page__summary-section {
-    display: flex;
-    flex-direction: column;
+.dashboard-nav-bar .finance-doctor-filter {
+    margin: 0;
+}
+
+/* Ensure TransactionTable fills container but is contained in card */
+.finances-page .dashboard-card.no-padding {
+    overflow: auto;
+    max-height: calc(100vh - 300px);
 }

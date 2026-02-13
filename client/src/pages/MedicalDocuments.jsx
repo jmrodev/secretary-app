@@ -88,249 +88,248 @@ const MedicalDocuments = () => {
     return (
         <MainLayout wide>
             <div className="medical-documents no-print">
-                <header className="page-header">
-                    <div className="page-header__info">
-                        <h1 className="page-header__title">{t('medical_documents')}</h1>
-                        <p className="page-header__subtitle">{t('medical_docs_subtitle') || 'Gestione requerimientos, archivos e historial de pacientes.'}</p>
-                    </div>
+                <header className="dashboard-header">
+                    <h1 className="dashboard-header__title">{t('medical_documents')}</h1>
+                    <p className="dashboard-header__subtitle">{t('medical_docs_subtitle') || 'Gestione requerimientos, archivos e historial de pacientes.'}</p>
                 </header>
 
-                <TabNav className="medical-documents__tabs">
-                    {[
-                        { id: 'requests', label: t('requests_workflow'), icon: 'REQUESTS' },
-                        { id: 'files', label: t('file_repository'), icon: 'DOCUMENTS' },
-                        { id: 'prescriptions', label: t('prescriptions'), icon: 'PRESCRIPTION' },
-                        { id: 'licenses', label: t('medical_licenses'), icon: 'LICENSE' },
-                        { id: 'certificates', label: t('certificates') || 'Certificados', icon: 'CERTIFICATE' }
-                    ].map(tab => (
-                        <TabButton
-                            key={tab.id}
-                            isActive={activeTab === tab.id}
-                            onClick={() => handleTabChange(tab.id)}
-                        >
-                            <span className="medical-documents__tab-icon">
-                                <Icon name={tab.icon} size="1.2rem" />
-                            </span>
-                            {tab.label}
-                        </TabButton>
-                    ))}
-                </TabNav>
-
-                <section className="action-bar">
-                    <div className="action-bar__search">
-                        <SearchBar
-                            value={searchTerm}
-                            onChange={e => handleSearchChange(e.target.value)}
-                            placeholder={t('search_docs_placeholder')}
-                        />
-                    </div>
-                </section>
-
-                <div className="medical-documents__tabs-content animate-fadeIn">
-                    {activeTab === 'requests' && (
-                        <div className="medical-documents__requests-layout">
-                            <TabNav className="tab-nav--sub">
-                                <TabButton
-                                    isActive={requestsSubTab === 'list'}
-                                    onClick={() => handleSubTabChange('list')}
-                                >
-                                    {t('request_status')}
-                                </TabButton>
-                                <TabButton
-                                    isActive={requestsSubTab === 'new'}
-                                    onClick={() => handleSubTabChange('new')}
-                                    icon={<Icon name="ADD" size="1rem" />}
-                                >
-                                    {t('new_request')}
-                                </TabButton>
+                <div className="dashboard-grid animate-fadeIn">
+                    <aside className="dashboard-sidebar">
+                        <div className="dashboard-nav-bar">
+                            <TabNav className="medical-documents__tabs">
+                                {[
+                                    { id: 'requests', label: t('requests_workflow'), icon: 'REQUESTS' },
+                                    { id: 'files', label: t('file_repository'), icon: 'DOCUMENTS' },
+                                    { id: 'prescriptions', label: t('prescriptions'), icon: 'PRESCRIPTION' },
+                                    { id: 'licenses', label: t('medical_licenses'), icon: 'LICENSE' },
+                                    { id: 'certificates', label: t('certificates') || 'Certificados', icon: 'CERTIFICATE' }
+                                ].map(tab => (
+                                    <TabButton
+                                        key={tab.id}
+                                        isActive={activeTab === tab.id}
+                                        onClick={() => handleTabChange(tab.id)}
+                                    >
+                                        <span className="medical-documents__tab-icon">
+                                            <Icon name={tab.icon} size="1.2rem" />
+                                        </span>
+                                        {tab.label}
+                                    </TabButton>
+                                ))}
                             </TabNav>
-
-                            {requestsSubTab === 'new' ? (
-                                <MedicalRequestForm
-                                    doctors={doctors}
-                                    initialType={reqType}
-                                    initialSendToDoctor={sendToDoctor}
-                                    onRequestCreated={() => {
-                                        handlers.fetchRequests();
-                                        handleSubTabChange('list');
-                                    }}
-                                />
-                            ) : (
-                                <>
-                                    <div className="medical-documents__section-header">
-                                        <h3 className="section-title mb-0">{user.role === 'doctor' ? t('pending_requests') : t('request_status')}</h3>
-                                        <div className="medical-documents__section-actions">
-                                            <Button
-                                                variant="secondary"
-                                                size="sm"
-                                                onClick={controller.handleExportJSON}
-                                                icon={<Icon name="SAVE" size="1rem" />}
-                                            >
-                                                {t('export_json')}
-                                            </Button>
-                                            <Button
-                                                variant="secondary"
-                                                size="sm"
-                                                onClick={controller.handlePrintPrescriptions}
-                                                icon={<Icon name="PRINT" size="1rem" />}
-                                            >
-                                                {t('print_backup')}
-                                            </Button>
-                                        </div>
-                                    </div>
-                                    <MedicalRequestList
-                                        requests={requests}
-                                        filterItem={filterItem}
-                                        handleDeleteRequest={handleDeleteRequest}
-                                        openActionModal={openActionModal}
-                                        setPaymentModal={openPaymentModal}
-                                        canDelete={user.role === 'admin' || canDeleteRequest}
-                                        handleEditRequest={handleEditItem}
-                                    />
-                                </>
-                            )}
                         </div>
-                    )}
 
-                    {activeTab === 'files' && (
-                        <div className="medical-documents__repository">
-                            <section className="medical-documents__upload-section">
-                                <div className="card medical-documents__upload-card">
-                                    <header className="card-header border-b-0 mb-4">
-                                        <h3 className="card-header__title">{t('upload_document')}</h3>
-                                    </header>
-                                    <form className="config-flex--column config-flex--gap-4" onSubmit={handleFileUpload}>
-                                        <div className="input-group">
-                                            <label className="input-label">{t('patient_label')}</label>
-                                            <PatientSearchSelect value={filePatient} onChange={handleFilePatientChange} placeholder={t('select_patient')} />
-                                        </div>
-                                        <div className="input-group">
-                                            <label className="input-label">{t('description')}</label>
-                                            <input className="input-field" value={fileDesc} onChange={e => handleFileDescChange(e.target.value)} placeholder="e.g. Lab Results PDF" required />
-                                        </div>
-                                        <div className="input-group">
-                                            <label className="input-label">{t('file')}</label>
-                                            <input type="file" className="input-field" onChange={e => handleFileUploadChange(e.target.files[0])} required />
-                                        </div>
-                                        <Button type="submit" className="w-full">{t('upload_file')}</Button>
-                                    </form>
-                                </div>
-                            </section>
-
-                            <section className="medical-documents__list-section">
-                                <div className="medical-documents__file-list">
-                                    <header className="card-header border-b mb-0 p-6 bg-slate-50/50">
-                                        <h3 className="card-header__title">{t('file_repository')}</h3>
-                                    </header>
-                                    <div className="medical-documents__table-container">
-                                        {files.filter(filterItem).length === 0 ? (
-                                            <div className="medical-documents__empty-repository">
-                                                <Icon name="DOCUMENTS" size="3rem" className="medical-documents__empty-icon" />
-                                                {t('no_files')}
-                                            </div>
-                                        ) : (
-                                            <table className="table-base w-full">
-                                                <thead>
-                                                    <tr>
-                                                        <th className="pl-6">{t('file')}</th>
-                                                        <th>{t('patient')}</th>
-                                                        <th className="pr-6 text-right">{t('actions')}</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {files.filter(filterItem).map(f => (
-                                                        <tr key={f.id} className="hover:bg-slate-50 cursor-pointer" onClick={() => window.open(f.file_url, '_blank')}>
-                                                            <td className="pl-6 py-4">
-                                                                <div className="config-flex">
-                                                                    <Icon name="DOCUMENTS" size="1.2rem" className="medical-documents__file-icon" />
-                                                                    <span className="medical-documents__file-name">{f.description || f.file_name}</span>
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <span className="medical-documents__patient-name">{f.patient_name}</span>
-                                                            </td>
-                                                            <td className="pr-6 text-right">
-                                                                {(user.role === 'admin' || canDeleteFile) && (
-                                                                    <Button
-                                                                        variant="ghost"
-                                                                        size="sm-compact"
-                                                                        className="text-danger"
-                                                                        onClick={(e) => { e.stopPropagation(); openDeleteFileModal(f); }}
-                                                                        icon={<Icon name="DELETE" size="1rem" />}
-                                                                    />
-                                                                )}
-                                                            </td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        )}
-                                    </div>
-                                </div>
-                            </section>
+                        <div className="dashboard-card">
+                            <h3 className="dashboard-card__title">🔍 {t('search') || 'Buscar'}</h3>
+                            <SearchBar
+                                value={searchTerm}
+                                onChange={e => handleSearchChange(e.target.value)}
+                                placeholder={t('search_docs_placeholder')}
+                            />
                         </div>
-                    )}
 
-                    {['prescriptions', 'licenses', 'certificates'].includes(activeTab) && (
-                        <div className="config-flex--column config-flex--gap-4">
-                            <div className="medical-documents__section-header">
-                                <h2 className="section-title mb-0">
-                                    <Icon
-                                        name={activeTab === 'prescriptions' ? 'PRESCRIPTION' : activeTab === 'licenses' ? 'LICENSE' : 'CERTIFICATE'}
-                                        size="1.5rem"
-                                        className="mr-2"
-                                    />
-                                    {activeTab === 'prescriptions' ? t('prescriptions') :
-                                        activeTab === 'licenses' ? t('medical_licenses') :
-                                            (t('certificates') || 'Certificados')}
-                                </h2>
-                                <div className="medical-documents__section-actions">
+                        {activeTab === 'requests' && requestsSubTab === 'list' && (
+                            <div className="dashboard-card">
+                                <h3 className="dashboard-card__title">🛠️ {t('actions') || 'Acciones'}</h3>
+                                <div className="config-flex--column config-flex--gap-3">
+                                    <Button
+                                        variant="secondary"
+                                        size="sm"
+                                        onClick={controller.handleExportJSON}
+                                        icon={<Icon name="SAVE" size="1rem" />}
+                                        className="w-full justify-start"
+                                    >
+                                        {t('export_json')}
+                                    </Button>
+                                    <Button
+                                        variant="secondary"
+                                        size="sm"
+                                        onClick={controller.handlePrintPrescriptions}
+                                        icon={<Icon name="PRINT" size="1rem" />}
+                                        className="w-full justify-start"
+                                    >
+                                        {t('print_backup')}
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
+
+                        {['prescriptions', 'licenses', 'certificates'].includes(activeTab) && (
+                            <div className="dashboard-card">
+                                <h3 className="dashboard-card__title">🛠️ {t('actions') || 'Acciones'}</h3>
+                                <div className="config-flex--column config-flex--gap-3">
                                     {activeTab === 'prescriptions' && (
                                         <Button
                                             variant="secondary"
                                             size="sm"
                                             onClick={controller.handleExportJSON}
+                                            icon={<Icon name="SAVE" size="1rem" />}
+                                            className="w-full justify-start"
                                         >
-                                            💾 {t('export_json')}
+                                            {t('export_json')}
                                         </Button>
                                     )}
                                     <Button
                                         variant="secondary"
                                         size="sm"
                                         onClick={controller.handlePrintPrescriptions}
+                                        icon={<Icon name="PRINT" size="1rem" />}
+                                        className="w-full justify-start"
                                     >
-                                        🖨️ {t('print_backup')}
+                                        {t('print_backup')}
                                     </Button>
                                 </div>
                             </div>
-                            <MedicalHistoryTable
-                                items={
-                                    activeTab === 'prescriptions' ? combinedPrescriptions :
-                                        activeTab === 'licenses' ? combinedLicenses :
-                                            combinedCertificates
-                                }
-                                filterItem={filterItem}
-                                onView={handleEditItem}
-                                onDelete={
-                                    activeTab === 'prescriptions' ? handleDeletePrescription :
-                                        activeTab === 'licenses' ? handleDeleteLicense :
-                                            (id, item) => handleDeleteRequest(id, item)
-                                }
-                                canDelete={
-                                    user.role === 'admin' ||
-                                    (activeTab === 'prescriptions' && canDeletePrescription) ||
-                                    (['licenses', 'certificates'].includes(activeTab) && canDeleteLicense)
-                                }
-                                icon={activeTab === 'prescriptions' ? 'PRESCRIPTION' : activeTab === 'licenses' ? 'LICENSE' : 'CERTIFICATE'}
-                                title={
-                                    activeTab === 'prescriptions' ? t('recent_prescriptions') :
-                                        activeTab === 'licenses' ? t('recent_licenses') :
-                                            t('recent_certificates')
-                                }
-                                originLabel={activeTab === 'certificates' ? t('certificate') : undefined}
-                            />
+                        )}
+                    </aside>
+
+                    <main className="dashboard-main">
+                        <div className="medical-documents__tabs-content">
+                            {activeTab === 'requests' && (
+                                <div className="medical-documents__requests-layout">
+                                    <TabNav className="tab-nav--sub">
+                                        <TabButton
+                                            isActive={requestsSubTab === 'list'}
+                                            onClick={() => handleSubTabChange('list')}
+                                        >
+                                            {t('request_status')}
+                                        </TabButton>
+                                        <TabButton
+                                            isActive={requestsSubTab === 'new'}
+                                            onClick={() => handleSubTabChange('new')}
+                                            icon={<Icon name="ADD" size="1rem" />}
+                                        >
+                                            {t('new_request')}
+                                        </TabButton>
+                                    </TabNav>
+
+                                    {requestsSubTab === 'new' ? (
+                                        <MedicalRequestForm
+                                            doctors={doctors}
+                                            initialType={reqType}
+                                            initialSendToDoctor={sendToDoctor}
+                                            onRequestCreated={() => {
+                                                handlers.fetchRequests();
+                                                handleSubTabChange('list');
+                                            }}
+                                        />
+                                    ) : (
+                                        <MedicalRequestList
+                                            requests={requests}
+                                            filterItem={filterItem}
+                                            handleDeleteRequest={handleDeleteRequest}
+                                            openActionModal={openActionModal}
+                                            setPaymentModal={openPaymentModal}
+                                            canDelete={user.role === 'admin' || canDeleteRequest}
+                                            handleEditRequest={handleEditItem}
+                                        />
+                                    )}
+                                </div>
+                            )}
+
+                            {activeTab === 'files' && (
+                                <div className="medical-documents__repository">
+                                    <section className="medical-documents__upload-section">
+                                        <div className="dashboard-card">
+                                            <h3 className="dashboard-card__title">{t('upload_document')}</h3>
+                                            <form className="config-flex--column config-flex--gap-4" onSubmit={handleFileUpload}>
+                                                <div className="input-group">
+                                                    <label className="input-label">{t('patient_label')}</label>
+                                                    <PatientSearchSelect value={filePatient} onChange={handleFilePatientChange} placeholder={t('select_patient')} />
+                                                </div>
+                                                <div className="input-group">
+                                                    <label className="input-label">{t('description')}</label>
+                                                    <input className="input-field" value={fileDesc} onChange={e => handleFileDescChange(e.target.value)} placeholder="e.g. Lab Results PDF" required />
+                                                </div>
+                                                <div className="input-group">
+                                                    <label className="input-label">{t('file')}</label>
+                                                    <input type="file" className="input-field" onChange={e => handleFileUploadChange(e.target.files[0])} required />
+                                                </div>
+                                                <Button type="submit" className="w-full">{t('upload_file')}</Button>
+                                            </form>
+                                        </div>
+                                    </section>
+
+                                    <section className="medical-documents__list-section">
+                                        <div className="dashboard-card no-padding">
+                                            <div className="medical-documents__table-container">
+                                                {files.filter(filterItem).length === 0 ? (
+                                                    <div className="medical-documents__empty-repository">
+                                                        <Icon name="DOCUMENTS" size="3rem" className="medical-documents__empty-icon" />
+                                                        {t('no_files')}
+                                                    </div>
+                                                ) : (
+                                                    <table className="table-base w-full">
+                                                        <thead>
+                                                            <tr>
+                                                                <th className="pl-6">{t('file')}</th>
+                                                                <th>{t('patient')}</th>
+                                                                <th className="pr-6 text-right">{t('actions')}</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {files.filter(filterItem).map(f => (
+                                                                <tr key={f.id} className="hover:bg-slate-50 cursor-pointer" onClick={() => window.open(f.file_url, '_blank')}>
+                                                                    <td className="pl-6 py-4">
+                                                                        <div className="config-flex">
+                                                                            <Icon name="DOCUMENTS" size="1.2rem" className="medical-documents__file-icon" />
+                                                                            <span className="medical-documents__file-name">{f.description || f.file_name}</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <span className="medical-documents__patient-name">{f.patient_name}</span>
+                                                                    </td>
+                                                                    <td className="pr-6 text-right">
+                                                                        {(user.role === 'admin' || canDeleteFile) && (
+                                                                            <Button
+                                                                                variant="ghost"
+                                                                                size="sm-compact"
+                                                                                className="text-danger"
+                                                                                onClick={(e) => { e.stopPropagation(); openDeleteFileModal(f); }}
+                                                                                icon={<Icon name="DELETE" size="1rem" />}
+                                                                            />
+                                                                        )}
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                            )}
+
+                            {['prescriptions', 'licenses', 'certificates'].includes(activeTab) && (
+                                <MedicalHistoryTable
+                                    items={
+                                        activeTab === 'prescriptions' ? combinedPrescriptions :
+                                            activeTab === 'licenses' ? combinedLicenses :
+                                                combinedCertificates
+                                    }
+                                    filterItem={filterItem}
+                                    onView={handleEditItem}
+                                    onDelete={
+                                        activeTab === 'prescriptions' ? handleDeletePrescription :
+                                            activeTab === 'licenses' ? handleDeleteLicense :
+                                                (id, item) => handleDeleteRequest(id, item)
+                                    }
+                                    canDelete={
+                                        user.role === 'admin' ||
+                                        (activeTab === 'prescriptions' && canDeletePrescription) ||
+                                        (['licenses', 'certificates'].includes(activeTab) && canDeleteLicense)
+                                    }
+                                    icon={activeTab === 'prescriptions' ? 'PRESCRIPTION' : activeTab === 'licenses' ? 'LICENSE' : 'CERTIFICATE'}
+                                    title={
+                                        activeTab === 'prescriptions' ? t('recent_prescriptions') :
+                                            activeTab === 'licenses' ? t('recent_licenses') :
+                                                t('recent_certificates')
+                                    }
+                                    originLabel={activeTab === 'certificates' ? t('certificate') : undefined}
+                                />
+                            )}
                         </div>
-                    )}
+                    </main>
                 </div>
 
                 {/* --- Modals --- */}

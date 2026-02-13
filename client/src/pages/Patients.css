@@ -1,32 +1,33 @@
-.patients__header {
-    margin-bottom: 1.5rem;
+/* Patients-specific Styles */
+
+.patients-sidebar__search {
+    width: 100%;
 }
 
-.patients__title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--slate-800, #1e293b);
-    margin: 0;
-}
-
-.patients__subtitle {
-    font-size: 0.875rem;
-    color: var(--slate-500, #64748b);
-    margin-top: 0.25rem;
-}
-
-.patients__nav {
-    margin-bottom: 1.5rem;
+.patients-sidebar__tools {
     display: flex;
+    flex-direction: column;
     gap: 0.5rem;
 }
 
-.patients__action-bar {
-    margin-bottom: 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
+.patients-list-view .dashboard-card {
+    padding: 0;
+}
+
+/* Pagination container inside patient card */
+.patients-list-view .pagination {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+}
+
+.patients__dot-badge {
+    background: var(--rose-500, #f43f5e);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 999px;
+    font-size: 0.65rem;
+    font-weight: 700;
 }
 
 .patients__rating-guide-content {
@@ -42,29 +43,4 @@
     margin-top: 1.5rem;
     display: flex;
     justify-content: flex-end;
-}
-
-.patients__dot-badge {
-    background: var(--rose-500, #f43f5e);
-    color: white;
-    padding: 2px 6px;
-    border-radius: 999px;
-    font-size: 0.65rem;
-    font-weight: 700;
-}
-
-.pagination__info {
-    font-size: 0.875rem;
-    color: var(--text-muted);
-}
-
-.pagination__controls {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.pagination__page-indicator {
-    font-weight: 600;
-    font-size: 0.875rem;
 }

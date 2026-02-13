@@ -6,12 +6,10 @@
     align-items: stretch;
     gap: 0;
     width: 100%;
-    background-color: white;
-    border: 1px solid var(--gray-300);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-sm);
-    overflow: hidden;
-    margin: 0 auto;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    overflow: visible;
 }
 
 /* Allow main page calendar to be wider */
@@ -37,12 +35,16 @@
 .calendar-grid__body {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 1px;
-    background-color: var(--gray-200);
+    background-color: transparent;
+    gap: 0;
 }
 
 .calendar-grid__cell--empty {
-    background-color: var(--gray-50);
+    background: transparent;
+    border: none;
+    min-height: 65px;
+    pointer-events: none;
+    opacity: 0;
 }
 
 .calendar-loader,

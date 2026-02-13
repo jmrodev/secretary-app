@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useSystemConfigController } from '../controllers/useSystemConfigController';
 import MainLayout from '../components/templates/MainLayout';
@@ -7,6 +8,7 @@ import IntegrationSettings from '../components/organisms/IntegrationSettings';
 import BillingSettings from '../components/organisms/BillingSettings';
 import QRCodeModal from '../components/molecules/QRCodeModal';
 import Button from '../components/atoms/Button';
+import Icon from '../components/atoms/Icon';
 import TabNav from '../components/molecules/TabNav';
 import TabButton from '../components/atoms/TabButton';
 import './SystemConfig.css';
@@ -15,12 +17,8 @@ import './SystemConfig.css';
  * SystemConfig Page
  * 
  * Control panel for system-wide settings
- * Uses BEM CSS methodology and Atomic Design principles
  */
 
-/**
- * Single Responsibility: Render tab content based on active tab
- */
 const renderTabContent = (activeTab, controller) => {
     const {
         user,
@@ -41,7 +39,7 @@ const renderTabContent = (activeTab, controller) => {
     switch (activeTab) {
         case 'general':
             return (
-                <>
+                <div className="space-y-8">
                     <GeneralSettings
                         user={user}
                         settings={settings}
@@ -51,29 +49,29 @@ const renderTabContent = (activeTab, controller) => {
                             setQrModal({ open: true, url, expiry: null });
                         }}
                     />
-                    <div className="config-section" style={{ marginTop: '2rem' }}>
-                        <div className="config-section__header">
-                            <span className="config-section__icon">📖</span>
-                            <h3 className="config-section__title">Documentación y Ayuda</h3>
+                    <div className="dashboard-card">
+                        <div className="flex items-center gap-2 mb-4">
+                            <Icon name="DOCS" size="1.2rem" className="text-primary" />
+                            <h3 className="text-lg font-bold text-slate-800">Documentación y Ayuda</h3>
                         </div>
-                        <div className="config-section__body">
-                            <div className="config-actions">
-                                <Button
-                                    variant="secondary"
-                                    onClick={() => window.open('/docs/MANUAL_OPERACIONES.html', '_blank')}
-                                >
-                                    📄 Ver Manual de Operaciones
-                                </Button>
-                                <Button
-                                    variant="ghost"
-                                    onClick={() => window.open('/docs/GUIA_CONFIGURACION_GENERAL.md', '_blank')}
-                                >
-                                    ⚙️ Guía de Configuración
-                                </Button>
-                            </div>
+                        <div className="flex flex-wrap gap-4">
+                            <Button
+                                variant="outline"
+                                onClick={() => window.open('/docs/MANUAL_OPERACIONES.html', '_blank')}
+                                icon={<Icon name="REPORTS" size="1.1rem" />}
+                            >
+                                Ver Manual de Operaciones
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                onClick={() => window.open('/docs/GUIA_CONFIGURACION_GENERAL.md', '_blank')}
+                                icon={<Icon name="SETTINGS" size="1.1rem" />}
+                            >
+                                Guía de Configuración
+                            </Button>
                         </div>
                     </div>
-                </>
+                </div>
             );
         case 'communications':
             return (
@@ -110,17 +108,15 @@ const renderTabContent = (activeTab, controller) => {
             );
         case 'data':
             return (
-                <div className="tab-panel animate-fadeIn">
-                    <div className="config-section">
-                        <div className="config-section__header">
-                            <span className="config-section__icon">💾</span>
-                            <h3 className="config-section__title">
-                                {t('data_management_title') || 'Gestión de Datos y Copias de Seguridad'}
-                            </h3>
-                        </div>
-                        <div className="config-section__body" style={{ textAlign: 'center', padding: '3rem' }}>
-                            <p className="config-field__hint">{t('coming_soon') || 'Próximamente...'}</p>
-                        </div>
+                <div className="dashboard-card">
+                    <div className="flex items-center gap-2 mb-4">
+                        <Icon name="FINANCES" size="1.2rem" className="text-primary" />
+                        <h3 className="text-lg font-bold text-slate-800">
+                            {t('data_management_title') || 'Gestión de Datos y Copias de Seguridad'}
+                        </h3>
+                    </div>
+                    <div className="py-20 text-center">
+                        <p className="text-slate-400 italic">{t('coming_soon') || 'Próximamente...'}</p>
                     </div>
                 </div>
             );
@@ -141,60 +137,63 @@ const SystemConfig = () => {
     } = controller;
 
     return (
-        <MainLayout
-            title={t('system_config') || 'Configuración del Sistema'}
-            subtitle={t('system_config_subtitle') || 'Administre las preferencias globales de la aplicación.'}
-        >
-            {/* Tab Navigation with BEM CSS */}
-            <TabNav>
-                {(user.role === 'admin' || user.role === 'secretary') && (
-                    <>
-                        <TabButton
-                            isActive={activeTab === 'general'}
-                            onClick={() => setActiveTab('general')}
-                        >
-                            ⚙️ {t('general') || 'General'}
-                        </TabButton>
-                        <TabButton
-                            isActive={activeTab === 'communications'}
-                            onClick={() => setActiveTab('communications')}
-                        >
-                            📢 {t('communications') || 'Comunicaciones'}
-                        </TabButton>
-                        <TabButton
-                            isActive={activeTab === 'integrations'}
-                            onClick={() => setActiveTab('integrations')}
-                        >
-                            🔌 {t('integrations') || 'Integraciones'}
-                        </TabButton>
-                        <TabButton
-                            isActive={activeTab === 'billing'}
-                            onClick={() => setActiveTab('billing')}
-                        >
-                            🧾 {t('billing') || 'Facturación'}
-                        </TabButton>
-                        <TabButton
-                            isActive={activeTab === 'data'}
-                            onClick={() => setActiveTab('data')}
-                        >
-                            💾 {t('data') || 'Datos'}
-                        </TabButton>
-                    </>
-                )}
-            </TabNav>
+        <MainLayout wide>
+            <div className="system-config-page">
+                <header className="dashboard-header animate-fadeIn">
+                    <h1 className="dashboard-header__title">{t('system_config') || 'Configuración del Sistema'}</h1>
+                    <p className="dashboard-header__subtitle">{t('system_config_subtitle') || 'Administre las preferencias globales de la aplicación.'}</p>
+                </header>
 
-            {/* Tab Content */}
-            <div className="tab-content relative min-h-500 animate-fadeIn">
-                {renderTabContent(activeTab, controller)}
+                <div className="dashboard-nav-bar dashboard-nav-bar--centered animate-fadeIn">
+                    <TabNav>
+                        {(user.role === 'admin' || user.role === 'secretary') && (
+                            <>
+                                <TabButton
+                                    isActive={activeTab === 'general'}
+                                    onClick={() => setActiveTab('general')}
+                                >
+                                    ⚙️ {t('general') || 'General'}
+                                </TabButton>
+                                <TabButton
+                                    isActive={activeTab === 'communications'}
+                                    onClick={() => setActiveTab('communications')}
+                                >
+                                    📢 {t('communications') || 'Comunicaciones'}
+                                </TabButton>
+                                <TabButton
+                                    isActive={activeTab === 'integrations'}
+                                    onClick={() => setActiveTab('integrations')}
+                                >
+                                    🔌 {t('integrations') || 'Integraciones'}
+                                </TabButton>
+                                <TabButton
+                                    isActive={activeTab === 'billing'}
+                                    onClick={() => setActiveTab('billing')}
+                                >
+                                    🧾 {t('billing') || 'Facturación'}
+                                </TabButton>
+                                <TabButton
+                                    isActive={activeTab === 'data'}
+                                    onClick={() => setActiveTab('data')}
+                                >
+                                    💾 {t('data') || 'Datos'}
+                                </TabButton>
+                            </>
+                        )}
+                    </TabNav>
+                </div>
+
+                <div className="max-w-4xl mx-auto py-8 animate-fadeIn">
+                    {renderTabContent(activeTab, controller)}
+                </div>
+
+                <QRCodeModal
+                    isOpen={qrModal.open}
+                    onClose={() => setQrModal({ ...qrModal, open: false })}
+                    url={qrModal.url}
+                    expiresAt={qrModal.expiry}
+                />
             </div>
-
-            {/* QR Code Modal */}
-            <QRCodeModal
-                isOpen={qrModal.open}
-                onClose={() => setQrModal({ ...qrModal, open: false })}
-                url={qrModal.url}
-                expiresAt={qrModal.expiry}
-            />
         </MainLayout>
     );
 };

@@ -91,85 +91,116 @@ const Patients = () => {
             ) : (
                 // --- LIST VIEW ---
                 <>
-                    <header className="patients__header">
-                        <div>
-                            <h1 className="patients__title">{t('patients')}</h1>
-                            <p className="patients__subtitle">{t('patients_subtitle') || 'Administración completa de fichas médicas de pacientes.'}</p>
-                        </div>
+                    <header className="dashboard-header">
+                        <h1 className="dashboard-header__title">{t('patients')}</h1>
+                        <p className="dashboard-header__subtitle">{t('patients_subtitle') || 'Administración completa de fichas médicas de pacientes.'}</p>
                     </header>
 
-                    <TabNav className="patients__nav">
-                        <TabButton
-                            isActive={activeTab === 'list'}
-                            onClick={() => setActiveTab('list')}
-                        >
-                            <Icon name="PATIENTS" size="1.2rem" className="mr-2" />
-                            {t('active_list') || 'Lista Activa'}
-                        </TabButton>
-                        {(user.role === 'admin' || user.role === 'secretary') && (
-                            <TabButton
-                                isActive={activeTab === 'recycle'}
-                                onClick={() => { setActiveTab('recycle'); fetchRecycleBin(); }}
-                            >
-                                <Icon name="DELETE" size="1.2rem" className="mr-2" />
-                                {t('recycle_bin') || 'Papelera'}
-                                {recycleItems.length > 0 && <span className="patients__dot-badge">{recycleItems.length}</span>}
-                            </TabButton>
-                        )}
-                    </TabNav>
+                    <div className="dashboard-grid animate-fadeIn">
+                        <aside className="dashboard-sidebar">
+                            <div className="dashboard-nav-bar">
+                                <TabNav className="patients__nav">
+                                    <TabButton
+                                        isActive={activeTab === 'list'}
+                                        onClick={() => setActiveTab('list')}
+                                    >
+                                        <Icon name="PATIENTS" size="1.2rem" className="mr-2" />
+                                        {t('active_list') || 'Lista Activa'}
+                                    </TabButton>
+                                    {(user.role === 'admin' || user.role === 'secretary') && (
+                                        <TabButton
+                                            isActive={activeTab === 'recycle'}
+                                            onClick={() => { setActiveTab('recycle'); fetchRecycleBin(); }}
+                                        >
+                                            <Icon name="DELETE" size="1.2rem" className="mr-2" />
+                                            {t('recycle_bin') || 'Papelera'}
+                                            {recycleItems.length > 0 && <span className="patients__dot-badge">{recycleItems.length}</span>}
+                                        </TabButton>
+                                    )}
+                                </TabNav>
+                            </div>
 
-                    <section className="patients__action-bar">
-                        <div className="action-bar__search">
-                            {activeTab === 'list' && (
-                                <SearchBar
-                                    value={searchTerm}
-                                    onChange={e => setSearchTerm(e.target.value)}
-                                    placeholder={t('search_placeholder') || "Buscar..."}
-                                    className="action-bar__search"
+                            <div className="dashboard-card">
+                                <h3 className="dashboard-card__title">🔍 {t('search') || 'Buscar'}</h3>
+                                <div className="patients-sidebar__search">
+                                    {activeTab === 'list' && (
+                                        <SearchBar
+                                            value={searchTerm}
+                                            onChange={e => setSearchTerm(e.target.value)}
+                                            placeholder={t('search_placeholder') || "Nombre, DNI, obra social..."}
+                                            className="action-bar__search"
+                                        />
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="dashboard-card">
+                                <h3 className="dashboard-card__title">🛠️ {t('actions') || 'Acciones'}</h3>
+                                <div className="patients-sidebar__tools">
+                                    <Button
+                                        variant="outline"
+                                        className="w-full justify-start"
+                                        onClick={() => { fetchPatients(); fetchRecycleBin(); }}
+                                        icon={<Icon name="SYNC" size="1.2rem" />}
+                                    >
+                                        {t('refresh') || 'Sincronizar'}
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full justify-start"
+                                        onClick={() => setShowRatingInfo(true)}
+                                        icon={<Icon name="INFO" size="1.2rem" />}
+                                    >
+                                        {t('rating_info') || 'Info de Calificación'}
+                                    </Button>
+                                    {(user.role === 'admin' || user.role === 'secretary') && activeTab === 'list' && (
+                                        <Button
+                                            variant="primary"
+                                            className="w-full justify-start mt-4"
+                                            onClick={handleNewClick}
+                                            icon={<Icon name="ADD" size="1.2rem" />}
+                                        >
+                                            {t('new') || 'Nuevo Paciente'}
+                                        </Button>
+                                    )}
+                                </div>
+                            </div>
+                        </aside>
+
+                        <main className="dashboard-main">
+
+                            {activeTab === 'list' ? (
+                                <div className="patients-list-view">
+                                    <div className="dashboard-card no-padding">
+                                        <PatientList
+                                            patients={patients}
+                                            t={t}
+                                            onViewDetails={handleViewDetails}
+                                            onOpenDebt={handleOpenDebtModal}
+                                            onToggleRating={handleCycleRating}
+                                            calculateFinancialRating={calculateFinancialRating}
+                                            calculateAttendanceRating={calculateAttendanceRating}
+                                        />
+
+                                        <Pagination
+                                            currentPage={currentPage}
+                                            totalPages={totalPages}
+                                            totalCount={totalCount}
+                                            itemsShowing={patients.length}
+                                            onPageChange={handlePageChange}
+                                            t={t}
+                                        />
+                                    </div>
+                                </div>
+                            ) : (
+                                <PatientRecycleBin
+                                    recycleItems={recycleItems}
+                                    loading={loading}
+                                    onRestore={() => { /* Implementation pending */ }}
                                 />
                             )}
-                        </div>
-
-                        <div className="action-bar__tools">
-                            <Button variant="ghost" onClick={() => { fetchPatients(); fetchRecycleBin(); }} icon={<Icon name="SYNC" size="1.2rem" />} />
-                            <Button variant="ghost" onClick={() => setShowRatingInfo(true)} icon={<Icon name="INFO" size="1.2rem" />} />
-                            {(user.role === 'admin' || user.role === 'secretary') && activeTab === 'list' && (
-                                <Button variant="primary" onClick={handleNewClick} icon={<Icon name="ADD" size="1.2rem" />}>
-                                    {t('new') || 'Nuevo'}
-                                </Button>
-                            )}
-                        </div>
-                    </section>
-
-
-                    {activeTab === 'list' ? (
-                        <div className="patients-list">
-                            <PatientList
-                                patients={patients}
-                                t={t}
-                                onViewDetails={handleViewDetails}
-                                onOpenDebt={handleOpenDebtModal}
-                                onToggleRating={handleCycleRating}
-                                calculateFinancialRating={calculateFinancialRating}
-                                calculateAttendanceRating={calculateAttendanceRating}
-                            />
-
-                            <Pagination
-                                currentPage={currentPage}
-                                totalPages={totalPages}
-                                totalCount={totalCount}
-                                itemsShowing={patients.length}
-                                onPageChange={handlePageChange}
-                                t={t}
-                            />
-                        </div>
-                    ) : (
-                        <PatientRecycleBin
-                            recycleItems={recycleItems}
-                            loading={loading}
-                            onRestore={() => { /* Implementation pending */ }}
-                        />
-                    )}
+                        </main>
+                    </div>
                 </>
             )}
 

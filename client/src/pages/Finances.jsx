@@ -42,119 +42,130 @@ const Finances = () => {
     return (
         <MainLayout wide>
             <div className="finances-page">
-                <header className="page-header">
-                    <div className="page-header__info">
-                        <h1 className="page-header__title">{t('finances')}</h1>
-                        <p className="page-header__subtitle">{t('finances_subtitle') || 'Control de caja y transacciones médicas.'}</p>
-                    </div>
+                <header className="dashboard-header animate-fadeIn">
+                    <h1 className="dashboard-header__title">{t('finances')}</h1>
+                    <p className="dashboard-header__subtitle">{t('finances_subtitle') || 'Control de caja y transacciones médicas.'}</p>
                 </header>
 
                 {loading ? (
                     <Loading variant="centered" text={t('loading') || "Cargando..."} />
                 ) : (
-                    <>
-                        <div className="finances-page__controls">
-                            {isAdminOrSecretary && (
-                                <FinanceDoctorFilter
-                                    doctors={doctors}
-                                    selectedDoctorFilter={selectedDoctorFilter}
-                                    setSelectedDoctorFilter={handlers.onSelectDoctor}
-                                    t={t}
-                                />
-                            )}
-
-                            <div className="finances-page__actions-row">
-                                <div className="finances-page__main-info">
-                                    {isAdminOrSecretary && stats.length > 0 && (
-                                        <FinanceStatsCards stats={stats} t={t} />
-                                    )}
-
-                                    {user.role !== 'patient' && (
-                                        <Card className="finances-page__actions-card">
-                                            <Button size="sm" variant="primary" onClick={handlers.onOpenNewTransaction} icon={<Icon name="ADD" size="1.1rem" />}>
-                                                {t('new_transaction')}
-                                            </Button>
-
-                                            {selectedDoctorFilter && (() => {
-                                                const d = doctors.find(doc => doc.id == selectedDoctorFilter);
-                                                const balances = handlers.calculateBalanceByMethod(selectedDoctorFilter);
-                                                if (d && balances.cash > 0) {
-                                                    return (
-                                                        <Button
-                                                            variant="secondary"
-                                                            size="sm"
-                                                            onClick={() => handlers.onOpenCloseBox(d, balances.cash)}
-                                                            icon={<Icon name="FINANCES" size="1.1rem" />}
-                                                        >
-                                                            {t('deliver')} a {d.full_name?.split(' ')[0]}
-                                                        </Button>
-                                                    );
-                                                }
-                                                return null;
-                                            })()}
-                                        </Card>
-                                    )}
-                                </div>
-
-                                {user.role === 'secretary' && (
-                                    <div className="finances-page__summary-section">
-                                        <CashBoxSummary
+                    <div className="dashboard-grid animate-fadeIn">
+                        <aside className="dashboard-sidebar">
+                            <div className="dashboard-nav-bar animate-fadeIn">
+                                <div className="flex-1">
+                                    {isAdminOrSecretary && (
+                                        <FinanceDoctorFilter
                                             doctors={doctors}
                                             selectedDoctorFilter={selectedDoctorFilter}
-                                            onSelectDoctor={handlers.onSelectDoctor}
-                                            calculateBalance={handlers.calculateBalance}
-                                            calculateBalanceByMethod={handlers.calculateBalanceByMethod}
+                                            setSelectedDoctorFilter={handlers.onSelectDoctor}
                                             t={t}
-                                            compact
                                         />
-                                    </div>
-                                )}
+                                    )}
+                                </div>
                             </div>
-                        </div>
 
-                        <TransactionsTable
-                            transactions={transactions}
-                            user={user}
-                            settings={settings}
-                            t={t}
-                            onEdit={handlers.onEditTransaction}
-                            onDelete={handlers.onDeleteTransaction}
-                            onGenerateInvoice={handlers.onGenerateInvoice}
-                            onSync={handlers.onSyncTransaction}
-                            alert={controller.alert}
-                        />
+                            <div className="dashboard-card">
+                                <h3 className="dashboard-card__title">🛠️ {t('actions') || 'Acciones'}</h3>
+                                <div className="flex flex-col gap-3">
+                                    {user.role !== 'patient' && (
+                                        <Button
+                                            variant="primary"
+                                            className="justify-start w-full"
+                                            onClick={handlers.onOpenNewTransaction}
+                                            icon={<Icon name="ADD" size="1.2rem" />}
+                                        >
+                                            {t('new_transaction')}
+                                        </Button>
+                                    )}
 
-                        {/* --- Modals --- */}
-                        <TransactionModal
-                            isOpen={modalOpen}
-                            onClose={handlers.onCloseNewTransaction}
-                            onSuccess={handlers.onRefresh}
-                        />
+                                    {selectedDoctorFilter && (() => {
+                                        const d = doctors.find(doc => doc.id == selectedDoctorFilter);
+                                        const balances = handlers.calculateBalanceByMethod(selectedDoctorFilter);
+                                        if (d && balances.cash > 0) {
+                                            return (
+                                                <Button
+                                                    variant="secondary"
+                                                    className="justify-start w-full"
+                                                    onClick={() => handlers.onOpenCloseBox(d, balances.cash)}
+                                                    icon={<Icon name="FINANCES" size="1.2rem" />}
+                                                >
+                                                    {t('deliver')} a {d.full_name?.split(' ')[0]}
+                                                </Button>
+                                            );
+                                        }
+                                        return null;
+                                    })()}
+                                </div>
+                            </div>
 
-                        <CashBoxDeliveryModal
-                            isOpen={closeBoxModal.open}
-                            onClose={handlers.onCloseCloseBox}
-                            onConfirm={handlers.onCloseBox}
-                            doctorName={closeBoxModal.doctorName}
-                            balance={closeBoxModal.balance}
-                            amount={closeAmount}
-                            setAmount={handlers.setCloseAmount}
-                            t={t}
-                        />
+                            {user.role === 'secretary' && (
+                                <div className="dashboard-card">
+                                    <h3 className="dashboard-card__title">📊 {t('summary') || 'Resumen de Caja'}</h3>
+                                    <CashBoxSummary
+                                        doctors={doctors}
+                                        selectedDoctorFilter={selectedDoctorFilter}
+                                        onSelectDoctor={handlers.onSelectDoctor}
+                                        calculateBalance={handlers.calculateBalance}
+                                        calculateBalanceByMethod={handlers.calculateBalanceByMethod}
+                                        t={t}
+                                        compact
+                                    />
+                                </div>
+                            )}
+                        </aside>
 
-                        {editingTx && (
-                            <EditTransactionModal
-                                isOpen={!!editingTx}
-                                onClose={() => handlers.setEditingTx(null)}
-                                onSave={handlers.onUpdateTransaction}
-                                transaction={editingTx}
-                                setTransaction={handlers.setEditingTx}
-                                settings={settings}
-                                user={user}
-                                t={t}
-                            />
-                        )}
-                    </>
+                        <main className="dashboard-main">
+                            {isAdminOrSecretary && stats.length > 0 && (
+                                <FinanceStatsCards stats={stats} t={t} />
+                            )}
+
+                            <div className="dashboard-card no-padding">
+                                <TransactionsTable
+                                    transactions={transactions}
+                                    user={user}
+                                    settings={settings}
+                                    t={t}
+                                    onEdit={handlers.onEditTransaction}
+                                    onDelete={handlers.onDeleteTransaction}
+                                    onGenerateInvoice={handlers.onGenerateInvoice}
+                                    onSync={handlers.onSyncTransaction}
+                                    alert={controller.alert}
+                                />
+                            </div>
+                        </main>
+                    </div>
+                )}
+
+                {/* --- Modals --- */}
+                <TransactionModal
+                    isOpen={modalOpen}
+                    onClose={handlers.onCloseNewTransaction}
+                    onSuccess={handlers.onRefresh}
+                />
+
+                <CashBoxDeliveryModal
+                    isOpen={closeBoxModal.open}
+                    onClose={handlers.onCloseCloseBox}
+                    onConfirm={handlers.onCloseBox}
+                    doctorName={closeBoxModal.doctorName}
+                    balance={closeBoxModal.balance}
+                    amount={closeAmount}
+                    setAmount={handlers.setCloseAmount}
+                    t={t}
+                />
+
+                {editingTx && (
+                    <EditTransactionModal
+                        isOpen={!!editingTx}
+                        onClose={() => handlers.setEditingTx(null)}
+                        onSave={handlers.onUpdateTransaction}
+                        transaction={editingTx}
+                        setTransaction={handlers.setEditingTx}
+                        settings={settings}
+                        user={user}
+                        t={t}
+                    />
                 )}
             </div>
         </MainLayout>

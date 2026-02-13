@@ -1,0 +1,153 @@
+/* Standard Dashboard Page Layouts */
+
+/**
+ * 1. Global Page Header
+ * Used for title and subtitle at the very top.
+ */
+.dashboard-header {
+    margin-bottom: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.dashboard-header__title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: white;
+    /* Consistently white due to background gradient */
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    margin: 0;
+}
+
+.dashboard-header__subtitle {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+}
+
+/**
+ * 2. Navigation & Filters Bar
+ * Centralized bar for tabs and doctor filters.
+ */
+.dashboard-nav-bar {
+    background: var(--card-bg);
+    padding: 0.5rem 1.25rem;
+    margin-bottom: 0.75rem;
+    width: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    box-shadow: var(--shadow-md);
+}
+
+/* Modifier for centered nav bar when no secondary items exist */
+.dashboard-nav-bar--centered {
+    justify-content: center;
+}
+
+/* Sidebar context for nav-bar */
+.dashboard-sidebar .dashboard-nav-bar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.4rem;
+    gap: 0.25rem;
+    margin-bottom: 0.4rem;
+}
+
+.dashboard-sidebar .dashboard-nav-bar .tab-nav {
+    width: 100%;
+    margin-bottom: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/**
+ * 3. Split Page Grid
+ * Distribution: Sidebar (Left) and Main Content (Right)
+ */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    /* Unified sidebar width - increased for better readability */
+    gap: 0.75rem;
+    align-items: start;
+    width: 100%;
+    max-width: 100%;
+}
+
+.dashboard-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    position: sticky;
+    top: 0.5rem;
+}
+
+.dashboard-main {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/**
+ * 4. Standard Dashboard Card
+ */
+.dashboard-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 0.75rem;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.dashboard-card.no-padding {
+    padding: 0;
+}
+
+.dashboard-card__title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+/* Animations */
+.animate-fadeIn {
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-sidebar {
+        position: static;
+    }
+}
