@@ -32,7 +32,7 @@ const Doctors = () => {
                 <div className="dashboard-nav-bar dashboard-nav-bar--centered animate-fadeIn">
                     {/* Placeholder for future tabs if needed */}
                     <div className="flex items-center gap-2 text-sm font-medium text-muted">
-                        <Icon name="DOCTOR" size="1.2rem" />
+                        <Icon name="medical_services" size="1.2rem" />
                         {filteredDoctors.length} {t('doctors_count') || 'Médicos activos'}
                     </div>
                 </div>
@@ -43,7 +43,10 @@ const Doctors = () => {
                     <div className="dashboard-grid animate-fadeIn">
                         <aside className="dashboard-sidebar">
                             <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">🔍 {t('search') || 'Buscar'}</h3>
+                                <h3 className="dashboard-card__title">
+                                    <Icon name="search" size="1.2rem" />
+                                    {t('search') || 'Buscar'}
+                                </h3>
                                 <SearchBar
                                     value={searchTerm}
                                     onChange={e => setSearchTerm(e.target.value)}
@@ -52,21 +55,16 @@ const Doctors = () => {
                             </div>
 
                             <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">🛠️ {t('actions') || 'Acciones'}</h3>
+                                <h3 className="dashboard-card__title">
+                                    <Icon name="build" size="1.2rem" />
+                                    {t('actions') || 'Acciones'}
+                                </h3>
                                 <div className="flex flex-col gap-3">
-                                    <Button
-                                        variant="outline"
-                                        className="justify-start w-full"
-                                        onClick={handlers.fetchDoctors}
-                                        icon={<Icon name="SYNC" size="1.2rem" />}
-                                    >
-                                        {t('refresh') || 'Actualizar'}
-                                    </Button>
                                     <Button
                                         variant="primary"
                                         className="justify-start w-full"
                                         onClick={() => handlers.onEditDoctor(null)}
-                                        icon={<Icon name="ADD" size="1.2rem" />}
+                                        icon={<Icon name="add" size="1.1rem" />}
                                     >
                                         {t('new') || 'Nuevo'}
                                     </Button>
@@ -79,7 +77,7 @@ const Doctors = () => {
                                 {filteredDoctors.length === 0 ? (
                                     <div className="doctors-page__empty-state">
                                         <div className="doctors-page__empty-icon">
-                                            <Icon name="DOCTOR" size="3rem" />
+                                            <Icon name="medical_services" size="3rem" />
                                         </div>
                                         <p className="doctors-page__empty-text">{t('no_doctors_found')}</p>
                                     </div>

@@ -32,13 +32,16 @@ const AppointmentHeader = ({ appt, t, onWhatsApp }) => {
                 {appt.patient_phone && (
                     <div className={`${baseClass}__phone-row`}>
                         <strong className={`${baseClass}__label`}>{t('phone_label') || t('phone')}:</strong>
-                        <a
-                            href={`tel:${appt.patient_phone.replace(/[^0-9+]/g, '')}`}
+                        <Button
+                            to={`tel:${appt.patient_phone.replace(/[^0-9+]/g, '')}`}
+                            variant="phone"
+                            size="md"
                             className={`${baseClass}__phone-link`}
                             onClick={(e) => e.stopPropagation()}
+                            icon={<Icon name="call" size="0.9rem" />}
                         >
                             {appt.patient_phone}
-                        </a>
+                        </Button>
                         <div className={`${baseClass}__phone-actions`}>
                             <Button
                                 variant="ghost"
@@ -49,7 +52,7 @@ const AppointmentHeader = ({ appt, t, onWhatsApp }) => {
                                 icon={<Icon name="content_copy" size="1rem" />}
                             />
                             <Button
-                                variant="ghost"
+                                variant="whatsapp"
                                 size="sm-compact"
                                 className={`${baseClass}__icon-btn ${baseClass}__icon-btn--whatsapp`}
                                 onClick={() => onWhatsApp(appt, 'reminder')}
@@ -57,7 +60,7 @@ const AppointmentHeader = ({ appt, t, onWhatsApp }) => {
                                 icon={<Icon name="send" size="1rem" />} // No brand icons in Material Symbols usually, using send
                             />
                             <Button
-                                variant="ghost"
+                                variant="accent"
                                 size="sm-compact"
                                 className={`${baseClass}__icon-btn ${baseClass}__icon-btn--magic`}
                                 onClick={() => onWhatsApp(appt, 'confirmation')}

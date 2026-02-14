@@ -59,7 +59,6 @@ const AppointmentAdminPanel = ({
                         {canConfirm && (
                             <Button
                                 variant="success"
-                                outline
                                 className={`${baseClass}__action`}
                                 onClick={() => { onUpdateStatus(appt.id, 'confirmed'); onClose(); }}
                                 tooltip="Confirmar asistencia (Restaurar)"
@@ -85,7 +84,6 @@ const AppointmentAdminPanel = ({
                         {canAttend && (
                             <Button
                                 variant="success"
-                                outline
                                 className={`${baseClass}__action`}
                                 onClick={() => { onUpdateStatus(appt.id, 'completed'); onClose(); }}
                                 tooltip="Marcar como atendido"
@@ -99,7 +97,6 @@ const AppointmentAdminPanel = ({
                         {appt.type !== 'virtual' && (
                             <Button
                                 variant="accent"
-                                outline
                                 className={`${baseClass}__action`}
                                 onClick={() => { onUpdateType(appt.id, 'virtual'); onClose(); }}
                                 tooltip="Cambiar tipo a Videollamada"

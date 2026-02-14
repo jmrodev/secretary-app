@@ -279,21 +279,21 @@
 }
 
 .date-indicator__action {
-    background-color: white !important;
-    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.05);
     box-shadow: var(--shadow-sm);
-    padding: 0.25rem 0.5rem !important;
-    height: auto !important;
-    font-size: 0.65rem !important;
-    font-weight: 800 !important;
-    color: var(--slate-600) !important;
+    padding: 0.25rem 0.5rem;
+    height: auto;
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: var(--slate-600);
     transition: all 0.2s ease;
 }
 
 .date-indicator__action:hover {
     transform: translateY(-1px);
     box-shadow: var(--shadow-md);
-    color: var(--blue-600) !important;
+    color: var(--blue-600);
 }
 
 /* Financial Debt Block */

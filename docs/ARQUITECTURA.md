@@ -20,12 +20,13 @@
 ### 3. Atomic Design
 - **Estructura de componentes**:
   ```
-  atoms/       → Componentes básicos (Button, Input, Badge)
+  atoms/       → Componentes básicos (Button, Input, Badge, Icon)
   molecules/   → Combinación de átomos (SearchBar, FormField)
   organisms/   → Secciones complejas (Header, ReportTable)
   templates/   → Layouts de página
   pages/       → Páginas completas
   ```
+- **Uso Obligatorio de Átomos**: Todos los botones deben usar el componente `<Button />` y todos los iconos deben usar el componente `<Icon />`. PROHIBIDO usar emojis o elementos nativos (como `<button>` o `<span>` con clases de iconos) directamente para estos propósitos.
 
 ### 4. NO Tailwind CSS
 - **Solo CSS vanilla/puro**
@@ -33,6 +34,7 @@
 - **Variables CSS para temas**: Usar `var(--color-primary)` en lugar de valores hardcoded
 - **Mantenimiento**: Revisar periódicamente `index.css` y extraer estilos específicos a sus respectivos componentes para evitar colisiones y mantener la modularidad.
 - **CSS Compartido**: Si un estilo o clase CSS se utiliza en más de una página, componente o átomo, DEBE estar en `index.css` (o en un archivo de utilidades global importado allí) para evitar duplicación, marcándolo claramente como compartido.
+- **PROHIBIDO usar `!important`**: Nunca utilizar `!important` para sobrescribir estilos. Si hay conflictos, mejorar la especificidad del selector o reestructurar el CSS.
 
 ### 5. MVC (Model-View-Controller)
 - **Frontend**:
@@ -302,7 +304,9 @@ Antes de hacer commit, verificar:
 
 - [ ] ¿Sigue BEM CSS?
 - [ ] ¿Cada componente tiene su CSS?
+- [ ] ¿Usa los átomos `<Button />` e `<Icon />` en lugar de elementos nativos o emojis?
 - [ ] ¿No usa Tailwind?
+- [ ] ¿No usa `!important`?
 - [ ] ¿No hay código repetido (DRY)?
 - [ ] ¿Sigue la estructura Atomic Design?
 - [ ] ¿Sigue el patrón MVC?

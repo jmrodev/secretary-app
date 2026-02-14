@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import CurrencyInput from '../atoms/CurrencyInput';
 import PhoneNumbersManager from '../molecules/PhoneNumbersManager';
+import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
 import './PatientForm.css';
 
 const PatientForm = ({
@@ -127,9 +129,15 @@ const PatientForm = ({
                         onChange={handleChange}
                     />
                     {formData.email && (
-                        <a href={`mailto:${formData.email}`} className="patient-form__email-link">
-                            {t('send_email')} ↗
-                        </a>
+                        <Button
+                            to={`mailto:${formData.email}`}
+                            variant="link"
+                            size="sm"
+                            className="patient-form__email-link"
+                            icon={<Icon name="mail" size="1rem" />}
+                        >
+                            {t('send_email')}
+                        </Button>
                     )}
                 </div>
             </div>
@@ -283,16 +291,18 @@ const PatientForm = ({
                     placeholder="Ej: Entre calles X e Y, timbre blanco..."
                 />
                 {(formData.street_name || formData.address) && (
-                    <a
-                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                    <Button
+                        to={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
                             `${formData.street_name || ''} ${formData.street_number || ''}, ${formData.city || ''}, ${formData.province || ''}, ${formData.country || ''} ${formData.address || ''}`.trim()
                         )}`}
                         target="_blank"
-                        rel="noreferrer"
-                        className="text-xs text-blue-600 hover:underline mt-1 inline-block"
+                        variant="link"
+                        size="sm"
+                        className="mt-1"
+                        icon={<Icon name="map" size="1rem" />}
                     >
-                        {t('view_on_map')} ↗
-                    </a>
+                        {t('view_on_map')}
+                    </Button>
                 )}
             </div>
 
@@ -380,13 +390,23 @@ const PatientForm = ({
 
             <div className="form-actions">
                 {onCancel && (
-                    <button type="button" className="btn btn-secondary" onClick={onCancel}>
+                    <Button
+                        variant="secondary"
+                        onClick={onCancel}
+                        icon={<Icon name="close" />}
+                    >
                         {t('cancel')}
-                    </button>
+                    </Button>
                 )}
-                <button type="submit" className="btn btn-primary w-full md:w-auto" disabled={isSubmitting}>
+                <Button
+                    type="submit"
+                    variant="success"
+                    className="w-full md:w-auto"
+                    disabled={isSubmitting}
+                    icon={<Icon name="save" />}
+                >
                     {isEdit ? t('save_changes') : t('create_account')}
-                </button>
+                </Button>
             </div>
         </form >
     );

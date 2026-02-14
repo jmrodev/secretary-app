@@ -56,7 +56,7 @@ const AuditLogs = () => {
         return (
             <MainLayout wide>
                 <div className="max-w-md mx-auto mt-20 p-8 bg-red-50 border border-red-100 rounded-xl text-center">
-                    <Icon name="DELETE" size="3rem" className="text-red-500 mb-4 mx-auto" />
+                    <Icon name="block" size="3rem" className="text-red-500 mb-4 mx-auto" />
                     <h2 className="text-red-800 font-bold text-xl mb-2">{t('access_denied')}</h2>
                     <p className="text-red-600">No tiene permisos para acceder a los registros de auditoría.</p>
                 </div>
@@ -74,27 +74,12 @@ const AuditLogs = () => {
 
                 <div className="dashboard-nav-bar animate-fadeIn">
                     <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
-                        <Icon name="SYMBOLS" size="1.2rem" />
+                        <Icon name="history_edu" size="1.2rem" />
                         {logs.length} {t('logs_count') || 'registros encontrados'}
                     </div>
                 </div>
 
                 <div className="dashboard-grid animate-fadeIn">
-                    <aside className="dashboard-sidebar">
-                        <div className="dashboard-card">
-                            <h3 className="dashboard-card__title">🛠️ {t('actions') || 'Acciones'}</h3>
-                            <div className="flex flex-col gap-3">
-                                <Button
-                                    variant="outline"
-                                    className="justify-start w-full"
-                                    onClick={() => window.location.reload()}
-                                    icon={<Icon name="SYNC" size="1.2rem" />}
-                                >
-                                    {t('refresh') || 'Actualizar'}
-                                </Button>
-                            </div>
-                        </div>
-                    </aside>
 
                     <main className="dashboard-main">
                         <div className="dashboard-card no-padding">

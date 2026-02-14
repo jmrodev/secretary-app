@@ -53,11 +53,11 @@ const RequirementItem = ({
                 <div className="requirement-item__actions">
                     {canDelete && (
                         <Button
-                            variant="ghost"
+                            variant="outline-danger"
                             size="sm-compact"
                             onClick={() => onDelete(id)}
                             title={t('delete') || "Eliminar"}
-                            icon={<Icon name="delete" size="1rem" className="text-danger" />}
+                            icon={<Icon name="delete" size="1rem" />}
                         />
                     )}
                     {isAdminOrSecretary && status === 'consult' && (
@@ -72,25 +72,25 @@ const RequirementItem = ({
                     {(status === 'pending' || status === 'consult') && (
                         <>
                             <Button
-                                variant="ghost"
+                                variant="outline-success"
                                 size="sm-compact"
                                 onClick={() => onAction('completed', id)}
                                 title={t('mark_as_done')}
-                                icon={<Icon name="check_circle" size="1rem" className="text-success" />}
+                                icon={<Icon name="check_circle" size="1rem" />}
                             />
                             <Button
-                                variant="ghost"
+                                variant="outline-warning"
                                 size="sm-compact"
                                 onClick={() => onAction('consult', id)}
                                 title={t('consult_secretary')}
-                                icon={<Icon name="help" size="1rem" className="text-warning" />}
+                                icon={<Icon name="help" size="1rem" />}
                             />
                             <Button
-                                variant="ghost"
+                                variant="outline-danger"
                                 size="sm-compact"
                                 onClick={() => onAction('rejected', id)}
                                 title={t('reject')}
-                                icon={<Icon name="cancel" size="1rem" className="text-danger" />}
+                                icon={<Icon name="cancel" size="1rem" />}
                             />
                         </>
                     )}

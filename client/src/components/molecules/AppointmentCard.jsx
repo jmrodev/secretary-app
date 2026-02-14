@@ -1,5 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
+import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
 import './AppointmentCard.css';
 
 const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction }) => {
@@ -23,20 +25,26 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
             {/* Col 2: Info */}
             <div className="appointment-card__info">
                 <div className="appointment-card__patient-name">
-                    {appt.type === 'virtual' && '📹 '}
+                    {appt.type === 'virtual' && <Icon name="videocam" size="1.1rem" className="mr-1" />}
                     {appt.patient_name || 'S/N'}
                 </div>
                 {appt.patient_phone && (
-                    <a
-                        href={`tel:${appt.patient_phone.replace(/[^0-9+]/g, '')}`}
+                    <Button
+                        to={`tel:${appt.patient_phone.replace(/[^0-9+]/g, '')}`}
+                        variant="phone"
+                        size="sm"
                         className="appointment-card__phone"
                         onClick={(e) => e.stopPropagation()}
+                        icon={<Icon name="call" size="0.9rem" />}
                     >
-                        📱 {appt.patient_phone}
-                    </a>
+                        {appt.patient_phone}
+                    </Button>
                 )}
                 <div className="appointment-card__details">
-                    <span className="appointment-card__doctor">👨‍⚕️ {appt.doctor_name}</span>
+                    <span className="appointment-card__doctor">
+                        <Icon name="person" size="1rem" className="mr-1" />
+                        {appt.doctor_name}
+                    </span>
                     {appt.reason && <span className="appointment-card__reason">• {appt.reason}</span>}
                 </div>
             </div>
@@ -56,24 +64,19 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
 
                     let colorModifier = '';
                     let amountToDisplay = effectiveTotal;
-                    let icon = '';
+                    let statusIcon = null;
 
                     if (!isAttended) {
                         colorModifier = 'pending';
-                        amountToDisplay = hasTransactions ? txTotal : cost;
                     } else {
                         if (paid >= effectiveTotal && effectiveTotal > 0) {
                             colorModifier = 'paid';
                             amountToDisplay = paid;
-                            icon = ' ✓';
-                        } else if (pending > 0) {
+                            statusIcon = <Icon name="check_circle" size="1rem" className="appt-status__check" />;
+                        } else if (pending > 0 || (!hasTransactions && cost > 0)) {
                             colorModifier = 'debt';
-                            amountToDisplay = pending;
-                            icon = ' ✘';
-                        } else if (!hasTransactions && cost > 0) {
-                            colorModifier = 'debt';
-                            amountToDisplay = cost;
-                            icon = ' ✘';
+                            amountToDisplay = pending > 0 ? pending : cost;
+                            statusIcon = <Icon name="cancel" size="1rem" className="appt-status__check" />;
                         }
                     }
 
@@ -83,14 +86,18 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
                         <div className="appt-status__col">
                             <div className={`appt-status__text appt-status__amount--${colorModifier}`}>
                                 <span>${amountToDisplay.toLocaleString()}</span>
-                                {icon && <span className="appt-status__check">{icon}</span>}
+                                {statusIcon}
                             </div>
                             {appt.payment_methods && paid > 0 && (
                                 <span className="appt-status__icon-group">
-                                    {appt.payment_methods.split(',').map(m =>
-                                        m.trim() === 'cash' ? '💵' :
-                                            m.trim() === 'transfer' ? '🏦' : '💳'
-                                    ).join('')}
+                                    {appt.payment_methods.split(',').map((m, idx) => {
+                                        const method = m.trim();
+                                        let iconName = 'payments';
+                                        if (method === 'cash') iconName = 'payments';
+                                        else if (method === 'transfer') iconName = 'account_balance';
+                                        else iconName = 'credit_card';
+                                        return <Icon key={idx} name={iconName} size="1rem" />;
+                                    })}
                                 </span>
                             )}
                         </div>
@@ -105,24 +112,28 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
             {/* Col 4: Actions (Optional) */}
             {showActions && (
                 <div className="appointment-card__actions">
-                    <button onClick={(e) => {
-                        e.stopPropagation();
-                        onWhatsAppAction(appt, 'reminder');
-                    }}
-                        className="appointment-card__action-btn appointment-card__action-btn--whatsapp"
-                        title="Enviar recordatorio"
-                    >
-                        📲
-                    </button>
-                    <button onClick={(e) => {
-                        e.stopPropagation();
-                        onWhatsAppAction(appt, 'confirmation');
-                    }}
-                        className="appointment-card__action-btn appointment-card__action-btn--receipt"
-                        title="Enviar comprobante"
-                    >
-                        ✨
-                    </button>
+                    <Button
+                        variant="ghost"
+                        size="sm-compact"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onWhatsAppAction(appt, 'reminder');
+                        }}
+                        className="appointment-card__action-btn"
+                        title={t('whatsapp_reminder')}
+                        icon={<Icon name="send" />}
+                    />
+                    <Button
+                        variant="ghost"
+                        size="sm-compact"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onWhatsAppAction(appt, 'confirmation');
+                        }}
+                        className="appointment-card__action-btn"
+                        title={t('whatsapp_proof')}
+                        icon={<Icon name="auto_awesome" />}
+                    />
                 </div>
             )}
         </div>

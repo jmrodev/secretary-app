@@ -19,7 +19,7 @@ const HolidayList = ({ holidays, onDelete }) => {
     if (!holidays || holidays.length === 0) {
         return (
             <div className={`${baseClass}__empty`}>
-                <span style={{ fontSize: '1.5rem', display: 'block', marginBottom: '0.5rem' }}>🏝️</span>
+                <Icon name="beach_access" size="3rem" className="mb-2 text-slate-300" />
                 No hay feriados configurados.
             </div>
         );

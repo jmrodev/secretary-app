@@ -8,6 +8,7 @@ import PrescriptionReportTable from '../components/organisms/PrescriptionReportT
 import LicenseReportTable from '../components/organisms/LicenseReportTable';
 import CertificateReportTable from '../components/organisms/CertificateReportTable';
 import BalanceView from '../components/organisms/BalanceView';
+import Icon from '../components/atoms/Icon';
 
 import { useReportsController } from '../controllers/useReportsController';
 import { printReport } from '../utils/reportPrintHelper';
@@ -62,7 +63,10 @@ const Reports = () => {
                 <div className="dashboard-grid animate-fadeIn">
                     <aside className="dashboard-sidebar">
                         <div className="dashboard-card">
-                            <h3 className="dashboard-card__title">⚙️ {t('filters') || 'Filtros'}</h3>
+                            <h3 className="dashboard-card__title">
+                                <Icon name="filter_list" size="1.2rem" />
+                                {t('filters') || 'Filtros'}
+                            </h3>
                             <ReportFilters
                                 month={month}
                                 year={year}

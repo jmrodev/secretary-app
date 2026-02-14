@@ -66,14 +66,17 @@ const Finances = () => {
                             </div>
 
                             <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">🛠️ {t('actions') || 'Acciones'}</h3>
+                                <h3 className="dashboard-card__title">
+                                    <Icon name="build" size="1.2rem" />
+                                    {t('actions') || 'Acciones'}
+                                </h3>
                                 <div className="flex flex-col gap-3">
                                     {user.role !== 'patient' && (
                                         <Button
                                             variant="primary"
                                             className="justify-start w-full"
                                             onClick={handlers.onOpenNewTransaction}
-                                            icon={<Icon name="ADD" size="1.2rem" />}
+                                            icon={<Icon name="add" size="1.1rem" />}
                                         >
                                             {t('new_transaction')}
                                         </Button>
@@ -88,7 +91,7 @@ const Finances = () => {
                                                     variant="secondary"
                                                     className="justify-start w-full"
                                                     onClick={() => handlers.onOpenCloseBox(d, balances.cash)}
-                                                    icon={<Icon name="FINANCES" size="1.2rem" />}
+                                                    icon={<Icon name="payments" size="1.1rem" />}
                                                 >
                                                     {t('deliver')} a {d.full_name?.split(' ')[0]}
                                                 </Button>
@@ -101,7 +104,10 @@ const Finances = () => {
 
                             {user.role === 'secretary' && (
                                 <div className="dashboard-card">
-                                    <h3 className="dashboard-card__title">📊 {t('summary') || 'Resumen de Caja'}</h3>
+                                    <h3 className="dashboard-card__title">
+                                        <Icon name="analytics" size="1.2rem" />
+                                        {t('summary') || 'Resumen de Caja'}
+                                    </h3>
                                     <CashBoxSummary
                                         doctors={doctors}
                                         selectedDoctorFilter={selectedDoctorFilter}

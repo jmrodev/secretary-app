@@ -8,6 +8,7 @@ import TabNav from '../components/molecules/TabNav';
 import InstitutionList from '../components/organisms/InstitutionList';
 import InstitutionFinances from '../components/organisms/InstitutionFinances';
 import InstitutionFormModal from '../components/organisms/InstitutionFormModal';
+import Icon from '../components/atoms/Icon';
 import { useInstitutionsController } from '../controllers/useInstitutionsController';
 
 const Institutions = () => {
@@ -44,14 +45,16 @@ const Institutions = () => {
                         <TabButton
                             isActive={activeTab === 'list'}
                             onClick={() => setActiveTab('list')}
+                            icon={<Icon name="view_list" size="1rem" />}
                         >
-                            📋 {t('list') || 'Lista'}
+                            {t('list') || 'Lista'}
                         </TabButton>
                         <TabButton
                             isActive={activeTab === 'finances'}
                             onClick={() => setActiveTab('finances')}
+                            icon={<Icon name="analytics" size="1rem" />}
                         >
-                            📊 {t('finances') || 'Finanzas'}
+                            {t('finances') || 'Finanzas'}
                         </TabButton>
                     </TabNav>
                 </div>
@@ -62,24 +65,21 @@ const Institutions = () => {
                     <div className="dashboard-grid animate-fadeIn">
                         <aside className="dashboard-sidebar">
                             <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">🛠️ {t('actions') || 'Acciones'}</h3>
+                                <h3 className="dashboard-card__title">
+                                    <Icon name="build" size="1.2rem" />
+                                    {t('actions') || 'Acciones'}
+                                </h3>
                                 <div className="flex flex-col gap-3">
                                     {activeTab === 'list' && (
                                         <Button
                                             variant="primary"
                                             className="justify-start w-full"
                                             onClick={() => handleOpenFormModal()}
+                                            icon={<Icon name="add" size="1.1rem" />}
                                         >
-                                            ✨ {t('new_institution') || 'Nueva Institución'}
+                                            {t('new_institution') || 'Nueva Institución'}
                                         </Button>
                                     )}
-                                    <Button
-                                        variant="outline"
-                                        className="justify-start w-full"
-                                        onClick={() => window.location.reload()}
-                                    >
-                                        🔄 {t('refresh') || 'Actualizar'}
-                                    </Button>
                                 </div>
                             </div>
                         </aside>

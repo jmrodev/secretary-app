@@ -51,21 +51,21 @@ const renderTabContent = (activeTab, controller) => {
                     />
                     <div className="dashboard-card">
                         <div className="flex items-center gap-2 mb-4">
-                            <Icon name="DOCS" size="1.2rem" className="text-primary" />
+                            <Icon name="description" size="1.2rem" className="text-primary" />
                             <h3 className="text-lg font-bold text-slate-800">Documentación y Ayuda</h3>
                         </div>
                         <div className="flex flex-wrap gap-4">
                             <Button
                                 variant="outline"
                                 onClick={() => window.open('/docs/MANUAL_OPERACIONES.html', '_blank')}
-                                icon={<Icon name="REPORTS" size="1.1rem" />}
+                                icon={<Icon name="assessment" size="1.1rem" />}
                             >
                                 Ver Manual de Operaciones
                             </Button>
                             <Button
                                 variant="ghost"
                                 onClick={() => window.open('/docs/GUIA_CONFIGURACION_GENERAL.md', '_blank')}
-                                icon={<Icon name="SETTINGS" size="1.1rem" />}
+                                icon={<Icon name="settings" size="1.1rem" />}
                             >
                                 Guía de Configuración
                             </Button>
@@ -110,7 +110,7 @@ const renderTabContent = (activeTab, controller) => {
             return (
                 <div className="dashboard-card">
                     <div className="flex items-center gap-2 mb-4">
-                        <Icon name="FINANCES" size="1.2rem" className="text-primary" />
+                        <Icon name="payments" size="1.2rem" className="text-primary" />
                         <h3 className="text-lg font-bold text-slate-800">
                             {t('data_management_title') || 'Gestión de Datos y Copias de Seguridad'}
                         </h3>
@@ -151,32 +151,37 @@ const SystemConfig = () => {
                                 <TabButton
                                     isActive={activeTab === 'general'}
                                     onClick={() => setActiveTab('general')}
+                                    icon={<Icon name="settings" size="1rem" />}
                                 >
-                                    ⚙️ {t('general') || 'General'}
+                                    {t('general') || 'General'}
                                 </TabButton>
                                 <TabButton
                                     isActive={activeTab === 'communications'}
                                     onClick={() => setActiveTab('communications')}
+                                    icon={<Icon name="campaign" size="1rem" />}
                                 >
-                                    📢 {t('communications') || 'Comunicaciones'}
+                                    {t('communications') || 'Comunicaciones'}
                                 </TabButton>
                                 <TabButton
                                     isActive={activeTab === 'integrations'}
                                     onClick={() => setActiveTab('integrations')}
+                                    icon={<Icon name="extension" size="1rem" />}
                                 >
-                                    🔌 {t('integrations') || 'Integraciones'}
+                                    {t('integrations') || 'Integraciones'}
                                 </TabButton>
                                 <TabButton
                                     isActive={activeTab === 'billing'}
                                     onClick={() => setActiveTab('billing')}
+                                    icon={<Icon name="receipt_long" size="1rem" />}
                                 >
-                                    🧾 {t('billing') || 'Facturación'}
+                                    {t('billing') || 'Facturación'}
                                 </TabButton>
                                 <TabButton
                                     isActive={activeTab === 'data'}
                                     onClick={() => setActiveTab('data')}
+                                    icon={<Icon name="database" size="1rem" />}
                                 >
-                                    💾 {t('data') || 'Datos'}
+                                    {t('data') || 'Datos'}
                                 </TabButton>
                             </>
                         )}

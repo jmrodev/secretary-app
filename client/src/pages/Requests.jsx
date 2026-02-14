@@ -33,13 +33,16 @@ const Requests = () => {
                 <div className="dashboard-grid animate-fadeIn">
                     <aside className="dashboard-sidebar">
                         <div className="dashboard-card">
-                            <h3 className="dashboard-card__title">🛠️ {t('actions') || 'Acciones'}</h3>
+                            <h3 className="dashboard-card__title">
+                                <Icon name="build" size="1.2rem" />
+                                {t('actions') || 'Acciones'}
+                            </h3>
                             <div className="flex flex-col gap-3">
                                 <Button
                                     variant="outline"
                                     className="justify-start w-full"
                                     onClick={() => window.location.reload()}
-                                    icon={<Icon name="SYNC" size="1.2rem" />}
+                                    icon={<Icon name="sync" size="1.1rem" />}
                                 >
                                     {t('refresh') || 'Actualizar'}
                                 </Button>
@@ -47,7 +50,10 @@ const Requests = () => {
                         </div>
 
                         <div className="dashboard-card">
-                            <h3 className="dashboard-card__title">ℹ️ {t('information') || 'Información'}</h3>
+                            <h3 className="dashboard-card__title">
+                                <Icon name="info" size="1.2rem" />
+                                {t('information') || 'Información'}
+                            </h3>
                             <p className="text-xs text-slate-500 leading-relaxed">
                                 Aquí puede ver y procesar las solicitudes realizadas por los pacientes a través del portal público.
                             </p>

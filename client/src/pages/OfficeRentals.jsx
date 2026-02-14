@@ -84,7 +84,7 @@ const OfficeRentals = () => {
 
                 <div className="dashboard-nav-bar animate-fadeIn">
                     <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
-                        <Icon name="SYMBOLS" size="1.2rem" />
+                        <Icon name="domain" size="1.2rem" />
                         {consultorios.length} {t('offices_count') || 'Consultorios disponibles'}
                     </div>
                 </div>
@@ -97,7 +97,10 @@ const OfficeRentals = () => {
                             {/* Booking Form (Doctors only) */}
                             {user.role === 'doctor' && (
                                 <div className="dashboard-card">
-                                    <h3 className="dashboard-card__title">📅 {t('book_office') || 'Nueva Reserva'}</h3>
+                                    <h3 className="dashboard-card__title">
+                                        <Icon name="calendar_month" size="1.2rem" />
+                                        {t('book_office') || 'Nueva Reserva'}
+                                    </h3>
                                     <form onSubmit={handleRent} className="flex flex-col gap-4 mt-2">
                                         <div className="input-group">
                                             <label className="input-label">{t('select_office')}</label>
@@ -131,7 +134,10 @@ const OfficeRentals = () => {
 
                             {/* Available Offices List */}
                             <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">🚪 {t('available_offices') || 'Espacios Disponibles'}</h3>
+                                <h3 className="dashboard-card__title">
+                                    <Icon name="meeting_room" size="1.2rem" />
+                                    {t('available_offices') || 'Espacios Disponibles'}
+                                </h3>
                                 <div className="flex flex-col gap-3">
                                     {consultorios.map(c => (
                                         <div key={c.id} className="p-3 bg-slate-50 rounded-lg border border-slate-200">
@@ -190,7 +196,7 @@ const OfficeRentals = () => {
                             {(user.role === 'secretary' || user.role === 'admin') && (
                                 <div className="dashboard-card">
                                     <div className="py-20 text-center">
-                                        <Icon name="FINANCES" size="3rem" className="text-slate-200 mb-4 mx-auto" />
+                                        <Icon name="payments" size="3rem" className="text-slate-200 mb-4 mx-auto" />
                                         <h3 className="text-slate-400 font-medium">Panel de Gestión de Alquileres</h3>
                                         <p className="text-slate-400 text-sm max-w-xs mx-auto mt-2 italic">
                                             Próximamente podrá ver el resumen de alquileres de todos los médicos.

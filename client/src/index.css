@@ -124,17 +124,17 @@
 }
 
 .doctor-themed-bg {
-  background-color: var(--doc-bg) !important;
-  border-color: var(--doc-border) !important;
+  background-color: var(--doc-bg);
+  border-color: var(--doc-border);
 }
 
 .doctor-themed-text {
-  color: var(--doc-text) !important;
+  color: var(--doc-text);
 }
 
 .doctor-themed-accent {
-  background-color: var(--doc-accent) !important;
-  color: white !important;
+  background-color: var(--doc-accent);
+  color: white;
 }
 
 /* Animations */

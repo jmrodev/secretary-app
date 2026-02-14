@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
+import Icon from '../atoms/Icon';
 
 const AdminAuthModal = ({ isOpen, onClose, onConfirm }) => {
     const [password, setPassword] = useState('');
@@ -11,7 +12,16 @@ const AdminAuthModal = ({ isOpen, onClose, onConfirm }) => {
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} title="🔒 Autorización de Administrador">
+        <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            title={
+                <div className="flex items-center gap-2">
+                    <Icon name="lock" size="1.2rem" />
+                    Autorización de Administrador
+                </div>
+            }
+        >
             <form onSubmit={handleSubmit}>
                 <p className="mb-4 text-slate-600">
                     Esta acción está restringida. Por favor, ingrese la contraseña de administrador para continuar.

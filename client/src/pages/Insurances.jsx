@@ -42,7 +42,7 @@ const Insurances = () => {
 
                 <div className="dashboard-nav-bar dashboard-nav-bar--centered animate-fadeIn">
                     <div className="flex items-center gap-2 text-sm font-medium text-muted">
-                        <Icon name="FINANCES" size="1.2rem" />
+                        <Icon name="monitor_heart" size="1.2rem" />
                         {filteredInsurances.length} {t('insurances_count') || 'Obras sociales activas'}
                     </div>
                 </div>
@@ -53,7 +53,10 @@ const Insurances = () => {
                     <div className="dashboard-grid animate-fadeIn">
                         <aside className="dashboard-sidebar">
                             <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">🔍 {t('search') || 'Buscar'}</h3>
+                                <h3 className="dashboard-card__title">
+                                    <Icon name="search" size="1.2rem" />
+                                    {t('search') || 'Buscar'}
+                                </h3>
                                 <SearchBar
                                     value={searchTerm}
                                     onChange={e => setSearchTerm(e.target.value)}
@@ -62,21 +65,16 @@ const Insurances = () => {
                             </div>
 
                             <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">🛠️ {t('actions') || 'Acciones'}</h3>
+                                <h3 className="dashboard-card__title">
+                                    <Icon name="build" size="1.2rem" />
+                                    {t('actions') || 'Acciones'}
+                                </h3>
                                 <div className="flex flex-col gap-3">
-                                    <Button
-                                        variant="outline"
-                                        className="justify-start w-full"
-                                        onClick={handlers.fetchInsurances || (() => window.location.reload())}
-                                        icon={<Icon name="SYNC" size="1.2rem" />}
-                                    >
-                                        {t('refresh') || 'Actualizar'}
-                                    </Button>
                                     <Button
                                         variant="primary"
                                         className="justify-start w-full"
                                         onClick={handleOpenCreate}
-                                        icon={<Icon name="ADD" size="1.2rem" />}
+                                        icon={<Icon name="add" size="1.1rem" />}
                                     >
                                         {t('new_insurance') || 'Nueva Obra Social'}
                                     </Button>

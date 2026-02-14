@@ -2,6 +2,7 @@ import React, { Fragment, useEffect } from 'react';
 import Modal from './Modal';
 import { formatDate } from '../../utils/dateUtils';
 import { useLanguage } from '../../context/LanguageContext';
+import Icon from '../atoms/Icon';
 
 const NextSlotModal = ({
     isOpen,
@@ -47,14 +48,19 @@ const NextSlotModal = ({
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={`🔍 ${t('search_free_slots')}`}
+            title={
+                <div className="flex items-center gap-2">
+                    <Icon name="search" size="1.2rem" />
+                    {t('search_free_slots')}
+                </div>
+            }
             size="lg"
         >
             <div className="flex flex-col gap-6 max-h-[75vh] overflow-y-auto custom-scrollbar p-2">
                 {/* Info Banner */}
                 <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 mx-2">
                     <div className="flex items-center gap-2">
-                        <span className="text-blue-600 text-lg">ℹ️</span>
+                        <Icon name="info" size="1.1rem" className="text-blue-600" />
                         <p className="text-xs font-semibold text-blue-800">
                             {t('search_limit_3_months')}
                         </p>
@@ -69,7 +75,10 @@ const NextSlotModal = ({
                             checked={includeOutOfHours}
                             onChange={(e) => onToggleOutOfHours(e.target.checked)}
                         />
-                        <span className="text-sm font-bold text-amber-800">🔓 {t('include_overtime_short')}</span>
+                        <span className="text-sm font-bold text-amber-800 flex items-center gap-1">
+                            <Icon name="lock_open" size="1rem" />
+                            {t('include_overtime_short')}
+                        </span>
                     </label>
                 </div>
 
@@ -101,10 +110,13 @@ const NextSlotModal = ({
                                         <Fragment key={`${slot.dayDate}-${slot.iso}-${index}`}>
                                             {showMonthHeader && (
                                                 <tr className="bg-slate-900 border-y border-slate-800">
-                                                    <td colSpan="2" className="px-5 py-2 text-center">
-                                                        <span className="text-[10px] font-black text-white uppercase tracking-[0.2em]">
-                                                            🗓️ {monthLabel}
-                                                        </span>
+                                                    <td colSpan="2" className="px-5 py-2 text-center text-white">
+                                                        <div className="flex items-center justify-center gap-2">
+                                                            <Icon name="calendar_today" size="0.9rem" />
+                                                            <span className="text-[10px] font-black uppercase tracking-[0.2em]">
+                                                                {monthLabel}
+                                                            </span>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             )}
@@ -112,8 +124,9 @@ const NextSlotModal = ({
                                                 <tr className="bg-slate-100">
                                                     <td colSpan="2" className="px-5 py-2 border-b border-slate-200">
                                                         <div className="flex items-center gap-2">
+                                                            <Icon name="event" size="1rem" className="text-main-700" />
                                                             <span className="text-[11px] font-black text-main-700 uppercase tracking-widest">
-                                                                📅 {slot.dayName}
+                                                                {slot.dayName}
                                                             </span>
                                                             {isToday && (
                                                                 <span className="text-[9px] bg-blue-600 text-white px-1.5 py-0.5 rounded-full font-black uppercase">{t('today')}</span>
@@ -156,9 +169,7 @@ const NextSlotModal = ({
                                                             }}
                                                             title={t('share_whatsapp')}
                                                         >
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                                                <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z" />
-                                                            </svg>
+                                                            <Icon name="chat" size="1.2rem" />
                                                         </button>
                                                         <button
                                                             className={`px-5 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-md active:scale-95 ${slot.is_out_of_hours ? 'bg-amber-600 text-white hover:bg-amber-700' : 'bg-slate-900 text-white hover:bg-black'}`}
@@ -181,19 +192,21 @@ const NextSlotModal = ({
                 {nextSlotData?.results && (
                     <div className="flex justify-between items-center px-2">
                         <button
-                            className="btn btn-sm btn-secondary"
+                            className="btn btn-sm btn-secondary flex items-center gap-1"
                             onClick={() => setSlotsPage(p => Math.max(0, p - 1))}
                             disabled={slotsPage === 0}
                         >
-                            ⬅️ {t('previous_month') || 'Anterior'}
+                            <Icon name="chevron_left" size="1.1rem" />
+                            {t('previous_month') || 'Anterior'}
                         </button>
                         <span className="text-xs font-bold text-slate-500">{t('page_x').replace('{page}', slotsPage + 1)}</span>
                         <button
-                            className="btn btn-sm btn-secondary"
+                            className="btn btn-sm btn-secondary flex items-center gap-1"
                             onClick={() => setSlotsPage(p => p + 1)}
                             disabled={slotsPage >= slotPages.length - 1}
                         >
-                            {t('next_month') || 'Siguiente'} ➡️
+                            {t('next_month') || 'Siguiente'}
+                            <Icon name="chevron_right" size="1.1rem" />
                         </button>
                     </div>
                 )}
@@ -204,7 +217,7 @@ const NextSlotModal = ({
                             className="flex-1 btn btn-secondary py-5 flex flex-col items-center gap-1 rounded-2xl border-2 hover:bg-slate-50 transition-all font-bold"
                             onClick={onPrevGroup}
                         >
-                            <span className="text-xl">⬅️</span>
+                            <Icon name="chevron_left" size="1.2rem" />
                             <span className="text-xs uppercase tracking-widest text-muted">{t('previous_month') || 'Anteriores'}</span>
                         </button>
                     )}
@@ -213,7 +226,7 @@ const NextSlotModal = ({
                             className="flex-[2] btn btn-secondary py-5 flex flex-col items-center gap-1 rounded-2xl border-2 border-dashed border-blue-200 hover:border-blue-400 hover:bg-blue-50 transition-all group"
                             onClick={onNextGroup}
                         >
-                            <span className="text-xl group-hover:scale-125 transition-transform">🔍</span>
+                            <Icon name="search" size="1.2rem" className="text-blue-600 group-hover:scale-125 transition-transform" />
                             <span className="text-xs uppercase tracking-widest font-black text-blue-600">{t('explore_more_dates')}</span>
                         </button>
                     )}

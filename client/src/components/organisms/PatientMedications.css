@@ -29,11 +29,11 @@
 }
 
 .patient-medications__table-row:nth-child(even) {
-    background-color: var(--blue-50) !important;
+    background-color: var(--blue-50);
 }
 
 .patient-medications__table-row:hover {
-    background-color: var(--blue-100/30) !important;
+    background-color: var(--blue-100/30);
 }
 
 .patient-medications__table-row {

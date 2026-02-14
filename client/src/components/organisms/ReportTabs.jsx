@@ -9,36 +9,36 @@ const ReportTabs = ({ activeTab, onTabChange, t }) => {
             <TabButton
                 isActive={activeTab === 'appointments'}
                 onClick={() => onTabChange('appointments')}
+                icon={<Icon name="calendar_month" size="1.1rem" />}
             >
-                <Icon name="APPOINTMENTS" className="mr-2" size="1.2rem" />
                 {t('appointment_reports') || 'Reporte de Turnos'}
             </TabButton>
             <TabButton
                 isActive={activeTab === 'prescriptions'}
                 onClick={() => onTabChange('prescriptions')}
+                icon={<Icon name="medication" size="1.1rem" />}
             >
-                <Icon name="PRESCRIPTION" className="mr-2" size="1.2rem" />
                 {t('prescription_reports') || 'Reporte de Recetas'}
             </TabButton>
             <TabButton
                 isActive={activeTab === 'licenses'}
                 onClick={() => onTabChange('licenses')}
+                icon={<Icon name="badge" size="1.1rem" />}
             >
-                <Icon name="DOCUMENTS" className="mr-2" size="1.2rem" />
                 {t('license_reports') || 'Reporte de Licencias'}
             </TabButton>
             <TabButton
                 isActive={activeTab === 'certificates'}
                 onClick={() => onTabChange('certificates')}
+                icon={<Icon name="verified" size="1.1rem" />}
             >
-                <Icon name="LICENSE" className="mr-2" size="1.2rem" />
                 {t('certificate_reports') || 'Reporte de Certificados'}
             </TabButton>
             <TabButton
                 isActive={activeTab === 'balance'}
                 onClick={() => onTabChange('balance')}
+                icon={<Icon name="analytics" size="1.1rem" />}
             >
-                <Icon name="STATS" className="mr-2" size="1.2rem" />
                 {t('balance_report') || 'Balance General'}
             </TabButton>
         </TabNav>

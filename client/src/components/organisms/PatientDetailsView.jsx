@@ -87,16 +87,17 @@ const PatientDetailsView = ({
                                                 ].filter(Boolean).join(', ') || <span className="patient-details__text-empty">{t('no_address_loaded')}</span>}
                                             </div>
                                             {(details.street_name || details.address) && (
-                                                <a
-                                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                                <Button
+                                                    to={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
                                                         `${details.street_name || ''} ${details.street_number || ''}, ${details.city || ''}, ${details.province || ''}, ${details.country || ''} ${details.address || ''}`.trim()
                                                     )}`}
-                                                    target="_blank"
-                                                    rel="noreferrer"
+                                                    variant="link"
+                                                    size="sm"
                                                     className="patient-details__map-link"
+                                                    icon={<Icon name="map" size="0.9rem" />}
                                                 >
-                                                    {t('view_on_map')} ↗
-                                                </a>
+                                                    {t('view_on_map')}
+                                                </Button>
                                             )}
                                         </td>
                                     </tr>
@@ -108,33 +109,42 @@ const PatientDetailsView = ({
                                                     details.phoneNumbers.map((p, idx) => (
                                                         <div key={idx} className="patient-details__contact-item">
                                                             <span className={`patient-details__contact-indicator ${p.is_primary ? 'patient-details__contact-indicator--primary' : ''}`}></span>
-                                                            <a
-                                                                href={`tel:${p.phone_number.replace(/[^0-9+]/g, '')}`}
+                                                            <Button
+                                                                to={`tel:${p.phone_number.replace(/[^0-9+]/g, '')}`}
+                                                                variant="phone"
+                                                                size="sm"
                                                                 className="patient-details__contact-link"
+                                                                icon={<Icon name="call" size="0.9rem" />}
                                                             >
                                                                 {p.phone_number}
-                                                            </a>
+                                                            </Button>
                                                             {p.label && <span className="patient-details__info-hint">({p.label})</span>}
                                                         </div>
                                                     ))
                                                 ) : (
                                                     details.phone ? (
-                                                        <a
-                                                            href={`tel:${details.phone.replace(/[^0-9+]/g, '')}`}
+                                                        <Button
+                                                            to={`tel:${details.phone.replace(/[^0-9+]/g, '')}`}
+                                                            variant="phone"
+                                                            size="sm"
                                                             className="patient-details__contact-link"
+                                                            icon={<Icon name="call" size="0.9rem" />}
                                                         >
                                                             {details.phone}
-                                                        </a>
+                                                        </Button>
                                                     ) : <span>N/A</span>
                                                 )}
                                                 {details.email && (
                                                     <div className="patient-details__contact-item patient-details__contact-item--email">
-                                                        <a
-                                                            href={`mailto:${details.email}`}
+                                                        <Button
+                                                            to={`mailto:${details.email}`}
+                                                            variant="link"
+                                                            size="sm"
                                                             className="patient-details__contact-link patient-details__contact-link--email"
+                                                            icon={<Icon name="mail" size="0.9rem" />}
                                                         >
                                                             {details.email}
-                                                        </a>
+                                                        </Button>
                                                     </div>
                                                 )}
                                             </div>
@@ -168,9 +178,9 @@ const PatientDetailsView = ({
                                                                 </div>
                                                                 <Button
                                                                     size="xs"
-                                                                    variant="ghost"
+                                                                    variant="whatsapp"
                                                                     className="date-indicator__action"
-                                                                    icon={<Icon name="CHAT" size="0.8rem" />}
+                                                                    icon={<Icon name="chat" size="0.8rem" />}
                                                                     onClick={() => {
                                                                         const phone = details.phoneNumbers?.find(p => p.is_primary)?.phone_number || details.phone;
                                                                         if (!phone) return alert(t('no_phone_available'));
@@ -194,7 +204,7 @@ const PatientDetailsView = ({
                                                                     size="xs"
                                                                     variant="ghost"
                                                                     className="date-indicator__action"
-                                                                    icon={<Icon name="PRESCRIPTION" size="0.8rem" />}
+                                                                    icon={<Icon name="description" size="0.8rem" />}
                                                                     onClick={() => onGeneratePrescriptionLink(details.id)}
                                                                 >
                                                                     {t('send_link')}
@@ -215,7 +225,7 @@ const PatientDetailsView = ({
                     <section className="details-block details-block--history">
                         <header className="details-block__header">
                             <h3 className="details-block__title">
-                                <Icon name="CALENDAR" size="1.2rem" />
+                                <Icon name="calendar_month" size="1.2rem" />
                                 {t('appointment_history')}
                             </h3>
                         </header>
@@ -246,7 +256,7 @@ const PatientDetailsView = ({
                                                     </td>
                                                     <td className="patient-details__history-cell">{app.doctor_name}</td>
                                                     <td className="patient-details__history-cell">
-                                                        <span className={`tag tag-${app.status}`}>
+                                                        <span className={`patient-details__status-tag status-${app.status}`}>
                                                             {t(app.status) || app.status}
                                                         </span>
                                                     </td>
@@ -263,7 +273,7 @@ const PatientDetailsView = ({
                                                                         variant="ghost"
                                                                         className="patient-details__pay-btn-mini"
                                                                         onClick={() => onPayDebt(null, details.id, app.pending_amount)}
-                                                                        icon={<Icon name="FINANCES" size="0.8rem" />}
+                                                                        icon={<Icon name="payments" size="0.8rem" />}
                                                                     >
                                                                         {t('pay')}
                                                                     </Button>
@@ -276,7 +286,7 @@ const PatientDetailsView = ({
                                                             {app.reason}
                                                             {app.cancellation_reason && (
                                                                 <div className="patient-details__cancel-reason">
-                                                                    <Icon name="REJECT" size="0.8rem" className="mr-1" />
+                                                                    <Icon name="block" size="0.8rem" className="mr-1" />
                                                                     {app.cancellation_reason}
                                                                 </div>
                                                             )}
@@ -317,16 +327,15 @@ const PatientDetailsView = ({
                                         variant="primary"
                                         className="patient-details__pay-debt-btn"
                                         onClick={(e) => onPayDebt(e, details.id, details.total_debt)}
-                                        icon={<Icon name="FINANCES" size="1rem" />}
+                                        icon={<Icon name="payments" size="1rem" />}
                                     >
                                         {t('pay_debt')}
                                     </Button>
                                     <Button
-                                        variant="ghost"
+                                        variant="whatsapp"
                                         size="sm"
                                         className="patient-details__remind-debt-btn"
-                                        style={{ color: 'var(--red-300)', opacity: 0.8 }}
-                                        icon={<Icon name="CHAT" size="1rem" />}
+                                        icon={<Icon name="chat" size="1rem" />}
                                         onClick={() => {
                                             const phone = details.phoneNumbers?.find(p => p.is_primary)?.phone_number || details.phone;
                                             if (!phone) return alert(t('no_phone_available'));
@@ -345,7 +354,7 @@ const PatientDetailsView = ({
                     <div className="details-block details-block--sidebar details-block--tools">
                         <header className="details-block__header">
                             <h3 className="details-block__title">
-                                <Icon name="CONFIG" size="1rem" />
+                                <Icon name="settings" size="1rem" />
                                 {t('tools')}
                             </h3>
                         </header>
@@ -354,7 +363,7 @@ const PatientDetailsView = ({
                                 variant="secondary"
                                 className="patient-details__tool-btn"
                                 onClick={() => onGenerateQR(details.id)}
-                                icon={<Icon name="CHAT" size="1.1rem" />}
+                                icon={<Icon name="qr_code" size="1.1rem" />}
                             >
                                 {t('generate_qr_access')}
                             </Button>
@@ -362,7 +371,7 @@ const PatientDetailsView = ({
                                 variant="secondary"
                                 className="patient-details__tool-btn"
                                 onClick={() => onGeneratePrescriptionLink(details.id)}
-                                icon={<Icon name="PRESCRIPTION" size="1.1rem" />}
+                                icon={<Icon name="description" size="1.1rem" />}
                             >
                                 {t('request_prescription_link')}
                             </Button>
@@ -371,7 +380,7 @@ const PatientDetailsView = ({
                                     variant="ghost"
                                     className="patient-details__delete-btn"
                                     onClick={() => onDelete(details)}
-                                    icon={<Icon name="DELETE" size="1rem" />}
+                                    icon={<Icon name="delete" size="1rem" />}
                                 >
                                     {t('delete_patient')}
                                 </Button>

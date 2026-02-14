@@ -41,7 +41,10 @@ const CalendarSection = ({
                     {activeTab === 'calendar' && (
                         <div className="flex flex-col gap-5 mt-5">
                             <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">🔍 Buscar Historial</h3>
+                                <h3 className="dashboard-card__title">
+                                    <Icon name="search" size="1rem" />
+                                    Buscar Historial
+                                </h3>
                                 <div className="calendar-section__filter-group">
                                     <PatientSearchSelect
                                         value={searchPatientId}
@@ -53,13 +56,16 @@ const CalendarSection = ({
                             </div>
 
                             <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">🛠️ Herramientas</h3>
+                                <h3 className="dashboard-card__title">
+                                    <Icon name="build" size="1rem" />
+                                    Herramientas
+                                </h3>
                                 <div className="flex gap-2">
                                     <Button
                                         variant="outline"
                                         className="flex-1 justify-center"
                                         onClick={onNextFreeSlot}
-                                        icon={<Icon name="SEARCH" size="1.1rem" />}
+                                        icon={<Icon name="search" size="1.1rem" />}
                                     >
                                         Próximo Libre
                                     </Button>
@@ -68,7 +74,7 @@ const CalendarSection = ({
                                         onClick={() => onSyncDayToGoogle && onSyncDayToGoogle()}
                                         title="Sincronizar Google Calendar"
                                         className="px-3"
-                                        icon={<Icon name="SYNC" size="1.1rem" />}
+                                        icon={<Icon name="sync" size="1.1rem" />}
                                     />
                                 </div>
                             </div>
@@ -77,7 +83,10 @@ const CalendarSection = ({
                 </>
             ) : (
                 <div className="dashboard-card holiday-card">
-                    <h3 className="dashboard-card__title">🏖️ Bloquear Agenda</h3>
+                    <h3 className="dashboard-card__title">
+                        <Icon name="event_busy" size="1rem" />
+                        Bloquear Agenda
+                    </h3>
                     <p className="text-xs text-slate-500 mb-4 leading-relaxed">
                         Crea un feriado o licencia para bloquear turnos en los días seleccionados.
                     </p>

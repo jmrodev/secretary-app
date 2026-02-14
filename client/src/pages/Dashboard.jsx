@@ -72,24 +72,6 @@ const Dashboard = () => {
                         </p>
                     </div>
                     <div className="flex items-center gap-3">
-                        <Button
-                            variant="secondary"
-                            outline
-                            size="sm"
-                            onClick={refreshDashboard}
-                            icon={<Icon name="SYNC" size="1.1rem" />}
-                            tooltip={t('refresh')}
-                        />
-                        {isAdminOrSecretary && (
-                            <Button
-                                variant="primary"
-                                size="sm"
-                                onClick={() => navigate('/patients', { state: { openNewPatient: true } })}
-                                icon={<Icon name="ADD" size="1.1rem" />}
-                            >
-                                {t('new_patient')}
-                            </Button>
-                        )}
                     </div>
                 </header>
 
@@ -115,7 +97,8 @@ const Dashboard = () => {
                                             variant="ghost"
                                             active={activeTab === 'requirements'}
                                             onClick={() => setActiveTab('requirements')}
-                                            icon={<Icon name="DOCS" />}
+                                            icon={<Icon name="description" size="1.2rem" />}
+                                            className="px-6"
                                         >
                                             {t('ongoing_requirements')}
                                         </Button>
@@ -126,7 +109,8 @@ const Dashboard = () => {
                                             variant="ghost"
                                             active={activeTab === 'reminders'}
                                             onClick={() => setActiveTab('reminders')}
-                                            icon={<Icon name="NOTIFICATIONS" />}
+                                            icon={<Icon name="notifications" size="1.2rem" />}
+                                            className="px-6"
                                         >
                                             {t('reminders')}
                                         </Button>
@@ -141,18 +125,12 @@ const Dashboard = () => {
                                 {activeTab === 'requirements' && (isAdminOrSecretary || isDoctor) && (
                                     <div className="dashboard-requirements">
                                         <div className="dashboard-requirements__header">
-                                            <h3 className="dashboard-requirements__title">{t('pending_requests')}</h3>
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={() => navigate('/requests')}
-                                                className="dashboard-requirements__view-all"
-                                            >
-                                                {t('view_all')}
-                                                <Icon name="arrow_forward" size="1rem" />
-                                            </Button>
+                                            <h3 className="dashboard-requirements__title">
+                                                <Icon name="description" size="1.2rem" />
+                                                {t('pending_requests')}
+                                            </h3>
                                         </div>
-                                        <RequirementsList user={user} />
+                                        <RequirementsList user={user} hideTabs={true} hideFilters={true} />
                                     </div>
                                 )}
 

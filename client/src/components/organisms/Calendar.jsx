@@ -133,10 +133,12 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
                 </div>
             )}
 
-            <DayHeaders daysOfWeek={daysOfWeek} />
+            <div className="calendar-grid__main-container">
+                <DayHeaders daysOfWeek={daysOfWeek} />
 
-            <div className="calendar-grid__body">
-                {renderDays()}
+                <div className="calendar-grid__body">
+                    {renderDays()}
+                </div>
             </div>
         </div>
     );

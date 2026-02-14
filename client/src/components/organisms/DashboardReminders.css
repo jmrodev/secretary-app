@@ -1,18 +1,22 @@
 .dashboard-reminders {
-    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 2vw, 1.5rem);
+    padding: 0;
+    /* Let dashboard container handle padding */
 }
 
 .dashboard-reminders__header {
-    margin-bottom: 1.5rem;
+    margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    border-bottom: 1px solid var(--slate-100);
+    border-bottom: 1px solid var(--gray-100);
 }
 
 .dashboard-reminders__tabs {
     display: flex;
-    gap: 1rem;
+    gap: 0.5rem;
     margin-bottom: -1px;
 }
 
@@ -77,18 +81,18 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.25rem;
+    padding: 0.85rem 1.25rem;
     background: white;
-    border: 1px solid var(--slate-100);
-    border-radius: 1rem;
-    transition: all 0.2s ease;
+    border: 1px solid var(--gray-100);
+    border-radius: var(--radius-lg, 0.75rem);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: var(--shadow-sm);
 }
 
 .dashboard-reminders__item:hover {
-    transform: translateY(-2px);
+    transform: translateX(4px);
     box-shadow: var(--shadow-md);
-    border-color: var(--primary-light);
+    border-color: var(--blue-200);
 }
 
 .dashboard-reminders__item-info {
@@ -114,10 +118,10 @@
 }
 
 .dashboard-reminders__badge {
-    font-size: 0.85rem;
-    padding: 0.2rem 0.65rem;
+    font-size: 0.75rem;
+    padding: 0.15rem 0.6rem;
     border-radius: 2rem;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .dashboard-reminders__badge--medication {

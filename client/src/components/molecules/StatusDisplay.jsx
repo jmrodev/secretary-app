@@ -1,4 +1,5 @@
 import React from 'react';
+import Icon from '../atoms/Icon';
 import './StatusDisplay.css';
 
 /**
@@ -16,7 +17,7 @@ const StatusDisplay = ({
             case 'error':
                 return (
                     <div className="status-display status-display--error">
-                        <div className="status-display__icon">{icon || '⚠️'}</div>
+                        <div className="status-display__icon">{icon || <Icon name="warning" size="2.5rem" />}</div>
                         <h2 className="status-display__title">{title || 'Error'}</h2>
                         <p className="status-display__message">{message}</p>
                     </div>
@@ -24,7 +25,7 @@ const StatusDisplay = ({
             case 'success':
                 return (
                     <div className="status-display status-display--success">
-                        <div className="status-display__icon">{icon || '✅'}</div>
+                        <div className="status-display__icon">{icon || <Icon name="check_circle" size="2.5rem" />}</div>
                         <h2 className="status-display__title">{title || 'Completado'}</h2>
                         <p className="status-display__message">{message}</p>
                     </div>

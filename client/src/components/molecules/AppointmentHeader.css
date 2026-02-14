@@ -32,15 +32,7 @@
 .appointment-header__phone-link {
     font-family: monospace;
     font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--primary);
-    text-decoration: none;
-    transition: color 0.2s;
-}
-
-.appointment-header__phone-link:hover {
-    text-decoration: underline;
-    color: var(--primary-dark);
+    margin: 0;
 }
 
 .appointment-header__phone-actions {
@@ -49,32 +41,20 @@
     margin-left: 0.5rem;
 }
 
-.appointment-header__icon-btn {
-    border-radius: 50% !important;
-    padding: 0.2rem !important;
-    height: 24px;
-    width: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .appointment-header__icon-btn--whatsapp {
-    color: var(--success) !important;
+    color: var(--green-600);
 }
 
 .appointment-header__icon-btn--whatsapp:hover {
-    background-color: var(--success-light) !important;
-    color: var(--success-dark) !important;
+    background-color: var(--green-50);
 }
 
 .appointment-header__icon-btn--magic {
-    color: var(--primary) !important;
+    color: var(--indigo-600);
 }
 
 .appointment-header__icon-btn--magic:hover {
-    background-color: var(--primary-light) !important;
-    color: var(--primary-dark) !important;
+    background-color: var(--indigo-50);
 }
 
 .appointment-header__date {

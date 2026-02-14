@@ -15,6 +15,7 @@ import {
 import Input from '../atoms/Input';
 import Select from '../atoms/Select';
 import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
 import CurrencyInput from '../atoms/CurrencyInput';
 import FormGroup from './FormGroup';
 import PrescriptionSection from './PrescriptionSection';
@@ -71,7 +72,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
             footer={
                 <div className="transaction-modal-footer">
                     <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
-                    <Button onClick={handleSubmit} disabled={loading} variant="primary" icon="✅">
+                    <Button onClick={handleSubmit} disabled={loading} variant="primary" icon={<Icon name="check" size="1.2rem" />}>
                         {loading ? t('processing') : t('confirm_payment')}
                     </Button>
                 </div>
@@ -117,7 +118,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                                 onFocus={() => !initialData?.patientId && setShowPatientList(true)}
                                 placeholder={t('search_name_dni')}
                                 disabled={!!initialData?.patientId}
-                                icon="🔍"
+                                icon={<Icon name="search" size="1.1rem" />}
                             />
                             {showPatientList && patientSearch && !formData.related_user_id && (
                                 <ul className="transaction-modal__results">
@@ -186,7 +187,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                 <div className="payment-methods-card">
                     <div className="payment-methods-card__header">
                         <label className="payment-methods-card__title">{t('payment_methods')}</label>
-                        <Button variant="ghost" size="sm-compact" onClick={addPaymentMethod} icon="+">
+                        <Button variant="ghost" size="sm-compact" onClick={addPaymentMethod} icon={<Icon name="add" size="1.1rem" />}>
                             {t('add_payment_method') || 'Agregar'}
                         </Button>
                     </div>
@@ -213,7 +214,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                                         variant="ghost"
                                         size="sm-icon"
                                         onClick={() => removePaymentMethod(index)}
-                                        icon="✕"
+                                        icon={<Icon name="close" size="1rem" />}
                                     />
                                 )}
                             </div>
@@ -222,7 +223,10 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
 
                     <div className="payment-summary">
                         {pricingInfo && (
-                            <p className="payment-summary__pricing-info">ℹ️ {pricingInfo}</p>
+                            <p className="payment-summary__pricing-info">
+                                <Icon name="info" size="1.1rem" />
+                                {pricingInfo}
+                            </p>
                         )}
                         <div className="payment-summary__totals">
                             {totalPrice > 0 && (
@@ -234,7 +238,10 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                                             {t('debt')}: {formatPrice(debtAmount)}
                                         </span>
                                     ) : (
-                                        <span className="payment-summary__paid" style={{ fontWeight: 800 }}>✓ {t('completed')}</span>
+                                        <span className="payment-summary__paid" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 800 }}>
+                                            <Icon name="check" size="1.1rem" />
+                                            {t('completed')}
+                                        </span>
                                     )}
                                 </>
                             )}
@@ -263,7 +270,8 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                             onChange={e => updateField('transaction_date', e.target.value)}
                         />
                         <p className="edit-transaction-form__warning">
-                            <span>⚠️</span> {t('edit_date_warning') || 'Modificar la fecha afecta el orden en la caja diaria.'}
+                            <Icon name="warning" size="1.1rem" />
+                            {t('edit_date_warning') || 'Modificar la fecha afecta el orden en la caja diaria.'}
                         </p>
                     </FormGroup>
                 )}

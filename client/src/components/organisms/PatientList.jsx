@@ -1,7 +1,7 @@
-
 import React from 'react';
 import Button from '../atoms/Button';
 import Badge from '../atoms/Badge';
+import Icon from '../atoms/Icon';
 import './PatientList.css';
 
 const PatientList = ({
@@ -18,7 +18,11 @@ const PatientList = ({
         return (
             <div className={`rating-item__stars rating-item__stars--${colorClass}`}>
                 {[1, 2, 3, 4, 5].map(s => (
-                    <span key={s}>{s <= (rating || 5) ? '★' : '☆'}</span>
+                    <Icon
+                        key={s}
+                        name={s <= (rating || 5) ? 'star' : 'star_outline'}
+                        size="14px"
+                    />
                 ))}
             </div>
         );
@@ -70,35 +74,41 @@ const PatientList = ({
                                 <div className="patient-table__contact-info">
                                     {p.phone ? (
                                         <div className="patient-table__contact-row">
-                                            <a
-                                                href={`https://wa.me/${p.phone.replace(/[^0-9]/g, '')}`}
+                                            <Button
+                                                to={`https://wa.me/${p.phone.replace(/[^0-9]/g, '')}`}
                                                 target="_blank"
-                                                rel="noreferrer"
-                                                className="patient-table__whatsapp-link"
+                                                variant="whatsapp"
+                                                size="sm-compact"
+                                                className="patient-table__whatsapp-btn"
                                                 onClick={(e) => e.stopPropagation()}
                                                 title="WhatsApp"
-                                            >
-                                                📱
-                                            </a>
-                                            <a
-                                                href={`tel:${p.phone.replace(/[^0-9+]/g, '')}`}
-                                                className="patient-table__contact-link patient-table__contact-link--tel"
+                                                icon={<Icon name="send" size="1.1rem" />}
+                                            />
+                                            <Button
+                                                to={`tel:${p.phone.replace(/[^0-9+]/g, '')}`}
+                                                variant="phone"
+                                                size="sm"
+                                                className="patient-table__contact-link"
                                                 onClick={(e) => e.stopPropagation()}
                                                 title="Llamar"
+                                                icon={<Icon name="call" size="0.9rem" />}
                                             >
                                                 {p.phone}
-                                            </a>
+                                            </Button>
                                         </div>
                                     ) : <div className="patient-table__no-contact">{t('no_phone_short')}</div>}
 
                                     {p.email && (
-                                        <a
-                                            href={`mailto:${p.email}`}
-                                            className="patient-table__contact-link patient-table__contact-link--email"
+                                        <Button
+                                            to={`mailto:${p.email}`}
+                                            variant="link"
+                                            size="sm"
+                                            className="patient-table__contact-link--email"
                                             onClick={(e) => e.stopPropagation()}
+                                            icon={<Icon name="mail" size="0.9rem" />}
                                         >
-                                            ✉️ {p.email}
-                                        </a>
+                                            {p.email}
+                                        </Button>
                                     )}
                                 </div>
                             </td>
@@ -126,11 +136,12 @@ const PatientList = ({
                                 {Number(p.total_debt) > 0 ? (
                                     <Button
                                         size="sm-compact"
-                                        variant="ghost"
+                                        variant="warning"
                                         onClick={(e) => onOpenDebt(e, p.id, p.total_debt)}
                                         className="patient-table__debt-badge"
+                                        icon={<Icon name="payments" size="1rem" />}
                                     >
-                                        💸 ${p.total_debt}
+                                        ${p.total_debt}
                                     </Button>
                                 ) : (
                                     <span className="patient-table__zero-debt">$0.00</span>
@@ -138,11 +149,12 @@ const PatientList = ({
                             </td>
                             <td className="patient-table__actions">
                                 <Button
-                                    variant="ghost"
+                                    variant="info"
                                     size="sm-compact"
                                     className="patient-table__view-btn"
+                                    icon={<Icon name="badge" />}
                                 >
-                                    🆔 {t('view_details') || 'Ficha'}
+                                    {t('view_details') || 'Ficha'}
                                 </Button>
                             </td>
                         </tr>

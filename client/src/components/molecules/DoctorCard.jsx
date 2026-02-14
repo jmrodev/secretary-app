@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
 import { formatPrice } from '../../utils/format';
 import './DoctorCard.css';
 
@@ -22,7 +23,7 @@ const DoctorCard = ({ doctor, currentUser, onEdit, t }) => {
 
             <div className="doctor-card__details">
                 <div className="doctor-card__detail-item">
-                    <span className="doctor-card__detail-icon">📞</span>
+                    <Icon name="phone" size="1rem" className="doctor-card__detail-icon" />
                     {doctor.phone ? (
                         <a
                             href={`tel:${doctor.phone.replace(/[^0-9+]/g, '')}`}
@@ -38,7 +39,7 @@ const DoctorCard = ({ doctor, currentUser, onEdit, t }) => {
                     )}
                 </div>
                 <div className="doctor-card__detail-item">
-                    <span className="doctor-card__detail-icon">🏢</span>
+                    <Icon name="location_on" size="1rem" className="doctor-card__detail-icon" />
                     <span className="doctor-card__office-label">
                         {t('office') || 'Consultorio'}: <span className="doctor-card__office-value">{doctor.office_number || 'N/A'}</span>
                     </span>
@@ -67,7 +68,7 @@ const DoctorCard = ({ doctor, currentUser, onEdit, t }) => {
                         size="sm"
                         className="doctor-card__config-btn"
                         onClick={() => onEdit(doctor)}
-                        icon="⚙️"
+                        icon={<Icon name="settings" size="1rem" />}
                     >
                         {t('configure_doctor') || 'Configurar Médico'}
                     </Button>

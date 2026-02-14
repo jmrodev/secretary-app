@@ -1,21 +1,21 @@
 export const ICONS = {
     // Navigation / Sidebar
     DASHBOARD: 'dashboard',
-    APPOINTMENTS: 'event_note', // Distinct icon with lines
+    APPOINTMENTS: 'calendar_month',
     PATIENTS: 'groups',
     INSURANCES: 'monitor_heart',
     RENTALS: 'domain',
-    REQUESTS: 'description',
+    REQUESTS: 'assignment',
     DOCUMENTS: 'folder_open',
     DOCTORS: 'medical_services',
     FINANCES: 'payments',
-    REPORTS: 'assignment',
+    REPORTS: 'assessment',
     LOGS: 'history_edu',
     USERS: 'manage_accounts',
     INSTITUTIONS: 'account_balance',
     CONFIG: 'settings',
     PROFILE: 'person',
-    SPREADSHEETS: 'query_stats',
+    SPREADSHEETS: 'table_chart',
     LOGOUT: 'logout',
 
     // Stats / Dashboard
@@ -50,6 +50,7 @@ export const ICONS = {
     REJECT: 'block',
     RESTORE: 'restore',
     VIEW_LIST: 'view_list',
+    VIEW: 'visibility',
 
     // Status / Medical
     PENDING: 'timer',
@@ -59,11 +60,15 @@ export const ICONS = {
     VIRTUAL: 'videocam',
     PRESCRIPTION: 'medication',
     HISTORY: 'history',
-    LICENSE: 'description',
+    LICENSE: 'badge',
     CERTIFICATE: 'verified',
     WARNING: 'warning',
     INFO: 'info',
     NOTES: 'notes',
     CHAT: 'chat',
     NOTIFICATIONS: 'notifications_active',
+    SMARTPHONE: 'smartphone',
+    PHONE: 'call',
+    MAIL: 'mail',
+    MAP: 'map',
 };

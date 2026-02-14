@@ -1,13 +1,8 @@
-.dashboard-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-}
-
 .dashboard-sidebar__section {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    width: 100%;
 }
 
 .dashboard-sidebar__title {
@@ -24,8 +19,8 @@
 
 .dashboard-sidebar__grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
 }
 
 /* Reminders Section Specifics */

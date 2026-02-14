@@ -174,6 +174,7 @@ const DoctorEditModal = ({
                         <DoctorMessagesForm
                             data={data}
                             onChange={onChangeData}
+                            settings={settings}
                             t={t}
                         />
                     )}

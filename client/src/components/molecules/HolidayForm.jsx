@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
 import FormGroup from '../molecules/FormGroup';
 import Input from '../atoms/Input';
 import { capitalizeFirst } from '../../utils/stringUtils';
@@ -38,8 +39,8 @@ const HolidayForm = ({ onAdd }) => {
                 />
             </FormGroup>
 
-            <Button type="submit" variant="primary" className="w-full mt-2">
-                ✨ Agregar Feriado
+            <Button type="submit" variant="primary" className="w-full mt-2" icon={<Icon name="auto_awesome" size="1.1rem" />}>
+                Agregar Feriado
             </Button>
         </form>
     );

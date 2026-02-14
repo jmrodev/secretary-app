@@ -28,7 +28,7 @@ import Loading from '../atoms/Loading';
  * RequirementsList Organism.
  * Displays and manages medical requests with list, new, and recycle bin views.
  */
-const RequirementsList = ({ user }) => {
+const RequirementsList = ({ user, hideNew = false, hideRecycle = false, hideTabs = false, hideFilters = false }) => {
     const { t } = useLanguage();
     const {
         requests,
@@ -86,39 +86,43 @@ const RequirementsList = ({ user }) => {
 
     return (
         <div className={baseClass}>
-            <nav className={`${baseClass}__tabs`}>
-                <TabButton
-                    isActive={activeTab === 'list'}
-                    onClick={handleListTab}
-                    variant="pill"
-                    icon={<Icon name="view_list" />}
-                >
-                    {t('request_status')}
-                </TabButton>
-                <TabButton
-                    isActive={activeTab === 'new'}
-                    onClick={handleNewTab}
-                    variant="pill"
-                    icon={<Icon name="add_circle" />}
-                >
-                    {t('new_request')}
-                </TabButton>
-                {isAdminOrSecretary && canDeleteRequest && (
-                    <div className={`${baseClass}__tab-wrapper`}>
+            {!hideTabs && (
+                <nav className={`${baseClass}__tabs`}>
+                    <TabButton
+                        isActive={activeTab === 'list'}
+                        onClick={handleListTab}
+                        variant="pill"
+                        icon={<Icon name="view_list" />}
+                    >
+                        {t('request_status')}
+                    </TabButton>
+                    {!hideNew && (
                         <TabButton
-                            isActive={activeTab === 'recycle'}
-                            onClick={handleRecycleTab}
+                            isActive={activeTab === 'new'}
+                            onClick={handleNewTab}
                             variant="pill"
-                            icon={<Icon name="delete" />}
+                            icon={<Icon name="add_circle" />}
                         >
-                            {t('recycle_bin') || 'Papelera'}
+                            {t('new_request')}
                         </TabButton>
-                        {recycleRequests.length > 0 && (
-                            <span className={`${baseClass}__badge`}>{recycleRequests.length}</span>
-                        )}
-                    </div>
-                )}
-            </nav>
+                    )}
+                    {isAdminOrSecretary && canDeleteRequest && !hideRecycle && (
+                        <div className={`${baseClass}__tab-wrapper`}>
+                            <TabButton
+                                isActive={activeTab === 'recycle'}
+                                onClick={handleRecycleTab}
+                                variant="pill"
+                                icon={<Icon name="delete" />}
+                            >
+                                {t('recycle_bin') || 'Papelera'}
+                            </TabButton>
+                            {recycleRequests.length > 0 && (
+                                <span className={`${baseClass}__badge`}>{recycleRequests.length}</span>
+                            )}
+                        </div>
+                    )}
+                </nav>
+            )}
 
             {activeTab === 'new' ? (
                 <div className={`${baseClass}__content animate-fadeIn`}>
@@ -132,22 +136,24 @@ const RequirementsList = ({ user }) => {
                 </div>
             ) : activeTab === 'list' ? (
                 <div className={`${baseClass}__content animate-fadeIn`}>
-                    <div className={`${baseClass}__filters`}>
-                        <TabButton
-                            variant="pill"
-                            isActive={filter === 'active'}
-                            onClick={() => setFilter('active')}
-                        >
-                            {t('pending') || 'Pendientes'}
-                        </TabButton>
-                        <TabButton
-                            variant="pill"
-                            isActive={filter === 'history'}
-                            onClick={() => setFilter('history')}
-                        >
-                            {t('history') || 'Historial'}
-                        </TabButton>
-                    </div>
+                    {!hideFilters && (
+                        <div className={`${baseClass}__filters`}>
+                            <TabButton
+                                variant="pill"
+                                isActive={filter === 'active'}
+                                onClick={() => setFilter('active')}
+                            >
+                                {t('pending') || 'Pendientes'}
+                            </TabButton>
+                            <TabButton
+                                variant="pill"
+                                isActive={filter === 'history'}
+                                onClick={() => setFilter('history')}
+                            >
+                                {t('history') || 'Historial'}
+                            </TabButton>
+                        </div>
+                    )}
 
                     {requests.length === 0 ? (
                         <div className={`${baseClass}__empty`}>

@@ -7,7 +7,7 @@
 
 .main-content {
     flex: 1;
-    padding: 0.5rem 2rem 2rem 2rem;
+    padding: clamp(0.75rem, 2vh, 1.25rem) clamp(1rem, 3vw, 2.5rem);
     overflow-y: auto;
     min-height: 0;
     display: flex;
@@ -17,25 +17,32 @@
 /* Base constraint for content inside main layout */
 .main-content>* {
     width: 100%;
-    max-width: 1300px;
-    /* Slightly wider than before to accommodate grid */
+    max-width: 1360px;
+    /* Focused container for standard pages */
     margin: 0 auto;
 }
 
 .main-content.dashboard-wide {
-    padding-top: 0.5rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    padding-bottom: 1.5rem;
+    padding: clamp(0.75rem, 2.5vh, 1.5rem) clamp(1rem, 3vw, 2rem);
 }
 
 .main-content.dashboard-wide>* {
-    max-width: 100%;
+    max-width: 1600px;
 }
 
 @media screen and (max-width: 1400px),
 screen and (max-height: 800px) {
     .main-content {
-        padding: 1rem 1.5rem;
+        padding: 1.25rem 1.5rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .main-content {
+        padding: 1rem;
+    }
+
+    .main-content.dashboard-wide {
+        padding: 0.75rem;
     }
 }

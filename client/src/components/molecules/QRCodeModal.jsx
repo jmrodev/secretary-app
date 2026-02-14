@@ -2,6 +2,7 @@ import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import Modal from './Modal';
 import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
 import { useLanguage } from '../../context/LanguageContext';
 import { useModal } from '../../context/ModalContext';
 import { useConfig } from '../../context/ConfigContext';
@@ -48,10 +49,11 @@ const QRCodeModal = ({ isOpen, onClose, url, expiresAt, patientName, patientPhon
                             rel="noopener noreferrer"
                             className="qr-modal-footer__whatsapp"
                         >
-                            📱 WhatsApp
+                            <Icon name="smartphone" size="1.1rem" />
+                            WhatsApp
                         </a>
                     )}
-                    <Button variant="accent" onClick={handleCopy}>📋 {t('copy_link') || 'Copiar Enlace'}</Button>
+                    <Button variant="accent" onClick={handleCopy} icon={<Icon name="content_copy" size="1.1rem" />}>{t('copy_link') || 'Copiar Enlace'}</Button>
                 </div>
             }
         >

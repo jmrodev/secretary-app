@@ -1,5 +1,6 @@
 import React from 'react';
 import TabButton from '../atoms/TabButton';
+import Icon from '../atoms/Icon';
 import TabNav from './TabNav';
 import './FinanceDoctorFilter.css';
 
@@ -16,8 +17,9 @@ const FinanceDoctorFilter = ({
                     isActive={selectedDoctorFilter === ''}
                     onClick={() => setSelectedDoctorFilter('')}
                     className="finance-doctor-filter__item"
+                    icon={<Icon name="groups" size="1.1rem" />}
                 >
-                    👥 {t('all_doctors')}
+                    {t('all_doctors')}
                 </TabButton>
                 {doctors.map(d => (
                     <TabButton
@@ -26,8 +28,9 @@ const FinanceDoctorFilter = ({
                         onClick={() => setSelectedDoctorFilter(String(d.id))}
                         className="finance-doctor-filter__item"
                         title={d.specialty}
+                        icon={<Icon name="medical_services" size="1.1rem" />}
                     >
-                        👨‍⚕️ {d.full_name.split(' ').slice(0, 2).join(' ')}
+                        {d.full_name.split(' ').slice(0, 2).join(' ')}
                     </TabButton>
                 ))}
             </TabNav>

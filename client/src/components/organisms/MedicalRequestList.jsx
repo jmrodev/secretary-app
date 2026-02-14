@@ -4,6 +4,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { isToday } from '../../utils/time';
 import { formatPrice } from '../../utils/format';
 import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
 import './MedicalRequestList.css';
 
 const MedicalRequestList = ({
@@ -23,7 +24,7 @@ const MedicalRequestList = ({
     if (filteredRequests.length === 0) {
         return (
             <div className="medical-requests__empty">
-                <span className="medical-requests__empty-icon">📋</span>
+                <Icon name="description" size="3rem" className="medical-requests__empty-icon" />
                 {t('no_requests')}
             </div>
         );
@@ -63,7 +64,7 @@ const MedicalRequestList = ({
                                             </span>
                                             {!!r.is_patient_submitted && (
                                                 <span className="medical-requests__source-tag">
-                                                    📲 App
+                                                    <Icon name="smartphone" size="1rem" /> App
                                                 </span>
                                             )}
                                         </div>
@@ -104,9 +105,11 @@ const MedicalRequestList = ({
 
                                             {r.payment_method && (
                                                 <div className="medical-requests__payment-method">
-                                                    <span className="medical-requests__payment-method-icon">
-                                                        {r.payment_method === 'cash' ? '💵' : r.payment_method === 'transfer' ? '🏦' : '💳'}
-                                                    </span>
+                                                    <Icon
+                                                        name={r.payment_method === 'cash' ? 'payments' : r.payment_method === 'transfer' ? 'account_balance' : 'credit_card'}
+                                                        size="1rem"
+                                                        className="medical-requests__payment-method-icon"
+                                                    />
                                                     {t(r.payment_method) || r.payment_method}
                                                 </div>
                                             )}
@@ -134,7 +137,7 @@ const MedicalRequestList = ({
                                                         reqId: r.id
                                                     })}
                                                     title="Cobrar"
-                                                    icon="💲"
+                                                    icon={<Icon name="payments" size="1rem" />}
                                                 />
                                             )}
 
@@ -144,7 +147,7 @@ const MedicalRequestList = ({
                                                     size="sm-compact"
                                                     onClick={() => openActionModal('completed', r.id)}
                                                     title={t('mark_as_done')}
-                                                    icon="✅"
+                                                    icon={<Icon name="task_alt" size="1rem" />}
                                                 />
                                             )}
 
@@ -154,7 +157,7 @@ const MedicalRequestList = ({
                                                     size="sm-compact"
                                                     onClick={() => openActionModal('rejected', r.id)}
                                                     title={t('reject')}
-                                                    icon="❌"
+                                                    icon={<Icon name="block" size="1rem" />}
                                                 />
                                             )}
 
@@ -164,7 +167,7 @@ const MedicalRequestList = ({
                                                     size="sm-compact"
                                                     onClick={() => handleEditRequest({ ...r, _origin: 'request' })}
                                                     title={t('edit')}
-                                                    icon="✏️"
+                                                    icon={<Icon name="edit" size="1rem" />}
                                                 />
                                             )}
 
@@ -174,7 +177,7 @@ const MedicalRequestList = ({
                                                     size="sm-compact"
                                                     onClick={() => handleDeleteRequest(r.id, r)}
                                                     title="Eliminar"
-                                                    icon="🗑️"
+                                                    icon={<Icon name="delete" size="1rem" />}
                                                 />
                                             )}
                                         </div>

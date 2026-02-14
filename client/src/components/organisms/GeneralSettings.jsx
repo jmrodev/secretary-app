@@ -2,6 +2,7 @@ import React from 'react';
 import ConfigToggle from '../molecules/ConfigToggle';
 import ConfigField from '../molecules/ConfigField';
 import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
 
 /**
  * GeneralSettings Organism
@@ -94,8 +95,9 @@ const renderUrlConfiguration = (settings, updateSetting, isAdmin, onShowQr) => {
                         variant="secondary"
                         onClick={onShowQr}
                         title="Ver QR Staff"
+                        icon={<Icon name="smartphone" size="1.2rem" />}
                     >
-                        <span>📱</span> <span>QR</span>
+                        QR
                     </Button>
                 </div>
                 <span className="config-field__hint">
@@ -114,7 +116,7 @@ const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => {
             {/* Functionalities and Permissions */}
             <div className="config-section">
                 <div className="config-section__header">
-                    <span className="config-section__icon">🛠️</span>
+                    <Icon name="settings" size="1.5rem" className="config-section__icon" />
                     <h3 className="config-section__title">Funcionalidades y Permisos</h3>
                 </div>
 
@@ -158,7 +160,7 @@ const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => {
             {/* System URLs */}
             <div className="config-section">
                 <div className="config-section__header">
-                    <span className="config-section__icon">🔗</span>
+                    <Icon name="link" size="1.5rem" className="config-section__icon" />
                     <h3 className="config-section__title">Direcciones del Sistema</h3>
                 </div>
 

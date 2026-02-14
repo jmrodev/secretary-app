@@ -1,4 +1,6 @@
 import React from 'react';
+import Button from './Button';
+import Icon from './Icon';
 import './MedicationTag.css';
 
 /**
@@ -12,14 +14,13 @@ const MedicationTag = ({ label, onRemove, className = '' }) => {
     return (
         <span className={`medication-tag ${className}`}>
             <span className="medication-tag__label">{label}</span>
-            <button
-                type="button"
+            <Button
+                variant="ghost"
+                size="sm-compact"
                 onClick={onRemove}
                 className="medication-tag__remove-btn"
-                aria-label="Remove medication"
-            >
-                ×
-            </button>
+                icon={<Icon name="close" size="1.1rem" />}
+            />
         </span>
     );
 };

@@ -98,11 +98,11 @@ const MedicalDocuments = () => {
                         <div className="dashboard-nav-bar">
                             <TabNav className="medical-documents__tabs">
                                 {[
-                                    { id: 'requests', label: t('requests_workflow'), icon: 'REQUESTS' },
-                                    { id: 'files', label: t('file_repository'), icon: 'DOCUMENTS' },
-                                    { id: 'prescriptions', label: t('prescriptions'), icon: 'PRESCRIPTION' },
-                                    { id: 'licenses', label: t('medical_licenses'), icon: 'LICENSE' },
-                                    { id: 'certificates', label: t('certificates') || 'Certificados', icon: 'CERTIFICATE' }
+                                    { id: 'requests', label: t('requests_workflow'), icon: 'description' },
+                                    { id: 'files', label: t('file_repository'), icon: 'folder_open' },
+                                    { id: 'prescriptions', label: t('prescriptions'), icon: 'medication' },
+                                    { id: 'licenses', label: t('medical_licenses'), icon: 'description' },
+                                    { id: 'certificates', label: t('certificates') || 'Certificados', icon: 'verified' }
                                 ].map(tab => (
                                     <TabButton
                                         key={tab.id}
@@ -119,7 +119,10 @@ const MedicalDocuments = () => {
                         </div>
 
                         <div className="dashboard-card">
-                            <h3 className="dashboard-card__title">🔍 {t('search') || 'Buscar'}</h3>
+                            <h3 className="dashboard-card__title">
+                                <Icon name="search" size="1.2rem" />
+                                {t('search') || 'Buscar'}
+                            </h3>
                             <SearchBar
                                 value={searchTerm}
                                 onChange={e => handleSearchChange(e.target.value)}
@@ -135,7 +138,7 @@ const MedicalDocuments = () => {
                                         variant="secondary"
                                         size="sm"
                                         onClick={controller.handleExportJSON}
-                                        icon={<Icon name="SAVE" size="1rem" />}
+                                        icon={<Icon name="save" size="1rem" />}
                                         className="w-full justify-start"
                                     >
                                         {t('export_json')}
@@ -162,7 +165,7 @@ const MedicalDocuments = () => {
                                             variant="secondary"
                                             size="sm"
                                             onClick={controller.handleExportJSON}
-                                            icon={<Icon name="SAVE" size="1rem" />}
+                                            icon={<Icon name="save" size="1rem" />}
                                             className="w-full justify-start"
                                         >
                                             {t('export_json')}
@@ -196,7 +199,7 @@ const MedicalDocuments = () => {
                                         <TabButton
                                             isActive={requestsSubTab === 'new'}
                                             onClick={() => handleSubTabChange('new')}
-                                            icon={<Icon name="ADD" size="1rem" />}
+                                            icon={<Icon name="add" size="1rem" />}
                                         >
                                             {t('new_request')}
                                         </TabButton>
@@ -254,7 +257,7 @@ const MedicalDocuments = () => {
                                             <div className="medical-documents__table-container">
                                                 {files.filter(filterItem).length === 0 ? (
                                                     <div className="medical-documents__empty-repository">
-                                                        <Icon name="DOCUMENTS" size="3rem" className="medical-documents__empty-icon" />
+                                                        <Icon name="folder_open" size="3rem" className="medical-documents__empty-icon" />
                                                         {t('no_files')}
                                                     </div>
                                                 ) : (
@@ -271,7 +274,7 @@ const MedicalDocuments = () => {
                                                                 <tr key={f.id} className="hover:bg-slate-50 cursor-pointer" onClick={() => window.open(f.file_url, '_blank')}>
                                                                     <td className="pl-6 py-4">
                                                                         <div className="config-flex">
-                                                                            <Icon name="DOCUMENTS" size="1.2rem" className="medical-documents__file-icon" />
+                                                                            <Icon name="folder_open" size="1.2rem" className="medical-documents__file-icon" />
                                                                             <span className="medical-documents__file-name">{f.description || f.file_name}</span>
                                                                         </div>
                                                                     </td>
@@ -285,7 +288,7 @@ const MedicalDocuments = () => {
                                                                                 size="sm-compact"
                                                                                 className="text-danger"
                                                                                 onClick={(e) => { e.stopPropagation(); openDeleteFileModal(f); }}
-                                                                                icon={<Icon name="DELETE" size="1rem" />}
+                                                                                icon={<Icon name="delete" size="1rem" />}
                                                                             />
                                                                         )}
                                                                     </td>
@@ -319,7 +322,7 @@ const MedicalDocuments = () => {
                                         (activeTab === 'prescriptions' && canDeletePrescription) ||
                                         (['licenses', 'certificates'].includes(activeTab) && canDeleteLicense)
                                     }
-                                    icon={activeTab === 'prescriptions' ? 'PRESCRIPTION' : activeTab === 'licenses' ? 'LICENSE' : 'CERTIFICATE'}
+                                    icon={activeTab === 'prescriptions' ? 'medication' : activeTab === 'licenses' ? 'description' : 'verified'}
                                     title={
                                         activeTab === 'prescriptions' ? t('recent_prescriptions') :
                                             activeTab === 'licenses' ? t('recent_licenses') :

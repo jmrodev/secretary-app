@@ -1,5 +1,6 @@
 import React from 'react';
 import TabButton from '../atoms/TabButton';
+import Icon from '../atoms/Icon';
 import TabNav from './TabNav';
 import './DoctorFilter.css';
 
@@ -20,8 +21,9 @@ const DoctorFilter = ({ activeTab, userRole, viewDoctorId, setViewDoctorId, doct
                     onClick={() => setViewDoctorId('')}
                     size="sm"
                     className="doctor-filter__tab"
+                    icon={<Icon name="groups" size="1.1rem" />}
                 >
-                    🏢 Todos
+                    Todos
                 </TabButton>
                 {doctors.map(d => (
                     <TabButton
@@ -31,8 +33,9 @@ const DoctorFilter = ({ activeTab, userRole, viewDoctorId, setViewDoctorId, doct
                         size="sm"
                         className="doctor-filter__tab"
                         title={d.specialty}
+                        icon={<Icon name="medical_services" size="1.1rem" />}
                     >
-                        👨‍⚕️ {d.full_name.split(' ').slice(0, 2).join(' ')}
+                        {d.full_name.split(' ').slice(0, 2).join(' ')}
                     </TabButton>
                 ))}
             </TabNav>

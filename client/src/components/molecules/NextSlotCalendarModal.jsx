@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Modal from './Modal';
 import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
 import { useLanguage } from '../../context/LanguageContext';
 import '../organisms/Calendar.css';
 import '../molecules/CalendarHeader.css';
@@ -145,7 +146,10 @@ const NextSlotCalendarModal = ({
                     checked={includeOutOfHours}
                     onChange={(e) => onToggleOutOfHours(e.target.checked)}
                 />
-                <span className="calendar-slot-controls__label">🔓 {t('include_overtime')}</span>
+                <span className="calendar-slot-controls__label flex items-center gap-1">
+                    <Icon name="lock_open" size="1rem" />
+                    {t('include_overtime')}
+                </span>
             </label>
 
             <div className="calendar-slot-controls__toggle-group">
@@ -153,13 +157,15 @@ const NextSlotCalendarModal = ({
                     className={`calendar-slot-controls__toggle-btn ${viewMode === 'calendar' ? 'calendar-slot-controls__toggle-btn--active' : ''}`}
                     onClick={() => setViewMode('calendar')}
                 >
-                    📅 {t('calendar')}
+                    <Icon name="calendar_today" size="1rem" />
+                    {t('calendar')}
                 </button>
                 <button
                     className={`calendar-slot-controls__toggle-btn ${viewMode === 'list' ? 'calendar-slot-controls__toggle-btn--active' : ''}`}
                     onClick={() => setViewMode('list')}
                 >
-                    📋 {t('list')}
+                    <Icon name="list" size="1rem" />
+                    {t('list')}
                 </button>
             </div>
         </div>
@@ -168,11 +174,15 @@ const NextSlotCalendarModal = ({
     const renderCalendarView = () => (
         <div className="calendar-grid">
             <div className="calendar-header">
-                <button onClick={handlePrevMonth} className="calendar-header__nav-button" title={t('previous_month')}>⬅️</button>
+                <button onClick={handlePrevMonth} className="calendar-header__nav-button" title={t('previous_month')}>
+                    <Icon name="chevron_left" size="1.2rem" />
+                </button>
                 <h3 className="calendar-header__title">
                     {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
                 </h3>
-                <button onClick={handleNextMonth} className="calendar-header__nav-button" title={t('next_month')}>➡️</button>
+                <button onClick={handleNextMonth} className="calendar-header__nav-button" title={t('next_month')}>
+                    <Icon name="chevron_right" size="1.2rem" />
+                </button>
             </div>
 
             <div className="day-headers">
@@ -251,8 +261,9 @@ const NextSlotCalendarModal = ({
                         disabled={loading}
                         variant="ghost"
                         size="sm"
+                        icon={<Icon name="search" size="1rem" />}
                     >
-                        {loading ? t('loading') : `🔍 ${t('load_more_dates')}`}
+                        {loading ? t('loading') : t('load_more_dates')}
                     </Button>
                 </div>
             )}
@@ -311,7 +322,7 @@ const NextSlotCalendarModal = ({
                                                 onClick={(e) => { e.stopPropagation(); onWhatsApp(slot); }}
                                                 title="WhatsApp"
                                             >
-                                                📲
+                                                <Icon name="chat" size="1.1rem" />
                                             </button>
                                             <Button
                                                 variant={type === 'normal' ? 'primary' : 'secondary'}
@@ -336,15 +347,16 @@ const NextSlotCalendarModal = ({
                     <h3 className="slots-list__title">
                         {slotsByDate[selectedDate]?.dayName} - {new Date(selectedDate + 'T12:00:00').toLocaleDateString()}
                     </h3>
-                    <button onClick={() => setViewMode('calendar')} className="slots-list__back-btn">
-                        ← {t('back_to_calendar')}
+                    <button onClick={() => setViewMode('calendar')} className="slots-list__back-btn flex items-center gap-1">
+                        <Icon name="arrow_back" size="1.1rem" />
+                        {t('back_to_calendar')}
                     </button>
                 </div>
                 <div className="slots-list__body">
-                    {renderSection(`🔓 ${t('before_hours_extra')}`, beforeSlots, 'before')}
-                    {renderSection(`✅ ${t('attention_hours')}`, normalSlots, 'normal')}
-                    {renderSection(`☕ ${t('breaks_special_slots')}`, breakSlots, 'break')}
-                    {renderSection(`🔓 ${t('after_hours_extra')}`, afterSlots, 'after')}
+                    {renderSection(<div className="flex items-center gap-2"><Icon name="lock_open" size="1.1rem" /> {t('before_hours_extra')}</div>, beforeSlots, 'before')}
+                    {renderSection(<div className="flex items-center gap-2"><Icon name="check_circle" size="1.1rem" /> {t('attention_hours')}</div>, normalSlots, 'normal')}
+                    {renderSection(<div className="flex items-center gap-2"><Icon name="coffee" size="1.1rem" /> {t('breaks_special_slots')}</div>, breakSlots, 'break')}
+                    {renderSection(<div className="flex items-center gap-2"><Icon name="lock_open" size="1.1rem" /> {t('after_hours_extra')}</div>, afterSlots, 'after')}
                 </div>
             </div>
         );
@@ -354,7 +366,12 @@ const NextSlotCalendarModal = ({
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={`🔍 ${t('search_free_slots')}`}
+            title={
+                <div className="flex items-center gap-2">
+                    <Icon name="search" size="1.2rem" />
+                    {t('search_free_slots')}
+                </div>
+            }
             size="lg"
         >
             <div className="calendar-slot-modal">

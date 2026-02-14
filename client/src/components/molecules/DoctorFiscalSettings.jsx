@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
 import Input from '../atoms/Input';
 import Switch from '../atoms/Switch';
 import FormGroup from './FormGroup';
@@ -83,7 +84,7 @@ const DoctorFiscalSettings = ({
                 </p>
 
                 <div className="doctor-fiscal-settings__actions">
-                    <Button size="sm" variant="secondary" onClick={onGenerateCsr} loading={generatingCsr} icon="⚙️">
+                    <Button size="sm" variant="secondary" onClick={onGenerateCsr} loading={generatingCsr} icon={<Icon name="settings" size="1.1rem" />}>
                         {t('generate_csr')}
                     </Button>
                     <input
@@ -93,7 +94,7 @@ const DoctorFiscalSettings = ({
                         accept=".crt,.key"
                         style={{ display: 'none' }}
                     />
-                    <Button size="sm" variant="ghost" onClick={handleUploadClick} loading={uploading} icon="📤">
+                    <Button size="sm" variant="ghost" onClick={handleUploadClick} loading={uploading} icon={<Icon name="upload" size="1.1rem" />}>
                         {t('upload_certificate')}
                     </Button>
                 </div>
@@ -112,7 +113,7 @@ const DoctorFiscalSettings = ({
                         />
                         <div className="doctor-fiscal-settings__csr-footer">
                             <span className="doctor-fiscal-settings__hint">{t('copy_to_wsass')}</span>
-                            <Button size="sm" variant="primary" onClick={handleCopyCsr} icon="📋">
+                            <Button size="sm" variant="primary" onClick={handleCopyCsr} icon={<Icon name="content_copy" size="1.1rem" />}>
                                 {t('copy_text')}
                             </Button>
                         </div>
@@ -127,7 +128,7 @@ const DoctorFiscalSettings = ({
                             variant="secondary"
                             onClick={onTestConnection}
                             loading={connectionStatus === 'checking'}
-                            icon="🔌"
+                            icon={<Icon name="power" size="1.1rem" />}
                         >
                             {t('test_connection')}
                         </Button>
@@ -135,7 +136,9 @@ const DoctorFiscalSettings = ({
 
                     {connectionStatus === 'ok' && (
                         <div className="doctor-fiscal-settings__status-box doctor-fiscal-settings__status-box--success animate-fadeIn">
-                            <div className="doctor-fiscal-settings__status-icon">✅</div>
+                            <div className="doctor-fiscal-settings__status-icon">
+                                <Icon name="check_circle" size="1.5rem" />
+                            </div>
                             <div className="doctor-fiscal-settings__status-content">
                                 <strong>{t('afip_connection_success')}</strong>
                                 <pre className="doctor-fiscal-settings__status-details">
@@ -147,7 +150,9 @@ const DoctorFiscalSettings = ({
 
                     {connectionStatus === 'error' && (
                         <div className="doctor-fiscal-settings__status-box doctor-fiscal-settings__status-box--error animate-fadeIn">
-                            <div className="doctor-fiscal-settings__status-icon">❌</div>
+                            <div className="doctor-fiscal-settings__status-icon">
+                                <Icon name="error" size="1.5rem" />
+                            </div>
                             <div className="doctor-fiscal-settings__status-content">
                                 <strong>{t('afip_connection_error')}</strong>
                                 <p className="doctor-fiscal-settings__status-message">{String(statusDetails)}</p>
@@ -156,7 +161,10 @@ const DoctorFiscalSettings = ({
                     )}
 
                     <details className="doctor-fiscal-settings__guide">
-                        <summary className="doctor-fiscal-settings__guide-summary">📜 {t('afip_setup_guide')}</summary>
+                        <summary className="doctor-fiscal-settings__guide-summary">
+                            <Icon name="history_edu" size="1.2rem" />
+                            {t('afip_setup_guide')}
+                        </summary>
                         <ol className="doctor-fiscal-settings__guide-list">
                             <li>{t('afip_guide_step_1')}</li>
                             <li>{t('afip_guide_step_2')}</li>

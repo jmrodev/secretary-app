@@ -219,7 +219,7 @@
 }
 
 .transactions-table__group-total {
-    padding: 0.75rem 1rem !important;
+    padding: 0.75rem 1rem;
     text-align: right;
     font-weight: 800;
     color: var(--text-main);
@@ -263,9 +263,9 @@
 }
 
 .pl-6-bem {
-    padding-left: 1.5rem !important;
+    padding-left: 1.5rem;
 }
 
 .pr-6-bem {
-    padding-right: 1.5rem !important;
+    padding-right: 1.5rem;
 }

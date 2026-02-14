@@ -2,7 +2,6 @@ import React from 'react';
 import StatCard from '../molecules/StatCard';
 import Icon from '../atoms/Icon';
 import { useNavigate } from 'react-router-dom';
-import { ICONS } from '../../constants/icons';
 import './DashboardSidebar.css';
 
 /**
@@ -18,31 +17,31 @@ const DashboardSidebar = ({ stats, newPatientStats, reminders, user, t }) => {
             {stats && (
                 <section className="dashboard-sidebar__section">
                     <h4 className="dashboard-sidebar__title">
-                        <Icon name={ICONS.STATS} size="1rem" />
+                        <Icon name="analytics" size="1rem" />
                         {t('general_stats') || 'Estadísticas Generales'}
                     </h4>
                     <div className="dashboard-sidebar__grid">
                         <StatCard
                             size="sm"
-                            icon={ICONS.TODAY}
+                            icon="calendar_today"
                             label={t('turnos_hoy')}
                             value={stats.appointments_today}
                         />
                         <StatCard
                             size="sm"
-                            icon={ICONS.WEEK}
+                            icon="view_week"
                             label={t('turnos_semana')}
                             value={stats.appointments_week}
                         />
                         <StatCard
                             size="sm"
-                            icon={ICONS.MONTH}
+                            icon="date_range"
                             label={t('turnos_mes')}
                             value={stats.appointments_month}
                         />
                         <StatCard
                             size="sm"
-                            icon={ICONS.PATIENTS}
+                            icon="groups"
                             label={t('pacientes_label')}
                             value={stats.total_patients}
                         />
@@ -54,32 +53,32 @@ const DashboardSidebar = ({ stats, newPatientStats, reminders, user, t }) => {
             {newPatientStats && (
                 <section className="dashboard-sidebar__section">
                     <h4 className="dashboard-sidebar__title">
-                        <Icon name={ICONS.NEW} size="1rem" />
+                        <Icon name="auto_awesome" size="1rem" />
                         {t('new_patients_stat')}
                     </h4>
                     <div className="dashboard-sidebar__grid">
                         <StatCard
                             size="sm"
-                            icon={ICONS.FLARE}
+                            icon="flare"
                             label={t('this_day')}
                             value={newPatientStats.currentDay}
                             variant="accent"
                         />
                         <StatCard
                             size="sm"
-                            icon={ICONS.CALENDAR_TODAY}
+                            icon="calendar_today"
                             label={t('this_week')}
                             value={newPatientStats.currentWeek}
                         />
                         <StatCard
                             size="sm"
-                            icon={ICONS.BAR_CHART}
+                            icon="bar_chart"
                             label={t('this_month')}
                             value={newPatientStats.currentMonth}
                         />
                         <StatCard
                             size="sm"
-                            icon={ICONS.GROWTH}
+                            icon="trending_up"
                             label={t('this_year')}
                             value={newPatientStats.currentYear}
                             variant="dark"

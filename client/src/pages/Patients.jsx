@@ -103,16 +103,16 @@ const Patients = () => {
                                     <TabButton
                                         isActive={activeTab === 'list'}
                                         onClick={() => setActiveTab('list')}
+                                        icon={<Icon name="groups" size="1.1rem" />}
                                     >
-                                        <Icon name="PATIENTS" size="1.2rem" className="mr-2" />
                                         {t('active_list') || 'Lista Activa'}
                                     </TabButton>
                                     {(user.role === 'admin' || user.role === 'secretary') && (
                                         <TabButton
                                             isActive={activeTab === 'recycle'}
                                             onClick={() => { setActiveTab('recycle'); fetchRecycleBin(); }}
+                                            icon={<Icon name="delete" size="1.1rem" />}
                                         >
-                                            <Icon name="DELETE" size="1.2rem" className="mr-2" />
                                             {t('recycle_bin') || 'Papelera'}
                                             {recycleItems.length > 0 && <span className="patients__dot-badge">{recycleItems.length}</span>}
                                         </TabButton>
@@ -121,7 +121,10 @@ const Patients = () => {
                             </div>
 
                             <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">🔍 {t('search') || 'Buscar'}</h3>
+                                <h3 className="dashboard-card__title">
+                                    <Icon name="search" size="1.2rem" />
+                                    {t('search') || 'Buscar'}
+                                </h3>
                                 <div className="patients-sidebar__search">
                                     {activeTab === 'list' && (
                                         <SearchBar
@@ -135,13 +138,16 @@ const Patients = () => {
                             </div>
 
                             <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">🛠️ {t('actions') || 'Acciones'}</h3>
+                                <h3 className="dashboard-card__title">
+                                    <Icon name="build" size="1.2rem" />
+                                    {t('actions') || 'Acciones'}
+                                </h3>
                                 <div className="patients-sidebar__tools">
                                     <Button
                                         variant="outline"
                                         className="w-full justify-start"
                                         onClick={() => { fetchPatients(); fetchRecycleBin(); }}
-                                        icon={<Icon name="SYNC" size="1.2rem" />}
+                                        icon={<Icon name="sync" size="1.1rem" />}
                                     >
                                         {t('refresh') || 'Sincronizar'}
                                     </Button>
@@ -149,7 +155,7 @@ const Patients = () => {
                                         variant="outline"
                                         className="w-full justify-start"
                                         onClick={() => setShowRatingInfo(true)}
-                                        icon={<Icon name="INFO" size="1.2rem" />}
+                                        icon={<Icon name="info" size="1.1rem" />}
                                     >
                                         {t('rating_info') || 'Info de Calificación'}
                                     </Button>
@@ -158,7 +164,7 @@ const Patients = () => {
                                             variant="primary"
                                             className="w-full justify-start mt-4"
                                             onClick={handleNewClick}
-                                            icon={<Icon name="ADD" size="1.2rem" />}
+                                            icon={<Icon name="add" size="1.1rem" />}
                                         >
                                             {t('new') || 'Nuevo Paciente'}
                                         </Button>

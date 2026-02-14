@@ -208,7 +208,7 @@ export const useDoctorsPageController = () => {
     const handlers = {
         fetchDoctors: loadData,
         onEditDoctor: handleEditClick,
-        onSaveDoctor: handleSaveEdit,
+        onSaveDoctor: handleSaveDoctor,
         onCloseModal: () => setModalState(prev => ({ ...prev, isOpen: false })),
         onTabChange: (tab) => setModalState(prev => ({ ...prev, activeTab: tab })),
         onConnectGoogle: handleConnectGoogle,

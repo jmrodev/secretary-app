@@ -70,7 +70,7 @@ const MedicalHistoryTable = ({ items, filterItem, onView, onDelete, icon, title,
                                             size="sm-compact"
                                             onClick={() => onView(item)}
                                             title={t('view')}
-                                            icon={<Icon name="VIEW" size="1rem" />}
+                                            icon={<Icon name="visibility" size="1rem" />}
                                         />
                                         {showDelete && (
                                             <Button
@@ -78,7 +78,7 @@ const MedicalHistoryTable = ({ items, filterItem, onView, onDelete, icon, title,
                                                 size="sm-compact"
                                                 onClick={() => onView(item)}
                                                 title={t('edit')}
-                                                icon={<Icon name="EDIT" size="1rem" />}
+                                                icon={<Icon name="edit" size="1rem" />}
                                             />
                                         )}
                                         {showDelete && (
@@ -87,7 +87,7 @@ const MedicalHistoryTable = ({ items, filterItem, onView, onDelete, icon, title,
                                                 size="sm-compact"
                                                 onClick={() => onDelete(item.id, item)}
                                                 title={t('delete')}
-                                                icon={<Icon name="DELETE" size="1rem" />}
+                                                icon={<Icon name="delete" size="1rem" />}
                                             />
                                         )}
                                     </div>

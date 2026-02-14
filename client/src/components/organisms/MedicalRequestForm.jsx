@@ -13,6 +13,7 @@ import Input from '../atoms/Input';
 import Select from '../atoms/Select';
 import TabButton from '../atoms/TabButton';
 import Icon from '../atoms/Icon';
+import Badge from '../atoms/Badge';
 import './MedicalRequestForm.css';
 
 /**

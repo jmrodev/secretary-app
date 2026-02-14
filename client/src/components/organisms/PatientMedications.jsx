@@ -276,7 +276,7 @@ const PatientMedications = ({ patientId, patientName }) => {
                                                 </div>
                                             </td>
                                             <td className="patient-medications__table-cell">
-                                                <span className={`tag tag-${req.status === 'completed' ? 'completed' : 'pending'}`}>
+                                                <span className={`patient-medications__status-tag status-${req.status === 'completed' ? 'completed' : 'pending'}`}>
                                                     {req.status === 'completed' ? t('delivered') || 'Entregado' : t('pending') || 'Pendiente'}
                                                 </span>
                                             </td>
@@ -293,12 +293,12 @@ const PatientMedications = ({ patientId, patientName }) => {
             <section className="details-block details-block--medications">
                 <header className="details-block__header">
                     <h3 className="details-block__title">
-                        <Icon name="PRESCRIPTION" size="1.2rem" />
+                        <Icon name="medication" size="1.2rem" />
                         {t('patient_current_meds') || 'Medicación Habitual / Crónicos'}
                     </h3>
                     {!isAdding && (
-                        <Button size="sm" variant="secondary" onClick={() => setIsAdding(true)}>
-                            + {t('configure') || 'Configurar'}
+                        <Button size="sm" variant="secondary" onClick={() => setIsAdding(true)} icon={<Icon name="settings" size="1rem" />}>
+                            {t('configure') || 'Configurar'}
                         </Button>
                     )}
                 </header>
@@ -333,13 +333,13 @@ const PatientMedications = ({ patientId, patientName }) => {
                                                         {med.frequency && ` • ${med.frequency}`}
                                                     </div>
                                                 </div>
-                                                <button
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm-compact"
                                                     onClick={() => handleRemovePendingMedication(idx)}
                                                     className="patient-medications__remove-pending"
-                                                    type="button"
-                                                >
-                                                    ✕
-                                                </button>
+                                                    icon={<Icon name="close" size="1rem" />}
+                                                />
                                             </div>
                                         ))}
                                     </div>
@@ -352,21 +352,21 @@ const PatientMedications = ({ patientId, patientName }) => {
                                         <label className="config-field__label">{t('reminder_mode') || 'Modo de Recordatorio'}</label>
                                         <div className="config-flex config-flex--gap-2">
                                             <Button
-                                                size="xs"
+                                                size="sm-compact"
                                                 variant={currentMed.reminder_mode === 'calculation' ? 'primary' : 'secondary'}
                                                 onClick={() => handleModeChange('calculation')}
                                             >
                                                 {t('mode_calculation') || 'Por Cálculo'}
                                             </Button>
                                             <Button
-                                                size="xs"
+                                                size="sm-compact"
                                                 variant={currentMed.reminder_mode === 'fixed_day' ? 'primary' : 'secondary'}
                                                 onClick={() => handleModeChange('fixed_day')}
                                             >
-                                                {t('mode_fixed_day') || 'Todos los meses (día...)'}
+                                                {t('mode_fixed_day') || 'Todos los meses'}
                                             </Button>
                                             <Button
-                                                size="xs"
+                                                size="sm-compact"
                                                 variant={currentMed.reminder_mode === 'fixed_date' ? 'primary' : 'secondary'}
                                                 onClick={() => handleModeChange('fixed_date')}
                                             >
@@ -471,24 +471,25 @@ const PatientMedications = ({ patientId, patientName }) => {
                                             />
                                             <label htmlFor="is_chronic" className="patient-medications__checkbox-label">{t('chronic')}</label>
                                         </div>
-                                        <Button size="sm" onClick={handleAddToPending}>
-                                            {t('add_to_list') || 'Agregar a Lista'}
+                                        <Button size="sm" variant="accent" onClick={handleAddToPending} icon={<Icon name="add" size="1.2rem" />}>
+                                            {t('add_to_list') || 'Agregar'}
                                         </Button>
                                     </div>
                                 </div>
                             )}
 
                             <div className="patient-medications__form-actions">
-                                <button type="button" className="patient-medications__cancel-link" onClick={() => {
+                                <Button variant="ghost" onClick={() => {
                                     setIsAdding(false);
                                     setPendingMedications([]);
-                                }}>
+                                }} icon={<Icon name="close" />}>
                                     {t('cancel')}
-                                </button>
+                                </Button>
                                 <Button
-                                    variant="primary"
+                                    variant="success"
                                     onClick={handleAddMedication}
                                     disabled={pendingMedications.length === 0}
+                                    icon={<Icon name="save" />}
                                 >
                                     {t('save_all')} {pendingMedications.length > 0 ? `(${pendingMedications.length})` : ''}
                                 </Button>
@@ -530,7 +531,7 @@ const PatientMedications = ({ patientId, patientName }) => {
                                                 </div>
                                                 {med.next_refill_date && (
                                                     <div className={`patient-medications__refill-info ${new Date(med.next_refill_date) <= new Date(new Date().setDate(new Date().getDate() + 2)) ? 'patient-medications__refill-info--urgent' : ''}`}>
-                                                        <Icon name="TODAY" size="0.8rem" />
+                                                        <Icon name="today" size="0.8rem" />
                                                         {t('next_refill_date')}: {new Date(med.next_refill_date).toLocaleDateString()}
                                                         <span className="patient-medications__mode-badge ml-2">
                                                             ({med.reminder_mode === 'calculation' ? t('by_calculation') || 'Cálculo' :
@@ -545,8 +546,9 @@ const PatientMedications = ({ patientId, patientName }) => {
                                             <td className="patient-medications__table-cell text-right">
                                                 <div className="config-flex config-flex--justify-end config-flex--gap-2">
                                                     {med.next_refill_date && (
-                                                        <button
-                                                            className="text-blue-400 hover:text-blue-600 p-1"
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm-compact"
                                                             title={t('remind_refill') || 'Recordar Renovación'}
                                                             onClick={() => {
                                                                 const template = settings.medication_refill_reminder_template ||
@@ -559,17 +561,17 @@ const PatientMedications = ({ patientId, patientName }) => {
 
                                                                 window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
                                                             }}
-                                                        >
-                                                            <Icon name="CHAT" size="1rem" />
-                                                        </button>
+                                                            icon={<Icon name="chat" size="1.1rem" />}
+                                                        />
                                                     )}
-                                                    <button
-                                                        className="text-red-400 hover:text-red-600 p-1"
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm-compact"
+                                                        className="hover-danger"
                                                         onClick={() => handleDiscontinue(med.id)}
                                                         title={t('discontinue')}
-                                                    >
-                                                        ✕
-                                                    </button>
+                                                        icon={<Icon name="close" size="1.1rem" />}
+                                                    />
                                                 </div>
                                             </td>
                                         </tr>
@@ -577,7 +579,8 @@ const PatientMedications = ({ patientId, patientName }) => {
                                 </tbody>
                             </table>
                         </div>
-                    )}
+                    )
+                    }
                 </div>
             </section>
         </div>

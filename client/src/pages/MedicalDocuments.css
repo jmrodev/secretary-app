@@ -1,30 +1,13 @@
-/* Medical Documents Page Styles */
-
+/* Medical Documents Page specific refinements */
 .medical-documents {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
-}
-
-.medical-documents__header {
-    margin-bottom: 2rem;
-}
-
-.medical-documents__title {
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--text-main);
-    margin-bottom: 0.5rem;
-}
-
-.medical-documents__subtitle {
-    color: var(--text-secondary);
-    font-size: 1rem;
 }
 
 /* Tabs and Subtabs Layout */
 .medical-documents__tabs-content {
-    margin-top: 1.5rem;
+    margin-top: 0;
+    /* Handled by dashboard-main gap */
 }
 
 .medical-documents__subtabs {
@@ -97,7 +80,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: clamp(0.75rem, 2vh, 1.25rem);
 }
 
 .medical-documents__section-actions {

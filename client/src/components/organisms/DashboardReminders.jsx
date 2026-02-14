@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
 import Button from '../atoms/Button';
 import Icon from '../atoms/Icon';
-import { ICONS } from '../../constants/icons';
+import TabButton from '../atoms/TabButton';
 import './DashboardReminders.css';
 
 /**
@@ -67,27 +66,29 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
         <div className="dashboard-reminders">
             <div className="dashboard-reminders__header">
                 <div className="dashboard-reminders__tabs">
-                    <button
-                        className={`dashboard-reminders__tab ${activeSection === 'pending' ? 'dashboard-reminders__tab--active' : ''}`}
+                    <TabButton
+                        isActive={activeSection === 'pending'}
                         onClick={() => setActiveSection('pending')}
+                        variant="pill"
                     >
                         {t('pending') || 'Pendientes'}
                         <span className="dashboard-reminders__count">{pendingTasks.length}</span>
-                    </button>
-                    <button
-                        className={`dashboard-reminders__tab ${activeSection === 'notified' ? 'dashboard-reminders__tab--active' : ''}`}
+                    </TabButton>
+                    <TabButton
+                        isActive={activeSection === 'notified'}
                         onClick={() => setActiveSection('notified')}
+                        variant="pill"
                     >
                         {t('notified') || 'Avisados'}
                         <span className="dashboard-reminders__count">{notifiedTasks.length}</span>
-                    </button>
+                    </TabButton>
                 </div>
             </div>
 
             <div className="dashboard-reminders__list">
                 {currentTasks.length === 0 ? (
                     <div className="dashboard-reminders__empty">
-                        <Icon name="INFO" size="3rem" color="var(--slate-300)" />
+                        <Icon name="info" size="3rem" color="var(--slate-300)" />
                         <p>
                             {activeSection === 'pending'
                                 ? (t('no_pending_reminders') || 'No hay recordatorios pendientes.')
@@ -108,10 +109,10 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                             </div>
                             <div className="dashboard-reminders__item-actions">
                                 <Button
-                                    variant="secondary"
-                                    size="sm"
+                                    variant="whatsapp"
+                                    size="sm-compact"
                                     onClick={() => onWhatsApp(task, task.taskType)}
-                                    icon={<Icon name={ICONS.CHAT} size="1rem" />}
+                                    icon={<Icon name="chat" size="1rem" />}
                                     tooltip={t('notify_via_whatsapp') || 'Avisar por WhatsApp'}
                                 >
                                     WhatsApp
@@ -120,7 +121,7 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                                 {activeSection === 'pending' ? (
                                     <Button
                                         variant="ghost"
-                                        size="sm"
+                                        size="sm-compact"
                                         onClick={() => onMarkNotified(task, task.taskType, true)}
                                         icon={<Icon name="notifications_active" size="1rem" />}
                                         tooltip={t('mark_as_notified') || 'Marcar Avisado'}
@@ -130,7 +131,7 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                                 ) : (
                                     <Button
                                         variant="ghost"
-                                        size="sm"
+                                        size="sm-compact"
                                         onClick={() => onMarkNotified(task, task.taskType, false)}
                                         icon={<Icon name="undo" size="1rem" />}
                                         tooltip={t('unmark_notified') || 'Quitar de Avisados'}
@@ -140,20 +141,19 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                                 )}
 
                                 <Button
-                                    variant="primary"
-                                    size="sm"
+                                    variant="success"
+                                    size="sm-compact"
                                     onClick={() => onComplete(task, task.taskType)}
-                                    icon={<Icon name={ICONS.CHECK} size="1rem" />}
+                                    icon={<Icon name="check" size="1rem" />}
                                 >
                                     {t('done') || 'Realizado'}
                                 </Button>
 
                                 <Button
-                                    variant="ghost"
-                                    outline
-                                    size="sm"
+                                    variant="outline-accent"
+                                    size="sm-compact"
                                     onClick={() => onViewProfile(task.id)}
-                                    icon={<Icon name={ICONS.PROFILE} size="1rem" />}
+                                    icon={<Icon name="person" size="1rem" />}
                                 >
                                     {t('profile') || 'Perfil'}
                                 </Button>

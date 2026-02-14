@@ -24,6 +24,7 @@ import FloatingChat from './components/organisms/FloatingChat';
 import { useAuth } from './context/AuthContext';
 import { useLanguage } from './context/LanguageContext';
 import Button from './components/atoms/Button';
+import Icon from './components/atoms/Icon';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -37,7 +38,9 @@ const ProtectedRoute = ({ children }) => {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 text-center">
         <div className="card max-w-md p-8 shadow-lg">
-          <div className="text-5xl mb-4">✅</div>
+          <div className="flex justify-center mb-4">
+            <Icon name="check_circle" size="4rem" className="text-green-500" />
+          </div>
           <h2 className="title text-xl mb-4">Registro Completado</h2>
           <p className="text-main-600 mb-6">
             Tu información ha sido recibida correctamente.
