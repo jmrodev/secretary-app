@@ -1,6 +1,10 @@
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useSystemConfigController } from '../controllers/useSystemConfigController';
+import { useDoctorsPageController } from '../controllers/useDoctorsPageController';
+import { useProfileController } from '../controllers/useProfileController';
+import { useReportsController } from '../controllers/useReportsController';
+
 import MainLayout from '../components/templates/MainLayout';
 import GeneralSettings from '../components/organisms/GeneralSettings';
 import CommunicationSettings from '../components/organisms/CommunicationSettings';
@@ -9,17 +13,72 @@ import BillingSettings from '../components/organisms/BillingSettings';
 import QRCodeModal from '../components/molecules/QRCodeModal';
 import Button from '../components/atoms/Button';
 import Icon from '../components/atoms/Icon';
-import TabNav from '../components/molecules/TabNav';
-import TabButton from '../components/atoms/TabButton';
+import SettingsSidebar from '../components/organisms/SettingsSidebar';
+import Loading from '../components/atoms/Loading';
+
+// Lazy load heavy components
+const DoctorsManager = React.lazy(() => import('../components/organisms/DoctorsManager'));
+const ProfileEditor = React.lazy(() => import('../components/organisms/ProfileEditor'));
+const ReportsDashboard = React.lazy(() => import('../components/organisms/ReportsDashboard'));
+import { printReport } from '../utils/reportPrintHelper';
+
 import './SystemConfig.css';
 
-/**
- * SystemConfig Page
- * 
- * Control panel for system-wide settings
- */
+const InstitutionManager = React.lazy(() => import('../components/organisms/InstitutionManager'));
+const AuditLogManager = React.lazy(() => import('../components/organisms/AuditLogManager'));
+const UserManager = React.lazy(() => import('../components/organisms/UserManager'));
+import { useInstitutionsController } from '../controllers/useInstitutionsController';
+import { useAuditLogsController } from '../controllers/useAuditLogsController';
 
-const renderTabContent = (activeTab, controller) => {
+// Wrapper for external controllers
+const DoctorsSection = () => {
+    const controller = useDoctorsPageController();
+    return <DoctorsManager {...controller} />;
+};
+const ProfileSection = () => {
+    const controller = useProfileController();
+    return <ProfileEditor {...controller} />;
+};
+const ReportsSection = () => {
+    const controller = useReportsController();
+    const handlePrint = () => {
+        printReport(controller.reportData, {
+            activeTab: controller.activeTab,
+            month: controller.month,
+            year: controller.year,
+            t: controller.t
+        });
+    };
+    return <ReportsDashboard {...controller} onPrint={handlePrint} />;
+};
+
+const InstitutionsSection = () => {
+    const controller = useInstitutionsController();
+    return <InstitutionManager {...controller} />;
+};
+const AuditLogsSection = () => {
+    // We can reuse the existing controller/hook
+    // Note: useAuditLogsController might need adaptation if it expects page-level props or routing
+    // Assuming it works or we pass props down
+    const controller = useAuditLogsController();
+    return <AuditLogManager {...controller} />;
+};
+const UserSection = () => {
+    // Assuming UserManager handles its own data fetching or we create a controller
+    // If AdminUsers page logic is complex, we might need a useUserController
+    // For now, let's assume UserManager is self-contained or we use existing context
+    // AdminUsers used useAuth and internal state. 
+    // Best practice: Create useUsersPageController if logic is heavy.
+    // For now, let's just render the component which seems to handle some modal logic internally but logic might be mixed.
+    // Let's look at UserManager extracted... it uses UserManagement organism which handles logic?
+    // UserManagement was an organism used in AdminUsers. 
+    // Let's pass 't' from system config
+    const { t } = useSystemConfigController();
+    return <UserManager t={t} />;
+};
+
+
+const renderContent = (activeTab, controller) => {
     const {
         user,
         settings,
@@ -37,9 +96,22 @@ const renderTabContent = (activeTab, controller) => {
     } = controller;
 
     switch (activeTab) {
+        case 'profile':
+            return <ProfileSection />;
+        case 'doctors':
+            return <DoctorsSection />;
+        case 'reports':
+            return <ReportsSection />;
+        case 'institutions':
+            return <InstitutionsSection />;
+        case 'users':
+            return <UserSection />;
+        case 'logs':
+            return <AuditLogsSection />;
         case 'general':
             return (
-                <div className="space-y-8">
+                <div className="settings-content-wrapper">
+                    <h2 className="settings-content-title">{t('general') || 'Configuración General'}</h2>
                     <GeneralSettings
                         user={user}
                         settings={settings}
@@ -49,7 +121,7 @@ const renderTabContent = (activeTab, controller) => {
                             setQrModal({ open: true, url, expiry: null });
                         }}
                     />
-                    <div className="dashboard-card">
+                    <div className="dashboard-card mt-8">
                         <div className="flex items-center gap-2 mb-4">
                             <Icon name="description" size="1.2rem" className="text-primary" />
                             <h3 className="text-lg font-bold text-slate-800">Documentación y Ayuda</h3>
@@ -75,48 +147,60 @@ const renderTabContent = (activeTab, controller) => {
             );
         case 'communications':
             return (
-                <CommunicationSettings
-                    user={user}
-                    settings={settings}
-                    updateSetting={updateSetting}
-                    insertVariable={insertVariable}
-                />
+                <div className="settings-content-wrapper">
+                    <h2 className="settings-content-title">{t('communications') || 'Comunicaciones'}</h2>
+                    <CommunicationSettings
+                        user={user}
+                        settings={settings}
+                        updateSetting={updateSetting}
+                        insertVariable={insertVariable}
+                    />
+                </div>
             );
         case 'integrations':
             return (
-                <IntegrationSettings
-                    user={user}
-                    settings={settings}
-                    updateSetting={updateSetting}
-                    loading={loading}
-                    googleUnlinked={googleUnlinked}
-                    onGoogleAuth={handleGoogleAuth}
-                    onDisconnectGoogle={handleDisconnectGoogle}
-                    onRefreshToken={handleGoogleAuth}
-                    onRetryGoogle={handleRetryGoogleFailed}
-                    onRefreshTunnel={handleRefreshTunnel}
-                    onTestMeta={handleTestMeta}
-                />
+                <div className="settings-content-wrapper">
+                    <h2 className="settings-content-title">{t('integrations') || 'Integraciones'}</h2>
+                    <IntegrationSettings
+                        user={user}
+                        settings={settings}
+                        updateSetting={updateSetting}
+                        loading={loading}
+                        googleUnlinked={googleUnlinked}
+                        onGoogleAuth={handleGoogleAuth}
+                        onDisconnectGoogle={handleDisconnectGoogle}
+                        onRefreshToken={handleGoogleAuth}
+                        onRetryGoogle={handleRetryGoogleFailed}
+                        onRefreshTunnel={handleRefreshTunnel}
+                        onTestMeta={handleTestMeta}
+                    />
+                </div>
             );
         case 'billing':
             return (
-                <BillingSettings
-                    user={user}
-                    settings={settings}
-                    updateSetting={updateSetting}
-                />
+                <div className="settings-content-wrapper">
+                    <h2 className="settings-content-title">{t('billing') || 'Facturación'}</h2>
+                    <BillingSettings
+                        user={user}
+                        settings={settings}
+                        updateSetting={updateSetting}
+                    />
+                </div>
             );
         case 'data':
             return (
-                <div className="dashboard-card">
-                    <div className="flex items-center gap-2 mb-4">
-                        <Icon name="payments" size="1.2rem" className="text-primary" />
-                        <h3 className="text-lg font-bold text-slate-800">
-                            {t('data_management_title') || 'Gestión de Datos y Copias de Seguridad'}
-                        </h3>
-                    </div>
-                    <div className="py-20 text-center">
-                        <p className="text-slate-400 italic">{t('coming_soon') || 'Próximamente...'}</p>
+                <div className="settings-content-wrapper">
+                    <h2 className="settings-content-title">{t('data_management_title') || 'Datos y Seguridad'}</h2>
+                    <div className="dashboard-card">
+                        <div className="flex items-center gap-2 mb-4">
+                            <Icon name="payments" size="1.2rem" className="text-primary" />
+                            <h3 className="text-lg font-bold text-slate-800">
+                                {t('data_management_title') || 'Gestión de Datos y Copias de Seguridad'}
+                            </h3>
+                        </div>
+                        <div className="py-20 text-center">
+                            <p className="text-slate-400 italic">{t('coming_soon') || 'Próximamente...'}</p>
+                        </div>
                     </div>
                 </div>
             );
@@ -137,60 +221,20 @@ const SystemConfig = () => {
     } = controller;
 
     return (
-        <MainLayout wide>
-            <div className="system-config-page">
-                <header className="dashboard-header animate-fadeIn">
-                    <h1 className="dashboard-header__title">{t('system_config') || 'Configuración del Sistema'}</h1>
-                    <p className="dashboard-header__subtitle">{t('system_config_subtitle') || 'Administre las preferencias globales de la aplicación.'}</p>
-                </header>
+        <MainLayout wide className="system-config-layout">
+            <div className="system-config-container animate-fadeIn">
+                <SettingsSidebar
+                    activeSection={activeTab}
+                    onSelect={setActiveTab}
+                    t={t}
+                    user={user}
+                />
 
-                <div className="dashboard-nav-bar dashboard-nav-bar--centered animate-fadeIn">
-                    <TabNav>
-                        {(user.role === 'admin' || user.role === 'secretary') && (
-                            <>
-                                <TabButton
-                                    isActive={activeTab === 'general'}
-                                    onClick={() => setActiveTab('general')}
-                                    icon={<Icon name="settings" size="1rem" />}
-                                >
-                                    {t('general') || 'General'}
-                                </TabButton>
-                                <TabButton
-                                    isActive={activeTab === 'communications'}
-                                    onClick={() => setActiveTab('communications')}
-                                    icon={<Icon name="campaign" size="1rem" />}
-                                >
-                                    {t('communications') || 'Comunicaciones'}
-                                </TabButton>
-                                <TabButton
-                                    isActive={activeTab === 'integrations'}
-                                    onClick={() => setActiveTab('integrations')}
-                                    icon={<Icon name="extension" size="1rem" />}
-                                >
-                                    {t('integrations') || 'Integraciones'}
-                                </TabButton>
-                                <TabButton
-                                    isActive={activeTab === 'billing'}
-                                    onClick={() => setActiveTab('billing')}
-                                    icon={<Icon name="receipt_long" size="1rem" />}
-                                >
-                                    {t('billing') || 'Facturación'}
-                                </TabButton>
-                                <TabButton
-                                    isActive={activeTab === 'data'}
-                                    onClick={() => setActiveTab('data')}
-                                    icon={<Icon name="database" size="1rem" />}
-                                >
-                                    {t('data') || 'Datos'}
-                                </TabButton>
-                            </>
-                        )}
-                    </TabNav>
-                </div>
-
-                <div className="max-w-4xl mx-auto py-8 animate-fadeIn">
-                    {renderTabContent(activeTab, controller)}
-                </div>
+                <main className="system-config-main">
+                    <Suspense fallback={<Loading variant="centered" />}>
+                        {renderContent(activeTab, controller)}
+                    </Suspense>
+                </main>
 
                 <QRCodeModal
                     isOpen={qrModal.open}

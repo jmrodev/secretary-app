@@ -211,7 +211,23 @@ export const usePatientsHandlers = ({
         } catch (err) { showMessage('Error generating prescription link', 'error'); }
     }, [settings.public_base_url, showMessage, patients, setQrModal]);
 
+    const handleRestorePatient = useCallback(async (id) => {
+        try {
+            await api.post(`/users/patients/${id}/restore`);
+            showMessage(t('patient_restored') || 'Paciente restaurado', 'success');
+            fetchPatients();
+            fetchRecycleBin();
+        } catch (err) {
+            console.error(err);
+            showMessage(t('restore_failed') || 'Error al restaurar paciente', 'error');
+        }
+    }, [t, showMessage, fetchPatients, fetchRecycleBin]);
+
     return {
+        handleViewDetails: handleViewDetailsAction,
+        handleDeletePatient,
+        handleEditClick,
+        handleUpdatePatient,
         handleViewDetails: handleViewDetailsAction,
         handleDeletePatient,
         handleEditClick,
@@ -225,6 +241,7 @@ export const usePatientsHandlers = ({
         handleToggleNew,
         handleGenerateQR,
         handleGeneratePrescriptionLink,
+        handleRestorePatient,
         handleNewClick: () => setEditModal({ open: true, data: null }),
     };
 };

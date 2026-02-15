@@ -112,7 +112,7 @@ function App() {
         } />
         <Route path="/profile" element={
           <ProtectedRoute>
-            <Profile />
+            <Navigate to="/config?tab=profile" replace />
           </ProtectedRoute>
         } />
         <Route path="/patients" element={
@@ -122,7 +122,7 @@ function App() {
         } />
         <Route path="/doctors" element={
           <ProtectedRoute>
-            <Doctors />
+            <Navigate to="/config?tab=doctors" replace />
           </ProtectedRoute>
         } />
         <Route path="/logs" element={
@@ -158,7 +158,7 @@ function App() {
 
         <Route path="/reports" element={
           <ProtectedRoute>
-            <Reports />
+            <Navigate to="/config?tab=reports" replace />
           </ProtectedRoute>
         } />
         <Route path="/patient-access/:token" element={<TempAccess />} />

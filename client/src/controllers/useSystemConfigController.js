@@ -24,7 +24,20 @@ export const useSystemConfigController = () => {
 
     // Local State
     const [loading, setLoading] = useState(false);
-    const [activeTab, setActiveTab] = useState('general');
+    const [activeTab, setActiveTab] = useState(() => {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('tab') || 'general';
+    });
+
+    // Sync URL when activeTab changes
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('tab') !== activeTab) {
+            params.set('tab', activeTab);
+            const newUrl = `${window.location.pathname}?${params.toString()}`;
+            window.history.replaceState({}, '', newUrl);
+        }
+    }, [activeTab]);
 
     // QR Modal State
     const [qrModal, setQrModal] = useState({ open: false, url: '', expiry: null });
@@ -38,12 +51,25 @@ export const useSystemConfigController = () => {
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const status = urlParams.get('status');
+        const tab = urlParams.get('tab');
+
+        if (tab && tab !== activeTab) {
+            setActiveTab(tab);
+        }
+
         if (status === 'success') {
             showMessage('Cuenta de Google Conectada con Éxito', 'success');
-            window.history.replaceState({}, document.title, window.location.pathname);
+            // Remove status but keep tab
+            urlParams.delete('status');
+            const newSearch = urlParams.toString();
+            const newUrl = newSearch ? `${window.location.pathname}?${newSearch}` : window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
         } else if (status === 'error') {
             showMessage('Error al conectar con Google', 'error');
-            window.history.replaceState({}, document.title, window.location.pathname);
+            urlParams.delete('status');
+            const newSearch = urlParams.toString();
+            const newUrl = newSearch ? `${window.location.pathname}?${newSearch}` : window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
         }
     }, [showMessage]);
 

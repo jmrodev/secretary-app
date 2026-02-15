@@ -144,22 +144,20 @@ const Appointments = () => {
                         </aside>
 
                         {activeTab !== 'monthly' && (
-                            <main className="dashboard-main">
-                                <ScheduleSection
-                                    activeTab={activeTab}
-                                    selectedDate={selectedDate}
-                                    onDateSelect={handlers.handleDateSelect}
-                                    selectedDoctor={currentDoctor}
-                                    viewDoctorId={viewDoctorId}
-                                    appointments={appointments}
-                                    doctorSchedule={doctorSchedule}
-                                    holidays={holidays}
-                                    onSlotClick={handlers.handleSlotClick}
-                                    onDeleteHoliday={handlers.handleDeleteHoliday}
-                                    showOutOfHours={showOutOfHours}
-                                    setShowOutOfHours={setShowOutOfHours}
-                                />
-                            </main>
+                            <ScheduleSection
+                                activeTab={activeTab}
+                                selectedDate={selectedDate}
+                                onDateSelect={handlers.handleDateSelect}
+                                selectedDoctor={currentDoctor}
+                                viewDoctorId={viewDoctorId}
+                                appointments={appointments}
+                                doctorSchedule={doctorSchedule}
+                                holidays={holidays}
+                                onSlotClick={handlers.handleSlotClick}
+                                onDeleteHoliday={handlers.handleDeleteHoliday}
+                                showOutOfHours={showOutOfHours}
+                                setShowOutOfHours={setShowOutOfHours}
+                            />
                         )}
                     </div>
                 )}

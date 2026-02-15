@@ -80,7 +80,7 @@
 .dashboard-grid {
     display: grid;
     /* Use minmax(0, ...) to ensure content can shrink and doesn't push the layout */
-    grid-template-columns: clamp(20rem, 25vw, 26rem) minmax(0, 1fr);
+    grid-template-columns: clamp(24rem, 30vw, 32rem) minmax(0, 1fr);
     gap: clamp(1rem, 2vw, 1.5rem);
     align-items: start;
     width: 100%;

@@ -1,7 +1,7 @@
 .calendar-day-indicator {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
     margin-top: auto;
     width: 100%;
 }
@@ -9,14 +9,14 @@
 .calendar-day-indicator__grid {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
     width: 100%;
 }
 
 .calendar-day-indicator__row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2px;
+    gap: 3px;
 }
 
 .calendar-day-indicator__row--hidden {
@@ -24,25 +24,26 @@
     pointer-events: none;
 }
 
-.calendar-day-indicator__appointment-badge {
+/* Increased specificity without !important */
+.calendar-day-indicator .calendar-day-indicator__appointment-badge {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 14px;
-    min-height: 14px;
+    min-width: 16px;
+    min-height: 16px;
     padding: 1px 2px;
-    border-radius: 3px;
-    font-size: 0.7rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
     font-weight: 800;
     line-height: 1;
 }
 
 @media (max-width: 768px) {
 
-    .calendar-day-indicator__appointment-badge {
-        min-width: 12px;
-        min-height: 12px;
-        font-size: 0.65rem;
+    .calendar-day-indicator .calendar-day-indicator__appointment-badge {
+        min-width: 14px;
+        min-height: 14px;
+        font-size: 0.7rem;
         padding: 0;
     }
 }

@@ -42,7 +42,7 @@ const CalendarSection = ({
                         <div className="flex flex-col gap-5 mt-5">
                             <div className="dashboard-card">
                                 <h3 className="dashboard-card__title">
-                                    <Icon name="search" size="1rem" />
+                                    <Icon name="history" size="1rem" />
                                     Buscar Historial
                                 </h3>
                                 <div className="calendar-section__filter-group">

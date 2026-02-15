@@ -1,7 +1,7 @@
 .day-schedule {
     display: flex;
     flex-direction: column;
-    padding: 1rem;
+    padding: 0;
     min-height: 0;
     overflow: hidden;
 }

@@ -1,5 +1,6 @@
 .calendar-day-cell {
-    min-height: 65px;
+    aspect-ratio: 1 / 1;
+    min-height: auto;
     border: 2px solid var(--gray-400);
     margin: 0;
     padding: 0;
@@ -20,7 +21,7 @@
     height: 100%;
     width: 100%;
     position: relative;
-    padding-top: 1.45rem;
+    padding-top: 1.15rem;
     /* Space for absolute header */
 }
 
@@ -77,9 +78,9 @@
 
 .calendar-day-cell__date {
     position: absolute;
-    top: 0.35rem;
-    left: 0.4rem;
-    right: 0.4rem;
+    top: 0.15rem;
+    left: 0.3rem;
+    right: 0.3rem;
     display: flex;
     justify-content: space-between;
     align-items: center;

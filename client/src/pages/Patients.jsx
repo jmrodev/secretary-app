@@ -64,6 +64,7 @@ const Patients = () => {
         handleGeneratePrescriptionLink,
         calculateFinancialRating,
         calculateAttendanceRating,
+        handleRestorePatient,
     } = handlers;
 
     return (
@@ -202,7 +203,7 @@ const Patients = () => {
                                 <PatientRecycleBin
                                     recycleItems={recycleItems}
                                     loading={loading}
-                                    onRestore={() => { /* Implementation pending */ }}
+                                    onRestore={handleRestorePatient}
                                 />
                             )}
                         </main>

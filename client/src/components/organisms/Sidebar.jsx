@@ -82,18 +82,22 @@ const Sidebar = () => {
 
                 {user.role !== 'admin' && (
                     <>
-                        <Link to="/requests" className={getLinkClass('/requests')}>
-                            <Icon name="REQUESTS" className="sidebar__link-icon" />
-                            {t('requests_workflow')}
-                        </Link>
                         <Link to="/documents" className={getLinkClass('/documents')}>
                             <Icon name="DOCUMENTS" className="sidebar__link-icon" />
                             {t('medical_documents')}
                         </Link>
-                        <Link to="/doctors" className={getLinkClass('/doctors')}>
-                            <Icon name="DOCTORS" className="sidebar__link-icon" />
-                            {t('doctors')}
-                        </Link>
+                        {user.role === 'doctor' && ( // Doctors go to their own config profile
+                            <Link to="/config?tab=profile" className={`sidebar__link ${location.pathname === '/config' && location.search.includes('tab=profile') ? 'sidebar__link--active' : ''}`}>
+                                <Icon name="DOCTORS" className="sidebar__link-icon" />
+                                {t('my_profile') || 'Mi Perfil Médico'}
+                            </Link>
+                        )}
+                        {user.role === 'secretary' && (
+                            <Link to="/config?tab=doctors" className={`sidebar__link ${location.pathname === '/config' && location.search.includes('tab=doctors') ? 'sidebar__link--active' : ''}`}>
+                                <Icon name="DOCTORS" className="sidebar__link-icon" />
+                                {t('doctors')}
+                            </Link>
+                        )}
                     </>
                 )}
 
@@ -104,12 +108,20 @@ const Sidebar = () => {
                     </Link>
                 )}
 
-                {(user.role === 'admin' || user.role === 'secretary') && (
-                    <Link to="/reports" className={getLinkClass('/reports')}>
+                {(user.role === 'admin') && (
+                    <Link to="/config?tab=reports" className={`sidebar__link ${location.pathname === '/config' && location.search.includes('tab=reports') ? 'sidebar__link--active' : ''}`}>
                         <Icon name="REPORTS" className="sidebar__link-icon" />
                         {t('reports') || 'Reportes'}
                     </Link>
                 )}
+
+                {user.role === 'secretary' && (
+                    <Link to="/config?tab=reports" className={`sidebar__link ${location.pathname === '/config' && location.search.includes('tab=reports') ? 'sidebar__link--active' : ''}`}>
+                        <Icon name="REPORTS" className="sidebar__link-icon" />
+                        {t('reports') || 'Reportes'}
+                    </Link>
+                )}
+
 
                 {user.role === 'admin' && (
                     <>
@@ -121,6 +133,10 @@ const Sidebar = () => {
                             <Icon name="USERS" className="sidebar__link-icon" />
                             {t('users')}
                         </Link>
+                        <Link to="/config?tab=doctors" className={`sidebar__link ${location.pathname === '/config' && location.search.includes('tab=doctors') ? 'sidebar__link--active' : ''}`}>
+                            <Icon name="DOCTORS" className="sidebar__link-icon" />
+                            {t('doctors')}
+                        </Link>
                     </>
                 )}
 
@@ -130,14 +146,14 @@ const Sidebar = () => {
                             <Icon name="INSTITUTIONS" className="sidebar__link-icon" />
                             {t('institutions')}
                         </Link>
-                        <Link to="/config" className={getLinkClass('/config')}>
+                        <Link to="/config?tab=general" className={`sidebar__link ${location.pathname === '/config' && (location.search.includes('tab=general') || !location.search) ? 'sidebar__link--active' : ''}`}>
                             <Icon name="CONFIG" className="sidebar__link-icon" />
                             {t('system_config')}
                         </Link>
                     </>
                 )}
 
-                <Link to="/profile" className={getLinkClass('/profile')}>
+                <Link to="/config?tab=profile" className={`sidebar__link ${location.pathname === '/config' && location.search.includes('tab=profile') ? 'sidebar__link--active' : ''}`}>
                     <Icon name="PROFILE" className="sidebar__link-icon" />
                     {t('profile')}
                 </Link>
