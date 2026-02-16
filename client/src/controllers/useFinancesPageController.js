@@ -263,35 +263,37 @@ export const useFinancesPageController = () => {
             if (!daysMap[dateStr]) {
                 daysMap[dateStr] = {
                     date: dateStr,
-                    balance: 0,
+                    balance: 0,       // Cash
+                    transferBalance: 0, // Transfer
                     lastTime: '00:00',
-                    doctor_id: t.doctor_id, // Assume primary doctor filter is active or take first
+                    doctor_id: t.doctor_id,
                     doctor_name: t.doctor_name
                 };
             }
 
             const amount = parseFloat(t.amount) || 0;
 
-            // Robust check for withdrawals/expenses to prevent double counting or missing closures
-            const isExplicitWithdrawal = desc.includes('Entrega de Caja') || desc.includes('Cierre') || desc.includes('Retiro');
+            // Robust check for withdrawals/expenses
+            // (desc is already defined above, but scoped? careful)
+            // Let's reuse desc from above scope if available or re-define if not blocked
+            const isExplicitWithdrawal = (t.description || '').includes('Entrega de Caja') || (t.description || '').includes('Cierre') || (t.description || '').includes('Retiro');
 
-            // Check flags
-            const isWithdrawalType = t.is_withdrawal || t.type === 'withdrawal' || t.type === 'payment_doctor'; // payment_doctor is a withdrawal from box
+            const isWithdrawalType = t.is_withdrawal || t.type === 'withdrawal' || t.type === 'payment_doctor';
             const isWithdrawal = isWithdrawalType || isExplicitWithdrawal;
+            const isExpense = t.type.includes('expense');
+            const isIncome = !isWithdrawal && !isExpense; // Simplified assumption for remaining income types
 
-            // Only tracking CASH physical box
-            if (isWithdrawal) {
-                // Assuming withdrawals are always CASH from box
-                daysMap[dateStr].balance -= amount;
-            } else if (t.method === 'cash') {
-                const isIncome = t.type.includes('income') || t.type.includes('payment'); // income_patient, etc.
-                const isExpense = t.type.includes('expense'); // generic expense
-
-                // Expenses are also withdrawals
-                if (isExpense) {
+            if (t.method === 'transfer') {
+                if (isWithdrawal || isExpense) {
+                    daysMap[dateStr].transferBalance -= amount;
+                } else if (isIncome) {
+                    daysMap[dateStr].transferBalance += amount;
+                }
+            } else {
+                // Default to CASH (null, 'cash', or others)
+                if (isWithdrawal || isExpense) {
                     daysMap[dateStr].balance -= amount;
-                } else {
-                    // Income
+                } else if (isIncome) {
                     daysMap[dateStr].balance += amount;
 
                     // Track last income time
@@ -299,17 +301,19 @@ export const useFinancesPageController = () => {
                     if (typeof t.transaction_date === 'string') {
                         if (t.transaction_date.includes('T')) timeStr = t.transaction_date.split('T')[1].substring(0, 5);
                         else if (t.transaction_date.includes(' ')) timeStr = t.transaction_date.split(' ')[1].substring(0, 5);
+                    } else if (t.transaction_date instanceof Date) {
+                        timeStr = t.transaction_date.toTimeString().substring(0, 5);
                     }
                     if (timeStr > daysMap[dateStr].lastTime) daysMap[dateStr].lastTime = timeStr;
                 }
             }
         });
 
-        // Filter and sort (oldest first? Or newest? User wants to fix past)
-        // Sort descending (newest first)
+        // Filter valid pending days (positive balance in EITHER cash or transfer)
+        // Also filter out future days or today if not ended? (Policy: End of day closure)
         return Object.values(daysMap)
-            .filter(d => d.balance > 1) // Tolerance for float js errors, > $1
-            .sort((a, b) => b.date.localeCompare(a.date));
+            .filter(d => (d.balance > 100 || d.transferBalance > 100)) // Threshold to ignore tiny diffs
+            .sort((a, b) => a.date.localeCompare(b.date));
     }, [transactions]);
 
     const handleAutoClosure = async (dayData) => {
@@ -331,26 +335,50 @@ export const useFinancesPageController = () => {
                 timeStr = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
             }
 
-            const dateTime = `${dayData.date} ${timeStr}:00`;
+            const dateTime = `${dayData.date} ${String(timeStr).includes(':') ? timeStr : '12:30'}:00`;
+            const docId = dayData.doctor_id || (doctors[0] ? doctors[0].id : null);
 
-            await api.post('/finances/transactions', {
-                type: 'withdrawal',
-                amount: dayData.balance,
-                description: `Cierre Automático (${dayData.date})`,
-                doctor_id: dayData.doctor_id || (doctors[0] ? doctors[0].id : null),
-                transaction_date: dateTime,
-                status: 'paid',
-                method: 'cash',
-                is_withdrawal: true
-            });
+            const promises = [];
 
-            showMessage(`Caja cerrada para el día ${dayData.date} ($${dayData.balance})`, 'success');
-            fetchData();
-        } catch (err) {
-            console.error(err);
-            alert("Error al realizar cierre automático");
+            // 1. Close Calcium (Cash)
+            if (dayData.balance > 0) {
+                promises.push(api.post('/finances/transactions', {
+                    type: 'withdrawal',
+                    amount: dayData.balance,
+                    description: `Cierre Automático (${dayData.date}) - Efectivo`,
+                    doctor_id: docId,
+                    transaction_date: dateTime,
+                    status: 'paid',
+                    method: 'cash',
+                    is_withdrawal: true
+                }));
+            }
+
+            // 2. Close Virtual (Transfer)
+            if (dayData.transferBalance > 0) {
+                promises.push(api.post('/finances/transactions', {
+                    type: 'withdrawal',
+                    amount: dayData.transferBalance,
+                    description: `Cierre Automático (${dayData.date}) - Transferencia`,
+                    doctor_id: docId,
+                    transaction_date: dateTime,
+                    status: 'paid',
+                    method: 'transfer',
+                    is_withdrawal: true
+                }));
+            }
+
+            await Promise.all(promises);
+
+            showToast('Cajas cerradas correctamente', 'success');
+            reloadFinances();
+        } catch (error) {
+            console.error('Error closing box:', error);
+            showToast('Error al cerrar caja', 'error');
         }
     };
+
+
 
     // ... rest of the hook ... use handlers object to expose it
 

@@ -40,8 +40,8 @@ const PendingClosuresModal = ({ isOpen, onClose, pendingClosures, duplicateClosu
                 )}
 
                 <p className="text-sm text-gray-600">
-                    A continuación se muestran los días que tienen un saldo de efectivo positivo sin retirar.
-                    Puede hacer clic en "Entregar" para registrar automáticamente un retiro por el monto total de ese día.
+                    A continuación se muestran los días que tienen un saldo pendiente (Efectivo o Transferencias) sin retirar.
+                    Puede hacer clic en "Entregar" para registrar automáticamente el cierre de ambos saldos.
                 </p>
 
                 <div className="overflow-x-auto rounded-lg border border-gray-200">
@@ -49,15 +49,16 @@ const PendingClosuresModal = ({ isOpen, onClose, pendingClosures, duplicateClosu
                         <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b">
                             <tr>
                                 <th className="px-6 py-3">Fecha</th>
-                                <th className="px-6 py-3">Saldo Efectivo</th>
-                                <th className="px-6 py-3">Último Ingreso</th>
+                                <th className="px-6 py-3">Saldo Caja</th>
+                                <th className="px-6 py-3">Saldo Virtual</th>
+                                <th className="px-6 py-3">Último Mov.</th>
                                 <th className="px-6 py-3">Acción</th>
                             </tr>
                         </thead>
                         <tbody>
                             {pendingClosures.length === 0 ? (
                                 <tr>
-                                    <td colSpan="4" className="px-6 py-4 text-center text-gray-500">
+                                    <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
                                         ¡Todo al día! No hay cierres pendientes.
                                     </td>
                                 </tr>
@@ -65,10 +66,13 @@ const PendingClosuresModal = ({ isOpen, onClose, pendingClosures, duplicateClosu
                                 pendingClosures.map((day) => (
                                     <tr key={day.date} className="bg-white border-b hover:bg-gray-50">
                                         <td className="px-6 py-4 font-medium text-gray-900">
-                                            {day.date} {/* Should be formatted nicely */}
+                                            {day.date}
                                         </td>
                                         <td className="px-6 py-4 font-bold text-green-600">
                                             ${day.balance.toLocaleString()}
+                                        </td>
+                                        <td className="px-6 py-4 font-bold text-blue-600">
+                                            ${(day.transferBalance || 0).toLocaleString()}
                                         </td>
                                         <td className="px-6 py-4 text-gray-500">
                                             {day.lastTime}
@@ -79,9 +83,9 @@ const PendingClosuresModal = ({ isOpen, onClose, pendingClosures, duplicateClosu
                                                 variant={processingDate === day.date ? "ghost" : "primary"}
                                                 onClick={() => handleClosure(day)}
                                                 disabled={!!processingDate}
-                                                title="Registrar retiro automático"
+                                                title="Registrar retiro de ambos saldos"
                                             >
-                                                {processingDate === day.date ? "Procesando..." : "Entregar"}
+                                                {processingDate === day.date ? "Procesando..." : "Entregar / Cerrar"}
                                             </Button>
                                         </td>
                                     </tr>
