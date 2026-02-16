@@ -180,6 +180,18 @@
     margin-top: 1.5rem;
 }
 
-.form-actions__submit {
-    width: 100%;
+.appointment-form-modal__extra-badge--pulse {
+    animation: pulse 2s infinite;
+}
+
+.appointment-form-modal__help-text {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.appointment-form-modal__checkbox {
+    width: auto;
+    margin-right: 0.5rem;
 }

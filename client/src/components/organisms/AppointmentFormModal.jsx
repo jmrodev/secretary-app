@@ -156,7 +156,7 @@ const AppointmentFormModal = ({
                     <label className="form-label">{t('date_time') || 'Fecha y Hora'}</label>
                     <input type="datetime-local" className="form-control" value={date} onChange={e => handleDateChange(e.target.value)} required />
                     {isOutOfHours && (
-                        <div className="appointment-form-modal__extra-badge animate-pulse">
+                        <div className="appointment-form-modal__extra-badge appointment-form-modal__extra-badge--pulse">
                             ⚠️ Turno Fuera de Horario (Extra)
                         </div>
                     )}
@@ -186,7 +186,7 @@ const AppointmentFormModal = ({
                             </option>
                         ))}
                     </select>
-                    <span className="text-xs text-muted mt-1">
+                    <span className="appointment-form-modal__help-text">
                         Si seleccionas "Institución del Paciente", se usará la que tenga configurada en su perfil.
                     </span>
                 </div>
@@ -197,7 +197,7 @@ const AppointmentFormModal = ({
                         id="bonified"
                         checked={bonified}
                         onChange={e => handleBonifiedChange(e.target.checked)}
-                        className="w-auto"
+                        className="appointment-form-modal__checkbox"
                     />
                     <label htmlFor="bonified" className="input-label checkbox-label">
                         Bonificado (Sin Costo)

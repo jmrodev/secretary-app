@@ -1,0 +1,108 @@
+/* PendingClosuresModal.css */
+
+.pending-closures-alert {
+    background-color: var(--red-50);
+    border: 1px solid var(--red-200);
+    color: var(--red-800);
+    padding: 1rem;
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.pending-closures-alert__title {
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pending-closures-description {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.pending-closures-table-container {
+    overflow-x: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+}
+
+.pending-closures-table {
+    width: 100%;
+    font-size: 0.875rem;
+    text-align: left;
+    border-collapse: collapse;
+}
+
+.pending-closures-table th {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background-color: var(--gray-50);
+    padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 700;
+}
+
+.pending-closures-table td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    background-color: white;
+}
+
+.pending-closures-table tr:last-child td {
+    border-bottom: none;
+}
+
+.pending-closures-table tr:hover td {
+    background-color: var(--gray-50);
+}
+
+.pending-closures-table__date {
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+.pending-closures-table__balance--cash {
+    font-weight: 700;
+    color: var(--success);
+}
+
+.pending-closures-table__balance--virtual {
+    font-weight: 700;
+    color: var(--primary);
+    /* Blue */
+}
+
+.pending-closures-table__last-time {
+    color: var(--text-muted);
+}
+
+.pending-closures-table__empty {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 2rem !important;
+}
+
+.pending-closures-footer {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.pending-closures-footer__btn-fix {
+    color: var(--error);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pending-closures-footer__btn-fix:hover {
+    background-color: var(--red-50);
+}

@@ -370,11 +370,11 @@ export const useFinancesPageController = () => {
 
             await Promise.all(promises);
 
-            showToast('Cajas cerradas correctamente', 'success');
-            reloadFinances();
+            showMessage('Cajas cerradas correctamente', 'success');
+            fetchData();
         } catch (error) {
             console.error('Error closing box:', error);
-            showToast('Error al cerrar caja', 'error');
+            showMessage('Error al cerrar caja', 'error');
         }
     };
 
