@@ -16,6 +16,7 @@ import CashBoxDeliveryModal from '../components/molecules/CashBoxDeliveryModal';
 import TransactionsTable from '../components/organisms/TransactionsTable';
 import EditTransactionModal from '../components/organisms/EditTransactionModal';
 import TransactionModal from '../components/molecules/TransactionModal';
+import PendingClosuresModal from '../components/molecules/PendingClosuresModal';
 
 import './Finances.css';
 
@@ -72,14 +73,30 @@ const Finances = () => {
                                 </h3>
                                 <div className="flex flex-col gap-3">
                                     {user.role !== 'patient' && (
-                                        <Button
-                                            variant="primary"
-                                            className="justify-start w-full"
-                                            onClick={handlers.onOpenNewTransaction}
-                                            icon={<Icon name="add" size="1.1rem" />}
-                                        >
-                                            {t('new_transaction')}
-                                        </Button>
+                                        <>
+                                            <Button
+                                                variant="primary"
+                                                className="justify-start w-full"
+                                                onClick={handlers.onOpenNewTransaction}
+                                                icon={<Icon name="add" size="1.1rem" />}
+                                            >
+                                                {t('new_transaction')}
+                                            </Button>
+
+                                            <Button
+                                                variant="secondary"
+                                                className="justify-start w-full relative"
+                                                onClick={() => handlers.setPendingClosuresOpen(true)}
+                                                icon={<Icon name="calendar_view_week" size="1.1rem" />}
+                                            >
+                                                Entregar Caja
+                                                {controller.pendingClosures.length > 0 && (
+                                                    <span className="absolute right-2 top-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                                                        {controller.pendingClosures.length}
+                                                    </span>
+                                                )}
+                                            </Button>
+                                        </>
                                     )}
 
                                     {selectedDoctorFilter && (() => {
@@ -141,7 +158,8 @@ const Finances = () => {
                             </div>
                         </main>
                     </div>
-                )}
+                )
+                }
 
                 {/* --- Modals --- */}
                 <TransactionModal
@@ -161,20 +179,48 @@ const Finances = () => {
                     t={t}
                 />
 
-                {editingTx && (
-                    <EditTransactionModal
-                        isOpen={!!editingTx}
-                        onClose={() => handlers.setEditingTx(null)}
-                        onSave={handlers.onUpdateTransaction}
-                        transaction={editingTx}
-                        setTransaction={handlers.setEditingTx}
-                        settings={settings}
-                        user={user}
-                        t={t}
-                    />
-                )}
-            </div>
-        </MainLayout>
+                {
+                    editingTx && (
+                        <EditTransactionModal
+                            isOpen={!!editingTx}
+                            onClose={() => handlers.setEditingTx(null)}
+                            onSave={handlers.onUpdateTransaction}
+                            transaction={editingTx}
+                            setTransaction={handlers.setEditingTx}
+                            settings={settings}
+                            user={user}
+                            t={t}
+                        />
+                    )
+                }
+                {
+                    editingTx && (
+                        <EditTransactionModal
+                            isOpen={!!editingTx}
+                            onClose={() => handlers.setEditingTx(null)}
+                            onSave={handlers.onUpdateTransaction}
+                            transaction={editingTx}
+                            setTransaction={handlers.setEditingTx}
+                            settings={settings}
+                            user={user}
+                            t={t}
+                        />
+                    )
+                }
+
+
+
+                <PendingClosuresModal
+                    isOpen={controller.pendingClosuresOpen}
+                    onClose={() => handlers.setPendingClosuresOpen(false)}
+                    pendingClosures={controller.pendingClosures}
+                    duplicateClosures={controller.duplicateClosures}
+                    onAutoClosure={handlers.handleAutoClosure}
+                    onFixDuplicates={handlers.handleFixDuplicates}
+                    t={t}
+                />
+            </div >
+        </MainLayout >
     );
 };
 

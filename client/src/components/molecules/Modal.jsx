@@ -18,7 +18,7 @@ const Modal = ({ isOpen, onClose, title, children, footer, size = 'md' }) => {
     return ReactDOM.createPortal(
         <div className="modal-overlay" onClick={onClose}>
             <div
-                className={`modal-content ${size === 'lg' ? 'modal-content--lg' : ''}`}
+                className={`modal-content ${size && size !== 'md' ? `modal-content--${size}` : ''}`}
                 onClick={e => e.stopPropagation()}
             >
                 <header className="modal-header">

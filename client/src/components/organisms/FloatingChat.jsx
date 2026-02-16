@@ -16,7 +16,7 @@ const FloatingChat = () => {
     const { showMessage } = useMessage();
     const {
         isOpen, toggleChat, closeChat,
-        selectedConvo, backToList,
+        selectedConvo, setSelectedConvo, backToList,
         conversations,
         thread,
         unreadCount,

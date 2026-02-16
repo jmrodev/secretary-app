@@ -12,64 +12,76 @@
 }
 
 .transactions-table__wrapper {
-    overflow-x: visible;
+    overflow-x: auto;
+    overflow-y: auto;
     width: 100%;
+    max-height: 600px;
+    /* Adjustable max height */
 }
 
 .transactions-table__table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.75rem;
-    table-layout: auto;
+    table-layout: fixed;
+    /* Force column widths */
 }
 
-/* Column widths */
+/* Column widths - Total 100% */
+/* 1. Date */
 .transactions-table__table th:nth-child(1),
 .transactions-table__table td:nth-child(1) {
-    width: 8%;
+    width: 10%;
     min-width: 80px;
 }
 
+/* 2. Description */
 .transactions-table__table th:nth-child(2),
 .transactions-table__table td:nth-child(2) {
+    width: 25%;
+    min-width: 180px;
+}
+
+/* 3. Beneficiary/Patient */
+.transactions-table__table th:nth-child(3),
+.transactions-table__table td:nth-child(3) {
     width: 20%;
     min-width: 150px;
 }
 
-.transactions-table__table th:nth-child(3),
-.transactions-table__table td:nth-child(3) {
-    width: 12%;
-    min-width: 100px;
-}
-
+/* 4. Method */
 .transactions-table__table th:nth-child(4),
 .transactions-table__table td:nth-child(4) {
     width: 8%;
-    min-width: 70px;
+    min-width: 60px;
 }
 
+/* 5. Status */
 .transactions-table__table th:nth-child(5),
 .transactions-table__table td:nth-child(5) {
     width: 8%;
-    min-width: 70px;
+    min-width: 60px;
 }
 
+/* 6. Amount */
 .transactions-table__table th:nth-child(6),
 .transactions-table__table td:nth-child(6) {
     width: 10%;
     min-width: 80px;
 }
 
+/* 7. Proof */
 .transactions-table__table th:nth-child(7),
 .transactions-table__table td:nth-child(7) {
-    width: 8%;
-    min-width: 60px;
+    width: 5%;
+    min-width: 40px;
 }
 
+/* 8. Actions */
 .transactions-table__table th:nth-child(8),
 .transactions-table__table td:nth-child(8) {
-    width: 12%;
-    min-width: 120px;
+    width: 14%;
+    min-width: 100px;
 }
 
 .transactions-table__table th {
@@ -85,6 +97,10 @@
     white-space: normal;
     overflow: hidden;
     text-overflow: ellipsis;
+    /* Sticky Header */
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 .transactions-table__table td {

@@ -10,9 +10,3 @@
 .dashboard-nav-bar .finance-doctor-filter {
     margin: 0;
 }
-
-/* Ensure TransactionTable fills container but is contained in card */
-.finances-page .dashboard-card.no-padding {
-    overflow: auto;
-    max-height: calc(100vh - 300px);
-}

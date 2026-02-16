@@ -16,6 +16,7 @@ export const ICONS = {
     CONFIG: 'settings',
     PROFILE: 'person',
     SPREADSHEETS: 'table_chart',
+    LANGUAGE: 'language',
     LOGOUT: 'logout',
 
     // Stats / Dashboard

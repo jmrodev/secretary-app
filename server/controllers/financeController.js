@@ -16,7 +16,7 @@ exports.createTransaction = async (req, res) => {
         // type: income_patient, income_rental, expense_general, payment_doctor, withdrawal
         // related_user_id: Patient or Doctor interacting
         // doctor_id: Beneficiary of the cash box
-        const { type, amount, description, related_user_id, doctor_id, method, status, debt_amount, appointment_id, transaction_date } = req.body;
+        const { type, amount, description, related_user_id, doctor_id, method, status, debt_amount, appointment_id, transaction_date, is_withdrawal } = req.body;
         let { payments } = req.body;
         const proof_file = req.file ? `/uploads/${req.file.filename}` : null;
         let result = {};
@@ -47,16 +47,16 @@ exports.createTransaction = async (req, res) => {
             for (const p of payments) {
                 if (Number(p.amount) > 0) {
                     result = await conn.query(
-                        "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, institution_id, method, status, proof_file, request_id, appointment_id, transaction_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                        [type, p.amount, description, related_user_id || null, doctor_id || null, req.body.institution_id || null, p.method || 'cash', status || 'paid', proof_file, req.body.request_id || null, appointment_id || null, finalDate]
+                        "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, institution_id, method, status, proof_file, request_id, appointment_id, transaction_date, is_withdrawal) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        [type, p.amount, description, related_user_id || null, doctor_id || null, req.body.institution_id || null, p.method || 'cash', status || 'paid', proof_file, req.body.request_id || null, appointment_id || null, finalDate, is_withdrawal || false]
                     );
                 }
             }
         } else if (Number(amount) > 0) {
             // Fallback for single payment
             result = await conn.query(
-                "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, institution_id, method, status, proof_file, request_id, appointment_id, transaction_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                [type, amount, description, related_user_id || null, doctor_id || null, req.body.institution_id || null, method || 'cash', status || 'paid', proof_file, req.body.request_id || null, appointment_id || null, finalDate]
+                "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, institution_id, method, status, proof_file, request_id, appointment_id, transaction_date, is_withdrawal) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [type, amount, description, related_user_id || null, doctor_id || null, req.body.institution_id || null, method || 'cash', status || 'paid', proof_file, req.body.request_id || null, appointment_id || null, finalDate, is_withdrawal || false]
             );
         }
 

@@ -13,7 +13,6 @@ import BillingSettings from '../components/organisms/BillingSettings';
 import QRCodeModal from '../components/molecules/QRCodeModal';
 import Button from '../components/atoms/Button';
 import Icon from '../components/atoms/Icon';
-import SettingsSidebar from '../components/organisms/SettingsSidebar';
 import Loading from '../components/atoms/Loading';
 
 // Lazy load heavy components
@@ -214,7 +213,6 @@ const SystemConfig = () => {
     const {
         user,
         activeTab,
-        setActiveTab,
         qrModal,
         setQrModal,
         t
@@ -223,12 +221,7 @@ const SystemConfig = () => {
     return (
         <MainLayout wide className="system-config-layout">
             <div className="system-config-container animate-fadeIn">
-                <SettingsSidebar
-                    activeSection={activeTab}
-                    onSelect={setActiveTab}
-                    t={t}
-                    user={user}
-                />
+
 
                 <main className="system-config-main">
                     <Suspense fallback={<Loading variant="centered" />}>

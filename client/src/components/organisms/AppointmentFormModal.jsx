@@ -46,10 +46,11 @@ const AppointmentFormModal = ({
             isOpen={isOpen}
             onClose={onClose}
             title={editModeId ? (t('edit_appointment') || 'Editar Turno') : t('new_appointment')}
+            size="2xl"
         >
             <form onSubmit={onSubmit} id="new-appointment-form" className="appointment-form-modal" autoComplete="off">
-                {/* Fake fields to stop Chrome Autosave */}
-                <div className="visually-hidden">
+                {/* Fake fields to stop Chrome Autosave - hidden via style to be robust */}
+                <div style={{ position: 'absolute', opacity: 0, top: -1000, left: -1000, height: 0, width: 0, overflow: 'hidden', pointerEvents: 'none' }}>
                     <input type="text" name="fake_user_trap_appt" autoComplete="username" tabIndex={-1} />
                     <input type="password" name="fake_pass_trap_appt" autoComplete="new-password" tabIndex={-1} />
                 </div>
@@ -65,14 +66,14 @@ const AppointmentFormModal = ({
                     </div>
                 )}
                 <div className="input-group">
-                    <label className="form-label">{t('doctors')}</label>
+                    <label className="form-label">{t('doctors') || 'Doctor'}</label>
                     {user.role === 'doctor' ? (
                         <div className="form-control form-control--disabled">
-                            {doctors.find(d => d.id === Number(selectedDoctor))?.full_name || 'You'}
+                            {doctors.find(d => d.id === Number(selectedDoctor))?.full_name || 'Usted'}
                         </div>
                     ) : (
                         <select className="form-control" value={selectedDoctor || ''} onChange={e => handleDoctorChange(e.target.value)} required>
-                            <option value="">{t('select_doctor')}</option>
+                            <option value="">Seleccionar Doctor</option>
                             {doctors.map(d => (
                                 <option key={d.id} value={d.id}>{d.full_name} ({d.specialty})</option>
                             ))}
@@ -102,18 +103,19 @@ const AppointmentFormModal = ({
 
                 {(user.role === 'secretary' || user.role === 'doctor') && (
                     <div className="input-group">
-                        <label className="form-label">{t('patients')}</label>
+                        <label className="form-label">{t('patients') || 'Paciente'}</label>
                         <PatientSearchSelect
                             value={selectedPatient}
                             selectedData={selectedPatientData}
                             autoFocus={true}
-                            placeholder={t('select_patient')}
+                            placeholder="Buscar Paciente..."
                             onCreatePatient={async (name) => {
                                 handlePatientChange(null, { full_name: capitalizeWords(name) });
                                 onOpenEditPatient();
                             }}
                             onChange={handlePatientChange}
                         />
+                        {/* ... missing data alert ... */}
                         {missingData.length > 0 && (
                             <div className="missing-data-alert">
                                 <span className="missing-data-alert__text">
@@ -132,13 +134,13 @@ const AppointmentFormModal = ({
                         {selectedPatient && (
                             <div className="patient-quick-info">
                                 <div className="patient-quick-info__field">
-                                    <span className="patient-quick-info__label">📱 {t('phone') || 'Teléfono'}</span>
+                                    <span className="patient-quick-info__label">📱 Teléfono</span>
                                     <input
                                         type="text"
                                         className="patient-quick-info__input"
                                         value={selectedPatientData?.phone || ''}
                                         onChange={e => handlePhoneChange(e.target.value)}
-                                        placeholder={t('no_phone') || 'Sin teléfono'}
+                                        placeholder="Sin teléfono"
                                     />
                                 </div>
                                 <div className="whatsapp-status">
@@ -151,22 +153,22 @@ const AppointmentFormModal = ({
                 )}
 
                 <div className="input-group">
-                    <label className="form-label">{t('date_time')}</label>
+                    <label className="form-label">{t('date_time') || 'Fecha y Hora'}</label>
                     <input type="datetime-local" className="form-control" value={date} onChange={e => handleDateChange(e.target.value)} required />
                     {isOutOfHours && (
                         <div className="appointment-form-modal__extra-badge animate-pulse">
-                            ⚠️ {t('extra_turn_warning') || 'Turno Fuera de Horario (Extra)'}
+                            ⚠️ Turno Fuera de Horario (Extra)
                         </div>
                     )}
                 </div>
 
                 <div className="input-group">
-                    <label className="form-label">{t('reason')}</label>
+                    <label className="form-label">{t('reason') || 'Motivo de Consulta'}</label>
                     <textarea className="form-control" rows="3" value={reason} onChange={e => handleReasonChange(e.target.value)} required></textarea>
                 </div>
 
                 <div className="input-group">
-                    <label className="form-label">{t('institution') || 'Institución'}</label>
+                    <label className="form-label">Obra Social / Institución</label>
                     <select
                         className="form-control"
                         value={selectedInstitution}
@@ -174,10 +176,10 @@ const AppointmentFormModal = ({
                     >
                         <option value="">
                             {selectedPatientData
-                                ? `Institución del Paciente (${selectedPatientData.institution_name || 'Ninguna - Se usará Particular'})`
-                                : t('patient_institution') || 'Institución del Paciente'}
+                                ? `Institución del Paciente (${selectedPatientData.institution_name || 'Ninguna'})`
+                                : 'Institución del Paciente'}
                         </option>
-                        <option value="none">{t('particular') || 'Particular / Sin Institución'}</option>
+                        <option value="none">Particular / Sin Institución</option>
                         {institutions.map(inst => (
                             <option key={inst.id} value={inst.id}>
                                 {inst.name}
@@ -185,7 +187,7 @@ const AppointmentFormModal = ({
                         ))}
                     </select>
                     <span className="text-xs text-muted mt-1">
-                        {t('institution_help') || 'Dejar en "Por Defecto" para usar la obra social del perfil del paciente.'}
+                        Si seleccionas "Institución del Paciente", se usará la que tenga configurada en su perfil.
                     </span>
                 </div>
 
@@ -198,7 +200,7 @@ const AppointmentFormModal = ({
                         className="w-auto"
                     />
                     <label htmlFor="bonified" className="input-label checkbox-label">
-                        {t('bonificado') || 'Bonificado (Free/Waived)'}
+                        Bonificado (Sin Costo)
                     </label>
                 </div>
                 <div className="form-actions">

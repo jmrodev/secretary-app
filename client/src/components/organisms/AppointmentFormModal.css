@@ -1,9 +1,30 @@
 /* AppointmentFormModal Styles (BEM) */
 
 .appointment-form-modal {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+    padding: 0;
+}
+
+@media (min-width: 640px) {
+    .appointment-form-modal {
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        align-items: start;
+    }
+
+    /* Elements that should span full width */
+    .reference-box,
+    .form-actions {
+        grid-column: 1 / -1;
+    }
+
+    /* Checkbox group at the end usually */
+    .checkbox-group {
+        grid-column: 1 / -1;
+        margin-top: 0.5rem;
+    }
 }
 
 .reference-box {

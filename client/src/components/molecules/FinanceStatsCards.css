@@ -2,7 +2,7 @@
 
 .finance-stats {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     gap: 0.5rem;
     margin-bottom: 0.5rem;
     width: 100%;
@@ -13,7 +13,8 @@
     flex-direction: column;
     padding: 0.4rem 0.5rem;
     flex: 1;
-    min-width: 0;
+    min-width: 400px;
+    overflow-x: auto;
 }
 
 .finance-stats__title {
@@ -122,8 +123,9 @@
 }
 
 .finance-stats__table-cell {
-    padding: 0.15rem 0;
+    padding: 0.25rem 0.25rem;
     border-bottom: 1px solid var(--gray-50);
+    white-space: nowrap;
 }
 
 .finance-stats__summary-row {

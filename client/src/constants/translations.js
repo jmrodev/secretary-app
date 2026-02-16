@@ -1,6 +1,7 @@
 export const translations = {
     es: {
         app_name: "MediCare",
+        i18n: "Idioma",
         language: "Idioma",
         logged_in_as: "Conectado como",
         sign_out: "Cerrar Sesión",
@@ -9,11 +10,17 @@ export const translations = {
         audit_logs: "Registros de Auditoría",
         user_management: "Gestión de Usuarios",
         documents: "Documentos",
+        reports: "Reportes",
+        profile: "Perfil",
         appointments: "Turnos",
         patients: "Pacientes",
+        insurances: "Obras Sociales",
         insurance_entities: "Obras Sociales",
         institutions: "Instituciones",
         doctors: "Doctores",
+        finances: "Finanzas",
+        users: "Usuarios",
+        system_config: "Configuración",
         enable_afip_billing: "Habilitar Facturación con ARCA/AFIP",
         billing_cuit: "CUIT Facturación",
         pto_vta: "Punto de Venta",
@@ -768,6 +775,7 @@ export const translations = {
     },
     en: {
         app_name: "MediCare",
+        i18n: "Language",
         language: "Language",
         logged_in_as: "Logged in as",
         sign_out: "Sign Out",

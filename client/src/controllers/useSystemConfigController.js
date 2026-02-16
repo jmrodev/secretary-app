@@ -5,6 +5,7 @@ import { useMessage } from '../context/MessageContext';
 import { useModal } from '../context/ModalContext';
 import { useConfig } from '../context/ConfigContext';
 import api from '../api/axios';
+import { useLocation } from 'react-router-dom';
 
 /**
  * System Configuration Controller
@@ -24,6 +25,8 @@ export const useSystemConfigController = () => {
 
     // Local State
     const [loading, setLoading] = useState(false);
+
+    // State
     const [activeTab, setActiveTab] = useState(() => {
         const params = new URLSearchParams(window.location.search);
         return params.get('tab') || 'general';

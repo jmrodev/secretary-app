@@ -7,8 +7,13 @@ import api from '../api/axios';
  */
 export const useFloatingChatController = (user, showMessage) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedConvo, setSelectedConvo] = useState(null);
     const [conversations, setConversations] = useState([]);
+    const [selectedConvo, setSelectedConvo] = useState(null);
+
+    // Refs to track state inside callbacks without adding dependencies
+    const conversationsRef = useRef(conversations);
+    const selectedConvoRef = useRef(selectedConvo);
+
     const [thread, setThread] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [messageText, setMessageText] = useState('');
@@ -22,6 +27,14 @@ export const useFloatingChatController = (user, showMessage) => {
     const scrollRef = useRef(null);
     const typingTimeoutRef = useRef(null);
     const notificationSound = useRef(new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3'));
+
+    useEffect(() => {
+        conversationsRef.current = conversations;
+    }, [conversations]);
+
+    useEffect(() => {
+        selectedConvoRef.current = selectedConvo;
+    }, [selectedConvo]);
 
     const playNotification = useCallback((convo) => {
         notificationSound.current.play().catch(() => { });
@@ -37,14 +50,16 @@ export const useFloatingChatController = (user, showMessage) => {
         try {
             const res = await api.get('/messages/conversations');
             const newData = Array.isArray(res.data) ? res.data : [];
+            const currentConversations = conversationsRef.current;
+            const currentSelectedConvo = selectedConvoRef.current;
 
-            if (conversations.length > 0 && newData.length > 0) {
+            if (currentConversations.length > 0 && newData.length > 0) {
                 const totalUnreadNew = newData.reduce((acc, c) => acc + (c.unread_count || 0), 0);
-                const totalUnreadOld = conversations.reduce((acc, c) => acc + (c.unread_count || 0), 0);
+                const totalUnreadOld = currentConversations.reduce((acc, c) => acc + (c.unread_count || 0), 0);
 
                 if (totalUnreadNew > totalUnreadOld) {
                     const latestMsg = newData.find(c => (c.unread_count || 0) > 0);
-                    if (latestMsg && (!selectedConvo || selectedConvo.other_user_id !== latestMsg.other_user_id)) {
+                    if (latestMsg && (!currentSelectedConvo || currentSelectedConvo.other_user_id !== latestMsg.other_user_id)) {
                         playNotification(latestMsg);
                     }
                 }
@@ -53,7 +68,7 @@ export const useFloatingChatController = (user, showMessage) => {
         } catch (err) {
             console.error('Error loading conversations:', err);
         }
-    }, [conversations, selectedConvo, playNotification]);
+    }, [playNotification]);
 
     const loadThread = useCallback(async (otherId, silent = false) => {
         if (!silent) setLoading(true);
@@ -122,8 +137,7 @@ export const useFloatingChatController = (user, showMessage) => {
         }, 15000);
 
         return () => clearInterval(interval);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user]);
+    }, [user, loadConversations, loadUnreadCount, loadRecipients]);
 
     useEffect(() => {
         if (selectedConvo) {
@@ -157,21 +171,47 @@ export const useFloatingChatController = (user, showMessage) => {
         e.preventDefault();
         if (!messageText.trim() || !selectedConvo) return;
 
+        const optimisticId = Date.now();
+        const optimisticMsg = {
+            id: optimisticId,
+            sender_id: user.user_id,
+            recipient_id: selectedConvo.other_user_id,
+            message: messageText,
+            created_at: new Date().toISOString(),
+            read_status: 0,
+            is_optimistic: true
+        };
+
+        // Optimistic update
+        setThread(prev => [...prev, optimisticMsg]);
+        const textToSend = messageText; // Capture text before clearing
+        setMessageText('');
+
+        // Scroll to bottom immediately
+        if (scrollRef.current) {
+            setTimeout(() => {
+                scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+            }, 50);
+        }
+
         setSending(true);
         try {
             await api.post('/messages', {
                 recipient_id: selectedConvo.other_user_id,
                 recipient_type: 'individual',
                 subject: selectedConvo.subject?.startsWith('Re:') ? selectedConvo.subject : `Re: ${selectedConvo.subject || ''}`,
-                message: messageText
+                message: textToSend
             });
 
-            setMessageText('');
+            // The loadThread will replace the optimistic message with the real one
             loadThread(selectedConvo.other_user_id, true);
             loadConversations();
         } catch (err) {
             console.error('Error sending message:', err);
             showMessage('Error al enviar mensaje', 'error');
+            // Rollback optimistic update
+            setThread(prev => prev.filter(m => m.id !== optimisticId));
+            setMessageText(textToSend); // Restore text
         } finally {
             setSending(false);
         }
