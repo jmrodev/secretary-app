@@ -1,5 +1,6 @@
 import React from 'react';
 import Card from '../atoms/Card';
+import Icon from '../atoms/Icon';
 import './FinanceStatsCards.css';
 
 const FinanceStatsCards = ({ stats, t }) => {
@@ -11,18 +12,32 @@ const FinanceStatsCards = ({ stats, t }) => {
     const breakdownTypes = ['appointments', 'prescriptions', 'licenses', 'certificates'];
     const otherStats = stats.filter(s => breakdownTypes.includes(s.type));
 
-    // Icon and label mapping for better identification
+    // Icon mapping using semantic names for the Icon atom
     const typeIcons = {
-        cash: '💵',
-        transfer: '🏦',
-        withdrawal: '📤',
-        expenses: '📉',
-        appointments: '🗓️',
-        prescriptions: '💊',
-        licenses: '📄',
-        certificates: '📜',
-        net_cash: '💰',
-        pending_debt: '⚠️'
+        cash: 'payments',
+        transfer: 'account_balance',
+        withdrawal: 'logout',
+        expenses: 'trending_down',
+        appointments: 'calendar_month',
+        prescriptions: 'medication',
+        licenses: 'badge',
+        certificates: 'verified',
+        net_cash: 'monetization_on',
+        pending_debt: 'warning'
+    };
+
+    // Color mapping for icons to maintain rich aesthetics
+    const typeColors = {
+        cash: 'var(--green-600)',
+        transfer: 'var(--blue-600)',
+        withdrawal: 'var(--orange-600)',
+        expenses: 'var(--red-600)',
+        appointments: 'var(--indigo-600)',
+        prescriptions: 'var(--pink-600)',
+        licenses: 'var(--sky-600)',
+        certificates: 'var(--amber-600)',
+        net_cash: 'var(--yellow-600)',
+        pending_debt: 'var(--error)'
     };
 
     return (
@@ -31,7 +46,8 @@ const FinanceStatsCards = ({ stats, t }) => {
             {otherStats.map((s, idx) => (
                 <Card key={idx} className="finance-stats__card">
                     <span className="finance-stats__title">
-                        {typeIcons[s.type] || ''} {t(s.type) || s.type}
+                        <Icon name={typeIcons[s.type]} size="0.8rem" color={typeColors[s.type]} className="mr-1" />
+                        {t(s.type) || s.type}
                     </span>
 
                     <div className="finance-stats__breakdown">
@@ -47,21 +63,27 @@ const FinanceStatsCards = ({ stats, t }) => {
                             </thead>
                             <tbody>
                                 {[
-                                    { l: 'this_day', d: { count: s.today?.count || 0, paid: s.today?.paid || s.today || 0 }, c: 'finance-stats__value--purple' },
-                                    { l: 'this_month', d: { count: s.month?.count || 0, paid: s.month?.paid || s.month || 0 }, c: 'finance-stats__value--gray' },
-                                    { l: 'this_year', d: { count: s.year?.count || 0, paid: s.year?.paid || s.year || 0 }, c: 'finance-stats__value--muted' }
+                                    { l: 'this_day', d: s.today, c: 'finance-stats__value--purple' },
+                                    { l: 'this_month', d: s.month, c: 'finance-stats__value--gray' },
+                                    { l: 'this_year', d: s.year, c: 'finance-stats__value--muted' }
                                 ]
-                                    .map(row => (
-                                        <tr key={row.l}>
-                                            <td className="finance-stats__table-cell finance-stats__label">{t(row.l) || row.l}</td>
-                                            <td className={`finance-stats__table-cell text-right font-bold ${row.c}`}>
-                                                {Number(row.d.count || 0).toLocaleString()}
-                                            </td>
-                                            <td className="finance-stats__table-cell text-right font-bold finance-stats__value--green">
-                                                ${Number(row.d.paid || 0).toLocaleString()}
-                                            </td>
-                                        </tr>
-                                    ))}
+                                    .map(row => {
+                                        // Safety check: row.d can be an object {count, paid} or a number (legacy/flat)
+                                        const count = typeof row.d === 'object' ? (row.d?.count ?? 0) : 0;
+                                        const paid = typeof row.d === 'object' ? (row.d?.paid ?? 0) : (row.d ?? 0);
+
+                                        return (
+                                            <tr key={row.l}>
+                                                <td className="finance-stats__table-cell finance-stats__label">{t(row.l) || row.l}</td>
+                                                <td className={`finance-stats__table-cell text-right font-bold ${row.c}`}>
+                                                    {Number(count).toLocaleString()}
+                                                </td>
+                                                <td className="finance-stats__table-cell text-right font-bold finance-stats__value--green">
+                                                    ${Number(paid).toLocaleString()}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
                             </tbody>
                         </table>
                         <div className="finance-stats__row finance-stats__row--divider">
@@ -77,7 +99,10 @@ const FinanceStatsCards = ({ stats, t }) => {
             {/* Combined Payment Methods Card with Financial Summary */}
             {(tableStats.length > 0 || financialSummary.length > 0) && (
                 <Card className="finance-stats__card">
-                    <span className="finance-stats__title">{t('payment_methods') || 'MÉTODOS DE PAGO / GASTOS'}</span>
+                    <span className="finance-stats__title">
+                        <Icon name="payments" size="0.8rem" className="mr-1" />
+                        {t('payment_methods') || 'MÉTODOS DE PAGO / GASTOS'}
+                    </span>
                     <div className="finance-stats__breakdown">
                         <table className="finance-stats__table">
                             <thead>
@@ -92,9 +117,10 @@ const FinanceStatsCards = ({ stats, t }) => {
                                 {tableStats.map((s, idx) => {
                                     const isNegative = ['expenses', 'withdrawal'].includes(s.type);
                                     return (
-                                        <tr key={idx}>
+                                        <tr key={idx} className="finance-stats__method-row">
                                             <td className="finance-stats__table-cell finance-stats__label">
-                                                {typeIcons[s.type] || ''} {(t(s.type) || s.type).toUpperCase()}
+                                                <Icon name={typeIcons[s.type]} size="0.7rem" color={typeColors[s.type]} className="mr-1" />
+                                                {(t(s.type) || s.type).toUpperCase()}
                                                 {s.type === 'cash' ? ` (${t('concept_income') || 'Ingreso'})` : ''}
                                                 {s.type === 'transfer' ? ` (${t('concept_income') || 'Ingreso'})` : ''}
                                             </td>
@@ -113,7 +139,8 @@ const FinanceStatsCards = ({ stats, t }) => {
                                 {financialSummary.map((s, idx) => (
                                     <tr key={`summary-${idx}`} className="finance-stats__summary-row">
                                         <td className="finance-stats__table-cell finance-stats__label font-bold">
-                                            {typeIcons[s.type] || ''} = {(t(s.type) || s.type).toUpperCase()}
+                                            <Icon name={typeIcons[s.type]} size="0.75rem" color={typeColors[s.type]} className="mr-1" />
+                                            = {(t(s.type) || s.type).toUpperCase()}
                                         </td>
                                         <td className="finance-stats__table-cell text-right font-bold finance-stats__value--purple">
                                             ${Number(s.today).toLocaleString()}

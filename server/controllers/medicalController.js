@@ -244,8 +244,8 @@ exports.createPrescription = async (req, res) => {
                 const medName = item.name || item.medication_name;
                 await conn.query(
                     `INSERT INTO prescription_items 
-                    (prescription_id, vademecum_id, medication_name, presentation, monodroga, dose, frequency, duration, quantity) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                    (prescription_id, vademecum_id, medication_name, presentation, monodroga, dose, frequency, duration, quantity, daily_intake, units_per_box) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                     [
                         prescriptionId,
                         item.vademecum_id || null,
@@ -255,7 +255,9 @@ exports.createPrescription = async (req, res) => {
                         item.dose || null,
                         item.frequency || null,
                         item.duration || null,
-                        item.quantity || null
+                        item.quantity || null,
+                        item.daily_units || null,
+                        item.units_per_box || null
                     ]
                 );
 
@@ -265,27 +267,29 @@ exports.createPrescription = async (req, res) => {
                         "SELECT id FROM patient_medications WHERE patient_id = ? AND medication_name = ? AND status = 'active'",
                         [patientId, medName]
                     );
-                                            if (!existing) {
-                                                                            // Calculate next_refill_date
-                                                                            let nextRefillDate = null;
-                                                                            const refillDays = calculateRefillDays(parseFloat(item.frequency), parseInt(item.quantity), parseInt(item.units_per_box));
-                                                                            if (refillDays !== null) {
-                                                                                const today = new Date();
-                                                                                today.setDate(today.getDate() + refillDays);
-                                                                                nextRefillDate = today.toISOString().split('T')[0];
-                                                                            }
-                                                
-                                                                            await conn.query(
-                                                                                `INSERT INTO patient_medications (patient_id, medication_name, dose, frequency, monodroga, presentation, vademecum_id, added_by, next_refill_date, units_per_box, boxes_count)
-                                                                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                                                                                [
-                                                                                    patientId, medName, item.dose || null, item.frequency || null,
-                                                                                    item.drug || item.monodroga || null, item.presentation || null,
-                                                                                    item.vademecum_id || null, req.user.user_id, nextRefillDate,
-                                                                                    item.units_per_box || null, item.quantity || null // item.quantity is now boxes_count
-                                                                                ]
-                                                                            );                                                console.log(`DEBUG: Auto-saved ${medName} to history for patient ${patientId}`);
-                                            }                }
+                    if (!existing) {
+                        // Calculate next_refill_date
+                        let nextRefillDate = null;
+                        const refillDays = calculateRefillDays(parseFloat(item.daily_units), parseInt(item.quantity), parseInt(item.units_per_box));
+                        if (refillDays !== null) {
+                            const today = new Date();
+                            today.setDate(today.getDate() + refillDays);
+                            nextRefillDate = today.toISOString().split('T')[0];
+                        }
+
+                        await conn.query(
+                            `INSERT INTO patient_medications (patient_id, medication_name, dose, frequency, monodroga, presentation, vademecum_id, added_by, next_refill_date, units_per_box, boxes_count, daily_intake)
+                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                            [
+                                patientId, medName, item.dose || null, item.frequency || null,
+                                item.drug || item.monodroga || null, item.presentation || null,
+                                item.vademecum_id || null, req.user.user_id, nextRefillDate,
+                                item.units_per_box || null, item.quantity || null, item.daily_units || null
+                            ]
+                        );
+                        console.log(`DEBUG: Auto-saved ${medName} to history for patient ${patientId}`);
+                    }
+                }
             }
         }
 
@@ -735,9 +739,12 @@ exports.createRequest = async (req, res) => {
                         const quantity = (typeof item === 'object' && item.quantity !== '') ? item.quantity : null;
 
                         if (name) {
+                            const dailyUnits = (typeof item === 'object') ? item.daily_units : null;
+                            const upb = (typeof item === 'object') ? item.units_per_box : null;
+
                             await conn.query(
-                                "INSERT INTO medical_request_items (request_id, medication_name, dose, frequency, quantity, status, vademecum_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                                [result.insertId, name, dose, frequency, quantity, 'pending', item.vademecum_id || null]
+                                "INSERT INTO medical_request_items (request_id, medication_name, dose, frequency, quantity, status, vademecum_id, daily_intake, units_per_box) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                                [result.insertId, name, dose, frequency, quantity, 'pending', item.vademecum_id || null, dailyUnits, upb]
                             );
 
                             // [AUTO-SAVE] Save to patient habitual list
@@ -746,10 +753,21 @@ exports.createRequest = async (req, res) => {
                                 [patient_id, name]
                             );
                             if (!existing) {
+                                // Calculate next_refill_date if data available
+                                let nextRefillDate = null;
+                                if (dailyUnits && quantity && upb) {
+                                    const refillDays = calculateRefillDays(parseFloat(dailyUnits), parseInt(quantity), parseInt(upb));
+                                    if (refillDays !== null) {
+                                        const today = new Date();
+                                        today.setDate(today.getDate() + refillDays);
+                                        nextRefillDate = today.toISOString().split('T')[0];
+                                    }
+                                }
+
                                 await conn.query(
-                                    `INSERT INTO patient_medications (patient_id, medication_name, dose, frequency, vademecum_id, added_by) 
-                                     VALUES (?, ?, ?, ?, ?, ?)`,
-                                    [patient_id, name, dose, frequency, item.vademecum_id || null, req.user.user_id]
+                                    `INSERT INTO patient_medications (patient_id, medication_name, dose, frequency, vademecum_id, added_by, daily_intake, units_per_box, boxes_count, next_refill_date) 
+                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                                    [patient_id, name, dose, frequency, item.vademecum_id || null, req.user.user_id, dailyUnits, upb, quantity, nextRefillDate]
                                 );
                             }
                         }
@@ -992,9 +1010,12 @@ exports.updateRequest = async (req, res) => {
                         const status = typeof item === 'object' ? (item.status || 'pending') : 'pending';
 
                         if (name) {
+                            const dailyUnits = (typeof item === 'object') ? item.daily_units : null;
+                            const upb = (typeof item === 'object') ? item.units_per_box : null;
+
                             await conn.query(
-                                "INSERT INTO medical_request_items (request_id, medication_name, dose, frequency, quantity, status) VALUES (?, ?, ?, ?, ?, ?)",
-                                [id, name, dose, frequency, quantity, status]
+                                "INSERT INTO medical_request_items (request_id, medication_name, dose, frequency, quantity, status, daily_intake, units_per_box) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                                [id, name, dose, frequency, quantity, status, dailyUnits, upb]
                             );
                         }
                     }

@@ -1,6 +1,7 @@
 import React from 'react';
 import Card from '../atoms/Card';
 import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
 import './CashBoxSummary.css';
 
 const CashBoxSummary = ({
@@ -25,11 +26,13 @@ const CashBoxSummary = ({
                             <span className="cash-box__name--compact">{d.full_name?.split(' ')[0]}</span>
                             <div className="cash-box__values--compact">
                                 <span className="cash-box__method cash-box__method--cash">
-                                    💵 ${balances.cash.toLocaleString()}
+                                    <Icon name="payments" size="0.8rem" color="var(--green-600)" className="mr-1" />
+                                    ${balances.cash.toLocaleString()}
                                 </span>
                                 <span className="cash-box__separator">|</span>
                                 <span className="cash-box__method cash-box__method--transfer">
-                                    🏦 ${balances.transfer.toLocaleString()}
+                                    <Icon name="account_balance" size="0.8rem" color="var(--blue-600)" className="mr-1" />
+                                    ${balances.transfer.toLocaleString()}
                                 </span>
                             </div>
                         </div>
@@ -62,13 +65,19 @@ const CashBoxSummary = ({
                             <h4 className="cash-box__name">{d.full_name}</h4>
                             <div className="cash-box__values">
                                 <div className="flex justify-between items-center">
-                                    <span className="finance-stats__label">Efectivo</span>
+                                    <span className="finance-stats__label">
+                                        <Icon name="payments" size="1rem" color="var(--green-600)" className="mr-1" />
+                                        Efectivo
+                                    </span>
                                     <span className="cash-box__method cash-box__method--cash">
                                         ${balances.cash.toLocaleString()}
                                     </span>
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <span className="finance-stats__label">Transferencia</span>
+                                    <span className="finance-stats__label">
+                                        <Icon name="account_balance" size="1rem" color="var(--blue-600)" className="mr-1" />
+                                        Transferencia
+                                    </span>
                                     <span className="cash-box__method cash-box__method--transfer">
                                         ${balances.transfer.toLocaleString()}
                                     </span>

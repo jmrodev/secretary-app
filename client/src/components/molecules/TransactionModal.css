@@ -89,10 +89,10 @@
 }
 
 .payment-methods-card__title {
-    font-size: 0.75rem !important;
-    font-weight: 800 !important;
+    font-size: 0.72rem;
+    font-weight: 800;
     color: var(--text-muted);
-    margin: 0 !important;
+    margin: 0;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -187,11 +187,12 @@
     width: 140px;
 }
 
-.payment-summary__total-input {
-    font-weight: 900 !important;
-    font-size: 1.1rem !important;
-    color: var(--blue-700) !important;
+.payment-summary__input-wrapper .payment-summary__total-input {
+    font-weight: 900;
+    font-size: 1.15rem;
+    color: var(--blue-700);
     text-align: right;
+    border-bottom: 2px solid var(--blue-600);
 }
 
 .payment-summary__status {

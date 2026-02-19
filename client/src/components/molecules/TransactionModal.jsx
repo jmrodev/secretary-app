@@ -48,7 +48,8 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
         medications,
         selectedPatient,
         addMedication,
-        removeMedication
+        removeMedication,
+        setTotalPrice
     } = useTransactionForm(isOpen, initialData, requestId, onSuccess, onClose);
 
     // Derived State

@@ -51,6 +51,10 @@
 
 @media (min-width: 768px) {
     .medical-request-form__field-group-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .medical-request-form__field-group-row--numeric {
         grid-template-columns: 1fr 1fr 1fr;
     }
 }
@@ -129,6 +133,59 @@
     padding: 0.15rem 0.4rem;
     border: 1px solid var(--border-color);
     border-radius: 4px;
+}
+
+.medical-request-form__freq-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-bottom: 0.25rem;
+}
+
+.medical-request-form__freq-btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: var(--gray-50);
+    border: 1px solid var(--border-color);
+    border-radius: 99px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.medical-request-form__freq-btn:hover {
+    background: var(--blue-50);
+    color: var(--blue-600);
+}
+
+.medical-request-form__freq-btn--active {
+    background: var(--blue-600) !important;
+    border-color: var(--blue-700) !important;
+    color: white !important;
+}
+
+.medical-request-form__supply-preview {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.9rem;
+    background: var(--success-50, #ecfdf5);
+    border: 1px solid var(--success-200, #a7f3d0);
+    border-radius: 0.6rem;
+    font-size: 0.75rem;
+    color: var(--success-700, #065f46);
+    margin-top: 0.5rem;
+}
+
+.medical-request-form__supply-text {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+.medical-request-form__refill-date {
+    opacity: 0.9;
 }
 
 .medical-request-form__habitual-section {
@@ -261,4 +318,18 @@
     font-weight: 600;
     color: var(--text-secondary);
     border: 1px solid var(--border-color);
+}
+
+.medical-request-form__select {
+    height: 34px;
+    /* matching input--sm roughly */
+    padding: 0 0.5rem;
+    cursor: pointer;
+    background-color: white;
+}
+
+.medical-request-form__select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px var(--primary-100);
 }

@@ -4,7 +4,12 @@ import Button from '../atoms/Button';
 import CurrencyInput from '../atoms/CurrencyInput';
 import Select from '../atoms/Select';
 import { getPaymentMethods } from '../../constants/transactionOptions';
+import './DebtPaymentModal.css';
 
+/**
+ * DebtPaymentModal Component
+ * Follows strict BEM and Atomic Design (Mocelule)
+ */
 const DebtPaymentModal = ({
     isOpen,
     onClose,
@@ -29,19 +34,17 @@ const DebtPaymentModal = ({
                 </>
             }
         >
-            <div className="flex flex-col gap-4">
-                <div className="input-group">
-                    <label className="input-label">{t('amount')} ($)</label>
+            <div className="debt-payment-modal">
+                <div className="debt-payment-modal__field">
+                    <label className="debt-payment-modal__label">{t('amount')} ($)</label>
                     <CurrencyInput
-                        className="input-field"
                         value={amount}
                         onChange={(e) => onAmountChange(e.target.value)}
                     />
                 </div>
-                <div className="input-group">
-                    <label className="input-label">{t('payment_method')}</label>
+                <div className="debt-payment-modal__field">
+                    <label className="debt-payment-modal__label">{t('payment_method')}</label>
                     <Select
-                        className="input-field"
                         value={method}
                         onChange={(e) => onMethodChange(e.target.value)}
                         options={paymentMethods}

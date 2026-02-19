@@ -178,27 +178,24 @@ exports.getStats = async (req, res) => {
             },
             {
                 type: 'prescriptions',
-                today: stats.prescriptions.today.paid,
-                month: stats.prescriptions.month.paid,
-                year: stats.prescriptions.year.paid,
-                debt: stats.prescriptions.month.debt,
-                count: stats.prescriptions.month.count
+                today: stats.prescriptions.today,
+                month: stats.prescriptions.month,
+                year: stats.prescriptions.year,
+                debt: stats.prescriptions.month.debt
             },
             {
                 type: 'licenses',
-                today: stats.licenses.today.paid,
-                month: stats.licenses.month.paid,
-                year: stats.licenses.year.paid,
-                debt: stats.licenses.month.debt,
-                count: stats.licenses.month.count
+                today: stats.licenses.today,
+                month: stats.licenses.month,
+                year: stats.licenses.year,
+                debt: stats.licenses.month.debt
             },
             {
                 type: 'certificates',
-                today: stats.certificates.today.paid,
-                month: stats.certificates.month.paid,
-                year: stats.certificates.year.paid,
-                debt: stats.certificates.month.debt,
-                count: stats.certificates.month.count
+                today: stats.certificates.today,
+                month: stats.certificates.month,
+                year: stats.certificates.year,
+                debt: stats.certificates.month.debt
             },
             { type: 'pending_debt', total: stats.totalDebt },
             {

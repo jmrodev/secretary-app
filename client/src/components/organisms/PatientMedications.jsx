@@ -173,10 +173,22 @@ const PatientMedications = ({ patientId, patientName }) => {
 
     const handleDailyIntakeChange = (val) => {
         const date = calculateRefillDate(currentMed.units_per_box, val, currentMed.boxes_count);
+
+        let freqStr = '';
+        if (val) {
+            const num = parseFloat(val);
+            freqStr = `${val} por día`;
+            if (num === 1) freqStr = 'cada 24hs';
+            else if (num === 2) freqStr = 'cada 12hs';
+            else if (num === 3) freqStr = 'cada 8hs';
+            else if (num === 4) freqStr = 'cada 6hs';
+            else if (num === 0.5) freqStr = 'día por medio';
+        }
+
         setCurrentMed(prev => ({
             ...prev,
             daily_intake: val,
-            dose: val ? `${val} por día` : prev.dose,
+            frequency: freqStr || prev.frequency,
             next_refill_date: prev.reminder_mode === 'calculation' ? (date || prev.next_refill_date) : prev.next_refill_date
         }));
     };
@@ -378,16 +390,20 @@ const PatientMedications = ({ patientId, patientName }) => {
                                     {currentMed.reminder_mode === 'calculation' && (
                                         <div className="patient-medications__config-grid animate-fadeIn">
                                             <div className="config-field">
-                                                <label className="config-field__label">{t('units_per_box')}</label>
-                                                <input
-                                                    type="number"
+                                                <label className="config-field__label">{t('units_per_box') || 'Caja de (X) pastillas'}</label>
+                                                <select
                                                     className="config-field__input"
                                                     value={currentMed.units_per_box}
                                                     onChange={e => handleUnitsChange(e.target.value)}
-                                                />
+                                                >
+                                                    <option value="">{t('select_option') || 'Sel.'}</option>
+                                                    {[10, 14, 20, 28, 30, 40, 50, 60, 100].map(v => (
+                                                        <option key={v} value={v}>{v}</option>
+                                                    ))}
+                                                </select>
                                             </div>
                                             <div className="config-field">
-                                                <label className="config-field__label">{t('boxes_count')}</label>
+                                                <label className="config-field__label">{t('boxes_count') || 'Cantidad de cajas'}</label>
                                                 <input
                                                     type="number"
                                                     min="1"
@@ -397,15 +413,19 @@ const PatientMedications = ({ patientId, patientName }) => {
                                                 />
                                             </div>
                                             <div className="config-field">
-                                                <label className="config-field__label">{t('daily_intake')}</label>
-                                                <input
-                                                    type="number"
-                                                    min="0.1"
-                                                    step="0.1"
+                                                <label className="config-field__label">{t('daily_intake') || 'Pastillas por día'}</label>
+                                                <select
                                                     className="config-field__input"
                                                     value={currentMed.daily_intake}
                                                     onChange={e => handleDailyIntakeChange(e.target.value)}
-                                                />
+                                                >
+                                                    <option value="">{t('select_option') || 'Sel.'}</option>
+                                                    {[0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4].map(v => (
+                                                        <option key={v} value={v}>
+                                                            {v === 0.25 ? '1/4' : v === 0.5 ? '1/2' : v === 0.75 ? '3/4' : v}
+                                                        </option>
+                                                    ))}
+                                                </select>
                                             </div>
                                         </div>
                                     )}

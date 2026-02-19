@@ -5,6 +5,9 @@
     user-select: none;
     vertical-align: middle;
     transition: all 0.2s ease;
+    text-transform: none !important;
+    /* Force ligatures to work regardless of parents */
+    font-family: 'Material Symbols Outlined' !important;
 }
 
 .icon--button {

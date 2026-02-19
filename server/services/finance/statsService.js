@@ -13,12 +13,13 @@ exports.getDetailedStats = async (doctor_id) => {
     try {
         conn = await pool.getConnection();
 
-        const now = new Date();
-        const todayStr = now.toISOString().split('T')[0];
-        const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        const monthStr = firstDayOfMonth.toISOString().split('T')[0];
-        const firstDayOfYear = new Date(now.getFullYear(), 0, 1);
-        const yearStr = firstDayOfYear.toISOString().split('T')[0];
+        const { nowLocalSQL } = require('../../utils/dateUtils');
+        const nowString = nowLocalSQL(); // "YYYY-MM-DD HH:mm:ss"
+        const todayStr = nowString.split(' ')[0];
+        const monthStr = todayStr.slice(0, 7) + '-01';
+        const yearStr = todayStr.slice(0, 4) + '-01-01';
+
+        console.log(`🔍 StatsService: today=${todayStr}, month=${monthStr}, year=${yearStr}`);
 
         // SQL Filter for specific doctor
         const doctorFilter = doctor_id ? " AND doctor_id = ?" : "";
@@ -40,7 +41,7 @@ exports.getDetailedStats = async (doctor_id) => {
             FROM transactions t
             WHERE 1=1 ${doctorFilter}
         `;
-        const [statsRows] = await conn.query(statsQuery, statsParams);
+        const statsRows = await conn.query(statsQuery, statsParams);
         const statsRow = statsRows[0] || {};
 
         // 2. Year Stats Query
@@ -54,7 +55,7 @@ exports.getDetailedStats = async (doctor_id) => {
             WHERE status = 'paid' AND transaction_date >= ?
             ${doctorFilter}
         `;
-        const [yearRows] = await conn.query(yearQuery, doctor_id ? [yearStr, doctor_id] : [yearStr]);
+        const yearRows = await conn.query(yearQuery, doctor_id ? [yearStr, doctor_id] : [yearStr]);
         const yearRow = yearRows[0] || {};
 
         // 3. Helper for Requests (Prescriptions, Licenses, Certificates)
@@ -76,9 +77,9 @@ exports.getDetailedStats = async (doctor_id) => {
             `;
 
             // Execute queries and unwrap the first row (since these are aggregations)
-            const [todayRows] = await conn.query(q("DATE(r.created_at) = ?"), params);
-            const [monthRows] = await conn.query(q("r.created_at >= ?"), monthParams);
-            const [yearRows] = await conn.query(q("r.created_at >= ?"), yearParams);
+            const todayRows = await conn.query(q("DATE(r.created_at) = ?"), params);
+            const monthRows = await conn.query(q("r.created_at >= ?"), monthParams);
+            const yearRows = await conn.query(q("r.created_at >= ?"), yearParams);
 
             return {
                 today: todayRows[0] || { count: 0, paid: 0, debt: 0 },
@@ -104,12 +105,12 @@ exports.getDetailedStats = async (doctor_id) => {
                 ${doctor_id ? " AND a.doctor_id = ?" : ""}
             `;
 
-            const [todayRows] = await conn.query(q("DATE(a.appointment_date) = ?"), paramsToday);
-            const [monthRows] = await conn.query(q("a.appointment_date >= ?"), paramsMonth);
-            const [yearRows] = await conn.query(q("a.appointment_date >= ?"), paramsYear);
+            const todayRows = await conn.query(q("DATE(a.appointment_date) = ?"), paramsToday);
+            const monthRows = await conn.query(q("a.appointment_date >= ?"), paramsMonth);
+            const yearRows = await conn.query(q("a.appointment_date >= ?"), paramsYear);
 
             // Debt for past/finalized appointments
-            const [debtRow] = await conn.query(`
+            const debtRows = await conn.query(`
                 SELECT SUM(t.amount) as total 
                 FROM transactions t
                 JOIN appointments a ON t.appointment_id = a.id
@@ -117,6 +118,7 @@ exports.getDetailedStats = async (doctor_id) => {
                   AND a.status IN ('completed', 'attended', 'arrived', 'absent')
                   ${doctor_id ? " AND t.doctor_id = ?" : ""}
             `, doctor_id ? [doctor_id] : []);
+            const debtRow = debtRows[0];
 
             return {
                 today: todayRows[0] || { count: 0, paid: 0 },
@@ -127,7 +129,7 @@ exports.getDetailedStats = async (doctor_id) => {
         };
 
         // 5. General Expenses
-        const [expenseRows] = await conn.query(`
+        const expenseRows = await conn.query(`
             SELECT 
                 SUM(CASE WHEN DATE(transaction_date) = ? THEN amount ELSE 0 END) as today,
                 SUM(CASE WHEN transaction_date >= ? THEN amount ELSE 0 END) as month,
@@ -139,12 +141,12 @@ exports.getDetailedStats = async (doctor_id) => {
         const expenseRow = expenseRows[0] || {};
 
         // Aggregate All Data
-        const apptData = await getApptBreakdown();
-        const rxData = await getRequestBreakdown('prescription');
-        const licData = await getRequestBreakdown('license');
-        const certData = await getRequestBreakdown('certificate');
+        const apptDataRaw = await getApptBreakdown();
+        const rxDataRaw = await getRequestBreakdown('prescription');
+        const licDataRaw = await getRequestBreakdown('license');
+        const certDataRaw = await getRequestBreakdown('certificate');
 
-        const [totalDebtRows] = await conn.query(`
+        const totalDebtRows = await conn.query(`
             SELECT SUM(amount) as total 
             FROM transactions t
             LEFT JOIN appointments a ON t.appointment_id = a.id
@@ -153,6 +155,31 @@ exports.getDetailedStats = async (doctor_id) => {
               ${doctor_id ? " AND t.doctor_id = ?" : ""}
         `, doctor_id ? [doctor_id] : []);
         const totalDebtVal = totalDebtRows[0]?.total || 0;
+
+        const apptData = {
+            today: { count: Number(apptDataRaw.today.count || 0), paid: Number(apptDataRaw.today.paid || 0) },
+            month: { count: Number(apptDataRaw.month.count || 0), paid: Number(apptDataRaw.month.paid || 0) },
+            year: { count: Number(apptDataRaw.year.count || 0), paid: Number(apptDataRaw.year.paid || 0) },
+            debt: Number(apptDataRaw.debt || 0)
+        };
+
+        const rxData = {
+            today: { count: Number(rxDataRaw.today.count || 0), paid: Number(rxDataRaw.today.paid || 0), debt: Number(rxDataRaw.today.debt || 0) },
+            month: { count: Number(rxDataRaw.month.count || 0), paid: Number(rxDataRaw.month.paid || 0), debt: Number(rxDataRaw.month.debt || 0) },
+            year: { count: Number(rxDataRaw.year.count || 0), paid: Number(rxDataRaw.year.paid || 0), debt: Number(rxDataRaw.year.debt || 0) }
+        };
+
+        const licData = {
+            today: { count: Number(licDataRaw.today.count || 0), paid: Number(licDataRaw.today.paid || 0), debt: Number(licDataRaw.today.debt || 0) },
+            month: { count: Number(licDataRaw.month.count || 0), paid: Number(licDataRaw.month.paid || 0), debt: Number(licDataRaw.month.debt || 0) },
+            year: { count: Number(licDataRaw.year.count || 0), paid: Number(licDataRaw.year.paid || 0), debt: Number(licDataRaw.year.debt || 0) }
+        };
+
+        const certData = {
+            today: { count: Number(certDataRaw.today.count || 0), paid: Number(certDataRaw.today.paid || 0), debt: Number(certDataRaw.today.debt || 0) },
+            month: { count: Number(certDataRaw.month.count || 0), paid: Number(certDataRaw.month.paid || 0), debt: Number(certDataRaw.month.debt || 0) },
+            year: { count: Number(certDataRaw.year.count || 0), paid: Number(certDataRaw.year.paid || 0), debt: Number(certDataRaw.year.debt || 0) }
+        };
 
         const stats = {
             todayCash: Number(statsRow.todayCash || 0),
@@ -174,7 +201,7 @@ exports.getDetailedStats = async (doctor_id) => {
             prescriptions: rxData,
             licenses: licData,
             certificates: certData,
-            totalDebt: totalDebtVal
+            totalDebt: Number(totalDebtVal || 0)
         };
 
         return stats;

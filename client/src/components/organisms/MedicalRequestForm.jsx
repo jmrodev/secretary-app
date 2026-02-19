@@ -17,6 +17,18 @@ import Badge from '../atoms/Badge';
 import Tooltip from '../atoms/Tooltip';
 import './MedicalRequestForm.css';
 
+// Common frequency presets: label (display) + unitsPerDay (numeric)
+const FREQ_PRESETS = [
+    { label: '1/día', unitsPerDay: 1, text: 'cada 24hs' },
+    { label: '2/día', unitsPerDay: 2, text: 'cada 12hs' },
+    { label: '3/día', unitsPerDay: 3, text: 'cada 8hs' },
+    { label: '4/día', unitsPerDay: 4, text: 'cada 6hs' },
+    { label: '½/día', unitsPerDay: 0.5, text: 'cada 48hs' },
+    { label: '¼/día', unitsPerDay: 0.25, text: '1/4 cada 24hs' },
+    { label: '¾/día', unitsPerDay: 0.75, text: '3/4 cada 24hs' },
+    { label: 'Según necesidad', unitsPerDay: null, text: 'según necesidad' },
+];
+
 /**
  * MedicalRequestForm Organism.
  * Form to create new medical requests (prescriptions, licenses, certificates).
@@ -36,10 +48,29 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
     const [tempMed, setTempMed] = useState('');
     const [tempDose, setTempDose] = useState('');
     const [tempFreq, setTempFreq] = useState('');
-    const [tempQty, setTempQty] = useState('');
+    const [tempQty, setTempQty] = useState(''); // this will be boxes count
+    const [tempUnitsPerBox, setTempUnitsPerBox] = useState('');
+    const [tempDailyUnits, setTempDailyUnits] = useState('');
+    const [tempFreqPreset, setTempFreqPreset] = useState(null);
     const [currentVademecumId, setCurrentVademecumId] = useState(null);
     const [sendToDoctor, setSendToDoctor] = useState(initialSendToDoctor !== undefined ? initialSendToDoctor : true);
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Live days-supply calculation
+    const daysSupply = React.useMemo(() => {
+        const upb = parseFloat(tempUnitsPerBox);
+        const boxes = parseFloat(tempQty);
+        const daily = parseFloat(tempDailyUnits);
+        if (!upb || !boxes || !daily || daily <= 0) return null;
+        return Math.floor((upb * boxes) / daily);
+    }, [tempUnitsPerBox, tempQty, tempDailyUnits]);
+
+    const refillDateStr = React.useMemo(() => {
+        if (!daysSupply) return null;
+        const d = new Date();
+        d.setDate(d.getDate() + daysSupply);
+        return d.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
+    }, [daysSupply]);
 
     useEffect(() => {
         if (selectedDoctor) {
@@ -64,6 +95,34 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
         }
     };
 
+    const handleSelectHabitual = (med) => {
+        const medName = med.medication_name || med.name;
+        setTempMed(medName);
+        setTempDose(med.dose || '');
+        setCurrentVademecumId(med.vademecum_id || med.id);
+
+        // Auto-fill numeric values from history
+        if (med.units_per_box) setTempUnitsPerBox(String(med.units_per_box));
+
+        // Handle daily units / daily intake (backend uses daily_intake)
+        const dailyVal = med.daily_units || med.daily_intake;
+        if (dailyVal) {
+            const sVal = String(dailyVal);
+            setTempDailyUnits(sVal);
+            // Auto-generate frequency text
+            const num = parseFloat(sVal);
+            let fStr = `${sVal} por día`;
+            if (num === 1) fStr = 'cada 24hs';
+            else if (num === 2) fStr = 'cada 12hs';
+            else if (num === 3) fStr = 'cada 8hs';
+            else if (num === 4) fStr = 'cada 6hs';
+            else if (num === 0.5) fStr = 'día por medio';
+            setTempFreq(fStr);
+        }
+
+        if (med.boxes_count) setTempQty(String(med.boxes_count));
+    };
+
     const handleCreateRequest = async (e) => {
         e.preventDefault();
         if (isSubmitting) return;
@@ -84,7 +143,10 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                 dose: tempDose.trim(),
                 frequency: tempFreq.trim(),
                 quantity: tempQty.trim(),
-                vademecum_id: currentVademecumId // I need to track this
+                units_per_box: parseFloat(tempUnitsPerBox) || null,
+                daily_units: parseFloat(tempDailyUnits) || null,
+                days_supply: daysSupply,
+                vademecum_id: currentVademecumId
             };
             if (!finalItems.some(i => i.name === newItem.name)) {
                 finalItems.push(newItem);
@@ -96,6 +158,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
             if (i.dose) str += ` ${i.dose}`;
             if (i.frequency) str += ` (${i.frequency})`;
             if (i.quantity) str += ` [Qty: ${i.quantity}]`;
+            if (i.days_supply) str += ` (~${i.days_supply}d)`;
             return str;
         });
 
@@ -129,6 +192,9 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
             setTempDose('');
             setTempFreq('');
             setTempQty('');
+            setTempUnitsPerBox('');
+            setTempDailyUnits('');
+            setTempFreqPreset(null);
             setSendToDoctor(true);
             setSelectedPatient('');
             setPatientData(null);
@@ -208,6 +274,35 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                 >
                     {reqType === 'prescription' ? (
                         <div className={`${baseClass}__medication-section`}>
+                            {/* --- Habitual medications --- */}
+                            {patientMeds.length > 0 && (
+                                <div className={`${baseClass}__habitual`}>
+                                    <label className={`${baseClass}__field-label`}>
+                                        {t('habitual_meds') || 'Habituales'}:
+                                    </label>
+                                    <div className={`${baseClass}__habitual-grid`}>
+                                        {patientMeds.map(m => {
+                                            const isSelected = medicationItems.some(i => i.name === m.medication_name);
+                                            return (
+                                                <button
+                                                    key={m.id}
+                                                    type="button"
+                                                    className={`${baseClass}__habitual-btn ${isSelected ? `${baseClass}__habitual-btn--active` : ''}`}
+                                                    onClick={() => handleSelectHabitual(m)}
+                                                >
+                                                    <span className={`${baseClass}__habitual-name`}>{m.medication_name}</span>
+                                                    {(m.dose || m.daily_intake || m.daily_units) && (
+                                                        <span className={`${baseClass}__habitual-meta`}>
+                                                            {m.dose} {m.dose && (m.daily_intake || m.daily_units) ? '·' : ''} {m.daily_intake || m.daily_units ? `${m.daily_intake || m.daily_units}/d` : ''}
+                                                        </span>
+                                                    )}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+
                             <div className={`${baseClass}__med-input-row`}>
                                 <div className={`${baseClass}__inputs-grid`}>
                                     <div className={`${baseClass}__field-wrapper`}>
@@ -229,7 +324,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                                         <div className={`${baseClass}__field-wrapper`}>
                                             <label className={`${baseClass}__field-label`}>
                                                 {t('dose')}
-                                                <Tooltip text={t('dose_help')} />
+                                                <Tooltip text={t('dose_help') || "Concentración (ej: 500mg, 10mg/ml)"} />
                                             </label>
                                             <Input
                                                 size="sm"
@@ -242,40 +337,119 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                                         <div className={`${baseClass}__field-wrapper`}>
                                             <label className={`${baseClass}__field-label`}>
                                                 {t('frequency')}
-                                                <Tooltip text={t('freq_help')} />
+                                                <Tooltip text={t('freq_help') || "Selecciona o escribe la frecuencia"} />
                                             </label>
-                                            <Input
-                                                size="sm"
-                                                placeholder={t('freq_placeholder') || "Frecuencia (ej: cada 8hs)"}
-                                                value={tempFreq}
-                                                onChange={e => setTempFreq(e.target.value)}
-                                            />
+                                            <div className={`${baseClass}__freq-presets`}>
+                                                {FREQ_PRESETS.map((p, idx) => (
+                                                    <button
+                                                        key={idx}
+                                                        type="button"
+                                                        className={`${baseClass}__freq-btn ${tempFreqPreset === idx ? `${baseClass}__freq-btn--active` : ''}`}
+                                                        onClick={() => {
+                                                            setTempFreqPreset(idx);
+                                                            setTempFreq(p.text);
+                                                            if (p.unitsPerDay !== null) setTempDailyUnits(String(p.unitsPerDay));
+                                                        }}
+                                                    >
+                                                        {p.label}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className={`${baseClass}__field-group-row ${baseClass}__field-group-row--numeric`}>
+                                        <div className={`${baseClass}__field-wrapper`}>
+                                            <label className={`${baseClass}__field-label`}>
+                                                {t('units_per_box') || 'Caja de (X) pastillas'}
+                                            </label>
+                                            <select
+                                                className={`input input--sm ${baseClass}__select`}
+                                                value={tempUnitsPerBox}
+                                                onChange={e => setTempUnitsPerBox(e.target.value)}
+                                            >
+                                                <option value="">{t('select_option') || 'Sel.'}</option>
+                                                {[10, 14, 20, 28, 30, 40, 50, 60, 100].map(v => (
+                                                    <option key={v} value={v}>{v}</option>
+                                                ))}
+                                            </select>
                                         </div>
 
                                         <div className={`${baseClass}__field-wrapper`}>
                                             <label className={`${baseClass}__field-label`}>
-                                                {t('quantity')}
-                                                <Tooltip text={t('qty_help')} />
+                                                {t('daily_units') || 'Pastillas por día'}
+                                            </label>
+                                            <select
+                                                className={`input input--sm ${baseClass}__select`}
+                                                value={tempDailyUnits}
+                                                onChange={e => {
+                                                    const val = e.target.value;
+                                                    setTempDailyUnits(val);
+                                                    setTempFreqPreset(null);
+                                                    // Auto-generate frequency text
+                                                    if (val) {
+                                                        const num = parseFloat(val);
+                                                        let fStr = `${val} por día`;
+                                                        if (num === 1) fStr = 'cada 24hs';
+                                                        else if (num === 2) fStr = 'cada 12hs';
+                                                        else if (num === 3) fStr = 'cada 8hs';
+                                                        else if (num === 4) fStr = 'cada 6hs';
+                                                        else if (num === 0.5) fStr = 'día por medio';
+                                                        setTempFreq(fStr);
+                                                    }
+                                                }}
+                                            >
+                                                <option value="">{t('select_option') || 'Sel.'}</option>
+                                                {[0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4].map(v => (
+                                                    <option key={v} value={v}>
+                                                        {v === 0.25 ? '1/4' : v === 0.5 ? '1/2' : v === 0.75 ? '3/4' : v}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        <div className={`${baseClass}__field-wrapper`}>
+                                            <label className={`${baseClass}__field-label`}>
+                                                {t('quantity') || 'Cantidad de cajas'}
                                             </label>
                                             <Input
                                                 size="sm"
-                                                placeholder={t('qty_placeholder') || "Unidades/Cajas"}
                                                 type="number"
+                                                min="1"
+                                                placeholder="1"
                                                 value={tempQty}
                                                 onChange={e => setTempQty(e.target.value)}
                                             />
                                         </div>
                                     </div>
+
+                                    {daysSupply !== null && (
+                                        <div className={`${baseClass}__supply-preview animate-fadeIn`}>
+                                            <Icon name="notifications" size="1.1rem" />
+                                            <div className={`${baseClass}__supply-text`}>
+                                                {t('supply_prefix') || 'Abastece'} <strong>~{daysSupply} {t('days') || 'días'}</strong>
+                                                {refillDateStr && (
+                                                    <span className={`${baseClass}__refill-date`}>
+                                                        {' '}· {t('automatic_reminder') || 'Sugerido'}: <strong>{refillDateStr}</strong>
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                                 <Button
                                     type="button"
                                     variant="primary"
                                     onClick={() => {
+                                        if (!tempMed.trim()) return;
                                         const newItem = {
                                             name: tempMed.trim(),
                                             dose: tempDose.trim(),
                                             frequency: tempFreq.trim(),
                                             quantity: tempQty.trim(),
+                                            units_per_box: parseFloat(tempUnitsPerBox) || null,
+                                            daily_units: parseFloat(tempDailyUnits) || null,
+                                            days_supply: daysSupply,
                                             vademecum_id: currentVademecumId
                                         };
                                         if (!medicationItems.some(i => i.name === newItem.name)) {
@@ -284,6 +458,9 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                                             setTempDose('');
                                             setTempFreq('');
                                             setTempQty('');
+                                            setTempUnitsPerBox('');
+                                            setTempDailyUnits('');
+                                            setTempFreqPreset(null);
                                             setCurrentVademecumId(null);
                                         }
                                     }}
@@ -312,42 +489,6 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                                 </ul>
                             )}
 
-                            {patientMeds.length > 0 && (
-                                <div className={`${baseClass}__habitual-section`}>
-                                    <span className={`${baseClass}__habitual-label`}>
-                                        {t('patient_current_meds') || 'Medicación actual'}
-                                    </span>
-                                    <div className={`${baseClass}__habitual-grid`}>
-                                        {patientMeds.map(m => {
-                                            const isSelected = medicationItems.some(i => i.name === m.medication_name);
-                                            return (
-                                                <button
-                                                    key={m.id}
-                                                    type="button"
-                                                    className={`${baseClass}__habitual-btn ${isSelected ? `${baseClass}__habitual-btn--active` : ''}`}
-                                                    onClick={() => {
-                                                        if (isSelected) {
-                                                            setMedicationItems(medicationItems.filter(i => i.name !== m.medication_name));
-                                                        } else {
-                                                            const newItem = {
-                                                                name: m.medication_name,
-                                                                dose: m.dose || '',
-                                                                frequency: m.frequency || '',
-                                                                quantity: '',
-                                                                vademecum_id: m.vademecum_id
-                                                            };
-                                                            setMedicationItems([...medicationItems, newItem]);
-                                                        }
-                                                    }}
-                                                >
-                                                    <span className={`${baseClass}__habitual-name`}>{m.medication_name} {m.dose}</span>
-                                                    <span className={`${baseClass}__habitual-meta`}>{m.frequency}</span>
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            )}
                         </div>
                     ) : (
                         <Input
