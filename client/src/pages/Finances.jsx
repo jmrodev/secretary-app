@@ -193,20 +193,6 @@ const Finances = () => {
                         />
                     )
                 }
-                {
-                    editingTx && (
-                        <EditTransactionModal
-                            isOpen={!!editingTx}
-                            onClose={() => handlers.setEditingTx(null)}
-                            onSave={handlers.onUpdateTransaction}
-                            transaction={editingTx}
-                            setTransaction={handlers.setEditingTx}
-                            settings={settings}
-                            user={user}
-                            t={t}
-                        />
-                    )
-                }
 
 
 
@@ -216,6 +202,7 @@ const Finances = () => {
                     pendingClosures={controller.pendingClosures}
                     duplicateClosures={controller.duplicateClosures}
                     onAutoClosure={handlers.handleAutoClosure}
+                    onCloseAll={handlers.handleCloseAllPending}
                     onFixDuplicates={handlers.handleFixDuplicates}
                     t={t}
                 />

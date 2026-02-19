@@ -145,29 +145,7 @@ export const useFinancesPageController = () => {
                 transaction_date: dateTime,
                 status: 'paid',
                 method: 'cash',
-                // Note: backend 'createTransaction' usually infers 'type' but doesn't set is_withdrawal explicitly from body unless we modify backend.
-                // Wait, backend logic for 'withdrawal' type MIGHT set is_withdrawal=1 automatically?
-                // Looking at backend code (line 16): const { type ... } = req.body.
-                // It inserts type. It does NOT set is_withdrawal based on type unless we changed it.
-                // Wait, closeCashBox uses explicit query: INSERT ... is_withdrawal=TRUE.
-                // createTransaction uses generic INSERT.
-                // schema says is_withdrawal DEFAULT 0.
-
-                // CRITICAL: Does createTransaction insert 'is_withdrawal'?
-                // Line 51: INSERT INTO transactions (... method, status, proof_file, request_id, appointment_id, transaction_date) VALUES ...
-                // It does NOT include is_withdrawal column in the INSERT statement of createTransaction!
-                // So createTransaction CANNOT create a withdrawal properly for stats if stats rely on is_withdrawal=1.
-
-                // Fix: I must use a new endpoint or modify createTransaction in backend OR use closeCashBox endpoint but allow date override?
-                // closeCashBox endpoint (line 475) does NOT take date as input. It uses NOW() defaults or doesn't specify date (DB default CURRENT_TIMESTAMP).
-
-                // CONCLUSION: I MUST UPDATE BACKEND 'createTransaction' to accept 'is_withdrawal' OR handle 'type=withdrawal' by setting flag.
-
-                // Plan B: I will use 'closeCashBox' endpoint BUT I will add date support to it in backend first? 
-                // Or better, modify 'createTransaction' in backend to support is_withdrawal.
-                // But I am in frontend step.
-
-                // Let's assume for a moment I can fix backend in next step. I will send 'is_withdrawal': true.
+                is_withdrawal: true
             });
 
             // Actually, I should inspect backend createTransaction again.
@@ -273,15 +251,10 @@ export const useFinancesPageController = () => {
 
             const amount = parseFloat(t.amount) || 0;
 
-            // Robust check for withdrawals/expenses
-            // (desc is already defined above, but scoped? careful)
-            // Let's reuse desc from above scope if available or re-define if not blocked
-            const isExplicitWithdrawal = (t.description || '').includes('Entrega de Caja') || (t.description || '').includes('Cierre') || (t.description || '').includes('Retiro');
-
-            const isWithdrawalType = t.is_withdrawal || t.type === 'withdrawal' || t.type === 'payment_doctor';
-            const isWithdrawal = isWithdrawalType || isExplicitWithdrawal;
-            const isExpense = t.type.includes('expense');
-            const isIncome = !isWithdrawal && !isExpense; // Simplified assumption for remaining income types
+            // Unambiguous classification using database flags, not fragile string matching
+            const isWithdrawal = t.is_withdrawal === 1 || t.is_withdrawal === true || t.type === 'withdrawal';
+            const isExpense = String(t.type).startsWith('expense');
+            const isIncome = !isWithdrawal && !isExpense;
 
             if (t.method === 'transfer') {
                 if (isWithdrawal || isExpense) {
@@ -289,22 +262,25 @@ export const useFinancesPageController = () => {
                 } else if (isIncome) {
                     daysMap[dateStr].transferBalance += amount;
                 }
-            } else {
-                // Default to CASH (null, 'cash', or others)
+            } else if (t.method === 'cash') {
                 if (isWithdrawal || isExpense) {
                     daysMap[dateStr].balance -= amount;
                 } else if (isIncome) {
                     daysMap[dateStr].balance += amount;
+                }
+            }
 
-                    // Track last income time
-                    let timeStr = '00:00';
-                    if (typeof t.transaction_date === 'string') {
-                        if (t.transaction_date.includes('T')) timeStr = t.transaction_date.split('T')[1].substring(0, 5);
-                        else if (t.transaction_date.includes(' ')) timeStr = t.transaction_date.split(' ')[1].substring(0, 5);
-                    } else if (t.transaction_date instanceof Date) {
-                        timeStr = t.transaction_date.toTimeString().substring(0, 5);
-                    }
-                    if (timeStr > daysMap[dateStr].lastTime) daysMap[dateStr].lastTime = timeStr;
+            if (isIncome && (t.method === 'cash' || t.method === 'transfer')) {
+                // Track last income time
+                let timeStr = '00:00';
+                if (typeof t.transaction_date === 'string') {
+                    if (t.transaction_date.includes('T')) timeStr = t.transaction_date.split('T')[1].substring(0, 5);
+                    else if (t.transaction_date.includes(' ')) timeStr = t.transaction_date.split(' ')[1].substring(0, 5);
+                } else if (t.transaction_date instanceof Date) {
+                    timeStr = t.transaction_date.toTimeString().substring(0, 5);
+                }
+                if (timeStr > (daysMap[dateStr]?.lastTime || '00:00')) {
+                    daysMap[dateStr].lastTime = timeStr;
                 }
             }
         });
@@ -318,63 +294,71 @@ export const useFinancesPageController = () => {
 
     const handleAutoClosure = async (dayData) => {
         try {
-            // Determine time: if lastTime > 12:30 -> lastTime + 1 min, else 12:30
             let [h, m] = dayData.lastTime.split(':').map(Number);
-            let timeStr = '12:30';
+            m += 1; // Add 1 min after last transaction
+            if (m >= 60) { h++; m = 0; }
+            const timeStr = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00`;
+            const dateTime = `${dayData.date} ${timeStr}`;
+            const docId = dayData.doctor_id || doctor_id;
 
-            const cutoffHour = 12;
-            const cutoffMin = 30;
-
-            if (h > cutoffHour || (h === cutoffHour && m > cutoffMin)) {
-                // Add 1 minute
-                m += 1;
-                if (m >= 60) {
-                    m = 0;
-                    h += 1;
-                }
-                timeStr = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-            }
-
-            const dateTime = `${dayData.date} ${String(timeStr).includes(':') ? timeStr : '12:30'}:00`;
-            const docId = dayData.doctor_id || (doctors[0] ? doctors[0].id : null);
-
-            const promises = [];
-
-            // 1. Close Calcium (Cash)
+            setLoading(true);
             if (dayData.balance > 0) {
-                promises.push(api.post('/finances/transactions', {
-                    type: 'withdrawal',
-                    amount: dayData.balance,
-                    description: `Cierre Automático (${dayData.date}) - Efectivo`,
-                    doctor_id: docId,
-                    transaction_date: dateTime,
-                    status: 'paid',
-                    method: 'cash',
-                    is_withdrawal: true
-                }));
+                await api.post('/finances/transactions', {
+                    type: 'withdrawal', amount: dayData.balance, description: `Cierre Automático (${dayData.date}) - Efectivo`,
+                    doctor_id: docId, transaction_date: dateTime, status: 'paid', method: 'cash', is_withdrawal: true
+                });
             }
-
-            // 2. Close Virtual (Transfer)
             if (dayData.transferBalance > 0) {
-                promises.push(api.post('/finances/transactions', {
-                    type: 'withdrawal',
-                    amount: dayData.transferBalance,
-                    description: `Cierre Automático (${dayData.date}) - Transferencia`,
-                    doctor_id: docId,
-                    transaction_date: dateTime,
-                    status: 'paid',
-                    method: 'transfer',
-                    is_withdrawal: true
-                }));
+                await api.post('/finances/transactions', {
+                    type: 'withdrawal', amount: dayData.transferBalance, description: `Cierre Automático (${dayData.date}) - Transferencia`,
+                    doctor_id: docId, transaction_date: dateTime, status: 'paid', method: 'transfer', is_withdrawal: true
+                });
             }
-
-            await Promise.all(promises);
-
-            showMessage('Cajas cerradas correctamente', 'success');
+            showMessage(`Día ${dayData.date} cerrado exitosamente`, 'success');
             fetchData();
-        } catch (error) {
-            console.error('Error closing box:', error);
-            showMessage('Error al cerrar caja', 'error');
+        } catch (err) {
+            console.error(err);
+            showMessage("Error al procesar el cierre", 'error');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleCloseAllPending = async () => {
+        if (!pendingClosures.length) return;
+        if (!await confirm(`¿Está seguro de que desea cerrar las ${pendingClosures.length} cajas pendientes automáticamente?`)) return;
+
+        setLoading(true);
+        try {
+            for (const day of pendingClosures) {
+                // Call handleAutoClosure logic but without individual showMessage
+                let [h, m] = day.lastTime.split(':').map(Number);
+                m += 1;
+                if (m >= 60) { m = 0; h += 1; }
+                const timeStr = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00`;
+                const dateTime = `${day.date} ${timeStr}`;
+                const docId = day.doctor_id || doctor_id;
+
+                if (day.balance > 0) {
+                    await api.post('/finances/transactions', {
+                        type: 'withdrawal', amount: day.balance, description: `Cierre Automático (${day.date}) - Efectivo`,
+                        doctor_id: docId, transaction_date: dateTime, status: 'paid', method: 'cash', is_withdrawal: true
+                    });
+                }
+                if (day.transferBalance > 0) {
+                    await api.post('/finances/transactions', {
+                        type: 'withdrawal', amount: day.transferBalance, description: `Cierre Automático (${day.date}) - Transferencia`,
+                        doctor_id: docId, transaction_date: dateTime, status: 'paid', method: 'transfer', is_withdrawal: true
+                    });
+                }
+            }
+            showMessage(`Se cerraron ${pendingClosures.length} días exitosamente`, 'success');
+            fetchData();
+        } catch (err) {
+            console.error(err);
+            showMessage("Error al cerrar todas las cajas", 'error');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -384,37 +368,39 @@ export const useFinancesPageController = () => {
 
     // Detect Duplicate Automatic Closures
     const duplicateClosures = useMemo(() => {
-        const closuresByDay = {};
+        const closuresByDay = {}; // Key: "YYYY-MM-DD_method"
         transactions.forEach(t => {
-            const desc = t.description || '';
-            // Match based on description because dates might vary slightly
-            const isAuto = desc.startsWith('Cierre Automático');
-            const isManual = desc.includes('Cierre Manual');
+            // Unambiguous check: it is a closure IF it's a withdrawal AND has no appointment/request ID
+            if (t.is_withdrawal && !t.appointment_id && !t.request_id && t.type === 'withdrawal') {
+                const desc = t.description || '';
+                if (desc.includes('Cierre')) { // Small text check remains only for sub-typing, but key logic is type-based
+                    let dateKey = '';
+                    const dateMatch = desc.match(/\d{4}-\d{2}-\d{2}/);
 
-            if (isAuto || isManual) {
-                let dateKey = '';
-                // Try to extract date from description (YYYY-MM-DD)
-                const dateMatch = desc.match(/\d{4}-\d{2}-\d{2}/);
+                    if (dateMatch) {
+                        dateKey = dateMatch[0];
+                    } else {
+                        if (typeof t.transaction_date === 'string') dateKey = t.transaction_date.split('T')[0];
+                        else if (t.transaction_date instanceof Date) dateKey = t.transaction_date.toISOString().split('T')[0];
+                    }
 
-                if (dateMatch) {
-                    dateKey = dateMatch[0];
-                } else {
-                    // Fallback to transaction_date
-                    if (typeof t.transaction_date === 'string') dateKey = t.transaction_date.split('T')[0];
-                    else if (t.transaction_date instanceof Date) dateKey = t.transaction_date.toISOString().split('T')[0];
-                }
-
-                if (dateKey) {
-                    if (!closuresByDay[dateKey]) closuresByDay[dateKey] = [];
-                    closuresByDay[dateKey].push(t);
+                    if (dateKey) {
+                        const method = t.method || 'cash';
+                        const key = `${dateKey}_${method}`;
+                        if (!closuresByDay[key]) closuresByDay[key] = [];
+                        closuresByDay[key].push(t);
+                    }
                 }
             }
         });
 
-        // Return only days with > 1 closure
+        // Return only days/methods with > 1 closure
         return Object.entries(closuresByDay)
             .filter(([_, list]) => list.length > 1)
-            .map(([date, list]) => ({ date, count: list.length, ids: list.map(t => t.id) }));
+            .map(([key, list]) => {
+                const [date, method] = key.split('_');
+                return { date, method, count: list.length, ids: list.map(t => t.id) };
+            });
     }, [transactions]);
 
     const handleFixDuplicates = async () => {
@@ -472,6 +458,7 @@ export const useFinancesPageController = () => {
 
         // Auto Closure
         handleAutoClosure,
+        handleCloseAllPending,
 
         // Duplicates
         handleFixDuplicates,

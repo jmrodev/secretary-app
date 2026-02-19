@@ -112,6 +112,7 @@ export const useAppointmentUIHandlers = ({
             open: true,
             apptId: appt.id,
             patientName: appt.patient_name || appt.full_name,
+            patientId: appt.patient_id,
             medications: '',
             instructions: ''
         });

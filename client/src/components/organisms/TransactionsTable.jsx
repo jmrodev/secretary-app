@@ -123,7 +123,12 @@ const TransactionsTable = ({
                                                 <td>
                                                     <div className="transactions-table__description-wrapper">
                                                         <span className={`tag tag-${isIncome ? 'completed' : 'rejected'} transactions-table__type-tag`}>
-                                                            {t(tx.type) || tx.type.replace('_', ' ')}
+                                                            {tx.appointment_id
+                                                                ? (t('appointment') || 'Turno')
+                                                                : tx.request_type
+                                                                    ? (t(tx.request_type) || tx.request_type)
+                                                                    : (t(tx.type) || tx.type.replace('_', ' '))
+                                                            }
                                                         </span>
                                                         <span className="transactions-table__description">{translateDescription(tx.description)}</span>
                                                     </div>

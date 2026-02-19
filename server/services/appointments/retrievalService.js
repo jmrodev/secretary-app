@@ -35,7 +35,8 @@ class RetrievalService {
             holidayMap[d] = h.description;
         });
 
-        let query = `
+        // 1. Fetch Appointments for the list
+        let apptQuery = `
             SELECT 
                 a.id, a.appointment_date, a.reason, a.status, a.payment_status, a.type, a.is_out_of_hours,
                 p.full_name as patient_name, d.full_name as doctor_name,
@@ -48,14 +49,30 @@ class RetrievalService {
             JOIN doctors d ON a.doctor_id = d.id
             WHERE MONTH(a.appointment_date) = ? AND YEAR(a.appointment_date) = ?
         `;
-        const params = [targetMonth, targetYear];
+        const apptParams = [targetMonth, targetYear];
         if (doctorId) {
-            query += " AND a.doctor_id = ?";
-            params.push(doctorId);
+            apptQuery += " AND a.doctor_id = ?";
+            apptParams.push(doctorId);
         }
-        query += " ORDER BY a.appointment_date ASC";
+        apptQuery += " ORDER BY a.appointment_date ASC";
 
-        const appointments = await pool.query(query, params);
+        const appointments = await pool.query(apptQuery, apptParams);
+
+        // 2. Fetch ALL Paid Income Transactions of the month (The real Cash Flow)
+        let incomeQuery = `
+            SELECT amount, method, transaction_date, type, appointment_id, request_id 
+            FROM transactions 
+            WHERE is_withdrawal = 0 
+              AND status = 'paid' 
+              AND MONTH(transaction_date) = ? 
+              AND YEAR(transaction_date) = ?
+        `;
+        const incomeParams = [targetMonth, targetYear];
+        if (doctorId) {
+            incomeQuery += " AND doctor_id = ?";
+            incomeParams.push(doctorId);
+        }
+        const incomeTransactions = await pool.query(incomeQuery, incomeParams);
 
         const report = {};
         const daysInMonth = new Date(targetYear, targetMonth, 0).getDate();
@@ -76,6 +93,7 @@ class RetrievalService {
             };
         }
 
+        // Fill Appointments list (List only, don't use for totals yet)
         appointments.forEach(a => {
             const dateObj = new Date(a.appointment_date);
             const dateStr = dateObj.toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
@@ -103,37 +121,24 @@ class RetrievalService {
                     tipo_atencion: a.type,
                     is_overturn: !!a.is_out_of_hours
                 });
-                report[dateStr].total_dia += Number(a.paid_amount);
-                report[dateStr].total_efectivo += Number(a.cash_amount);
-                report[dateStr].total_paid += Number(a.paid_amount);
             }
         });
 
-        // Other Income (Granular to catch cash)
-        let otherTransactionsQuery = `
-            SELECT amount, method, transaction_date, description FROM transactions 
-            WHERE is_withdrawal = 0 AND status = 'paid' AND appointment_id IS NULL
-            AND MONTH(transaction_date) = ? AND YEAR(transaction_date) = ?
-        `;
-        const oParams = [targetMonth, targetYear];
-        if (doctorId) {
-            otherTransactionsQuery += " AND doctor_id = ?";
-            oParams.push(doctorId);
-        }
-        const otherTrans = await pool.query(otherTransactionsQuery, oParams);
-
-        // Distribute other income into daily cash if applicable
-        otherTrans.forEach(ot => {
-            const dateStr = new Date(ot.transaction_date).toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
+        // Calculate Totals per Day based on ACTUAL Transactions (Cash Flow)
+        incomeTransactions.forEach(t => {
+            const dateStr = new Date(t.transaction_date).toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
             if (report[dateStr]) {
-                report[dateStr].total_paid += Number(ot.amount);
-                if (ot.method === 'cash' || ot.method === 'efectivo') {
-                    report[dateStr].total_efectivo += Number(ot.amount);
+                report[dateStr].total_paid += Number(t.amount);
+                report[dateStr].total_dia += Number(t.amount); // total_dia used in some views as total_paid synonym
+                if (t.method === 'cash' || t.method === 'efectivo') {
+                    report[dateStr].total_efectivo += Number(t.amount);
                 }
             }
         });
 
-        const totalOther = otherTrans.reduce((acc, ot) => acc + Number(ot.amount), 0);
+        const totalOther = incomeTransactions
+            .filter(t => !t.appointment_id)
+            .reduce((acc, t) => acc + Number(t.amount), 0);
 
         // Withdrawals
         let withdrawalsQuery = `

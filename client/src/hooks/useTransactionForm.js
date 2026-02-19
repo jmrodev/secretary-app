@@ -277,6 +277,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         removePaymentMethod,
         handleSubmit,
         addMedication,
-        removeMedication
+        removeMedication,
+        setTotalPrice
     };
 };

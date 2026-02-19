@@ -4,7 +4,14 @@ exports.getAllInstitutions = async (req, res) => {
     try {
         const rows = await pool.query(`
             SELECT i.*, 
-                   COALESCE((SELECT SUM(amount) FROM transactions t WHERE t.institution_id = i.id AND t.status = 'pending'), 0) as total_debt
+                   COALESCE((
+                       SELECT SUM(t.amount) 
+                       FROM transactions t 
+                       LEFT JOIN appointments a ON t.appointment_id = a.id
+                       WHERE t.institution_id = i.id 
+                         AND t.status = 'pending'
+                         AND (t.appointment_id IS NULL OR a.status IN ('completed', 'attended', 'arrived', 'absent'))
+                   ), 0) as total_debt
             FROM institutions i 
             ORDER BY i.name ASC
         `);
@@ -131,7 +138,14 @@ exports.getInstitutionFinances = async (req, res) => {
 
         // Calculate totals based on transactions
         const totalAmount = rows.reduce((sum, r) => sum + Number(r.amount), 0);
-        const totalPending = rows.reduce((sum, r) => r.payment_status === 'pending' ? sum + Number(r.amount) : sum, 0);
+        const totalPending = rows.reduce((sum, r) => {
+            if (r.payment_status !== 'pending') return sum;
+            // Exclude future appointments from "Debt" calculation
+            if (r.appointment_id && !['completed', 'attended', 'arrived', 'absent'].includes(r.appointment_status)) {
+                return sum;
+            }
+            return sum + Number(r.amount);
+        }, 0);
 
         res.json({
             institution_id: id,

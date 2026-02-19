@@ -188,6 +188,7 @@ const Appointments = () => {
                 isOpen={prescribeModal.open}
                 onClose={() => setPrescribeModal({ ...prescribeModal, open: false })}
                 patientName={prescribeModal.patientName}
+                patientId={prescribeModal.patientId}
                 onSubmit={(data) => handlers.handleSavePrescription({ ...prescribeModal, ...data })}
                 t={t}
                 isSubmitting={loading}

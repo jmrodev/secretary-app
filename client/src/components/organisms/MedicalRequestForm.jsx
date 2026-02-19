@@ -14,6 +14,7 @@ import Select from '../atoms/Select';
 import TabButton from '../atoms/TabButton';
 import Icon from '../atoms/Icon';
 import Badge from '../atoms/Badge';
+import Tooltip from '../atoms/Tooltip';
 import './MedicalRequestForm.css';
 
 /**
@@ -209,34 +210,62 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                         <div className={`${baseClass}__medication-section`}>
                             <div className={`${baseClass}__med-input-row`}>
                                 <div className={`${baseClass}__inputs-grid`}>
-                                    <MedicationAutocomplete
-                                        value={tempMed}
-                                        onChange={setTempMed}
-                                        onSelectMedication={(med) => {
-                                            setTempMed(med.name);
-                                            setCurrentVademecumId(med.id);
-                                        }}
-                                        placeholder={t('medication_placeholder') || "Nombre..."}
-                                    />
-                                    <Input
-                                        size="sm"
-                                        placeholder="Dosis"
-                                        value={tempDose}
-                                        onChange={e => setTempDose(e.target.value)}
-                                    />
-                                    <Input
-                                        size="sm"
-                                        placeholder="Frecuencia"
-                                        value={tempFreq}
-                                        onChange={e => setTempFreq(e.target.value)}
-                                    />
-                                    <Input
-                                        size="sm"
-                                        placeholder="Cant."
-                                        type="number"
-                                        value={tempQty}
-                                        onChange={e => setTempQty(e.target.value)}
-                                    />
+                                    <div className={`${baseClass}__field-wrapper`}>
+                                        <label className={`${baseClass}__field-label`}>
+                                            {t('medication')}
+                                        </label>
+                                        <MedicationAutocomplete
+                                            value={tempMed}
+                                            onChange={setTempMed}
+                                            onSelectMedication={(med) => {
+                                                setTempMed(med.name);
+                                                setCurrentVademecumId(med.id);
+                                            }}
+                                            placeholder={t('medication_placeholder') || "Nombre del medicamento..."}
+                                        />
+                                    </div>
+
+                                    <div className={`${baseClass}__field-group-row`}>
+                                        <div className={`${baseClass}__field-wrapper`}>
+                                            <label className={`${baseClass}__field-label`}>
+                                                {t('dose')}
+                                                <Tooltip text={t('dose_help')} />
+                                            </label>
+                                            <Input
+                                                size="sm"
+                                                placeholder={t('dose_placeholder') || "Dosis (ej: 500mg)"}
+                                                value={tempDose}
+                                                onChange={e => setTempDose(e.target.value)}
+                                            />
+                                        </div>
+
+                                        <div className={`${baseClass}__field-wrapper`}>
+                                            <label className={`${baseClass}__field-label`}>
+                                                {t('frequency')}
+                                                <Tooltip text={t('freq_help')} />
+                                            </label>
+                                            <Input
+                                                size="sm"
+                                                placeholder={t('freq_placeholder') || "Frecuencia (ej: cada 8hs)"}
+                                                value={tempFreq}
+                                                onChange={e => setTempFreq(e.target.value)}
+                                            />
+                                        </div>
+
+                                        <div className={`${baseClass}__field-wrapper`}>
+                                            <label className={`${baseClass}__field-label`}>
+                                                {t('quantity')}
+                                                <Tooltip text={t('qty_help')} />
+                                            </label>
+                                            <Input
+                                                size="sm"
+                                                placeholder={t('qty_placeholder') || "Unidades/Cajas"}
+                                                type="number"
+                                                value={tempQty}
+                                                onChange={e => setTempQty(e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                                 <Button
                                     type="button"
@@ -289,28 +318,33 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                                         {t('patient_current_meds') || 'Medicación actual'}
                                     </span>
                                     <div className={`${baseClass}__habitual-grid`}>
-                                        {patientMeds.map(m => (
-                                            <button
-                                                key={m.id}
-                                                type="button"
-                                                className={`${baseClass}__habitual-btn`}
-                                                onClick={() => {
-                                                    const newItem = {
-                                                        name: m.medication_name,
-                                                        dose: m.dose || '',
-                                                        frequency: m.frequency || '',
-                                                        quantity: '',
-                                                        vademecum_id: m.vademecum_id
-                                                    };
-                                                    if (!medicationItems.some(i => i.name === newItem.name)) {
-                                                        setMedicationItems([...medicationItems, newItem]);
-                                                    }
-                                                }}
-                                            >
-                                                <span className={`${baseClass}__habitual-name`}>{m.medication_name} {m.dose}</span>
-                                                <span className={`${baseClass}__habitual-meta`}>{m.frequency}</span>
-                                            </button>
-                                        ))}
+                                        {patientMeds.map(m => {
+                                            const isSelected = medicationItems.some(i => i.name === m.medication_name);
+                                            return (
+                                                <button
+                                                    key={m.id}
+                                                    type="button"
+                                                    className={`${baseClass}__habitual-btn ${isSelected ? `${baseClass}__habitual-btn--active` : ''}`}
+                                                    onClick={() => {
+                                                        if (isSelected) {
+                                                            setMedicationItems(medicationItems.filter(i => i.name !== m.medication_name));
+                                                        } else {
+                                                            const newItem = {
+                                                                name: m.medication_name,
+                                                                dose: m.dose || '',
+                                                                frequency: m.frequency || '',
+                                                                quantity: '',
+                                                                vademecum_id: m.vademecum_id
+                                                            };
+                                                            setMedicationItems([...medicationItems, newItem]);
+                                                        }
+                                                    }}
+                                                >
+                                                    <span className={`${baseClass}__habitual-name`}>{m.medication_name} {m.dose}</span>
+                                                    <span className={`${baseClass}__habitual-meta`}>{m.frequency}</span>
+                                                </button>
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             )}

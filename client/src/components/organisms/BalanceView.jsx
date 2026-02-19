@@ -11,24 +11,28 @@ const BalanceView = ({ reportData, month, year, t }) => {
     const certificates = Array.isArray(reportData?.certificates) ? reportData.certificates : [];
     const withdrawals = Array.isArray(reportData?.withdrawals) ? reportData.withdrawals : [];
 
-    // Totals Calculation
-    let totalAppts = 0;
-    let totalPres = 0;
-    let totalLicenses = 0;
-    let totalCertificates = 0;
-    let totalWithdrawals = withdrawals.reduce((acc, w) => acc + Number(w.monto || 0), 0);
-    let allDebts = [];
+    // Totals Calculation based on Cash Flow (Daily totals from server)
+    const totalIncome = appts.reduce((acc, day) => acc + Number(day.total_paid || 0), 0);
+    const totalAppts = appts.reduce((acc, day) =>
+        acc + day.appointments.reduce((sum, a) => sum + Number(a.monto_pagado || 0), 0), 0);
+    const totalPres = pres.reduce((acc, p) => (p.payment_status?.toLowerCase() === 'paid' || p.payment_status?.toLowerCase() === 'pagado') ? acc + Number(p.amount || 0) : acc, 0);
+    const totalLicenses = licenses.reduce((acc, l) => (l.payment_status?.toLowerCase() === 'paid' || l.payment_status?.toLowerCase() === 'pagado') ? acc + Number(l.amount || 0) : acc, 0);
+    const totalCertificates = certificates.reduce((acc, c) => (c.payment_status?.toLowerCase() === 'paid' || c.payment_status?.toLowerCase() === 'pagado') ? acc + Number(c.amount || 0) : acc, 0);
 
+    // The difference between totalIncome (real cash) and the specific items of the month
+    const otherOrPastIncome = Math.max(0, totalIncome - (totalAppts + totalPres + totalLicenses + totalCertificates));
+
+    let totalWithdrawals = withdrawals.reduce((acc, w) => acc + Number(w.monto || 0), 0);
+
+    // Aggregating debts
+    let allDebts = [];
     appts.forEach(day => {
         if (Array.isArray(day.appointments)) {
             day.appointments.forEach(a => {
-                if (Number(a.monto_pagado) > 0) {
-                    totalAppts += Number(a.monto_pagado);
-                }
                 const debtAmt = Number(a.debt_amount || 0);
-                // Si no fue atendido (estado no completado o llegado), no se considera deuda
-                const isAttended = ['completed', 'attended', 'arrived'].includes(a.asistencia);
-                if (isAttended && ((a.pago === 'debt' || a.pago === 'debe') || debtAmt > 0)) {
+                // Debt is considered for attended, arrived, absent, or completed
+                const isAttended = ['completed', 'attended', 'arrived', 'absent'].includes(a.asistencia);
+                if (isAttended && debtAmt > 0) {
                     allDebts.push({
                         date: day.date,
                         type: 'Turno',
@@ -40,52 +44,24 @@ const BalanceView = ({ reportData, month, year, t }) => {
         }
     });
 
-    pres.forEach(p => {
-        const amt = Number(p.amount || 0);
-        const status = (p.payment_status || '').toLowerCase();
-        if (status === 'paid' || status === 'pagado') {
-            totalPres += amt;
-        } else if (status === 'debt' || status === 'debe') {
-            allDebts.push({
-                date: p.date ? new Date(p.date).toLocaleDateString() : '-',
-                type: 'Receta',
-                patient: p.patient_name,
-                amount: amt
-            });
-        }
-    });
+    // Medical request debts
+    const addRequestDebts = (items, type) => {
+        items.forEach(item => {
+            const status = (item.payment_status || '').toLowerCase();
+            if (status === 'debt' || status === 'debe' || status === 'pending') {
+                allDebts.push({
+                    date: item.date ? new Date(item.date).toLocaleDateString('es-AR') : '-',
+                    type,
+                    patient: item.patient_name,
+                    amount: Number(item.amount || 0)
+                });
+            }
+        });
+    };
+    addRequestDebts(pres, 'Receta');
+    addRequestDebts(licenses, 'Licencia');
+    addRequestDebts(certificates, 'Certificado');
 
-    licenses.forEach(l => {
-        const amt = Number(l.amount || 0);
-        const status = (l.payment_status || '').toLowerCase();
-        if (status === 'paid' || status === 'pagado') {
-            totalLicenses += amt;
-        } else if (status === 'debt' || status === 'debe') {
-            allDebts.push({
-                date: l.date ? new Date(l.date).toLocaleDateString() : '-',
-                type: 'Licencia',
-                patient: l.patient_name,
-                amount: amt
-            });
-        }
-    });
-
-    certificates.forEach(c => {
-        const amt = Number(c.amount || 0);
-        const status = (c.payment_status || '').toLowerCase();
-        if (status === 'paid' || status === 'pagado') {
-            totalCertificates += amt;
-        } else if (status === 'debt' || status === 'debe') {
-            allDebts.push({
-                date: c.date ? new Date(c.date).toLocaleDateString() : '-',
-                type: 'Certificado',
-                patient: c.patient_name,
-                amount: amt
-            });
-        }
-    });
-
-    const totalIncome = totalAppts + totalPres + totalLicenses + totalCertificates;
     const netTotal = totalIncome - totalWithdrawals;
     const totalDebt = allDebts.reduce((a, b) => a + b.amount, 0);
 
@@ -126,6 +102,15 @@ const BalanceView = ({ reportData, month, year, t }) => {
                             $ {totalCertificates.toLocaleString()}
                         </span>
                     </div>
+
+                    {otherOrPastIncome > 0 && (
+                        <div className="balance-view__summary-item">
+                            <span>Otros Ingresos / Cobro Deudas:</span>
+                            <span className="balance-view__amount balance-view__amount--positive">
+                                $ {otherOrPastIncome.toLocaleString()}
+                            </span>
+                        </div>
+                    )}
 
                     <div className="balance-view__summary-item balance-view__summary-item--subtotal">
                         <span>SUBTOTAL INGRESOS:</span>

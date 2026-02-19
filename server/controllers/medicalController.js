@@ -176,6 +176,18 @@ exports.deletePatientMedication = async (req, res) => {
 
 // --- Prescriptions ---
 
+function calculateRefillDays(dailyUnitsConsumed, boxesCount, unitsPerBox) {
+    if (!dailyUnitsConsumed || !boxesCount || !unitsPerBox) {
+        return null;
+    }
+
+    const totalQuantity = boxesCount * unitsPerBox;
+    if (totalQuantity <= 0 || dailyUnitsConsumed <= 0) return null;
+
+    const refillDays = Math.floor(totalQuantity / dailyUnitsConsumed);
+    return refillDays > 0 ? refillDays : null;
+}
+
 exports.createPrescription = async (req, res) => {
     let conn;
     try {
@@ -224,7 +236,12 @@ exports.createPrescription = async (req, res) => {
 
         // --- Store structured items if provided ---
         if (items && Array.isArray(items)) {
+            // Get patientId for this appointment
+            const patientIdRes = await conn.query("SELECT patient_id FROM appointments WHERE id = ?", [appointment_id]);
+            const patientId = patientIdRes[0]?.patient_id;
+
             for (const item of items) {
+                const medName = item.name || item.medication_name;
                 await conn.query(
                     `INSERT INTO prescription_items 
                     (prescription_id, vademecum_id, medication_name, presentation, monodroga, dose, frequency, duration, quantity) 
@@ -232,7 +249,7 @@ exports.createPrescription = async (req, res) => {
                     [
                         prescriptionId,
                         item.vademecum_id || null,
-                        item.name || item.medication_name,
+                        medName,
                         item.presentation || null,
                         item.drug || item.monodroga || null,
                         item.dose || null,
@@ -241,6 +258,34 @@ exports.createPrescription = async (req, res) => {
                         item.quantity || null
                     ]
                 );
+
+                // [AUTO-SAVE] Save to patient habitual list if it doesn't exist as active
+                if (patientId) {
+                    const [existing] = await conn.query(
+                        "SELECT id FROM patient_medications WHERE patient_id = ? AND medication_name = ? AND status = 'active'",
+                        [patientId, medName]
+                    );
+                                            if (!existing) {
+                                                                            // Calculate next_refill_date
+                                                                            let nextRefillDate = null;
+                                                                            const refillDays = calculateRefillDays(parseFloat(item.frequency), parseInt(item.quantity), parseInt(item.units_per_box));
+                                                                            if (refillDays !== null) {
+                                                                                const today = new Date();
+                                                                                today.setDate(today.getDate() + refillDays);
+                                                                                nextRefillDate = today.toISOString().split('T')[0];
+                                                                            }
+                                                
+                                                                            await conn.query(
+                                                                                `INSERT INTO patient_medications (patient_id, medication_name, dose, frequency, monodroga, presentation, vademecum_id, added_by, next_refill_date, units_per_box, boxes_count)
+                                                                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                                                                                [
+                                                                                    patientId, medName, item.dose || null, item.frequency || null,
+                                                                                    item.drug || item.monodroga || null, item.presentation || null,
+                                                                                    item.vademecum_id || null, req.user.user_id, nextRefillDate,
+                                                                                    item.units_per_box || null, item.quantity || null // item.quantity is now boxes_count
+                                                                                ]
+                                                                            );                                                console.log(`DEBUG: Auto-saved ${medName} to history for patient ${patientId}`);
+                                            }                }
             }
         }
 
@@ -694,6 +739,19 @@ exports.createRequest = async (req, res) => {
                                 "INSERT INTO medical_request_items (request_id, medication_name, dose, frequency, quantity, status, vademecum_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
                                 [result.insertId, name, dose, frequency, quantity, 'pending', item.vademecum_id || null]
                             );
+
+                            // [AUTO-SAVE] Save to patient habitual list
+                            const [existing] = await conn.query(
+                                "SELECT id FROM patient_medications WHERE patient_id = ? AND medication_name = ? AND status = 'active'",
+                                [patient_id, name]
+                            );
+                            if (!existing) {
+                                await conn.query(
+                                    `INSERT INTO patient_medications (patient_id, medication_name, dose, frequency, vademecum_id, added_by) 
+                                     VALUES (?, ?, ?, ?, ?, ?)`,
+                                    [patient_id, name, dose, frequency, item.vademecum_id || null, req.user.user_id]
+                                );
+                            }
                         }
                     }
                 }

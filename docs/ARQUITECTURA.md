@@ -298,6 +298,12 @@ Todos los reportes siguen la misma estructura:
 </div>
 ```
 
+## Reglas de Negocio
+
+### Finanzas y Deudores
+- **Turnos Futuros**: Los turnos agendados a futuro cuyos pagos estén marcados como “pendientes” NO deben considerarse deuda exigible hasta que el turno haya ocurrido (estado `completed`, `attended`, `arrived`, `absent`).
+- **Deuda Visible**: En los reportes financieros y listas de pacientes, la deuda mostrada debe ser solo la vencida (turnos pasados o completados). Los turnos futuros con saldo pendiente no suman a la deuda total hasta que se concreten.
+
 ## Checklist de Revisión
 
 Antes de hacer commit, verificar:
@@ -324,5 +330,5 @@ Antes de hacer commit, verificar:
 
 ---
 
-**Última actualización**: 2026-02-05
+**Última actualización**: 2026-02-18
 **Mantenedor**: Equipo de Desarrollo

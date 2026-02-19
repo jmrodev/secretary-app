@@ -147,32 +147,61 @@
 
 .payment-summary__totals {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 1.25rem;
-    font-size: 0.95rem;
-    font-weight: 700;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+    width: 100%;
 }
 
-.payment-summary__total {
+.payment-summary__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.25rem 0;
+}
+
+.payment-summary__label {
+    font-size: 0.85rem;
+    font-weight: 700;
     color: var(--text-muted);
 }
 
-.payment-summary__paid {
-    color: var(--green-600);
-    background: var(--green-50);
-    padding: 0.25rem 0.75rem;
-    border-radius: 2rem;
+.payment-summary__value {
+    font-size: 1rem;
+    font-weight: 800;
 }
 
-.payment-summary__debt {
+.payment-summary__value--paid {
+    color: var(--success-color, #10b981);
+}
+
+.payment-summary__value--debt {
+    color: var(--error-color, #ef4444);
+    background: var(--red-50);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+}
+
+.payment-summary__input-wrapper {
+    width: 140px;
+}
+
+.payment-summary__total-input {
+    font-weight: 900 !important;
+    font-size: 1.1rem !important;
+    color: var(--blue-700) !important;
+    text-align: right;
+}
+
+.payment-summary__status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     font-weight: 800;
-    background-color: var(--red-50);
-    padding: 0.25rem 0.75rem;
-    border-radius: 2rem;
-    color: var(--error);
-    border: 1px solid var(--red-100);
+    color: var(--success-color, #10b981);
+    justify-content: flex-end;
+    padding: 0.5rem 0;
 }
 
 .transaction-modal-footer {

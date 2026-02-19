@@ -38,15 +38,36 @@
 }
 
 .medical-request-form__inputs-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.medical-request-form__field-group-row {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 0.5rem;
+    gap: 1rem;
 }
 
 @media (min-width: 768px) {
-    .medical-request-form__inputs-grid {
-        grid-template-columns: 2fr 1fr 1fr 1fr;
+    .medical-request-form__field-group-row {
+        grid-template-columns: 1fr 1fr 1fr;
     }
+}
+
+.medical-request-form__field-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.medical-request-form__field-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
 }
 
 .medical-request-form__med-list {
@@ -146,6 +167,17 @@
 .medical-request-form__habitual-btn:hover {
     background: var(--blue-100);
     transform: translateY(-1px);
+}
+
+.medical-request-form__habitual-btn--active {
+    background: var(--success-color, #10b981) !important;
+    border-color: var(--success-600, #059669) !important;
+    color: white !important;
+}
+
+.medical-request-form__habitual-btn--active .medical-request-form__habitual-meta {
+    color: white;
+    opacity: 0.9;
 }
 
 .medical-request-form__habitual-name {

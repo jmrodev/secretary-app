@@ -229,19 +229,38 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                             </p>
                         )}
                         <div className="payment-summary__totals">
+                            <div className="payment-summary__row">
+                                <span className="payment-summary__label">{t('total_to_charge') || 'Total a Cobrar'}:</span>
+                                <div className="payment-summary__input-wrapper">
+                                    <CurrencyInput
+                                        value={totalPrice}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            // We need to expose a way to set totalPrice from useTransactionForm or just use updateField logic if possible
+                                            // Since useTransactionForm doesn't expose setTotalPrice, I will use a custom event or check if I can modify the hook.
+                                            // Actually, I will update useTransactionForm to export setTotalPrice.
+                                            setTotalPrice(Number(val));
+                                        }}
+                                        className="payment-summary__total-input"
+                                    />
+                                </div>
+                            </div>
                             {totalPrice > 0 && (
                                 <>
-                                    <span className="payment-summary__total">{t('total')}: {formatPrice(totalPrice)}</span>
-                                    <span className="payment-summary__paid">{t('paid')}: {formatPrice(currentPaidTotal)}</span>
+                                    <div className="payment-summary__row">
+                                        <span className="payment-summary__label">{t('paid')}:</span>
+                                        <span className="payment-summary__value payment-summary__value--paid">{formatPrice(currentPaidTotal)}</span>
+                                    </div>
                                     {debtAmount > 0 ? (
-                                        <span className="payment-summary__debt">
-                                            {t('debt')}: {formatPrice(debtAmount)}
-                                        </span>
+                                        <div className="payment-summary__row">
+                                            <span className="payment-summary__label">{t('debt')}:</span>
+                                            <span className="payment-summary__value payment-summary__value--debt">{formatPrice(debtAmount)}</span>
+                                        </div>
                                     ) : (
-                                        <span className="payment-summary__paid" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 800 }}>
+                                        <div className="payment-summary__status">
                                             <Icon name="check" size="1.1rem" />
                                             {t('completed')}
-                                        </span>
+                                        </div>
                                     )}
                                 </>
                             )}
