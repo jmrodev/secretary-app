@@ -19,11 +19,45 @@
 .appointment-card:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    background-color: var(--gray-50);
+    filter: brightness(0.98);
 }
 
 .appointment-card--external {
     border-left: 4px solid var(--amber-500);
+}
+
+/* Status Based Colors */
+.appointment-card--pending {
+    border-left: 4px solid var(--gray-400);
+}
+
+.appointment-card--confirmed {
+    border-left: 4px solid var(--blue-500);
+    background-color: var(--blue-50);
+}
+
+.appointment-card--arrived,
+.appointment-card--attended,
+.appointment-card--completed {
+    border-left: 4px solid var(--green-500);
+    background-color: var(--green-50);
+}
+
+.appointment-card--absent,
+.appointment-card--cancelled,
+.appointment-card--rejected {
+    border-left: 4px solid var(--red-500);
+    background-color: var(--red-50);
+}
+
+.appointment-card--rescheduled {
+    border-left: 4px solid var(--amber-500);
+    background-color: var(--amber-50);
+}
+
+.appointment-card--virtual {
+    border-left: 4px solid var(--indigo-500);
+    background-color: var(--indigo-50);
 }
 
 /* Col 1: Time */

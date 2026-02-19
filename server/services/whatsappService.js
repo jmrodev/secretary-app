@@ -1,16 +1,11 @@
 const axios = require('axios');
-const { pool } = require('../db');
+const systemSettingsRepository = require('../repositories/systemSettingsRepository');
 
 const getMetaCredentials = async () => {
-    const conn = await pool.getConnection();
-    try {
-        const [rows] = await conn.query("SELECT setting_key, setting_value FROM system_settings WHERE setting_key IN ('meta_phone_number_id', 'meta_access_token')");
-        const settings = {};
-        rows.forEach(r => settings[r.setting_key] = r.setting_value);
-        return settings;
-    } finally {
-        if (conn) conn.release();
-    }
+    const rows = await systemSettingsRepository.findManyByKeys(['meta_phone_number_id', 'meta_access_token']);
+    const settings = {};
+    rows.forEach(r => settings[r.setting_key] = r.setting_value);
+    return settings;
 };
 
 /**
@@ -28,9 +23,6 @@ const sendTemplateMessage = async (to, templateName, languageCode = 'es', compon
     }
 
     const url = `https://graph.facebook.com/v21.0/${meta_phone_number_id}/messages`;
-
-    // Ensure components is an array and properly structured if passed
-    // If empty, standard simple templates don't need 'components' key unless variables are required.
 
     const messageData = {
         messaging_product: 'whatsapp',

@@ -1,33 +1,38 @@
 const express = require('express');
 const router = express.Router();
-const userController = require('../controllers/userController');
+const profileController = require('../controllers/user/profileController');
+const patientManagementController = require('../controllers/user/patientManagementController');
+const doctorManagementController = require('../controllers/user/doctorManagementController');
+const userAccountController = require('../controllers/user/userAccountController');
+const reminderController = require('../controllers/user/reminderController');
+const userStatsController = require('../controllers/user/userStatsController');
+
 const { verifyToken } = require('../middleware/authMiddleware');
 const { authorize } = require('../middleware/authorize');
 const { ACCESS_LEVELS } = require('../constants/roles');
 
-router.get('/profile', verifyToken, userController.getProfile);
-router.put('/profile', verifyToken, userController.updateProfile);
+router.get('/profile', verifyToken, profileController.getProfile);
+router.put('/profile', verifyToken, profileController.updateProfile);
 
 // Specific patient details (for doctors/secretaries)
-// Specific patient details (for doctors/secretaries)
-router.get('/patients/:id', verifyToken, userController.getPatientDetails);
-router.put('/patients/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_PATIENTS), userController.updatePatientDetails);
-router.put('/patients/:id/toggle-new', verifyToken, authorize(ACCESS_LEVELS.MANAGE_PATIENTS), userController.toggleNewPatientStatus);
+router.get('/patients/:id', verifyToken, patientManagementController.getPatientDetails);
+router.put('/patients/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_PATIENTS), patientManagementController.updatePatientDetails);
+router.put('/patients/:id/toggle-new', verifyToken, authorize(ACCESS_LEVELS.MANAGE_PATIENTS), patientManagementController.toggleNewPatientStatus);
 
 // List routes
-router.get('/doctors', verifyToken, userController.getAllDoctors);
-router.put('/doctors/:id', verifyToken, userController.updateDoctor);
-router.get('/patients', verifyToken, userController.getAllPatients);
-router.get('/reminders', verifyToken, userController.getReminders);
-router.post('/reminders/complete', verifyToken, userController.completeReminder);
-router.get('/stats', verifyToken, userController.getStats);
-router.get('/patients/stats/new', verifyToken, userController.getNewPatientStats);
+router.get('/doctors', verifyToken, doctorManagementController.getAllDoctors);
+router.put('/doctors/:id', verifyToken, doctorManagementController.updateDoctor);
+router.get('/patients', verifyToken, patientManagementController.getAllPatients);
+router.get('/reminders', verifyToken, reminderController.getReminders);
+router.post('/reminders/complete', verifyToken, reminderController.completeReminder);
+router.get('/stats', verifyToken, userStatsController.getStats);
+router.get('/patients/stats/new', verifyToken, patientManagementController.getNewPatientStats);
 
 // Admin routes
-router.get('/admin/users', verifyToken, authorize(ACCESS_LEVELS.MANAGE_USERS), userController.getUsersForAdmin);
-router.post('/admin/reset-password/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_USERS), userController.adminResetPassword);
-router.post('/admin/users', verifyToken, authorize(ACCESS_LEVELS.MANAGE_USERS), userController.createUser);
-router.put('/admin/users/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_USERS), userController.updateUser);
-router.delete('/admin/users/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_USERS), userController.deleteUser);
+router.get('/admin/users', verifyToken, authorize(ACCESS_LEVELS.MANAGE_USERS), userAccountController.getUsersForAdmin);
+router.post('/admin/reset-password/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_USERS), userAccountController.adminResetPassword);
+router.post('/admin/users', verifyToken, authorize(ACCESS_LEVELS.MANAGE_USERS), userAccountController.createUser);
+router.put('/admin/users/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_USERS), userAccountController.updateUser);
+router.delete('/admin/users/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_USERS), userAccountController.deleteUser);
 
 module.exports = router;

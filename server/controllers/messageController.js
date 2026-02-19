@@ -1,351 +1,152 @@
-const { pool } = require('../db');
+const messageService = require('../services/messageService');
 const { logAction } = require('../utils/audit');
 
-// Send a message
+/**
+ * messageController
+ * Handles HTTP requests for internal messages.
+ */
+
 exports.sendMessage = async (req, res) => {
-    let conn;
     try {
         const { user_id } = req.user;
-        const { recipient_id, recipient_type, subject, message } = req.body;
+        const msgId = await messageService.sendMessage(user_id, req.body);
 
-        if (!message || message.trim() === '') {
-            return res.status(400).send("Message content is required");
-        }
-
-        conn = await pool.getConnection();
-
-        // Insert message
-        const result = await conn.query(
-            "INSERT INTO messages (sender_id, recipient_id, recipient_type, subject, message) VALUES (?, ?, ?, ?, ?)",
-            [user_id, recipient_id || null, recipient_type || 'individual', subject || null, message]
-        );
-
-        logAction(req, 'SEND_MESSAGE', `To: ${recipient_type === 'all_staff' ? 'All Staff' : recipient_id}`);
-        res.status(201).json({ id: Number(result.insertId), message: "Message sent successfully" });
-
+        logAction(req, 'SEND_MESSAGE', `To: ${req.body.recipient_type === 'all_staff' ? 'All Staff' : req.body.recipient_id}`);
+        res.status(201).json({ id: msgId, message: "Message sent successfully" });
     } catch (err) {
-        console.error("sendMessage Error:", err);
-        res.status(500).send("Server Error: " + err.message);
-    } finally {
-        if (conn) conn.release();
+        console.error(err);
+        if (err.message === "Message content is required") return res.status(400).send(err.message);
+        res.status(500).send("Server Error");
     }
 };
 
-// Get inbox messages (Linear/Fallback)
 exports.getInbox = async (req, res) => {
-    let conn;
     try {
         const { user_id } = req.user;
-        conn = await pool.getConnection();
-
-        const messages = await conn.query(`
-            SELECT m.*, u.username as sender_name
-            FROM messages m
-            JOIN users u ON m.sender_id = u.id
-            WHERE (m.recipient_id = ? OR (m.recipient_type = 'all_staff' AND m.recipient_id IS NULL))
-            ORDER BY m.created_at DESC
-        `, [user_id]);
-
+        const messages = await messageService.getInbox(user_id);
         res.json(messages);
-
     } catch (err) {
-        console.error("getInbox Error:", err);
-        res.status(500).send("Server Error: " + err.message);
-    } finally {
-        if (conn) conn.release();
+        console.error(err);
+        res.status(500).send("Server Error");
     }
 };
 
-// Get sent messages (Linear/Fallback)
 exports.getSent = async (req, res) => {
-    let conn;
     try {
         const { user_id } = req.user;
-        conn = await pool.getConnection();
-
-        const messages = await conn.query(
-            `SELECT m.*, u.username as recipient_name
-             FROM messages m
-             LEFT JOIN users u ON m.recipient_id = u.id
-             WHERE m.sender_id = ?
-             ORDER BY m.created_at DESC`,
-            [user_id]
-        );
-
+        const messages = await messageService.getSent(user_id);
         res.json(messages);
-
     } catch (err) {
-        console.error("getSent Error:", err);
-        res.status(500).send("Server Error: " + err.message);
-    } finally {
-        if (conn) conn.release();
+        console.error(err);
+        res.status(500).send("Server Error");
     }
 };
 
-// Get single message
 exports.getMessage = async (req, res) => {
-    let conn;
     try {
         const { id } = req.params;
         const { user_id } = req.user;
-        conn = await pool.getConnection();
-
-        const messages = await conn.query(
-            `SELECT m.*, 
-                    sender.username as sender_name,
-                    recipient.username as recipient_name
-             FROM messages m
-             JOIN users sender ON m.sender_id = sender.id
-             LEFT JOIN users recipient ON m.recipient_id = recipient.id
-             WHERE m.id = ? AND (m.sender_id = ? OR m.recipient_id = ? OR m.recipient_type = 'all_staff')`,
-            [id, user_id, user_id]
-        );
-
-        if (messages.length === 0) {
-            return res.status(404).send("Message not found");
-        }
-
-        res.json(messages[0]);
-
+        const message = await messageService.getMessage(id, user_id);
+        res.json(message);
     } catch (err) {
-        console.error("getMessage Error:", err);
-        res.status(500).send("Server Error: " + err.message);
-    } finally {
-        if (conn) conn.release();
+        console.error(err);
+        if (err.message === "Message not found") return res.status(404).send(err.message);
+        res.status(500).send("Server Error");
     }
 };
 
-// Mark message as read
 exports.markAsRead = async (req, res) => {
-    let conn;
     try {
         const { id } = req.params;
         const { user_id } = req.user;
-        conn = await pool.getConnection();
-
-        await conn.query(
-            "UPDATE messages SET read_status = 2, read_at = NOW() WHERE id = ? AND recipient_id = ?",
-            [id, user_id]
-        );
-
+        await messageService.markAsRead(id, user_id);
         res.json({ message: "Message marked as read" });
-
     } catch (err) {
-        console.error("markAsRead Error:", err);
-        res.status(500).send("Server Error: " + err.message);
-    } finally {
-        if (conn) conn.release();
+        console.error(err);
+        res.status(500).send("Server Error");
     }
 };
 
-// Delete message
 exports.deleteMessage = async (req, res) => {
-    let conn;
     try {
         const { id } = req.params;
         const { user_id } = req.user;
-        conn = await pool.getConnection();
-
-        const result = await conn.query(
-            "DELETE FROM messages WHERE id = ? AND sender_id = ?",
-            [id, user_id]
-        );
-
-        if (result.affectedRows === 0) {
-            return res.status(404).send("Message not found or you don't have permission");
-        }
+        await messageService.deleteMessage(id, user_id);
 
         logAction(req, 'DELETE_MESSAGE', `Message ID: ${id}`);
         res.json({ message: "Message deleted successfully" });
-
     } catch (err) {
-        console.error("deleteMessage Error:", err);
-        res.status(500).send("Server Error: " + err.message);
-    } finally {
-        if (conn) conn.release();
+        console.error(err);
+        if (err.message === "Message not found or unauthorized") return res.status(404).send(err.message);
+        res.status(500).send("Server Error");
     }
 };
 
-// Get unread count
 exports.getUnreadCount = async (req, res) => {
-    let conn;
     try {
         const { user_id } = req.user;
-        conn = await pool.getConnection();
-
-        const result = await conn.query(
-            `SELECT COUNT(*) as count FROM messages 
-             WHERE (recipient_id = ? OR (recipient_type = 'all_staff' AND recipient_id IS NULL))
-             AND read_status < 2`,
-            [user_id]
-        );
-
-        const count = (result && result.length > 0) ? result[0].count : 0;
-        res.json({ unread_count: Number(count) });
-
+        const count = await messageService.getUnreadCount(user_id);
+        res.json({ unread_count: count });
     } catch (err) {
-        console.error("getUnreadCount Error:", err);
-        res.status(500).send("Server Error: " + err.message);
-    } finally {
-        if (conn) conn.release();
+        console.error(err);
+        res.status(500).send("Server Error");
     }
 };
 
-// Get list of conversations (latest message from each person)
 exports.getConversations = async (req, res) => {
-    let conn;
     try {
         const { user_id } = req.user;
-        conn = await pool.getConnection();
-
-        // Optimized query compatible with strict SQL modes
-        // We select the logical 'other_user_id' by checking sender vs recipient.
-        const conversations = await conn.query(
-            `SELECT m.*, 
-                    convo.other_user_id,
-                    u.username as other_username,
-                    COALESCE(d.full_name, s.full_name, p.full_name, u.username) as other_display_name,
-                    COALESCE(d.phone, s.phone, p.phone) as other_phone,
-                    (SELECT COUNT(*) FROM messages 
-                     WHERE recipient_id = ? AND sender_id = convo.other_user_id AND read_status < 2) as unread_count
-             FROM (
-                SELECT MAX(id) as last_id, 
-                       IF(sender_id = ?, recipient_id, sender_id) as other_user_id
-                FROM messages
-                WHERE (sender_id = ? OR recipient_id = ?) AND recipient_type = 'individual'
-                GROUP BY IF(sender_id = ?, recipient_id, sender_id)
-             ) convo
-             JOIN messages m ON convo.last_id = m.id
-             JOIN users u ON convo.other_user_id = u.id
-             LEFT JOIN doctors d ON u.id = d.user_id
-             LEFT JOIN secretaries s ON u.id = s.user_id
-             LEFT JOIN patients p ON u.id = p.user_id
-             ORDER BY m.created_at DESC`,
-            [user_id, user_id, user_id, user_id, user_id]
-        );
-
-        // Mark incoming messages as Delivered (1) if they are currently Sent (0)
-        // We do this asynchronously to not block response
-        conn.query(
-            "UPDATE messages SET read_status = 1, delivered_at = NOW() WHERE recipient_id = ? AND read_status = 0",
-            [user_id]
-        ).catch(e => console.error("Error updating delivered status:", e));
-
+        const conversations = await messageService.getConversations(user_id);
         res.json(conversations);
-
     } catch (err) {
-        console.error("getConversations Error:", err);
-        res.status(500).send("Server Error: " + err.message);
-    } finally {
-        if (conn) conn.release();
+        console.error(err);
+        res.status(500).send("Server Error");
     }
 };
 
-// Get all messages between current user and another user (Thread)
 exports.getThread = async (req, res) => {
-    let conn;
     try {
         const { user_id } = req.user;
         const { other_id } = req.params;
-        conn = await pool.getConnection();
-
-        const messages = await conn.query(
-            `SELECT m.*, 
-                    sender.username as sender_name,
-                    recipient.username as recipient_name
-             FROM messages m
-             JOIN users sender ON m.sender_id = sender.id
-             LEFT JOIN users recipient ON m.recipient_id = recipient.id
-             WHERE ((m.sender_id = ? AND m.recipient_id = ?) OR (m.sender_id = ? AND m.recipient_id = ?))
-             AND m.recipient_type = 'individual'
-             ORDER BY m.created_at ASC`,
-            [user_id, other_id, other_id, user_id]
-        );
-
-        // Mark all as read when opening the thread
-        await conn.query(
-            "UPDATE messages SET read_status = 2, read_at = COALESCE(read_at, NOW()), delivered_at = COALESCE(delivered_at, NOW()) WHERE recipient_id = ? AND sender_id = ? AND read_status < 2",
-            [user_id, other_id]
-        );
-
+        const messages = await messageService.getThread(user_id, other_id);
         res.json(messages);
-
     } catch (err) {
-        console.error("getThread Error:", err);
-        res.status(500).send("Server Error: " + err.message);
-    } finally {
-        if (conn) conn.release();
+        console.error(err);
+        res.status(500).send("Server Error");
     }
 };
 
-// Get list of users for recipient selection
 exports.getRecipients = async (req, res) => {
-    let conn;
     try {
         const { user_id } = req.user;
-        conn = await pool.getConnection();
-
-        const users = await conn.query(
-            `SELECT u.id, u.username, u.role,
-                    COALESCE(d.full_name, s.full_name, u.username) as display_name
-             FROM users u
-             LEFT JOIN doctors d ON u.id = d.user_id
-             LEFT JOIN secretaries s ON u.id = s.user_id
-             WHERE u.id != ? AND u.role IN ('doctor', 'secretary', 'admin')
-             ORDER BY display_name`,
-            [user_id]
-        );
-
+        const users = await messageService.getRecipients(user_id);
         res.json(users);
-
     } catch (err) {
-        console.error("getRecipients Error:", err);
-        res.status(500).send("Server Error: " + err.message);
-    } finally {
-        if (conn) conn.release();
+        console.error(err);
+        res.status(500).send("Server Error");
     }
 };
 
-// Update typing status
 exports.updateTypingStatus = async (req, res) => {
-    let conn;
     try {
         const { user_id } = req.user;
         const { target_id } = req.body;
-        conn = await pool.getConnection();
-
-        await conn.query(
-            "INSERT INTO user_typing_status (user_id, target_id) VALUES (?, ?) ON DUPLICATE KEY UPDATE updated_at = NOW()",
-            [user_id, target_id]
-        );
-
+        await messageService.updateTypingStatus(user_id, target_id);
         res.json({ message: "Typing status updated" });
     } catch (err) {
-        console.error("updateTypingStatus Error:", err);
-        res.status(500).send("Server Error: " + err.message);
-    } finally {
-        if (conn) conn.release();
+        console.error(err);
+        res.status(500).send("Server Error");
     }
 };
 
-// Get typing status
 exports.getTypingStatus = async (req, res) => {
-    let conn;
     try {
         const { other_id } = req.params;
-        const { user_id } = req.user; // We check if other_id is typing to user_id
-        conn = await pool.getConnection();
-
-        const result = await conn.query(
-            "SELECT 1 FROM user_typing_status WHERE user_id = ? AND target_id = ? AND updated_at > DATE_SUB(NOW(), INTERVAL 5 SECOND)",
-            [other_id, user_id]
-        );
-
-        res.json({ is_typing: result.length > 0 });
+        const { user_id } = req.user;
+        const isTyping = await messageService.getTypingStatus(other_id, user_id);
+        res.json({ is_typing: isTyping });
     } catch (err) {
-        console.error("getTypingStatus Error:", err);
-        res.status(500).send("Server Error: " + err.message);
-    } finally {
-        if (conn) conn.release();
+        console.error(err);
+        res.status(500).send("Server Error");
     }
 };

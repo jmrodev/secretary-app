@@ -2,6 +2,7 @@ import React from 'react';
 import Modal from './Modal';
 import PatientForm from '../organisms/PatientForm';
 import Loading from '../atoms/Loading';
+import Icon from '../atoms/Icon';
 import { usePatientFormController } from '../../controllers/usePatientFormController';
 import './PatientManagerModal.css';
 
@@ -44,7 +45,8 @@ const PatientManagerModal = ({
                 {referenceInfo && !isEdit && (
                     <div className={`${baseClass}__reference`}>
                         <span className={`${baseClass}__reference-label`}>
-                            📄 {t('appointment_info_reference') || 'Info de Turno (Referencia)'}
+                            <Icon name="description" size="1.2rem" />
+                            {t('appointment_info_reference') || 'Info de Turno (Referencia)'}
                         </span>
                         <div className={`${baseClass}__reference-content`}>
                             {referenceInfo}

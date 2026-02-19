@@ -2,12 +2,14 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const { pool } = require('./db');
+const systemSettingsRepository = require('./repositories/systemSettingsRepository');
+const appointmentRepository = require('./repositories/appointmentRepository');
 
 // BigInt JSON serialization fix
 BigInt.prototype.toJSON = function () { return Number(this); };
 
 const authRoutes = require('./routes/authRoutes');
-const institutionRoutes = require('./routes/institutionRoutes'); // [NEW]
+const institutionRoutes = require('./routes/institutionRoutes');
 
 const morgan = require('morgan');
 dotenv.config();
@@ -48,18 +50,12 @@ app.use(async (req, res, next) => {
             const isPrivate = /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.)/.test(ipPart);
 
             if (isPrivate) {
-                // Use the host as it came in (e.g. 192.168.1.50:8080 or 192.168.1.50:5173)
-                // This ensures we point to the correct port regardless of the environment
                 const staffUrl = `http://${host}`;
 
                 // Only update if different to avoid constant DB writes
                 if (global.lastDetectedStaffIp !== staffUrl) {
                     global.lastDetectedStaffIp = staffUrl;
-                    const { pool } = require('./db');
-                    await pool.query(
-                        'INSERT INTO system_settings (setting_key, setting_value) VALUES ("staff_base_url", ?) ON DUPLICATE KEY UPDATE setting_value = ?',
-                        [staffUrl, staffUrl]
-                    );
+                    await systemSettingsRepository.upsert('staff_base_url', staffUrl);
                     console.log(`🤖 Auto-detected Staff LAN IP: ${staffUrl}`);
                 }
             }
@@ -70,8 +66,6 @@ app.use(async (req, res, next) => {
 
     next();
 });
-
-
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', require('./routes/userRoutes'));
@@ -87,33 +81,20 @@ app.use('/api/settings', require('./routes/settingsRoutes'));
 app.use('/api/insurances', require('./routes/insuranceRoutes'));
 app.use('/api/holidays', require('./routes/holidayRoutes'));
 app.use('/api/messages', require('./routes/messageRoutes'));
-app.use('/api/temp-access', require('./routes/tempAccessRoutes')); // [NEW] QR Access
-app.use('/api/institutions', institutionRoutes); // [NEW] Institutions
-app.use('/api/schedules', require('./routes/scheduleRoutes')); // [NEW] Schedules
-app.use('/api/billing', require('./routes/billingRoutes')); // [NEW] ARCA Billing
+app.use('/api/temp-access', require('./routes/tempAccessRoutes'));
+app.use('/api/institutions', institutionRoutes);
+app.use('/api/schedules', require('./routes/scheduleRoutes'));
+app.use('/api/billing', require('./routes/billingRoutes'));
 app.use('/uploads', express.static('uploads'));
-
 
 app.get('/api/debug/dump-appointments', async (req, res) => {
     try {
-        const { pool } = require('./db');
-        const conn = await pool.getConnection();
-        const [rows] = await conn.query(`
-            SELECT a.id, a.doctor_id, d.full_name as doctor_name, a.patient_id, a.appointment_date, a.status 
-            FROM appointments a 
-            JOIN doctors d ON a.doctor_id = d.id 
-            ORDER BY a.doctor_id
-        `);
-        conn.release();
+        const rows = await appointmentRepository.findAllDetailed();
         res.json({ count: rows.length, rows });
     } catch (e) {
         res.status(500).json({ error: e.message });
     }
 });
-
-
-
-app.use('/api/auth', authRoutes);
 
 // Start server
 const server = app.listen(PORT, '0.0.0.0', async () => {
@@ -125,10 +106,6 @@ const server = app.listen(PORT, '0.0.0.0', async () => {
         // Debug: Identify DB
         const dbInfo = await conn.query("SELECT DATABASE() as db, @@hostname as host");
         console.log("!!! CONNECTED TO DB:", dbInfo[0]?.db);
-
-        const appts = await conn.query("SELECT * FROM appointments LIMIT 1");
-        console.log("!!! SAMPLE APPOINTMENT:", appts.length > 0 ? "Found Data" : "NO DATA (Empty DB)");
-
 
         conn.release();
 

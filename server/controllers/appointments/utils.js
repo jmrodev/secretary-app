@@ -1,14 +1,12 @@
-const { pool } = require('../../db');
+const patientRepository = require('../../repositories/patientRepository');
 const bcrypt = require('bcrypt');
 
 // Helper to validate Admin Password for overrides
 const validateAdminPassword = async (conn, password) => {
     if (!password) return false;
-    const adminUser = await conn.query("SELECT password_hash FROM users WHERE username = 'admin'");
-    if (adminUser.length === 0) return false;
-    return await bcrypt.compare(password, adminUser[0].password_hash);
+    const adminUser = await patientRepository.findAdminPasswordHash(conn);
+    if (!adminUser) return false;
+    return await bcrypt.compare(password, adminUser.password_hash);
 };
 
-module.exports = {
-    validateAdminPassword
-};
+module.exports = { validateAdminPassword };

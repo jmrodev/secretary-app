@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { pool } = require('./db');
+const userRepository = require('./repositories/userRepository');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -13,10 +13,11 @@ async function createAdmin() {
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
 
-        const result = await pool.query(
-            'INSERT INTO users (username, password_hash, role) VALUES (?, ?, "admin") ON DUPLICATE KEY UPDATE password_hash = ?',
-            [username, hash, hash]
-        );
+        await userRepository.upsert({
+            username,
+            password_hash: hash,
+            role: 'admin'
+        });
 
         console.log('✅ Usuario administrativo listo.');
         console.log(`👤 Usuario: ${username}`);

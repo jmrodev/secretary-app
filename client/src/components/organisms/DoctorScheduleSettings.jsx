@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../api/axios';
 import { useLanguage } from '../../context/LanguageContext';
-import { useModal } from '../../context/ModalContext';
-import { useMessage } from '../../context/MessageContext';
 import Button from '../atoms/Button';
-import Input from '../atoms/Input';
+
+// Molecules
+import ScheduleBulkActions from '../molecules/ScheduleBulkActions';
+import ScheduleTimeBlock from '../molecules/ScheduleTimeBlock';
+
 import './DoctorScheduleSettings.css';
 
+/**
+ * DoctorScheduleSettings Organism.
+ * Provides a specialized interface for configuring a doctor's weekly work schedule.
+ */
 const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading }) => {
     const { t } = useLanguage();
-    const { confirm } = useModal();
-    const { showMessage } = useMessage();
     const [focusedIndex, setFocusedIndex] = useState(null);
 
     // Initialize schedule with unique keys if missing
@@ -22,7 +25,6 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                     ...s,
                     _key: s._key || s.id || `new-${Date.now()}-${idx}`
                 }));
-                // Only update if something changed to avoid loop
                 if (JSON.stringify(withKeys) !== JSON.stringify(schedule)) {
                     setSchedule(withKeys);
                 }
@@ -66,10 +68,8 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
         setSchedule(prev => {
             const hasDay = prev.some(s => s.day_of_week === dayId);
             if (hasDay) {
-                // Remove all blocks for this day
                 return prev.filter(s => s.day_of_week !== dayId);
             } else {
-                // Add initial block
                 return [...prev, {
                     day_of_week: dayId,
                     start_time: '08:00',
@@ -86,10 +86,7 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
 
     const applyBulk = (daysToApply) => {
         setSchedule(prev => {
-            // Keep days NOT in the bulk list
             let newSched = prev.filter(s => !daysToApply.includes(s.day_of_week));
-
-            // Add new single block for each bulk day
             daysToApply.forEach(dayId => {
                 newSched.push({
                     day_of_week: dayId,
@@ -110,42 +107,14 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
             <h3 className="schedule-settings__title">Configuración de Horarios de Atención</h3>
             <p className="schedule-settings__desc">Defina los días y franjas horarias en las que este médico atiende.</p>
 
-            <div className="schedule-bulk">
-                <h4 className="schedule-bulk__title">Aplicar a múltiples días (Sobrescribe horarios)</h4>
-                <div className="schedule-bulk__actions">
-                    <div className="schedule-bulk__time-inputs">
-                        <input
-                            type="time"
-                            className="input-field schedule-bulk__time-input"
-                            value={bulkStart}
-                            onChange={(e) => setBulkStart(e.target.value)}
-                        />
-                        <span className="schedule-bulk__separator">a</span>
-                        <input
-                            type="time"
-                            className="input-field schedule-bulk__time-input"
-                            value={bulkEnd}
-                            onChange={(e) => setBulkEnd(e.target.value)}
-                        />
-                    </div>
-                    <div className="schedule-bulk__buttons">
-                        <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => applyBulk([1, 2, 3, 4, 5])}
-                        >
-                            Lunes a Viernes
-                        </Button>
-                        <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => applyBulk([1, 2, 3, 4, 5, 6])}
-                        >
-                            Lunes a Sábado
-                        </Button>
-                    </div>
-                </div>
-            </div>
+            <ScheduleBulkActions
+                bulkStart={bulkStart}
+                setBulkStart={setBulkStart}
+                bulkEnd={bulkEnd}
+                setBulkEnd={setBulkEnd}
+                onApplyBulk={applyBulk}
+                t={t}
+            />
 
             <div className="schedule-settings__days">
                 {DAYS.map(day => {
@@ -183,63 +152,15 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                                     {isActive && (
                                         <div className="schedule-blocks">
                                             {dayBlocks.map((block) => (
-                                                <div key={block._key || block.originalIndex} className="time-block">
-                                                    <div className="time-block__inputs">
-                                                        <Input
-                                                            type="time"
-                                                            size="sm"
-                                                            value={String(block.start_time || '').slice(0, 5)}
-                                                            onFocus={() => setFocusedIndex(block.originalIndex)}
-                                                            onBlur={() => setFocusedIndex(null)}
-                                                            onChange={(e) => handleBlockChange(block.originalIndex, 'start_time', e.target.value)}
-                                                        />
-                                                        <span className="time-block__connector">a</span>
-                                                        <Input
-                                                            type="time"
-                                                            size="sm"
-                                                            value={String(block.end_time || '').slice(0, 5)}
-                                                            onFocus={() => setFocusedIndex(block.originalIndex)}
-                                                            onBlur={() => setFocusedIndex(null)}
-                                                            onChange={(e) => handleBlockChange(block.originalIndex, 'end_time', e.target.value)}
-                                                        />
-                                                    </div>
-
-                                                    <div className="time-block__divider" />
-
-                                                    <div className="time-block__type">
-                                                        <select
-                                                            className={`time-block__type-select ${block.default_type === 'virtual' ? 'time-block__type-select--virtual' : ''}`}
-                                                            value={block.default_type || 'consultation'}
-                                                            onChange={(e) => {
-                                                                handleBlockChange(block.originalIndex, 'default_type', e.target.value);
-                                                            }}
-                                                        >
-                                                            <option value="consultation">🏥 Presencial</option>
-                                                            <option value="virtual">📹 Videollamada</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <div className="time-block__options">
-                                                        <label className="time-block__alignment">
-                                                            <input
-                                                                type="checkbox"
-                                                                className="time-block__checkbox"
-                                                                checked={block.force_hour_alignment === 1}
-                                                                onChange={(e) => handleBlockChange(block.originalIndex, 'force_hour_alignment', e.target.checked ? 1 : 0)}
-                                                            />
-                                                            <span className="time-block__alignment-text">🕒 Coord. :00</span>
-                                                        </label>
-                                                    </div>
-
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm-compact"
-                                                        onClick={() => handleRemoveBlock(block.originalIndex)}
-                                                        className="time-block__remove"
-                                                        title="Eliminar franja"
-                                                        icon="🗑️"
-                                                    />
-                                                </div>
+                                                <ScheduleTimeBlock
+                                                    key={block._key || block.originalIndex}
+                                                    block={block}
+                                                    onFocus={() => setFocusedIndex(block.originalIndex)}
+                                                    onBlur={() => setFocusedIndex(null)}
+                                                    onChange={handleBlockChange}
+                                                    onRemove={() => handleRemoveBlock(block.originalIndex)}
+                                                    t={t}
+                                                />
                                             ))}
 
                                             <Button

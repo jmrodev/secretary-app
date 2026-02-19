@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { pool } = require('../db');
+const systemSettingsRepository = require('../repositories/systemSettingsRepository');
 const { startTunnelManager, stopTunnelManager, refreshTunnel: refreshCFTunnel } = require('./tunnel-manager');
 
 /**
@@ -11,9 +11,7 @@ let duckDnsInterval = null;
 
 async function updateDuckDNS() {
     try {
-        const [methodRow] = await pool.query(
-            "SELECT setting_value FROM system_settings WHERE setting_key = 'remote_access_method'"
-        );
+        const methodRow = await systemSettingsRepository.findByKey('remote_access_method');
         const method = methodRow ? methodRow.setting_value : 'cloudflare';
 
         if (method !== 'duckdns') {
@@ -21,9 +19,7 @@ async function updateDuckDNS() {
             return;
         }
 
-        const rows = await pool.query(
-            "SELECT setting_key, setting_value FROM system_settings WHERE setting_key IN ('duckdns_domain', 'duckdns_token')"
-        );
+        const rows = await systemSettingsRepository.findManyByKeys(['duckdns_domain', 'duckdns_token']);
 
         const settings = {};
         rows.forEach(r => settings[r.setting_key] = r.setting_value);
@@ -44,10 +40,7 @@ async function updateDuckDNS() {
 
             const publicUrl = `http://${domain}.duckdns.org`;
 
-            await pool.query(
-                'INSERT INTO system_settings (setting_key, setting_value) VALUES ("public_base_url", ?) ON DUPLICATE KEY UPDATE setting_value = ?',
-                [publicUrl, publicUrl]
-            );
+            await systemSettingsRepository.upsert('public_base_url', publicUrl);
         } else {
             console.error('❌ DuckDNS: Update failed -', response.data);
         }
@@ -73,9 +66,7 @@ function stopDuckDNS() {
 
 async function initRemoteAccess() {
     try {
-        const [rows] = await pool.query(
-            "SELECT setting_value FROM system_settings WHERE setting_key = 'remote_access_method'"
-        );
+        const rows = await systemSettingsRepository.findByKey('remote_access_method');
         const method = rows ? rows.setting_value : 'cloudflare';
 
         if (method === 'cloudflare') {
@@ -95,9 +86,7 @@ async function initRemoteAccess() {
 }
 
 async function refreshRemoteAccess() {
-    const [rows] = await pool.query(
-        "SELECT setting_value FROM system_settings WHERE setting_key = 'remote_access_method'"
-    );
+    const rows = await systemSettingsRepository.findByKey('remote_access_method');
     const method = rows ? rows.setting_value : 'cloudflare';
 
     if (method === 'cloudflare') {

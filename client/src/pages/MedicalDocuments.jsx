@@ -3,14 +3,11 @@ import { useMedicalDocumentsController } from '../controllers/useMedicalDocument
 
 // Components
 import MainLayout from '../components/templates/MainLayout';
-import Modal from '../components/molecules/Modal';
-import TransactionModal from '../components/molecules/TransactionModal';
-import PatientSearchSelect from '../components/molecules/PatientSearchSelect';
 import MedicalRequestForm from '../components/organisms/MedicalRequestForm';
 import MedicalRequestList from '../components/organisms/MedicalRequestList';
 import MedicalHistoryTable from '../components/organisms/MedicalHistoryTable';
-import MedicationAutocomplete from '../components/molecules/MedicationAutocomplete';
-import CurrencyInput from '../components/atoms/CurrencyInput';
+import MedicalFileRepository from '../components/organisms/MedicalFileRepository';
+import MedicalActionModals from '../components/organisms/MedicalActionModals';
 import Button from '../components/atoms/Button';
 import SearchBar from '../components/molecules/SearchBar';
 import TabNav from '../components/molecules/TabNav';
@@ -35,8 +32,6 @@ const MedicalDocuments = () => {
         requestEditData,
         reqType, reqNote,
         sendToDoctor,
-
-        // Permissions
         canDeletePrescription, canDeleteLicense, canDeleteFile, canDeleteRequest,
         printData,
         handlers
@@ -90,7 +85,9 @@ const MedicalDocuments = () => {
             <div className="medical-documents no-print">
                 <header className="dashboard-header">
                     <h1 className="dashboard-header__title">{t('medical_documents')}</h1>
-                    <p className="dashboard-header__subtitle">{t('medical_docs_subtitle') || 'Gestione requerimientos, archivos e historial de pacientes.'}</p>
+                    <p className="dashboard-header__subtitle">
+                        {t('medical_docs_subtitle') || 'Gestione requerimientos, archivos e historial de pacientes.'}
+                    </p>
                 </header>
 
                 <div className="dashboard-grid animate-fadeIn">
@@ -130,37 +127,11 @@ const MedicalDocuments = () => {
                             />
                         </div>
 
-                        {activeTab === 'requests' && requestsSubTab === 'list' && (
+                        {(['requests', 'prescriptions', 'licenses', 'certificates'].includes(activeTab)) && (
                             <div className="dashboard-card">
                                 <h3 className="dashboard-card__title">🛠️ {t('actions') || 'Acciones'}</h3>
                                 <div className="config-flex--column config-flex--gap-3">
-                                    <Button
-                                        variant="secondary"
-                                        size="sm"
-                                        onClick={controller.handleExportJSON}
-                                        icon={<Icon name="save" size="1rem" />}
-                                        className="w-full justify-start"
-                                    >
-                                        {t('export_json')}
-                                    </Button>
-                                    <Button
-                                        variant="secondary"
-                                        size="sm"
-                                        onClick={controller.handlePrintPrescriptions}
-                                        icon={<Icon name="PRINT" size="1rem" />}
-                                        className="w-full justify-start"
-                                    >
-                                        {t('print_backup')}
-                                    </Button>
-                                </div>
-                            </div>
-                        )}
-
-                        {['prescriptions', 'licenses', 'certificates'].includes(activeTab) && (
-                            <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">🛠️ {t('actions') || 'Acciones'}</h3>
-                                <div className="config-flex--column config-flex--gap-3">
-                                    {activeTab === 'prescriptions' && (
+                                    {(activeTab === 'prescriptions' || (activeTab === 'requests' && requestsSubTab === 'list')) && (
                                         <Button
                                             variant="secondary"
                                             size="sm"
@@ -230,77 +201,20 @@ const MedicalDocuments = () => {
                             )}
 
                             {activeTab === 'files' && (
-                                <div className="medical-documents__repository">
-                                    <section className="medical-documents__upload-section">
-                                        <div className="dashboard-card">
-                                            <h3 className="dashboard-card__title">{t('upload_document')}</h3>
-                                            <form className="config-flex--column config-flex--gap-4" onSubmit={handleFileUpload}>
-                                                <div className="input-group">
-                                                    <label className="input-label">{t('patient_label')}</label>
-                                                    <PatientSearchSelect value={filePatient} onChange={handleFilePatientChange} placeholder={t('select_patient')} />
-                                                </div>
-                                                <div className="input-group">
-                                                    <label className="input-label">{t('description')}</label>
-                                                    <input className="input-field" value={fileDesc} onChange={e => handleFileDescChange(e.target.value)} placeholder="e.g. Lab Results PDF" required />
-                                                </div>
-                                                <div className="input-group">
-                                                    <label className="input-label">{t('file')}</label>
-                                                    <input type="file" className="input-field" onChange={e => handleFileUploadChange(e.target.files[0])} required />
-                                                </div>
-                                                <Button type="submit" className="w-full">{t('upload_file')}</Button>
-                                            </form>
-                                        </div>
-                                    </section>
-
-                                    <section className="medical-documents__list-section">
-                                        <div className="dashboard-card no-padding">
-                                            <div className="medical-documents__table-container">
-                                                {files.filter(filterItem).length === 0 ? (
-                                                    <div className="medical-documents__empty-repository">
-                                                        <Icon name="folder_open" size="3rem" className="medical-documents__empty-icon" />
-                                                        {t('no_files')}
-                                                    </div>
-                                                ) : (
-                                                    <table className="table-base w-full">
-                                                        <thead>
-                                                            <tr>
-                                                                <th className="pl-6">{t('file')}</th>
-                                                                <th>{t('patient')}</th>
-                                                                <th className="pr-6 text-right">{t('actions')}</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {files.filter(filterItem).map(f => (
-                                                                <tr key={f.id} className="hover:bg-slate-50 cursor-pointer" onClick={() => window.open(f.file_url, '_blank')}>
-                                                                    <td className="pl-6 py-4">
-                                                                        <div className="config-flex">
-                                                                            <Icon name="folder_open" size="1.2rem" className="medical-documents__file-icon" />
-                                                                            <span className="medical-documents__file-name">{f.description || f.file_name}</span>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <span className="medical-documents__patient-name">{f.patient_name}</span>
-                                                                    </td>
-                                                                    <td className="pr-6 text-right">
-                                                                        {(user.role === 'admin' || canDeleteFile) && (
-                                                                            <Button
-                                                                                variant="ghost"
-                                                                                size="sm-compact"
-                                                                                className="text-danger"
-                                                                                onClick={(e) => { e.stopPropagation(); openDeleteFileModal(f); }}
-                                                                                icon={<Icon name="delete" size="1rem" />}
-                                                                            />
-                                                                        )}
-                                                                    </td>
-                                                                </tr>
-                                                            ))}
-                                                        </tbody>
-                                                    </table>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </section>
-                                </div>
+                                <MedicalFileRepository
+                                    t={t}
+                                    user={user}
+                                    files={files}
+                                    filterItem={filterItem}
+                                    filePatient={filePatient}
+                                    fileDesc={fileDesc}
+                                    handleFilePatientChange={handleFilePatientChange}
+                                    handleFileDescChange={handleFileDescChange}
+                                    handleFileUploadChange={handleFileUploadChange}
+                                    handleFileUpload={handleFileUpload}
+                                    openDeleteFileModal={openDeleteFileModal}
+                                    canDeleteFile={canDeleteFile}
+                                />
                             )}
 
                             {['prescriptions', 'licenses', 'certificates'].includes(activeTab) && (
@@ -335,132 +249,35 @@ const MedicalDocuments = () => {
                     </main>
                 </div>
 
-                {/* --- Modals --- */}
-                <Modal
-                    isOpen={actionModal.open}
-                    onClose={closeActionModal}
-                    title={actionModal.type === 'completed' ? t('approve_request') : t('reject_request')}
-                    footer={
-                        <>
-                            <Button variant="secondary" onClick={closeActionModal}>{t('cancel')}</Button>
-                            <Button onClick={() => handleUpdateStatus(actionModal.id, actionModal.type, actionNote)}>{actionModal.type === 'completed' ? t('approve') : t('reject')}</Button>
-                        </>
-                    }
-                >
-                    <div className="input-group">
-                        <label className="input-label">{actionModal.type === 'completed' ? t('message_optional') : t('reason_rejection')}</label>
-                        <textarea className="input-field" rows="3" value={actionNote} onChange={e => handleActionNoteChange(e.target.value)} autoFocus />
-                    </div>
-                </Modal>
-
-                <TransactionModal
-                    isOpen={paymentModal.open}
-                    onClose={closePaymentModal}
-                    initialData={paymentModal.initialData}
-                    requestId={paymentModal.reqId}
-                    onSuccess={fetchRequests}
+                <MedicalActionModals
+                    t={t}
+                    isEditing={isEditing}
+                    toggleEditing={toggleEditing}
+                    actionModal={actionModal}
+                    closeActionModal={closeActionModal}
+                    actionNote={actionNote}
+                    handleActionNoteChange={handleActionNoteChange}
+                    handleUpdateStatus={handleUpdateStatus}
+                    paymentModal={paymentModal}
+                    closePaymentModal={closePaymentModal}
+                    fetchRequests={fetchRequests}
+                    fileToDelete={fileToDelete}
+                    closeDeleteFileModal={closeDeleteFileModal}
+                    confirmFileDelete={confirmFileDelete}
+                    selectedPrescription={selectedPrescription}
+                    selectedLicense={selectedLicense}
+                    selectedRequest={selectedRequest}
+                    editData={editData}
+                    handleEditDataChange={handleEditDataChange}
+                    handleSelectMedication={handleSelectMedication}
+                    handleUpdatePrescription={handleUpdatePrescription}
+                    licenseEditData={licenseEditData}
+                    handleLicenseEditDataChange={handleLicenseEditDataChange}
+                    handleUpdateLicense={handleUpdateLicense}
+                    requestEditData={requestEditData}
+                    handleRequestEditDataChange={handleRequestEditDataChange}
+                    handleUpdateRequest={handleUpdateRequest}
                 />
-
-                <Modal
-                    isOpen={!!fileToDelete}
-                    onClose={closeDeleteFileModal}
-                    title={t('confirm_delete')}
-                    footer={
-                        <>
-                            <Button variant="secondary" onClick={closeDeleteFileModal}>{t('cancel')}</Button>
-                            <Button variant="danger" onClick={confirmFileDelete}>{t('delete')}</Button>
-                        </>
-                    }
-                >
-                    <p>¿Seguro que desea eliminar el archivo <strong>{fileToDelete?.file_name}</strong>?</p>
-                </Modal>
-
-                {/* --- Edit Modals --- */}
-                {isEditing && selectedPrescription && (
-                    <Modal
-                        isOpen={isEditing && !!selectedPrescription}
-                        onClose={() => toggleEditing(false)}
-                        title={`${t('prescription_for')} ${selectedPrescription.patient_name}`}
-                        footer={
-                            <>
-                                <Button variant="secondary" onClick={() => toggleEditing(false)}>{t('cancel')}</Button>
-                                <Button onClick={handleUpdatePrescription}>{t('save')}</Button>
-                            </>
-                        }
-                    >
-                        <div className="config-flex--column config-flex--gap-4">
-                            <div className="input-group">
-                                <label className="input-label">{t('medications')}</label>
-                                <MedicationAutocomplete
-                                    value=""
-                                    onChange={() => { }}
-                                    onSelectMedication={handleSelectMedication}
-                                />
-                                <textarea className="input-field mt-4" rows="4" value={editData.medications} onChange={e => handleEditDataChange('medications', e.target.value)} />
-                            </div>
-                            <div className="input-group">
-                                <label className="input-label">{t('instructions')}</label>
-                                <textarea className="input-field" rows="3" value={editData.instructions} onChange={e => handleEditDataChange('instructions', e.target.value)} />
-                            </div>
-                        </div>
-                    </Modal>
-                )}
-
-                {isEditing && selectedLicense && (
-                    <Modal
-                        isOpen={isEditing && !!selectedLicense}
-                        onClose={() => toggleEditing(false)}
-                        title={`${t('license_for')} ${selectedLicense.patient_name}`}
-                        footer={
-                            <>
-                                <Button variant="secondary" onClick={() => toggleEditing(false)}>{t('cancel')}</Button>
-                                <Button onClick={handleUpdateLicense}>{t('save')}</Button>
-                            </>
-                        }
-                    >
-                        <div className="config-flex--column config-flex--gap-4">
-                            <div className="config-grid config-grid--2col">
-                                <div className="input-group">
-                                    <label className="input-label">{t('start_date')}</label>
-                                    <input type="date" className="input-field" value={licenseEditData.start_date} onChange={e => handleLicenseEditDataChange('start_date', e.target.value)} />
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">{t('days_duration')}</label>
-                                    <input type="number" className="input-field" value={licenseEditData.days_duration} onChange={e => handleLicenseEditDataChange('days_duration', e.target.value)} />
-                                </div>
-                            </div>
-                            <div className="input-group">
-                                <label className="input-label">{t('diagnosis')}</label>
-                                <textarea className="input-field" rows="3" value={licenseEditData.diagnosis} onChange={e => handleLicenseEditDataChange('diagnosis', e.target.value)} />
-                            </div>
-                        </div>
-                    </Modal>
-                )}
-
-                {isEditing && selectedRequest && (
-                    <Modal
-                        isOpen={isEditing && !!selectedRequest}
-                        onClose={() => toggleEditing(false)}
-                        title={t('edit_request')}
-                        footer={
-                            <>
-                                <Button variant="secondary" onClick={() => toggleEditing(false)}>{t('cancel')}</Button>
-                                <Button onClick={handleUpdateRequest}>{t('save')}</Button>
-                            </>
-                        }
-                    >
-                        <div className="config-flex--column config-flex--gap-4">
-                            <div className="input-group">
-                                <label className="input-label">{t('request_note')}</label>
-                                <textarea className="input-field" rows="3" value={requestEditData.request_note} onChange={e => handleRequestEditDataChange('request_note', e.target.value)} />
-                            </div>
-                            <div className="input-group">
-                                <label className="input-label">{t('doctor_reply')}</label>
-                                <textarea className="input-field" rows="3" value={requestEditData.doctor_note} onChange={e => handleRequestEditDataChange('doctor_note', e.target.value)} />
-                            </div>
-                        </div>
-                    </Modal>
-                )}
             </div>
 
             {/* Print Section - BEM compliant */}
@@ -516,3 +333,4 @@ const MedicalDocuments = () => {
 };
 
 export default MedicalDocuments;
+

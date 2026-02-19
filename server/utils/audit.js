@@ -1,4 +1,4 @@
-const { pool } = require('../db');
+const auditRepository = require('../repositories/auditRepository');
 
 /**
  * Utility to log CRUD operations with specific before/after state.
@@ -26,8 +26,13 @@ exports.logAction = async (req, action, details) => {
             detailsStr = JSON.stringify(details);
         }
 
-        const query = "INSERT INTO audit_logs (user_id, username, action, details, ip_address) VALUES (?, ?, ?, ?, ?)";
-        await pool.query(query, [user_id, username, action, detailsStr, ip_address]);
+        await auditRepository.create({
+            user_id,
+            username,
+            action,
+            details: detailsStr,
+            ip_address
+        });
 
     } catch (err) {
         console.error("[Audit Log Error]", err);

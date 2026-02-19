@@ -1,5 +1,7 @@
 const { validateAdminPassword } = require('../../controllers/appointments/utils');
 const { AuthRequiredError } = require('../../utils/errors');
+const appointmentRepository = require('../../repositories/appointmentRepository');
+const systemSettingsRepository = require('../../repositories/systemSettingsRepository');
 
 const formatDateForDB = (date) => {
     try {
@@ -18,13 +20,12 @@ const formatDateForDB = (date) => {
 
 const freeSlot = async (conn, doctorId, appointmentDate) => {
     const formatted = formatDateForDB(appointmentDate);
-    await conn.query("DELETE FROM recently_freed_slots WHERE doctor_id = ? AND slot_date = ?", [doctorId, formatted]);
-    await conn.query("INSERT INTO recently_freed_slots (doctor_id, slot_date) VALUES (?, ?)", [doctorId, formatted]);
+    await appointmentRepository.addRecentlyFreedSlot(doctorId, formatted, conn);
 };
 
 const occupySlot = async (conn, doctorId, appointmentDate) => {
     const formatted = formatDateForDB(appointmentDate);
-    await conn.query("DELETE FROM recently_freed_slots WHERE doctor_id = ? AND slot_date = ?", [doctorId, formatted]);
+    await appointmentRepository.deleteFromRecentlyFreedSlots(doctorId, formatted, conn);
 };
 
 const checkModificationPermissions = async (conn, appt, user, adminPassword) => {
@@ -43,15 +44,15 @@ const checkModificationPermissions = async (conn, appt, user, adminPassword) => 
 
     // Turnos Pasados
     if (apptDate < now) {
-        const setting = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'allow_secretary_edit_past_appointments'");
-        const canEdit = setting.length > 0 && (setting[0].setting_value === 'true' || setting[0].setting_value === '1');
+        const setting = await systemSettingsRepository.findByKey('allow_secretary_edit_past_appointments', conn);
+        const canEdit = setting && (setting.setting_value === 'true' || setting.setting_value === '1');
         if (!canEdit) throw new AuthRequiredError("Requiere autorización de Administrador (Turno Pasado).");
     }
 
     // Turnos Atendidos/Completados
     if (['completed', 'attended', 'arrived'].includes(appt.status)) {
-        const setting = await conn.query("SELECT setting_value FROM system_settings WHERE setting_key = 'enable_secretary_unrestricted_crud'");
-        const canEdit = setting.length > 0 && (setting[0].setting_value === 'true' || setting[0].setting_value === '1');
+        const setting = await systemSettingsRepository.findByKey('enable_secretary_unrestricted_crud', conn);
+        const canEdit = setting && (setting.setting_value === 'true' || setting.setting_value === '1');
         if (!canEdit) throw new AuthRequiredError("Requiere autorización de Administrador (Turno Completado/Atendido).");
     }
 

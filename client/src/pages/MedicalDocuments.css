@@ -16,65 +16,6 @@
     margin-bottom: 1.5rem;
 }
 
-/* Repository Section */
-.medical-documents__repository {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-}
-
-@media (min-width: 1024px) {
-    .medical-documents__repository {
-        grid-template-columns: 350px 1fr;
-    }
-}
-
-.medical-documents__upload-card {
-    height: fit-content;
-}
-
-.medical-documents__file-list {
-    background: white;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border-color);
-    overflow: hidden;
-}
-
-.medical-documents__table-container {
-    overflow-x: auto;
-}
-
-.medical-documents__file-icon {
-    font-size: 1.25rem;
-    margin-right: 0.75rem;
-}
-
-.medical-documents__file-name {
-    font-weight: 700;
-    color: var(--text-main);
-}
-
-.medical-documents__patient-name {
-    font-weight: 500;
-    color: var(--text-secondary);
-}
-
-.medical-documents__empty-repository {
-    padding: 4rem 2rem;
-    text-align: center;
-    color: var(--text-muted);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-}
-
-.medical-documents__empty-icon {
-    font-size: 3rem;
-    opacity: 0.5;
-}
-
 /* Section Controls (Titles + Action Buttons) */
 .medical-documents__section-header {
     display: flex;

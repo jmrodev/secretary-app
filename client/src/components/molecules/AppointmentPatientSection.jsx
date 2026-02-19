@@ -1,0 +1,71 @@
+import React from 'react';
+import PatientSearchSelect from './PatientSearchSelect';
+import { capitalizeWords } from '../../utils/stringUtils';
+
+/**
+ * AppointmentPatientSection Molecule.
+ * Manages patient selection, missing data alerts, and quick phone editing 
+ * within the appointment form.
+ */
+const AppointmentPatientSection = ({
+    selectedPatient,
+    selectedPatientData,
+    missingData,
+    handlePatientChange,
+    handlePhoneChange,
+    onOpenEditPatient,
+    t
+}) => {
+    return (
+        <div className="input-group">
+            <label className="form-label">{t('patients') || 'Paciente'}</label>
+            <PatientSearchSelect
+                value={selectedPatient}
+                selectedData={selectedPatientData}
+                autoFocus={true}
+                placeholder="Buscar Paciente..."
+                onCreatePatient={async (name) => {
+                    handlePatientChange(null, { full_name: capitalizeWords(name) });
+                    onOpenEditPatient();
+                }}
+                onChange={handlePatientChange}
+            />
+
+            {missingData.length > 0 && (
+                <div className="missing-data-alert">
+                    <span className="missing-data-alert__text">
+                        ⚠️ <strong>Datos incompletos:</strong> {missingData.join(', ')}.
+                    </span>
+                    <button
+                        type="button"
+                        className="missing-data-alert__action"
+                        onClick={onOpenEditPatient}
+                    >
+                        Completar
+                    </button>
+                </div>
+            )}
+
+            {selectedPatient && (
+                <div className="patient-quick-info">
+                    <div className="patient-quick-info__field">
+                        <span className="patient-quick-info__label">📱 Teléfono</span>
+                        <input
+                            type="text"
+                            className="patient-quick-info__input"
+                            value={selectedPatientData?.phone || ''}
+                            onChange={e => handlePhoneChange(e.target.value)}
+                            placeholder="Sin teléfono"
+                        />
+                    </div>
+                    <div className="whatsapp-status">
+                        <span className={`whatsapp-status__indicator ${selectedPatientData?.phone ? 'whatsapp-status__indicator--active' : ''}`}></span>
+                        {selectedPatientData?.phone ? 'WHATSAPP OK' : 'SIN TEL.'}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default AppointmentPatientSection;

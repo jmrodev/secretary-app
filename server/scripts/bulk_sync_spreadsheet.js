@@ -1,5 +1,5 @@
 const { pool } = require('../db');
-const googleController = require('../controllers/googleController');
+const googleSpreadsheetService = require('../services/google/GoogleSpreadsheetService');
 
 async function run() {
     let conn;
@@ -11,7 +11,7 @@ async function run() {
         for (const tx of txs) {
             process.stdout.write(`Syncing tx ${tx.id}... `);
             try {
-                await googleController.syncToSpreadsheetHelper(tx.id);
+                await googleSpreadsheetService.syncToSpreadsheet(tx.id);
                 process.stdout.write(`Done\n`);
             } catch (innerErr) {
                 process.stdout.write(`Error: ${innerErr.message}\n`);

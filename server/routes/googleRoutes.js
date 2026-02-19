@@ -1,32 +1,43 @@
 const express = require('express');
 const router = express.Router();
-const googleController = require('../controllers/googleController');
+const googleAuthController = require('../controllers/google/googleAuthController');
+const googleCalendarController = require('../controllers/google/googleCalendarController');
+const googleContactController = require('../controllers/google/googleContactController');
+const googleSpreadsheetController = require('../controllers/google/googleSpreadsheetController');
+const googleSpreadsheetService = require('../services/google/GoogleSpreadsheetService');
 
 const { verifyToken } = require('../middleware/authMiddleware');
 const { authorize } = require('../middleware/authorize');
 const { ACCESS_LEVELS } = require('../constants/roles');
 
-router.get('/auth-url', verifyToken, googleController.getAuthUrl);
-router.get('/callback', googleController.oauthCallback); // Public: Browser redirect
-router.get('/status', verifyToken, googleController.getStatus);
-router.post('/disconnect', verifyToken, googleController.disconnect);
-router.post('/import', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), googleController.importContacts);
-router.post('/sync-import', verifyToken, googleController.syncImportEvents); // Import events from Google
-router.post('/sync-day', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), googleController.syncDayToGoogle); // Sync specific day to Google
-router.post('/retry-failed', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), googleController.retryFailedItems); // Retry stalled items
-router.get('/appointments', verifyToken, googleController.listAppointments);
-router.post('/appointments', verifyToken, googleController.createAppointment);
-router.delete('/appointments/:eventId', verifyToken, googleController.deleteEvent);
+// Auth
+router.get('/auth-url', verifyToken, googleAuthController.getAuthUrl);
+router.get('/callback', googleAuthController.oauthCallback);
+router.get('/status', verifyToken, googleAuthController.getStatus);
+router.post('/disconnect', verifyToken, googleAuthController.disconnect);
 
-// Sanitization Tool
-router.get('/audit-appointments', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), googleController.getAuditAppointments);
-router.post('/sanitize/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), googleController.sanitizeAppointment);
-router.post('/reset-spreadsheet', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), googleController.resetSpreadsheet);
+// Contacts
+router.post('/import', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), googleContactController.importContacts);
+
+// Calendar & Sync
+router.post('/sync-day', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), googleCalendarController.syncDayToGoogle);
+router.post('/retry-failed', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), googleCalendarController.retryFailedItems);
+router.get('/appointments', verifyToken, googleCalendarController.listAppointments);
+router.post('/appointments', verifyToken, googleCalendarController.createAppointment);
+router.delete('/appointments/:eventId', verifyToken, googleCalendarController.deleteEvent);
+
+// Audit & Sanitization
+router.get('/audit-appointments', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), googleCalendarController.getAuditAppointments);
+router.post('/sanitize/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), googleCalendarController.sanitizeAppointment);
+
+// Spreadsheets
+router.post('/reset-spreadsheet', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), googleSpreadsheetController.resetSpreadsheet);
 router.post('/sync-transaction/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_INTEGRATIONS), (req, res) => {
     const { id } = req.params;
-    googleController.syncToSpreadsheetHelper(id, req.user.id)
+    googleSpreadsheetService.syncToSpreadsheet(id, req.user.user_id)
         .then(() => res.json({ message: 'Sincronización manual completada' }))
         .catch(err => res.status(500).json({ error: err.message }));
 });
 
 module.exports = router;
+

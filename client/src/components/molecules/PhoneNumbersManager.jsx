@@ -1,5 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
+import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
 import './PhoneNumbersManager.css';
 
 const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
@@ -33,19 +35,20 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
     return (
         <div className="phone-manager">
             <label className="phone-manager__label">
-                📱 {t('phone_numbers')}
+                <Icon name="smartphone" size="1.2rem" />
+                {t('phone_numbers')}
             </label>
             {displayPhoneNumbers.map((pn, index) => (
                 <div key={index} className="phone-manager__item">
                     <input
-                        className="form-input phone-manager__label-input"
+                        className="phone-manager__input phone-manager__input--label"
                         value={pn.label}
                         onChange={(e) => handleUpdate(index, 'label', e.target.value)}
                         placeholder={t('label')}
                     />
                     <div className="phone-manager__number-box">
                         <input
-                            className="form-input phone-manager__number-input"
+                            className="phone-manager__input phone-manager__input--number"
                             value={pn.phone_number}
                             onChange={(e) => handleUpdate(index, 'phone_number', e.target.value)}
                             placeholder="+549..."
@@ -53,22 +56,21 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
                         />
                         {pn.phone_number && pn.phone_number.length > 5 && (
                             <div className="phone-manager__quick-actions">
-                                <a
-                                    href={`tel:${pn.phone_number.replace(/[^0-9+]/g, '')}`}
+                                <Button
+                                    to={`tel:${pn.phone_number.replace(/[^0-9+]/g, '')}`}
+                                    variant="link"
+                                    size="sm"
                                     title="Llamar"
-                                    className="phone-manager__action-link"
-                                >
-                                    📞
-                                </a>
-                                <a
-                                    href={`https://wa.me/${pn.phone_number.replace(/[^0-9]/g, '')}`}
+                                    icon={<Icon name="call" size="1.1rem" />}
+                                />
+                                <Button
+                                    to={`https://wa.me/${pn.phone_number.replace(/[^0-9]/g, '')}`}
                                     target="_blank"
-                                    rel="noreferrer"
+                                    variant="link"
+                                    size="sm"
                                     title="WhatsApp"
-                                    className="phone-manager__action-link"
-                                >
-                                    📱
-                                </a>
+                                    icon={<Icon name="chat" size="1.1rem" />}
+                                />
                             </div>
                         )}
                     </div>
@@ -84,23 +86,25 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
                             {t('primary')}
                         </label>
                     </div>
-                    <button
-                        type="button"
+                    <Button
+                        variant="ghost"
+                        size="sm"
                         className="phone-manager__delete-btn"
                         onClick={() => handleRemove(index)}
                         title={t('delete')}
-                    >
-                        🗑️
-                    </button>
+                        icon={<Icon name="delete" size="1.1rem" />}
+                    />
                 </div>
             ))}
-            <button
-                type="button"
-                className="btn btn-secondary btn-sm phone-manager__add-btn"
+            <Button
+                variant="secondary"
+                size="sm"
+                className="phone-manager__add-btn"
                 onClick={handleAdd}
+                icon={<Icon name="add" />}
             >
-                ➕ {t('add_phone')}
-            </button>
+                {t('add_phone')}
+            </Button>
         </div>
     );
 };

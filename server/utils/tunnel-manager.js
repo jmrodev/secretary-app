@@ -1,6 +1,7 @@
 const { spawn } = require('child_process');
-const { pool } = require('../db');
+const systemSettingsRepository = require('../repositories/systemSettingsRepository');
 const path = require('path');
+const fs = require('fs');
 
 /**
  * Tunnel Manager
@@ -24,7 +25,6 @@ function startTunnelManager() {
     console.log(`📍 Targeting: ${TARGET_URL}`);
 
     // Check if binary exists
-    const fs = require('fs');
     if (!fs.existsSync(CLOUDFLARED_PATH)) {
         console.error(`❌ Cloudflared binary not found at ${CLOUDFLARED_PATH}`);
         return;
@@ -48,20 +48,16 @@ function startTunnelManager() {
             const quickTunnelMatch = text.match(/https:\/\/[a-z0-9]+-[a-z0-9-]+\.trycloudflare\.com/);
             if (quickTunnelMatch && !quickTunnelMatch[0].includes('api.trycloudflare.com')) {
                 const newUrl = quickTunnelMatch[0];
-                updateUrl(newUrl);
+                await updateUrlInDb(newUrl);
             }
         } else {
-            updateUrl(match[0]);
+            await updateUrlInDb(match[0]);
         }
 
-        async function updateUrl(newUrl) {
+        async function updateUrlInDb(newUrl) {
             console.log(`✨ New Tunnel URL detected: ${newUrl}`);
             try {
-                const key = 'public_base_url';
-                await pool.query(
-                    'INSERT INTO system_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?',
-                    [key, newUrl, newUrl]
-                );
+                await systemSettingsRepository.upsert('public_base_url', newUrl);
                 console.log('✅ Database updated successfully.');
             } catch (err) {
                 console.error('❌ Failed to update database:', err.message);

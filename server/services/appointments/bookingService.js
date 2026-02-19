@@ -1,4 +1,6 @@
 const appointmentRepository = require('../../repositories/appointmentRepository');
+const patientRepository = require('../../repositories/patientRepository');
+const transactionRepository = require('../../repositories/transactionRepository');
 const appointmentEvents = require('../../events/appointmentEvents');
 const { calculatePrice } = require('../../utils/priceCalculator');
 const { pool } = require('../../db');
@@ -6,20 +8,20 @@ const { ConflictError, NotFoundError } = require('../../utils/errors');
 
 class BookingService {
     async createAppointment(userId, role, data) {
-        let conn = await pool.getConnection();
+        const conn = await pool.getConnection();
         try {
             await conn.beginTransaction();
 
             let patient_id = data.patient_id;
             if (role === 'patient') {
-                const rows = await conn.query("SELECT id FROM patients WHERE user_id = ?", [userId]);
-                if (rows.length === 0) throw new NotFoundError("Patient profile not found");
-                patient_id = rows[0].id;
+                const patient = await patientRepository.findByUserId(userId, conn);
+                if (!patient) throw new NotFoundError("Patient profile not found");
+                patient_id = patient.id;
             }
 
             const formattedDate = new Date(data.appointment_date).toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace('T', ' ');
 
-            await conn.query("DELETE FROM recently_freed_slots WHERE doctor_id = ? AND slot_date = ?", [data.doctor_id, formattedDate]);
+            await appointmentRepository.deleteFromRecentlyFreedSlots(data.doctor_id, formattedDate, conn);
 
             const existing = await appointmentRepository.findBySlot(data.doctor_id, formattedDate, conn);
             if (existing.length > 0) {
@@ -32,7 +34,7 @@ class BookingService {
                 }
             }
 
-            const [patientData] = await conn.query("SELECT full_name, user_id, dni, phone, email, institution_id FROM patients WHERE id = ?", [patient_id]);
+            const patientData = await patientRepository.findById(patient_id, conn);
             let finalInstitutionId = data.institution_id === 'none' ? null : (data.institution_id || (patientData ? patientData.institution_id : null));
 
             const appointmentId = await appointmentRepository.create({
@@ -53,7 +55,7 @@ class BookingService {
 
             await conn.commit();
 
-            // EMIT EVENT - The service doesn't care HOW it's synced or HOW it's logged
+            // EMIT EVENT
             appointmentEvents.emit('appointmentCreated', {
                 appointmentId,
                 data,
@@ -72,13 +74,16 @@ class BookingService {
     }
 
     async handleOverwrite(oldAppt, newData, userId, conn) {
-        const [oldPatient] = await conn.query("SELECT full_name FROM patients WHERE id = ?", [oldAppt.patient_id]);
+        const oldPatient = await patientRepository.findById(oldAppt.patient_id, conn);
         const oldPatientName = oldPatient ? oldPatient.full_name : 'Paciente desconocido';
 
-        await conn.query(
-            "INSERT INTO overwritten_reservations (doctor_id, slot_date, patient_id, patient_name) VALUES (?, ?, ?, ?)",
-            [oldAppt.doctor_id, oldAppt.appointment_date, oldAppt.patient_id, oldPatientName]
-        );
+        await appointmentRepository.createOverwrittenReservation({
+            doctor_id: oldAppt.doctor_id,
+            slot_date: oldAppt.appointment_date,
+            patient_id: oldAppt.patient_id,
+            patient_name: oldPatientName
+        }, conn);
+
         if (oldAppt.google_event_id) {
             try {
                 const googleSyncService = require('./googleSyncService');
@@ -89,9 +94,6 @@ class BookingService {
         }
 
         await appointmentRepository.delete(oldAppt.id, conn);
-
-        // Note: The sync deletion could also be an event, but usually overwrite is synchronous enough
-        // Or we could emit 'appointmentDeleted'
     }
 
     async generateDebt(appointmentId, doctorId, patientId, type, institutionId, patientData, conn) {
@@ -103,16 +105,30 @@ class BookingService {
         const institutionDebt = institutionId ? Math.max(0, basePrice - patientShare) : 0;
 
         if (patientShare > 0) {
-            await conn.query(
-                "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, method, status, transaction_date, appointment_id) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)",
-                ['income_patient', patientShare, `${type === 'virtual' ? 'Virtual' : 'Presencial'} Share: ${patientData.full_name}`, patientData.user_id, doctorId, 'on_account', 'pending', appointmentId]
-            );
+            await transactionRepository.create({
+                type: 'income_patient',
+                amount: patientShare,
+                description: `${type === 'virtual' ? 'Virtual' : 'Presencial'} Share: ${patientData.full_name}`,
+                related_user_id: patientData.user_id,
+                doctor_id: doctorId,
+                method: 'on_account',
+                status: 'pending',
+                transaction_date: new Date(),
+                appointment_id: appointmentId
+            }, conn);
         }
         if (institutionDebt > 0 && institutionId) {
-            await conn.query(
-                "INSERT INTO transactions (type, amount, description, related_user_id, doctor_id, institution_id, method, status, transaction_date, appointment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?)",
-                ['income_patient', institutionDebt, `${type === 'virtual' ? 'Virtual' : 'Presencial'} Institution Share: ${patientData.full_name}`, null, doctorId, institutionId, 'on_account', 'pending', appointmentId]
-            );
+            await transactionRepository.create({
+                type: 'income_patient',
+                amount: institutionDebt,
+                description: `${type === 'virtual' ? 'Virtual' : 'Presencial'} Institution Share: ${patientData.full_name}`,
+                doctor_id: doctorId,
+                institution_id: institutionId,
+                method: 'on_account',
+                status: 'pending',
+                transaction_date: new Date(),
+                appointment_id: appointmentId
+            }, conn);
         }
 
         if (patientShare > 0 || institutionDebt > 0) {

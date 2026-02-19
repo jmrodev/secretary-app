@@ -1,5 +1,8 @@
 const appointmentRepository = require('../../repositories/appointmentRepository');
-const { pool } = require('../../db');
+const transactionRepository = require('../../repositories/transactionRepository');
+const holidayRepository = require('../../repositories/holidayRepository');
+const patientRepository = require('../../repositories/patientRepository');
+const doctorRepository = require('../../repositories/doctorRepository');
 
 class RetrievalService {
     async getAppointments(user, query) {
@@ -10,11 +13,11 @@ class RetrievalService {
         };
 
         if (role === 'patient') {
-            const [pRows] = await pool.query("SELECT id FROM patients WHERE user_id = ?", [user_id]);
-            if (pRows) filters.patient_id = pRows.id;
+            const patient = await patientRepository.findByUserId(user_id);
+            if (patient) filters.patient_id = patient.id;
         } else if (role === 'doctor') {
-            const [dRows] = await pool.query("SELECT id FROM doctors WHERE user_id = ?", [user_id]);
-            if (dRows) filters.doctor_id = dRows.id;
+            const doctor = await doctorRepository.findByUserId(user_id);
+            if (doctor) filters.doctor_id = doctor.id;
         }
 
         return await appointmentRepository.getHistory(filters);
@@ -25,10 +28,7 @@ class RetrievalService {
         const targetYear = year || new Date().getFullYear();
 
         // 0. Fetch Holidays
-        const holidays = await pool.query(
-            "SELECT date, description FROM active_holidays WHERE MONTH(date) = ? AND YEAR(date) = ?",
-            [targetMonth, targetYear]
-        );
+        const holidays = await holidayRepository.findActiveByMonth(targetMonth, targetYear);
         const holidayMap = {};
         holidays.forEach(h => {
             const d = new Date(h.date).toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
@@ -36,43 +36,10 @@ class RetrievalService {
         });
 
         // 1. Fetch Appointments for the list
-        let apptQuery = `
-            SELECT 
-                a.id, a.appointment_date, a.reason, a.status, a.payment_status, a.type, a.is_out_of_hours,
-                p.full_name as patient_name, d.full_name as doctor_name,
-                (SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE appointment_id = a.id AND is_withdrawal = 0 AND status = 'paid') as paid_amount,
-                (SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE appointment_id = a.id AND is_withdrawal = 0 AND status = 'paid' AND (method = 'cash' OR method = 'efectivo')) as cash_amount,
-                (SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE appointment_id = a.id AND is_withdrawal = 0 AND status = 'pending') as debt_amount,
-                (SELECT GROUP_CONCAT(method) FROM transactions WHERE appointment_id = a.id AND is_withdrawal = 0 AND status = 'paid') as methods
-            FROM appointments a
-            LEFT JOIN patients p ON a.patient_id = p.id
-            JOIN doctors d ON a.doctor_id = d.id
-            WHERE MONTH(a.appointment_date) = ? AND YEAR(a.appointment_date) = ?
-        `;
-        const apptParams = [targetMonth, targetYear];
-        if (doctorId) {
-            apptQuery += " AND a.doctor_id = ?";
-            apptParams.push(doctorId);
-        }
-        apptQuery += " ORDER BY a.appointment_date ASC";
-
-        const appointments = await pool.query(apptQuery, apptParams);
+        const appointments = await appointmentRepository.findMonthlyAppointments(targetMonth, targetYear, doctorId);
 
         // 2. Fetch ALL Paid Income Transactions of the month (The real Cash Flow)
-        let incomeQuery = `
-            SELECT amount, method, transaction_date, type, appointment_id, request_id 
-            FROM transactions 
-            WHERE is_withdrawal = 0 
-              AND status = 'paid' 
-              AND MONTH(transaction_date) = ? 
-              AND YEAR(transaction_date) = ?
-        `;
-        const incomeParams = [targetMonth, targetYear];
-        if (doctorId) {
-            incomeQuery += " AND doctor_id = ?";
-            incomeParams.push(doctorId);
-        }
-        const incomeTransactions = await pool.query(incomeQuery, incomeParams);
+        const incomeTransactions = await transactionRepository.findMonthlyIncome(targetMonth, targetYear, doctorId);
 
         const report = {};
         const daysInMonth = new Date(targetYear, targetMonth, 0).getDate();
@@ -141,17 +108,7 @@ class RetrievalService {
             .reduce((acc, t) => acc + Number(t.amount), 0);
 
         // Withdrawals
-        let withdrawalsQuery = `
-            SELECT amount, transaction_date, description FROM transactions 
-            WHERE (type = 'withdrawal' OR type = 'payout') 
-            AND MONTH(transaction_date) = ? AND YEAR(transaction_date) = ? 
-        `;
-        const wParams = [targetMonth, targetYear];
-        if (doctorId) {
-            withdrawalsQuery += " AND doctor_id = ?";
-            wParams.push(doctorId);
-        }
-        const withdrawals = await pool.query(withdrawalsQuery, wParams);
+        const withdrawals = await transactionRepository.findMonthlyWithdrawals(targetMonth, targetYear, doctorId);
 
         return {
             appointments: Object.values(report),

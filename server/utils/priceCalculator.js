@@ -1,3 +1,5 @@
+const doctorRepository = require('../repositories/doctorRepository');
+const patientRepository = require('../repositories/patientRepository');
 
 /**
  * Calculates the final price for a medical service based on Doctor's base price and Patient's tariff adjustments.
@@ -5,21 +7,17 @@
  * @param {Object} conn - Active DB connection
  * @param {number} doctorId - Doctor ID
  * @param {number} patientId - Patient ID
- * @param {string} serviceType - 'consultation', 'prescription', 'medical_license', 'virtual_consultation'
- * @returns {Promise<{price: number, explanation: string}>}
+ * @param {string} serviceType - 'consultation', 'prescription', 'medical_license', 'virtual_consultation', 'certificate'
+ * @returns {Promise<{price: number, basePrice: number, explanation: string}>}
  */
 async function calculatePrice(conn, doctorId, patientId, serviceType = 'consultation', appointmentInstitutionId = null) {
-    // Get Doctor Prices
-    const docRows = await conn.query(
-        "SELECT consultation_price, prescription_price, medical_license_price, virtual_consultation_price, certificate_price FROM doctors WHERE id = ?",
-        [doctorId]
-    );
+    // Get Doctor Prices via Repository
+    const d = await doctorRepository.findPrices(doctorId, conn);
 
-    if (docRows.length === 0) {
+    if (!d) {
         throw new Error("Doctor not found");
     }
 
-    const d = docRows[0];
     let basePrice = 0;
     let priceType = 'Consultation';
 
@@ -50,27 +48,12 @@ async function calculatePrice(conn, doctorId, patientId, serviceType = 'consulta
     let finalPrice = basePrice;
     let explanation = `${priceType} Base: $${basePrice}`;
 
-    // Get Patient Tariff & Institution Base Price
+    // Get Patient Tariff & Institution Base Price via Repository
     if (patientId) {
-        // If appointmentInstitutionId is provided, use it. Otherwise use patient's default.
-        // We can do this by just checking the ID if passed, or fetching patient's one if not.
+        const patData = await patientRepository.findTariffAndInstitutionPrice(patientId, appointmentInstitutionId, conn);
 
-        // This query fetches patient settings AND the institution price if linked.
-        // If appointmentInstitutionId is passed, we should join on THAT id instead of p.institution_id
-
-        let query = `
-            SELECT p.tariff_percent, p.tariff_override, i.base_price as inst_price 
-            FROM patients p
-            LEFT JOIN institutions i ON ${appointmentInstitutionId ? 'i.id = ?' : 'p.institution_id = i.id'}
-            WHERE p.id = ?
-        `;
-
-        const params = appointmentInstitutionId ? [appointmentInstitutionId, patientId] : [patientId];
-
-        const patRows = await conn.query(query, params);
-
-        if (patRows.length > 0) {
-            const { tariff_percent, tariff_override, inst_price } = patRows[0];
+        if (patData) {
+            const { tariff_percent, tariff_override, inst_price } = patData;
 
             // If Institution has a defined price, it overrides the Doctor's base price
             if (Number(inst_price) > 0) {
@@ -94,7 +77,11 @@ async function calculatePrice(conn, doctorId, patientId, serviceType = 'consulta
         }
     }
 
-    return { price: Number(finalPrice.toFixed(2)), basePrice: Number(basePrice.toFixed(2)), explanation };
+    return {
+        price: Number(finalPrice.toFixed(2)),
+        basePrice: Number(basePrice.toFixed(2)),
+        explanation
+    };
 }
 
 module.exports = { calculatePrice };

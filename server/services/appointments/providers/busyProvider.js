@@ -1,18 +1,17 @@
-const googleController = require('../../../controllers/googleController');
-const { pool } = require('../../../db');
+const googleCalendarService = require('../../google/GoogleCalendarService');
+const appointmentRepository = require('../../../repositories/appointmentRepository');
 
 class BusyProvider {
     async getBusyIntervals(doctorId, startTime, endTime) {
         // Combined Google + DB busy times
         let googleBusy = [];
         try {
-            googleBusy = await googleController.getBusyIntervals(doctorId, startTime.toISOString(), endTime.toISOString());
-        } catch (e) { console.warn("Google Busy fail", e.message); }
+            googleBusy = await googleCalendarService.getBusyIntervals(doctorId, startTime.toISOString(), endTime.toISOString());
+        } catch (e) {
+            console.warn("Google Busy fail", e.message);
+        }
 
-        const dbBusy = await pool.query(
-            "SELECT appointment_date, duration FROM appointments WHERE doctor_id = ? AND appointment_date BETWEEN ? AND ? AND status NOT IN ('cancelled', 'rescheduled')",
-            [doctorId, startTime, endTime]
-        );
+        const dbBusy = await appointmentRepository.findInRange(doctorId, startTime.toISOString(), endTime.toISOString(), ['cancelled', 'rescheduled']);
 
         return { google: googleBusy, db: dbBusy };
     }

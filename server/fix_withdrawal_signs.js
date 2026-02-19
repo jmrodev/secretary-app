@@ -1,5 +1,5 @@
 const mariadb = require('mariadb');
-const googleController = require('./controllers/googleController');
+const googleSpreadsheetService = require('./services/google/GoogleSpreadsheetService');
 
 const pool = mariadb.createPool({
     host: '127.0.0.1',
@@ -28,7 +28,7 @@ async function fixWithdrawals() {
 
         for (const w of withdrawals) {
             console.log(`Re-syncing transaction ID: ${w.id}`);
-            await googleController.syncToSpreadsheetHelper(w.id, 1); // User ID 1 (Admin)
+            await googleSpreadsheetService.syncToSpreadsheet(w.id);
         }
 
         console.log("Fix complete!");

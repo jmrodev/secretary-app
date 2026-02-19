@@ -1,5 +1,9 @@
 const { pool } = require('../db');
-const googleController = require('../controllers/googleController');
+const googleAuthService = require('./google/GoogleAuthService');
+const googleIntegrationRepository = require('../repositories/googleIntegrationRepository');
+const appointmentRepository = require('../repositories/appointmentRepository');
+const patientRepository = require('../repositories/patientRepository');
+const { google } = require('googleapis');
 
 /**
  * Import events from Google Calendar to local database
@@ -13,8 +17,8 @@ async function importFromGoogle() {
 
         conn = await pool.getConnection();
 
-        // Get all doctors with Google integration
-        const doctors = await conn.query("SELECT doctor_id FROM doctor_integrations");
+        // Get all doctors with Google integration via repository
+        const doctors = await googleIntegrationRepository.findAllDoctorIds(conn);
 
         if (doctors.length === 0) {
             console.log("[GoogleImport] No doctors connected to Google Calendar");
@@ -53,29 +57,16 @@ async function importFromGoogle() {
 async function importDoctorEvents(conn, doctorId) {
     const stats = { imported: 0, updated: 0, skipped: 0 };
 
-    // Get tokens for this doctor
-    const [integration] = await conn.query(
-        "SELECT * FROM doctor_integrations WHERE doctor_id = ?",
-        [doctorId]
-    );
+    // Get tokens for this doctor via repository
+    const integration = await googleIntegrationRepository.findTokensByDoctorId(doctorId, conn);
 
     if (!integration || !integration.refresh_token) {
         return stats;
     }
 
     // Get Google Calendar events
-    const { google } = require('googleapis');
-    const oauth2Client = new google.auth.OAuth2(
-        process.env.GOOGLE_CLIENT_ID,
-        process.env.GOOGLE_CLIENT_SECRET,
-        process.env.GOOGLE_REDIRECT_URI || 'http://localhost:5000/api/google/callback'
-    );
-
-    oauth2Client.setCredentials({
-        refresh_token: integration.refresh_token,
-        access_token: integration.access_token,
-        expiry_date: integration.token_expiry
-    });
+    const oauth2Client = await googleAuthService.getAuthorizedClient(doctorId);
+    if (!oauth2Client) return stats;
 
     const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 
@@ -95,11 +86,8 @@ async function importDoctorEvents(conn, doctorId) {
 
     for (const event of events) {
         try {
-            // Check if event already exists in DB
-            const [existing] = await conn.query(
-                "SELECT id, appointment_date, status, payment_status FROM appointments WHERE google_event_id = ?",
-                [event.id]
-            );
+            // Check if event already exists in DB via repository
+            const existing = await appointmentRepository.findByGoogleEventId(event.id, conn);
 
             if (existing) {
                 // Event exists, check if needs update
@@ -107,11 +95,8 @@ async function importDoctorEvents(conn, doctorId) {
                 const dbDate = new Date(existing.appointment_date).toISOString();
 
                 if (eventDate !== dbDate) {
-                    // Date changed, update
-                    await conn.query(
-                        "UPDATE appointments SET appointment_date = ? WHERE google_event_id = ?",
-                        [new Date(eventDate), event.id]
-                    );
+                    // Date changed, update via repository
+                    await appointmentRepository.update(existing.id, { appointment_date: new Date(eventDate) }, conn);
                     stats.updated++;
                 } else {
                     stats.skipped++;
@@ -148,12 +133,8 @@ async function importEvent(conn, event, doctorId) {
     let patientId = null;
 
     if (patientInfo.patientName) {
-        // Try to find patient by name
-        const [patient] = await conn.query(
-            "SELECT id FROM patients WHERE full_name LIKE ?",
-            [`%${patientInfo.patientName}%`]
-        );
-
+        // Try to find patient by name via repository
+        const patient = await patientRepository.findByNameLike(patientInfo.patientName, conn);
         if (patient) {
             patientId = patient.id;
         }
@@ -164,32 +145,23 @@ async function importEvent(conn, event, doctorId) {
         return false;
     }
 
-    // Import all other events (no filter)
-    // If no patient found, patient_id will be NULL
+    // Insert appointment via repository
+    const result = await appointmentRepository.create({
+        patient_id: patientId,
+        doctor_id: doctorId,
+        appointment_date: new Date(startTime),
+        reason: patientInfo.reason || summary,
+        status: patientInfo.status || 'pending',
+        payment_status: patientInfo.paymentStatus || 'pending',
+        google_event_id: event.id
+    }, conn);
 
-    // Insert appointment
-    const result = await conn.query(
-        `INSERT INTO appointments 
-        (patient_id, doctor_id, appointment_date, reason, status, payment_status, google_event_id) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [
-            patientId,
-            doctorId,
-            new Date(startTime),
-            patientInfo.reason || summary,
-            patientInfo.status || 'pending',
-            patientInfo.paymentStatus || 'pending',
-            event.id
-        ]
-    );
-
-    console.log(`[GoogleImport] Imported event: ${summary} (ID: ${result.insertId})`);
+    console.log(`[GoogleImport] Imported event: ${summary} (ID: ${result})`);
     return true;
 }
 
 /**
  * Parse event description to extract patient info
- * Format: "Motivo: X\nPaciente: Y (DNI: Z)\n..."
  */
 function parseEventDescription(description) {
     const info = {
@@ -201,29 +173,17 @@ function parseEventDescription(description) {
 
     if (!description) return info;
 
-    // Extract patient name
     const patientMatch = description.match(/Paciente:\s*([^\(]+)/i);
-    if (patientMatch) {
-        info.patientName = patientMatch[1].trim();
-    }
+    if (patientMatch) info.patientName = patientMatch[1].trim();
 
-    // Extract reason
     const reasonMatch = description.match(/Motivo:\s*([^\n]+)/i);
-    if (reasonMatch) {
-        info.reason = reasonMatch[1].trim();
-    }
+    if (reasonMatch) info.reason = reasonMatch[1].trim();
 
-    // Extract status
     const statusMatch = description.match(/Estado:\s*(\w+)/i);
-    if (statusMatch) {
-        info.status = statusMatch[1].trim();
-    }
+    if (statusMatch) info.status = statusMatch[1].trim();
 
-    // Extract payment status
     const paymentMatch = description.match(/Pago:\s*(\w+)/i);
-    if (paymentMatch) {
-        info.paymentStatus = paymentMatch[1].trim();
-    }
+    if (paymentMatch) info.paymentStatus = paymentMatch[1].trim();
 
     return info;
 }

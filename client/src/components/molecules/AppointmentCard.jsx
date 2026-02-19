@@ -12,7 +12,7 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
 
     return (
         <div
-            className={`appointment-card status-${appt.status} ${isExternal ? 'appointment-card--external' : ''} ${isAnonymous ? 'appointment-card--anonymous' : ''}`}
+            className={`appointment-card appointment-card--${appt.status} ${appt.type === 'virtual' ? 'appointment-card--virtual' : ''} ${isExternal ? 'appointment-card--external' : ''} ${isAnonymous ? 'appointment-card--anonymous' : ''}`}
             onClick={onClick}
         >
             {/* Col 1: Time */}
@@ -104,7 +104,7 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
                     );
                 })()}
 
-                <span className={`appointment-card__status-chip status-${appt.status}`}>
+                <span className={`appointment-card__status-chip appointment-card__status-chip--${appt.status} status-chip status-${appt.status}`}>
                     {t(appt.status) || appt.status}
                 </span>
             </div>

@@ -97,14 +97,33 @@ secretary-app/
 │   │   └── financeRoutes.js
 │   ├── controllers/
 │   │   ├── appointmentController.js
-│   │   ├── medicalController.js
-│   │   └── financeController.js
+│   │   ├── financeController.js
+│   │   ├── google/
+│   │   │   ├── googleAuthController.js
+│   │   │   ├── googleCalendarController.js
+│   │   │   ├── googleContactController.js
+│   │   │   └── googleSpreadsheetController.js
+│   │   └── medical/
+│   │       ├── medicationController.js
+│   │       ├── prescriptionController.js
+│   │       ├── medicalRequestController.js
+│   │       ├── medicalFileController.js
+│   │       └── medicalExportController.js
 │   ├── services/
 │   │   ├── appointments/
 │   │   │   ├── bookingService.js
 │   │   │   ├── modificationService.js
 │   │   │   └── retrievalService.js
+│   │   ├── google/
+│   │   │   ├── GoogleAuthService.js
+│   │   │   ├── GoogleCalendarService.js
+│   │   │   ├── GoogleContactService.js
+│   │   │   └── GoogleSpreadsheetService.js
+│   │   ├── medical/
+│   │   │   ├── medicationService.js
+│   │   │   └── prescriptionService.js
 │   │   └── finance/
+│   │       └── statsService.js
 │   └── middleware/
 └── docs/
     ├── ARQUITECTURA.md (este archivo)
@@ -330,5 +349,5 @@ Antes de hacer commit, verificar:
 
 ---
 
-**Última actualización**: 2026-02-18
+**Última actualización**: 2026-02-19
 **Mantenedor**: Equipo de Desarrollo

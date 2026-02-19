@@ -1,21 +1,23 @@
 import React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
-import { useModal } from '../../context/ModalContext'; // Keep just in case or remove if truly unused?
-// Actually I should remove useModal from consumption if I removed it.
 import { useDayScheduleHandlers } from '../../hooks/useDayScheduleHandlers';
 import { useConfig } from '../../context/ConfigContext';
-import AppointmentCard from '../molecules/AppointmentCard';
-import Button from '../atoms/Button';
-import Switch from '../atoms/Switch';
-import { formatDate, formatTime } from '../../utils/dateUtils';
+
+// Molecules
+import DayScheduleHeader from '../molecules/DayScheduleHeader';
+import ScheduleTimeline from '../molecules/ScheduleTimeline';
+
 import './DaySchedule.css';
 
+/**
+ * DaySchedule Organism.
+ * Orchestrates the display of daily appointments, time slots, and schedule navigation.
+ */
 const DaySchedule = ({
     date, appointments, onSlotClick, doctor, schedule, onDateSelect,
     holidays = [], showOutOfHours, setShowOutOfHours
 }) => {
     const { t } = useLanguage();
-    // const { confirm } = useModal(); // Moved to hook
     const { settings } = useConfig();
     const [showCancelled, setShowCancelled] = React.useState(false);
 
@@ -185,130 +187,29 @@ const DaySchedule = ({
 
     return (
         <div className="day-schedule">
-            <header className="day-schedule__header">
-                <div className="day-schedule__title-group">
-                    <h3 className="day-schedule__title">
-                        {formatDate(date, { weekday: true, monthName: true, hideYear: true })}
-                    </h3>
-                    <div className="day-schedule__holiday-container">
-                        {holiday && (
-                            <span className="day-schedule__holiday-badge">
-                                🏖️ {holiday.description}
-                            </span>
-                        )}
-                    </div>
-                </div>
+            <DayScheduleHeader
+                date={date}
+                holiday={holiday}
+                showOutOfHours={showOutOfHours}
+                setShowOutOfHours={setShowOutOfHours}
+                showCancelled={showCancelled}
+                setShowCancelled={setShowCancelled}
+                onPrevDay={handlePrevDay}
+                onToday={handleToday}
+                onNextDay={handleNextDay}
+                onPrint={handlePrint}
+                t={t}
+            />
 
-                <div className="day-schedule__nav">
-                    <Button
-                        variant="ghost"
-                        size="sm-compact"
-                        onClick={handlePrevDay}
-                        title={t('prev_day') || "Día Anterior"}
-                    >
-                        ⬅️
-                    </Button>
-
-                    <Button
-                        variant="ghost"
-                        size="sm-compact"
-                        onClick={handleToday}
-                        className="day-schedule__today-btn"
-                        title={t('today') || "Hoy"}
-                    >
-                        {t('today') || "Hoy"}
-                    </Button>
-
-                    <Button
-                        variant="ghost"
-                        size="sm-compact"
-                        onClick={handleNextDay}
-                        title={t('next_day') || "Día Siguiente"}
-                    >
-                        ➡️
-                    </Button>
-                </div>
-
-                <div className="day-schedule__toolbar">
-                    <div className="day-schedule__controls">
-                        <Switch
-                            label={t('show_out_of_hours') || 'Mostrar fuera de horario'}
-                            checked={showOutOfHours}
-                            onChange={setShowOutOfHours}
-                        />
-                        <Switch
-                            label={t('show_cancelled') || 'Mostrar Cancelados'}
-                            checked={showCancelled}
-                            onChange={setShowCancelled}
-                        />
-                    </div>
-
-                    <Button
-                        variant="ghost"
-                        size="sm-compact"
-                        onClick={handlePrint}
-                        className="day-schedule__print-btn"
-                        title={t('print_list_tooltip') || "Imprimir lista del día"}
-                        icon="🖨️"
-                    >
-                        {t('print') || 'Imprimir'}
-                    </Button>
-                </div>
-            </header>
-
-            <div className="schedule-timeline">
-                {timeSlots
-                    .map(slot => ({
-                        ...slot,
-                        slotApps: getAppointmentsForSlot(slot.time, slot.duration)
-                    }))
-                    .filter(slot => {
-                        if (showOutOfHours) return true;
-                        if (slot.type !== 'closed') return true;
-                        return slot.slotApps.length > 0;
-                    })
-                    .map((slot, index) => {
-                        const { slotApps, type } = slot;
-                        const isSlotClosed = type === 'closed';
-                        const isSlotBreak = type === 'break';
-                        const isBlocked = slotApps.some(a => !['cancelled', 'suspended', 'absent'].includes(a.status));
-
-                        const slotClasses = `time-slot ${isSlotClosed ? 'time-slot--closed' : ''} ${isSlotBreak ? 'time-slot--break' : ''}`;
-
-                        return (
-                            <div key={index} className={slotClasses}>
-                                <div className="slot-content">
-                                    {slotApps
-                                        .filter(appt => showCancelled || !['cancelled', 'suspended', 'absent'].includes(appt.status))
-                                        .map(appt => (
-                                            <AppointmentCard
-                                                key={appt.id}
-                                                appt={appt}
-                                                onClick={() => onSlotClick(slot.time.getHours(), appt)}
-                                            />
-                                        ))}
-
-                                    {!isBlocked && (
-                                        <div
-                                            className={`available-slot ${isSlotClosed ? 'available-slot--closed' : ''}`}
-                                            onClick={() => handleSlotAction(slot)}
-                                        >
-                                            <span className="available-slot__icon">{isSlotClosed ? '🚫' : '+'}</span>
-                                            <div className="available-slot__info">
-                                                <span className="available-slot__time">
-                                                    {formatTime(slot.time)}
-                                                </span>
-                                                <span className="available-slot__label">
-                                                    {isSlotClosed ? (t('closed_hours') || 'Fuera de Horario') : (t('available') || 'Disponible')}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        );
-                    })}
-            </div>
+            <ScheduleTimeline
+                timeSlots={timeSlots}
+                showOutOfHours={showOutOfHours}
+                showCancelled={showCancelled}
+                onSlotClick={onSlotClick}
+                onSlotAction={handleSlotAction}
+                getAppointmentsForSlot={getAppointmentsForSlot}
+                t={t}
+            />
         </div>
     );
 };

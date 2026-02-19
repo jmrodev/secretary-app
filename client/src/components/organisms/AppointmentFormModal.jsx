@@ -1,11 +1,20 @@
 import React from 'react';
 import Modal from '../molecules/Modal';
-import PatientSearchSelect from '../molecules/PatientSearchSelect';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
-import { capitalizeWords } from '../../utils/stringUtils';
+
+// Molecules
+import AppointmentSyncAlert from '../molecules/AppointmentSyncAlert';
+import AppointmentTypeSelector from '../molecules/AppointmentTypeSelector';
+import AppointmentPatientSection from '../molecules/AppointmentPatientSection';
+
 import './AppointmentFormModal.css';
 
+/**
+ * AppointmentFormModal Organism.
+ * Main form for creating and editing medical appointments.
+ * Orchestrates patient selection, doctor assignment, type setting, and schedule details.
+ */
 const AppointmentFormModal = ({
     isOpen,
     onClose,
@@ -49,22 +58,14 @@ const AppointmentFormModal = ({
             size="2xl"
         >
             <form onSubmit={onSubmit} id="new-appointment-form" className="appointment-form-modal" autoComplete="off">
-                {/* Fake fields to stop Chrome Autosave - hidden via style to be robust */}
+                {/* Fake fields to stop Chrome Autosave */}
                 <div style={{ position: 'absolute', opacity: 0, top: -1000, left: -1000, height: 0, width: 0, overflow: 'hidden', pointerEvents: 'none' }}>
                     <input type="text" name="fake_user_trap_appt" autoComplete="username" tabIndex={-1} />
                     <input type="password" name="fake_pass_trap_appt" autoComplete="new-password" tabIndex={-1} />
                 </div>
-                {syncReferenceInfo && (
-                    <div className="reference-box">
-                        <span className="reference-box__label">📄 Información Original (Referencia)</span>
-                        <div className="reference-box__content">
-                            {syncReferenceInfo}
-                        </div>
-                        <p className="reference-box__hint">
-                            Utilice esta información para buscar al paciente correcto.
-                        </p>
-                    </div>
-                )}
+
+                <AppointmentSyncAlert info={syncReferenceInfo} />
+
                 <div className="input-group">
                     <label className="form-label">{t('doctors') || 'Doctor'}</label>
                     {user.role === 'doctor' ? (
@@ -81,75 +82,22 @@ const AppointmentFormModal = ({
                     )}
                 </div>
 
-                <div className="input-group">
-                    <label className="form-label">Tipo de Turno</label>
-                    <div className="appointment-type-selector">
-                        <button
-                            type="button"
-                            className={`btn btn-sm ${type === 'consultation' ? 'btn-primary' : 'btn-secondary'}`}
-                            onClick={() => handleTypeChange('consultation')}
-                        >
-                            🏢 Presencial
-                        </button>
-                        <button
-                            type="button"
-                            className={`btn btn-sm ${type === 'virtual' ? 'btn-primary' : 'btn-secondary'}`}
-                            onClick={() => handleTypeChange('virtual')}
-                        >
-                            📹 Videollamada
-                        </button>
-                    </div>
-                </div>
+                <AppointmentTypeSelector
+                    type={type}
+                    onChange={handleTypeChange}
+                    t={t}
+                />
 
                 {(user.role === 'secretary' || user.role === 'doctor') && (
-                    <div className="input-group">
-                        <label className="form-label">{t('patients') || 'Paciente'}</label>
-                        <PatientSearchSelect
-                            value={selectedPatient}
-                            selectedData={selectedPatientData}
-                            autoFocus={true}
-                            placeholder="Buscar Paciente..."
-                            onCreatePatient={async (name) => {
-                                handlePatientChange(null, { full_name: capitalizeWords(name) });
-                                onOpenEditPatient();
-                            }}
-                            onChange={handlePatientChange}
-                        />
-                        {/* ... missing data alert ... */}
-                        {missingData.length > 0 && (
-                            <div className="missing-data-alert">
-                                <span className="missing-data-alert__text">
-                                    ⚠️ <strong>Datos incompletos:</strong> {missingData.join(', ')}.
-                                </span>
-                                <button
-                                    type="button"
-                                    className="missing-data-alert__action"
-                                    onClick={onOpenEditPatient}
-                                >
-                                    Completar
-                                </button>
-                            </div>
-                        )}
-
-                        {selectedPatient && (
-                            <div className="patient-quick-info">
-                                <div className="patient-quick-info__field">
-                                    <span className="patient-quick-info__label">📱 Teléfono</span>
-                                    <input
-                                        type="text"
-                                        className="patient-quick-info__input"
-                                        value={selectedPatientData?.phone || ''}
-                                        onChange={e => handlePhoneChange(e.target.value)}
-                                        placeholder="Sin teléfono"
-                                    />
-                                </div>
-                                <div className="whatsapp-status">
-                                    <span className={`whatsapp-status__indicator ${selectedPatientData?.phone ? 'whatsapp-status__indicator--active' : ''}`}></span>
-                                    {selectedPatientData?.phone ? 'WHATSAPP OK' : 'SIN TEL.'}
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                    <AppointmentPatientSection
+                        selectedPatient={selectedPatient}
+                        selectedPatientData={selectedPatientData}
+                        missingData={missingData}
+                        handlePatientChange={handlePatientChange}
+                        handlePhoneChange={handlePhoneChange}
+                        onOpenEditPatient={onOpenEditPatient}
+                        t={t}
+                    />
                 )}
 
                 <div className="input-group">

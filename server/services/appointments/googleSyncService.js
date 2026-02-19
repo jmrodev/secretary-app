@@ -1,5 +1,6 @@
-const googleController = require('../../controllers/googleController');
-const { pool } = require('../../db');
+const googleCalendarService = require('../google/GoogleCalendarService');
+const appointmentRepository = require('../../repositories/appointmentRepository');
+const googleIntegrationRepository = require('../../repositories/googleIntegrationRepository');
 
 class GoogleSyncService {
     buildDescription(appt, patient, extra = {}) {
@@ -18,9 +19,9 @@ class GoogleSyncService {
 
     async syncCreate(appointmentId, doctorId, eventData, userId) {
         try {
-            const googleEvent = await googleController.createEventHelper(doctorId, eventData, userId);
+            const googleEvent = await googleCalendarService.createEventHelper(doctorId, eventData, userId);
             if (googleEvent) {
-                await pool.query("UPDATE appointments SET google_event_id = ? WHERE id = ?", [googleEvent.id, appointmentId]);
+                await appointmentRepository.update(appointmentId, { google_event_id: googleEvent.id });
                 return googleEvent.id;
             }
         } catch (syncErr) {
@@ -33,7 +34,7 @@ class GoogleSyncService {
     async syncUpdate(appointmentId, doctorId, googleEventId, eventData, userId) {
         if (!googleEventId) return this.syncCreate(appointmentId, doctorId, eventData, userId);
         try {
-            await googleController.updateEventHelper(doctorId, googleEventId, eventData, userId);
+            await googleCalendarService.updateEventHelper(doctorId, googleEventId, eventData, userId);
             return true;
         } catch (syncErr) {
             console.warn(`[GoogleSyncService] Update failed for appt ${appointmentId}: ${syncErr.message}`);
@@ -45,7 +46,7 @@ class GoogleSyncService {
     async syncDelete(appointmentId, doctorId, googleEventId, userId) {
         if (!googleEventId) return true;
         try {
-            await googleController.deleteEventHelper(doctorId, googleEventId, userId);
+            await googleCalendarService.deleteEventHelper(doctorId, googleEventId, userId);
             return true;
         } catch (syncErr) {
             console.warn(`[GoogleSyncService] Delete failed for appt ${appointmentId}: ${syncErr.message}`);
@@ -55,10 +56,12 @@ class GoogleSyncService {
 
     async enqueue(appointmentId, doctorId, action, payload) {
         try {
-            await pool.query(
-                "INSERT INTO google_sync_queue (appointment_id, doctor_id, action, payload, status) VALUES (?, ?, ?, ?, 'pending')",
-                [appointmentId, doctorId, action, JSON.stringify(payload)]
-            );
+            await googleIntegrationRepository.enqueueSync({
+                appointment_id: appointmentId,
+                doctor_id: doctorId,
+                action,
+                payload
+            });
         } catch (err) {
             console.error("[GoogleSyncService] Failed to enqueue sync:", err.message);
         }

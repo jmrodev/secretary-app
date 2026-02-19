@@ -25,7 +25,7 @@ const AppointmentAdminPanel = ({
     const isPendingPayment = (appt.payment_status === 'pending' || appt.payment_status === 'debt' || appt.payment_status === 'partial');
 
     // Status Logic State Machine
-    const canConfirm = ['pending', 'cancelled', 'suspended', 'absent'].includes(appt.status);
+    const canConfirm = ['pending', 'cancelled', 'suspended', 'absent', 'rescheduled'].includes(appt.status);
     const canArrive = ['confirmed', 'rescheduled'].includes(appt.status) && appt.type !== 'virtual';
     const canAttend = ['confirmed', 'rescheduled', 'arrived'].includes(appt.status);
 
