@@ -87,7 +87,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
             setTotalPrice(Number(data.amount));
         }
 
-        if (data.doctorId && data.patientId && !requestId) {
+        if (data.doctorId && data.patientId && (!data.amount || Number(data.amount) === 0)) {
             fetchPricing(data.doctorId, data.patientId, initialServiceType);
         }
 

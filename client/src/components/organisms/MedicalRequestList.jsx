@@ -125,7 +125,7 @@ const MedicalRequestList = ({
                                                         open: true,
                                                         initialData: {
                                                             type: 'income_patient',
-                                                            amount: r.debt_amount,
+                                                            amount: r.resolved_debt_amount || r.debt_amount,
                                                             description: `${t('request')}: ${t(r.type) || r.type} - ${r.patient_name}`,
                                                             patientId: r.patient_id,
                                                             patientUserId: r.patient_user_id,
