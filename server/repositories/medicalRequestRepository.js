@@ -7,7 +7,7 @@ const { pool } = require('../db');
 class MedicalRequestRepository {
     async findAll(filters = {}, conn = pool) {
         let query = `
-            SELECT r.*, p.full_name as patient_name, d.full_name as doctor_name,
+            SELECT r.*, p.full_name as patient_name, p.user_id as patient_user_id, d.full_name as doctor_name, d.user_id as doctor_user_id,
             COALESCE(NULLIF(r.debt_amount, 0), (SELECT amount FROM transactions WHERE request_id = r.id AND status='pending' LIMIT 1), r.debt_amount) as resolved_debt_amount
             FROM medical_requests r
             LEFT JOIN patients p ON r.patient_id = p.id
@@ -32,7 +32,7 @@ class MedicalRequestRepository {
 
     async findDetailedById(id, conn = pool) {
         const rows = await conn.query(`
-            SELECT r.*, p.full_name as patient_name, d.full_name as doctor_name
+            SELECT r.*, p.full_name as patient_name, p.user_id as patient_user_id, d.full_name as doctor_name, d.user_id as doctor_user_id
             FROM medical_requests r
             JOIN patients p ON r.patient_id = p.id
             JOIN doctors d ON r.doctor_id = d.id
