@@ -131,7 +131,8 @@ const PrescriptionForm = ({
                 refillDateStr={refillDateStr}
                 onAddItem={handleAddItem}
                 onVademecumSelect={(med) => {
-                    setTempMed(med.name);
+                    const fullMedName = med.full_label || med.name;
+                    setTempMed(fullMedName);
                     setCurrentVademecumId(med.id);
                 }}
                 freqPresets={FREQ_PRESETS}

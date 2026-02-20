@@ -127,7 +127,8 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
 
     // ── Handlers ─────────────────────────────────────────────────────────────
     const handleSelectMedication = (med) => {
-        const medName = med.medication_name || med.name;
+        // Prioritize: 1. full_label (from search), 2. medication_name (from DB), 3. name (fallback)
+        const medName = med.full_label || med.medication_name || med.name;
 
         // Toggle Logic: if already in items, remove it.
         if (items.some(i => i.name === medName)) {
@@ -136,7 +137,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
         }
 
         const dose = med.dose || '';
-        const upb = med.units_per_box || '';
+        const upb = med.units_per_box || med.units_per_box || '';
         const daily = med.daily_units || med.daily_intake || '';
         const boxes = med.boxes_count || med.quantity || '';
         const vademecumId = med.vademecum_id || med.id;

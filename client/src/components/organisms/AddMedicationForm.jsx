@@ -46,7 +46,7 @@ const AddMedicationForm = ({
 
         setCurrentMed(prev => ({
             ...prev,
-            medication_name: `${med.name} ${med.presentation}`,
+            medication_name: med.full_label || `${med.name} ${med.presentation}`,
             presentation: med.presentation,
             monodroga: med.drug,
             units_per_box: extractedUnits,
