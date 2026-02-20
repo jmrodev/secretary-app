@@ -119,6 +119,7 @@ exports.updateTransaction = async (req, res) => {
         await transactionRepository.update(id, { amount, description, method, status, transaction_date: finalDate });
 
         if (oldTx.appointment_id) await financeService.syncAppointmentPaymentStatus(oldTx.appointment_id, req.user?.user_id);
+        if (oldTx.request_id) await financeService.syncRequestPaymentStatus(oldTx.request_id);
         logAction(req, 'FINANCE_UPDATE', `Updated transaction ${id}`);
         res.json({ message: 'Transaction updated successfully' });
     } catch (err) {

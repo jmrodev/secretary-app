@@ -130,7 +130,7 @@ const Dashboard = () => {
                                                 {t('pending_requests')}
                                             </h3>
                                         </div>
-                                        <RequirementsList user={user} hideTabs={true} hideFilters={true} />
+                                        <RequirementsList user={user} hideTabs={true} hideFilters={true} setPaymentModal={setPaymentModal} />
                                     </div>
                                 )}
 
@@ -188,7 +188,11 @@ const Dashboard = () => {
                 <TransactionModal
                     isOpen={paymentModal.open}
                     onClose={() => setPaymentModal({ ...paymentModal, open: false })}
-                    initialData={paymentModal.initialData}
+                    initialData={{
+                        ...paymentModal.initialData,
+                        appointment_id: paymentModal.apptId || paymentModal.initialData?.apptId
+                    }}
+                    requestId={paymentModal.reqId || paymentModal.initialData?.reqId}
                     onSuccess={async () => {
                         refreshDashboard();
                     }}

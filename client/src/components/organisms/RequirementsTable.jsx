@@ -16,6 +16,7 @@ const RequirementsTable = ({
     isAdminOrSecretary,
     hideFilters,
     typeLabels,
+    setPaymentModal,
     t
 }) => {
     return (
@@ -78,6 +79,7 @@ const RequirementsTable = ({
                                     onAction={openActionModal}
                                     canDelete={canDeleteRequest}
                                     isAdminOrSecretary={isAdminOrSecretary}
+                                    setPaymentModal={setPaymentModal}
                                     t={t}
                                 />
                             ))}

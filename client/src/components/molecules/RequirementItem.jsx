@@ -16,9 +16,10 @@ const RequirementItem = ({
     onAction,
     canDelete,
     isAdminOrSecretary,
+    setPaymentModal,
     t
 }) => {
-    const { id, type, created_at, patient_name, doctor_name, secretary_name, status } = request;
+    const { id, type, created_at, patient_name, doctor_name, secretary_name, status, payment_status, debt_amount, payment_method, patient_id, patient_user_id, doctor_id } = request;
 
     return (
         <tr className="requirement-item">
@@ -58,6 +59,29 @@ const RequirementItem = ({
                             onClick={() => onDelete(id)}
                             title={t('delete') || "Eliminar"}
                             icon={<Icon name="delete" size="1rem" />}
+                        />
+                    )}
+                    {setPaymentModal && payment_status && payment_status !== 'paid' && payment_status !== 'bonified' && isAdminOrSecretary && (
+                        <Button
+                            variant="ghost"
+                            size="sm-compact"
+                            onClick={() => setPaymentModal({
+                                open: true,
+                                initialData: {
+                                    type: 'income_patient',
+                                    amount: request.resolved_debt_amount || debt_amount,
+                                    description: `Solicitud: ${typeLabel} - ${patient_name}`,
+                                    patientId: patient_id,
+                                    patientUserId: patient_user_id,
+                                    patientName: patient_name,
+                                    doctorId: doctor_id,
+                                    method: payment_method || 'cash',
+                                    serviceType: type === 'license' ? 'medical_license' : (type === 'prescription' ? 'prescription' : 'certificate')
+                                },
+                                reqId: id
+                            })}
+                            title={t('pay') || 'Cobrar'}
+                            icon={<Icon name="payments" size="1rem" />}
                         />
                     )}
                     {isAdminOrSecretary && status === 'consult' && (

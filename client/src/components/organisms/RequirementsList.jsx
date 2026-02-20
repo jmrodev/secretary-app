@@ -20,7 +20,7 @@ import './RequirementsList.css';
  * RequirementsList Organism.
  * Displays and manages medical requests with list, new, and recycle bin views.
  */
-const RequirementsList = ({ user, hideNew = false, hideRecycle = false, hideTabs = false, hideFilters = false }) => {
+const RequirementsList = ({ user, hideNew = false, hideRecycle = false, hideTabs = false, hideFilters = false, setPaymentModal }) => {
     const { t } = useLanguage();
     const {
         requests,
@@ -138,6 +138,7 @@ const RequirementsList = ({ user, hideNew = false, hideRecycle = false, hideTabs
                         isAdminOrSecretary={isAdminOrSecretary}
                         hideFilters={hideFilters}
                         typeLabels={typeLabels}
+                        setPaymentModal={setPaymentModal}
                         t={t}
                     />
                 ) : (
