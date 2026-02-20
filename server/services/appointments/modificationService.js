@@ -19,8 +19,8 @@ class ModificationService {
             await helper.checkModificationPermissions(conn, appt, { role }, adminPassword);
 
             // Check for medical records before deletion
-            const [medical] = await conn.query("SELECT id FROM prescriptions WHERE appointment_id = ? UNION SELECT id FROM medical_licenses WHERE appointment_id = ?", [id, id]);
-            if (medical) throw new Error("No se puede eliminar: tiene registros médicos asociados.");
+            const medical = await conn.query("SELECT id FROM prescriptions WHERE appointment_id = ? UNION SELECT id FROM medical_licenses WHERE appointment_id = ?", [id, id]);
+            if (medical.length > 0) throw new Error("No se puede eliminar: tiene registros médicos asociados.");
 
             // Handle transactions
             if (appt.payment_status === 'paid') {
@@ -107,8 +107,8 @@ class ModificationService {
         try {
             await conn.beginTransaction();
             if (userRole === 'doctor') {
-                const [doc] = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [userId]);
-                if (!doc || doc.id != doctorId) throw new Error("Unauthorized");
+                const rows = await conn.query("SELECT id FROM doctors WHERE user_id = ?", [userId]);
+                if (rows.length === 0 || rows[0].id != doctorId) throw new Error("Unauthorized");
             }
             let sql = "UPDATE appointments SET type = ? WHERE DAYOFWEEK(appointment_date) = ?";
             let params = [type, Number(dayOfWeek) + 1];
@@ -129,12 +129,12 @@ class ModificationService {
     // --- Private Helpers ---
 
     async _handleCompletion(conn, appt) {
-        const [rows] = await conn.query(`
+        const rows = await conn.query(`
             SELECT COALESCE(p.visit_interval_days, d.default_visit_interval_days) as days
             FROM patients p JOIN doctors d ON d.id = ? WHERE p.id = ?`, [appt.doctor_id, appt.patient_id]);
-        if (rows?.days > 0) {
+        if (rows.length > 0 && rows[0].days > 0) {
             const next = new Date(appt.appointment_date);
-            next.setDate(next.getDate() + Number(rows.days));
+            next.setDate(next.getDate() + Number(rows[0].days));
             await conn.query("UPDATE patients SET next_suggested_visit_date = ? WHERE id = ?", [next.toISOString().split('T')[0], appt.patient_id]);
         }
     }

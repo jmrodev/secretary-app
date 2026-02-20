@@ -1,5 +1,5 @@
 const institutionRepository = require('../repositories/institutionRepository');
-const phoneModel = require('../models/PhoneModel');
+const phoneRepository = require('../repositories/phoneRepository');
 const { pool } = require('../db');
 
 /**
@@ -10,7 +10,7 @@ class InstitutionService {
     async getAllInstitutions() {
         const rows = await institutionRepository.findAll();
         for (const row of rows) {
-            row.phoneNumbers = await phoneModel.findByEntity('institution', row.id);
+            row.phoneNumbers = await phoneRepository.findByEntity('institution', row.id);
         }
         return rows;
     }
@@ -23,7 +23,7 @@ class InstitutionService {
             const instId = await institutionRepository.create({ name, description, status, base_price }, conn);
 
             if (Array.isArray(phoneNumbers)) {
-                await phoneModel.syncPhones('institution', instId, phoneNumbers, conn);
+                await phoneRepository.syncPhones('institution', instId, phoneNumbers, conn);
             }
             await conn.commit();
             return { id: instId, name };
@@ -45,7 +45,7 @@ class InstitutionService {
             }
 
             if (Array.isArray(phoneNumbers)) {
-                await phoneModel.syncPhones('institution', id, phoneNumbers, conn);
+                await phoneRepository.syncPhones('institution', id, phoneNumbers, conn);
             }
             await conn.commit();
         } catch (err) {

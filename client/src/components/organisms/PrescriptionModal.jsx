@@ -31,6 +31,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
     const [instructions, setInstructions] = useState('');
     const [items, setItems] = useState([]);
     const [patientMeds, setPatientMeds] = useState([]);
+    const [historyMeds, setHistoryMeds] = useState([]);
 
     // Structured input states
     const [tempMed, setTempMed] = useState('');
@@ -41,14 +42,56 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
     const [tempFreqPreset, setTempFreqPreset] = useState(null); // selected preset index
     const [currentVademecumId, setCurrentVademecumId] = useState(null);
 
-    // ── Fetch patient habitual meds ─────────────────────────────────────────
+    // ── Fetch data ──────────────────────────────────────────────────────────
     React.useEffect(() => {
         if (isOpen && patientId) {
             import('../../api/axios').then(module => {
                 const api = module.default;
+
+                // Fetch habitual meds
                 api.get(`/medical/patients/${patientId}/medications`)
                     .then(res => setPatientMeds(res.data))
                     .catch(err => console.error("Error fetching meds", err));
+
+                // Fetch recent prescriptions to build history list
+                api.get(`/medical/requests?patientId=${patientId}&type=prescription`)
+                    .then(res => {
+                        const historyItems = [];
+                        const seenNames = new Set();
+
+                        res.data.forEach(req => {
+                            // 1. Try structured data first
+                            if (req.raw_medication_data) {
+                                try {
+                                    const rawItems = typeof req.raw_medication_data === 'string'
+                                        ? JSON.parse(req.raw_medication_data)
+                                        : req.raw_medication_data;
+
+                                    if (Array.isArray(rawItems)) {
+                                        rawItems.forEach(it => {
+                                            const name = it.medication_name || it.name;
+                                            if (name && !seenNames.has(name.toLowerCase())) {
+                                                historyItems.push(it);
+                                                seenNames.add(name.toLowerCase());
+                                            }
+                                        });
+                                    }
+                                } catch (e) { console.warn("Error parsing raw_medication_data", e); }
+                            }
+
+                            // 2. Fallback to parsing text field if we need more
+                            if (req.medications && seenNames.size < 10) {
+                                req.medications.split('\n').forEach(line => {
+                                    const name = line.trim().split(' (')[0].split(' x')[0].split(' cada')[0];
+                                    if (name && !seenNames.has(name.toLowerCase())) {
+                                        historyItems.push({ medication_name: name });
+                                        seenNames.add(name.toLowerCase());
+                                    }
+                                });
+                            }
+                        });
+                        setHistoryMeds(historyItems.slice(0, 15));
+                    });
             });
         }
         if (!isOpen) {
@@ -57,13 +100,12 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
     }, [isOpen, patientId]);
 
     // ── Live days-supply calculation ─────────────────────────────────────────
-    const daysSupply = useMemo(() => {
-        const upb = parseFloat(tempUnitsPerBox);
-        const boxes = parseFloat(tempBoxes);
-        const daily = parseFloat(tempDailyUnits);
+    const ds = (upb, boxes, daily) => {
         if (!upb || !boxes || !daily || daily <= 0) return null;
         return Math.floor((upb * boxes) / daily);
-    }, [tempUnitsPerBox, tempBoxes, tempDailyUnits]);
+    };
+
+    const daysSupply = useMemo(() => ds(parseFloat(tempUnitsPerBox), parseFloat(tempBoxes), parseFloat(tempDailyUnits)), [tempUnitsPerBox, tempBoxes, tempDailyUnits]);
 
     const refillDateStr = useMemo(() => {
         if (!daysSupply) return null;
@@ -86,12 +128,59 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
     // ── Handlers ─────────────────────────────────────────────────────────────
     const handleSelectMedication = (med) => {
         const medName = med.medication_name || med.name;
+
+        // Toggle Logic: if already in items, remove it.
+        if (items.some(i => i.name === medName)) {
+            handleRemoveItem(items.findIndex(i => i.name === medName));
+            return;
+        }
+
+        const dose = med.dose || '';
+        const upb = med.units_per_box || '';
+        const daily = med.daily_units || med.daily_intake || '';
+        const boxes = med.boxes_count || med.quantity || '';
+        const vademecumId = med.vademecum_id || med.id;
+
+        // Set form fields for potential editing
         setTempMed(medName);
-        setTempDose(med.dose || '');
-        setCurrentVademecumId(med.vademecum_id || med.id);
-        if (med.units_per_box) setTempUnitsPerBox(String(med.units_per_box));
-        if (med.daily_units) setTempDailyUnits(String(med.daily_units));
-        if (med.boxes_count) setTempBoxes(String(med.boxes_count));
+        setTempDose(dose);
+        setCurrentVademecumId(vademecumId);
+        setTempUnitsPerBox(String(upb));
+        setTempDailyUnits(String(daily));
+        setTempBoxes(String(boxes));
+
+        // Always add it to the list as long as we have a name
+        if (medName) {
+            let frequencyText = '';
+            if (daily) {
+                const num = parseFloat(daily);
+                if (num === 1) frequencyText = 'cada 24hs';
+                else if (num === 2) frequencyText = 'cada 12hs';
+                else if (num === 3) frequencyText = 'cada 8hs';
+                else if (num === 4) frequencyText = 'cada 6hs';
+                else if (num === 0.5) frequencyText = 'día por medio';
+                else frequencyText = `${daily} por día`;
+            }
+
+            const calcDs = ds(parseFloat(upb), parseFloat(boxes), parseFloat(daily));
+
+            const newItem = {
+                vademecum_id: vademecumId,
+                name: medName,
+                dose: dose.trim(),
+                frequency: frequencyText,
+                daily_units: parseFloat(daily) || null,
+                units_per_box: parseFloat(upb) || null,
+                quantity: String(boxes || '').trim(),
+                days_supply: calcDs
+            };
+
+            setItems(prev => [...prev, newItem]);
+            const supplyStr = calcDs ? ` (~${calcDs}d)` : '';
+            const qtyStr = boxes ? ` x${boxes}` : '';
+            const fullLabel = `${medName} ${dose.trim()} ${frequencyText}${qtyStr}${supplyStr}`.trim();
+            setMedications(curr => curr.trim() ? `${curr.trim()}\n${fullLabel}` : fullLabel);
+        }
     };
 
     const handleFreqPreset = (idx) => {
@@ -134,28 +223,48 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
             days_supply: daysSupply
         };
 
-        if (!items.some(i => i.name === medName)) {
-            setItems(prev => [...prev, newItem]);
-            const supplyStr = daysSupply ? ` (~${daysSupply}d)` : '';
-            const fullLabel = `${medName} ${tempDose.trim()} ${frequencyText} x${tempBoxes.trim()}${supplyStr}`.trim();
-            const currentText = medications.trim();
-            setMedications(currentText ? `${currentText}\n${fullLabel}` : fullLabel);
-            resetFields();
-        }
+        setItems(prev => {
+            let next;
+            const existingIdx = prev.findIndex(i => i.name === medName);
+            if (existingIdx > -1) {
+                // Update existing item
+                next = [...prev];
+                next[existingIdx] = newItem;
+            } else {
+                next = [...prev, newItem];
+            }
+
+            // Sync medications text area
+            const newText = next.map(i => {
+                const supplyStr = i.days_supply ? ` (~${i.days_supply}d)` : '';
+                const qtyStr = i.quantity ? ` x${i.quantity}` : '';
+                return `${i.name} ${i.dose} ${i.frequency}${qtyStr}${supplyStr}`.trim();
+            }).join('\n');
+            setMedications(newText);
+
+            return next;
+        });
+
+        resetFields();
     };
 
     const handleRemoveItem = (index) => {
-        const newItems = items.filter((_, i) => i !== index);
-        setItems(newItems);
-        const newText = newItems.map(i =>
-            `${i.name} ${i.dose} ${i.frequency} x${i.quantity}${i.days_supply ? ` (~${i.days_supply}d)` : ''}`.trim()
-        ).join('\n');
-        setMedications(newText);
+        setItems(prev => {
+            const newItems = prev.filter((_, i) => i !== index);
+            const newText = newItems.map(i => {
+                const supplyStr = i.days_supply ? ` (~${i.days_supply}d)` : '';
+                const qtyStr = i.quantity ? ` x${i.quantity}` : '';
+                return `${i.name} ${i.dose} ${i.frequency}${qtyStr}${supplyStr}`.trim();
+            }).join('\n');
+            setMedications(newText);
+            return newItems;
+        });
     };
 
     const handleSubmit = () => {
+        // ... (rest as before but using map to sync medications properly if needed)
+        // Actually handleAddItem already syncs. If form has data not in items, handle it:
         let finalItems = [...items];
-        let finalMeds = medications;
 
         if (tempMed.trim() && !items.some(i => i.name === tempMed.trim())) {
             const selectedPreset = tempFreqPreset !== null ? FREQ_PRESETS[tempFreqPreset] : null;
@@ -171,12 +280,15 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
                 days_supply: daysSupply
             };
             finalItems.push(lastItem);
-            const supplyStr = daysSupply ? ` (~${daysSupply}d)` : '';
-            const label = `${lastItem.name} ${lastItem.dose} ${frequencyText} x${lastItem.quantity}${supplyStr}`.trim();
-            finalMeds = medications.trim() ? `${medications.trim()}\n${label}` : label;
         }
 
-        if (!finalMeds.trim() && finalItems.length === 0) return;
+        if (finalItems.length === 0) return;
+
+        const finalMeds = finalItems.map(i => {
+            const supplyStr = i.days_supply ? ` (~${i.days_supply}d)` : '';
+            const qtyStr = i.quantity ? ` x${i.quantity}` : '';
+            return `${i.name} ${i.dose} ${i.frequency}${qtyStr}${supplyStr}`.trim();
+        }).join('\n');
 
         onSubmit({ medications: finalMeds, instructions, items: finalItems });
         setMedications('');
@@ -205,6 +317,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
             <div className="prescription-modal">
                 <PrescriptionHabitualMeds
                     patientMeds={patientMeds}
+                    historyMeds={historyMeds}
                     items={items}
                     handleSelectMedication={handleSelectMedication}
                     t={t}

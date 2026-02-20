@@ -10,7 +10,7 @@ class RestoreService {
     async restoreItem(req, id) {
         const conn = await pool.getConnection();
         try {
-            const [rows] = await conn.query("SELECT * FROM recycle_bin WHERE id = ?", [id]);
+            const rows = await conn.query("SELECT * FROM recycle_bin WHERE id = ?", [id]);
             if (rows.length === 0) throw new Error("Item not found in recycle bin");
 
             const item = rows[0];

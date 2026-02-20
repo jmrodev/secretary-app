@@ -1,6 +1,7 @@
 const patientRepository = require('../repositories/patientRepository');
-const phoneModel = require('../models/PhoneModel');
-const appointmentModel = require('../models/AppointmentModel');
+const phoneRepository = require('../repositories/phoneRepository');
+const appointmentRepository = require('../repositories/appointmentRepository');
+const medicalFileRepository = require('../repositories/medicalFileRepository');
 const googleContactService = require('../services/google/GoogleContactService');
 const { pool } = require('../db');
 const { PatientsQueryBuilder } = require('../utils/queryBuilders');
@@ -21,7 +22,7 @@ class PatientService {
             const rows = await conn.query(query, params);
 
             if (rows.length > 0) {
-                const phoneMap = await phoneModel.findByEntities('patient', rows.map(r => r.id));
+                const phoneMap = await phoneRepository.findByEntities('patient', rows.map(r => r.id), conn);
                 rows.forEach(r => { r.phoneNumbers = phoneMap[r.id] || []; });
             }
 
@@ -40,41 +41,25 @@ class PatientService {
         const patient = await patientRepository.findById(id);
         if (!patient) throw new Error("Patient not found");
 
-        const appointments = await appointmentModel.findByPatientId(id);
-        const [stats] = await appointmentModel.getStats(id);
+        const appointments = await appointmentRepository.findByPatientId(id);
+        const [stats] = await appointmentRepository.getStats(id);
 
-        const conn = await pool.getConnection();
-        try {
-            const prescriptions = await conn.query(`
-                (SELECT p.id, p.created_at, 'prescription' as type, d.full_name as doctor_name, p.medications as diagnosis, NULL as days
-                 FROM prescriptions p JOIN appointments a ON p.appointment_id = a.id JOIN doctors d ON a.doctor_id = d.id WHERE a.patient_id = ?)
-                UNION
-                (SELECT ml.id, ml.created_at, 'license' as type, d.full_name as doctor_name, ml.diagnosis, ml.days_duration as days
-                 FROM medical_licenses ml JOIN appointments a ON ml.appointment_id = a.id JOIN doctors d ON a.doctor_id = d.id WHERE a.patient_id = ?)
-                ORDER BY created_at DESC`, [id, id]);
+        const prescriptions = await patientRepository.getHistoryFull(id);
+        const files = await medicalFileRepository.findAll({ patient_id: id });
+        const assignedDoctors = await patientRepository.getAssignedDoctors(id);
+        const phoneNumbers = await phoneRepository.findByEntity('patient', id);
 
-            const files = await conn.query(`
-                SELECT f.*, u.username as uploader_name FROM patient_files f JOIN users u ON f.uploaded_by = u.id WHERE f.patient_id = ? ORDER BY f.created_at DESC`, [id]);
-
-            const assignedDoctors = await conn.query(`
-                SELECT d.id, d.full_name FROM patient_doctors pd JOIN doctors d ON pd.doctor_id = d.id WHERE pd.patient_id = ?`, [id]);
-
-            const phoneNumbers = await phoneModel.findByEntity('patient', id);
-
-            return {
-                ...patient,
-                total_debt: Number(patient.total_debt || 0), // Use total_debt from repository if included, or calculate
-                appointments,
-                prescriptions,
-                files,
-                accumulated_days: Number(stats.attended),
-                assignedDoctors,
-                phoneNumbers,
-                stats
-            };
-        } finally {
-            conn.release();
-        }
+        return {
+            ...patient,
+            total_debt: Number(patient.total_debt || 0),
+            appointments,
+            prescriptions,
+            files,
+            accumulated_days: Number(stats.attended),
+            assignedDoctors,
+            phoneNumbers,
+            stats
+        };
     }
 
     async updatePatientDetails(id, updates, reqUser) {
@@ -86,18 +71,11 @@ class PatientService {
         }
 
         if (assignedDoctors !== undefined) {
-            const conn = await pool.getConnection();
-            try {
-                await conn.query("DELETE FROM patient_doctors WHERE patient_id = ?", [id]);
-                if (assignedDoctors?.length > 0) {
-                    const insertValues = assignedDoctors.map(docId => [id, docId]);
-                    await conn.batch("INSERT INTO patient_doctors (patient_id, doctor_id) VALUES (?, ?)", insertValues);
-                }
-            } finally { conn.release(); }
+            await patientRepository.updateAssignedDoctors(id, assignedDoctors);
         }
 
         if (phoneNumbers !== undefined) {
-            const primaryPhone = await phoneModel.syncPhones('patient', id, phoneNumbers);
+            const primaryPhone = await phoneRepository.syncPhones('patient', id, phoneNumbers);
             if (primaryPhone) await patientRepository.update(id, { phone: primaryPhone });
         }
 

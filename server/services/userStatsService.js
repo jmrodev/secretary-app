@@ -1,5 +1,5 @@
-const statsRepository = require('../../repositories/statsRepository');
-const doctorRepository = require('../../repositories/doctorRepository');
+const statsRepository = require('../repositories/statsRepository');
+const doctorRepository = require('../repositories/doctorRepository');
 
 /**
  * UserStatsService

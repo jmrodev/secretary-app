@@ -1,5 +1,5 @@
 const doctorRepository = require('../repositories/doctorRepository');
-const phoneModel = require('../models/PhoneModel');
+const phoneRepository = require('../repositories/phoneRepository');
 
 /**
  * DoctorService
@@ -10,7 +10,7 @@ class DoctorService {
         const rows = await doctorRepository.findAll();
         if (rows.length > 0) {
             const doctorIds = rows.map(r => r.id);
-            const phoneMap = await phoneModel.findByEntities('doctor', doctorIds);
+            const phoneMap = await phoneRepository.findByEntities('doctor', doctorIds);
             rows.forEach(r => {
                 r.phoneNumbers = phoneMap[r.id] || [];
             });
@@ -28,7 +28,7 @@ class DoctorService {
 
         // 2. Handle Phone Numbers
         if (phoneNumbers !== undefined) {
-            const primaryPhone = await phoneModel.syncPhones('doctor', id, phoneNumbers);
+            const primaryPhone = await phoneRepository.syncPhones('doctor', id, phoneNumbers);
             if (primaryPhone) {
                 await doctorRepository.updateById(id, { phone: primaryPhone });
             }

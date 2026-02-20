@@ -2,7 +2,7 @@ import React from 'react';
 import Icon from '../atoms/Icon';
 import { useLanguage } from '../../context/LanguageContext';
 
-const MedicationHistory = ({ recentRequests, t }) => {
+const MedicationHistory = ({ recentRequests, t, onRepeat }) => {
     return (
         <section className="details-block details-block--medications">
             <header className="details-block__header">
@@ -26,6 +26,7 @@ const MedicationHistory = ({ recentRequests, t }) => {
                                     <th>{t('date')}</th>
                                     <th>{t('prescription_detail')}</th>
                                     <th>{t('status')}</th>
+                                    <th>{t('actions') || 'Acciones'}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -48,6 +49,15 @@ const MedicationHistory = ({ recentRequests, t }) => {
                                             <span className={`patient-medications__status-tag status-${req.status === 'completed' ? 'completed' : 'pending'}`}>
                                                 {req.status === 'completed' ? t('delivered') || 'Entregado' : t('pending') || 'Pendiente'}
                                             </span>
+                                        </td>
+                                        <td className="patient-medications__table-cell">
+                                            <button
+                                                className="btn-icon btn-icon--primary"
+                                                title={t('repeat_prescription') || 'Repetir Receta'}
+                                                onClick={() => onRepeat && onRepeat(req)}
+                                            >
+                                                <Icon name="HISTORY" size="1.2rem" />
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}

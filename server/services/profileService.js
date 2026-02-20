@@ -1,7 +1,7 @@
-const doctorModel = require('../models/DoctorModel');
-const patientModel = require('../models/PatientModel');
-const secretaryModel = require('../models/SecretaryModel');
-const phoneModel = require('../models/PhoneModel');
+const doctorRepository = require('../repositories/doctorRepository');
+const patientRepository = require('../repositories/patientRepository');
+const secretaryRepository = require('../repositories/secretaryRepository');
+const phoneRepository = require('../repositories/phoneRepository');
 
 /**
  * ProfileService
@@ -15,18 +15,17 @@ class ProfileService {
             return { role, user_id, username: 'Admin' };
         }
 
-        let profileRows;
+        let profile;
         if (role === 'secretary') {
-            profileRows = await secretaryModel.findByUserId(user_id);
+            profile = await secretaryRepository.findByUserId(user_id);
         } else if (role === 'doctor') {
-            profileRows = await doctorModel.findByUserId(user_id);
+            profile = await doctorRepository.findByUserId(user_id);
         } else if (role === 'patient') {
-            profileRows = await patientModel.findByUserId(user_id);
+            profile = await patientRepository.findByUserId(user_id);
         }
 
-        if (profileRows && profileRows.length > 0) {
-            const profile = profileRows[0];
-            const phoneNumbers = await phoneModel.findByEntity(role, profile.id);
+        if (profile) {
+            const phoneNumbers = await phoneRepository.findByEntity(role, profile.id);
             return { ...profile, role, phoneNumbers };
         }
         return null;
@@ -36,32 +35,38 @@ class ProfileService {
         const { role, user_id } = user;
         const { phoneNumbers, ...profileUpdates } = updates;
 
-        let profileId;
-        let model;
+        let profile;
+        let repository;
         if (role === 'patient') {
-            const [p] = await patientModel.findByUserId(user_id);
-            profileId = p?.id;
-            model = patientModel;
+            profile = await patientRepository.findByUserId(user_id);
+            repository = patientRepository;
         } else if (role === 'doctor') {
-            const [d] = await doctorModel.findByUserId(user_id);
-            profileId = d?.id;
-            model = doctorModel;
+            profile = await doctorRepository.findByUserId(user_id);
+            repository = doctorRepository;
         } else if (role === 'secretary') {
-            const [s] = await secretaryModel.findByUserId(user_id);
-            profileId = s?.id;
-            model = secretaryModel;
+            profile = await secretaryRepository.findByUserId(user_id);
+            repository = secretaryRepository;
         }
 
-        if (!profileId) throw new Error("Profile not found");
+        if (!profile) throw new Error("Profile not found");
 
         if (Object.keys(profileUpdates).length > 0) {
-            await model.update(role === 'patient' ? profileId : user_id, profileUpdates);
+            // patientRepository uses update(id, updates), doctor/secretary use updateByUserId
+            if (role === 'patient') {
+                await repository.update(profile.id, profileUpdates);
+            } else {
+                await repository.updateByUserId(user_id, profileUpdates);
+            }
         }
 
         if (phoneNumbers !== undefined) {
-            const primaryPhone = await phoneModel.syncPhones(role, profileId, phoneNumbers);
+            const primaryPhone = await phoneRepository.syncPhones(role, profile.id, phoneNumbers);
             if (primaryPhone) {
-                await model.update(role === 'patient' ? profileId : user_id, { phone: primaryPhone });
+                if (role === 'patient') {
+                    await repository.update(profile.id, { phone: primaryPhone });
+                } else {
+                    await repository.updateByUserId(user_id, { phone: primaryPhone });
+                }
             }
         }
     }

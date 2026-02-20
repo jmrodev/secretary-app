@@ -1,5 +1,5 @@
 const insuranceRepository = require('../repositories/insuranceRepository');
-const phoneModel = require('../models/PhoneModel');
+const phoneRepository = require('../repositories/phoneRepository');
 const { pool } = require('../db');
 
 /**
@@ -10,7 +10,7 @@ class InsuranceService {
     async getAllInsurances() {
         const rows = await insuranceRepository.findAll();
         for (const row of rows) {
-            const phoneNumbers = await phoneModel.findByEntity('insurance', row.id);
+            const phoneNumbers = await phoneRepository.findByEntity('insurance', row.id);
             row.phoneNumbers = phoneNumbers;
         }
         return rows;
@@ -19,7 +19,7 @@ class InsuranceService {
     async getInsuranceById(id) {
         const row = await insuranceRepository.findById(id);
         if (!row) return null;
-        row.phoneNumbers = await phoneModel.findByEntity('insurance', id);
+        row.phoneNumbers = await phoneRepository.findByEntity('insurance', id);
         return row;
     }
 
@@ -30,7 +30,7 @@ class InsuranceService {
             const insId = await insuranceRepository.create(data, conn);
 
             if (Array.isArray(data.phoneNumbers)) {
-                const primaryPhone = await phoneModel.syncPhones('insurance', insId, data.phoneNumbers, conn);
+                const primaryPhone = await phoneRepository.syncPhones('insurance', insId, data.phoneNumbers, conn);
                 if (primaryPhone) {
                     await insuranceRepository.update(insId, { phone: primaryPhone }, conn);
                 }
@@ -57,7 +57,7 @@ class InsuranceService {
             }
 
             if (phoneNumbers !== undefined && Array.isArray(phoneNumbers)) {
-                const primaryPhone = await phoneModel.syncPhones('insurance', id, phoneNumbers, conn);
+                const primaryPhone = await phoneRepository.syncPhones('insurance', id, phoneNumbers, conn);
                 if (primaryPhone) {
                     await insuranceRepository.update(id, { phone: primaryPhone }, conn);
                 }

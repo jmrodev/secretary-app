@@ -6,12 +6,12 @@ const { pool } = require('../db');
  */
 class LicenseRepository {
     async findById(id, conn = pool) {
-        const [rows] = await conn.query(`
+        const rows = await conn.query(`
             SELECT ml.*, a.doctor_id, a.patient_id 
             FROM medical_licenses ml
             JOIN appointments a ON ml.appointment_id = a.id
             WHERE ml.id = ?`, [id]);
-        return rows || null;
+        return rows[0] || null;
     }
 
     async findAll(filters = {}, conn = pool) {

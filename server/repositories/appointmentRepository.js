@@ -224,6 +224,26 @@ class AppointmentRepository {
             if (!conn) connection.release();
         }
     }
+
+    async findByPatientId(patientId, conn = pool) {
+        return await conn.query(`
+            SELECT a.*, d.full_name as doctor_name 
+            FROM appointments a 
+            JOIN doctors d ON a.doctor_id = d.id 
+            WHERE a.patient_id = ? 
+            ORDER BY a.appointment_date DESC`, [patientId]);
+    }
+
+    async getStats(patientId, conn = pool) {
+        return await conn.query(`
+            SELECT 
+                COUNT(*) as total,
+                COUNT(CASE WHEN status IN ('completed', 'attended', 'arrived') THEN 1 END) as attended,
+                COUNT(CASE WHEN status = 'absent' THEN 1 END) as absent,
+                COUNT(CASE WHEN status = 'cancelled' THEN 1 END) as cancelled
+            FROM appointments 
+            WHERE patient_id = ?`, [patientId]);
+    }
 }
 
 module.exports = new AppointmentRepository();

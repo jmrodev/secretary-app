@@ -13,8 +13,17 @@ class AuditRepository {
         );
     }
 
-    async findAll(limit = 100, conn = pool) {
-        return await conn.query("SELECT * FROM audit_logs ORDER BY created_at DESC LIMIT ?", [limit]);
+    async findRecentLogs(limit = 100, conn = pool) {
+        return await conn.query(
+            "SELECT * FROM audit_logs ORDER BY created_at DESC LIMIT ?",
+            [limit]
+        );
+    }
+
+    async findRecycleBin(conn = pool) {
+        return await conn.query(
+            "SELECT * FROM recycle_bin ORDER BY deleted_at DESC"
+        );
     }
 }
 
