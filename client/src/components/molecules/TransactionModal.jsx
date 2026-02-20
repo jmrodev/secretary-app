@@ -186,10 +186,36 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
 
                 {/* Payments Section */}
                 <div className="payment-methods-card">
+                    <div className="payment-summary__totals" style={{ marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border-color)' }}>
+                        {pricingInfo && (
+                            <p className="payment-summary__pricing-info" style={{ marginBottom: '1rem' }}>
+                                <Icon name="info" size="1.1rem" />
+                                {pricingInfo}
+                            </p>
+                        )}
+                        <div className="payment-summary__row">
+                            <span className="payment-summary__label" style={{ fontSize: '1.2rem', color: 'var(--text-main)' }}>{t('total_to_charge') || 'Total a Cobrar'}:</span>
+                            <div className="payment-summary__input-wrapper" style={{ width: '180px' }}>
+                                <CurrencyInput
+                                    value={totalPrice}
+                                    onChange={(e) => {
+                                        const val = Number(e.target.value);
+                                        setTotalPrice(val);
+                                        if (formData.payments.length === 1) {
+                                            handlePaymentChange(0, 'amount', val);
+                                        }
+                                    }}
+                                    className="payment-summary__total-input"
+                                    style={{ fontSize: '1.75rem', fontWeight: '900', borderBottom: '3px solid var(--blue-600)', color: 'var(--blue-700)', textAlign: 'right', paddingBottom: '0.25rem' }}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="payment-methods-card__header">
                         <label className="payment-methods-card__title">{t('payment_methods')}</label>
                         <Button variant="ghost" size="sm-compact" onClick={addPaymentMethod} icon={<Icon name="add" size="1.1rem" />}>
-                            {t('add_payment_method') || 'Agregar'}
+                            {t('add_payment_method') || 'Dividir Pago'}
                         </Button>
                     </div>
 
@@ -197,7 +223,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                         <div key={index} className="payment-row">
                             <div className="payment-row__amount">
                                 <CurrencyInput
-                                    placeholder={t('amount')}
+                                    placeholder={t('amount_paid') || 'Monto'}
                                     value={payment.amount}
                                     onChange={e => handlePaymentChange(index, 'amount', e.target.value)}
                                 />
@@ -223,29 +249,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                     ))}
 
                     <div className="payment-summary">
-                        {pricingInfo && (
-                            <p className="payment-summary__pricing-info">
-                                <Icon name="info" size="1.1rem" />
-                                {pricingInfo}
-                            </p>
-                        )}
                         <div className="payment-summary__totals">
-                            <div className="payment-summary__row">
-                                <span className="payment-summary__label">{t('total_to_charge') || 'Total a Cobrar'}:</span>
-                                <div className="payment-summary__input-wrapper">
-                                    <CurrencyInput
-                                        value={totalPrice}
-                                        onChange={(e) => {
-                                            const val = e.target.value;
-                                            // We need to expose a way to set totalPrice from useTransactionForm or just use updateField logic if possible
-                                            // Since useTransactionForm doesn't expose setTotalPrice, I will use a custom event or check if I can modify the hook.
-                                            // Actually, I will update useTransactionForm to export setTotalPrice.
-                                            setTotalPrice(Number(val));
-                                        }}
-                                        className="payment-summary__total-input"
-                                    />
-                                </div>
-                            </div>
                             {totalPrice > 0 && (
                                 <>
                                     <div className="payment-summary__row">
@@ -259,8 +263,8 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                                         </div>
                                     ) : (
                                         <div className="payment-summary__status">
-                                            <Icon name="check" size="1.1rem" />
-                                            {t('completed')}
+                                            <Icon name="check" size="1.2rem" />
+                                            {t('completed_payment') || 'Pago Completado'}
                                         </div>
                                     )}
                                 </>

@@ -61,7 +61,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
 
         const newFormState = {
             type: data.type || 'income_patient',
-            payments: data.payments || [{ amount: data.amount || '', method: data.method || 'cash' }],
+            payments: data.payments || [{ amount: data.amount !== undefined ? data.amount : '', method: data.method || 'cash' }],
             description: data.description || '',
             related_user_id: data.related_user_id || data.patientUserId || data.patientId || '',
             doctor_id: data.doctorId || '',
