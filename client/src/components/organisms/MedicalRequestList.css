@@ -81,6 +81,16 @@
     width: fit-content;
 }
 
+.medical-requests__type-tag--clickable {
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.medical-requests__type-tag--clickable:hover {
+    opacity: 0.8;
+    transform: scale(1.02);
+}
+
 .medical-requests__type-tag--prescription {
     background: var(--blue-100);
     color: var(--blue-700);

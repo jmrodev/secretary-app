@@ -110,7 +110,7 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
             </div>
 
             {/* Col 4: Actions (Optional) */}
-            {showActions && (
+            {showActions && appt.status !== 'completed' && (
                 <div className="appointment-card__actions">
                     <Button
                         variant="ghost"

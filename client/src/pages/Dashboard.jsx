@@ -64,7 +64,7 @@ const Dashboard = () => {
                             <h1 className="dashboard-header__title">{t('dashboard')}</h1>
                             <div className="dashboard-live-indicator">
                                 <span className="dashboard-live-indicator__dot"></span>
-                                <span className="dashboard-live-indicator__text">LIVE</span>
+                                <span className="dashboard-live-indicator__text">{t('live') || 'LIVE'}</span>
                             </div>
                         </div>
                         <p className="dashboard-header__subtitle">

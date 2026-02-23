@@ -63,10 +63,10 @@ const RequirementsList = ({ user, hideNew = false, hideRecycle = false, hideTabs
     const handleRecycleTab = () => setActiveTab('recycle');
 
     const typeLabels = {
-        'prescription': 'Receta',
-        'license': 'Licencia',
-        'certificate': 'Certificado',
-        'referral': 'Derivación'
+        'prescription': t('prescription'),
+        'license': t('license'),
+        'certificate': t('certificate'),
+        'referral': t('referral')
     };
 
     if (loading) return <Loading variant="centered" text={t('loading')} />;

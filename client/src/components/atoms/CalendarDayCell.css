@@ -76,6 +76,14 @@
     opacity: 0.5;
 }
 
+.calendar-day-cell--past {
+    background: var(--gray-50);
+}
+
+.calendar-day-cell--past .calendar-day-cell__number {
+    color: var(--gray-400);
+}
+
 .calendar-day-cell__date {
     position: absolute;
     top: 0.15rem;

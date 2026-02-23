@@ -59,7 +59,11 @@ const MedicalRequestList = ({
                                 <tr key={r.id} className={`medical-requests__row ${!isPending ? 'medical-requests__row--completed' : ''}`}>
                                     <td className="medical-requests__td medical-requests__td--type">
                                         <div className="medical-requests__type-cell">
-                                            <span className={`medical-requests__type-tag medical-requests__type-tag--${r.type}`}>
+                                            <span
+                                                className={`medical-requests__type-tag medical-requests__type-tag--${r.type} medical-requests__type-tag--clickable`}
+                                                onClick={() => handleEditRequest({ ...r, _origin: 'request', _readOnly: true })}
+                                                title={t('view') || 'Ver'}
+                                            >
                                                 {r.type === 'prescription' ? t('prescription') : (r.type === 'license' ? t('license') : (r.type === 'certificate' ? t('certificate') : r.type))}
                                             </span>
                                             {!!r.is_patient_submitted && (
@@ -161,12 +165,20 @@ const MedicalRequestList = ({
                                                 />
                                             )}
 
+                                            <Button
+                                                variant="ghost"
+                                                size="sm-compact"
+                                                onClick={() => handleEditRequest({ ...r, _origin: 'request', _readOnly: true })}
+                                                title={t('view') || 'Ver'}
+                                                icon={<Icon name="visibility" size="1rem" />}
+                                            />
+
                                             {(user.role === 'admin' || canDelete) && (
                                                 <Button
                                                     variant="ghost"
                                                     size="sm-compact"
                                                     onClick={() => handleEditRequest({ ...r, _origin: 'request' })}
-                                                    title={t('edit')}
+                                                    title={t('edit') || 'Editar'}
                                                     icon={<Icon name="edit" size="1rem" />}
                                                 />
                                             )}

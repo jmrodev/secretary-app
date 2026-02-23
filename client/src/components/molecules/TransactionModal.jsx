@@ -186,16 +186,16 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
 
                 {/* Payments Section */}
                 <div className="payment-methods-card">
-                    <div className="payment-summary__totals" style={{ marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border-color)' }}>
+                    <div className="payment-summary__totals payment-summary__totals--main">
                         {pricingInfo && (
-                            <p className="payment-summary__pricing-info" style={{ marginBottom: '1rem' }}>
+                            <p className="payment-summary__pricing-info">
                                 <Icon name="info" size="1.1rem" />
                                 {pricingInfo}
                             </p>
                         )}
                         <div className="payment-summary__row">
-                            <span className="payment-summary__label" style={{ fontSize: '1.2rem', color: 'var(--text-main)' }}>{t('total_to_charge') || 'Total a Cobrar'}:</span>
-                            <div className="payment-summary__input-wrapper" style={{ width: '180px' }}>
+                            <span className="payment-summary__label payment-summary__label--large">{t('total_to_charge') || 'Total a Cobrar'}:</span>
+                            <div className="payment-summary__input-wrapper payment-summary__input-wrapper--large">
                                 <CurrencyInput
                                     value={totalPrice}
                                     onChange={(e) => {
@@ -206,7 +206,6 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                                         }
                                     }}
                                     className="payment-summary__total-input"
-                                    style={{ fontSize: '1.75rem', fontWeight: '900', borderBottom: '3px solid var(--blue-600)', color: 'var(--blue-700)', textAlign: 'right', paddingBottom: '0.25rem' }}
                                 />
                             </div>
                         </div>

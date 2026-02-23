@@ -58,12 +58,12 @@ class MedicationRepository {
         return result.affectedRows;
     }
     async deleteByRequestId(requestId, conn = pool) {
-        return await conn.query("DELETE FROM request_medications WHERE request_id = ?", [requestId]);
+        return await conn.query("DELETE FROM medical_request_items WHERE request_id = ?", [requestId]);
     }
 
     async createRequestMedication(data, conn = pool) {
         return await conn.query(
-            "INSERT INTO request_medications (request_id, medication_id, dosage, quantity) VALUES (?, ?, ?, ?)",
+            "INSERT INTO medical_request_items (request_id, vademecum_id, dose, quantity) VALUES (?, ?, ?, ?)",
             [data.request_id, data.medication_id, data.dosage, data.quantity]
         );
     }

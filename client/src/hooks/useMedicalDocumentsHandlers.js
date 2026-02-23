@@ -12,7 +12,7 @@ export const useMedicalDocumentsHandlers = ({
     doubleConfirm,
     canDeleteRequest,
 
-    // Data/State Access
+    // State Access
     reqType,
     selectedPatient,
     selectedDoctor,
@@ -28,6 +28,12 @@ export const useMedicalDocumentsHandlers = ({
     selectedPrescription,
     selectedLicense,
     selectedRequest,
+    actionModal,
+    actionNote,
+    paymentModal,
+    searchTerm,
+    activeTab,
+    requestsSubTab,
 
     // Setters
     setReqNote,
@@ -37,6 +43,7 @@ export const useMedicalDocumentsHandlers = ({
     setPrescriptions,
     setLicenses,
     setFileDesc,
+    setFilePatient,
     setSelectedFile,
     setFileToDelete,
     setIsSubmitting,
@@ -49,6 +56,10 @@ export const useMedicalDocumentsHandlers = ({
     setRequestEditData,
     setActionModal,
     setPaymentModal,
+    setSearchTerm,
+    setActiveTab,
+    setRequestsSubTab,
+    setActionNote,
 
     // Actions
     fetchRequests,
@@ -82,12 +93,15 @@ export const useMedicalDocumentsHandlers = ({
     const handleUpdateStatus = useCallback(async (id, status, note = '') => {
         try {
             await api.patch(`/medical/requests/${id}`, { status, doctor_note: note });
+            setActionModal({ open: false, type: '', id: null });
+            setSelectedRequest(null);
+            setIsEditing(false);
             fetchRequests();
             showMessage(t('status_updated'), 'success');
         } catch (err) {
             showMessage(t('update_failed'), 'error');
         }
-    }, [t, showMessage, fetchRequests]);
+    }, [t, showMessage, fetchRequests, setActionModal, setSelectedRequest, setIsEditing]);
 
     const handleFileUpload = useCallback(async (e) => {
         if (e) e.preventDefault();
@@ -245,9 +259,13 @@ export const useMedicalDocumentsHandlers = ({
 
         if (item._origin === 'prescription') {
             setSelectedPrescription(item);
+            let parsedItems = [];
+            try { if (item.raw_medication_data) parsedItems = JSON.parse(item.raw_medication_data); } catch (e) { }
             setEditData({
                 medications: item.medications || '',
-                instructions: item.instructions || ''
+                instructions: item.instructions || '',
+                items: parsedItems,
+                _readOnly: item._readOnly || false
             });
         } else if (item._origin === 'license') {
             setSelectedLicense(item);
@@ -258,14 +276,59 @@ export const useMedicalDocumentsHandlers = ({
             });
         } else if (item._origin === 'request') {
             setSelectedRequest(item);
+            let parsedItems = [];
+            try { if (item.raw_medication_data) parsedItems = JSON.parse(item.raw_medication_data); } catch (e) { }
             setRequestEditData({
                 request_note: item.request_note || '',
-                doctor_note: item.doctor_note || ''
+                doctor_note: item.doctor_note || '',
+                items: parsedItems,
+                _readOnly: item._readOnly || false
             });
         }
     }, [setIsEditing, setSelectedPrescription, setEditData, setSelectedLicense, setLicenseEditData, setSelectedRequest, setRequestEditData]);
 
+    const handleSearchChange = useCallback((val) => setSearchTerm(val), [setSearchTerm]);
+    const handleTabChange = useCallback((val) => setActiveTab(val), [setActiveTab]);
+    const handleSubTabChange = useCallback((val) => setRequestsSubTab(val), [setRequestsSubTab]);
+    const handleFileDescChange = useCallback((val) => setFileDesc(val), [setFileDesc]);
+    const handleFilePatientChange = useCallback((val) => setFilePatient(val), [setFilePatient]);
+    const handleFileUploadChange = useCallback((file) => setSelectedFile(file), [setSelectedFile]);
+    const handleActionNoteChange = useCallback((val) => setActionNote(val), [setActionNote]);
+
+    const handleEditDataChange = useCallback((field, val) => setEditData(prev => ({ ...prev, [field]: val })), [setEditData]);
+    const handleLicenseEditDataChange = useCallback((field, val) => setLicenseEditData(prev => ({ ...prev, [field]: val })), [setLicenseEditData]);
+    const handleRequestEditDataChange = useCallback((field, val) => setRequestEditData(prev => ({ ...prev, [field]: val })), [setRequestEditData]);
+
+    const handleSelectMedicationLocal = useCallback((med) => {
+        setEditData(prev => {
+            const current = (prev.medications || '').trim();
+            const newValue = current ? `${current}\n${med.full_label}` : med.full_label;
+            return { ...prev, medications: newValue };
+        });
+    }, [setEditData]);
+
+    const toggleEditing = useCallback((val) => {
+        setIsEditing(val);
+        if (!val) {
+            setSelectedPrescription(null);
+            setSelectedLicense(null);
+            setSelectedRequest(null);
+        }
+    }, [setIsEditing, setSelectedPrescription, setSelectedLicense, setSelectedRequest]);
+
+    const closeActionModal = useCallback(() => setActionModal({ open: false, type: '', id: null }), [setActionModal]);
+    const openActionModal = useCallback((type, id) => setActionModal({ open: true, type, id }), [setActionModal]);
+
+    const closePaymentModal = useCallback(() => setPaymentModal(prev => ({ ...prev, open: false })), [setPaymentModal]);
+    const openPaymentModal = useCallback((data) => setPaymentModal({ open: true, ...data }), [setPaymentModal]);
+
+    const closeDeleteFileModal = useCallback(() => setFileToDelete(null), [setFileToDelete]);
+    const openDeleteFileModal = useCallback((f) => setFileToDelete(f), [setFileToDelete]);
+
+    const handlePrintLocal = useCallback((setPrintData) => handlePrintPrescriptions(setPrintData), [handlePrintPrescriptions]);
+
     return {
+        // Core Actions
         handleCreateRequest,
         handleUpdateStatus,
         handleFileUpload,
@@ -277,8 +340,28 @@ export const useMedicalDocumentsHandlers = ({
         handleDeletePrescription,
         handleDeleteLicense,
         handleExportJSON,
-        handlePrintPrescriptions,
+        handlePrintPrescriptions: handlePrintLocal,
         handleEditItem,
         fetchRequests,
+
+        // UI Handlers
+        handleSearchChange,
+        handleTabChange,
+        handleSubTabChange,
+        handleFileDescChange,
+        handleFilePatientChange,
+        handleFileUploadChange,
+        handleActionNoteChange,
+        handleEditDataChange,
+        handleLicenseEditDataChange,
+        handleRequestEditDataChange,
+        handleSelectMedication: handleSelectMedicationLocal,
+        toggleEditing,
+        closeActionModal,
+        openActionModal,
+        closePaymentModal,
+        openPaymentModal,
+        closeDeleteFileModal,
+        openDeleteFileModal
     };
 };

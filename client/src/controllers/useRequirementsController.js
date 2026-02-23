@@ -149,6 +149,7 @@ export const useRequirementsController = (user) => {
             await api.patch(`/medical/requests/${actionModal.id}`, payload);
             showMessage(t('action_success') || 'Updated successfully', 'success');
             setActionModal({ open: false, type: '', id: null });
+            setSelectedRequest(null);
             fetchRequests();
         } catch (err) {
             console.error("[RequirementsController] Action error", err);

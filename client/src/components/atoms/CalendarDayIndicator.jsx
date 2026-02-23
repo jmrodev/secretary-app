@@ -10,11 +10,14 @@ const CalendarDayIndicator = ({
   isHoliday,
   holidayDescription = '',
   variant = 'normal',
-  showOutOfHours = false
+  showOutOfHours = false,
+  t
 }) => {
   if (count === 0 && !isHoliday && !freeInCount && !freeOutCount) {
     return null;
   }
+
+  const translate = (key, fallback) => (t && t(key)) || fallback;
 
   return (
     <div className="calendar-day-indicator">
@@ -26,13 +29,13 @@ const CalendarDayIndicator = ({
         <div className="calendar-day-indicator__row calendar-day-indicator__row--in-hours">
           {/* Free In-Hours (Green) - Left */}
           <div className={`calendar-day-indicator__appointment-badge calendar-day-indicator__appointment-badge--free-normal ${freeInCount === 0 ? 'calendar-day-indicator__appointment-badge--zero' : ''}`}
-            title={`${freeInCount} Libres (Horario)`}>
+            title={`${freeInCount} ${translate('free_slots_label', 'Libres')} (${translate('regular_schedule', 'Horario')})`}>
             <span className="calendar-day-indicator__count">{freeInCount || 0}</span>
           </div>
 
           {/* Booked In-Hours (Blue) - Right */}
           <div className={`calendar-day-indicator__appointment-badge calendar-day-indicator__appointment-badge--booked-normal ${bookedInCount === 0 ? 'calendar-day-indicator__appointment-badge--zero' : ''}`}
-            title={`${bookedInCount} Ocupados (Horario)`}>
+            title={`${bookedInCount} ${translate('booked_slots_label', 'Ocupados')} (${translate('regular_schedule', 'Horario')})`}>
             <span className="calendar-day-indicator__count">{bookedInCount || 0}</span>
           </div>
         </div>
@@ -42,13 +45,13 @@ const CalendarDayIndicator = ({
           }`}>
           {/* Free Out-of-Hours (Amber) - Left */}
           <div className={`calendar-day-indicator__appointment-badge calendar-day-indicator__appointment-badge--free-extra ${freeOutCount === 0 ? 'calendar-day-indicator__appointment-badge--zero' : ''}`}
-            title={`${freeOutCount} Libres (Extra)`}>
+            title={`${freeOutCount} ${translate('free_slots_label', 'Libres')} (${translate('extra_schedule', 'Extra')})`}>
             <span className="calendar-day-indicator__count">{freeOutCount || 0}</span>
           </div>
 
           {/* Booked Out-of-Hours (Indigo) - Right */}
           <div className={`calendar-day-indicator__appointment-badge calendar-day-indicator__appointment-badge--booked-extra ${bookedOutCount === 0 ? 'calendar-day-indicator__appointment-badge--zero' : ''}`}
-            title={`${bookedOutCount} Ocupados (Extra)`}>
+            title={`${bookedOutCount} ${translate('booked_slots_label', 'Ocupados')} (${translate('extra_schedule', 'Extra')})`}>
             <span className="calendar-day-indicator__count">{bookedOutCount || 0}</span>
           </div>
         </div>

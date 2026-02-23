@@ -2,6 +2,8 @@ import React from 'react';
 import Modal from './Modal';
 import Button from '../atoms/Button';
 import MedicationAutocomplete from './MedicationAutocomplete';
+import PrescriptionItemsList from './PrescriptionItemsList';
+import '../organisms/PrescriptionModal.css';
 
 /**
  * EditPrescriptionModal Molecule.
@@ -25,23 +27,40 @@ const EditPrescriptionModal = ({
             onClose={onClose}
             title={`${t('prescription_for')} ${prescription.patient_name}`}
             footer={
-                <>
-                    <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
-                    <Button onClick={onUpdate}>{t('save')}</Button>
-                </>
+                editData._readOnly ? (
+                    <Button variant="secondary" onClick={onClose}>{t('close') || 'Cerrar'}</Button>
+                ) : (
+                    <>
+                        <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
+                        <Button onClick={onUpdate}>{t('save')}</Button>
+                    </>
+                )
             }
         >
             <div className="config-flex--column config-flex--gap-4">
                 <div className="input-group">
                     <label className="input-label">{t('medications')}</label>
-                    <MedicationAutocomplete
-                        value=""
-                        onChange={() => { }}
-                        onSelectMedication={onSelectMedication}
-                    />
+                    {editData.items && editData.items.length > 0 && (
+                        <div className="prescription-modal mb-4">
+                            <PrescriptionItemsList
+                                items={editData.items}
+                                handleRemoveItem={() => { }} // Remove handled in full form
+                                t={t}
+                                readOnly={true}
+                            />
+                        </div>
+                    )}
+                    {!editData._readOnly && (
+                        <MedicationAutocomplete
+                            value=""
+                            onChange={() => { }}
+                            onSelectMedication={onSelectMedication}
+                        />
+                    )}
                     <textarea
                         className="input-field mt-4"
                         rows="4"
+                        readOnly={editData._readOnly}
                         value={editData.medications}
                         onChange={e => onEditDataChange('medications', e.target.value)}
                     />
@@ -51,6 +70,7 @@ const EditPrescriptionModal = ({
                     <textarea
                         className="input-field"
                         rows="3"
+                        readOnly={editData._readOnly}
                         value={editData.instructions}
                         onChange={e => onEditDataChange('instructions', e.target.value)}
                     />

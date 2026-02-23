@@ -3,6 +3,7 @@ import CalendarDayCell from '../atoms/CalendarDayCell';
 import CalendarHeader from '../molecules/CalendarHeader';
 import DayHeaders from '../molecules/DayHeaders';
 import { useLanguage } from '../../context/LanguageContext';
+import { isPastDay, isSameDay } from '../../utils/dateUtils';
 import './Calendar.css';
 
 const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = [], calendarStats = {}, hideNavigation = false, showOutOfHours = false }) => {
@@ -24,11 +25,7 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
         return { days, firstDay };
     };
 
-    const isSameDay = (d1, d2) => {
-        return d1.getFullYear() === d2.getFullYear() &&
-            d1.getMonth() === d2.getMonth() &&
-            d1.getDate() === d2.getDate();
-    };
+
 
     const { days, firstDay } = getDaysInMonth(viewDate);
 
@@ -69,7 +66,7 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
             const dayStats = calendarStats[dateStr] || {};
 
             const dayAppts = appointments.filter(appt =>
-                isSameDay(new Date(appt.appointment_date), currentDay)
+                isSameDay(appt.appointment_date, currentDay)
             );
 
             // Priority: Use dayStats if provided (better for summary views) 
@@ -87,12 +84,15 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
                 }
             });
 
+            const isPast = isPastDay(currentDay);
+
             dayElements.push(
                 <CalendarDayCell
                     key={i}
                     day={i}
                     isSelected={isSelected}
                     isToday={isToday}
+                    isPast={isPast}
                     isHoliday={!!isHolidayObj}
                     holidayDescription={isHolidayObj ? isHolidayObj.description : ''}
                     appointmentCount={count}
@@ -103,6 +103,7 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
                     showOutOfHours={showOutOfHours}
                     onClick={() => onDateSelect(currentDay)}
                     isCurrentMonth={true}
+                    t={t}
                 />
             );
         }

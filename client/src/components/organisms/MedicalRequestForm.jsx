@@ -9,6 +9,7 @@ import FormGroup from '../molecules/FormGroup';
 import Select from '../atoms/Select';
 import Icon from '../atoms/Icon';
 import Badge from '../atoms/Badge';
+import { formatDate } from '../../utils/dateUtils';
 import './MedicalRequestForm.css';
 
 // Hooks
@@ -37,24 +38,12 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
         medicationItems, setMedicationItems,
         sendToDoctor, setSendToDoctor,
         isSubmitting,
-        handleCreateRequest
+        handleCreateRequest,
+        tempMedsProps
     } = useMedicalRequest(initialType, initialSendToDoctor, user, showMessage, t, onRequestCreated);
 
     const handleSubmit = (e) => {
-        let finalNoteItems = [];
-        if (reqType === 'prescription') {
-            finalNoteItems = medicationItems.map(i => {
-                let str = i.name;
-                if (i.dose) str += ` ${i.dose}`;
-                if (i.frequency) str += ` (${i.frequency})`;
-                if (i.quantity) str += ` [Qty: ${i.quantity}]`;
-                if (i.days_supply) str += ` (~${i.days_supply}d)`;
-                return str;
-            });
-        }
-        const finalNote = reqType === 'prescription' ? finalNoteItems.join('\n') : reqNote;
-
-        handleCreateRequest(e, medicationItems, finalNote);
+        handleCreateRequest(e, medicationItems, reqNote);
     };
 
     if (user.role !== 'secretary' && user.role !== 'doctor') return null;
@@ -111,7 +100,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                         <div className={`${baseClass}__badge-wrapper`}>
                             <Badge variant="warning">
                                 <Icon name="warning" size="1rem" />
-                                {t('patient_has_valid_until') || 'Cobertura sugerida hasta'}: {new Date(patientData.next_suggested_prescription_date).toLocaleDateString()}
+                                {t('patient_has_valid_until') || 'Cobertura sugerida hasta'}: {formatDate(patientData.next_suggested_prescription_date)}
                             </Badge>
                         </div>
                     )}
@@ -128,6 +117,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                             medicationItems={medicationItems}
                             setMedicationItems={setMedicationItems}
                             baseClass={baseClass}
+                            {...tempMedsProps}
                         />
                     ) : (
                         <SimpleRequestForm

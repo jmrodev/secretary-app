@@ -1,6 +1,7 @@
 import React from 'react';
 import Icon from '../atoms/Icon';
 import Button from '../atoms/Button';
+import { formatDate } from '../../utils/dateUtils';
 
 const ActiveMedicationsList = ({ medications, loading, t, onDiscontinue, onRemindRefill, settings, user, patientName }) => {
     if (loading) {
@@ -44,7 +45,7 @@ const ActiveMedicationsList = ({ medications, loading, t, onDiscontinue, onRemin
                                 {med.next_refill_date && (
                                     <div className={`patient-medications__refill-info ${new Date(med.next_refill_date) <= new Date(new Date().setDate(new Date().getDate() + 2)) ? 'patient-medications__refill-info--urgent' : ''}`}>
                                         <Icon name="today" size="0.8rem" />
-                                        {t('next_refill_date')}: {new Date(med.next_refill_date).toLocaleDateString()}
+                                        {t('next_refill_date')}: {formatDate(med.next_refill_date)}
                                         <span className="patient-medications__mode-badge ml-2">
                                             ({med.reminder_mode === 'calculation' ? t('by_calculation') || 'Cálculo' :
                                                 med.reminder_mode === 'fixed_day' ? `${t('day') || 'Día'} ${med.reminder_day}` :

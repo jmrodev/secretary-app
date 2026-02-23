@@ -1,6 +1,6 @@
 import React from 'react';
 import AppointmentCard from '../molecules/AppointmentCard';
-import { formatTime } from '../../utils/dateUtils';
+import { formatTime, isPast as checkIsPast } from '../../utils/dateUtils';
 
 /**
  * ScheduleTimeline Molecule.
@@ -32,8 +32,9 @@ const ScheduleTimeline = ({
                     const isSlotClosed = type === 'closed';
                     const isSlotBreak = type === 'break';
                     const isBlocked = slotApps.some(a => !['cancelled', 'suspended', 'absent'].includes(a.status));
+                    const isPast = checkIsPast(slot.time);
 
-                    const slotClasses = `time-slot ${isSlotClosed ? 'time-slot--closed' : ''} ${isSlotBreak ? 'time-slot--break' : ''}`;
+                    const slotClasses = `time-slot ${isSlotClosed ? 'time-slot--closed' : ''} ${isSlotBreak ? 'time-slot--break' : ''} ${isPast ? 'time-slot--past' : ''}`;
 
                     return (
                         <div key={index} className={slotClasses}>
@@ -48,7 +49,7 @@ const ScheduleTimeline = ({
                                         />
                                     ))}
 
-                                {!isBlocked && (
+                                {!isBlocked && !isPast && (
                                     <div
                                         className={`available-slot ${isSlotClosed ? 'available-slot--closed' : ''}`}
                                         onClick={() => onSlotAction(slot)}

@@ -16,7 +16,9 @@ const CalendarDayCell = ({
   freeOutCount = 0,
   showOutOfHours = false,
   onClick,
-  disabled = false
+  disabled = false,
+  isPast = false,
+  t
 }) => {
   const handleClick = () => {
     if (!disabled && onClick) {
@@ -31,7 +33,8 @@ const CalendarDayCell = ({
     isSelected && 'calendar-day-cell--selected',
     isToday && 'calendar-day-cell--today',
     isHoliday && 'calendar-day-cell--holiday',
-    disabled && 'calendar-day-cell--disabled'
+    disabled && 'calendar-day-cell--disabled',
+    isPast && 'calendar-day-cell--past'
   ].filter(Boolean).join(' ');
 
   return (
@@ -63,6 +66,7 @@ const CalendarDayCell = ({
           holidayDescription={holidayDescription}
           variant={appointmentCount > 5 ? 'high' : 'normal'}
           showOutOfHours={showOutOfHours}
+          t={t}
         />
       </div>
     </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { timeAgo } from '../../utils/time';
+import { formatDate } from '../../utils/dateUtils';
 import Button from '../atoms/Button';
 import Icon from '../atoms/Icon';
 import './MedicalHistoryTable.css';
@@ -41,7 +42,7 @@ const MedicalHistoryTable = ({ items, filterItem, onView, onDelete, icon, title,
                             <tr key={`${item._origin}_${item.id}`} className="medical-history__row">
                                 <td className="medical-history__td">
                                     <div className="medical-history__date-cell">
-                                        <span className="medical-history__date">{new Date(item.appointment_date || item.created_at).toLocaleDateString()}</span>
+                                        <span className="medical-history__date">{formatDate(item.appointment_date || item.created_at)}</span>
                                         <span className="medical-history__time-ago">{timeAgo(item.appointment_date || item.created_at)}</span>
                                     </div>
                                 </td>
@@ -49,7 +50,11 @@ const MedicalHistoryTable = ({ items, filterItem, onView, onDelete, icon, title,
                                     <div className="medical-history__patient-cell">
                                         <span className="medical-history__patient-name">{item.patient_name}</span>
                                         {item._origin === 'request' && (
-                                            <span className="medical-history__origin-tag">
+                                            <span
+                                                className="medical-history__origin-tag medical-history__origin-tag--clickable"
+                                                onClick={() => onView({ ...item, _readOnly: true })}
+                                                title={t('view') || 'Ver'}
+                                            >
                                                 {originLabel || t('request')}
                                             </span>
                                         )}
@@ -68,7 +73,7 @@ const MedicalHistoryTable = ({ items, filterItem, onView, onDelete, icon, title,
                                         <Button
                                             variant="ghost"
                                             size="sm-compact"
-                                            onClick={() => onView(item)}
+                                            onClick={() => onView({ ...item, _readOnly: true })}
                                             title={t('view')}
                                             icon={<Icon name="visibility" size="1rem" />}
                                         />

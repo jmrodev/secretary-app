@@ -2,6 +2,7 @@ import React from 'react';
 import Badge from '../atoms/Badge';
 import Button from '../atoms/Button';
 import Icon from '../atoms/Icon';
+import { formatDate } from '../../utils/dateUtils';
 import './RequirementItem.css';
 
 /**
@@ -33,7 +34,7 @@ const RequirementItem = ({
                     {typeLabel}
                 </Badge>
             </td>
-            <td className="requirement-item__cell">{new Date(created_at).toLocaleDateString()}</td>
+            <td className="requirement-item__cell">{formatDate(created_at)}</td>
             <td className="requirement-item__cell requirement-item__patient-name">
                 {patient_name}
             </td>
@@ -52,6 +53,13 @@ const RequirementItem = ({
             </td>
             <td className="requirement-item__cell">
                 <div className="requirement-item__actions">
+                    <Button
+                        variant="ghost"
+                        size="sm-compact"
+                        onClick={() => onSelect(request)}
+                        title={t('view') || "Ver"}
+                        icon={<Icon name="visibility" size="1rem" />}
+                    />
                     {canDelete && (
                         <Button
                             variant="outline-danger"

@@ -1,9 +1,11 @@
 import React, { useState, useMemo } from 'react';
 
 // Molecules
-import HabitualMedicationsGrid from '../molecules/HabitualMedicationsGrid';
-import MedicationInputSection from '../molecules/MedicationInputSection';
-import MedicationItemsSummary from '../molecules/MedicationItemsSummary';
+import PrescriptionHabitualMeds from '../molecules/PrescriptionHabitualMeds';
+import PrescriptionFormFields from '../molecules/PrescriptionFormFields';
+import PrescriptionItemsList from '../molecules/PrescriptionItemsList';
+
+import './PrescriptionModal.css';
 
 const FREQ_PRESETS = [
     { label: '1/día', unitsPerDay: 1, text: 'cada 24hs' },
@@ -25,16 +27,17 @@ const PrescriptionForm = ({
     patientMeds,
     medicationItems,
     setMedicationItems,
-    baseClass
+    baseClass,
+    // Prop-drilled state from useMedicalRequest
+    tempMed, setTempMed,
+    tempDose, setTempDose,
+    tempFreq, setTempFreq,
+    tempDailyUnits, setTempDailyUnits,
+    tempUnitsPerBox, setTempUnitsPerBox,
+    tempQty, setTempQty,
+    tempVademecumId, setTempVademecumId
 }) => {
-    const [tempMed, setTempMed] = useState('');
-    const [tempDose, setTempDose] = useState('');
-    const [tempFreq, setTempFreq] = useState('');
-    const [tempQty, setTempQty] = useState('');
-    const [tempUnitsPerBox, setTempUnitsPerBox] = useState('');
-    const [tempDailyUnits, setTempDailyUnits] = useState('');
     const [tempFreqPreset, setTempFreqPreset] = useState(null);
-    const [currentVademecumId, setCurrentVademecumId] = useState(null);
 
     // ── Live days-supply calculation ─────────────────────────────────────────
     const daysSupply = useMemo(() => {
@@ -53,20 +56,45 @@ const PrescriptionForm = ({
     }, [daysSupply]);
 
     // ── Handlers ─────────────────────────────────────────────────────────────
-    const handleSelectHabitual = (med) => {
-        const medName = med.medication_name || med.name;
+    const handleFreqPreset = (idx) => {
+        setTempFreqPreset(idx);
+        const preset = FREQ_PRESETS[idx];
+        if (preset.unitsPerDay !== null) {
+            const val = String(preset.unitsPerDay);
+            setTempDailyUnits(val);
+            setTempFreq(preset.text);
+        } else {
+            setTempDailyUnits('');
+            setTempFreq('según necesidad');
+        }
+    };
+
+    const handleSelectMedication = (med) => {
+        const medName = med.full_label || med.medication_name || med.name;
+
+        // Toggle logic
+        const existingIdx = medicationItems.findIndex(i => i.name === medName);
+        if (existingIdx > -1) {
+            handleRemoveItem(existingIdx);
+            return;
+        }
+
+        const dose = med.dose || '';
+        const upb = med.units_per_box || '';
+        const daily = med.daily_units || med.daily_intake || '';
+        const boxes = med.boxes_count || med.quantity || '';
+        const vId = med.vademecum_id || med.id;
+
         setTempMed(medName);
-        setTempDose(med.dose || '');
-        setCurrentVademecumId(med.vademecum_id || med.id);
+        setTempDose(dose);
+        setTempVademecumId(vId);
+        setTempUnitsPerBox(String(upb));
+        setTempDailyUnits(String(daily));
+        setTempQty(String(boxes));
 
-        if (med.units_per_box) setTempUnitsPerBox(String(med.units_per_box));
-
-        const dailyVal = med.daily_units || med.daily_intake;
-        if (dailyVal) {
-            const sVal = String(dailyVal);
-            setTempDailyUnits(sVal);
-            const num = parseFloat(sVal);
-            let fStr = `${sVal} por día`;
+        if (daily) {
+            const num = parseFloat(daily);
+            let fStr = `${daily} por día`;
             if (num === 1) fStr = 'cada 24hs';
             else if (num === 2) fStr = 'cada 12hs';
             else if (num === 3) fStr = 'cada 8hs';
@@ -74,8 +102,6 @@ const PrescriptionForm = ({
             else if (num === 0.5) fStr = 'día por medio';
             setTempFreq(fStr);
         }
-
-        if (med.boxes_count) setTempQty(String(med.boxes_count));
     };
 
     const handleAddItem = () => {
@@ -84,25 +110,31 @@ const PrescriptionForm = ({
             name: tempMed.trim(),
             dose: tempDose.trim(),
             frequency: tempFreq.trim(),
-            quantity: tempQty.trim(),
+            quantity: tempQty.trim() || '1',
             units_per_box: parseFloat(tempUnitsPerBox) || null,
             daily_units: parseFloat(tempDailyUnits) || null,
             days_supply: daysSupply,
-            vademecum_id: currentVademecumId
+            vademecum_id: tempVademecumId
         };
 
-        if (!medicationItems.some(i => i.name === newItem.name)) {
+        const existingIdx = medicationItems.findIndex(i => i.name === newItem.name);
+        if (existingIdx > -1) {
+            const next = [...medicationItems];
+            next[existingIdx] = newItem;
+            setMedicationItems(next);
+        } else {
             setMedicationItems([...medicationItems, newItem]);
-            // Reset temp fields
-            setTempMed('');
-            setTempDose('');
-            setTempFreq('');
-            setTempQty('');
-            setTempUnitsPerBox('');
-            setTempDailyUnits('');
-            setTempFreqPreset(null);
-            setCurrentVademecumId(null);
         }
+
+        // Reset
+        setTempMed('');
+        setTempDose('');
+        setTempFreq('');
+        setTempQty('');
+        setTempUnitsPerBox('');
+        setTempDailyUnits('');
+        setTempFreqPreset(null);
+        setTempVademecumId(null);
     };
 
     const handleRemoveItem = (index) => {
@@ -110,40 +142,33 @@ const PrescriptionForm = ({
     };
 
     return (
-        <div className={`${baseClass}__medication-section`}>
-            <HabitualMedicationsGrid
+        <div className="prescription-modal">
+            <PrescriptionHabitualMeds
                 patientMeds={patientMeds}
-                medicationItems={medicationItems}
-                onSelect={handleSelectHabitual}
-                baseClass={baseClass}
+                items={medicationItems}
+                handleSelectMedication={handleSelectMedication}
                 t={t}
             />
 
-            <MedicationInputSection
+            <PrescriptionFormFields
                 tempMed={tempMed} setTempMed={setTempMed}
                 tempDose={tempDose} setTempDose={setTempDose}
-                tempFreqPreset={tempFreqPreset} setTempFreqPreset={setTempFreqPreset}
-                tempFreq={tempFreq} setTempFreq={setTempFreq}
-                tempDailyUnits={tempDailyUnits} setTempDailyUnits={setTempDailyUnits}
+                tempFreqPreset={tempFreqPreset} handleFreqPreset={handleFreqPreset}
                 tempUnitsPerBox={tempUnitsPerBox} setTempUnitsPerBox={setTempUnitsPerBox}
-                tempQty={tempQty} setTempQty={setTempQty}
+                tempDailyUnits={tempDailyUnits} setTempDailyUnits={setTempDailyUnits}
+                tempBoxes={tempQty} setTempBoxes={setTempQty}
+                handleAddItem={handleAddItem}
+                handleSelectMedication={handleSelectMedication}
+                canAdd={tempMed.trim().length > 0}
                 daysSupply={daysSupply}
                 refillDateStr={refillDateStr}
-                onAddItem={handleAddItem}
-                onVademecumSelect={(med) => {
-                    const fullMedName = med.full_label || med.name;
-                    setTempMed(fullMedName);
-                    setCurrentVademecumId(med.id);
-                }}
                 freqPresets={FREQ_PRESETS}
-                baseClass={baseClass}
                 t={t}
             />
 
-            <MedicationItemsSummary
+            <PrescriptionItemsList
                 items={medicationItems}
-                onRemove={handleRemoveItem}
-                baseClass={baseClass}
+                handleRemoveItem={handleRemoveItem}
                 t={t}
             />
         </div>

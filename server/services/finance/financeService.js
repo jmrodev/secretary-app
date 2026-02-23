@@ -16,9 +16,11 @@ class FinanceService {
 
             // 1. Cleanup pending
             if (data.appointment_id) {
+                console.log(`[FinanceService] Deleting pending for Appointment: ${data.appointment_id}`);
                 await transactionRepository.deletePendingByAppointment(data.appointment_id, conn);
             }
             if (data.request_id) {
+                console.log(`[FinanceService] Deleting pending for Request: ${data.request_id}`);
                 await transactionRepository.deletePendingByRequest(data.request_id, conn);
             }
 
@@ -236,8 +238,13 @@ class FinanceService {
     }
 
     async syncRequestPaymentStatus(requestId, conn) {
+        console.log(`[FinanceService] syncRequestPaymentStatus for Request: ${requestId}`);
         const { totalPaid, totalPending } = await transactionRepository.getRequestPaymentSummary(requestId, conn);
+        console.log(`[FinanceService] Summary for ${requestId}: Paid=${totalPaid}, Pending=${totalPending}`);
+
         let finalStatus = (totalPaid > 0 && totalPending > 0) ? 'partial' : (totalPaid > 0 ? 'paid' : (totalPending > 0 ? 'debt' : 'pending'));
+        console.log(`[FinanceService] Updating Request ${requestId} status to: ${finalStatus}`);
+
         await medicalRequestRepository.update(requestId, {
             payment_status: finalStatus,
             debt_amount: totalPending

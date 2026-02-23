@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import Modal from '../molecules/Modal';
 import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
+import { useMessage } from '../../context/MessageContext';
 import { capitalizeFirst } from '../../utils/stringUtils';
 
 // Molecules
@@ -27,6 +29,7 @@ const FREQ_PRESETS = [
  * Orchestrates habitual meds, form entry, and item listing for medical prescriptions.
  */
 const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, t, isSubmitting }) => {
+    const { showMessage } = useMessage();
     const [medications, setMedications] = useState('');
     const [instructions, setInstructions] = useState('');
     const [items, setItems] = useState([]);
@@ -178,8 +181,8 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
 
             setItems(prev => [...prev, newItem]);
             const supplyStr = calcDs ? ` (~${calcDs}d)` : '';
-            const qtyStr = boxes ? ` x${boxes}` : '';
-            const fullLabel = `${medName} ${dose.trim()} ${frequencyText}${qtyStr}${supplyStr}`.trim();
+            const qtyStr = (boxes && boxes !== '0') ? ` x${boxes}` : '';
+            const fullLabel = `${medName} ${dose.trim()} ${frequencyText}${qtyStr}${supplyStr}`.trim().replace(/\s+/g, ' ');
             setMedications(curr => curr.trim() ? `${curr.trim()}\n${fullLabel}` : fullLabel);
         }
     };
@@ -238,8 +241,8 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
             // Sync medications text area
             const newText = next.map(i => {
                 const supplyStr = i.days_supply ? ` (~${i.days_supply}d)` : '';
-                const qtyStr = i.quantity ? ` x${i.quantity}` : '';
-                return `${i.name} ${i.dose} ${i.frequency}${qtyStr}${supplyStr}`.trim();
+                const qtyStr = i.quantity && i.quantity !== '0' ? ` x${i.quantity}` : '';
+                return `${i.name} ${i.dose || ''} ${i.frequency || ''}${qtyStr}${supplyStr}`.trim().replace(/\s+/g, ' ');
             }).join('\n');
             setMedications(newText);
 
@@ -254,8 +257,8 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
             const newItems = prev.filter((_, i) => i !== index);
             const newText = newItems.map(i => {
                 const supplyStr = i.days_supply ? ` (~${i.days_supply}d)` : '';
-                const qtyStr = i.quantity ? ` x${i.quantity}` : '';
-                return `${i.name} ${i.dose} ${i.frequency}${qtyStr}${supplyStr}`.trim();
+                const qtyStr = i.quantity && i.quantity !== '0' ? ` x${i.quantity}` : '';
+                return `${i.name} ${i.dose || ''} ${i.frequency || ''}${qtyStr}${supplyStr}`.trim().replace(/\s+/g, ' ');
             }).join('\n');
             setMedications(newText);
             return newItems;
@@ -267,28 +270,49 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
         // Actually handleAddItem already syncs. If form has data not in items, handle it:
         let finalItems = [...items];
 
-        if (tempMed.trim() && !items.some(i => i.name === tempMed.trim())) {
+        if (tempMed.trim()) {
             const selectedPreset = tempFreqPreset !== null ? FREQ_PRESETS[tempFreqPreset] : null;
-            const frequencyText = selectedPreset ? selectedPreset.text : (tempDailyUnits ? `${tempDailyUnits}/día` : '');
-            const lastItem = {
+            let frequencyText = '';
+            if (selectedPreset) {
+                frequencyText = selectedPreset.text;
+            } else if (tempDailyUnits) {
+                const num = parseFloat(tempDailyUnits);
+                if (num === 1) frequencyText = 'cada 24hs';
+                else if (num === 2) frequencyText = 'cada 12hs';
+                else if (num === 3) frequencyText = 'cada 8hs';
+                else if (num === 4) frequencyText = 'cada 6hs';
+                else if (num === 0.5) frequencyText = 'día por medio';
+                else frequencyText = `${tempDailyUnits} por día`;
+            }
+
+            const itemToInclude = {
                 vademecum_id: currentVademecumId,
                 name: tempMed.trim(),
                 dose: tempDose.trim(),
                 frequency: frequencyText,
                 daily_units: parseFloat(tempDailyUnits) || null,
                 units_per_box: parseFloat(tempUnitsPerBox) || null,
-                quantity: tempBoxes.trim(),
+                quantity: tempBoxes.trim() || "1",
                 days_supply: daysSupply
             };
-            finalItems.push(lastItem);
+
+            const existingIdx = finalItems.findIndex(i => i.name === itemToInclude.name);
+            if (existingIdx > -1) {
+                finalItems[existingIdx] = itemToInclude;
+            } else {
+                finalItems.push(itemToInclude);
+            }
         }
 
-        if (finalItems.length === 0) return;
+        if (finalItems.length === 0) {
+            showMessage(t('please_add_at_least_one_medication') || 'Debe agregar al menos un medicamento a la lista.', 'warning');
+            return;
+        }
 
         const finalMeds = finalItems.map(i => {
             const supplyStr = i.days_supply ? ` (~${i.days_supply}d)` : '';
-            const qtyStr = i.quantity ? ` x${i.quantity}` : '';
-            return `${i.name} ${i.dose} ${i.frequency}${qtyStr}${supplyStr}`.trim();
+            const qtyStr = i.quantity && i.quantity !== '0' ? ` x${i.quantity}` : '';
+            return `${i.name} ${i.dose || ''} ${i.frequency || ''}${qtyStr}${supplyStr}`.trim().replace(/\s+/g, ' ');
         }).join('\n');
 
         onSubmit({ medications: finalMeds, instructions, items: finalItems });
@@ -304,15 +328,16 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
             onClose={onClose}
             title={`${t('prescription_for') || 'Receta para'} ${patientName}`}
             footer={
-                <>
+                <div className="prescription-modal__footer-actions">
                     <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
                     <Button
                         onClick={handleSubmit}
-                        disabled={(!items.length && !tempMed.trim()) || isSubmitting}
+                        disabled={isSubmitting || (items.length === 0 && !tempMed.trim())}
+                        icon={<Icon name="SAVE" />}
                     >
                         {isSubmitting ? t('sending') : t('create')}
                     </Button>
-                </>
+                </div>
             }
         >
             <div className="prescription-modal">

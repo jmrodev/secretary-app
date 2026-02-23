@@ -95,7 +95,7 @@ const TransactionRow = ({
                             <Button size="sm-compact" variant="ghost" onClick={() => onGenerateInvoice(tx.id)} title="Generar Factura" icon="🧾" />
                         )}
                         {tx.status === 'pending' && (
-                            <Button size="sm-compact" variant="ghost" onClick={() => onEdit(tx)} title={t('pay') || 'Cobrar'} icon="💰" />
+                            <Button size="sm-compact" variant="ghost" onClick={() => onEdit({ ...tx, status: 'paid' })} title={t('pay') || 'Cobrar'} icon="💰" />
                         )}
                         <Button size="sm-compact" variant="ghost" onClick={() => onEdit(tx)} title={t('edit')} icon="✏️" />
                         {tx.status === 'paid' && (

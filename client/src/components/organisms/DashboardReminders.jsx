@@ -1,6 +1,8 @@
+import React, { useState } from 'react';
 import Button from '../atoms/Button';
 import Icon from '../atoms/Icon';
 import TabButton from '../atoms/TabButton';
+import { formatDate } from '../../utils/dateUtils';
 import './DashboardReminders.css';
 
 /**
@@ -21,7 +23,7 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                 ...r,
                 taskType: 'visit',
                 isNotified: !!r.visit_notified,
-                label: `${t('visit_overdue') || 'Control pendiente'} (${new Date(r.next_suggested_visit_date).toLocaleDateString()})`,
+                label: `${t('visit_overdue') || 'Control pendiente'} (${formatDate(r.next_suggested_visit_date)})`,
                 badgeClass: 'visit'
             });
         }
@@ -31,7 +33,7 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                 ...r,
                 taskType: 'prescription',
                 isNotified: !!r.prescription_notified,
-                label: `${t('prescription_overdue') || 'Renovación sugerida'} (${new Date(r.next_suggested_prescription_date).toLocaleDateString()})`,
+                label: `${t('prescription_overdue') || 'Renovación sugerida'} (${formatDate(r.next_suggested_prescription_date)})`,
                 badgeClass: 'prescription'
             });
         }
@@ -41,7 +43,7 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                 ...r,
                 taskType: 'license',
                 isNotified: !!r.license_notified,
-                label: `${t('license_expiring') || 'Licencia por vencer'} (${new Date(r.license_expiry_date).toLocaleDateString()})`,
+                label: `${t('license_expiring') || 'Licencia por vencer'} (${formatDate(r.license_expiry_date)})`,
                 badgeClass: 'license'
             });
         }

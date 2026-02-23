@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '../atoms/Button';
 import Icon from '../atoms/Icon';
+import './AppointmentAdminPanel.css';
 
 /**
  * AppointmentAdminPanel Molecule.
@@ -35,132 +36,159 @@ const AppointmentAdminPanel = ({
 
     const showAdminPanel = !isGoogle && (appt.status !== 'completed' || canUnrestricted);
 
+    // Visibility refinements based on status
+    const canReschedule = appt.status !== 'completed' && appt.status !== 'absent';
+    const canPassToVideo = appt.status !== 'completed' && appt.status !== 'absent' && appt.type !== 'virtual';
+
     if (!showAdminPanel && !isPendingPayment) return null;
 
     const baseClass = 'appointment-admin-panel';
 
     return (
         <div className={baseClass}>
-            <div className={`${baseClass}__grid`}>
-                {/* Pay Button */}
-                {isPendingPayment && !isGoogle && (
-                    <Button
-                        variant="primary"
-                        onClick={() => onPay(appt)}
-                        icon={<Icon name="payments" size="1rem" />}
-                    >
-                        {t('pay')}
-                    </Button>
-                )}
-
-                {showAdminPanel && (
-                    <>
-                        {/* 1. Confirm (Restaurar) */}
-                        {canConfirm && (
-                            <Button
-                                variant="success"
-                                className={`${baseClass}__action`}
-                                onClick={() => { onUpdateStatus(appt.id, 'confirmed'); onClose(); }}
-                                tooltip="Confirmar asistencia (Restaurar)"
-                                icon={<Icon name="check_circle" size="1rem" />}
-                            >
-                                {t('confirm')}
-                            </Button>
-                        )}
-
-                        {/* 2. Arrived (Asistió a Sala) - ONLY if Confirmed */}
-                        {canArrive && (
-                            <Button
-                                variant="secondary"
-                                className={`${baseClass}__action`}
-                                onClick={() => { onUpdateStatus(appt.id, 'arrived'); onClose(); }}
-                                icon={<Icon name="meeting_room" size="1rem" />}
-                            >
-                                {t('patient_arrived') || 'En Sala'}
-                            </Button>
-                        )}
-
-                        {/* 3. Attended (Completed) - ONLY if Arrived */}
-                        {canAttend && (
-                            <Button
-                                variant="success"
-                                className={`${baseClass}__action`}
-                                onClick={() => { onUpdateStatus(appt.id, 'completed'); onClose(); }}
-                                tooltip="Marcar como atendido"
-                                icon={<Icon name="task_alt" size="1rem" />}
-                            >
-                                {t('attended') || 'Atendido'}
-                            </Button>
-                        )}
-
-                        {/* [NEW] Switch to Virtual */}
-                        {appt.type !== 'virtual' && (
-                            <Button
-                                variant="accent"
-                                className={`${baseClass}__action`}
-                                onClick={() => { onUpdateType(appt.id, 'virtual'); onClose(); }}
-                                tooltip="Cambiar tipo a Videollamada"
-                                icon={<Icon name="videocam" size="1rem" />}
-                            >
-                                {t('pass_to_video') || 'Pasar a Video'}
-                            </Button>
-                        )}
-
-                        {/* [NEW] Hard Edit (Always available in Admin Panel) */}
-                        <Button
-                            variant="secondary"
-                            outline
-                            className={`${baseClass}__action`}
-                            onClick={() => { onHardEdit(appt); onClose(); }}
-                            tooltip="Editar detalles del turno"
-                            icon={<Icon name="edit" size="1rem" />}
-                        >
-                            {t('edit') || 'Editar'}
-                        </Button>
-
-                        {/* Common Actions */}
+            {/* Pay Button / Quick Actions */}
+            {isPendingPayment && !isGoogle && (
+                <div className={`${baseClass}__group ${baseClass}__group--highlight`}>
+                    <div className={`${baseClass}__grid`}>
                         <Button
                             variant="primary"
-                            outline
                             className={`${baseClass}__action`}
-                            onClick={() => { onReschedule(appt); onClose(); }}
-                            tooltip="Reprogramar fecha/hora"
-                            icon={<Icon name="calendar_month" size="1rem" />}
+                            onClick={() => { onPay(appt); onClose(); }}
+                            icon={<Icon name="payments" size="1rem" />}
                         >
-                            {t('reschedule')}
+                            {t('pay')}
                         </Button>
+                    </div>
+                </div>
+            )}
 
-                        {canSuspend && (
+            {showAdminPanel && (
+                <>
+                    {/* Attendance Group */}
+                    <div className={`${baseClass}__group`}>
+                        <h4 className={`${baseClass}__group-title`}>{t('attendance') || 'Asistencia'}</h4>
+                        <div className={`${baseClass}__grid`}>
+                            {/* 1. Confirm (Restaurar) */}
+                            {canConfirm && (
+                                <Button
+                                    variant="success"
+                                    className={`${baseClass}__action`}
+                                    onClick={() => { onUpdateStatus(appt.id, 'confirmed'); onClose(); }}
+                                    tooltip="Confirmar asistencia (Restaurar)"
+                                    icon={<Icon name="check_circle" size="1rem" />}
+                                >
+                                    {t('confirm')}
+                                </Button>
+                            )}
+
+                            {/* 2. Arrived (Asistió a Sala) - ONLY if Confirmed */}
+                            {canArrive && (
+                                <Button
+                                    variant="secondary"
+                                    className={`${baseClass}__action`}
+                                    onClick={() => { onUpdateStatus(appt.id, 'arrived'); onClose(); }}
+                                    icon={<Icon name="meeting_room" size="1rem" />}
+                                >
+                                    {t('patient_arrived') || 'En Sala'}
+                                </Button>
+                            )}
+
+                            {/* 3. Attended (Completed) - ONLY if Arrived */}
+                            {canAttend && (
+                                <Button
+                                    variant="success"
+                                    className={`${baseClass}__action`}
+                                    onClick={() => { onUpdateStatus(appt.id, 'completed'); onClose(); }}
+                                    tooltip="Marcar como atendido"
+                                    icon={<Icon name="task_alt" size="1rem" />}
+                                >
+                                    {t('attended') || 'Atendido'}
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Management Group */}
+                    <div className={`${baseClass}__group`}>
+                        <h4 className={`${baseClass}__group-title`}>{t('management') || 'Gestión'}</h4>
+                        <div className={`${baseClass}__grid`}>
+                            {/* Hard Edit (Always available in Admin Panel) */}
                             <Button
-                                variant="warning"
+                                variant="secondary"
                                 outline
                                 className={`${baseClass}__action`}
-                                onClick={() => { onUpdateStatus(appt.id, 'suspended'); onClose(); }}
-                                tooltip="Suspendido por la oficina. Cancela momentáneamente sin afectar reputación."
-                                icon={<Icon name="pause_circle" size="1rem" />}
+                                onClick={() => { onHardEdit(appt); onClose(); }}
+                                tooltip="Editar detalles del turno"
+                                icon={<Icon name="edit" size="1rem" />}
                             >
-                                {t('suspend')}
+                                {t('edit') || 'Editar'}
                             </Button>
-                        )}
 
-                        {canMarkAbsent && (
-                            <Button
-                                variant="danger"
-                                outline
-                                className={`${baseClass}__action`}
-                                onClick={() => { onUpdateStatus(appt.id, 'absent'); onClose(); }}
-                                tooltip="El paciente faltó sin aviso. BAJA reputación (-1)."
-                                icon={<Icon name="block" size="1rem" />}
-                            >
-                                {t('absent')}
-                            </Button>
-                        )}
-                    </>
-                )}
-            </div>
+                            {canReschedule && (
+                                <Button
+                                    variant="primary"
+                                    outline
+                                    className={`${baseClass}__action`}
+                                    onClick={() => { onReschedule(appt); onClose(); }}
+                                    tooltip="Reprogramar fecha/hora"
+                                    icon={<Icon name="calendar_month" size="1rem" />}
+                                >
+                                    {t('reschedule')}
+                                </Button>
+                            )}
+
+                            {/* Switch to Virtual */}
+                            {canPassToVideo && (
+                                <Button
+                                    variant="accent"
+                                    className={`${baseClass}__action`}
+                                    onClick={() => { onUpdateType(appt.id, 'virtual'); onClose(); }}
+                                    tooltip="Cambiar tipo a Videollamada"
+                                    icon={<Icon name="videocam" size="1rem" />}
+                                >
+                                    {t('pass_to_video') || 'Pasar a Video'}
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Status/Other Group */}
+                    <div className={`${baseClass}__group`}>
+                        <h4 className={`${baseClass}__group-title`}>{t('status_label') || 'Estado'}</h4>
+                        <div className={`${baseClass}__grid`}>
+                            {canSuspend && (
+                                <Button
+                                    variant="warning"
+                                    outline
+                                    className={`${baseClass}__action`}
+                                    onClick={() => { onUpdateStatus(appt.id, 'suspended'); onClose(); }}
+                                    tooltip="Suspendido por la oficina. Cancela momentáneamente sin afectar reputación."
+                                    icon={<Icon name="pause_circle" size="1rem" />}
+                                >
+                                    {t('suspend')}
+                                </Button>
+                            )}
+
+                            {canMarkAbsent && (
+                                <Button
+                                    variant="danger"
+                                    outline
+                                    className={`${baseClass}__action`}
+                                    onClick={() => { onUpdateStatus(appt.id, 'absent'); onClose(); }}
+                                    tooltip="El paciente faltó sin aviso. BAJA reputación (-1)."
+                                    icon={<Icon name="block" size="1rem" />}
+                                >
+                                    {t('absent')}
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+                </>
+            )}
 
             {!isGoogle && (
-                <div className={`${baseClass}__danger-zone`}>
+                <div className={`${baseClass}__group ${baseClass}__group--danger`}>
+                    <h4 className={`${baseClass}__group-title`}>{t('danger_zone') || 'acciones críticas'}</h4>
                     <div className={`${baseClass}__grid`}>
                         <Button
                             variant="danger"

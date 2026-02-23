@@ -2,6 +2,7 @@ import React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useDayScheduleHandlers } from '../../hooks/useDayScheduleHandlers';
 import { useConfig } from '../../context/ConfigContext';
+import { isSameDay } from '../../utils/dateUtils';
 
 // Molecules
 import DayScheduleHeader from '../molecules/DayScheduleHeader';
@@ -44,10 +45,7 @@ const DaySchedule = ({
 
     let daysConfig = holiday ? [] : (schedule || []).filter(s => s.day_of_week === date.getDay() && s.is_break === 0);
 
-    const dayApps = appointments.filter(appt => {
-        const d = new Date(appt.appointment_date);
-        return d.getFullYear() === date.getFullYear() && d.getMonth() === date.getMonth() && d.getDate() === date.getDate();
-    });
+    const dayApps = appointments.filter(appt => isSameDay(appt.appointment_date, date));
 
     // Precise calculation of bounds
     const parseTime = (timeStr, baseDate) => {
@@ -166,17 +164,13 @@ const DaySchedule = ({
         currentTime = new Date(slotStart.getTime() + slotDuration * 60000);
     }
 
-    const isSameDay = (d1, d2) => {
-        return d1.getFullYear() === d2.getFullYear() &&
-            d1.getMonth() === d2.getMonth() &&
-            d1.getDate() === d2.getDate();
-    };
+
 
     const getAppointmentsForSlot = (slotTime, durationMinutes) => {
         return appointments.filter(appt => {
-            const apptDate = new Date(appt.appointment_date);
-            if (!isSameDay(apptDate, date)) return false;
+            if (!isSameDay(appt.appointment_date, date)) return false;
 
+            const apptDate = new Date(appt.appointment_date);
             const slotStart = slotTime.getTime();
             const slotEnd = slotStart + durationMinutes * 60000;
             const apptStart = apptDate.getTime();

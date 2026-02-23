@@ -163,9 +163,9 @@ class MedicalRequestService {
             const reqInfo = await medicalRequestRepository.findById(id, conn);
             if (!reqInfo) throw new Error("Request not found");
 
-            if (req.user.role !== ROLES.ADMIN) throw new Error("Only admins can delete requests");
+            await this._checkPermissions(conn, req.user.role, req.user.user_id, reqInfo);
 
-            await saveToRecycleBin(conn, 'medical_requests', id, req.user.user_id);
+            await saveToRecycleBin(req, 'medical_requests', id, `Solicitud #${id}`, reqInfo);
             await medicationRepository.deleteByRequestId(id, conn);
             await transactionRepository.deletePendingByRequestId(id, conn);
             await medicalRequestRepository.delete(id, conn);

@@ -64,13 +64,14 @@ export const formatDate = (date, options = {}) => {
  * Formats only the time (e.g. "14:30")
  * @param {string|Date} date 
  */
-export const formatTime = (date) => {
+export const formatTime = (date, options = {}) => {
     const d = parseDate(date);
     if (!d) return '--:--';
     return d.toLocaleTimeString('es-AR', {
         timeZone: 'America/Argentina/Buenos_Aires',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
+        hour12: options.hour12 !== undefined ? options.hour12 : true
     });
 };
 
@@ -119,6 +120,56 @@ export const toApiDate = (input) => {
     const d = parseDate(input);
     if (!d) return null;
     return d.toISOString();
+};
+
+/**
+ * Formats a date with full time and AM/PM (e.g. "20/02/2026 06:54 a. m.")
+ * @param {string|Date} date 
+ */
+export const formatDateTimeLong = (date) => {
+    const d = parseDate(date);
+    if (!d) return 'N/A';
+    return d.toLocaleString('es-AR', {
+        timeZone: 'America/Argentina/Buenos_Aires',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+    }).replace(',', '');
+};
+
+/**
+ * Returns true if the date is before the current time.
+ */
+export const isPast = (date) => {
+    const d = parseDate(date);
+    if (!d) return false;
+    return d < new Date();
+};
+
+/**
+ * Returns true if the date is before today (at 00:00:00).
+ */
+export const isPastDay = (date) => {
+    const d = parseDate(date);
+    if (!d) return false;
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return d < today;
+};
+
+/**
+ * Returns true if two dates represent the same day (Year, Month, Day)
+ */
+export const isSameDay = (d1, d2) => {
+    const a = parseDate(d1);
+    const b = parseDate(d2);
+    if (!a || !b) return false;
+    return a.getFullYear() === b.getFullYear() &&
+        a.getMonth() === b.getMonth() &&
+        a.getDate() === b.getDate();
 };
 
 /**

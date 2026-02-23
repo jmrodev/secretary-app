@@ -160,6 +160,11 @@
     border-left: 4px solid var(--amber-300);
 }
 
+.time-slot--past {
+    opacity: 0.5;
+    background-color: var(--gray-50);
+}
+
 .slot-content {
     display: flex;
     flex-direction: column;

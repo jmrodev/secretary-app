@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatDate } from '../../utils/dateUtils';
 
 // Molecules
 import BalanceFinancialSummary from '../molecules/BalanceFinancialSummary';
@@ -63,7 +64,7 @@ const BalanceView = ({ reportData, month, year, t }) => {
             const status = (item.payment_status || '').toLowerCase();
             if (status === 'debt' || status === 'debe' || status === 'pending') {
                 allDebts.push({
-                    date: item.date ? new Date(item.date).toLocaleDateString('es-AR') : '-',
+                    date: formatDate(item.date),
                     type,
                     patient: item.patient_name,
                     amount: Number(item.amount || 0)

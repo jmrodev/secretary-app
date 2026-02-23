@@ -141,7 +141,7 @@
     background: var(--blue-50);
     padding: 0.5rem 1rem;
     border-radius: var(--radius-sm);
-    margin: 0;
+    margin: 0 0 1rem 0;
     width: 100%;
 }
 
@@ -151,6 +151,12 @@
     align-items: stretch;
     gap: 0.5rem;
     width: 100%;
+}
+
+.payment-summary__totals--main {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .payment-summary__row {
@@ -165,6 +171,11 @@
     font-size: 0.85rem;
     font-weight: 700;
     color: var(--text-muted);
+}
+
+.payment-summary__label--large {
+    font-size: 1.2rem;
+    color: var(--text-main);
 }
 
 .payment-summary__value {
@@ -187,12 +198,22 @@
     width: 140px;
 }
 
+.payment-summary__input-wrapper--large {
+    width: 180px;
+}
+
 .payment-summary__input-wrapper .payment-summary__total-input {
     font-weight: 900;
     font-size: 1.15rem;
     color: var(--blue-700);
     text-align: right;
     border-bottom: 2px solid var(--blue-600);
+}
+
+.payment-summary__input-wrapper--large .payment-summary__total-input {
+    font-size: 1.75rem;
+    border-bottom-width: 3px;
+    padding-bottom: 0.25rem;
 }
 
 .payment-summary__status {

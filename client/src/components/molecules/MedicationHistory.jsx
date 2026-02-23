@@ -1,6 +1,7 @@
 import React from 'react';
 import Icon from '../atoms/Icon';
 import { useLanguage } from '../../context/LanguageContext';
+import { formatDate } from '../../utils/dateUtils';
 
 const MedicationHistory = ({ recentRequests, t, onRepeat }) => {
     return (
@@ -34,7 +35,7 @@ const MedicationHistory = ({ recentRequests, t, onRepeat }) => {
                                     <tr key={req.id} className="patient-medications__table-row">
                                         <td className="patient-medications__table-cell">
                                             <span className="patient-medications__date-badge">
-                                                {new Date(req.created_at).toLocaleDateString()}
+                                                {formatDate(req.created_at)}
                                             </span>
                                             <div className="patient-medications__doctor-name">
                                                 Dr/a. {req.doctor_name}

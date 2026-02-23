@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '../atoms/Button';
 import Icon from '../atoms/Icon';
+import { formatDate, formatDateTimeLong } from '../../utils/dateUtils';
 
 const RequirementsRecycleBin = ({ recycleRequests, handleRestore, t }) => {
     if (recycleRequests.length === 0) {
@@ -29,8 +30,8 @@ const RequirementsRecycleBin = ({ recycleRequests, handleRestore, t }) => {
                         <tr key={item.id} className="requirement-item">
                             <td className="requirement-item__cell requirement-item__patient-name">{item.entity_name}</td>
                             <td className="requirement-item__cell">{item.deleted_by_name}</td>
-                            <td className="requirement-item__cell">{new Date(item.deleted_at).toLocaleString()}</td>
-                            <td className="requirement-item__cell">{new Date(item.expires_at).toLocaleDateString()}</td>
+                            <td className="requirement-item__cell">{formatDateTimeLong(item.deleted_at)}</td>
+                            <td className="requirement-item__cell">{formatDate(item.expires_at)}</td>
                             <td className="requirement-item__cell">
                                 <div className="requirement-item__actions">
                                     <Button

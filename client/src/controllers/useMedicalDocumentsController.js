@@ -143,54 +143,29 @@ export const useMedicalDocumentsController = () => {
     const [printData, setPrintData] = useState([]);
 
     // --- Handlers Hook ---
-    const hookHandlers = useMedicalDocumentsHandlers({
+    // --- Handlers Hook ---
+    const handlers = useMedicalDocumentsHandlers({
+        // Context/External
         user, t, showMessage, confirm, doubleConfirm, canDeleteRequest,
+
+        // State Access
         reqType, selectedPatient, selectedDoctor, reqNote, sendToDoctor,
         selectedFile, filePatient, fileDesc, fileToDelete, editData, licenseEditData,
         requestEditData, selectedPrescription, selectedLicense, selectedRequest,
-        setReqNote, setSendToDoctor, setFiles, setRequests, setPrescriptions,
-        setLicenses, setFileDesc, setSelectedFile, setFileToDelete, setIsSubmitting,
-        setIsEditing, setSelectedPrescription, setSelectedLicense, setSelectedRequest,
-        setEditData, setLicenseEditData, setRequestEditData, setActionModal, setPaymentModal,
-        fetchRequests, fetchFiles, fetchHistory,
-    });
+        actionModal, actionNote, paymentModal, searchTerm, activeTab, requestsSubTab,
 
-    const handlers = {
-        ...hookHandlers,
-        handleSearchChange: (val) => setSearchTerm(val),
-        handleTabChange: (val) => setActiveTab(val),
-        handleSubTabChange: (val) => setRequestsSubTab(val),
-        handleFileDescChange: (val) => setFileDesc(val),
-        handleFilePatientChange: (val) => setFilePatient(val),
-        handleFileUploadChange: (file) => setSelectedFile(file),
-        handleActionNoteChange: (val) => setActionNote(val),
-        handleEditDataChange: (field, val) => setEditData(prev => ({ ...prev, [field]: val })),
-        handleLicenseEditDataChange: (field, val) => setLicenseEditData(prev => ({ ...prev, [field]: val })),
-        handleRequestEditDataChange: (field, val) => setRequestEditData(prev => ({ ...prev, [field]: val })),
-        handleSelectMedication: (med) => {
-            setEditData(prev => {
-                const current = prev.medications.trim();
-                const newValue = current ? `${current}\n${med.full_label}` : med.full_label;
-                return { ...prev, medications: newValue };
-            });
-        },
-        toggleEditing: (val) => {
-            setIsEditing(val);
-            if (!val) {
-                setSelectedPrescription(null);
-                setSelectedLicense(null);
-                setSelectedRequest(null);
-            }
-        },
-        closeActionModal: () => setActionModal({ open: false, type: '', id: null }),
-        openActionModal: (type, id) => setActionModal({ open: true, type, id }),
-        closePaymentModal: () => setPaymentModal(prev => ({ ...prev, open: false })),
-        openPaymentModal: (data) => setPaymentModal({ open: true, ...data }),
-        closeDeleteFileModal: () => setFileToDelete(null),
-        openDeleteFileModal: (f) => setFileToDelete(f),
-        handlePrintPrescriptions: () => hookHandlers.handlePrintPrescriptions(setPrintData),
+        // Setters
+        setReqNote, setSendToDoctor, setFiles, setRequests, setPrescriptions,
+        setLicenses, setFileDesc, setFilePatient, setSelectedFile, setFileToDelete,
+        setIsSubmitting, setIsEditing, setSelectedPrescription, setSelectedLicense,
+        setSelectedRequest, setEditData, setLicenseEditData, setRequestEditData,
+        setActionModal, setPaymentModal, setSearchTerm, setActiveTab, setRequestsSubTab,
+        setActionNote,
+
+        // Actions/Filter
+        fetchRequests, fetchFiles, fetchHistory,
         filterItem
-    };
+    });
 
     return {
         // State
@@ -213,7 +188,6 @@ export const useMedicalDocumentsController = () => {
         canDeleteRequest,
 
         // Handlers
-        ...hookHandlers,
         printData,
         handlers
     };

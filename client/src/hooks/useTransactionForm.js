@@ -243,7 +243,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
             if (initialData?.appointment_id) payload.append('appointment_id', initialData.appointment_id);
 
             const data = await financeService.createTransaction(payload);
-            if (onSuccess) onSuccess(data);
+            if (onSuccess) await onSuccess(data);
             onClose();
         } catch (err) {
             alert(t('failed_record_transaction') || 'Error al guardar');

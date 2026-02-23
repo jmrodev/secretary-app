@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Card from '../atoms/Card';
 import Button from '../atoms/Button';
 import { useLanguage } from '../../context/LanguageContext';
+import { formatDate, formatTime } from '../../utils/dateUtils';
 import './PatientRecycleBin.css'; // Architecture compliant
 
 const PatientRecycleBin = ({
@@ -79,10 +80,10 @@ const PatientRecycleBin = ({
                                 <td className="p-4 border-b border-gray-100">
                                     <div className="flex flex-col">
                                         <span className="text-slate-800 font-medium">
-                                            {new Date(item.deleted_at || item.created_at).toLocaleDateString()}
+                                            {formatDate(item.deleted_at || item.created_at)}
                                         </span>
                                         <span className="text-xs text-slate-400">
-                                            {new Date(item.deleted_at || item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            {formatTime(item.deleted_at || item.created_at)}
                                         </span>
                                     </div>
                                 </td>
