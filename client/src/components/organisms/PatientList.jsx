@@ -30,8 +30,8 @@ const PatientList = ({
 
     if (patients.length === 0) {
         return (
-            <div className="card text-center p-12 border-dashed">
-                <p className="text-muted">{t('no_patients_found') || "No patients found"}</p>
+            <div className="patient-list__empty">
+                <p className="patient-list__empty-text">{t('no_patients_found') || "No patients found"}</p>
             </div>
         );
     }

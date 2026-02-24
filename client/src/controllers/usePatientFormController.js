@@ -4,6 +4,7 @@ import api from '../api/axios';
 import { useLanguage } from '../context/LanguageContext';
 import { useMessage } from '../context/MessageContext';
 import { capitalizeWords } from '../utils/stringUtils';
+import { PATIENT_CAPITALIZE_FIELDS } from '../constants/patientConstants';
 
 export const usePatientFormController = ({
     initialValues,
@@ -33,7 +34,6 @@ export const usePatientFormController = ({
         dni: '',
         phoneNumbers: [{ phone_number: '+549', label: 'Celular', is_primary: true }],
         email: '',
-        address: '',
         street_name: '',
         street_number: '',
         floor: '',
@@ -111,7 +111,7 @@ export const usePatientFormController = ({
             let { name, value } = e.target;
 
             // Apply capitalization if needed
-            if (['first_name', 'last_name', 'address', 'street_name', 'city', 'province', 'country'].includes(name)) {
+            if (PATIENT_CAPITALIZE_FIELDS.includes(name)) {
                 value = capitalizeWords(value);
             }
 
@@ -176,8 +176,29 @@ export const usePatientFormController = ({
 
             try {
                 if (isEdit && formData.id) {
+                    // If there's an external handler (e.g. TempAccess public form),
+                    // delegate directly to avoid hitting the protected PUT route.
+                    if (onUpdate) {
+                        await onUpdate(formData);
+                        showMessage(t('patient_updated') || 'Patient updated successfully', 'success');
+                        if (onClose) onClose();
+                        return;
+                    }
+
+                    // Construir payload limpio: excluir campos de solo lectura / joins computados
+                    // El backend (patientService) tiene su propio whitelist como segunda línea de defensa
+                    const {
+                        insurance_name,    // join computado
+                        institution_name,  // join computado
+                        total_debt,        // calculado
+                        total_appointments,// calculado
+                        missed_appointments,// calculado
+                        role,              // no se cambia por esta ruta
+                        ...updatePayload
+                    } = formData;
+
                     // UPDATE
-                    await api.put(`/users/patients/${formData.id}`, formData);
+                    await api.put(`/users/patients/${formData.id}`, updatePayload);
 
                     const updatedPatient = {
                         ...formData,

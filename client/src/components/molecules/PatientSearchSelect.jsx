@@ -16,7 +16,7 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
             const res = await api.get(`/users/patients?search=${inputValue}`);
             return res.data.map(p => ({
                 value: p.id,
-                label: `${p.full_name} - DNI: ${p.dni || 'N/A'} - ${p.address || ''}`,
+                label: `${p.full_name} - DNI: ${p.dni || 'N/A'} - ${p.street_name || ''}`,
                 patient: p
             }));
         } catch (err) {

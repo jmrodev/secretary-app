@@ -117,7 +117,6 @@ class AuthService {
             last_name: lastName,
             dob: data.dob || null,
             phone: data.phone || null,
-            address: data.address || null,
             medical_history: data.medicalHistory || null,
             dni: data.dni || null,
             insurance_id: data.insurance_id || null,

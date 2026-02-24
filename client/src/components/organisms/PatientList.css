@@ -199,3 +199,18 @@
     background: var(--blue-50);
     border-color: var(--blue-100);
 }
+
+/* Empty state */
+.patient-list__empty {
+    padding: 3rem;
+    text-align: center;
+    border: 1px dashed var(--border-color);
+    border-radius: 1rem;
+    background: var(--gray-50);
+}
+
+.patient-list__empty-text {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-style: italic;
+}

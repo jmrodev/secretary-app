@@ -40,14 +40,14 @@ const LicenseReportTable = ({ data, t }) => {
         <div className="medical-report">
             {/* Summary Table */}
             <div className="medical-report__summary">
-                <h3 className="medical-report__summary-title">Resumen Diario</h3>
+                <h3 className="medical-report__summary-title">{t('daily_summary')}</h3>
                 <table className="medical-report__table medical-report__table--summary">
                     <thead>
                         <tr>
-                            <th>Fecha</th>
-                            <th className="text-right">Efectivo (Contado)</th>
-                            <th className="text-right">Otros Métodos</th>
-                            <th className="text-right">Total Diario</th>
+                            <th>{t('date_label')}</th>
+                            <th className="text-right">{t('cash_cash_only')}</th>
+                            <th className="text-right">{t('other_methods')}</th>
+                            <th className="text-right">{t('daily_total')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -64,19 +64,19 @@ const LicenseReportTable = ({ data, t }) => {
                     </tbody>
                     <tfoot>
                         <tr className="medical-report__footer-subtotal">
-                            <td>TOTAL EFECTIVO DEL MES:</td>
+                            <td>{t('monthly_cash_total')}</td>
                             <td colSpan="3" className="text-right">
                                 $ {dailySummary.reduce((acc, day) => acc + day.cash, 0).toLocaleString()}
                             </td>
                         </tr>
                         <tr className="medical-report__footer-subtotal">
-                            <td>TOTAL OTROS MÉTODOS DEL MES:</td>
+                            <td>{t('monthly_others_total')}</td>
                             <td colSpan="3" className="text-right">
                                 $ {dailySummary.reduce((acc, day) => acc + day.others, 0).toLocaleString()}
                             </td>
                         </tr>
                         <tr className="medical-report__footer">
-                            <td>TOTAL ACUMULADO DEL MES:</td>
+                            <td>{t('monthly_accumulated_total')}</td>
                             <td colSpan="3" className="text-right">
                                 $ {monthlyTotal.toLocaleString()}
                             </td>
@@ -89,18 +89,18 @@ const LicenseReportTable = ({ data, t }) => {
             {dailySummary.map((day, groupIdx) => (
                 <div key={groupIdx} className="medical-report__group">
                     <h3 className="medical-report__date-header">
-                        {day.date} - Total Día: ${day.total.toLocaleString()}
+                        {day.date} - {t('total_day')}: ${day.total.toLocaleString()}
                     </h3>
                     <div className="table-responsive">
                         <table className="medical-report__table">
                             <thead>
                                 <tr>
-                                    <th>Paciente</th>
-                                    <th>Diagnóstico</th>
-                                    <th>Días</th>
-                                    <th>Metodo</th>
-                                    <th>Estado Pago</th>
-                                    <th className="text-right">Monto</th>
+                                    <th>{t('patient_label')}</th>
+                                    <th>{t('diagnosis')}</th>
+                                    <th>{t('days')}</th>
+                                    <th>{t('method_label')}</th>
+                                    <th>{t('payment_status')}</th>
+                                    <th className="text-right">{t('amount')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -113,20 +113,20 @@ const LicenseReportTable = ({ data, t }) => {
                                             </div>
                                         </td>
                                         <td>{item.diagnosis || '-'}</td>
-                                        <td>{item.days_duration || '-'} días</td>
+                                        <td>{item.days_duration || '-'} {t('days').toLowerCase()}</td>
                                         <td>
                                             <span className={`medical-report__method-badge medical-report__method-badge--${item.payment_method}`}>
-                                                {item.payment_method === 'cash' || item.payment_method === 'efectivo' ? 'Efectivo' :
-                                                    item.payment_method === 'transfer' ? 'Transferencia' :
-                                                        item.payment_method === 'on_account' ? 'Cta. Cte.' : item.payment_method}
+                                                {item.payment_method === 'cash' || item.payment_method === 'efectivo' ? t('cash') :
+                                                    item.payment_method === 'transfer' ? t('transfer') :
+                                                        item.payment_method === 'on_account' ? t('on_account') : item.payment_method}
                                             </span>
                                         </td>
                                         <td>
                                             <span className={`medical-report__badge medical-report__badge--${item.payment_status}`}>
-                                                {item.payment_status === 'paid' ? 'Pagado' :
-                                                    item.payment_status === 'debt' ? `Deuda ($${item.debt_amount || 0})` :
-                                                        item.payment_status === 'partial' ? `Parcial ($${item.debt_amount || 0})` :
-                                                            item.payment_status === 'bonified' ? 'Bonificado' : item.payment_status}
+                                                {item.payment_status === 'paid' ? t('paid') :
+                                                    item.payment_status === 'debt' ? `${t('debt')} ($${item.debt_amount || 0})` :
+                                                        item.payment_status === 'partial' ? `${t('partial')} ($${item.debt_amount || 0})` :
+                                                            item.payment_status === 'bonified' ? t('bonified') : item.payment_status}
                                             </span>
                                         </td>
                                         <td className="medical-report__cell-amount text-right">

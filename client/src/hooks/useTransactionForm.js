@@ -208,6 +208,10 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
     };
 
     const handleSubmit = async () => {
+        if (!formData.doctor_id) {
+            alert(t('please_select_doctor') || 'Por favor, seleccione un profesional');
+            return;
+        }
         setLoading(true);
         try {
             const payload = new FormData();

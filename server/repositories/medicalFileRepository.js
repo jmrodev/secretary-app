@@ -21,7 +21,11 @@ class MedicalFileRepository {
     async findAll(filters = {}, conn = pool) {
         const { patient_id } = filters;
         let query = `
-            SELECT f.*, u.username as uploader_name, p.full_name as patient_name, p.dni as patient_dni, p.address as patient_address
+            SELECT f.*, u.username as uploader_name, p.full_name as patient_name, p.dni as patient_dni,
+            CONCAT_WS(' ', p.street_name, p.street_number,
+                IF(p.floor IS NOT NULL AND p.floor != '', CONCAT('Piso ', p.floor), NULL),
+                IF(p.apartment IS NOT NULL AND p.apartment != '', CONCAT('Dto. ', p.apartment), NULL)
+            ) as patient_address
             FROM patient_files f
             JOIN users u ON f.uploaded_by = u.id
             JOIN patients p ON f.patient_id = p.id

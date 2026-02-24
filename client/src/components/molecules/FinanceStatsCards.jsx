@@ -6,7 +6,7 @@ import './FinanceStatsCards.css';
 const FinanceStatsCards = ({ stats, t }) => {
     // Separate different types of stats
     const tableStats = stats.filter(s => ['cash', 'transfer', 'withdrawal', 'expenses'].includes(s.type));
-    const financialSummary = stats.filter(s => s.type === 'net_cash');
+    const financialSummary = stats.filter(s => ['cash_balance', 'transfer_balance', 'total_net', 'net_cash'].includes(s.type));
 
     // Medical request categories that use the breakdown table
     const breakdownTypes = ['appointments', 'prescriptions', 'licenses', 'certificates'];
@@ -23,6 +23,9 @@ const FinanceStatsCards = ({ stats, t }) => {
         licenses: 'badge',
         certificates: 'verified',
         net_cash: 'monetization_on',
+        cash_balance: 'payments',
+        transfer_balance: 'account_balance',
+        total_net: 'account_balance_wallet',
         pending_debt: 'warning'
     };
 
@@ -37,6 +40,9 @@ const FinanceStatsCards = ({ stats, t }) => {
         licenses: 'var(--sky-600)',
         certificates: 'var(--amber-600)',
         net_cash: 'var(--yellow-600)',
+        cash_balance: 'var(--green-700)',
+        transfer_balance: 'var(--blue-700)',
+        total_net: 'var(--purple-600)',
         pending_debt: 'var(--error)'
     };
 
@@ -54,11 +60,11 @@ const FinanceStatsCards = ({ stats, t }) => {
                         <table className="finance-stats__table">
                             <thead>
                                 <tr>
-                                    <th className="finance-stats__table-header">{t('period') || 'Período'}</th>
+                                    <th className="finance-stats__table-header">{t('period_label')}</th>
                                     <th className="finance-stats__table-header text-right">
-                                        {t('count') || 'Cant.'}
+                                        {t('count_label')}
                                     </th>
-                                    <th className="finance-stats__table-header text-right">{t('payment') || 'Pago'}</th>
+                                    <th className="finance-stats__table-header text-right">{t('payment')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -87,7 +93,7 @@ const FinanceStatsCards = ({ stats, t }) => {
                             </tbody>
                         </table>
                         <div className="finance-stats__row finance-stats__row--divider">
-                            <span className="finance-stats__label font-bold">{t('debt') || 'Deuda'}</span>
+                            <span className="finance-stats__label font-bold">{t('debt')}</span>
                             <span className={`finance-stats__value ${s.debt > 0 ? 'finance-stats__value--red' : 'finance-stats__value--muted'}`}>
                                 ${Number(s.debt || 0).toLocaleString()}
                             </span>
@@ -101,16 +107,16 @@ const FinanceStatsCards = ({ stats, t }) => {
                 <Card className="finance-stats__card">
                     <span className="finance-stats__title">
                         <Icon name="payments" size="0.8rem" className="mr-1" />
-                        {t('payment_methods') || 'MÉTODOS DE PAGO / GASTOS'}
+                        {t('payment_methods_summary')}
                     </span>
                     <div className="finance-stats__breakdown">
                         <table className="finance-stats__table">
                             <thead>
                                 <tr>
-                                    <th className="finance-stats__table-header">{t('concept') || 'CONCEPTO'}</th>
-                                    <th className="finance-stats__table-header text-right">{t('this_day') || 'HOY'}</th>
-                                    <th className="finance-stats__table-header text-right">{t('this_month') || 'ESTE MES'}</th>
-                                    <th className="finance-stats__table-header text-right">{t('this_year') || 'ESTE AÑO'}</th>
+                                    <th className="finance-stats__table-header">{t('concept_label')}</th>
+                                    <th className="finance-stats__table-header text-right">{t('this_day')}</th>
+                                    <th className="finance-stats__table-header text-right">{t('this_month')}</th>
+                                    <th className="finance-stats__table-header text-right">{t('this_year')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -121,8 +127,8 @@ const FinanceStatsCards = ({ stats, t }) => {
                                             <td className="finance-stats__table-cell finance-stats__label">
                                                 <Icon name={typeIcons[s.type]} size="0.7rem" color={typeColors[s.type]} className="mr-1" />
                                                 {(t(s.type) || s.type).toUpperCase()}
-                                                {s.type === 'cash' ? ` (${t('concept_income') || 'Ingreso'})` : ''}
-                                                {s.type === 'transfer' ? ` (${t('concept_income') || 'Ingreso'})` : ''}
+                                                {s.type === 'cash' ? ` (${t('concept_income')})` : ''}
+                                                {s.type === 'transfer' ? ` (${t('concept_income')})` : ''}
                                             </td>
                                             <td className={`finance-stats__table-cell text-right font-bold ${isNegative ? 'finance-stats__value--red' : 'finance-stats__value--blue'}`}>
                                                 {isNegative ? '-' : '+'}${Number(s.today).toLocaleString()}

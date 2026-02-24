@@ -100,16 +100,6 @@ const ProfileEditor = ({
                             />
                         </div>
 
-                        <div className="form-group">
-                            <label className="form-label">{t('address')}</label>
-                            <input
-                                className="form-control"
-                                value={formData.address}
-                                onChange={e => handleChange('address', e.target.value)}
-                                placeholder="Calle 123, Ciudad"
-                            />
-                        </div>
-
                         <div className="mt-4">
                             <PhoneNumbersManager
                                 phoneNumbers={formData.phoneNumbers}
@@ -126,27 +116,16 @@ const ProfileEditor = ({
                         </div>
 
                         {user.role === 'patient' && (
-                            <>
-                                <div className="form-group">
-                                    <label className="form-label">{t('insurance')}</label>
-                                    <input
-                                        className="form-control"
-                                        value={formData.insurance}
-                                        onChange={e => handleChange('insurance', e.target.value)}
-                                        placeholder="Example: OSDE, Swiss Medical"
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label className="form-label">{t('medical_history')}</label>
-                                    <textarea
-                                        className="form-control"
-                                        rows="6"
-                                        value={formData.medicalHistory}
-                                        onChange={e => handleChange('medicalHistory', e.target.value)}
-                                        placeholder="Allergies, chronic conditions, etc."
-                                    />
-                                </div>
-                            </>
+                            <div className="form-group">
+                                <label className="form-label">{t('medical_history')}</label>
+                                <textarea
+                                    className="form-control"
+                                    rows="6"
+                                    value={formData.medicalHistory}
+                                    onChange={e => handleChange('medicalHistory', e.target.value)}
+                                    placeholder="Allergies, chronic conditions, etc."
+                                />
+                            </div>
                         )}
 
                         {user.role === 'doctor' && (

@@ -15,11 +15,11 @@ class InsuranceRepository {
     }
 
     async create(data, conn = pool) {
-        const { name, cuit, website, email, phone, address, status, street_name, street_number, floor, apartment, city, province, country } = data;
+        const { name, cuit, website, email, phone, address_notes, status, street_name, street_number, floor, apartment, city, province, country } = data;
         const result = await conn.query(
-            `INSERT INTO insurances (name, cuit, website, email, phone, address, status, street_name, street_number, floor, apartment, city, province, country)
+            `INSERT INTO insurances (name, cuit, website, email, phone, address_notes, status, street_name, street_number, floor, apartment, city, province, country)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [name, cuit, website, email, phone, address, status || 'active',
+            [name, cuit, website, email, phone, address_notes, status || 'active',
                 street_name || null, street_number || null, floor || null, apartment || null,
                 city || 'Tandil', province || 'Buenos Aires', country || 'Argentina']
         );

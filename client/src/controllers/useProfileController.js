@@ -16,10 +16,8 @@ export const useProfileController = () => {
     const [formData, setFormData] = useState({
         fullName: '',
         phoneNumbers: [],
-        address: '',
         medicalHistory: '',
         dni: '',
-        insurance: ''
     });
 
     useEffect(() => {
@@ -32,10 +30,8 @@ export const useProfileController = () => {
                     setFormData({
                         fullName: res.data.full_name || '',
                         phoneNumbers: res.data.phoneNumbers || (res.data.phone ? [{ phone_number: res.data.phone, is_primary: true, label: 'Celular' }] : []),
-                        address: res.data.address || '',
                         medicalHistory: res.data.medical_history || '',
                         dni: res.data.dni || '',
-                        insurance: res.data.insurance || ''
                     });
                 }
             } catch (err) {
@@ -65,10 +61,8 @@ export const useProfileController = () => {
             await api.put('/users/profile', {
                 full_name: formData.fullName,
                 phoneNumbers: formData.phoneNumbers,
-                address: formData.address,
                 medical_history: formData.medicalHistory,
                 dni: formData.dni,
-                insurance: formData.insurance
             });
             showMessage(t('profile_updated'), 'success');
             window.scrollTo({ top: 0, behavior: 'smooth' });

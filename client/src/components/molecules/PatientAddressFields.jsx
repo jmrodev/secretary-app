@@ -87,30 +87,20 @@ const PatientAddressFields = ({ formData, handleChange, t }) => {
                 />
             </div>
 
-            <div className="patient-form__group">
-                <label className="patient-form__label">{t('address_notes') || 'Notas de Dirección / Referencias'}</label>
-                <input
-                    name="address"
-                    className="patient-form__field"
-                    value={formData.address || ''}
-                    onChange={handleChange}
-                    placeholder="Ej: Entre calles X e Y, timbre blanco..."
-                />
-                {(formData.street_name || formData.address) && (
-                    <Button
-                        to={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                            `${formData.street_name || ''} ${formData.street_number || ''}, ${formData.city || ''}, ${formData.province || ''}, ${formData.country || ''} ${formData.address || ''}`.trim()
-                        )}`}
-                        target="_blank"
-                        variant="link"
-                        size="sm"
-                        className="mt-1"
-                        icon={<Icon name="map" size="1rem" />}
-                    >
-                        {t('view_on_map')}
-                    </Button>
-                )}
-            </div>
+            {formData.street_name && (
+                <Button
+                    to={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                        `${formData.street_name || ''} ${formData.street_number || ''}, ${formData.city || ''}, ${formData.province || ''}, ${formData.country || ''}`.trim()
+                    )}`}
+                    target="_blank"
+                    variant="link"
+                    size="sm"
+                    className="mt-1"
+                    icon={<Icon name="map" size="1rem" />}
+                >
+                    {t('view_on_map')}
+                </Button>
+            )}
         </div>
     );
 };

@@ -1,4 +1,4 @@
-const { logAction } = require('../utils/audit');
+                        const { logAction } = require('../utils/audit');
 const { formatLocalSQL } = require('../utils/dateUtils');
 const statsService = require('../services/finance/statsService');
 const financeService = require('../services/finance/financeService');
@@ -33,6 +33,9 @@ exports.createTransaction = async (req, res) => {
         logAction(req, 'FINANCE_CREATE', `Created transaction: ${data.description}`);
         res.status(201).json({ message: "Transaction created successfully", id: insertId });
     } catch (err) {
+        if (err.message.includes("Doctor ID is required")) {
+            return res.status(400).send(err.message);
+        }
         console.error(err);
         res.status(500).send("Server Error");
     }
@@ -40,7 +43,9 @@ exports.createTransaction = async (req, res) => {
 
 exports.getTransactions = async (req, res) => {
     try {
-        const rows = await financeService.getTransactions(req.user, req.query);
+        let { doctor_id } = req.query;
+        if (doctor_id === 'all' || !doctor_id) doctor_id = null;
+        const rows = await financeService.getTransactions(req.user, { ...req.query, doctor_id });
         res.json(rows);
     } catch (err) {
         console.error(err);
@@ -50,7 +55,8 @@ exports.getTransactions = async (req, res) => {
 
 exports.getStats = async (req, res) => {
     try {
-        const { doctor_id } = req.query;
+        let { doctor_id } = req.query;
+        if (doctor_id === 'all' || !doctor_id) doctor_id = null;
         const stats = await statsService.getDetailedStats(doctor_id);
         const result = [
             { type: 'cash', today: stats.todayCash, month: stats.monthCash, year: stats.yearCash },
@@ -63,7 +69,19 @@ exports.getStats = async (req, res) => {
             { type: 'certificates', today: stats.certificates.today, month: stats.certificates.month, year: stats.certificates.year, debt: stats.certificates.month?.debt },
             { type: 'pending_debt', total: stats.totalDebt },
             {
-                type: 'net_cash',
+                type: 'cash_balance',
+                today: stats.todayCash - Number(stats.todayWithdrawalCash || 0) - stats.expenseToday,
+                month: stats.monthCash - Number(stats.monthCashWithdrawal || 0) - stats.expenseMonth,
+                year: stats.yearCash - Number(stats.yearWithdrawalCash || 0) - stats.expenseYear
+            },
+            {
+                type: 'transfer_balance',
+                today: stats.todayTransfer - Number(stats.todayWithdrawalTransfer || 0),
+                month: stats.monthTransfer - Number(stats.monthTransferWithdrawal || 0),
+                year: stats.yearTransfer - Number(stats.yearWithdrawalTransfer || 0)
+            },
+            {
+                type: 'total_net',
                 today: (stats.todayCash + stats.todayTransfer) - stats.todayWithdrawal - stats.expenseToday,
                 month: (stats.monthCash + stats.monthTransfer) - stats.monthWithdrawal - stats.expenseMonth,
                 year: (stats.yearCash + stats.yearTransfer) - stats.yearWithdrawal - stats.expenseYear

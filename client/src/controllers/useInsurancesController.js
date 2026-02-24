@@ -19,7 +19,7 @@ export const useInsurancesController = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [formData, setFormData] = useState({
-        name: '', cuit: '', website: '', email: '', phoneNumbers: [], address: '', status: 'active',
+        name: '', cuit: '', website: '', email: '', phoneNumbers: [], address_notes: '', status: 'active',
         street_name: '', street_number: '', floor: '', apartment: '', city: 'Tandil', province: 'Buenos Aires', country: 'Argentina'
     });
 
@@ -44,7 +44,7 @@ export const useInsurancesController = () => {
     const handleOpenCreate = useCallback(() => {
         setEditingId(null);
         setFormData({
-            name: '', cuit: '', website: '', email: '', phoneNumbers: [], address: '', status: 'active',
+            name: '', cuit: '', website: '', email: '', phoneNumbers: [], address_notes: '', status: 'active',
             street_name: '', street_number: '', floor: '', apartment: '', city: 'Tandil', province: 'Buenos Aires', country: 'Argentina'
         });
         setModalOpen(true);
@@ -58,7 +58,7 @@ export const useInsurancesController = () => {
             website: ins.website || '',
             email: ins.email || '',
             phoneNumbers: ins.phoneNumbers || (ins.phone ? [{ phone_number: ins.phone, is_primary: true, label: 'Celular' }] : []),
-            address: ins.address || '',
+            address_notes: ins.address_notes || '',
             street_name: ins.street_name || '',
             street_number: ins.street_number || '',
             floor: ins.floor || '',
@@ -126,7 +126,7 @@ export const useInsurancesController = () => {
                 setFormData(prev => {
                     const next = data(prev);
                     if (next.name) next.name = capitalizeWords(next.name);
-                    if (next.address) next.address = capitalizeWords(next.address);
+                    if (next.address_notes) next.address_notes = capitalizeWords(next.address_notes);
                     if (next.street_name) next.street_name = capitalizeWords(next.street_name);
                     if (next.city) next.city = capitalizeWords(next.city);
                     if (next.province) next.province = capitalizeWords(next.province);
@@ -136,7 +136,7 @@ export const useInsurancesController = () => {
             } else {
                 const updated = { ...data };
                 if (updated.name) updated.name = capitalizeWords(updated.name);
-                if (updated.address) updated.address = capitalizeWords(updated.address);
+                if (updated.address_notes) updated.address_notes = capitalizeWords(updated.address_notes);
                 if (updated.street_name) updated.street_name = capitalizeWords(updated.street_name);
                 if (updated.city) updated.city = capitalizeWords(updated.city);
                 if (updated.province) updated.province = capitalizeWords(updated.province);

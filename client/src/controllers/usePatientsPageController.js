@@ -43,7 +43,6 @@ export const usePatientsPageController = () => {
     const [showRatingInfo, setShowRatingInfo] = useState(false);
 
     // --- FETCH DATA ---
-    // --- FETCH DATA ---
     const fetchPatients = useCallback(async () => {
         try {
             const res = await api.get('/users/patients');
@@ -103,11 +102,10 @@ export const usePatientsPageController = () => {
         if (!searchTerm) return sortedPatients;
 
         return sortedPatients.filter(p => {
-            // Optimization: Create searchable string once or lazily, but here inline is fine if not excessive
             const searchText = normalizeText(
                 [
                     p.full_name, p.first_name, p.last_name, p.dni,
-                    p.insurance, p.insurance_name, p.affiliate_number,
+                    p.insurance_name, p.affiliate_number,
                     p.email, p.phone, p.phone?.replace(/[^0-9]/g, '')
                 ].filter(Boolean).join(' ')
             );
@@ -186,7 +184,6 @@ export const usePatientsPageController = () => {
         searchTerm, setSearchTerm,
         selectedPatientId, setSelectedPatientId,
         patientDetails, setPatientDetails,
-        showRatingInfo, setShowRatingInfo,
 
         // Modals
         editModal, setEditModal,

@@ -4,14 +4,12 @@ import { usePatientsPageController } from '../controllers/usePatientsPageControl
 // Atoms
 import MainLayout from '../components/templates/MainLayout';
 import Button from '../components/atoms/Button';
-import CurrencyInput from '../components/atoms/CurrencyInput';
 import Loading from '../components/atoms/Loading';
 import TabButton from '../components/atoms/TabButton';
 import Icon from '../components/atoms/Icon';
 
 // Molecules
 import PatientManagerModal from '../components/molecules/PatientManagerModal';
-import Modal from '../components/molecules/Modal';
 import QRCodeModal from '../components/molecules/QRCodeModal';
 import DebtPaymentModal from '../components/molecules/DebtPaymentModal';
 import SearchBar from '../components/molecules/SearchBar';
@@ -22,7 +20,6 @@ import TabNav from '../components/molecules/TabNav';
 import PatientList from '../components/organisms/PatientList';
 import PatientDetailsView from '../components/organisms/PatientDetailsView';
 import PatientRecycleBin from '../components/organisms/PatientRecycleBin';
-import PatientForm from '../components/organisms/PatientForm';
 import PatientMedications from '../components/organisms/PatientMedications';
 import './Patients.css';
 
@@ -36,7 +33,6 @@ const Patients = () => {
         activeTab, setActiveTab,
         searchTerm, setSearchTerm,
         selectedPatientId, setSelectedPatientId, patientDetails,
-        showRatingInfo, setShowRatingInfo,
 
         // Modals
         editModal, setEditModal,
@@ -47,7 +43,7 @@ const Patients = () => {
     } = controller;
 
     const {
-        fetchPatients, fetchRecycleBin,
+        fetchRecycleBin,
         handleNewClick,
         handleViewDetails,
         handleDeletePatient,
@@ -57,7 +53,6 @@ const Patients = () => {
         handleDebtAmountChange,
         handleDebtMethodChange,
         handlePayDebt,
-        handleRatingChange,
         handleCycleRating,
         handleToggleNew,
         handleGenerateQR,
@@ -70,7 +65,7 @@ const Patients = () => {
     return (
         <MainLayout wide>
             {loading ? (
-                <Loading variant="centered" text={t('loading') || "Cargando..."} />
+                <Loading variant="centered" text={t('loading')} />
             ) : detailsLoading ? (
                 <Loading variant="centered" />
             ) : (selectedPatientId && patientDetails) ? (
@@ -94,7 +89,7 @@ const Patients = () => {
                 <>
                     <header className="dashboard-header">
                         <h1 className="dashboard-header__title">{t('patients')}</h1>
-                        <p className="dashboard-header__subtitle">{t('patients_subtitle') || 'Administración completa de fichas médicas de pacientes.'}</p>
+                        <p className="dashboard-header__subtitle">{t('patients_subtitle')}</p>
                     </header>
 
                     <div className="dashboard-grid animate-fadeIn">
@@ -106,7 +101,7 @@ const Patients = () => {
                                         onClick={() => setActiveTab('list')}
                                         icon={<Icon name="groups" size="1.1rem" />}
                                     >
-                                        {t('active_list') || 'Lista Activa'}
+                                        {t('active_list')}
                                     </TabButton>
                                     {(user.role === 'admin' || user.role === 'secretary') && (
                                         <TabButton
@@ -114,7 +109,7 @@ const Patients = () => {
                                             onClick={() => { setActiveTab('recycle'); fetchRecycleBin(); }}
                                             icon={<Icon name="delete" size="1.1rem" />}
                                         >
-                                            {t('recycle_bin') || 'Papelera'}
+                                            {t('recycle_bin')}
                                             {recycleItems.length > 0 && <span className="patients__dot-badge">{recycleItems.length}</span>}
                                         </TabButton>
                                     )}
@@ -124,58 +119,41 @@ const Patients = () => {
                             <div className="dashboard-card">
                                 <h3 className="dashboard-card__title">
                                     <Icon name="search" size="1.2rem" />
-                                    {t('search') || 'Buscar'}
+                                    {t('search')}
                                 </h3>
                                 <div className="patients-sidebar__search">
                                     {activeTab === 'list' && (
                                         <SearchBar
                                             value={searchTerm}
                                             onChange={e => setSearchTerm(e.target.value)}
-                                            placeholder={t('search_placeholder') || "Nombre, DNI, obra social..."}
+                                            placeholder={t('search_placeholder')}
                                             className="action-bar__search"
                                         />
                                     )}
                                 </div>
                             </div>
 
-                            <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">
-                                    <Icon name="build" size="1.2rem" />
-                                    {t('actions') || 'Acciones'}
-                                </h3>
-                                <div className="patients-sidebar__tools">
-                                    <Button
-                                        variant="outline"
-                                        className="w-full justify-start"
-                                        onClick={() => { fetchPatients(); fetchRecycleBin(); }}
-                                        icon={<Icon name="sync" size="1.1rem" />}
-                                    >
-                                        {t('refresh') || 'Sincronizar'}
-                                    </Button>
-                                    <Button
-                                        variant="outline"
-                                        className="w-full justify-start"
-                                        onClick={() => setShowRatingInfo(true)}
-                                        icon={<Icon name="info" size="1.1rem" />}
-                                    >
-                                        {t('rating_info') || 'Info de Calificación'}
-                                    </Button>
-                                    {(user.role === 'admin' || user.role === 'secretary') && activeTab === 'list' && (
+                            {(user.role === 'admin' || user.role === 'secretary') && activeTab === 'list' && (
+                                <div className="dashboard-card">
+                                    <h3 className="dashboard-card__title">
+                                        <Icon name="build" size="1.2rem" />
+                                        {t('actions')}
+                                    </h3>
+                                    <div className="patients-sidebar__tools">
                                         <Button
                                             variant="primary"
-                                            className="w-full justify-start mt-4"
+                                            className="w-full justify-start"
                                             onClick={handleNewClick}
                                             icon={<Icon name="add" size="1.1rem" />}
                                         >
-                                            {t('new') || 'Nuevo Paciente'}
+                                            {t('new_patient_btn')}
                                         </Button>
-                                    )}
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                         </aside>
 
                         <main className="dashboard-main">
-
                             {activeTab === 'list' ? (
                                 <div className="patients-list-view">
                                     <div className="dashboard-card no-padding">
@@ -240,21 +218,6 @@ const Patients = () => {
                 onMethodChange={handleDebtMethodChange}
                 t={t}
             />
-
-            <Modal
-                isOpen={showRatingInfo}
-                onClose={() => setShowRatingInfo(false)}
-                title={t('rating_guide_title')}
-            >
-                <div className="patients__rating-guide-content">
-                    <p className="patients__rating-guide-text">
-                        {t('rating_guide_body')}
-                    </p>
-                    <div className="patients__modal-actions">
-                        <Button onClick={() => setShowRatingInfo(false)}>{t('close')}</Button>
-                    </div>
-                </div>
-            </Modal>
         </MainLayout>
     );
 };

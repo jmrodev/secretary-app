@@ -23,7 +23,6 @@ export const useRegisterController = () => {
         specialty: '',
         cbu: '',
         dob: '',
-        address: '',
         medicalHistory: ''
     });
 
@@ -32,7 +31,7 @@ export const useRegisterController = () => {
 
     const handleChange = (e) => {
         let { name, value } = e.target;
-        if (['fullName', 'address'].includes(name)) {
+        if (['fullName'].includes(name)) {
             value = capitalizeWords(value);
         }
         setFormData(prev => ({ ...prev, [name]: value }));

@@ -65,6 +65,27 @@ class MedicalRequestRepository {
         const values = Object.values(data);
         return await conn.query(`INSERT INTO medical_request_items (${fields}) VALUES (${placeholders})`, values);
     }
+
+    async getRequestAggregates(type, dateColumn, dateValue, isExactDate, doctor_id, conn = pool) {
+        const doctorFilter = doctor_id ? " AND r.doctor_id = ?" : "";
+        const dateFilter = isExactDate ? `DATE(r.${dateColumn}) = ?` : `r.${dateColumn} >= ?`;
+        const query = `
+            SELECT 
+                COUNT(DISTINCT r.id) as count,
+                SUM(CASE WHEN t.status = 'paid' THEN t.amount ELSE 0 END) as paid,
+                SUM(CASE WHEN t.status = 'pending' THEN t.amount ELSE 0 END) as debt
+            FROM medical_requests r
+            LEFT JOIN transactions t ON t.request_id = r.id
+            WHERE r.type = ? AND ${dateFilter}
+            AND r.status != 'rejected'
+            ${doctorFilter}
+        `;
+        const params = [type, dateValue];
+        if (doctor_id) params.push(doctor_id);
+
+        const [row] = await conn.query(query, params);
+        return row || { count: 0, paid: 0, debt: 0 };
+    }
 }
 
 module.exports = new MedicalRequestRepository();

@@ -62,22 +62,25 @@ class RestoreService {
 
         await conn.query(`
             INSERT INTO patients (
-                id, user_id, first_name, last_name, full_name, dob, phone, email, address, 
+                id, user_id, first_name, last_name, full_name, dob, phone, email,
                 medical_history, dni, affiliate_number, insurance_id, institution_id, 
-                tariff_percent, tariff_override, behavior_rating, is_new_patient, insurance,
+                tariff_percent, tariff_override, behavior_rating, is_new_patient,
                 visit_interval_days, prescription_interval_days, next_suggested_visit_date, 
-                next_suggested_prescription_date, license_expiry_date
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                next_suggested_prescription_date, license_expiry_date,
+                street_name, street_number, floor, apartment, city, province, country
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [
             profile.id, newUserId, profile.first_name, profile.last_name, profile.full_name,
-            profile.dob, profile.phone, profile.email, profile.address,
+            profile.dob, profile.phone, profile.email,
             profile.medical_history, profile.dni, profile.affiliate_number,
             profile.insurance_id, profile.institution_id,
             profile.tariff_percent, profile.tariff_override,
-            profile.behavior_rating, profile.is_new_patient, profile.insurance,
+            profile.behavior_rating, profile.is_new_patient,
             profile.visit_interval_days, profile.prescription_interval_days,
             profile.next_suggested_visit_date, profile.next_suggested_prescription_date,
-            profile.license_expiry_date
+            profile.license_expiry_date,
+            profile.street_name, profile.street_number, profile.floor, profile.apartment,
+            profile.city, profile.country
         ]);
 
         if (assigned_doctors?.length) {

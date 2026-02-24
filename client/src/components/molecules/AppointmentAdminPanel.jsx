@@ -27,8 +27,8 @@ const AppointmentAdminPanel = ({
 
     // Status Logic State Machine
     const canConfirm = ['pending', 'cancelled', 'suspended', 'absent', 'rescheduled'].includes(appt.status);
-    const canArrive = ['confirmed', 'rescheduled'].includes(appt.status) && appt.type !== 'virtual';
-    const canAttend = ['confirmed', 'rescheduled', 'arrived'].includes(appt.status);
+    const canArrive = appt.status === 'confirmed' && appt.type !== 'virtual';
+    const canAttend = appt.status === 'arrived' || (appt.type === 'virtual' && appt.status === 'confirmed');
 
     // Allow reverting if unrestricted or completed
     const canSuspend = ['pending', 'confirmed', 'rescheduled'].includes(appt.status);

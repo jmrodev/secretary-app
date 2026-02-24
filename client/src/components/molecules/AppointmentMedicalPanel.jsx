@@ -57,7 +57,7 @@ const AppointmentMedicalPanel = ({
                         {t('prescribe') || 'Recetar'}
                     </Button>
                 )}
-                {isDoctorOrAdmin && (
+                {isDoctorOrAdmin && (appt.status === 'arrived' || (appt.type === 'virtual' && appt.status === 'confirmed')) && (
                     <Button
                         variant="success"
                         size="sm"

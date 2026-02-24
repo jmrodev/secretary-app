@@ -3,9 +3,13 @@ import ConfigField from '../molecules/ConfigField';
 import Button from '../atoms/Button';
 import api from '../../api/axios';
 import { useMessage } from '../../context/MessageContext';
+import { useLanguage } from '../../context/LanguageContext';
+import { useModal } from '../../context/ModalContext';
 
 const BillingSettings = ({ user, settings, updateSetting }) => {
     const { showMessage } = useMessage();
+    const { t } = useLanguage();
+    const { alert } = useModal();
     const [status, setStatus] = useState(null);
     const [checking, setChecking] = useState(false);
     const [generatingCsr, setGeneratingCsr] = useState(false);
@@ -18,9 +22,9 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
         try {
             const res = await api.post('/billing/csr');
             setGeneratedCsr(res.data.csr);
-            showMessage('CSR generado correctamente', 'success');
+            showMessage(t('csr_generated_success') || 'CSR generado correctamente', 'success');
         } catch (err) {
-            alert('Error generando CSR: ' + (err.response?.data?.error || err.message));
+            alert((t('error_saving') || 'Error') + ': ' + (err.response?.data?.error || err.message));
         } finally {
             setGeneratingCsr(false);
         }
@@ -31,10 +35,10 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
         try {
             const res = await api.get('/billing/status');
             setStatus(res.data);
-            showMessage('Conexión con AFIP validada', 'success');
+            showMessage(t('afip_validated') || 'Conexión con AFIP validada', 'success');
         } catch (err) {
-            setStatus({ error: err.response?.data?.error || 'Error de conexión' });
-            showMessage('Fallo al conectar con AFIP', 'error');
+            setStatus({ error: err.response?.data?.error || t('afip_status_error') });
+            showMessage(t('afip_connection_failed') || 'Fallo al conectar con AFIP', 'error');
         } finally {
             setChecking(false);
         }
@@ -45,64 +49,64 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
             <div className="config-section">
                 <div className="config-section__header">
                     <span className="config-section__icon">🧾</span>
-                    <h4 className="config-section__title">Configuración de Facturación ARCA (AFIP)</h4>
+                    <h4 className="config-section__title">{t('billing_settings_title')}</h4>
                 </div>
 
                 <div className="config-section__body">
                     <div className="config-grid config-grid--2col">
                         <ConfigField
-                            label="CUIT de Facturación"
+                            label={t('billing_cuit')}
                             type="text"
                             placeholder="Ej: 20111111112"
                             value={settings.afip_cuit || ''}
                             onChange={(e) => updateSetting('afip_cuit', e.target.value)}
                             disabled={!isAdmin}
-                            hint="CUIT sin guiones del titular de la facturación."
+                            hint={t('afip_guide_step_1')}
                         />
                         <ConfigField
-                            label="Punto de Venta"
+                            label={t('pto_vta')}
                             type="number"
                             placeholder="1"
                             value={settings.afip_pto_vta || '1'}
                             onChange={(e) => updateSetting('afip_pto_vta', e.target.value)}
                             disabled={!isAdmin}
-                            hint="Número de punto de venta configurado en AFIP."
+                            hint={t('afip_guide_step_1')}
                         />
                     </div>
 
                     <ConfigField
-                        label="Entorno AFIP"
+                        label={t('afip_environment')}
                         type="select"
                         value={settings.afip_environment || 'testing'}
                         onChange={(e) => updateSetting('afip_environment', e.target.value)}
                         disabled={!isAdmin}
                         options={[
-                            { value: 'testing', label: 'Homologación (Pruebas)' },
-                            { value: 'production', label: 'Producción (Real)' }
+                            { value: 'testing', label: t('afip_env_testing') },
+                            { value: 'production', label: t('afip_env_production') }
                         ]}
-                        hint="ADVERTENCIA: El modo Producción genera facturas legales reales."
+                        hint={t('afip_prod_warning')}
                     />
 
                     <div className="config-section__divider"></div>
 
                     <div className="config-group">
                         <div className="config-group__header">
-                            <h5 className="config-group__title">Estado de la Conexión</h5>
+                            <h5 className="config-group__title">{t('connection_status')}</h5>
                         </div>
                         <div className="config-group__items">
                             {status ? (
                                 <div className={`text-sm ${status.error ? 'text-danger' : 'text-success'}`}>
                                     {status.error ? (
-                                        <p>❌ Error: {status.error}</p>
+                                        <p>❌ {t('afip_status_error')}: {status.error}</p>
                                     ) : (
                                         <>
-                                            <p>✅ Conectado a AFIP ({status.environment})</p>
+                                            <p>✅ {t('afip_status_connected')} ({status.environment})</p>
                                             <p className="config-field__hint">App: {status.afip_status.AppServer}, DB: {status.afip_status.DbServer}, Auth: {status.afip_status.AuthServer}</p>
                                         </>
                                     )}
                                 </div>
                             ) : (
-                                <p className="config-field__hint">No se ha verificado la conexión todavía.</p>
+                                <p className="config-field__hint">{t('not_verified')}</p>
                             )}
                         </div>
 
@@ -112,7 +116,7 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                                 onClick={checkStatus}
                                 loading={checking}
                             >
-                                🔄 Verificar Conexión con AFIP
+                                🔄 {t('verify_afip_connection')}
                             </Button>
                         </div>
                     </div>
@@ -122,36 +126,35 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
             <div className="config-section">
                 <div className="config-section__header">
                     <span className="config-section__icon">🔑</span>
-                    <h4 className="config-section__title">Certificados Digitales</h4>
+                    <h4 className="config-section__title">{t('digital_certificates')}</h4>
                 </div>
                 <div className="config-section__body">
-                    <p className="config-field__hint" style={{ marginBottom: '1.5rem' }}>
-                        Para habilitar la facturación, necesitas generar un Certificado de Homologación (Pruebas) o Producción en la web de AFIP.
-                        Sigue estos pasos:
+                    <div className="config-field__hint" style={{ marginBottom: '1.5rem' }}>
+                        {t('valid_certificate_needed')}
                         <br /><br />
-                        1. Genera el pedido de certificado (CSR) con el botón de abajo.
+                        1. {t('afip_guide_step_1_short')}
                         <br />
-                        2. Ingresa a AFIP con Clave Fiscal: <a href="https://auth.afip.gob.ar/contribuyente_/login.xhtml" target="_blank" rel="noreferrer" className="link">Acceder a AFIP</a>
+                        2. {t('afip_guide_step_2_short')} <a href="https://auth.afip.gob.ar/contribuyente_/login.xhtml" target="_blank" rel="noreferrer" className="link">{t('access_afip')}</a>
                         <br />
-                        3. Busca el servicio <b>"WSASS - Autogestión Certificados Homologación"</b>.
+                        3. {t('afip_guide_step_3_short')}
                         <br />
-                        4. Crea un certificado nuevo pegando el texto CSR.
+                        4. {t('afip_guide_step_4_short')}
                         <br />
-                        5. Descarga el archivo .crt y súbelo aquí.
-                    </p>
+                        5. {t('afip_guide_step_5_short')}
+                    </div>
                     <div className="config-actions">
                         <Button variant="primary" onClick={generateCsr} loading={generatingCsr}>
-                            ⚙️ Generar CSR (Pedido de Certificado)
+                            ⚙️ {t('generate_csr_btn')}
                         </Button>
-                        <Button variant="ghost" disabled={true} title="Próximamente">Subir Certificado (.crt)</Button>
+                        <Button variant="ghost" disabled={true} title="Próximamente">{t('upload_crt')}</Button>
                     </div>
 
                     {generatedCsr && (
                         <div className="config-group" style={{ background: 'white' }}>
                             <div className="config-group__header">
-                                <h5 className="config-group__title">Tu Pedido de Certificado (CSR)</h5>
+                                <h5 className="config-group__title">{t('your_csr')}</h5>
                             </div>
-                            <p className="config-field__hint" style={{ marginBottom: '0.5rem' }}>Copia este texto exacto y pégalo en la web de AFIP:</p>
+                            <p className="config-field__hint" style={{ marginBottom: '0.5rem' }}>{t('copy_to_wsass')}:</p>
                             <textarea
                                 className="input-field"
                                 style={{ height: '200px', fontFamily: 'monospace', fontSize: '0.8rem' }}
@@ -160,8 +163,8 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                                 onClick={(e) => e.target.select()}
                             />
                             <div className="config-actions" style={{ justifyContent: 'flex-end', marginTop: '1rem' }}>
-                                <Button size="sm" variant="secondary" onClick={() => { navigator.clipboard.writeText(generatedCsr); showMessage('Copiado al portapapeles', 'success'); }}>
-                                    📋 Copiar
+                                <Button size="sm" variant="secondary" onClick={() => { navigator.clipboard.writeText(generatedCsr); showMessage(t('csr_copied'), 'success'); }}>
+                                    📋 {t('copy')}
                                 </Button>
                             </div>
                         </div>

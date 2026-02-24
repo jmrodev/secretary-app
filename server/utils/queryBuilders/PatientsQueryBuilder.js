@@ -19,7 +19,6 @@ class PatientsQueryBuilder extends BaseQueryBuilder {
             'p.dni',
             'p.phone',
             'p.email',
-            'p.address',
             'p.street_name',
             'p.street_number',
             'p.floor',
@@ -136,7 +135,8 @@ class PatientsQueryBuilder extends BaseQueryBuilder {
                 { condition: 'p.first_name LIKE ?', params: term },
                 { condition: 'p.last_name LIKE ?', params: term },
                 { condition: 'p.dni LIKE ?', params: term },
-                { condition: 'p.address LIKE ?', params: term },
+                { condition: 'p.street_name LIKE ?', params: term },
+                { condition: 'p.street_number LIKE ?', params: term },
                 { condition: 'p.phone LIKE ?', params: term }
             ]);
         });

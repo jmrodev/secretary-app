@@ -8,11 +8,12 @@ export const printReport = (data, options) => {
 
     try {
         const printWindow = window.open('', '_blank');
-        if (!printWindow) return alert("Por favor permita ventanas emergentes para imprimir.");
+        const customAlert = options.alert || window.alert;
+        if (!printWindow) return customAlert(t('allow_popups_error') || "Por favor permita ventanas emergentes para imprimir.");
 
         const monthName = (t && t('months_array') && t('months_array')[month - 1]) || 'Mes';
-        const pageTitle = activeTab === 'balance' ? 'Balance General' :
-            (activeTab === 'prescriptions' ? 'Reporte de Recetas' : 'Reporte de Turnos');
+        const pageTitle = activeTab === 'balance' ? t('balance_report_title') :
+            (activeTab === 'prescriptions' ? t('prescriptions_report_title') : t('appointments_report_title'));
 
         const baseStyles = `
             body { font-family: 'Courier New', monospace; padding: 20px; max-width: 1000px; margin: 0 auto; line-height: 1.2; color: #000; font-size: 12px; }
@@ -48,7 +49,7 @@ export const printReport = (data, options) => {
         if (activeTab === 'balance') {
             content = generateBalancePrint(data, monthName, year, t);
         } else if (activeTab === 'appointments') {
-            content = generateAppointmentsPrint(data, monthName, year);
+            content = generateAppointmentsPrint(data, monthName, year, t);
         } else if (activeTab === 'prescriptions') {
             content = generatePrescriptionsPrint(data, monthName, year, t);
         }
@@ -120,21 +121,21 @@ const generateBalancePrint = (reportData, monthName, year, t) => {
     const netTotal = totalIncome - totalWithdrawals;
 
     return `
-        <h1>Balance General: ${monthName} ${year}</h1>
+        <h1>${t('balance_report_title')}: ${monthName} ${year}</h1>
         <div class="summary-box">
-            <div class="row"><span>Ingresos Turnos:</span><span>$${totalAppts.toLocaleString()}</span></div>
-            <div class="row"><span>Ingresos Recetas:</span><span>$${totalPres.toLocaleString()}</span></div>
-            <div class="row row--total"><span>SUBTOTAL INGRESOS:</span><span>$${totalIncome.toLocaleString()}</span></div>
-            <div class="row withdrawal" style="margin-top: 15px;"><span>(-) Retiros Doctora:</span><span>-$${totalWithdrawals.toLocaleString()}</span></div>
-            <div class="row row--net"><span>RESULTADO NETO:</span><span>$${netTotal.toLocaleString()}</span></div>
+            <div class="row"><span>${t('turn_income')}:</span><span>$${totalAppts.toLocaleString()}</span></div>
+            <div class="row"><span>${t('prescription_income')}:</span><span>$${totalPres.toLocaleString()}</span></div>
+            <div class="row row--total"><span>${t('subtotal_income')}:</span><span>$${totalIncome.toLocaleString()}</span></div>
+            <div class="row withdrawal" style="margin-top: 15px;"><span>(-) ${t('withdrawal')}:</span><span>-$${totalWithdrawals.toLocaleString()}</span></div>
+            <div class="row row--net"><span>${t('result_neto')}:</span><span>$${netTotal.toLocaleString()}</span></div>
         </div>
 
-        <h2>Rendición de Caja (Efectivo por Día)</h2>
+        <h2>${t('cash_rendering')}</h2>
         <table>
             <thead>
                 <tr>
-                    <th>Fecha</th>
-                    <th class="amount">Efectivo a Rendir</th>
+                    <th>${t('date_label')}</th>
+                    <th class="amount">${t('cash_to_render')}</th>
                 </tr>
             </thead>
             <tbody>
@@ -147,21 +148,21 @@ const generateBalancePrint = (reportData, monthName, year, t) => {
             </tbody>
             <tfoot>
                 <tr style="font-weight: bold; border-top: 2px solid #000;">
-                    <td style="padding-top: 10px;">TOTAL EFECTIVO A RENDIR:</td>
+                    <td style="padding-top: 10px;">${t('total_cash_to_render')}:</td>
                     <td class="amount" style="padding-top: 10px;">$${appts.reduce((acc, d) => acc + Number(d.total_efectivo || 0), 0).toLocaleString()}</td>
                 </tr>
             </tfoot>
         </table>
 
-        <h2 style="margin-top: 40px;">Deudas Pendientes</h2>
+        <h2 style="margin-top: 40px;">${t('pending_debt')}</h2>
         ${allDebts.length > 0 ? `
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 100px;">Fecha</th>
-                        <th style="width: 300px;">Paciente</th>
-                        <th style="width: 150px;">Origen</th>
-                        <th class="amount">Monto</th>
+                        <th style="width: 100px;">${t('date_label')}</th>
+                        <th style="width: 300px;">${t('patient_label')}</th>
+                        <th style="width: 150px;">${t('origin')}</th>
+                        <th class="amount">${t('amount')}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -176,34 +177,34 @@ const generateBalancePrint = (reportData, monthName, year, t) => {
                 </tbody>
             </table>
             <div style="text-align: right; margin-top: 20px; font-weight: bold; font-size: 14px;">
-                Total Deuda: $${allDebts.reduce((a, b) => a + b.amount, 0).toLocaleString()}
+                ${t('total_debt')}: $${allDebts.reduce((a, b) => a + b.amount, 0).toLocaleString()}
             </div>
-        ` : '<p>No se encontraron deudas.</p>'}
+        ` : `<p>${t('no_debts_found_report')}</p>`}
     `;
 };
 
-const generateAppointmentsPrint = (reportData, monthName, year) => {
+const generateAppointmentsPrint = (reportData, monthName, year, t) => {
     const list = Array.isArray(reportData?.appointments) ? reportData.appointments : (Array.isArray(reportData) ? reportData : []);
     let total = 0;
 
     return `
-        <h1>Reporte de Turnos: ${monthName} ${year}</h1>
-        ${list.map(day => {
+        <h1>${t('appointments_report_title')}: ${monthName} ${year}</h1>
+            ${list.map(day => {
         const dayAppts = Array.isArray(day.appointments) ? day.appointments : [];
         return `
             <div class="day-group">
                 <div class="day-header ${day.is_weekend ? 'day-header--weekend' : ''} ${day.is_holiday ? 'day-header--holiday' : ''}">
                     <span>📅 ${day.date || ''}</span>
-                    ${day.is_holiday ? `<span class="tag tag--holiday">${day.holiday_description || 'FERIADO'}</span>` : ''}
-                    ${day.is_weekend && !day.is_holiday ? `<span style="font-size: 10px; opacity: 0.8;">(Finde)</span>` : ''}
+                    ${day.is_holiday ? `<span class="tag tag--holiday">${day.holiday_description || t('holiday')}</span>` : ''}
+                    ${day.is_weekend && !day.is_holiday ? `<span style="font-size: 10px; opacity: 0.8;">(${t('weekend') || 'Finde'})</span>` : ''}
                 </div>
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 75px;">Hora</th>
-                            <th style="width: 300px;">Paciente / Profesional</th>
-                            <th style="width: 250px;">Pago / Estado</th>
-                            <th class="amount">Monto</th>
+                            <th style="width: 75px;">${t('time_header')}</th>
+                            <th style="width: 300px;">${t('patient_label')} / ${t('doctor_label')}</th>
+                            <th style="width: 250px;">${t('payment')} / ${t('status')}</th>
+                            <th class="amount">${t('amount')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -216,7 +217,7 @@ const generateAppointmentsPrint = (reportData, monthName, year) => {
                                 <td class="time">${appt.hora || ''}</td>
                                 <td>
                                     <strong>${appt.nombre || ''}</strong>
-                                    ${appt.is_overturn ? `<span class="tag tag--overturn" style="font-size: 8px;">SOBRE</span>` : ''}
+                                    ${appt.is_overturn ? `<span class="tag tag--overturn" style="font-size: 8px;">${t('overturn_badge')}</span>` : ''}
                                 </td>
                                 <td class="meta">${metaInfo}</td>
                                 <td class="amount">${paid > 0 ? '$' + paid.toLocaleString() : '-'}</td>
@@ -225,10 +226,11 @@ const generateAppointmentsPrint = (reportData, monthName, year) => {
                     </tbody>
                 </table>
             </div>`;
-    }).join('')}
-        <div style="margin-top: 30px; border-top: 2px solid #000; padding: 10px 0; text-align: right; font-size: 14px; font-weight: bold;">
-            TOTAL INGRESOS TURNOS: $${total.toLocaleString()}
-        </div>
+    }).join('')
+        }
+    <div style="margin-top: 30px; border-top: 2px solid #000; padding: 10px 0; text-align: right; font-size: 14px; font-weight: bold;">
+        ${t('total_appointments_income')}: $${total.toLocaleString()}
+    </div>
     `;
 };
 
@@ -238,15 +240,15 @@ const generatePrescriptionsPrint = (reportData, monthName, year, t) => {
     let total = 0;
 
     return `
-        <h1>Reporte de Recetas: ${monthName} ${year}</h1>
+        <h1>${t('prescriptions_report_title')}: ${monthName} ${year}</h1>
         <table>
             <thead>
                 <tr>
-                    <th style="width: 100px;">Fecha</th>
-                    <th style="width: 250px;">Paciente</th>
-                    <th style="width: 200px;">Medicamentos</th>
-                    <th style="width: 180px;">Estado / Pago</th>
-                    <th class="amount">Monto</th>
+                    <th style="width: 100px;">${t('date_label')}</th>
+                    <th style="width: 250px;">${t('patient_label')}</th>
+                    <th style="width: 200px;">${t('medications')}</th>
+                    <th style="width: 180px;">${t('status')} / ${t('payment')}</th>
+                    <th class="amount">${t('amount')}</th>
                 </tr>
             </thead>
             <tbody>
@@ -268,7 +270,7 @@ const generatePrescriptionsPrint = (reportData, monthName, year, t) => {
             </tbody>
         </table>
         <div style="text-align: right; margin-top: 20px; font-weight: bold; font-size: 14px;">
-            TOTAL INGRESOS RECETAS: $${total.toLocaleString()}
+            ${t('total_prescriptions_income')}: $${total.toLocaleString()}
         </div>
     `;
 };

@@ -40,22 +40,31 @@ const PrescriptionReportTable = ({ data, t }) => {
     const getDayOfWeek = (dateStr) => {
         const d = parseDate(dateStr);
         if (!d) return '';
-        const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-        return days[d.getDay()];
+        const dayIdx = d.getDay();
+        const days = [
+            t('sunday_short') || 'Dom',
+            t('monday_short') || 'Lun',
+            t('tuesday_short') || 'Mar',
+            t('wednesday_short') || 'Mié',
+            t('thursday_short') || 'Jue',
+            t('friday_short') || 'Vie',
+            t('saturday_short') || 'Sáb'
+        ];
+        return days[dayIdx];
     };
 
     return (
         <div className="prescription-report">
             {/* Summary Table */}
             <div className="prescription-report__summary">
-                <h3 className="prescription-report__summary-title">Resumen Diario</h3>
+                <h3 className="prescription-report__summary-title">{t('daily_summary')}</h3>
                 <table className="prescription-report__table prescription-report__table--summary">
                     <thead>
                         <tr>
-                            <th>Fecha</th>
-                            <th className="text-right">Efectivo (Contado)</th>
-                            <th className="text-right">Otros Métodos</th>
-                            <th className="text-right">Total Diario</th>
+                            <th>{t('date_label')}</th>
+                            <th className="text-right">{t('cash_cash_only')}</th>
+                            <th className="text-right">{t('other_methods')}</th>
+                            <th className="text-right">{t('daily_total')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -75,19 +84,19 @@ const PrescriptionReportTable = ({ data, t }) => {
                     </tbody>
                     <tfoot>
                         <tr className="prescription-report__footer-subtotal">
-                            <td>TOTAL EFECTIVO DEL MES:</td>
+                            <td>{t('monthly_cash_total')}</td>
                             <td colSpan="3" className="text-right">
                                 $ {dailySummary.reduce((acc, day) => acc + day.cash, 0).toLocaleString()}
                             </td>
                         </tr>
                         <tr className="prescription-report__footer-subtotal">
-                            <td>TOTAL OTROS MÉTODOS DEL MES:</td>
+                            <td>{t('monthly_others_total')}</td>
                             <td colSpan="3" className="text-right">
                                 $ {dailySummary.reduce((acc, day) => acc + day.others, 0).toLocaleString()}
                             </td>
                         </tr>
                         <tr className="prescription-report__footer">
-                            <td>TOTAL ACUMULADO DEL MES:</td>
+                            <td>{t('monthly_accumulated_total')}</td>
                             <td colSpan="3" className="text-right">
                                 $ {monthlyTotal.toLocaleString()}
                             </td>
@@ -100,24 +109,24 @@ const PrescriptionReportTable = ({ data, t }) => {
             {dailySummary.map((day, groupIdx) => (
                 <div key={groupIdx} className="prescription-report__group">
                     <h3 className="prescription-report__date-header">
-                        {day.date} - Total Día: ${day.total.toLocaleString()}
+                        {day.date} - {t('total_day')}: ${day.total.toLocaleString()}
                     </h3>
                     <div className="table-responsive">
                         <table className="prescription-report__table">
                             <thead>
                                 <tr>
-                                    <th>Tipo</th>
-                                    <th>Paciente</th>
-                                    <th>Medicamentos</th>
-                                    <th>Metodo</th>
-                                    <th>Estado Pago</th>
-                                    <th className="text-right">Monto</th>
+                                    <th>{t('type')}</th>
+                                    <th>{t('patient_label')}</th>
+                                    <th>{t('medications_label')}</th>
+                                    <th>{t('method_label')}</th>
+                                    <th>{t('payment_status')}</th>
+                                    <th className="text-right">{t('amount')}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {day.items.map((item, idx) => (
                                     <tr key={idx} className="prescription-report__row">
-                                        <td>{item.source_type === 'direct' ? 'Directa' : 'Solicitud'}</td>
+                                        <td>{item.source_type === 'direct' ? t('direct') : t('request')}</td>
                                         <td>
                                             <div className="prescription-report__patient-info">
                                                 <span className="prescription-report__patient-name">{item.patient_name}</span>
@@ -131,17 +140,17 @@ const PrescriptionReportTable = ({ data, t }) => {
                                         </td>
                                         <td>
                                             <span className={`prescription-report__method-badge prescription-report__method-badge--${item.payment_method}`}>
-                                                {item.payment_method === 'cash' || item.payment_method === 'efectivo' ? 'Efectivo' :
-                                                    item.payment_method === 'transfer' ? 'Transferencia' :
-                                                        item.payment_method === 'on_account' ? 'Cta. Cte.' : item.payment_method}
+                                                {item.payment_method === 'cash' || item.payment_method === 'efectivo' ? t('cash') :
+                                                    item.payment_method === 'transfer' ? t('transfer') :
+                                                        item.payment_method === 'on_account' ? t('on_account') : item.payment_method}
                                             </span>
                                         </td>
                                         <td>
                                             <span className={`prescription-report__badge prescription-report__badge--${item.payment_status}`}>
-                                                {item.payment_status === 'paid' ? 'Pagado' :
-                                                    item.payment_status === 'debt' ? `Deuda ($${item.debt_amount || 0})` :
-                                                        item.payment_status === 'partial' ? `Parcial ($${item.debt_amount || 0})` :
-                                                            item.payment_status === 'bonified' ? 'Bonificado' : item.payment_status}
+                                                {item.payment_status === 'paid' ? t('paid') :
+                                                    item.payment_status === 'debt' ? `${t('debt')} ($${item.debt_amount || 0})` :
+                                                        item.payment_status === 'partial' ? `${t('partial')} ($${item.debt_amount || 0})` :
+                                                            item.payment_status === 'bonified' ? t('bonified') : item.payment_status}
                                             </span>
                                         </td>
                                         <td className="prescription-report__cell-amount text-right">

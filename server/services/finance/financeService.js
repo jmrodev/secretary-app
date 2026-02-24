@@ -8,6 +8,9 @@ const { calculatePrice } = require('../../utils/priceCalculator');
 
 class FinanceService {
     async createTransaction(data, userId) {
+        if (!data.doctor_id) {
+            throw new Error("Doctor ID is required for transactions");
+        }
         const conn = await pool.getConnection();
         try {
             await conn.beginTransaction();

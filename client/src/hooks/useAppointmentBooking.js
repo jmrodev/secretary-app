@@ -45,10 +45,10 @@ export const useAppointmentBooking = (doctors) => {
         const missing = [];
         if (!selectedPatientData.dni) missing.push(t('dni') || 'DNI');
         if (!selectedPatientData.phone) missing.push(t('phone') || 'Teléfono');
-        if (!selectedPatientData.email) missing.push('Email');
-        if (!selectedPatientData.address) missing.push(t('address') || 'Dirección');
-        if (!selectedPatientData.insurance_name && !selectedPatientData.insurance && !selectedPatientData.insurance_id) {
-            missing.push('Obra Social');
+        if (!selectedPatientData.email) missing.push(t('email') || 'Email');
+        if (!selectedPatientData.street_name) missing.push(t('address') || 'Dirección');
+        if (!selectedPatientData.insurance_name && !selectedPatientData.insurance_id) {
+            missing.push(t('insurance') || 'Obra Social');
         }
         setMissingData(missing);
     }, [selectedPatientData, t]);

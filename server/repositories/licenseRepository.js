@@ -17,7 +17,11 @@ class LicenseRepository {
     async findAll(filters = {}, conn = pool) {
         let query = `
             SELECT ml.*, a.appointment_date, d.full_name as doctor_name, 
-            p.full_name as patient_name, p.dni as patient_dni, p.address as patient_address 
+            p.full_name as patient_name, p.dni as patient_dni,
+            CONCAT_WS(' ', p.street_name, p.street_number,
+                IF(p.floor IS NOT NULL AND p.floor != '', CONCAT('Piso ', p.floor), NULL),
+                IF(p.apartment IS NOT NULL AND p.apartment != '', CONCAT('Dto. ', p.apartment), NULL)
+            ) as patient_address 
             FROM medical_licenses ml
             JOIN appointments a ON ml.appointment_id = a.id
             JOIN doctors d ON a.doctor_id = d.id

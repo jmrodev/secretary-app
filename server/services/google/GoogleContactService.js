@@ -37,7 +37,7 @@ class GoogleContactService {
             const contactBody = {
                 names: [{ givenName: givenName, familyName: familyName }],
                 phoneNumbers: patient.phone ? [{ value: patient.phone, type: 'mobile' }] : [],
-                organizations: patient.insurance ? [{ name: patient.insurance, title: 'Obra Social' }] : [],
+                organizations: patient.insurance_name ? [{ name: patient.insurance_name, title: 'Obra Social' }] : [],
                 biographies: [{ value: `DNI: ${patient.dni || 'N/A'}` }],
             };
 
@@ -118,7 +118,7 @@ class GoogleContactService {
                     await patientRepository.update(existing.id, {
                         phone: phone || existing.phone,
                         email: email || existing.email,
-                        insurance: insurance || existing.insurance,
+                        // insurance: no se actualiza desde Google — se gestiona via insurance_id
                         dob: dob || existing.dob,
                         dni: dni || existing.dni
                     });
@@ -140,7 +140,7 @@ class GoogleContactService {
                             full_name: name,
                             phone: phone || null,
                             email: email,
-                            insurance: insurance || null,
+                            // insurance: nombre sin normalizar omitido; asignar insurance_id manualmente
                             dob: dob || null,
                             dni: dni || null
                         }, conn);

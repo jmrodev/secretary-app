@@ -62,8 +62,8 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
     const statusOptions = getStatusOptions(t);
     const serviceTypes = getServiceTypes(t);
 
-    const doctorOptions = [{ value: '', label: t('select_doctor') || 'Seleccionar Profesional' }, ...doctors.map(d => ({ value: d.id, label: d.full_name }))];
-    const doctorUserOptions = [{ value: '', label: t('select_doctor') || 'Seleccionar Profesional' }, ...doctors.map(d => ({ value: d.user_id, label: d.full_name }))];
+    const doctorOptions = [{ value: '', label: t('select_doctor') }, ...doctors.map(d => ({ value: d.id, label: d.full_name }))];
+    const doctorUserOptions = [{ value: '', label: t('select_doctor') }, ...doctors.map(d => ({ value: d.user_id, label: d.full_name }))];
 
     return (
         <Modal
@@ -84,11 +84,11 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                 {requestId && (
                     <div className="transaction-modal__summary-header">
                         <div className="summary-item">
-                            <span className="summary-label">{t('patient') || 'Paciente'}:</span>
+                            <span className="summary-label">{t('patient')}:</span>
                             <span className="summary-value">{patientSearch}</span>
                         </div>
                         <div className="summary-item">
-                            <span className="summary-label">{t('doctor') || 'Doctor'}:</span>
+                            <span className="summary-label">{t('doctor')}:</span>
                             <span className="summary-value">{doctors.find(d => d.id === formData.doctor_id)?.full_name}</span>
                         </div>
                     </div>
@@ -194,7 +194,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                             </p>
                         )}
                         <div className="payment-summary__row">
-                            <span className="payment-summary__label payment-summary__label--large">{t('total_to_charge') || 'Total a Cobrar'}:</span>
+                            <span className="payment-summary__label payment-summary__label--large">{t('total_to_charge')}:</span>
                             <div className="payment-summary__input-wrapper payment-summary__input-wrapper--large">
                                 <CurrencyInput
                                     value={totalPrice}
@@ -214,7 +214,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                     <div className="payment-methods-card__header">
                         <label className="payment-methods-card__title">{t('payment_methods')}</label>
                         <Button variant="ghost" size="sm-compact" onClick={addPaymentMethod} icon={<Icon name="add" size="1.1rem" />}>
-                            {t('add_payment_method') || 'Dividir Pago'}
+                            {t('add_payment_method')}
                         </Button>
                     </div>
 
@@ -222,7 +222,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                         <div key={index} className="payment-row">
                             <div className="payment-row__amount">
                                 <CurrencyInput
-                                    placeholder={t('amount_paid') || 'Monto'}
+                                    placeholder={t('amount_label')}
                                     value={payment.amount}
                                     onChange={e => handlePaymentChange(index, 'amount', e.target.value)}
                                 />
@@ -263,7 +263,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                                     ) : (
                                         <div className="payment-summary__status">
                                             <Icon name="check" size="1.2rem" />
-                                            {t('completed_payment') || 'Pago Completado'}
+                                            {t('completed_payment')}
                                         </div>
                                     )}
                                 </>
@@ -286,7 +286,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                 {/* Date */}
                 {/* Date - Hidden for specific requests as it defaults to NOW() */}
                 {!requestId && settings.allow_admin_edit_finance_date === 'true' && (
-                    <FormGroup label={t('transaction_date') || 'Fecha de Transacción'}>
+                    <FormGroup label={t('transaction_date')}>
                         <Input
                             type="datetime-local"
                             value={formData.transaction_date}
@@ -294,7 +294,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                         />
                         <p className="edit-transaction-form__warning">
                             <Icon name="warning" size="1.1rem" />
-                            {t('edit_date_warning') || 'Modificar la fecha afecta el orden en la caja diaria.'}
+                            {t('edit_date_warning')}
                         </p>
                     </FormGroup>
                 )}
@@ -304,12 +304,12 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                     <Input
                         value={formData.description}
                         onChange={e => updateField('description', e.target.value)}
-                        placeholder="Descripción, detalle del cobro..."
+                        placeholder={t('description_placeholder')}
                     />
                 </FormGroup>
 
                 {/* Proof */}
-                <FormGroup label={t('proof_payment_optional') || 'Comprobante (Opcional)'}>
+                <FormGroup label={t('proof_payment_optional')}>
                     <Input
                         type="file"
                         onChange={e => updateField('proof', e.target.files[0])}

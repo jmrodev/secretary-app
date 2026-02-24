@@ -1,12 +1,14 @@
 
 import { useState, useCallback } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { useModal } from '../context/ModalContext';
 import { useAppointments } from '../hooks/useAppointments';
 import { useDoctors } from '../hooks/useUsers';
 import api from '../api/axios';
 
 export const useReportsController = () => {
     const { t } = useLanguage();
+    const { alert } = useModal();
     const { getMonthlyReport, isSubmitting } = useAppointments();
     const { doctors } = useDoctors();
 
@@ -106,6 +108,7 @@ export const useReportsController = () => {
         doctors,
         handleGenerateReport,
         handleDownloadJson,
-        changeMonth
+        changeMonth,
+        alert
     };
 };

@@ -98,7 +98,7 @@ class ImportService {
             await patientRepository.update(existing.id, {
                 phone: data.phone || null,
                 email: data.email,
-                insurance: data.insurance,
+                // insurance: campo deprecado, gestionar via insurance_id
                 dni: data.dni
             }, conn);
             results.updated++;
@@ -118,7 +118,7 @@ class ImportService {
                 full_name: data.name,
                 phone: data.phone || null,
                 email: data.email,
-                insurance: data.insurance,
+                // insurance: campo deprecado, gestionar via insurance_id
                 dni: data.dni
             }, conn);
             results.created++;

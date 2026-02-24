@@ -32,11 +32,11 @@ const TransactionsTable = ({
         const d = new Date(dateStr);
         if (isNaN(d.getTime())) return dateStr;
         const day = d.getDate().toString().padStart(2, '0');
-        const monthKey = [
+        const months = t('months_array') || [
             'january', 'february', 'march', 'april', 'may', 'june',
             'july', 'august', 'september', 'october', 'november', 'december'
-        ][d.getMonth()];
-        const month = t(monthKey);
+        ];
+        const month = months[d.getMonth()];
         const year = d.getFullYear();
 
         const format = t('date_format_long') || "{day} {month} {year}";
@@ -50,13 +50,13 @@ const TransactionsTable = ({
         if (!desc) return "";
         let d = desc;
         const transTable = [
-            { k: "Consultation (Booking)", v: t('consultation_booking') || "Consulta (Reserva)" },
-            { k: "Consultation (Patient Share)", v: t('consultation_patient_share') || "Consulta (Parte Paciente)" },
-            { k: "Consultation (Institution Share)", v: t('consultation_institution_share') || "Consulta (Parte Institución)" },
-            { k: "Payment for appointment on", v: t('payment_appointment_on') || "Pago por turno del" },
-            { k: "Cash Box Delivery to Dr.", v: t('cash_box_delivery_to') || "Entrega de Caja al Dr." },
-            { k: "Request: license for", v: t('request_license_for') || "Solicitud: licencia para" },
-            { k: "Request: prescription for", v: t('request_prescription_for') || "Solicitud: receta para" },
+            { k: "Consultation (Booking)", v: t('consultation_booking') },
+            { k: "Consultation (Patient Share)", v: t('consultation_patient_share') },
+            { k: "Consultation (Institution Share)", v: t('consultation_institution_share') },
+            { k: "Payment for appointment on", v: t('payment_appointment_on') },
+            { k: "Cash Box Delivery to Dr.", v: t('cash_box_delivery_to') },
+            { k: "Request: license for", v: t('request_license_for') },
+            { k: "Request: prescription for", v: t('request_prescription_for') },
             { k: "- Paid", v: `- ${t('paid')}` }
         ];
 

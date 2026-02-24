@@ -48,13 +48,12 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink }) => {
                                         details.apartment && `Depto ${details.apartment}`,
                                         details.city,
                                         details.province,
-                                        details.address && `(${details.address})`
                                     ].filter(Boolean).join(', ') || <span className="patient-details__text-empty">{t('no_address_loaded')}</span>}
                                 </div>
-                                {(details.street_name || details.address) && (
+                                {details.street_name && (
                                     <Button
                                         to={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                                            `${details.street_name || ''} ${details.street_number || ''}, ${details.city || ''}, ${details.province || ''}, ${details.country || ''} ${details.address || ''}`.trim()
+                                            `${details.street_name || ''} ${details.street_number || ''}, ${details.city || ''}, ${details.province || ''}, ${details.country || ''}`.trim()
                                         )}`}
                                         variant="link"
                                         size="sm"

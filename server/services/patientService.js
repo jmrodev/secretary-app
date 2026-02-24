@@ -3,8 +3,12 @@ const phoneRepository = require('../repositories/phoneRepository');
 const appointmentRepository = require('../repositories/appointmentRepository');
 const medicalFileRepository = require('../repositories/medicalFileRepository');
 const googleContactService = require('../services/google/GoogleContactService');
+const userRepository = require('../repositories/userRepository');
+const bcrypt = require('bcrypt');
 const { pool } = require('../db');
 const { PatientsQueryBuilder } = require('../utils/queryBuilders');
+
+const { PATIENT_FIELDS } = require('../constants/patientConstants');
 
 /**
  * PatientService
@@ -63,11 +67,33 @@ class PatientService {
     }
 
     async updatePatientDetails(id, updates, reqUser) {
-        const { assignedDoctors, phoneNumbers, ...patientUpdates } = updates;
+        const { assignedDoctors, phoneNumbers, username, password, ...rest } = updates;
         const oldData = await patientRepository.findById(id);
+
+        // Filtrar solo los campos válidos de la tabla `patients`
+        // Evita errores SQL por campos extra del formData (insurance_name, id, etc.)
+        const patientUpdates = Object.fromEntries(
+            Object.entries(rest).filter(([key]) => PATIENT_FIELDS.has(key))
+        );
 
         if (Object.keys(patientUpdates).length > 0) {
             await patientRepository.update(id, patientUpdates);
+        }
+
+        // Actualizar username/password en la tabla `users` si se proporcionaron
+        if (username || password) {
+            const userUpdates = {};
+            if (username) userUpdates.username = username;
+            if (password) userUpdates.password_hash = await bcrypt.hash(password, 10);
+            const conn = await pool.getConnection();
+            try {
+                await conn.query(
+                    `UPDATE users SET ${Object.keys(userUpdates).map(k => `${k} = ?`).join(', ')} WHERE id = (SELECT user_id FROM patients WHERE id = ?)`,
+                    [...Object.values(userUpdates), id]
+                );
+            } finally {
+                conn.release();
+            }
         }
 
         if (assignedDoctors !== undefined) {

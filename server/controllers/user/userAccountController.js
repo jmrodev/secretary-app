@@ -61,11 +61,11 @@ exports.updateUser = async (req, res) => {
 exports.deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
-        await userRepository.delete(id);
+        await userAccountService.deleteUser(req, id);
         logAction(req, 'DELETE_USER', `Deleted User ID: ${id}`);
         res.json({ message: "User deleted successfully" });
     } catch (err) {
-        console.error(err);
-        res.status(500).send("Server Error");
+        console.error("Delete User Error:", err);
+        res.status(500).send("Server Error: " + err.message);
     }
 };

@@ -50,6 +50,23 @@ class ModificationService {
             const appt = await appointmentRepository.findById(id, conn);
             if (!appt) throw new Error("Appointment not found");
 
+            // Enforce strict business rules for status transitions
+            if (status === 'arrived' && appt.status !== 'confirmed') {
+                throw new Error("No se puede marcar como 'En Sala' si el turno no está en estado 'Confirmado'.");
+            }
+            if (status === 'completed') {
+                const isVirtual = appt.type === 'virtual';
+                if (isVirtual) {
+                    if (appt.status !== 'confirmed') {
+                        throw new Error("Para marcar como 'Atendido' un turno virtual, primero debe estar 'Confirmado'.");
+                    }
+                } else {
+                    if (appt.status !== 'arrived') {
+                        throw new Error("No se puede marcar como 'Atendido' si el paciente no está 'En Sala'.");
+                    }
+                }
+            }
+
             const updates = { status, cancellation_reason: reason || null };
             if (['cancelled', 'absent', 'suspended'].includes(status) && ['pending', 'debt'].includes(appt.payment_status)) {
                 updates.payment_status = null;

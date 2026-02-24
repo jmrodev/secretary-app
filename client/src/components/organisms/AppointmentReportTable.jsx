@@ -43,22 +43,31 @@ const AppointmentReportTable = ({ data, t }) => {
     const getDayOfWeek = (dateStr) => {
         const d = parseDate(dateStr);
         if (!d) return '';
-        const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-        return days[d.getDay()];
+        const dayIdx = d.getDay();
+        const days = [
+            t('sunday_short') || 'Dom',
+            t('monday_short') || 'Lun',
+            t('tuesday_short') || 'Mar',
+            t('wednesday_short') || 'Mié',
+            t('thursday_short') || 'Jue',
+            t('friday_short') || 'Vie',
+            t('saturday_short') || 'Sáb'
+        ];
+        return days[dayIdx];
     };
 
     return (
         <div className="appointment-report">
             {/* Summary Table */}
             <div className="appointment-report__summary">
-                <h3 className="appointment-report__summary-title">Resumen Diario</h3>
+                <h3 className="appointment-report__summary-title">{t('daily_summary')}</h3>
                 <table className="appointment-report__table appointment-report__table--summary">
                     <thead>
                         <tr>
-                            <th>Fecha</th>
-                            <th className="text-right">Efectivo (Contado)</th>
-                            <th className="text-right">Otros Métodos</th>
-                            <th className="text-right">Total Diario</th>
+                            <th>{t('date_label')}</th>
+                            <th className="text-right">{t('cash_cash_only')}</th>
+                            <th className="text-right">{t('other_methods')}</th>
+                            <th className="text-right">{t('daily_total')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -80,19 +89,19 @@ const AppointmentReportTable = ({ data, t }) => {
                     </tbody>
                     <tfoot>
                         <tr className="appointment-report__footer-subtotal">
-                            <td>TOTAL EFECTIVO DEL MES:</td>
+                            <td>{t('monthly_cash_total')}</td>
                             <td colSpan="3" className="text-right">
                                 $ {monthlyTotalCash.toLocaleString()}
                             </td>
                         </tr>
                         <tr className="appointment-report__footer-subtotal">
-                            <td>TOTAL OTROS MÉTODOS DEL MES:</td>
+                            <td>{t('monthly_others_total')}</td>
                             <td colSpan="3" className="text-right">
                                 $ {monthlyTotalOthers.toLocaleString()}
                             </td>
                         </tr>
                         <tr className="appointment-report__footer">
-                            <td>TOTAL ACUMULADO DEL MES:</td>
+                            <td>{t('monthly_accumulated_total')}</td>
                             <td colSpan="3" className="text-right">
                                 $ {monthlyTotal.toLocaleString()}
                             </td>
@@ -122,7 +131,7 @@ const AppointmentReportTable = ({ data, t }) => {
                                     <td colSpan="7">
                                         📅 {dayGroup.date}
                                         {dayGroup.is_holiday && <span className="appointment-report__holiday-tag">🎈 {dayGroup.holiday_description}</span>}
-                                        {dayGroup.is_weekend && !dayGroup.is_holiday && <span style={{ marginLeft: '8px', fontSize: '0.7em', opacity: 0.7 }}>(Finde)</span>}
+                                        {dayGroup.is_weekend && !dayGroup.is_holiday && <span style={{ marginLeft: '8px', fontSize: '0.7em', opacity: 0.7 }}>({t('weekend_short') || 'Finde'})</span>}
                                     </td>
                                 </tr>
                                 {dayGroup.appointments.map((appt, i) => (

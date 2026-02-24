@@ -45,7 +45,7 @@ const TransactionRow = ({
             <td>
                 <div className="transactions-table__beneficiary">
                     <span className="transactions-table__beneficiary-name">
-                        {tx.patient_full_name ? `🧑 ${tx.patient_full_name}` : (tx.doctor_name || t('general'))}
+                        {tx.patient_full_name ? `🧑 ${tx.patient_full_name}` : (tx.doctor_name || t('general_clinic'))}
                     </span>
                     {tx.patient_full_name && tx.doctor_name && (
                         <span className="transactions-table__patient">
@@ -61,7 +61,7 @@ const TransactionRow = ({
             </td>
             <td>
                 <span className={`status-badge-mini status-${tx.status}`}>
-                    {t(tx.status) || (tx.status === 'paid' ? 'Pagado' : 'Pendiente')}
+                    {t(tx.status)}
                 </span>
             </td>
             <td className={`transactions-table__amount ${tx.is_withdrawal ? 'transactions-table__amount--withdrawal' : (isIncome ? 'transactions-table__amount--income' : 'transactions-table__amount--expense')}`}>
@@ -77,9 +77,9 @@ const TransactionRow = ({
                             size="sm-compact"
                             variant="ghost"
                             onClick={() => alert(<InvoiceDetailContent tx={tx} formatDate={formatDateUnambiguous} />)}
-                            title="Ver Detalle"
+                            title={t('view_details')}
                         >
-                            📄 Ver
+                            📄 {t('view_action')}
                         </Button>
                     </div>
                 ) : tx.proof_file ? (
@@ -92,14 +92,14 @@ const TransactionRow = ({
                 <td className="transactions-table__cell--right pr-6-bem">
                     <div className="transactions-table__actions">
                         {tx.type === 'income_patient' && tx.status === 'paid' && !tx.invoice_number && (
-                            <Button size="sm-compact" variant="ghost" onClick={() => onGenerateInvoice(tx.id)} title="Generar Factura" icon="🧾" />
+                            <Button size="sm-compact" variant="ghost" onClick={() => onGenerateInvoice(tx.id)} title={t('generate_invoice')} icon="🧾" />
                         )}
                         {tx.status === 'pending' && (
-                            <Button size="sm-compact" variant="ghost" onClick={() => onEdit({ ...tx, status: 'paid' })} title={t('pay') || 'Cobrar'} icon="💰" />
+                            <Button size="sm-compact" variant="ghost" onClick={() => onEdit({ ...tx, status: 'paid' })} title={t('pay')} icon="💰" />
                         )}
                         <Button size="sm-compact" variant="ghost" onClick={() => onEdit(tx)} title={t('edit')} icon="✏️" />
                         {tx.status === 'paid' && (
-                            <Button size="sm-compact" variant="ghost" onClick={() => onSync(tx.id)} title="Sincronizar con Google" icon="☁️" />
+                            <Button size="sm-compact" variant="ghost" onClick={() => onSync(tx.id)} title={t('sync_google')} icon="☁️" />
                         )}
                         <Button size="sm-compact" variant="ghost" onClick={() => onDelete(tx.id)} title={t('delete')} icon="🗑️" />
                     </div>

@@ -103,6 +103,17 @@
     gap: 0.5rem;
 }
 
-.pending-closures-footer__btn-fix:hover {
-    background-color: var(--red-50);
+.pending-closures-table__date-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.pending-closures-table__date-text {
+    font-weight: 700;
+}
+
+.pending-closures-table__doctor-text {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
 }

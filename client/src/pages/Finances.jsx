@@ -164,6 +164,7 @@ const Finances = () => {
                 {/* --- Modals --- */}
                 <TransactionModal
                     isOpen={modalOpen}
+                    initialData={selectedDoctorFilter && selectedDoctorFilter !== 'all' ? { doctorId: parseInt(selectedDoctorFilter) } : null}
                     onClose={handlers.onCloseNewTransaction}
                     onSuccess={handlers.onRefresh}
                 />
@@ -204,6 +205,7 @@ const Finances = () => {
                     onAutoClosure={handlers.handleAutoClosure}
                     onCloseAll={handlers.handleCloseAllPending}
                     onFixDuplicates={handlers.handleFixDuplicates}
+                    onResetDay={handlers.handleResetDay}
                     t={t}
                 />
             </div >
