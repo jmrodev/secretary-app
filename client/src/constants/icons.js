@@ -72,4 +72,8 @@ export const ICONS = {
     PHONE: 'call',
     MAIL: 'mail',
     MAP: 'map',
+    ARROW_BACK: 'arrow_back',
+    ARROW_FORWARD: 'arrow_forward',
+    CHEVRON_LEFT: 'chevron_left',
+    CHEVRON_RIGHT: 'chevron_right',
 };

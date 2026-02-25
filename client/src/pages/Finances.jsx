@@ -10,13 +10,12 @@ import Icon from '../components/atoms/Icon';
 
 // Molecules/Organisms
 import FinanceStatsCards from '../components/molecules/FinanceStatsCards';
-import FinanceDoctorFilter from '../components/molecules/FinanceDoctorFilter';
-import CashBoxSummary from '../components/molecules/CashBoxSummary';
 import CashBoxDeliveryModal from '../components/molecules/CashBoxDeliveryModal';
 import TransactionsTable from '../components/organisms/TransactionsTable';
 import EditTransactionModal from '../components/organisms/EditTransactionModal';
 import TransactionModal from '../components/molecules/TransactionModal';
 import PendingClosuresModal from '../components/molecules/PendingClosuresModal';
+import FinanceSidebar from '../components/organisms/FinanceSidebar';
 
 import './Finances.css';
 
@@ -32,6 +31,8 @@ const Finances = () => {
         closeBoxModal,
         closeAmount,
         editingTx,
+        filters,
+        filteredTransactions,
         user,
         settings,
         t,
@@ -52,91 +53,22 @@ const Finances = () => {
                     <Loading variant="centered" text={t('loading') || "Cargando..."} />
                 ) : (
                     <div className="dashboard-grid animate-fadeIn">
-                        <aside className="dashboard-sidebar">
-                            <div className="dashboard-nav-bar animate-fadeIn">
-                                <div className="flex-1">
-                                    {isAdminOrSecretary && (
-                                        <FinanceDoctorFilter
-                                            doctors={doctors}
-                                            selectedDoctorFilter={selectedDoctorFilter}
-                                            setSelectedDoctorFilter={handlers.onSelectDoctor}
-                                            t={t}
-                                        />
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">
-                                    <Icon name="build" size="1.2rem" />
-                                    {t('actions') || 'Acciones'}
-                                </h3>
-                                <div className="flex flex-col gap-3">
-                                    {user.role !== 'patient' && (
-                                        <>
-                                            <Button
-                                                variant="primary"
-                                                className="justify-start w-full"
-                                                onClick={handlers.onOpenNewTransaction}
-                                                icon={<Icon name="add" size="1.1rem" />}
-                                            >
-                                                {t('new_transaction')}
-                                            </Button>
-
-                                            <Button
-                                                variant="secondary"
-                                                className="justify-start w-full relative"
-                                                onClick={() => handlers.setPendingClosuresOpen(true)}
-                                                icon={<Icon name="calendar_view_week" size="1.1rem" />}
-                                            >
-                                                Entregar Caja
-                                                {controller.pendingClosures.length > 0 && (
-                                                    <span className="absolute right-2 top-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                                                        {controller.pendingClosures.length}
-                                                    </span>
-                                                )}
-                                            </Button>
-                                        </>
-                                    )}
-
-                                    {selectedDoctorFilter && (() => {
-                                        const d = doctors.find(doc => doc.id == selectedDoctorFilter);
-                                        const balances = handlers.calculateBalanceByMethod(selectedDoctorFilter);
-                                        if (d && balances.cash > 0) {
-                                            return (
-                                                <Button
-                                                    variant="secondary"
-                                                    className="justify-start w-full"
-                                                    onClick={() => handlers.onOpenCloseBox(d, balances.cash)}
-                                                    icon={<Icon name="payments" size="1.1rem" />}
-                                                >
-                                                    {t('deliver')} a {d.full_name?.split(' ')[0]}
-                                                </Button>
-                                            );
-                                        }
-                                        return null;
-                                    })()}
-                                </div>
-                            </div>
-
-                            {user.role === 'secretary' && (
-                                <div className="dashboard-card">
-                                    <h3 className="dashboard-card__title">
-                                        <Icon name="analytics" size="1.2rem" />
-                                        {t('summary') || 'Resumen de Caja'}
-                                    </h3>
-                                    <CashBoxSummary
-                                        doctors={doctors}
-                                        selectedDoctorFilter={selectedDoctorFilter}
-                                        onSelectDoctor={handlers.onSelectDoctor}
-                                        calculateBalance={handlers.calculateBalance}
-                                        calculateBalanceByMethod={handlers.calculateBalanceByMethod}
-                                        t={t}
-                                        compact
-                                    />
-                                </div>
-                            )}
-                        </aside>
+                        <FinanceSidebar
+                            isAdminOrSecretary={isAdminOrSecretary}
+                            user={user}
+                            doctors={doctors}
+                            selectedDoctorFilter={selectedDoctorFilter}
+                            pendingClosuresCount={controller.pendingClosures.length}
+                            onOpenNewTransaction={handlers.onOpenNewTransaction}
+                            onOpenPendingClosures={() => handlers.setPendingClosuresOpen(true)}
+                            onSelectDoctor={handlers.onSelectDoctor}
+                            onOpenCloseBox={handlers.onOpenCloseBox}
+                            calculateBalance={handlers.calculateBalance}
+                            calculateBalanceByMethod={handlers.calculateBalanceByMethod}
+                            filters={filters}
+                            handlers={handlers}
+                            t={t}
+                        />
 
                         <main className="dashboard-main">
                             {isAdminOrSecretary && stats.length > 0 && (
@@ -145,7 +77,7 @@ const Finances = () => {
 
                             <div className="dashboard-card no-padding">
                                 <TransactionsTable
-                                    transactions={transactions}
+                                    transactions={filteredTransactions}
                                     user={user}
                                     settings={settings}
                                     t={t}
@@ -158,8 +90,7 @@ const Finances = () => {
                             </div>
                         </main>
                     </div>
-                )
-                }
+                )}
 
                 {/* --- Modals --- */}
                 <TransactionModal

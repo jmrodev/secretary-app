@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
 import InvoiceDetailContent from './InvoiceDetailContent';
 
 /**
@@ -13,6 +14,7 @@ const TransactionRow = ({
     formatDateUnambiguous,
     formatTime,
     translateDescription,
+    highlightPatientName,
     onGenerateInvoice,
     onEdit,
     onDelete,
@@ -39,13 +41,20 @@ const TransactionRow = ({
                                 : (t(tx.type) || tx.type.replace('_', ' '))
                         }
                     </span>
-                    <span className="transactions-table__description">{translateDescription(tx.description)}</span>
+                    <span className="transactions-table__description">
+                        {highlightPatientName(translateDescription(tx.description), tx.patient_full_name)}
+                    </span>
                 </div>
             </td>
             <td>
                 <div className="transactions-table__beneficiary">
                     <span className="transactions-table__beneficiary-name">
-                        {tx.patient_full_name ? `🧑 ${tx.patient_full_name}` : (tx.doctor_name || t('general_clinic'))}
+                        {tx.patient_full_name ? (
+                            <>
+                                <Icon name="PROFILE" size="1.2rem" color="var(--blue-600)" />
+                                {tx.patient_full_name}
+                            </>
+                        ) : (tx.doctor_name || t('general_clinic'))}
                     </span>
                     {tx.patient_full_name && tx.doctor_name && (
                         <span className="transactions-table__patient">
@@ -78,13 +87,14 @@ const TransactionRow = ({
                             variant="ghost"
                             onClick={() => alert(<InvoiceDetailContent tx={tx} formatDate={formatDateUnambiguous} />)}
                             title={t('view_details')}
+                            icon={<Icon name="VIEW" size="1.1rem" />}
                         >
-                            📄 {t('view_action')}
+                            {t('view_action')}
                         </Button>
                     </div>
                 ) : tx.proof_file ? (
                     <a href={tx.proof_file} target="_blank" rel="noreferrer" className="btn-text" title={t('view')}>
-                        📁
+                        <Icon name="DOCUMENTS" />
                     </a>
                 ) : <span className="transactions-table__no-proof">-</span>}
             </td>
@@ -92,16 +102,16 @@ const TransactionRow = ({
                 <td className="transactions-table__cell--right pr-6-bem">
                     <div className="transactions-table__actions">
                         {tx.type === 'income_patient' && tx.status === 'paid' && !tx.invoice_number && (
-                            <Button size="sm-compact" variant="ghost" onClick={() => onGenerateInvoice(tx.id)} title={t('generate_invoice')} icon="🧾" />
+                            <Button size="sm-compact" variant="ghost" onClick={() => onGenerateInvoice(tx.id)} title={t('generate_invoice')} icon={<Icon name="REPORTS" />} />
                         )}
                         {tx.status === 'pending' && (
-                            <Button size="sm-compact" variant="ghost" onClick={() => onEdit({ ...tx, status: 'paid' })} title={t('pay')} icon="💰" />
+                            <Button size="sm-compact" variant="ghost" onClick={() => onEdit({ ...tx, status: 'paid' })} title={t('pay')} icon={<Icon name="FINANCES" />} />
                         )}
-                        <Button size="sm-compact" variant="ghost" onClick={() => onEdit(tx)} title={t('edit')} icon="✏️" />
+                        <Button size="sm-compact" variant="ghost" onClick={() => onEdit(tx)} title={t('edit')} icon={<Icon name="EDIT" />} />
                         {tx.status === 'paid' && (
-                            <Button size="sm-compact" variant="ghost" onClick={() => onSync(tx.id)} title={t('sync_google')} icon="☁️" />
+                            <Button size="sm-compact" variant="ghost" onClick={() => onSync(tx.id)} title={t('sync_google')} icon={<Icon name="SYNC" />} />
                         )}
-                        <Button size="sm-compact" variant="ghost" onClick={() => onDelete(tx.id)} title={t('delete')} icon="🗑️" />
+                        <Button size="sm-compact" variant="ghost" onClick={() => onDelete(tx.id)} title={t('delete')} icon={<Icon name="DELETE" />} />
                     </div>
                 </td>
             )}

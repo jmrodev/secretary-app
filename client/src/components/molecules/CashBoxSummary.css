@@ -8,8 +8,8 @@
 
 .cash-box--compact {
     background-color: var(--gray-50);
-    padding: 1rem;
-    border-radius: var(--radius);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-sm);
     border: 1px solid var(--border-color);
 }
 
@@ -20,11 +20,11 @@
 }
 
 .cash-box__header--compact {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     font-weight: 900;
     text-transform: uppercase;
     color: var(--text-muted);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
 }
 
 .cash-box__grid {
@@ -41,8 +41,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid var(--border-color);
+    padding: 0.35rem 0;
+    border-bottom: 1px dotted var(--border-color);
 }
 
 .cash-box__item--compact:last-child {

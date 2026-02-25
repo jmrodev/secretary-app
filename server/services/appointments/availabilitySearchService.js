@@ -57,7 +57,7 @@ class AvailabilitySearchService {
         const holidays = await holidayRepository.getHolidaysInRange(dMin, dMax);
         const holidayDates = new Set(holidays);
         const schedulesAll = await doctorRepository.getDoctorSchedules(doctor_id);
-        const existingApptsAll = await appointmentRepository.findInRange(doctor_id, tMin, tMax, ['cancelled', 'rescheduled']);
+        const existingApptsAll = await appointmentRepository.findInRange(doctor_id, tMin, tMax, ['cancelled', 'absent', 'suspended']);
         const apptIntervals = existingApptsAll.map(a => ({
             start: new Date(a.appointment_date).getTime(),
             end: new Date(a.appointment_date).getTime() + (a.duration || duration) * 60000
@@ -153,7 +153,7 @@ class AvailabilitySearchService {
         const holidays = await holidayRepository.getHolidaysInRange(dMin, dMax);
         const holidayDates = new Set(holidays);
         const schedulesAll = await doctorRepository.getDoctorSchedules(doctor_id);
-        const existingApptsAll = await appointmentRepository.findInRange(doctor_id, tMin, tMax, ['cancelled']);
+        const existingApptsAll = await appointmentRepository.findInRange(doctor_id, tMin, tMax, ['cancelled', 'absent', 'suspended']);
         const apptIntervals = existingApptsAll.map(a => ({
             start: new Date(a.appointment_date).getTime(),
             end: new Date(a.appointment_date).getTime() + (a.duration || duration) * 60000

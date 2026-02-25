@@ -25,12 +25,17 @@ class BookingService {
 
             const existing = await appointmentRepository.findBySlot(data.doctor_id, formattedDate, conn);
             if (existing.length > 0) {
-                const oldAppt = existing[0];
-                if (!['reserved', 'cancelled', 'absent'].includes(oldAppt.status)) {
+                // Determine if there is any 'active' appointment blocking the slot
+                const blockingAppt = existing.find(a => !['reserved', 'cancelled', 'absent', 'suspended'].includes(a.status));
+
+                if (blockingAppt) {
                     throw new ConflictError("Ya existe un turno confirmado en este horario.");
                 }
-                if (oldAppt.status === 'reserved') {
-                    await this.handleOverwrite(oldAppt, data, userId, conn);
+
+                // If no active appointment blocks, but there is a reservation, handle overwrite
+                const reservedAppt = existing.find(a => a.status === 'reserved');
+                if (reservedAppt) {
+                    await this.handleOverwrite(reservedAppt, data, userId, conn);
                 }
             }
 

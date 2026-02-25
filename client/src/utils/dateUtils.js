@@ -61,6 +61,38 @@ export const formatDate = (date, options = {}) => {
 };
 
 /**
+ * Returns the month name for a given month index (0-11).
+ * @param {number} monthIndex 
+ * @param {Function} t - Translation function
+ */
+export const getMonthName = (monthIndex, t = null) => {
+    if (t && t('months_array')) {
+        return t('months_array')[monthIndex];
+    }
+    return new Date(2026, monthIndex, 1).toLocaleDateString('es-AR', {
+        month: 'long',
+        timeZone: 'America/Argentina/Buenos_Aires'
+    });
+};
+
+/**
+ * Returns an array of month options for use in Select components.
+ * @param {Function} t - Translation function
+ * @param {string} allLabelKey - Translation key for "All Months"
+ */
+export const getMonthsOptions = (t, allLabelKey = 'all_months') => {
+    const months = Array.from({ length: 12 }, (_, i) => ({
+        value: (i + 1).toString(),
+        label: getMonthName(i, t)
+    }));
+
+    if (allLabelKey) {
+        return [{ value: 'all', label: t(allLabelKey) || 'Todos los meses' }, ...months];
+    }
+    return months;
+};
+
+/**
  * Formats only the time (e.g. "14:30")
  * @param {string|Date} date 
  */

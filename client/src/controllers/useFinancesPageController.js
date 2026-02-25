@@ -27,6 +27,11 @@ export const useFinancesPageController = () => {
 
     // Filters
     const [selectedDoctorFilter, setSelectedDoctorFilter] = useState(localStorage.getItem('last_selected_doctor_id') || '');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [typeFilter, setTypeFilter] = useState('all');
+    const [monthFilter, setMonthFilter] = useState('all');
+    const [yearFilter, setYearFilter] = useState('all');
 
     // New Transaction Form State
     const [modalOpen, setModalOpen] = useState(false);
@@ -218,6 +223,61 @@ export const useFinancesPageController = () => {
             });
     }, [transactions]);
 
+    /**
+     * Frontend Filtered Transactions
+     */
+    const filteredTransactions = useMemo(() => {
+        return transactions.filter(tx => {
+            // Search Query Filter
+            if (searchQuery) {
+                const query = searchQuery.toLowerCase();
+                const matchesPatient = tx.patient_full_name?.toLowerCase().includes(query);
+                const matchesDesc = tx.description?.toLowerCase().includes(query);
+                const matchesAmount = tx.amount?.toString().includes(query);
+                if (!matchesPatient && !matchesDesc && !matchesAmount) return false;
+            }
+
+            // Status Filter
+            if (statusFilter !== 'all' && tx.status !== statusFilter) return false;
+
+            // Type Filter
+            if (typeFilter !== 'all') {
+                const txType = tx.appointment_id ? 'appointment' : tx.request_type ? 'request' : tx.type;
+                if (typeFilter === 'appointment' && !tx.appointment_id) return false;
+                if (typeFilter === 'request' && !tx.request_type) return false;
+                if (typeFilter !== 'appointment' && typeFilter !== 'request' && tx.type !== typeFilter) return false;
+            }
+
+            // Date Filters
+            if (monthFilter !== 'all' || yearFilter !== 'all') {
+                const date = new Date(tx.transaction_date);
+                if (monthFilter !== 'all' && (date.getMonth() + 1).toString() !== monthFilter) return false;
+                if (yearFilter !== 'all' && date.getFullYear().toString() !== yearFilter) return false;
+            }
+
+            return true;
+        });
+    }, [transactions, searchQuery, statusFilter, typeFilter, monthFilter, yearFilter]);
+
+    // Available filters generator
+    const filterOptions = useMemo(() => {
+        const years = new Set();
+        const types = new Set();
+        transactions.forEach(tx => {
+            if (tx.transaction_date) {
+                years.add(new Date(tx.transaction_date).getFullYear().toString());
+            }
+            if (tx.appointment_id) types.add('appointment');
+            else if (tx.request_type) types.add('request');
+            else types.add(tx.type);
+        });
+
+        return {
+            years: Array.from(years).sort((a, b) => b - a),
+            types: Array.from(types)
+        };
+    }, [transactions]);
+
     // Initialize Handlers
     const financeHandlers = useFinanceHandlers({
         user, t, showMessage, confirm, alert,
@@ -260,7 +320,23 @@ export const useFinancesPageController = () => {
         handlers: {
             ...financeHandlers,
             calculateBalance,
-            calculateBalanceByMethod
-        }
+            calculateBalanceByMethod,
+            setSearchQuery,
+            setStatusFilter,
+            setTypeFilter,
+            setMonthFilter,
+            setYearFilter
+        },
+
+        // Filter State
+        filters: {
+            searchQuery,
+            statusFilter,
+            typeFilter,
+            monthFilter,
+            yearFilter,
+            options: filterOptions
+        },
+        filteredTransactions
     };
 };

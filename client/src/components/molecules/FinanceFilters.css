@@ -1,0 +1,79 @@
+/* FinanceFilters Component Styles */
+
+.finance-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    /* Removed padding/background to fit into dashboard-card */
+}
+
+.finance-filters__search-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.finance-filters__search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-400);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.finance-filters__search-input {
+    padding-left: 2.5rem !important;
+    background-color: var(--gray-50) !important;
+    height: 34px !important;
+    font-size: 0.85rem !important;
+}
+
+.finance-filters__groups {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.finance-filters__group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    width: 100%;
+}
+
+.finance-filters__label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-left: 0.1rem;
+}
+
+.finance-filters__clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.75rem;
+    background: transparent;
+    border: 1px solid var(--gray-200);
+    border-radius: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    height: 38px;
+    width: 100%;
+    /* Match select height */
+}
+
+.finance-filters__clear:hover {
+    background: var(--gray-100);
+    color: var(--text-main);
+    border-color: var(--gray-300);
+}
+
+/* Cleaned up redundant responsive styles */

@@ -60,7 +60,7 @@ export const useFinanceHandlers = ({
             await api.post('/finances/transactions/close', {
                 doctor_id: closeBoxModal.doctorId,
                 amount_delivered: closeAmount,
-                description: `${t('cash_box_delivery_to')} ${closeBoxModal.doctorName}`
+                description: `${t('cash_box_delivery_to')} ${closeBoxModal.doctorName} - ${user.name || user.username}`
             });
 
             showMessage(t('box_closed_successfully'), 'success');
@@ -130,13 +130,13 @@ export const useFinanceHandlers = ({
             setLoading(true);
             if (dayData.balance > 0) {
                 await api.post('/finances/transactions', {
-                    type: 'withdrawal', amount: dayData.balance, description: `${t('auto_closure')} (${dayData.date}) - ${t('cash') || 'Efectivo'}`,
+                    type: 'withdrawal', amount: dayData.balance, description: `${t('auto_closure')} (${dayData.date}) - ${t('cash') || 'Efectivo'} - ${user.name || user.username}`,
                     doctor_id: docId, transaction_date: dateTime, status: 'paid', method: 'cash', is_withdrawal: true
                 });
             }
             if (dayData.transferBalance > 0) {
                 await api.post('/finances/transactions', {
-                    type: 'withdrawal', amount: dayData.transferBalance, description: `${t('auto_closure')} (${dayData.date}) - ${t('transfer') || 'Transferencia'}`,
+                    type: 'withdrawal', amount: dayData.transferBalance, description: `${t('auto_closure')} (${dayData.date}) - ${t('transfer') || 'Transferencia'} - ${user.name || user.username}`,
                     doctor_id: docId, transaction_date: dateTime, status: 'paid', method: 'transfer', is_withdrawal: true
                 });
             }
@@ -170,13 +170,13 @@ export const useFinanceHandlers = ({
 
                 if (day.balance > 0) {
                     await api.post('/finances/transactions', {
-                        type: 'withdrawal', amount: day.balance, description: `${t('auto_closure')} (${day.date}) - ${t('cash') || 'Efectivo'}`,
+                        type: 'withdrawal', amount: day.balance, description: `${t('auto_closure')} (${day.date}) - ${t('cash') || 'Efectivo'} - ${user.name || user.username}`,
                         doctor_id: docId, transaction_date: dateTime, status: 'paid', method: 'cash', is_withdrawal: true
                     });
                 }
                 if (day.transferBalance > 0) {
                     await api.post('/finances/transactions', {
-                        type: 'withdrawal', amount: day.transferBalance, description: `${t('auto_closure')} (${day.date}) - ${t('transfer') || 'Transferencia'}`,
+                        type: 'withdrawal', amount: day.transferBalance, description: `${t('auto_closure')} (${day.date}) - ${t('transfer') || 'Transferencia'} - ${user.name || user.username}`,
                         doctor_id: docId, transaction_date: dateTime, status: 'paid', method: 'transfer', is_withdrawal: true
                     });
                 }

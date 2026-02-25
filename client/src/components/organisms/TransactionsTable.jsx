@@ -69,6 +69,24 @@ const TransactionsTable = ({
     };
 
     /**
+     * Highlights the patient name within a description string.
+     */
+    const highlightPatientName = (description, patientName) => {
+        if (!description || !patientName) return description;
+
+        // Escape special characters in patientName for regex
+        const escapedName = patientName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`(${escapedName})`, 'gi');
+
+        const parts = description.split(regex);
+        return parts.map((part, i) =>
+            part.toLowerCase() === patientName.toLowerCase()
+                ? <strong key={i} className="transactions-table__highlight">{part}</strong>
+                : part
+        );
+    };
+
+    /**
      * Groups consecutive transactions that belong to the same entity (e.g., fractional payments).
      */
     const groupedTransactions = useMemo(() => {
@@ -133,6 +151,7 @@ const TransactionsTable = ({
                                             formatDateUnambiguous={formatDateUnambiguous}
                                             formatTime={formatTime}
                                             translateDescription={translateDescription}
+                                            highlightPatientName={highlightPatientName}
                                             onGenerateInvoice={onGenerateInvoice}
                                             onEdit={onEdit}
                                             onDelete={onDelete}

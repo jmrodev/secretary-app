@@ -1,5 +1,6 @@
 import React from 'react';
 import Badge from '../atoms/Badge';
+import Icon from '../atoms/Icon';
 
 /**
  * InstitutionTransactionsTable Molecule.
@@ -15,7 +16,7 @@ const InstitutionTransactionsTable = ({
         <div className="inst-table-container">
             <div className="inst-table-header">
                 <h3 className="inst-table-title">
-                    📋 {t('transaction_log')}
+                    <Icon name="assignment" /> {t('transaction_log')}
                     <span className="inst-table-badge">{transactions.length}</span>
                 </h3>
             </div>

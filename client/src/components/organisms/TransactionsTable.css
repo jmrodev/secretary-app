@@ -136,11 +136,12 @@
 
 .transactions-table__type-tag {
     align-self: flex-start;
-    font-size: 0.65rem;
-    font-weight: 800;
-    padding: 0.1rem 0.6rem;
+    font-size: 0.6rem;
+    font-weight: 500;
+    padding: 0.1rem 0.5rem;
     text-transform: uppercase;
     border-radius: 1rem;
+    opacity: 0.9;
 }
 
 .transactions-table__description {
@@ -162,7 +163,20 @@
 }
 
 .transactions-table__beneficiary-name {
-    font-weight: 600;
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.transactions-table__highlight {
+    color: var(--blue-700);
+    font-weight: 800;
+    background-color: var(--blue-50);
+    padding: 0 0.2rem;
+    border-radius: 2px;
 }
 
 .transactions-table__patient {

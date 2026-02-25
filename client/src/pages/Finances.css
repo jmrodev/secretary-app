@@ -1,12 +1,9 @@
-/* Finances-specific Styles */
+/* Finances Page Styles
+   Cleaned up - most styles moved to specialized organisms/molecules
+*/
 
-.finances-page__main-info {
+.finances-page {
     display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-}
-
-.dashboard-nav-bar .finance-doctor-filter {
-    margin: 0;
+    flex-direction: column;
+    gap: 1rem;
 }

@@ -3,6 +3,8 @@ import React from 'react';
 import Button from '../atoms/Button';
 import Select from '../atoms/Select';
 import Input from '../atoms/Input';
+import Icon from '../atoms/Icon';
+import { getMonthsOptions } from '../../utils/dateUtils';
 import './ReportFilters.css';
 
 const ReportFilters = ({
@@ -22,6 +24,12 @@ const ReportFilters = ({
     doctors,
     t
 }) => {
+    // We pass null for allLabelKey because ReportFilters specifically requires a month (no "All Months" option)
+    const monthOptions = getMonthsOptions(t, null).map(opt => ({
+        ...opt,
+        value: Number(opt.value) // ReportFilters uses numeric values
+    }));
+
     return (
         <div className="report-filters">
             <div className="report-filters__group">
@@ -33,15 +41,12 @@ const ReportFilters = ({
                         onClick={() => onStepMonth(-1)}
                         className="report-filters__step-btn"
                     >
-                        ⬅️
+                        <Icon name="ARROW_BACK" size="1.2rem" />
                     </Button>
                     <Select
                         value={month}
                         onChange={(e) => onMonthChange(Number(e.target.value))}
-                        options={Array.from({ length: 12 }, (_, i) => ({
-                            value: i + 1,
-                            label: t('months_array')[i]
-                        }))}
+                        options={monthOptions}
                         className="report-filters__select"
                     />
                     <Button
@@ -50,7 +55,7 @@ const ReportFilters = ({
                         onClick={() => onStepMonth(1)}
                         className="report-filters__step-btn"
                     >
-                        ➡️
+                        <Icon name="ARROW_FORWARD" size="1.2rem" />
                     </Button>
                 </div>
             </div>
@@ -64,7 +69,7 @@ const ReportFilters = ({
                         onClick={() => onStepYear(-1)}
                         className="report-filters__step-btn"
                     >
-                        ⬅️
+                        <Icon name="ARROW_BACK" size="1.2rem" />
                     </Button>
                     <Input
                         type="number"
@@ -80,7 +85,7 @@ const ReportFilters = ({
                         onClick={() => onStepYear(1)}
                         className="report-filters__step-btn"
                     >
-                        ➡️
+                        <Icon name="ARROW_FORWARD" size="1.2rem" />
                     </Button>
                 </div>
             </div>
@@ -118,14 +123,16 @@ const ReportFilters = ({
                             onClick={onDownload}
                             className="report-filters__btn"
                         >
-                            💾 {t('download_json') || 'JSON'}
+                            <Icon name="DOCUMENTS" size="1.1rem" className="mr-1" />
+                            {t('download_json') || 'JSON'}
                         </Button>
                         <Button
                             variant="accent"
                             onClick={onPrint}
                             className="report-filters__btn"
                         >
-                            🖨️ {t('print') || 'Imprimir'}
+                            <Icon name="FINANCES" size="1.1rem" className="mr-1" />
+                            {t('print') || 'Imprimir'}
                         </Button>
                     </>
                 )}

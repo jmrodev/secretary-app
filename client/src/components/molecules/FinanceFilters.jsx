@@ -1,0 +1,130 @@
+import React from 'react';
+import Input from '../atoms/Input';
+import Select from '../atoms/Select';
+import Icon from '../atoms/Icon';
+import { getMonthsOptions } from '../../utils/dateUtils';
+import './FinanceFilters.css';
+
+/**
+ * FinanceFilters Molecule.
+ * Provides search and filtering capabilities for the finance ledger.
+ */
+const FinanceFilters = ({
+    filters,
+    handlers,
+    t
+}) => {
+    const {
+        searchQuery,
+        statusFilter,
+        typeFilter,
+        monthFilter,
+        yearFilter,
+        options
+    } = filters;
+
+    const {
+        setSearchQuery,
+        setStatusFilter,
+        setTypeFilter,
+        setMonthFilter,
+        setYearFilter
+    } = handlers;
+
+    const monthOptions = getMonthsOptions(t);
+
+    const yearOptions = [
+        { value: 'all', label: t('all_years') || 'Todos los años' },
+        ...options.years.map(year => ({ value: year, label: year }))
+    ];
+
+    const statusOptions = [
+        { value: 'all', label: t('all_statuses') || 'Todos los estados' },
+        { value: 'paid', label: t('paid') || 'Pagado' },
+        { value: 'pending', label: t('pending') || 'Pendiente' },
+        { value: 'refunded', label: t('refunded') || 'Reembolsado' }
+    ];
+
+    const typeOptions = [
+        { value: 'all', label: t('all_types') || 'Todos los tipos' },
+        ...options.types.map(type => ({
+            value: type,
+            label: t(type) || type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' ')
+        }))
+    ];
+
+    return (
+        <div className="finance-filters">
+            <div className="finance-filters__search-wrapper">
+                <Icon name="SEARCH" className="finance-filters__search-icon" />
+                <Input
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder={t('search_placeholder') || "Buscar por paciente, descripción o monto..."}
+                    className="finance-filters__search-input"
+                    size="sm"
+                />
+            </div>
+
+            <div className="finance-filters__groups">
+                <div className="finance-filters__group">
+                    <label className="finance-filters__label">{t('status')}</label>
+                    <Select
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                        options={statusOptions}
+                        size="sm"
+                    />
+                </div>
+
+                <div className="finance-filters__group">
+                    <label className="finance-filters__label">{t('type')}</label>
+                    <Select
+                        value={typeFilter}
+                        onChange={(e) => setTypeFilter(e.target.value)}
+                        options={typeOptions}
+                        size="sm"
+                    />
+                </div>
+
+                <div className="finance-filters__group">
+                    <label className="finance-filters__label">{t('month')}</label>
+                    <Select
+                        value={monthFilter}
+                        onChange={(e) => setMonthFilter(e.target.value)}
+                        options={monthOptions}
+                        size="sm"
+                    />
+                </div>
+
+                <div className="finance-filters__group">
+                    <label className="finance-filters__label">{t('year')}</label>
+                    <Select
+                        value={yearFilter}
+                        onChange={(e) => setYearFilter(e.target.value)}
+                        options={yearOptions}
+                        size="sm"
+                    />
+                </div>
+
+                {(searchQuery || statusFilter !== 'all' || typeFilter !== 'all' || monthFilter !== 'all' || yearFilter !== 'all') && (
+                    <button
+                        className="finance-filters__clear"
+                        onClick={() => {
+                            setSearchQuery('');
+                            setStatusFilter('all');
+                            setTypeFilter('all');
+                            setMonthFilter('all');
+                            setYearFilter('all');
+                        }}
+                    >
+                        <Icon name="CANCEL" size="1.1rem" />
+                        {t('clear_filters') || 'Limpiar'}
+                    </button>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default FinanceFilters;

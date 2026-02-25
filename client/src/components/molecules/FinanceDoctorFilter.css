@@ -1,7 +1,8 @@
 /* FinanceDoctorFilter Component Styles */
 
 .finance-doctor-filter {
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;
+    /* Reduced from 2rem */
 }
 
 .finance-doctor-filter__list {
@@ -12,6 +13,6 @@
 }
 
 .finance-doctor-filter__item {
-    font-size: 0.8125rem;
-    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
 }

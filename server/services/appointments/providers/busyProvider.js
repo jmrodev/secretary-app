@@ -11,7 +11,7 @@ class BusyProvider {
             console.warn("Google Busy fail", e.message);
         }
 
-        const dbBusy = await appointmentRepository.findInRange(doctorId, startTime.toISOString(), endTime.toISOString(), ['cancelled', 'rescheduled']);
+        const dbBusy = await appointmentRepository.findInRange(doctorId, startTime.toISOString(), endTime.toISOString(), ['cancelled', 'absent', 'suspended']);
 
         return { google: googleBusy, db: dbBusy };
     }

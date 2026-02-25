@@ -1,0 +1,49 @@
+/* FinanceSidebar Organism Styles */
+
+.finance-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    /* Reduced from 1.25rem */
+}
+
+.sidebar-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    /* Tighter gap */
+}
+
+.sidebar-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding-left: 0.1rem;
+}
+
+/* Global dashboard card override specifically for sidebar context */
+.finance-sidebar .dashboard-card {
+    margin-bottom: 0;
+    padding: 0.75rem !important;
+    /* Force tight padding */
+}
+
+/* Ensure sections inside cards are tight */
+.finance-sidebar .flex-col.gap-4 {
+    gap: 0.6rem !important;
+}
+
+/* Tighten TabNav when in sidebar */
+.finance-sidebar .tab-nav {
+    margin-bottom: 0 !important;
+    gap: 0.25rem !important;
+    padding: 0.25rem !important;
+    background: var(--gray-50) !important;
+}
+
+/* Eliminate excessive gap in doctor filter */
+.finance-sidebar .finance-doctor-filter {
+    margin-bottom: 0 !important;
+}
