@@ -273,13 +273,14 @@ export const useDashboardController = () => {
         });
     };
 
-    const handlePrescriptionSubmit = async ({ medications, instructions }) => {
+    const handlePrescriptionSubmit = async ({ medications, instructions, bonified }) => {
         setIsSubmitting(true);
         try {
             await savePrescription({
                 apptId: prescribeModal.apptId,
                 medications,
-                instructions
+                instructions,
+                bonified
             }, () => {
                 setPrescribeModal({ ...prescribeModal, open: false });
                 refreshDashboard();

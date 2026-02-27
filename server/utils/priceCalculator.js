@@ -59,7 +59,7 @@ async function calculatePrice(conn, doctorId, patientId, serviceType = 'consulta
             if (Number(inst_price) > 0) {
                 basePrice = Number(inst_price);
                 explanation = `${priceType} (Institution Rate): $${basePrice}`;
-                finalPrice = basePrice;
+                finalPrice = 0; // The institution covers it; patient share starts at 0 (unless adjusted below)
             }
 
             const percent = Number(tariff_percent) || 0;

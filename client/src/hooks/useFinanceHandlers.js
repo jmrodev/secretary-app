@@ -95,6 +95,26 @@ export const useFinanceHandlers = ({
         }
     }, [showMessage, t]);
 
+    const handleBonifyTransaction = useCallback(async (tx) => {
+        if (!await confirm(t('confirm_bonify') || "¿Desea bonificar este ítem? Esto eliminará la deuda.")) return;
+        try {
+            if (tx.appointment_id) {
+                await api.put(`/appointments/${tx.appointment_id}`, { bonified: 1 });
+            } else if (tx.request_id) {
+                await api.put(`/medical/requests/${tx.request_id}`, { payment_status: 'bonified' });
+            } else {
+                // If it's a generic transaction, maybe just delete it?
+                // But usually transactions in ledger are tied to something.
+                await api.delete(`/finances/transactions/${tx.id}`);
+            }
+            showMessage(t('bonified_success') || "Bonificado correctamente", 'success');
+            fetchData();
+        } catch (err) {
+            console.error(err);
+            showMessage(t('error_bonifying') || "Error al bonificar", 'error');
+        }
+    }, [confirm, t, showMessage, fetchData]);
+
     const handleHistoricalWithdrawal = useCallback(async (data) => {
         try {
             const dateTime = `${data.date} ${data.time}:00`;
@@ -274,6 +294,7 @@ export const useFinanceHandlers = ({
         onCloseCloseBox: () => setCloseBoxModal(prev => ({ ...prev, open: false })),
         onGenerateInvoice: handleGenerateInvoice,
         onSyncTransaction: handleSyncTransaction,
+        onBonify: handleBonifyTransaction,
         handleHistoricalWithdrawal,
         handleAutoClosure,
         handleCloseAllPending,

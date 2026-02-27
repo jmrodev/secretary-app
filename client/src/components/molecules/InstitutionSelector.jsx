@@ -1,4 +1,5 @@
 import React from 'react';
+import Icon from '../atoms/Icon';
 
 /**
  * InstitutionSelector Molecule.
@@ -34,13 +35,15 @@ const InstitutionSelector = ({
                         className={`inst-finances__toggle-btn ${viewMode === 'transactions' ? 'inst-finances__toggle-btn--active' : ''}`}
                         onClick={() => setViewMode('transactions')}
                     >
-                        📊 {t('finances')}
+                        <Icon name="analytics" size="1.1rem" />
+                        {t('finances')}
                     </button>
                     <button
                         className={`inst-finances__toggle-btn ${viewMode === 'patients' ? 'inst-finances__toggle-btn--active' : ''}`}
                         onClick={() => setViewMode('patients')}
                     >
-                        👥 {t('patients')}
+                        <Icon name="groups" size="1.1rem" />
+                        {t('patients')}
                     </button>
                 </div>
             )}

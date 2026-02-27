@@ -60,6 +60,17 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
                     const hasTransactions = txTotal > 0;
                     const effectiveTotal = hasTransactions ? txTotal : cost;
 
+                    if (appt.bonified == 1 || appt.bonified === true || appt.bonified === 'true') {
+                        return (
+                            <div className="appt-status__col">
+                                <div className="appt-status__text appt-status__amount--paid">
+                                    <span style={{ color: 'var(--blue-600)', textTransform: 'uppercase', fontSize: '10px' }}>{t('bonified') || 'Bonificado'}</span>
+                                    <Icon name="verified" size="1rem" style={{ color: 'var(--blue-500)' }} />
+                                </div>
+                            </div>
+                        );
+                    }
+
                     if (effectiveTotal === 0 && !isAttended) return null;
 
                     let colorModifier = '';

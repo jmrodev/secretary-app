@@ -180,6 +180,7 @@ const Appointments = () => {
                 onWhatsApp={handlers.handleWhatsAppUniversal}
                 onUpdateType={handlers.handleUpdateType}
                 onHardEdit={handlers.handleHardEdit}
+                onBonify={handlers.handleBonify}
                 onSaveNote={handlers.handleSaveNote}
                 fetchAppointments={handlers.fetchAppointments}
             />

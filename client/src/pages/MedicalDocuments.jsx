@@ -193,6 +193,7 @@ const MedicalDocuments = () => {
                                             handleDeleteRequest={handleDeleteRequest}
                                             openActionModal={openActionModal}
                                             setPaymentModal={openPaymentModal}
+                                            onBonify={handlers.handleBonifyRequest}
                                             canDelete={user.role === 'admin' || canDeleteRequest}
                                             handleEditRequest={handleEditItem}
                                         />

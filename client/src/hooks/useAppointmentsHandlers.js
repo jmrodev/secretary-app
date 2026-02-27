@@ -216,7 +216,8 @@ export const useAppointmentsHandlers = ({
                 apptId: prescribeModal.apptId,
                 medications: prescribeModal.medications,
                 instructions: prescribeModal.instructions,
-                items: prescribeModal.items
+                items: prescribeModal.items,
+                bonified: prescribeModal.bonified
             });
             setPrescribeModal({ open: false, apptId: null, patientName: '', medications: '', instructions: '', items: [] });
             showMessage(t('prescription_saved') || 'Receta guardada', 'success');
@@ -439,6 +440,24 @@ export const useAppointmentsHandlers = ({
         booking.setShowForm(true);
     };
 
+    const handleBonify = async (appt) => {
+        if (!await confirm(t('confirm_bonify') || '¿Seguro que desea marcar este turno como bonificado? Esto eliminará cualquier deuda pendiente.')) return;
+        try {
+            await api.put(`/appointments/${appt.id}`, { bonified: 1 });
+            showMessage(t('bonified_success') || 'Turno bonificado correctamente', 'success');
+            fetchAppointments();
+            setActionModal(prev => {
+                if (prev.open && prev.appt && prev.appt.id === appt.id) {
+                    return { ...prev, appt: { ...prev.appt, bonified: 1, payment_status: 'paid' } };
+                }
+                return prev;
+            });
+        } catch (e) {
+            console.error(e);
+            showMessage('Error al bonificar turno', 'error');
+        }
+    };
+
     const handleAddHoliday = async (date, description) => {
         return await addHolidayAction(date, description);
     };
@@ -483,6 +502,7 @@ export const useAppointmentsHandlers = ({
         handleAdminAuthConfirm,
         handleUpdateType,
         handleHardEdit,
+        handleBonify,
         handleAddHoliday,
         handleDeleteHoliday,
         handleOpenPayment,

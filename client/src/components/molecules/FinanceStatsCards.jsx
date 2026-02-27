@@ -64,6 +64,7 @@ const FinanceStatsCards = ({ stats, t }) => {
                                     <th className="finance-stats__table-header text-right">
                                         {t('count_label')}
                                     </th>
+                                    <th className="finance-stats__table-header text-right">{t('bonified_short') || 'Bonif.'}</th>
                                     <th className="finance-stats__table-header text-right">{t('payment')}</th>
                                 </tr>
                             </thead>
@@ -74,15 +75,19 @@ const FinanceStatsCards = ({ stats, t }) => {
                                     { l: 'this_year', d: s.year, c: 'finance-stats__value--muted' }
                                 ]
                                     .map(row => {
-                                        // Safety check: row.d can be an object {count, paid} or a number (legacy/flat)
+                                        // Safety check: row.d can be an object {count, paid, bonified} or a number (legacy/flat)
                                         const count = typeof row.d === 'object' ? (row.d?.count ?? 0) : 0;
                                         const paid = typeof row.d === 'object' ? (row.d?.paid ?? 0) : (row.d ?? 0);
+                                        const bonified = typeof row.d === 'object' ? (row.d?.bonified ?? 0) : 0;
 
                                         return (
                                             <tr key={row.l}>
                                                 <td className="finance-stats__table-cell finance-stats__label">{t(row.l) || row.l}</td>
                                                 <td className={`finance-stats__table-cell text-right font-bold ${row.c}`}>
                                                     {Number(count).toLocaleString()}
+                                                </td>
+                                                <td className="finance-stats__table-cell text-right font-bold finance-stats__value--muted">
+                                                    {Number(bonified).toLocaleString()}
                                                 </td>
                                                 <td className="finance-stats__table-cell text-right font-bold finance-stats__value--green">
                                                     ${Number(paid).toLocaleString()}

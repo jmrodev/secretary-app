@@ -175,6 +175,17 @@ export const useMedicalDocumentsHandlers = ({
         }
     }, [selectedRequest, requestEditData, t, showMessage, fetchRequests, setIsEditing, setSelectedRequest]);
 
+    const handleBonifyRequest = useCallback(async (id) => {
+        if (!await confirm(t('confirm_bonify') || '¿Seguro que desea marcar como bonificado? Esto cancelará deudas pendientes.')) return;
+        try {
+            await api.put(`/medical/requests/${id}`, { payment_status: 'bonified' });
+            showMessage(t('bonified_success') || 'Carga realizada con bonificación exitosa', 'success');
+            fetchRequests();
+        } catch (err) {
+            showMessage(`${t('error')}: ${err.response?.data || err.message}`, 'error');
+        }
+    }, [t, showMessage, fetchRequests, confirm]);
+
     const handleDeleteRequest = useCallback(async (id, r) => {
         if (user.role !== 'admin' && !canDeleteRequest && (r.status === 'completed' || r.status === 'rejected')) {
             if (!isToday(r.completed_at || r.updated_at)) {
@@ -265,6 +276,7 @@ export const useMedicalDocumentsHandlers = ({
                 medications: item.medications || '',
                 instructions: item.instructions || '',
                 items: parsedItems,
+                bonified: item.bonified === 1 || item.bonified === true,
                 _readOnly: item._readOnly || false
             });
         } else if (item._origin === 'license') {
@@ -282,6 +294,7 @@ export const useMedicalDocumentsHandlers = ({
                 request_note: item.request_note || '',
                 doctor_note: item.doctor_note || '',
                 items: parsedItems,
+                payment_status: item.payment_status || 'pending',
                 _readOnly: item._readOnly || false
             });
         }
@@ -362,6 +375,7 @@ export const useMedicalDocumentsHandlers = ({
         closePaymentModal,
         openPaymentModal,
         closeDeleteFileModal,
-        openDeleteFileModal
+        openDeleteFileModal,
+        handleBonifyRequest
     };
 };

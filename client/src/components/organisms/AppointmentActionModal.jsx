@@ -28,6 +28,7 @@ const AppointmentActionModal = ({
     onWhatsApp,
     onUpdateType,
     onHardEdit,
+    onBonify,
     onSaveNote,
     fetchAppointments
 }) => {
@@ -50,7 +51,6 @@ const AppointmentActionModal = ({
     // We will stick to: Only Doctors and Admins see the full panel unless explicitly enabled via config AND the role allows valid medical acts? 
     // Actually, usually permissions like 'canDeletePrescription' are for specific overrides. 
     // But let's assume if role IS 'secretary', hide it.
-
     // However, if a secretary has explicit permission to 'canDeletePrescription' (e.g. fixing errors), maybe they should see it?
     // The user said "si es secretaria no necesita panel medico". 
     // We will STRICTLY check for doctor/admin role for the panel.
@@ -124,6 +124,7 @@ const AppointmentActionModal = ({
                         onDelete={onDelete}
                         onUpdateType={onUpdateType}
                         onHardEdit={onHardEdit}
+                        onBonify={onBonify}
                         onClose={onClose}
                         note={note}
                     />

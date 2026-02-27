@@ -21,6 +21,7 @@ const AppointmentAdminPanel = ({
     onClose,
     onUpdateType,
     onHardEdit,
+    onBonify,
     note
 }) => {
     const isPendingPayment = (appt.payment_status === 'pending' || appt.payment_status === 'debt' || appt.payment_status === 'partial');
@@ -57,6 +58,15 @@ const AppointmentAdminPanel = ({
                             icon={<Icon name="payments" size="1rem" />}
                         >
                             {t('pay')}
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            outline
+                            className={`${baseClass}__action`}
+                            onClick={() => { onBonify(appt); onClose(); }}
+                            icon={<Icon name="card_giftcard" size="1rem" />}
+                        >
+                            {t('bonify') || 'Bonificar'}
                         </Button>
                     </div>
                 </div>

@@ -75,6 +75,21 @@ const EditPrescriptionModal = ({
                         onChange={e => onEditDataChange('instructions', e.target.value)}
                     />
                 </div>
+                {!editData._readOnly && (
+                    <div className="input-group">
+                        <label className="checkbox-container">
+                            <input
+                                type="checkbox"
+                                checked={editData.bonified || false}
+                                onChange={e => onEditDataChange('bonified', e.target.checked)}
+                            />
+                            <span className="checkmark"></span>
+                            <span className="checkbox-label" style={{ marginLeft: '10px' }}>
+                                {t('bonified') || 'Bonificado (Sin Costo)'}
+                            </span>
+                        </label>
+                    </div>
+                )}
             </div>
         </Modal>
     );

@@ -132,6 +132,11 @@ const AppointmentHeader = ({ appt, t, onWhatsApp }) => {
                 <Badge variant={appt.payment_status === 'paid' ? 'green' : 'red'}>
                     {t(appt.payment_status) || appt.payment_status}
                 </Badge>
+                {(appt.bonified === 1 || appt.bonified === true) && (
+                    <Badge variant="accent">
+                        {t('bonified') || 'Bonificado'}
+                    </Badge>
+                )}
             </div>
         </div>
     );

@@ -37,6 +37,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
         reqNote, setReqNote,
         medicationItems, setMedicationItems,
         sendToDoctor, setSendToDoctor,
+        bonified, setBonified,
         isSubmitting,
         handleCreateRequest,
         tempMedsProps
@@ -141,6 +142,19 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                         />
                         <label htmlFor="req-forward" className={`${baseClass}__panel-label`}>
                             {t('send_to_doctor') || 'Enviar a revisión médica'}
+                        </label>
+                    </div>
+
+                    <div className={`${baseClass}__panel-item`}>
+                        <input
+                            type="checkbox"
+                            className={`${baseClass}__checkbox`}
+                            id="bonified-req"
+                            checked={bonified}
+                            onChange={e => setBonified(e.target.checked)}
+                        />
+                        <label htmlFor="bonified-req" className={`${baseClass}__panel-label`}>
+                            {t('bonified') || 'Bonificado (Sin costo)'}
                         </label>
                     </div>
                 </div>

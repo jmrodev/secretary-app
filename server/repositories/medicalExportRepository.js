@@ -9,7 +9,7 @@ class MedicalExportRepository {
         const sql = `
             (SELECT 'direct' as source_type, pr.id, pr.medications, pr.instructions, a.appointment_date as date,
                     d.full_name as doctor_name, p.full_name as patient_name, p.dni as patient_dni,
-                    'paid' as payment_status, 0 as amount, 'N/A' as payment_method, 'prescription' as request_type
+                    CASE WHEN pr.bonified = 1 THEN 'bonified' ELSE 'paid' END as payment_status, 0 as amount, 'N/A' as payment_method, 'prescription' as request_type
             FROM prescriptions pr
             JOIN appointments a ON pr.appointment_id = a.id
             JOIN doctors d ON a.doctor_id = d.id

@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
 
 /**
  * InstitutionSummary Molecule.
@@ -15,24 +16,30 @@ const InstitutionSummary = ({
     if (!report) return null;
 
     return (
-        <div className="inst-header-bar">
+        <div className="inst-header-bar animate-fadeIn">
             <div className="inst-stats">
                 <div className="inst-stat-item">
-                    <div className="inst-stat-icon inst-stat-icon--blue">📊</div>
+                    <div className="inst-stat-icon inst-stat-icon--blue">
+                        <Icon name="history" size="1.2rem" />
+                    </div>
                     <div>
                         <p className="inst-stat-label">{t('historical_total')}</p>
-                        <p className="inst-stat-value">${report.total_amount}</p>
+                        <p className="inst-stat-value">${Number(report.total_amount || 0).toLocaleString()}</p>
                     </div>
                 </div>
                 <div className="inst-stat-item">
-                    <div className="inst-stat-icon inst-stat-icon--red">⏳</div>
+                    <div className="inst-stat-icon inst-stat-icon--red">
+                        <Icon name="timer" size="1.2rem" />
+                    </div>
                     <div>
                         <p className="inst-stat-label">{t('pending')}</p>
-                        <p className="inst-stat-value inst-stat-value--red">${report.total_pending}</p>
+                        <p className="inst-stat-value inst-stat-value--red">${Number(report.total_pending || 0).toLocaleString()}</p>
                     </div>
                 </div>
                 <div className="inst-stat-item">
-                    <div className="inst-stat-icon inst-stat-icon--orange">🔢</div>
+                    <div className="inst-stat-icon inst-stat-icon--orange">
+                        <Icon name="pending_actions" size="1.2rem" />
+                    </div>
                     <div>
                         <p className="inst-stat-label">{t('unpaid_count')}</p>
                         <p className="inst-stat-value">
@@ -62,8 +69,9 @@ const InstitutionSummary = ({
                     variant="success"
                     onClick={onPayClick}
                     disabled={Number(report.total_pending) <= 0}
+                    icon={<Icon name="payments" size="1.1rem" />}
                 >
-                    💰 {t('pay')}
+                    {t('pay')}
                 </Button>
             </div>
         </div>

@@ -32,6 +32,7 @@ export const useFinancesPageController = () => {
     const [typeFilter, setTypeFilter] = useState('all');
     const [monthFilter, setMonthFilter] = useState('all');
     const [yearFilter, setYearFilter] = useState('all');
+    const [paymentMethodFilter, setPaymentMethodFilter] = useState('all');
 
     // New Transaction Form State
     const [modalOpen, setModalOpen] = useState(false);
@@ -99,7 +100,7 @@ export const useFinancesPageController = () => {
 
             if (t.method === 'cash') {
                 results[docId].cash += delta;
-            } else if (t.method === 'transfer') {
+            } else {
                 results[docId].transfer += delta;
             }
             results[docId].total += delta;
@@ -234,11 +235,21 @@ export const useFinancesPageController = () => {
                 const matchesPatient = tx.patient_full_name?.toLowerCase().includes(query);
                 const matchesDesc = tx.description?.toLowerCase().includes(query);
                 const matchesAmount = tx.amount?.toString().includes(query);
-                if (!matchesPatient && !matchesDesc && !matchesAmount) return false;
+                const matchesStatus = t(tx.status)?.toLowerCase().includes(query);
+                const matchesMethod = t(tx.method)?.toLowerCase().includes(query);
+
+                if (!matchesPatient && !matchesDesc && !matchesAmount && !matchesStatus && !matchesMethod) return false;
             }
 
             // Status Filter
-            if (statusFilter !== 'all' && tx.status !== statusFilter) return false;
+            if (statusFilter !== 'all') {
+                if (statusFilter === 'bonified') {
+                    const isBonified = tx.bonified === 1 || tx.payment_status === 'bonified';
+                    if (!isBonified) return false;
+                } else if (tx.status !== statusFilter) {
+                    return false;
+                }
+            }
 
             // Type Filter
             if (typeFilter !== 'all') {
@@ -247,6 +258,9 @@ export const useFinancesPageController = () => {
                 if (typeFilter === 'request' && !tx.request_type) return false;
                 if (typeFilter !== 'appointment' && typeFilter !== 'request' && tx.type !== typeFilter) return false;
             }
+
+            // Payment Method Filter
+            if (paymentMethodFilter !== 'all' && tx.method !== paymentMethodFilter) return false;
 
             // Date Filters
             if (monthFilter !== 'all' || yearFilter !== 'all') {
@@ -257,12 +271,13 @@ export const useFinancesPageController = () => {
 
             return true;
         });
-    }, [transactions, searchQuery, statusFilter, typeFilter, monthFilter, yearFilter]);
+    }, [transactions, searchQuery, statusFilter, typeFilter, monthFilter, yearFilter, paymentMethodFilter]);
 
     // Available filters generator
     const filterOptions = useMemo(() => {
         const years = new Set();
         const types = new Set();
+        const paymentMethods = new Set();
         transactions.forEach(tx => {
             if (tx.transaction_date) {
                 years.add(new Date(tx.transaction_date).getFullYear().toString());
@@ -270,11 +285,13 @@ export const useFinancesPageController = () => {
             if (tx.appointment_id) types.add('appointment');
             else if (tx.request_type) types.add('request');
             else types.add(tx.type);
+            if (tx.method) paymentMethods.add(tx.method);
         });
 
         return {
             years: Array.from(years).sort((a, b) => b - a),
-            types: Array.from(types)
+            types: Array.from(types),
+            paymentMethods: Array.from(paymentMethods)
         };
     }, [transactions]);
 
@@ -325,7 +342,8 @@ export const useFinancesPageController = () => {
             setStatusFilter,
             setTypeFilter,
             setMonthFilter,
-            setYearFilter
+            setYearFilter,
+            setPaymentMethodFilter
         },
 
         // Filter State
@@ -335,6 +353,7 @@ export const useFinancesPageController = () => {
             typeFilter,
             monthFilter,
             yearFilter,
+            paymentMethodFilter,
             options: filterOptions
         },
         filteredTransactions

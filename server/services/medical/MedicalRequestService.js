@@ -8,6 +8,7 @@ const medicationRepository = require('../../repositories/medicationRepository');
 const doctorRepository = require('../../repositories/doctorRepository');
 const systemSettingsRepository = require('../../repositories/systemSettingsRepository');
 const transactionRepository = require('../../repositories/transactionRepository');
+const financeService = require('../finance/financeService');
 const { ROLES } = require('../../constants/roles');
 
 /**
@@ -108,7 +109,7 @@ class MedicalRequestService {
         try {
             await conn.beginTransaction();
             const { role, user_id } = req.user;
-            const { type, request_note, doctor_id, raw_medication_data, debt_amount, payment_method, regenerate_debt } = data;
+            const { type, request_note, doctor_id, raw_medication_data, debt_amount, payment_method, payment_status, regenerate_debt } = data;
 
             const reqInfo = await medicalRequestRepository.findById(id, conn);
             if (!reqInfo) throw new Error("Request not found");
@@ -120,9 +121,15 @@ class MedicalRequestService {
             if (request_note !== undefined) updates.request_note = request_note;
             if (doctor_id) updates.doctor_id = doctor_id;
             if (raw_medication_data) updates.raw_medication_data = typeof raw_medication_data === 'string' ? raw_medication_data : JSON.stringify(raw_medication_data);
+            if (payment_status) updates.payment_status = payment_status;
 
             if (Object.keys(updates).length > 0) {
                 await medicalRequestRepository.update(id, updates, conn);
+            }
+
+            if (payment_status === 'bonified') {
+                await financeService.markAsBonified(id, 'request', conn);
+                if (updates.payment_status) delete updates.payment_status;
             }
 
             if (raw_medication_data) {

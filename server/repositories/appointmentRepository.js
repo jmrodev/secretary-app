@@ -33,8 +33,8 @@ class AppointmentRepository {
         const connection = conn || await pool.getConnection();
         try {
             const result = await connection.query(
-                "INSERT INTO appointments (patient_id, doctor_id, appointment_date, reason, is_out_of_hours, type, status, institution_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                [data.patient_id, data.doctor_id, data.appointment_date, data.reason, data.is_out_of_hours || false, data.type || 'consultation', data.status || 'pending', data.institution_id]
+                "INSERT INTO appointments (patient_id, doctor_id, appointment_date, reason, is_out_of_hours, type, status, institution_id, bonified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [data.patient_id, data.doctor_id, data.appointment_date, data.reason, data.is_out_of_hours || false, data.type || 'consultation', data.status || 'pending', data.institution_id, data.bonified || false]
             );
             return result.insertId;
         } finally {
@@ -43,6 +43,7 @@ class AppointmentRepository {
     }
 
     async update(id, updates, conn) {
+        if (!updates || Object.keys(updates).length === 0) return 0;
         const connection = conn || await pool.getConnection();
         try {
             const setClauses = Object.keys(updates).map(key => `${key} = ?`).join(', ');
@@ -133,7 +134,7 @@ class AppointmentRepository {
     async findMonthlyAppointments(month, year, doctorId, conn = pool) {
         let query = `
             SELECT 
-                a.id, a.appointment_date, a.reason, a.status, a.payment_status, a.type, a.is_out_of_hours,
+                a.id, a.appointment_date, a.reason, a.status, a.payment_status, a.type, a.is_out_of_hours, a.bonified,
                 p.full_name as patient_name, d.full_name as doctor_name,
                 (SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE appointment_id = a.id AND is_withdrawal = 0 AND status = 'paid') as paid_amount,
                 (SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE appointment_id = a.id AND is_withdrawal = 0 AND status = 'paid' AND (method = 'cash' OR method = 'efectivo')) as cash_amount,
@@ -251,7 +252,8 @@ class AppointmentRepository {
         const query = `
             SELECT 
                 COUNT(DISTINCT a.id) as count,
-                SUM(CASE WHEN t.status = 'paid' THEN t.amount ELSE 0 END) as paid
+                SUM(CASE WHEN t.status = 'paid' THEN t.amount ELSE 0 END) as paid,
+                SUM(a.bonified) as bonified
             FROM appointments a
             LEFT JOIN transactions t ON t.appointment_id = a.id
             WHERE ${dateFilter}

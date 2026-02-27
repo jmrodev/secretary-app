@@ -32,6 +32,7 @@ class TransactionRepository {
     }
 
     async update(id, updates, conn) {
+        if (!updates || Object.keys(updates).length === 0) return 0;
         const connection = conn || await pool.getConnection();
         try {
             const setClauses = Object.keys(updates).map(key => `${key} = ?`).join(', ');
@@ -62,10 +63,34 @@ class TransactionRepository {
         }
     }
 
+    async findPendingByAppointment(appointmentId, conn) {
+        const connection = conn || await pool.getConnection();
+        try {
+            return await connection.query(
+                "SELECT * FROM transactions WHERE appointment_id = ? AND status = 'pending'",
+                [appointmentId]
+            );
+        } finally {
+            if (!conn) connection.release();
+        }
+    }
+
     async deletePendingByRequest(requestId, conn) {
         const connection = conn || await pool.getConnection();
         try {
             await connection.query("DELETE FROM transactions WHERE request_id = ? AND status = 'pending'", [requestId]);
+        } finally {
+            if (!conn) connection.release();
+        }
+    }
+
+    async findPendingByRequest(requestId, conn) {
+        const connection = conn || await pool.getConnection();
+        try {
+            return await connection.query(
+                "SELECT * FROM transactions WHERE request_id = ? AND status = 'pending'",
+                [requestId]
+            );
         } finally {
             if (!conn) connection.release();
         }
@@ -147,7 +172,7 @@ class TransactionRepository {
         const connection = conn || await pool.getConnection();
         try {
             let query = `SELECT t.*, u.username as related_user_name, d.full_name as doctor_name, p.full_name as patient_full_name, p.dni as patient_dni,
-                                i.cbte_nro as invoice_number, r.type as request_type
+                                i.cbte_nro as invoice_number, r.type as request_type, a.bonified, r.payment_status
                          FROM transactions t 
                          LEFT JOIN users u ON t.related_user_id = u.id
                          LEFT JOIN doctors d ON t.doctor_id = d.id
@@ -265,21 +290,33 @@ class TransactionRepository {
         const query = `
             SELECT
                 SUM(CASE WHEN status = 'paid' AND DATE(transaction_date) = ? AND is_withdrawal = 0 AND type LIKE 'income%' AND method = 'cash' THEN amount ELSE 0 END) as todayCash,
-                SUM(CASE WHEN status = 'paid' AND DATE(transaction_date) = ? AND is_withdrawal = 0 AND type LIKE 'income%' AND method = 'transfer' THEN amount ELSE 0 END) as todayTransfer,
+                SUM(CASE WHEN status = 'paid' AND DATE(transaction_date) = ? AND is_withdrawal = 0 AND type LIKE 'income%' AND method != 'cash' THEN amount ELSE 0 END) as todayTransfer,
                 SUM(CASE WHEN status = 'paid' AND DATE(transaction_date) = ? AND is_withdrawal = 1 AND method = 'cash' THEN amount ELSE 0 END) as todayWithdrawalCash,
-                SUM(CASE WHEN status = 'paid' AND DATE(transaction_date) = ? AND is_withdrawal = 1 AND method = 'transfer' THEN amount ELSE 0 END) as todayWithdrawalTransfer,
+                SUM(CASE WHEN status = 'paid' AND DATE(transaction_date) = ? AND is_withdrawal = 1 AND method != 'cash' THEN amount ELSE 0 END) as todayWithdrawalTransfer,
+                SUM(CASE WHEN status = 'paid' AND DATE(transaction_date) = ? AND type LIKE 'expense%' AND method = 'cash' THEN amount ELSE 0 END) as todayExpenseCash,
+                SUM(CASE WHEN status = 'paid' AND DATE(transaction_date) = ? AND type LIKE 'expense%' AND method != 'cash' THEN amount ELSE 0 END) as todayExpenseTransfer,
+                
                 SUM(CASE WHEN status = 'paid' AND transaction_date >= ? AND is_withdrawal = 0 AND type LIKE 'income%' AND method = 'cash' THEN amount ELSE 0 END) as monthCash,
-                SUM(CASE WHEN status = 'paid' AND transaction_date >= ? AND is_withdrawal = 0 AND type LIKE 'income%' AND method = 'transfer' THEN amount ELSE 0 END) as monthTransfer,
+                SUM(CASE WHEN status = 'paid' AND transaction_date >= ? AND is_withdrawal = 0 AND type LIKE 'income%' AND method != 'cash' THEN amount ELSE 0 END) as monthTransfer,
                 SUM(CASE WHEN is_withdrawal = 1 AND transaction_date >= ? AND method = 'cash' THEN amount ELSE 0 END) as monthCashWithdrawal,
-                SUM(CASE WHEN is_withdrawal = 1 AND transaction_date >= ? AND method = 'transfer' THEN amount ELSE 0 END) as monthTransferWithdrawal,
+                SUM(CASE WHEN is_withdrawal = 1 AND transaction_date >= ? AND method != 'cash' THEN amount ELSE 0 END) as monthTransferWithdrawal,
+                SUM(CASE WHEN status = 'paid' AND transaction_date >= ? AND type LIKE 'expense%' AND method = 'cash' THEN amount ELSE 0 END) as monthExpenseCash,
+                SUM(CASE WHEN status = 'paid' AND transaction_date >= ? AND type LIKE 'expense%' AND method != 'cash' THEN amount ELSE 0 END) as monthExpenseTransfer,
+                
                 SUM(CASE WHEN status = 'paid' AND transaction_date >= ? AND is_withdrawal = 0 AND type LIKE 'income%' AND method = 'cash' THEN amount ELSE 0 END) as yearCash,
-                SUM(CASE WHEN status = 'paid' AND transaction_date >= ? AND is_withdrawal = 0 AND type LIKE 'income%' AND method = 'transfer' THEN amount ELSE 0 END) as yearTransfer,
+                SUM(CASE WHEN status = 'paid' AND transaction_date >= ? AND is_withdrawal = 0 AND type LIKE 'income%' AND method != 'cash' THEN amount ELSE 0 END) as yearTransfer,
                 SUM(CASE WHEN is_withdrawal = 1 AND transaction_date >= ? AND method = 'cash' THEN amount ELSE 0 END) as yearWithdrawalCash,
-                SUM(CASE WHEN is_withdrawal = 1 AND transaction_date >= ? AND method = 'transfer' THEN amount ELSE 0 END) as yearWithdrawalTransfer
+                SUM(CASE WHEN is_withdrawal = 1 AND transaction_date >= ? AND method != 'cash' THEN amount ELSE 0 END) as yearWithdrawalTransfer,
+                SUM(CASE WHEN status = 'paid' AND transaction_date >= ? AND type LIKE 'expense%' AND method = 'cash' THEN amount ELSE 0 END) as yearExpenseCash,
+                SUM(CASE WHEN status = 'paid' AND transaction_date >= ? AND type LIKE 'expense%' AND method != 'cash' THEN amount ELSE 0 END) as yearExpenseTransfer
             FROM transactions
             WHERE 1=1 ${doctorFilter}
         `;
-        const params = [today, today, today, today, month, month, month, month, year, year, year, year];
+        const params = [
+            today, today, today, today, today, today,
+            month, month, month, month, month, month,
+            year, year, year, year, year, year
+        ];
         if (doctorId) params.push(doctorId);
 
         const [row] = await conn.query(query, params);

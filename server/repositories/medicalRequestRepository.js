@@ -50,6 +50,7 @@ class MedicalRequestRepository {
     }
 
     async update(id, updates, conn = pool) {
+        if (!updates || Object.keys(updates).length === 0) return 0;
         const fields = Object.keys(updates).map(k => `${k} = ?`).join(', ');
         const values = [...Object.values(updates), id];
         return await conn.query(`UPDATE medical_requests SET ${fields} WHERE id = ?`, values);
@@ -73,7 +74,8 @@ class MedicalRequestRepository {
             SELECT 
                 COUNT(DISTINCT r.id) as count,
                 SUM(CASE WHEN t.status = 'paid' THEN t.amount ELSE 0 END) as paid,
-                SUM(CASE WHEN t.status = 'pending' THEN t.amount ELSE 0 END) as debt
+                SUM(CASE WHEN t.status = 'pending' THEN t.amount ELSE 0 END) as debt,
+                SUM(CASE WHEN r.payment_status = 'bonified' THEN 1 ELSE 0 END) as bonified
             FROM medical_requests r
             LEFT JOIN transactions t ON t.request_id = r.id
             WHERE r.type = ? AND ${dateFilter}

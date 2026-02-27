@@ -1,0 +1,98 @@
+/* TempAccess.css (BEM) */
+
+.temp-access {
+    min-height: 100vh;
+    background-color: var(--slate-50, #f8fafc);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2.5rem 1rem;
+}
+
+.temp-access__container {
+    max-width: 48rem;
+    width: 100%;
+}
+
+.temp-access__card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--slate-200, #e2e8f0);
+}
+
+.temp-access__header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.temp-access__title {
+    font-size: 1.875rem;
+    font-weight: 800;
+    color: var(--slate-900, #0f172a);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.025em;
+}
+
+.temp-access__subtitle {
+    color: var(--slate-500, #64748b);
+    font-size: 1.1rem;
+}
+
+.temp-access__form-section {
+    margin-top: 2rem;
+}
+
+.temp-access__download-card {
+    margin-top: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--blue-600, #2563eb) 0%, var(--blue-800, #1e40af) 100%);
+    border-radius: 1.5rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    box-shadow: 0 15px 30px -5px rgba(37, 99, 235, 0.3);
+}
+
+.temp-access__download-info {
+    flex: 1;
+}
+
+.temp-access__download-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.temp-access__download-text {
+    font-size: 1rem;
+    opacity: 0.9;
+    line-height: 1.5;
+}
+
+.temp-access__download-button {
+    background: white !important;
+    color: var(--blue-700, #1d4ed8) !important;
+    font-weight: 800 !important;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .temp-access__card {
+        padding: 1.5rem;
+    }
+
+    .temp-access__download-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+
+    .temp-access__download-button {
+        width: 100%;
+    }
+}

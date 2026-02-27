@@ -78,6 +78,16 @@ const PatientFinancialSidebar = ({
                     >
                         {t('request_prescription_link')}
                     </Button>
+
+                    <Button
+                        variant="accent"
+                        className="patient-details__tool-btn"
+                        onClick={() => window.open('/uploads/secretary-app.apk', '_blank')}
+                        icon={<Icon name="DOWNLOAD" size="1.1rem" />}
+                    >
+                        {t('download_apk')}
+                    </Button>
+
                     {(user.role === 'admin' || user.role === 'secretary') && (
                         <Button
                             variant="ghost"

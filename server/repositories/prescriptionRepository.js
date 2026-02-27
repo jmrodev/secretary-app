@@ -50,8 +50,8 @@ class PrescriptionRepository {
 
     async create(data, conn = pool) {
         const result = await conn.query(
-            "INSERT INTO prescriptions (appointment_id, medications, instructions) VALUES (?, ?, ?)",
-            [data.appointment_id, data.medications || '', data.instructions]
+            "INSERT INTO prescriptions (appointment_id, medications, instructions, bonified) VALUES (?, ?, ?, ?)",
+            [data.appointment_id, data.medications || '', data.instructions, data.bonified || false]
         );
         return result.insertId;
     }
@@ -72,6 +72,7 @@ class PrescriptionRepository {
     }
 
     async update(id, updates, conn = pool) {
+        if (!updates || Object.keys(updates).length === 0) return 0;
         const setClauses = Object.keys(updates).map(key => `${key} = ?`).join(', ');
         const params = [...Object.values(updates), id];
         const result = await conn.query(`UPDATE prescriptions SET ${setClauses} WHERE id = ?`, params);

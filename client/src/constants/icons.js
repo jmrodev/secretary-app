@@ -76,4 +76,5 @@ export const ICONS = {
     ARROW_FORWARD: 'arrow_forward',
     CHEVRON_LEFT: 'chevron_left',
     CHEVRON_RIGHT: 'chevron_right',
+    DOWNLOAD: 'file_download',
 };

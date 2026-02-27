@@ -66,6 +66,21 @@ const EditRequestModal = ({
                         onChange={e => onEditDataChange('doctor_note', e.target.value)}
                     />
                 </div>
+                {!editData._readOnly && (
+                    <div className="input-group">
+                        <label className="checkbox-container">
+                            <input
+                                type="checkbox"
+                                checked={editData.payment_status === 'bonified'}
+                                onChange={e => onEditDataChange('payment_status', e.target.checked ? 'bonified' : 'debt')}
+                            />
+                            <span className="checkmark"></span>
+                            <span className="checkbox-label" style={{ marginLeft: '10px' }}>
+                                {t('bonified') || 'Bonificado (Sin Costo)'}
+                            </span>
+                        </label>
+                    </div>
+                )}
             </div>
         </Modal>
     );

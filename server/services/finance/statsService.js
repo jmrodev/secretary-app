@@ -53,6 +53,8 @@ exports.getDetailedStats = async (doctor_id) => {
             todayWithdrawalCash: Number(finStats.todayWithdrawalCash || 0),
             todayWithdrawalTransfer: Number(finStats.todayWithdrawalTransfer || 0),
             expenseToday: Number(expenseStats.today || 0),
+            expenseTodayCash: Number(finStats.todayExpenseCash || 0),
+            expenseTodayTransfer: Number(finStats.todayExpenseTransfer || 0),
 
             monthCash: Number(finStats.monthCash || 0),
             monthTransfer: Number(finStats.monthTransfer || 0),
@@ -60,6 +62,8 @@ exports.getDetailedStats = async (doctor_id) => {
             monthCashWithdrawal: Number(finStats.monthCashWithdrawal || 0),
             monthTransferWithdrawal: Number(finStats.monthTransferWithdrawal || 0),
             expenseMonth: Number(expenseStats.month || 0),
+            expenseMonthCash: Number(finStats.monthExpenseCash || 0),
+            expenseMonthTransfer: Number(finStats.monthExpenseTransfer || 0),
 
             yearCash: Number(finStats.yearCash || 0),
             yearTransfer: Number(finStats.yearTransfer || 0),
@@ -67,11 +71,25 @@ exports.getDetailedStats = async (doctor_id) => {
             yearWithdrawalCash: Number(finStats.yearWithdrawalCash || 0),
             yearWithdrawalTransfer: Number(finStats.yearWithdrawalTransfer || 0),
             expenseYear: Number(expenseStats.year || 0),
+            expenseYearCash: Number(finStats.yearExpenseCash || 0),
+            expenseYearTransfer: Number(finStats.yearExpenseTransfer || 0),
 
             appointments: {
-                today: { count: Number(apptToday.count || 0), paid: Number(apptToday.paid || 0) },
-                month: { count: Number(apptMonth.count || 0), paid: Number(apptMonth.paid || 0) },
-                year: { count: Number(apptYear.count || 0), paid: Number(apptYear.paid || 0) },
+                today: {
+                    count: Number(apptToday.count || 0),
+                    paid: Number(apptToday.paid || 0),
+                    bonified: Number(apptToday.bonified || 0)
+                },
+                month: {
+                    count: Number(apptMonth.count || 0),
+                    paid: Number(apptMonth.paid || 0),
+                    bonified: Number(apptMonth.bonified || 0)
+                },
+                year: {
+                    count: Number(apptYear.count || 0),
+                    paid: Number(apptYear.paid || 0),
+                    bonified: Number(apptYear.bonified || 0)
+                },
                 debt: Number(apptDebt || 0)
             },
             prescriptions: requestData.prescription,

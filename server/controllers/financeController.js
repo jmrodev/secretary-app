@@ -1,4 +1,4 @@
-                        const { logAction } = require('../utils/audit');
+const { logAction } = require('../utils/audit');
 const { formatLocalSQL } = require('../utils/dateUtils');
 const statsService = require('../services/finance/statsService');
 const financeService = require('../services/finance/financeService');
@@ -70,15 +70,15 @@ exports.getStats = async (req, res) => {
             { type: 'pending_debt', total: stats.totalDebt },
             {
                 type: 'cash_balance',
-                today: stats.todayCash - Number(stats.todayWithdrawalCash || 0) - stats.expenseToday,
-                month: stats.monthCash - Number(stats.monthCashWithdrawal || 0) - stats.expenseMonth,
-                year: stats.yearCash - Number(stats.yearWithdrawalCash || 0) - stats.expenseYear
+                today: stats.todayCash - Number(stats.todayWithdrawalCash || 0) - (stats.expenseTodayCash || 0),
+                month: stats.monthCash - Number(stats.monthCashWithdrawal || 0) - (stats.expenseMonthCash || 0),
+                year: stats.yearCash - Number(stats.yearWithdrawalCash || 0) - (stats.expenseYearCash || 0)
             },
             {
                 type: 'transfer_balance',
-                today: stats.todayTransfer - Number(stats.todayWithdrawalTransfer || 0),
-                month: stats.monthTransfer - Number(stats.monthTransferWithdrawal || 0),
-                year: stats.yearTransfer - Number(stats.yearWithdrawalTransfer || 0)
+                today: stats.todayTransfer - Number(stats.todayWithdrawalTransfer || 0) - (stats.expenseTodayTransfer || 0),
+                month: stats.monthTransfer - Number(stats.monthTransferWithdrawal || 0) - (stats.expenseMonthTransfer || 0),
+                year: stats.yearTransfer - Number(stats.yearWithdrawalTransfer || 0) - (stats.expenseYearTransfer || 0)
             },
             {
                 type: 'total_net',

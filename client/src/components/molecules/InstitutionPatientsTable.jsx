@@ -1,4 +1,5 @@
 import React from 'react';
+import Icon from '../atoms/Icon';
 
 /**
  * InstitutionPatientsTable Molecule.
@@ -10,10 +11,10 @@ const InstitutionPatientsTable = ({
     t
 }) => {
     return (
-        <div className="inst-table-container">
+        <div className="inst-table-container animate-fadeIn">
             <div className="inst-table-header">
                 <h3 className="inst-table-title">
-                    👥 {t('patient_list_padron')}
+                    <Icon name="groups" /> {t('patient_list_padron')}
                     <span className="inst-table-badge">{patients.length}</span>
                 </h3>
             </div>

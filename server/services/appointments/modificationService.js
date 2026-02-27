@@ -1,5 +1,6 @@
 const appointmentRepository = require('../../repositories/appointmentRepository');
 const googleSyncService = require('./googleSyncService');
+const financeService = require('../finance/financeService');
 const helper = require('./appointmentHelper');
 const { pool } = require('../../db');
 const { logAction } = require('../../utils/audit');
@@ -107,7 +108,15 @@ class ModificationService {
                 updates.appointment_date = newDate;
             }
 
-            await appointmentRepository.update(id, updates, conn);
+            if (updates.bonified === 1 || updates.bonified === true || updates.bonified === 'true') {
+                await financeService.markAsBonified(id, 'appointment', conn);
+                delete updates.bonified;
+                if (updates.payment_status) delete updates.payment_status;
+            }
+
+            if (Object.keys(updates).length > 0) {
+                await appointmentRepository.update(id, updates, conn);
+            }
             await conn.commit();
             await this._syncUpdateToGoogle(id, updates, userId);
             return true;

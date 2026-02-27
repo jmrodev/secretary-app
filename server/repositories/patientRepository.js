@@ -16,14 +16,34 @@ class PatientRepository {
         return rows[0] || null;
     }
 
-    async findTariffAndInstitutionPrice(patientId, appointmentInstitutionId = null, conn = pool) {
-        let query = `
-            SELECT p.tariff_percent, p.tariff_override, i.base_price as inst_price 
-            FROM patients p
-            LEFT JOIN institutions i ON ${appointmentInstitutionId ? 'i.id = ?' : 'p.institution_id = i.id'}
-            WHERE p.id = ?
-        `;
-        const params = appointmentInstitutionId ? [appointmentInstitutionId, patientId] : [patientId];
+    async findTariffAndInstitutionPrice(patientId, appointmentInstitutionId, conn = pool) {
+        let query;
+        let params;
+
+        if (appointmentInstitutionId === null) {
+            // Explicitly NO institution
+            query = `SELECT tariff_percent, tariff_override, NULL as inst_price FROM patients WHERE id = ?`;
+            params = [patientId];
+        } else if (appointmentInstitutionId) {
+            // Specific institution provided
+            query = `
+                SELECT p.tariff_percent, p.tariff_override, i.base_price as inst_price 
+                FROM patients p
+                LEFT JOIN institutions i ON i.id = ?
+                WHERE p.id = ?
+            `;
+            params = [appointmentInstitutionId, patientId];
+        } else {
+            // Default: use patient's assigned institution
+            query = `
+                SELECT p.tariff_percent, p.tariff_override, i.base_price as inst_price 
+                FROM patients p
+                LEFT JOIN institutions i ON p.institution_id = i.id
+                WHERE p.id = ?
+            `;
+            params = [patientId];
+        }
+
         const rows = await conn.query(query, params);
         return rows[0] || null;
     }

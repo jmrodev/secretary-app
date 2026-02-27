@@ -7,6 +7,7 @@ import InstitutionSummary from '../molecules/InstitutionSummary';
 import InstitutionTransactionsTable from '../molecules/InstitutionTransactionsTable';
 import InstitutionPatientsTable from '../molecules/InstitutionPatientsTable';
 import InstitutionPaymentModal from '../molecules/InstitutionPaymentModal';
+import './InstitutionFinances.css';
 
 /**
  * InstitutionFinances Organism.

@@ -20,6 +20,7 @@ const FinanceFilters = ({
         typeFilter,
         monthFilter,
         yearFilter,
+        paymentMethodFilter,
         options
     } = filters;
 
@@ -28,13 +29,14 @@ const FinanceFilters = ({
         setStatusFilter,
         setTypeFilter,
         setMonthFilter,
-        setYearFilter
+        setYearFilter,
+        setPaymentMethodFilter
     } = handlers;
 
     const monthOptions = getMonthsOptions(t);
 
     const yearOptions = [
-        { value: 'all', label: t('all_years') || 'Todos los años' },
+        { value: 'all', label: t('all_years') },
         ...options.years.map(year => ({ value: year, label: year }))
     ];
 
@@ -42,6 +44,7 @@ const FinanceFilters = ({
         { value: 'all', label: t('all_statuses') || 'Todos los estados' },
         { value: 'paid', label: t('paid') || 'Pagado' },
         { value: 'pending', label: t('pending') || 'Pendiente' },
+        { value: 'bonified', label: t('bonified') || 'Bonificado' },
         { value: 'refunded', label: t('refunded') || 'Reembolsado' }
     ];
 
@@ -50,6 +53,14 @@ const FinanceFilters = ({
         ...options.types.map(type => ({
             value: type,
             label: t(type) || type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' ')
+        }))
+    ];
+
+    const paymentMethodOptions = [
+        { value: 'all', label: t('all_methods') || 'Todos los métodos' },
+        ...(options.paymentMethods || []).map(method => ({
+            value: method,
+            label: t(method) || method.charAt(0).toUpperCase() + method.slice(1)
         }))
     ];
 
@@ -107,7 +118,17 @@ const FinanceFilters = ({
                     />
                 </div>
 
-                {(searchQuery || statusFilter !== 'all' || typeFilter !== 'all' || monthFilter !== 'all' || yearFilter !== 'all') && (
+                <div className="finance-filters__group">
+                    <label className="finance-filters__label">{t('payment_method') || 'Método de pago'}</label>
+                    <Select
+                        value={paymentMethodFilter}
+                        onChange={(e) => setPaymentMethodFilter(e.target.value)}
+                        options={paymentMethodOptions}
+                        size="sm"
+                    />
+                </div>
+
+                {(searchQuery || statusFilter !== 'all' || typeFilter !== 'all' || monthFilter !== 'all' || yearFilter !== 'all' || paymentMethodFilter !== 'all') && (
                     <button
                         className="finance-filters__clear"
                         onClick={() => {
@@ -116,6 +137,7 @@ const FinanceFilters = ({
                             setTypeFilter('all');
                             setMonthFilter('all');
                             setYearFilter('all');
+                            setPaymentMethodFilter('all');
                         }}
                     >
                         <Icon name="CANCEL" size="1.1rem" />

@@ -10,6 +10,7 @@ export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMe
     const [reqNote, setReqNote] = useState('');
     const [medicationItems, setMedicationItems] = useState([]);
     const [sendToDoctor, setSendToDoctor] = useState(initialSendToDoctor !== undefined ? initialSendToDoctor : true);
+    const [bonified, setBonified] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Temporary medication states (for auto-add on submit)
@@ -108,7 +109,8 @@ export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMe
                 doctor_id: user.role === 'doctor' ? (user.user_id || user.id) : selectedDoctor,
                 request_note: finalNote,
                 raw_medication_data: JSON.stringify(finalItems),
-                status: sendToDoctor ? 'pending' : 'completed'
+                status: sendToDoctor ? 'pending' : 'completed',
+                bonified: bonified
             });
             showMessage(sendToDoctor ? t('request_sent') : (t('request_saved_completed') || 'Guardado como Completado'), 'success');
 
@@ -116,6 +118,7 @@ export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMe
             setReqNote('');
             setMedicationItems([]);
             setSendToDoctor(true);
+            setBonified(false);
             setSelectedPatient('');
             setPatientData(null);
 
@@ -146,6 +149,7 @@ export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMe
         reqNote, setReqNote,
         medicationItems, setMedicationItems,
         sendToDoctor, setSendToDoctor,
+        bonified, setBonified,
         isSubmitting,
         handleCreateRequest,
         tempMedsProps: {

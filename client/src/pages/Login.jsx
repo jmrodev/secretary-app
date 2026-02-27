@@ -3,6 +3,7 @@ import { useLoginController } from '../controllers/useLoginController';
 import Button from '../components/atoms/Button';
 import Input from '../components/atoms/Input';
 import FormGroup from '../components/molecules/FormGroup';
+import Icon from '../components/atoms/Icon';
 import './Login.css';
 
 /**
@@ -65,6 +66,17 @@ const Login = () => {
                 </form>
 
                 <footer className="auth-card__footer">
+                    <div className="auth-card__download mb-6">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full"
+                            icon={<Icon name="DOWNLOAD" size="1.1rem" />}
+                            onClick={() => window.open('/uploads/secretary-app.apk', '_blank')}
+                        >
+                            {t('download_apk')}
+                        </Button>
+                    </div>
                     <p className="auth-card__footer-text">
                         © {new Date().getFullYear()} Consultorio Médico.
                     </p>

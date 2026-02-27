@@ -23,7 +23,7 @@ class PrescriptionService {
         try {
             await conn.beginTransaction();
 
-            const { appointment_id, medications, instructions, items } = prescriptionData;
+            const { appointment_id, medications, instructions, items, bonified } = prescriptionData;
             const userId = req.user.user_id;
 
             const appt = await appointmentRepository.findById(appointment_id, conn);
@@ -32,14 +32,14 @@ class PrescriptionService {
             await this._checkOwnership(conn, req.user, appt.doctor_id);
 
             const prescriptionId = await prescriptionRepository.create({
-                appointment_id, medications, instructions
+                appointment_id, medications, instructions, bonified
             }, conn);
 
             if (items && Array.isArray(items)) {
                 await this._processPrescriptionItems(conn, prescriptionId, appt.patient_id, items, userId);
             }
 
-            await this._handleFinancialsAndReminders(conn, appointment_id, appt.doctor_id, appt.patient_id, instructions, userId, req);
+            await this._handleFinancialsAndReminders(conn, appointment_id, appt.doctor_id, appt.patient_id, instructions, userId, req, bonified);
 
             await conn.commit();
             return prescriptionId;
@@ -70,12 +70,13 @@ class PrescriptionService {
         const conn = await pool.getConnection();
         try {
             const { medications, instructions } = prescriptionData;
-            const prescription = await prescriptionRepository.findById(id, conn);
-            if (!prescription) throw new Error("Prescription not found");
+            const updates = { medications, instructions };
 
-            await this._checkPermissions(conn, req.user, prescription.doctor_id, 'enable_secretary_crud_prescriptions');
+            if (prescriptionData.bonified === 1 || prescriptionData.bonified === true || prescriptionData.bonified === 'true') {
+                await financeService.markAsBonified(id, 'prescription', conn);
+            }
 
-            await prescriptionRepository.update(id, { medications, instructions }, conn);
+            await prescriptionRepository.update(id, updates, conn);
             logAction(req, 'UPDATE_PRESCRIPTION', `Prescription ID: ${id}`);
         } finally {
             conn.release();
@@ -121,12 +122,12 @@ class PrescriptionService {
         }
     }
 
-    async _handleFinancialsAndReminders(conn, appointment_id, doctorId, patientId, instructions, userId, req) {
+    async _handleFinancialsAndReminders(conn, appointment_id, doctorId, patientId, instructions, userId, req, bonified) {
         const pat = await patientRepository.findById(patientId, conn);
         if (!pat) return;
 
         const { price } = await calculatePrice(conn, doctorId, patientId, 'prescription');
-        if (price > 0) {
+        if (price > 0 && !bonified) {
             await financeService.createTransaction({
                 type: 'income_patient', amount: 0, debt_amount: price,
                 description: `Prescription - ${instructions ? instructions.substring(0, 50) : 'General'}`,

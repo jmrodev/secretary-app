@@ -35,6 +35,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
     const [items, setItems] = useState([]);
     const [patientMeds, setPatientMeds] = useState([]);
     const [historyMeds, setHistoryMeds] = useState([]);
+    const [bonified, setBonified] = useState(false);
 
     // Structured input states
     const [tempMed, setTempMed] = useState('');
@@ -126,6 +127,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
         setTempBoxes('');
         setTempFreqPreset(null);
         setCurrentVademecumId(null);
+        setBonified(false);
     };
 
     // ── Handlers ─────────────────────────────────────────────────────────────
@@ -315,7 +317,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
             return `${i.name} ${i.dose || ''} ${i.frequency || ''}${qtyStr}${supplyStr}`.trim().replace(/\s+/g, ' ');
         }).join('\n');
 
-        onSubmit({ medications: finalMeds, instructions, items: finalItems });
+        onSubmit({ medications: finalMeds, instructions, items: finalItems, bonified });
         setMedications('');
         setInstructions('');
         setItems([]);
@@ -380,6 +382,19 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
                         onChange={e => setInstructions(capitalizeFirst(e.target.value))}
                         placeholder={t('instructions_placeholder') || 'ej. Tomar con comida. No superar dosis máxima.'}
                     />
+                </div>
+
+                <div className="prescription-modal__group checkbox-group">
+                    <input
+                        type="checkbox"
+                        id="bonified-prescription"
+                        checked={bonified}
+                        onChange={e => setBonified(e.target.checked)}
+                        className="prescription-modal__checkbox"
+                    />
+                    <label htmlFor="bonified-prescription" className="input-label checkbox-label">
+                        {t('bonified') || 'Bonificado (Sin costo)'}
+                    </label>
                 </div>
             </div>
         </Modal>

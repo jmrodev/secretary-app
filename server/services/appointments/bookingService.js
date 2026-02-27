@@ -50,7 +50,8 @@ class BookingService {
                 is_out_of_hours: data.is_out_of_hours === true || data.is_out_of_hours === 1 || data.is_out_of_hours === 'true',
                 type: data.type,
                 status: 'pending',
-                institution_id: finalInstitutionId
+                institution_id: finalInstitutionId,
+                bonified: data.bonified === true || data.bonified === 1 || data.bonified === 'true'
             }, conn);
 
             let paymentStatus = 'pending';

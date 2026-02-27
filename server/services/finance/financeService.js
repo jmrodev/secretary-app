@@ -2,6 +2,7 @@ const transactionRepository = require('../../repositories/transactionRepository'
 const appointmentRepository = require('../../repositories/appointmentRepository');
 const patientRepository = require('../../repositories/patientRepository');
 const medicalRequestRepository = require('../../repositories/medicalRequestRepository');
+const prescriptionRepository = require('../../repositories/prescriptionRepository');
 const { pool } = require('../../db');
 const { formatLocalSQL, nowLocalSQL } = require('../../utils/dateUtils');
 const { calculatePrice } = require('../../utils/priceCalculator');
@@ -272,6 +273,112 @@ class FinanceService {
 
     async getPricing(doctorId, patientId, serviceType) {
         return await calculatePrice(pool, doctorId, patientId, serviceType);
+    }
+
+    async markAsBonified(id, type, conn) {
+        const connection = conn || await pool.getConnection();
+        try {
+            if (type === 'appointment') {
+                const appt = await appointmentRepository.findById(id, connection);
+                if (!appt) throw new Error("Turno no encontrado");
+
+                // Check if already paid (and not bonified)
+                if (appt.payment_status === 'paid' && !appt.bonified) {
+                    throw new Error("No se puede bonificar un turno que ya ha sido pagado.");
+                }
+
+                const pendings = await transactionRepository.findPendingByAppointment(id, connection);
+                if (pendings.length > 0) {
+                    for (const tx of pendings) {
+                        await transactionRepository.update(tx.id, {
+                            status: 'paid',
+                            amount: 0,
+                            method: 'bonified',
+                            description: (tx.description || '') + " (Bonificado)"
+                        }, connection);
+                    }
+                } else {
+                    if (appt) {
+                        await transactionRepository.create({
+                            type: 'income',
+                            amount: 0,
+                            description: `${appt.reason || 'Consulta'} (Bonificado)`,
+                            related_user_id: appt.patient_id ? (await patientRepository.findById(appt.patient_id, connection))?.user_id : null,
+                            doctor_id: appt.doctor_id,
+                            appointment_id: id,
+                            transaction_date: appt.appointment_date,
+                            method: 'bonified',
+                            status: 'paid'
+                        }, connection);
+                    }
+                }
+                await appointmentRepository.update(id, { payment_status: 'paid', bonified: 1 }, connection);
+            } else if (type === 'request') {
+                const req = await medicalRequestRepository.findById(id, connection);
+                if (!req) throw new Error("Solicitud no encontrada");
+
+                // Check if already paid
+                if (req.payment_status === 'paid') {
+                    throw new Error("No se puede bonificar una solicitud que ya ha sido pagada.");
+                }
+
+                const pendings = await transactionRepository.findPendingByRequest(id, connection);
+                if (pendings.length > 0) {
+                    for (const tx of pendings) {
+                        await transactionRepository.update(tx.id, {
+                            status: 'paid',
+                            amount: 0,
+                            method: 'bonified',
+                            description: (tx.description || '') + " (Bonificado)"
+                        }, connection);
+                    }
+                } else {
+                    if (req) {
+                        await transactionRepository.create({
+                            type: 'income',
+                            amount: 0,
+                            description: `Solicitud: ${req.type} (Bonificado)`,
+                            related_user_id: req.user_id,
+                            doctor_id: req.doctor_id,
+                            request_id: id,
+                            transaction_date: req.created_at,
+                            method: 'bonified',
+                            status: 'paid'
+                        }, connection);
+                    }
+                }
+                await medicalRequestRepository.update(id, { payment_status: 'bonified', debt_amount: 0 }, connection);
+            } else if (type === 'prescription') {
+                // Here id is prescriptionId
+                const prescription = await prescriptionRepository.findById(id, connection);
+                if (!prescription) throw new Error("Receta no encontrada");
+
+                // Check if already bonified. If not, check if it has paid transactions
+                // (Prescriptions usually don't have their own payment_status in the main table yet, 
+                // but they are linked to appointment transactions or standalone ones)
+                // If it's already bonified, we allow it (idempotency).
+                if (prescription.bonified) return;
+
+                if (prescription.appointment_id) {
+                    // Check if there are PAID transactions for this prescription
+                    const paidTx = await connection.query(
+                        "SELECT id FROM transactions WHERE appointment_id = ? AND description LIKE 'Prescription%' AND status = 'paid'",
+                        [prescription.appointment_id]
+                    );
+                    if (paidTx.length > 0) {
+                        throw new Error("No se puede bonificar una receta que ya ha sido pagada.");
+                    }
+
+                    await connection.query(
+                        "DELETE FROM transactions WHERE appointment_id = ? AND description LIKE 'Prescription%' AND status = 'pending'",
+                        [prescription.appointment_id]
+                    );
+                }
+                await prescriptionRepository.update(id, { bonified: 1 }, connection);
+            }
+        } finally {
+            if (!conn) connection.release();
+        }
     }
 }
 

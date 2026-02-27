@@ -3,6 +3,10 @@ import PatientForm from '../components/organisms/PatientForm';
 import StatusDisplay from '../components/molecules/StatusDisplay';
 import { useTempAccessController } from '../controllers/useTempAccessController';
 import { usePatientFormController } from '../controllers/usePatientFormController';
+import { useLanguage } from '../context/LanguageContext';
+import Button from '../components/atoms/Button';
+import Icon from '../components/atoms/Icon';
+import './TempAccess.css';
 
 const TempAccessFormWrapper = ({ initialData, insurances, onSubmit, isEdit }) => {
     const controller = usePatientFormController({
@@ -30,6 +34,7 @@ const TempAccess = () => {
         insurances,
         handleSubmit
     } = useTempAccessController();
+    const { t } = useLanguage();
 
     // Render logic for different states
     if (loading) {
@@ -79,6 +84,26 @@ const TempAccess = () => {
                         />
                     </section>
                 </article>
+
+                <aside className="temp-access__download-card animate-fadeIn">
+                    <div className="temp-access__download-info">
+                        <h4 className="temp-access__download-title">
+                            <Icon name="SMARTPHONE" className="mr-2" />
+                            {t('mobile_app')}
+                        </h4>
+                        <p className="temp-access__download-text">
+                            Descarga nuestra aplicación para gestionar tus turnos y recetas más rápido.
+                        </p>
+                    </div>
+                    <Button
+                        variant="secondary"
+                        className="temp-access__download-button"
+                        icon={<Icon name="DOWNLOAD" size="1.1rem" />}
+                        onClick={() => window.open('/uploads/secretary-app.apk', '_blank')}
+                    >
+                        {t('download_apk')}
+                    </Button>
+                </aside>
             </div>
         </div>
     );

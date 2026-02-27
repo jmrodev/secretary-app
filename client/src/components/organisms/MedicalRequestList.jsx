@@ -13,6 +13,7 @@ const MedicalRequestList = ({
     handleDeleteRequest,
     openActionModal,
     setPaymentModal,
+    onBonify,
     canDelete,
     handleEditRequest
 }) => {
@@ -122,27 +123,36 @@ const MedicalRequestList = ({
                                     <td className="medical-requests__td medical-requests__td--actions">
                                         <div className="medical-requests__actions">
                                             {(r.payment_status !== 'paid' && r.payment_status !== 'bonified') && (user.role === 'secretary' || user.role === 'doctor') && (
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm-compact"
-                                                    onClick={() => setPaymentModal({
-                                                        open: true,
-                                                        initialData: {
-                                                            type: 'income_patient',
-                                                            amount: r.resolved_debt_amount || r.debt_amount,
-                                                            description: `${t('request')}: ${t(r.type) || r.type} - ${r.patient_name}`,
-                                                            patientId: r.patient_id,
-                                                            patientUserId: r.patient_user_id,
-                                                            patientName: r.patient_name,
-                                                            doctorId: r.doctor_id,
-                                                            method: r.payment_method,
-                                                            serviceType: r.type === 'license' ? 'medical_license' : (r.type === 'prescription' ? 'prescription' : 'certificate')
-                                                        },
-                                                        reqId: r.id
-                                                    })}
-                                                    title="Cobrar"
-                                                    icon={<Icon name="payments" size="1rem" />}
-                                                />
+                                                <>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm-compact"
+                                                        onClick={() => setPaymentModal({
+                                                            open: true,
+                                                            initialData: {
+                                                                type: 'income_patient',
+                                                                amount: r.resolved_debt_amount || r.debt_amount,
+                                                                description: `${t('request')}: ${t(r.type) || r.type} - ${r.patient_name}`,
+                                                                patientId: r.patient_id,
+                                                                patientUserId: r.patient_user_id,
+                                                                patientName: r.patient_name,
+                                                                doctorId: r.doctor_id,
+                                                                method: r.payment_method,
+                                                                serviceType: r.type === 'license' ? 'medical_license' : (r.type === 'prescription' ? 'prescription' : 'certificate')
+                                                            },
+                                                            reqId: r.id
+                                                        })}
+                                                        title="Cobrar"
+                                                        icon={<Icon name="payments" size="1rem" />}
+                                                    />
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm-compact"
+                                                        onClick={() => onBonify(r.id)}
+                                                        title={t('bonify') || 'Bonificar'}
+                                                        icon={<Icon name="card_giftcard" size="1rem" />}
+                                                    />
+                                                </>
                                             )}
 
                                             {(user.role === 'doctor' || user.role === 'secretary') && isPending && (

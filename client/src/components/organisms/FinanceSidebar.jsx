@@ -36,6 +36,7 @@ const FinanceSidebar = ({
                             <label className="sidebar-label">{t('doctor')}</label>
                             <FinanceDoctorFilter
                                 doctors={doctors}
+
                                 selectedDoctorFilter={selectedDoctorFilter}
                                 setSelectedDoctorFilter={onSelectDoctor}
                                 t={t}

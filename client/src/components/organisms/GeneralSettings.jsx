@@ -168,6 +168,32 @@ const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => {
                     {renderUrlConfiguration(settings, updateSetting, isAdmin, onShowQr)}
                 </div>
             </div>
+
+            {/* Mobile App Download */}
+            <div className="config-section">
+                <div className="config-section__header">
+                    <Icon name="smartphone" size="1.5rem" className="config-section__icon" />
+                    <h3 className="config-section__title">Aplicación Móvil</h3>
+                </div>
+
+                <div className="config-section__body">
+                    <div className="dashboard-card bg-slate-50 border-slate-200">
+                        <div className="flex items-center justify-between gap-4">
+                            <div>
+                                <h4 className="font-bold text-slate-800 mb-1">Descargar APK para Android</h4>
+                                <p className="text-sm text-slate-500">Instala la aplicación nativa para una gestión más rápida desde el celular.</p>
+                            </div>
+                            <Button
+                                variant="primary"
+                                icon={<Icon name="DOWNLOAD" size="1.1rem" />}
+                                onClick={() => window.open('/uploads/secretary-app.apk', '_blank')}
+                            >
+                                Descargar APK
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

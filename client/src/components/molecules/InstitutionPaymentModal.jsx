@@ -1,6 +1,7 @@
 import React from 'react';
 import Modal from '../molecules/Modal';
 import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
 
 /**
  * InstitutionPaymentModal Molecule.
@@ -20,10 +21,11 @@ const InstitutionPaymentModal = ({
             onClose={onClose}
             title={t('register_inst_payment')}
         >
-            <div className="flex flex-col gap-4">
-                <p className="text-sm text-main-600 bg-blue-50 p-3 rounded border border-blue-100">
-                    {t('payment_info_msg')}
-                </p>
+            <div className="flex flex-col gap-4 animate-fadeIn">
+                <div className="flex items-start gap-3 text-sm text-blue-700 bg-blue-50 p-4 rounded-xl border border-blue-100">
+                    <Icon name="info" size="1.25rem" color="var(--blue-600)" className="mt-0.5" />
+                    <p>{t('payment_info_msg')}</p>
+                </div>
                 <div className="form-group-bem">
                     <label className="input-label">{t('amount_paid')}</label>
                     <input
@@ -47,13 +49,14 @@ const InstitutionPaymentModal = ({
                         <option value="other">{t('other') || 'Otro'}</option>
                     </select>
                 </div>
-                <div className="modal-footer modal-footer--right mt-4">
+                <div className="modal-footer modal-footer--right mt-6">
                     <Button variant="secondary" onClick={onClose}>
                         {t('cancel')}
                     </Button>
                     <Button
                         onClick={onSubmit}
                         disabled={!paymentData.amount || Number(paymentData.amount) <= 0}
+                        icon={<Icon name="check_circle" size="1.1rem" />}
                     >
                         {t('confirm_payment_btn')}
                     </Button>

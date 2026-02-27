@@ -299,3 +299,35 @@
 .pr-6-bem {
     padding-right: 1.5rem;
 }
+
+/* Status Badge Styles */
+.status-badge-mini {
+    padding: 0.125rem 0.5rem;
+    border-radius: 1rem;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.status-paid {
+    background-color: var(--green-50, #f0fdf4);
+    color: var(--green-700, #15803d);
+}
+
+.status-pending {
+    background-color: var(--amber-50, #fffbeb);
+    color: var(--amber-700, #b45309);
+}
+
+.status-bonified {
+    background-color: var(--blue-50, #eff6ff);
+    color: var(--blue-700, #1d4ed8);
+    border: 1px dashed var(--blue-300);
+}
+
+.status-refunded {
+    background-color: var(--gray-100, #f3f4f6);
+    color: var(--gray-600, #4b5563);
+}

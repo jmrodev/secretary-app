@@ -138,7 +138,8 @@ export const useAppointments = () => {
                 patient_id: data.patientId,
                 medications: data.medications,
                 instructions: data.instructions,
-                items: data.items
+                items: data.items,
+                bonified: data.bonified
             });
             showMessage(t('prescription_created'), 'success');
             if (onUpdate) onUpdate();

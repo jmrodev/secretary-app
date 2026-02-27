@@ -69,8 +69,8 @@ const TransactionRow = ({
                 </div>
             </td>
             <td>
-                <span className={`status-badge-mini status-${tx.status}`}>
-                    {t(tx.status)}
+                <span className={`status-badge-mini status-${(tx.bonified === 1 || tx.payment_status === 'bonified') ? 'bonified' : tx.status}`}>
+                    {(tx.bonified === 1 || tx.payment_status === 'bonified') ? (t('bonified') || 'Bonificado') : t(tx.status)}
                 </span>
             </td>
             <td className={`transactions-table__amount ${tx.is_withdrawal ? 'transactions-table__amount--withdrawal' : (isIncome ? 'transactions-table__amount--income' : 'transactions-table__amount--expense')}`}>

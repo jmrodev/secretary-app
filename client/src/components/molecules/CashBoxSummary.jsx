@@ -46,8 +46,9 @@ const CashBoxSummary = ({
                         <span className="finance-stats__label">
                             <Icon name="payments" size="1rem" color="var(--green-600)" className="mr-1" />
                             {t('cash')}
+                            <span className="text-[10px] ml-1 opacity-50 font-normal uppercase tracking-tighter">(Rendible)</span>
                         </span>
-                        <span className={`cash-box__method ${balances.cash < 0 ? 'text-red-600' : 'cash-box__method--cash'}`}>
+                        <span className={`cash-box__method ${balances.cash < 0 ? 'text-red-600 font-black animate-pulse' : 'cash-box__method--cash'}`}>
                             ${balances.cash.toLocaleString()}
                         </span>
                     </div>
@@ -55,8 +56,9 @@ const CashBoxSummary = ({
                         <span className="finance-stats__label">
                             <Icon name="account_balance" size="1rem" color="var(--blue-600)" className="mr-1" />
                             {t('transfer')}
+                            <span className="text-[10px] ml-1 opacity-50 font-normal uppercase tracking-tighter">({t('stats')})</span>
                         </span>
-                        <span className={`cash-box__method ${balances.transfer < 0 ? 'text-red-600' : 'cash-box__method--transfer'}`}>
+                        <span className={`cash-box__method ${balances.transfer < 0 ? 'text-red-500 opacity-70 italic' : 'cash-box__method--transfer'}`}>
                             ${balances.transfer.toLocaleString()}
                         </span>
                     </div>
