@@ -103,6 +103,23 @@ class PatientService {
         if (phoneNumbers !== undefined) {
             const primaryPhone = await phoneRepository.syncPhones('patient', id, phoneNumbers);
             if (primaryPhone) await patientRepository.update(id, { phone: primaryPhone });
+        } else if (rest.phone !== undefined && rest.phone !== null) {
+            // Update the phone_numbers table safely to preserve secondary phones
+            const existingPhones = await phoneRepository.findByEntity('patient', id);
+
+            if (existingPhones.length <= 1) {
+                const primaryPhone = await phoneRepository.syncPhones('patient', id, [{ phone_number: rest.phone, is_primary: 1, label: 'Celular' }]);
+                if (primaryPhone) await patientRepository.update(id, { phone: primaryPhone });
+            } else {
+                const primaryDoc = existingPhones.find(p => p.is_primary === 1 || p.is_primary === true) || existingPhones[0];
+                const conn = await pool.getConnection(); // Use existing pool
+                try {
+                    await conn.query("UPDATE phone_numbers SET phone_number = ? WHERE id = ?", [rest.phone, primaryDoc.id]);
+                } finally {
+                    conn.release();
+                }
+                await patientRepository.update(id, { phone: rest.phone });
+            }
         }
 
         const newData = await patientRepository.findById(id);
