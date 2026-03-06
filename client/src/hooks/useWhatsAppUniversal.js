@@ -73,7 +73,8 @@ export const useWhatsAppUniversal = (doctors) => {
                     secretary_name: user.name || 'Secretaría',
                     cbu: doctor?.cbu || '',
                     alias: doctor?.alias || '',
-                    bio: doctor?.bio || ''
+                    bio: doctor?.bio || '',
+                    google_review_link: settings.google_review_link || ''
                 };
 
                 if (await handleMetaSend(phone, metaTemplateName, metaParamsOrder, context)) {
@@ -122,7 +123,8 @@ export const useWhatsAppUniversal = (doctors) => {
             .replace(/{secretary_name}/g, user.name || 'Secretaria')
             .replace(/{cbu}/g, doctor?.cbu || '')
             .replace(/{alias}/g, doctor?.alias || '')
-            .replace(/{bio}/g, doctor?.bio || '');
+            .replace(/{bio}/g, doctor?.bio || '')
+            .replace(/{google_review_link}/g, settings.google_review_link || '');
 
         try {
             await copyToClipboard(message);

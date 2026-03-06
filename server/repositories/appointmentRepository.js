@@ -96,8 +96,7 @@ class AppointmentRepository {
                 (SELECT i.cbte_nro FROM invoices i JOIN transactions t ON i.transaction_id = t.id WHERE t.appointment_id = a.id LIMIT 1) as invoice_number,
                 (SELECT i.punto_vta FROM invoices i JOIN transactions t ON i.transaction_id = t.id WHERE t.appointment_id = a.id LIMIT 1) as invoice_punto_vta,
                 (SELECT i.cae FROM invoices i JOIN transactions t ON i.transaction_id = t.id WHERE t.appointment_id = a.id LIMIT 1) as invoice_cae,
-                (SELECT i.cae_vto FROM invoices i JOIN transactions t ON i.transaction_id = t.id WHERE t.appointment_id = a.id LIMIT 1) as invoice_cae_vto,
-                (SELECT i.cbte_tipo FROM invoices i JOIN transactions t ON i.transaction_id = t.id WHERE t.appointment_id = a.id LIMIT 1) as invoice_cbte_tipo,
+                (SELECT base_price FROM institutions inst WHERE inst.id = a.institution_id) as institution_base_price,
                 d.full_name as doctor_name, d.afip_cuit as doctor_cuit, p.phone as patient_phone 
                 FROM appointments a 
                 LEFT JOIN patients p ON a.patient_id = p.id 
@@ -157,7 +156,8 @@ class AppointmentRepository {
         return await conn.query(`
             SELECT a.*, p.full_name as patient_name, p.phone as patient_phone,
                    COALESCE(SUM(CASE WHEN t.status = 'paid' THEN t.amount ELSE 0 END), 0) as amount_paid,
-                   COALESCE(SUM(CASE WHEN t.status = 'pending' THEN t.amount ELSE 0 END), 0) as amount_debt
+                   COALESCE(SUM(CASE WHEN t.status = 'pending' THEN t.amount ELSE 0 END), 0) as amount_debt,
+                   (SELECT base_price FROM institutions inst WHERE inst.id = a.institution_id) as institution_base_price
             FROM appointments a
             LEFT JOIN patients p ON a.patient_id = p.id
             LEFT JOIN transactions t ON t.appointment_id = a.id

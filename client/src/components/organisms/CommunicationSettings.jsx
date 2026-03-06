@@ -17,7 +17,7 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
     const commonVars = useMemo(() => [
         '{patient_name}', '{date}', '{time}', '{doctor_name}',
         '{appointment_type}', '{appointment_location}', '{price}', '{secretary_name}',
-        '{cbu}', '{alias}', '{bio}'
+        '{cbu}', '{alias}', '{bio}', '{google_review_link}'
     ], []);
 
     return (
@@ -128,6 +128,19 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
                 </div>
 
                 <div className="config-section__body">
+                    <ConfigField
+                        id="google-review-link"
+                        label={<span className="flex items-center gap-1"><Icon name="STAR" size="1rem" /> {t('google_review_link_label') || 'Enlace de Reseñas de Google'}</span>}
+                        type="url"
+                        placeholder="Ej. https://g.page/r/.../review"
+                        value={settings.google_review_link || ''}
+                        onChange={(e) => updateSetting('google_review_link', e.target.value)}
+                        disabled={!isAdmin}
+                        hint={t('google_review_hint') || 'Ingresa el enlace directo para que los pacientes te dejen una reseña en Google. Búscalo en tu perfil de Google My Business.'}
+                    />
+
+                    <div className="config-section__divider"></div>
+
                     <MessageTemplateEditor
                         id="whatsapp-prescription-template"
                         label={<span className="flex items-center gap-1"><Icon name="PRESCRIPTION" size="1rem" /> {t('prescription_request_whatsapp')}</span>}

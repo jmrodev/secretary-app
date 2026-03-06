@@ -30,7 +30,7 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
                 </div>
                 {appt.patient_phone && (
                     <Button
-                        to={`tel:${appt.patient_phone.replace(/[^0-9+]/g, '')}`}
+                        to={`tel:${String(appt.patient_phone).replace(/[^0-9+]/g, '')}`}
                         variant="phone"
                         size="sm"
                         className="appointment-card__phone"
@@ -57,8 +57,12 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
                     const pending = Number(appt.pending_amount || 0);
                     const txTotal = paid + pending;
                     const cost = Number(appt.cost || 0);
+                    const instBasePrice = Number(appt.institution_base_price || 0);
                     const hasTransactions = txTotal > 0;
-                    const effectiveTotal = hasTransactions ? txTotal : cost;
+
+                    // If no explicit cost/transactions, fallback to institution base price if set, else 0
+                    const fallbackCost = cost > 0 ? cost : instBasePrice;
+                    const effectiveTotal = hasTransactions ? (txTotal > 0 ? txTotal : fallbackCost) : fallbackCost;
 
                     if (appt.bonified == 1 || appt.bonified === true || appt.bonified === 'true') {
                         return (

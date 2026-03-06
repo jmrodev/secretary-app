@@ -50,14 +50,24 @@ const TransactionsTable = ({
         if (!desc) return "";
         let d = desc;
         const transTable = [
-            { k: "Consultation (Booking)", v: t('consultation_booking') },
-            { k: "Consultation (Patient Share)", v: t('consultation_patient_share') },
-            { k: "Consultation (Institution Share)", v: t('consultation_institution_share') },
-            { k: "Payment for appointment on", v: t('payment_appointment_on') },
-            { k: "Cash Box Delivery to Dr.", v: t('cash_box_delivery_to') },
-            { k: "Request: license for", v: t('request_license_for') },
-            { k: "Request: prescription for", v: t('request_prescription_for') },
-            { k: "- Paid", v: `- ${t('paid')}` }
+            { k: "Consultation (Booking)", v: t('consultation_booking') || "Consulta (Reserva)" },
+            { k: "Consultation (Patient Share)", v: t('consultation_patient_share') || "Consulta (Parte del Paciente)" },
+            { k: "Consultation (Institution Share)", v: t('consultation_institution_share') || "Consulta (Parte de Institución)" },
+            { k: "Payment for appointment on", v: t('payment_appointment_on') || "Pago por turno del" },
+            { k: "Cash Box Delivery to Dr.", v: t('cash_box_delivery_to') || "Entrega de caja al Dr." },
+            { k: "Request: license for", v: t('request_license_for') || "Solicitud: licencia para" },
+            { k: "Request: prescription for", v: t('request_prescription_for') || "Solicitud: receta para" },
+            { k: "- Paid Part by Inst", v: `- ${t('paid_part_inst') || 'Pago Parcial (Inst.)'}` },
+            { k: "- Paid by Inst", v: `- ${t('paid_inst') || 'Pagado (Inst.)'}` },
+            { k: "- Paid Part", v: `- ${t('paid_part') || 'Pago Parcial'}` },
+            { k: "- Paid", v: `- ${t('paid') || 'Pagado'}` },
+            { k: "Advance Payment / Credit", v: t('advance_payment') || 'Pago Adelantado / Saldo a Favor' },
+            { k: "DEBT:", v: t('debt_tag') || 'DEUDA:' },
+            { k: "Virtual Share:", v: t('virtual_share') || 'Virtual:' },
+            { k: "Presencial Share:", v: t('presencial_share') || 'Presencial:' },
+            { k: "Virtual Institution Share:", v: t('virtual_institution_share') || 'Virtual (Inst.):' },
+            { k: "Presencial Institution Share:", v: t('presencial_institution_share') || 'Presencial (Inst.):' },
+            { k: "Saldo a favor (Turno Eliminado):", v: t('credit_balance_deleted') || 'Saldo a favor (Turno Eliminado):' }
         ];
 
         transTable.forEach(item => {

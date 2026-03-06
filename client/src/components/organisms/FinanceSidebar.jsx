@@ -33,10 +33,9 @@ const FinanceSidebar = ({
                 <div className="flex flex-col gap-4">
                     {isAdminOrSecretary && (
                         <div className="sidebar-section">
-                            <label className="sidebar-label">{t('doctor')}</label>
+                            <label className="sidebar-label">{t('doctor_label')}</label>
                             <FinanceDoctorFilter
                                 doctors={doctors}
-
                                 selectedDoctorFilter={selectedDoctorFilter}
                                 setSelectedDoctorFilter={onSelectDoctor}
                                 t={t}
@@ -99,19 +98,21 @@ const FinanceSidebar = ({
             </div>
 
             {/* Cash Summary Card (Only for Secretary) */}
-            {user.role === 'secretary' && (
-                <div className="dashboard-card">
-                    <CashBoxSummary
-                        doctors={doctors}
-                        selectedDoctorFilter={selectedDoctorFilter}
-                        onSelectDoctor={onSelectDoctor}
-                        calculateBalance={calculateBalance}
-                        calculateBalanceByMethod={calculateBalanceByMethod}
-                        t={t}
-                        compact
-                    />
-                </div>
-            )}
+            {
+                user.role === 'secretary' && (
+                    <div className="dashboard-card">
+                        <CashBoxSummary
+                            doctors={doctors}
+                            selectedDoctorFilter={selectedDoctorFilter}
+                            onSelectDoctor={onSelectDoctor}
+                            calculateBalance={calculateBalance}
+                            calculateBalanceByMethod={calculateBalanceByMethod}
+                            t={t}
+                            compact
+                        />
+                    </div>
+                )
+            }
 
             {/* Filters Card */}
             <div className="dashboard-card">
@@ -121,7 +122,7 @@ const FinanceSidebar = ({
                     t={t}
                 />
             </div>
-        </aside>
+        </aside >
     );
 };
 

@@ -49,7 +49,7 @@ const ScheduleTimeline = ({
                                         />
                                     ))}
 
-                                {!isBlocked && !isPast && (
+                                {!isBlocked && (
                                     <div
                                         className={`available-slot ${isSlotClosed ? 'available-slot--closed' : ''}`}
                                         onClick={() => onSlotAction(slot)}

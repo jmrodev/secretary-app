@@ -995,4 +995,6 @@ export const es = {
     booked_slots_label: "Ocupados",
     regular_schedule: "Horario",
     extra_schedule: "Extra",
+    new_transaction: "Nueva Transacción",
+    deliver_box: "Entregar Caja",
 };

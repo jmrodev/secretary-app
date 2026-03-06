@@ -45,7 +45,9 @@ const DaySchedule = ({
 
     let daysConfig = holiday ? [] : (schedule || []).filter(s => s.day_of_week === date.getDay() && s.is_break === 0);
 
-    const dayApps = appointments.filter(appt => isSameDay(appt.appointment_date, date));
+    const dayApps = [...appointments]
+        .filter(appt => isSameDay(appt.appointment_date, date))
+        .sort((a, b) => new Date(a.appointment_date).getTime() - new Date(b.appointment_date).getTime());
 
     // Precise calculation of bounds
     const parseTime = (timeStr, baseDate) => {
@@ -67,8 +69,13 @@ const DaySchedule = ({
     const oEnd = parseTime(overturnEnd, date);
 
     if (showOutOfHours) {
-        startLimit = oStart;
-        endLimit = oEnd;
+        if (oStart < startLimit) startLimit = oStart;
+        if (oEnd > endLimit) endLimit = oEnd;
+
+        // Ensure we show at least 7 AM when checking 'fuera de horario'
+        const sevenAM = new Date(date);
+        sevenAM.setHours(7, 0, 0, 0);
+        if (startLimit > sevenAM) startLimit = sevenAM;
     }
 
     // Expand if there are earlier/later blocks or appointments
@@ -167,9 +174,7 @@ const DaySchedule = ({
 
 
     const getAppointmentsForSlot = (slotTime, durationMinutes) => {
-        return appointments.filter(appt => {
-            if (!isSameDay(appt.appointment_date, date)) return false;
-
+        return dayApps.filter(appt => {
             const apptDate = new Date(appt.appointment_date);
             const slotStart = slotTime.getTime();
             const slotEnd = slotStart + durationMinutes * 60000;
