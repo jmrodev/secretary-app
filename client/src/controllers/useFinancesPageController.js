@@ -139,12 +139,14 @@ export const useFinancesPageController = () => {
             const docId = t.doctor_id || 'null';
             const key = `${dateKey}_${docId}`;
 
-            // Check if it's a closure withdrawal
+            // Check if it's a closure withdrawal to avoid prompting again unless balance is > 0
             if (t.is_withdrawal && t.type === 'withdrawal' && desc.includes('Cierre')) {
                 const method = t.method || 'cash';
                 closuresByDay.add(`${key}_${method}`);
-            } else if (t.status === 'paid' && !t.is_withdrawal) {
-                // It's a normal income/payment
+            }
+
+            // Consider all paid transactions to compute the remaining balance accurately
+            if (t.status === 'paid') {
                 if (!transByDay[key]) {
                     const doc = doctors.find(d => String(d.id) === String(docId));
                     transByDay[key] = {
@@ -160,17 +162,18 @@ export const useFinancesPageController = () => {
                 const amount = parseFloat(t.amount) || 0;
                 const isIncome = t.type.includes('income');
                 const isExpense = t.type.includes('expense');
+                const isWithdrawal = t.is_withdrawal;
 
-                if (isIncome) {
-                    if (t.method === 'cash') transByDay[key].balance += amount;
-                    else if (t.method === 'transfer') transByDay[key].transferBalance += amount;
-                } else if (isExpense) {
-                    if (t.method === 'cash') transByDay[key].balance -= amount;
-                    else if (t.method === 'transfer') transByDay[key].transferBalance -= amount;
-                }
+                let delta = 0;
+                if (isWithdrawal) delta = -amount;
+                else if (isIncome) delta = amount;
+                else if (isExpense) delta = -amount;
+
+                if (t.method === 'cash') transByDay[key].balance += delta;
+                else if (t.method !== 'cash') transByDay[key].transferBalance += delta;
 
                 // Update last time if available (only if it matches the current date key, to avoid mixing times from different days)
-                if (t.transaction_date && String(t.transaction_date).startsWith(dateKey)) {
+                if (!isWithdrawal && t.transaction_date && String(t.transaction_date).startsWith(dateKey)) {
                     const time = String(t.transaction_date).includes('T') ? t.transaction_date.split('T')[1]?.slice(0, 5) : t.transaction_date.split(' ')[1]?.slice(0, 5);
                     if (time && time > transByDay[key].lastTime) transByDay[key].lastTime = time;
                 }
@@ -180,8 +183,9 @@ export const useFinancesPageController = () => {
         // Map into a list and filter out already closed ones
         const pending = [];
         Object.entries(transByDay).forEach(([dayDocKey, summary]) => {
-            const needsCashClose = summary.balance > 0 && !closuresByDay.has(`${dayDocKey}_cash`);
-            const needsTransferClose = summary.transferBalance > 0 && !closuresByDay.has(`${dayDocKey}_transfer`);
+            // Only suggest closure if there is more than 0.01 remaining
+            const needsCashClose = summary.balance > 0.01 && !closuresByDay.has(`${dayDocKey}_cash`);
+            const needsTransferClose = summary.transferBalance > 0.01 && !closuresByDay.has(`${dayDocKey}_transfer`);
 
             if (needsCashClose || needsTransferClose) {
                 pending.push({

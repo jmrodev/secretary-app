@@ -24,10 +24,24 @@ body {
 }
 
 body.dev-mode {
-    background-color: #dcfce7 !important;
+    background-color: #0d0d0d !important;
     background-image: none !important;
-    border-left: 10px solid #16a34a;
-    border-right: 10px solid #16a34a;
+    border: none;
+}
+
+body.dev-mode::before {
+    content: "DESARROLLO";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-30deg);
+    font-size: 15vw;
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.06);
+    z-index: 9998;
+    /* Altísimo para que quede por encima de las tarjetas y el fondo, pero sin tapar modales vitales */
+    pointer-events: none;
+    white-space: nowrap;
 }
 
 body.dev-mode::after {
@@ -35,15 +49,16 @@ body.dev-mode::after {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #16a34a;
+    background-color: #333333;
     color: white;
     padding: 8px 16px;
     border-radius: 8px;
     z-index: 99999;
     font-weight: bold;
     font-size: 0.9rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
     pointer-events: none;
+    border: 1px solid #555;
 }
 
 /* Base Typography */
