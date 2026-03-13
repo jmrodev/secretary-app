@@ -1,31 +1,28 @@
 :root {
     /* Core Semantic Colors */
-    --primary-color: #0f172a;
-    /* gray-900 */
-    --secondary-color: #1e293b;
-    /* gray-800 */
-    --accent-color: #3b82f6;
-    /* blue-500 */
-    --accent-hover: #2563eb;
-    /* blue-600 */
-    --background-bg: #f1f5f9;
-    /* gray-100 */
-    --card-bg: #ffffff;
-    /* white */
-    --text-main: #020617;
-    /* gray-950 */
-    --text-muted: #64748b;
-    /* gray-500 */
-    --text-secondary: #475569;
+    --primary-color: #374151;
+    /* gray-700 */
+    --secondary-color: #4b5563;
     /* gray-600 */
-    --border-color: #cbd5e1;
-    /* gray-300 */
+    --accent-color: #3f83f8;
+    /* Muted blue */
+    --accent-hover: #1c64f2;
+    /* Darker blue */
+    --background-bg: #d1d5db;
+    /* gray-300 - Intermediate gray */
+    --card-bg: #f3f4f6;
+    /* gray-100 - Soft gray card */
+    --text-main: #1f2937;
+    /* gray-800 */
+    --text-muted: #6b7280;
+    /* gray-500 */
+    --text-secondary: #4b5563;
+    /* gray-600 */
+    --border-color: #94a3b8;
+    /* gray-400 */
     --error: #ef4444;
-    /* red-500 */
     --success: #10b981;
-    /* green-500 */
     --warning: #f59e0b;
-    /* amber-500 */
 
     /* Gray Scale */
     --white: #ffffff;

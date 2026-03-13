@@ -13,10 +13,7 @@ body {
     margin: 0;
     font-family: var(--font-family);
     background-color: var(--background-bg);
-    background-image:
-        radial-gradient(circle at top right, rgba(14, 165, 233, 0.08), transparent),
-        radial-gradient(circle at bottom left, rgba(37, 99, 235, 0.05), transparent);
-    background-attachment: fixed;
+    background-image: none;
     color: var(--text-main);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -77,8 +74,8 @@ h6 {
 
 h1 {
     font-size: 2.25rem;
-    color: white;
-    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    color: var(--text-main);
+    text-shadow: none;
 }
 
 h2 {
@@ -141,8 +138,8 @@ select:focus,
 textarea:focus,
 .form-control:focus,
 .input-field:focus {
-    border-color: var(--blue-500);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(63, 131, 248, 0.1);
     transform: translateY(-1px);
 }
 

@@ -20,6 +20,11 @@ const Sidebar = () => {
     const { settings } = useConfig();
     const location = useLocation();
     const [doctors, setDoctors] = useState([]);
+    const [isAdminOpen, setIsAdminOpen] = useState(() => {
+        // Keep it open if one of the links inside is active
+        const adminPaths = ['/profile', '/doctors', '/reports', '/institutions', '/admin/users', '/logs', '/config'];
+        return adminPaths.some(path => location.pathname === path);
+    });
 
     const fetchSidebarDoctors = () => {
         if (user && ['admin', 'secretary', 'doctor'].includes(user.role)) {
@@ -100,50 +105,57 @@ const Sidebar = () => {
 
                 {/* Configuration / Administration Section */}
                 {(user.role === 'admin' || user.role === 'secretary') && (
-                    <div className="sidebar__section">
-                        <div className="sidebar__section-title">{t('administration')}</div>
+                    <div className={`sidebar__section sidebar__section--collapsible ${isAdminOpen ? 'sidebar__section--open' : ''}`}>
+                        <div
+                            className="sidebar__section-header"
+                            onClick={() => setIsAdminOpen(!isAdminOpen)}
+                        >
+                            <span className="sidebar__section-title">{t('administration')}</span>
+                            <Icon
+                                name={isAdminOpen ? 'EXPAND_LESS' : 'EXPAND_MORE'}
+                                className="sidebar__section-chevron"
+                            />
+                        </div>
 
-                        <Link to="/profile" className={getLinkClass('/profile')}>
-                            <Icon name="PROFILE" className="sidebar__link-icon" />
-                            {t('profile')}
-                        </Link>
+                        <div className="sidebar__section-content">
+                            <Link to="/profile" className={getLinkClass('/profile')}>
+                                <Icon name="PROFILE" className="sidebar__link-icon" />
+                                {t('profile')}
+                            </Link>
 
-                        <Link to="/doctors" className={getLinkClass('/doctors')}>
-                            <Icon name="DOCTORS" className="sidebar__link-icon" />
-                            {t('doctors')}
-                        </Link>
+                            <Link to="/doctors" className={getLinkClass('/doctors')}>
+                                <Icon name="DOCTORS" className="sidebar__link-icon" />
+                                {t('doctors')}
+                            </Link>
 
-                        <Link to="/reports" className={getLinkClass('/reports')}>
-                            <Icon name="REPORTS" className="sidebar__link-icon" />
-                            {t('reports')}
-                        </Link>
+                            <Link to="/reports" className={getLinkClass('/reports')}>
+                                <Icon name="REPORTS" className="sidebar__link-icon" />
+                                {t('reports')}
+                            </Link>
 
-                        <Link to="/institutions" className={getLinkClass('/institutions')}>
-                            <Icon name="INSTITUTIONS" className="sidebar__link-icon" />
-                            {t('institutions')}
-                        </Link>
+                            <Link to="/institutions" className={getLinkClass('/institutions')}>
+                                <Icon name="INSTITUTIONS" className="sidebar__link-icon" />
+                                {t('institutions')}
+                            </Link>
 
-                        {user.role === 'admin' && (
-                            <>
-                                <Link to="/admin/users" className={getLinkClass('/admin/users')}>
-                                    <Icon name="USERS" className="sidebar__link-icon" />
-                                    {t('users')}
-                                </Link>
-                                <Link to="/logs" className={getLinkClass('/logs')}>
-                                    <Icon name="LOGS" className="sidebar__link-icon" />
-                                    {t('audit_logs')}
-                                </Link>
-                            </>
-                        )}
+                            {user.role === 'admin' && (
+                                <>
+                                    <Link to="/admin/users" className={getLinkClass('/admin/users')}>
+                                        <Icon name="USERS" className="sidebar__link-icon" />
+                                        {t('users')}
+                                    </Link>
+                                    <Link to="/logs" className={getLinkClass('/logs')}>
+                                        <Icon name="LOGS" className="sidebar__link-icon" />
+                                        {t('audit_logs')}
+                                    </Link>
+                                </>
+                            )}
 
-                        <Link to="/config?tab=general" className={`sidebar__link ${location.pathname === '/config' && (location.search.includes('tab=general') || (!location.search && activeTab === 'general')) ? 'sidebar__link--active' : ''}`}>
-                            <Icon name="SETTINGS" className="sidebar__link-icon" />
-                            {t('system_config')}
-                        </Link>
-
-
-
-
+                            <Link to="/config?tab=general" className={`sidebar__link ${location.pathname === '/config' ? 'sidebar__link--active' : ''}`}>
+                                <Icon name="SETTINGS" className="sidebar__link-icon" />
+                                {t('system_config')}
+                            </Link>
+                        </div>
                     </div>
                 )}
 

@@ -18,6 +18,8 @@ export const ICONS = {
     SPREADSHEETS: 'table_chart',
     LANGUAGE: 'language',
     LOGOUT: 'logout',
+    EXPAND_MORE: 'expand_more',
+    EXPAND_LESS: 'expand_less',
 
     // Stats / Dashboard
     STATS: 'analytics',

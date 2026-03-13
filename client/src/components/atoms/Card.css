@@ -1,21 +1,21 @@
 .card {
-    background: white;
-    border-radius: 1.25rem;
-    border: 1px solid var(--gray-200);
-    box-shadow: var(--shadow-md);
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-premium);
     overflow: hidden;
     margin-bottom: 1.5rem;
 }
 
 .card__header {
     padding: 1.5rem 1.5rem 0.75rem;
-    border-bottom: 1px solid var(--gray-50);
+    border-bottom: 1px solid var(--gray-100);
 }
 
 .card__title {
     font-size: 1.25rem;
     font-weight: 800;
-    color: var(--gray-900);
+    color: var(--text-main);
     margin: 0;
 }
 
