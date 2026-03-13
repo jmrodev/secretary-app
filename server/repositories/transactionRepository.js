@@ -220,7 +220,7 @@ class TransactionRepository {
             SELECT t.*, p.full_name as patient_name, a.type as appt_type, r.type as req_type, d.full_name as doctor_name
             FROM transactions t
             LEFT JOIN users u ON t.related_user_id = u.id
-            LEFT JOIN patients p ON u.id = p.id
+            LEFT JOIN patients p ON u.id = p.user_id
             LEFT JOIN appointments a ON t.appointment_id = a.id
             LEFT JOIN medical_requests r ON t.request_id = r.id
             LEFT JOIN doctors d ON t.doctor_id = d.id
