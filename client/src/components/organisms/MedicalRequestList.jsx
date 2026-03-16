@@ -35,7 +35,7 @@ const MedicalRequestList = ({
     return (
         <div className="medical-requests">
             <div className="medical-requests__container">
-                <table className="medical-requests__table">
+                <table className="medical-requests__table table-base">
                     <thead>
                         <tr>
                             <th className="medical-requests__th medical-requests__th--type">{t('type')}</th>

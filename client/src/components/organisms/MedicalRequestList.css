@@ -3,7 +3,7 @@
 }
 
 .medical-requests__container {
-    background: white;
+    background: var(--white);
     border-radius: var(--radius);
     overflow: hidden;
     box-shadow: var(--shadow-sm);
@@ -64,16 +64,12 @@
     transition: background 0.2s ease;
 }
 
-.medical-requests__row:nth-child(even) {
-    background-color: rgba(0, 0, 0, 0.012); /* Subtle zebra stripe alternating color */
-}
-
 .medical-requests__row:hover {
-    background-color: var(--gray-50);
+    background-color: rgba(63, 131, 248, 0.05); /* Highlight hover effect */
 }
 
 .medical-requests__row--completed {
-    background-color: var(--gray-50);
+    opacity: 0.85; /* Visual cue for completed requests instead of bg-color */
 }
 
 .medical-requests__type-cell {
@@ -270,7 +266,7 @@
 
 .medical-requests__empty {
     padding: 4rem 2rem;
-    background: white;
+    background: var(--white);
     border-radius: var(--radius);
     text-align: center;
     color: var(--text-muted);
