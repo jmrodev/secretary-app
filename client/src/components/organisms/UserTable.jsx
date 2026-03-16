@@ -8,8 +8,8 @@ const UserTable = ({ users, onEdit, onReset, onDelete }) => {
     const { t } = useLanguage();
 
     return (
-        <div className="user-table">
-            <table className="user-table__table">
+        <div className="user-table-wrapper">
+            <table className="user-table__table table-base">
                 <thead>
                     <tr className="user-table__header">
                         <th className="user-table__header-cell">{t('user_header') || 'Usuario'}</th>

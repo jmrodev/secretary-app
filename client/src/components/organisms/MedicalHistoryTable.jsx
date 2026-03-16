@@ -26,8 +26,8 @@ const MedicalHistoryTable = ({ items, filterItem, onView, onDelete, icon, title,
                 {title}
             </h3>
 
-            <div className="medical-history__container">
-                <table className="medical-history__table">
+            <div className="medical-history__wrapper">
+                <table className="medical-history__table table-base">
                     <thead>
                         <tr>
                             <th className="medical-history__th medical-history__th--date">{t('date')}</th>

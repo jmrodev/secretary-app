@@ -126,8 +126,8 @@ const TransactionsTable = ({
 
     return (
         <Card className="transactions-table__container" title={t('transaction_log')}>
-            <div className="transactions-table__wrapper">
-                <table className="transactions-table__table">
+            <div className="transactions-table__container">
+                <table className="transactions-table__table table-base">
                     <thead>
                         <tr>
                             <th className="pl-6-bem">{t('date_label')}</th>

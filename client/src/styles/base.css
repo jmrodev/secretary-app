@@ -170,11 +170,15 @@ label {
 }
 
 .table-base tbody tr:nth-child(even) {
-    background-color: var(--gray-50);
+    background-color: var(--gray-200); /* High contrast grey */
 }
 
 .table-base tbody tr:nth-child(odd) {
-    background-color: rgba(63, 131, 248, 0.015); /* Light blue tint */
+    background-color: var(--blue-200); /* Darker contrast blue */
+}
+
+.table-base td {
+    border-bottom: 1.5px solid var(--gray-400); /* Strongly distinct separating line */
 }
 
 .table-base tbody tr:hover {

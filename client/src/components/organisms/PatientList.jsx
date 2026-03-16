@@ -38,7 +38,7 @@ const PatientList = ({
 
     return (
         <div className="patient-list-container">
-            <table className="patient-table">
+            <table className="patient-table table-base">
                 <thead>
                     <tr>
                         <th>{t('patient')}</th>

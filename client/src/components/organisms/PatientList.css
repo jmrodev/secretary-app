@@ -37,10 +37,6 @@
     transition: all 0.2s ease;
 }
 
-.patient-table tr:hover {
-    background-color: var(--gray-50);
-}
-
 .patient-table td {
     padding: 1rem;
     border-bottom: 1px solid var(--gray-100);

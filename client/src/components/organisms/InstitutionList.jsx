@@ -16,8 +16,8 @@ const InstitutionList = ({ institutions, onEdit, onDelete, t }) => {
     }
 
     return (
-        <div className="institution-list animate-fadeIn">
-            <table className="institution-list__table">
+        <div className="institution-list-container">
+            <table className="institution-list__table table-base">
                 <thead>
                     <tr>
                         <th className="institution-list__th">{t('name') || 'Nombre'}</th>
