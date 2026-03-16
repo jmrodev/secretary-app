@@ -11,6 +11,18 @@ cd "$ROOT_DIR" || exit 1
 
 echo "🚀 Starting professional deployment workflow for $PROJECT_NAME..."
 
+# Step 0: Sync changes with Git Remote
+if [ -n "$(git status --porcelain)" ]; then
+    echo "🔄 Unstaged changes found. Committing and pushing to Remote..."
+    CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+    git add .
+    git commit -m "Auto-commit before deploy: $(date '+%Y-%m-%d %H:%M:%S')"
+    # Ignore push failures
+    git push origin "$CURRENT_BRANCH" || echo "⚠️  Could not push to remote. Continuing with deploy..."
+else
+    echo "✅ Git is already up to date."
+fi
+
 # Step 1: Run Linter/Tests if they exist
 echo "🔍 Checking code quality..."
 # cd client && npm run lint && cd ..
@@ -45,5 +57,8 @@ select mode in "Production (Local)" "Staging (Test Port)" "Cancel"; do
             ;;
     esac
 done
+
+echo "🧹 Cleaning up unused Docker resources to save disk space..."
+docker system prune -f
 
 echo "🎉 Workflow completed!"

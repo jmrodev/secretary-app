@@ -321,13 +321,16 @@ export const useAppointmentsHandlers = ({
 
         // 1. Generate Message (Keep existing sophisticated logic)
         let message = '';
-        if (settings.next_free_slot_template) {
-            const isVirtualSlot = slot.is_virtual || false;
+        const isVirtualSlot = slot.is_virtual || false;
+        const doctorTemplate = isVirtualSlot ? doctor?.next_free_slot_virtual_template : doctor?.next_free_slot_template;
+        const messageTemplate = doctorTemplate || settings.next_free_slot_template;
+
+        if (messageTemplate) {
             const slotPrice = isVirtualSlot ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0);
             const address = isVirtualSlot ? 'Virtual (Cima Salud)' : (settings.clinic_address || 'Montiel 1255');
             const formatPrice = (p) => new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(p);
 
-            message = settings.next_free_slot_template
+            message = messageTemplate
                 .replace(/{[\s]*doctor_name[\s]*}/gi, doctorName)
                 .replace(/{[\s]*date[\s]*}/gi, slot.formattedDate ? `${dayName} ${slot.formattedDate}` : `${dayName} ${dateStr}`)
                 .replace(/{[\s]*time[\s]*}/gi, timeStr)
@@ -336,7 +339,8 @@ export const useAppointmentsHandlers = ({
                 .replace(/{[\s]*price[\s]*}/gi, formatPrice(slotPrice))
                 .replace(/{[\s]*secretary_name[\s]*}/gi, user.name || 'Secretaría');
         } else {
-            message = `Hola, tenemos un turno disponible el ${slot.formattedDate ? `${dayName} ${slot.formattedDate}` : `${dayName} ${dateStr}`} a las ${timeStr} con el/la Dr/a. ${doctorName}. ¿Le gustaría reservarlo?`;
+            const typeText = isVirtualSlot ? 'VIRTUAL' : 'PRESENCIAL';
+            message = `Hola, tenemos un turno ${typeText} disponible el ${slot.formattedDate ? `${dayName} ${slot.formattedDate}` : `${dayName} ${dateStr}`} a las ${timeStr} con el/la Dr/a. ${doctorName}. ¿Le gustaría reservarlo?`;
         }
 
         // 2. Determine target phone

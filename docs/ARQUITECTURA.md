@@ -34,6 +34,7 @@
 - **Variables CSS para temas**: Usar `var(--color-primary)` en lugar de valores hardcoded
 - **Mantenimiento**: Revisar periódicamente `index.css` y extraer estilos específicos a sus respectivos componentes para evitar colisiones y mantener la modularidad.
 - **CSS Compartido**: Si un estilo o clase CSS se utiliza en más de una página, componente o átomo, DEBE estar en `index.css` (o en un archivo de utilidades global importado allí) para evitar duplicación, marcándolo claramente como compartido.
+- **Unidades Relativas**: Priorizar el uso de unidades relativas (`rem`, `em`, `%`) para `font-size`, `padding`, `margin`, `width`, `height` en lugar de píxeles (`px`) absolutos. Esto garantiza que el diseño sea adaptable y accesible (1rem = 16px por defecto).
 - **PROHIBIDO usar `!important`**: Nunca utilizar `!important` para sobrescribir estilos. Si hay conflictos, mejorar la especificidad del selector o reestructurar el CSS.
 
 ### 5. MVC (Model-View-Controller)

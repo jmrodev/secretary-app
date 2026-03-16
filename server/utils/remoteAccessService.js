@@ -1,10 +1,9 @@
 const axios = require('axios');
 const systemSettingsRepository = require('../repositories/systemSettingsRepository');
-const { startTunnelManager, stopTunnelManager, refreshTunnel: refreshCFTunnel } = require('./tunnel-manager');
 
 /**
  * Remote Access Service
- * Manages both Cloudflare Tunnel and DuckDNS updates.
+ * Manages DuckDNS updates. (Cloudflare Tunnel removed)
  */
 
 let duckDnsInterval = null;
@@ -12,7 +11,7 @@ let duckDnsInterval = null;
 async function updateDuckDNS() {
     try {
         const methodRow = await systemSettingsRepository.findByKey('remote_access_method');
-        const method = methodRow ? methodRow.setting_value : 'cloudflare';
+        const method = methodRow ? methodRow.setting_value : 'none';
 
         if (method !== 'duckdns') {
             stopDuckDNS();
@@ -34,12 +33,9 @@ async function updateDuckDNS() {
         console.log(`🦆 DuckDNS: Updating domain '${domain}'...`);
         const response = await axios.get(`https://www.duckdns.org/update?domains=${domain}&token=${token}`);
 
-        // DuckDNS responds with 'OK' (sometimes with more text like 'OK (ip)')
         if (response.data.includes('OK')) {
             console.log('✅ DuckDNS: Update successful.');
-
             const publicUrl = `http://${domain}.duckdns.org`;
-
             await systemSettingsRepository.upsert('public_base_url', publicUrl);
         } else {
             console.error('❌ DuckDNS: Update failed -', response.data);
@@ -67,17 +63,12 @@ function stopDuckDNS() {
 async function initRemoteAccess() {
     try {
         const rows = await systemSettingsRepository.findByKey('remote_access_method');
-        const method = rows ? rows.setting_value : 'cloudflare';
+        const method = rows ? rows.setting_value : 'none';
 
-        if (method === 'cloudflare') {
-            stopDuckDNS();
-            startTunnelManager();
-        } else if (method === 'duckdns') {
-            stopTunnelManager();
+        if (method === 'duckdns') {
             startDuckDNS();
         } else {
             console.log('🌐 Remote Access: Disabled in settings.');
-            stopTunnelManager();
             stopDuckDNS();
         }
     } catch (err) {
@@ -87,11 +78,9 @@ async function initRemoteAccess() {
 
 async function refreshRemoteAccess() {
     const rows = await systemSettingsRepository.findByKey('remote_access_method');
-    const method = rows ? rows.setting_value : 'cloudflare';
+    const method = rows ? rows.setting_value : 'none';
 
-    if (method === 'cloudflare') {
-        refreshCFTunnel();
-    } else if (method === 'duckdns') {
+    if (method === 'duckdns') {
         updateDuckDNS();
     }
 }

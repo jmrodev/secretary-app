@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { isToday } from '../../utils/time';
 import { formatPrice } from '../../utils/format';
+import { formatDate } from '../../utils/dateUtils';
 import Button from '../atoms/Button';
 import Icon from '../atoms/Icon';
 import './MedicalRequestList.css';
@@ -38,11 +39,11 @@ const MedicalRequestList = ({
                     <thead>
                         <tr>
                             <th className="medical-requests__th medical-requests__th--type">{t('type')}</th>
+                            <th className="medical-requests__th">{t('date') || 'Fecha'}</th>
                             <th className="medical-requests__th">{t('patient')}</th>
                             <th className="medical-requests__th">{t('doctor')}</th>
-                            <th className="medical-requests__th medical-requests__th--detail">{t('detail')}</th>
-                            <th className="medical-requests__th">{t('status')}</th>
-                            <th className="medical-requests__th">{t('payment')}</th>
+                            <th className="medical-requests__th medical-requests__th--status">{t('status')}</th>
+                            <th className="medical-requests__th medical-requests__th--payment">{t('payment')}</th>
                             <th className="medical-requests__th medical-requests__th--actions">{t('actions')}</th>
                         </tr>
                     </thead>
@@ -75,16 +76,16 @@ const MedicalRequestList = ({
                                         </div>
                                     </td>
                                     <td className="medical-requests__td">
+                                        <div className="medical-requests__date" title={formatDate(r.created_at, { time: true })}>
+                                            {formatDate(r.created_at)}
+                                        </div>
+                                    </td>
+                                    <td className="medical-requests__td">
                                         <div className="medical-requests__patient-name">{r.patient_name}</div>
                                     </td>
                                     <td className="medical-requests__td">
                                         <div className="medical-requests__doctor-name">
-                                            Dr. {r.doctor_name || '---'}
-                                        </div>
-                                    </td>
-                                    <td className="medical-requests__td">
-                                        <div className="medical-requests__detail" title={r.request_note}>
-                                            {r.request_note}
+                                            Dr. {r.doctor_name ? r.doctor_name.split(' ').pop() : '---'}
                                         </div>
                                     </td>
                                     <td className="medical-requests__td">

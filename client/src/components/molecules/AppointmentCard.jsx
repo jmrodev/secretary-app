@@ -81,18 +81,16 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
                     let amountToDisplay = effectiveTotal;
                     let statusIcon = null;
 
-                    if (!isAttended) {
+                    if (paid >= effectiveTotal && effectiveTotal > 0) {
+                        colorModifier = 'paid';
+                        amountToDisplay = paid;
+                        statusIcon = <Icon name="check_circle" size="1rem" className="appt-status__check" />;
+                    } else if (!isAttended) {
                         colorModifier = 'pending';
-                    } else {
-                        if (paid >= effectiveTotal && effectiveTotal > 0) {
-                            colorModifier = 'paid';
-                            amountToDisplay = paid;
-                            statusIcon = <Icon name="check_circle" size="1rem" className="appt-status__check" />;
-                        } else if (pending > 0 || (!hasTransactions && cost > 0)) {
-                            colorModifier = 'debt';
-                            amountToDisplay = pending > 0 ? pending : cost;
-                            statusIcon = <Icon name="cancel" size="1rem" className="appt-status__check" />;
-                        }
+                    } else if (pending > 0 || (!hasTransactions && cost > 0)) {
+                        colorModifier = 'debt';
+                        amountToDisplay = pending > 0 ? pending : cost;
+                        statusIcon = <Icon name="cancel" size="1rem" className="appt-status__check" />;
                     }
 
                     if (amountToDisplay === 0) return null;

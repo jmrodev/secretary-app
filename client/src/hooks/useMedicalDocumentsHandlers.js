@@ -65,6 +65,7 @@ export const useMedicalDocumentsHandlers = ({
     fetchRequests,
     fetchFiles,
     fetchHistory,
+    filterItem,
 }) => {
 
     const handleCreateRequest = useCallback(async (e) => {
@@ -376,6 +377,7 @@ export const useMedicalDocumentsHandlers = ({
         openPaymentModal,
         closeDeleteFileModal,
         openDeleteFileModal,
-        handleBonifyRequest
+        handleBonifyRequest,
+        filterItem
     };
 };

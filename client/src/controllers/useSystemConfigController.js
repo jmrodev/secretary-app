@@ -167,34 +167,22 @@ export const useSystemConfigController = () => {
     }, [updateSetting]);
 
     /**
-     * Single Responsibility: Refresh Cloudflare tunnel or DuckDNS IP
+     * Single Responsibility: Refresh DuckDNS IP
      */
     const handleRefreshTunnel = useCallback(async () => {
-        const isDuckDNS = settings.remote_access_method === 'duckdns';
-        const confirmMsg = isDuckDNS
-            ? "¿Desea actualizar su IP en DuckDNS ahora?"
-            : "¿Solicitar nuevo enlace a Cloudflare? Esto reiniciará el túnel y tardará unos segundos.";
-
-        if (!await confirm(confirmMsg)) return;
+        if (!await confirm("¿Desea actualizar su IP en DuckDNS ahora?")) return;
 
         try {
             setLoading(true);
             await api.post('/settings/refresh-tunnel');
-
-            const successMsg = isDuckDNS
-                ? "IP de DuckDNS actualizada correctamente."
-                : "Renovación de túnel solicitada. Espere unos segundos y recargue.";
-
-            showMessage(successMsg, 'info');
-
-            // Optionally trigger a refresh of settings after a delay
-            setTimeout(refreshSettings, isDuckDNS ? 2000 : 5000);
+            showMessage("IP de DuckDNS actualizada correctamente.", 'info');
+            setTimeout(refreshSettings, 2000);
         } catch (err) {
             showMessage(t('error_saving'), 'error');
         } finally {
             setLoading(false);
         }
-    }, [confirm, showMessage, refreshSettings, settings.remote_access_method, t]);
+    }, [confirm, showMessage, refreshSettings, t]);
 
     return {
         // State

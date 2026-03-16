@@ -9,7 +9,7 @@ import Alert from '../atoms/Alert';
  * Manages remote access methods including Cloudflare Tunnel and DuckDNS.
  */
 const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loading, isAuthorized }) => {
-    const method = settings.remote_access_method || 'cloudflare';
+    const method = settings.remote_access_method || 'none';
 
     return (
         <div className="config-section">
@@ -31,7 +31,6 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
                         onChange={(e) => updateSetting('remote_access_method', e.target.value)}
                         disabled={!isAuthorized}
                     >
-                        <option value="cloudflare">Cloudflare Tunnel (Recomendado - Sin configurar router)</option>
                         <option value="duckdns">DuckDNS (Requiere configuración de Router / Port Forwarding)</option>
                         <option value="none">Deshabilitado (Solo acceso local)</option>
                     </select>
@@ -39,29 +38,7 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
 
                 <div className="config-section__divider"></div>
 
-                {method === 'cloudflare' && (
-                    <div className="animate-fadeIn">
-                        <div className="config-group">
-                            <div className="config-group__header">
-                                <div style={{ flex: 1 }}>
-                                    <span className="config-group__title">Estado del Túnel</span>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.75rem' }}>
-                                        <StatusIndicator status="connected" label="Túnel Activo" />
-                                        <div className="config-url-display">
-                                            {settings.public_base_url || 'Detectando URL...'}
-                                        </div>
-                                    </div>
-                                </div>
-                                <Button onClick={onRefreshTunnel} disabled={loading} size="sm">
-                                    🔄 Generar Nueva URL
-                                </Button>
-                            </div>
-                        </div>
-                        <Alert variant="info" style={{ marginTop: '1rem' }}>
-                            Cloudflare Tunnel permite acceso seguro sin abrir puertos en su router. La URL es temporal.
-                        </Alert>
-                    </div>
-                )}
+
 
                 {method === 'duckdns' && (
                     <div className="animate-fadeIn">

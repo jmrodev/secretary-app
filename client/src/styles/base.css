@@ -34,9 +34,9 @@ body.dev-mode::before {
     transform: translate(-50%, -50%) rotate(-30deg);
     font-size: 15vw;
     font-weight: 900;
-    color: rgba(255, 255, 255, 0.06);
-    z-index: 9998;
-    /* Altísimo para que quede por encima de las tarjetas y el fondo, pero sin tapar modales vitales */
+    color: rgba(25, 135, 84, 0.2); /* Darker green, semi-transparent overlay */
+    -webkit-text-stroke: 1.5px rgba(150, 150, 150, 0.4); /* Soft grey border */
+    z-index: 999999; /* Overlays on top of cards and tables */
     pointer-events: none;
     white-space: nowrap;
 }
@@ -159,6 +159,22 @@ label {
     margin-bottom: 0.5rem;
     color: var(--gray-500);
     font-size: 0.9rem;
+}
+
+/* =========================================
+   Tables - Striped alternating Rows
+   ========================================= */
+.table-base {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-base tbody tr:nth-child(even) {
+    background-color: var(--gray-50);
+}
+
+.table-base tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.02) !important;
 }
 
 /* Legacy Buttons (Moved to Button.css / Should use Button atom) */
