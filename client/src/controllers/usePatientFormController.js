@@ -11,6 +11,7 @@ export const usePatientFormController = ({
     onClose,
     onUpdate,
     isEdit,
+    onSubmitOverride,
     providedInsurances = [],
     providedDoctors = []
 }) => {
@@ -180,8 +181,8 @@ export const usePatientFormController = ({
                 if (isEdit && formData.id) {
                     // If there's an external handler (e.g. TempAccess public form),
                     // delegate directly to avoid hitting the protected PUT route.
-                    if (onUpdate) {
-                        await onUpdate(formData);
+                    if (onSubmitOverride) {
+                        await onSubmitOverride(formData);
                         showMessage(t('patient_updated') || 'Patient updated successfully', 'success');
                         if (onClose) onClose();
                         return;

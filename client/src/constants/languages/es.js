@@ -244,6 +244,15 @@ export const es = {
     view_on_map: "Ver en mapa",
 
     // Appointments
+    appointment_title: "Turno",
+    attendance: "Asistencia",
+    attended: "Atendido",
+    management: "Gestión",
+    pass_to_video: "Pasar a Video",
+    status_label: "Estado",
+    danger_zone: "Acciones Críticas",
+    sync_required: "Sincronización requerida",
+    sync_db: "Sincronizar BBDD",
     select_doctor: "-- Seleccionar Doctor --",
     select_patient: "-- Seleccionar Paciente --",
     date_time: "Fecha y Hora",

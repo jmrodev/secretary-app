@@ -13,7 +13,7 @@ const TempAccessFormWrapper = ({ initialData, insurances, onSubmit, isEdit }) =>
         initialValues: initialData,
         providedInsurances: insurances,
         isEdit: isEdit,
-        onUpdate: onSubmit // Redirect update to the page handler
+        onSubmitOverride: onSubmit // Redirect update to the page handler
     });
 
     return <PatientForm controller={controller} isAdmin={false} />;

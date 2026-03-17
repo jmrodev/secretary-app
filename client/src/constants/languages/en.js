@@ -246,6 +246,15 @@ export const en = {
     view_on_map: "View on map",
 
     // Appointments
+    appointment_title: "Appointment",
+    attendance: "Attendance",
+    attended: "Attended",
+    management: "Management",
+    pass_to_video: "Switch to Video",
+    status_label: "Status",
+    danger_zone: "Critical Actions",
+    sync_required: "Sync Required",
+    sync_db: "Sync DB",
     select_doctor: "-- Select Doctor --",
     select_patient: "-- Select Patient --",
     date_time: "Date & Time",

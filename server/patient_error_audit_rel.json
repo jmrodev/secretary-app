@@ -1,0 +1,43 @@
+{
+  "message": "ENOENT: no such file or directory, open '/home/cima/Documentos/secretary-app/patient_updates_audit.json'",
+  "stack": "Error: ENOENT: no such file or directory, open '/home/cima/Documentos/secretary-app/patient_updates_audit.json'\n    at Object.openSync (node:fs:596:3)\n    at Object.writeFileSync (node:fs:2322:35)\n    at PatientService.updatePatientDetails (/app/services/patientService.js:84:16)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async exports.updatePatientDetails (/app/controllers/user/patientManagementController.js:32:38)",
+  "updates": {
+    "username": "",
+    "password": "",
+    "full_name": "Agustina De Las Heras77",
+    "first_name": "Agustina",
+    "last_name": "De Las Heras77",
+    "dni": "",
+    "phoneNumbers": [
+      {
+        "id": 4313,
+        "phone_number": "+5492494213155",
+        "is_primary": 1,
+        "label": "Celular"
+      }
+    ],
+    "email": "",
+    "street_name": "",
+    "street_number": "",
+    "floor": "",
+    "apartment": "",
+    "city": "Tandil",
+    "province": "Buenos Aires",
+    "country": "Argentina",
+    "dob": "",
+    "insurance_id": "",
+    "institution_id": "",
+    "affiliate_number": "",
+    "medical_history": "",
+    "assignedDoctors": [],
+    "tariff_percent": 0,
+    "tariff_override": "",
+    "visit_interval_days": "",
+    "prescription_interval_days": "",
+    "next_suggested_visit_date": "",
+    "next_suggested_prescription_date": "",
+    "license_expiry_date": "",
+    "id": 8657,
+    "phone": "+5492494213155"
+  }
+}
