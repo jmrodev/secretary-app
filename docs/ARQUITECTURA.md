@@ -346,6 +346,12 @@ Todos los reportes siguen la misma estructura:
 - **Turnos Futuros**: Los turnos agendados a futuro cuyos pagos estén marcados como “pendientes” NO deben considerarse deuda exigible hasta que el turno haya ocurrido (estado `completed`, `attended`, `arrived`, `absent`).
 - **Deuda Visible**: En los reportes financieros y listas de pacientes, la deuda mostrada debe ser solo la vencida (turnos pasados o completados). Los turnos futuros con saldo pendiente no suman a la deuda total hasta que se concreten.
 
+### Co-pago y Responsabilidad de Instituciones
+- **Independencia de Pago**: Los pacientes derivados de una institución pueden pagar una parte, el total o nada de su consulta. La institución se hace cargo del resto pactado por convenio.
+- **Fechas de Pago**: Tanto el paciente como la institución pueden abonar en fechas separadas, independientes de la fecha del turno.
+- **Estructura de Deuda**: Una vez que el paciente paga lo que le corresponde (su fracción pactada), queda liberado de deuda. El resto de la deuda se deriva y recae sobre la Institución.
+- **Topes de Cobertura**: Si la institución tiene un tope pactado y el paciente incurre en un gasto extra no cubierto, esa porción extra es deuda del PACIENTE. Las instituciones solo absorben lo acordado en su tarifa.
+
 ## Checklist de Revisión
 
 Antes de hacer commit, verificar:

@@ -64,6 +64,9 @@ class InstitutionService {
             if (r.payment_status === 'pending' && (!r.appointment_id || ['completed', 'attended', 'arrived', 'absent'].includes(r.appointment_status))) {
                 return sum + Number(r.amount);
             }
+            if (r.payment_status === 'paid' && r.description && r.description.includes('Pago Adelantado')) {
+                return sum - Number(r.amount);
+            }
             return sum;
         }, 0);
 

@@ -24,6 +24,7 @@ export const usePatientsPageController = () => {
     const [doctors, setDoctors] = useState([]);
     const [insurances, setInsurances] = useState([]);
     const [recycleItems, setRecycleItems] = useState([]);
+    const [institutions, setInstitutions] = useState([]);
     const [loading, setLoading] = useState(true);
 
     // View State
@@ -77,12 +78,20 @@ export const usePatientsPageController = () => {
         } catch (err) { console.error(err); }
     }, [user.role]);
 
+    const fetchInstitutions = useCallback(async () => {
+        try {
+            const res = await api.get('/institutions');
+            setInstitutions(res.data);
+        } catch (err) { console.error(err); }
+    }, []);
+
     useEffect(() => {
         fetchPatients();
         fetchDoctors();
         fetchInsurances();
         fetchRecycleBin();
-    }, [fetchPatients, fetchDoctors, fetchInsurances, fetchRecycleBin]);
+        fetchInstitutions();
+    }, [fetchPatients, fetchDoctors, fetchInsurances, fetchRecycleBin, fetchInstitutions]);
 
     // --- FILTER LOGIC ---
     const filteredPatients = useMemo(() => {
@@ -178,7 +187,7 @@ export const usePatientsPageController = () => {
         patients: paginatedPatients, // Return paginated list as 'patients' to view
         totalCount: filteredPatients.length,
         currentPage, totalPages, handlePageChange,
-        doctors, insurances, recycleItems,
+        doctors, insurances, recycleItems, institutions,
         loading, detailsLoading,
         activeTab, setActiveTab,
         searchTerm, setSearchTerm,

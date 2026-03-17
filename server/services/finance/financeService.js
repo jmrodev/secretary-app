@@ -222,6 +222,22 @@ class FinanceService {
                     remaining = 0;
                 }
             }
+
+            if (remaining > 0.01) {
+                const { nowLocalSQL } = require('../../utils/dateUtils');
+                await transactionRepository.create({
+                    type: 'income_institution',
+                    amount: remaining,
+                    description: 'Pago Adelantado / Crédito Institución',
+                    institution_id: institution_id,
+                    doctor_id: null,
+                    method: method,
+                    status: 'paid',
+                    transaction_date: nowLocalSQL()
+                }, conn);
+                totalPaid += remaining;
+            }
+
             await conn.commit();
             return totalPaid;
         } catch (err) {

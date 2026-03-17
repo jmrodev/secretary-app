@@ -68,7 +68,6 @@ const InstitutionSummary = ({
                     size="sm"
                     variant="success"
                     onClick={onPayClick}
-                    disabled={Number(report.total_pending) <= 0}
                     icon={<Icon name="payments" size="1.1rem" />}
                 >
                     {t('pay')}

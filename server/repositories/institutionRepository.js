@@ -9,11 +9,19 @@ class InstitutionRepository {
         return await conn.query(`
             SELECT i.*, 
                    COALESCE((
-                       SELECT SUM(t.amount) 
+                       SELECT SUM(
+                           CASE 
+                               WHEN t.type = 'income_institution' AND t.status = 'paid' THEN -t.amount
+                               ELSE t.amount 
+                           END
+                       ) 
                        FROM transactions t 
                        LEFT JOIN appointments a ON t.appointment_id = a.id
-                       WHERE t.institution_id = i.id AND t.status = 'pending'
-                       AND (t.appointment_id IS NULL OR a.status IN ('completed', 'attended', 'arrived', 'absent'))
+                       WHERE t.institution_id = i.id 
+                       AND (
+                           (t.status = 'pending' AND (t.appointment_id IS NULL OR a.status IN ('completed', 'attended', 'arrived', 'absent')))
+                           OR (t.type = 'income_institution' AND t.status = 'paid')
+                       )
                    ), 0) as total_debt
             FROM institutions i ORDER BY i.name ASC
         `);

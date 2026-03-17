@@ -29,7 +29,7 @@ const Patients = () => {
         user, t,
         patients, loading, detailsLoading,
         totalCount, currentPage, totalPages, handlePageChange,
-        doctors, insurances, recycleItems,
+        doctors, insurances, recycleItems, institutions,
         activeTab, setActiveTab,
         searchTerm, setSearchTerm,
         selectedPatientId, setSelectedPatientId, patientDetails,
@@ -159,6 +159,7 @@ const Patients = () => {
                                     <div className="dashboard-card no-padding">
                                         <PatientList
                                             patients={patients}
+                                            institutions={institutions}
                                             t={t}
                                             onViewDetails={handleViewDetails}
                                             onOpenDebt={handleOpenDebtModal}
