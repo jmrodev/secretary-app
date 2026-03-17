@@ -262,7 +262,29 @@ exports.getData = async (param1, param2) => {
         if (conn) conn.release();
     }
 };
-```
+## Internacionalización (i18n)
+
+Para garantizar la correcta traducción de mensajes:
+
+### Backend
+- **NUNCA** devolver cadenas de texto crudo (`"Server Error"`, `"Actualizado"`) para respuestas que deban ser leídas por el usuario.
+- **DEBEN** devolver una **clave (key)** en formato JSON que el Frontend pueda mapear.
+  ```javascript
+  // ✅ CORRECTO
+  res.status(500).json({ error: 'server_error' });
+  ```
+
+### Frontend
+- En los bloques `catch`, utiliza la clave del backend con la función `t()`.
+  ```javascript
+  // ✅ CORRECTO
+  try {
+      await api.put(`/resource`);
+  } catch (err) {
+      const errorMsg = err.response?.data?.error ? t(err.response.data.error) : t('failed_update');
+      showMessage(errorMsg, 'error');
+  }
+  ```
 
 ## Convenciones de Nombres
 

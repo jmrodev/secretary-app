@@ -67,65 +67,66 @@ class PatientService {
     }
 
     async updatePatientDetails(id, updates, reqUser) {
-        const { assignedDoctors, phoneNumbers, username, password, ...rest } = updates;
-        const oldData = await patientRepository.findById(id);
+        const conn = await pool.getConnection();
+        try {
+            await conn.beginTransaction();
 
-        // Filtrar solo los campos válidos de la tabla `patients`
-        // Evita errores SQL por campos extra del formData (insurance_name, id, etc.)
-        const patientUpdates = Object.fromEntries(
-            Object.entries(rest).filter(([key]) => PATIENT_FIELDS.has(key))
-        );
+            const { assignedDoctors, phoneNumbers, username, password, ...rest } = updates;
+            const oldData = await patientRepository.findById(id, conn);
 
-        if (Object.keys(patientUpdates).length > 0) {
-            await patientRepository.update(id, patientUpdates);
-        }
+            // Filtrar solo los campos válidos de la tabla `patients`
+            const patientUpdates = Object.fromEntries(
+                Object.entries(rest).filter(([key]) => PATIENT_FIELDS.has(key))
+            );
 
-        // Actualizar username/password en la tabla `users` si se proporcionaron
-        if (username || password) {
-            const userUpdates = {};
-            if (username) userUpdates.username = username;
-            if (password) userUpdates.password_hash = await bcrypt.hash(password, 10);
-            const conn = await pool.getConnection();
-            try {
+            if (Object.keys(patientUpdates).length > 0) {
+                await patientRepository.update(id, patientUpdates, conn);
+            }
+
+            // Actualizar username/password en la tabla `users` si se proporcionaron
+            if (username || password) {
+                const userUpdates = {};
+                if (username) userUpdates.username = username;
+                if (password) userUpdates.password_hash = await bcrypt.hash(password, 10);
                 await conn.query(
                     `UPDATE users SET ${Object.keys(userUpdates).map(k => `${k} = ?`).join(', ')} WHERE id = (SELECT user_id FROM patients WHERE id = ?)`,
                     [...Object.values(userUpdates), id]
                 );
-            } finally {
-                conn.release();
             }
-        }
 
-        if (assignedDoctors !== undefined) {
-            await patientRepository.updateAssignedDoctors(id, assignedDoctors);
-        }
+            if (assignedDoctors !== undefined) {
+                await patientRepository.updateAssignedDoctors(id, assignedDoctors, conn);
+            }
 
-        if (phoneNumbers !== undefined) {
-            const primaryPhone = await phoneRepository.syncPhones('patient', id, phoneNumbers);
-            if (primaryPhone) await patientRepository.update(id, { phone: primaryPhone });
-        } else if (rest.phone !== undefined && rest.phone !== null) {
-            // Update the phone_numbers table safely to preserve secondary phones
-            const existingPhones = await phoneRepository.findByEntity('patient', id);
+            if (phoneNumbers !== undefined) {
+                const primaryPhone = await phoneRepository.syncPhones('patient', id, phoneNumbers, conn);
+                if (primaryPhone) await patientRepository.update(id, { phone: primaryPhone }, conn);
+            } else if (rest.phone !== undefined && rest.phone !== null) {
+                // Update the phone_numbers table safely to preserve secondary phones
+                const existingPhones = await phoneRepository.findByEntity('patient', id, conn);
 
-            if (existingPhones.length <= 1) {
-                const primaryPhone = await phoneRepository.syncPhones('patient', id, [{ phone_number: rest.phone, is_primary: 1, label: 'Celular' }]);
-                if (primaryPhone) await patientRepository.update(id, { phone: primaryPhone });
-            } else {
-                const primaryDoc = existingPhones.find(p => p.is_primary === 1 || p.is_primary === true) || existingPhones[0];
-                const conn = await pool.getConnection(); // Use existing pool
-                try {
+                if (existingPhones.length <= 1) {
+                    const primaryPhone = await phoneRepository.syncPhones('patient', id, [{ phone_number: rest.phone, is_primary: 1, label: 'Celular' }], conn);
+                    if (primaryPhone) await patientRepository.update(id, { phone: primaryPhone }, conn);
+                } else {
+                    const primaryDoc = existingPhones.find(p => p.is_primary === 1 || p.is_primary === true) || existingPhones[0];
                     await conn.query("UPDATE phone_numbers SET phone_number = ? WHERE id = ?", [rest.phone, primaryDoc.id]);
-                } finally {
-                    conn.release();
+                    await patientRepository.update(id, { phone: rest.phone }, conn);
                 }
-                await patientRepository.update(id, { phone: rest.phone });
             }
+
+            await conn.commit();
+
+            const newData = await patientRepository.findById(id);
+            googleContactService.syncContact(newData).catch(err => console.error("Sync Error:", err));
+
+            return { oldData, newData };
+        } catch (err) {
+            await conn.rollback();
+            throw err;
+        } finally {
+            conn.release();
         }
-
-        const newData = await patientRepository.findById(id);
-        googleContactService.syncContact(newData).catch(err => console.error("Sync Error:", err));
-
-        return { oldData, newData };
     }
 
     async toggleNewPatientStatus(id) {

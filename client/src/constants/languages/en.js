@@ -268,6 +268,12 @@ export const en = {
     // Patients
     patients_list: "Patients",
     patients_subtitle: "Complete management of patient medical records.",
+    edit_patient: "Edit Patient",
+    first_name: "First Name",
+    last_name: "Last Name",
+    select_choice: "Select...",
+    affiliate_number: "Affiliate Number",
+    appointment_info_reference: "Appointment Info (Reference)",
     register_new_patient: "Register New Patient",
     new_patient_btn: "New Patient",
     search_placeholder: "Search by name, DNI, insurance...",

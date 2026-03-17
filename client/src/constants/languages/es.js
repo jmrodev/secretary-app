@@ -268,6 +268,12 @@ export const es = {
     // Patients
     patients_list: "Pacientes",
     patients_subtitle: "Administración completa de fichas médicas de pacientes.",
+    edit_patient: "Editar Paciente",
+    first_name: "Nombre",
+    last_name: "Apellido",
+    select_choice: "Seleccionar...",
+    affiliate_number: "Nro Afiliado",
+    appointment_info_reference: "Info de Turno (Referencia)",
     register_new_patient: "Registrar Nuevo Paciente",
     new_patient_btn: "Nuevo Paciente",
     search_placeholder: "Buscar por nombre, DNI, obra social...",

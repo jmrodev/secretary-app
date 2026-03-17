@@ -116,32 +116,34 @@ export const usePatientFormController = ({
             }
 
             setFormData(prev => {
-                // Specialized logic for auto-populating username/password from names
-                if (!isEdit && (name === 'first_name' || name === 'last_name')) {
+                let updatedState = { ...prev, [name]: value };
+
+                // 1. Siempre actualizar full_name si cambian Nombre o Apellido
+                if (name === 'first_name' || name === 'last_name') {
                     const firstName = name === 'first_name' ? value : (prev.first_name || '');
                     const lastName = name === 'last_name' ? value : (prev.last_name || '');
+                    updatedState.full_name = `${firstName} ${lastName}`.trim();
 
-                    // Username/Password should stay lowercase
-                    const normalizedFirst = firstName.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
-                    const normalizedLast = lastName.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
-                    const autoValue = `${normalizedFirst}${normalizedLast}`;
+                    // 2. Solo auto-completar usuario/clave si NO es edición (creación)
+                    if (!isEdit) {
+                        const normalizedFirst = firstName.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
+                        const normalizedLast = lastName.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
+                        const autoValue = `${normalizedFirst}${normalizedLast}`;
 
-                    const oldNormalizedFirst = (prev.first_name || '').trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
-                    const oldNormalizedLast = (prev.last_name || '').trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
-                    const oldAuto = `${oldNormalizedFirst}${oldNormalizedLast}`;
+                        const oldNormalizedFirst = (prev.first_name || '').trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
+                        const oldNormalizedLast = (prev.last_name || '').trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
+                        const oldAuto = `${oldNormalizedFirst}${oldNormalizedLast}`;
 
-                    const shouldUpdate = !prev.username || prev.username === oldAuto;
+                        const shouldUpdate = !prev.username || prev.username === oldAuto;
 
-                    return {
-                        ...prev,
-                        [name]: value,
-                        full_name: `${firstName} ${lastName}`.trim(),
-                        username: shouldUpdate ? autoValue : prev.username,
-                        password: shouldUpdate ? autoValue : prev.password
-                    };
+                        if (shouldUpdate) {
+                            updatedState.username = autoValue;
+                            updatedState.password = autoValue;
+                        }
+                    }
                 }
 
-                return { ...prev, [name]: value };
+                return updatedState;
             });
         },
 
@@ -239,7 +241,12 @@ export const usePatientFormController = ({
                 if (onClose) onClose();
             } catch (err) {
                 console.error(err);
-                const msg = err.response?.data?.message || err.response?.data || t('failed_update') || 'Failed operation';
+                
+                // Retrocompatible: Busca primero la clave de traducción { error: 'key' }
+                const msg = err.response?.data?.error 
+                    ? t(err.response.data.error) 
+                    : (typeof err.response?.data === 'string' ? err.response.data : t('failed_update'));
+
                 showMessage(msg, 'error');
             } finally {
                 setIsSubmitting(false);
