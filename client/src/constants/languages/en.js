@@ -485,6 +485,12 @@ export const en = {
     label: "Label",
     primary: "Primary",
     add_phone: "Add Phone",
+    whatsapp_confirmation: "WhatsApp Confirmation",
+    send_via_whatsapp: "Send via WhatsApp",
+    sending_to: "Sending to",
+    wa_help_text: "The message will open in WhatsApp Desktop/Web.",
+    message_to_send: "Message to send",
+    message_copied_opening_wa: "Message copied. Opening WhatsApp...",
 
     // Office Rentals
     office_rentals: "Office Rentals",
