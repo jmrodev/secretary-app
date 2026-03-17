@@ -61,10 +61,16 @@ class InstitutionService {
 
         const totalAmount = rows.reduce((sum, r) => sum + Number(r.amount), 0);
         const totalPending = rows.reduce((sum, r) => {
-            if (r.payment_status === 'pending' && (!r.appointment_id || ['completed', 'attended', 'arrived', 'absent'].includes(r.appointment_status))) {
+            const statusLower = (r.appointment_status || '').toLowerCase();
+            const paymentLower = (r.payment_status || '').toLowerCase();
+            
+            const isPastPending = statusLower === 'pending' && r.appointment_date && new Date(r.appointment_date) <= new Date();
+            const isValidStatus = ['completed', 'attended', 'arrived', 'absent'].includes(statusLower);
+
+            if (paymentLower === 'pending' && (!r.appointment_id || isValidStatus || isPastPending)) {
                 return sum + Number(r.amount);
             }
-            if (r.payment_status === 'paid' && r.description && r.description.includes('Pago Adelantado')) {
+            if (paymentLower === 'paid' && r.description && r.description.includes('Pago Adelantado')) {
                 return sum - Number(r.amount);
             }
             return sum;

@@ -29,10 +29,46 @@ const InstitutionFinances = ({ institutions, t }) => {
 
     const [showPendingOnly, setShowPendingOnly] = React.useState(true);
     const [viewMode, setViewMode] = React.useState('transactions');
+    const [selectedTrs, setSelectedTrs] = React.useState(new Set());
 
     const filteredTransactions = report?.transactions.filter(t =>
         showPendingOnly ? t.payment_status === 'pending' : true
     ) || [];
+
+    // Calculate sum of selected transactions
+    const selectedAmount = React.useMemo(() => {
+        if (!report?.transactions) return 0;
+        return report.transactions
+            .filter(tr => selectedTrs.has(tr.transaction_id))
+            .reduce((sum, tr) => sum + Number(tr.amount), 0);
+    }, [selectedTrs, report?.transactions]);
+
+    // Fill amount with selection when opening modal
+    React.useEffect(() => {
+        if (isPayModalOpen) {
+            setPaymentData(p => ({ ...p, amount: selectedAmount.toString(), transaction_ids: Array.from(selectedTrs) }));
+        }
+    }, [isPayModalOpen, selectedAmount, selectedTrs, setPaymentData]);
+
+    const handleToggleSelect = (id) => {
+        setSelectedTrs(prev => {
+            const next = new Set(prev);
+            if (next.has(id)) next.delete(id);
+            else next.push ? next.push(id) : next.add(id);
+            return next;
+        });
+    };
+
+    const handleSelectAll = (checked) => {
+        if (checked) {
+            const pendingIds = filteredTransactions
+                .filter(tr => tr.payment_status === 'pending')
+                .map(tr => tr.transaction_id);
+            setSelectedTrs(new Set(pendingIds));
+        } else {
+            setSelectedTrs(new Set());
+        }
+    };
 
     /**
      * Helper to format dates using internationalization keys.
@@ -70,6 +106,8 @@ const InstitutionFinances = ({ institutions, t }) => {
                         report={report}
                         showPendingOnly={showPendingOnly}
                         setShowPendingOnly={setShowPendingOnly}
+                        selectedAmount={selectedAmount}
+                        selectedCount={selectedTrs.size}
                         onPayClick={() => setIsPayModalOpen(true)}
                         t={t}
                     />
@@ -77,6 +115,9 @@ const InstitutionFinances = ({ institutions, t }) => {
                     <InstitutionTransactionsTable
                         transactions={filteredTransactions}
                         showPendingOnly={showPendingOnly}
+                        selectedTrs={selectedTrs}
+                        onToggleSelect={handleToggleSelect}
+                        onSelectAll={handleSelectAll}
                         formatDate={formatDate}
                         t={t}
                     />
