@@ -125,11 +125,9 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
             const data = await financeService.getPricing(docId, patId, serviceType);
             if (data) {
                 setFormData(prev => {
-                    const newPayments = [...prev.payments];
-                    // Auto-fill amount logic: if empty or single payment, suggest price
-                    if (newPayments.length > 0) {
-                        newPayments[0].amount = data.price;
-                    }
+                    const newPayments = prev.payments.map((p, index) => 
+                        index === 0 ? { ...p, amount: data.price } : p
+                    );
                     return { ...prev, payments: newPayments };
                 });
                 setTotalPrice(Number(data.price));
@@ -186,9 +184,10 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
     };
 
     const handlePaymentChange = (index, field, val) => {
-        const newPayments = [...formData.payments];
-        newPayments[index][field] = val;
-        setFormData({ ...formData, payments: newPayments });
+        const newPayments = formData.payments.map((p, i) => 
+            i === index ? { ...p, [field]: val } : p
+        );
+        setFormData(prev => ({ ...prev, payments: newPayments }));
     };
 
     const addPaymentMethod = () => {

@@ -10,6 +10,7 @@ const InstitutionSummary = ({
     report,
     showPendingOnly,
     setShowPendingOnly,
+    selectedAmount = 0,
     onPayClick,
     t
 }) => {
@@ -43,35 +44,26 @@ const InstitutionSummary = ({
                     <div>
                         <p className="inst-stat-label">{t('unpaid_count')}</p>
                         <p className="inst-stat-value">
-                            {report.transactions.filter(t => t.payment_status === 'pending').length}
+                            {report.transactions.filter(tr => {
+                                const paymentLower = (tr.payment_status || '').toLowerCase();
+                                const statusLower = (tr.appointment_status || '').toLowerCase();
+                                const done = ['completed', 'attended', 'arrived', 'absent'].includes(statusLower);
+                                return paymentLower === 'pending' && (!tr.appointment_id || done);
+                            }).length}
                         </p>
                     </div>
                 </div>
-            </div>
-
-            <div className="inst-controls">
-                <div className="inst-finances__view-toggle">
-                    <button
-                        className={`inst-finances__toggle-btn ${showPendingOnly ? 'inst-finances__toggle-btn--active' : ''}`}
-                        onClick={() => setShowPendingOnly(true)}
-                    >
-                        {t('only_debts')}
-                    </button>
-                    <button
-                        className={`inst-finances__toggle-btn ${!showPendingOnly ? 'inst-finances__toggle-btn--active' : ''}`}
-                        onClick={() => setShowPendingOnly(false)}
-                    >
-                        {t('all_transactions')}
-                    </button>
-                </div>
-                <Button
-                    size="sm"
-                    variant="success"
-                    onClick={onPayClick}
-                    icon={<Icon name="payments" size="1.1rem" />}
-                >
-                    {t('pay')}
-                </Button>
+                {selectedAmount > 0 && (
+                    <div className="inst-stat-item" style={{ border: '2px solid #38bdf8' }}>
+                        <div className="inst-stat-icon inst-stat-icon--green">
+                            <Icon name="check_circle" size="1.2rem" />
+                        </div>
+                        <div>
+                            <p className="inst-stat-label">A Cobrar</p>
+                            <p className="inst-stat-value" style={{ color: '#16a34a' }}>${Number(selectedAmount).toLocaleString()}</p>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

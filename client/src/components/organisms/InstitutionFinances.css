@@ -131,6 +131,11 @@
     color: var(--orange-600);
 }
 
+.inst-stat-icon--green {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
 .inst-stat-label {
     font-size: 0.7rem;
     font-weight: 800;
@@ -226,6 +231,11 @@
 
 .inst-data-table__tr--pending {
     background-color: var(--rose-50) !important;
+}
+
+.inst-data-table__tr--selected {
+    background-color: #e0f2fe !important;
+    outline: 1px solid #38bdf8;
 }
 
 .inst-data-table tbody tr:hover {

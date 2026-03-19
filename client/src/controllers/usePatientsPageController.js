@@ -29,7 +29,11 @@ export const usePatientsPageController = () => {
 
     // View State
     const [activeTab, setActiveTab] = useState('list'); // 'list' | 'recycle'
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchTerm, setSearchTerm] = useState(() => {
+        // Pre-fill search from URL param, e.g. when navigating from institution transactions
+        const params = new URLSearchParams(window.location.search);
+        return params.get('search') || '';
+    });
 
     // Details View State
     const [selectedPatientId, setSelectedPatientId] = useState(null);

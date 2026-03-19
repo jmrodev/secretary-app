@@ -27,7 +27,14 @@
         <activity android:name=".DashboardActivity" />
         <activity android:name=".AppointmentsActivity" />
         <activity android:name=".AppointmentDetailActivity" />
-        <activity android:name=".PatientsActivity" />
+        <activity android:name=".PatientsActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+                <data android:mimeType="application/pdf" />
+            </intent-filter>
+        </activity>
         <activity android:name=".PatientDetailActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".PatientFilesActivity" />

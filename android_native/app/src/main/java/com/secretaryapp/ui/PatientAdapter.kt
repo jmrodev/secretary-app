@@ -10,8 +10,10 @@ import com.secretaryapp.PatientDetailActivity
 import com.secretaryapp.R
 import com.secretaryapp.model.Patient
 
-class PatientAdapter(private var patients: List<Patient>) :
-    RecyclerView.Adapter<PatientAdapter.PatientViewHolder>() {
+class PatientAdapter(
+    private var patients: List<Patient>,
+    private val onItemClick: (Patient) -> Unit
+) : RecyclerView.Adapter<PatientAdapter.PatientViewHolder>() {
 
     class PatientViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvName: TextView = itemView.findViewById(R.id.tvPatientName)
@@ -20,7 +22,7 @@ class PatientAdapter(private var patients: List<Patient>) :
         val tvAttendance: TextView = itemView.findViewById(R.id.tvAttendanceStars)
         val tvBehavior: TextView = itemView.findViewById(R.id.tvBehaviorStars)
 
-        fun bind(patient: Patient) {
+        fun bind(patient: Patient, onItemClick: (Patient) -> Unit) {
             tvName.text = patient.full_name
             tvDni.text = "DNI: ${patient.dni ?: "N/A"} • Tel: ${patient.phone ?: "N/A"}"
             
@@ -33,15 +35,7 @@ class PatientAdapter(private var patients: List<Patient>) :
             tvBehavior.text = com.secretaryapp.utils.RatingUtils.getStarString(bRating)
             
             itemView.setOnClickListener {
-                val intent = Intent(itemView.context, PatientDetailActivity::class.java).apply {
-                    putExtra("patient_id", patient.id)
-                    putExtra("name", patient.full_name)
-                    putExtra("dni", patient.dni)
-                    putExtra("phone", patient.phone)
-                    putExtra("email", patient.email)
-                    putExtra("address", patient.address)
-                }
-                itemView.context.startActivity(intent)
+                onItemClick(patient)
             }
         }
     }
@@ -53,7 +47,7 @@ class PatientAdapter(private var patients: List<Patient>) :
     }
 
     override fun onBindViewHolder(holder: PatientViewHolder, position: Int) {
-        holder.bind(patients[position])
+        holder.bind(patients[position], onItemClick)
     }
 
     override fun getItemCount() = patients.size

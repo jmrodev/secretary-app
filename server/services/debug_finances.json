@@ -1,0 +1,54 @@
+[
+  {
+    "transaction_id": 1831,
+    "amount": "40000.00",
+    "description": "Presencial Institution Share: Theo Gatica",
+    "transaction_date": "2026-03-06T15:13:15.000Z",
+    "payment_status": "pending",
+    "method": "on_account",
+    "patient_name": "Theo Gatica",
+    "doctor_name": "Maria Cecilia Scheerle",
+    "appointment_id": 924,
+    "appointment_date": "2026-04-09T14:00:00.000Z",
+    "appointment_status": "pending"
+  },
+  {
+    "transaction_id": 818,
+    "amount": "60000.00",
+    "description": "Presencial Share: Eva Martinez - Paid",
+    "transaction_date": "2026-02-12T12:36:47.000Z",
+    "payment_status": "paid",
+    "method": "transfer",
+    "patient_name": null,
+    "doctor_name": "Maria Cecilia Scheerle",
+    "appointment_id": null,
+    "appointment_date": null,
+    "appointment_status": null
+  },
+  {
+    "transaction_id": 696,
+    "amount": "40000.00",
+    "description": "Presencial Institution Share: Theo Gatica - Paid by Inst",
+    "transaction_date": "2026-02-04T10:59:20.000Z",
+    "payment_status": "paid",
+    "method": "transfer",
+    "patient_name": "Theo Gatica",
+    "doctor_name": "Maria Cecilia Scheerle",
+    "appointment_id": 761,
+    "appointment_date": "2026-03-06T14:00:00.000Z",
+    "appointment_status": "completed"
+  },
+  {
+    "transaction_id": 104,
+    "amount": "40000.00",
+    "description": "Consultation (Institution Share): Theo Gatica",
+    "transaction_date": "2026-01-15T08:25:42.000Z",
+    "payment_status": "paid",
+    "method": "transfer",
+    "patient_name": "Theo Gatica",
+    "doctor_name": "Maria Cecilia Scheerle",
+    "appointment_id": 342,
+    "appointment_date": "2026-01-06T14:00:00.000Z",
+    "appointment_status": "completed"
+  }
+]

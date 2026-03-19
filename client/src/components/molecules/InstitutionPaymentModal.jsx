@@ -22,9 +22,18 @@ const InstitutionPaymentModal = ({
             title={t('register_inst_payment')}
         >
             <div className="flex flex-col gap-4 animate-fadeIn">
-                <div className="flex items-start gap-3 text-sm text-blue-700 bg-blue-50 p-4 rounded-xl border border-blue-100">
-                    <Icon name="info" size="1.25rem" color="var(--blue-600)" className="mt-0.5" />
-                    <p>{t('payment_info_msg')}</p>
+                <div className={`flex items-start gap-3 text-sm p-4 rounded-xl border ${
+                    paymentData.transaction_ids?.length > 0
+                        ? 'text-green-700 bg-green-50 border-green-100'
+                        : 'text-blue-700 bg-blue-50 border-blue-100'
+                }`}>
+                    <Icon name={paymentData.transaction_ids?.length > 0 ? 'check_circle' : 'info'} size="1.25rem" className="mt-0.5" />
+                    <p>
+                        {paymentData.transaction_ids?.length > 0
+                            ? `Se pagarán las ${paymentData.transaction_ids.length} transacciones seleccionadas por $${Number(paymentData.amount).toLocaleString()}.`
+                            : t('payment_info_msg')
+                        }
+                    </p>
                 </div>
                 <div className="form-group-bem">
                     <label className="input-label">{t('amount_paid')}</label>

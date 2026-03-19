@@ -22,7 +22,15 @@ class InstitutionRepository {
                            (t.status = 'pending' AND (t.appointment_id IS NULL OR a.status IN ('completed', 'attended', 'arrived', 'absent')))
                            OR (t.type = 'income_institution' AND t.status = 'paid')
                        )
-                   ), 0) as total_debt
+                   ), 0) as total_debt,
+                   COALESCE((
+                       SELECT COUNT(*)
+                       FROM transactions t
+                       LEFT JOIN appointments a ON t.appointment_id = a.id
+                       WHERE t.institution_id = i.id
+                       AND t.status = 'pending'
+                       AND (t.appointment_id IS NULL OR a.status IN ('completed', 'attended', 'arrived', 'absent'))
+                   ), 0) as pending_count
             FROM institutions i ORDER BY i.name ASC
         `);
     }

@@ -2,20 +2,15 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useMessage } from '../context/MessageContext';
 
-export const useInstitutionFinances = (institutions) => {
+export const useInstitutionFinances = (institutions, selectedInstId) => {
     const { showMessage } = useMessage();
 
-    const [selectedInstId, setSelectedInstId] = useState('');
     const [report, setReport] = useState(null);
     const [patients, setPatients] = useState([]);
     const [loadingReport, setLoadingReport] = useState(false);
 
-    // Payment State
     const [isPayModalOpen, setIsPayModalOpen] = useState(false);
-    const [paymentData, setPaymentData] = useState({
-        amount: '',
-        method: 'transfer'
-    });
+    const [paymentData, setPaymentData] = useState({ amount: '', method: 'transfer' });
 
     const fetchReport = async (id) => {
         setLoadingReport(true);
@@ -47,7 +42,8 @@ export const useInstitutionFinances = (institutions) => {
             await api.post('/finances/pay-institution-debt', {
                 institution_id: selectedInstId,
                 amount: paymentData.amount,
-                method: paymentData.method
+                method: paymentData.method,
+                transaction_ids: paymentData.transaction_ids || []
             });
             showMessage('Pago registrado con éxito', 'success');
             setIsPayModalOpen(false);
@@ -60,8 +56,6 @@ export const useInstitutionFinances = (institutions) => {
     };
 
     return {
-        selectedInstId,
-        setSelectedInstId,
         report,
         patients,
         loadingReport,
@@ -72,3 +66,4 @@ export const useInstitutionFinances = (institutions) => {
         handlePaymentSubmit
     };
 };
+

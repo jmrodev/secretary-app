@@ -2,7 +2,6 @@ import React from 'react';
 import { useInstitutionFinances } from '../../hooks/useInstitutionFinances';
 
 // Molecules
-import InstitutionSelector from '../molecules/InstitutionSelector';
 import InstitutionSummary from '../molecules/InstitutionSummary';
 import InstitutionTransactionsTable from '../molecules/InstitutionTransactionsTable';
 import InstitutionPatientsTable from '../molecules/InstitutionPatientsTable';
@@ -12,11 +11,10 @@ import './InstitutionFinances.css';
 /**
  * InstitutionFinances Organism.
  * Orchestrates financial reports and patient data for health insurance institutions.
+ * Institution selection is managed by the parent sidebar (Institutions.jsx).
  */
-const InstitutionFinances = ({ institutions, t }) => {
+const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMode, t }) => {
     const {
-        selectedInstId,
-        setSelectedInstId,
         report,
         patients,
         loadingReport,
@@ -25,17 +23,25 @@ const InstitutionFinances = ({ institutions, t }) => {
         paymentData,
         setPaymentData,
         handlePaymentSubmit
-    } = useInstitutionFinances(institutions);
+    } = useInstitutionFinances(institutions, selectedInstId);
 
     const [showPendingOnly, setShowPendingOnly] = React.useState(true);
-    const [viewMode, setViewMode] = React.useState('transactions');
     const [selectedTrs, setSelectedTrs] = React.useState(new Set());
 
-    const filteredTransactions = report?.transactions.filter(t =>
-        showPendingOnly ? t.payment_status === 'pending' : true
+    // Reset selection when institution changes
+    React.useEffect(() => { setSelectedTrs(new Set()); }, [selectedInstId]);
+
+    const isRealDebt = (tr) => {
+        const paymentLower = (tr.payment_status || '').toLowerCase();
+        const statusLower = (tr.appointment_status || '').toLowerCase();
+        const done = ['completed', 'attended', 'arrived', 'absent'].includes(statusLower);
+        return paymentLower === 'pending' && (!tr.appointment_id || done);
+    };
+
+    const filteredTransactions = report?.transactions.filter(tr =>
+        showPendingOnly ? isRealDebt(tr) : true
     ) || [];
 
-    // Calculate sum of selected transactions
     const selectedAmount = React.useMemo(() => {
         if (!report?.transactions) return 0;
         return report.transactions
@@ -43,7 +49,6 @@ const InstitutionFinances = ({ institutions, t }) => {
             .reduce((sum, tr) => sum + Number(tr.amount), 0);
     }, [selectedTrs, report?.transactions]);
 
-    // Fill amount with selection when opening modal
     React.useEffect(() => {
         if (isPayModalOpen) {
             setPaymentData(p => ({ ...p, amount: selectedAmount.toString(), transaction_ids: Array.from(selectedTrs) }));
@@ -54,7 +59,7 @@ const InstitutionFinances = ({ institutions, t }) => {
         setSelectedTrs(prev => {
             const next = new Set(prev);
             if (next.has(id)) next.delete(id);
-            else next.push ? next.push(id) : next.add(id);
+            else next.add(id);
             return next;
         });
     };
@@ -70,9 +75,6 @@ const InstitutionFinances = ({ institutions, t }) => {
         }
     };
 
-    /**
-     * Helper to format dates using internationalization keys.
-     */
     const formatDate = (dateStr) => {
         if (!dateStr) return 'N/A';
         const date = new Date(dateStr);
@@ -80,44 +82,60 @@ const InstitutionFinances = ({ institutions, t }) => {
         const monthKey = t('months_array')[date.getMonth()].toLowerCase();
         const month = t(monthKey);
         const year = date.getFullYear();
-
         return t('date_format_long')
             .replace('{day}', day)
             .replace('{month}', month)
             .replace('{year}', year);
     };
 
+    if (!selectedInstId) {
+        return (
+            <div className="inst-finances">
+                <div style={{ color: 'var(--text-muted)', padding: '4rem', textAlign: 'center' }}>
+                    <span style={{ fontSize: '2.5rem' }}>🏥</span>
+                    <p style={{ marginTop: '1rem', fontWeight: 600 }}>Seleccioná una institución del panel izquierdo</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="inst-finances">
-            <InstitutionSelector
-                institutions={institutions}
-                selectedInstId={selectedInstId}
-                setSelectedInstId={setSelectedInstId}
-                viewMode={viewMode}
-                setViewMode={setViewMode}
-                t={t}
-            />
+            {/* View mode toggle: Finanzas / Pacientes */}
+            <div className="inst-finances__selector-bar" style={{ justifyContent: 'flex-end' }}>
+                <div className="inst-finances__view-toggle">
+                    <button
+                        className={`inst-finances__toggle-btn ${viewMode === 'transactions' ? 'inst-finances__toggle-btn--active' : ''}`}
+                        onClick={() => setViewMode('transactions')}
+                    >
+                        📊 {t('finances')}
+                    </button>
+                    <button
+                        className={`inst-finances__toggle-btn ${viewMode === 'patients' ? 'inst-finances__toggle-btn--active' : ''}`}
+                        onClick={() => setViewMode('patients')}
+                    >
+                        👥 {t('patients')}
+                    </button>
+                </div>
+            </div>
 
             {loadingReport && <div className="loading-state">{t('loading_report')}</div>}
 
             {report && viewMode === 'transactions' && (
-                <div className="flex flex-col gap-4 animate-fade-in h-[calc(100vh-200px)]">
+                <div className="flex flex-col gap-4 animate-fade-in">
                     <InstitutionSummary
                         report={report}
-                        showPendingOnly={showPendingOnly}
-                        setShowPendingOnly={setShowPendingOnly}
                         selectedAmount={selectedAmount}
-                        selectedCount={selectedTrs.size}
-                        onPayClick={() => setIsPayModalOpen(true)}
                         t={t}
                     />
-
                     <InstitutionTransactionsTable
                         transactions={filteredTransactions}
                         showPendingOnly={showPendingOnly}
+                        setShowPendingOnly={setShowPendingOnly}
                         selectedTrs={selectedTrs}
                         onToggleSelect={handleToggleSelect}
                         onSelectAll={handleSelectAll}
+                        onPayClick={() => setIsPayModalOpen(true)}
                         formatDate={formatDate}
                         t={t}
                     />
@@ -125,7 +143,7 @@ const InstitutionFinances = ({ institutions, t }) => {
             )}
 
             {report && viewMode === 'patients' && (
-                <div className="flex flex-col gap-4 animate-fade-in h-[calc(100vh-250px)]">
+                <div className="flex flex-col gap-4 animate-fade-in">
                     <InstitutionPatientsTable
                         patients={patients}
                         formatDate={formatDate}

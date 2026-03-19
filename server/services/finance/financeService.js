@@ -175,12 +175,19 @@ class FinanceService {
     async payInstitutionDebt(data, currentUserId) {
         const conn = await pool.getConnection();
         try {
-            const { institution_id, amount, method } = data;
+            const { institution_id, amount, method, transaction_ids } = data;
             const payAmount = parseFloat(amount);
             if (isNaN(payAmount) || payAmount <= 0) throw new Error("Invalid amount");
 
             await conn.beginTransaction();
-            const debts = await transactionRepository.findPendingByInstitutionId(institution_id, conn);
+            let debts = await transactionRepository.findPendingByInstitutionId(institution_id, conn);
+
+            // Si se envían IDs específicos (desde checkboxes), pagar solo esos
+            if (Array.isArray(transaction_ids) && transaction_ids.length > 0) {
+                const idSet = new Set(transaction_ids.map(Number));
+                debts = debts.filter(debt => idSet.has(Number(debt.id)));
+            }
+
             let remaining = payAmount;
             let totalPaid = 0;
 
@@ -265,10 +272,19 @@ class FinanceService {
         let finalStatus = (totalPaid > 0 && totalPending > 0) ? 'partial' : (totalPaid > 0 ? 'paid' : (totalPending > 0 ? 'debt' : 'pending'));
         console.log(`[FinanceService] Updating Request ${requestId} status to: ${finalStatus}`);
 
-        await medicalRequestRepository.update(requestId, {
+        const paidTransactions = await conn.query(
+            "SELECT method FROM transactions WHERE request_id = ? AND status = 'paid' ORDER BY transaction_date DESC LIMIT 1",
+            [requestId]
+        );
+        const lastMethod = paidTransactions[0]?.method;
+
+        const updates = {
             payment_status: finalStatus,
             debt_amount: totalPending
-        }, conn);
+        };
+        if (lastMethod) updates.payment_method = lastMethod;
+
+        await medicalRequestRepository.update(requestId, updates, conn);
     }
 
     async closeCashBox(data) {

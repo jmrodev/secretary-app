@@ -8,7 +8,8 @@ class MedicalRequestRepository {
     async findAll(filters = {}, conn = pool) {
         let query = `
             SELECT r.*, p.full_name as patient_name, p.user_id as patient_user_id, d.full_name as doctor_name, d.user_id as doctor_user_id,
-            COALESCE(NULLIF(r.debt_amount, 0), (SELECT amount FROM transactions WHERE request_id = r.id AND status='pending' LIMIT 1), r.debt_amount) as resolved_debt_amount
+            COALESCE(NULLIF(r.debt_amount, 0), (SELECT amount FROM transactions WHERE request_id = r.id AND status='pending' LIMIT 1), r.debt_amount) as resolved_debt_amount,
+            COALESCE((SELECT method FROM transactions WHERE request_id = r.id AND status='paid' ORDER BY transaction_date DESC LIMIT 1), r.payment_method) as payment_method
             FROM medical_requests r
             LEFT JOIN patients p ON r.patient_id = p.id
             LEFT JOIN doctors d ON r.doctor_id = d.id
