@@ -30,7 +30,7 @@ CREATE TABLE `active_holidays` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `date` (`date`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -57,6 +57,7 @@ CREATE TABLE `appointments` (
   `type` enum('consultation','virtual') DEFAULT 'consultation',
   `institution_id` int(11) DEFAULT NULL,
   `duration` int(11) DEFAULT NULL,
+  `bonified` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `patient_id` (`patient_id`),
   KEY `doctor_id` (`doctor_id`),
@@ -64,7 +65,7 @@ CREATE TABLE `appointments` (
   CONSTRAINT `appointments_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`id`),
   CONSTRAINT `appointments_ibfk_2` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`id`),
   CONSTRAINT `appointments_ibfk_3` FOREIGN KEY (`consultorio_id`) REFERENCES `consultorios` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=727 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1010 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -85,7 +86,7 @@ CREATE TABLE `audit_logs` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `audit_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2850 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7722 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -127,7 +128,8 @@ CREATE TABLE `deleted_appointments` (
   `is_out_of_hours` tinyint(1) DEFAULT 0,
   `type` enum('consultation','virtual') DEFAULT 'consultation',
   `deleted_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `deleted_by` int(11) DEFAULT NULL
+  `deleted_by` int(11) DEFAULT NULL,
+  `bonified` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -148,10 +150,11 @@ CREATE TABLE `doctor_integrations` (
   `calendar_id` varchar(255) DEFAULT 'primary',
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `spreadsheet_id` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_doctor` (`doctor_id`),
   CONSTRAINT `doctor_integrations_ibfk_1` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -174,7 +177,7 @@ CREATE TABLE `doctor_schedules` (
   PRIMARY KEY (`id`),
   KEY `doctor_id` (`doctor_id`),
   CONSTRAINT `doctor_schedules_fk` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=247 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=362 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -191,6 +194,8 @@ CREATE TABLE `doctors` (
   `specialty` varchar(50) DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `cbu` varchar(50) DEFAULT NULL,
+  `alias` varchar(100) DEFAULT NULL,
+  `bio` text DEFAULT NULL,
   `dni` varchar(50) DEFAULT NULL,
   `consultation_price` decimal(10,2) DEFAULT 0.00,
   `office_number` varchar(50) DEFAULT NULL,
@@ -212,6 +217,10 @@ CREATE TABLE `doctors` (
   `afip_key_path` varchar(255) DEFAULT NULL,
   `afip_enabled` tinyint(1) DEFAULT 0,
   `afip_pto_vta` int(11) DEFAULT 1,
+  `reminder_template` text DEFAULT NULL,
+  `confirmation_template` text DEFAULT NULL,
+  `reminder_virtual_template` text DEFAULT NULL,
+  `confirmation_virtual_template` text DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `doctors_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
@@ -272,11 +281,41 @@ CREATE TABLE `insurances` (
   `website` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `phone` varchar(50) DEFAULT NULL,
-  `address` text DEFAULT NULL,
+  `address_notes` text DEFAULT NULL,
   `status` enum('active','inactive') DEFAULT 'active',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `street_name` varchar(255) DEFAULT NULL,
+  `street_number` varchar(50) DEFAULT NULL,
+  `floor` varchar(50) DEFAULT NULL,
+  `apartment` varchar(50) DEFAULT NULL,
+  `city` varchar(255) DEFAULT NULL,
+  `province` varchar(255) DEFAULT NULL,
+  `country` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `invoices`
+--
+
+DROP TABLE IF EXISTS `invoices`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `invoices` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `transaction_id` int(11) DEFAULT NULL,
+  `cbte_tipo` int(11) NOT NULL,
+  `punto_vta` int(11) NOT NULL,
+  `cbte_nro` bigint(20) NOT NULL,
+  `cae` varchar(20) DEFAULT NULL,
+  `cae_vto` date DEFAULT NULL,
+  `imp_total` decimal(10,2) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `transaction_id` (`transaction_id`),
+  CONSTRAINT `invoices_ibfk_1` FOREIGN KEY (`transaction_id`) REFERENCES `transactions` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -317,10 +356,13 @@ CREATE TABLE `medical_request_items` (
   `status` enum('pending','approved','rejected','modified') DEFAULT 'pending',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `vademecum_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `request_id` (`request_id`),
+  KEY `fk_mri_vademecum` (`vademecum_id`),
+  CONSTRAINT `fk_mri_vademecum` FOREIGN KEY (`vademecum_id`) REFERENCES `vademecum` (`id`) ON DELETE SET NULL,
   CONSTRAINT `medical_request_items_ibfk_1` FOREIGN KEY (`request_id`) REFERENCES `medical_requests` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=97 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -354,7 +396,7 @@ CREATE TABLE `medical_requests` (
   CONSTRAINT `medical_requests_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`id`),
   CONSTRAINT `medical_requests_ibfk_2` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`id`),
   CONSTRAINT `medical_requests_ibfk_3` FOREIGN KEY (`secretary_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=212 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -448,7 +490,7 @@ CREATE TABLE `patient_access_tokens` (
   UNIQUE KEY `token` (`token`),
   KEY `patient_id` (`patient_id`),
   CONSTRAINT `patient_access_tokens_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=117 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=118 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -468,7 +510,7 @@ CREATE TABLE `patient_doctors` (
   KEY `fk_pd_doctor` (`doctor_id`),
   CONSTRAINT `fk_pd_doctor` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_pd_patient` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -517,12 +559,21 @@ CREATE TABLE `patient_medications` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `next_refill_date` date DEFAULT NULL,
   `notes` text DEFAULT NULL,
+  `is_notified` tinyint(1) DEFAULT 0,
+  `vademecum_id` int(11) DEFAULT NULL,
+  `reminder_mode` enum('calculation','fixed_day','fixed_date') DEFAULT 'calculation',
+  `reminder_day` int(11) DEFAULT NULL,
+  `units_per_box` int(11) DEFAULT NULL,
+  `daily_intake` decimal(10,2) DEFAULT NULL,
+  `boxes_count` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_pm_patient` (`patient_id`),
   KEY `fk_pm_added_by` (`added_by`),
+  KEY `fk_pm_vademecum` (`vademecum_id`),
   CONSTRAINT `fk_pm_added_by` FOREIGN KEY (`added_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `fk_pm_patient` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  CONSTRAINT `fk_pm_patient` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_pm_vademecum` FOREIGN KEY (`vademecum_id`) REFERENCES `vademecum` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -560,13 +611,6 @@ CREATE TABLE `patients` (
   `dob` date DEFAULT NULL,
   `phone` varchar(100) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
-  `street_name` varchar(255) DEFAULT NULL,
-  `street_number` varchar(50) DEFAULT NULL,
-  `floor` varchar(50) DEFAULT NULL,
-  `apartment` varchar(50) DEFAULT NULL,
-  `city` varchar(255) DEFAULT 'Tandil',
-  `province` varchar(255) DEFAULT 'Buenos Aires',
-  `country` varchar(255) DEFAULT 'Argentina',
   `medical_history` text DEFAULT NULL,
   `dni` varchar(20) DEFAULT NULL,
   `affiliate_number` varchar(100) DEFAULT NULL,
@@ -582,6 +626,16 @@ CREATE TABLE `patients` (
   `next_suggested_prescription_date` date DEFAULT NULL,
   `license_expiry_date` date DEFAULT NULL,
   `institution_id` int(11) DEFAULT NULL,
+  `street_name` varchar(255) DEFAULT NULL,
+  `street_number` varchar(50) DEFAULT NULL,
+  `floor` varchar(50) DEFAULT NULL,
+  `apartment` varchar(50) DEFAULT NULL,
+  `city` varchar(255) DEFAULT 'Tandil',
+  `province` varchar(255) DEFAULT 'Buenos Aires',
+  `country` varchar(255) DEFAULT 'Argentina',
+  `visit_notified` tinyint(1) DEFAULT 0,
+  `prescription_notified` tinyint(1) DEFAULT 0,
+  `license_notified` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `fk_patient_insurance` (`insurance_id`),
@@ -589,7 +643,7 @@ CREATE TABLE `patients` (
   CONSTRAINT `fk_patient_institution` FOREIGN KEY (`institution_id`) REFERENCES `institutions` (`id`) ON DELETE SET NULL,
   CONSTRAINT `fk_patient_insurance` FOREIGN KEY (`insurance_id`) REFERENCES `insurances` (`id`) ON DELETE SET NULL,
   CONSTRAINT `patients_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8609 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8661 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -609,7 +663,34 @@ CREATE TABLE `phone_numbers` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `idx_entity` (`entity_type`,`entity_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4155 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4349 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `prescription_items`
+--
+
+DROP TABLE IF EXISTS `prescription_items`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `prescription_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `prescription_id` int(11) NOT NULL,
+  `vademecum_id` int(11) DEFAULT NULL,
+  `medication_name` varchar(255) NOT NULL,
+  `presentation` varchar(255) DEFAULT NULL,
+  `monodroga` varchar(255) DEFAULT NULL,
+  `dose` varchar(100) DEFAULT NULL,
+  `frequency` varchar(100) DEFAULT NULL,
+  `duration` varchar(100) DEFAULT NULL,
+  `quantity` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `fk_pi_prescription` (`prescription_id`),
+  KEY `fk_pi_vademecum` (`vademecum_id`),
+  CONSTRAINT `fk_pi_prescription` FOREIGN KEY (`prescription_id`) REFERENCES `prescriptions` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_pi_vademecum` FOREIGN KEY (`vademecum_id`) REFERENCES `vademecum` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -633,7 +714,7 @@ CREATE TABLE `prescription_request_tokens` (
   KEY `fk_prt_doctor` (`doctor_id`),
   CONSTRAINT `fk_prt_doctor` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`id`) ON DELETE SET NULL,
   CONSTRAINT `fk_prt_patient` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -650,6 +731,7 @@ CREATE TABLE `prescriptions` (
   `instructions` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `payment_status` enum('pending','paid','debt') DEFAULT 'pending',
+  `bonified` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `appointment_id` (`appointment_id`),
   CONSTRAINT `prescriptions_ibfk_1` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`id`) ON DELETE CASCADE
@@ -671,7 +753,7 @@ CREATE TABLE `recently_freed_slots` (
   PRIMARY KEY (`id`),
   KEY `doctor_id` (`doctor_id`),
   CONSTRAINT `fk_freed_doctor` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=217 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=372 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -692,7 +774,7 @@ CREATE TABLE `recycle_bin` (
   `deleted_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `expires_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -711,7 +793,7 @@ CREATE TABLE `secretaries` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `secretaries_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -762,7 +844,7 @@ CREATE TABLE `transactions` (
   CONSTRAINT `fk_transactions_appointment` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`id`) ON DELETE SET NULL,
   CONSTRAINT `fk_transactions_request` FOREIGN KEY (`request_id`) REFERENCES `medical_requests` (`id`) ON DELETE SET NULL,
   CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`related_user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=597 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2204 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -799,7 +881,7 @@ CREATE TABLE `users` (
   `token_version` int(11) DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=9656 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9713 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -823,6 +905,10 @@ CREATE TABLE `vademecum` (
   FULLTEXT KEY `idx_vademecum_search` (`nombre`,`presentacion`,`monodroga`,`laboratorio`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10487 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping routines for database 'clinical_management'
+--
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -833,4 +919,4 @@ CREATE TABLE `vademecum` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-01-30 12:00:02
+-- Dump completed on 2026-03-21  1:42:45
