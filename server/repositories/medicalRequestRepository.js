@@ -8,8 +8,7 @@ class MedicalRequestRepository {
     async findAll(filters = {}, conn = pool) {
         let query = `
             SELECT r.*, p.full_name as patient_name, p.user_id as patient_user_id, d.full_name as doctor_name, d.user_id as doctor_user_id,
-            COALESCE(NULLIF(r.debt_amount, 0), (SELECT amount FROM transactions WHERE request_id = r.id AND status='pending' LIMIT 1), r.debt_amount) as resolved_debt_amount,
-            COALESCE((SELECT method FROM transactions WHERE request_id = r.id AND status='paid' ORDER BY transaction_date DESC LIMIT 1), r.payment_method) as payment_method
+            COALESCE(NULLIF(r.debt_amount, 0), 0) as resolved_debt_amount
             FROM medical_requests r
             LEFT JOIN patients p ON r.patient_id = p.id
             LEFT JOIN doctors d ON r.doctor_id = d.id
@@ -18,7 +17,11 @@ class MedicalRequestRepository {
         const whereClauses = [];
 
         if (filters.patientId) { whereClauses.push("r.patient_id = ?"); params.push(filters.patientId); }
-        if (filters.doctorId) { whereClauses.push("r.doctor_id = ?"); params.push(filters.doctorId); }
+        if (filters.doctorId) {
+            // Include requests assigned to this doctor OR unassigned patient-submitted requests
+            whereClauses.push("(r.doctor_id = ? OR (r.is_patient_submitted = TRUE AND r.doctor_id IS NULL))");
+            params.push(filters.doctorId);
+        }
 
         if (whereClauses.length > 0) query += " WHERE " + whereClauses.join(" AND ");
         query += " ORDER BY r.created_at DESC";
