@@ -21,16 +21,18 @@ android_native/local.properties
 *.keystore
 
 # Database and data
-/mysql_data
-/mysql_data_prod/
-# Backups
-backup_*.sql
-backups/
-backup_ddbb/
-backup.log
-*.csv
-contacts.csv
+/data/database/
+/data/backups_dev/
+/data/backups_prod/
+/data/fichas_medicas/
+# Logs
+logs/*.txt
+# CSVs and JSONs
+data/*.csv
 extracted_patients.json
+# Build artifacts
+builds/
+!builds/old_gradle/
 
 # Keys and certs
 *.key

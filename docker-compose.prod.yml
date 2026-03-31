@@ -15,7 +15,7 @@ services:
       MYSQL_DATABASE: ${DB_NAME_PROD:-clinical_management}
       TZ: America/Argentina/Buenos_Aires
     volumes:
-      - ./mysql_data_prod:/var/lib/mysql
+      - ./data/database/prod:/var/lib/mysql
       - ./server/01-schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
     ports:
       - "${DB_EXTERNAL_PORT_PROD:-3310}:3306"
