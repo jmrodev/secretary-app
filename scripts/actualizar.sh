@@ -1,9 +1,8 @@
 #!/bin/bash
+
 # ==========================================
 # SECRETARY APP - QUICK REMOTE UPDATE
 # ==========================================
-# Move to root to run git commands
-cd "$(dirname "$0")/.."
 
 echo "🔄 Iniciando actualización remota..."
 

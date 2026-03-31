@@ -114,6 +114,7 @@ Se creó un script de monitoreo: `monitor-docker.sh`
 ```bash
 # Monitoreo cada 5 segundos (default)
 ./monitor-docker.sh
+
 # Monitoreo cada 2 segundos
 ./monitor-docker.sh 2
 ```

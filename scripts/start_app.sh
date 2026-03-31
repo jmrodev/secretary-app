@@ -1,6 +1,4 @@
 #!/bin/bash
-# Move to root so docker-compose finds the yml
-cd "$(dirname "$0")/.."
 
 # ==========================================
 # SECRETARY APP - AUTO STARTUP
@@ -17,6 +15,7 @@ fi
 echo "📍 Network Detected: $HOST_IP"
 
 # 2. Start Services (Background)
+# We assume docker-compose is installed and user has permission
 echo "🐳 Starting Docker Services..."
 docker compose up -d
 
@@ -33,7 +32,9 @@ done
 echo ""
 
 # 4. Inject IP into Running Server
+# We do this AFTER start so we don't need to rebuild or restart just for a config change
 echo "🔄 Configuring Network..."
+# Wait for server container to be reachable to run the command
 sleep 2 
 docker exec secretary-app-server-1 node -e "
 const { pool } = require('./db');
@@ -51,6 +52,7 @@ echo "👉 Staff QR Link: http://$HOST_IP:5173"
 echo "🌐 Opening Browser..."
 google-chrome "http://localhost:5173" > /dev/null 2>&1 &
 
+# Keep terminal open so user can see status
 echo ""
 echo "Esta ventana se cerrará en 10 segundos..."
 sleep 10

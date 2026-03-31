@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # 1. Detect the Host's Primary LAN IP
+# We take the first IP that is not localhost.
 IP=$(hostname -I | awk '{print $1}')
 
 if [ -z "$IP" ]; then

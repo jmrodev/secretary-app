@@ -3,7 +3,7 @@
 Este documento detalla la implementación técnica realizada para la adecuación del sistema a la normativa de la **Agencia de Recaudación y Control Aduanero (ARCA)**, bajo los lineamientos de la **Resolución General 5616/2024** y la **Ley de Inocencia Fiscal 27.743**.
 
 ## 🚀 Resumen del Hito
-Se ha logrado la transición exitosa del protocolo AFIP hacia el nuevo estándar **ARCA 2026**, permitir la obtención de CAE (Código de Autorización Electrónico) para profesionales de la salud (Monotributistas/Responsables Inscriptos) con cumplimiento estricto de validación.
+Se ha logrado la transición exitosa del protocolo AFIP hacia el nuevo estándar **ARCA 2026**, permitiendo la obtención de CAE (Código de Autorización Electrónico) para profesionales de la salud (Monotributistas/Responsables Inscriptos) con cumplimiento estricto de validación.
 
 ---
 

@@ -24,6 +24,9 @@ android_native/local.properties
 /data/database/
 /data/backups_dev/
 /data/backups_prod/
+/mysql_data/
+/mysql_data_prod/
+/android_sdk/
 /data/fichas_medicas/
 # Logs
 logs/*.txt
@@ -57,3 +60,5 @@ android_sdk/tools.zip
 *.sln
 *.sw?
 *.DS_Store
+android_sdk/
+tools/android_sdk/
