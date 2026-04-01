@@ -256,8 +256,8 @@ class FinanceService {
     }
 
     async syncAppointmentPaymentStatus(appointmentId, userId, conn) {
-        const { totalPaid, totalPending } = await transactionRepository.getPaymentSummary(appointmentId, conn);
-        let finalStatus = (totalPaid > 0 && totalPending > 0) ? 'partial' : (totalPaid > 0 ? 'paid' : (totalPending > 0 ? 'debt' : 'pending'));
+        const { totalPaid, totalPending, hasPaid, hasPending } = await transactionRepository.getPaymentSummary(appointmentId, conn);
+        let finalStatus = (hasPaid && hasPending) ? 'partial' : (hasPaid ? 'paid' : (hasPending ? 'debt' : 'pending'));
         await appointmentRepository.update(appointmentId, {
             payment_status: finalStatus,
             is_paid: finalStatus === 'paid' ? 1 : 0
@@ -266,10 +266,10 @@ class FinanceService {
 
     async syncRequestPaymentStatus(requestId, conn) {
         console.log(`[FinanceService] syncRequestPaymentStatus for Request: ${requestId}`);
-        const { totalPaid, totalPending } = await transactionRepository.getRequestPaymentSummary(requestId, conn);
-        console.log(`[FinanceService] Summary for ${requestId}: Paid=${totalPaid}, Pending=${totalPending}`);
+        const { totalPaid, totalPending, hasPaid, hasPending } = await transactionRepository.getRequestPaymentSummary(requestId, conn);
+        console.log(`[FinanceService] Summary for ${requestId}: Paid=${totalPaid}, Pending=${totalPending}, hasPaid=${hasPaid}, hasPending=${hasPending}`);
 
-        let finalStatus = (totalPaid > 0 && totalPending > 0) ? 'partial' : (totalPaid > 0 ? 'paid' : (totalPending > 0 ? 'debt' : 'pending'));
+        let finalStatus = (hasPaid && hasPending) ? 'partial' : (hasPaid ? 'paid' : (hasPending ? 'debt' : 'pending'));
         console.log(`[FinanceService] Updating Request ${requestId} status to: ${finalStatus}`);
 
         const paidTransactions = await conn.query(
