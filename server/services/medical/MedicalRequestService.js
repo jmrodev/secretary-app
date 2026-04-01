@@ -17,8 +17,8 @@ const { ROLES } = require('../../constants/roles');
  */
 class MedicalRequestService {
     async createRequest(req, data) {
-        const { patient_id, doctor_id, request_note, type, bonified, raw_medication_data } = data;
-        const initialStatus = req.user.role === ROLES.DOCTOR ? 'completed' : 'pending';
+        const { patient_id, doctor_id, request_note, type, bonified, raw_medication_data, status } = data;
+        const initialStatus = status || (req.user.role === ROLES.DOCTOR ? 'completed' : 'pending');
 
         const pat = await patientRepository.findById(patient_id);
         if (!pat) throw new Error("Patient not found");

@@ -23,6 +23,7 @@ exports.getRequests = async (req, res) => {
             patientId: req.query.patientId
         };
         const rows = await medicalRequestService.getRequests(req.user, filters);
+        console.log(`[GET_REQUESTS] User: ${req.user.username} (Role: ${req.user.role}). Rows returned: ${rows.length}`);
         res.json(rows);
     } catch (err) {
         console.error(err);
