@@ -161,6 +161,19 @@ export const useAppointments = () => {
         }
     };
 
+    const getMonthlyReport = async (month, year, doctorId = null) => {
+        try {
+            const params = { month, year };
+            if (doctorId) params.doctorId = doctorId;
+            const response = await api.get('/appointments/month-report', { params });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            showMessage('Error al obtener el reporte', 'error');
+            return null;
+        }
+    };
+
     return {
         updateStatus,
         updateAppointment,
@@ -168,6 +181,7 @@ export const useAppointments = () => {
         deleteAppointment,
         rescheduleAppointment,
         savePrescription,
+        getMonthlyReport,
         isSubmitting
     };
 };
