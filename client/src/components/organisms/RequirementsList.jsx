@@ -7,7 +7,7 @@ import Button from '../atoms/Button';
 import TabButton from '../atoms/TabButton';
 import Icon from '../atoms/Icon';
 import Loading from '../atoms/Loading';
-import MedicalRequestForm from './MedicalRequestForm';
+import { MedicalRequestForm } from '../../features/medical_documents';
 import RequirementsTable from './RequirementsTable';
 import RequirementsRecycleBin from './RequirementsRecycleBin';
 import RequirementDetailModal from './RequirementDetailModal';

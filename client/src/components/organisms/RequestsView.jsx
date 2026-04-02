@@ -2,8 +2,7 @@ import React from 'react';
 import TabNav from '../molecules/TabNav';
 import TabButton from '../atoms/TabButton';
 import Icon from '../atoms/Icon';
-import MedicalRequestForm from './MedicalRequestForm';
-import MedicalRequestList from './MedicalRequestList';
+import { MedicalRequestForm, MedicalRequestList } from '../../features/medical_documents';
 
 const RequestsView = ({
     t,
