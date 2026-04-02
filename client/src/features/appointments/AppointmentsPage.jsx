@@ -6,10 +6,10 @@ import NavTabs from '../../components/molecules/NavTabs';
 import DoctorFilter from '../../components/molecules/DoctorFilter';
 import Modal from '../../components/molecules/Modal';
 import { PatientManagerModal, PatientHistoryModal } from '../patients';
-import PrescriptionModal from '../../components/organisms/PrescriptionModal';
+import { PrescriptionModal } from '../medical_documents';
 import WhatsAppModal from '../../components/molecules/WhatsAppModal';
 import AdminAuthModal from '../../components/molecules/AdminAuthModal';
-import TransactionModal from '../../components/molecules/TransactionModal';
+import { TransactionModal } from '../finances';
 
 // Feature Components (Executors)
 import CalendarSection from './components/CalendarSection';

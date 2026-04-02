@@ -1,10 +1,10 @@
 import React from 'react';
-import Modal from '../molecules/Modal';
-import Button from '../atoms/Button';
-import Input from '../atoms/Input';
-import Select from '../atoms/Select';
-import CurrencyInput from '../atoms/CurrencyInput';
-import FormGroup from '../molecules/FormGroup';
+import Modal from '../../../components/molecules/Modal';
+import Button from '../../../components/atoms/Button';
+import Input from '../../../components/atoms/Input';
+import Select from '../../../components/atoms/Select';
+import CurrencyInput from '../../../components/atoms/CurrencyInput';
+import FormGroup from '../../../components/molecules/FormGroup';
 import './EditTransactionModal.css';
 
 const EditTransactionModal = ({

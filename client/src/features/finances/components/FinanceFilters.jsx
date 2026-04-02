@@ -1,8 +1,8 @@
 import React from 'react';
-import Input from '../atoms/Input';
-import Select from '../atoms/Select';
-import Icon from '../atoms/Icon';
-import { getMonthsOptions } from '../../utils/dateUtils';
+import Input from '../../../components/atoms/Input';
+import Select from '../../../components/atoms/Select';
+import Icon from '../../../components/atoms/Icon';
+import { getMonthsOptions } from '../../../utils/dateUtils';
 import './FinanceFilters.css';
 
 /**

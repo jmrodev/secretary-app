@@ -3,7 +3,7 @@ import React from 'react';
 import MainLayout from '../components/templates/MainLayout';
 import Button from '../components/atoms/Button';
 import Loading from '../components/atoms/Loading';
-import InstitutionFinances from '../components/organisms/InstitutionFinances';
+import { InstitutionFinances } from '../features/finances';
 import InstitutionFormModal from '../components/organisms/InstitutionFormModal';
 import Icon from '../components/atoms/Icon';
 import { useInstitutionsController } from '../controllers/useInstitutionsController';

@@ -129,8 +129,8 @@ secretary-app/
 │   │   ├── features/
 │   │   │   ├── auth/           → Autenticación y sesión
 │   │   │   ├── appointments/   → Gestión de agenda y turnos
+│   │   │   ├── finances/       → Gestión de caja y reportes financieros (migrado)
 │   │   │   └── patients/       → Gestión integral de pacientes (migrado)
-│   │   │       ├── components/  → PatientForm, PatientDetailsView, PatientList, etc.
 │   │   │       ├── hooks/       → usePatientsPageController, usePatientFormController
 │   │   │       ├── index.js     → API Pública de la feature
 │   │   │       └── PatientsPage.jsx
@@ -427,4 +427,4 @@ Antes de hacer commit, verificar:
 ---
 
 **Última actualización**: 2026-04-02
-**Mantenedor**: Equipo de Desarrollo (Modularización de Feature Patients completada)
+**Mantenedor**: Equipo de Desarrollo (Modularización de Feature Finances completada)

@@ -1,13 +1,15 @@
 import React from 'react';
-import { useMedicalDocumentsController } from '../controllers/useMedicalDocumentsController';
+import { 
+    useMedicalDocumentsController,
+    MedicalRequestForm,
+    MedicalRequestList,
+    MedicalHistoryTable,
+    MedicalFileRepository,
+    MedicalActionModals
+} from '../features/medical_documents';
 
 // Components
 import MainLayout from '../components/templates/MainLayout';
-import MedicalRequestForm from '../components/organisms/MedicalRequestForm';
-import MedicalRequestList from '../components/organisms/MedicalRequestList';
-import MedicalHistoryTable from '../components/organisms/MedicalHistoryTable';
-import MedicalFileRepository from '../components/organisms/MedicalFileRepository';
-import MedicalActionModals from '../components/organisms/MedicalActionModals';
 import Button from '../components/atoms/Button';
 import SearchBar from '../components/molecules/SearchBar';
 import TabNav from '../components/molecules/TabNav';

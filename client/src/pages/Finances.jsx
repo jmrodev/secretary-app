@@ -1,5 +1,5 @@
 import React from 'react';
-import { useFinancesPageController } from '../controllers/useFinancesPageController';
+
 
 // Atomic Design Components
 import MainLayout from '../components/templates/MainLayout';
@@ -9,13 +9,17 @@ import Card from '../components/atoms/Card';
 import Icon from '../components/atoms/Icon';
 
 // Molecules/Organisms
-import FinanceStatsCards from '../components/molecules/FinanceStatsCards';
 import CashBoxDeliveryModal from '../components/molecules/CashBoxDeliveryModal';
 import TransactionsTable from '../components/organisms/TransactionsTable';
-import EditTransactionModal from '../components/organisms/EditTransactionModal';
-import TransactionModal from '../components/molecules/TransactionModal';
 import PendingClosuresModal from '../components/molecules/PendingClosuresModal';
-import FinanceSidebar from '../components/organisms/FinanceSidebar';
+
+import {
+    useFinancesPageController,
+    FinanceStatsCards,
+    EditTransactionModal,
+    TransactionModal,
+    FinanceSidebar
+} from '../features/finances';
 
 import './Finances.css';
 

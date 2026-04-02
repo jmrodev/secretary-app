@@ -1,0 +1,234 @@
+
+/* PrescriptionModal Styles – BEM compliant, no !important */
+
+/* ── Root container ── */
+.prescription-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+/* ── Generic group (stacked column with gap) ── */
+.prescription-modal__group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* ── Label shared style (uppercase micro-label) ── */
+.prescription-modal__label {
+    font-weight: 700;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.prescription-modal__sub-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: -0.25rem;
+}
+
+/* ── Single field wrapper (label + control stacked) ── */
+.prescription-modal__field-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    width: 100%;
+}
+
+/* ── Frequency presets pill-row ── */
+.prescription-modal__freq-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.prescription-modal__freq-btn {
+    padding: 0.3rem 0.65rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    background: var(--gray-100, #f3f4f6);
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    border-radius: 99px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.prescription-modal__freq-btn:hover {
+    background: var(--blue-50, #eff6ff);
+    color: var(--blue-700, #1d4ed8);
+    border-color: var(--blue-200, #bfdbfe);
+}
+
+.prescription-modal__freq-btn--active {
+    background: var(--blue-600, #2563eb);
+    color: #fff;
+    border-color: var(--blue-700, #1d4ed8);
+}
+
+/* ── Numeric fields row (3 inputs + add btn) ── */
+.prescription-modal__numeric-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 0.75rem;
+    align-items: end;
+}
+
+.prescription-modal__numeric-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.prescription-modal__add-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.prescription-modal__add-col--spacer {
+    /* empty label placeholder */
+    display: block;
+    height: 1.1rem;
+}
+
+/* ── Quick lists container ── */
+.prescription-modal__quick-lists {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* ── Days-supply preview banner ── */
+.prescription-modal__supply-preview {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.9rem;
+    background: var(--success-50, #ecfdf5);
+    border: 1px solid var(--success-200, #a7f3d0);
+    border-radius: 0.6rem;
+    font-size: 0.8rem;
+    color: var(--success-700, #065f46);
+}
+
+/* ── Habitual medications ── */
+.prescription-modal__habitual {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: var(--gray-50, #f9fafb);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+}
+
+.prescription-modal__habitual-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.prescription-modal__habitual-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: var(--blue-50, #eff6ff);
+    color: var(--blue-700, #1d4ed8);
+    border: 1px solid var(--blue-100, #dbeafe);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    text-align: left;
+}
+
+.prescription-modal__habitual-btn:hover {
+    background: var(--blue-100, #dbeafe);
+}
+
+.prescription-modal__habitual-btn--active {
+    background: var(--success-500, #10b981);
+    border-color: var(--success-600, #059669);
+    color: #fff;
+}
+
+.prescription-modal__habitual-name {
+    font-weight: 700;
+}
+
+.prescription-modal__habitual-dose {
+    font-size: 0.65rem;
+    opacity: 0.8;
+}
+
+/* ── Items list (added medications) ── */
+.prescription-modal__items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: var(--gray-50, #f9fafb);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+}
+
+.prescription-modal__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0.75rem;
+    background: var(--bg-card, #fff);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+}
+
+.prescription-modal__item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.prescription-modal__item-name {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--text-main);
+}
+
+.prescription-modal__item-meta {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.prescription-modal__item-supply {
+    font-weight: 700;
+    color: var(--success-600, #059669);
+}
+
+/* ── Textarea (preview and instructions) ── */
+.prescription-modal__textarea {
+    min-height: 60px;
+    resize: vertical;
+}
+
+/* ── Responsive: stack numeric row on small screens ── */
+@media (max-width: 480px) {
+    .prescription-modal__numeric-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .prescription-modal__add-col {
+        grid-column: span 2;
+    }
+}

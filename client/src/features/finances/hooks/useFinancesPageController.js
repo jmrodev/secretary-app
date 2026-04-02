@@ -1,12 +1,11 @@
-
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import api from '../api/axios';
-import { useAuth } from '../features/auth';
-import { useLanguage } from '../context/LanguageContext';
-import { useModal } from '../context/ModalContext';
-import { useMessage } from '../context/MessageContext';
-import { useConfig } from '../context/ConfigContext';
-import { useFinanceHandlers } from '../hooks/useFinanceHandlers';
+import api from '../../../api/axios';
+import { useAuth } from '../../auth';
+import { useLanguage } from '../../../context/LanguageContext';
+import { useModal } from '../../../context/ModalContext';
+import { useMessage } from '../../../context/MessageContext';
+import { useConfig } from '../../../context/ConfigContext';
+import { useFinanceHandlers } from './useFinanceHandlers';
 
 export const useFinancesPageController = () => {
     const { user } = useAuth();

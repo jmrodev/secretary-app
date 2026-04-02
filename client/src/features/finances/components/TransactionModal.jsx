@@ -1,24 +1,24 @@
 import React from 'react';
-import Modal from './Modal';
-import { useLanguage } from '../../context/LanguageContext';
-import { useConfig } from '../../context/ConfigContext';
-import { useTransactionForm } from '../../hooks/useTransactionForm';
-import { formatPrice } from '../../utils/format';
+import Modal from '../../../components/molecules/Modal';
+import { useLanguage } from '../../../context/LanguageContext';
+import { useConfig } from '../../../context/ConfigContext';
+import { useTransactionForm } from '../hooks/useTransactionForm';
+import { formatPrice } from '../../../utils/format';
 import {
     getTransactionTypes,
     getPaymentMethods,
     getStatusOptions,
     getServiceTypes
-} from '../../constants/transactionOptions';
+} from '../../../constants/transactionOptions';
 
 // Atomic Components
-import Input from '../atoms/Input';
-import Select from '../atoms/Select';
-import Button from '../atoms/Button';
-import Icon from '../atoms/Icon';
-import CurrencyInput from '../atoms/CurrencyInput';
-import FormGroup from './FormGroup';
-import PrescriptionSection from './PrescriptionSection';
+import Input from '../../../components/atoms/Input';
+import Select from '../../../components/atoms/Select';
+import Button from '../../../components/atoms/Button';
+import Icon from '../../../components/atoms/Icon';
+import CurrencyInput from '../../../components/atoms/CurrencyInput';
+import FormGroup from '../../../components/molecules/FormGroup';
+import PrescriptionSection from '../../../components/molecules/PrescriptionSection';
 import './TransactionModal.css';
 
 const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requestId }) => {

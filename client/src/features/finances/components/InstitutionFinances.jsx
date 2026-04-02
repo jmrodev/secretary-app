@@ -1,11 +1,11 @@
 import React from 'react';
-import { useInstitutionFinances } from '../../hooks/useInstitutionFinances';
+import { useInstitutionFinances } from '../hooks/useInstitutionFinances';
 
 // Molecules
-import InstitutionSummary from '../molecules/InstitutionSummary';
-import InstitutionTransactionsTable from '../molecules/InstitutionTransactionsTable';
-import InstitutionPatientsTable from '../molecules/InstitutionPatientsTable';
-import InstitutionPaymentModal from '../molecules/InstitutionPaymentModal';
+import InstitutionSummary from '../../../components/molecules/InstitutionSummary';
+import InstitutionTransactionsTable from '../../../components/molecules/InstitutionTransactionsTable';
+import InstitutionPatientsTable from '../../../components/molecules/InstitutionPatientsTable';
+import InstitutionPaymentModal from '../../../components/molecules/InstitutionPaymentModal';
 import './InstitutionFinances.css';
 
 /**

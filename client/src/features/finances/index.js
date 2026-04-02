@@ -1,0 +1,18 @@
+// Public API for the Finances Feature
+// Exposes only what is needed by pages or other features.
+
+// Hooks
+export { useFinancesPageController } from './hooks/useFinancesPageController';
+export { useInstitutionFinances } from './hooks/useInstitutionFinances';
+export { useFinanceHandlers } from './hooks/useFinanceHandlers';
+export { useTransactionForm } from './hooks/useTransactionForm';
+
+// Components
+export { default as TransactionModal } from './components/TransactionModal';
+export { default as EditTransactionModal } from './components/EditTransactionModal';
+export { default as BalanceFinancialSummary } from './components/BalanceFinancialSummary';
+export { default as FinanceDoctorFilter } from './components/FinanceDoctorFilter';
+export { default as FinanceFilters } from './components/FinanceFilters';
+export { default as FinanceStatsCards } from './components/FinanceStatsCards';
+export { default as FinanceSidebar } from './components/FinanceSidebar';
+export { default as InstitutionFinances } from './components/InstitutionFinances';

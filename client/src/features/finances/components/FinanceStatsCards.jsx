@@ -1,6 +1,6 @@
 import React from 'react';
-import Card from '../atoms/Card';
-import Icon from '../atoms/Icon';
+import Card from '../../../components/atoms/Card';
+import Icon from '../../../components/atoms/Icon';
 import './FinanceStatsCards.css';
 
 const FinanceStatsCards = ({ stats, t }) => {

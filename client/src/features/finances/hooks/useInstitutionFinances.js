@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import api from '../api/axios';
-import { useMessage } from '../context/MessageContext';
+import api from '../../../api/axios';
+import { useMessage } from '../../../context/MessageContext';
 
 export const useInstitutionFinances = (institutions, selectedInstId) => {
     const { showMessage } = useMessage();
@@ -66,4 +66,3 @@ export const useInstitutionFinances = (institutions, selectedInstId) => {
         handlePaymentSubmit
     };
 };
-
