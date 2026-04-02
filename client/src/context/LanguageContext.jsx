@@ -1,22 +1,13 @@
-import { createContext, useContext, useState } from 'react';
-import { translations } from '../constants/translations';
+import { createContext, useContext } from 'react';
+import { useLanguageLogic } from './useLanguageLogic';
 
 const LanguageContext = createContext(null);
 
 export const LanguageProvider = ({ children }) => {
-    // Default to 'es' (Spanish)
-    const [language, setLanguage] = useState('es');
-
-    const t = (key) => {
-        return translations[language][key] || key;
-    };
-
-    const toggleLanguage = () => {
-        setLanguage(prev => prev === 'es' ? 'en' : 'es');
-    };
+    const value = useLanguageLogic();
 
     return (
-        <LanguageContext.Provider value={{ language, setLanguage, toggleLanguage, t }}>
+        <LanguageContext.Provider value={value}>
             {children}
         </LanguageContext.Provider>
     );

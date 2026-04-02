@@ -35,6 +35,7 @@ export const useRegisterController = () => {
             value = capitalizeWords(value);
         }
         setFormData(prev => ({ ...prev, [name]: value }));
+        if (error) setError('');
     };
 
     const handleSubmit = async (e) => {

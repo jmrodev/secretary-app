@@ -37,9 +37,19 @@ export const useLoginController = () => {
         }
     };
 
+    const handleUsernameChange = (val) => {
+        setUsername(val);
+        if (error) setError('');
+    };
+
+    const handlePasswordChange = (val) => {
+        setPassword(val);
+        if (error) setError('');
+    };
+
     return {
-        username, setUsername,
-        password, setPassword,
+        username, setUsername: handleUsernameChange,
+        password, setPassword: handlePasswordChange,
         error, loading,
         handleSubmit,
         t

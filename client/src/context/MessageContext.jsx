@@ -1,23 +1,19 @@
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext } from 'react';
+import { useMessageLogic } from './useMessageLogic';
 
 const MessageContext = createContext();
 
 export const useMessage = () => useContext(MessageContext);
 
 export const MessageProvider = ({ children }) => {
-    const [message, setMessage] = useState(null);
-
-    const showMessage = useCallback((text, type = 'info') => {
-        setMessage({ text, type });
-        setTimeout(() => setMessage(null), 3000);
-    }, []);
+    const value = useMessageLogic();
 
     return (
-        <MessageContext.Provider value={{ showMessage }}>
+        <MessageContext.Provider value={value}>
             {children}
-            {message && (
-                <div className={`toast-container ${message.type === 'error' ? 'toast-error' : 'toast-info'}`}>
-                    {message.text}
+            {value.text && (
+                <div className={`toast-container ${value.type === 'error' ? 'toast-error' : 'toast-info'}`}>
+                    {value.text}
                 </div>
             )}
         </MessageContext.Provider>

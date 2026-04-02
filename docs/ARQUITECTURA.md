@@ -44,7 +44,7 @@
 - **Unidades Relativas**: Priorizar el uso de unidades relativas (`rem`, `em`, `%`) para `font-size`, `padding`, `margin`, `width`, `height` en lugar de píxeles (`px`) absolutos. Esto garantiza que el diseño sea adaptable y accesible (1rem = 16px por defecto).
 - **PROHIBIDO usar `!important`**: Nunca utilizar `!important` para sobrescribir estilos. Si hay conflictos, mejorar la especificidad del selector o reestructurar el CSS.
 
-### 5. MVC (Model-View-Controller)
+### 6. MVC (Model-View-Controller)
 - **Frontend**:
   ```
   components/  → View (presentación siguiendo Atomic Design)
@@ -60,7 +60,7 @@
   models/      → Acceso a datos (queries)
   ```
 
-### 6. Un Componente = Un CSS
+### 7. Un Componente = Un CSS
 - **Regla estricta**: Cada archivo `.jsx` tiene su correspondiente `.css`
 - **Ejemplo**:
   ```
@@ -68,6 +68,23 @@
   AppointmentReportTable.css
   ```
 - **NO usar**: CSS inline, styled-components, o CSS-in-JS
+
+### 8. Optimización con Memoización (`useMemo` / `useCallback`)
+- **Uso Justificado**: NO memorizar todo por defecto. Usar solo cuando:
+    - Hay cálculos costosos (ej: filtrado de grandes volúmenes de datos, transformaciones complejas).
+    - Se requiere **igualdad referencial** para evitar re-renders innecesarios en componentes hijos envueltos en `React.memo`.
+    - Se pasan objetos, arrays o funciones como dependencias a otros hooks (`useEffect`, `useMemo`, `useCallback`).
+- **Contextos**: Los valores de los Context Providers DEBEN estar memorizados con `useMemo` para evitar renderizados en toda la aplicación cuando el estado global cambia.
+- **Dependencias**: Siempre incluir todas las dependencias utilizadas dentro del hook. NUNCA omitir dependencias para "forzar" que no se actualice.
+
+### 9. Gestión de Errores y Feedback de Interacción
+- **Aislamiento de Estado**: Los errores de formularios deben ser **locales** al controlador de cada característica (Feature Controller) para garantizar la independencia total. Lo que sucede en un formulario no debe afectar a otros (ej: el Usuario B no debe borrar el error del Usuario A).
+- **Limpieza por Interacción**: Los mensajes de error en formularios DEBEN limpiarse tan pronto como el usuario empiece a interactuar con los campos (evento `onChange`, escritura de teclado). Esto indica al usuario que el sistema está esperando su nueva entrada antes de volver a validar.
+- **Toasts vs Errores Locales**:
+    - **Toasts (Contexto Global)**: Reservados para mensajes asíncronos persistentes, notificaciones de sistema o confirmaciones transversales (ej: "Conexión perdida", "Cita creada con éxito").
+    - **Errores Locales (Controladores)**: Para validaciones de entrada de datos y respuestas de error específicas de un formulario.
+
+
 
 ## Estructura del Proyecto
 
