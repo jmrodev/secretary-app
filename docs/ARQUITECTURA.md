@@ -30,10 +30,18 @@
 - **Uso Obligatorio de Átomos**: Todos los botones deben usar el componente `<Button />` y todos los iconos deben usar el componente `<Icon />`. PROHIBIDO usar emojis o elementos nativos (como `<button>` o `<span>` con clases de iconos) directamente para estos propósitos.
 
 ### 4. Modularidad por Características (Features)
-- **Encapsulamiento**: Agrupar lógica, servicios y contextos relacionados en una carpeta dentro de `src/features/`.
+- **Encapsulamiento**: Agrupar lógica, servicios, estilos y componentes específicos de un dominio en una carpeta dentro de `src/features/`.
+- **Estructura Estándar** (Ej: `src/features/appointments/`):
+  ```
+  components/  → Componentes específicos (solo usados en esta feature)
+  hooks/       → Lógica de estado y side-effects (model/controller local)
+  index.js     → Barrel file que exporta el orquestador y hooks clave
+  FeaturePage.jsx → Page principal (Orquestador)
+  FeaturePage.css → Estilos globales de la página
+  ```
 - **Barrel Files**: Cada característica debe tener un `index.js` para exponer solo lo necesario al resto de la aplicación.
-- **Independencia**: Las características deben ser lo más autónomas posible.
-- **Separación de Lógica en React Hooks**: Para evitar componentes "cargados", la lógica de estado y efectos debe extraerse a hooks personalizados (ej: `useAuthLogic.js`). Esto facilita el testing y la legibilidad.
+- **Independencia**: Las características deben ser lo más autónomas posible. Los componentes generales (Atoms/Molecules/Organisms) se reservan para piezas reutilizables entre múltiples features.
+- **Separación de Lógica en React Hooks**: Para evitar componentes "cargados", la lógica de estado y efectos debe extraerse a hooks especializados dentro de la feature (ej: `useAppointmentsLogic.js`).
 
 ### 5. NO Tailwind CSS
 - **Solo CSS vanilla/puro**
@@ -120,10 +128,15 @@ secretary-app/
 │   │   ├── controllers/
 │   │   │   └── useReportsController.js
 │   │   ├── features/
-│   │   │   └── auth/           → Ejemplo de módulo encapsulado
-│   │   │       ├── AuthContext.jsx
-│   │   │       ├── authService.js
-│   │   │       └── index.js
+│   │   │   ├── auth/           → Ejemplo de módulo encapsulado
+│   │   │   │   ├── AuthContext.jsx
+│   │   │   │   ├── authService.js
+│   │   │   │   └── index.js
+│   │   │   └── appointments/   → Ejemplo de feature completa
+│   │   │       ├── components/  → Modals y panels específicos
+│   │   │       ├── hooks/       → useAppointments, useBooking, etc.
+│   │   │       ├── index.js     → Exporta AppointmentsPage y useAppointments
+│   │   │       └── AppointmentsPage.jsx
 │   │   ├── hooks/
 │   │   ├── context/            → Solo contextos transversales (Idiomas, Modales)
 │   │   └── utils/
