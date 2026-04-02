@@ -1,0 +1,119 @@
+/* BalanceView Component Styles (BEM) */
+
+.balance-view {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.balance-view__title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
+
+.balance-view__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.balance-view__card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+}
+
+.balance-view__card--summary {
+    grid-column: span 1;
+}
+
+.balance-view__card-title {
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.balance-view__summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.balance-view__amount--positive {
+    color: var(--success);
+    font-weight: 700;
+}
+
+.balance-view__summary-item--subtotal {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--gray-200);
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.balance-view__summary-item--withdrawals {
+    color: var(--error);
+}
+
+.balance-view__summary-item--net {
+    margin-top: 1rem;
+    padding: 1.25rem;
+    background: var(--gray-900);
+    color: white;
+    border-radius: var(--radius-sm);
+    font-size: 1.25rem;
+    font-weight: 900;
+}
+
+.balance-view__table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.balance-view__table th {
+    text-align: left;
+    padding: 0.75rem;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 800;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.balance-view__table td {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    border-bottom: 1px solid var(--gray-50);
+}
+
+.balance-view__table-footer {
+    background: var(--gray-50);
+    font-weight: 800;
+}
+
+.balance-view__debt-total {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: var(--red-50);
+    color: var(--red-700);
+    text-align: right;
+    font-weight: 800;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--red-100);
+}
+
+@media (max-width: 1200px) {
+    .balance-view__grid {
+        grid-template-columns: 1fr;
+    }
+}

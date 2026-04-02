@@ -1,0 +1,55 @@
+.user-table-wrapper {
+    overflow-x: auto;
+}
+
+.user-table__table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.user-table__header-cell {
+    text-align: left;
+    padding: 12px 16px;
+    background: var(--slate-50);
+    color: var(--slate-600);
+    font-weight: 600;
+    font-size: 0.875rem;
+    border-bottom: 1px solid var(--slate-200);
+}
+
+.user-table__row {
+    border-bottom: 1px solid var(--slate-100);
+}
+
+.user-table__cell {
+    padding: 12px 16px;
+    vertical-align: middle;
+}
+
+.user-table__username {
+    font-weight: 600;
+    color: var(--slate-800);
+}
+
+.user-table__dni {
+    font-size: 0.75rem;
+    color: var(--slate-500);
+}
+
+.user-table__full-name {
+    color: var(--slate-800);
+    font-size: 0.9rem;
+}
+
+.user-table__phone-container {
+    font-size: 0.75rem;
+    color: var(--slate-500);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.user-table__actions {
+    display: flex;
+    gap: 8px;
+}

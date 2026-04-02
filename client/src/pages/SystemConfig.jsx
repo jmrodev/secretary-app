@@ -1,15 +1,16 @@
 
 import React, { Suspense } from 'react';
-import { useSystemConfigController } from '../controllers/useSystemConfigController';
+import { 
+    useSystemConfigController, 
+    GeneralSettings, 
+    CommunicationSettings, 
+    IntegrationSettings, 
+    BillingSettings 
+} from '../features/config';
 import { useDoctorsPageController } from '../features/doctors';
-import { useProfileController } from '../controllers/useProfileController';
-import { useReportsController } from '../controllers/useReportsController';
-
+import { useProfileController, ProfileEditor } from '../features/auth';
+import { useReportsController, useAuditLogsController } from '../features/reports';
 import MainLayout from '../components/templates/MainLayout';
-import GeneralSettings from '../components/organisms/GeneralSettings';
-import CommunicationSettings from '../components/organisms/CommunicationSettings';
-import IntegrationSettings from '../components/organisms/IntegrationSettings';
-import BillingSettings from '../components/organisms/BillingSettings';
 import QRCodeModal from '../components/molecules/QRCodeModal';
 import Button from '../components/atoms/Button';
 import Icon from '../components/atoms/Icon';
@@ -17,17 +18,15 @@ import Loading from '../components/atoms/Loading';
 
 // Lazy load heavy components
 const DoctorsManager = React.lazy(() => import('../features/doctors').then(module => ({ default: module.DoctorsManager })));
-const ProfileEditor = React.lazy(() => import('../components/organisms/ProfileEditor'));
-const ReportsDashboard = React.lazy(() => import('../components/organisms/ReportsDashboard'));
+const ReportsDashboard = React.lazy(() => import('../features/reports').then(module => ({ default: module.ReportsDashboard })));
 import { printReport } from '../utils/reportPrintHelper';
 
 import './SystemConfig.css';
 
 const InstitutionManager = React.lazy(() => import('../features/institutions').then(module => ({ default: module.InstitutionManager })));
-const AuditLogManager = React.lazy(() => import('../components/organisms/AuditLogManager'));
-const UserManager = React.lazy(() => import('../components/organisms/UserManager'));
+const AuditLogManager = React.lazy(() => import('../features/reports').then(module => ({ default: module.AuditLogManager })));
+const UserManager = React.lazy(() => import('../features/users').then(module => ({ default: module.UserManager })));
 import { useInstitutionsController } from '../features/institutions';
-import { useAuditLogsController } from '../controllers/useAuditLogsController';
 
 // Wrapper for external controllers
 const DoctorsSection = () => {

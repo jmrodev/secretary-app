@@ -1,0 +1,46 @@
+/* PageHeader Component Styles */
+.page-header {
+    margin-bottom: clamp(0.5rem, 2vh, 1.5rem);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.5rem;
+}
+
+.page-header__title-container {
+    flex: 1;
+    min-width: 0;
+}
+
+.page-header__title {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 0;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.page-header__subtitle {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin: 0.25rem 0 0 0;
+    max-width: 800px;
+    line-height: 1.5;
+}
+
+.page-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.page-header--divider {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1.25rem;
+}

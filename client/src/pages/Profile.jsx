@@ -1,7 +1,5 @@
-import React from 'react';
-import { useProfileController } from '../controllers/useProfileController';
+import { useProfileController, ProfileEditor } from '../features/auth';
 import MainLayout from '../components/templates/MainLayout';
-import ProfileEditor from '../components/organisms/ProfileEditor';
 import './Profile.css';
 
 const Profile = () => {

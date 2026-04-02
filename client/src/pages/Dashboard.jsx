@@ -1,15 +1,13 @@
 import React from 'react';
-import { useDashboardController } from '../controllers/useDashboardController';
+import { useDashboardController, DashboardSidebar, DashboardReminders } from '../features/dashboard';
+import { PageHeader } from '../features/layout';
 import Button from '../components/atoms/Button';
 import Icon from '../components/atoms/Icon';
 import Badge from '../components/atoms/Badge';
-import RequirementsList from '../components/organisms/RequirementsList';
-import DashboardSidebar from '../components/organisms/DashboardSidebar';
-import DashboardReminders from '../components/organisms/DashboardReminders';
-import AppointmentActionModal from '../features/appointments/components/AppointmentActionModal.jsx';
-import { PrescriptionModal } from '../features/medical_documents';
+import { PrescriptionModal, MedicalRequirementManager } from '../features/medical_documents';
 import { PatientHistoryModal } from '../features/patients';
 import { TransactionModal } from '../features/finances';
+import AppointmentActionModal from '../features/appointments/components/AppointmentActionModal.jsx';
 import MainLayout from '../components/templates/MainLayout';
 import Loading from '../components/atoms/Loading';
 import './Dashboard.css';
@@ -17,6 +15,7 @@ import './Dashboard.css';
 /**
  * Dashboard Page.
  * Central hub of the application.
+ * Uses orchestrated logic and components from the dashboard feature.
  */
 const Dashboard = () => {
     const controller = useDashboardController();
@@ -59,22 +58,22 @@ const Dashboard = () => {
     return (
         <MainLayout wide>
             <div className="dashboard-page">
-                <header className="dashboard-header animate-fadeIn">
-                    <div className="flex-1">
-                        <div className="flex items-center gap-3">
-                            <h1 className="dashboard-header__title">{t('dashboard')}</h1>
+                <PageHeader 
+                    title={
+                        <>
+                            {t('dashboard')}
                             <div className="dashboard-live-indicator">
                                 <span className="dashboard-live-indicator__dot"></span>
                                 <span className="dashboard-live-indicator__text">{t('live') || 'LIVE'}</span>
                             </div>
-                        </div>
-                        <p className="dashboard-header__subtitle">
+                        </>
+                    }
+                    subtitle={
+                        <>
                             {t('welcome_back')}, <strong>{user.full_name || user.username}</strong>. {t('dashboard_subtitle')}
-                        </p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                    </div>
-                </header>
+                        </>
+                    }
+                />
 
                 <div className="dashboard-grid animate-fadeIn">
                     {/* Sidebar Stats */}
@@ -82,7 +81,6 @@ const Dashboard = () => {
                         <DashboardSidebar
                             stats={stats}
                             newPatientStats={newPatientStats}
-                            reminders={[]} // No longer show reminders here
                             user={user}
                             t={t}
                         />
@@ -131,7 +129,7 @@ const Dashboard = () => {
                                                 {t('pending_requests')}
                                             </h3>
                                         </div>
-                                        <RequirementsList user={user} hideTabs={true} hideFilters={true} setPaymentModal={setPaymentModal} />
+                                        <MedicalRequirementManager user={user} hideTabs={true} hideFilters={true} setPaymentModal={setPaymentModal} />
                                     </div>
                                 )}
 
@@ -150,7 +148,7 @@ const Dashboard = () => {
                     </main>
                 </div>
 
-                {/* Modals */}
+                {/* Modals - Orchestrated by Dashboard Controller but located in their respective features */}
                 <AppointmentActionModal
                     isOpen={actionModal.open}
                     onClose={() => setActionModal({ ...actionModal, open: false })}

@@ -5,8 +5,7 @@ import Modal from '../components/molecules/Modal';
 import Button from '../components/atoms/Button';
 import Loading from '../components/atoms/Loading';
 import Icon from '../components/atoms/Icon';
-import AuditLogTable from '../components/organisms/AuditLogTable';
-import { useAuditLogsController } from '../controllers/useAuditLogsController';
+import { AuditLogTable, useAuditLogsController } from '../features/reports';
 import { formatDate } from '../utils/dateUtils';
 
 const AuditLogs = () => {

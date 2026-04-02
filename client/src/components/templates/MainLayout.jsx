@@ -1,5 +1,5 @@
 import React from 'react';
-import Sidebar from '../organisms/Sidebar';
+import { Sidebar } from '../../features/layout';
 import './MainLayout.css';
 
 const MainLayout = ({ children, wide = false }) => {

@@ -2,7 +2,7 @@
 import React from 'react';
 import { useAuth } from '../features/auth';
 import { useLanguage } from '../context/LanguageContext';
-import RequirementsList from '../components/organisms/RequirementsList';
+import { MedicalRequirementManager } from '../features/medical_documents';
 import MainLayout from '../components/templates/MainLayout';
 import Icon from '../components/atoms/Icon';
 import Button from '../components/atoms/Button';
@@ -63,7 +63,7 @@ const Requests = () => {
                     <main className="dashboard-main">
                         <div className="dashboard-card no-padding">
                             <section className="requests-page__section">
-                                <RequirementsList user={user} />
+                                <MedicalRequirementManager user={user} />
                             </section>
                         </div>
                     </main>

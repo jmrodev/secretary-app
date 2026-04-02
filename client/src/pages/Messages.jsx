@@ -1,8 +1,10 @@
 import React from 'react';
-import { useMessagesPageController } from '../controllers/useMessagesPageController';
-import ChatSidebar from '../components/organisms/ChatSidebar';
-import ChatWindow from '../components/organisms/ChatWindow';
+import { useMessagesPageController, ChatSidebar, ChatWindow } from '../features/chat';
 
+/**
+ * Messages Page.
+ * Renders the full-screen chat experience using components and logic from the chat feature.
+ */
 const Messages = () => {
     const {
         user,
@@ -22,13 +24,6 @@ const Messages = () => {
 
     return (
         <div className="chat-container app-layout h-screen overflow-hidden flex">
-            {/* We override app-layout styles to fit full screen chat if needed, 
-                but assuming app-layout usually has sidebar.
-                If this page needs to act as a standalone layout or inside main layout:
-                The CSS for .chat-container usually handles grid.
-                Let's assume we want valid semantic structure but keep it simple.
-            */}
-
             <ChatSidebar
                 conversations={conversations}
                 selectedConvo={selectedConvo}

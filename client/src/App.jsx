@@ -5,7 +5,7 @@ import { Toaster } from 'react-hot-toast';
 import AppRouter from './routes/AppRouter';
 
 // Global UI Components
-import FloatingChat from './components/organisms/FloatingChat';
+import { FloatingChat } from './features/chat';
 
 /**
  * Main Application Orchestrator.

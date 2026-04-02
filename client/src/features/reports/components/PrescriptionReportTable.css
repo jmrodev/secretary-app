@@ -1,0 +1,85 @@
+/* PrescriptionReportTable Component Styles (BEM) */
+
+.prescription-report {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.prescription-report__summary {
+    background: var(--gray-50);
+    border-radius: var(--radius);
+    padding: 2rem;
+    border: 1px solid var(--border-color);
+    margin-bottom: 2rem;
+}
+
+.prescription-report__summary-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.prescription-report__table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.prescription-report__table th {
+    text-align: left;
+    padding: 1rem 1.25rem;
+    background: var(--gray-100);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.prescription-report__row {
+    border-bottom: 1px solid var(--gray-50);
+}
+
+.prescription-report__row td {
+    padding: 1rem 1.25rem;
+    font-size: 0.875rem;
+}
+
+.prescription-report__patient-name {
+    font-weight: 700;
+}
+
+.prescription-report__meds {
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.prescription-report__badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.65rem;
+    font-weight: 800;
+}
+
+.prescription-report__badge--paid {
+    background: var(--green-100);
+    color: var(--green-700);
+}
+
+.prescription-report__badge--debt {
+    background: var(--red-100);
+    color: var(--red-700);
+}
+
+.prescription-report__date-header {
+    background: var(--purple-700);
+    color: white;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 800;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}

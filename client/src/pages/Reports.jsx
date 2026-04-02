@@ -1,8 +1,6 @@
-
 import React from 'react';
 import MainLayout from '../components/templates/MainLayout';
-import ReportsDashboard from '../components/organisms/ReportsDashboard';
-import { useReportsController } from '../controllers/useReportsController';
+import { ReportsDashboard, useReportsController } from '../features/reports';
 import { printReport } from '../utils/reportPrintHelper';
 import './Reports.css';
 

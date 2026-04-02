@@ -1,0 +1,114 @@
+import React from 'react';
+import Button from '../../../components/atoms/Button';
+import StatusIndicator from '../../../components/atoms/StatusIndicator';
+import ConfigToggle from './ConfigToggle';
+import ConfigField from './ConfigField';
+import Alert from '../../../components/atoms/Alert';
+
+/**
+ * IntegrationGoogleCalendar Feature Molecule.
+ * Manages Google Calendar connection, sync status, and financial spreadsheet IDs.
+ */
+const IntegrationGoogleCalendar = ({
+    googleUnlinked,
+    settings,
+    updateSetting,
+    onGoogleAuth,
+    onDisconnectGoogle,
+    onRefreshToken,
+    onRetryGoogle,
+    loading
+}) => {
+    const status = googleUnlinked ? 'disconnected' : 'connected';
+    const statusLabel = googleUnlinked ? 'Desconectado' : 'Conectado';
+
+    return (
+        <div className="config-section animate-fadeIn">
+            <div className="config-section__header">
+                <span className="config-section__icon">📅</span>
+                <h2 className="config-section__title">Integración con Google Calendar</h2>
+            </div>
+
+            <div className="config-section__body">
+                <div className="config-group">
+                    <div className="config-group__header config-flex config-flex--gap-2" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                            <p className="config-field__hint" style={{ marginBottom: '0.75rem' }}>
+                                Conecta tu cuenta de Google para sincronizar turnos automáticamente.
+                            </p>
+                            <StatusIndicator status={status} label={`Estado: ${statusLabel}`} />
+                        </div>
+
+                        {!googleUnlinked && (
+                            <div className="config-flex config-flex--column" style={{ alignItems: 'flex-end', gap: '0.5rem' }}>
+                                <ConfigToggle
+                                    id="google-sync-toggle"
+                                    label={settings.google_sync_enabled === 'false' ? '⏸️ Sincronización PAUSADA' : '✅ Sincronización ACTIVA'}
+                                    checked={settings.google_sync_enabled !== 'false'}
+                                    onChange={(val) => updateSetting('google_sync_enabled', val ? 'true' : 'false')}
+                                />
+                                <p className="config-field__hint" style={{ textAlign: 'right', margin: 0 }}>
+                                    Si pausas, los cambios en la App no se enviarán a Google.
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    {!googleUnlinked ? (
+                        <div className="config-group__items">
+                            <div className="config-actions">
+                                <Button variant="secondary" onClick={onRefreshToken}>
+                                    🔄 Refrescar Enlace
+                                </Button>
+                                <Button variant="danger" onClick={onDisconnectGoogle}>
+                                    ❌ Desconectar Cuenta
+                                </Button>
+                            </div>
+
+                            <Alert variant="warning" title="¿Problemas de Sincronización?">
+                                <p className="config-alert__message">
+                                    Si los turnos no se están enviando a Google, puede que haya elementos atascados.
+                                </p>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    onClick={onRetryGoogle}
+                                    disabled={loading}
+                                    style={{ marginTop: '0.5rem' }}
+                                >
+                                    ⚡ Reintentar Elementos Fallidos
+                                </Button>
+                            </Alert>
+
+                            <div className="config-section__divider"></div>
+
+                            <div className="config-field">
+                                <label className="config-field__label">Google Sheets - ID de Hoja de Cálculo (Finanzas)</label>
+                                <p className="config-field__hint">
+                                    Pega el ID de la hoja de cálculo de Google donde deseas respaldar las transacciones.
+                                    <br />
+                                    <small>El ID se encuentra en la URL: docs.google.com/spreadsheets/d/<b>ID_AQUI</b>/edit</small>
+                                </p>
+                                <ConfigField
+                                    id="finance-spreadsheet-id"
+                                    value={settings.finance_spreadsheet_id || ''}
+                                    onChange={(e) => updateSetting('finance_spreadsheet_id', e.target.value)}
+                                    placeholder="e.g. 1aBCdEfGhIjKlMnOpQrStUvWxYz1234567890"
+                                    className="font-mono text-sm"
+                                />
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="config-actions">
+                            <Button onClick={onGoogleAuth}>
+                                Conectar Google Workspaces
+                            </Button>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default IntegrationGoogleCalendar;

@@ -5,7 +5,7 @@ import { useLanguage } from '../context/LanguageContext';
 
 // Atomic Design Components
 import MainLayout from '../components/templates/MainLayout';
-import UserManagement from '../components/organisms/UserManagement';
+import { UserManagement } from '../features/users';
 import Button from '../components/atoms/Button';
 import Icon from '../components/atoms/Icon';
 

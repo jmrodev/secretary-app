@@ -130,6 +130,8 @@ secretary-app/
 │   │   │   ├── auth/           → Autenticación y sesión
 │   │   │   ├── appointments/   → Gestión de agenda y turnos
 │   │   │   ├── finances/       → Gestión de caja y reportes financieros (migrado)
+│   │   │   ├── reports/        → Orquestador de reportes mensuales y Auditoría (migrado)
+│   │   │   ├── medical_documents/ → Gestión de recetas (migrado)
 │   │   │   ├── institutions/   → Gestión de instituciones (migrado)
 │   │   │   ├── insurances/     → Gestión de convenios y obras sociales (migrado)
 │   │   │   └── patients/       → Gestión integral de pacientes (migrado)
