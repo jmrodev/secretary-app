@@ -16,3 +16,6 @@ export { default as FinanceFilters } from './components/FinanceFilters';
 export { default as FinanceStatsCards } from './components/FinanceStatsCards';
 export { default as FinanceSidebar } from './components/FinanceSidebar';
 export { default as InstitutionFinances } from './components/InstitutionFinances';
+export { default as TransactionsTable } from './components/TransactionsTable';
+export { default as CashBoxDeliveryModal } from './components/CashBoxDeliveryModal';
+export { default as PendingClosuresModal } from './components/PendingClosuresModal';

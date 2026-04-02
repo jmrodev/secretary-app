@@ -8,17 +8,15 @@ import Loading from '../components/atoms/Loading';
 import Card from '../components/atoms/Card';
 import Icon from '../components/atoms/Icon';
 
-// Molecules/Organisms
-import CashBoxDeliveryModal from '../components/molecules/CashBoxDeliveryModal';
-import TransactionsTable from '../components/organisms/TransactionsTable';
-import PendingClosuresModal from '../components/molecules/PendingClosuresModal';
-
 import {
     useFinancesPageController,
     FinanceStatsCards,
     EditTransactionModal,
     TransactionModal,
-    FinanceSidebar
+    FinanceSidebar,
+    TransactionsTable,
+    CashBoxDeliveryModal,
+    PendingClosuresModal
 } from '../features/finances';
 
 import './Finances.css';
