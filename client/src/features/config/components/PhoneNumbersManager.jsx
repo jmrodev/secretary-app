@@ -1,14 +1,13 @@
 import React from 'react';
-import { useLanguage } from '../../context/LanguageContext';
-import Button from '../atoms/Button';
-import Icon from '../atoms/Icon';
+import { useLanguage } from '../../../context/LanguageContext';
+import Button from '../../../components/atoms/Button';
+import Icon from '../../../components/atoms/Icon';
 import './PhoneNumbersManager.css';
 
 /**
- * PhoneNumbersManager Shared Molecule (BEM).
- * Global orchestrator for institutional or personal contact numbers.
- * Supports primary number isolation, phone normalization, and quick communication actions (Call/WhatsApp).
- * Shared across: institutions, patients, users, auth and config features.
+ * PhoneNumbersManager Feature Molecule.
+ * Orchestrates institutional phone contacts within the communication settings domain.
+ * Supports primary number selection, quick actions (call/WhatsApp), and multi-entry management.
  */
 const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
     const { t } = useLanguage();
@@ -16,10 +15,10 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
     // Ensure we always have at least one item to render (Ghost item if list is empty)
     const displayPhoneNumbers = (phoneNumbers && phoneNumbers.length > 0)
         ? phoneNumbers
-        : [{ phone_number: '+549', label: t('cell_phone') || 'Celular', is_primary: true }];
+        : [{ phone_number: '+549', label: 'Celular', is_primary: true }];
 
     const handleAdd = () => {
-        onChange([...(phoneNumbers || []), { phone_number: '+549', label: t('cell_phone') || 'Celular', is_primary: false }]);
+        onChange([...(phoneNumbers || []), { phone_number: '+549', label: 'Celular', is_primary: false }]);
     };
 
     const handleRemove = (index) => {
@@ -28,7 +27,7 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
     };
 
     const handleUpdate = (index, field, value) => {
-        let currentList = (phoneNumbers && phoneNumbers.length > 0) ? [...phoneNumbers] : [{ phone_number: '+549', label: t('cell_phone') || 'Celular', is_primary: true }];
+        let currentList = (phoneNumbers && phoneNumbers.length > 0) ? [...phoneNumbers] : [{ phone_number: '+549', label: 'Celular', is_primary: true }];
 
         currentList[index][field] = value;
 

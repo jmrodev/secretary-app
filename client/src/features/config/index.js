@@ -12,3 +12,4 @@ export { default as IntegrationSettings } from './components/IntegrationSettings
 export { default as BillingSettings } from './components/BillingSettings';
 export { default as ConfigToggle } from './components/ConfigToggle';
 export { default as ConfigField } from './components/ConfigField';
+export { default as MessageTemplateEditor } from './components/MessageTemplateEditor';

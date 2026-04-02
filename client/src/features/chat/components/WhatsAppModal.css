@@ -1,0 +1,50 @@
+/* WhatsAppModal Feature Styles (BEM) */
+
+.whatsapp-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.whatsapp-modal__info {
+    padding: 1rem;
+    background-color: var(--green-50);
+    border: 1px solid var(--green-100);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.whatsapp-modal__icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--green-100);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.whatsapp-modal__recipient {
+    font-size: 0.875rem;
+    color: var(--green-900);
+    font-weight: 800;
+}
+
+.whatsapp-modal__help {
+    font-size: 0.75rem;
+    color: var(--green-700);
+}
+
+.whatsapp-modal__textarea {
+    min-height: 150px;
+    resize: vertical;
+    border-color: var(--green-200);
+}
+
+.whatsapp-modal__textarea:focus {
+    border-color: var(--green-500);
+    box-shadow: 0 0 0 3px var(--green-100);
+}

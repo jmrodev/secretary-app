@@ -15,6 +15,8 @@ export { default as MedicalRequestList } from './components/MedicalRequestList';
 export { default as MedicalRequirementManager } from './components/MedicalRequirementManager';
 export { default as MedicalFileRepository } from './components/MedicalFileRepository';
 export { default as PrescriptionModal } from './components/PrescriptionModal';
+export { default as DocumentsSidebar } from './components/DocumentsSidebar';
+export { default as DocumentsHeader } from './components/DocumentsHeader';
 
 // Molecules (if needed externally)
 export { default as StatusActionModal } from './components/StatusActionModal';
@@ -28,3 +30,20 @@ export { default as MedicalRequirementTable } from './components/MedicalRequirem
 export { default as MedicalRequirementRecycleBin } from './components/MedicalRequirementRecycleBin';
 export { default as MedicalRequirementDetailModal } from './components/MedicalRequirementDetailModal';
 export { default as MedicalRequirementActionModal } from './components/MedicalRequirementActionModal';
+
+// Medication Components
+export { default as MedicationAutocomplete } from './components/MedicationAutocomplete';
+export { default as MedicationCard } from './components/MedicationCard';
+export { default as MedicationEditor } from './components/MedicationEditor';
+export { default as MedicationInput } from './components/MedicationInput';
+export { default as MedicationInputSection } from './components/MedicationInputSection';
+export { default as MedicationList } from './components/MedicationList';
+export { default as MedicationItemsSummary } from './components/MedicationItemsSummary';
+export { default as HabitualMedicationsGrid } from './components/HabitualMedicationsGrid';
+export { default as RequirementItem } from './components/RequirementItem';
+export { default as RequirementMedicationList } from './components/RequirementMedicationList';
+export { default as RequirementDetailHeader } from './components/RequirementDetailHeader';
+export { default as RequirementFeedback } from './components/RequirementFeedback';
+
+// Specialized Hooks
+export { useMedicationAutocomplete } from './hooks/useMedicationAutocomplete';

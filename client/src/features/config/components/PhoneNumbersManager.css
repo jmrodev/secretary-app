@@ -1,4 +1,4 @@
-/* PhoneNumbersManager Shared Styles (BEM) */
+/* PhoneNumbersManager Feature Styles (BEM) */
 
 .phone-manager {
     display: flex;
@@ -109,7 +109,7 @@
 }
 
 .phone-manager__add-btn {
-    align-self: flex-end;
+    align-self: flex-start;
 }
 
 @media (max-width: 640px) {

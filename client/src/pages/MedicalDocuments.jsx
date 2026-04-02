@@ -5,15 +5,14 @@ import {
     MedicalRequestList,
     MedicalHistoryTable,
     MedicalFileRepository,
-    MedicalActionModals
+    MedicalActionModals,
+    DocumentsHeader,
+    DocumentsSidebar
 } from '../features/medical_documents';
 
 // Components
 import MainLayout from '../components/templates/MainLayout';
-import Button from '../components/atoms/Button';
-import SearchBar from '../components/molecules/SearchBar';
-import TabNav from '../components/molecules/TabNav';
-import TabButton from '../components/atoms/TabButton';
+import Loading from '../components/atoms/Loading';
 import Icon from '../components/atoms/Icon';
 import { formatDate } from '../utils/dateUtils';
 
@@ -36,7 +35,8 @@ const MedicalDocuments = () => {
         sendToDoctor,
         canDeletePrescription, canDeleteLicense, canDeleteFile, canDeleteRequest,
         printData,
-        handlers
+        handlers,
+        loading
     } = controller;
 
     const {
@@ -49,7 +49,7 @@ const MedicalDocuments = () => {
         handleCreateRequest, handleUpdateStatus, handleFileUpload, confirmFileDelete,
         handleUpdatePrescription, handleUpdateLicense, handleUpdateRequest, handleDeleteRequest,
         handleDeletePrescription, handleEditItem, handleDeleteLicense, fetchRequests,
-        filterItem
+        filterItem, handleExportJSON, handlePrintPrescriptions
     } = handlers;
 
     // --- Derived Data for Combined Views ---
@@ -82,81 +82,28 @@ const MedicalDocuments = () => {
         }))
     ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
+    if (loading) return (
+        <MainLayout wide>
+            <Loading variant="centered" />
+        </MainLayout>
+    );
+
     return (
         <MainLayout wide>
             <div className="medical-documents no-print">
-                <header className="dashboard-header">
-                    <h1 className="dashboard-header__title">{t('medical_documents')}</h1>
-                    <p className="dashboard-header__subtitle">
-                        {t('medical_docs_subtitle') || 'Gestione requerimientos, archivos e historial de pacientes.'}
-                    </p>
-                </header>
+                <DocumentsHeader t={t} />
 
                 <div className="dashboard-grid animate-fadeIn">
-                    <aside className="dashboard-sidebar">
-                        <div className="dashboard-nav-bar">
-                            <TabNav className="medical-documents__tabs">
-                                {[
-                                    { id: 'requests', label: t('requests_workflow'), icon: 'description' },
-                                    { id: 'files', label: t('file_repository'), icon: 'folder_open' },
-                                    { id: 'prescriptions', label: t('prescriptions'), icon: 'medication' },
-                                    { id: 'licenses', label: t('medical_licenses'), icon: 'description' },
-                                    { id: 'certificates', label: t('certificates') || 'Certificados', icon: 'verified' }
-                                ].map(tab => (
-                                    <TabButton
-                                        key={tab.id}
-                                        isActive={activeTab === tab.id}
-                                        onClick={() => handleTabChange(tab.id)}
-                                    >
-                                        <span className="medical-documents__tab-icon">
-                                            <Icon name={tab.icon} size="1.2rem" />
-                                        </span>
-                                        {tab.label}
-                                    </TabButton>
-                                ))}
-                            </TabNav>
-                        </div>
-
-                        <div className="dashboard-card">
-                            <h3 className="dashboard-card__title">
-                                <Icon name="search" size="1.2rem" />
-                                {t('search') || 'Buscar'}
-                            </h3>
-                            <SearchBar
-                                value={searchTerm}
-                                onChange={e => handleSearchChange(e.target.value)}
-                                placeholder={t('search_docs_placeholder')}
-                            />
-                        </div>
-
-                        {(['requests', 'prescriptions', 'licenses', 'certificates'].includes(activeTab)) && (
-                            <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">🛠️ {t('actions') || 'Acciones'}</h3>
-                                <div className="config-flex--column config-flex--gap-3">
-                                    {(activeTab === 'prescriptions' || (activeTab === 'requests' && requestsSubTab === 'list')) && (
-                                        <Button
-                                            variant="secondary"
-                                            size="sm"
-                                            onClick={controller.handleExportJSON}
-                                            icon={<Icon name="save" size="1rem" />}
-                                            className="w-full justify-start"
-                                        >
-                                            {t('export_json')}
-                                        </Button>
-                                    )}
-                                    <Button
-                                        variant="secondary"
-                                        size="sm"
-                                        onClick={controller.handlePrintPrescriptions}
-                                        icon={<Icon name="PRINT" size="1rem" />}
-                                        className="w-full justify-start"
-                                    >
-                                        {t('print_backup')}
-                                    </Button>
-                                </div>
-                            </div>
-                        )}
-                    </aside>
+                    <DocumentsSidebar
+                        t={t}
+                        activeTab={activeTab}
+                        handleTabChange={handleTabChange}
+                        searchTerm={searchTerm}
+                        handleSearchChange={handleSearchChange}
+                        requestsSubTab={requestsSubTab}
+                        handleExportJSON={handleExportJSON}
+                        handlePrintPrescriptions={handlePrintPrescriptions}
+                    />
 
                     <main className="dashboard-main">
                         <div className="medical-documents__tabs-content">

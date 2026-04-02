@@ -14,3 +14,4 @@ export { default as ChatList } from './components/ChatList';
 export { default as ChatConversationItem } from './components/ChatConversationItem';
 export { default as ChatMessageBubble } from './components/ChatMessageBubble';
 export { default as ChatThread } from './components/ChatThread';
+export { default as WhatsAppModal } from './components/WhatsAppModal';

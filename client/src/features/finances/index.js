@@ -19,3 +19,8 @@ export { default as InstitutionFinances } from './components/InstitutionFinances
 export { default as TransactionsTable } from './components/TransactionsTable';
 export { default as CashBoxDeliveryModal } from './components/CashBoxDeliveryModal';
 export { default as PendingClosuresModal } from './components/PendingClosuresModal';
+export { default as BalanceCashFlowTable } from './components/BalanceCashFlowTable';
+export { default as BalanceDebtsTable } from './components/BalanceDebtsTable';
+export { default as CashBoxSummary } from './components/CashBoxSummary';
+export { default as HistoricalWithdrawalModal } from './components/HistoricalWithdrawalModal';
+export { default as BillingSettings } from './components/BillingSettings';
