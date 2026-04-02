@@ -1,0 +1,46 @@
+/* Patients-specific Styles - Feature Component */
+
+.patients-sidebar__search {
+    width: 100%;
+}
+
+.patients-sidebar__tools {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.patients-list-view .dashboard-card {
+    padding: 0;
+}
+
+/* Pagination container inside patient card */
+.patients-list-view .pagination {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+}
+
+.patients__dot-badge {
+    background: var(--rose-500, #f43f5e);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 999px;
+    font-size: 0.65rem;
+    font-weight: 700;
+}
+
+.patients__rating-guide-content {
+    padding: 0.5rem;
+}
+
+.patients__rating-guide-text {
+    white-space: pre-line;
+    color: var(--main-600, #4b5563);
+}
+
+.patients__modal-actions {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+}

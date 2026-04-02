@@ -11,7 +11,7 @@ import OfficeRentals from '../pages/OfficeRentals';
 import MedicalDocuments from '../pages/MedicalDocuments';
 import Finances from '../pages/Finances';
 import Profile from '../pages/Profile';
-import Patients from '../pages/Patients';
+// import Patients from '../pages/Patients'; // Deprecated
 import AuditLogs from '../pages/AuditLogs';
 import AdminUsers from '../pages/AdminUsers';
 import Doctors from '../pages/Doctors';
@@ -25,6 +25,7 @@ import PublicPrescriptionRequest from '../pages/PublicPrescriptionRequest';
 
 // Features (Orchestrators)
 import { AppointmentsPage } from '../features/appointments';
+import { PatientsPage } from '../features/patients';
 
 /**
  * AppRouter Component.
@@ -47,7 +48,7 @@ const AppRouter = () => {
                 <Route path="/documents" element={<MedicalDocuments />} />
                 <Route path="/finances" element={<Finances />} />
                 <Route path="/profile" element={<Profile />} />
-                <Route path="/patients" element={<Patients />} />
+                <Route path="/patients" element={<PatientsPage />} />
                 <Route path="/doctors" element={<Doctors />} />
                 <Route path="/logs" element={<AuditLogs />} />
                 <Route path="/admin/users" element={<AdminUsers />} />

@@ -1,8 +1,7 @@
 import React from 'react';
-import PatientForm from '../components/organisms/PatientForm';
+import { PatientForm, usePatientFormController } from '../features/patients';
 import StatusDisplay from '../components/molecules/StatusDisplay';
 import { useTempAccessController } from '../controllers/useTempAccessController';
-import { usePatientFormController } from '../controllers/usePatientFormController';
 import { useLanguage } from '../context/LanguageContext';
 import Button from '../components/atoms/Button';
 import Icon from '../components/atoms/Icon';
