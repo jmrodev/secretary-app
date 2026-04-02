@@ -1,59 +1,26 @@
-import React, { createContext, useContext, useState, useCallback, useRef } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 import ConfirmModal from '../components/molecules/ConfirmModal';
+import { useModalLogic } from './useModalLogic';
 
 const ModalContext = createContext();
 
 export const useModal = () => useContext(ModalContext);
 
 export const ModalProvider = ({ children }) => {
-    const [modalConfig, setModalConfig] = useState({
-        isOpen: false,
-        title: '',
-        message: '',
-        type: 'confirm',
-        initialValue: '',
-        resolve: null
-    });
+    const { 
+        alert, confirm, prompt, doubleConfirm, 
+        modalConfig, handleConfirm, handleCancel 
+    } = useModalLogic();
 
-    const showModal = useCallback((type, message, title = '', initialValue = '') => {
-        return new Promise((resolve) => {
-            setModalConfig({
-                isOpen: true,
-                type,
-                message,
-                title,
-                initialValue,
-                resolve
-            });
-        });
-    }, []);
-
-    const alert = (message, title) => showModal('alert', message, title);
-    const confirm = (message, title) => showModal('confirm', message, title);
-    const prompt = (message, defaultValue = '', title = '') => showModal('prompt', message, title, defaultValue);
-
-    const doubleConfirm = async (message1, message2, title1 = '', title2 = '') => {
-        const first = await confirm(message1, title1);
-        if (!first) return false;
-        return await confirm(message2 || "Are you absolutely sure? This action is irreversible.", title2 || "Final Confirmation");
-    };
-
-    const handleConfirm = (value) => {
-        if (modalConfig.resolve) {
-            modalConfig.resolve(value);
-        }
-        setModalConfig(prev => ({ ...prev, isOpen: false }));
-    };
-
-    const handleCancel = () => {
-        if (modalConfig.resolve) {
-            modalConfig.resolve(modalConfig.type === 'confirm' ? false : null);
-        }
-        setModalConfig(prev => ({ ...prev, isOpen: false }));
-    };
+    const contextValue = useMemo(() => ({
+        alert,
+        confirm,
+        prompt,
+        doubleConfirm
+    }), [alert, confirm, prompt, doubleConfirm]);
 
     return (
-        <ModalContext.Provider value={{ alert, confirm, prompt, doubleConfirm }}>
+        <ModalContext.Provider value={contextValue}>
             {children}
             <ConfirmModal
                 isOpen={modalConfig.isOpen}
