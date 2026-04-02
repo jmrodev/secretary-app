@@ -84,6 +84,13 @@
     - **Toasts (Contexto Global)**: Reservados para mensajes asíncronos persistentes, notificaciones de sistema o confirmaciones transversales (ej: "Conexión perdida", "Cita creada con éxito").
     - **Errores Locales (Controladores)**: Para validaciones de entrada de datos y respuestas de error específicas de un formulario.
 
+### 10. Orquestadores vs Ejecutores
+- **Componentes Orquestadores**: Son componentes de alto nivel (`App.jsx`, `Dashboard.jsx`, Routers, Layouts) que NO implementan lógica de negocio ni UI compleja. Su único propósito es **coordinar** otros componentes y hooks (ej: definir la estructura de rutas o envolver el contenido en una rejilla).
+- **Componentes Ejecutores**: Son los que "hacen el trabajo". Aquí se incluyen:
+    - **Atoms/Molecules/Organisms**: Los que renderizan la UI siguiendo BEM.
+    - **Logic Hooks (`useXXXLogic`)**: Los que ejecutan la lógica, llamadas a API y cambios de estado.
+- **Regla de Oro**: Si un orquestador empieza a tener lógica de `useEffect`, cálculos de datos o estados locales complejos, debe ser refactorizado extrayendo esa ejecución a un hook o componente especializado.
+
 
 
 ## Estructura del Proyecto

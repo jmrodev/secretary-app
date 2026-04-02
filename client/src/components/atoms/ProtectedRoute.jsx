@@ -1,9 +1,13 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../../features/auth';
 import PatientBlocker from '../molecules/PatientBlocker';
 
-const ProtectedRoute = ({ children }) => {
+/**
+ * Route guard layout component.
+ * Verifies authentication status and user roles for a group of routes.
+ */
+const ProtectedRoute = () => {
     const { user, loading } = useAuth();
 
     if (loading) {
@@ -23,7 +27,8 @@ const ProtectedRoute = ({ children }) => {
         return <PatientBlocker />;
     }
 
-    return children;
+    // Render child routes
+    return <Outlet />;
 };
 
 export default ProtectedRoute;
