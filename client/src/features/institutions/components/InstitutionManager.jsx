@@ -1,10 +1,10 @@
 import React from 'react';
 import InstitutionList from './InstitutionList';
-import { InstitutionFinances } from '../../features/finances';
+import { InstitutionFinances } from '../../finances';
 import InstitutionFormModal from './InstitutionFormModal';
-import Icon from '../atoms/Icon';
-import TabNav from '../molecules/TabNav';
-import TabButton from '../atoms/TabButton';
+import Icon from '../../../components/atoms/Icon';
+import TabNav from '../../../components/molecules/TabNav';
+import TabButton from '../../../components/atoms/TabButton';
 
 const InstitutionManager = ({
     institutions,

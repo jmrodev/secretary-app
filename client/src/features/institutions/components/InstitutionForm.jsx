@@ -1,8 +1,8 @@
 import React from 'react';
-import Button from '../atoms/Button';
-import PhoneNumbersManager from '../molecules/PhoneNumbersManager';
-import { useLanguage } from '../../context/LanguageContext';
-import { capitalizeWords } from '../../utils/stringUtils';
+import Button from '../../../components/atoms/Button';
+import PhoneNumbersManager from '../../../components/molecules/PhoneNumbersManager';
+import { useLanguage } from '../../../context/LanguageContext';
+import { capitalizeWords } from '../../../utils/stringUtils';
 
 const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isEditing, isSubmitting = false }) => {
     const { t } = useLanguage();

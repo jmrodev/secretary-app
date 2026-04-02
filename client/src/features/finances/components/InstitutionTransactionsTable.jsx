@@ -1,6 +1,6 @@
 import React from 'react';
-import Badge from '../atoms/Badge';
-import Icon from '../atoms/Icon';
+import Badge from '../../../components/atoms/Badge';
+import Icon from '../../../components/atoms/Icon';
 
 /**
  * InstitutionTransactionsTable Molecule.

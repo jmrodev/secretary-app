@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from '../atoms/Icon';
+import Icon from '../../../components/atoms/Icon';
 
 /**
  * InstitutionPatientsTable Molecule.

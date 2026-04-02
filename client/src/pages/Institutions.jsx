@@ -4,9 +4,8 @@ import MainLayout from '../components/templates/MainLayout';
 import Button from '../components/atoms/Button';
 import Loading from '../components/atoms/Loading';
 import { InstitutionFinances } from '../features/finances';
-import InstitutionFormModal from '../components/organisms/InstitutionFormModal';
 import Icon from '../components/atoms/Icon';
-import { useInstitutionsController } from '../controllers/useInstitutionsController';
+import { useInstitutionsController, InstitutionFormModal } from '../features/institutions';
 
 const Institutions = () => {
     const {

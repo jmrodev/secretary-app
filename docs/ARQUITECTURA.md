@@ -130,6 +130,8 @@ secretary-app/
 │   │   │   ├── auth/           → Autenticación y sesión
 │   │   │   ├── appointments/   → Gestión de agenda y turnos
 │   │   │   ├── finances/       → Gestión de caja y reportes financieros (migrado)
+│   │   │   ├── institutions/   → Gestión de instituciones (migrado)
+│   │   │   ├── insurances/     → Gestión de convenios y obras sociales (migrado)
 │   │   │   └── patients/       → Gestión integral de pacientes (migrado)
 │   │   │       ├── hooks/       → usePatientsPageController, usePatientFormController
 │   │   │       ├── index.js     → API Pública de la feature

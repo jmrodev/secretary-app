@@ -23,10 +23,10 @@ import { printReport } from '../utils/reportPrintHelper';
 
 import './SystemConfig.css';
 
-const InstitutionManager = React.lazy(() => import('../components/organisms/InstitutionManager'));
+const InstitutionManager = React.lazy(() => import('../features/institutions').then(module => ({ default: module.InstitutionManager })));
 const AuditLogManager = React.lazy(() => import('../components/organisms/AuditLogManager'));
 const UserManager = React.lazy(() => import('../components/organisms/UserManager'));
-import { useInstitutionsController } from '../controllers/useInstitutionsController';
+import { useInstitutionsController } from '../features/institutions';
 import { useAuditLogsController } from '../controllers/useAuditLogsController';
 
 // Wrapper for external controllers

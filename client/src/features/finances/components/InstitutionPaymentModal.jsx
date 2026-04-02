@@ -1,7 +1,7 @@
 import React from 'react';
-import Modal from '../molecules/Modal';
-import Button from '../atoms/Button';
-import Icon from '../atoms/Icon';
+import Modal from '../../../components/molecules/Modal';
+import Button from '../../../components/atoms/Button';
+import Icon from '../../../components/atoms/Icon';
 
 /**
  * InstitutionPaymentModal Molecule.

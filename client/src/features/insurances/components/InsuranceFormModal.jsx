@@ -1,9 +1,9 @@
 import React from 'react';
-import Modal from '../molecules/Modal';
-import Button from '../atoms/Button';
-import PhoneNumbersManager from '../molecules/PhoneNumbersManager';
-import { capitalizeWords } from '../../utils/stringUtils';
-import { useLanguage } from '../../context/LanguageContext';
+import Modal from '../../../components/molecules/Modal';
+import Button from '../../../components/atoms/Button';
+import PhoneNumbersManager from '../../../components/molecules/PhoneNumbersManager';
+import { capitalizeWords } from '../../../utils/stringUtils';
+import { useLanguage } from '../../../context/LanguageContext';
 import './InsuranceFormModal.css';
 
 const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFormData, isEditing }) => {

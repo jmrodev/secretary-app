@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import api from '../api/axios';
-import { useMessage } from '../context/MessageContext';
-import { useModal } from '../context/ModalContext';
-import { useLanguage } from '../context/LanguageContext';
-import { capitalizeWords } from '../utils/stringUtils';
+import api from '../../../api/axios';
+import { useMessage } from '../../../context/MessageContext';
+import { useModal } from '../../../context/ModalContext';
+import { useLanguage } from '../../../context/LanguageContext';
+import { capitalizeWords } from '../../../utils/stringUtils';
 
 export const useInstitutionsController = () => {
     const { showMessage } = useMessage();

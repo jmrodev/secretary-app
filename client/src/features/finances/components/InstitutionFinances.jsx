@@ -2,10 +2,10 @@ import React from 'react';
 import { useInstitutionFinances } from '../hooks/useInstitutionFinances';
 
 // Molecules
-import InstitutionSummary from '../../../components/molecules/InstitutionSummary';
-import InstitutionTransactionsTable from '../../../components/molecules/InstitutionTransactionsTable';
-import InstitutionPatientsTable from '../../../components/molecules/InstitutionPatientsTable';
-import InstitutionPaymentModal from '../../../components/molecules/InstitutionPaymentModal';
+import InstitutionSummary from './InstitutionSummary';
+import InstitutionTransactionsTable from './InstitutionTransactionsTable';
+import InstitutionPatientsTable from './InstitutionPatientsTable';
+import InstitutionPaymentModal from './InstitutionPaymentModal';
 import './InstitutionFinances.css';
 
 /**

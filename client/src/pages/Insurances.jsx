@@ -5,9 +5,7 @@ import Button from '../components/atoms/Button';
 import Loading from '../components/atoms/Loading';
 import Icon from '../components/atoms/Icon';
 import SearchBar from '../components/molecules/SearchBar';
-import InsuranceList from '../components/organisms/InsuranceList';
-import InsuranceFormModal from '../components/organisms/InsuranceFormModal';
-import { useInsurancesController } from '../controllers/useInsurancesController';
+import { useInsurancesController, InsuranceList, InsuranceFormModal } from '../features/insurances';
 import './Insurances.css';
 
 const Insurances = () => {
