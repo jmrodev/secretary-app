@@ -3,7 +3,7 @@ import { useAuth } from '../features/auth';
 import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useConfig } from '../context/ConfigContext';
-import { useAppointments } from '../hooks/useAppointments';
+import { useAppointments } from '../features/appointments';
 import api from '../api/axios';
 import { copyToClipboard } from '../utils/clipboardUtils';
 import { useNavigate } from 'react-router-dom';

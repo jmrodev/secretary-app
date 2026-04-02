@@ -24,7 +24,7 @@ import TempAccess from '../pages/TempAccess';
 import PublicPrescriptionRequest from '../pages/PublicPrescriptionRequest';
 
 // Features (Orchestrators)
-import AppointmentsPage from '../features/appointments/AppointmentsPage';
+import { AppointmentsPage } from '../features/appointments';
 
 /**
  * AppRouter Component.

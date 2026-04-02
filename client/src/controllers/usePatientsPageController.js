@@ -5,7 +5,7 @@ import { useMessage } from '../context/MessageContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useConfig } from '../context/ConfigContext';
 import { useModal } from '../context/ModalContext';
-import { useAppointments } from '../hooks/useAppointments';
+import { useAppointments } from '../features/appointments';
 import { useUsers } from '../hooks/useUsers';
 import { usePatientsHandlers } from '../hooks/usePatientsHandlers';
 
