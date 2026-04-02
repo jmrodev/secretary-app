@@ -6,6 +6,7 @@
 export { useSystemConfigController } from './hooks/useSystemConfigController';
 
 // Components
+export { default as SystemConfigPage } from './SystemConfigPage';
 export { default as GeneralSettings } from './components/GeneralSettings';
 export { default as CommunicationSettings } from './components/CommunicationSettings';
 export { default as IntegrationSettings } from './components/IntegrationSettings';

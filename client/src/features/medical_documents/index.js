@@ -8,6 +8,7 @@ export { useMedicalRequest } from './hooks/useMedicalRequest';
 export { useRequirementManagerController } from './hooks/useRequirementManagerController';
 
 // Organisms and Orchestrators
+export { default as MedicalDocumentsPage } from './MedicalDocumentsPage';
 export { default as MedicalRequestForm } from './components/MedicalRequestForm';
 export { default as MedicalHistoryTable } from './components/MedicalHistoryTable';
 export { default as MedicalActionModals } from './components/MedicalActionModals';

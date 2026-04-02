@@ -8,6 +8,7 @@ export { useFinanceHandlers } from './hooks/useFinanceHandlers';
 export { useTransactionForm } from './hooks/useTransactionForm';
 
 // Components
+export { default as FinancesPage } from './FinancesPage';
 export { default as TransactionModal } from './components/TransactionModal';
 export { default as EditTransactionModal } from './components/EditTransactionModal';
 export { default as BalanceFinancialSummary } from './components/BalanceFinancialSummary';

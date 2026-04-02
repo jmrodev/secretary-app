@@ -7,8 +7,8 @@ import { DoctorFilter } from '../doctors';
 import Modal from '../../components/molecules/Modal';
 import { PatientManagerModal, PatientHistoryModal } from '../patients';
 import { PrescriptionModal } from '../medical_documents';
-import WhatsAppModal from '../../components/molecules/WhatsAppModal';
-import AdminAuthModal from '../../components/molecules/AdminAuthModal';
+import WhatsAppModal from '../chat/components/WhatsAppModal';
+import AdminAuthModal from '../auth/components/AdminAuthModal';
 import { TransactionModal } from '../finances';
 
 // Feature Components (Executors)

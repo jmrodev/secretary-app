@@ -19,3 +19,6 @@ export { default as PatientMedications } from './components/PatientMedications';
 export { default as AddMedicationForm } from './components/AddMedicationForm';
 export { default as DebtPaymentModal } from './components/DebtPaymentModal';
 export { default as PatientRecycleBin } from './components/PatientRecycleBin';
+export { default as QRCodeModal } from './components/QRCodeModal';
+export { default as PatientSearchSelect } from './components/PatientSearchSelect';
+export { default as PatientBlocker } from './components/PatientBlocker';

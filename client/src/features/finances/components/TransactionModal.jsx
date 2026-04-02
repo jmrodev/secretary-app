@@ -18,7 +18,7 @@ import Button from '../../../components/atoms/Button';
 import Icon from '../../../components/atoms/Icon';
 import CurrencyInput from '../../../components/atoms/CurrencyInput';
 import FormGroup from '../../../components/molecules/FormGroup';
-import PrescriptionSection from '../../../components/molecules/PrescriptionSection';
+import { MedicationInput } from '../../medical_documents';
 import './TransactionModal.css';
 
 const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requestId }) => {
@@ -176,11 +176,12 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
 
                 {/* Medication Autocomplete - Hidden for specific requests as it comes from the medical side */}
                 {!requestId && formData.type === 'income_patient' && (
-                    <PrescriptionSection
+                    <MedicationInput
                         medications={medications}
                         onAdd={addMedication}
                         onRemove={removeMedication}
                         selectedPatient={selectedPatient}
+                        label={t('medications')}
                     />
                 )}
 

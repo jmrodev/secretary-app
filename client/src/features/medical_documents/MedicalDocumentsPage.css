@@ -1,0 +1,52 @@
+/* MedicalDocumentsPage Styles (BEM) */
+
+/* Include all styles from the original MedicalDocuments.css */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+
+    .medical-documents__print-container {
+        display: block !important;
+    }
+}
+
+.medical-documents__print-container {
+    display: none;
+    padding: 2rem;
+    background: white;
+}
+
+.medical-documents__print-header {
+    border-bottom: 2px solid var(--gray-800);
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+}
+
+.medical-documents__print-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: black;
+}
+
+.medical-documents__print-date {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+}
+
+.print-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.print-table th, .print-table td {
+    border: 1px solid var(--gray-300);
+    padding: 0.75rem;
+    text-align: left;
+    font-size: 0.75rem;
+}
+
+.print-table th {
+    background-color: var(--gray-100);
+    font-weight: bold;
+}

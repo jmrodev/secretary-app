@@ -8,20 +8,24 @@ import {
     MedicalActionModals,
     DocumentsHeader,
     DocumentsSidebar
-} from '../features/medical_documents';
+} from './index'; // Using local index for feature components
 
-// Components
-import MainLayout from '../components/templates/MainLayout';
-import Loading from '../components/atoms/Loading';
-import Icon from '../components/atoms/Icon';
-import TabButton from '../components/atoms/TabButton';
-import TabNav from '../components/molecules/TabNav';
-import { formatDate } from '../utils/dateUtils';
+// Global Atomic Components
+import MainLayout from '../../components/templates/MainLayout';
+import Loading from '../../components/atoms/Loading';
+import Icon from '../../components/atoms/Icon';
+import TabButton from '../../components/atoms/TabButton';
+import TabNav from '../../components/molecules/TabNav';
+import { formatDate } from '../../utils/dateUtils';
 
 // Styles
-import './MedicalDocuments.css';
+import './MedicalDocumentsPage.css';
 
-const MedicalDocuments = () => {
+/**
+ * MedicalDocumentsPage (Orchestrator).
+ * Coordinates medical requests, history, and file repository.
+ */
+const MedicalDocumentsPage = () => {
     const controller = useMedicalDocumentsController();
     const {
         user, t, activeTab, requestsSubTab,
@@ -91,7 +95,7 @@ const MedicalDocuments = () => {
     );
 
     return (
-        <MainLayout wide>
+        <div className="medical-documents-page">
             <div className="medical-documents no-print">
                 <DocumentsHeader t={t} />
 
@@ -280,9 +284,8 @@ const MedicalDocuments = () => {
                     </tbody>
                 </table>
             </div>
-        </MainLayout>
+        </div>
     );
 };
 
-export default MedicalDocuments;
-
+export default MedicalDocumentsPage;

@@ -6,16 +6,12 @@ import ProtectedRoute from '../components/atoms/ProtectedRoute';
 // Pages
 import Login from '../pages/Login';
 import Register from '../pages/Register';
-import Dashboard from '../pages/Dashboard';
 import OfficeRentals from '../pages/OfficeRentals';
-import MedicalDocuments from '../pages/MedicalDocuments';
-import Finances from '../pages/Finances';
 import Profile from '../pages/Profile';
 // import Patients from '../pages/Patients'; // Deprecated
 import AuditLogs from '../pages/AuditLogs';
 import AdminUsers from '../pages/AdminUsers';
 import Doctors from '../pages/Doctors';
-import SystemConfig from '../pages/SystemConfig';
 import Requests from '../pages/Requests';
 import Insurances from '../pages/Insurances';
 import Institutions from '../pages/Institutions';
@@ -26,6 +22,10 @@ import PublicPrescriptionRequest from '../pages/PublicPrescriptionRequest';
 // Features (Orchestrators)
 import { AppointmentsPage } from '../features/appointments';
 import { PatientsPage } from '../features/patients';
+import { MedicalDocumentsPage } from '../features/medical_documents';
+import { FinancesPage } from '../features/finances';
+import { DashboardPage } from '../features/dashboard';
+import { SystemConfigPage } from '../features/config';
 
 /**
  * AppRouter Component.
@@ -42,17 +42,17 @@ const AppRouter = () => {
 
             {/* Protected Dashboard Routes (Layout) */}
             <Route element={<ProtectedRoute />}>
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/appointments" element={<AppointmentsPage />} />
                 <Route path="/rentals" element={<OfficeRentals />} />
-                <Route path="/documents" element={<MedicalDocuments />} />
-                <Route path="/finances" element={<Finances />} />
+                <Route path="/documents" element={<MedicalDocumentsPage />} />
+                <Route path="/finances" element={<FinancesPage />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/patients" element={<PatientsPage />} />
                 <Route path="/doctors" element={<Doctors />} />
                 <Route path="/logs" element={<AuditLogs />} />
                 <Route path="/admin/users" element={<AdminUsers />} />
-                <Route path="/config" element={<SystemConfig />} />
+                <Route path="/config" element={<SystemConfigPage />} />
                 <Route path="/requests" element={<Requests />} />
                 <Route path="/insurances" element={<Insurances />} />
                 <Route path="/institutions" element={<Institutions />} />

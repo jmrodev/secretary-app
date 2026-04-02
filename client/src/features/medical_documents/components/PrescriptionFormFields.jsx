@@ -4,7 +4,7 @@ import Input from '../../../components/atoms/Input';
 import Tooltip from '../../../components/atoms/Tooltip';
 import Button from '../../../components/atoms/Button';
 import Icon from '../../../components/atoms/Icon';
-import MedicationAutocomplete from '../../../components/molecules/MedicationAutocomplete';
+import MedicationAutocomplete from './MedicationAutocomplete';
 
 /**
  * PrescriptionFormFields Molecule.

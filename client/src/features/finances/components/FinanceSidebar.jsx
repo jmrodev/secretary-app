@@ -2,7 +2,7 @@ import React from 'react';
 import Button from '../../../components/atoms/Button';
 import Icon from '../../../components/atoms/Icon';
 import FinanceDoctorFilter from './FinanceDoctorFilter';
-import CashBoxSummary from '../../../components/molecules/CashBoxSummary';
+import CashBoxSummary from './CashBoxSummary';
 import FinanceFilters from './FinanceFilters';
 import './FinanceSidebar.css';
 

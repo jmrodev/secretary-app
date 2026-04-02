@@ -10,7 +10,7 @@ import TabButton from '../../components/atoms/TabButton';
 import Icon from '../../components/atoms/Icon';
 
 // Molecules (Shared/Global)
-import QRCodeModal from '../../components/molecules/QRCodeModal';
+import QRCodeModal from './components/QRCodeModal';
 import SearchBar from '../../components/molecules/SearchBar';
 import Pagination from '../../components/molecules/Pagination';
 import TabNav from '../../components/molecules/TabNav';

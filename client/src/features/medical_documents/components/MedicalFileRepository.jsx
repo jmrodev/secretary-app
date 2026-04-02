@@ -1,6 +1,6 @@
 
 import React from 'react';
-import PatientSearchSelect from '../../../components/molecules/PatientSearchSelect';
+import { PatientSearchSelect } from '../../patients';
 import Button from '../../../components/atoms/Button';
 import Icon from '../../../components/atoms/Icon';
 import './MedicalFileRepository.css';

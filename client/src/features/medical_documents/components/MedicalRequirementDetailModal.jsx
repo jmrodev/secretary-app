@@ -5,13 +5,13 @@ import Badge from '../../../components/atoms/Badge';
 import Input from '../../../components/atoms/Input';
 import Icon from '../../../components/atoms/Icon';
 import FormGroup from '../../../components/molecules/FormGroup';
-import MedicationEditor from '../../../components/molecules/MedicationEditor';
+import MedicationEditor from './MedicationEditor';
 import { extractMedicationDetails } from '../../../utils/medicationHelpers';
 
 // Molecules
-import RequirementDetailHeader from '../../../components/molecules/RequirementDetailHeader';
-import RequirementMedicationList from '../../../components/molecules/RequirementMedicationList';
-import RequirementFeedback from '../../../components/molecules/RequirementFeedback';
+import RequirementDetailHeader from './RequirementDetailHeader';
+import RequirementMedicationList from './RequirementMedicationList';
+import RequirementFeedback from './RequirementFeedback';
 
 /**
  * MedicalRequirementDetailModal Organism (Feature-based).

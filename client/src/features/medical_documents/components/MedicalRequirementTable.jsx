@@ -2,7 +2,7 @@ import React from 'react';
 import TabButton from '../../../components/atoms/TabButton';
 import Icon from '../../../components/atoms/Icon';
 import Button from '../../../components/atoms/Button';
-import RequirementItem from '../../../components/molecules/RequirementItem';
+import RequirementItem from './RequirementItem';
 
 const MedicalRequirementTable = ({
     requests,

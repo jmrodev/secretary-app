@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Button from '../../../components/atoms/Button';
 import Icon from '../../../components/atoms/Icon';
-import MedicationAutocomplete from '../../../components/molecules/MedicationAutocomplete';
+import MedicationAutocomplete from '../../medical_documents/components/MedicationAutocomplete';
 
 // Local Feature Components
 import MedicationPendingList from './MedicationPendingList';

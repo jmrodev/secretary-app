@@ -1,0 +1,8 @@
+/* FinancesPage Styles (BEM) */
+
+.finances-page {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Include any refinement needed for the dashboard grid layout */

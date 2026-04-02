@@ -1,0 +1,18 @@
+/* SystemConfigPage Styles (BEM) */
+
+.system-config-page {
+    /* Container for the page orchestrated in the feature */
+}
+
+.settings-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.settings-content-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--slate-800);
+    margin-bottom: 0.5rem;
+}
