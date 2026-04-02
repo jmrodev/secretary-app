@@ -126,17 +126,14 @@ secretary-app/
 │   │   │       ├── Reports.jsx
 │   │   │       └── Reports.css
 │   │   ├── controllers/
-│   │   │   └── useReportsController.js
 │   │   ├── features/
-│   │   │   ├── auth/           → Ejemplo de módulo encapsulado
-│   │   │   │   ├── AuthContext.jsx
-│   │   │   │   ├── authService.js
-│   │   │   │   └── index.js
-│   │   │   └── appointments/   → Ejemplo de feature completa
-│   │   │       ├── components/  → Modals y panels específicos
-│   │   │       ├── hooks/       → useAppointments, useBooking, etc.
-│   │   │       ├── index.js     → Exporta AppointmentsPage y useAppointments
-│   │   │       └── AppointmentsPage.jsx
+│   │   │   ├── auth/           → Autenticación y sesión
+│   │   │   ├── appointments/   → Gestión de agenda y turnos
+│   │   │   └── patients/       → Gestión integral de pacientes (migrado)
+│   │   │       ├── components/  → PatientForm, PatientDetailsView, PatientList, etc.
+│   │   │       ├── hooks/       → usePatientsPageController, usePatientFormController
+│   │   │       ├── index.js     → API Pública de la feature
+│   │   │       └── PatientsPage.jsx
 │   │   ├── hooks/
 │   │   ├── context/            → Solo contextos transversales (Idiomas, Modales)
 │   │   └── utils/
@@ -429,5 +426,5 @@ Antes de hacer commit, verificar:
 
 ---
 
-**Última actualización**: 2026-04-01
-**Mantenedor**: Equipo de Desarrollo (Refactor de Arquitectura Modular)
+**Última actualización**: 2026-04-02
+**Mantenedor**: Equipo de Desarrollo (Modularización de Feature Patients completada)

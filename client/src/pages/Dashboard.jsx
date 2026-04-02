@@ -8,7 +8,7 @@ import DashboardSidebar from '../components/organisms/DashboardSidebar';
 import DashboardReminders from '../components/organisms/DashboardReminders';
 import AppointmentActionModal from '../features/appointments/components/AppointmentActionModal.jsx';
 import PrescriptionModal from '../components/organisms/PrescriptionModal';
-import PatientHistoryModal from '../components/molecules/PatientHistoryModal';
+import { PatientHistoryModal } from '../features/patients';
 import TransactionModal from '../components/molecules/TransactionModal';
 import MainLayout from '../components/templates/MainLayout';
 import Loading from '../components/atoms/Loading';
