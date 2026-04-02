@@ -2,7 +2,7 @@ import React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useMessage } from '../../context/MessageContext';
 import { useConfig } from '../../context/ConfigContext';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../features/auth';
 import api from '../../api/axios';
 import Icon from '../atoms/Icon';
 import Button from '../atoms/Button';

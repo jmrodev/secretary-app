@@ -3,9 +3,10 @@
 ## Principios Fundamentales
 
 ### 1. DRY (Don't Repeat Yourself)
-- **No repetir código**: Extraer lógica común en funciones/componentes reutilizables
-- **Centralizar configuraciones**: Variables, constantes y configuraciones en un solo lugar
-- **Reutilizar componentes**: Crear componentes genéricos y parametrizables
+- **No repetir código**: Extraer lógica común en funciones/componentes reutilizables.
+- **Centralizar flujos de lógica**: En los hooks de lógica (`useLogic.js`), si múltiples acciones (como `login` y `register`) comparten el mismo proceso final de actualización de estado y almacenamiento, usar un manejador interno genérico (ej: `handleAuthResponse`).
+- **Centralizar configuraciones**: Variables, constantes y configuraciones en un solo lugar.
+- **Reutilizar componentes**: Crear componentes genéricos y parametrizables.
 
 ### 2. BEM CSS (Block Element Modifier)
 - **Nomenclatura estricta**: `block__element--modifier`
@@ -28,7 +29,13 @@
   ```
 - **Uso Obligatorio de Átomos**: Todos los botones deben usar el componente `<Button />` y todos los iconos deben usar el componente `<Icon />`. PROHIBIDO usar emojis o elementos nativos (como `<button>` o `<span>` con clases de iconos) directamente para estos propósitos.
 
-### 4. NO Tailwind CSS
+### 4. Modularidad por Características (Features)
+- **Encapsulamiento**: Agrupar lógica, servicios y contextos relacionados en una carpeta dentro de `src/features/`.
+- **Barrel Files**: Cada característica debe tener un `index.js` para exponer solo lo necesario al resto de la aplicación.
+- **Independencia**: Las características deben ser lo más autónomas posible.
+- **Separación de Lógica en React Hooks**: Para evitar componentes "cargados", la lógica de estado y efectos debe extraerse a hooks personalizados (ej: `useAuthLogic.js`). Esto facilita el testing y la legibilidad.
+
+### 5. NO Tailwind CSS
 - **Solo CSS vanilla/puro**
 - **Cada componente tiene su propio archivo CSS**
 - **Variables CSS para temas**: Usar `var(--color-primary)` en lugar de valores hardcoded
@@ -40,9 +47,10 @@
 ### 5. MVC (Model-View-Controller)
 - **Frontend**:
   ```
-  components/  → View (presentación)
-  controllers/ → Controller (lógica de UI)
-  hooks/       → Model (estado y datos)
+  components/  → View (presentación siguiendo Atomic Design)
+  controllers/ → Controller (hooks de lógica de UI genérica)
+  features/    → Módulos por característica (agrupan logic, services y context de un dominio)
+  hooks/       → Model (estado y hooks de datos compartidos)
   ```
 - **Backend**:
   ```
@@ -87,8 +95,13 @@ secretary-app/
 │   │   │       └── Reports.css
 │   │   ├── controllers/
 │   │   │   └── useReportsController.js
+│   │   ├── features/
+│   │   │   └── auth/           → Ejemplo de módulo encapsulado
+│   │   │       ├── AuthContext.jsx
+│   │   │       ├── authService.js
+│   │   │       └── index.js
 │   │   ├── hooks/
-│   │   ├── context/
+│   │   ├── context/            → Solo contextos transversales (Idiomas, Modales)
 │   │   └── utils/
 │   └── public/
 ├── server/
@@ -378,5 +391,5 @@ Antes de hacer commit, verificar:
 
 ---
 
-**Última actualización**: 2026-02-19
-**Mantenedor**: Equipo de Desarrollo
+**Última actualización**: 2026-04-01
+**Mantenedor**: Equipo de Desarrollo (Refactor de Arquitectura Modular)

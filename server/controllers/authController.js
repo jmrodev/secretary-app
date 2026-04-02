@@ -32,3 +32,11 @@ exports.login = async (req, res) => {
         res.status(err.message === 'Invalid Credentials' ? 400 : 500).send(err.message);
     }
 };
+
+/**
+ * verify
+ * Simply returns the user data already attached by the authMiddleware.
+ */
+exports.verify = async (req, res) => {
+    res.status(200).json(req.user);
+};

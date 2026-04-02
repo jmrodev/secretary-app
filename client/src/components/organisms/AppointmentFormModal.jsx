@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from '../molecules/Modal';
 import { useLanguage } from '../../context/LanguageContext';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../features/auth';
 
 // Molecules
 import AppointmentSyncAlert from '../molecules/AppointmentSyncAlert';

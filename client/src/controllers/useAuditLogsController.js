@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import api from '../api/axios';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../features/auth';
 import { useLanguage } from '../context/LanguageContext';
 
 export const useAuditLogsController = () => {

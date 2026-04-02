@@ -19,6 +19,8 @@ services:
       - ./server/01-schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
     ports:
       - "${DB_EXTERNAL_PORT_PROD:-3310}:3306"
+    networks:
+      - proxy-network
     healthcheck:
       test: "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD"
       timeout: 20s
@@ -48,6 +50,8 @@ services:
     depends_on:
       db-prod:
         condition: service_healthy
+    networks:
+      - proxy-network
     healthcheck:
       test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:5000/api/health" ]
       interval: 30s
@@ -65,6 +69,8 @@ services:
       - "8080:80"
     depends_on:
       - server-prod
+    networks:
+      - proxy-network
 
   # [MONITORING] Real-time log viewer
   dozzle:
@@ -77,3 +83,9 @@ services:
       - "8888:8080"
     environment:
       - DOZZLE_LEVEL=info
+    networks:
+      - proxy-network
+
+networks:
+  proxy-network:
+    external: true

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../features/auth';
 
 /**
  * Hook to manage complex role-based permissions, including dynamic system settings.

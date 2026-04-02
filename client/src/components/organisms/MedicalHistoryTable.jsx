@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../features/auth';
 import { timeAgo } from '../../utils/time';
 import { formatDate } from '../../utils/dateUtils';
 import Button from '../atoms/Button';

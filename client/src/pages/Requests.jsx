@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../features/auth';
 import { useLanguage } from '../context/LanguageContext';
 import RequirementsList from '../components/organisms/RequirementsList';
 import MainLayout from '../components/templates/MainLayout';

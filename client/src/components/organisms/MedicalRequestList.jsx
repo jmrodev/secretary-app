@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../features/auth';
 import { useLanguage } from '../../context/LanguageContext';
 import { isToday } from '../../utils/time';
 import { formatPrice } from '../../utils/format';

@@ -92,6 +92,9 @@ class MedicalRequestService {
 
             if (status === 'completed' && reqInfo.payment_status === 'pending') {
                 await this.generateRequestDebt(conn, id, user_id);
+                // Sync status to reflect the new debt
+                const financeService = require('../finance/financeService');
+                await financeService.syncRequestPaymentStatus(id, conn);
             }
 
             await conn.commit();

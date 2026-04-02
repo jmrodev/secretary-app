@@ -21,7 +21,7 @@ import PublicPrescriptionRequest from './pages/PublicPrescriptionRequest'; // [N
 
 
 import FloatingChat from './components/organisms/FloatingChat';
-import { useAuth } from './context/AuthContext';
+import { useAuth } from './features/auth';
 import { useLanguage } from './context/LanguageContext';
 import Button from './components/atoms/Button';
 import Icon from './components/atoms/Icon';

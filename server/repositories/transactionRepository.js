@@ -141,11 +141,17 @@ class TransactionRepository {
                 [appointmentId]
             );
             let totalPaid = 0, totalPending = 0;
+            let hasPaid = false, hasPending = false;
             rows.forEach(t => {
-                if (t.status === 'paid') totalPaid += Number(t.amount);
-                else if (t.status === 'pending') totalPending += Number(t.amount);
+                if (t.status === 'paid') {
+                    totalPaid += Number(t.amount);
+                    hasPaid = true;
+                } else if (t.status === 'pending') {
+                    totalPending += Number(t.amount);
+                    hasPending = true;
+                }
             });
-            return { totalPaid, totalPending };
+            return { totalPaid, totalPending, hasPaid, hasPending };
         } finally {
             if (!conn) connection.release();
         }
@@ -159,11 +165,17 @@ class TransactionRepository {
                 [requestId]
             );
             let totalPaid = 0, totalPending = 0;
+            let hasPaid = false, hasPending = false;
             rows.forEach(t => {
-                if (t.status === 'paid') totalPaid += Number(t.amount);
-                else if (t.status === 'pending') totalPending += Number(t.amount);
+                if (t.status === 'paid') {
+                    totalPaid += Number(t.amount);
+                    hasPaid = true;
+                } else if (t.status === 'pending') {
+                    totalPending += Number(t.amount);
+                    hasPending = true;
+                }
             });
-            return { totalPaid, totalPending };
+            return { totalPaid, totalPending, hasPaid, hasPending };
         } finally {
             if (!conn) connection.release();
         }
