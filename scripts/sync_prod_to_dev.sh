@@ -11,7 +11,7 @@ DB_NAME="clinical_management"
 DB_USER="root"
 DB_PASSWORD="cima1255"
 
-echo "🔄 Iniciando sincronización TOTAL de PRODUCCIÓN -> DESARROLLO..."
+echo "🔄 Iniciando sincronización de DATOS (Base de Datos) PRODUCCIÓN -> DESARROLLO..."
 
 # --- 1. Sincronización de Base de Datos ---
 echo "📦 [1/3] Sincronizando Base de Datos..."
@@ -44,26 +44,10 @@ else
     exit 1
 fi
 
-# --- 2. Sincronización de Código (Git) ---
-echo "🖥️ [2/3] Sincronizando Código con Producción (main)..."
-cd "$PROJECT_ROOT" || exit 1
-
-# Estacionar cambios locales por seguridad
-TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-echo "  📥 Guardando cambios locales en stash (por si acaso)..."
-git stash save "Sync auto-backup $TIMESTAMP"
-
-# Traer cambios de origin y resetear al estado de producción
-echo "  📡 Obteniendo última versión de origin/main..."
-git fetch origin
-git reset --hard origin/main
-
-if [ $? -eq 0 ]; then
-    echo "  ✅ Código igualado a producción (main)."
-else
-    echo "  ❌ Error al sincronizar el código."
-    exit 1
-fi
+# --- 2. Sincronización de Código (OPCIONAL/MANUAL) ---
+# Se ha eliminado la sincronización automática de código para proteger la rama 'development'.
+# Si deseas igualar el código a producción, hazlo manualmente con 'git pull origin main'.
+echo "🖥️ [2/3] Sincronización de Código: Saltando (Protección de rama activa)..."
 
 # --- 3. Reinicio de Servicios ---
 echo "🔄 [3/3] Reiniciando contenedores de desarrollo..."
@@ -76,6 +60,7 @@ else
 fi
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "🎉 ¡SINCRONIZACIÓN COMPLETADA EXITOSAMENTE!"
-echo "✨ Tu entorno de desarrollo ahora es un espejo de producción."
+echo "🎉 ¡DATOS SINCRONIZADOS EXITOSAMENTE!"
+echo "✨ Tu entorno de desarrollo ahora tiene datos reales de producción."
+echo "⚠️  Nota: Tu código fue preservado (no se realizó git reset)."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
