@@ -7,6 +7,7 @@ export { useFloatingChatController } from './hooks/useFloatingChatController';
 export { useMessagesPageController } from './hooks/useMessagesPageController';
 
 // Components
+export { default as ChatPage } from './ChatPage';
 export { default as FloatingChat } from './components/FloatingChat';
 export { default as ChatSidebar } from './components/ChatSidebar';
 export { default as ChatWindow } from './components/ChatWindow';

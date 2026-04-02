@@ -9,6 +9,8 @@ export { useRequirementManagerController } from './hooks/useRequirementManagerCo
 
 // Organisms and Orchestrators
 export { default as MedicalDocumentsPage } from './MedicalDocumentsPage';
+export { default as RequestsPage } from './RequestsPage';
+export { default as PublicRequestPage } from './PublicRequestPage';
 export { default as MedicalRequestForm } from './components/MedicalRequestForm';
 export { default as MedicalHistoryTable } from './components/MedicalHistoryTable';
 export { default as MedicalActionModals } from './components/MedicalActionModals';

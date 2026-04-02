@@ -1,4 +1,8 @@
 export * from './AuthContext';
+export { default as TempAccessPage } from './TempAccessPage';
+export { default as LoginPage } from './LoginPage';
+export { default as RegisterPage } from './RegisterPage';
+export { default as ProfilePage } from './ProfilePage';
 export * from './authService';
 export * from './authReducer';
 export * from './useAuthLogic';

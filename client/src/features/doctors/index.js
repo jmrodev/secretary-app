@@ -1,4 +1,5 @@
 // src/features/doctors/index.js
+export { default as DoctorsPage } from './DoctorsPage';
 
 export { useDoctorsPageController } from './hooks/useDoctorsPageController';
 export { useDoctorFiscalController } from './hooks/useDoctorFiscalController';

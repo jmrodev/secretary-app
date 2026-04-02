@@ -2,6 +2,7 @@
 
 export { useInstitutionsController } from './hooks/useInstitutionsController';
 
+export { default as InstitutionsPage } from './InstitutionsPage';
 export { default as InstitutionManager } from './components/InstitutionManager';
 export { default as InstitutionFormModal } from './components/InstitutionFormModal';
 export { default as InstitutionList } from './components/InstitutionList';

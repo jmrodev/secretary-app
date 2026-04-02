@@ -1,0 +1,10 @@
+/* InsurancesPage Styles */
+
+.insurances-page-orchestrator {
+    display: flex;
+    flex-direction: column;
+}
+
+.insurances__content {
+    animation: fadeIn 0.4s ease-out;
+}

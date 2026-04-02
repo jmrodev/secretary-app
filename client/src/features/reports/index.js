@@ -8,7 +8,9 @@ export { useAuditLogsController } from './hooks/useAuditLogsController';
 
 // Components and Dashboard
 export { default as ReportsDashboard } from './components/ReportsDashboard';
+export { default as ReportsPage } from './ReportsPage';
 export { default as AuditLogManager } from './components/AuditLogManager';
+export { default as AuditLogsPage } from './AuditLogsPage';
 export { default as ReportTabs } from './components/ReportTabs';
 export { default as ReportFilters } from './components/ReportFilters';
 
