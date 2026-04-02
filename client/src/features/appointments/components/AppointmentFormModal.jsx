@@ -3,9 +3,9 @@ import Modal from '../../../components/molecules/Modal';
 import { useLanguage } from '../../../context/LanguageContext';
 import { useAuth } from '../../auth';
 
-import AppointmentSyncAlert from './AppointmentSyncAlert';
-import AppointmentTypeSelector from './AppointmentTypeSelector';
-import AppointmentPatientSection from './AppointmentPatientSection';
+import AppointmentSyncAlert from './AppointmentSyncAlert.jsx';
+import AppointmentTypeSelector from './AppointmentTypeSelector.jsx';
+import AppointmentPatientSection from './AppointmentPatientSection.jsx';
 
 import './AppointmentFormModal.css';
 

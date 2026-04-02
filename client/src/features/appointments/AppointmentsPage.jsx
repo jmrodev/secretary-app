@@ -16,7 +16,7 @@ import TransactionModal from '../../components/molecules/TransactionModal';
 import CalendarSection from './components/CalendarSection';
 import ScheduleSection from './components/ScheduleSection';
 import RescheduleBanner from './components/RescheduleBanner';
-import AppointmentActionModal from './components/AppointmentActionModal';
+import AppointmentActionModal from '/src/features/appointments/components/AppointmentActionModal.jsx';
 import AppointmentFormModal from './components/AppointmentFormModal';
 import PatientHistoryView from './components/PatientHistoryView';
 import UpcomingAppointmentsView from './components/UpcomingAppointmentsView';

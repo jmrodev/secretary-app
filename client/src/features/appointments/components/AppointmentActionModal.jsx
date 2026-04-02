@@ -8,9 +8,9 @@ import { useMessage } from '../../../context/MessageContext';
 import { useModal } from '../../../context/ModalContext';
 import { useConfig } from '../../../context/ConfigContext';
 import { usePermissions } from '../../../hooks/usePermissions';
-import AppointmentHeader from './AppointmentHeader';
-import AppointmentMedicalPanel from './AppointmentMedicalPanel';
-import AppointmentAdminPanel from './AppointmentAdminPanel';
+import AppointmentHeader from './AppointmentHeader.jsx';
+import AppointmentMedicalPanel from './AppointmentMedicalPanel.jsx';
+import AppointmentAdminPanel from './AppointmentAdminPanel.jsx';
 import './AppointmentActionModal.css';
 
 /**

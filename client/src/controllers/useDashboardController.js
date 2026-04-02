@@ -17,6 +17,7 @@ export const useDashboardController = () => {
 
     const { updateStatus, cancelAppointment, deleteAppointment, savePrescription } = useAppointments();
 
+    const [doctors, setDoctors] = useState([]);
     const [stats, setStats] = useState(null);
     const [newPatientStats, setNewPatientStats] = useState(null);
     const [reminders, setReminders] = useState([]);
@@ -35,6 +36,7 @@ export const useDashboardController = () => {
     const refreshDashboard = () => {
         fetchStats();
         fetchRequests();
+        fetchDoctors();
         if (user.role === 'admin' || user.role === 'secretary') {
             fetchNewPatientStats();
         }
@@ -57,6 +59,15 @@ export const useDashboardController = () => {
             setStats(res.data);
         } catch (err) {
             console.error("Failed to fetch stats", err);
+        }
+    };
+
+    const fetchDoctors = async () => {
+        try {
+            const res = await api.get('/users/doctors');
+            setDoctors(res.data);
+        } catch (err) {
+            console.error("Failed to fetch doctors", err);
         }
     };
 
@@ -364,6 +375,7 @@ export const useDashboardController = () => {
         prescribeModal, setPrescribeModal,
         paymentModal, setPaymentModal,
         isSubmitting,
+        doctors,
 
         // Actions
         refreshDashboard,

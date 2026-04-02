@@ -4,8 +4,8 @@ import { useDayScheduleHandlers } from '../hooks/useDayScheduleHandlers';
 import { useConfig } from '../../../context/ConfigContext';
 import { isSameDay } from '../../../utils/dateUtils';
 
-import DayScheduleHeader from './DayScheduleHeader';
-import ScheduleTimeline from './ScheduleTimeline';
+import DayScheduleHeader from './DayScheduleHeader.jsx';
+import ScheduleTimeline from './ScheduleTimeline.jsx';
 
 import './DaySchedule.css';
 

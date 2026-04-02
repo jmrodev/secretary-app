@@ -1,6 +1,6 @@
 import React from 'react';
-import DaySchedule from './DaySchedule';
-import HolidayList from './HolidayList';
+import DaySchedule from './DaySchedule.jsx';
+import HolidayList from './HolidayList.jsx';
 import './ScheduleSection.css';
 
 /**

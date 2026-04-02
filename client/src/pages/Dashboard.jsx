@@ -6,7 +6,7 @@ import Badge from '../components/atoms/Badge';
 import RequirementsList from '../components/organisms/RequirementsList';
 import DashboardSidebar from '../components/organisms/DashboardSidebar';
 import DashboardReminders from '../components/organisms/DashboardReminders';
-import AppointmentActionModal from '../components/organisms/AppointmentActionModal';
+import AppointmentActionModal from '../features/appointments/components/AppointmentActionModal.jsx';
 import PrescriptionModal from '../components/organisms/PrescriptionModal';
 import PatientHistoryModal from '../components/molecules/PatientHistoryModal';
 import TransactionModal from '../components/molecules/TransactionModal';
@@ -45,7 +45,8 @@ const Dashboard = () => {
         handleCompleteReminder,
         handleWhatsAppReminder,
         handleMarkNotified,
-        navigate
+        navigate,
+        doctors
     } = controller;
 
     if (!user) {
@@ -154,6 +155,7 @@ const Dashboard = () => {
                     isOpen={actionModal.open}
                     onClose={() => setActionModal({ ...actionModal, open: false })}
                     appt={actionModal.appt}
+                    doctors={doctors}
                     onUpdateStatus={handleUpdateStatus}
                     onDelete={handleDelete}
                     onCancel={handleCancel}

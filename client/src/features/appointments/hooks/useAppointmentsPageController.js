@@ -108,7 +108,7 @@ export const useAppointmentsPageController = () => {
         setActionModal, setPrescribeModal, setHistoryModal, setPaymentModal, setAuthModalOpen,
         setRetryAction, setShowNextSlotModal: nextSlot.setShowModal, booking,
         setWhatsappModal: booking.setWhatsappModal, setEditPatientModalOpen, setSelectedPatient: booking.setSelectedPatient,
-        updateStatus, updateAppointment, fetchAppointments, savePrescription, deleteAppointment, rescheduleAppointment, bookAppointment,
+        updateStatus, updateAppointment, fetchAppointments, savePrescription, deleteAppointment, rescheduleAppointment, bookAppointment: booking.bookAppointment,
         fetchNextFreeSlots: nextSlot.fetchNextFreeSlots, setSlotHistory: nextSlot.setSlotHistory, addHoliday, deleteHoliday, copyToClipboard
     });
 
