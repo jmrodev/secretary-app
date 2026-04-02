@@ -1,6 +1,6 @@
 import React from 'react';
-import Button from '../atoms/Button';
-import Badge from '../atoms/Badge';
+import Button from '../../../components/atoms/Button';
+import Badge from '../../../components/atoms/Badge';
 import './DoctorGoogleSettings.css';
 
 const DoctorGoogleSettings = ({

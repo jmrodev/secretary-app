@@ -1,7 +1,7 @@
 
 import React, { Suspense } from 'react';
 import { useSystemConfigController } from '../controllers/useSystemConfigController';
-import { useDoctorsPageController } from '../controllers/useDoctorsPageController';
+import { useDoctorsPageController } from '../features/doctors';
 import { useProfileController } from '../controllers/useProfileController';
 import { useReportsController } from '../controllers/useReportsController';
 
@@ -16,7 +16,7 @@ import Icon from '../components/atoms/Icon';
 import Loading from '../components/atoms/Loading';
 
 // Lazy load heavy components
-const DoctorsManager = React.lazy(() => import('../components/organisms/DoctorsManager'));
+const DoctorsManager = React.lazy(() => import('../features/doctors').then(module => ({ default: module.DoctorsManager })));
 const ProfileEditor = React.lazy(() => import('../components/organisms/ProfileEditor'));
 const ReportsDashboard = React.lazy(() => import('../components/organisms/ReportsDashboard'));
 import { printReport } from '../utils/reportPrintHelper';

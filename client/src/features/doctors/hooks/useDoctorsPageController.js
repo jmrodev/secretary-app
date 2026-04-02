@@ -1,11 +1,11 @@
 
 import { useState, useEffect } from 'react';
-import api from '../api/axios';
-import { useAuth } from '../features/auth';
-import { useModal } from '../context/ModalContext';
-import { useMessage } from '../context/MessageContext';
-import { useLanguage } from '../context/LanguageContext';
-import { useUsers } from '../hooks/useUsers';
+import api from '../../../api/axios';
+import { useAuth } from '../../auth';
+import { useModal } from '../../../context/ModalContext';
+import { useMessage } from '../../../context/MessageContext';
+import { useLanguage } from '../../../context/LanguageContext';
+import { useUsers } from '../../../hooks/useUsers';
 
 export const useDoctorsPageController = () => {
     const { t } = useLanguage();

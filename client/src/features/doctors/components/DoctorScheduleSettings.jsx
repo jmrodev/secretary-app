@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useLanguage } from '../../context/LanguageContext';
-import Button from '../atoms/Button';
+import { useLanguage } from '../../../context/LanguageContext';
+import Button from '../../../components/atoms/Button';
 
 // Molecules
-import ScheduleBulkActions from '../molecules/ScheduleBulkActions';
-import ScheduleTimeBlock from '../molecules/ScheduleTimeBlock';
+import ScheduleBulkActions from '../../../components/molecules/ScheduleBulkActions';
+import ScheduleTimeBlock from '../../../components/molecules/ScheduleTimeBlock';
 
 import './DoctorScheduleSettings.css';
 

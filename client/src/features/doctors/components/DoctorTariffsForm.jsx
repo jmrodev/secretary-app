@@ -1,8 +1,8 @@
 import React from 'react';
-import FormGroup from '../molecules/FormGroup';
-import Input from '../atoms/Input';
-import Select from '../atoms/Select';
-import CurrencyInput from '../atoms/CurrencyInput';
+import FormGroup from '../../../components/molecules/FormGroup';
+import Input from '../../../components/atoms/Input';
+import Select from '../../../components/atoms/Select';
+import CurrencyInput from '../../../components/atoms/CurrencyInput';
 import './DoctorTariffsForm.css';
 
 const DoctorTariffsForm = ({ data, settings, onChange, t }) => {

@@ -1,18 +1,18 @@
 import React from 'react';
-import Modal from '../molecules/Modal';
-import Button from '../atoms/Button';
-import FormGroup from '../molecules/FormGroup';
-import Input from '../atoms/Input';
-import Switch from '../atoms/Switch';
-import TabNav from '../molecules/TabNav';
-import TabButton from '../atoms/TabButton';
-import DoctorTariffsForm from '../molecules/DoctorTariffsForm';
-import DoctorGoogleSettings from '../molecules/DoctorGoogleSettings';
+import Modal from '../../../components/molecules/Modal';
+import Button from '../../../components/atoms/Button';
+import FormGroup from '../../../components/molecules/FormGroup';
+import Input from '../../../components/atoms/Input';
+import Switch from '../../../components/atoms/Switch';
+import TabNav from '../../../components/molecules/TabNav';
+import TabButton from '../../../components/atoms/TabButton';
+import DoctorTariffsForm from './DoctorTariffsForm';
+import DoctorGoogleSettings from './DoctorGoogleSettings';
 import DoctorScheduleSettings from './DoctorScheduleSettings';
-import DoctorFiscalSettings from '../molecules/DoctorFiscalSettings';
-import DoctorMessagesForm from '../molecules/DoctorMessagesForm';
-import UserForm from './UserForm';
-import { useDoctorFiscalController } from '../../controllers/useDoctorFiscalController';
+import DoctorFiscalSettings from './DoctorFiscalSettings';
+import DoctorMessagesForm from './DoctorMessagesForm';
+import UserForm from '../../../components/organisms/UserForm';
+import { useDoctorFiscalController } from '../hooks/useDoctorFiscalController';
 import './DoctorEditModal.css';
 
 const DoctorEditModal = ({

@@ -1,7 +1,6 @@
 import React from 'react';
-import { useDoctorsPageController } from '../controllers/useDoctorsPageController';
+import { useDoctorsPageController, DoctorsManager } from '../features/doctors';
 import MainLayout from '../components/templates/MainLayout';
-import DoctorsManager from '../components/organisms/DoctorsManager';
 import './Doctors.css';
 
 const Doctors = () => {
