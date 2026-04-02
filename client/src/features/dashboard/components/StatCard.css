@@ -65,7 +65,7 @@
 }
 
 .stat-card--sm .stat-card__icon-wrapper .icon {
-    font-size: 1rem !important;
+    font-size: 1rem;
 }
 
 .stat-card--sm .stat-card__label {

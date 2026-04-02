@@ -1,4 +1,5 @@
 import React from 'react';
+import './ConfigField.css';
 import Switch from '../atoms/Switch';
 
 /**

@@ -182,11 +182,12 @@
     text-transform: capitalize;
 }
 
-.sidebar-user__logout {
+.sidebar-user__logout,
+.sidebar-user__logout.btn {
     color: var(--error);
     opacity: 0.7;
     transition: opacity 0.2s;
-    background: transparent !important;
+    background: transparent;
 }
 
 .sidebar-user__logout:hover {

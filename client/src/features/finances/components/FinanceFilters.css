@@ -22,11 +22,11 @@
     pointer-events: none;
 }
 
-.finance-filters__search-input {
-    padding-left: 2.5rem !important;
-    background-color: var(--gray-50) !important;
-    height: 34px !important;
-    font-size: 0.85rem !important;
+.finance-filters .finance-filters__search-input {
+    padding-left: 2.5rem;
+    background-color: var(--gray-50);
+    height: 34px;
+    font-size: 0.85rem;
 }
 
 .finance-filters__groups {

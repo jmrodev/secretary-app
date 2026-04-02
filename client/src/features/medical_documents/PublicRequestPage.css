@@ -259,11 +259,12 @@
     margin-top: 1rem;
 }
 
-.btn--submit {
-    padding: 1.5rem !important;
-    border-radius: 1.5rem !important;
-    font-size: 1.125rem !important;
-    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2) !important;
+.public-prescription .btn--submit,
+.public-prescription__footer .btn--submit {
+    padding: 1.5rem;
+    border-radius: 1.5rem;
+    font-size: 1.125rem;
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
 }
 
 .public-prescription__brand {

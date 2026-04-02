@@ -72,10 +72,10 @@
     color: var(--primary);
 }
 
-.pending-closures-table__empty {
+.pending-closures-table td.pending-closures-table__empty {
     text-align: center;
     color: var(--text-muted);
-    padding: 2rem !important;
+    padding: 2rem;
 }
 
 .pending-closures-table__date-group {

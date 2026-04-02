@@ -26,24 +26,24 @@
 /* Global dashboard card override specifically for sidebar context */
 .finance-sidebar .dashboard-card {
     margin-bottom: 0;
-    padding: 0.75rem !important;
-    /* Force tight padding */
+    padding: 0.75rem;
 }
 
 /* Ensure sections inside cards are tight */
-.finance-sidebar .flex-col.gap-4 {
-    gap: 0.6rem !important;
+.finance-sidebar .finance-sidebar__card-body {
+    gap: 0.6rem;
 }
 
 /* Tighten TabNav when in sidebar */
 .finance-sidebar .tab-nav {
-    margin-bottom: 0 !important;
-    gap: 0.25rem !important;
-    padding: 0.25rem !important;
-    background: var(--gray-50) !important;
+    margin-bottom: 0;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    background: var(--gray-50);
 }
 
 /* Eliminate excessive gap in doctor filter */
 .finance-sidebar .finance-doctor-filter {
-    margin-bottom: 0 !important;
+    margin-bottom: 0;
 }
+

@@ -37,7 +37,7 @@ const ConnectionStatus = ({
                 <div>
                     <StatusIndicator status={status} label={statusLabel} />
                     {description && (
-                        <p className="config-field__hint" style={{ marginTop: '0.5rem' }}>
+                        <p className="config-field__hint config-field__hint--spaced">
                             {description}
                         </p>
                     )}

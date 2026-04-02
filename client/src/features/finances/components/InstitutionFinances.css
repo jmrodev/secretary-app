@@ -229,12 +229,14 @@
     color: var(--text-main);
 }
 
-.inst-data-table__tr--pending {
-    background-color: var(--rose-50) !important;
+.inst-data-table tbody .inst-data-table__tr--pending,
+.inst-data-table tbody .inst-data-table__tr--pending:hover {
+    background-color: var(--rose-50);
 }
 
-.inst-data-table__tr--selected {
-    background-color: #e0f2fe !important;
+.inst-data-table tbody .inst-data-table__tr--selected,
+.inst-data-table tbody .inst-data-table__tr--selected:hover {
+    background-color: #e0f2fe;
     outline: 1px solid #38bdf8;
 }
 

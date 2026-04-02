@@ -54,5 +54,8 @@
 .appointment-card__status-chip--completed { color: var(--green-600); background: var(--green-50); }
 
 .appointment-card__actions { display: flex; gap: 0.25rem; }
-.appointment-card__action-btn { color: var(--gray-400); }
-.appointment-card__action-btn:hover { color: var(--blue-600); background: var(--blue-50) !important; }
+.appointment-card__action-btn:hover {
+    color: var(--blue-600);
+    background: var(--blue-50);
+}
+
