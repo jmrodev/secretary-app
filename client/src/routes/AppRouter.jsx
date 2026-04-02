@@ -7,7 +7,6 @@ import ProtectedRoute from '../components/atoms/ProtectedRoute';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Dashboard from '../pages/Dashboard';
-import Appointments from '../pages/Appointments';
 import OfficeRentals from '../pages/OfficeRentals';
 import MedicalDocuments from '../pages/MedicalDocuments';
 import Finances from '../pages/Finances';
@@ -23,6 +22,9 @@ import Institutions from '../pages/Institutions';
 import Reports from '../pages/Reports';
 import TempAccess from '../pages/TempAccess';
 import PublicPrescriptionRequest from '../pages/PublicPrescriptionRequest';
+
+// Features (Orchestrators)
+import AppointmentsPage from '../features/appointments/AppointmentsPage';
 
 /**
  * AppRouter Component.
@@ -40,7 +42,7 @@ const AppRouter = () => {
             {/* Protected Dashboard Routes (Layout) */}
             <Route element={<ProtectedRoute />}>
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/appointments" element={<Appointments />} />
+                <Route path="/appointments" element={<AppointmentsPage />} />
                 <Route path="/rentals" element={<OfficeRentals />} />
                 <Route path="/documents" element={<MedicalDocuments />} />
                 <Route path="/finances" element={<Finances />} />
