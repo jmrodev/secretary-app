@@ -1,0 +1,48 @@
+/* NextSlotCalendarModal Styles (BEM) */
+
+.calendar-slot-modal { display: flex; flex-direction: column; gap: 1rem; }
+
+.calendar-slot-controls {
+    display: flex; justify-content: space-between; align-items: center;
+    background-color: var(--gray-50); padding: 0.75rem 1rem;
+    border-radius: var(--radius); border: 1px solid var(--gray-200);
+}
+
+.calendar-slot-controls__checkbox { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.8125rem; font-weight: 700; }
+.calendar-slot-controls__toggle-group { display: flex; background-color: white; padding: 0.2rem; border-radius: 0.5rem; border: 1px solid var(--gray-200); }
+.calendar-slot-controls__toggle-btn { padding: 0.4rem 0.75rem; font-size: 0.75rem; font-weight: 800; border: none; background: none; cursor: pointer; border-radius: 0.35rem; color: var(--text-muted); }
+.calendar-slot-controls__toggle-btn--active { background-color: var(--blue-600); color: white; box-shadow: var(--shadow-sm); }
+
+.calendar-slot__indicators { display: flex; justify-content: center; gap: 4px; margin-top: auto; width: 100%; flex-wrap: wrap; }
+.calendar-slot__badge { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; border-radius: 4px; }
+.calendar-slot__badge--normal { background-color: var(--green-100); color: var(--green-800); border: 1px solid var(--green-200); }
+.calendar-slot__badge--extra { background-color: var(--amber-100); color: var(--amber-800); border: 1px solid var(--amber-200); }
+.calendar-slot__badge--break { background-color: var(--indigo-100); color: var(--indigo-800); border: 1px solid var(--indigo-200); }
+
+.calendar-slot__legend { display: flex; flex-wrap: wrap; gap: 1rem; padding: 0.75rem 1rem; border-top: 1px solid var(--gray-200); background-color: var(--gray-50); }
+.calendar-slot__legend-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
+.calendar-slot__legend-box { width: 10px; height: 10px; border-radius: 2px; }
+.calendar-slot__legend-box--in-hours { background-color: var(--green-100); border: 1px solid var(--green-300); }
+.calendar-slot__legend-box--out-hours { background-color: var(--amber-100); border: 1px solid var(--amber-300); }
+.calendar-slot__legend-box--break { background-color: var(--indigo-100); border: 1px solid var(--indigo-300); }
+
+.slots-list { background-color: white; border-radius: var(--radius); border: 1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; }
+.slots-list__header { background-color: var(--blue-700); color: white; padding: 0.75rem 1.25rem; display: flex; justify-content: space-between; align-items: center; }
+.slots-list__title { font-size: 1rem; font-weight: 800; margin: 0; }
+.slots-list__body { max-height: 400px; overflow-y: auto; }
+
+.slots-list__section-header { padding: 0.5rem 1.25rem; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; border-bottom: 1px solid var(--gray-100); }
+.slots-list__section-header--normal { background-color: var(--green-50); color: var(--green-800); }
+.slots-list__section-header--extra { background-color: var(--amber-50); color: var(--amber-800); }
+
+.slots-list__time { font-size: 0.95rem; font-weight: 800; }
+.slots-list__time--normal { color: var(--text-main); }
+.slots-list__time--extra, .slots-list__time--before, .slots-list__time--after { color: var(--amber-700); }
+.slots-list__time--break { color: var(--indigo-700); }
+
+.slots-list__tag-extra, .slots-list__tag-break { font-size: 0.6rem; padding: 1px 6px; border-radius: 10px; font-weight: 800; }
+.slots-list__tag-extra { background-color: var(--amber-100); color: var(--amber-700); border: 1px solid var(--amber-200); }
+.slots-list__tag-break { background-color: var(--indigo-100); color: var(--indigo-700); border: 1px solid var(--indigo-200); }
+
+.slots-list__wa-btn { background: var(--green-50); border: 1px solid var(--green-200); padding: 4px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; transition: all 0.2s; }
+.slots-list__wa-btn:hover { background: var(--green-100); transform: scale(1.1); }

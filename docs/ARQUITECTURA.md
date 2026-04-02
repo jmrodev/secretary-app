@@ -172,7 +172,8 @@ secretary-app/
 ## Reglas de Código
 
 ## Reglas de Herramientas de IA
-- **Browser Tool**: NO utilizar la herramienta `browser` para observar la aplicación. Es un proceso lento. En su lugar, solicitar al usuario que describa lo que observa o pedir información específica.
+- 🚫 **PROHIBICIÓN DEL BROWSER TOOL**: Está TERMINANTEMENTE PROHIBIDO que la IA utilice la herramienta `browser_subagent` o `read_url` para intentar observar o depurar la aplicación local (localhost). Este proceso consume recursos innecesarios y es propenso a fallos de red. 
+- **Fuente de Verdad Visual**: La ÚNICA forma de validar la interfaz es solicitando al USER una descripción detallada, compartiendo capturas de pantalla o pidiendo logs específicos de la consola. No se debe intentar navegar por el sitio de forma autónoma.
 
 ### Frontend (React)
 

@@ -1,0 +1,58 @@
+/* AppointmentCard.css */
+
+.appointment-card {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid var(--gray-100);
+    gap: 1rem;
+    min-width: 0;
+}
+
+.appointment-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    filter: brightness(0.98);
+}
+
+.appointment-card--external { border-left: 4px solid var(--amber-500); }
+.appointment-card--pending { border-left: 4px solid var(--gray-400); }
+.appointment-card--confirmed { border-left: 4px solid var(--blue-500); background-color: var(--blue-50); }
+.appointment-card--arrived, .appointment-card--attended, .appointment-card--completed { border-left: 4px solid var(--green-500); background-color: var(--green-50); }
+.appointment-card--absent, .appointment-card--cancelled, .appointment-card--rejected { border-left: 4px solid var(--red-500); background-color: var(--red-50); }
+.appointment-card--rescheduled { border-left: 4px solid var(--amber-500); background-color: var(--amber-50); }
+.appointment-card--virtual { border-left: 4px solid var(--indigo-500); background-color: var(--indigo-50); }
+
+.appointment-card__time-box { min-width: 50px; display: flex; align-items: center; }
+.appointment-card__time { font-size: 0.875rem; font-weight: 700; color: var(--slate-900); }
+
+.appointment-card__info { flex: 1; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+.appointment-card__patient-name { font-weight: 700; color: var(--slate-800); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.appointment-card__phone { font-size: 10px; color: var(--indigo-600); font-weight: 500; text-decoration: none; width: fit-content; }
+.appointment-card__details { display: flex; align-items: center; gap: 0.5rem; font-size: 11px; color: var(--slate-500); overflow: hidden; min-width: 0; }
+.appointment-card__doctor { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex-shrink: 0; }
+.appointment-card__reason { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1; font-style: italic; opacity: 0.75; }
+
+.appointment-card__status { display: flex; flex-direction: column; align-items: flex-end; min-width: 80px; }
+.appt-status__col { display: flex; flex-direction: column; align-items: flex-end; }
+.appt-status__text { font-weight: 800; font-size: 11px; display: flex; align-items: center; gap: 2px; }
+.appt-status__amount--pending { color: var(--amber-500); }
+.appt-status__amount--paid { color: var(--emerald-600); }
+.appt-status__amount--debt { color: var(--rose-600); }
+
+.appointment-card__status-chip {
+    font-size: 10px; padding: 2px 8px; border-radius: 9999px; margin-top: 4px;
+    font-weight: 600; text-transform: capitalize; border: 1px solid currentColor;
+}
+.appointment-card__status-chip--confirmed { color: var(--blue-600); background: var(--blue-50); }
+.appointment-card__status-chip--completed { color: var(--green-600); background: var(--green-50); }
+
+.appointment-card__actions { display: flex; gap: 0.25rem; }
+.appointment-card__action-btn { color: var(--gray-400); }
+.appointment-card__action-btn:hover { color: var(--blue-600); background: var(--blue-50) !important; }
