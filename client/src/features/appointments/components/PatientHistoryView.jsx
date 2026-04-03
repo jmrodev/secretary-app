@@ -3,6 +3,7 @@ import Icon from '../../../components/atoms/Icon';
 import Button from '../../../components/atoms/Button';
 import Loading from '../../../components/atoms/Loading';
 import AppointmentCard from './AppointmentCard';
+import './PatientHistoryView.css';
 
 /**
  * PatientHistoryView (Executor Component).
@@ -12,10 +13,10 @@ const PatientHistoryView = ({ patientAppointments, loading, onClose, t, searchPa
     if (loading) return <Loading />;
     if (!patientAppointments || patientAppointments.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center p-10 bg-white rounded-xl border border-slate-200">
-                <Icon name="history_off" size="3rem" className="text-slate-300 mb-4" />
-                <h3 className="text-xl font-bold text-slate-800">{t('no_history_found')}</h3>
-                <Button onClick={onClose} variant="ghost" className="mt-4">{t('back')}</Button>
+            <div className="patient-history-view__empty">
+                <Icon name="history_off" size="3rem" className="patient-history-view__empty-icon" />
+                <h3 className="patient-history-view__empty-title">{t('no_history_found')}</h3>
+                <Button onClick={onClose} variant="ghost" style={{ marginTop: '1rem' }}>{t('back')}</Button>
             </div>
         );
     }
@@ -24,17 +25,17 @@ const PatientHistoryView = ({ patientAppointments, loading, onClose, t, searchPa
 
     return (
         <div className="patient-history-view animate-fadeIn">
-            <header className="flex justify-between items-center mb-6">
+            <header className="patient-history-view__header">
                 <div>
-                    <h2 className="text-2xl font-black text-slate-800">{t('history_of')}: {patientName}</h2>
-                    <p className="text-slate-500 font-semibold">{t('total_appointments')}: {patientAppointments.length}</p>
+                    <h2 className="patient-history-view__title">{t('history_of')}: {patientName}</h2>
+                    <p className="patient-history-view__subtitle">{t('total_appointments')}: {patientAppointments.length}</p>
                 </div>
                 <Button onClick={onClose} variant="secondary" outline icon={<Icon name="arrow_back" size="1.1rem" />}>
                     {t('back')}
                 </Button>
             </header>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="patient-history-view__grid">
                 {patientAppointments.map(appt => (
                     <AppointmentCard
                         key={appt.id} appt={appt}

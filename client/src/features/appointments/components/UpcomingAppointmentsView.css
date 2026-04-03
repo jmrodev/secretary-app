@@ -1,0 +1,69 @@
+/* UpcomingAppointmentsView Organism Styles */
+
+.upcoming-appointments-view__title {
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: var(--slate-800);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.upcoming-appointments-view__icon-wrapper {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    background-color: var(--blue-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.2);
+}
+
+.upcoming-appointments-view__grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .upcoming-appointments-view__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .upcoming-appointments-view__grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.upcoming-appointments-view__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem;
+    background-color: white;
+    border-radius: 1.5rem;
+    border: 2px dashed var(--slate-200);
+}
+
+.upcoming-appointments-view__empty-icon {
+    color: var(--slate-200);
+    margin-bottom: 1.5rem;
+}
+
+.upcoming-appointments-view__empty-title {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--slate-800);
+    letter-spacing: -0.025em;
+}
+
+.upcoming-appointments-view__empty-hint {
+    color: var(--slate-400);
+    font-weight: 700;
+    margin-top: 0.5rem;
+}

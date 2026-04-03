@@ -2,6 +2,7 @@ import React from 'react';
 import AppointmentCard from './AppointmentCard';
 import Loading from '../../../components/atoms/Loading';
 import Icon from '../../../components/atoms/Icon';
+import './UpcomingAppointmentsView.css';
 
 /**
  * UpcomingAppointmentsView (Executor Component).
@@ -16,24 +17,24 @@ const UpcomingAppointmentsView = ({ appointments, loading, t, onAction, onWhatsA
 
     if (upcoming.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center p-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
-                <Icon name="event_busy" size="4rem" className="text-slate-200 mb-6" />
-                <h3 className="text-2xl font-black text-slate-800 tracking-tight">{t('no_upcoming_appointments')}</h3>
-                <p className="text-slate-400 font-bold mt-2">{t('no_upcoming_hint')}</p>
+            <div className="upcoming-appointments-view__empty">
+                <Icon name="event_busy" size="4rem" className="upcoming-appointments-view__empty-icon" />
+                <h3 className="upcoming-appointments-view__empty-title">{t('no_upcoming_appointments')}</h3>
+                <p className="upcoming-appointments-view__empty-hint">{t('no_upcoming_hint')}</p>
             </div>
         );
     }
 
     return (
         <div className="upcoming-appointments-view animate-fadeIn">
-            <h2 className="text-xl font-black text-slate-800 mb-6 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-200">
-                    <Icon name="upcoming" size="1.4rem" className="text-white" />
+            <h2 className="upcoming-appointments-view__title">
+                <div className="upcoming-appointments-view__icon-wrapper">
+                    <Icon name="upcoming" size="1.4rem" style={{ color: 'white' }} />
                 </div>
                 {t('next_appointments')}
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="upcoming-appointments-view__grid">
                 {upcoming.map(appt => (
                     <AppointmentCard
                         key={appt.id} appt={appt}
