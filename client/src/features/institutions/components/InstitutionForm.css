@@ -1,0 +1,11 @@
+/* InstitutionForm Feature Molecule - BEM Styles */
+
+.institution-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.institution-form__footer {
+    margin-top: 1rem;
+}

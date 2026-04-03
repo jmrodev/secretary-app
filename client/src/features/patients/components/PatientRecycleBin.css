@@ -106,3 +106,49 @@
     justify-content: flex-end;
     gap: 0.5rem;
 }
+
+.patient-recycle-bin__loading {
+    display: flex;
+    justify-content: center;
+    padding: 3rem;
+}
+
+.patient-recycle-bin__empty-title {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.patient-recycle-bin__empty-text {
+    font-size: 0.875rem;
+    color: var(--gray-400);
+    margin-top: 0.5rem;
+}
+
+.patient-recycle-bin__patient-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.patient-recycle-bin__contact-missing {
+    font-style: italic;
+    color: var(--slate-400);
+}
+
+.patient-recycle-bin__action-btn--restore {
+    color: var(--green-600) !important;
+    border-color: var(--green-200) !important;
+    font-weight: 700 !important;
+}
+
+.patient-recycle-bin__action-btn--restore:hover {
+    background-color: var(--green-50) !important;
+    border-color: var(--green-300) !important;
+}
+
+.patient-recycle-bin__footer-hint {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--gray-400);
+}
+

@@ -8,9 +8,9 @@ const InstitutionList = ({ institutions, onEdit, onDelete, t }) => {
 
     if (institutions.length === 0) {
         return (
-            <div className="card p-12 text-center text-main-500 bg-gray-50 flex flex-col items-center gap-4">
-                <Icon name="business" size="3rem" className="opacity-20" />
-                <p className="text-lg font-medium opacity-50">{t('no_institutions') || 'No hay instituciones registradas'}</p>
+            <div className="institution-list__empty">
+                <Icon name="business" size="3rem" className="institution-list__empty-icon" />
+                <p className="institution-list__empty-text">{t('no_institutions') || 'No hay instituciones registradas'}</p>
             </div>
         );
     }

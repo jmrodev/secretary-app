@@ -4,6 +4,25 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    padding: 0.5rem;
+}
+
+.whatsapp-modal__title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--green-700);
+    font-weight: 800;
+}
+
+.whatsapp-modal__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    width: 100%;
+    border-top: 1px solid var(--gray-100);
+    padding-top: 1rem;
+    margin-top: 0.5rem;
 }
 
 .whatsapp-modal__info {
@@ -31,20 +50,40 @@
     font-size: 0.875rem;
     color: var(--green-900);
     font-weight: 800;
+    margin: 0;
 }
 
 .whatsapp-modal__help {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--green-700);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-weight: 500;
+    margin: 0.25rem 0 0;
 }
 
 .whatsapp-modal__textarea {
-    min-height: 150px;
+    min-height: 120px;
     resize: vertical;
     border-color: var(--green-200);
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    border-radius: var(--radius-sm);
+    background: var(--gray-50);
+    font-weight: 500;
 }
 
 .whatsapp-modal__textarea:focus {
     border-color: var(--green-500);
     box-shadow: 0 0 0 3px var(--green-100);
+    outline: none;
+}
+
+.whatsapp-modal__send-btn {
+    background-color: var(--green-500);
+}
+
+.whatsapp-modal__send-btn:hover {
+    background-color: var(--green-600);
 }

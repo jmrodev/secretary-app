@@ -89,18 +89,20 @@ const PatientAddressFields = ({ formData, handleChange, t }) => {
             </div>
 
             {formData.street_name && (
-                <Button
-                    to={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                        `${formData.street_name || ''} ${formData.street_number || ''}, ${formData.city || ''}, ${formData.province || ''}, ${formData.country || ''}`.trim()
-                    )}`}
-                    target="_blank"
-                    variant="link"
-                    size="sm"
-                    className="mt-1"
-                    icon={<Icon name="map" size="1rem" />}
-                >
-                    {t('view_on_map')}
-                </Button>
+                <div className="patient-form__map-action">
+                    <Button
+                        to={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                            `${formData.street_name || ''} ${formData.street_number || ''}, ${formData.city || ''}, ${formData.province || ''}, ${formData.country || ''}`.trim()
+                        )}`}
+                        target="_blank"
+                        variant="link"
+                        size="sm"
+                        className="patient-form__map-btn"
+                        icon={<Icon name="map" size="1rem" />}
+                    >
+                        {t('view_on_map')}
+                    </Button>
+                </div>
             )}
         </div>
     );

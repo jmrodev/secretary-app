@@ -62,3 +62,26 @@
     transform: translateY(-1px);
     box-shadow: var(--shadow-sm);
 }
+
+.institution-list__empty {
+    padding: 3rem;
+    text-align: center;
+    color: var(--text-main);
+    background-color: var(--gray-50);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+}
+
+.institution-list__empty-icon {
+    opacity: 0.2;
+}
+
+.institution-list__empty-text {
+    font-size: 1.125rem;
+    font-weight: 500;
+    opacity: 0.5;
+}

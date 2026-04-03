@@ -3,12 +3,13 @@ import Button from '../../../components/atoms/Button';
 import PhoneNumbersManager from '../../../components/molecules/PhoneNumbersManager';
 import { useLanguage } from '../../../context/LanguageContext';
 import { capitalizeWords } from '../../../utils/stringUtils';
+import './InstitutionForm.css';
 
 const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isEditing, isSubmitting = false }) => {
     const { t } = useLanguage();
 
     return (
-        <form onSubmit={onSubmit} className="institution-form flex flex-col gap-4">
+        <form onSubmit={onSubmit} className="institution-form">
             <div className="form-group-bem">
                 <label className="input-label">{t('institution_name')} *</label>
                 <input
@@ -31,7 +32,7 @@ const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isEditing, is
                 />
             </div>
 
-            <div className="mb-4">
+            <div className="institution-form__phone-manager">
                 <PhoneNumbersManager
                     phoneNumbers={formData.phoneNumbers}
                     onChange={(newContext) => onChange('phoneNumbers', newContext)}
@@ -60,7 +61,7 @@ const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isEditing, is
                 </select>
             </div>
 
-            <div className="modal-footer modal-footer--right mt-4">
+            <div className="modal-footer modal-footer--right institution-form__footer">
                 {onCancel && (
                     <Button variant="secondary" onClick={onCancel} type="button">
                         {t('cancel')}

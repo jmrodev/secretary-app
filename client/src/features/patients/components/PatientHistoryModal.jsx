@@ -89,13 +89,13 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
 
             <div className={`${baseClass}__body`}>
                 {loading ? (
-                    <div className="text-center p-8 text-muted">{t('loading')}...</div>
+                    <div className={`${baseClass}__loading`}>{t('loading')}...</div>
                 ) : (
                     <>
                         {activeTab === 'appointments' && (
                             <div className={`${baseClass}__list`}>
                                 {history.appointments.length === 0 ? (
-                                    <p className="text-muted italic p-4 text-center">{t('no_history')}</p>
+                                    <p className={`${baseClass}__empty`}>{t('no_history')}</p>
                                 ) : (
                                     history.appointments.map(appt => (
                                         <div key={appt.id} className={`${baseClass}__item ${appt.status === 'cancelled' ? baseClass + '__item--cancelled' : ''}`}>
@@ -118,7 +118,7 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
                                                 </div>
                                             )}
                                             {appt.behavior_rating && (
-                                                <div className="text-xs mt-2 text-blue-600 font-bold">
+                                                <div className={`${baseClass}__rating`}>
                                                     <Icon name="NEW" size="0.9rem" className="mr-1" />
                                                     {t('rating')}: {appt.behavior_rating}/5
                                                 </div>
@@ -135,16 +135,16 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
                                 <section className={`${baseClass}__section`}>
                                     <h4 className={`${baseClass}__section-title`}>{t('prescriptions') || 'Recetas'}</h4>
                                     {history.prescriptions.length === 0 ? (
-                                        <p className="text-xs text-muted italic ml-2">{t('none') || 'Ninguna'}</p>
+                                        <p className={`${baseClass}__empty-record`}>{t('none') || 'Ninguna'}</p>
                                     ) : (
-                                        <div className="flex-col gap-2">
+                                        <div className={`${baseClass}__record-list`}>
                                             {history.prescriptions.map(p => (
                                                 <div key={p.id} className={`${baseClass}__record ${baseClass}__record--rx`}>
                                                     <div className={`${baseClass}__record-header`}>
                                                         <span>{formatDate(p.created_at || p.appointment_date)}</span>
                                                         <span>Dr. {p.doctor_name}</span>
                                                     </div>
-                                                    <div className="mt-1 whitespace-pre-wrap">{p.medications}</div>
+                                                    <div className={`${baseClass}__record-text ${baseClass}__record-text--pre`}>{p.medications}</div>
                                                 </div>
                                             ))}
                                         </div>
@@ -155,17 +155,17 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
                                 <section className={`${baseClass}__section`}>
                                     <h4 className={`${baseClass}__section-title`}>{t('requests') || 'Solicitudes'}</h4>
                                     {history.requests.length === 0 ? (
-                                        <p className="text-xs text-muted italic ml-2">{t('none') || 'Ninguna'}</p>
+                                        <p className={`${baseClass}__empty-record`}>{t('none') || 'Ninguna'}</p>
                                     ) : (
-                                        <div className="flex-col gap-2">
+                                        <div className={`${baseClass}__record-list`}>
                                             {history.requests.map(r => (
                                                 <div key={r.id} className={`${baseClass}__record ${baseClass}__record--req`}>
                                                     <div className={`${baseClass}__record-header`}>
                                                         <span>{formatDate(r.created_at)}</span>
                                                         <span className={`${baseClass}__record-type`}>{r.type}</span>
                                                     </div>
-                                                    <div className="mt-1">"{r.request_note}"</div>
-                                                    <div className="text-xs opacity-70 text-right mt-1">{t(r.status)}</div>
+                                                    <div className={`${baseClass}__record-text`}>"{r.request_note}"</div>
+                                                    <div className={`${baseClass}__record-status`}>{t(r.status)}</div>
                                                 </div>
                                             ))}
                                         </div>
@@ -176,16 +176,16 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
                                 <section className={`${baseClass}__section`}>
                                     <h4 className={`${baseClass}__section-title`}>{t('licenses') || 'Licencias Médicas'}</h4>
                                     {history.licenses.length === 0 ? (
-                                        <p className="text-xs text-muted italic ml-2">{t('none') || 'Ninguna'}</p>
+                                        <p className={`${baseClass}__empty-record`}>{t('none') || 'Ninguna'}</p>
                                     ) : (
-                                        <div className="flex-col gap-2">
+                                        <div className={`${baseClass}__record-list`}>
                                             {history.licenses.map(l => (
                                                 <div key={l.id} className={`${baseClass}__record ${baseClass}__record--lic`}>
                                                     <div className={`${baseClass}__record-header`}>
                                                         <span>Desde: {new Date(l.start_date).toLocaleDateString()}</span>
                                                         <span>{l.days_duration} {t('days') || 'Días'}</span>
                                                     </div>
-                                                    <div className="mt-1 italic">{l.diagnosis}</div>
+                                                    <div className={`${baseClass}__record-text`}>{l.diagnosis}</div>
                                                 </div>
                                             ))}
                                         </div>

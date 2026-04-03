@@ -10,7 +10,7 @@ import { formatDate } from '../../../utils/dateUtils';
  */
 const ActiveMedicationsList = ({ medications, loading, t, onDiscontinue, onRemindRefill, settings, user, patientName }) => {
     if (loading) {
-        return <div className="text-center p-4 text-slate-400">Cargando...</div>;
+        return <div className="patient-medications__loading">Cargando...</div>;
     }
 
     if (medications.length === 0) {

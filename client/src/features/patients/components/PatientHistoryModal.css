@@ -129,3 +129,54 @@
     border-radius: 4px;
     border: 1px solid currentColor;
 }
+
+.patient-history__loading {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+}
+
+.patient-history__empty {
+    color: var(--text-muted);
+    font-style: italic;
+    padding: 1rem;
+    text-align: center;
+}
+
+.patient-history__empty-record {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-left: 0.5rem;
+}
+
+.patient-history__rating {
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    color: var(--blue-600);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+}
+
+.patient-history__record-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.patient-history__record-text {
+    margin-top: 0.25rem;
+}
+
+.patient-history__record-text--pre {
+    white-space: pre-wrap;
+}
+
+.patient-history__record-status {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    text-align: right;
+    margin-top: 0.25rem;
+}
+

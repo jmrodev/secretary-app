@@ -1,6 +1,7 @@
 import React from 'react';
 import Modal from '../../../components/molecules/Modal';
 import Button from '../../../components/atoms/Button';
+import Icon from '../../../components/atoms/Icon';
 import FormGroup from '../../../components/molecules/FormGroup';
 import { useLanguage } from '../../../context/LanguageContext';
 import { useMessage } from '../../../context/MessageContext';
@@ -46,26 +47,24 @@ const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange }) => 
         showMessage(t('message_copied_opening_wa') || "Mensaje copiado. Intentando abrir WhatsApp...", "success");
     };
 
-    const baseClass = 'whatsapp-modal';
-
     return (
         <Modal
             isOpen={isOpen}
             onClose={onClose}
             title={
-                <div className="flex items-center gap-2 text-green-600 font-bold">
-                    📲 {t('whatsapp_confirmation') || "Confirmación por WhatsApp"}
+                <div className="whatsapp-modal__title">
+                    <Icon name="chat" size="1.2rem" />
+                    {t('whatsapp_confirmation') || "Confirmación por WhatsApp"}
                 </div>
             }
             footer={
-                <div className="flex justify-end gap-3 w-full border-t border-gray-50 pt-4 mt-2">
-                    <Button variant="ghost" onClick={onClose} className="text-gray-400 hover:text-gray-600 uppercase tracking-widest text-[10px] font-bold">
+                <div className="whatsapp-modal__footer">
+                    <Button variant="ghost" onClick={onClose}>
                         {t('cancel')}
                     </Button>
                     <Button
                         variant="accent"
-                        className="text-white shadow-lg shadow-green-200 uppercase tracking-widest text-[10px] font-bold"
-                        style={{ backgroundColor: '#10b981' }}
+                        className="whatsapp-modal__send-btn"
                         onClick={handleSend}
                     >
                         {t('send_via_whatsapp') || 'Enviar por WhatsApp'}
@@ -73,21 +72,23 @@ const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange }) => 
                 </div>
             }
         >
-            <div className={`${baseClass} animate-fadeIn p-2`}>
-                <div className={`${baseClass}__info bg-green-50 p-4 border border-green-100 rounded-sm mb-6 flex gap-4 items-start`}>
-                    <div className={`${baseClass}__icon text-2xl`}>📱</div>
+            <div className="whatsapp-modal animate-fadeIn">
+                <div className="whatsapp-modal__info">
+                    <div className="whatsapp-modal__icon">
+                        <Icon name="smartphone" size="1.2rem" />
+                    </div>
                     <div>
-                        <p className={`${baseClass}__recipient font-bold text-green-800 text-sm`}>{t('sending_to') || 'Enviar a'}: {phone}</p>
-                        <p className={`${baseClass}__help text-[10px] text-green-600 uppercase tracking-tight font-medium mt-1`}>{t('wa_help_text') || 'El mensaje se abrirá en WhatsApp Desktop/Web.'}</p>
+                        <p className="whatsapp-modal__recipient">{t('sending_to') || 'Enviar a'}: {phone}</p>
+                        <p className="whatsapp-modal__help">{t('wa_help_text') || 'El mensaje se abrirá en WhatsApp Desktop/Web.'}</p>
                     </div>
                 </div>
 
-                <FormGroup label={t('message_to_send') || "Mensaje a enviar"} className="mb-0">
+                <FormGroup label={t('message_to_send') || "Mensaje a enviar"}>
                     <textarea
-                        className="input-field border-gray-200 focus:border-green-500 w-full min-h-[120px] p-3 text-sm resize-none rounded-sm bg-slate-50 font-medium"
+                        className="whatsapp-modal__textarea"
                         value={message}
                         onChange={(e) => onMessageChange(e.target.value)}
-                    ></textarea>
+                    />
                 </FormGroup>
             </div>
         </Modal>

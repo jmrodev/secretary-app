@@ -11,7 +11,7 @@ const PatientAdminFields = ({ formData, doctors, handleDoctorToggle, handleManua
         <div className="patient-form__admin-section">
             <h4 className="patient-form__section-title">{t('admin_settings') || 'Administrative Settings'}</h4>
 
-            <div className="patient-form__group mb-4">
+            <div className="patient-form__group patient-form__group--admin-docs">
                 <label className="patient-form__label">{t('assigned_doctors')}</label>
                 <div className="patient-form__doctor-grid">
                     {doctors.map(doc => (

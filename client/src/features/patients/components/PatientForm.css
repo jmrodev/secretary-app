@@ -36,6 +36,17 @@
     gap: 0.5rem;
 }
 
+.patient-form__group--admin-docs {
+    margin-bottom: 1.5rem;
+}
+
+.patient-form__map-action {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 0.25rem;
+}
+
+
 .patient-form__group--expand-3 {
     flex: 3;
 }

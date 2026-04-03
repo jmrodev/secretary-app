@@ -57,17 +57,17 @@ const PatientList = ({
                 </thead>
                 <tbody>
                     {institutions.filter(inst => Number(inst.total_debt) > 0).map(inst => (
-                        <tr key={`inst-${inst.id}`} className="patient-table__row patient-table__row--institution cursor-default hover:bg-transparent">
+                        <tr key={`inst-${inst.id}`} className="patient-table__row patient-table__row--institution">
                             <td>
-                                <div className="patient-table__name-cell flex items-center gap-2">
-                                    <Icon name="account_balance" size="1.1rem" className="text-amber-600" />
-                                    <span className="font-semibold text-amber-700">
+                                <div className="patient-table__name-cell">
+                                    <Icon name="account_balance" size="1.1rem" className="patient-table__inst-icon" />
+                                    <span className="patient-table__inst-name">
                                         [INSTITUCIÓN] {inst.name}
                                     </span>
                                 </div>
                             </td>
                             <td>
-                                <span className="text-xs text-slate-500">{t('institution_debt') || 'Deuda Institucional'}</span>
+                                <span className="patient-table__inst-type">{t('institution_debt') || 'Deuda Institucional'}</span>
                             </td>
                             <td></td>
                             <td></td>
@@ -89,8 +89,8 @@ const PatientList = ({
                     ))}
 
                     {institutions.filter(inst => Number(inst.total_debt) > 0).length > 0 && (
-                        <tr className="patient-table__row--divider hover:bg-transparent">
-                            <td colSpan={6} className="py-2"><hr className="border-t border-slate-200" /></td>
+                        <tr className="patient-table__row--divider">
+                            <td colSpan={6} className="py-2"><hr className="patient-table__divider" /></td>
                         </tr>
                     )}
 

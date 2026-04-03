@@ -1,5 +1,6 @@
 import React from 'react';
 import Icon from '../../../components/atoms/Icon';
+import './InstitutionSelector.css';
 
 /**
  * InstitutionSelector Feature Molecule.
@@ -15,14 +16,14 @@ const InstitutionSelector = ({
     t
 }) => {
     return (
-        <div className="inst-finances__selector-bar flex flex-wrap items-center justify-between gap-6 p-6 bg-white border border-gray-100 rounded-sm shadow-sm animate-fadeIn">
-            <div className="flex items-center gap-4">
-                <label className="inst-finances__label text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+        <div className="inst-finances__selector-bar animate-fadeIn">
+            <div className="inst-finances__selector-group">
+                <label className="inst-finances__label">
                     <Icon name="business" size="1.2rem" color="var(--accent-color)" />
                     {t('institutions') || 'Instituciones'}:
                 </label>
                 <select
-                    className="inst-finances__select min-w-[240px] py-2 px-4 rounded-sm border-gray-200 focus:border-accent text-sm font-bold text-gray-700 bg-gray-50"
+                    className="inst-finances__select"
                     value={selectedInstId}
                     onChange={e => setSelectedInstId(e.target.value)}
                 >
@@ -34,12 +35,12 @@ const InstitutionSelector = ({
             </div>
 
             {selectedInstId && (
-                <div className="inst-finances__view-toggle flex bg-gray-50 p-1 rounded-sm border border-gray-100">
+                <div className="inst-finances__view-toggle">
                     <button
-                        className={`inst-finances__toggle-btn flex items-center gap-2 px-6 py-2 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-all ${
+                        className={`inst-finances__toggle-btn ${
                             viewMode === 'transactions' 
-                            ? 'bg-accent text-white shadow-md' 
-                            : 'text-gray-400 hover:text-gray-600'
+                            ? 'inst-finances__toggle-btn--active' 
+                            : ''
                         }`}
                         onClick={() => setViewMode('transactions')}
                     >
@@ -47,10 +48,10 @@ const InstitutionSelector = ({
                         {t('finances')}
                     </button>
                     <button
-                        className={`inst-finances__toggle-btn flex items-center gap-2 px-6 py-2 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-all ${
+                        className={`inst-finances__toggle-btn ${
                             viewMode === 'patients' 
-                            ? 'bg-accent text-white shadow-md' 
-                            : 'text-gray-400 hover:text-gray-600'
+                            ? 'inst-finances__toggle-btn--active' 
+                            : ''
                         }`}
                         onClick={() => setViewMode('patients')}
                     >
@@ -62,5 +63,6 @@ const InstitutionSelector = ({
         </div>
     );
 };
+
 
 export default InstitutionSelector;

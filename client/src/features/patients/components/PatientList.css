@@ -63,6 +63,37 @@
     text-transform: capitalize;
 }
 
+.patient-table__row--institution {
+    cursor: default;
+}
+
+.patient-table__row--institution:hover {
+    background-color: transparent !important;
+}
+
+.patient-table__inst-icon {
+    color: var(--amber-600, #d97706);
+}
+
+.patient-table__inst-name {
+    font-weight: 600;
+    color: var(--amber-700, #b45309);
+}
+
+.patient-table__inst-type {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.patient-table__row--divider:hover {
+    background-color: transparent !important;
+}
+
+.patient-table__divider {
+    border-top: 1px solid var(--gray-200);
+}
+
+
 .patient-table__id-info {
     display: flex;
     flex-direction: column;

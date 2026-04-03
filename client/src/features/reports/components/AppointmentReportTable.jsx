@@ -80,7 +80,7 @@ const AppointmentReportTable = ({ data, t }) => {
                                 </td>
                                 <td className="text-right">$ {day.cash.toLocaleString()}</td>
                                 <td className="text-right">$ {day.others.toLocaleString()}</td>
-                                <td className="text-right" style={{ fontWeight: 'bold' }}>
+                                <td className="text-right appointment-report__cell--bold">
                                     $ {day.total.toLocaleString()}
                                 </td>
                             </tr>
@@ -130,7 +130,7 @@ const AppointmentReportTable = ({ data, t }) => {
                                     <td colSpan="7">
                                         📅 {dayGroup.date}
                                         {dayGroup.is_holiday && <span className="appointment-report__holiday-tag">🎈 {dayGroup.holiday_description}</span>}
-                                        {dayGroup.is_weekend && !dayGroup.is_holiday && <span style={{ marginLeft: '8px', fontSize: '0.7em', opacity: 0.7 }}>({t('weekend_short') || 'Finde'})</span>}
+                                        {dayGroup.is_weekend && !dayGroup.is_holiday && <span className="appointment-report__weekend-note">({t('weekend_short') || 'Finde'})</span>}
                                     </td>
                                 </tr>
                                 {dayGroup.appointments.map((appt, i) => (

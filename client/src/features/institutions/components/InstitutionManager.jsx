@@ -5,6 +5,7 @@ import InstitutionFormModal from './InstitutionFormModal';
 import Icon from '../../../components/atoms/Icon';
 import TabNav from '../../../components/molecules/TabNav';
 import TabButton from '../../../components/atoms/TabButton';
+import './InstitutionManager.css';
 
 const InstitutionManager = ({
     institutions,
@@ -26,13 +27,13 @@ const InstitutionManager = ({
     } = handlers;
 
     return (
-        <div className="institutions-manager h-full flex flex-col">
-            <header className="mb-6 border-b pb-4">
-                <h2 className="text-2xl font-bold text-slate-800">{t('institutions') || 'Instituciones'}</h2>
-                <p className="text-slate-500">{t('institutions_subtitle') || 'Gestiona instituciones pagadoras y convenios.'}</p>
+        <div className="institutions-manager">
+            <header className="institutions-manager__header">
+                <h2 className="institutions-manager__title">{t('institutions') || 'Instituciones'}</h2>
+                <p className="institutions-manager__subtitle">{t('institutions_subtitle') || 'Gestiona instituciones pagadoras y convenios.'}</p>
             </header>
 
-            <div className="mb-6">
+            <div className="institutions-manager__nav">
                 <TabNav className="institutions__nav">
                     <TabButton
                         isActive={activeTab === 'list'}
@@ -51,12 +52,12 @@ const InstitutionManager = ({
                 </TabNav>
             </div>
 
-            <div className="flex-1 dashboard-card dashboard-card--highlighted flex flex-col overflow-hidden">
+            <div className="dashboard-card dashboard-card--highlighted institutions-manager__content">
                 {/* Actions Header inside card */}
                 {activeTab === 'list' && (
-                    <div className="flex justify-end mb-4">
+                    <div className="institutions-manager__actions">
                         <button
-                            className="btn btn-primary btn-sm flex items-center gap-2"
+                            className="btn btn-primary btn-sm institutions-manager__action-btn"
                             onClick={() => handleOpenFormModal()}
                         >
                             <Icon name="add" size="1.1rem" />
@@ -65,7 +66,7 @@ const InstitutionManager = ({
                     </div>
                 )}
 
-                <div className="flex-1 overflow-y-auto">
+                <div className="institutions-manager__list-container">
                     {activeTab === 'list' ? (
                         <InstitutionList
                             institutions={institutions}
@@ -93,3 +94,4 @@ const InstitutionManager = ({
 };
 
 export default InstitutionManager;
+

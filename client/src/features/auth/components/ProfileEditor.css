@@ -57,6 +57,45 @@
     gap: 1.5rem;
 }
 
+.profile-editor__header-body {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    position: relative;
+    z-index: 10;
+}
+
+.profile-editor__header-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.profile-editor__title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+    text-shadow: none;
+}
+
+.profile-editor__subtitle {
+    color: rgba(219, 234, 254, 0.9);
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.profile-editor__actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+}
+
+.profile-editor__phone-section {
+    margin-top: 1rem;
+}
+
 @media (min-width: 768px) {
     .profile-editor .item-grid {
         grid-template-columns: 1fr 1fr;

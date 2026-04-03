@@ -20,7 +20,7 @@ const MedicationConfigFields = ({
 }) => {
     return (
         <div className="patient-medications__form-card animate-fadeIn">
-            <div className="patient-medications__mode-selector mb-4">
+            <div className="patient-medications__mode-selector">
                 <label className="config-field__label">{t('reminder_mode') || 'Modo de Recordatorio'}</label>
                 <div className="config-flex config-flex--gap-2">
                     <Button
@@ -128,7 +128,7 @@ const MedicationConfigFields = ({
                         readOnly={currentMed.reminder_mode !== 'fixed_date'}
                     />
                     {currentMed.reminder_mode !== 'fixed_date' && (
-                        <div className="text-xs text-muted mt-1">
+                        <div className="patient-medications__hint">
                             {t('auto_calculated_date') || 'Fecha calculada automáticamente'}
                         </div>
                     )}
@@ -136,7 +136,7 @@ const MedicationConfigFields = ({
             </div>
 
             <div className="patient-medications__config-footer">
-                <div className="config-field flex-1 mb-0">
+                <div className="config-field config-field--flex config-field--no-margin">
                     <input
                         className="config-field__input"
                         value={currentMed.notes}
