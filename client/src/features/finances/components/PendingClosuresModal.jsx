@@ -48,7 +48,7 @@ const PendingClosuresModal = ({
                         <Button
                             size="sm"
                             variant="primary"
-                            className="bg-red-600 hover:bg-red-700 text-white w-fit mt-2"
+                            style={{ backgroundColor: 'var(--red-600)', color: 'white', width: 'fit-content', marginTop: '0.5rem' }}
                             onClick={onFixDuplicates}
                         >
                             {t('fix_conflicts_btn')}
@@ -109,7 +109,7 @@ const PendingClosuresModal = ({
                                             <td className="pending-closures-table__balance--virtual" style={{ textAlign: 'right' }}>
                                                 ${(day.transferBalance || 0).toLocaleString()}
                                             </td>
-                                            <td className="flex justify-center gap-2 p-2">
+                                            <td className="pending-closures-table__actions">
                                                 <Button
                                                     size="sm"
                                                     variant={isProcessing ? "ghost" : "primary"}
@@ -121,7 +121,7 @@ const PendingClosuresModal = ({
                                                 <Button
                                                     size="sm"
                                                     variant="ghost"
-                                                    className="text-red-600 border-red-200"
+                                                    style={{ color: 'var(--red-600)', borderColor: 'var(--red-200)' }}
                                                     onClick={() => onResetDay(day.date, day.doctor_id)}
                                                     disabled={!!processingDate}
                                                     title={t('reset_day_title')}

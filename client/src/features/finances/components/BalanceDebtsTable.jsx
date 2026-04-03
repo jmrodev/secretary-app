@@ -21,7 +21,7 @@ const BalanceDebtsTable = ({ debts = [], totalDebt, t }) => {
                                 <th>Fecha</th>
                                 <th>Paciente</th>
                                 <th>Origen</th>
-                                <th className="text-right">Monto</th>
+                                <th align="right">Monto</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -30,7 +30,7 @@ const BalanceDebtsTable = ({ debts = [], totalDebt, t }) => {
                                     <td>{d.date}</td>
                                     <td className="balance-view__cell-patient" style={{ fontWeight: 'bold' }}>{d.patient}</td>
                                     <td className="balance-view__cell-type">{d.type}</td>
-                                    <td className="balance-view__cell-amount text-right">
+                                    <td className="balance-view__cell-amount" align="right">
                                         {d.amount > 0 ? `$${d.amount.toLocaleString()}` : '-'}
                                     </td>
                                 </tr>

@@ -76,7 +76,7 @@ const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) =
                     />
                 </div>
 
-                <div className="item-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div className="item-grid">
                     <div className="form-group">
                         <label className="form-label">{t('date') || 'Fecha'}</label>
                         <Input
@@ -106,7 +106,7 @@ const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) =
                     />
                 </div>
 
-                <div className="flex justify-end gap-3 mt-8">
+                <div className="historical-withdrawal-form__actions">
                     <Button type="button" variant="secondary" onClick={onClose}>
                         {t('cancel')}
                     </Button>

@@ -5,6 +5,7 @@ import api from '../../../api/axios';
 import { useMessage } from '../../../context/MessageContext';
 import { useLanguage } from '../../../context/LanguageContext';
 import { useModal } from '../../../context/ModalContext';
+import './BillingSettings.css';
 
 /**
  * BillingSettings Feature Organism/Molecule.
@@ -52,13 +53,13 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
     return (
         <div className="tab-panel animate-fadeIn">
             <div className="config-section">
-                <div className="config-section__header flex items-center gap-3 mb-6">
-                    <span className="config-section__icon text-2xl">🧾</span>
-                    <h4 className="config-section__title text-xl font-bold text-gray-800">{t('billing_settings_title')}</h4>
+                <div className="config-section__header">
+                    <span className="config-section__icon">🧾</span>
+                    <h4 className="config-section__title">{t('billing_settings_title')}</h4>
                 </div>
 
-                <div className="config-section__body space-y-6">
-                    <div className="config-grid grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="config-section__body">
+                    <div className="config-grid">
                         <ConfigField
                             label={t('billing_cuit')}
                             type="text"
@@ -92,28 +93,28 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                         hint={t('afip_prod_warning')}
                     />
 
-                    <div className="config-section__divider border-t border-gray-100 my-8"></div>
+                    <div className="config-section__divider"></div>
 
-                    <div className="config-group bg-gray-50 p-6 rounded-sm border border-gray-100">
-                        <div className="config-group__header mb-4">
-                            <h5 className="config-group__title font-bold text-gray-700">{t('connection_status')}</h5>
+                    <div className="config-group">
+                        <div className="config-group__header">
+                            <h5 className="config-group__title">{t('connection_status')}</h5>
                         </div>
-                        <div className="config-group__items mb-6">
+                        <div className="config-group__items">
                             {status ? (
-                                <div className={`text-sm p-4 rounded bg-white shadow-sm font-medium ${status.error ? 'text-red-600' : 'text-green-600'}`}>
+                                <div className={`config-group__status ${status.error ? 'config-group__status--error' : 'config-group__status--success'}`}>
                                     {status.error ? (
                                         <p>❌ {t('afip_status_error')}: {status.error}</p>
                                     ) : (
                                         <>
                                             <p>✅ {t('afip_status_connected')} ({status.environment})</p>
-                                            <p className="text-[10px] mt-1 opacity-60 uppercase tracking-widest">
+                                            <p className="config-group__status-details">
                                                 App: {status.afip_status.AppServer} · DB: {status.afip_status.DbServer} · Auth: {status.afip_status.AuthServer}
                                             </p>
                                         </>
                                     )}
                                 </div>
                             ) : (
-                                <p className="text-sm text-gray-400 italic">{t('not_verified')}</p>
+                                <p className="config-group__status-empty">{t('not_verified')}</p>
                             )}
                         </div>
 
@@ -122,7 +123,7 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                                 variant="secondary"
                                 onClick={checkStatus}
                                 loading={checking}
-                                className="w-full md:w-auto"
+                                className="config-btn-full"
                             >
                                 🔄 {t('verify_afip_connection')}
                             </Button>
@@ -131,21 +132,21 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                 </div>
             </div>
 
-            <div className="config-section mt-12 bg-white shadow-sm border border-gray-100 p-8 rounded-sm">
-                <div className="config-section__header flex items-center gap-3 mb-6">
-                    <span className="config-section__icon text-2xl">🔑</span>
-                    <h4 className="config-section__title text-xl font-bold text-gray-800">{t('digital_certificates')}</h4>
+            <div className="config-section config-section--boxed">
+                <div className="config-section__header">
+                    <span className="config-section__icon">🔑</span>
+                    <h4 className="config-section__title">{t('digital_certificates')}</h4>
                 </div>
                 <div className="config-section__body">
-                    <div className="text-sm space-y-2 text-gray-600 mb-8 leading-relaxed">
-                        <p className="font-bold text-gray-800 underline mb-4">{t('valid_certificate_needed')}</p>
+                    <div className="config-instructions">
+                        <p className="config-instructions__title">{t('valid_certificate_needed')}</p>
                         <p>1. {t('afip_guide_step_1_short')}</p>
-                        <p>2. {t('afip_guide_step_2_short')} <a href="https://auth.afip.gob.ar/contribuyente_/login.xhtml" target="_blank" rel="noreferrer" className="text-accent underline font-bold">{t('access_afip')}</a></p>
+                        <p>2. {t('afip_guide_step_2_short')} <a href="https://auth.afip.gob.ar/contribuyente_/login.xhtml" target="_blank" rel="noreferrer" className="config-instructions__link">{t('access_afip')}</a></p>
                         <p>3. {t('afip_guide_step_3_short')}</p>
                         <p>4. {t('afip_guide_step_4_short')}</p>
                         <p>5. {t('afip_guide_step_5_short')}</p>
                     </div>
-                    <div className="config-actions flex flex-wrap gap-4">
+                    <div className="config-actions">
                         <Button variant="primary" onClick={generateCsr} loading={generatingCsr}>
                             ⚙️ {t('generate_csr_btn')}
                         </Button>
@@ -155,18 +156,18 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                     </div>
 
                     {generatedCsr && (
-                        <div className="config-group mt-8 p-6 bg-blue-50 border border-blue-100 rounded-sm">
-                            <div className="config-group__header mb-4">
-                                <h5 className="config-group__title font-bold text-blue-800 underline">{t('your_csr')}</h5>
+                        <div className="config-group config-group--blue">
+                            <div className="config-group__header">
+                                <h5 className="config-group__title config-group__title--link">{t('your_csr')}</h5>
                             </div>
-                            <p className="text-xs text-blue-600 mb-2 font-medium">{t('copy_to_wsass')}:</p>
+                            <p className="config-group__subtitle">{t('copy_to_wsass')}:</p>
                             <textarea
-                                className="w-full h-[200px] p-4 font-mono text-[11px] bg-white border border-blue-200 rounded-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="config-group__textarea"
                                 readOnly
                                 value={generatedCsr}
                                 onClick={(e) => e.target.select()}
                             />
-                            <div className="config-actions flex justify-end mt-4">
+                            <div className="config-actions config-actions--right">
                                 <Button size="sm" variant="accent" onClick={() => { navigator.clipboard.writeText(generatedCsr); showMessage(t('csr_copied'), 'success'); }}>
                                     📋 {t('copy')}
                                 </Button>

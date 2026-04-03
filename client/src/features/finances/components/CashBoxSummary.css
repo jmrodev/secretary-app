@@ -26,6 +26,27 @@
     margin-bottom: 0.25rem;
 }
 
+.cash-box__flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cash-box__header-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+
+.cash-box__title-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+
 .cash-box__grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

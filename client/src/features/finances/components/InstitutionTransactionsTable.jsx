@@ -56,7 +56,7 @@ const InstitutionTransactionsTable = ({
                 <table className="inst-data-table">
                     <thead>
                         <tr>
-                            <th className="text-center" style={{ width: '40px' }}>
+                            <th align="center" style={{ width: '40px' }}>
                                 <input
                                     type="checkbox"
                                     checked={allChecked}
@@ -67,10 +67,10 @@ const InstitutionTransactionsTable = ({
                             <th>{t('date_label')}</th>
                             <th>{t('patient')}</th>
                             <th>{t('doctor')}</th>
-                            <th className="text-center">{t('status')}</th>
-                            <th className="text-center">{t('antiquity')}</th>
-                            <th className="text-right">{t('amount')}</th>
-                            <th className="text-center">{t('payment')}</th>
+                            <th align="center">{t('status')}</th>
+                            <th align="center">{t('antiquity')}</th>
+                            <th align="right">{t('amount')}</th>
+                            <th align="center">{t('payment')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -86,7 +86,7 @@ const InstitutionTransactionsTable = ({
                                     key={tr.transaction_id}
                                     className={`${isPending ? 'inst-data-table__tr--pending' : ''} ${isChecked ? 'inst-data-table__tr--selected' : ''}`}
                                 >
-                                    <td className="text-center">
+                                    <td align="center">
                                         {isPending && (
                                             <input
                                                 type="checkbox"
@@ -107,20 +107,20 @@ const InstitutionTransactionsTable = ({
                                         )}
                                     </td>
                                     <td>{tr.doctor_name || 'N/A'}</td>
-                                    <td className="text-center">
+                                    <td align="center">
                                         <Badge variant={tr.appointment_status === 'completed' ? 'green' : 'gray'}>
                                             {t(tr.appointment_status) || tr.appointment_status}
                                         </Badge>
                                     </td>
-                                    <td className="text-center">
+                                    <td align="center">
                                         {isPending ? (
                                             <span className={`inst-age-badge ${diffDays > 30 ? 'inst-age-badge--critical' : 'inst-age-badge--warning'}`}>
                                                 {t('days_count').replace('{days}', diffDays)}
                                             </span>
                                         ) : '-'}
                                     </td>
-                                    <td className="text-right font-mono font-bold">${tr.amount}</td>
-                                    <td className="text-center">
+                                    <td align="right" className="inst-data-table__amount-bold">${tr.amount}</td>
+                                    <td align="center">
                                         <Badge variant={tr.payment_status === 'paid' ? 'green' : 'red'}>
                                             {t(tr.payment_status)}
                                         </Badge>
@@ -130,7 +130,7 @@ const InstitutionTransactionsTable = ({
                         })}
                         {transactions.length === 0 && (
                             <tr>
-                                <td colSpan="8" className="text-center py-12 text-slate-400 italic">
+                                <td colSpan="8" className="inst-data-table__empty">
                                     {showPendingOnly ? t('no_debts_found') : t('no_movements_found')}
                                 </td>
                             </tr>

@@ -6,6 +6,8 @@ import SearchBar from '../../components/molecules/SearchBar';
 import { useInsurancesController, InsuranceList, InsuranceFormModal } from './index';
 import './InsurancesPage.css';
 
+import MainLayout from '../../components/templates/MainLayout';
+
 /**
  * InsurancesPage (Orchestrator).
  * Manages healthcare providers and insurance schemes.
@@ -33,7 +35,8 @@ const InsurancesPage = () => {
     } = handlers;
 
     return (
-        <div className="insurances-page-orchestrator">
+        <MainLayout wide>
+            <div className="insurances-page-orchestrator">
             <header className="dashboard-header animate-fadeIn">
                 <h1 className="dashboard-header__title">{t('insurances') || 'Obras Sociales'}</h1>
                 <p className="dashboard-header__subtitle">{t('insurances_subtitle') || 'Gestione las obras sociales y prepagas del sistema.'}</p>
@@ -105,6 +108,7 @@ const InsurancesPage = () => {
                 isEditing={!!editingId}
             />
         </div>
+        </MainLayout>
     );
 };
 

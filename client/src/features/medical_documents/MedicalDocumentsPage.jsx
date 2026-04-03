@@ -95,8 +95,9 @@ const MedicalDocumentsPage = () => {
     );
 
     return (
-        <div className="medical-documents-page">
-            <div className="medical-documents no-print">
+        <MainLayout wide>
+            <div className="medical-documents-page">
+                <div className="medical-documents no-print">
                 <DocumentsHeader t={t} />
 
                 <div className="dashboard-grid animate-fadeIn">
@@ -285,6 +286,7 @@ const MedicalDocumentsPage = () => {
                 </table>
             </div>
         </div>
+        </MainLayout>
     );
 };
 

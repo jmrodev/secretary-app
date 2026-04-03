@@ -122,7 +122,7 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
             {loadingReport && <div className="loading-state">{t('loading_report')}</div>}
 
             {report && viewMode === 'transactions' && (
-                <div className="flex flex-col gap-4 animate-fade-in">
+                <div className="inst-finances__grid">
                     <InstitutionSummary
                         report={report}
                         selectedAmount={selectedAmount}
@@ -143,7 +143,7 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
             )}
 
             {report && viewMode === 'patients' && (
-                <div className="flex flex-col gap-4 animate-fade-in">
+                <div className="inst-finances__grid">
                     <InstitutionPatientsTable
                         patients={patients}
                         formatDate={formatDate}

@@ -25,8 +25,8 @@ const InstitutionPatientsTable = ({
                         <tr>
                             <th>{t('full_name')}</th>
                             <th>{t('dni')}</th>
-                            <th className="text-center">{t('last_visit')}</th>
-                            <th className="text-right">{t('tariff_copay')}</th>
+                            <th align="center">{t('last_visit')}</th>
+                            <th align="right">{t('tariff_copay')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -37,20 +37,20 @@ const InstitutionPatientsTable = ({
                                         {p.full_name}
                                     </a>
                                 </td>
-                                <td className="font-mono text-xs">{p.dni}</td>
-                                <td className="text-center">{formatDate(p.last_visit_date)}</td>
-                                <td className="text-right">
+                                <td className="inst-data-table__mono-xs">{p.dni}</td>
+                                <td align="center">{formatDate(p.last_visit_date)}</td>
+                                <td align="right">
                                     {p.tariff_override ? (
-                                        <span className="font-bold text-blue-600">${p.tariff_override}</span>
+                                        <span className="inst-data-table__amount-override">${p.tariff_override}</span>
                                     ) : (
-                                        <span className="text-slate-500">{p.tariff_percent || 0}%</span>
+                                        <span className="inst-data-table__percent">{p.tariff_percent || 0}%</span>
                                     )}
                                 </td>
                             </tr>
                         ))}
                         {patients.length === 0 && (
                             <tr>
-                                <td colSpan="4" className="text-center py-12 text-slate-400 italic">
+                                <td colSpan="4" className="inst-data-table__empty">
                                     {t('no_patients_found')}
                                 </td>
                             </tr>

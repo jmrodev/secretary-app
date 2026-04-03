@@ -92,3 +92,10 @@
     color: var(--text-muted);
     text-transform: uppercase;
 }
+
+.pending-closures-table__actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+}

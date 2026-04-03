@@ -30,12 +30,12 @@ const CashBoxSummary = ({
                     <span className="cash-box__name--compact">{name?.split(' ')[0] || t('general_clinic')}</span>
                     <div className="cash-box__values--compact">
                         <span className="cash-box__method cash-box__method--cash">
-                            <Icon name="payments" size="0.8rem" color="var(--green-600)" className="mr-1" />
+                            <Icon name="payments" size="0.8rem" color="var(--green-600)" style={{ marginRight: '0.25rem' }} />
                             ${balances.cash.toLocaleString()}
                         </span>
                         <span className="cash-box__separator">|</span>
                         <span className="cash-box__method cash-box__method--transfer">
-                            <Icon name="account_balance" size="0.8rem" color="var(--blue-600)" className="mr-1" />
+                            <Icon name="account_balance" size="0.8rem" color="var(--blue-600)" style={{ marginRight: '0.25rem' }} />
                             ${balances.transfer.toLocaleString()}
                         </span>
                     </div>
@@ -47,21 +47,21 @@ const CashBoxSummary = ({
             <Card key={id || 'null'} className="cash-box__item animate-fadeIn">
                 <h4 className="cash-box__name">{name || t('general_clinic')}</h4>
                 <div className="cash-box__values">
-                    <div className="flex justify-between items-center mb-1">
+                    <div className="cash-box__header-group">
                         <span className="finance-stats__label">
-                            <Icon name="payments" size="1rem" color="var(--green-600)" className="mr-1" />
+                            <Icon name="payments" size="1rem" color="var(--green-600)" style={{ marginRight: '0.25rem' }} />
                             {t('cash')}
-                            <span className="text-[10px] ml-1 opacity-50 font-normal uppercase tracking-tighter">(Rendible)</span>
+                            <span style={{ fontSize: '10px', marginLeft: '0.25rem', opacity: 0.5, fontWeight: 'normal', textTransform: 'uppercase', letterSpacing: '-0.05em' }}>(Rendible)</span>
                         </span>
                         <span className={`cash-box__method font-bold ${balances.cash < 0 ? 'text-red-600' : 'cash-box__method--cash'}`}>
                             ${balances.cash.toLocaleString()}
                         </span>
                     </div>
-                    <div className="flex justify-between items-center">
+                    <div className="cash-box__flex-between">
                         <span className="finance-stats__label">
-                            <Icon name="account_balance" size="1rem" color="var(--blue-600)" className="mr-1" />
+                            <Icon name="account_balance" size="1rem" color="var(--blue-600)" style={{ marginRight: '0.25rem' }} />
                             {t('transfer')}
-                            <span className="text-[10px] ml-1 opacity-50 font-normal uppercase tracking-tighter">({t('stats')})</span>
+                            <span style={{ fontSize: '10px', marginLeft: '0.25rem', opacity: 0.5, fontWeight: 'normal', textTransform: 'uppercase', letterSpacing: '-0.05em' }}>({t('stats')})</span>
                         </span>
                         <span className={`cash-box__method font-bold ${balances.transfer < 0 ? 'text-red-500 opacity-70 italic' : 'cash-box__method--transfer'}`}>
                             ${balances.transfer.toLocaleString()}
@@ -89,7 +89,7 @@ const CashBoxSummary = ({
 
     return (
         <div className="cash-box animate-fadeIn">
-            <header className="flex justify-between items-center mb-3">
+            <header className="cash-box__title-group">
                 <h3 className="cash-box__header">{t('cash_boxes')}</h3>
                 {selectedDoctorFilter && (
                     <Button variant="ghost" size="sm" onClick={() => onSelectDoctor('')}>

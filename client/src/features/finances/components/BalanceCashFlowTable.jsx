@@ -29,9 +29,9 @@ const BalanceCashFlowTable = ({ appointments = [], t }) => {
                     <thead>
                         <tr>
                             <th>Fecha</th>
-                            <th className="text-right">Efectivo</th>
-                            <th className="text-right">Otros Métodos</th>
-                            <th className="text-right">Total Día</th>
+                            <th align="right">Efectivo</th>
+                            <th align="right">Otros Métodos</th>
+                            <th align="right">Total Día</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,9 +43,9 @@ const BalanceCashFlowTable = ({ appointments = [], t }) => {
                             return (
                                 <tr key={idx}>
                                     <td>{day.date}</td>
-                                    <td className="text-right">$ {cash.toLocaleString()}</td>
-                                    <td className="text-right">$ {others.toLocaleString()}</td>
-                                    <td className="text-right" style={{ fontWeight: 'bold' }}>
+                                    <td align="right">$ {cash.toLocaleString()}</td>
+                                    <td align="right">$ {others.toLocaleString()}</td>
+                                    <td align="right" style={{ fontWeight: 'bold' }}>
                                         $ {total.toLocaleString()}
                                     </td>
                                 </tr>
@@ -55,9 +55,9 @@ const BalanceCashFlowTable = ({ appointments = [], t }) => {
                     <tfoot>
                         <tr className="balance-view__table-footer">
                             <td>TOTAL:</td>
-                            <td className="text-right">$ {totalCash.toLocaleString()}</td>
-                            <td className="text-right">$ {totalOthers.toLocaleString()}</td>
-                            <td className="text-right font-bold">$ {totalIncome.toLocaleString()}</td>
+                            <td align="right">$ {totalCash.toLocaleString()}</td>
+                            <td align="right">$ {totalOthers.toLocaleString()}</td>
+                            <td align="right" style={{ fontWeight: 'bold' }}>$ {totalIncome.toLocaleString()}</td>
                         </tr>
                     </tfoot>
                 </table>

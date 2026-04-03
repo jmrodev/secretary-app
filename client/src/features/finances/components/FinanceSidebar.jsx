@@ -30,7 +30,7 @@ const FinanceSidebar = ({
         <aside className="finance-sidebar">
             {/* Main Action & Doctor Filter Card */}
             <div className="dashboard-card">
-                <div className="flex flex-col gap-4">
+                <div className="finance-sidebar__stack">
                     {isAdminOrSecretary && (
                         <div className="sidebar-section">
                             <label className="sidebar-label">{t('doctor_label')}</label>
@@ -45,7 +45,7 @@ const FinanceSidebar = ({
 
                     {user.role !== 'patient' && (
                         <div className="sidebar-section">
-                            <div className="flex flex-col gap-2">
+                            <div className="finance-sidebar__stack--sm">
                                 <Button
                                     variant="primary"
                                     size="sm"
@@ -65,7 +65,7 @@ const FinanceSidebar = ({
                                 >
                                     {t('deliver_box') || 'Entregar Caja'}
                                     {pendingClosuresCount > 0 && (
-                                        <span className="absolute right-2 top-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                                        <span className="finance-sidebar__badge">
                                             {pendingClosuresCount}
                                         </span>
                                     )}

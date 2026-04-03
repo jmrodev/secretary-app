@@ -44,7 +44,8 @@ const FinancesPage = () => {
     const isAdminOrSecretary = user.role === 'admin' || user.role === 'secretary';
 
     return (
-        <div className="finances-page">
+        <MainLayout wide>
+            <div className="finances-page">
             <header className="dashboard-header animate-fadeIn">
                 <h1 className="dashboard-header__title">{t('finances')}</h1>
                 <p className="dashboard-header__subtitle">{t('finances_subtitle') || 'Control de caja y transacciones médicas.'}</p>
@@ -139,6 +140,7 @@ const FinancesPage = () => {
                 t={t}
             />
         </div>
+        </MainLayout>
     );
 };
 
