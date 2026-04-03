@@ -2,6 +2,8 @@ import React from 'react';
 import StatusIndicator from '../atoms/StatusIndicator';
 import Button from '../atoms/Button';
 
+import './ConnectionStatus.css';
+
 /**
  * ConnectionStatus Molecule
  * 
@@ -32,7 +34,7 @@ const ConnectionStatus = ({
         : `Desconectado de ${serviceName}`;
 
     return (
-        <div className={`config-group ${className}`}>
+        <div className={`connection-status config-group ${className}`}>
             <div className="config-group__header">
                 <div>
                     <StatusIndicator status={status} label={statusLabel} />

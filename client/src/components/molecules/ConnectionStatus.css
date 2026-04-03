@@ -1,0 +1,8 @@
+/* ConnectionStatus Molecule Styles - BEM */
+
+/* Any specific overrides if needed */
+.connection-status .config-group__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}

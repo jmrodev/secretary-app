@@ -7,7 +7,7 @@
     transition: all 0.2s ease;
     text-transform: none;
     /* Required: overrides parent text-transform so ligature names render as icons */
-    font-family: 'Material Symbols Outlined' !important;
+    font-family: 'Material Symbols Outlined';
 }
 
 .icon--button {

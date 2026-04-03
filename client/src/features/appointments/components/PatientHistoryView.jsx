@@ -16,7 +16,7 @@ const PatientHistoryView = ({ patientAppointments, loading, onClose, t, searchPa
             <div className="patient-history-view__empty">
                 <Icon name="history_off" size="3rem" className="patient-history-view__empty-icon" />
                 <h3 className="patient-history-view__empty-title">{t('no_history_found')}</h3>
-                <Button onClick={onClose} variant="ghost" style={{ marginTop: '1rem' }}>{t('back')}</Button>
+                <Button onClick={onClose} variant="ghost" className="patient-history-view__empty-button">{t('back')}</Button>
             </div>
         );
     }

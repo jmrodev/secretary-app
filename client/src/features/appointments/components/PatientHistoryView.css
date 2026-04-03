@@ -57,3 +57,7 @@
     font-weight: 700;
     color: var(--slate-800);
 }
+
+.patient-history-view__empty-button {
+    margin-top: 1rem;
+}
