@@ -3,8 +3,8 @@ echo "🏗️ Iniciando compilación de Android..."
 
 cd /home/cima/Documentos/secretary-app/android_native
 
-# Usar gradlew para compilar una versión Debug
-./gradlew assembleDebug
+# Usar gradle del sistema para compilar una versión Debug
+gradle assembleDebug
 
 if [ $? -eq 0 ]; then
     echo "=========================================="

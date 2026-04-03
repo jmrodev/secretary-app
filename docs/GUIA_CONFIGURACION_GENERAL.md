@@ -43,3 +43,4 @@ Controla cómo se procesan los pagos y retiros.
 1.  **Backup Semanal**: Siempre ejecuta `./scripts/backup_prod.sh` antes de hacer cambios grandes en la configuración.
 2.  **HTTPS**: Si usas la app móvil, asegúrate de que el SSL esté activo (vía Nginx Proxy Manager o Cloudflare).
 3.  **Logs**: Si algo no funciona (ej: no se sincroniza con Google), revisa el monitor en `http://localhost:8888`.
+4.  **Sincronizar Datos**: Para mover datos de la Pi a tu PC local de forma segura, consulta la [Guía de Intercambio de Entorno](file:///home/jmro/Documentos/secretary-app/docs/SHARING_ENVIRONMENT.md).
