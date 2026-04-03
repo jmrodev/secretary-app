@@ -1,14 +1,19 @@
 #!/bin/bash
 
 # Configuration
-PROJECT_DIR="/home/cima/Documentos/secretary-app"
+# Load .env file automatically
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+if [ -f "$PROJECT_DIR/.env" ]; then
+    export $(grep -v '^#' "$PROJECT_DIR/.env" | xargs)
+fi
+
 BACKUP_DIR="$PROJECT_DIR/backup_ddbb"
 DATE=$(date +"%Y%m%d_%H%M%S")
 # Updated to match docker-compose.yml dev container name
 CONTAINER_NAME="secretary-db-dev" 
-DB_USER="root"
-DB_PASS="cima1255"
-DB_NAME="clinical_management"
+DB_USER=${DB_USER}
+DB_PASS=${DB_PASSWORD}
+DB_NAME=${DB_NAME}
 
 # Ensure directories exist
 mkdir -p "$BACKUP_DIR/structure"

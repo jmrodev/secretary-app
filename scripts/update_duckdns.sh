@@ -4,11 +4,17 @@
 # SECRETARY APP - DUCKDNS AUTO-UPDATE (DEBUG)
 # ==========================================
 
-DB_USER="root"
-DB_PASS="cima1255"
-DB_NAME="clinical_management"
-DB_HOST="127.0.0.1"
-DB_PORT="3310" # Default for production
+# Load .env file automatically
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+if [ -f "$PROJECT_DIR/.env" ]; then
+    export $(grep -v '^#' "$PROJECT_DIR/.env" | xargs)
+fi
+
+DB_USER=${DB_USER}
+DB_PASS=${DB_PASSWORD}
+DB_NAME=${DB_NAME}
+DB_HOST=${DB_HOST}
+DB_PORT=${DB_PORT} 
 
 echo "📡 Iniciando actualización de DuckDNS..."
 

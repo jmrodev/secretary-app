@@ -1,13 +1,18 @@
 #!/bin/bash
 
 # Configuration
-BACKUP_DIR="/home/cima/Documentos/secretary-app/backups"
+# Load .env file automatically
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+if [ -f "$PROJECT_DIR/.env" ]; then
+    export $(grep -v '^#' "$PROJECT_DIR/.env" | xargs)
+fi
+
+BACKUP_DIR="$PROJECT_DIR/backups"
 DB_CONTAINER="secretary-db-prod"
-DB_NAME="clinical_management"
-DB_USER="root"
-# Idealmente usar variable de entorno
-DB_PASSWORD="cima1255" 
-DESKTOP_DIR="/home/cima/Escritorio"
+DB_NAME=${DB_NAME}
+DB_USER=${DB_USER}
+DB_PASSWORD=${DB_PASSWORD}
+DESKTOP_DIR="$HOME/Escritorio"
 
 # Create directories if they don't exist
 mkdir -p "$BACKUP_DIR"
