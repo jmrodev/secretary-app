@@ -1,9 +1,0 @@
-/* Finances Page Styles
-   Cleaned up - most styles moved to specialized organisms/molecules
-*/
-
-.finances-page {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}

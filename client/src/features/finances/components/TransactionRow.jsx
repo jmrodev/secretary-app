@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '../../../components/atoms/Button';
 import Icon from '../../../components/atoms/Icon';
+import Badge from '../../../components/atoms/Badge';
 import InvoiceDetailContent from './InvoiceDetailContent';
 
 /**
@@ -25,22 +26,35 @@ const TransactionRow = ({
     const isIncome = tx.type.includes('income') && !tx.is_withdrawal;
     const isGrouped = groupLength > 1;
 
+    // Normalizing status for Badge atom
+    const getStatusVariant = (status, bonified) => {
+        if (bonified === 1 || status === 'bonified') return 'blue';
+        if (status === 'paid' || status === 'completed') return 'success';
+        if (status === 'pending') return 'warning';
+        if (status === 'rejected' || status === 'cancelled') return 'danger';
+        return 'default';
+    };
+
     return (
         <tr className={`animate-fadeIn ${isGrouped ? 'transactions-table__row--grouped' : ''}`}>
-            <td className="pl-6-bem">
+            <td className="transactions-table__cell--first">
                 <div className="transactions-table__date">{formatDateUnambiguous(tx.transaction_date)}</div>
                 <div className="transactions-table__time">{formatTime(tx.transaction_date)}</div>
             </td>
             <td>
                 <div className="transactions-table__description-wrapper">
-                    <span className={`tag tag-${isIncome ? 'completed' : 'rejected'} transactions-table__type-tag`}>
+                    <Badge 
+                        variant={isIncome ? 'success' : 'rejected'} 
+                        className="transactions-table__type-tag"
+                        size="sm"
+                    >
                         {tx.appointment_id
                             ? (t('appointment') || 'Turno')
                             : tx.request_type
                                 ? (t(tx.request_type) || tx.request_type)
                                 : (t(tx.type) || tx.type.replace('_', ' '))
                         }
-                    </span>
+                    </Badge>
                     <span className="transactions-table__description">
                         {highlightPatientName(translateDescription(tx.description), tx.patient_full_name)}
                     </span>
@@ -69,9 +83,9 @@ const TransactionRow = ({
                 </div>
             </td>
             <td>
-                <span className={`status-badge-mini status-${(tx.bonified === 1 || tx.payment_status === 'bonified') ? 'bonified' : tx.status}`}>
+                <Badge variant={getStatusVariant(tx.status, tx.bonified)}>
                     {(tx.bonified === 1 || tx.payment_status === 'bonified') ? (t('bonified') || 'Bonificado') : t(tx.status)}
-                </span>
+                </Badge>
             </td>
             <td className={`transactions-table__amount ${tx.is_withdrawal ? 'transactions-table__amount--withdrawal' : (isIncome ? 'transactions-table__amount--income' : 'transactions-table__amount--expense')}`}>
                 {tx.is_withdrawal ? '↩' : (isIncome ? '+' : '-')}${Math.abs(tx.amount).toLocaleString()}
@@ -99,7 +113,7 @@ const TransactionRow = ({
                 ) : <span className="transactions-table__no-proof">-</span>}
             </td>
             {canManagerFinance && (
-                <td className="transactions-table__cell--right pr-6-bem">
+                <td className="transactions-table__cell--right transactions-table__cell--last">
                     <div className="transactions-table__actions">
                         {tx.type === 'income_patient' && tx.status === 'paid' && !tx.invoice_number && (
                             <Button size="sm-compact" variant="ghost" onClick={() => onGenerateInvoice(tx.id)} title={t('generate_invoice')} icon={<Icon name="REPORTS" />} />
@@ -120,3 +134,4 @@ const TransactionRow = ({
 };
 
 export default TransactionRow;
+

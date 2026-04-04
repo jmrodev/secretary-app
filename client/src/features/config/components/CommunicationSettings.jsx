@@ -22,7 +22,7 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
             {/* Clinic Address */}
             <div className="config-section">
                 <div className="config-section__header">
-                    <Icon name="CONFIG" size="1.2rem" className="mr-2" />
+                    <Icon name="CONFIG" size="1.2rem" className="config-section__icon" />
                     <h4 className="config-section__title">{t('clinic_address_title')}</h4>
                 </div>
 
@@ -43,14 +43,14 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
             {/* Appointment Reminders */}
             <div className="config-section">
                 <div className="config-section__header">
-                    <Icon name="APPOINTMENTS" size="1.2rem" className="mr-2" />
+                    <Icon name="APPOINTMENTS" size="1.2rem" className="config-section__icon" />
                     <h4 className="config-section__title">{t('appointment_reminders_title')}</h4>
                 </div>
 
                 <div className="config-section__body">
                     <MessageTemplateEditor
                         id="reminder-template"
-                        label={<span className="flex items-center gap-1"><Icon name="HISTORY" size="1rem" /> {t('presential_reminder_label')}</span>}
+                        label={<span className="config-field__label-with-icon"><Icon name="HISTORY" size="1rem" /> {t('presential_reminder_label')}</span>}
                         value={settings.appointment_reminder_template}
                         settingKey="appointment_reminder_template"
                         variables={commonVars}
@@ -66,7 +66,7 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
 
                     <MessageTemplateEditor
                         id="reminder-virtual-template"
-                        label={<span className="flex items-center gap-1"><Icon name="VIRTUAL" size="1rem" /> {t('virtual_reminder_label')}</span>}
+                        label={<span className="config-field__label-with-icon"><Icon name="VIRTUAL" size="1rem" /> {t('virtual_reminder_label')}</span>}
                         value={settings.appointment_reminder_virtual_template}
                         settingKey="appointment_reminder_virtual_template"
                         variables={commonVars}
@@ -81,14 +81,14 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
             {/* Appointment Confirmation */}
             <div className="config-section">
                 <div className="config-section__header">
-                    <Icon name="CHECK" size="1.2rem" className="mr-2" />
+                    <Icon name="CHECK" size="1.2rem" className="config-section__icon" />
                     <h4 className="config-section__title">{t('appointment_confirmation_title')}</h4>
                 </div>
 
                 <div className="config-section__body">
                     <MessageTemplateEditor
                         id="confirmation-template"
-                        label={<span className="flex items-center gap-1"><Icon name="CHECK" size="1rem" /> {t('presential_confirmation_label')}</span>}
+                        label={<span className="config-field__label-with-icon"><Icon name="CHECK" size="1rem" /> {t('presential_confirmation_label')}</span>}
                         value={settings.appointment_confirmation_template}
                         settingKey="appointment_confirmation_template"
                         variables={commonVars}
@@ -105,7 +105,7 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
 
                     <MessageTemplateEditor
                         id="confirmation-virtual-template"
-                        label={<span className="flex items-center gap-1"><Icon name="VIRTUAL" size="1rem" /> {t('virtual_confirmation_label')}</span>}
+                        label={<span className="config-field__label-with-icon"><Icon name="VIRTUAL" size="1rem" /> {t('virtual_confirmation_label')}</span>}
                         value={settings.appointment_confirmation_virtual_template}
                         settingKey="appointment_confirmation_virtual_template"
                         variables={commonVars}
@@ -120,14 +120,14 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
             {/* Public Requests / QR Links */}
             <div className="config-section">
                 <div className="config-section__header">
-                    <Icon name="DOCUMENTS" size="1.2rem" className="mr-2" />
+                    <Icon name="DOCUMENTS" size="1.2rem" className="config-section__icon" />
                     <h4 className="config-section__title">{t('public_requests_title')}</h4>
                 </div>
 
                 <div className="config-section__body">
                     <ConfigField
                         id="google-review-link"
-                        label={<span className="flex items-center gap-1"><Icon name="STAR" size="1rem" /> {t('google_review_link_label') || 'Enlace de Reseñas de Google'}</span>}
+                        label={<span className="config-field__label-with-icon"><Icon name="STAR" size="1rem" /> {t('google_review_link_label') || 'Enlace de Reseñas de Google'}</span>}
                         type="url"
                         placeholder="Ej. https://g.page/r/.../review"
                         value={settings.google_review_link || ''}
@@ -136,11 +136,12 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
                         hint={t('google_review_hint') || 'Ingresa el enlace directo para que los pacientes te dejen una reseña en Google. Búscalo en tu perfil de Google My Business.'}
                     />
 
+
                     <div className="config-section__divider"></div>
 
                     <MessageTemplateEditor
                         id="whatsapp-prescription-template"
-                        label={<span className="flex items-center gap-1"><Icon name="PRESCRIPTION" size="1rem" /> {t('prescription_request_whatsapp')}</span>}
+                        label={<span className="config-field__label-with-icon"><Icon name="PRESCRIPTION" size="1rem" /> {t('prescription_request_whatsapp')}</span>}
                         value={settings.whatsapp_prescription_request_template}
                         settingKey="whatsapp_prescription_request_template"
                         variables={['{patient_name}', '{link}']}
@@ -156,7 +157,7 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
 
                     <MessageTemplateEditor
                         id="whatsapp-patient-data-template"
-                        label={<span className="flex items-center gap-1"><Icon name="PROFILE" size="1rem" /> {t('data_update_whatsapp')}</span>}
+                        label={<span className="config-field__label-with-icon"><Icon name="PROFILE" size="1rem" /> {t('data_update_whatsapp')}</span>}
                         value={settings.whatsapp_patient_data_request_template}
                         settingKey="whatsapp_patient_data_request_template"
                         variables={['{patient_name}', '{link}']}
@@ -172,7 +173,7 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
 
                     <MessageTemplateEditor
                         id="medication-refill-template"
-                        label={<span className="flex items-center gap-1"><Icon name="PRESCRIPTION" size="1rem" /> {t('medication_refill_reminder_label') || 'Recordatorio de Renovación de Medicación'}</span>}
+                        label={<span className="config-field__label-with-icon"><Icon name="PRESCRIPTION" size="1rem" /> {t('medication_refill_reminder_label') || 'Recordatorio de Renovación de Medicación'}</span>}
                         value={settings.medication_refill_reminder_template}
                         settingKey="medication_refill_reminder_template"
                         variables={['{patient_name}', '{medication_name}']}
@@ -185,6 +186,7 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
                     />
                 </div>
             </div>
+
         </div>
     );
 };

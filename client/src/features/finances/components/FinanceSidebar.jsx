@@ -1,6 +1,8 @@
 import React from 'react';
 import Button from '../../../components/atoms/Button';
 import Icon from '../../../components/atoms/Icon';
+import Card from '../../../components/atoms/Card';
+import Badge from '../../../components/atoms/Badge';
 import FinanceDoctorFilter from './FinanceDoctorFilter';
 import CashBoxSummary from './CashBoxSummary';
 import FinanceFilters from './FinanceFilters';
@@ -29,7 +31,7 @@ const FinanceSidebar = ({
     return (
         <aside className="finance-sidebar">
             {/* Main Action & Doctor Filter Card */}
-            <div className="dashboard-card">
+            <Card className="finance-sidebar__card">
                 <div className="finance-sidebar__stack">
                     {isAdminOrSecretary && (
                         <div className="sidebar-section">
@@ -49,7 +51,7 @@ const FinanceSidebar = ({
                                 <Button
                                     variant="primary"
                                     size="sm"
-                                    className="justify-start w-full"
+                                    className="btn--block btn--justify-start"
                                     onClick={onOpenNewTransaction}
                                     icon={<Icon name="add" size="1.1rem" />}
                                 >
@@ -59,16 +61,16 @@ const FinanceSidebar = ({
                                 <Button
                                     variant="secondary"
                                     size="sm"
-                                    className="justify-start w-full relative"
+                                    className="btn--block btn--justify-start btn--relative"
                                     onClick={onOpenPendingClosures}
                                     icon={<Icon name="calendar_view_week" size="1.1rem" />}
                                 >
                                     {t('deliver_box') || 'Entregar Caja'}
-                                    {pendingClosuresCount > 0 && (
-                                        <span className="finance-sidebar__badge">
-                                            {pendingClosuresCount}
-                                        </span>
-                                    )}
+                                    <Badge 
+                                        count={pendingClosuresCount} 
+                                        position="top-right" 
+                                        variant="danger" 
+                                    />
                                 </Button>
                             </div>
                         </div>
@@ -83,7 +85,7 @@ const FinanceSidebar = ({
                                     <Button
                                         variant="secondary"
                                         size="sm"
-                                        className="justify-start w-full"
+                                        className="btn--block btn--justify-start"
                                         onClick={() => onOpenCloseBox(d, balances.cash)}
                                         icon={<Icon name="payments" size="1rem" />}
                                     >
@@ -95,12 +97,12 @@ const FinanceSidebar = ({
                         return null;
                     })()}
                 </div>
-            </div>
+            </Card>
 
             {/* Cash Summary Card (Only for Secretary) */}
             {
                 user.role === 'secretary' && (
-                    <div className="dashboard-card">
+                    <Card className="finance-sidebar__card">
                         <CashBoxSummary
                             doctors={doctors}
                             selectedDoctorFilter={selectedDoctorFilter}
@@ -110,20 +112,21 @@ const FinanceSidebar = ({
                             t={t}
                             compact
                         />
-                    </div>
+                    </Card>
                 )
             }
 
             {/* Filters Card */}
-            <div className="dashboard-card">
+            <Card className="finance-sidebar__card">
                 <FinanceFilters
                     filters={filters}
                     handlers={handlers}
                     t={t}
                 />
-            </div>
+            </Card>
         </aside >
     );
 };
 
 export default FinanceSidebar;
+

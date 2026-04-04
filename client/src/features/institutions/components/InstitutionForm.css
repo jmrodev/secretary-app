@@ -3,9 +3,27 @@
 .institution-form {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.25rem;
+}
+
+.institution-form__group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.institution-form__label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-main);
 }
 
 .institution-form__footer {
-    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
 }
+

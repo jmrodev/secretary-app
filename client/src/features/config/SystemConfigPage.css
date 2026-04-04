@@ -1,7 +1,10 @@
 /* SystemConfigPage Styles (BEM) */
 
 .system-config-page {
-    /* Container for the page orchestrated in the feature */
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1rem;
 }
 
 .settings-content-wrapper {
@@ -14,5 +17,207 @@
     font-size: 1.25rem;
     font-weight: 700;
     color: var(--slate-800);
+    margin-bottom: 1.5rem;
+}
+
+/* Documentation and Data Sections */
+.system-config-page__documentation,
+.system-config-page__data-management,
+.system-config-page__app-card {
+    background: white;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    padding: 2rem;
+    border-radius: var(--radius-sm);
+    margin-top: 2rem;
+}
+
+.system-config-page__app-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    background: var(--gray-50);
+}
+
+.system-config-page__app-title {
+    font-weight: 700;
+    color: var(--slate-800);
+    margin-bottom: 0.25rem;
+}
+
+.system-config-page__app-description {
+    font-size: 0.875rem;
+    color: var(--slate-500);
+    margin: 0;
+}
+
+
+.system-config-page__section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.system-config-page__section-icon {
+    color: var(--accent-color);
+}
+
+.system-config-page__section-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.system-config-page__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.system-config-page__placeholder {
+    padding: 5rem 0;
+    text-align: center;
+}
+
+.system-config-page__placeholder-text {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.config-field__label-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Billing and Status Spacing/Colors */
+.config-status {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.config-status--success {
+    color: var(--green-600);
+}
+
+.config-status--error {
+    color: var(--red-600);
+}
+
+.config-actions--mt-1 {
+    margin-top: 1rem;
+}
+
+.config-field__hint--mb-15 {
+    margin-bottom: 1.5rem;
+}
+
+.config-link {
+    color: var(--blue-600);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.config-link:hover {
+    text-decoration: underline;
+}
+
+.config-group--bg-white {
+    background: white !important;
+}
+
+.config-field__hint--mb-05 {
     margin-bottom: 0.5rem;
 }
+
+.config-field__input--monospace {
+    font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
+.config-actions--right {
+    justify-content: flex-end;
+}
+
+/* Integration-specific Layouts */
+.config-group__header--flex-spaced {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+}
+
+.config-group__status-info {
+    flex: 1;
+}
+
+.config-group__sync-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.config-field__hint--mb-075 {
+    margin-bottom: 0.75rem;
+}
+
+.config-field__hint--text-right {
+    text-align: right;
+    margin: 0;
+}
+
+.config-actions--mt-05 {
+    margin-top: 0.5rem;
+}
+
+.config-grid--gap-1 {
+    gap: 1rem;
+}
+
+.config-flex--align-center {
+    align-items: center;
+}
+
+.config-flex--mt-1 {
+    margin-top: 1rem;
+}
+
+.config-guide {
+    background: var(--slate-50);
+    padding: 1.5rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+}
+
+.config-guide__title {
+    margin-bottom: 0.75rem;
+    color: var(--slate-800);
+    font-weight: 700;
+}
+
+.config-guide__list {
+    padding-left: 1.25rem;
+    font-size: 0.875rem;
+    color: var(--slate-600);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.config-url-display {
+    padding: 0.75rem 1rem;
+    background: var(--slate-100);
+    border-radius: var(--radius-xs);
+    font-family: monospace;
+    font-size: 0.875rem;
+    color: var(--slate-700);
+    border: 1px solid var(--border-color);
+}
+
+
+
+

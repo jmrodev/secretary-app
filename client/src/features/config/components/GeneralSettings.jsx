@@ -73,14 +73,14 @@ const renderUrlConfiguration = (settings, updateSetting, isAdmin, onShowQr) => {
                     URL Local (Red Clínica)
                 </label>
                 <div className="config-flex config-flex--gap-2">
-                    <input
+                    <Input
                         type="text"
                         id="staff-base-url"
-                        className="input-field config-flex__item--grow"
+                        className="config-field__input config-flex__item--grow"
                         placeholder="http://192.168.0.x:5173"
                         value={settings.staff_base_url || ''}
                         onChange={(e) => updateSetting('staff_base_url', e.target.value)}
-                        readOnly={!isAdmin}
+                        disabled={!isAdmin}
                     />
                     <Button
                         variant="secondary"
@@ -168,20 +168,18 @@ const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => {
                 </div>
 
                 <div className="config-section__body">
-                    <div className="dashboard-card bg-slate-50 border-slate-200">
-                        <div className="flex items-center justify-between gap-4">
-                            <div>
-                                <h4 className="font-bold text-slate-800 mb-1">Descargar APK para Android</h4>
-                                <p className="text-sm text-slate-500">Instala la aplicación nativa para una gestión más rápida desde el celular.</p>
-                            </div>
-                            <Button
-                                variant="primary"
-                                icon={<Icon name="DOWNLOAD" size="1.1rem" />}
-                                onClick={() => window.open('/uploads/secretary-app.apk', '_blank')}
-                            >
-                                Descargar APK
-                            </Button>
+                    <div className="system-config-page__app-card">
+                        <div className="system-config-page__app-info">
+                            <h4 className="system-config-page__app-title">Descargar APK para Android</h4>
+                            <p className="system-config-page__app-description">Instala la aplicación nativa para una gestión más rápida desde el celular.</p>
                         </div>
+                        <Button
+                            variant="primary"
+                            icon={<Icon name="DOWNLOAD" size="1.1rem" />}
+                            onClick={() => window.open('/uploads/secretary-app.apk', '_blank')}
+                        >
+                            Descargar APK
+                        </Button>
                     </div>
                 </div>
             </div>

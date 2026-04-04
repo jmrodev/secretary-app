@@ -129,8 +129,9 @@ const FinanceFilters = ({
                 </div>
 
                 {(searchQuery || statusFilter !== 'all' || typeFilter !== 'all' || monthFilter !== 'all' || yearFilter !== 'all' || paymentMethodFilter !== 'all') && (
-                    <button
-                        className="finance-filters__clear"
+                    <Button
+                        variant="ghost"
+                        className="btn--block finance-filters__clear"
                         onClick={() => {
                             setSearchQuery('');
                             setStatusFilter('all');
@@ -139,10 +140,10 @@ const FinanceFilters = ({
                             setYearFilter('all');
                             setPaymentMethodFilter('all');
                         }}
+                        icon={<Icon name="CANCEL" size="1.1rem" />}
                     >
-                        <Icon name="CANCEL" size="1.1rem" />
                         {t('clear_filters') || 'Limpiar'}
-                    </button>
+                    </Button>
                 )}
             </div>
         </div>

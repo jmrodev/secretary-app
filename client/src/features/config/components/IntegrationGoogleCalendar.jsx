@@ -31,23 +31,23 @@ const IntegrationGoogleCalendar = ({
 
             <div className="config-section__body">
                 <div className="config-group">
-                    <div className="config-group__header config-flex config-flex--gap-2" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                        <div>
-                            <p className="config-field__hint" style={{ marginBottom: '0.75rem' }}>
+                    <div className="config-group__header config-group__header--flex-spaced">
+                        <div className="config-group__status-info">
+                            <p className="config-field__hint config-field__hint--mb-075">
                                 Conecta tu cuenta de Google para sincronizar turnos automáticamente.
                             </p>
                             <StatusIndicator status={status} label={`Estado: ${statusLabel}`} />
                         </div>
 
                         {!googleUnlinked && (
-                            <div className="config-flex config-flex--column" style={{ alignItems: 'flex-end', gap: '0.5rem' }}>
+                            <div className="config-group__sync-controls">
                                 <ConfigToggle
                                     id="google-sync-toggle"
                                     label={settings.google_sync_enabled === 'false' ? '⏸️ Sincronización PAUSADA' : '✅ Sincronización ACTIVA'}
                                     checked={settings.google_sync_enabled !== 'false'}
                                     onChange={(val) => updateSetting('google_sync_enabled', val ? 'true' : 'false')}
                                 />
-                                <p className="config-field__hint" style={{ textAlign: 'right', margin: 0 }}>
+                                <p className="config-field__hint config-field__hint--text-right">
                                     Si pausas, los cambios en la App no se enviarán a Google.
                                 </p>
                             </div>
@@ -74,7 +74,7 @@ const IntegrationGoogleCalendar = ({
                                     size="sm"
                                     onClick={onRetryGoogle}
                                     disabled={loading}
-                                    style={{ marginTop: '0.5rem' }}
+                                    className="config-actions--mt-05"
                                 >
                                     ⚡ Reintentar Elementos Fallidos
                                 </Button>
@@ -94,7 +94,7 @@ const IntegrationGoogleCalendar = ({
                                     value={settings.finance_spreadsheet_id || ''}
                                     onChange={(e) => updateSetting('finance_spreadsheet_id', e.target.value)}
                                     placeholder="e.g. 1aBCdEfGhIjKlMnOpQrStUvWxYz1234567890"
-                                    className="font-mono text-sm"
+                                    className="config-field__input--monospace"
                                 />
                             </div>
                         </div>
@@ -112,3 +112,4 @@ const IntegrationGoogleCalendar = ({
 };
 
 export default IntegrationGoogleCalendar;
+

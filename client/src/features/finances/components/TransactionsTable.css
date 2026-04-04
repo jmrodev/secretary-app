@@ -131,8 +131,8 @@
 .transactions-table__description {
     font-weight: 500;
     color: var(--text-main);
-    font-size: 0.7rem;
-    line-height: 1.3;
+    font-size: 0.75rem;
+    line-height: 1.4;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -140,6 +140,27 @@
     line-clamp: 2;
     -webkit-box-orient: vertical;
 }
+
+.transactions-table__cell--first {
+    padding-left: 1.5rem !important;
+}
+
+.transactions-table__cell--last {
+    padding-right: 1.5rem !important;
+}
+
+.transactions-table__cell--center {
+    text-align: center;
+}
+
+.transactions-table__cell--right {
+    text-align: right;
+}
+
+.transactions-table__description-text {
+    display: block;
+}
+
 
 .transactions-table__beneficiary {
     display: flex;
@@ -155,13 +176,15 @@
     gap: 0.4rem;
 }
 
-.transactions-table__highlight {
-    color: var(--blue-700);
-    font-weight: 800;
-    background-color: var(--blue-50);
-    padding: 0 0.2rem;
-    border-radius: 2px;
+.transactions-table__cell--empty-state {
+    padding: 3rem !important;
+    color: var(--text-muted);
 }
+
+.transactions-table__header-cell--description {
+    width: 30%;
+}
+
 
 .transactions-table__patient {
     font-size: 0.65rem;
@@ -187,28 +210,12 @@
     color: var(--amber-600);
 }
 
-.transactions-table__header-cell--right,
-.transactions-table__cell--right {
-    text-align: right;
-}
-
-.transactions-table__header-cell--center,
-.transactions-table__cell--center {
-    text-align: center;
-}
-
-.transactions-table__invoice-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-}
-
 .transactions-table__invoice-number {
     font-size: 0.75rem;
     font-weight: 800;
     color: var(--blue-600);
 }
+
 
 .transactions-table__no-proof {
     color: var(--text-muted);
@@ -226,7 +233,7 @@
 }
 
 .transactions-table__group-total {
-    padding: 0.75rem 1rem;
+    padding: 0.75rem 1.5rem;
     text-align: right;
     font-weight: 800;
     color: var(--text-main);
@@ -253,31 +260,3 @@
     font-size: 0.875rem;
 }
 
-.pl-6-bem { padding-left: 1.5rem; }
-.pr-6-bem { padding-right: 1.5rem; }
-
-/* Status Badge Styles */
-.status-badge-mini {
-    padding: 0.125rem 0.5rem;
-    border-radius: 1rem;
-    font-size: 0.65rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    display: inline-block;
-}
-
-.status-paid {
-    background-color: var(--green-50, #f0fdf4);
-    color: var(--green-700, #15803d);
-}
-
-.status-pending {
-    background-color: var(--amber-50, #fffbeb);
-    color: var(--amber-700, #b45309);
-}
-
-.status-bonified {
-    background-color: var(--blue-50, #eff6ff);
-    color: var(--blue-700, #1d4ed8);
-    border: 1px dashed var(--blue-300);
-}

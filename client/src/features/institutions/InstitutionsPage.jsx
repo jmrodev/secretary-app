@@ -54,7 +54,7 @@ const InstitutionsPage = () => {
                                 <div className="institutions-sidebar__actions">
                                     <Button
                                         variant="primary"
-                                        className="justify-start w-full"
+                                        className="institutions-sidebar__add-btn"
                                         onClick={() => handleOpenFormModal()}
                                         icon={<Icon name="add" size="1.1rem" />}
                                     >
@@ -71,9 +71,11 @@ const InstitutionsPage = () => {
                                                     key={inst.id}
                                                     className={`institution-item ${selectedInstId === String(inst.id) ? 'institution-item--active' : ''}`}
                                                 >
-                                                    <button
+                                                    <Button
+                                                        variant="ghost"
+                                                        active={selectedInstId === String(inst.id)}
                                                         onClick={() => setSelectedInstId(String(inst.id))}
-                                                        className={`institution-item__btn ${selectedInstId === String(inst.id) ? 'institution-item__btn--active' : ''}`}
+                                                        className="institution-item__btn"
                                                     >
                                                         <span className="institution-item__name">{inst.name}</span>
                                                         {Number(inst.pending_count) > 0 && (
@@ -81,22 +83,24 @@ const InstitutionsPage = () => {
                                                                 {inst.pending_count}
                                                             </span>
                                                         )}
-                                                    </button>
+                                                    </Button>
                                                     <div className="institution-item__actions">
-                                                        <button
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm-compact"
                                                             onClick={() => handleOpenFormModal(inst)}
                                                             title={t('edit')}
                                                             className="institution-item__action-btn institution-item__action-btn--edit"
-                                                        >
-                                                            <Icon name="edit" size="0.9rem" />
-                                                        </button>
-                                                        <button
+                                                            icon={<Icon name="edit" size="0.9rem" />}
+                                                        />
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm-compact"
                                                             onClick={() => handleDelete(inst.id)}
                                                             title={t('delete')}
                                                             className="institution-item__action-btn institution-item__action-btn--delete"
-                                                        >
-                                                            <Icon name="delete" size="0.9rem" />
-                                                        </button>
+                                                            icon={<Icon name="delete" size="0.9rem" />}
+                                                        />
                                                     </div>
                                                 </div>
                                             ))}

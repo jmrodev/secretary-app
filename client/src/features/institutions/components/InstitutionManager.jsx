@@ -56,18 +56,21 @@ const InstitutionManager = ({
                 {/* Actions Header inside card */}
                 {activeTab === 'list' && (
                     <div className="institutions-manager__actions">
-                        <button
-                            className="btn btn-primary btn-sm institutions-manager__action-btn"
+                        <Button
+                            variant="primary"
+                            size="sm"
+                            className="institutions-manager__action-btn"
                             onClick={() => handleOpenFormModal()}
+                            icon={<Icon name="add" size="1.1rem" />}
                         >
-                            <Icon name="add" size="1.1rem" />
                             {t('new_institution') || 'Nueva Institución'}
-                        </button>
+                        </Button>
                     </div>
                 )}
 
                 <div className="institutions-manager__list-container">
                     {activeTab === 'list' ? (
+
                         <InstitutionList
                             institutions={institutions}
                             onEdit={handleOpenFormModal}

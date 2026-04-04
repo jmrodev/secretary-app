@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '../../../components/atoms/Button';
 import ConfigField from './ConfigField';
+import Select from '../../../components/atoms/Select';
 import StatusIndicator from '../../../components/atoms/StatusIndicator';
 import Alert from '../../../components/atoms/Alert';
 
@@ -19,28 +20,29 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
             </div>
 
             <div className="config-section__body">
-                <p className="config-field__hint" style={{ marginBottom: '1.5rem' }}>
+                <p className="config-field__hint config-field__hint--mb-15">
                     Elija cómo desea acceder a la aplicación cuando no esté en el consultorio.
                 </p>
 
                 <div className="config-field">
                     <label className="config-field__label">Método de Acceso</label>
-                    <select
-                        className="input-field"
+                    <Select
+                        id="remote-access-method"
                         value={method}
                         onChange={(e) => updateSetting('remote_access_method', e.target.value)}
                         disabled={!isAuthorized}
-                    >
-                        <option value="duckdns">DuckDNS (Requiere configuración de Router / Port Forwarding)</option>
-                        <option value="none">Deshabilitado (Solo acceso local)</option>
-                    </select>
+                        options={[
+                            { value: 'duckdns', label: 'DuckDNS (Requiere configuración de Router / Port Forwarding)' },
+                            { value: 'none', label: 'Deshabilitado (Solo acceso local)' }
+                        ]}
+                    />
                 </div>
 
                 <div className="config-section__divider"></div>
 
                 {method === 'duckdns' && (
                     <div className="animate-fadeIn">
-                        <div className="config-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div className="config-grid config-grid--2col config-grid--gap-1">
                             <ConfigField
                                 id="duckdns-domain"
                                 label="Subdominio DuckDNS"
@@ -61,8 +63,8 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
                             />
                         </div>
 
-                        <div className="config-flex config-flex--gap-2" style={{ marginTop: '1rem', alignItems: 'center' }}>
-                            <div className="config-url-display" style={{ flex: 1, margin: 0 }}>
+                        <div className="config-flex config-flex--align-center config-flex--mt-1">
+                            <div className="config-url-display config-flex__item--grow">
                                 URL: {settings.duckdns_domain ? `http://${settings.duckdns_domain}.duckdns.org` : 'Configure su dominio'}
                             </div>
                             <Button
@@ -78,9 +80,9 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
                         <div className="config-section__divider"></div>
 
                         <div className="config-guide">
-                            <h4 style={{ marginBottom: '0.75rem', color: 'var(--slate-800)' }}>📖 Guía de Configuración DuckDNS</h4>
-                            <ol className="config-guide__list" style={{ paddingLeft: '1.25rem', fontSize: '0.875rem', color: 'var(--slate-600)', lineHeight: '1.6' }}>
-                                <li>Registre un subdominio gratuito en <a href="https://www.duckdns.org" target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">duckdns.org</a>.</li>
+                            <h4 className="config-guide__title">📖 Guía de Configuración DuckDNS</h4>
+                            <ol className="config-guide__list">
+                                <li>Registre un subdominio gratuito en <a href="https://www.duckdns.org" target="_blank" rel="noreferrer" className="config-link">duckdns.org</a>.</li>
                                 <li>Copie el <b>Token</b> y el <b>Subdominio</b> en los campos de arriba.</li>
                                 <li>Lo más importante: Debe configurar el <b>Port Forwarding</b> en su Router.</li>
                                 <li>Reenvíe el puerto externo <b>80</b> (o el que prefiera) a la IP local del servidor en el puerto <b>5173</b> (Dev) o <b>3001</b> (Prod).</li>
@@ -95,3 +97,4 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
 };
 
 export default IntegrationRemoteAccess;
+

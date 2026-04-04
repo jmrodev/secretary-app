@@ -20,21 +20,22 @@
     gap: 0.5rem;
 }
 
-.transaction-modal__summary-header .summary-item {
+.transaction-modal__summary-item {
     display: flex;
     justify-content: space-between;
     font-size: 0.9rem;
 }
 
-.transaction-modal__summary-header .summary-label {
+.transaction-modal__summary-label {
     font-weight: 600;
     color: var(--blue-700);
 }
 
-.transaction-modal__summary-header .summary-value {
+.transaction-modal__summary-value {
     color: var(--text-main);
     font-weight: 500;
 }
+
 
 .transaction-modal__results {
     position: absolute;
@@ -74,21 +75,21 @@
     font-weight: 600;
 }
 
-.payment-methods-card {
+.transaction-modal__payment-methods {
     padding: 1.5rem;
     background-color: var(--gray-50);
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
 }
 
-.payment-methods-card__header {
+.transaction-modal__payment-methods-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.25rem;
 }
 
-.payment-methods-card__title {
+.transaction-modal__payment-methods-title {
     font-size: 0.72rem;
     font-weight: 800;
     color: var(--text-muted);
@@ -97,7 +98,7 @@
     letter-spacing: 0.05em;
 }
 
-.payment-row {
+.transaction-modal__payment-row {
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -106,25 +107,26 @@
     border-bottom: 1px dashed var(--border-color);
 }
 
-.payment-row:last-of-type {
+.transaction-modal__payment-row:last-of-type {
     margin-bottom: 0;
     padding-bottom: 0;
     border-bottom: none;
 }
 
-.payment-row__amount {
+.transaction-modal__payment-row-amount {
     width: 140px;
 }
 
-.payment-row__method {
+.transaction-modal__payment-row-method {
     flex: 1;
 }
 
-.payment-row__action {
+.transaction-modal__payment-row-action {
     flex-shrink: 0;
 }
 
-.payment-summary {
+
+.transaction-modal__summary {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -134,7 +136,7 @@
     gap: 0.75rem;
 }
 
-.payment-summary__pricing-info {
+.transaction-modal__pricing-info {
     font-size: 0.8rem;
     font-style: italic;
     color: var(--blue-600);
@@ -143,9 +145,12 @@
     border-radius: var(--radius-sm);
     margin: 0 0 1rem 0;
     width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-.payment-summary__totals {
+.transaction-modal__totals {
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -153,13 +158,13 @@
     width: 100%;
 }
 
-.payment-summary__totals--main {
+.transaction-modal__totals--main {
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--border-color);
 }
 
-.payment-summary__row {
+.transaction-modal__summary-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -167,42 +172,42 @@
     padding: 0.25rem 0;
 }
 
-.payment-summary__label {
+.transaction-modal__label {
     font-size: 0.85rem;
     font-weight: 700;
     color: var(--text-muted);
 }
 
-.payment-summary__label--large {
+.transaction-modal__label--large {
     font-size: 1.2rem;
     color: var(--text-main);
 }
 
-.payment-summary__value {
+.transaction-modal__value {
     font-size: 1rem;
     font-weight: 800;
 }
 
-.payment-summary__value--paid {
-    color: var(--success-color, #10b981);
+.transaction-modal__value--paid {
+    color: var(--success);
 }
 
-.payment-summary__value--debt {
-    color: var(--error-color, #ef4444);
+.transaction-modal__value--debt {
+    color: var(--error);
     background: var(--red-50);
     padding: 0.2rem 0.6rem;
     border-radius: 4px;
 }
 
-.payment-summary__input-wrapper {
+.transaction-modal__input-wrapper {
     width: 140px;
 }
 
-.payment-summary__input-wrapper--large {
+.transaction-modal__input-wrapper--large {
     width: 180px;
 }
 
-.payment-summary__input-wrapper .payment-summary__total-input {
+.transaction-modal__input-wrapper .transaction-modal__total-input {
     font-weight: 900;
     font-size: 1.15rem;
     color: var(--blue-700);
@@ -210,18 +215,18 @@
     border-bottom: 2px solid var(--blue-600);
 }
 
-.payment-summary__input-wrapper--large .payment-summary__total-input {
+.transaction-modal__input-wrapper--large .transaction-modal__total-input {
     font-size: 1.75rem;
     border-bottom-width: 3px;
     padding-bottom: 0.25rem;
 }
 
-.payment-summary__status {
+.transaction-modal__status {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-weight: 800;
-    color: var(--success-color, #10b981);
+    color: var(--success);
     justify-content: flex-end;
     padding: 0.5rem 0;
 }
@@ -232,11 +237,16 @@
     justify-content: flex-end;
 }
 
-.edit-transaction-form__warning {
+.transaction-modal__warning {
     color: var(--amber-700);
     background: var(--amber-50);
     padding: 0.5rem 0.75rem;
     border-radius: 4px;
     font-size: 0.75rem;
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
 }
+

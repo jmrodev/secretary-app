@@ -107,16 +107,17 @@ const renderContent = (activeTab, controller) => {
                             setQrModal({ open: true, url, expiry: null });
                         }}
                     />
-                    <div className="dashboard-card mt-8">
-                        <div className="flex items-center gap-2 mb-4">
-                            <Icon name="description" size="1.2rem" className="text-primary" />
-                            <h3 className="text-lg font-bold text-slate-800">Documentación y Ayuda</h3>
+                    <div className="system-config-page__documentation animate-fadeIn">
+                        <div className="system-config-page__section-header">
+                            <Icon name="description" size="1.2rem" className="system-config-page__section-icon" />
+                            <h3 className="system-config-page__section-title">Documentación y Ayuda</h3>
                         </div>
-                        <div className="flex flex-wrap gap-4">
+                        <div className="system-config-page__actions">
                             <Button
-                                variant="outline"
+                                variant="ghost"
                                 onClick={() => window.open('/docs/MANUAL_OPERACIONES.html', '_blank')}
                                 icon={<Icon name="assessment" size="1.1rem" />}
+                                className="system-config-page__action-btn"
                             >
                                 Ver Manual de Operaciones
                             </Button>
@@ -124,6 +125,7 @@ const renderContent = (activeTab, controller) => {
                                 variant="ghost"
                                 onClick={() => window.open('/docs/GUIA_CONFIGURACION_GENERAL.md', '_blank')}
                                 icon={<Icon name="settings" size="1.1rem" />}
+                                className="system-config-page__action-btn"
                             >
                                 Guía de Configuración
                             </Button>
@@ -177,15 +179,15 @@ const renderContent = (activeTab, controller) => {
             return (
                 <div className="settings-content-wrapper">
                     <h2 className="settings-content-title">{t('data_management_title') || 'Datos y Seguridad'}</h2>
-                    <div className="dashboard-card">
-                        <div className="flex items-center gap-2 mb-4">
-                            <Icon name="payments" size="1.2rem" className="text-primary" />
-                            <h3 className="text-lg font-bold text-slate-800">
+                    <div className="system-config-page__data-management animate-fadeIn">
+                        <div className="system-config-page__section-header">
+                            <Icon name="payments" size="1.2rem" className="system-config-page__section-icon" />
+                            <h3 className="system-config-page__section-title">
                                 {t('data_management_title') || 'Gestión de Datos y Copias de Seguridad'}
                             </h3>
                         </div>
-                        <div className="py-20 text-center">
-                            <p className="text-slate-400 italic">{t('coming_soon') || 'Próximamente...'}</p>
+                        <div className="system-config-page__placeholder">
+                            <p className="system-config-page__placeholder-text">{t('coming_soon') || 'Próximamente...'}</p>
                         </div>
                     </div>
                 </div>

@@ -13,6 +13,12 @@
     gap: 0.75rem;
 }
 
+.institutions-sidebar__add-btn {
+    justify-content: flex-start;
+    width: 100%;
+}
+
+
 .institutions-sidebar__list-label {
     font-size: 0.7rem;
     font-weight: 700;

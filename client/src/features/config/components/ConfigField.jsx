@@ -1,9 +1,11 @@
 import React from 'react';
+import Input from '../../../components/atoms/Input';
+import Select from '../../../components/atoms/Select';
 
 /**
  * ConfigField Molecule (Feature Component).
  * Renders a labeled input or select field used across system preferences.
- * Supports standard input types and 'select' (requires options array).
+ * Supports more robust validation and styling via Atoms.
  */
 const ConfigField = ({
     label,
@@ -26,28 +28,23 @@ const ConfigField = ({
             </label>
             
             {isSelect ? (
-                <select
+                <Select
                     id={id}
-                    className="input-field"
                     value={value}
+                    options={options}
                     onChange={onChange}
                     disabled={disabled}
-                >
-                    {options.map(opt => (
-                        <option key={opt.value} value={opt.value}>
-                            {opt.label}
-                        </option>
-                    ))}
-                </select>
+                    className="config-field__input"
+                />
             ) : (
-                <input
+                <Input
                     type={type}
                     id={id}
-                    className="input-field"
                     value={value}
                     onChange={onChange}
                     disabled={disabled}
                     placeholder={placeholder}
+                    className="config-field__input"
                 />
             )}
 
@@ -59,3 +56,4 @@ const ConfigField = ({
 };
 
 export default ConfigField;
+

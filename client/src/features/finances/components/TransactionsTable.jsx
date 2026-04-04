@@ -129,22 +129,22 @@ const TransactionsTable = ({
                 <table className="transactions-table__table table-base">
                     <thead>
                         <tr>
-                            <th className="pl-6-bem">{t('date_label')}</th>
-                            <th style={{ width: '30%' }}>{t('description')}</th>
+                            <th className="transactions-table__cell--first">{t('date_label')}</th>
+                            <th className="transactions-table__header-cell--description">{t('description')}</th>
                             <th>{t('beneficiary')}</th>
                             <th>{t('payment_method')}</th>
                             <th>{t('status') || 'Estado'}</th>
-                            <th className="transactions-table__header-cell--right">{t('amount')}</th>
-                            <th className="transactions-table__header-cell--center">{t('proof')}</th>
+                            <th className="transactions-table__cell--right">{t('amount')}</th>
+                            <th className="transactions-table__cell--center">{t('proof')}</th>
                             {canManagerFinance && (
-                                <th className="transactions-table__header-cell--right pr-6-bem">{t('actions')}</th>
+                                <th className="transactions-table__cell--right transactions-table__cell--last">{t('actions')}</th>
                             )}
                         </tr>
                     </thead>
                     <tbody>
                         {groupedTransactions.length === 0 ? (
                             <tr>
-                                <td colSpan={canManagerFinance ? 8 : 7} style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
+                                <td colSpan={canManagerFinance ? 8 : 7} className="transactions-table__cell--center transactions-table__cell--empty-state">
                                     {t('no_transactions_found') || 'No hay transacciones registradas.'}
                                 </td>
                             </tr>

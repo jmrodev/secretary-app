@@ -15,7 +15,7 @@ const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, loading,
             </div>
 
             <div className="config-section__body">
-                <p className="config-field__hint" style={{ marginBottom: '1.5rem' }}>
+                <p className="config-field__hint config-field__hint--mb-15">
                     Configure las credenciales de WhatsApp Cloud API.
                 </p>
 
@@ -25,7 +25,7 @@ const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, loading,
                     value={settings.meta_phone_number_id || ''}
                     onChange={(e) => updateSetting('meta_phone_number_id', e.target.value)}
                     disabled={!isAuthorized}
-                    className="font-mono text-sm"
+                    className="config-field__input--monospace"
                 />
 
                 <ConfigField
@@ -36,7 +36,7 @@ const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, loading,
                     onChange={(e) => updateSetting('meta_access_token', e.target.value)}
                     placeholder={settings.meta_access_token === 'MASKED_PRESENT' ? '•••••••• (Guardado)' : 'Pegar Token aquí...'}
                     disabled={!isAuthorized}
-                    className="font-mono text-sm"
+                    className="config-field__input--monospace"
                 />
 
                 <div className="config-actions">
@@ -59,3 +59,4 @@ const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, loading,
 };
 
 export default IntegrationMetaWhatsApp;
+

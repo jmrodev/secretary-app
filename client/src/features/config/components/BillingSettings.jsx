@@ -106,7 +106,7 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                         </div>
                         <div className="config-group__items">
                             {status ? (
-                                <div className={`text-sm ${status.error ? 'text-danger' : 'text-success'}`}>
+                                <div className={`config-status ${status.error ? 'config-status--error' : 'config-status--success'}`}>
                                     {status.error ? (
                                         <p>❌ {t('afip_status_error')}: {status.error}</p>
                                     ) : (
@@ -121,7 +121,7 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                             )}
                         </div>
 
-                        <div className="config-actions" style={{ marginTop: '1rem' }}>
+                        <div className="config-actions config-actions--mt-1">
                             <Button
                                 variant="secondary"
                                 onClick={checkStatus}
@@ -141,12 +141,12 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                     <h4 className="config-section__title">{t('digital_certificates')}</h4>
                 </div>
                 <div className="config-section__body">
-                    <div className="config-field__hint" style={{ marginBottom: '1.5rem' }}>
+                    <div className="config-field__hint config-field__hint--mb-15">
                         {t('valid_certificate_needed')}
                         <br /><br />
                         1. {t('afip_guide_step_1_short')}
                         <br />
-                        2. {t('afip_guide_step_2_short')} <a href="https://auth.afip.gob.ar/contribuyente_/login.xhtml" target="_blank" rel="noreferrer" className="link text-blue-600 hover:underline">{t('access_afip')}</a>
+                        2. {t('afip_guide_step_2_short')} <a href="https://auth.afip.gob.ar/contribuyente_/login.xhtml" target="_blank" rel="noreferrer" className="config-link">{t('access_afip')}</a>
                         <br />
                         3. {t('afip_guide_step_3_short')}
                         <br />
@@ -162,25 +162,27 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                     </div>
 
                     {generatedCsr && (
-                        <div className="config-group" style={{ background: 'white' }}>
+                        <div className="config-group config-group--bg-white">
                             <div className="config-group__header">
                                 <h5 className="config-group__title">{t('your_csr')}</h5>
                             </div>
-                            <p className="config-field__hint" style={{ marginBottom: '0.5rem' }}>{t('copy_to_wsass')}:</p>
-                            <textarea
-                                className="input-field"
-                                style={{ height: '200px', fontFamily: 'monospace', fontSize: '0.8rem' }}
+                            <p className="config-field__hint config-field__hint--mb-05">{t('copy_to_wsass')}:</p>
+                            <Input
+                                type="textarea"
+                                className="config-field__input config-field__input--monospace"
                                 readOnly
                                 value={generatedCsr}
                                 onClick={(e) => e.target.select()}
+                                rows={8}
                             />
-                            <div className="config-actions" style={{ justifyContent: 'flex-end', marginTop: '1rem' }}>
+                            <div className="config-actions config-actions--right config-actions--mt-1">
                                 <Button size="sm" variant="secondary" onClick={() => { navigator.clipboard.writeText(generatedCsr); showMessage(t('csr_copied'), 'success'); }}>
                                     📋 {t('copy')}
                                 </Button>
                             </div>
                         </div>
                     )}
+
                 </div>
             </div>
         </div>
