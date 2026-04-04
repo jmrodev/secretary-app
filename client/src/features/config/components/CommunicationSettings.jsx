@@ -10,7 +10,7 @@ import { useLanguage } from '../../../context/LanguageContext';
  */
 const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }) => {
     const { t } = useLanguage();
-    const isAdmin = user.role === 'admin' || user.role === 'secretary';
+    const isAdmin = user?.role === 'admin' || user?.role === 'secretary';
     const commonVars = useMemo(() => [
         '{patient_name}', '{date}', '{time}', '{doctor_name}',
         '{appointment_type}', '{appointment_location}', '{price}', '{secretary_name}',

@@ -93,7 +93,7 @@ const PatientFinancialSidebar = ({
                         {t('download_apk')}
                     </Button>
 
-                    {(user.role === 'admin' || user.role === 'secretary') && (
+                    {(user?.role === 'admin' || user?.role === 'secretary') && (
                         <Button
                             variant="ghost"
                             className="patient-details__delete-btn"

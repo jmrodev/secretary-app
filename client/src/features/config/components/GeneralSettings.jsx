@@ -100,7 +100,7 @@ const renderUrlConfiguration = (settings, updateSetting, isAdmin, onShowQr) => {
 };
 
 const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => {
-    const isAdmin = user.role === 'admin';
+    const isAdmin = user?.role === 'admin';
 
     return (
         <div className="tab-panel animate-fadeIn">

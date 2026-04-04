@@ -23,7 +23,7 @@ const IntegrationSettings = ({
     onTestMeta
 }) => {
     // Shared authorization logic for integration management
-    const isAuthorized = user.role === 'admin' || user.role === 'secretary';
+    const isAuthorized = user?.role === 'admin' || user?.role === 'secretary';
 
     return (
         <div className="tab-panel animate-fadeIn">

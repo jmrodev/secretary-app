@@ -77,7 +77,7 @@ const PatientDetailsView = ({
                         >
                             {t('print') || 'Imprimir'}
                         </Button>
-                        {user.role === 'secretary' && (
+                        {user?.role === 'secretary' && (
                             <Button
                                 size="sm"
                                 variant={details.is_new_patient ? 'primary' : 'secondary'}

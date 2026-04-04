@@ -21,7 +21,7 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
     const [generatingCsr, setGeneratingCsr] = useState(false);
     const [generatedCsr, setGeneratedCsr] = useState(null);
 
-    const isAdmin = user.role === 'admin' || user.role === 'secretary';
+    const isAdmin = user?.role === 'admin' || user?.role === 'secretary';
 
     const generateCsr = async () => {
         setGeneratingCsr(true);
