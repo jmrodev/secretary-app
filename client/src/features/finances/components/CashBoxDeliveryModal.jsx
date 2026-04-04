@@ -1,6 +1,7 @@
 import React from 'react';
 import Modal from '../../../components/molecules/Modal';
 import Button from '../../../components/atoms/Button';
+import Icon from '../../../components/atoms/Icon';
 import CurrencyInput from '../../../components/atoms/CurrencyInput';
 import FormGroup from '../../../components/molecules/FormGroup';
 import './CashBoxDeliveryModal.css';
@@ -16,15 +17,19 @@ const CashBoxDeliveryModal = ({ isOpen, onClose, onConfirm, doctorName, balance,
             onClose={onClose}
             title={`${t('close_box')}: ${doctorName}`}
             footer={
-                <Button variant="primary" onClick={onConfirm} icon="💰">
-                    {t('confirm_delivery')}
-                </Button>
+                <div className="cash-box-delivery__footer">
+                    <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
+                    <Button variant="primary" onClick={onConfirm} icon={<Icon name="payments" size="1.1rem" />}>
+                        {t('confirm_delivery')}
+                    </Button>
+                </div>
             }
         >
             <div className="cash-box-delivery animate-fadeIn">
-                <p className="cash-box-delivery__balance">
-                    {t('current_system_balance')}: <span className="cash-box-delivery__balance-value">${balance?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                </p>
+                <div className="cash-box-delivery__balance-info">
+                    <span className="cash-box-delivery__label">{t('current_system_balance')}:</span>
+                    <span className="cash-box-delivery__value">${balance?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                </div>
 
                 <FormGroup label={t('amount_delivered')}>
                     <CurrencyInput
@@ -34,12 +39,14 @@ const CashBoxDeliveryModal = ({ isOpen, onClose, onConfirm, doctorName, balance,
                     />
                 </FormGroup>
 
-                <p className="cash-box-delivery__warning">
-                    ⚠️ {t('close_box_warning') || 'Esta acción registrará una salida de efectivo en la caja del profesional y ajustará el saldo.'}
-                </p>
+                <div className="cash-box-delivery__warning">
+                    <Icon name="warning" size="1.1rem" />
+                    <span>{t('close_box_warning') || 'Esta acción registrará una salida de efectivo en la caja del profesional y ajustará el saldo.'}</span>
+                </div>
             </div>
         </Modal>
     );
 };
 
 export default CashBoxDeliveryModal;
+

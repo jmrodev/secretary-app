@@ -30,12 +30,12 @@ const CashBoxSummary = ({
                     <span className="cash-box__name--compact">{name?.split(' ')[0] || t('general_clinic')}</span>
                     <div className="cash-box__values--compact">
                         <span className="cash-box__method cash-box__method--cash">
-                            <Icon name="payments" size="0.8rem" color="var(--green-600)" style={{ marginRight: '0.25rem' }} />
+                            <Icon name="payments" size="0.8rem" color="var(--green-600)" className="cash-box__icon" />
                             ${balances.cash.toLocaleString()}
                         </span>
                         <span className="cash-box__separator">|</span>
                         <span className="cash-box__method cash-box__method--transfer">
-                            <Icon name="account_balance" size="0.8rem" color="var(--blue-600)" style={{ marginRight: '0.25rem' }} />
+                            <Icon name="account_balance" size="0.8rem" color="var(--blue-600)" className="cash-box__icon" />
                             ${balances.transfer.toLocaleString()}
                         </span>
                     </div>
@@ -48,22 +48,22 @@ const CashBoxSummary = ({
                 <h4 className="cash-box__name">{name || t('general_clinic')}</h4>
                 <div className="cash-box__values">
                     <div className="cash-box__header-group">
-                        <span className="finance-stats__label">
-                            <Icon name="payments" size="1rem" color="var(--green-600)" style={{ marginRight: '0.25rem' }} />
+                        <span className="cash-box__label">
+                            <Icon name="payments" size="1rem" color="var(--green-600)" className="cash-box__icon" />
                             {t('cash')}
-                            <span style={{ fontSize: '10px', marginLeft: '0.25rem', opacity: 0.5, fontWeight: 'normal', textTransform: 'uppercase', letterSpacing: '-0.05em' }}>(Rendible)</span>
+                            <span className="cash-box__label-hint">(Rendible)</span>
                         </span>
-                        <span className={`cash-box__method font-bold ${balances.cash < 0 ? 'text-red-600' : 'cash-box__method--cash'}`}>
+                        <span className={`cash-box__method cash-box__method--bold ${balances.cash < 0 ? 'cash-box__method--red' : 'cash-box__method--cash'}`}>
                             ${balances.cash.toLocaleString()}
                         </span>
                     </div>
                     <div className="cash-box__flex-between">
-                        <span className="finance-stats__label">
-                            <Icon name="account_balance" size="1rem" color="var(--blue-600)" style={{ marginRight: '0.25rem' }} />
+                        <span className="cash-box__label">
+                            <Icon name="account_balance" size="1rem" color="var(--blue-600)" className="cash-box__icon" />
                             {t('transfer')}
-                            <span style={{ fontSize: '10px', marginLeft: '0.25rem', opacity: 0.5, fontWeight: 'normal', textTransform: 'uppercase', letterSpacing: '-0.05em' }}>({t('stats')})</span>
+                            <span className="cash-box__label-hint">({t('stats')})</span>
                         </span>
-                        <span className={`cash-box__method font-bold ${balances.transfer < 0 ? 'text-red-500 opacity-70 italic' : 'cash-box__method--transfer'}`}>
+                        <span className={`cash-box__method cash-box__method--bold ${balances.transfer < 0 ? 'cash-box__method--red' : 'cash-box__method--transfer'}`}>
                             ${balances.transfer.toLocaleString()}
                         </span>
                     </div>
@@ -79,7 +79,12 @@ const CashBoxSummary = ({
                 {renderDoctorCard(null, null, t('general_clinic'))}
                 {filteredDoctors.map(d => renderDoctorCard(d, d.id, d.full_name))}
                 {selectedDoctorFilter && (
-                    <Button variant="ghost" size="xs" onClick={() => onSelectDoctor('')} className="cash-box__view-all">
+                    <Button 
+                        variant="ghost" 
+                        size="sm-compact" 
+                        onClick={() => onSelectDoctor('')} 
+                        className="cash-box__view-all"
+                    >
                         {t('view_all')}
                     </Button>
                 )}
@@ -106,3 +111,4 @@ const CashBoxSummary = ({
 };
 
 export default CashBoxSummary;
+

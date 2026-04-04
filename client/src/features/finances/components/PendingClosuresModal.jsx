@@ -1,6 +1,7 @@
 import React from 'react';
 import Modal from '../../../components/molecules/Modal';
 import Button from '../../../components/atoms/Button';
+import Icon from '../../../components/atoms/Icon';
 
 import './PendingClosuresModal.css';
 
@@ -37,18 +38,25 @@ const PendingClosuresModal = ({
             onClose={onClose}
             title={t('pending_closures_title').replace('{count}', pendingClosures.length)}
             size="lg"
+            footer={
+                <div className="pending-closures-footer">
+                    <Button variant="secondary" onClick={onClose}>
+                        {t('close_action')}
+                    </Button>
+                </div>
+            }
         >
             <div className="pending-closures-container animate-fadeIn">
                 {duplicateClosures && duplicateClosures.length > 0 && (
                     <div className="pending-closures-alert">
                         <div className="pending-closures-alert__title">
-                            ⚠️ {t('duplicate_closures_alert').replace('{count}', duplicateClosures.length)}
+                            <Icon name="warning" size="1.2rem" />
+                            {t('duplicate_closures_alert').replace('{count}', duplicateClosures.length)}
                         </div>
-                        <p>{t('fix_duplicates_desc')}</p>
+                        <p className="pending-closures-alert__description">{t('fix_duplicates_desc')}</p>
                         <Button
                             size="sm"
-                            variant="primary"
-                            style={{ backgroundColor: 'var(--red-600)', color: 'white', width: 'fit-content', marginTop: '0.5rem' }}
+                            variant="danger"
                             onClick={onFixDuplicates}
                         >
                             {t('fix_conflicts_btn')}
@@ -66,7 +74,7 @@ const PendingClosuresModal = ({
                             size="md"
                             onClick={onCloseAll}
                             className="pending-closures-btn-all"
-                            style={{ marginBottom: '1rem' }}
+                            icon={<Icon name="check_circle" size="1.1rem" />}
                         >
                             {t('deliver_all_month').replace('{count}', pendingClosures.length)}
                         </Button>
@@ -78,9 +86,9 @@ const PendingClosuresModal = ({
                         <thead>
                             <tr>
                                 <th>{t('date_label')}</th>
-                                <th style={{ textAlign: 'right' }}>{t('cash_balance')}</th>
-                                <th style={{ textAlign: 'right' }}>{t('virtual_balance')}</th>
-                                <th style={{ textAlign: 'center' }}>{t('actions')}</th>
+                                <th className="pending-closures-table__cell--right">{t('cash_balance')}</th>
+                                <th className="pending-closures-table__cell--right">{t('virtual_balance')}</th>
+                                <th className="pending-closures-table__cell--center">{t('actions')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -103,15 +111,15 @@ const PendingClosuresModal = ({
                                                     <span className="pending-closures-table__doctor-text">{day.doctor_name || 'General'}</span>
                                                 </div>
                                             </td>
-                                            <td className="pending-closures-table__balance--cash" style={{ textAlign: 'right' }}>
+                                            <td className="pending-closures-table__balance--cash pending-closures-table__cell--right">
                                                 ${day.balance.toLocaleString()}
                                             </td>
-                                            <td className="pending-closures-table__balance--virtual" style={{ textAlign: 'right' }}>
+                                            <td className="pending-closures-table__balance--virtual pending-closures-table__cell--right">
                                                 ${(day.transferBalance || 0).toLocaleString()}
                                             </td>
                                             <td className="pending-closures-table__actions">
                                                 <Button
-                                                    size="sm"
+                                                    size="sm-compact"
                                                     variant={isProcessing ? "ghost" : "primary"}
                                                     onClick={() => handleClosure(day)}
                                                     disabled={!!processingDate}
@@ -119,12 +127,12 @@ const PendingClosuresModal = ({
                                                     {isProcessing ? "..." : t('deliver_action')}
                                                 </Button>
                                                 <Button
-                                                    size="sm"
-                                                    variant="ghost"
-                                                    style={{ color: 'var(--red-600)', borderColor: 'var(--red-200)' }}
+                                                    size="sm-compact"
+                                                    variant="outline-danger"
                                                     onClick={() => onResetDay(day.date, day.doctor_id)}
                                                     disabled={!!processingDate}
                                                     title={t('reset_day_title')}
+                                                    icon={<Icon name="refresh" size="1rem" />}
                                                 >
                                                     {t('reset_action')}
                                                 </Button>
@@ -136,15 +144,10 @@ const PendingClosuresModal = ({
                         </tbody>
                     </table>
                 </div>
-
-                <div className="pending-closures-footer" style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
-                    <Button variant="secondary" onClick={onClose}>
-                        {t('close_action')}
-                    </Button>
-                </div>
             </div>
         </Modal>
     );
 };
 
 export default PendingClosuresModal;
+

@@ -6,6 +6,11 @@ import InstitutionSummary from './InstitutionSummary';
 import InstitutionTransactionsTable from './InstitutionTransactionsTable';
 import InstitutionPatientsTable from './InstitutionPatientsTable';
 import InstitutionPaymentModal from './InstitutionPaymentModal';
+
+// Atoms
+import Button from '../../../components/atoms/Button';
+import Icon from '../../../components/atoms/Icon';
+
 import './InstitutionFinances.css';
 
 /**
@@ -79,10 +84,14 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
         if (!dateStr) return 'N/A';
         const date = new Date(dateStr);
         const day = date.getDate();
-        const monthKey = t('months_array')[date.getMonth()].toLowerCase();
+        const months = t('months_array') || [
+            'january', 'february', 'march', 'april', 'may', 'june',
+            'july', 'august', 'september', 'october', 'november', 'december'
+        ];
+        const monthKey = months[date.getMonth()].toLowerCase();
         const month = t(monthKey);
         const year = date.getFullYear();
-        return t('date_format_long')
+        return (t('date_format_long') || "{day} {month} {year}")
             .replace('{day}', day)
             .replace('{month}', month)
             .replace('{year}', year);
@@ -90,39 +99,45 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
 
     if (!selectedInstId) {
         return (
-            <div className="inst-finances">
-                <div style={{ color: 'var(--text-muted)', padding: '4rem', textAlign: 'center' }}>
-                    <span style={{ fontSize: '2.5rem' }}>🏥</span>
-                    <p style={{ marginTop: '1rem', fontWeight: 600 }}>Seleccioná una institución del panel izquierdo</p>
+            <div className="institution-finances">
+                <div className="institution-finances__empty-state">
+                    <span className="institution-finances__empty-icon">🏥</span>
+                    <p className="institution-finances__empty-text">
+                        {t('select_institution_desc') || 'Seleccioná una institución del panel izquierdo'}
+                    </p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="inst-finances">
+        <div className="institution-finances">
             {/* View mode toggle: Finanzas / Pacientes */}
-            <div className="inst-finances__selector-bar" style={{ justifyContent: 'flex-end' }}>
-                <div className="inst-finances__view-toggle">
-                    <button
-                        className={`inst-finances__toggle-btn ${viewMode === 'transactions' ? 'inst-finances__toggle-btn--active' : ''}`}
+            <div className="institution-finances__selector-bar">
+                <div className="institution-finances__view-toggle">
+                    <Button
+                        variant={viewMode === 'transactions' ? 'primary' : 'ghost'}
+                        size="sm-compact"
                         onClick={() => setViewMode('transactions')}
+                        icon={<Icon name="analytics" size="1.1rem" />}
                     >
-                        📊 {t('finances')}
-                    </button>
-                    <button
-                        className={`inst-finances__toggle-btn ${viewMode === 'patients' ? 'inst-finances__toggle-btn--active' : ''}`}
+                        {t('finances')}
+                    </Button>
+                    <Button
+                        variant={viewMode === 'patients' ? 'primary' : 'ghost'}
+                        size="sm-compact"
                         onClick={() => setViewMode('patients')}
+                        icon={<Icon name="group" size="1.1rem" />}
                     >
-                        👥 {t('patients')}
-                    </button>
+                        {t('patients')}
+                    </Button>
                 </div>
             </div>
 
-            {loadingReport && <div className="loading-state">{t('loading_report')}</div>}
+            {loadingReport && <div className="institution-finances__loading">{t('loading_report')}</div>}
 
             {report && viewMode === 'transactions' && (
-                <div className="inst-finances__grid">
+                <div className="institution-finances__grid">
                     <InstitutionSummary
                         report={report}
                         selectedAmount={selectedAmount}
@@ -143,7 +158,7 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
             )}
 
             {report && viewMode === 'patients' && (
-                <div className="inst-finances__grid">
+                <div className="institution-finances__grid">
                     <InstitutionPatientsTable
                         patients={patients}
                         formatDate={formatDate}
@@ -163,5 +178,8 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
         </div>
     );
 };
+
+export default InstitutionFinances;
+
 
 export default InstitutionFinances;

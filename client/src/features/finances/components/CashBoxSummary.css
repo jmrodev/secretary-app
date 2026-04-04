@@ -46,7 +46,6 @@
     margin-bottom: 0.75rem;
 }
 
-
 .cash-box__grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -106,6 +105,35 @@
     color: var(--accent-color);
 }
 
+.cash-box__method--red {
+    color: var(--error);
+}
+
+.cash-box__method--bold {
+    font-weight: 800;
+}
+
+.cash-box__icon {
+    margin-right: 0.35rem;
+}
+
+.cash-box__label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+}
+
+.cash-box__label-hint {
+    font-size: 10px;
+    margin-left: 0.25rem;
+    opacity: 0.5;
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+}
+
 .cash-box__separator {
     color: var(--border-color);
     font-size: 0.75rem;
@@ -115,3 +143,4 @@
     margin-top: 0.75rem;
     width: 100%;
 }
+

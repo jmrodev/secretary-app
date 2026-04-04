@@ -4,9 +4,15 @@ import Button from '../../../components/atoms/Button';
 import Input from '../../../components/atoms/Input';
 import Select from '../../../components/atoms/Select';
 import CurrencyInput from '../../../components/atoms/CurrencyInput';
+import AutoTextarea from '../../../components/atoms/AutoTextarea';
+import Icon from '../../../components/atoms/Icon';
 import FormGroup from '../../../components/molecules/FormGroup';
 import './EditTransactionModal.css';
 
+/**
+ * EditTransactionModal Molecule.
+ * Simplified modal for quick editing of existing transactions.
+ */
 const EditTransactionModal = ({
     isOpen,
     onClose,
@@ -41,13 +47,15 @@ const EditTransactionModal = ({
             onClose={onClose}
             title={t('edit_transaction') || "Editar Transacción"}
             footer={
-                <>
+                <div className="edit-transaction-modal__footer">
                     <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
-                    <Button onClick={onSave} variant="primary">{t('save')}</Button>
-                </>
+                    <Button onClick={onSave} variant="primary" icon={<Icon name="save" size="1.1rem" />}>
+                        {t('save')}
+                    </Button>
+                </div>
             }
         >
-            <form className="edit-transaction-form" onSubmit={e => e.preventDefault()}>
+            <div className="edit-transaction-modal">
                 <FormGroup label={t('amount')}>
                     <CurrencyInput
                         value={transaction.amount}
@@ -56,10 +64,10 @@ const EditTransactionModal = ({
                 </FormGroup>
 
                 <FormGroup label={t('description')}>
-                    <Input
-                        type="text"
+                    <AutoTextarea
                         value={transaction.description}
                         onChange={e => handleChange('description', e.target.value)}
+                        placeholder={t('description_placeholder')}
                     />
                 </FormGroup>
 
@@ -86,17 +94,20 @@ const EditTransactionModal = ({
                             value={transaction.transaction_date ? new Date(transaction.transaction_date).toLocaleString('sv').slice(0, 16).replace(' ', 'T') : ''}
                             onChange={e => handleChange('transaction_date', e.target.value)}
                         />
-                        <p className="edit-transaction-form__warning">
-                            <span>⚠️</span> {t('date_browser_warning') || 'El formato (Día/Mes o Mes/Día) depende de su navegador. Por favor verifique el nombre del mes al seleccionar.'}
-                        </p>
-                        <p className="edit-transaction-form__warning">
-                            <span>⚠️</span> {t('date_order_warning') || 'Cuidado: Cambiar la fecha puede afectar el orden cronológico de la caja.'}
-                        </p>
+                        <div className="edit-transaction-modal__warning">
+                            <Icon name="warning" size="1rem" />
+                            <span>{t('date_browser_warning') || 'El formato depende de su navegador. Verifique el mes al seleccionar.'}</span>
+                        </div>
+                        <div className="edit-transaction-modal__warning">
+                            <Icon name="warning" size="1rem" />
+                            <span>{t('date_order_warning') || 'Cuidado: Cambiar la fecha puede afectar el orden cronológico.'}</span>
+                        </div>
                     </FormGroup>
                 )}
-            </form>
+            </div>
         </Modal>
     );
 };
 
 export default EditTransactionModal;
+
