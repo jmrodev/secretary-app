@@ -8,7 +8,15 @@ if [ -f "$PROJECT_DIR/.env" ]; then
 fi
 
 BACKUP_DIR="$PROJECT_DIR/backups"
-DB_CONTAINER="secretary-db-prod"
+# Autodetect production database container
+if docker ps --format '{{.Names}}' | grep -q "^secretary-db-prod$"; then
+    DB_CONTAINER="secretary-db-prod"
+elif docker ps --format '{{.Names}}' | grep -q "^secretary-db$"; then
+    DB_CONTAINER="secretary-db"
+else
+    DB_CONTAINER="secretary-db-prod" # Fallback
+fi
+
 DB_NAME=${DB_NAME}
 DB_USER=${DB_USER}
 DB_PASSWORD=${DB_PASSWORD}
@@ -21,7 +29,14 @@ mkdir -p "$BACKUP_DIR"
 TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
 FILENAME="backup_${DB_NAME}_${TIMESTAMP}.sql"
 
-echo "💾 Iniciando backup de la base de datos de producción..."
+# Check if container is running
+if ! docker ps --format '{{.Names}}' | grep -q "^$DB_CONTAINER$"; then
+    echo "❌ Error: El contenedor de base de datos $DB_CONTAINER no está corriendo."
+    exit 1
+fi
+
+echo "💾 Iniciando backup de la base de datos de producción ($DB_CONTAINER)..."
+
 
 # Execute dump inside container and save to local disk
 docker exec "$DB_CONTAINER" /usr/bin/mysqldump -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" > "${BACKUP_DIR}/${FILENAME}"
