@@ -1,10 +1,9 @@
-/* FinanceFilters Component Styles */
+/* FinanceFilters Component Styles (BEM) */
 
 .finance-filters {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    /* Removed padding/background to fit into dashboard-card */
+    gap: 1rem;
 }
 
 .finance-filters__search-wrapper {
@@ -22,58 +21,34 @@
     pointer-events: none;
 }
 
-.finance-filters .finance-filters__search-input {
-    padding-left: 2.5rem;
-    background-color: var(--gray-50);
-    height: 34px;
-    font-size: 0.85rem;
+.finance-filters__search-input {
+    padding-left: 2.75rem !important;
+    background-color: var(--gray-50) !important;
 }
 
 .finance-filters__groups {
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
+    gap: 0.75rem;
 }
 
 .finance-filters__group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
     width: 100%;
 }
 
-.finance-filters__label {
-    font-size: 0.6rem;
-    font-weight: 700;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    margin-left: 0.1rem;
+/* Modifier for the actions container within the filter groups */
+.finance-filters__group--actions {
+    margin-top: 0.25rem;
 }
 
 .finance-filters__clear {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
-    padding: 0.5rem 0.75rem;
-    background: transparent;
-    border: 1px solid var(--gray-200);
-    border-radius: 0.5rem;
-    color: var(--text-secondary);
-    font-size: 0.75rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    height: 38px;
     width: 100%;
-    /* Match select height */
+    justify-content: center;
+    border: 1px solid var(--gray-200) !important;
+    font-weight: 700 !important;
 }
 
 .finance-filters__clear:hover {
-    background: var(--gray-100);
-    color: var(--text-main);
-    border-color: var(--gray-300);
+    background: var(--gray-100) !important;
+    border-color: var(--gray-300) !important;
 }
-
-/* Cleaned up redundant responsive styles */

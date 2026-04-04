@@ -50,7 +50,7 @@ const PendingClosuresModal = ({
                 {duplicateClosures && duplicateClosures.length > 0 && (
                     <div className="pending-closures-alert">
                         <div className="pending-closures-alert__title">
-                            <Icon name="warning" size="1.2rem" />
+                            <Icon name="WARNING" size="1.2rem" />
                             {t('duplicate_closures_alert').replace('{count}', duplicateClosures.length)}
                         </div>
                         <p className="pending-closures-alert__description">{t('fix_duplicates_desc')}</p>
@@ -74,7 +74,7 @@ const PendingClosuresModal = ({
                             size="md"
                             onClick={onCloseAll}
                             className="pending-closures-btn-all"
-                            icon={<Icon name="check_circle" size="1.1rem" />}
+                            icon={<Icon name="CONFIRMED" size="1.1rem" />}
                         >
                             {t('deliver_all_month').replace('{count}', pendingClosures.length)}
                         </Button>
@@ -132,7 +132,7 @@ const PendingClosuresModal = ({
                                                     onClick={() => onResetDay(day.date, day.doctor_id)}
                                                     disabled={!!processingDate}
                                                     title={t('reset_day_title')}
-                                                    icon={<Icon name="refresh" size="1rem" />}
+                                                    icon={<Icon name="RESTORE" size="1rem" />}
                                                 >
                                                     {t('reset_action')}
                                                 </Button>

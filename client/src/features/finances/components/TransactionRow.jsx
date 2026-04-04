@@ -7,6 +7,7 @@ import InvoiceDetailContent from './InvoiceDetailContent';
 /**
  * TransactionRow Feature Molecule.
  * Renders a specialized row for the financial ledger in the finances domain.
+ * Refactored to follow BEM and Atomic Design standards.
  */
 const TransactionRow = ({
     tx,
@@ -36,7 +37,7 @@ const TransactionRow = ({
     };
 
     return (
-        <tr className={`animate-fadeIn ${isGrouped ? 'transactions-table__row--grouped' : ''}`}>
+        <tr className={`transactions-table__row ${isGrouped ? 'transactions-table__row--grouped' : ''} animate-fadeIn`}>
             <td className="transactions-table__cell--first">
                 <div className="transactions-table__date">{formatDateUnambiguous(tx.transaction_date)}</div>
                 <div className="transactions-table__time">{formatTime(tx.transaction_date)}</div>
@@ -65,7 +66,7 @@ const TransactionRow = ({
                     <span className="transactions-table__beneficiary-name">
                         {tx.patient_full_name ? (
                             <>
-                                <Icon name="PROFILE" size="1.2rem" color="var(--blue-600)" />
+                                <Icon name="PROFILE" size="1.2rem" className="transactions-table__beneficiary-icon" />
                                 {tx.patient_full_name}
                             </>
                         ) : (tx.doctor_name || t('general_clinic'))}
@@ -107,8 +108,8 @@ const TransactionRow = ({
                         </Button>
                     </div>
                 ) : tx.proof_file ? (
-                    <a href={tx.proof_file} target="_blank" rel="noreferrer" className="btn-text" title={t('view')}>
-                        <Icon name="DOCUMENTS" />
+                    <a href={tx.proof_file} target="_blank" rel="noreferrer" className="transactions-table__proof-link" title={t('view')}>
+                        <Icon name="DOCUMENTS" size="1.2rem" />
                     </a>
                 ) : <span className="transactions-table__no-proof">-</span>}
             </td>
@@ -134,4 +135,5 @@ const TransactionRow = ({
 };
 
 export default TransactionRow;
+
 

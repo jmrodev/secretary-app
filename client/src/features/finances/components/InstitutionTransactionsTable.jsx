@@ -1,10 +1,12 @@
 import React from 'react';
 import Badge from '../../../components/atoms/Badge';
 import Icon from '../../../components/atoms/Icon';
+import Button from '../../../components/atoms/Button';
 
 /**
  * InstitutionTransactionsTable Molecule.
  * Renders the list of financial transactions for an institution.
+ * Nested under institution-finances namespace for consistent styling.
  */
 const InstitutionTransactionsTable = ({
     transactions,
@@ -21,56 +23,59 @@ const InstitutionTransactionsTable = ({
     const allChecked = pendingTransactions.length > 0 && pendingTransactions.every(tr => selectedTrs.has(tr.transaction_id));
 
     return (
-        <div className="inst-table-container">
-            <div className="inst-table-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h3 className="inst-table-title">
-                    <Icon name="assignment" /> {t('transaction_log')}
-                    <span className="inst-table-badge">{transactions.length}</span>
+        <div className="institution-finances__table-container">
+            <div className="institution-finances__table-header">
+                <h3 className="institution-finances__table-title">
+                    <Icon name="REQUESTS" size="1.2rem" /> {t('transaction_log')}
+                    <span className="institution-finances__table-badge">{transactions.length}</span>
                 </h3>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <div className="inst-finances__view-toggle">
-                        <button
-                            className={`inst-finances__toggle-btn ${showPendingOnly ? 'inst-finances__toggle-btn--active' : ''}`}
+                <div className="institution-finances__actions">
+                    <div className="institution-finances__view-toggle">
+                        <Button
+                            variant={showPendingOnly ? 'primary' : 'ghost'}
+                            size="sm-compact"
                             onClick={() => setShowPendingOnly(true)}
                         >
                             {t('only_debts')}
-                        </button>
-                        <button
-                            className={`inst-finances__toggle-btn ${!showPendingOnly ? 'inst-finances__toggle-btn--active' : ''}`}
+                        </Button>
+                        <Button
+                            variant={!showPendingOnly ? 'primary' : 'ghost'}
+                            size="sm-compact"
                             onClick={() => setShowPendingOnly(false)}
                         >
                             {t('all_transactions')}
-                        </button>
+                        </Button>
                     </div>
-                    <button
-                        className="inst-finances__toggle-btn"
+                    <Button
+                        variant="primary"
+                        size="sm-compact"
                         onClick={onPayClick}
-                        style={{ background: 'var(--accent-color)', color: 'white', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+                        icon={<Icon name="FINANCES" size="1rem" />}
+                        disabled={selectedTrs.size === 0}
                     >
-                        <Icon name="payments" size="1rem" /> {t('pay')}
-                    </button>
+                        {t('pay')}
+                    </Button>
                 </div>
             </div>
 
-            <div className="inst-table-wrapper">
-                <table className="inst-data-table">
+            <div className="institution-finances__table-wrapper">
+                <table className="institution-finances__table">
                     <thead>
                         <tr>
-                            <th align="center" style={{ width: '40px' }}>
+                            <th className="institution-finances__cell--center">
                                 <input
                                     type="checkbox"
                                     checked={allChecked}
                                     onChange={(e) => onSelectAll(e.target.checked)}
-                                    style={{ cursor: 'pointer' }}
                                 />
                             </th>
                             <th>{t('date_label')}</th>
                             <th>{t('patient')}</th>
                             <th>{t('doctor')}</th>
-                            <th align="center">{t('status')}</th>
-                            <th align="center">{t('antiquity')}</th>
-                            <th align="right">{t('amount')}</th>
-                            <th align="center">{t('payment')}</th>
+                            <th className="institution-finances__cell--center">{t('status')}</th>
+                            <th className="institution-finances__cell--center">{t('antiquity')}</th>
+                            <th className="institution-finances__cell--right">{t('amount')}</th>
+                            <th className="institution-finances__cell--center">{t('payment')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -84,43 +89,45 @@ const InstitutionTransactionsTable = ({
                             return (
                                 <tr
                                     key={tr.transaction_id}
-                                    className={`${isPending ? 'inst-data-table__tr--pending' : ''} ${isChecked ? 'inst-data-table__tr--selected' : ''}`}
+                                    className={`
+                                        ${isPending ? 'institution-finances__tr--pending' : ''} 
+                                        ${isChecked ? 'institution-finances__tr--selected' : ''}
+                                    `.trim()}
                                 >
-                                    <td align="center">
+                                    <td className="institution-finances__cell--center">
                                         {isPending && (
                                             <input
                                                 type="checkbox"
                                                 checked={isChecked}
                                                 onChange={() => onToggleSelect(tr.transaction_id)}
-                                                style={{ cursor: 'pointer' }}
                                             />
                                         )}
                                     </td>
                                     <td>{formatDate(displayDate)}</td>
                                     <td>
                                         {tr.patient_name ? (
-                                            <a href={`/patients?search=${encodeURIComponent(tr.patient_name)}`} className="inst-patient-link">
+                                            <a href={`/patients?search=${encodeURIComponent(tr.patient_name)}`} className="institution-finances__patient-link">
                                                 {tr.patient_name}
                                             </a>
                                         ) : (
-                                            <span style={{ color: 'var(--text-muted)' }}>—</span>
+                                            <span className="institution-finances__text-muted">—</span>
                                         )}
                                     </td>
                                     <td>{tr.doctor_name || 'N/A'}</td>
-                                    <td align="center">
+                                    <td className="institution-finances__cell--center">
                                         <Badge variant={tr.appointment_status === 'completed' ? 'green' : 'gray'}>
                                             {t(tr.appointment_status) || tr.appointment_status}
                                         </Badge>
                                     </td>
-                                    <td align="center">
+                                    <td className="institution-finances__cell--center">
                                         {isPending ? (
-                                            <span className={`inst-age-badge ${diffDays > 30 ? 'inst-age-badge--critical' : 'inst-age-badge--warning'}`}>
+                                            <span className={`institution-finances__age-badge ${diffDays > 30 ? 'institution-finances__age-badge--critical' : 'institution-finances__age-badge--warning'}`}>
                                                 {t('days_count').replace('{days}', diffDays)}
                                             </span>
                                         ) : '-'}
                                     </td>
-                                    <td align="right" className="inst-data-table__amount-bold">${tr.amount}</td>
-                                    <td align="center">
+                                    <td className="institution-finances__cell--right institution-finances__amount-bold">${Number(tr.amount).toLocaleString()}</td>
+                                    <td className="institution-finances__cell--center">
                                         <Badge variant={tr.payment_status === 'paid' ? 'green' : 'red'}>
                                             {t(tr.payment_status)}
                                         </Badge>
@@ -130,7 +137,7 @@ const InstitutionTransactionsTable = ({
                         })}
                         {transactions.length === 0 && (
                             <tr>
-                                <td colSpan="8" className="inst-data-table__empty">
+                                <td colSpan="8" className="institution-finances__empty">
                                     {showPendingOnly ? t('no_debts_found') : t('no_movements_found')}
                                 </td>
                             </tr>
@@ -143,3 +150,4 @@ const InstitutionTransactionsTable = ({
 };
 
 export default InstitutionTransactionsTable;
+

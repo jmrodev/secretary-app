@@ -25,6 +25,7 @@ import './TransactionModal.css';
 /**
  * TransactionModal Molecule.
  * Orchestrates the creation and editing of financial records.
+ * Refactored to follow BEM and Atomic Design standards.
  */
 const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requestId }) => {
     const { t } = useLanguage();
@@ -76,7 +77,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
             onClose={onClose}
             title={t('record_payment')}
             footer={
-                <div className="transaction-modal-footer">
+                <div className="transaction-modal__footer">
                     <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
                     <Button onClick={handleSubmit} disabled={loading} variant="primary" icon={<Icon name="check" size="1.2rem" />}>
                         {loading ? t('processing') : t('confirm_payment')}
@@ -106,6 +107,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                             value={formData.type}
                             onChange={e => updateField('type', e.target.value)}
                             options={transactionTypes}
+                            className="transaction-modal__select"
                         />
                     </FormGroup>
                 )}
@@ -124,7 +126,8 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                                 onFocus={() => !initialData?.patientId && setShowPatientList(true)}
                                 placeholder={t('search_name_dni')}
                                 disabled={!!initialData?.patientId}
-                                icon={<Icon name="search" size="1.1rem" />}
+                                icon={<Icon name="SEARCH" size="1.1rem" />}
+                                className="transaction-modal__input"
                             />
                             {showPatientList && patientSearch && !formData.related_user_id && (
                                 <ul className="transaction-modal__results">
@@ -137,7 +140,8 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                                             onClick={() => selectPatient(p)}
                                             className="transaction-modal__item"
                                         >
-                                            {p.full_name} <span className="transaction-modal__hint">{p.dni}</span>
+                                            <span className="transaction-modal__item-name">{p.full_name}</span>
+                                            <span className="transaction-modal__hint">{p.dni}</span>
                                         </li>
                                     ))}
                                 </ul>
@@ -153,6 +157,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                             value={formData.related_user_id}
                             onChange={e => updateField('related_user_id', e.target.value)}
                             options={doctorUserOptions}
+                            className="transaction-modal__select"
                         />
                     </FormGroup>
                 )}
@@ -164,6 +169,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                             value={formData.doctor_id}
                             onChange={e => updateDoctor(e.target.value)}
                             options={doctorOptions}
+                            className="transaction-modal__select"
                         />
                     </FormGroup>
                 )}
@@ -175,11 +181,12 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                             value={formData.service_type}
                             onChange={e => updateServiceType(e.target.value)}
                             options={serviceTypes}
+                            className="transaction-modal__select"
                         />
                     </FormGroup>
                 )}
 
-                {/* Medication Autocomplete - Hidden for specific requests as it comes from the medical side */}
+                {/* Medication Autocomplete */}
                 {!requestId && formData.type === 'income_patient' && (
                     <MedicationInput
                         medications={medications}
@@ -187,21 +194,22 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                         onRemove={removeMedication}
                         selectedPatient={selectedPatient}
                         label={t('medications')}
+                        className="transaction-modal__medication-input"
                     />
                 )}
 
                 {/* Payments Section */}
-                <div className="transaction-modal__payment-methods">
-                    <div className="transaction-modal__totals transaction-modal__totals--main">
+                <div className="transaction-modal__payment-section">
+                    <div className="transaction-modal__totals">
                         {pricingInfo && (
-                            <p className="transaction-modal__pricing-info">
-                                <Icon name="info" size="1.1rem" />
-                                {pricingInfo}
-                            </p>
+                            <div className="transaction-modal__pricing-alert">
+                                <Icon name="INFO" size="1.1rem" className="transaction-modal__pricing-icon" />
+                                <span>{pricingInfo}</span>
+                            </div>
                         )}
-                        <div className="transaction-modal__summary-row">
+                        <div className="transaction-modal__total-display">
                             <span className="transaction-modal__label transaction-modal__label--large">{t('total_to_charge')}:</span>
-                            <div className="transaction-modal__input-wrapper transaction-modal__input-wrapper--large">
+                            <div className="transaction-modal__total-input-wrapper">
                                 <CurrencyInput
                                     value={totalPrice}
                                     onChange={(e) => {
@@ -219,62 +227,71 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
 
                     <div className="transaction-modal__payment-methods-header">
                         <label className="transaction-modal__payment-methods-title">{t('payment_methods')}</label>
-                        <Button variant="ghost" size="sm-compact" onClick={addPaymentMethod} icon={<Icon name="add" size="1.1rem" />}>
+                        <Button 
+                            variant="ghost" 
+                            size="sm-compact" 
+                            onClick={addPaymentMethod} 
+                            icon={<Icon name="ADD_CIRCLE" size="1.1rem" />}
+                            className="transaction-modal__add-btn"
+                        >
                             {t('add_payment_method')}
                         </Button>
                     </div>
 
-                    {formData.payments.map((payment, index) => (
-                        <div key={index} className="transaction-modal__payment-row">
-                            <div className="transaction-modal__payment-row-amount">
-                                <CurrencyInput
-                                    placeholder={t('amount_label')}
-                                    value={payment.amount}
-                                    onChange={e => handlePaymentChange(index, 'amount', e.target.value)}
-                                />
-                            </div>
-                            <div className="transaction-modal__payment-row-method">
-                                <Select
-                                    value={payment.method}
-                                    onChange={e => handlePaymentChange(index, 'method', e.target.value)}
-                                    options={paymentMethods}
-                                />
-                            </div>
-                            <div className="transaction-modal__payment-row-action">
-                                {formData.payments.length > 1 && (
-                                    <Button
-                                        variant="ghost"
-                                        size="sm-compact"
-                                        onClick={() => removePaymentMethod(index)}
-                                        icon={<Icon name="close" size="1rem" />}
+                    <div className="transaction-modal__payment-methods-list">
+                        {formData.payments.map((payment, index) => (
+                            <div key={index} className="transaction-modal__payment-row">
+                                <div className="transaction-modal__payment-row-amount">
+                                    <CurrencyInput
+                                        placeholder={t('amount_label')}
+                                        value={payment.amount}
+                                        onChange={e => handlePaymentChange(index, 'amount', e.target.value)}
+                                        className="transaction-modal__payment-input"
                                     />
+                                </div>
+                                <div className="transaction-modal__payment-row-method">
+                                    <Select
+                                        value={payment.method}
+                                        onChange={e => handlePaymentChange(index, 'method', e.target.value)}
+                                        options={paymentMethods}
+                                        className="transaction-modal__payment-select"
+                                    />
+                                </div>
+                                <div className="transaction-modal__payment-row-action">
+                                    {formData.payments.length > 1 && (
+                                        <Button
+                                            variant="ghost"
+                                            size="sm-compact"
+                                            onClick={() => removePaymentMethod(index)}
+                                            icon={<Icon name="CLOSE" size="1rem" />}
+                                            className="transaction-modal__remove-btn"
+                                        />
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="transaction-modal__payment-summary">
+                        {totalPrice > 0 && (
+                            <div className="transaction-modal__summary-content">
+                                <div className="transaction-modal__summary-line">
+                                    <span className="transaction-modal__label">{t('paid')}:</span>
+                                    <span className="transaction-modal__value transaction-modal__value--paid">{formatPrice(currentPaidTotal)}</span>
+                                </div>
+                                {debtAmount > 0 ? (
+                                    <div className="transaction-modal__summary-line">
+                                        <span className="transaction-modal__label">{t('debt')}:</span>
+                                        <span className="transaction-modal__value transaction-modal__value--debt">{formatPrice(debtAmount)}</span>
+                                    </div>
+                                ) : (
+                                    <div className="transaction-modal__status-paid">
+                                        <Icon name="CHECK" size="1.2rem" className="transaction-modal__status-icon" />
+                                        {t('completed_payment')}
+                                    </div>
                                 )}
                             </div>
-                        </div>
-                    ))}
-
-                    <div className="transaction-modal__summary">
-                        <div className="transaction-modal__totals">
-                            {totalPrice > 0 && (
-                                <>
-                                    <div className="transaction-modal__summary-row">
-                                        <span className="transaction-modal__label">{t('paid')}:</span>
-                                        <span className="transaction-modal__value transaction-modal__value--paid">{formatPrice(currentPaidTotal)}</span>
-                                    </div>
-                                    {debtAmount > 0 ? (
-                                        <div className="transaction-modal__summary-row">
-                                            <span className="transaction-modal__label">{t('debt')}:</span>
-                                            <span className="transaction-modal__value transaction-modal__value--debt">{formatPrice(debtAmount)}</span>
-                                        </div>
-                                    ) : (
-                                        <div className="transaction-modal__status">
-                                            <Icon name="check" size="1.2rem" />
-                                            {t('completed_payment')}
-                                        </div>
-                                    )}
-                                </>
-                            )}
-                        </div>
+                        )}
                     </div>
                 </div>
 
@@ -285,6 +302,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                             value={formData.status}
                             onChange={e => updateField('status', e.target.value)}
                             options={statusOptions}
+                            className="transaction-modal__select"
                         />
                     </FormGroup>
                 )}
@@ -296,11 +314,12 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                             type="datetime-local"
                             value={formData.transaction_date}
                             onChange={e => updateField('transaction_date', e.target.value)}
+                            className="transaction-modal__input"
                         />
-                        <p className="transaction-modal__warning">
-                            <Icon name="warning" size="1.1rem" />
-                            {t('edit_date_warning')}
-                        </p>
+                        <div className="transaction-modal__date-warning">
+                            <Icon name="WARNING" size="1.1rem" className="transaction-modal__warning-icon" />
+                            <span>{t('edit_date_warning')}</span>
+                        </div>
                     </FormGroup>
                 )}
 
@@ -310,6 +329,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                         value={formData.description}
                         onChange={e => updateField('description', e.target.value)}
                         placeholder={t('description_placeholder')}
+                        className="transaction-modal__textarea"
                     />
                 </FormGroup>
 
@@ -318,6 +338,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                     <Input
                         type="file"
                         onChange={e => updateField('proof', e.target.files[0])}
+                        className="transaction-modal__file-input"
                     />
                 </FormGroup>
             </div>

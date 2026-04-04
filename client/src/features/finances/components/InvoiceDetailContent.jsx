@@ -1,29 +1,55 @@
 import React from 'react';
 import Button from '../../../components/atoms/Button';
+import Icon from '../../../components/atoms/Icon';
 import { printInvoice } from '../../../utils/printInvoice';
+import './InvoiceDetailContent.css';
 
 /**
  * InvoiceDetailContent Feature Molecule.
  * Modal content for viewing and printing generated invoices within the finances domain.
+ * Refactored to follow BEM and Atomic Design standards.
  */
 const InvoiceDetailContent = ({ tx, formatDate }) => {
     return (
         <div className="invoice-detail animate-fadeIn">
             <h3 className="invoice-detail__title">Comprobante Electrónico</h3>
             <div className="invoice-detail__content">
-                <p className="invoice-detail__row"><strong>Tipo:</strong> Factura {tx.invoice_cbte_tipo === 11 ? 'C' : tx.invoice_cbte_tipo}</p>
-                <p className="invoice-detail__row"><strong>Número:</strong> {String(tx.invoice_punto_vta).padStart(4, '0')}-{String(tx.invoice_number).padStart(8, '0')}</p>
-                <p className="invoice-detail__row"><strong>CAE:</strong> {tx.invoice_cae}</p>
-                <p className="invoice-detail__row"><strong>Vto. CAE:</strong> {formatDate(tx.invoice_cae_vto, { fallback: '-' })}</p>
-                <hr className="invoice-detail__divider" style={{ margin: '1rem 0', borderColor: 'var(--border-color)' }} />
-                <p className="invoice-detail__row"><strong>Paciente:</strong> {tx.patient_full_name}</p>
-                <p className="invoice-detail__row"><strong>Médico:</strong> {tx.doctor_name}</p>
-                <p className="invoice-detail__row"><strong>Monto Total:</strong> ${tx.amount}</p>
+                <p className="invoice-detail__row">
+                    <strong>Tipo:</strong> 
+                    <span>Factura {tx.invoice_cbte_tipo === 11 ? 'C' : tx.invoice_cbte_tipo}</span>
+                </p>
+                <p className="invoice-detail__row">
+                    <strong>Número:</strong> 
+                    <span>{String(tx.invoice_punto_vta).padStart(4, '0')}-{String(tx.invoice_number).padStart(8, '0')}</span>
+                </p>
+                <p className="invoice-detail__row">
+                    <strong>CAE:</strong> 
+                    <span>{tx.invoice_cae}</span>
+                </p>
+                <p className="invoice-detail__row">
+                    <strong>Vto. CAE:</strong> 
+                    <span>{formatDate(tx.invoice_cae_vto, { fallback: '-' })}</span>
+                </p>
+                
+                <hr className="invoice-detail__divider" />
+                
+                <p className="invoice-detail__row">
+                    <strong>Paciente:</strong> 
+                    <span>{tx.patient_full_name}</span>
+                </p>
+                <p className="invoice-detail__row">
+                    <strong>Médico:</strong> 
+                    <span>{tx.doctor_name}</span>
+                </p>
+                <p className="invoice-detail__row">
+                    <strong>Monto Total:</strong> 
+                    <span className="invoice-detail__amount">${Number(tx.amount).toLocaleString()}</span>
+                </p>
             </div>
-            <div className="invoice-detail__actions" style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <div className="invoice-detail__actions">
                 <Button
                     variant="primary"
-                    size="sm"
+                    size="md"
                     onClick={() => printInvoice({
                         ptoVta: tx.invoice_punto_vta,
                         number: tx.invoice_number,
@@ -37,7 +63,7 @@ const InvoiceDetailContent = ({ tx, formatDate }) => {
                         doctorCuit: tx.doctor_cuit,
                         amount: tx.amount
                     })}
-                    icon="🖨️"
+                    icon={<Icon name="PRINT" size="1.2rem" />}
                 >
                     Imprimir Factura
                 </Button>

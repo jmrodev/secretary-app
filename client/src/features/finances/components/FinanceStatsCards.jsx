@@ -6,6 +6,7 @@ import './FinanceStatsCards.css';
 /**
  * FinanceStatsCards Feature Organism.
  * Displays financial breakdown by category and payment methods.
+ * Refactored to follow BEM and Atomic Design standards.
  */
 const FinanceStatsCards = ({ stats, t }) => {
     // Separate different types of stats
@@ -33,30 +34,17 @@ const FinanceStatsCards = ({ stats, t }) => {
         pending_debt: 'warning'
     };
 
-    // Color mapping for icons to maintain rich aesthetics
-    const typeColors = {
-        cash: 'var(--green-600)',
-        transfer: 'var(--blue-600)',
-        withdrawal: 'var(--orange-600)',
-        expenses: 'var(--red-600)',
-        appointments: 'var(--indigo-600)',
-        prescriptions: 'var(--pink-600)',
-        licenses: 'var(--sky-600)',
-        certificates: 'var(--amber-600)',
-        net_cash: 'var(--yellow-600)',
-        cash_balance: 'var(--green-700)',
-        transfer_balance: 'var(--blue-700)',
-        total_net: 'var(--purple-600)',
-        pending_debt: 'var(--error)'
-    };
-
     return (
         <div className="finance-stats">
             {/* Breakdown Cards (Appointments, Prescriptions, Licenses, Certificates) */}
             {otherStats.map((s, idx) => (
                 <Card key={idx} className="finance-stats__card">
                     <span className="finance-stats__title">
-                        <Icon name={typeIcons[s.type]} size="0.8rem" color={typeColors[s.type]} className="finance-stats__icon" />
+                        <Icon 
+                            name={typeIcons[s.type]} 
+                            size="0.8rem" 
+                            className={`finance-stats__icon finance-stats__icon--${s.type}`} 
+                        />
                         {t(s.type) || s.type}
                     </span>
 
@@ -133,7 +121,11 @@ const FinanceStatsCards = ({ stats, t }) => {
                                     return (
                                         <tr key={idx} className="finance-stats__method-row">
                                             <td className="finance-stats__table-cell finance-stats__label">
-                                                <Icon name={typeIcons[s.type]} size="0.7rem" color={typeColors[s.type]} className="finance-stats__icon" />
+                                                <Icon 
+                                                    name={typeIcons[s.type]} 
+                                                    size="0.7rem" 
+                                                    className={`finance-stats__icon finance-stats__icon--${s.type}`} 
+                                                />
                                                 {(t(s.type) || s.type).toUpperCase()}
                                                 {s.type === 'cash' ? ` (${t('concept_income')})` : ''}
                                                 {s.type === 'transfer' ? ` (${t('concept_income')})` : ''}
@@ -153,7 +145,11 @@ const FinanceStatsCards = ({ stats, t }) => {
                                 {financialSummary.map((s, idx) => (
                                     <tr key={`summary-${idx}`} className="finance-stats__summary-row">
                                         <td className="finance-stats__table-cell finance-stats__label finance-stats__label--bold">
-                                            <Icon name={typeIcons[s.type]} size="0.75rem" color={typeColors[s.type]} className="finance-stats__icon" />
+                                            <Icon 
+                                                name={typeIcons[s.type]} 
+                                                size="0.75rem" 
+                                                className={`finance-stats__icon finance-stats__icon--${s.type}`} 
+                                            />
                                             = {(t(s.type) || s.type).toUpperCase()}
                                         </td>
                                         <td className="finance-stats__table-cell finance-stats__table-cell--right finance-stats__value--purple finance-stats__value--bold">

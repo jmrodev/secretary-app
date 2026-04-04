@@ -17,33 +17,33 @@ const InstitutionSummary = ({
     if (!report) return null;
 
     return (
-        <div className="inst-header-bar animate-fadeIn">
-            <div className="inst-stats">
-                <div className="inst-stat-item">
-                    <div className="inst-stat-icon inst-stat-icon--blue">
-                        <Icon name="history" size="1.2rem" />
+        <div className="institution-finances__header-bar animate-fadeIn">
+            <div className="institution-finances__stats">
+                <div className="institution-finances__stat-item">
+                    <div className="institution-finances__stat-icon institution-finances__stat-icon--blue">
+                        <Icon name="HISTORY" size="1.2rem" />
                     </div>
-                    <div>
-                        <p className="inst-stat-label">{t('historical_total')}</p>
-                        <p className="inst-stat-value">${Number(report.total_amount || 0).toLocaleString()}</p>
-                    </div>
-                </div>
-                <div className="inst-stat-item">
-                    <div className="inst-stat-icon inst-stat-icon--red">
-                        <Icon name="timer" size="1.2rem" />
-                    </div>
-                    <div>
-                        <p className="inst-stat-label">{t('pending')}</p>
-                        <p className="inst-stat-value inst-stat-value--red">${Number(report.total_pending || 0).toLocaleString()}</p>
+                    <div className="institution-finances__stat-info">
+                        <p className="institution-finances__stat-label">{t('historical_total')}</p>
+                        <p className="institution-finances__stat-value">${Number(report.total_amount || 0).toLocaleString()}</p>
                     </div>
                 </div>
-                <div className="inst-stat-item">
-                    <div className="inst-stat-icon inst-stat-icon--orange">
-                        <Icon name="pending_actions" size="1.2rem" />
+                <div className="institution-finances__stat-item">
+                    <div className="institution-finances__stat-icon institution-finances__stat-icon--red">
+                        <Icon name="PENDING" size="1.2rem" />
                     </div>
-                    <div>
-                        <p className="inst-stat-label">{t('unpaid_count')}</p>
-                        <p className="inst-stat-value">
+                    <div className="institution-finances__stat-info">
+                        <p className="institution-finances__stat-label">{t('pending')}</p>
+                        <p className="institution-finances__stat-value institution-finances__stat-value--red">${Number(report.total_pending || 0).toLocaleString()}</p>
+                    </div>
+                </div>
+                <div className="institution-finances__stat-item">
+                    <div className="institution-finances__stat-icon institution-finances__stat-icon--orange">
+                        <Icon name="NOTES" size="1.2rem" />
+                    </div>
+                    <div className="institution-finances__stat-info">
+                        <p className="institution-finances__stat-label">{t('unpaid_count')}</p>
+                        <p className="institution-finances__stat-value">
                             {report.transactions.filter(tr => {
                                 const paymentLower = (tr.payment_status || '').toLowerCase();
                                 const statusLower = (tr.appointment_status || '').toLowerCase();
@@ -54,13 +54,13 @@ const InstitutionSummary = ({
                     </div>
                 </div>
                 {selectedAmount > 0 && (
-                    <div className="inst-stat-item" style={{ border: '2px solid #38bdf8' }}>
-                        <div className="inst-stat-icon inst-stat-icon--green">
-                            <Icon name="check_circle" size="1.2rem" />
+                    <div className="institution-finances__stat-item institution-finances__stat-item--selected">
+                        <div className="institution-finances__stat-icon institution-finances__stat-icon--green">
+                            <Icon name="CONFIRMED" size="1.2rem" />
                         </div>
-                        <div>
-                            <p className="inst-stat-label">A Cobrar</p>
-                            <p className="inst-stat-value" style={{ color: '#16a34a' }}>${Number(selectedAmount).toLocaleString()}</p>
+                        <div className="institution-finances__stat-info">
+                            <p className="institution-finances__stat-label">A Cobrar</p>
+                            <p className="institution-finances__stat-value institution-finances__stat-value--green">${Number(selectedAmount).toLocaleString()}</p>
                         </div>
                     </div>
                 )}

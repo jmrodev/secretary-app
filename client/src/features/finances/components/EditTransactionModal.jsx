@@ -12,6 +12,7 @@ import './EditTransactionModal.css';
 /**
  * EditTransactionModal Molecule.
  * Simplified modal for quick editing of existing transactions.
+ * Refactored to follow BEM and Atomic Design standards.
  */
 const EditTransactionModal = ({
     isOpen,
@@ -60,6 +61,7 @@ const EditTransactionModal = ({
                     <CurrencyInput
                         value={transaction.amount}
                         onChange={e => handleChange('amount', e.target.value)}
+                        className="edit-transaction-modal__input"
                     />
                 </FormGroup>
 
@@ -68,6 +70,7 @@ const EditTransactionModal = ({
                         value={transaction.description}
                         onChange={e => handleChange('description', e.target.value)}
                         placeholder={t('description_placeholder')}
+                        className="edit-transaction-modal__textarea"
                     />
                 </FormGroup>
 
@@ -76,6 +79,7 @@ const EditTransactionModal = ({
                         value={transaction.method}
                         onChange={e => handleChange('method', e.target.value)}
                         options={paymentMethods}
+                        className="edit-transaction-modal__select"
                     />
                 </FormGroup>
 
@@ -84,6 +88,7 @@ const EditTransactionModal = ({
                         value={transaction.status}
                         onChange={e => handleChange('status', e.target.value)}
                         options={statusOptions}
+                        className="edit-transaction-modal__select"
                     />
                 </FormGroup>
 
@@ -93,13 +98,14 @@ const EditTransactionModal = ({
                             type="datetime-local"
                             value={transaction.transaction_date ? new Date(transaction.transaction_date).toLocaleString('sv').slice(0, 16).replace(' ', 'T') : ''}
                             onChange={e => handleChange('transaction_date', e.target.value)}
+                            className="edit-transaction-modal__input"
                         />
                         <div className="edit-transaction-modal__warning">
-                            <Icon name="warning" size="1rem" />
+                            <Icon name="WARNING" size="1rem" className="edit-transaction-modal__warning-icon" />
                             <span>{t('date_browser_warning') || 'El formato depende de su navegador. Verifique el mes al seleccionar.'}</span>
                         </div>
                         <div className="edit-transaction-modal__warning">
-                            <Icon name="warning" size="1rem" />
+                            <Icon name="WARNING" size="1rem" className="edit-transaction-modal__warning-icon" />
                             <span>{t('date_order_warning') || 'Cuidado: Cambiar la fecha puede afectar el orden cronológico.'}</span>
                         </div>
                     </FormGroup>

@@ -180,6 +180,3 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
 };
 
 export default InstitutionFinances;
-
-
-export default InstitutionFinances;

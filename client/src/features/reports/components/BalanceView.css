@@ -101,15 +101,46 @@
     font-weight: 800;
 }
 
+.balance-view__cell--right {
+    text-align: right !important;
+}
+
+.balance-view__cell--bold {
+    font-weight: 800 !important;
+}
+
+.balance-view__empty-state {
+    padding: 3rem 1rem;
+    text-align: center;
+    border: 2px dashed var(--gray-100);
+    border-radius: var(--radius);
+    background: var(--gray-50);
+}
+
+.balance-view__empty-msg {
+    font-style: italic;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin: 0;
+}
+
 .balance-view__debt-total {
     margin-top: 2rem;
-    padding: 1rem;
+    padding: 1.25rem;
     background: var(--red-50);
-    color: var(--red-700);
+    color: var(--red-800);
     text-align: right;
-    font-weight: 800;
+    font-weight: 700;
     border-radius: var(--radius-sm);
-    border: 1px solid var(--red-100);
+    border-left: 4px solid var(--error);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.balance-view__amount--bold {
+    font-size: 1.25rem;
+    font-weight: 900;
 }
 
 @media (max-width: 1200px) {

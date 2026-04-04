@@ -11,6 +11,7 @@ import './FinanceSidebar.css';
 /**
  * FinanceSidebar Organism.
  * Encapsulates all sidebar actions, filters, and summaries for the Finance page.
+ * Refactored to follow BEM and Atomic Design standards.
  */
 const FinanceSidebar = ({
     isAdminOrSecretary,
@@ -34,24 +35,25 @@ const FinanceSidebar = ({
             <Card className="finance-sidebar__card">
                 <div className="finance-sidebar__stack">
                     {isAdminOrSecretary && (
-                        <div className="sidebar-section">
-                            <label className="sidebar-label">{t('doctor_label')}</label>
+                        <div className="finance-sidebar__section">
+                            <label className="finance-sidebar__label">{t('doctor_label')}</label>
                             <FinanceDoctorFilter
                                 doctors={doctors}
                                 selectedDoctorFilter={selectedDoctorFilter}
                                 setSelectedDoctorFilter={onSelectDoctor}
                                 t={t}
+                                className="finance-sidebar__doctor-filter"
                             />
                         </div>
                     )}
 
                     {user.role !== 'patient' && (
-                        <div className="sidebar-section">
-                            <div className="finance-sidebar__stack--sm">
+                        <div className="finance-sidebar__section">
+                            <div className="finance-sidebar__actions">
                                 <Button
                                     variant="primary"
                                     size="sm"
-                                    className="btn--block btn--justify-start"
+                                    className="finance-sidebar__action-btn"
                                     onClick={onOpenNewTransaction}
                                     icon={<Icon name="add" size="1.1rem" />}
                                 >
@@ -61,7 +63,7 @@ const FinanceSidebar = ({
                                 <Button
                                     variant="secondary"
                                     size="sm"
-                                    className="btn--block btn--justify-start btn--relative"
+                                    className="finance-sidebar__action-btn finance-sidebar__action-btn--badge"
                                     onClick={onOpenPendingClosures}
                                     icon={<Icon name="calendar_view_week" size="1.1rem" />}
                                 >
@@ -81,11 +83,11 @@ const FinanceSidebar = ({
                         const balances = calculateBalanceByMethod(selectedDoctorFilter);
                         if (d && balances.cash > 0) {
                             return (
-                                <div className="sidebar-section">
+                                <div className="finance-sidebar__section">
                                     <Button
                                         variant="secondary"
                                         size="sm"
-                                        className="btn--block btn--justify-start"
+                                        className="finance-sidebar__action-btn"
                                         onClick={() => onOpenCloseBox(d, balances.cash)}
                                         icon={<Icon name="payments" size="1rem" />}
                                     >
@@ -129,4 +131,5 @@ const FinanceSidebar = ({
 };
 
 export default FinanceSidebar;
+
 

@@ -2,10 +2,15 @@ import React from 'react';
 import Modal from '../../../components/molecules/Modal';
 import Button from '../../../components/atoms/Button';
 import Icon from '../../../components/atoms/Icon';
+import Alert from '../../../components/atoms/Alert';
+import FormGroup from '../../../components/molecules/FormGroup';
+import Input from '../../../components/atoms/Input';
+import Select from '../../../components/atoms/Select';
 
 /**
  * InstitutionPaymentModal Molecule.
  * Modal for registering payments from institutions.
+ * Refactored to use Atomic Design components and BEM.
  */
 const InstitutionPaymentModal = ({
     isOpen,
@@ -15,50 +20,49 @@ const InstitutionPaymentModal = ({
     onSubmit,
     t
 }) => {
+    const hasTransactions = paymentData.transaction_ids?.length > 0;
+
+    const paymentMethods = [
+        { value: 'transfer', label: t('transfer') },
+        { value: 'cash', label: t('cash') },
+        { value: 'check', label: 'Cheque' },
+        { value: 'other', label: t('other') || 'Otro' }
+    ];
+
     return (
         <Modal
             isOpen={isOpen}
             onClose={onClose}
             title={t('register_inst_payment')}
         >
-            <div className="inst-finances__grid">
-                <div className={`flex items-start gap-3 text-sm p-4 rounded-xl border ${
-                    paymentData.transaction_ids?.length > 0
-                        ? 'text-green-700 bg-green-50 border-green-100'
-                        : 'text-blue-700 bg-blue-50 border-blue-100'
-                }`}>
-                    <Icon name={paymentData.transaction_ids?.length > 0 ? 'check_circle' : 'info'} size="1.25rem" style={{ marginTop: '0.125rem' }} />
-                    <p>
-                        {paymentData.transaction_ids?.length > 0
+            <div className="institution-finances__grid">
+                <Alert
+                    variant={hasTransactions ? 'success' : 'info'}
+                    message={
+                        hasTransactions
                             ? `Se pagarán las ${paymentData.transaction_ids.length} transacciones seleccionadas por $${Number(paymentData.amount).toLocaleString()}.`
                             : t('payment_info_msg')
-                        }
-                    </p>
-                </div>
-                <div className="form-group-bem">
-                    <label className="input-label">{t('amount_paid')}</label>
-                    <input
+                    }
+                />
+
+                <FormGroup label={t('amount_paid')} required>
+                    <Input
                         type="number"
-                        className="input-field"
                         value={paymentData.amount}
                         onChange={e => setPaymentData({ ...paymentData, amount: e.target.value })}
                         placeholder="0.00"
                     />
-                </div>
-                <div className="form-group-bem">
-                    <label className="input-label">{t('payment_method')}</label>
-                    <select
-                        className="input-field"
+                </FormGroup>
+
+                <FormGroup label={t('payment_method')} required>
+                    <Select
                         value={paymentData.method}
                         onChange={e => setPaymentData({ ...paymentData, method: e.target.value })}
-                    >
-                        <option value="transfer">{t('transfer')}</option>
-                        <option value="cash">{t('cash')}</option>
-                        <option value="check">Cheque</option>
-                        <option value="other">{t('other') || 'Otro'}</option>
-                    </select>
-                </div>
-                <div className="modal-footer modal-footer--right" style={{ marginTop: '1.5rem' }}>
+                        options={paymentMethods}
+                    />
+                </FormGroup>
+
+                <div className="institution-finances__actions institution-finances__actions--footer">
                     <Button variant="secondary" onClick={onClose}>
                         {t('cancel')}
                     </Button>
@@ -76,3 +80,4 @@ const InstitutionPaymentModal = ({
 };
 
 export default InstitutionPaymentModal;
+

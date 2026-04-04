@@ -19,7 +19,7 @@ const CashBoxDeliveryModal = ({ isOpen, onClose, onConfirm, doctorName, balance,
             footer={
                 <div className="cash-box-delivery__footer">
                     <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
-                    <Button variant="primary" onClick={onConfirm} icon={<Icon name="payments" size="1.1rem" />}>
+                    <Button variant="primary" onClick={onConfirm} icon={<Icon name="FINANCES" size="1.1rem" />}>
                         {t('confirm_delivery')}
                     </Button>
                 </div>
@@ -40,7 +40,7 @@ const CashBoxDeliveryModal = ({ isOpen, onClose, onConfirm, doctorName, balance,
                 </FormGroup>
 
                 <div className="cash-box-delivery__warning">
-                    <Icon name="warning" size="1.1rem" />
+                    <Icon name="WARNING" size="1.1rem" />
                     <span>{t('close_box_warning') || 'Esta acción registrará una salida de efectivo en la caja del profesional y ajustará el saldo.'}</span>
                 </div>
             </div>

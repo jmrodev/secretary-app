@@ -4,6 +4,7 @@ import Icon from '../../../components/atoms/Icon';
 /**
  * InstitutionPatientsTable Molecule.
  * Renders the roster of patients associated with an institution.
+ * Follows BEM naming for institution-finances component namespace.
  */
 const InstitutionPatientsTable = ({
     patients,
@@ -11,46 +12,46 @@ const InstitutionPatientsTable = ({
     t
 }) => {
     return (
-        <div className="inst-table-container animate-fadeIn">
-            <div className="inst-table-header">
-                <h3 className="inst-table-title">
-                    <Icon name="groups" /> {t('patient_list_padron')}
-                    <span className="inst-table-badge">{patients.length}</span>
+        <div className="institution-finances__table-container animate-fadeIn">
+            <div className="institution-finances__table-header">
+                <h3 className="institution-finances__table-title">
+                    <Icon name="PATIENTS" size="1.2rem" /> {t('patient_list_padron')}
+                    <span className="institution-finances__table-badge">{patients.length}</span>
                 </h3>
             </div>
 
-            <div className="inst-table-wrapper">
-                <table className="inst-data-table">
+            <div className="institution-finances__table-wrapper">
+                <table className="institution-finances__table">
                     <thead>
                         <tr>
                             <th>{t('full_name')}</th>
                             <th>{t('dni')}</th>
-                            <th align="center">{t('last_visit')}</th>
-                            <th align="right">{t('tariff_copay')}</th>
+                            <th className="institution-finances__cell--center">{t('last_visit')}</th>
+                            <th className="institution-finances__cell--right">{t('tariff_copay')}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {patients.map(p => (
                             <tr key={p.id}>
                                 <td>
-                                    <a href={`/patients?search=${p.dni}`} className="inst-patient-link">
+                                    <a href={`/patients?search=${p.dni}`} className="institution-finances__patient-link">
                                         {p.full_name}
                                     </a>
                                 </td>
-                                <td className="inst-data-table__mono-xs">{p.dni}</td>
-                                <td align="center">{formatDate(p.last_visit_date)}</td>
-                                <td align="right">
+                                <td>{p.dni}</td>
+                                <td className="institution-finances__cell--center">{formatDate(p.last_visit_date)}</td>
+                                <td className="institution-finances__cell--right">
                                     {p.tariff_override ? (
-                                        <span className="inst-data-table__amount-override">${p.tariff_override}</span>
+                                        <span className="institution-finances__amount-bold">${p.tariff_override}</span>
                                     ) : (
-                                        <span className="inst-data-table__percent">{p.tariff_percent || 0}%</span>
+                                        <span className="institution-finances__text-muted">{p.tariff_percent || 0}%</span>
                                     )}
                                 </td>
                             </tr>
                         ))}
                         {patients.length === 0 && (
                             <tr>
-                                <td colSpan="4" className="inst-data-table__empty">
+                                <td colSpan="4" className="institution-finances__empty">
                                     {t('no_patients_found')}
                                 </td>
                             </tr>
@@ -63,3 +64,4 @@ const InstitutionPatientsTable = ({
 };
 
 export default InstitutionPatientsTable;
+

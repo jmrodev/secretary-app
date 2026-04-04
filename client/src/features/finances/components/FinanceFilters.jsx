@@ -2,12 +2,15 @@ import React from 'react';
 import Input from '../../../components/atoms/Input';
 import Select from '../../../components/atoms/Select';
 import Icon from '../../../components/atoms/Icon';
+import Button from '../../../components/atoms/Button';
+import FormGroup from '../../../components/molecules/FormGroup';
 import { getMonthsOptions } from '../../../utils/dateUtils';
 import './FinanceFilters.css';
 
 /**
  * FinanceFilters Molecule.
  * Provides search and filtering capabilities for the finance ledger.
+ * Refactored to use BEM and Atomic Design components.
  */
 const FinanceFilters = ({
     filters,
@@ -64,10 +67,13 @@ const FinanceFilters = ({
         }))
     ];
 
+    const hasActiveFilters = searchQuery || statusFilter !== 'all' || typeFilter !== 'all' || 
+                             monthFilter !== 'all' || yearFilter !== 'all' || paymentMethodFilter !== 'all';
+
     return (
         <div className="finance-filters">
             <div className="finance-filters__search-wrapper">
-                <Icon name="SEARCH" className="finance-filters__search-icon" />
+                <Icon name="SEARCH" className="finance-filters__search-icon" size="1.2rem" />
                 <Input
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -78,72 +84,70 @@ const FinanceFilters = ({
             </div>
 
             <div className="finance-filters__groups">
-                <div className="finance-filters__group">
-                    <label className="finance-filters__label">{t('status')}</label>
+                <FormGroup label={t('status')} className="finance-filters__group">
                     <Select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
                         options={statusOptions}
                         size="sm"
                     />
-                </div>
+                </FormGroup>
 
-                <div className="finance-filters__group">
-                    <label className="finance-filters__label">{t('type')}</label>
+                <FormGroup label={t('type')} className="finance-filters__group">
                     <Select
                         value={typeFilter}
                         onChange={(e) => setTypeFilter(e.target.value)}
                         options={typeOptions}
                         size="sm"
                     />
-                </div>
+                </FormGroup>
 
-                <div className="finance-filters__group">
-                    <label className="finance-filters__label">{t('month')}</label>
+                <FormGroup label={t('month')} className="finance-filters__group">
                     <Select
                         value={monthFilter}
                         onChange={(e) => setMonthFilter(e.target.value)}
                         options={monthOptions}
                         size="sm"
                     />
-                </div>
+                </FormGroup>
 
-                <div className="finance-filters__group">
-                    <label className="finance-filters__label">{t('year')}</label>
+                <FormGroup label={t('year')} className="finance-filters__group">
                     <Select
                         value={yearFilter}
                         onChange={(e) => setYearFilter(e.target.value)}
                         options={yearOptions}
                         size="sm"
                     />
-                </div>
+                </FormGroup>
 
-                <div className="finance-filters__group">
-                    <label className="finance-filters__label">{t('payment_method') || 'Método de pago'}</label>
+                <FormGroup label={t('payment_method') || 'Método de pago'} className="finance-filters__group">
                     <Select
                         value={paymentMethodFilter}
                         onChange={(e) => setPaymentMethodFilter(e.target.value)}
                         options={paymentMethodOptions}
                         size="sm"
                     />
-                </div>
+                </FormGroup>
 
-                {(searchQuery || statusFilter !== 'all' || typeFilter !== 'all' || monthFilter !== 'all' || yearFilter !== 'all' || paymentMethodFilter !== 'all') && (
-                    <Button
-                        variant="ghost"
-                        className="btn--block finance-filters__clear"
-                        onClick={() => {
-                            setSearchQuery('');
-                            setStatusFilter('all');
-                            setTypeFilter('all');
-                            setMonthFilter('all');
-                            setYearFilter('all');
-                            setPaymentMethodFilter('all');
-                        }}
-                        icon={<Icon name="CANCEL" size="1.1rem" />}
-                    >
-                        {t('clear_filters') || 'Limpiar'}
-                    </Button>
+                {hasActiveFilters && (
+                    <div className="finance-filters__group finance-filters__group--actions">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="finance-filters__clear"
+                            onClick={() => {
+                                setSearchQuery('');
+                                setStatusFilter('all');
+                                setTypeFilter('all');
+                                setMonthFilter('all');
+                                setYearFilter('all');
+                                setPaymentMethodFilter('all');
+                            }}
+                            icon={<Icon name="CANCEL" size="1.1rem" />}
+                        >
+                            {t('clear_filters') || 'Limpiar'}
+                        </Button>
+                    </div>
                 )}
             </div>
         </div>

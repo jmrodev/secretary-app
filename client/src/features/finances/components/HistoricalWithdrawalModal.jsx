@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import Modal from '../../../components/molecules/Modal';
 import Button from '../../../components/atoms/Button';
 import Input from '../../../components/atoms/Input';
+import Select from '../../../components/atoms/Select';
 import Icon from '../../../components/atoms/Icon';
+import FormGroup from '../../../components/molecules/FormGroup';
 import './HistoricalWithdrawalModal.css';
 
 /**
  * HistoricalWithdrawalModal Feature Molecule.
  * Allows administrative staff to record manual cash withdrawals from previous dates.
- * Essential for correcting discrepancies or late-entry accounting in the finances domain.
+ * Refactored to follow BEM and Atomic Design standards.
  */
 const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) => {
     const [amount, setAmount] = useState('');
@@ -19,7 +21,6 @@ const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) =
 
     useEffect(() => {
         if (isOpen) {
-            // Reset fields to reasonable defaults
             setAmount('');
             const today = new Date().toISOString().split('T')[0];
             setDate(today);
@@ -42,29 +43,35 @@ const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) =
         });
     };
 
+    const doctorOptions = doctors.map(d => ({ value: d.id, label: d.full_name }));
+
     return (
         <Modal
             isOpen={isOpen}
             onClose={onClose}
             title={t('manual_withdrawal') || "Registro de Retiro Manual / Pasado"}
+            footer={
+                <div className="historical-withdrawal-modal__footer">
+                    <Button variant="secondary" onClick={onClose}>
+                        {t('cancel')}
+                    </Button>
+                    <Button onClick={handleSubmit} variant="primary" icon={<Icon name="save" size="1.2rem" />}>
+                        {t('save_withdrawal') || "Registrar Retiro"}
+                    </Button>
+                </div>
+            }
         >
-            <form onSubmit={handleSubmit} className="historical-withdrawal-form animate-fadeIn">
-                <div className="form-group">
-                    <label className="form-label">{t('doctor') || 'Doctor'}</label>
-                    <select
-                        className="form-control"
+            <div className="historical-withdrawal-modal">
+                <FormGroup label={t('doctor') || 'Doctor'}>
+                    <Select
                         value={doctorId}
                         onChange={(e) => setDoctorId(e.target.value)}
-                        required
-                    >
-                        {doctors.map(d => (
-                            <option key={d.id} value={d.id}>{d.full_name}</option>
-                        ))}
-                    </select>
-                </div>
+                        options={doctorOptions}
+                        className="historical-withdrawal-modal__select"
+                    />
+                </FormGroup>
 
-                <div className="form-group">
-                    <label className="form-label">{t('amount') || 'Monto ($)'}</label>
+                <FormGroup label={t('amount') || 'Monto ($)'}>
                     <Input
                         type="number"
                         value={amount}
@@ -73,48 +80,40 @@ const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) =
                         required
                         min="0"
                         step="0.01"
+                        className="historical-withdrawal-modal__input"
                     />
-                </div>
+                </FormGroup>
 
-                <div className="item-grid">
-                    <div className="form-group">
-                        <label className="form-label">{t('date') || 'Fecha'}</label>
+                <div className="historical-withdrawal-modal__grid">
+                    <FormGroup label={t('date') || 'Fecha'}>
                         <Input
                             type="date"
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
                             required
+                            className="historical-withdrawal-modal__input"
                         />
-                    </div>
-                    <div className="form-group">
-                        <label className="form-label">{t('time') || 'Hora'}</label>
+                    </FormGroup>
+                    <FormGroup label={t('time') || 'Hora'}>
                         <Input
                             type="time"
                             value={time}
                             onChange={(e) => setTime(e.target.value)}
                             required
+                            className="historical-withdrawal-modal__input"
                         />
-                    </div>
+                    </FormGroup>
                 </div>
 
-                <div className="form-group">
-                    <label className="form-label">{t('description') || 'Descripción'}</label>
+                <FormGroup label={t('description') || 'Descripción'}>
                     <Input
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="Ej: Cierre del día martes"
+                        className="historical-withdrawal-modal__input"
                     />
-                </div>
-
-                <div className="historical-withdrawal-form__actions">
-                    <Button type="button" variant="secondary" onClick={onClose}>
-                        {t('cancel')}
-                    </Button>
-                    <Button type="submit" variant="primary" icon={<Icon name="save" size="1rem" />}>
-                        {t('save_withdrawal') || "Registrar Retiro"}
-                    </Button>
-                </div>
-            </form>
+                </FormGroup>
+            </div>
         </Modal>
     );
 };
