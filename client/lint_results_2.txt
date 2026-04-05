@@ -1,0 +1,782 @@
+
+> client@1.9.3 lint
+> eslint .
+
+
+/app/client/src/components/atoms/CurrencyInput.jsx
+  27:29  error  Error: Cannot access variable before it is declared
+
+`format` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  25 |     useEffect(() => {
+  26 |         if (value !== undefined && value !== null) {
+> 27 |             setDisplayValue(format(value));
+     |                             ^^^^^^ `format` accessed before it is declared
+  28 |         } else {
+  29 |             setDisplayValue('');
+  30 |         }
+
+  31 |     }, [value]);
+  32 |
+> 33 |     const format = (val) => {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 34 |         if (!val && val !== 0) return '';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 35 |         return new Intl.NumberFormat('es-AR', {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 36 |             style: 'decimal',
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 37 |             minimumFractionDigits: 0,
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 38 |             maximumFractionDigits: 0
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 39 |         }).format(Number(val));
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 40 |     };
+     | ^^^^^^^ `format` is declared here
+  41 |
+  42 |     const handleChange = (e) => {
+  43 |         const inputVal = e.target.value;  react-hooks/immutability
+
+/app/client/src/components/atoms/Pagination.jsx
+  6:62  error  't' is defined but never used  no-unused-vars
+
+/app/client/src/components/molecules/ConfirmModal.jsx
+  20:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  18 |     useEffect(() => {
+  19 |         if (isOpen) {
+> 20 |             setInputValue(initialValue);
+     |             ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  21 |         }
+  22 |     }, [isOpen, initialValue]);
+  23 |  react-hooks/set-state-in-effect
+
+/app/client/src/components/molecules/ErrorBoundary.jsx
+  38:18  error  'process' is not defined  no-undef
+
+/app/client/src/components/molecules/NavTabs.jsx
+  6:45  error  'userRole' is defined but never used  no-unused-vars
+  6:64  error  'isAdmin' is defined but never used   no-unused-vars
+
+/app/client/src/constants/languages/en.js
+  138:5  error  Duplicate key 'rescheduled'                     no-dupe-keys
+  141:5  error  Duplicate key 'meds_placeholder'                no-dupe-keys
+  142:5  error  Duplicate key 'instructions_placeholder'        no-dupe-keys
+  143:5  error  Duplicate key 'dose_placeholder'                no-dupe-keys
+  144:5  error  Duplicate key 'freq_placeholder'                no-dupe-keys
+  145:5  error  Duplicate key 'qty_placeholder'                 no-dupe-keys
+  146:5  error  Duplicate key 'dose_help'                       no-dupe-keys
+  147:5  error  Duplicate key 'freq_help'                       no-dupe-keys
+  148:5  error  Duplicate key 'qty_help'                        no-dupe-keys
+  166:5  error  Duplicate key 'system_operational'              no-dupe-keys
+  167:5  error  Duplicate key 'no_appointments_today'           no-dupe-keys
+  168:5  error  Duplicate key 'today_schedule'                  no-dupe-keys
+  169:5  error  Duplicate key 'dashboard'                       no-dupe-keys
+  171:5  error  Duplicate key 'quick_actions'                   no-dupe-keys
+  172:5  error  Duplicate key 'notifications'                   no-dupe-keys
+  264:5  error  Duplicate key 'status'                          no-dupe-keys
+  357:5  error  Duplicate key 'medications'                     no-dupe-keys
+  393:5  error  Duplicate key 'actions'                         no-dupe-keys
+  428:5  error  Duplicate key 'save'                            no-dupe-keys
+  440:5  error  Duplicate key 'delete'                          no-dupe-keys
+  476:5  error  Duplicate key 'insurance'                       no-dupe-keys
+  518:5  error  Duplicate key 'available'                       no-dupe-keys
+  525:5  error  Duplicate key 'confirm_payment'                 no-dupe-keys
+  532:5  error  Duplicate key 'patient'                         no-dupe-keys
+  535:5  error  Duplicate key 'select_doctor'                   no-dupe-keys
+  544:5  error  Duplicate key 'debt'                            no-dupe-keys
+  551:5  error  Duplicate key 'appointments'                    no-dupe-keys
+  554:5  error  Duplicate key 'prescription'                    no-dupe-keys
+  562:5  error  Duplicate key 'payment_methods'                 no-dupe-keys
+  563:5  error  Duplicate key 'this_day'                        no-dupe-keys
+  564:5  error  Duplicate key 'this_week'                       no-dupe-keys
+  565:5  error  Duplicate key 'this_month'                      no-dupe-keys
+  566:5  error  Duplicate key 'this_year'                       no-dupe-keys
+  572:5  error  Duplicate key 'status'                          no-dupe-keys
+  573:5  error  Duplicate key 'paid'                            no-dupe-keys
+  653:5  error  Duplicate key 'concept_income'                  no-dupe-keys
+  656:5  error  Duplicate key 'current_system_balance'          no-dupe-keys
+  657:5  error  Duplicate key 'amount_delivered'                no-dupe-keys
+  658:5  error  Duplicate key 'confirm_delivery'                no-dupe-keys
+  659:5  error  Duplicate key 'close_box_warning'               no-dupe-keys
+  672:5  error  Duplicate key 'doctor_payer'                    no-dupe-keys
+  673:5  error  Duplicate key 'beneficiary_doctor_cash_box'     no-dupe-keys
+  675:5  error  Duplicate key 'add_payment_method'              no-dupe-keys
+  677:5  error  Duplicate key 'proof_payment_optional'          no-dupe-keys
+  680:5  error  Duplicate key 'view_all'                        no-dupe-keys
+  681:5  error  Duplicate key 'months_array'                    no-dupe-keys
+  682:5  error  Duplicate key 'licenses'                        no-dupe-keys
+  683:5  error  Duplicate key 'prescriptions'                   no-dupe-keys
+  684:5  error  Duplicate key 'certificates'                    no-dupe-keys
+  685:5  error  Duplicate key 'appointments'                    no-dupe-keys
+  693:5  error  Duplicate key 'diagnosis'                       no-dupe-keys
+  694:5  error  Duplicate key 'days'                            no-dupe-keys
+  697:5  error  Duplicate key 'bonified'                        no-dupe-keys
+  700:5  error  Duplicate key 'view_all'                        no-dupe-keys
+  728:5  error  Duplicate key 'cash'                            no-dupe-keys
+  729:5  error  Duplicate key 'transfer'                        no-dupe-keys
+  730:5  error  Duplicate key 'withdrawal'                      no-dupe-keys
+  731:5  error  Duplicate key 'holiday'                         no-dupe-keys
+  732:5  error  Duplicate key 'amount'                          no-dupe-keys
+  733:5  error  Duplicate key 'patient_label'                   no-dupe-keys
+  734:5  error  Duplicate key 'doctor_label'                    no-dupe-keys
+  735:5  error  Duplicate key 'status'                          no-dupe-keys
+  736:5  error  Duplicate key 'payment'                         no-dupe-keys
+  737:5  error  Duplicate key 'time_header'                     no-dupe-keys
+  738:5  error  Duplicate key 'medications'                     no-dupe-keys
+  739:5  error  Duplicate key 'pending_debt'                    no-dupe-keys
+  740:5  error  Duplicate key 'total_debt'                      no-dupe-keys
+  741:5  error  Duplicate key 'date_label'                      no-dupe-keys
+  751:5  error  Duplicate key 'cash_balance'                    no-dupe-keys
+  770:5  error  Duplicate key 'consultation_price'              no-dupe-keys
+  779:5  error  Duplicate key 'save_changes'                    no-dupe-keys
+  809:5  error  Duplicate key 'view_all'                        no-dupe-keys
+  826:5  error  Duplicate key 'period'                          no-dupe-keys
+  827:5  error  Duplicate key 'group_total'                     no-dupe-keys
+  828:5  error  Duplicate key 'cash'                            no-dupe-keys
+  829:5  error  Duplicate key 'transfer'                        no-dupe-keys
+  830:5  error  Duplicate key 'withdrawal'                      no-dupe-keys
+  831:5  error  Duplicate key 'appointments'                    no-dupe-keys
+  832:5  error  Duplicate key 'prescriptions'                   no-dupe-keys
+  847:5  error  Duplicate key 'consultation_booking'            no-dupe-keys
+  848:5  error  Duplicate key 'consultation_patient_share'      no-dupe-keys
+  849:5  error  Duplicate key 'consultation_institution_share'  no-dupe-keys
+  850:5  error  Duplicate key 'payment_appointment_on'          no-dupe-keys
+  851:5  error  Duplicate key 'cash_box_delivery_to'            no-dupe-keys
+  852:5  error  Duplicate key 'request_license_for'             no-dupe-keys
+  853:5  error  Duplicate key 'request_prescription_for'        no-dupe-keys
+  876:5  error  Duplicate key 'active'                          no-dupe-keys
+  877:5  error  Duplicate key 'inactive'                        no-dupe-keys
+  880:5  error  Duplicate key 'pending_debt'                    no-dupe-keys
+  881:5  error  Duplicate key 'loading_report'                  no-dupe-keys
+  884:5  error  Duplicate key 'no_patients_found'               no-dupe-keys
+  887:5  error  Duplicate key 'error_saving'                    no-dupe-keys
+  910:5  error  Duplicate key 'professional_bio'                no-dupe-keys
+  919:5  error  Duplicate key 'doctor_updated'                  no-dupe-keys
+  920:5  error  Duplicate key 'doctor_created'                  no-dupe-keys
+  927:5  error  Duplicate key 'appointments'                    no-dupe-keys
+  928:5  error  Duplicate key 'appointment_history'             no-dupe-keys
+  931:5  error  Duplicate key 'prescriptions'                   no-dupe-keys
+  943:5  error  Duplicate key 'phone'                           no-dupe-keys
+  945:5  error  Duplicate key 'insurance'                       no-dupe-keys
+  946:5  error  Duplicate key 'doctor'                          no-dupe-keys
+  947:5  error  Duplicate key 'status'                          no-dupe-keys
+  948:5  error  Duplicate key 'reason'                          no-dupe-keys
+  950:5  error  Duplicate key 'dose'                            no-dupe-keys
+
+/app/client/src/constants/languages/es.js
+   134:5  error  Duplicate key 'rescheduled'                   no-dupe-keys
+   162:5  error  Duplicate key 'system_operational'            no-dupe-keys
+   163:5  error  Duplicate key 'no_appointments_today'         no-dupe-keys
+   164:5  error  Duplicate key 'today_schedule'                no-dupe-keys
+   165:5  error  Duplicate key 'dashboard'                     no-dupe-keys
+   168:5  error  Duplicate key 'quick_actions'                 no-dupe-keys
+   169:5  error  Duplicate key 'notifications'                 no-dupe-keys
+   262:5  error  Duplicate key 'status'                        no-dupe-keys
+   343:5  error  Duplicate key 'patient'                       no-dupe-keys
+   344:5  error  Duplicate key 'doctor'                        no-dupe-keys
+   346:5  error  Duplicate key 'actions'                       no-dupe-keys
+   376:5  error  Duplicate key 'medications'                   no-dupe-keys
+   401:5  error  Duplicate key 'recent_certificates'           no-dupe-keys
+   448:5  error  Duplicate key 'save'                          no-dupe-keys
+   495:5  error  Duplicate key 'insurance'                     no-dupe-keys
+   518:5  error  Duplicate key 'send_email'                    no-dupe-keys
+   523:5  error  Duplicate key 'view_on_map'                   no-dupe-keys
+   625:5  error  Duplicate key 'confirm_payment'               no-dupe-keys
+   633:5  error  Duplicate key 'select_doctor'                 no-dupe-keys
+   652:5  error  Duplicate key 'payment_methods'               no-dupe-keys
+   724:5  error  Duplicate key 'view_details'                  no-dupe-keys
+   729:5  error  Duplicate key 'concept_income'                no-dupe-keys
+   732:5  error  Duplicate key 'current_system_balance'        no-dupe-keys
+   733:5  error  Duplicate key 'amount_delivered'              no-dupe-keys
+   734:5  error  Duplicate key 'confirm_delivery'              no-dupe-keys
+   735:5  error  Duplicate key 'close_box_warning'             no-dupe-keys
+   748:5  error  Duplicate key 'doctor_payer'                  no-dupe-keys
+   749:5  error  Duplicate key 'beneficiary_doctor_cash_box'   no-dupe-keys
+   751:5  error  Duplicate key 'add_payment_method'            no-dupe-keys
+   756:5  error  Duplicate key 'view_all'                      no-dupe-keys
+   757:5  error  Duplicate key 'months_array'                  no-dupe-keys
+   759:5  error  Duplicate key 'prescriptions'                 no-dupe-keys
+   760:5  error  Duplicate key 'certificates'                  no-dupe-keys
+   761:5  error  Duplicate key 'appointments'                  no-dupe-keys
+   769:5  error  Duplicate key 'diagnosis'                     no-dupe-keys
+   770:5  error  Duplicate key 'days'                          no-dupe-keys
+   773:5  error  Duplicate key 'bonified'                      no-dupe-keys
+   776:5  error  Duplicate key 'view_all'                      no-dupe-keys
+   804:5  error  Duplicate key 'cash'                          no-dupe-keys
+   805:5  error  Duplicate key 'transfer'                      no-dupe-keys
+   806:5  error  Duplicate key 'withdrawal'                    no-dupe-keys
+   807:5  error  Duplicate key 'holiday'                       no-dupe-keys
+   808:5  error  Duplicate key 'amount'                        no-dupe-keys
+   809:5  error  Duplicate key 'patient_label'                 no-dupe-keys
+   810:5  error  Duplicate key 'doctor_label'                  no-dupe-keys
+   811:5  error  Duplicate key 'status'                        no-dupe-keys
+   812:5  error  Duplicate key 'payment'                       no-dupe-keys
+   813:5  error  Duplicate key 'time_header'                   no-dupe-keys
+   814:5  error  Duplicate key 'medications'                   no-dupe-keys
+   815:5  error  Duplicate key 'pending_debt'                  no-dupe-keys
+   816:5  error  Duplicate key 'total_debt'                    no-dupe-keys
+   817:5  error  Duplicate key 'date_label'                    no-dupe-keys
+   827:5  error  Duplicate key 'cash_balance'                  no-dupe-keys
+   846:5  error  Duplicate key 'consultation_price'            no-dupe-keys
+   855:5  error  Duplicate key 'save_changes'                  no-dupe-keys
+   891:5  error  Duplicate key 'view_all'                      no-dupe-keys
+   909:5  error  Duplicate key 'units_per_box'                 no-dupe-keys
+   912:5  error  Duplicate key 'group_total'                   no-dupe-keys
+   921:5  error  Duplicate key 'placeholder_prescription_req'  no-dupe-keys
+   922:5  error  Duplicate key 'placeholder_data_req'          no-dupe-keys
+   923:5  error  Duplicate key 'select'                        no-dupe-keys
+   924:5  error  Duplicate key 'assign_ext'                    no-dupe-keys
+   925:5  error  Duplicate key 'assign_extra'                  no-dupe-keys
+   926:5  error  Duplicate key 'search_free_slots'             no-dupe-keys
+   927:5  error  Duplicate key 'exploring_schedule'            no-dupe-keys
+   928:5  error  Duplicate key 'no_slots_available'            no-dupe-keys
+   929:5  error  Duplicate key 'try_out_of_hours'              no-dupe-keys
+   930:5  error  Duplicate key 'click_day_to_view'             no-dupe-keys
+   931:5  error  Duplicate key 'search_limit_3_months'         no-dupe-keys
+   932:5  error  Duplicate key 'include_overtime_short'        no-dupe-keys
+   933:5  error  Duplicate key 'time_date'                     no-dupe-keys
+   934:5  error  Duplicate key 'share_whatsapp'                no-dupe-keys
+   935:5  error  Duplicate key 'page_x'                        no-dupe-keys
+   936:5  error  Duplicate key 'explore_more_dates'            no-dupe-keys
+   937:5  error  Duplicate key 'keyboard_nav_help'             no-dupe-keys
+   938:5  error  Duplicate key 'allow_popups'                  no-dupe-keys
+   939:5  error  Duplicate key 'patient_list'                  no-dupe-keys
+   940:5  error  Duplicate key 'time_th'                       no-dupe-keys
+   941:5  error  Duplicate key 'patient_th'                    no-dupe-keys
+   942:5  error  Duplicate key 'phone_th'                      no-dupe-keys
+   943:5  error  Duplicate key 'reason_th'                     no-dupe-keys
+   944:5  error  Duplicate key 'status_th'                     no-dupe-keys
+   945:5  error  Duplicate key 'no_appointments_day'           no-dupe-keys
+   946:5  error  Duplicate key 'generated_at'                  no-dupe-keys
+   949:5  error  Duplicate key 'institutions'                  no-dupe-keys
+   969:5  error  Duplicate key 'active'                        no-dupe-keys
+   970:5  error  Duplicate key 'inactive'                      no-dupe-keys
+   973:5  error  Duplicate key 'pending_debt'                  no-dupe-keys
+   974:5  error  Duplicate key 'loading_report'                no-dupe-keys
+   977:5  error  Duplicate key 'no_patients_found'             no-dupe-keys
+   983:5  error  Duplicate key 'error_saving'                  no-dupe-keys
+  1027:5  error  Duplicate key 'appointments'                  no-dupe-keys
+  1028:5  error  Duplicate key 'appointment_history'           no-dupe-keys
+  1031:5  error  Duplicate key 'prescriptions'                 no-dupe-keys
+  1043:5  error  Duplicate key 'phone'                         no-dupe-keys
+  1045:5  error  Duplicate key 'insurance'                     no-dupe-keys
+  1046:5  error  Duplicate key 'doctor'                        no-dupe-keys
+  1047:5  error  Duplicate key 'status'                        no-dupe-keys
+  1048:5  error  Duplicate key 'reason'                        no-dupe-keys
+  1050:5  error  Duplicate key 'dose'                          no-dupe-keys
+  1053:5  error  Duplicate key 'print'                         no-dupe-keys
+
+/app/client/src/context/ConfigContext.jsx
+  7:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/app/client/src/context/LanguageContext.jsx
+  16:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/app/client/src/context/MessageContext.jsx
+  6:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/app/client/src/context/ModalContext.jsx
+  7:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/app/client/src/controllers/useProfileController.js
+  12:12  error    'profile' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                         no-unused-vars
+  52:8   warning  React Hook useEffect has a missing dependency: 'showMessage'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/app/client/src/controllers/useSystemConfigController.js
+    8:10  error    'useLocation' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                            no-unused-vars
+   77:8   warning  React Hook useEffect has a missing dependency: 'activeTab'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   86:18  error    'error' is defined but never used                                                                             no-unused-vars
+  100:18  error    'error' is defined but never used                                                                             no-unused-vars
+  180:18  error    'err' is defined but never used                                                                               no-unused-vars
+
+/app/client/src/controllers/useTempAccessController.js
+  50:9  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  48 |
+  49 |     useEffect(() => {
+> 50 |         verifyToken();
+     |         ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  51 |     }, [verifyToken]);
+  52 |
+  53 |     const handleSubmit = async (formData) => {  react-hooks/set-state-in-effect
+
+/app/client/src/features/appointments/AppointmentsPage.jsx
+  42:27  error  'isDoctor' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u        no-unused-vars
+  42:37  error  'isPatient' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u       no-unused-vars
+  42:48  error  'isMedicalStaff' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/client/src/features/appointments/components/AppointmentActionModal.jsx
+   7:10  error  'useMessage' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  23:27  error  'fetchAppointments' is defined but never used                                      no-unused-vars
+
+/app/client/src/features/appointments/components/AppointmentAdminPanel.jsx
+  10:11  error  'user' is defined but never used  no-unused-vars
+
+/app/client/src/features/appointments/components/AppointmentHeader.jsx
+   9:10  error  'printInvoice' is defined but never used. Allowed unused vars must match /^[A-Z_]/u    no-unused-vars
+  18:13  error  'alert' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/client/src/features/appointments/components/Calendar.jsx
+  18:27  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  16 |
+  17 |     useEffect(() => {
+> 18 |         if (selectedDate) setViewDate(new Date(selectedDate));
+     |                           ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  19 |     }, [selectedDate]);
+  20 |
+  21 |     const getDaysInMonth = (date) => {  react-hooks/set-state-in-effect
+
+/app/client/src/features/appointments/components/CalendarDayCell.jsx
+  10:8  error  'isCurrentMonth' is assigned a value but never used  no-unused-vars
+
+/app/client/src/features/appointments/components/CalendarDayIndicator.jsx
+  10:3   error  'holidayDescription' is assigned a value but never used  no-unused-vars
+  10:28  error  'variant' is assigned a value but never used             no-unused-vars
+
+/app/client/src/features/appointments/components/CalendarSection.jsx
+  15:35  error  'viewDoctorId' is defined but never used  no-unused-vars
+
+/app/client/src/features/appointments/components/DaySchedule.jsx
+  21:13  error  'settings' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/client/src/features/appointments/components/HolidayForm.jsx
+  11:31  error  't' is defined but never used  no-unused-vars
+
+/app/client/src/features/appointments/components/NextSlotCalendarModal.jsx
+  67:36  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  65 |     };
+  66 |
+> 67 |     useEffect(() => { if (!isOpen) setHasInitialized(false); }, [isOpen]);
+     |                                    ^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  68 |
+  69 |     useEffect(() => {
+  70 |         if (nextSlotData?.results?.length > 0 && isOpen && !hasInitialized) {                                                                                                                          react-hooks/set-state-in-effect
+  72:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  70 |         if (nextSlotData?.results?.length > 0 && isOpen && !hasInitialized) {
+  71 |             const [year, month] = nextSlotData.results[0].date.split('-');
+> 72 |             setCurrentMonth(new Date(parseInt(year), parseInt(month) - 1, 1));
+     |             ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  73 |             setHasInitialized(true);
+  74 |         }
+  75 |     }, [nextSlotData, isOpen, hasInitialized]);  react-hooks/set-state-in-effect
+
+/app/client/src/features/appointments/components/PatientHistoryView.jsx
+  12:73  error  'searchPatientId' is defined but never used  no-unused-vars
+
+/app/client/src/features/appointments/components/ScheduleBulkActions.jsx
+  9:91  error  't' is defined but never used  no-unused-vars
+
+/app/client/src/features/appointments/components/ScheduleTimeBlock.jsx
+  16:5  error  't' is defined but never used  no-unused-vars
+
+/app/client/src/features/appointments/hooks/useAppointmentActions.js
+   8:5   error  'user' is defined but never used              no-unused-vars
+  12:5   error  'navigate' is defined but never used          no-unused-vars
+  17:5   error  'bookAppointment' is defined but never used   no-unused-vars
+  18:5   error  'savePrescription' is defined but never used  no-unused-vars
+  28:18  error  'error' is defined but never used             no-unused-vars
+  39:18  error  'error' is defined but never used             no-unused-vars
+  49:18  error  'error' is defined but never used             no-unused-vars
+  58:18  error  'error' is defined but never used             no-unused-vars
+  67:18  error  'error' is defined but never used             no-unused-vars
+
+/app/client/src/features/appointments/hooks/useAppointmentUIHandlers.js
+  12:5  error  'setBonified' is defined but never used              no-unused-vars
+  13:5  error  'setSelectedInstitution' is defined but never used   no-unused-vars
+  14:5  error  'setReason' is defined but never used                no-unused-vars
+  15:5  error  'setSyncReferenceInfo' is defined but never used     no-unused-vars
+  16:5  error  'setSyncingZombieId' is defined but never used       no-unused-vars
+  19:5  error  'setAuthModalOpen' is defined but never used         no-unused-vars
+  20:5  error  'setRetryAction' is defined but never used           no-unused-vars
+  21:5  error  'setShowNextSlotModal' is defined but never used     no-unused-vars
+  22:5  error  'setWhatsappModal' is defined but never used         no-unused-vars
+  23:5  error  'setEditPatientModalOpen' is defined but never used  no-unused-vars
+  34:5  error  'doctors' is defined but never used                  no-unused-vars
+
+/app/client/src/features/appointments/hooks/useAppointments.js
+  1:20  error  'useCallback' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/client/src/features/appointments/hooks/useAppointmentsHandlers.js
+   19:64  error  'setSelectedPatient' is defined but never used  no-unused-vars
+  135:18  error  'error' is defined but never used               no-unused-vars
+
+/app/client/src/features/appointments/hooks/useAppointmentsPageController.js
+  25:19  error    'isAdmin' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                   no-unused-vars
+  25:28  error    'isSecretary' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                               no-unused-vars
+  25:51  error    'isPatient' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                 no-unused-vars
+  25:62  error    'isStaff' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                   no-unused-vars
+  25:71  error    'isMedicalStaff' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                            no-unused-vars
+  74:8   warning  React Hook useEffect has a missing dependency: 'booking'. Either include it or remove the dependency array                                react-hooks/exhaustive-deps
+  85:8   warning  React Hook useEffect has a missing dependency: 'selectedDate'. Either include it or remove the dependency array                           react-hooks/exhaustive-deps
+  85:23  warning  React Hook useEffect has a complex expression in the dependency array. Extract it to a separate variable so it can be statically checked  react-hooks/exhaustive-deps
+  85:48  warning  React Hook useEffect has a complex expression in the dependency array. Extract it to a separate variable so it can be statically checked  react-hooks/exhaustive-deps
+  98:8   warning  React Hook useEffect has a missing dependency: 'isDoctor'. Either include it or remove the dependency array                               react-hooks/exhaustive-deps
+
+/app/client/src/features/appointments/hooks/useGoogleEvents.js
+  19:22  error  'err' is defined but never used  no-unused-vars
+
+/app/client/src/features/appointments/hooks/useHolidayHandlers.js
+  17:18  error  'error' is defined but never used  no-unused-vars
+  27:18  error  'error' is defined but never used  no-unused-vars
+
+/app/client/src/features/appointments/hooks/useHolidays.js
+  55:8  warning  React Hook useEffect has a missing dependency: 'fetchHolidays'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/app/client/src/features/appointments/hooks/useNextFreeSlot.js
+  73:18  error  'err' is defined but never used  no-unused-vars
+
+/app/client/src/features/appointments/hooks/usePatientSearch.js
+  56:8  warning  React Hook useEffect has a missing dependency: 'fetchPatientAppointments'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/app/client/src/features/appointments/hooks/useWhatsAppUniversal.js
+  97:18  error  'err' is defined but never used  no-unused-vars
+
+/app/client/src/features/auth/AuthContext.jsx
+  1:37  error  'useMemo' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                  no-unused-vars
+  6:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/app/client/src/features/auth/components/ProfileEditor.jsx
+  21:35  error  'isSecretary' is defined but never used  no-unused-vars
+  21:48  error  'isStaff' is defined but never used      no-unused-vars
+
+/app/client/src/features/auth/hooks/useProfileController.js
+  16:12  error  'profile' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/client/src/features/auth/useAuthLogic.js
+  47:26  error  'verifyError' is defined but never used  no-unused-vars
+  53:18  error  'error' is defined but never used        no-unused-vars
+
+/app/client/src/features/chat/hooks/useFloatingChatController.js
+  25:12  error  'permissionGranted' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/client/src/features/chat/hooks/useMessagesPageController.js
+  92:8  warning  React Hook useEffect has a missing dependency: 'loadThread'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/app/client/src/features/config/SystemConfigPage.jsx
+  205:9  error  'user' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  209:9  error  't' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+
+/app/client/src/features/config/components/BillingSettings.jsx
+  1:27  error  'useEffect' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/client/src/features/config/hooks/useSystemConfigController.js
+   78:18  error  'error' is defined but never used  no-unused-vars
+   92:18  error  'error' is defined but never used  no-unused-vars
+  166:18  error  'err' is defined but never used    no-unused-vars
+
+/app/client/src/features/dashboard/DashboardPage.jsx
+  31:18  error  'settings' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u        no-unused-vars
+  57:9   error  'isAdmin' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u         no-unused-vars
+  57:18  error  'isSecretary' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+  57:41  error  'isPatient' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u       no-unused-vars
+  57:61  error  'isMedicalStaff' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/client/src/features/dashboard/components/DashboardSidebar.jsx
+  11:53  error  'user' is defined but never used                                                          no-unused-vars
+  12:11  error  'navigate' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/client/src/features/dashboard/hooks/useDashboardController.js
+   28:12  error    'loadingReminders' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                       no-unused-vars
+  123:8   warning  React Hook useEffect has missing dependencies: 'isPatient', 'isStaff', and 'user'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  226:18  error    'err' is defined but never used                                                                                                        no-unused-vars
+  398:9   error    Duplicate key 'handleWhatsAppReminder'                                                                                                 no-dupe-keys
+
+/app/client/src/features/doctors/components/DoctorFilter.jsx
+  7:36  error  'userRole' is defined but never used  no-unused-vars
+  7:55  error  'isAdmin' is defined but never used   no-unused-vars
+
+/app/client/src/features/doctors/components/DoctorMessagesForm.jsx
+  1:26  error  'useEffect' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/client/src/features/doctors/components/DoctorScheduleSettings.jsx
+  15:35  error  'doctorId' is defined but never used  no-unused-vars
+
+/app/client/src/features/doctors/hooks/useDoctorsPageController.js
+   15:13  error    'fetchUsers' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                      no-unused-vars
+   15:25  error    'updateUser' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                      no-unused-vars
+   15:51  error    'isUpdating' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                      no-unused-vars
+   62:8   warning  React Hook useEffect has a missing dependency: 'showMessage'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  156:23  error    'res' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                             no-unused-vars
+  181:18  error    'err' is defined but never used                                                                                 no-unused-vars
+  225:22  error    'e' is defined but never used                                                                                   no-unused-vars
+  232:22  error    'e' is defined but never used                                                                                   no-unused-vars
+
+/app/client/src/features/finances/FinancesPage.jsx
+  25:9  error  'transactions' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/client/src/features/finances/components/BalanceCashFlowTable.jsx
+  8:52  error  't' is defined but never used  no-unused-vars
+
+/app/client/src/features/finances/components/BalanceDebtsTable.jsx
+  7:53  error  't' is defined but never used  no-unused-vars
+
+/app/client/src/features/finances/components/BalanceFinancialSummary.jsx
+  16:5  error  't' is defined but never used  no-unused-vars
+
+/app/client/src/features/finances/components/HistoricalWithdrawalModal.jsx
+  24:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  22 |     useEffect(() => {
+  23 |         if (isOpen) {
+> 24 |             setAmount('');
+     |             ^^^^^^^^^ Avoid calling setState() directly within an effect
+  25 |             const today = new Date().toISOString().split('T')[0];
+  26 |             setDate(today);
+  27 |             setTime('12:30');  react-hooks/set-state-in-effect
+
+/app/client/src/features/finances/components/InstitutionFinances.jsx
+  50:42  error  Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `report.transactions`, but the source dependencies were [selectedTrs, report?.transactions]. Inferred different dependency than source.
+
+  48 |     ) || [];
+  49 |
+> 50 |     const selectedAmount = React.useMemo(() => {
+     |                                          ^^^^^^^
+> 51 |         if (!report?.transactions) return 0;
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 52 |         return report.transactions
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 53 |             .filter(tr => selectedTrs.has(tr.transaction_id))
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 54 |             .reduce((sum, tr) => sum + Number(tr.amount), 0);
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 55 |     }, [selectedTrs, report?.transactions]);
+     | ^^^^^^ Could not preserve existing manual memoization
+  56 |
+  57 |     React.useEffect(() => {
+  58 |         if (isPayModalOpen) {  react-hooks/preserve-manual-memoization
+
+/app/client/src/features/finances/components/InstitutionSummary.jsx
+  11:5  error  'showPendingOnly' is defined but never used     no-unused-vars
+  12:5  error  'setShowPendingOnly' is defined but never used  no-unused-vars
+  14:5  error  'onPayClick' is defined but never used          no-unused-vars
+
+/app/client/src/features/finances/components/TransactionsTable.jsx
+  18:5  error  'totalCount' is defined but never used  no-unused-vars
+
+/app/client/src/features/finances/hooks/useFinanceHandlers.js
+   40:18  error    'err' is defined but never used                                                                                                       no-unused-vars
+   52:18  error    'err' is defined but never used                                                                                                       no-unused-vars
+   69:18  error    'err' is defined but never used                                                                                                       no-unused-vars
+   72:8   warning  React Hook useCallback has missing dependencies: 'user.name' and 'user.username'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  173:8   warning  React Hook useCallback has missing dependencies: 'user.name' and 'user.username'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  212:8   warning  React Hook useCallback has missing dependencies: 'user.name' and 'user.username'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/app/client/src/features/finances/hooks/useFinancesPageController.js
+    1:44  error  'useMemo' is defined but never used. Allowed unused vars must match /^[A-Z_]/u             no-unused-vars
+    8:10  error  'useFinanceHandlers' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   88:39  error  'doctorId' is defined but never used                                                       no-unused-vars
+   94:31  error  'doctorId' is defined but never used                                                       no-unused-vars
+  110:18  error  'err' is defined but never used                                                            no-unused-vars
+  122:18  error  'err' is defined but never used                                                            no-unused-vars
+  142:18  error  'err' is defined but never used                                                            no-unused-vars
+  156:18  error  'err' is defined but never used                                                            no-unused-vars
+
+/app/client/src/features/finances/hooks/useTransactionForm.js
+  14:13  error    'user' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                               no-unused-vars
+  48:8   warning  React Hook useEffect has a missing dependency: 'initializeData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/app/client/src/features/institutions/components/InstitutionForm.jsx
+  10:68  error  'isEditing' is defined but never used  no-unused-vars
+
+/app/client/src/features/institutions/components/InstitutionManager.jsx
+  12:5  error  'loading' is defined but never used  no-unused-vars
+
+/app/client/src/features/institutions/hooks/useInstitutionsController.js
+  33:11  warning  The 'fetchInstitutions' function makes the dependencies of useCallback Hook (at line 90) change on every render. To fix this, wrap the definition of 'fetchInstitutions' in its own useCallback() Hook   react-hooks/exhaustive-deps
+  33:11  warning  The 'fetchInstitutions' function makes the dependencies of useCallback Hook (at line 102) change on every render. To fix this, wrap the definition of 'fetchInstitutions' in its own useCallback() Hook  react-hooks/exhaustive-deps
+  48:8   warning  React Hook useEffect has a missing dependency: 'fetchInstitutions'. Either include it or remove the dependency array                                                                                     react-hooks/exhaustive-deps
+  66:8   warning  React Hook useCallback has a missing dependency: 'initialFormState'. Either include it or remove the dependency array                                                                                    react-hooks/exhaustive-deps
+  72:8   warning  React Hook useCallback has a missing dependency: 'initialFormState'. Either include it or remove the dependency array                                                                                    react-hooks/exhaustive-deps
+
+/app/client/src/features/layout/components/Sidebar.jsx
+  19:61  error  'isMedicalStaff' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/client/src/features/layout/hooks/useSidebarController.js
+  14:16  error    'toggleLanguage' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                       no-unused-vars
+  44:8   warning  React Hook useEffect has missing dependencies: 'fetchSidebarDoctors' and 'user'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/app/client/src/features/medical_documents/MedicalDocumentsPage.jsx
+  37:9   error  'selectedFile' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u         no-unused-vars
+  43:18  error  'reqNote' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u              no-unused-vars
+  58:9   error  'handleCreateRequest' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/client/src/features/medical_documents/components/MedicalRequestList.jsx
+  61:35  error  'isCompleted' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  62:35  error  'isRejected' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+
+/app/client/src/features/medical_documents/components/MedicationInputSection.jsx
+  17:5  error  'tempFreq' is defined but never used  no-unused-vars
+
+/app/client/src/features/medical_documents/components/MedicationItemsSummary.jsx
+  10:63  error  't' is defined but never used  no-unused-vars
+
+/app/client/src/features/medical_documents/components/MedicationList.jsx
+  13:5  error  'emptyMessage' is assigned a value but never used  no-unused-vars
+
+/app/client/src/features/medical_documents/components/PrescriptionForm.jsx
+  31:5  error  'baseClass' is defined but never used  no-unused-vars
+
+/app/client/src/features/medical_documents/components/PrescriptionModal.jsx
+  34:12  error  'medications' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/client/src/features/medical_documents/hooks/useMedicalDocumentsController.js
+    9:10  error    'isToday' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               no-unused-vars
+   22:11  error    'location' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     no-unused-vars
+  150:13  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  148 |     useEffect(() => {
+  149 |         if (activeTab === 'requests') {
+> 150 |             fetchResources();
+      |             ^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  151 |             fetchRequests();
+  152 |         } else if (activeTab === 'files') {
+  153 |             fetchResources();  react-hooks/set-state-in-effect
+  159:8   warning  React Hook useEffect has missing dependencies: 'fetchHistory' and 'fetchRequests'. Either include them or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        react-hooks/exhaustive-deps
+  167:23  error    'setPrintData' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 no-unused-vars
+
+/app/client/src/features/medical_documents/hooks/useMedicalDocumentsHandlers.js
+   35:5    error  'actionModal' is defined but never used       no-unused-vars
+   36:5    error  'actionNote' is defined but never used        no-unused-vars
+   37:5    error  'paymentModal' is defined but never used      no-unused-vars
+   38:5    error  'searchTerm' is defined but never used        no-unused-vars
+   39:5    error  'activeTab' is defined but never used         no-unused-vars
+   40:5    error  'requestsSubTab' is defined but never used    no-unused-vars
+   45:5    error  'setFiles' is defined but never used          no-unused-vars
+   46:5    error  'setRequests' is defined but never used       no-unused-vars
+   47:5    error  'setPrescriptions' is defined but never used  no-unused-vars
+   48:5    error  'setLicenses' is defined but never used       no-unused-vars
+  109:18   error  'err' is defined but never used               no-unused-vars
+  129:18   error  'err' is defined but never used               no-unused-vars
+  257:18   error  'err' is defined but never used               no-unused-vars
+  269:18   error  'err' is defined but never used               no-unused-vars
+  282:110  error  'e' is defined but never used                 no-unused-vars
+  282:113  error  Empty block statement                         no-empty
+  300:110  error  'e' is defined but never used                 no-unused-vars
+  300:113  error  Empty block statement                         no-empty
+
+/app/client/src/features/patients/components/ActiveMedicationsList.jsx
+  11:90   error  'settings' is defined but never used     no-unused-vars
+  11:100  error  'user' is defined but never used         no-unused-vars
+  11:106  error  'patientName' is defined but never used  no-unused-vars
+
+/app/client/src/features/patients/components/MedicationHistory.jsx
+  4:10  error  'useLanguage' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/client/src/features/patients/components/PatientBlocker.jsx
+  8:13  error  'logout' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/client/src/features/patients/components/PatientHistoryModal.jsx
+  31:8  warning  React Hook useEffect has a missing dependency: 'fetchHistory'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/app/client/src/features/patients/components/PatientPrintableView.jsx
+  75:22  error  'e' is defined but never used  no-unused-vars
+
+/app/client/src/features/patients/components/PatientSearchSelect.jsx
+  5:10  error  'components' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/client/src/features/patients/hooks/useMedicalRecords.js
+  69:18  error  'err' is defined but never used  no-unused-vars
+  80:18  error  'err' is defined but never used  no-unused-vars
+
+/app/client/src/features/patients/hooks/usePatientFormController.js
+   90:8   warning  React Hook useEffect has missing dependencies: 'doctors.length' and 'insurances.length'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  197:25  error    'insurance_name' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                               no-unused-vars
+  198:25  error    'institution_name' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                             no-unused-vars
+  199:25  error    'total_debt' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                   no-unused-vars
+  200:25  error    'total_appointments' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                           no-unused-vars
+  201:25  error    'missed_appointments' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                          no-unused-vars
+  202:25  error    'role' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                         no-unused-vars
+
+/app/client/src/features/patients/hooks/usePatientsHandlers.js
+   13:5   error  'confirm' is defined but never used  no-unused-vars
+  148:18  error  'err' is defined but never used      no-unused-vars
+  173:18  error  'err' is defined but never used      no-unused-vars
+  192:18  error  'err' is defined but never used      no-unused-vars
+  212:18  error  'err' is defined but never used      no-unused-vars
+
+/app/client/src/features/patients/hooks/usePatientsPageController.js
+    2:31  error    'useMemo' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                    no-unused-vars
+   14:28  error    'isAdmin' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                           no-unused-vars
+   15:29  error    'useMessage' is not defined                                                                                       no-undef
+   16:19  error    'useLanguage' is not defined                                                                                      no-undef
+   17:26  error    'useConfig' is not defined                                                                                        no-undef
+   18:25  error    'useModal' is not defined                                                                                         no-undef
+   19:34  error    'useAppointments' is not defined                                                                                  no-undef
+   20:28  error    'useUsers' is not defined                                                                                         no-undef
+  108:8   warning  React Hook useEffect has a missing dependency: 'fetchPatients'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/app/client/src/features/rentals/RentalsPage.jsx
+  48:8  warning  React Hook useEffect has a missing dependency: 'user'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/app/client/src/features/reports/components/AuditLogManager.jsx
+  26:18  error  'e' is defined but never used  no-unused-vars
+
+/app/client/src/features/reports/hooks/useAuditLogsController.js
+  30:8  warning  React Hook useEffect has a missing dependency: 'user'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/app/client/src/features/users/components/UserForm.jsx
+  1:17  error  'useState' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  8:8   error  'api' is defined but never used. Allowed unused vars must match /^[A-Z_]/u       no-unused-vars
+
+/app/client/src/utils/dateUtils.js
+  24:34  error  Unnecessary escape character: \/  no-useless-escape
+  24:36  error  Unnecessary escape character: \-  no-useless-escape
+  24:49  error  Unnecessary escape character: \/  no-useless-escape
+  24:51  error  Unnecessary escape character: \-  no-useless-escape
+
+/app/client/src/utils/reportPrintHelper.js
+  239:11  error  'withdrawals' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/app/client/vite.config.js
+  9:25  error  '__dirname' is not defined  no-undef
+
+✖ 432 problems (404 errors, 28 warnings)

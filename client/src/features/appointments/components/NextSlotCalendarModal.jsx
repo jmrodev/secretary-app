@@ -67,11 +67,15 @@ const NextSlotCalendarModal = ({
     useEffect(() => { if (!isOpen) setHasInitialized(false); }, [isOpen]);
 
     useEffect(() => {
+        let isMounted = true;
         if (nextSlotData?.results?.length > 0 && isOpen && !hasInitialized) {
-            const [year, month] = nextSlotData.results[0].date.split('-');
-            setCurrentMonth(new Date(parseInt(year), parseInt(month) - 1, 1));
-            setHasInitialized(true);
+            if (isMounted) {
+                const [year, month] = nextSlotData.results[0].date.split('-');
+                setCurrentMonth(new Date(parseInt(year), parseInt(month) - 1, 1));
+                setHasInitialized(true);
+            }
         }
+        return () => { isMounted = false; };
     }, [nextSlotData, isOpen, hasInitialized]);
 
     useEffect(() => {

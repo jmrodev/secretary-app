@@ -1,7 +1,13 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import api from '../../../api/axios';
-import { usePermissions } from '../../../hooks/usePermissions';
+import api from '@/api/axios';
+import { usePermissions } from '@/hooks/usePermissions';
+import { useMessage } from '@/context/MessageContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { useConfig } from '@/context/ConfigContext';
+import { useModal } from '@/context/ModalContext';
+import { useAppointments } from '@/features/appointments';
+import { useUsers } from '@/features/users';
 import { usePatientsHandlers } from './usePatientsHandlers';
 
 /**

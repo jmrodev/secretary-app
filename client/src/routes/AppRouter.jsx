@@ -1,32 +1,33 @@
+import { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 // Layout & Guards
 import ProtectedRoute from '../components/atoms/ProtectedRoute';
 import RoleGuard from '../components/auth/RoleGuard';
+import Loading from '../components/atoms/Loading';
 
-// Pages
-// import Patients from '../pages/Patients'; // Deprecated
-// All domain pages are now exported from their respective features.
-// Only thin entry points or redirects should remain here if necessary.
-
-
-// Features (Orchestrators)
-import { AppointmentsPage } from '../features/appointments';
-import { PatientsPage } from '../features/patients';
-import { MedicalDocumentsPage } from '../features/medical_documents';
-import { FinancesPage } from '../features/finances';
-import { DashboardPage } from '../features/dashboard';
-import { SystemConfigPage } from '../features/config';
-import { InstitutionsPage } from '../features/institutions';
-import { InsurancesPage } from '../features/insurances';
-import { AdminUsersPage } from '../features/users';
-import { AuditLogsPage } from '../features/reports';
-import { RentalsPage } from '../features/rentals';
-import { RequestsPage, PublicRequestPage } from '../features/medical_documents';
-import { ChatPage } from '../features/chat';
-import { TempAccessPage, LoginPage, RegisterPage, ProfilePage } from '../features/auth';
-import { DoctorsPage } from '../features/doctors';
-import { ReportsPage } from '../features/reports';
+// Features (Orchestrators) - Lazy Loaded
+// We use named exports for features, so we have to unwrap them in the lazy call.
+const AppointmentsPage = lazy(() => import('../features/appointments').then(m => ({ default: m.AppointmentsPage })));
+const PatientsPage = lazy(() => import('../features/patients').then(m => ({ default: m.PatientsPage })));
+const MedicalDocumentsPage = lazy(() => import('../features/medical_documents').then(m => ({ default: m.MedicalDocumentsPage })));
+const FinancesPage = lazy(() => import('../features/finances').then(m => ({ default: m.FinancesPage })));
+const DashboardPage = lazy(() => import('../features/dashboard').then(m => ({ default: m.DashboardPage })));
+const SystemConfigPage = lazy(() => import('../features/config').then(m => ({ default: m.SystemConfigPage })));
+const InstitutionsPage = lazy(() => import('../features/institutions').then(m => ({ default: m.InstitutionsPage })));
+const InsurancesPage = lazy(() => import('../features/insurances').then(m => ({ default: m.InsurancesPage })));
+const AdminUsersPage = lazy(() => import('../features/users').then(m => ({ default: m.AdminUsersPage })));
+const AuditLogsPage = lazy(() => import('../features/reports').then(m => ({ default: m.AuditLogsPage })));
+const RentalsPage = lazy(() => import('../features/rentals').then(m => ({ default: m.RentalsPage })));
+const RequestsPage = lazy(() => import('../features/medical_documents').then(m => ({ default: m.RequestsPage })));
+const PublicRequestPage = lazy(() => import('../features/medical_documents').then(m => ({ default: m.PublicRequestPage })));
+const ChatPage = lazy(() => import('../features/chat').then(m => ({ default: m.ChatPage })));
+const TempAccessPage = lazy(() => import('../features/auth').then(m => ({ default: m.TempAccessPage })));
+const LoginPage = lazy(() => import('../features/auth').then(m => ({ default: m.LoginPage })));
+const RegisterPage = lazy(() => import('../features/auth').then(m => ({ default: m.RegisterPage })));
+const ProfilePage = lazy(() => import('../features/auth').then(m => ({ default: m.ProfilePage })));
+const DoctorsPage = lazy(() => import('../features/doctors').then(m => ({ default: m.DoctorsPage })));
+const ReportsPage = lazy(() => import('../features/reports').then(m => ({ default: m.ReportsPage })));
 
 /**
  * AppRouter Component.
@@ -34,7 +35,8 @@ import { ReportsPage } from '../features/reports';
  */
 const AppRouter = () => {
     return (
-        <Routes>
+        <Suspense fallback={<Loading variant="full-page" />}>
+            <Routes>
             {/* Public Routes */}
             <Route path="/" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
@@ -98,9 +100,10 @@ const AppRouter = () => {
             </Route>
 
 
-            {/* 404 Redirect */}
-            <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
+                {/* 404 Redirect */}
+                <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+        </Suspense>
     );
 };
 

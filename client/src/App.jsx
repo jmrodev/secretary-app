@@ -2,10 +2,11 @@ import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 
 // Routing Orchestrator
-import AppRouter from './routes/AppRouter';
+import AppRouter from '@/routes/AppRouter';
 
 // Global UI Components
-import { FloatingChat } from './features/chat';
+import { FloatingChat } from '@/features/chat';
+import ErrorBoundary from '@/components/molecules/ErrorBoundary';
 
 /**
  * Main Application Orchestrator.
@@ -22,11 +23,11 @@ function App() {
   }, []);
 
   return (
-    <>
+    <ErrorBoundary>
       <Toaster position="top-right" containerStyle={{ zIndex: 9999 }} />
       <AppRouter />
       <FloatingChat />
-    </>
+    </ErrorBoundary>
   );
 }
 
