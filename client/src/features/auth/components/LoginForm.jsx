@@ -12,12 +12,13 @@ import './LoginForm.css';
  */
 const LoginForm = () => {
     const {
-        username, setUsername,
-        password, setPassword,
+        username,
+        password,
         error, loading,
-        handleSubmit,
+        handlers,
         t
     } = useLoginController();
+    const { setUsername, setPassword, handleSubmit } = handlers;
 
     return (
         <div className="auth-layout auth-layout--hero">

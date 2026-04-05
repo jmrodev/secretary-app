@@ -17,15 +17,18 @@ const PublicRequestPage = () => {
         patientInfo,
         selectedMeds,
         notes,
-        setNotes,
         searchTerm,
-        setSearchTerm,
         searchResults,
         searching,
+        handlers
+    } = usePublicPrescriptionRequestController();
+    const {
+        setNotes,
+        setSearchTerm,
         handleToggleMedSelection,
         handleAddManualMed,
         handleSubmit
-    } = usePublicPrescriptionRequestController();
+    } = handlers;
 
     if (loading && !patientInfo) return <StatusDisplay type="loading" message="Cargando..." />;
     if (error && !patientInfo) return <StatusDisplay type="error" title="Error" message={error} />;

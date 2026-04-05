@@ -49,11 +49,17 @@ export const useLoginController = () => {
         if (clearGlobalError) clearGlobalError();
     };
 
-    return {
-        username, setUsername: handleUsernameChange,
-        password, setPassword: handlePasswordChange,
-        error, loading,
+    const handlers = {
+        setUsername: handleUsernameChange,
+        setPassword: handlePasswordChange,
         handleSubmit,
+    };
+
+    return {
+        username,
+        password,
+        error, loading,
+        handlers,
         t
     };
 };

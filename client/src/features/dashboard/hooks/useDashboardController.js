@@ -367,18 +367,7 @@ export const useDashboardController = () => {
         handleMarkNotified(reminder, type, true);
     };
 
-    return {
-        // State exposed for orchestration
-        user, t, settings,
-        stats, newPatientStats, reminders, pendingReqCount, activeTab, setActiveTab,
-        actionModal, setActionModal,
-        historyModal, setHistoryModal,
-        prescribeModal, setPrescribeModal,
-        paymentModal, setPaymentModal,
-        isSubmitting,
-        doctors,
-
-        // Exposed handlers for direct component interaction
+    const handlers = {
         refreshDashboard,
         handleUpdateStatus,
         handleDelete,
@@ -395,9 +384,26 @@ export const useDashboardController = () => {
         handleSaveNote,
         handleCompleteReminder,
         handleWhatsAppReminder,
-        handleWhatsAppReminder,
         handleMarkNotified,
-        navigate,
+        setActiveTab,
+        setActionModal,
+        setHistoryModal,
+        setPrescribeModal,
+        setPaymentModal,
+        navigate
+    };
+
+    return {
+        // State exposed for orchestration
+        user, t, settings,
+        stats, newPatientStats, reminders, pendingReqCount, activeTab,
+        actionModal,
+        historyModal,
+        prescribeModal,
+        paymentModal,
+        isSubmitting,
+        doctors,
+        handlers,
         isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff
     };
 };

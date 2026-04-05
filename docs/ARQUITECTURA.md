@@ -252,11 +252,17 @@ export const useReportsController = () => {
         // Lógica de negocio
     };
 
+    // Group all action handlers in a 'handlers' object
+    const handlers = {
+        handleGenerateReport,
+        setActiveTab
+    };
+
     return {
         activeTab,
-        setActiveTab,
         reportData,
-        handleGenerateReport
+        handlers,
+        t
     };
 };
 ```

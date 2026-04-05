@@ -82,13 +82,17 @@ export const useProfileController = () => {
         }
     };
 
+    const handlers = {
+        handleChange,
+        handleUpdate,
+    };
+
     return {
         user,
         t,
         loading,
         formData,
-        handleChange,
-        handleUpdate,
+        handlers,
         isAdmin, isDoctor, isPatient, isSecretary, isStaff
     };
 };

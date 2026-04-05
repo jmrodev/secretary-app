@@ -87,6 +87,14 @@ export const usePublicPrescriptionRequestController = () => {
         }
     };
 
+    const handlers = {
+        setNotes,
+        setSearchTerm,
+        handleToggleMedSelection,
+        handleAddManualMed,
+        handleSubmit
+    };
+
     return {
         loading,
         error,
@@ -94,13 +102,9 @@ export const usePublicPrescriptionRequestController = () => {
         patientInfo,
         selectedMeds,
         notes,
-        setNotes,
         searchTerm,
-        setSearchTerm,
         searchResults,
         searching,
-        handleToggleMedSelection,
-        handleAddManualMed,
-        handleSubmit
+        handlers
     };
 };

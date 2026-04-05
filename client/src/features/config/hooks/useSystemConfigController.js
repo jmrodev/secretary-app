@@ -170,11 +170,9 @@ export const useSystemConfigController = () => {
         }
     }, [confirm, showMessage, refreshSettings, t]);
 
-    return {
-        user, t, settings, loading,
-        activeTab, setActiveTab,
-        qrModal, setQrModal,
-        googleUnlinked,
+    const handlers = {
+        setActiveTab,
+        setQrModal,
         updateSetting,
         handleGoogleAuth,
         handleDisconnectGoogle,
@@ -182,5 +180,13 @@ export const useSystemConfigController = () => {
         handleTestMeta,
         insertVariable,
         handleRefreshTunnel
+    };
+
+    return {
+        user, t, settings, loading,
+        activeTab,
+        qrModal,
+        googleUnlinked,
+        handlers
     };
 };

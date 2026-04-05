@@ -59,12 +59,16 @@ export const useRegisterController = () => {
         }
     };
 
-    return {
-        formData,
+    const handlers = {
         handleChange,
         handleSubmit,
+    };
+
+    return {
+        formData,
         error,
         loading,
+        handlers,
         t
     };
 };

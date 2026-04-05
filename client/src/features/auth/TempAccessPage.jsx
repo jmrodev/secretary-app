@@ -30,8 +30,9 @@ const TempAccessPage = () => {
         isNew,
         initialData,
         insurances,
-        handleSubmit
+        handlers
     } = useTempAccessController();
+    const { handleSubmit } = handlers;
     const { t } = useLanguage();
 
     if (loading) {

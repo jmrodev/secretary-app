@@ -31,16 +31,21 @@ import './AppointmentsPage.css';
 const AppointmentsPage = () => {
     const controller = useAppointmentsPageController();
     const {
-        t, user, loading, activeTab, setActiveTab, showOutOfHours, setShowOutOfHours,
-        viewDoctorId, setViewDoctorId, doctors, institutions, selectedDate, filteredAppointments,
+        t, user, loading, activeTab, showOutOfHours,
+        viewDoctorId, doctors, institutions, selectedDate, filteredAppointments,
         appointments, doctorSchedule, holidays, calendarStats, currentDoctor,
-        searchPatientId, setSearchPatientId, patientAppointments, patientApptLoading,
-        paymentModal, setPaymentModal, actionModal, setActionModal, historyModal, setHistoryModal,
-        prescribeModal, setPrescribeModal, whatsappModal, setWhatsappModal, showNextSlotModal, setShowNextSlotModal,
-        editPatientModalOpen, setEditPatientModalOpen, authModalOpen, setAuthModalOpen,
+        searchPatientId, patientAppointments, patientApptLoading,
+        paymentModal, actionModal, historyModal,
+        prescribeModal, whatsappModal, setWhatsappModal, showNextSlotModal, setShowNextSlotModal,
+        editPatientModalOpen, authModalOpen,
         handlers, booking, nextSlot, rescheduleAppt,
         isStaff, isAdmin, isDoctor, isPatient, isMedicalStaff
     } = controller;
+    const {
+        setActiveTab, setShowOutOfHours, setViewDoctorId, setSelectedDate,
+        setSearchPatientId, setPaymentModal, setActionModal, setHistoryModal,
+        setPrescribeModal, setEditPatientModalOpen, setAuthModalOpen
+    } = handlers;
 
     if (loading || !user) return <Loading variant="full-page" />;
 
