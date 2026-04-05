@@ -21,7 +21,7 @@ const ProfileEditor = ({
 }) => {
     if (loading || !user) return <div className="profile-editor__loading">{t('loading') || 'Cargando...'}</div>;
 
-    if (user.role === 'admin') {
+    if (user?.role === 'admin') {
         return (
             <div className="profile-editor animate-fadeIn">
                 <div className="profile-editor__banner">
@@ -32,7 +32,7 @@ const ProfileEditor = ({
                         <div className="profile-editor__header-info">
                             <div className="profile-editor__badge">{t('admin')}</div>
                             <h1 className="profile-editor__title">
-                                {user.username}
+                                {user?.username}
                             </h1>
                             <p className="profile-editor__subtitle">
                                 {t('system_admin_account')}
@@ -61,12 +61,12 @@ const ProfileEditor = ({
                         {formData.fullName ? formData.fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : user.username.substring(0, 2).toUpperCase()}
                     </div>
                     <div className="profile-editor__header-info">
-                        <div className="profile-editor__badge">{user.role === 'doctor' ? t('medical_professional') : t('patient_account')}</div>
+                        <div className="profile-editor__badge">{user?.role === 'doctor' ? t('medical_professional') : t('patient_account')}</div>
                         <h1 className="profile-editor__title">
-                            {formData.fullName || user.username}
+                            {formData.fullName || user?.username}
                         </h1>
                         <p className="profile-editor__subtitle">
-                            {user.role === 'doctor' ? t('manage_medical_settings') : t('manage_patient_profile')}
+                            {user?.role === 'doctor' ? t('manage_medical_settings') : t('manage_patient_profile')}
                         </p>
                     </div>
                 </div>
@@ -113,11 +113,11 @@ const ProfileEditor = ({
                     {/* ROLE-SPECIFIC INFORMATION SECTION */}
                     <div className="profile-editor__card">
                         <div className="profile-editor__section-title">
-                            <Icon name={user.role === 'doctor' ? 'DOCTORS' : 'DOCUMENTS'} size="1.2rem" />
-                            {user.role === 'doctor' ? t('professional_details') : t('medical_data')}
+                            <Icon name={user?.role === 'doctor' ? 'DOCTORS' : 'DOCUMENTS'} size="1.2rem" />
+                            {user?.role === 'doctor' ? t('professional_details') : t('medical_data')}
                         </div>
 
-                        {user.role === 'patient' && (
+                        {user?.role === 'patient' && (
                             <FormGroup label={t('medical_history')}>
                                 <Input
                                     type="textarea"
@@ -129,7 +129,7 @@ const ProfileEditor = ({
                             </FormGroup>
                         )}
 
-                        {user.role === 'doctor' && (
+                        {user?.role === 'doctor' && (
                             <p className="profile-editor__text-muted italic">
                                 {t('doctor_settings_moved') || "Para configurar horarios y especialidad, contacte al administrador o use el panel de Doctores."}
                             </p>
