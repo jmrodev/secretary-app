@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import api from '../../../api/axios';
 import { useMessage } from '../../../context/MessageContext';
 import { useLanguage } from '../../../context/LanguageContext';
@@ -7,11 +7,11 @@ import { useModal } from '../../../context/ModalContext';
 export const useUsers = () => {
     const { showMessage } = useMessage();
     const { t } = useLanguage();
-    const { confirm, doubleConfirm } = useModal();
+    const { doubleConfirm } = useModal();
     const [loading, setLoading] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const fetchUsers = async (options = {}) => {
+    const fetchUsers = useCallback(async (options = {}) => {
         const { role, excludeRoles = [] } = options;
         try {
             setLoading(true);
@@ -33,7 +33,7 @@ export const useUsers = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [showMessage]);
 
     const createUser = async (formData, onSuccess) => {
         try {
@@ -134,18 +134,27 @@ export const useDoctors = () => {
     const [hasFetched, setHasFetched] = useState(false);
 
     useEffect(() => {
+        let isMounted = true;
         if (!hasFetched) {
-            setHasFetched(true);
-            setLoading(true);
             api.get('/users/doctors')
                 .then(res => {
-                    if (Array.isArray(res.data)) {
-                        setDoctors(res.data);
+                    if (isMounted) {
+                        if (Array.isArray(res.data)) {
+                            setDoctors(res.data);
+                        }
+                        setHasFetched(true);
+                        setLoading(false);
                     }
                 })
-                .catch(err => console.error("Error fetching doctors:", err))
-                .finally(() => setLoading(false));
+                .catch(err => {
+                    console.error("Error fetching doctors:", err);
+                    if (isMounted) {
+                        setHasFetched(true);
+                        setLoading(false);
+                    }
+                });
         }
+        return () => { isMounted = false; };
     }, [hasFetched]);
 
     return { doctors, loading };

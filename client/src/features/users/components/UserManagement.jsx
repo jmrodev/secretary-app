@@ -12,7 +12,7 @@ import Modal from '../../../components/molecules/Modal';
 import UserTable from './UserTable';
 import UserForm from './UserForm';
 
-const UserManagement = ({ excludeRoles = [], role = null, title, subtitle }) => {
+const UserManagement = ({ excludeRoles = [], role = null }) => {
     const { t } = useLanguage();
     const {
         fetchUsers,
@@ -33,20 +33,20 @@ const UserManagement = ({ excludeRoles = [], role = null, title, subtitle }) => 
         formData: {}
     });
 
-    const loadData = async () => {
+    const loadData = React.useCallback(async () => {
         const data = await fetchUsers({ role, excludeRoles });
         setUsers(data);
-    };
+    }, [fetchUsers, role, excludeRoles]);
 
     useEffect(() => {
-        loadData();
-    }, [role, JSON.stringify(excludeRoles)]);
-
-    useEffect(() => {
-        const handler = (e) => openModal(e.detail);
-        window.addEventListener('OPEN_USER_MODAL', handler);
-        return () => window.removeEventListener('OPEN_USER_MODAL', handler);
-    }, []);
+        let isMounted = true;
+        const initLoad = async () => {
+            const data = await fetchUsers({ role, excludeRoles });
+            if (isMounted) setUsers(data);
+        };
+        initLoad();
+        return () => { isMounted = false; };
+    }, [fetchUsers, role, excludeRoles]);
 
     // Handlers
     const openModal = (type, u = null) => {

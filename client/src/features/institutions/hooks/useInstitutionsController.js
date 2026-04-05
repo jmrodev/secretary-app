@@ -1,18 +1,18 @@
-import { useState, useEffect, useCallback } from 'react';
-import api from '../../../api/axios';
-import { useMessage } from '../../../context/MessageContext';
-import { useModal } from '../../../context/ModalContext';
-import { useLanguage } from '../../../context/LanguageContext';
-import { capitalizeWords } from '../../../utils/stringUtils';
+import { useState, useCallback } from 'react';
+import { institutionService } from '@/services/institutionService';
+import { useMessage } from '@/context/MessageContext';
+import { useModal } from '@/context/ModalContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { capitalizeWords } from '@/utils/stringUtils';
+import { useFetch } from '@/hooks/useFetch';
 
 export const useInstitutionsController = () => {
     const { showMessage } = useMessage();
     const { confirm } = useModal();
     const { t } = useLanguage();
 
-    // Data State
-    const [institutions, setInstitutions] = useState([]);
-    const [loading, setLoading] = useState(true);
+    // Data State using custom hook
+    const { data: institutions = [], loading, refetch: fetchInstitutions } = useFetch('/institutions', { initialData: [] });
 
     // UI State
     const [activeTab, setActiveTab] = useState('list'); // 'list' | 'finances'
@@ -28,24 +28,6 @@ export const useInstitutionsController = () => {
         phoneNumbers: []
     };
     const [formData, setFormData] = useState(initialFormState);
-
-    // Fetch Data
-    const fetchInstitutions = async () => {
-        setLoading(true);
-        try {
-            const res = await api.get('/institutions');
-            setInstitutions(res.data);
-        } catch (err) {
-            console.error(err);
-            showMessage('Error al cargar instituciones', 'error');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchInstitutions();
-    }, []);
 
     // Handlers
     const handleOpenFormModal = useCallback((inst = null) => {
@@ -75,10 +57,10 @@ export const useInstitutionsController = () => {
         e.preventDefault();
         try {
             if (editingInstitution) {
-                await api.put(`/institutions/${editingInstitution.id}`, formData);
+                await institutionService.updateInstitution(editingInstitution.id, formData);
                 showMessage(t('update_success'), 'success');
             } else {
-                await api.post('/institutions', formData);
+                await institutionService.createInstitution(formData);
                 showMessage(t('save_success'), 'success');
             }
             fetchInstitutions();
@@ -92,7 +74,7 @@ export const useInstitutionsController = () => {
     const handleDelete = useCallback(async (id) => {
         if (!await confirm(t('delete_confirm_msg'))) return;
         try {
-            await api.delete(`/institutions/${id}`);
+            await institutionService.deleteInstitution(id);
             showMessage(t('delete_success'), 'success');
             fetchInstitutions();
         } catch (err) {
