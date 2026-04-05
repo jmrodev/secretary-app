@@ -22,12 +22,12 @@ export const useAuditLogsController = () => {
     }, []);
 
     useEffect(() => {
-        if (user.role === 'admin') {
+        if (user && user.role === 'admin') {
             fetchLogs();
         } else {
             setLoading(false);
         }
-    }, [user.role]);
+    }, [user?.role, fetchLogs]);
 
     return {
         logs,

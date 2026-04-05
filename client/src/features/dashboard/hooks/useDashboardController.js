@@ -41,7 +41,7 @@ export const useDashboardController = () => {
         fetchStats();
         fetchRequests();
         fetchDoctors();
-        if (user.role === 'admin' || user.role === 'secretary') {
+        if (user && (user.role === 'admin' || user.role === 'secretary')) {
             fetchNewPatientStats();
         }
     };
@@ -106,21 +106,21 @@ export const useDashboardController = () => {
     // Orchestration Effects
     useEffect(() => {
         fetchStats();
-        if (user.role !== 'patient') {
+        if (user && user.role !== 'patient') {
             fetchReminders();
             fetchRequests();
         }
-        if (user.role === 'admin' || user.role === 'secretary') {
+        if (user && (user.role === 'admin' || user.role === 'secretary')) {
             fetchNewPatientStats();
         }
         const interval = setInterval(() => {
-            if (user.role !== 'patient') {
+            if (user && user.role !== 'patient') {
                 fetchReminders();
                 fetchRequests();
             }
         }, 30000);
         return () => clearInterval(interval);
-    }, [user.role]);
+    }, [user?.role]);
 
     // Action Handlers
     const handleUpdateStatus = async (id, status) => {

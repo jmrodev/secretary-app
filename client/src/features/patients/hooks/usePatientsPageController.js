@@ -27,16 +27,18 @@ export const usePatientsPageController = () => {
 
     // Data State
     const [patients, setPatients] = useState([]);
+    const [totalCount, setTotalCount] = useState(0);
     const [doctors, setDoctors] = useState([]);
     const [insurances, setInsurances] = useState([]);
     const [recycleItems, setRecycleItems] = useState([]);
     const [institutions, setInstitutions] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // View State
+    // View State (Pagination)
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(50);
     const [activeTab, setActiveTab] = useState('list'); // 'list' | 'recycle'
     const [searchTerm, setSearchTerm] = useState(() => {
-        // Pre-fill search from URL param, e.g. when navigating from institution transactions
         const params = new URLSearchParams(window.location.search);
         return params.get('search') || '';
     });
@@ -52,18 +54,26 @@ export const usePatientsPageController = () => {
     const [prescribeModal, setPrescribeModal] = useState({ open: false, data: { apptId: null, patientId: null, patientName: '', medications: '', instructions: '' } });
     const [qrModal, setQrModal] = useState({ open: false, url: '', expiry: null, patientName: '', patientPhone: '' });
 
-    // --- FETCH DATA ---
-    const fetchPatients = useCallback(async () => {
+    // --- FETCH DATA (Server-Side) ---
+    const fetchPatients = useCallback(async (page = 1, search = '') => {
         try {
-            const res = await api.get('/users/patients');
-            setPatients(res.data);
+            setLoading(true);
+            const res = await api.get('/users/patients', {
+                params: {
+                    page,
+                    limit: itemsPerPage,
+                    search
+                }
+            });
+            setPatients(res.data.patients);
+            setTotalCount(res.data.totalCount);
         } catch (err) {
             console.error(err);
             showMessage(t('failed_load_patients') || "Error al cargar pacientes", 'error');
         } finally {
             setLoading(false);
         }
-    }, [t, showMessage]);
+    }, [t, showMessage, itemsPerPage]);
 
     const fetchDoctors = useCallback(async () => {
         try {
@@ -80,12 +90,12 @@ export const usePatientsPageController = () => {
     }, []);
 
     const fetchRecycleBin = useCallback(async () => {
-        if (user.role !== 'admin' && user.role !== 'secretary') return;
+        if (!user || (user.role !== 'admin' && user.role !== 'secretary')) return;
         try {
             const res = await api.get('/logs/recycle-bin');
             setRecycleItems(res.data);
         } catch (err) { console.error(err); }
-    }, [user.role]);
+    }, [user?.role]);
 
     const fetchInstitutions = useCallback(async () => {
         try {
@@ -94,58 +104,22 @@ export const usePatientsPageController = () => {
         } catch (err) { console.error(err); }
     }, []);
 
+    // Initial Load & Search/Page changes
     useEffect(() => {
-        fetchPatients();
+        fetchPatients(currentPage, searchTerm);
         fetchDoctors();
         fetchInsurances();
         fetchRecycleBin();
         fetchInstitutions();
-    }, [fetchPatients, fetchDoctors, fetchInsurances, fetchRecycleBin, fetchInstitutions]);
+    }, [currentPage, searchTerm, fetchDoctors, fetchInsurances, fetchRecycleBin, fetchInstitutions]); // intentionally not adding fetchPatients to avoid double fetch if it changes
 
-    // --- FILTER LOGIC ---
-    const filteredPatients = useMemo(() => {
-        const normalizeText = (text) => text ? text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : "";
-
-        // Sort first: patients with debt come first, then alphabetical
-        const sortedPatients = [...patients].sort((a, b) => {
-            const debtA = Number(a.total_debt) || 0;
-            const debtB = Number(b.total_debt) || 0;
-            if (debtA > 0 && debtB === 0) return -1;
-            if (debtA === 0 && debtB > 0) return 1;
-            if (debtA > 0 && debtB > 0) return debtB - debtA;
-            return a.full_name.localeCompare(b.full_name);
-        });
-
-        // Optimization: if no search term, return sorted list
-        if (!searchTerm) return sortedPatients;
-
-        return sortedPatients.filter(p => {
-            const searchText = normalizeText(
-                [
-                    p.full_name, p.first_name, p.last_name, p.dni,
-                    p.insurance_name, p.affiliate_number,
-                    p.email, p.phone, p.phone?.replace(/[^0-9]/g, '')
-                ].filter(Boolean).join(' ')
-            );
-            const tokens = normalizeText(searchTerm).split(/\s+/).filter(t => t.length > 0);
-            return tokens.every(token => searchText.includes(token));
-        });
-    }, [patients, searchTerm]);
-
-    // --- PAGINATION ---
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 50;
-
-    useEffect(() => {
+    // Reset to page 1 on search
+    const handleSearchChange = useCallback((value) => {
+        setSearchTerm(value);
         setCurrentPage(1);
-    }, [searchTerm, patients]); // Reset page on filter or data change
+    }, []);
 
-    const paginatedPatients = useMemo(() => {
-        const start = (currentPage - 1) * itemsPerPage;
-        return filteredPatients.slice(start, start + itemsPerPage);
-    }, [filteredPatients, currentPage]);
-
-    const totalPages = Math.ceil(filteredPatients.length / itemsPerPage);
+    const totalPages = Math.ceil(totalCount / itemsPerPage);
 
     const handlePageChange = useCallback((newPage) => {
         if (newPage >= 1 && newPage <= totalPages) {
@@ -160,7 +134,7 @@ export const usePatientsPageController = () => {
         t, showMessage, confirm, deleteUser, settings,
         patients, patientDetails,
         setPatients, setPatientDetails, setSelectedPatientId, setDetailsLoading,
-        setEditModal, setDebtModal, setQrModal, fetchPatients, fetchRecycleBin,
+        setEditModal, setDebtModal, setQrModal, setPrescribeModal, fetchPatients, fetchRecycleBin,
     });
 
     // Prescription (Special case needs savePrescription from appointments hook)
@@ -194,13 +168,13 @@ export const usePatientsPageController = () => {
     return {
         // State
         user, t, settings,
-        patients: paginatedPatients, 
-        totalCount: filteredPatients.length,
+        patients, 
+        totalCount,
         currentPage, totalPages, handlePageChange,
         doctors, insurances, recycleItems, institutions,
         loading, detailsLoading,
         activeTab, setActiveTab,
-        searchTerm, setSearchTerm,
+        searchTerm, setSearchTerm: handleSearchChange,
         selectedPatientId, setSelectedPatientId,
         patientDetails, setPatientDetails,
 
