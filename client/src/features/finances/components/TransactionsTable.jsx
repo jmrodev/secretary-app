@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import Card from '../../../components/atoms/Card';
 import { formatTime } from '../../../utils/dateUtils';
+import Pagination from '../../../components/atoms/Pagination';
 
 // Local Feature Components
 import TransactionRow from './TransactionRow';
@@ -14,6 +15,10 @@ import './TransactionsTable.css';
  */
 const TransactionsTable = ({
     transactions,
+    totalCount,
+    currentPage,
+    totalPages,
+    onPageChange,
     user,
     settings,
     t,
@@ -121,7 +126,7 @@ const TransactionsTable = ({
         return groups;
     }, [transactions]);
 
-    const canManagerFinance = user.role === 'admin' || settings.enable_secretary_finance_crud === 'true';
+    const canManagerFinance = user && (user.role === 'admin' || settings.enable_secretary_finance_crud === 'true');
 
     return (
         <Card className="transactions-table__container no-padding" title={t('transaction_log')}>
@@ -182,6 +187,14 @@ const TransactionsTable = ({
                     </tbody>
                 </table>
             </div>
+            {totalPages > 1 && (
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={onPageChange}
+                    t={t}
+                />
+            )}
         </Card>
     );
 };

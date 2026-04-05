@@ -4,16 +4,14 @@ import React from 'react';
 import MainLayout from '../../components/templates/MainLayout';
 import Loading from '../../components/atoms/Loading';
 
-import {
-    useFinancesPageController,
-    FinanceStatsCards,
-    EditTransactionModal,
-    TransactionModal,
-    FinanceSidebar,
-    TransactionsTable,
-    CashBoxDeliveryModal,
-    PendingClosuresModal
-} from './index'; // Using local index
+import { useFinancesPageController } from './hooks/useFinancesPageController';
+import FinanceStatsCards from './components/FinanceStatsCards';
+import EditTransactionModal from './components/EditTransactionModal';
+import TransactionModal from './components/TransactionModal';
+import FinanceSidebar from './components/FinanceSidebar';
+import TransactionsTable from './components/TransactionsTable';
+import CashBoxDeliveryModal from './components/CashBoxDeliveryModal';
+import PendingClosuresModal from './components/PendingClosuresModal';
 
 import './FinancesPage.css';
 
@@ -41,7 +39,7 @@ const FinancesPage = () => {
         handlers
     } = controller;
 
-    const isAdminOrSecretary = user.role === 'admin' || user.role === 'secretary';
+    const isAdminOrSecretary = user && (user.role === 'admin' || user.role === 'secretary');
 
     return (
         <MainLayout wide>
@@ -80,6 +78,10 @@ const FinancesPage = () => {
                         <div className="dashboard-card no-padding">
                             <TransactionsTable
                                 transactions={filteredTransactions}
+                                totalCount={controller.totalCount}
+                                currentPage={controller.currentPage}
+                                totalPages={controller.totalPages}
+                                onPageChange={handlers.onPageChange}
                                 user={user}
                                 settings={settings}
                                 t={t}
