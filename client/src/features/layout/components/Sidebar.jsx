@@ -32,42 +32,42 @@ const Sidebar = () => {
                     {t('dashboard')}
                 </Link>
 
-                {user.role !== 'admin' && (
+                {user?.role !== 'admin' && (
                     <Link to="/appointments" className={getLinkClass('/appointments')}>
                         <Icon name="APPOINTMENTS" className="sidebar__link-icon" />
                         {t('appointments')}
                     </Link>
                 )}
 
-                {user.role !== 'patient' && user.role !== 'admin' && (
+                {user?.role !== 'patient' && user?.role !== 'admin' && (
                     <Link to="/patients" className={getLinkClass('/patients')}>
                         <Icon name="PATIENTS" className="sidebar__link-icon" />
                         {t('patients')}
                     </Link>
                 )}
 
-                {user.role === 'secretary' && (
+                {user?.role === 'secretary' && (
                     <Link to="/insurances" className={getLinkClass('/insurances')}>
                         <Icon name="INSURANCES" className="sidebar__link-icon" />
                         {t('insurances') || 'Obras Sociales'}
                     </Link>
                 )}
 
-                {settings.enable_office_rentals === 'true' && user.role !== 'admin' && (
+                {settings.enable_office_rentals === 'true' && user?.role !== 'admin' && (
                     <Link to="/rentals" className={getLinkClass('/rentals')}>
                         <Icon name="RENTALS" className="sidebar__link-icon" />
                         {t('office_rentals')}
                     </Link>
                 )}
 
-                {user.role !== 'admin' && (
+                {user?.role !== 'admin' && (
                     <Link to="/documents" className={getLinkClass('/documents')}>
                         <Icon name="DOCUMENTS" className="sidebar__link-icon" />
                         {t('medical_documents')}
                     </Link>
                 )}
 
-                {user.role === 'secretary' && (
+                {user?.role === 'secretary' && (
                     <Link to="/finances" className={getLinkClass('/finances')}>
                         <Icon name="FINANCES" className="sidebar__link-icon" />
                         {t('finances')}
@@ -75,7 +75,7 @@ const Sidebar = () => {
                 )}
 
                 {/* Configuration / Administration Section */}
-                {(user.role === 'admin' || user.role === 'secretary') && (
+                {(user?.role === 'admin' || user?.role === 'secretary') && (
                     <div className={`sidebar__section sidebar__section--collapsible ${isAdminOpen ? 'sidebar__section--open' : ''}`}>
                         <div
                             className="sidebar__section-header"
@@ -109,7 +109,7 @@ const Sidebar = () => {
                                 {t('institutions')}
                             </Link>
 
-                            {user.role === 'admin' && (
+                            {user?.role === 'admin' && (
                                 <>
                                     <Link to="/admin/users" className={getLinkClass('/admin/users')}>
                                         <Icon name="USERS" className="sidebar__link-icon" />
@@ -178,8 +178,8 @@ const Sidebar = () => {
                         {user?.username?.charAt(0)?.toUpperCase() || 'U'}
                     </div>
                     <div className="sidebar-user__info">
-                        <span className="sidebar-user__name">{user.full_name || user.username}</span>
-                        <span className="sidebar-user__role">{t(user.role) || user.role}</span>
+                        <span className="sidebar-user__name">{user?.full_name || user?.username}</span>
+                        <span className="sidebar-user__role">{t(user?.role) || user?.role}</span>
                     </div>
                     <Button
                         variant="ghost"
