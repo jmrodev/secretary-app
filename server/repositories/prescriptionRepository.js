@@ -45,7 +45,39 @@ class PrescriptionRepository {
         }
 
         query += " ORDER BY a.appointment_date DESC";
+
+        if (filters.limit !== undefined && filters.offset !== undefined) {
+            query += " LIMIT ? OFFSET ?";
+            params.push(parseInt(filters.limit), parseInt(filters.offset));
+        }
+
         return await conn.query(query, params);
+    }
+
+    async countAll(filters = {}, conn = pool) {
+        let query = `
+            SELECT COUNT(*) as total 
+            FROM prescriptions pr
+            JOIN appointments a ON pr.appointment_id = a.id
+        `;
+        let params = [];
+        let whereClauses = [];
+
+        if (filters.doctor_id) {
+            whereClauses.push("a.doctor_id = ?");
+            params.push(filters.doctor_id);
+        }
+        if (filters.patient_id) {
+            whereClauses.push("a.patient_id = ?");
+            params.push(filters.patient_id);
+        }
+
+        if (whereClauses.length > 0) {
+            query += " WHERE " + whereClauses.join(" AND ");
+        }
+
+        const rows = await conn.query(query, params);
+        return rows[0].total;
     }
 
     async create(data, conn = pool) {

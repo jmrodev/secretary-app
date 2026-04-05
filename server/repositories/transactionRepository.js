@@ -182,6 +182,9 @@ class TransactionRepository {
     }
     async findFiltered(filters, conn) {
         const connection = conn || await pool.getConnection();
+        const limit = parseInt(filters.limit) || 50;
+        const offset = parseInt(filters.offset) || 0;
+
         try {
             let query = `SELECT t.*, u.username as related_user_name, d.full_name as doctor_name, p.full_name as patient_full_name, p.dni as patient_dni,
                                 i.cbte_nro as invoice_number, r.type as request_type, a.bonified, r.payment_status
@@ -218,10 +221,68 @@ class TransactionRepository {
                 if (filters.institution_id) { whereClauses.push("t.institution_id = ?"); params.push(filters.institution_id); }
             }
 
+            // Search Filter
+            if (filters.search) {
+                const search = `%${filters.search}%`;
+                whereClauses.push("(p.full_name LIKE ? OR t.description LIKE ? OR t.amount LIKE ?)");
+                params.push(search, search, search);
+            }
+
             if (whereClauses.length > 0) query += " WHERE " + whereClauses.join(" AND ");
-            query += " ORDER BY t.transaction_date DESC LIMIT 1000";
+            query += " ORDER BY t.transaction_date DESC LIMIT ? OFFSET ?";
+            params.push(limit, offset);
 
             return await connection.query(query, params);
+        } finally {
+            if (!conn) connection.release();
+        }
+    }
+
+    async countFiltered(filters, conn) {
+        const connection = conn || await pool.getConnection();
+        try {
+            let query = `SELECT COUNT(*) as count
+                         FROM transactions t 
+                         LEFT JOIN users u ON t.related_user_id = u.id
+                         LEFT JOIN doctors d ON t.doctor_id = d.id
+                         LEFT JOIN patients p ON p.user_id = u.id
+                         LEFT JOIN medical_requests r ON t.request_id = r.id
+                         LEFT JOIN appointments a ON t.appointment_id = a.id`;
+
+            let whereClauses = [
+                "(t.status != 'pending' OR t.appointment_id IS NULL OR a.status = 'completed' OR (DATE(a.appointment_date) = ? AND a.status NOT IN ('cancelled', 'absent', 'reserved')))"
+            ];
+            let params = [filters.today || new Date().toISOString().split('T')[0]];
+
+            if (filters.user_id && filters.role) {
+                if (filters.role === 'doctor') {
+                    const [doc] = await connection.query("SELECT id FROM doctors WHERE user_id = ?", [filters.user_id]);
+                    if (doc) {
+                        whereClauses.push("(t.doctor_id = ? OR t.related_user_id = ?)");
+                        params.push(doc.id, filters.user_id);
+                    } else {
+                        whereClauses.push("t.related_user_id = ?");
+                        params.push(filters.user_id);
+                    }
+                } else if (filters.role === 'patient') {
+                    whereClauses.push("t.related_user_id = ?");
+                    params.push(filters.user_id);
+                }
+            } else {
+                if (filters.doctor_id) { whereClauses.push("t.doctor_id = ?"); params.push(filters.doctor_id); }
+                if (filters.patient_user_id) { whereClauses.push("t.related_user_id = ?"); params.push(filters.patient_user_id); }
+                if (filters.institution_id) { whereClauses.push("t.institution_id = ?"); params.push(filters.institution_id); }
+            }
+
+            if (filters.search) {
+                const search = `%${filters.search}%`;
+                whereClauses.push("(p.full_name LIKE ? OR t.description LIKE ? OR t.amount LIKE ?)");
+                params.push(search, search, search);
+            }
+
+            if (whereClauses.length > 0) query += " WHERE " + whereClauses.join(" AND ");
+            const [row] = await connection.query(query, params);
+            return Number(row.count);
         } finally {
             if (!conn) connection.release();
         }
@@ -351,6 +412,44 @@ class TransactionRepository {
 
         const [row] = await conn.query(query, params);
         return row || { today: 0, month: 0, year: 0 };
+    }
+
+    async findPendingClosures(doctorId, conn) {
+        const connection = conn || await pool.getConnection();
+        try {
+            const doctorClause = doctorId ? "AND t.doctor_id = ?" : "";
+            const params = [];
+            if (doctorId) params.push(doctorId);
+
+            const query = `
+                SELECT 
+                    DATE(t.transaction_date) as date,
+                    t.doctor_id,
+                    d.full_name as doctor_name,
+                    SUM(CASE WHEN t.method = 'cash' THEN 
+                        CASE WHEN t.is_withdrawal = 1 THEN -t.amount 
+                             WHEN (t.type LIKE 'income%' OR t.type = 'income') THEN t.amount 
+                             WHEN (t.type LIKE 'expense%' OR t.type = 'expense') THEN -t.amount 
+                             ELSE 0 END 
+                        ELSE 0 END) as balance,
+                    SUM(CASE WHEN t.method != 'cash' THEN 
+                        CASE WHEN t.is_withdrawal = 1 THEN -t.amount 
+                             WHEN (t.type LIKE 'income%' OR t.type = 'income') THEN t.amount 
+                             WHEN (t.type LIKE 'expense%' OR t.type = 'expense') THEN -t.amount 
+                             ELSE 0 END 
+                        ELSE 0 END) as transferBalance
+                FROM transactions t
+                LEFT JOIN doctors d ON t.doctor_id = d.id
+                WHERE t.status = 'paid' ${doctorClause}
+                GROUP BY DATE(t.transaction_date), t.doctor_id
+                HAVING balance > 0.01 OR transferBalance > 0.01
+                ORDER BY date DESC
+            `;
+
+            return await connection.query(query, params);
+        } finally {
+            if (!conn) connection.release();
+        }
     }
 }
 

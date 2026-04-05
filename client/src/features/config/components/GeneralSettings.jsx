@@ -3,6 +3,7 @@ import ConfigToggle from './ConfigToggle';
 import ConfigField from './ConfigField';
 import Button from '../../../components/atoms/Button';
 import Icon from '../../../components/atoms/Icon';
+import Input from '../../../components/atoms/Input';
 
 /**
  * GeneralSettings Feature Component.

@@ -57,13 +57,30 @@ class MedicalRequestService {
         }
     }
 
-    async getRequests(user, filters) {
-        let doctorId = null;
+    async getRequests(user, filters = {}) {
+        let doctorId = filters.doctorId || null;
         if (user.role === 'doctor') {
             const doc = await doctorRepository.getDoctorConfigByUserId(user.user_id);
             if (doc) doctorId = doc.id;
         }
-        return await medicalRequestRepository.findAll({ doctorId, patientId: filters.patientId });
+
+        const repoFilters = {
+            doctorId,
+            patientId: filters.patientId,
+            status: filters.status,
+            limit: filters.limit,
+            offset: filters.offset
+        };
+
+        const [rows, total] = await Promise.all([
+            medicalRequestRepository.findAll(repoFilters),
+            medicalRequestRepository.countAll(repoFilters)
+        ]);
+
+        return {
+            requests: rows,
+            totalCount: total
+        };
     }
 
     async updateRequestStatus(req, id, statusData) {

@@ -43,8 +43,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
     // --- Effects ---
     useEffect(() => {
         if (!isOpen) return;
-
-        fetchLists();
+        fetchDoctors();
         initializeData();
     }, [isOpen]);
 
@@ -76,11 +75,17 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         }
 
         setFormData(newFormState);
-        setMedications([]); // Reset meds on open
+        setMedications([]); 
 
-        if (data.patientId && patients.length > 0) {
-            const preSelected = patients.find(p => p.id === data.patientId);
-            if (preSelected) setSelectedPatient(preSelected);
+        if (data.patientId) {
+            // If we have a patientId but not the object, we'll need to fetch it or just use the name from initialData
+            if (data.patientName) {
+                setPatientSearch(`${data.patientName} (${data.patientDni || 'N/A'})`);
+                setSelectedPatient({ id: data.patientId, user_id: data.related_user_id, full_name: data.patientName, dni: data.patientDni });
+            }
+        } else {
+            setPatientSearch('');
+            setSelectedPatient(null);
         }
 
         if (data.amount) {
@@ -90,32 +95,30 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         if (data.doctorId && data.patientId && (!data.amount || Number(data.amount) === 0)) {
             fetchPricing(data.doctorId, data.patientId, initialServiceType);
         }
-
-        if (data.patientName) {
-            setPatientSearch(`${data.patientName} (${data.patientDni || 'N/A'})`);
-        } else {
-            setPatientSearch('');
-        }
     };
 
-    // Update selected patient when patients list loads if initialData provided
+    // --- Patient Search Logic ---
     useEffect(() => {
-        if (initialData?.patientId && patients.length > 0) {
-            const preSelected = patients.find(p => p.id === initialData.patientId);
-            if (preSelected) setSelectedPatient(preSelected);
-        }
-    }, [patients, initialData]);
+        if (!isOpen || !patientSearch || patientSearch.includes('(')) return; // Skip if modal closed, empty, or already selected (contains parenthesis)
+        
+        const timer = setTimeout(async () => {
+            try {
+                const res = await userService.getPatients({ search: patientSearch, limit: 10 });
+                setPatients(res.patients || []);
+            } catch (err) {
+                console.error("Failed to search patients", err);
+            }
+        }, 500);
 
-    const fetchLists = async () => {
+        return () => clearTimeout(timer);
+    }, [patientSearch, isOpen]);
+
+    const fetchDoctors = async () => {
         try {
-            const [pData, dData] = await Promise.all([
-                userService.getPatients(),
-                userService.getDoctors()
-            ]);
-            setPatients(pData);
+            const dData = await userService.getDoctors();
             setDoctors(dData);
         } catch (err) {
-            console.error("Failed to fetch lists", err);
+            console.error("Failed to fetch doctors", err);
         }
     };
 
@@ -149,8 +152,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
     const updateServiceType = (newType) => {
         setFormData(prev => {
             let newDesc = prev.description;
-            const pat = patients.find(p => p.user_id === Number(prev.related_user_id));
-            const pName = pat ? pat.full_name : '';
+            const pName = selectedPatient ? selectedPatient.full_name : '';
 
             if (pName) {
                 const labels = getServiceTypes(t).reduce((acc, curr) => ({ ...acc, [curr.value]: curr.label }), {});
@@ -161,17 +163,15 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         });
 
         // Re-fetch pricing
-        if (formData.doctor_id && formData.related_user_id) {
-            const pat = patients.find(p => p.user_id === Number(formData.related_user_id));
-            if (pat) fetchPricing(formData.doctor_id, pat.id, newType);
+        if (formData.doctor_id && selectedPatient) {
+            fetchPricing(formData.doctor_id, selectedPatient.id, newType);
         }
     };
 
     const updateDoctor = (newDocId) => {
         setFormData(prev => ({ ...prev, doctor_id: newDocId }));
-        if (formData.type === 'income_patient' && formData.related_user_id) {
-            const pat = patients.find(p => p.user_id === Number(formData.related_user_id));
-            if (pat) fetchPricing(newDocId, pat.id, formData.service_type);
+        if (formData.type === 'income_patient' && selectedPatient) {
+            fetchPricing(newDocId, selectedPatient.id, formData.service_type);
         }
     };
 
@@ -180,7 +180,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         setSelectedPatient(patient);
         setPatientSearch(`${patient.full_name} (${patient.dni || 'N/A'})`);
         setShowPatientList(false);
-        if (formData.doctor_id) fetchPricing(formData.doctor_id, patient.id);
+        if (formData.doctor_id) fetchPricing(formData.doctor_id, patient.id, formData.service_type);
     };
 
     const handlePaymentChange = (index, field, val) => {

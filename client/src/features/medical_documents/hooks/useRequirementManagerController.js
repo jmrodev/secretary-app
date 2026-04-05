@@ -12,7 +12,6 @@ import { extractMedicationDetails } from '../../../utils/medicationHelpers';
  */
 export const useRequirementManagerController = (user) => {
     // State
-    const [allRequests, setAllRequests] = useState([]);
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedRequest, setSelectedRequest] = useState(null);
@@ -22,6 +21,11 @@ export const useRequirementManagerController = (user) => {
     const [recycleRequests, setRecycleRequests] = useState([]);
     const [doctors, setDoctors] = useState([]);
     const [filter, setFilter] = useState('active'); // 'active' | 'history'
+
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
+    const [itemsPerPage] = useState(25);
 
     // Medication/Edit State
     const [patientMeds, setPatientMeds] = useState([]);
@@ -39,14 +43,23 @@ export const useRequirementManagerController = (user) => {
 
     const fetchRequests = useCallback(async () => {
         try {
-            const res = await api.get('/medical/requests');
-            setAllRequests(res.data);
+            setLoading(true);
+            const statusFilter = filter === 'active' ? ['pending', 'consult'] : ['completed', 'rejected'];
+            const params = {
+                page: currentPage,
+                limit: itemsPerPage,
+                status: statusFilter
+            };
+            const res = await api.get('/medical/requests', { params });
+            setRequests(res.data.requests || []);
+            setTotalCount(res.data.totalCount || 0);
         } catch (err) {
             console.error("[RequirementManagerController] Failed to fetch requests", err);
+            setRequests([]);
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [filter, currentPage, itemsPerPage]);
 
     const fetchDoctors = useCallback(async () => {
         try {
@@ -68,21 +81,17 @@ export const useRequirementManagerController = (user) => {
     }, [user?.role]);
 
     useEffect(() => {
-        const filtered = allRequests.filter(r => {
-            if (filter === 'active') {
-                return r.status === 'pending' || r.status === 'consult';
-            }
-            return r.status === 'completed' || r.status === 'rejected';
-        });
-        setRequests(filtered);
-    }, [filter, allRequests]);
+        fetchRequests();
+    }, [fetchRequests]);
 
     useEffect(() => {
-        fetchRequests();
         fetchDoctors();
+    }, [fetchDoctors]);
+
+    useEffect(() => {
         const interval = setInterval(fetchRequests, 15000);
         return () => clearInterval(interval);
-    }, [fetchRequests, fetchDoctors]);
+    }, [fetchRequests]);
 
     useEffect(() => {
         if (activeTab === 'recycle') {
@@ -105,6 +114,22 @@ export const useRequirementManagerController = (user) => {
             }
         }
     }, [selectedRequest]);
+
+    const handleTabChange = (newTab) => {
+        setActiveTab(newTab);
+        if (newTab === 'list') {
+            setCurrentPage(1);
+        }
+    };
+
+    const handleFilterChange = (newFilter) => {
+        setFilter(newFilter);
+        setCurrentPage(1);
+    };
+
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
+    };
 
     const handleRestore = async (item) => {
         if (await confirm(`¿Restaurar solicitud de ${item.entity_name}?`)) {
@@ -263,11 +288,11 @@ export const useRequirementManagerController = (user) => {
         actionNote,
         setActionNote,
         activeTab,
-        setActiveTab,
+        setActiveTab: handleTabChange,
         recycleRequests,
         doctors,
         filter,
-        setFilter,
+        setFilter: handleFilterChange,
         canDeleteRequest,
         handleRestore,
         openActionModal,
@@ -283,6 +308,11 @@ export const useRequirementManagerController = (user) => {
         updateEditMed, handleAddMed,
         editDoctorNote, setEditDoctorNote,
         checkIsKnown,
+        // Pagination Props
+        currentPage,
+        totalPages: Math.ceil(totalCount / itemsPerPage),
+        totalCount,
+        handlePageChange,
         t
     };
 };

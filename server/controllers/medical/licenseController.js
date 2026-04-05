@@ -19,11 +19,14 @@ exports.createLicense = async (req, res) => {
 
 exports.getLicenses = async (req, res) => {
     try {
+        const { page = 1, limit = 50, patientId } = req.query;
         const filters = {
-            patientId: req.query.patientId
+            patientId,
+            limit: parseInt(limit),
+            offset: (parseInt(page) - 1) * parseInt(limit)
         };
-        const rows = await licenseService.getLicenses(req.user, filters);
-        res.json(rows);
+        const result = await licenseService.getLicenses(req.user, filters);
+        res.json(result);
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");

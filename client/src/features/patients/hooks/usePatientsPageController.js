@@ -1,13 +1,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import api from '../../../api/axios';
-import { useAuth } from '../../auth';
-import { useMessage } from '../../../context/MessageContext';
-import { useLanguage } from '../../../context/LanguageContext';
-import { useConfig } from '../../../context/ConfigContext';
-import { useModal } from '../../../context/ModalContext';
-import { useAppointments } from '../../appointments';
-import { useUsers } from '../../users';
+import { usePermissions } from '../../../hooks/usePermissions';
 import { usePatientsHandlers } from './usePatientsHandlers';
 
 /**
@@ -17,7 +11,7 @@ import { usePatientsHandlers } from './usePatientsHandlers';
  */
 export const usePatientsPageController = () => {
     // Contexts & Hooks
-    const { user } = useAuth();
+    const { user, isStaff, isAdmin } = usePermissions();
     const { showMessage } = useMessage();
     const { t } = useLanguage();
     const { settings } = useConfig();
@@ -90,12 +84,12 @@ export const usePatientsPageController = () => {
     }, []);
 
     const fetchRecycleBin = useCallback(async () => {
-        if (!user || (user.role !== 'admin' && user.role !== 'secretary')) return;
+        if (!isStaff) return;
         try {
             const res = await api.get('/logs/recycle-bin');
             setRecycleItems(res.data);
         } catch (err) { console.error(err); }
-    }, [user?.role]);
+    }, [isStaff]);
 
     const fetchInstitutions = useCallback(async () => {
         try {

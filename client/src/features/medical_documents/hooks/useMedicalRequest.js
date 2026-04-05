@@ -58,7 +58,7 @@ export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMe
             showMessage(t('select_patient') || 'Seleccione un paciente', 'error');
             return;
         }
-        if (user.role !== 'doctor' && !selectedDoctor) {
+        if (user?.role !== 'doctor' && !selectedDoctor) {
             showMessage(t('select_doctor') || 'Seleccione un doctor', 'error');
             return;
         }
@@ -111,7 +111,7 @@ export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMe
             await api.post('/medical/requests', {
                 type: reqType,
                 patient_id: selectedPatient,
-                doctor_id: user.role === 'doctor' ? (user.user_id || user.id) : selectedDoctor,
+                doctor_id: user?.role === 'doctor' ? (user.user_id || user.id) : selectedDoctor,
                 request_note: finalNote,
                 raw_medication_data: JSON.stringify(finalItems),
                 status: sendToDoctor ? 'pending' : 'completed',

@@ -64,6 +64,9 @@ export const useMedicalDocumentsHandlers = ({
     setActiveTab,
     setRequestsSubTab,
     setActionNote,
+    setRequestsPage,
+    setPrescriptionsPage,
+    setLicensesPage,
 
     // Actions
     fetchRequests,
@@ -79,7 +82,7 @@ export const useMedicalDocumentsHandlers = ({
             await api.post('/medical/requests', {
                 type: reqType,
                 patient_id: selectedPatient,
-                doctor_id: user.role === 'doctor' ? (user.user_id || user.id) : selectedDoctor,
+                doctor_id: user?.role === 'doctor' ? (user.user_id || user.id) : selectedDoctor,
                 request_note: reqNote,
                 status: sendToDoctor ? 'pending' : 'completed'
             });
@@ -192,7 +195,7 @@ export const useMedicalDocumentsHandlers = ({
     }, [t, showMessage, fetchRequests, confirm]);
 
     const handleDeleteRequest = useCallback(async (id, r) => {
-        if (user.role !== 'admin' && !canDeleteRequest && (r.status === 'completed' || r.status === 'rejected')) {
+        if (user?.role !== 'admin' && !canDeleteRequest && (r.status === 'completed' || r.status === 'rejected')) {
             if (!isToday(r.completed_at || r.updated_at)) {
                 showMessage("Solo administradores pueden eliminar solicitudes finalizadas de días anteriores.", "warning");
                 return;
@@ -306,8 +309,21 @@ export const useMedicalDocumentsHandlers = ({
     }, [setIsEditing, setSelectedPrescription, setEditData, setSelectedLicense, setLicenseEditData, setSelectedRequest, setRequestEditData]);
 
     const handleSearchChange = useCallback((val) => setSearchTerm(val), [setSearchTerm]);
-    const handleTabChange = useCallback((val) => setActiveTab(val), [setActiveTab]);
-    const handleSubTabChange = useCallback((val) => setRequestsSubTab(val), [setRequestsSubTab]);
+    const handleTabChange = useCallback((val) => {
+        setActiveTab(val);
+        setRequestsPage(1);
+        setPrescriptionsPage(1);
+        setLicensesPage(1);
+    }, [setActiveTab, setRequestsPage, setPrescriptionsPage, setLicensesPage]);
+
+    const handlePrescriptionPageChange = useCallback((val) => setPrescriptionsPage(val), [setPrescriptionsPage]);
+    const handleLicensePageChange = useCallback((val) => setLicensesPage(val), [setLicensesPage]);
+    const handleSubTabChange = useCallback((val) => {
+        setRequestsSubTab(val);
+        setRequestsPage(1);
+    }, [setRequestsSubTab, setRequestsPage]);
+
+    const handlePageChange = useCallback((val) => setRequestsPage(val), [setRequestsPage]);
     const handleFileDescChange = useCallback((val) => setFileDesc(val), [setFileDesc]);
     const handleFilePatientChange = useCallback((val) => setFilePatient(val), [setFilePatient]);
     const handleFileUploadChange = useCallback((file) => setSelectedFile(file), [setSelectedFile]);
@@ -366,6 +382,9 @@ export const useMedicalDocumentsHandlers = ({
         handleSearchChange,
         handleTabChange,
         handleSubTabChange,
+        handlePageChange,
+        handlePrescriptionPageChange,
+        handleLicensePageChange,
         handleFileDescChange,
         handleFilePatientChange,
         handleFileUploadChange,

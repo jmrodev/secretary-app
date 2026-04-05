@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../auth';
+import { usePermissions } from '../../../hooks/usePermissions';
 import { useMessage } from '../../../context/MessageContext';
 import { useLanguage } from '../../../context/LanguageContext';
 import { useConfig } from '../../../context/ConfigContext';
@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
  * Orchesrates stats, reminders, appointments and modal states at the root level.
  */
 export const useDashboardController = () => {
-    const { user } = useAuth();
+    const { user, isStaff, isAdmin, isSecretary, isDoctor, isPatient, isMedicalStaff } = usePermissions();
     const { showMessage } = useMessage();
     const { t } = useLanguage();
     const { settings } = useConfig();
@@ -41,7 +41,7 @@ export const useDashboardController = () => {
         fetchStats();
         fetchRequests();
         fetchDoctors();
-        if (user && (user.role === 'admin' || user.role === 'secretary')) {
+        if (isStaff) {
             fetchNewPatientStats();
         }
     };
@@ -106,7 +106,7 @@ export const useDashboardController = () => {
     // Orchestration Effects
     useEffect(() => {
         fetchStats();
-        if (user && user.role !== 'patient') {
+        if (user && !isPatient) {
             fetchReminders();
             fetchRequests();
         }
@@ -114,7 +114,7 @@ export const useDashboardController = () => {
             fetchNewPatientStats();
         }
         const interval = setInterval(() => {
-            if (user && user.role !== 'patient') {
+            if (user && !isPatient) {
                 fetchReminders();
                 fetchRequests();
             }
@@ -395,7 +395,9 @@ export const useDashboardController = () => {
         handleSaveNote,
         handleCompleteReminder,
         handleWhatsAppReminder,
+        handleWhatsAppReminder,
         handleMarkNotified,
-        navigate
+        navigate,
+        isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff
     };
 };

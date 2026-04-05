@@ -1,5 +1,8 @@
 import React from 'react';
-import { useAuditLogsController, AuditLogManager } from './index';
+import { useAuditLogsController } from './hooks/useAuditLogsController';
+import AuditLogManager from './components/AuditLogManager';
+
+import MainLayout from '../../components/templates/MainLayout';
 
 /**
  * AuditLogsPage (Orchestrator).
@@ -9,9 +12,11 @@ const AuditLogsPage = () => {
     const controller = useAuditLogsController();
     
     return (
-        <div className="audit-logs-page-orchestrator animate-fadeIn">
-            <AuditLogManager {...controller} />
-        </div>
+        <MainLayout wide>
+            <div className="audit-logs-page-orchestrator animate-fadeIn">
+                <AuditLogManager {...controller} />
+            </div>
+        </MainLayout>
     );
 };
 

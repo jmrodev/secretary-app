@@ -22,11 +22,50 @@ class MedicalRequestRepository {
             whereClauses.push("(r.doctor_id = ? OR (r.is_patient_submitted = TRUE AND r.doctor_id IS NULL))");
             params.push(filters.doctorId);
         }
+        if (filters.status) {
+            if (Array.isArray(filters.status)) {
+                whereClauses.push(`r.status IN (${filters.status.map(() => '?').join(',')})`);
+                params.push(...filters.status);
+            } else {
+                whereClauses.push("r.status = ?");
+                params.push(filters.status);
+            }
+        }
 
         if (whereClauses.length > 0) query += " WHERE " + whereClauses.join(" AND ");
         query += " ORDER BY r.created_at DESC";
 
+        if (filters.limit) {
+            query += " LIMIT ? OFFSET ?";
+            params.push(parseInt(filters.limit), parseInt(filters.offset || 0));
+        }
+
         return await conn.query(query, params);
+    }
+
+    async countAll(filters = {}, conn = pool) {
+        let query = "SELECT COUNT(*) as total FROM medical_requests r";
+        const params = [];
+        const whereClauses = [];
+
+        if (filters.patientId) { whereClauses.push("r.patient_id = ?"); params.push(filters.patientId); }
+        if (filters.doctorId) {
+            whereClauses.push("(r.doctor_id = ? OR (r.is_patient_submitted = TRUE AND r.doctor_id IS NULL))");
+            params.push(filters.doctorId);
+        }
+        if (filters.status) {
+            if (Array.isArray(filters.status)) {
+                whereClauses.push(`r.status IN (${filters.status.map(() => '?').join(',')})`);
+                params.push(...filters.status);
+            } else {
+                whereClauses.push("r.status = ?");
+                params.push(filters.status);
+            }
+        }
+
+        if (whereClauses.length > 0) query += " WHERE " + whereClauses.join(" AND ");
+        const [row] = await conn.query(query, params);
+        return row?.total || 0;
     }
 
     async findById(id, conn = pool) {

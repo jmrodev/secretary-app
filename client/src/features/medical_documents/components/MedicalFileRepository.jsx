@@ -95,7 +95,7 @@ const MedicalFileRepository = ({
                                                 <span className="medical-file-repository__patient-name">{f.patient_name}</span>
                                             </td>
                                             <td className="pr-6 text-right">
-                                                {(user.role === 'admin' || canDeleteFile) && (
+                                                {(user?.role === 'admin' || canDeleteFile) && (
                                                     <Button
                                                         variant="ghost"
                                                         size="sm-compact"

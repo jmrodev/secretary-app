@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../../../api/axios';
-import { useAuth } from '../AuthContext';
+import { usePermissions } from '../../../hooks/usePermissions';
 import { useMessage } from '../../../context/MessageContext';
 import { useLanguage } from '../../../context/LanguageContext';
 
@@ -9,7 +9,7 @@ import { useLanguage } from '../../../context/LanguageContext';
  * Manages state and logic for editing the currently authenticated user's profile.
  */
 export const useProfileController = () => {
-    const { user } = useAuth();
+    const { user, isAdmin, isDoctor, isPatient, isSecretary, isStaff } = usePermissions();
     const { t } = useLanguage();
     const { showMessage } = useMessage();
 
@@ -88,6 +88,7 @@ export const useProfileController = () => {
         loading,
         formData,
         handleChange,
-        handleUpdate
+        handleUpdate,
+        isAdmin, isDoctor, isPatient, isSecretary, isStaff
     };
 };

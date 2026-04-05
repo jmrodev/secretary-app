@@ -161,15 +161,38 @@ class FinanceService {
             patientUserId = await patientRepository.findUserIdById(filters.patientId);
         }
 
-        const rows = await transactionRepository.findFiltered({
-            role: user.role,
-            user_id: user.user_id,
-            doctor_id: filters.doctor_id,
-            patient_user_id: patientUserId,
-            institution_id: filters.institution_id,
-            today
-        });
-        return rows;
+        const limit = parseInt(filters.limit) || 50;
+        const page = parseInt(filters.page) || 1;
+        const offset = (page - 1) * limit;
+
+        const [transactions, totalCount] = await Promise.all([
+            transactionRepository.findFiltered({
+                role: user.role,
+                user_id: user.user_id,
+                doctor_id: filters.doctor_id,
+                patient_user_id: patientUserId,
+                institution_id: filters.institution_id,
+                search: filters.search,
+                limit,
+                offset,
+                today
+            }),
+            transactionRepository.countFiltered({
+                role: user.role,
+                user_id: user.user_id,
+                doctor_id: filters.doctor_id,
+                patient_user_id: patientUserId,
+                institution_id: filters.institution_id,
+                search: filters.search,
+                today
+            })
+        ]);
+
+        return { transactions, totalCount };
+    }
+
+    async getPendingClosures(doctorId) {
+        return await transactionRepository.findPendingClosures(doctorId);
     }
 
     async payInstitutionDebt(data, currentUserId) {

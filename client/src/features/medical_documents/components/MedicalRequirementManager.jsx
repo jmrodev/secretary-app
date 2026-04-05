@@ -70,8 +70,8 @@ const MedicalRequirementManager = ({
 
     if (loading) return <Loading variant="centered" text={t('loading')} />;
 
-    const isAdminOrSecretary = ['admin', 'secretary'].includes(user.role);
-    const canEdit = user.role === 'admin' || user.role === 'secretary' || user.role === 'doctor';
+    const isAdminOrSecretary = ['admin', 'secretary'].includes(user?.role);
+    const canEdit = user?.role === 'admin' || user?.role === 'secretary' || user?.role === 'doctor';
 
     const baseClass = 'medical-requirement-manager';
 
@@ -138,6 +138,9 @@ const MedicalRequirementManager = ({
                         hideFilters={hideFilters}
                         typeLabels={typeLabels}
                         setPaymentModal={setPaymentModal}
+                        currentPage={controller.currentPage}
+                        totalPages={controller.totalPages}
+                        onPageChange={controller.handlePageChange}
                         t={t}
                     />
                 ) : (

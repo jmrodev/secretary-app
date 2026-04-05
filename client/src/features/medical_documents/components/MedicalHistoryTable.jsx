@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { useLanguage } from '../../../context/LanguageContext';
+import Pagination from '../../../components/atoms/Pagination';
 import { useAuth } from '../../auth';
 import { timeAgo } from '../../../utils/time';
 import { formatDate } from '../../../utils/dateUtils';
@@ -8,15 +9,27 @@ import Button from '../../../components/atoms/Button';
 import Icon from '../../../components/atoms/Icon';
 import './MedicalHistoryTable.css';
 
-const MedicalHistoryTable = ({ items, filterItem, onView, onDelete, icon, title, originLabel, canDelete }) => {
+const MedicalHistoryTable = ({ 
+    items, 
+    // filterItem removed because filtering is now server-side or handled at orchestrator level
+    onView, 
+    onDelete, 
+    icon, 
+    title, 
+    originLabel, 
+    canDelete,
+    // Pagination Props
+    currentPage,
+    totalPages,
+    onPageChange
+}) => {
     const { t } = useLanguage();
     const { user } = useAuth();
 
-    const showDelete = canDelete !== undefined ? canDelete : (user.role === 'admin' || user.role === 'secretary');
+    const showDelete = canDelete !== undefined ? canDelete : (user?.role === 'admin' || user?.role === 'secretary');
 
-    // Safety check for items and filterItem function
+    // Safety check for items
     const safeItems = Array.isArray(items) ? items : [];
-    const filteredItems = typeof filterItem === 'function' ? safeItems.filter(filterItem) : safeItems;
 
     return (
         <div className="medical-history">
@@ -39,7 +52,7 @@ const MedicalHistoryTable = ({ items, filterItem, onView, onDelete, icon, title,
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredItems.map(item => (
+                        {safeItems.map(item => (
                             <tr key={`${item._origin}_${item.id}`} className="medical-history__row">
                                 <td className="medical-history__td">
                                     <div className="medical-history__date-cell">
@@ -103,9 +116,20 @@ const MedicalHistoryTable = ({ items, filterItem, onView, onDelete, icon, title,
                     </tbody>
                 </table>
 
-                {filteredItems.length === 0 && (
+                {safeItems.length === 0 && (
                     <div className="medical-history__empty">
                         <p>{t('none_found')}</p>
+                    </div>
+                )}
+
+                {totalPages > 1 && (
+                    <div className="medical-history__pagination">
+                        <Pagination 
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={onPageChange}
+                            t={t}
+                        />
                     </div>
                 )}
             </div>

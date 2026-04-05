@@ -48,7 +48,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
         handleCreateRequest(e, medicationItems, reqNote);
     };
 
-    if (user.role !== 'secretary' && user.role !== 'doctor') return null;
+    if (user?.role !== 'secretary' && user?.role !== 'doctor') return null;
 
     const baseClass = 'medical-request-form';
 
@@ -69,7 +69,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                     </FormGroup>
 
                     <FormGroup label={t('doctor_label')} required>
-                        {user.role === 'doctor' ? (
+                        {user?.role === 'doctor' ? (
                             <div className={`${baseClass}__readonly-value`}>
                                 Dr. {user.full_name || user.username}
                             </div>

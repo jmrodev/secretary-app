@@ -1,11 +1,9 @@
 import React, { Suspense } from 'react';
-import { 
-    useSystemConfigController, 
-    GeneralSettings, 
-    CommunicationSettings, 
-    IntegrationSettings, 
-    BillingSettings 
-} from './index'; // Using local index
+import { useSystemConfigController } from './hooks/useSystemConfigController';
+import GeneralSettings from './components/GeneralSettings';
+import CommunicationSettings from './components/CommunicationSettings';
+import IntegrationSettings from './components/IntegrationSettings';
+import BillingSettings from './components/BillingSettings';
 import { useDoctorsPageController } from '../doctors';
 import { useProfileController, ProfileEditor } from '../auth';
 import { useReportsController, useAuditLogsController } from '../reports';
@@ -212,22 +210,24 @@ const SystemConfigPage = () => {
     } = controller;
 
     return (
-        <div className="system-config-page">
-            <div className="system-config-container animate-fadeIn">
-                <main className="system-config-main">
-                    <Suspense fallback={<Loading variant="centered" />}>
-                        {renderContent(activeTab, controller)}
-                    </Suspense>
-                </main>
+        <MainLayout wide>
+            <div className="system-config-page">
+                <div className="system-config-container animate-fadeIn">
+                    <main className="system-config-main">
+                        <Suspense fallback={<Loading variant="centered" />}>
+                            {renderContent(activeTab, controller)}
+                        </Suspense>
+                    </main>
 
-                <QRCodeModal
-                    isOpen={qrModal.open}
-                    onClose={() => setQrModal({ ...qrModal, open: false })}
-                    url={qrModal.url}
-                    expiresAt={qrModal.expiry}
-                />
+                    <QRCodeModal
+                        isOpen={qrModal.open}
+                        onClose={() => setQrModal({ ...qrModal, open: false })}
+                        url={qrModal.url}
+                        expiresAt={qrModal.expiry}
+                    />
+                </div>
             </div>
-        </div>
+        </MainLayout>
     );
 };
 

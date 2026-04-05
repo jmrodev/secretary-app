@@ -38,7 +38,8 @@ const AppointmentsPage = () => {
         paymentModal, setPaymentModal, actionModal, setActionModal, historyModal, setHistoryModal,
         prescribeModal, setPrescribeModal, whatsappModal, setWhatsappModal, showNextSlotModal, setShowNextSlotModal,
         editPatientModalOpen, setEditPatientModalOpen, authModalOpen, setAuthModalOpen,
-        handlers, booking, nextSlot, rescheduleAppt, exitRescheduleMode
+        handlers, booking, nextSlot, rescheduleAppt, exitRescheduleMode,
+        isStaff, isAdmin, isDoctor, isPatient, isMedicalStaff
     } = controller;
 
     if (loading || !user) return <Loading variant="full-page" />;
@@ -68,9 +69,9 @@ const AppointmentsPage = () => {
                     <div className={activeTab === 'monthly' ? "appointments-grid--monthly" : "dashboard-grid"}>
                         <aside className="dashboard-sidebar">
                             <div className="dashboard-nav-bar animate-fadeIn">
-                                <NavTabs activeTab={activeTab} setActiveTab={setActiveTab} userRole={user?.role} />
+                                <NavTabs activeTab={activeTab} setActiveTab={setActiveTab} userRole={user?.role} isStaff={isStaff} isAdmin={isAdmin} />
                                 <DoctorFilter
-                                    activeTab={activeTab} userRole={user?.role} viewDoctorId={viewDoctorId}
+                                    activeTab={activeTab} userRole={user?.role} isStaff={isStaff} isAdmin={isAdmin} viewDoctorId={viewDoctorId}
                                     setViewDoctorId={setViewDoctorId} doctors={doctors}
                                 />
                             </div>

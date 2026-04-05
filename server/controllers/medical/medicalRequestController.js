@@ -19,12 +19,17 @@ exports.createRequest = async (req, res) => {
 
 exports.getRequests = async (req, res) => {
     try {
+        const { page = 1, limit = 50, status, patientId, doctorId } = req.query;
         const filters = {
-            patientId: req.query.patientId
+            patientId,
+            doctorId,
+            status,
+            limit: parseInt(limit),
+            offset: (parseInt(page) - 1) * parseInt(limit)
         };
-        const rows = await medicalRequestService.getRequests(req.user, filters);
-        console.log(`[GET_REQUESTS] User: ${req.user.username} (Role: ${req.user.role}). Rows returned: ${rows.length}`);
-        res.json(rows);
+        const result = await medicalRequestService.getRequests(req.user, filters);
+        console.log(`[GET_REQUESTS] User: ${req.user.username} (Role: ${req.user.role}). Total: ${result.totalCount}`);
+        res.json(result);
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");

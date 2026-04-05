@@ -31,6 +31,9 @@ const MedicalDocumentsPage = () => {
         user, t, activeTab, requestsSubTab,
         searchTerm, isEditing,
         requests, files, prescriptions, licenses, doctors,
+        requestsPage, requestsTotalPages,
+        prescriptionsPage, prescriptionsTotalPages,
+        licensesPage, licensesTotalPages,
         selectedFile, selectedPrescription,
         selectedLicense, selectedRequest,
         filePatient, fileDesc,
@@ -145,13 +148,15 @@ const MedicalDocumentsPage = () => {
                                     ) : (
                                         <MedicalRequestList
                                             requests={requests}
-                                            filterItem={filterItem}
                                             handleDeleteRequest={handleDeleteRequest}
                                             openActionModal={openActionModal}
                                             setPaymentModal={openPaymentModal}
                                             onBonify={handlers.handleBonifyRequest}
-                                            canDelete={user.role === 'admin' || canDeleteRequest}
+                                            canDelete={user?.role === 'admin' || canDeleteRequest}
                                             handleEditRequest={handleEditItem}
+                                            currentPage={requestsPage}
+                                            totalPages={requestsTotalPages}
+                                            onPageChange={handlers.handlePageChange}
                                         />
                                     )}
                                 </div>
@@ -181,7 +186,6 @@ const MedicalDocumentsPage = () => {
                                             activeTab === 'licenses' ? combinedLicenses :
                                                 combinedCertificates
                                     }
-                                    filterItem={filterItem}
                                     onView={handleEditItem}
                                     onDelete={
                                         activeTab === 'prescriptions' ? handleDeletePrescription :
@@ -189,7 +193,7 @@ const MedicalDocumentsPage = () => {
                                                 (id, item) => handleDeleteRequest(id, item)
                                     }
                                     canDelete={
-                                        user.role === 'admin' ||
+                                        user?.role === 'admin' ||
                                         (activeTab === 'prescriptions' && canDeletePrescription) ||
                                         (['licenses', 'certificates'].includes(activeTab) && canDeleteLicense)
                                     }
@@ -200,6 +204,22 @@ const MedicalDocumentsPage = () => {
                                                 t('recent_certificates')
                                     }
                                     originLabel={activeTab === 'certificates' ? t('certificate') : undefined}
+                                    // Pagination Props
+                                    currentPage={
+                                        activeTab === 'prescriptions' ? prescriptionsPage :
+                                            activeTab === 'licenses' ? licensesPage :
+                                                requestsPage
+                                    }
+                                    totalPages={
+                                        activeTab === 'prescriptions' ? prescriptionsTotalPages :
+                                            activeTab === 'licenses' ? licensesTotalPages :
+                                                requestsTotalPages
+                                    }
+                                    onPageChange={
+                                        activeTab === 'prescriptions' ? handlers.handlePrescriptionPageChange :
+                                            activeTab === 'licenses' ? handlers.handleLicensePageChange :
+                                                handlers.handlePageChange
+                                    }
                                 />
                             )}
                         </div>

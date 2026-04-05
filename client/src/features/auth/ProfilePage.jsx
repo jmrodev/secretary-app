@@ -11,7 +11,7 @@ const ProfilePage = () => {
     const profileProps = useProfileController();
 
     return (
-        <MainLayout wideSplit>
+        <MainLayout wide>
             <div className="profile-page animate-fadeIn">
                 <ProfileEditor {...profileProps} />
             </div>

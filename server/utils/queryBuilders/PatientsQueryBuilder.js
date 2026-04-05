@@ -183,6 +183,14 @@ class PatientsQueryBuilder extends BaseQueryBuilder {
     }
 
     /**
+     * Ordena por deuda (mayor deuda primero, luego por nombre)
+     */
+    sortByDebt() {
+        this.orderByClause = `ORDER BY total_debt DESC, p.full_name ASC`;
+        return this;
+    }
+
+    /**
      * Ordena por nombre
      */
     sortByName(direction = 'ASC') {

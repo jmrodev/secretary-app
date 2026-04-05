@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 
 // Layout & Guards
 import ProtectedRoute from '../components/atoms/ProtectedRoute';
+import RoleGuard from '../components/auth/RoleGuard';
 
 // Pages
 // import Patients from '../pages/Patients'; // Deprecated
@@ -43,21 +44,57 @@ const AppRouter = () => {
             {/* Protected Dashboard Routes (Layout) */}
             <Route element={<ProtectedRoute />}>
                 <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/appointments" element={<AppointmentsPage />} />
+                
+                <Route path="/appointments" element={
+                    <RoleGuard allowedRoles={['doctor', 'secretary']}>
+                        <AppointmentsPage />
+                    </RoleGuard>
+                } />
+
+                <Route path="/patients" element={
+                    <RoleGuard allowedRoles={['admin', 'secretary', 'doctor']}>
+                        <PatientsPage />
+                    </RoleGuard>
+                } />
+
+                <Route path="/finances" element={
+                    <RoleGuard allowedRoles={['secretary']}>
+                        <FinancesPage />
+                    </RoleGuard>
+                } />
+
+                <Route path="/insurances" element={
+                    <RoleGuard allowedRoles={['secretary']}>
+                        <InsurancesPage />
+                    </RoleGuard>
+                } />
+
+                <Route path="/admin/users" element={
+                    <RoleGuard allowedRoles={['admin']}>
+                        <AdminUsersPage />
+                    </RoleGuard>
+                } />
+
+                <Route path="/logs" element={
+                    <RoleGuard allowedRoles={['admin']}>
+                        <AuditLogsPage />
+                    </RoleGuard>
+                } />
+
+                <Route path="/config" element={
+                    <RoleGuard allowedRoles={['admin', 'secretary']}>
+                        <SystemConfigPage />
+                    </RoleGuard>
+                } />
+
                 <Route path="/rentals" element={<RentalsPage />} />
                 <Route path="/documents" element={<MedicalDocumentsPage />} />
-                <Route path="/finances" element={<FinancesPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/patients" element={<PatientsPage />} />
                 <Route path="/doctors" element={<DoctorsPage />} />
-                <Route path="/logs" element={<AuditLogsPage />} />
-                <Route path="/admin/users" element={<AdminUsersPage />} />
-                <Route path="/config" element={<SystemConfigPage />} />
-                <Route path="/requests" element={<RequestsPage />} />
-                <Route path="/messages" element={<ChatPage />} />
-                <Route path="/insurances" element={<InsurancesPage />} />
                 <Route path="/institutions" element={<InstitutionsPage />} />
                 <Route path="/reports" element={<ReportsPage />} />
+                <Route path="/requests" element={<RequestsPage />} />
+                <Route path="/messages" element={<ChatPage />} />
             </Route>
 
 

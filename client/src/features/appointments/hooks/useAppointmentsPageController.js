@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../../api/axios';
-import { useAuth } from '../../auth';
+import { usePermissions } from '../../../hooks/usePermissions';
 import { useMessage } from '../../../context/MessageContext';
 import { useLanguage } from '../../../context/LanguageContext';
 import { useModal } from '../../../context/ModalContext';
@@ -22,7 +22,7 @@ import { copyToClipboard } from '../../../utils/clipboardUtils';
  * Orchestrates all state and side effects for the Appointments Page.
  */
 export const useAppointmentsPageController = () => {
-    const { user } = useAuth();
+    const { user, isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff } = usePermissions();
     const { t } = useLanguage();
     const { showMessage } = useMessage();
     const { settings } = useConfig();
@@ -50,7 +50,7 @@ export const useAppointmentsPageController = () => {
     const { holidays, addHoliday, deleteHoliday } = useHolidays();
     const patientSearch = usePatientSearch();
     const { searchPatientId, setSearchPatientId, appointments, patientAppointments, patientApptLoading, fetchAppointments } = patientSearch;
-    const { doctorSchedule, syncDayToGoogle } = useGoogleEvents(viewDoctorId, selectedDate, user.role);
+    const { doctorSchedule, syncDayToGoogle } = useGoogleEvents(viewDoctorId, selectedDate, user?.role);
     const { handleWhatsAppUniversal } = useWhatsAppUniversal(doctors);
     const booking = useAppointmentBooking(doctors);
     const nextSlot = useNextFreeSlot(viewDoctorId || booking.selectedDoctor);
@@ -91,7 +91,7 @@ export const useAppointmentsPageController = () => {
     useEffect(() => {
         if (rescheduleAppt) { setViewDoctorId(rescheduleAppt.doctor_id); return; }
         if (syncAppt) { setViewDoctorId(syncAppt.doctor_id); setSelectedDate(new Date(syncAppt.appointment_date)); }
-        if (user.role === 'doctor' && doctors.length > 0) {
+        if (isDoctor && doctors.length > 0) {
             const profile = doctors.find(d => d.user_id === (user.user_id || user.id));
             if (profile) setViewDoctorId(profile.id);
         }

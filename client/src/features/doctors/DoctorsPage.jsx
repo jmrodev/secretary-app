@@ -1,16 +1,20 @@
 import React from 'react';
 import MainLayout from '../../components/templates/MainLayout';
-import { DoctorsManager } from './index';
+import DoctorsManager from './components/DoctorsManager';
+
+import { useDoctorsPageController } from './hooks/useDoctorsPageController';
 
 /**
  * DoctorsPage (Orchestrator).
  * Main interface for managing the medical staff and their schedules.
  */
 const DoctorsPage = () => {
+    const controller = useDoctorsPageController();
+
     return (
         <MainLayout wide>
             <div className="doctors-page-orchestrator animate-fadeIn">
-                <DoctorsManager />
+                <DoctorsManager {...controller} />
             </div>
         </MainLayout>
     );

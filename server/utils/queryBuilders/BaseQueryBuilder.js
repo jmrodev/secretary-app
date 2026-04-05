@@ -152,6 +152,38 @@ class BaseQueryBuilder {
     }
 
     /**
+     * Construye y retorna la query para contar registros totales
+     * @returns {{query: string, params: Array}}
+     */
+    buildCount() {
+        let query = 'SELECT COUNT(*) as total';
+
+        // FROM clause
+        query += ` FROM ${this.baseTable}`;
+
+        // JOINs (Sólo INNER JOINs suelen ser necesarios para contar si afectan resultados, 
+        // pero incluimos todos por si hay filtros en tablas joineadas)
+        this.joins.forEach(join => {
+            query += ` ${join.type} JOIN ${join.table} ON ${join.condition}`;
+        });
+
+        // WHERE clause
+        if (this.conditions.length > 0) {
+            query += ' WHERE ' + this.conditions.join(' AND ');
+        }
+
+        // GROUP BY (Si hay group by, el count es más complejo, pero para casos simples...)
+        if (this.groupByClause) {
+            query = `SELECT COUNT(*) as total FROM (${query} ${this.groupByClause}) as count_table`;
+        }
+
+        return {
+            query,
+            params: this.params
+        };
+    }
+
+    /**
      * Retorna solo la query como string (para debugging)
      */
     toSQL() {

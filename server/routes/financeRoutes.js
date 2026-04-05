@@ -27,6 +27,7 @@ router.put('/transactions/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_FINA
 router.delete('/transactions/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_FINANCE), financeController.deleteTransaction);
 router.post('/pay-debt', verifyToken, financeController.payDebt);
 router.post('/pay-institution-debt', verifyToken, financeController.payInstitutionDebt);
+router.get('/pending-closures', verifyToken, financeController.getPendingClosures);
 router.get('/stats', verifyToken, authorize(ACCESS_LEVELS.MANAGE_FINANCE), financeController.getStats);
 
 module.exports = router;

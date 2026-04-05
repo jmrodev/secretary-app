@@ -1,4 +1,5 @@
 import React from 'react';
+import Pagination from '../../../components/atoms/Pagination';
 import TabButton from '../../../components/atoms/TabButton';
 import Icon from '../../../components/atoms/Icon';
 import Button from '../../../components/atoms/Button';
@@ -17,7 +18,11 @@ const MedicalRequirementTable = ({
     hideFilters,
     typeLabels,
     setPaymentModal,
-    t
+    t,
+    // Pagination Props
+    currentPage,
+    totalPages,
+    onPageChange
 }) => {
     return (
         <div className="medical-requirement-manager__content animate-fadeIn">
@@ -85,6 +90,17 @@ const MedicalRequirementTable = ({
                             ))}
                         </tbody>
                     </table>
+                </div>
+            )}
+
+            {totalPages > 1 && (
+                <div className="medical-requirement-manager__pagination">
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={onPageChange}
+                        t={t}
+                    />
                 </div>
             )}
         </div>

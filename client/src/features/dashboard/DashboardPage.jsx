@@ -53,15 +53,15 @@ const DashboardPage = () => {
         handleWhatsAppReminder,
         handleMarkNotified,
         navigate,
-        doctors
+        doctors,
+        isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff
     } = controller;
 
     if (!user) {
         return <Loading variant="full-page" />;
     }
 
-    const isAdminOrSecretary = user?.role === 'admin' || user?.role === 'secretary';
-    const isDoctor = user?.role === 'doctor';
+    const isAdminOrSecretary = isStaff;
 
     return (
         <MainLayout wide>

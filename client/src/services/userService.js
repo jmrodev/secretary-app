@@ -1,8 +1,8 @@
 import api from '../api/axios';
 
 export const userService = {
-    getPatients: async () => {
-        const response = await api.get('/users/patients');
+    getPatients: async (params = {}) => {
+        const response = await api.get('/users/patients', { params });
         return response.data;
     },
 

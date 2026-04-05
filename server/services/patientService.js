@@ -15,12 +15,21 @@ const { PATIENT_FIELDS } = require('../constants/patientConstants');
  * Handles business logic for patient management.
  */
 class PatientService {
-    async getAllPatients(user, search) {
+    async getAllPatients(user, search, page = 1, limit = 50) {
         const conn = await pool.getConnection();
         try {
             const builder = new PatientsQueryBuilder(user);
             await builder.applyRoleFilter();
-            builder.withFullDetails().applySearch(search).sortByName();
+            builder.withFullDetails().applySearch(search).sortByDebt();
+
+            // 1. Get Total Count (without pagination)
+            const { query: countQuery, params: countParams } = builder.buildCount();
+            const [countRows] = await conn.query(countQuery, countParams);
+            const totalCount = countRows?.total || 0;
+
+            // 2. Apply Pagination
+            const offset = (page - 1) * limit;
+            builder.limit(limit, offset);
 
             const { query, params } = builder.build();
             const rows = await conn.query(query, params);
@@ -30,12 +39,17 @@ class PatientService {
                 rows.forEach(r => { r.phoneNumbers = phoneMap[r.id] || []; });
             }
 
-            return rows.map(r => ({
+            const patients = rows.map(r => ({
                 ...r,
                 total_debt: Number(r.total_debt),
                 total_appointments: Number(r.total_appointments),
                 missed_appointments: Number(r.missed_appointments)
             }));
+
+            return {
+                patients,
+                totalCount
+            };
         } finally {
             conn.release();
         }

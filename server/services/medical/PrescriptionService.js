@@ -51,8 +51,8 @@ class PrescriptionService {
         }
     }
 
-    async getPrescriptions(user, filters) {
-        let doctorId = null;
+    async getPrescriptions(user, filters = {}) {
+        let doctorId = filters.doctorId || null;
         let patientId = filters.patientId || null;
 
         if (user.role === 'patient') {
@@ -63,7 +63,22 @@ class PrescriptionService {
             if (doc) doctorId = doc.id;
         }
 
-        return await prescriptionRepository.findAll({ doctor_id: doctorId, patient_id: patientId });
+        const repoFilters = {
+            doctor_id: doctorId,
+            patient_id: patientId,
+            limit: filters.limit,
+            offset: filters.offset
+        };
+
+        const [rows, total] = await Promise.all([
+            prescriptionRepository.findAll(repoFilters),
+            prescriptionRepository.countAll(repoFilters)
+        ]);
+
+        return {
+            prescriptions: rows,
+            totalCount: total
+        };
     }
 
     async updatePrescription(req, id, prescriptionData) {

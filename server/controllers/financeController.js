@@ -43,10 +43,26 @@ exports.createTransaction = async (req, res) => {
 
 exports.getTransactions = async (req, res) => {
     try {
+        let { doctor_id, page, limit, search } = req.query;
+        if (doctor_id === 'all' || !doctor_id) doctor_id = null;
+        const result = await financeService.getTransactions(req.user, { doctor_id, page, limit, search });
+        res.json(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    }
+};
+
+exports.getPendingClosures = async (req, res) => {
+    try {
         let { doctor_id } = req.query;
         if (doctor_id === 'all' || !doctor_id) doctor_id = null;
-        const rows = await financeService.getTransactions(req.user, { ...req.query, doctor_id });
-        res.json(rows);
+        if (req.user.role === 'doctor') {
+            const [doc] = await pool.query("SELECT id FROM doctors WHERE user_id = ?", [req.user.user_id]);
+            doctor_id = doc?.id;
+        }
+        const closures = await financeService.getPendingClosures(doctor_id);
+        res.json(closures);
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");

@@ -1,5 +1,6 @@
 
 import React from 'react';
+import Pagination from '../../../components/atoms/Pagination';
 import { useAuth } from '../../auth';
 import { useLanguage } from '../../../context/LanguageContext';
 import { isToday } from '../../../utils/time';
@@ -15,20 +16,22 @@ import './MedicalRequestList.css';
  */
 const MedicalRequestList = ({
     requests,
-    filterItem,
+    // filterItem removed because filtering is now server-side
     handleDeleteRequest,
     openActionModal,
     setPaymentModal,
     onBonify,
     canDelete,
-    handleEditRequest
+    handleEditRequest,
+    // Pagination Props
+    currentPage,
+    totalPages,
+    onPageChange
 }) => {
     const { user } = useAuth();
     const { t } = useLanguage();
 
-    const filteredRequests = (requests || []).filter(filterItem || (() => true));
-
-    if (filteredRequests.length === 0) {
+    if (!requests || requests.length === 0) {
         return (
             <div className="medical-requests__empty">
                 <Icon name="description" size="3rem" className="medical-requests__empty-icon" />
@@ -53,7 +56,7 @@ const MedicalRequestList = ({
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredRequests.map(r => {
+                        {requests.map(r => {
                             const isPending = r.status === 'pending';
                             const isCompleted = r.status === 'completed';
                             const isRejected = r.status === 'rejected';
@@ -128,7 +131,7 @@ const MedicalRequestList = ({
                                     </td>
                                     <td className="medical-requests__td medical-requests__td--actions">
                                         <div className="medical-requests__actions">
-                                            {(r.payment_status !== 'paid' && r.payment_status !== 'bonified') && (user.role === 'secretary' || user.role === 'doctor') && (
+                                            {(r.payment_status !== 'paid' && r.payment_status !== 'bonified') && (user?.role === 'secretary' || user?.role === 'doctor') && (
                                                 <>
                                                     <Button
                                                         variant="ghost"
@@ -161,7 +164,7 @@ const MedicalRequestList = ({
                                                 </>
                                             )}
 
-                                            {(user.role === 'doctor' || user.role === 'secretary') && isPending && (
+                                            {(user?.role === 'doctor' || user?.role === 'secretary') && isPending && (
                                                 <Button
                                                     variant="ghost"
                                                     size="sm-compact"
@@ -171,7 +174,7 @@ const MedicalRequestList = ({
                                                 />
                                             )}
 
-                                            {(user.role === 'doctor' || user.role === 'secretary') && isPending && (
+                                            {(user?.role === 'doctor' || user?.role === 'secretary') && isPending && (
                                                 <Button
                                                     variant="ghost"
                                                     size="sm-compact"
@@ -189,7 +192,7 @@ const MedicalRequestList = ({
                                                 icon={<Icon name="visibility" size="1rem" />}
                                             />
 
-                                            {(user.role === 'admin' || canDelete) && (
+                                            {(user?.role === 'admin' || canDelete) && (
                                                 <Button
                                                     variant="ghost"
                                                     size="sm-compact"
@@ -199,7 +202,7 @@ const MedicalRequestList = ({
                                                 />
                                             )}
 
-                                            {(canDelete || user.role === 'admin' || (user.role === 'doctor' && (isPending || isToday(r.completed_at || r.updated_at)))) && (
+                                            {(canDelete || user?.role === 'admin' || (user?.role === 'doctor' && (isPending || isToday(r.completed_at || r.updated_at)))) && (
                                                 <Button
                                                     variant="ghost"
                                                     size="sm-compact"
@@ -216,6 +219,17 @@ const MedicalRequestList = ({
                     </tbody>
                 </table>
             </div>
+
+            {totalPages > 1 && (
+                <div className="medical-requests__pagination">
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={onPageChange}
+                        t={t}
+                    />
+                </div>
+            )}
         </div>
     );
 };

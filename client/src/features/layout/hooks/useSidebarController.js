@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useAuth } from '../../auth';
+import { usePermissions } from '../../../hooks/usePermissions';
 import { useLanguage } from '../../../context/LanguageContext';
 import { useConfig } from '../../../context/ConfigContext';
 import api from '../../../api/axios';
@@ -10,7 +10,7 @@ import api from '../../../api/axios';
  * Handles navigation state, user session, and external data fetching (doctors/spreadsheets).
  */
 export const useSidebarController = () => {
-    const { user, logout } = useAuth();
+    const { user, isStaff, isAdmin, isSecretary, isDoctor, isPatient, isMedicalStaff, logout } = usePermissions();
     const { t, toggleLanguage } = useLanguage();
     const { settings } = useConfig();
     const location = useLocation();
@@ -27,7 +27,7 @@ export const useSidebarController = () => {
      * Listens to 'doctors-updated' custom event for real-time refresh.
      */
     const fetchSidebarDoctors = () => {
-        if (user && ['admin', 'secretary', 'doctor'].includes(user.role)) {
+        if (isMedicalStaff) {
             api.get('/users/doctors')
                 .then(res => setDoctors(res.data))
                 .catch(err => console.error("Error fetching doctors in sidebar:", err));
@@ -41,7 +41,7 @@ export const useSidebarController = () => {
 
         window.addEventListener('doctors-updated', fetchSidebarDoctors);
         return () => window.removeEventListener('doctors-updated', fetchSidebarDoctors);
-    }, [user?.role]);
+    }, [isMedicalStaff]);
 
     /**
      * Helper to determine active link styling based on current path.
@@ -60,6 +60,12 @@ export const useSidebarController = () => {
         doctors,
         isAdminOpen,
         toggleAdmin,
-        getLinkClass
+        getLinkClass,
+        isStaff,
+        isAdmin,
+        isSecretary,
+        isDoctor,
+        isPatient,
+        isMedicalStaff
     };
 };

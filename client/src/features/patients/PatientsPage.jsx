@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { usePatientsPageController } from './hooks/usePatientsPageController';
+import { usePermissions } from '../../hooks/usePermissions';
 
 // Atoms (Shared)
 import MainLayout from '../../components/templates/MainLayout';
@@ -30,6 +31,7 @@ import './PatientsPage.css';
  * Coordinates patient listing, search, details, and recycle bin.
  */
 const PatientsPage = () => {
+    const { isStaff, user: authUser } = usePermissions();
     const controller = usePatientsPageController();
     const {
         user, t,
@@ -68,7 +70,7 @@ const PatientsPage = () => {
         handleRestorePatient,
     } = handlers;
 
-    if (loading) return (
+    if (loading || !authUser) return (
         <MainLayout wide>
             <Loading variant="centered" text={t('loading')} />
         </MainLayout>
@@ -117,7 +119,7 @@ const PatientsPage = () => {
                                     >
                                         {t('active_list')}
                                     </TabButton>
-                                    {(user.role === 'admin' || user.role === 'secretary') && (
+                                    {isStaff && (
                                         <TabButton
                                             isActive={activeTab === 'recycle'}
                                             onClick={() => { setActiveTab('recycle'); fetchRecycleBin(); }}
@@ -147,7 +149,7 @@ const PatientsPage = () => {
                                 </div>
                             </div>
 
-                            {(user.role === 'admin' || user.role === 'secretary') && activeTab === 'list' && (
+                            {isStaff && activeTab === 'list' && (
                                 <div className="dashboard-card">
                                     <h3 className="dashboard-card__title">
                                         <Icon name="build" size="1.2rem" />

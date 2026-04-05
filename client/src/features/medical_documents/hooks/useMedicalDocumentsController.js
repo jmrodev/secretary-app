@@ -29,6 +29,20 @@ export const useMedicalDocumentsController = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
 
+    // Pagination State for Requests
+    const [requestsPage, setRequestsPage] = useState(1);
+    const [requestsTotal, setRequestsTotal] = useState(0);
+    const [requestsLimit] = useState(25);
+
+    // Pagination State for History
+    const [prescriptionsPage, setPrescriptionsPage] = useState(1);
+    const [prescriptionsTotal, setPrescriptionsTotal] = useState(0);
+    const [prescriptionsLimit] = useState(25);
+
+    const [licensesPage, setLicensesPage] = useState(1);
+    const [licensesTotal, setLicensesTotal] = useState(0);
+    const [licensesLimit] = useState(25);
+
     // Data State
     const [requests, setRequests] = useState([]);
     const [files, setFiles] = useState([]);
@@ -91,16 +105,20 @@ export const useMedicalDocumentsController = () => {
 
     const fetchRequests = async () => {
         try {
-            const res = await api.get('/medical/requests');
-            const sorted = res.data.sort((a, b) => {
-                const topStatus = ['pending', 'consult'];
-                const aTop = topStatus.includes(a.status);
-                const bTop = topStatus.includes(b.status);
-                if (aTop && !bTop) return -1;
-                if (!aTop && bTop) return 1;
-                return new Date(b.created_at) - new Date(a.created_at);
-            });
-            setRequests(sorted);
+            const statusFilter = requestsSubTab === 'list' 
+                ? ['pending', 'consult'] 
+                : ['completed', 'rejected']; // Just a default, will be overridden by tab logic if needed
+
+            const params = {
+                page: requestsPage,
+                limit: requestsLimit,
+                status: statusFilter
+            };
+            const res = await api.get('/medical/requests', { params });
+            
+            // We expect { requests, totalCount } from our new paginated backend
+            setRequests(res.data.requests || []);
+            setRequestsTotal(res.data.totalCount || 0);
         } catch (err) { console.error(err); }
     };
 
@@ -114,11 +132,13 @@ export const useMedicalDocumentsController = () => {
     const fetchHistory = async () => {
         try {
             const [pRes, lRes] = await Promise.all([
-                api.get('/medical/prescriptions'),
-                api.get('/medical/licenses')
+                api.get('/medical/prescriptions', { params: { page: prescriptionsPage, limit: prescriptionsLimit } }),
+                api.get('/medical/licenses', { params: { page: licensesPage, limit: licensesLimit } })
             ]);
-            setPrescriptions(pRes.data);
-            setLicenses(lRes.data);
+            setPrescriptions(pRes.data.prescriptions || []);
+            setPrescriptionsTotal(pRes.data.totalCount || 0);
+            setLicenses(lRes.data.licenses || []);
+            setLicensesTotal(lRes.data.totalCount || 0);
         } catch (err) { console.error(err); }
     };
 
@@ -136,7 +156,7 @@ export const useMedicalDocumentsController = () => {
             fetchHistory();
             fetchRequests(); // Requests needed for combined views
         }
-    }, [activeTab]);
+    }, [activeTab, requestsPage, requestsSubTab, prescriptionsPage, licensesPage]);
 
     useEffect(() => {
         if (selectedDoctor) {
@@ -163,7 +183,7 @@ export const useMedicalDocumentsController = () => {
         setIsSubmitting, setIsEditing, setSelectedPrescription, setSelectedLicense,
         setSelectedRequest, setEditData, setLicenseEditData, setRequestEditData,
         setActionModal, setPaymentModal, setSearchTerm, setActiveTab, setRequestsSubTab,
-        setActionNote,
+        setActionNote, setRequestsPage, setPrescriptionsPage, setLicensesPage,
 
         // Actions/Filter
         fetchRequests, fetchFiles, fetchHistory,
@@ -175,6 +195,12 @@ export const useMedicalDocumentsController = () => {
         user, t, showMessage, activeTab, setActiveTab, requestsSubTab, setRequestsSubTab,
         searchTerm, setSearchTerm, isSubmitting, isEditing, setIsEditing,
         requests, files, prescriptions, licenses, doctors,
+        requestsPage, requestsTotal,
+        requestsTotalPages: Math.ceil(requestsTotal / requestsLimit),
+        prescriptionsPage, prescriptionsTotal,
+        prescriptionsTotalPages: Math.ceil(prescriptionsTotal / prescriptionsLimit),
+        licensesPage, licensesTotal,
+        licensesTotalPages: Math.ceil(licensesTotal / licensesLimit),
         selectedPatient, setSelectedPatient, selectedDoctor, setSelectedDoctor,
         selectedFile, setSelectedFile, selectedPrescription, setSelectedPrescription,
         selectedLicense, setSelectedLicense, selectedRequest, setSelectedRequest,

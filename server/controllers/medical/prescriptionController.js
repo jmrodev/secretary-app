@@ -20,11 +20,14 @@ exports.createPrescription = async (req, res) => {
 
 exports.getPrescriptions = async (req, res) => {
     try {
+        const { page = 1, limit = 50, patientId } = req.query;
         const filters = {
-            patientId: req.query.patientId
+            patientId,
+            limit: parseInt(limit),
+            offset: (parseInt(page) - 1) * parseInt(limit)
         };
-        const rows = await prescriptionService.getPrescriptions(req.user, filters);
-        res.json(rows);
+        const result = await prescriptionService.getPrescriptions(req.user, filters);
+        res.json(result);
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");

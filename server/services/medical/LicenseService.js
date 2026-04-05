@@ -45,8 +45,8 @@ class LicenseService {
         }
     }
 
-    async getLicenses(user, filters) {
-        let doctorId = null;
+    async getLicenses(user, filters = {}) {
+        let doctorId = filters.doctorId || null;
         let patientId = filters.patientId || null;
 
         if (user.role === 'patient') {
@@ -57,7 +57,22 @@ class LicenseService {
             if (doc) doctorId = doc.id;
         }
 
-        return await licenseRepository.findAll({ doctor_id: doctorId, patient_id: patientId });
+        const repoFilters = {
+            doctor_id: doctorId,
+            patient_id: patientId,
+            limit: filters.limit,
+            offset: filters.offset
+        };
+
+        const [rows, total] = await Promise.all([
+            licenseRepository.findAll(repoFilters),
+            licenseRepository.countAll(repoFilters)
+        ]);
+
+        return {
+            licenses: rows,
+            totalCount: total
+        };
     }
 
     async updateLicense(req, id, licenseData) {

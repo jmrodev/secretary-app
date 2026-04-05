@@ -69,5 +69,15 @@ export const usePermissions = () => {
         fetchSettings();
     }, [user]);
 
-    return { ...permissions, loading };
+    return { 
+        ...permissions, 
+        loading,
+        isAdmin: user?.role === 'admin',
+        isSecretary: user?.role === 'secretary',
+        isDoctor: user?.role === 'doctor',
+        isPatient: user?.role === 'patient',
+        isStaff: user?.role === 'admin' || user?.role === 'secretary',
+        isMedicalStaff: user?.role === 'admin' || user?.role === 'secretary' || user?.role === 'doctor',
+        user
+    };
 };
