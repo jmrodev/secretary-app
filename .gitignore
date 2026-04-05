@@ -64,3 +64,9 @@ android_sdk/
 tools/android_sdk/
 backup_ddbb/
 backups/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
