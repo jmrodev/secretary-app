@@ -38,7 +38,7 @@ const AppointmentsPage = () => {
         paymentModal, setPaymentModal, actionModal, setActionModal, historyModal, setHistoryModal,
         prescribeModal, setPrescribeModal, whatsappModal, setWhatsappModal, showNextSlotModal, setShowNextSlotModal,
         editPatientModalOpen, setEditPatientModalOpen, authModalOpen, setAuthModalOpen,
-        handlers, booking, nextSlot, rescheduleAppt, exitRescheduleMode,
+        handlers, booking, nextSlot, rescheduleAppt,
         isStaff, isAdmin, isDoctor, isPatient, isMedicalStaff
     } = controller;
 
@@ -46,7 +46,7 @@ const AppointmentsPage = () => {
 
     return (
         <MainLayout wide>
-            <RescheduleBanner rescheduleAppt={rescheduleAppt} onExit={exitRescheduleMode} t={t} />
+            <RescheduleBanner rescheduleAppt={rescheduleAppt} onExit={handlers.exitRescheduleMode} t={t} />
 
             <header className="dashboard-header animate-fadeIn">
                 <h1 className="dashboard-header__title">{t('appointments_title') || 'Agenda de Turnos'}</h1>
