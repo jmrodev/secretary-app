@@ -122,7 +122,7 @@ const DashboardPage = () => {
                                             >
                                                 {t('reminders')}
                                             </Button>
-                                            <Badge count={reminders.length} position="top-right" variant="danger" />
+                                            <Badge count={reminders?.length || 0} position="top-right" variant="danger" />
                                         </div>
                                     </div>
                                 </div>

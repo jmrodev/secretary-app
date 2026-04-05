@@ -110,7 +110,7 @@ export const useDashboardController = () => {
             fetchReminders();
             fetchRequests();
         }
-        if (user && (user.role === 'admin' || user.role === 'secretary')) {
+        if (isStaff) {
             fetchNewPatientStats();
         }
         const interval = setInterval(() => {
