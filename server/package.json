@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "dev": "nodemon app.js",
     "tunnel": "node utils/tunnel-manager.js",
     "tunnel:config": "./cloudflared tunnel --config config.yml run"
@@ -31,6 +31,7 @@
     "node-cron": "^4.2.1"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "nodemon": "^3.1.11"
   }
 }
