@@ -39,7 +39,7 @@ const AppointmentFormModal = ({
 
                 <div className="input-group">
                     <label className="form-label">{t('doctors') || 'Doctor'}</label>
-                    {user.role === 'doctor' ? (
+                    {user?.role === 'doctor' ? (
                         <div className="form-control form-control--disabled">
                             {doctors.find(d => d.id === Number(selectedDoctor))?.full_name || 'Usted'}
                         </div>
@@ -55,7 +55,7 @@ const AppointmentFormModal = ({
 
                 <AppointmentTypeSelector type={type} onChange={handleTypeChange} t={t} />
 
-                {(user.role === 'secretary' || user.role === 'doctor') && (
+                {(user?.role === 'secretary' || user?.role === 'doctor') && (
                     <AppointmentPatientSection
                         selectedPatient={selectedPatient} selectedPatientData={selectedPatientData} missingData={missingData}
                         handlePatientChange={handlePatientChange} handlePhoneChange={handlePhoneChange}

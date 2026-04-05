@@ -60,8 +60,8 @@ const DashboardPage = () => {
         return <Loading variant="full-page" />;
     }
 
-    const isAdminOrSecretary = user.role === 'admin' || user.role === 'secretary';
-    const isDoctor = user.role === 'doctor';
+    const isAdminOrSecretary = user?.role === 'admin' || user?.role === 'secretary';
+    const isDoctor = user?.role === 'doctor';
 
     return (
         <MainLayout wide>
@@ -79,7 +79,7 @@ const DashboardPage = () => {
                         }
                         subtitle={
                             <>
-                                {t('welcome_back')}, <strong>{user.full_name || user.username}</strong>. {t('dashboard_subtitle')}
+                                {t('welcome_back')}, <strong>{user?.full_name || user?.username}</strong>. {t('dashboard_subtitle')}
                             </>
                         }
                     />

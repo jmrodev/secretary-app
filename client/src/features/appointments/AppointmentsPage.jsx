@@ -41,7 +41,7 @@ const AppointmentsPage = () => {
         handlers, booking, nextSlot, rescheduleAppt, exitRescheduleMode
     } = controller;
 
-    if (loading) return <Loading variant="full-page" />;
+    if (loading || !user) return <Loading variant="full-page" />;
 
     return (
         <MainLayout wide>
@@ -68,9 +68,9 @@ const AppointmentsPage = () => {
                     <div className={activeTab === 'monthly' ? "appointments-grid--monthly" : "dashboard-grid"}>
                         <aside className="dashboard-sidebar">
                             <div className="dashboard-nav-bar animate-fadeIn">
-                                <NavTabs activeTab={activeTab} setActiveTab={setActiveTab} userRole={user.role} />
+                                <NavTabs activeTab={activeTab} setActiveTab={setActiveTab} userRole={user?.role} />
                                 <DoctorFilter
-                                    activeTab={activeTab} userRole={user.role} viewDoctorId={viewDoctorId}
+                                    activeTab={activeTab} userRole={user?.role} viewDoctorId={viewDoctorId}
                                     setViewDoctorId={setViewDoctorId} doctors={doctors}
                                 />
                             </div>
