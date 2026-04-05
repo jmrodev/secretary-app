@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import api from '../../../api/axios';
-import { useMessage } from '../../../context/MessageContext';
-import { useModal } from '../../../context/ModalContext';
-import { useLanguage } from '../../../context/LanguageContext';
-import { capitalizeWords } from '../../../utils/stringUtils';
+import { institutionService } from '@/services/institutionService';
+import { useMessage } from '@/context/MessageContext';
+import { useModal } from '@/context/ModalContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { capitalizeWords } from '@/utils/stringUtils';
 
 export const useInstitutionsController = () => {
     const { showMessage } = useMessage();
@@ -33,8 +33,8 @@ export const useInstitutionsController = () => {
     const fetchInstitutions = async () => {
         setLoading(true);
         try {
-            const res = await api.get('/institutions');
-            setInstitutions(res.data);
+            const data = await institutionService.getAllInstitutions();
+            setInstitutions(data);
         } catch (err) {
             console.error(err);
             showMessage('Error al cargar instituciones', 'error');
@@ -75,10 +75,10 @@ export const useInstitutionsController = () => {
         e.preventDefault();
         try {
             if (editingInstitution) {
-                await api.put(`/institutions/${editingInstitution.id}`, formData);
+                await institutionService.updateInstitution(editingInstitution.id, formData);
                 showMessage(t('update_success'), 'success');
             } else {
-                await api.post('/institutions', formData);
+                await institutionService.createInstitution(formData);
                 showMessage(t('save_success'), 'success');
             }
             fetchInstitutions();
@@ -92,7 +92,7 @@ export const useInstitutionsController = () => {
     const handleDelete = useCallback(async (id) => {
         if (!await confirm(t('delete_confirm_msg'))) return;
         try {
-            await api.delete(`/institutions/${id}`);
+            await institutionService.deleteInstitution(id);
             showMessage(t('delete_success'), 'success');
             fetchInstitutions();
         } catch (err) {
