@@ -42,12 +42,6 @@ const UserManagement = ({ excludeRoles = [], role = null, title, subtitle }) => 
         loadData();
     }, [role, JSON.stringify(excludeRoles)]);
 
-    useEffect(() => {
-        const handler = (e) => openModal(e.detail);
-        window.addEventListener('OPEN_USER_MODAL', handler);
-        return () => window.removeEventListener('OPEN_USER_MODAL', handler);
-    }, []);
-
     // Handlers
     const openModal = (type, u = null) => {
         let initialData = {};
