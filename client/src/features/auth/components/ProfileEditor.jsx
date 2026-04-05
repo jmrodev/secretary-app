@@ -15,11 +15,11 @@ const ProfileEditor = ({
     user,
     t,
     formData,
-    handleChange,
-    handleUpdate,
+    handlers,
     loading,
     isAdmin, isDoctor, isPatient, isSecretary, isStaff
 }) => {
+    const { handleChange, handleUpdate } = handlers;
     if (loading || !user) return <div className="profile-editor__loading">{t('loading') || 'Cargando...'}</div>;
 
     if (isAdmin) {

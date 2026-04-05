@@ -29,12 +29,18 @@ const DashboardPage = () => {
     const controller = useDashboardController();
     const {
         user, t, settings,
-        stats, newPatientStats, reminders, pendingReqCount, activeTab, setActiveTab,
-        actionModal, setActionModal,
-        historyModal, setHistoryModal,
-        prescribeModal, setPrescribeModal,
-        paymentModal, setPaymentModal,
+        stats, newPatientStats, reminders, pendingReqCount, activeTab,
+        actionModal,
+        historyModal,
+        prescribeModal,
+        paymentModal,
         isSubmitting,
+        doctors,
+        handlers,
+        isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff
+    } = controller;
+
+    const {
         refreshDashboard,
         handleUpdateStatus,
         handleDelete,
@@ -52,10 +58,13 @@ const DashboardPage = () => {
         handleCompleteReminder,
         handleWhatsAppReminder,
         handleMarkNotified,
-        navigate,
-        doctors,
-        isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff
-    } = controller;
+        setActiveTab,
+        setActionModal,
+        setHistoryModal,
+        setPrescribeModal,
+        setPaymentModal,
+        navigate
+    } = handlers;
 
     if (!user) {
         return <Loading variant="full-page" />;

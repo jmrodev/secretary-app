@@ -66,18 +66,21 @@ const renderContent = (activeTab, controller) => {
     const {
         user,
         settings,
-        updateSetting,
-        setQrModal,
         loading,
         googleUnlinked,
+        t,
+        handlers
+    } = controller;
+    const {
+        updateSetting,
+        setQrModal,
         handleGoogleAuth,
         handleDisconnectGoogle,
         handleRetryGoogleFailed,
         handleTestMeta,
         insertVariable,
-        handleRefreshTunnel,
-        t
-    } = controller;
+        handleRefreshTunnel
+    } = handlers;
 
     switch (activeTab) {
         case 'profile':
@@ -202,12 +205,12 @@ const renderContent = (activeTab, controller) => {
 const SystemConfigPage = () => {
     const controller = useSystemConfigController();
     const {
-        user,
         activeTab,
         qrModal,
-        setQrModal,
-        t
+        handlers
     } = controller;
+
+    const { setQrModal } = handlers;
 
     return (
         <MainLayout wide>

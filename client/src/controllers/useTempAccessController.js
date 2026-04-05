@@ -60,8 +60,12 @@ export const useTempAccessController = () => {
         }
     };
 
+    const handlers = {
+        handleSubmit
+    };
+
     return {
         ...state,
-        handleSubmit
+        handlers
     };
 };

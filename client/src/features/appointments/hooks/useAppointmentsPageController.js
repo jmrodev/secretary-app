@@ -117,18 +117,21 @@ export const useAppointmentsPageController = () => {
         handleAdminAuthConfirm: (password) => hookHandlers.handleAdminAuthConfirm(retryAction, password),
         handleWhatsAppUniversal, syncDayToGoogle, cancelAppointment, fetchAppointments,
         handleCancel: (id, reason) => cancelAppointment(id, fetchAppointments, reason),
-        exitRescheduleMode, rescheduleAppt
+        exitRescheduleMode, rescheduleAppt,
+        setActiveTab, setShowOutOfHours, setViewDoctorId, setSelectedDate,
+        setEditPatientModalOpen, setPaymentModal, setActionModal, setHistoryModal,
+        setPrescribeModal, setAuthModalOpen, setSearchPatientId
     };
 
     return {
-        viewDoctorId, setViewDoctorId, doctors, institutions, loading, selectedDate, setSelectedDate,
-        activeTab, setActiveTab, showOutOfHours, setShowOutOfHours, t, user,
-        editPatientModalOpen, setEditPatientModalOpen, paymentModal, setPaymentModal,
-        actionModal, setActionModal, historyModal, setHistoryModal, prescribeModal, setPrescribeModal,
-        authModalOpen, setAuthModalOpen, whatsappModal: booking.whatsappModal, setWhatsappModal: booking.setWhatsappModal,
+        viewDoctorId, doctors, institutions, loading, selectedDate,
+        activeTab, showOutOfHours, t, user,
+        editPatientModalOpen, paymentModal,
+        actionModal, historyModal, prescribeModal,
+        authModalOpen, whatsappModal: booking.whatsappModal, setWhatsappModal: booking.setWhatsappModal,
         showNextSlotModal: nextSlot.showModal, setShowNextSlotModal: nextSlot.setShowModal,
         holidays, booking, patientSearch, nextSlot, currentDoctor: viewDoctorId ? doctors.find(d => d.id === Number(viewDoctorId)) : null,
         filteredAppointments: appointments, appointments, calendarStats, doctorSchedule,
-        searchPatientId, setSearchPatientId, patientAppointments, patientApptLoading, handlers, rescheduleAppt
+        searchPatientId, patientAppointments, patientApptLoading, handlers, rescheduleAppt
     };
 };

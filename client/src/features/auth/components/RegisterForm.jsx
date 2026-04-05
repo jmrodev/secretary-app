@@ -13,12 +13,12 @@ import './RegisterForm.css';
 const RegisterForm = () => {
     const {
         formData,
-        handleChange,
-        handleSubmit,
         error,
         loading,
+        handlers,
         t
     } = useRegisterController();
+    const { handleChange, handleSubmit } = handlers;
 
     return (
         <div className="auth-layout auth-layout--hero">
