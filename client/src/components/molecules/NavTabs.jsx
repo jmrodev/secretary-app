@@ -3,7 +3,7 @@ import TabButton from '../atoms/TabButton';
 import TabNav from './TabNav';
 import Icon from '../atoms/Icon';
 
-const NavTabs = ({ activeTab, setActiveTab, userRole }) => {
+const NavTabs = ({ activeTab, setActiveTab, userRole, isStaff, isAdmin }) => {
     return (
         <TabNav className="nav-tabs--top">
             <TabButton
@@ -14,7 +14,7 @@ const NavTabs = ({ activeTab, setActiveTab, userRole }) => {
             >
                 Agenda
             </TabButton>
-            {(userRole === 'admin' || userRole === 'secretary') && (
+            {isStaff && (
                 <TabButton
                     isActive={activeTab === 'holidays'}
                     onClick={() => setActiveTab('holidays')}

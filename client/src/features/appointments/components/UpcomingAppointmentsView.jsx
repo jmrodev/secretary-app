@@ -11,7 +11,7 @@ import './UpcomingAppointmentsView.css';
 const UpcomingAppointmentsView = ({ appointments, loading, t, onAction, onWhatsApp }) => {
     if (loading) return <Loading />;
 
-    const upcoming = appointments
+    const upcoming = (appointments || [])
         .filter(a => new Date(a.appointment_date) >= new Date())
         .sort((a, b) => new Date(a.appointment_date) - new Date(b.appointment_date));
 

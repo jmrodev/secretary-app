@@ -4,9 +4,9 @@ import Icon from '../../../components/atoms/Icon';
 import TabNav from '../../../components/molecules/TabNav';
 import './DoctorFilter.css';
 
-const DoctorFilter = ({ activeTab, userRole, viewDoctorId, setViewDoctorId, doctors }) => {
+const DoctorFilter = ({ activeTab, userRole, isStaff, isAdmin, viewDoctorId, setViewDoctorId, doctors }) => {
     // Show filter on monthly view as well
-    if ((activeTab !== 'calendar' && activeTab !== 'upcoming' && activeTab !== 'monthly') || userRole !== 'secretary') {
+    if ((activeTab !== 'calendar' && activeTab !== 'upcoming' && activeTab !== 'monthly') || !isStaff) {
         return null;
     }
 

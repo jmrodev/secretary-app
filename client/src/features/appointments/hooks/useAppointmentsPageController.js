@@ -82,7 +82,7 @@ export const useAppointmentsPageController = () => {
             } catch (e) { console.error(e); }
         };
         fetchStats();
-    }, [viewDoctorId, selectedDate.getMonth(), selectedDate.getFullYear(), appointments.length]);
+    }, [viewDoctorId, selectedDate.getMonth(), selectedDate.getFullYear(), appointments?.length]);
 
     const rescheduleAppt = location.state?.rescheduleAppt;
     const syncAppt = location.state?.syncAppt;
