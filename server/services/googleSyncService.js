@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 const googleCalendarService = require('./google/GoogleCalendarService');
 const googleIntegrationRepository = require('../repositories/googleIntegrationRepository');
 const appointmentRepository = require('../repositories/appointmentRepository');
@@ -12,7 +13,7 @@ async function processSyncQueue() {
         const pendingItems = await googleIntegrationRepository.findPendingSyncItems(10);
 
         if (pendingItems.length > 0) {
-            console.log(`[GoogleSync] Processing ${pendingItems.length} pending items...`);
+            logger.info(`[GoogleSync] Processing ${pendingItems.length} pending items...`);
         }
 
         for (const item of pendingItems) {
@@ -37,23 +38,23 @@ async function processSyncQueue() {
                     success = true;
                 }
             } catch (err) {
-                console.error(`[GoogleSync] Error processing item ${item.id}:`, err.message);
+                logger.error(`[GoogleSync] Error processing item ${item.id}:`, err.message);
                 await googleIntegrationRepository.updateSyncItemError(item.id, err.message);
             }
 
             if (success) {
                 await googleIntegrationRepository.deleteSyncItem(item.id);
-                console.log(`[GoogleSync] Item ${item.id} processed successfully.`);
+                logger.info(`[GoogleSync] Item ${item.id} processed successfully.`);
             }
         }
     } catch (err) {
-        console.error("[GoogleSync] Service Error:", err);
+        logger.error("[GoogleSync] Service Error:", err);
     }
 }
 
 // Function to start the worker interval
 function startSyncWorker(intervalMs = 300000) { // Default 5 minutes
-    console.log("[GoogleSync] Worker started with interval:", intervalMs);
+    logger.info("[GoogleSync] Worker started with interval:", intervalMs);
 
     // Run immediately on start
     processSyncQueue();
