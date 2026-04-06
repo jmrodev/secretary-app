@@ -122,7 +122,7 @@ class MessageRepository {
     async markThreadRead(userId, otherId, conn = pool) {
         return await conn.query(
             "UPDATE messages SET read_status = 2, read_at = COALESCE(read_at, NOW()), delivered_at = COALESCE(delivered_at, NOW()) WHERE recipient_id = ? AND sender_id = ? AND read_status < 2",
-            [userId, other_id]
+            [userId, otherId]
         );
     }
 
