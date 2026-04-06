@@ -5,9 +5,7 @@ const fs = require('fs');
 // Basic storage (will move file later in controller)
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        // Use a temporary folder or directly the certs folder if logic permits
-        // For security and logic, temp folder is safer, but direct update is simpler for this scope.
-        // We will store in /tmp/ or a generic uploads folder, controller moves it.
+        // Store in a temporary folder; the controller will move it later.
         const uploadDir = path.join(__dirname, '../uploads/temp');
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
