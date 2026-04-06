@@ -4,6 +4,10 @@ const { pool } = require('../db');
  * SecretaryRepository
  * Handles data access for secretaries.
  */
+const ALLOWED_UPDATES = [
+    'user_id', 'full_name', 'phone', 'dni'
+];
+
 class SecretaryRepository {
     async create(data, conn = pool) {
         const { user_id, full_name, dni, phone } = data;
@@ -25,14 +29,38 @@ class SecretaryRepository {
     }
 
     async update(id, updates, conn = pool) {
-        const fields = Object.keys(updates).map(k => `${k} = ?`).join(', ');
-        const values = [...Object.values(updates), id];
+        if (!updates || Object.keys(updates).length === 0) return 0;
+
+        // Filter updates to only allow whitelisted fields
+        const validUpdates = {};
+        for (const key of Object.keys(updates)) {
+            if (ALLOWED_UPDATES.includes(key)) {
+                validUpdates[key] = updates[key];
+            }
+        }
+
+        if (Object.keys(validUpdates).length === 0) return 0;
+
+        const fields = Object.keys(validUpdates).map(k => `${k} = ?`).join(', ');
+        const values = [...Object.values(validUpdates), id];
         return await conn.query(`UPDATE secretaries SET ${fields} WHERE id = ?`, values);
     }
 
     async updateByUserId(userId, updates, conn = pool) {
-        const fields = Object.keys(updates).map(k => `${k} = ?`).join(', ');
-        const values = [...Object.values(updates), userId];
+        if (!updates || Object.keys(updates).length === 0) return 0;
+
+        // Filter updates to only allow whitelisted fields
+        const validUpdates = {};
+        for (const key of Object.keys(updates)) {
+            if (ALLOWED_UPDATES.includes(key)) {
+                validUpdates[key] = updates[key];
+            }
+        }
+
+        if (Object.keys(validUpdates).length === 0) return 0;
+
+        const fields = Object.keys(validUpdates).map(k => `${k} = ?`).join(', ');
+        const values = [...Object.values(validUpdates), userId];
         return await conn.query(`UPDATE secretaries SET ${fields} WHERE user_id = ?`, values);
     }
 

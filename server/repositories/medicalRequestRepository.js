@@ -4,6 +4,13 @@ const { pool } = require('../db');
  * MedicalRequestRepository
  * Handles data access for medical requests (certificates, requests, etc).
  */
+const ALLOWED_UPDATES = [
+    'type', 'patient_id', 'doctor_id', 'secretary_id',
+    'status', 'request_note', 'doctor_note', 'secretary_note', 'payment_status',
+    'payment_method', 'debt_amount', 'completed_at',
+    'raw_medication_data', 'is_patient_submitted'
+];
+
 class MedicalRequestRepository {
     async findAll(filters = {}, conn = pool) {
         let query = `
@@ -94,8 +101,19 @@ class MedicalRequestRepository {
 
     async update(id, updates, conn = pool) {
         if (!updates || Object.keys(updates).length === 0) return 0;
-        const fields = Object.keys(updates).map(k => `${k} = ?`).join(', ');
-        const values = [...Object.values(updates), id];
+
+        // Filter updates to only allow whitelisted fields
+        const validUpdates = {};
+        for (const key of Object.keys(updates)) {
+            if (ALLOWED_UPDATES.includes(key)) {
+                validUpdates[key] = updates[key];
+            }
+        }
+
+        if (Object.keys(validUpdates).length === 0) return 0;
+
+        const fields = Object.keys(validUpdates).map(k => `${k} = ?`).join(', ');
+        const values = [...Object.values(validUpdates), id];
         return await conn.query(`UPDATE medical_requests SET ${fields} WHERE id = ?`, values);
     }
 
