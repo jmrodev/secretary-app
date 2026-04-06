@@ -195,6 +195,7 @@ class FinanceService {
         return await transactionRepository.findPendingClosures(doctorId);
     }
 
+
     async payInstitutionDebt(data, currentUserId) {
         const conn = await pool.getConnection();
         try {
@@ -214,43 +215,86 @@ class FinanceService {
             let remaining = payAmount;
             let totalPaid = 0;
 
+            const fullyPaidIds = [];
+            const syncAppointments = new Set();
+            const syncRequests = new Set();
+            let partialUpdate = null;
+            let partialCreate = null;
+
             for (const debt of debts) {
                 if (remaining <= 0.01) break;
                 const debtAmount = Number(debt.amount);
-                if (remaining >= debtAmount) {
-                    await transactionRepository.update(debt.id, {
-                        status: 'paid',
-                        method,
-                        description: `${debt.description} - Paid by Inst`
-                    }, conn);
 
-                    if (debt.appointment_id) await this.syncAppointmentPaymentStatus(debt.appointment_id, currentUserId, conn);
-                    if (debt.request_id) await this.syncRequestPaymentStatus(debt.request_id, conn);
+                if (remaining >= debtAmount) {
+                    fullyPaidIds.push(debt.id);
+                    if (debt.appointment_id) syncAppointments.add(debt.appointment_id);
+                    if (debt.request_id) syncRequests.add(debt.request_id);
 
                     remaining -= debtAmount;
                     totalPaid += debtAmount;
                 } else {
-                    await transactionRepository.update(debt.id, {
-                        status: 'paid',
-                        amount: remaining,
-                        method,
-                        description: `${debt.description} - Paid Part by Inst`
-                    }, conn);
+                    partialUpdate = {
+                        id: debt.id,
+                        updates: {
+                            status: 'paid',
+                            amount: remaining,
+                            method,
+                            description: `${debt.description} - Paid Part by Inst`
+                        }
+                    };
 
                     const remainder = debtAmount - remaining;
-                    await transactionRepository.create({
+                    partialCreate = {
                         ...debt,
                         amount: remainder,
                         method: 'on_account',
                         status: 'pending'
-                    }, conn);
+                    };
 
-                    if (debt.appointment_id) await this.syncAppointmentPaymentStatus(debt.appointment_id, currentUserId, conn);
-                    if (debt.request_id) await this.syncRequestPaymentStatus(debt.request_id, conn);
+                    if (debt.appointment_id) syncAppointments.add(debt.appointment_id);
+                    if (debt.request_id) syncRequests.add(debt.request_id);
 
                     totalPaid += remaining;
                     remaining = 0;
                 }
+            }
+
+            // Execute all DB operations in parallel using Promise.all or batched queries
+            const promises = [];
+
+            if (fullyPaidIds.length > 0) {
+                // Batch update fully paid debts
+                // Since transactionRepository.update doesn't support bulk out of the box, we can do a raw query here,
+                // or just map to multiple update calls. But raw query is faster.
+                const placeholders = fullyPaidIds.map(() => '?').join(',');
+                promises.push(conn.query(
+                    `UPDATE transactions SET status = 'paid', method = ?, description = CONCAT(description, ' - Paid by Inst') WHERE id IN (${placeholders})`,
+                    [method, ...fullyPaidIds]
+                ));
+            }
+
+            if (partialUpdate) {
+                promises.push(transactionRepository.update(partialUpdate.id, partialUpdate.updates, conn));
+            }
+
+            if (partialCreate) {
+                promises.push(transactionRepository.create(partialCreate, conn));
+            }
+
+            if (promises.length > 0) {
+                await Promise.all(promises);
+            }
+
+            // Sync statuses
+            const syncPromises = [];
+            for (const appointmentId of syncAppointments) {
+                syncPromises.push(this.syncAppointmentPaymentStatus(appointmentId, currentUserId, conn));
+            }
+            for (const requestId of syncRequests) {
+                syncPromises.push(this.syncRequestPaymentStatus(requestId, conn));
+            }
+            if (syncPromises.length > 0) {
+                await Promise.all(syncPromises);
             }
 
             if (remaining > 0.01) {
@@ -277,8 +321,7 @@ class FinanceService {
             conn.release();
         }
     }
-
-    async syncAppointmentPaymentStatus(appointmentId, userId, conn) {
+async syncAppointmentPaymentStatus(appointmentId, userId, conn) {
         const { totalPaid, totalPending, hasPaid, hasPending } = await transactionRepository.getPaymentSummary(appointmentId, conn);
         let finalStatus = (hasPaid && hasPending) ? 'partial' : (hasPaid ? 'paid' : (hasPending ? 'debt' : 'pending'));
         await appointmentRepository.update(appointmentId, {
