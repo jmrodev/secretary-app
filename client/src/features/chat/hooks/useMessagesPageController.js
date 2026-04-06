@@ -56,7 +56,8 @@ export const useMessagesPageController = () => {
         try {
             const res = await api.get(`/messages/thread/${otherId}`);
             setThread(Array.isArray(res.data) ? res.data : []);
-            if (activeConvoRef.current && activeConvoRef.current.unread_count > 0) {
+            const hasUnread = (Array.isArray(res.data) ? res.data : []).some(msg => msg.sender_id == otherId && msg.read_status < 2);
+            if (hasUnread) {
                 loadUnreadCount();
                 loadConversations();
             }
@@ -138,8 +139,7 @@ export const useMessagesPageController = () => {
         setSearchTerm(''); // Clear search to show the chat
     };
 
-    const activeConvoRef = useRef(null);
-    useEffect(() => { activeConvoRef.current = selectedConvo; }, [selectedConvo]);
+
 
     return {
         user,
