@@ -1,23 +1,24 @@
-
-import { useState, useEffect } from 'react';
-import api from '../../../api/axios';
-import { useAuth } from '../../auth';
-import { useModal } from '../../../context/ModalContext';
-import { useMessage } from '../../../context/MessageContext';
-import { useLanguage } from '../../../context/LanguageContext';
-import { useUsers } from '../../users';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import api from '@/api/axios';
+import { useAuth } from '@/features/auth';
+import { useModal } from '@/context/ModalContext';
+import { useMessage } from '@/context/MessageContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { useUsers } from '@/features/users';
+import { useFetch } from '@/hooks/useFetch';
 
 export const useDoctorsPageController = () => {
     const { t } = useLanguage();
     const { user: currentUser } = useAuth();
     const { showMessage } = useMessage();
     const { confirm } = useModal();
-    const { fetchUsers, updateUser, isSubmitting: isUpdating } = useUsers();
+    const { updateUser, isSubmitting: isUpdating } = useUsers();
 
-    const [doctors, setDoctors] = useState([]);
-    const [loading, setLoading] = useState(true);
+    // Data State using useFetch
+    const { data: doctors = [], loading: doctorsLoading, refetch: fetchDoctors } = useFetch('/users/doctors', { initialData: [] });
+    const { data: settings = {}, loading: settingsLoading } = useFetch('/settings', { initialData: {} });
+
     const [searchTerm, setSearchTerm] = useState('');
-    const [settings, setSettings] = useState({});
 
     // Unified Modal State: type = 'EDIT'
     const [modalState, setModalState] = useState({
@@ -31,25 +32,7 @@ export const useDoctorsPageController = () => {
         data: {}
     });
 
-    const loadData = async () => {
-        setLoading(true);
-        try {
-            const [docs, config] = await Promise.all([
-                api.get('/users/doctors'),
-                api.get('/settings')
-            ]);
-            setDoctors(docs.data);
-            setSettings(config.data);
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
-        loadData();
-
         const urlParams = new URLSearchParams(window.location.search);
         const status = urlParams.get('status');
         if (status === 'success') {
@@ -59,7 +42,7 @@ export const useDoctorsPageController = () => {
             showMessage('Error al conectar con Google', 'error');
             window.history.replaceState({}, document.title, window.location.pathname);
         }
-    }, []);
+    }, [showMessage]);
 
     const checkGoogleStatus = async (doctorId) => {
         setModalState(prev => ({ ...prev, loadingGoogle: true }));
@@ -153,7 +136,7 @@ export const useDoctorsPageController = () => {
         const { type, data, schedule } = modalState;
         try {
             if (type === 'CREATE') {
-                const res = await api.post('/users', {
+                await api.post('/users', {
                     ...data,
                     fullName: data.full_name, // Backend expects fullName
                 });
@@ -167,7 +150,7 @@ export const useDoctorsPageController = () => {
             }
             setModalState(prev => ({ ...prev, isOpen: false }));
             window.dispatchEvent(new CustomEvent('doctors-updated'));
-            loadData();
+            fetchDoctors();
         } catch (err) {
             console.error("Failed to update doctor", err);
             showMessage(err.response?.data?.message || t('error_update'), "error");
@@ -195,18 +178,20 @@ export const useDoctorsPageController = () => {
         }
     };
 
-    const filteredDoctors = doctors.filter(d => {
+    const filteredDoctors = useMemo(() => {
         const term = searchTerm.toLowerCase();
-        return (d.full_name?.toLowerCase().includes(term) ||
+        return doctors.filter(d =>
+            d.full_name?.toLowerCase().includes(term) ||
             d.specialty?.toLowerCase().includes(term) ||
-            d.phone?.includes(term));
-    });
+            d.phone?.includes(term)
+        );
+    }, [doctors, searchTerm]);
 
     const setFormData = (newData) => setModalState(prev => ({ ...prev, data: { ...prev.data, ...newData } }));
 
     // Handlers mapped for cleaner component usage
     const handlers = {
-        fetchDoctors: loadData,
+        fetchDoctors,
         onEditDoctor: handleEditClick,
         onSaveDoctor: handleSaveDoctor,
         onCloseModal: () => setModalState(prev => ({ ...prev, isOpen: false })),
@@ -246,7 +231,7 @@ export const useDoctorsPageController = () => {
 
     return {
         doctors,
-        loading,
+        loading: doctorsLoading || settingsLoading,
         searchTerm, setSearchTerm,
         settings,
         currentUser,
@@ -256,3 +241,4 @@ export const useDoctorsPageController = () => {
         t // pass translation helper
     };
 };
+

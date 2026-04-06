@@ -1,18 +1,18 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import api from '../../../api/axios';
-import { useMessage } from '../../../context/MessageContext';
-import { useModal } from '../../../context/ModalContext';
-import { useLanguage } from '../../../context/LanguageContext';
-import { capitalizeWords } from '../../../utils/stringUtils';
+import { useState, useCallback, useMemo } from 'react';
+import api from '@/api/axios';
+import { useMessage } from '@/context/MessageContext';
+import { useModal } from '@/context/ModalContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { capitalizeWords } from '@/utils/stringUtils';
+import { useFetch } from '@/hooks/useFetch';
 
 export const useInsurancesController = () => {
     const { showMessage } = useMessage();
     const { confirm } = useModal();
     const { t } = useLanguage();
 
-    // Data State
-    const [insurances, setInsurances] = useState([]);
-    const [loading, setLoading] = useState(true);
+    // Data State using custom hook
+    const { data: insurances = [], loading, refetch: fetchInsurances } = useFetch('/insurances', { initialData: [] });
 
     // UI State
     const [searchTerm, setSearchTerm] = useState('');
@@ -22,23 +22,6 @@ export const useInsurancesController = () => {
         name: '', cuit: '', website: '', email: '', phoneNumbers: [], address_notes: '', status: 'active',
         street_name: '', street_number: '', floor: '', apartment: '', city: 'Tandil', province: 'Buenos Aires', country: 'Argentina'
     });
-
-    // Fetch Data
-    const fetchInsurances = useCallback(async () => {
-        try {
-            const res = await api.get('/insurances');
-            setInsurances(res.data);
-        } catch (err) {
-            console.error(err);
-            showMessage("Failed to fetch insurances", "error");
-        } finally {
-            setLoading(false);
-        }
-    }, [showMessage]);
-
-    useEffect(() => {
-        fetchInsurances();
-    }, [fetchInsurances]);
 
     // Handlers
     const handleOpenCreate = useCallback(() => {
@@ -75,30 +58,30 @@ export const useInsurancesController = () => {
         try {
             if (editingId) {
                 await api.put(`/insurances/${editingId}`, formData);
-                showMessage("Insurance updated", "success");
+                showMessage(t('update_success') || "Insurance updated", "success");
             } else {
                 await api.post('/insurances', formData);
-                showMessage("Insurance created", "success");
+                showMessage(t('save_success') || "Insurance created", "success");
             }
             setModalOpen(false);
             fetchInsurances();
         } catch (err) {
             console.error(err);
-            showMessage("Operation failed", "error");
+            showMessage(t('error_saving') || "Operation failed", "error");
         }
-    }, [editingId, formData, fetchInsurances, showMessage]);
+    }, [editingId, formData, fetchInsurances, showMessage, t]);
 
     const handleDelete = useCallback(async (id) => {
-        if (!await confirm("Are you sure?")) return;
+        if (!await confirm(t('delete_confirm_msg') || "Are you sure?")) return;
         try {
             await api.delete(`/insurances/${id}`);
-            showMessage("Insurance deleted", "success");
+            showMessage(t('delete_success') || "Insurance deleted", "success");
             fetchInsurances();
         } catch (err) {
             console.error(err);
-            showMessage(err.response?.data || "Delete failed", "error");
+            showMessage(err.response?.data || t('error_deleting') || "Delete failed", "error");
         }
-    }, [confirm, fetchInsurances, showMessage]);
+    }, [confirm, fetchInsurances, showMessage, t]);
 
     // Filter Logic
     const filteredInsurances = useMemo(() => {
@@ -156,3 +139,4 @@ export const useInsurancesController = () => {
         t
     };
 };
+

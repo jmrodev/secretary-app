@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { usePermissions } from '../../../hooks/usePermissions';
-import { useMessage } from '../../../context/MessageContext';
-import { useLanguage } from '../../../context/LanguageContext';
-import { useConfig } from '../../../context/ConfigContext';
-import { useAppointments } from '../../appointments';
-import api from '../../../api/axios';
+import { usePermissions } from '@/hooks/usePermissions';
+import { useMessage } from '@/context/MessageContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { useConfig } from '@/context/ConfigContext';
+import { useAppointments } from '@/features/appointments';
+import api from '@/api/axios';
 
 import { useDashboardStats } from './useDashboardStats';
 import { useDashboardReminders } from './useDashboardReminders';
@@ -24,42 +24,36 @@ export const useDashboardController = () => {
 
     const { updateStatus, cancelAppointment, deleteAppointment, savePrescription } = useAppointments();
 
-    const statsHook = useDashboardStats();
+    const statsHook = useDashboardStats(isStaff);
     const remindersHook = useDashboardReminders({ user, t, settings, showMessage });
     const modalsHook = useDashboardModals();
     const whatsAppHook = useDashboardWhatsApp({ user, settings, showMessage });
 
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [activeTab, setActiveTab] = useState('requirements');
 
-    // Fetch Data Methods
+    // Fetch Data Methods (Force refetch)
     const refreshDashboard = () => {
         statsHook.fetchStats();
         statsHook.fetchRequests();
-        statsHook.fetchDoctors();
         if (isStaff) {
             statsHook.fetchNewPatientStats();
         }
     };
 
-    // Orchestration Effects
+    // Periodic Refresh handled by standard useEffect
     useEffect(() => {
-        statsHook.fetchStats();
-        if (user && !isPatient) {
+        if (!user || isPatient) return;
+
+        const interval = setInterval(() => {
             remindersHook.fetchReminders();
             statsHook.fetchRequests();
-        }
-        if (isStaff) {
-            statsHook.fetchNewPatientStats();
-        }
-        const interval = setInterval(() => {
-            if (user && !isPatient) {
-                remindersHook.fetchReminders();
-                statsHook.fetchRequests();
-            }
+            statsHook.fetchStats();
         }, 30000);
+        
         return () => clearInterval(interval);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user?.role]);
+    }, [user?.id, isPatient]);
 
     // Action Handlers
     const handleUpdateStatus = async (id, status) => {
@@ -152,7 +146,7 @@ export const useDashboardController = () => {
         handleCompleteReminder: remindersHook.handleCompleteReminder,
         handleWhatsAppReminder: remindersHook.handleWhatsAppReminder,
         handleMarkNotified: remindersHook.handleMarkNotified,
-        setActiveTab: statsHook.setActiveTab,
+        setActiveTab,
         setActionModal: modalsHook.setActionModal,
         setHistoryModal: modalsHook.setHistoryModal,
         setPrescribeModal: modalsHook.setPrescribeModal,
@@ -167,7 +161,7 @@ export const useDashboardController = () => {
         newPatientStats: statsHook.newPatientStats,
         reminders: remindersHook.reminders,
         pendingReqCount: statsHook.pendingReqCount,
-        activeTab: statsHook.activeTab,
+        activeTab,
         actionModal: modalsHook.actionModal,
         historyModal: modalsHook.historyModal,
         prescribeModal: modalsHook.prescribeModal,
@@ -178,3 +172,4 @@ export const useDashboardController = () => {
         isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff
     };
 };
+

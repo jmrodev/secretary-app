@@ -1,6 +1,5 @@
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import api from '@/api/axios';
+import { useState, useMemo, useCallback } from 'react';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -9,30 +8,22 @@ import { useModal } from '@/context/ModalContext';
 import { useAppointments } from '@/features/appointments';
 import { useUsers } from '@/features/users';
 import { usePatientsHandlers } from './usePatientsHandlers';
+import { useFetch } from '@/hooks/useFetch';
 
 /**
  * usePatientsPageController (Orchestrator).
  * Main controller for the Patients feature.
- * Coordinates data fetching, filtering, pagination, and various modals.
+ * Coordinates data fetching, filtering, pagination, and various modals using useFetch.
  */
 export const usePatientsPageController = () => {
     // Contexts & Hooks
-    const { user, isStaff, isAdmin } = usePermissions();
+    const { isStaff } = usePermissions();
     const { showMessage } = useMessage();
     const { t } = useLanguage();
     const { settings } = useConfig();
     const { confirm } = useModal();
     const { savePrescription } = useAppointments();
     const { deleteUser } = useUsers();
-
-    // Data State
-    const [patients, setPatients] = useState([]);
-    const [totalCount, setTotalCount] = useState(0);
-    const [doctors, setDoctors] = useState([]);
-    const [insurances, setInsurances] = useState([]);
-    const [recycleItems, setRecycleItems] = useState([]);
-    const [institutions, setInstitutions] = useState([]);
-    const [loading, setLoading] = useState(true);
 
     // View State (Pagination)
     const [currentPage, setCurrentPage] = useState(1);
@@ -41,6 +32,33 @@ export const usePatientsPageController = () => {
     const [searchTerm, setSearchTerm] = useState(() => {
         const params = new URLSearchParams(window.location.search);
         return params.get('search') || '';
+    });
+
+    // --- FETCH DATA (Server-Side) using useFetch ---
+    
+    // Main Patients Data
+    const { 
+        data: patientData = { patients: [], totalCount: 0 }, 
+        loading: patientsLoading, 
+        refetch: fetchPatients 
+    } = useFetch('/users/patients', {
+        params: {
+            page: currentPage,
+            limit: itemsPerPage,
+            search: searchTerm
+        }
+    });
+
+    const patients = patientData.patients || [];
+    const totalCount = patientData.totalCount || 0;
+
+    // Supplementary Lists
+    const { data: doctors = [] } = useFetch('/users/doctors', { initialData: [] });
+    const { data: insurances = [] } = useFetch('/insurances', { initialData: [] });
+    const { data: institutions = [] } = useFetch('/institutions', { initialData: [] });
+    const { data: recycleItems = [], refetch: fetchRecycleBin } = useFetch('/logs/recycle-bin', { 
+        initialData: [],
+        immediate: isStaff // only fetch if user is staff
     });
 
     // Details View State
@@ -53,65 +71,6 @@ export const usePatientsPageController = () => {
     const [debtModal, setDebtModal] = useState({ open: false, params: { patientId: null, amount: '', method: 'cash' } });
     const [prescribeModal, setPrescribeModal] = useState({ open: false, data: { apptId: null, patientId: null, patientName: '', medications: '', instructions: '' } });
     const [qrModal, setQrModal] = useState({ open: false, url: '', expiry: null, patientName: '', patientPhone: '' });
-
-    // --- FETCH DATA (Server-Side) ---
-    const fetchPatients = useCallback(async (page = 1, search = '') => {
-        try {
-            setLoading(true);
-            const res = await api.get('/users/patients', {
-                params: {
-                    page,
-                    limit: itemsPerPage,
-                    search
-                }
-            });
-            setPatients(res.data.patients);
-            setTotalCount(res.data.totalCount);
-        } catch (err) {
-            console.error(err);
-            showMessage(t('failed_load_patients') || "Error al cargar pacientes", 'error');
-        } finally {
-            setLoading(false);
-        }
-    }, [t, showMessage, itemsPerPage]);
-
-    const fetchDoctors = useCallback(async () => {
-        try {
-            const res = await api.get('/users/doctors');
-            setDoctors(res.data);
-        } catch (err) { console.error(err); }
-    }, []);
-
-    const fetchInsurances = useCallback(async () => {
-        try {
-            const res = await api.get('/insurances');
-            setInsurances(res.data);
-        } catch (err) { console.error(err); }
-    }, []);
-
-    const fetchRecycleBin = useCallback(async () => {
-        if (!isStaff) return;
-        try {
-            const res = await api.get('/logs/recycle-bin');
-            setRecycleItems(res.data);
-        } catch (err) { console.error(err); }
-    }, [isStaff]);
-
-    const fetchInstitutions = useCallback(async () => {
-        try {
-            const res = await api.get('/institutions');
-            setInstitutions(res.data);
-        } catch (err) { console.error(err); }
-    }, []);
-
-    // Initial Load & Search/Page changes
-    useEffect(() => {
-        fetchPatients(currentPage, searchTerm);
-        fetchDoctors();
-        fetchInsurances();
-        fetchRecycleBin();
-        fetchInstitutions();
-    }, [currentPage, searchTerm, fetchDoctors, fetchInsurances, fetchRecycleBin, fetchInstitutions]); // intentionally not adding fetchPatients to avoid double fetch if it changes
 
     // Reset to page 1 on search
     const handleSearchChange = useCallback((value) => {
@@ -128,13 +87,14 @@ export const usePatientsPageController = () => {
         }
     }, [totalPages]);
 
-
     // --- Handlers Hook ---
     const hookHandlers = usePatientsHandlers({
         t, showMessage, confirm, deleteUser, settings,
         patients, patientDetails,
-        setPatients, setPatientDetails, setSelectedPatientId, setDetailsLoading,
-        setEditModal, setDebtModal, setQrModal, setPrescribeModal, fetchPatients, fetchRecycleBin,
+        setPatients: () => fetchPatients(), // Use fetchPatients instead of manual setPatients if possible
+        setPatientDetails, setSelectedPatientId, setDetailsLoading,
+        setEditModal, setDebtModal, setQrModal, setPrescribeModal, 
+        fetchPatients, fetchRecycleBin,
     });
 
     // Prescription (Special case needs savePrescription from appointments hook)
@@ -167,12 +127,14 @@ export const usePatientsPageController = () => {
 
     return {
         // State
-        user, t, settings,
+        user: usePermissions().user, 
+        t, settings,
         patients, 
         totalCount,
         currentPage, totalPages, handlePageChange,
         doctors, insurances, recycleItems, institutions,
-        loading, detailsLoading,
+        loading: patientsLoading, 
+        detailsLoading,
         activeTab, setActiveTab,
         searchTerm, setSearchTerm: handleSearchChange,
         selectedPatientId, setSelectedPatientId,
@@ -194,3 +156,4 @@ export const usePatientsPageController = () => {
         }
     };
 };
+

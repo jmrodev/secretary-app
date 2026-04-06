@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import api from '../../../api/axios';
-import { useAuth } from '../../auth';
-import { useLanguage } from '../../../context/LanguageContext';
-import { useModal } from '../../../context/ModalContext';
-import { useMessage } from '../../../context/MessageContext';
-import { useConfig } from '../../../context/ConfigContext';
-import { useFinanceHandlers } from './useFinanceHandlers';
+import api from '@/api/axios';
+import { useAuth } from '@/features/auth';
+import { useLanguage } from '@/context/LanguageContext';
+import { useModal } from '@/context/ModalContext';
+import { useMessage } from '@/context/MessageContext';
+import { useConfig } from '@/context/ConfigContext';
+import { useFetch } from '@/hooks/useFetch';
 
 export const useFinancesPageController = () => {
     const { user } = useAuth();
@@ -14,30 +14,14 @@ export const useFinancesPageController = () => {
     const { alert, confirm } = useModal();
     const { settings } = useConfig();
 
-    // --- Transactions State ---
-    const [transactions, setTransactions] = useState([]);
-    const [totalCount, setTotalCount] = useState(0);
+    // --- View State ---
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(50);
-    const [loading, setLoading] = useState(true);
-
-    // --- Global Stats & Lists ---
-    const [stats, setStats] = useState([]);
-    const [doctors, setDoctors] = useState([]);
-    const [pendingClosures, setPendingClosures] = useState([]);
-    
-    // --- UI State ---
-    const [modalOpen, setModalOpen] = useState(false);
-    const [pendingClosuresOpen, setPendingClosuresOpen] = useState(false);
-    const [editingTx, setEditingTx] = useState(null);
-    const [closeBoxModal, setCloseBoxModal] = useState({ open: false, doctorId: '', doctorName: '', balance: 0 });
-    const [closeAmount, setCloseAmount] = useState('');
     const [selectedDoctorFilter, setSelectedDoctorFilter] = useState(localStorage.getItem('last_selected_doctor_id') || '');
-
-    // --- Search & Filters ---
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
 
+    // Debounce search
     useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedSearch(searchQuery);
@@ -46,56 +30,62 @@ export const useFinancesPageController = () => {
         return () => clearTimeout(timer);
     }, [searchQuery]);
 
-    // --- Data Fetching ---
-    const fetchData = useCallback(async () => {
-        setLoading(true);
-        try {
-            const [txRes, statsRes, dRes, closuresRes] = await Promise.all([
-                api.get('/finances/transactions', {
-                    params: {
-                        doctor_id: selectedDoctorFilter || 'all',
-                        page: currentPage,
-                        limit: itemsPerPage,
-                        search: debouncedSearch
-                    }
-                }),
-                api.get(`/finances/stats?doctor_id=${selectedDoctorFilter || 'all'}`),
-                api.get('/users/doctors'),
-                api.get(`/finances/pending-closures?doctor_id=${selectedDoctorFilter || 'all'}`)
-            ]);
-
-            setTransactions(txRes.data.transactions || []);
-            setTotalCount(txRes.data.totalCount || 0);
-            setStats(statsRes.data || []);
-            setDoctors(dRes.data || []);
-            setPendingClosures(closuresRes.data || []);
-        } catch (err) {
-            console.error("Finance fetch error:", err);
-            showMessage("Error al cargar datos financieros", "error");
-        } finally {
-            setLoading(false);
-        }
-    }, [selectedDoctorFilter, currentPage, itemsPerPage, debouncedSearch, showMessage]);
-
+    // Save filter preference
     useEffect(() => {
-        fetchData();
         if (selectedDoctorFilter) {
             localStorage.setItem('last_selected_doctor_id', selectedDoctorFilter);
         }
-    }, [fetchData, selectedDoctorFilter, currentPage, debouncedSearch]);
+    }, [selectedDoctorFilter]);
 
-    // --- Calculated / Derived (Now from Server Data) ---
-    const calculateBalanceByMethod = (doctorId) => {
-        const cashBalance = stats.find(s => s.type === 'cash_balance')?.today || 0;
-        const transferBalance = stats.find(s => s.type === 'transfer_balance')?.today || 0;
-        return { cash: cashBalance, transfer: transferBalance };
-    };
+    // --- FETCH DATA using useFetch ---
+    
+    // Transactions
+    const { 
+        data: txData = { transactions: [], totalCount: 0 }, 
+        loading: txLoading, 
+        refetch: fetchTransactions 
+    } = useFetch('/finances/transactions', {
+        params: {
+            doctor_id: selectedDoctorFilter || 'all',
+            page: currentPage,
+            limit: itemsPerPage,
+            search: debouncedSearch
+        }
+    });
 
-    const calculateBalance = (doctorId) => {
-        return stats.find(s => s.type === 'total_net')?.today || 0;
-    };
+    // Stats
+    const { data: stats = [], loading: statsLoading, refetch: fetchStats } = useFetch(`/finances/stats`, {
+        params: { doctor_id: selectedDoctorFilter || 'all' },
+        initialData: []
+    });
+
+    // Doctors
+    const { data: doctors = [], loading: doctorsLoading } = useFetch('/users/doctors', { initialData: [] });
+
+    // Pending Closures
+    const { data: pendingClosures = [], loading: closuresLoading, refetch: fetchClosures } = useFetch(`/finances/pending-closures`, {
+        params: { doctor_id: selectedDoctorFilter || 'all' },
+        initialData: []
+    });
+
+    const transactions = txData.transactions || [];
+    const totalCount = txData.totalCount || 0;
+    const loading = txLoading || statsLoading || closuresLoading;
+
+    // --- UI State ---
+    const [modalOpen, setModalOpen] = useState(false);
+    const [pendingClosuresOpen, setPendingClosuresOpen] = useState(false);
+    const [editingTx, setEditingTx] = useState(null);
+    const [closeBoxModal, setCloseBoxModal] = useState({ open: false, doctorId: '', doctorName: '', balance: 0 });
+    const [closeAmount, setCloseAmount] = useState('');
 
     // --- Handlers ---
+    const fetchData = useCallback(() => {
+        fetchTransactions();
+        fetchStats();
+        fetchClosures();
+    }, [fetchTransactions, fetchStats, fetchClosures]);
+
     const onSelectDoctor = (id) => {
         setSelectedDoctorFilter(id);
         setCurrentPage(1);
@@ -158,8 +148,15 @@ export const useFinancesPageController = () => {
         }
     };
 
-    // Placeholder for duplicate logic if needed, simplified for performance
-    const duplicateClosures = []; 
+    const calculateBalanceByMethod = (doctorId) => {
+        const cashBalance = stats.find(s => s.type === 'cash_balance')?.today || 0;
+        const transferBalance = stats.find(s => s.type === 'transfer_balance')?.today || 0;
+        return { cash: cashBalance, transfer: transferBalance };
+    };
+
+    const calculateBalance = (doctorId) => {
+        return stats.find(s => s.type === 'total_net')?.today || 0;
+    };
 
     return {
         transactions,
@@ -176,7 +173,7 @@ export const useFinancesPageController = () => {
         closeAmount,
         editingTx,
         pendingClosures,
-        duplicateClosures,
+        duplicateClosures: [],
         user,
         settings,
         t,
@@ -203,8 +200,9 @@ export const useFinancesPageController = () => {
         },
         filters: {
             searchQuery,
-            options: { years: [], types: [], paymentMethods: [] } // Simplified filters for now
+            options: { years: [], types: [], paymentMethods: [] }
         },
-        filteredTransactions: transactions // Now server-side filtered
+        filteredTransactions: transactions
     };
 };
+
