@@ -39,33 +39,32 @@
   FeaturePage.jsx → Page principal (Orquestador)
   FeaturePage.css → Estilos globales de la página
   ```
+- **Estandarización de Datos**: Todos los controladores de features DEBEN utilizar el hook `@/hooks/useFetch` para la obtención de datos, asegurando un manejo consistente de estados de carga, error y sincronización.
 - **Barrel Files**: Cada característica debe tener un `index.js` para exponer solo lo necesario al resto de la aplicación.
-- **Independencia**: Las características deben ser lo más autónomas posible. Los componentes generales (Atoms/Molecules/Organisms) se reservan para piezas reutilizables entre múltiples features.
-- **Separación de Lógica en React Hooks**: Para evitar componentes "cargados", la lógica de estado y efectos debe extraerse a hooks especializados dentro de la feature (ej: `useAppointmentsLogic.js`).
+- **Separación de Lógica**: La lógica de orquestación reside en `useFeatureController.js`, mientras que las acciones se dividen en `useFeatureHandlers.js` si la complejidad lo requiere.
 
-### 5. NO Tailwind CSS
-- **Solo CSS vanilla/puro**
-- **Cada componente tiene su propio archivo CSS**
-- **Variables CSS para temas**: Usar `var(--color-primary)` en lugar de valores hardcoded
-- **Mantenimiento**: Revisar periódicamente `index.css` y extraer estilos específicos a sus respectivos componentes para evitar colisiones y mantener la modularidad.
-- **CSS Compartido**: Si un estilo o clase CSS se utiliza en más de una página, componente o átomo, DEBE estar en `index.css` (o en un archivo de utilidades global importado allí) para evitar duplicación, marcándolo claramente como compartido.
-- **Unidades Relativas**: Priorizar el uso de unidades relativas (`rem`, `em`, `%`) para `font-size`, `padding`, `margin`, `width`, `height` en lugar de píxeles (`px`) absolutos. Esto garantiza que el diseño sea adaptable y accesible (1rem = 16px por defecto).
-- **PROHIBIDO usar `!important`**: Nunca utilizar `!important` para sobrescribir estilos. Si hay conflictos, mejorar la especificidad del selector o reestructurar el CSS.
+### 5. Estilo y Rutas Limpias
+- **Solo CSS vanilla/puro**: Cada componente tiene su propio archivo CSS.
+- **Variables CSS**: Usar `var(--color-primary)` para temas.
+- **Path Aliases**: Utilizar siempre el alias `@/` para referencias a `src/` (ej: `@/api/axios`, `@/context/ConfigContext`). PROHIBIDO el uso de paths relativos profundos (`../../../../`).
+- **Lazy Loading**: TODAS las páginas y componentes pesados deben cargarse mediante `React.lazy()` y enviarse dentro de un `Suspense` con un fallback de carga. Esto se centraliza en `AppRouter.jsx`.
+- **Unidades Relativas**: Priorizar el uso de unidades relativas (`rem`, `em`, `%`).
+- **PROHIBIDO usar `!important`**.
 
 ### 6. MVC (Model-View-Controller)
 - **Frontend**:
   ```
-  components/  → View (presentación siguiendo Atomic Design)
-  controllers/ → Controller (hooks de lógica de UI genérica)
-  features/    → Módulos por característica (agrupan logic, services y context de un dominio)
-  hooks/       → Model (estado y hooks de datos compartidos)
+  components/  → View (Atomic Design)
+  controllers/ → Lógica de UI genérica
+  features/    → Controller de dominio (hooks orquestadores)
+  hooks/       → Model (useFetch para datos, Contextos para estado global)
   ```
 - **Backend**:
   ```
-  routes/      → Rutas HTTP
-  controllers/ → Lógica de negocio
-  services/    → Servicios especializados
-  models/      → Acceso a datos (queries)
+  routes/       → Rutas HTTP
+  controllers/  → Orquestación de peticiones
+  services/     → Lógica de negocio pura
+  repositories/ → Acceso a datos con saneamiento (SQL protection)
   ```
 
 ### 7. Un Componente = Un CSS
@@ -93,11 +92,19 @@
     - **Errores Locales (Controladores)**: Para validaciones de entrada de datos y respuestas de error específicas de un formulario.
 
 ### 10. Orquestadores vs Ejecutores
-- **Componentes Orquestadores**: Son componentes de alto nivel (`App.jsx`, `Dashboard.jsx`, Routers, Layouts) que NO implementan lógica de negocio ni UI compleja. Su único propósito es **coordinar** otros componentes y hooks (ej: definir la estructura de rutas o envolver el contenido en una rejilla).
-- **Componentes Ejecutores**: Son los que "hacen el trabajo". Aquí se incluyen:
-    - **Atoms/Molecules/Organisms**: Los que renderizan la UI siguiendo BEM.
-    - **Logic Hooks (`useXXXLogic`)**: Los que ejecutan la lógica, llamadas a API y cambios de estado.
-- **Regla de Oro**: Si un orquestador empieza a tener lógica de `useEffect`, cálculos de datos o estados locales complejos, debe ser refactorizado extrayendo esa ejecución a un hook o componente especializado.
+- **Componentes Orquestadores**: Son componentes de alto nivel (`App.jsx`, Routers, FeaturePage) que coordinan componentes y hooks.
+- **Componentes Ejecutores**: Átomos, Moléculas y Hooks de Lógica (`useFetch`, `useHandlers`).
+- **Regla de Oro**: Si un orquestador tiene lógica compleja, debe extraerse a un hook controlador.
+
+### 11. Estrategia de Ramas (Git Flow)
+- **main**: Rama de producción. Contiene código estable y desplegable.
+- **development**: Rama de integración principal. Todo el desarrollo se realiza y se une aquí antes de pasar a `main`.
+- **Limpieza**: Una vez que una funcionalidad se integra en `development` y se valida, su rama de origen DEBE ser borrada tanto local como remotamente.
+
+### 12. Seguridad y Repositorios (Backend)
+- **Protección SQL**: PROHIBIDO concatenar variables en strings de SQL.
+- **Whitelisting**: Los métodos `update` deben usar una lista blanca de campos permitidos (`ALLOWED_FIELDS`) para evitar inyecciones de parámetros no deseados.
+- **sqlUtils**: Utilizar la utilidad centralizada `@/utils/sqlUtils.js` para construir consultas dinámicas de forma segura.
 
 
 
@@ -436,5 +443,5 @@ Antes de hacer commit, verificar:
 
 ---
 
-**Última actualización**: 2026-04-02
-**Mantenedor**: Equipo de Desarrollo (Modularización de Feature Finances completada)
+**Última actualización**: 2026-04-06
+**Mantenedor**: Equipo de Desarrollo (Estandarización de useFetch, Lazy Loading y Git Flow completada)
