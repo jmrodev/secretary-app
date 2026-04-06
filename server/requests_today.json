@@ -1,6 +1,29 @@
 {
   "rRows": [
     {
+<<<<<<< HEAD
+=======
+      "id": 211,
+      "type": "prescription",
+      "patient_id": 5335,
+      "doctor_id": 10,
+      "secretary_id": null,
+      "status": "pending",
+      "request_note": "PSICOASTEN 10 MG (10 mg comp.rec.x 30) - paroxetina [Beta] 10mg - 1 caja\nRIVOTRIL (0.5 mg comp.x 60) - clonazepam [Investi] 0,5mg - 1 caja",
+      "doctor_note": null,
+      "created_at": "2026-03-20T16:00:14.000Z",
+      "updated_at": "2026-03-20T16:00:14.000Z",
+      "payment_status": "pending",
+      "payment_method": "cash",
+      "debt_amount": "0.00",
+      "completed_at": null,
+      "raw_medication_data": "[{\"name\":\"PSICOASTEN 10 MG (10 mg comp.rec.x 30) - paroxetina [Beta]\",\"dose\":\"10mg\",\"frequency\":\"\",\"quantity\":\"1\",\"units_per_box\":null,\"daily_units\":null,\"days_supply\":null,\"vademecum_id\":8053},{\"name\":\"RIVOTRIL (0.5 mg comp.x 60) - clonazepam [Investi]\",\"dose\":\"0,5mg\",\"frequency\":\"\",\"quantity\":\"1\",\"units_per_box\":null,\"daily_units\":null,\"days_supply\":null,\"vademecum_id\":8547}]",
+      "is_patient_submitted": 0,
+      "patient_name": "PAC Yamila Emer",
+      "doctor_name": "Maria Cecilia Scheerle"
+    },
+    {
+>>>>>>> origin/add-holiday-service-error-test-2732673805038106600
       "id": 209,
       "type": "prescription",
       "patient_id": 5685,

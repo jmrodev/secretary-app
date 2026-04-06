@@ -39,11 +39,14 @@ fi
 # 3. Importar Base de Datos
 DUMP_FILE="$TEMP_DIR/database.sql.gz"
 if [ -f "$DUMP_FILE" ]; then
+<<<<<<< HEAD
     # Load restored .env to get credentials
     if [ -f "$ENV_FILE" ]; then
         export $(grep -v '^#' "$ENV_FILE" | xargs)
     fi
 
+=======
+>>>>>>> origin/add-holiday-service-error-test-2732673805038106600
     # Determinar contenedor
     if docker ps | grep -q "secretary-db-prod"; then
         DB_CONTAINER="secretary-db-prod"
@@ -56,7 +59,11 @@ if [ -f "$DUMP_FILE" ]; then
         echo "   El volcado se encuentra en: $DUMP_FILE"
     else
         echo "📦 Importando volcado a $DB_CONTAINER..."
+<<<<<<< HEAD
         gunzip -c "$DUMP_FILE" | docker exec -i "$DB_CONTAINER" /usr/bin/mysql -u "${DB_USER:-root}" -p"${DB_PASSWORD}" "${DB_NAME:-clinical_management}"
+=======
+        gunzip -c "$DUMP_FILE" | docker exec -i "$DB_CONTAINER" /usr/bin/mysql -u root -pcima1255 clinical_management
+>>>>>>> origin/add-holiday-service-error-test-2732673805038106600
         echo "✅ Base de datos importada exitosamente."
     fi
 fi

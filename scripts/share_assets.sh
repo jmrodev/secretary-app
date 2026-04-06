@@ -12,8 +12,12 @@ echo "🔐 Iniciando proceso de empaquetado seguro..."
 # 1. Determinar si usar backup dev o prod
 if [ -f "$SCRIPTS_DIR/backup_prod.sh" ] && grep -q "secretary-db-prod" "$SCRIPTS_DIR/backup_prod.sh"; then
     echo "📦 Detectado entorno de producción. Ejecutando backup_prod.sh..."
+<<<<<<< HEAD
     bash "$SCRIPTS_DIR/backup_prod.sh" || { echo "❌ Error al ejecutar backup_prod.sh"; exit 1; }
 
+=======
+    bash "$SCRIPTS_DIR/backup_prod.sh"
+>>>>>>> origin/add-holiday-service-error-test-2732673805038106600
     # Buscar el último .gz en el directorio de backups de prod
     BACKUP_DIR=$(grep "BACKUP_DIR=" "$SCRIPTS_DIR/backup_prod.sh" | cut -d'"' -f2)
     LATEST_DUMP=$(ls -t "$BACKUP_DIR"/*.sql.gz | head -n1)

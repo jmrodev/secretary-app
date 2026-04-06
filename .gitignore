@@ -49,7 +49,8 @@ server/certs/
 server/uploads/
 
 # Android SDK tools
-android_sdk/tools.zip
+android_sdk/
+*.gpg
 
 # System and IDE
 .vscode/
