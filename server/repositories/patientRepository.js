@@ -4,6 +4,19 @@ const { pool } = require('../db');
  * PatientRepository
  * Core data access for patients.
  */
+const ALLOWED_UPDATES = [
+    'user_id', 'first_name', 'last_name', 'full_name', 'dob',
+    'phone', 'email', 'medical_history', 'dni', 'affiliate_number',
+    'insurance_id', 'tariff_percent', 'tariff_override',
+    'behavior_rating', 'is_new_patient', 'marked_new_at',
+    'visit_interval_days', 'prescription_interval_days',
+    'next_suggested_visit_date', 'next_suggested_prescription_date',
+    'license_expiry_date', 'institution_id', 'street_name',
+    'street_number', 'floor', 'apartment', 'city', 'province',
+    'country', 'visit_notified', 'prescription_notified',
+    'license_notified'
+];
+
 class PatientRepository {
     async findById(id, conn = pool) {
         const rows = await conn.query(`
@@ -93,8 +106,20 @@ class PatientRepository {
     }
 
     async update(id, updates, conn = pool) {
-        const fields = Object.keys(updates).map(k => `${k} = ?`).join(', ');
-        const values = [...Object.values(updates).map(v => v === '' ? null : v), id];
+        if (!updates || Object.keys(updates).length === 0) return 0;
+
+        // Filter updates to only allow whitelisted fields
+        const validUpdates = {};
+        for (const key of Object.keys(updates)) {
+            if (ALLOWED_UPDATES.includes(key)) {
+                validUpdates[key] = updates[key];
+            }
+        }
+
+        if (Object.keys(validUpdates).length === 0) return 0;
+
+        const fields = Object.keys(validUpdates).map(k => `${k} = ?`).join(', ');
+        const values = [...Object.values(validUpdates).map(v => v === '' ? null : v), id];
         return await conn.query(`UPDATE patients SET ${fields} WHERE id = ?`, values);
     }
 

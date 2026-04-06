@@ -4,6 +4,10 @@ const { pool } = require('../db');
  * InstitutionRepository
  * Handles data access for medical institutions.
  */
+const ALLOWED_UPDATES = [
+    'name', 'description', 'status', 'base_price'
+];
+
 class InstitutionRepository {
     async findAll(conn = pool) {
         return await conn.query(`
@@ -50,8 +54,20 @@ class InstitutionRepository {
     }
 
     async update(id, updates, conn = pool) {
-        const fields = Object.keys(updates).map(k => `${k} = ?`).join(', ');
-        const values = [...Object.values(updates), id];
+        if (!updates || Object.keys(updates).length === 0) return 0;
+
+        // Filter updates to only allow whitelisted fields
+        const validUpdates = {};
+        for (const key of Object.keys(updates)) {
+            if (ALLOWED_UPDATES.includes(key)) {
+                validUpdates[key] = updates[key];
+            }
+        }
+
+        if (Object.keys(validUpdates).length === 0) return 0;
+
+        const fields = Object.keys(validUpdates).map(k => `${k} = ?`).join(', ');
+        const values = [...Object.values(validUpdates), id];
         return await conn.query(`UPDATE institutions SET ${fields} WHERE id = ?`, values);
     }
 

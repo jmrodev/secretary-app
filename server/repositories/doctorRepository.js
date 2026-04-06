@@ -4,6 +4,20 @@ const { pool } = require('../db');
  * DoctorRepository
  * Handles data access for doctors and their schedules.
  */
+const ALLOWED_UPDATES = [
+    'user_id', 'full_name', 'specialty', 'phone', 'cbu', 'alias',
+    'bio', 'dni', 'consultation_price', 'office_number',
+    'rental_type', 'rental_cost', 'prescription_price',
+    'medical_license_price', 'certificate_price',
+    'virtual_consultation_price', 'default_visit_interval_days',
+    'default_prescription_interval_days', 'appointment_duration',
+    'break_duration', 'overturn_start_time', 'overturn_end_time',
+    'force_hour_alignment', 'afip_cuit', 'afip_cert_path',
+    'afip_key_path', 'afip_enabled', 'afip_pto_vta',
+    'reminder_template', 'confirmation_template',
+    'reminder_virtual_template', 'confirmation_virtual_template'
+];
+
 class DoctorRepository {
     async findAll(conn = pool) {
         return await conn.query(`
@@ -39,14 +53,38 @@ class DoctorRepository {
     }
 
     async updateById(id, updates, conn = pool) {
-        const fields = Object.keys(updates).map(k => `${k} = ?`).join(', ');
-        const values = [...Object.values(updates), id];
+        if (!updates || Object.keys(updates).length === 0) return 0;
+
+        // Filter updates to only allow whitelisted fields
+        const validUpdates = {};
+        for (const key of Object.keys(updates)) {
+            if (ALLOWED_UPDATES.includes(key)) {
+                validUpdates[key] = updates[key];
+            }
+        }
+
+        if (Object.keys(validUpdates).length === 0) return 0;
+
+        const fields = Object.keys(validUpdates).map(k => `${k} = ?`).join(', ');
+        const values = [...Object.values(validUpdates), id];
         return await conn.query(`UPDATE doctors SET ${fields} WHERE id = ?`, values);
     }
 
     async updateByUserId(userId, updates, conn = pool) {
-        const fields = Object.keys(updates).map(k => `${k} = ?`).join(', ');
-        const values = [...Object.values(updates), userId];
+        if (!updates || Object.keys(updates).length === 0) return 0;
+
+        // Filter updates to only allow whitelisted fields
+        const validUpdates = {};
+        for (const key of Object.keys(updates)) {
+            if (ALLOWED_UPDATES.includes(key)) {
+                validUpdates[key] = updates[key];
+            }
+        }
+
+        if (Object.keys(validUpdates).length === 0) return 0;
+
+        const fields = Object.keys(validUpdates).map(k => `${k} = ?`).join(', ');
+        const values = [...Object.values(validUpdates), userId];
         return await conn.query(`UPDATE doctors SET ${fields} WHERE user_id = ?`, values);
     }
 
@@ -115,8 +153,20 @@ class DoctorRepository {
     }
 
     async updateAfipSettings(doctorId, updates, conn = pool) {
-        const fields = Object.keys(updates).map(k => `${k} = ?`).join(', ');
-        const values = [...Object.values(updates), doctorId];
+        if (!updates || Object.keys(updates).length === 0) return 0;
+
+        // Filter updates to only allow whitelisted fields
+        const validUpdates = {};
+        for (const key of Object.keys(updates)) {
+            if (ALLOWED_UPDATES.includes(key)) {
+                validUpdates[key] = updates[key];
+            }
+        }
+
+        if (Object.keys(validUpdates).length === 0) return 0;
+
+        const fields = Object.keys(validUpdates).map(k => `${k} = ?`).join(', ');
+        const values = [...Object.values(validUpdates), doctorId];
         return await conn.query(`UPDATE doctors SET ${fields} WHERE id = ?`, values);
     }
 }

@@ -1,5 +1,12 @@
 const { pool } = require('../db');
 
+const ALLOWED_UPDATES = [
+    'type', 'amount', 'description', 'transaction_date',
+    'related_user_id', 'doctor_id', 'method', 'status',
+    'proof_file', 'is_withdrawal', 'request_id',
+    'appointment_id', 'institution_id'
+];
+
 class TransactionRepository {
     async findById(id, conn) {
         const connection = conn || await pool.getConnection();
@@ -33,10 +40,20 @@ class TransactionRepository {
 
     async update(id, updates, conn) {
         if (!updates || Object.keys(updates).length === 0) return 0;
+
+        // Filter updates to only allow whitelisted fields
+        const validUpdates = {};
+        for (const key of Object.keys(updates)) {
+            if (ALLOWED_UPDATES.includes(key)) {
+                validUpdates[key] = updates[key];
+            }
+        }
+
+        if (Object.keys(validUpdates).length === 0) return 0;
         const connection = conn || await pool.getConnection();
         try {
-            const setClauses = Object.keys(updates).map(key => `${key} = ?`).join(', ');
-            const values = [...Object.values(updates), id];
+            const setClauses = Object.keys(validUpdates).map(key => `${key} = ?`).join(', ');
+            const values = [...Object.values(validUpdates), id];
             const result = await connection.query(`UPDATE transactions SET ${setClauses} WHERE id = ?`, values);
             return result.affectedRows;
         } finally {
@@ -303,8 +320,19 @@ class TransactionRepository {
     }
 
     async updateByRequestId(requestId, updates, conn = pool) {
-        const fields = Object.keys(updates).map(k => `${k} = ?`).join(', ');
-        const values = [...Object.values(updates), requestId];
+        if (!updates || Object.keys(updates).length === 0) return 0;
+
+        // Filter updates to only allow whitelisted fields
+        const validUpdates = {};
+        for (const key of Object.keys(updates)) {
+            if (ALLOWED_UPDATES.includes(key)) {
+                validUpdates[key] = updates[key];
+            }
+        }
+
+        if (Object.keys(validUpdates).length === 0) return 0;
+        const fields = Object.keys(validUpdates).map(k => `${k} = ?`).join(', ');
+        const values = [...Object.values(validUpdates), requestId];
         return await conn.query(`UPDATE transactions SET ${fields} WHERE request_id = ? AND status = 'pending'`, values);
     }
 
