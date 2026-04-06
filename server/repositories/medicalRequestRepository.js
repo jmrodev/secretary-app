@@ -6,7 +6,7 @@ const { pool } = require('../db');
  */
 const ALLOWED_UPDATES = [
     'type', 'patient_id', 'doctor_id', 'secretary_id',
-    'status', 'request_note', 'doctor_note', 'payment_status',
+    'status', 'request_note', 'doctor_note', 'secretary_note', 'payment_status',
     'payment_method', 'debt_amount', 'completed_at',
     'raw_medication_data', 'is_patient_submitted'
 ];
