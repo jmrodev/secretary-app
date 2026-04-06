@@ -4,6 +4,41 @@ const { pool } = require('../db');
  * DoctorRepository
  * Handles data access for doctors and their schedules.
  */
+const ALLOWED_FIELDS = [
+    "user_id",
+    "full_name",
+    "specialty",
+    "phone",
+    "cbu",
+    "alias",
+    "bio",
+    "dni",
+    "consultation_price",
+    "office_number",
+    "rental_type",
+    "rental_cost",
+    "prescription_price",
+    "medical_license_price",
+    "certificate_price",
+    "virtual_consultation_price",
+    "default_visit_interval_days",
+    "default_prescription_interval_days",
+    "appointment_duration",
+    "break_duration",
+    "overturn_start_time",
+    "overturn_end_time",
+    "force_hour_alignment",
+    "afip_cuit",
+    "afip_cert_path",
+    "afip_key_path",
+    "afip_enabled",
+    "afip_pto_vta",
+    "reminder_template",
+    "confirmation_template",
+    "reminder_virtual_template",
+    "confirmation_virtual_template"
+];
+
 class DoctorRepository {
     async findAll(conn = pool) {
         return await conn.query(`
@@ -31,22 +66,49 @@ class DoctorRepository {
     }
 
     async create(data, conn = pool) {
-        const fields = Object.keys(data).join(', ');
-        const placeholders = Object.keys(data).map(() => '?').join(', ');
-        const values = Object.values(data);
+        const filteredData = {};
+        for (const key of Object.keys(data)) {
+            if (ALLOWED_FIELDS.includes(key)) {
+                filteredData[key] = data[key];
+            }
+        }
+
+        if (Object.keys(filteredData).length === 0) throw new Error('No valid fields provided for creation');
+
+        const fields = Object.keys(filteredData).join(', ');
+        const placeholders = Object.keys(filteredData).map(() => '?').join(', ');
+        const values = Object.values(filteredData);
         const result = await conn.query(`INSERT INTO doctors (${fields}) VALUES (${placeholders})`, values);
         return Number(result.insertId);
     }
 
     async updateById(id, updates, conn = pool) {
-        const fields = Object.keys(updates).map(k => `${k} = ?`).join(', ');
-        const values = [...Object.values(updates), id];
+        const filteredUpdates = {};
+        for (const key of Object.keys(updates)) {
+            if (ALLOWED_FIELDS.includes(key)) {
+                filteredUpdates[key] = updates[key];
+            }
+        }
+
+        if (Object.keys(filteredUpdates).length === 0) return null;
+
+        const fields = Object.keys(filteredUpdates).map(k => `${k} = ?`).join(', ');
+        const values = [...Object.values(filteredUpdates), id];
         return await conn.query(`UPDATE doctors SET ${fields} WHERE id = ?`, values);
     }
 
     async updateByUserId(userId, updates, conn = pool) {
-        const fields = Object.keys(updates).map(k => `${k} = ?`).join(', ');
-        const values = [...Object.values(updates), userId];
+        const filteredUpdates = {};
+        for (const key of Object.keys(updates)) {
+            if (ALLOWED_FIELDS.includes(key)) {
+                filteredUpdates[key] = updates[key];
+            }
+        }
+
+        if (Object.keys(filteredUpdates).length === 0) return null;
+
+        const fields = Object.keys(filteredUpdates).map(k => `${k} = ?`).join(', ');
+        const values = [...Object.values(filteredUpdates), userId];
         return await conn.query(`UPDATE doctors SET ${fields} WHERE user_id = ?`, values);
     }
 
@@ -115,8 +177,17 @@ class DoctorRepository {
     }
 
     async updateAfipSettings(doctorId, updates, conn = pool) {
-        const fields = Object.keys(updates).map(k => `${k} = ?`).join(', ');
-        const values = [...Object.values(updates), doctorId];
+        const filteredUpdates = {};
+        for (const key of Object.keys(updates)) {
+            if (ALLOWED_FIELDS.includes(key)) {
+                filteredUpdates[key] = updates[key];
+            }
+        }
+
+        if (Object.keys(filteredUpdates).length === 0) return null;
+
+        const fields = Object.keys(filteredUpdates).map(k => `${k} = ?`).join(', ');
+        const values = [...Object.values(filteredUpdates), doctorId];
         return await conn.query(`UPDATE doctors SET ${fields} WHERE id = ?`, values);
     }
 }
