@@ -1,6 +1,7 @@
 const { pool } = require('../db');
 const { logAction } = require('../utils/audit');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 
 /**
  * RestoreService
@@ -52,7 +53,7 @@ class RestoreService {
     async _restorePatient(conn, data) {
         const { profile, appointments, files, medical_requests, assigned_doctors } = data;
         const username = profile.email || profile.dni || `restored_patient_${Date.now()}`;
-        const passwordHash = await bcrypt.hash('123456', 10);
+        const passwordHash = await bcrypt.hash(crypto.randomBytes(16).toString('hex'), 10);
 
         const [uRes] = await conn.query(
             "INSERT INTO users (username, password_hash, role) VALUES (?, ?, 'patient')",
@@ -143,7 +144,7 @@ class RestoreService {
 
     async _restoreDoctor(conn, data) {
         const { profile } = data;
-        const passwordHash = await bcrypt.hash('123456', 10);
+        const passwordHash = await bcrypt.hash(crypto.randomBytes(16).toString('hex'), 10);
         const username = profile.full_name.replace(/\s+/g, '.').toLowerCase();
         const [uRes] = await conn.query("INSERT INTO users (username, password_hash, role) VALUES (?, ?, 'doctor')", [username, passwordHash]);
         await conn.query(`INSERT INTO doctors (id, user_id, full_name, specialty, phone) VALUES (?, ?, ?, ?, ?)`,
@@ -152,7 +153,7 @@ class RestoreService {
 
     async _restoreSecretary(conn, data) {
         const { profile } = data;
-        const passwordHash = await bcrypt.hash('123456', 10);
+        const passwordHash = await bcrypt.hash(crypto.randomBytes(16).toString('hex'), 10);
         const username = profile.full_name.replace(/\s+/g, '.').toLowerCase();
         const [uRes] = await conn.query("INSERT INTO users (username, password_hash, role) VALUES (?, ?, 'secretary')", [username, passwordHash]);
         await conn.query(`INSERT INTO secretaries (id, user_id, full_name, phone) VALUES (?, ?, ?, ?)`,
