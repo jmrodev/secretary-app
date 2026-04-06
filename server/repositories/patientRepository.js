@@ -1,4 +1,5 @@
 const { pool } = require('../db');
+const { buildUpdateQuery, buildInsertQuery } = require('../utils/sqlUtils');
 
 /**
  * PatientRepository
@@ -85,16 +86,16 @@ class PatientRepository {
     }
 
     async create(data, conn = pool) {
-        const fields = Object.keys(data).join(', ');
-        const placeholders = Object.keys(data).map(() => '?').join(', ');
-        const values = Object.values(data);
-        const result = await conn.query(`INSERT INTO patients (${fields}) VALUES (${placeholders})`, values);
+        const { columns, placeholders, values } = buildInsertQuery('patients', data);
+        if (!columns) throw new Error('No valid columns provided for patients create');
+        const result = await conn.query(`INSERT INTO patients (${columns}) VALUES (${placeholders})`, values);
         return Number(result.insertId);
     }
 
     async update(id, updates, conn = pool) {
-        const fields = Object.keys(updates).map(k => `${k} = ?`).join(', ');
-        const values = [...Object.values(updates).map(v => v === '' ? null : v), id];
+        const { setClauses: fields, values: updateValues } = buildUpdateQuery('patients', updates);
+        if (!fields) return 0;
+        const values = [...updateValues.map(v => v === '' ? null : v), id];
         return await conn.query(`UPDATE patients SET ${fields} WHERE id = ?`, values);
     }
 

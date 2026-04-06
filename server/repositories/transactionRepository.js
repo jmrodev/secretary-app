@@ -1,4 +1,5 @@
 const { pool } = require('../db');
+const { buildUpdateQuery } = require('../utils/sqlUtils');
 
 class TransactionRepository {
     async findById(id, conn) {
@@ -33,10 +34,11 @@ class TransactionRepository {
 
     async update(id, updates, conn) {
         if (!updates || Object.keys(updates).length === 0) return 0;
+        const { setClauses, values: updateValues } = buildUpdateQuery('transactions', updates);
+        if (!setClauses) return 0;
         const connection = conn || await pool.getConnection();
         try {
-            const setClauses = Object.keys(updates).map(key => `${key} = ?`).join(', ');
-            const values = [...Object.values(updates), id];
+            const values = [...updateValues, id];
             const result = await connection.query(`UPDATE transactions SET ${setClauses} WHERE id = ?`, values);
             return result.affectedRows;
         } finally {
@@ -303,9 +305,11 @@ class TransactionRepository {
     }
 
     async updateByRequestId(requestId, updates, conn = pool) {
-        const fields = Object.keys(updates).map(k => `${k} = ?`).join(', ');
-        const values = [...Object.values(updates), requestId];
-        return await conn.query(`UPDATE transactions SET ${fields} WHERE request_id = ? AND status = 'pending'`, values);
+        if (!updates || Object.keys(updates).length === 0) return null;
+        const { setClauses, values: updateValues } = buildUpdateQuery('transactions', updates);
+        if (!setClauses) return null;
+        const values = [...updateValues, requestId];
+        return await conn.query(`UPDATE transactions SET ${setClauses} WHERE request_id = ? AND status = 'pending'`, values);
     }
 
     async deletePendingByRequestId(requestId, conn = pool) {

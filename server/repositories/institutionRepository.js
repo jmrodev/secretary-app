@@ -1,4 +1,5 @@
 const { pool } = require('../db');
+const { buildUpdateQuery } = require('../utils/sqlUtils');
 
 /**
  * InstitutionRepository
@@ -50,8 +51,9 @@ class InstitutionRepository {
     }
 
     async update(id, updates, conn = pool) {
-        const fields = Object.keys(updates).map(k => `${k} = ?`).join(', ');
-        const values = [...Object.values(updates), id];
+        const { setClauses: fields, values: __updateValues } = buildUpdateQuery('institutions', updates);
+        if (!fields) return 0;
+        const values = [...__updateValues, id];
         return await conn.query(`UPDATE institutions SET ${fields} WHERE id = ?`, values);
     }
 

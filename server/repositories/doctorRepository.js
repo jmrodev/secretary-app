@@ -1,4 +1,5 @@
 const { pool } = require('../db');
+const { buildUpdateQuery, buildInsertQuery } = require('../utils/sqlUtils');
 
 /**
  * DoctorRepository
@@ -32,21 +33,23 @@ class DoctorRepository {
 
     async create(data, conn = pool) {
         const fields = Object.keys(data).join(', ');
-        const placeholders = Object.keys(data).map(() => '?').join(', ');
-        const values = Object.values(data);
-        const result = await conn.query(`INSERT INTO doctors (${fields}) VALUES (${placeholders})`, values);
+        const { columns, placeholders, values } = buildInsertQuery('doctors', data);
+        if (!columns) throw new Error('No valid columns provided for doctors create');
+        const result = await conn.query(`INSERT INTO doctors (${columns}) VALUES (${placeholders})`, values);
         return Number(result.insertId);
     }
 
     async updateById(id, updates, conn = pool) {
-        const fields = Object.keys(updates).map(k => `${k} = ?`).join(', ');
-        const values = [...Object.values(updates), id];
+        const { setClauses: fields, values: __updateValues } = buildUpdateQuery('doctors', updates);
+        if (!fields) return 0;
+        const values = [...__updateValues, id];
         return await conn.query(`UPDATE doctors SET ${fields} WHERE id = ?`, values);
     }
 
     async updateByUserId(userId, updates, conn = pool) {
-        const fields = Object.keys(updates).map(k => `${k} = ?`).join(', ');
-        const values = [...Object.values(updates), userId];
+        const { setClauses: fields, values: __updateValues } = buildUpdateQuery('doctors', updates);
+        if (!fields) return 0;
+        const values = [...__updateValues, userId];
         return await conn.query(`UPDATE doctors SET ${fields} WHERE user_id = ?`, values);
     }
 
@@ -115,8 +118,9 @@ class DoctorRepository {
     }
 
     async updateAfipSettings(doctorId, updates, conn = pool) {
-        const fields = Object.keys(updates).map(k => `${k} = ?`).join(', ');
-        const values = [...Object.values(updates), doctorId];
+        const { setClauses: fields, values: __updateValues } = buildUpdateQuery('doctors', updates);
+        if (!fields) return 0;
+        const values = [...__updateValues, doctorId];
         return await conn.query(`UPDATE doctors SET ${fields} WHERE id = ?`, values);
     }
 }

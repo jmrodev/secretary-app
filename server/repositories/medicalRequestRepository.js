@@ -1,4 +1,53 @@
-const { pool } = require('../db');
+async update(id, updates, conn) {
+        if (!updates || Object.keys(updates).length === 0) return 0;
+        const connection = conn || await pool.getConnection();
+        try {
+            const { setClauses, values: updateValues } = buildUpdateQuery('medical_requests', updates);
+            if (!setClauses) return 0;
+            const values = [...updateValues, id];
+            const result = await connection.query(`UPDATE medical_requests SET ${setClauses} WHERE id = ?`, values);
+            return result.affectedRows;
+        } finally {async create(data, conn) {
+        const connection = conn || await pool.getConnection();
+        try {
+            const { columns, placeholders, values } = buildInsertQuery('medical_requests', data);
+            if (!columns) throw new Error('No valid columns provided for medical_requests create');
+            const result = await connection.query(`INSERT INTO medical_requests (${columns}) VALUES (${placeholders})`, values);
+            return result.insertId;
+        } finally {async update(id, updates, conn) {
+        if (!updates || Object.keys(updates).length === 0) return 0;
+        const connection = conn || await pool.getConnection();
+        try {
+            const { setClauses, values: updateValues } = buildUpdateQuery('medical_requests', updates);
+            if (!setClauses) return 0;
+            const values = [...updateValues, id];
+            const result = await connection.query(`UPDATE medical_requests SET ${setClauses} WHERE id = ?`, values);
+            return result.affectedRows;
+        } finally {async create(data, conn) {
+        const connection = conn || await pool.getConnection();
+        try {
+            const { columns, placeholders, values } = buildInsertQuery('medical_requests', data);
+            if (!columns) throw new Error('No valid columns provided for medical_requests create');
+            const result = await connection.query(`INSERT INTO medical_requests (${columns}) VALUES (${placeholders})`, values);
+            return result.insertId;
+        } finally {async update(id, updates, conn) {
+        if (!updates || Object.keys(updates).length === 0) return 0;
+        const connection = conn || await pool.getConnection();
+        try {
+            const { setClauses, values: updateValues } = buildUpdateQuery('medical_requests', updates);
+            if (!setClauses) return 0;
+            const values = [...updateValues, id];
+            const result = await connection.query(`UPDATE medical_requests SET ${setClauses} WHERE id = ?`, values);
+            return result.affectedRows;
+        } finally {async create(data, conn) {
+        const connection = conn || await pool.getConnection();
+        try {
+            const { columns, placeholders, values } = buildInsertQuery('medical_requests', data);
+            if (!columns) throw new Error('No valid columns provided for medical_requests create');
+            const result = await connection.query(`INSERT INTO medical_requests (${columns}) VALUES (${placeholders})`, values);
+            return result.insertId;
+        } finally {const { pool } = require('../db');
+const { buildUpdateQuery, buildInsertQuery } = require('../utils/sqlUtils');
 
 /**
  * MedicalRequestRepository
@@ -85,17 +134,17 @@ class MedicalRequestRepository {
     }
 
     async create(data, conn = pool) {
-        const fields = Object.keys(data).join(', ');
-        const placeholders = Object.keys(data).map(() => '?').join(', ');
-        const values = Object.values(data);
-        const result = await conn.query(`INSERT INTO medical_requests (${fields}) VALUES (${placeholders})`, values);
+        const { columns, placeholders, values } = buildInsertQuery('medical_requests', data);
+        if (!columns) throw new Error('No valid columns provided for medical_requests create');
+        const result = await conn.query(`INSERT INTO medical_requests (${columns}) VALUES (${placeholders})`, values);
         return result.insertId;
     }
 
     async update(id, updates, conn = pool) {
         if (!updates || Object.keys(updates).length === 0) return 0;
-        const fields = Object.keys(updates).map(k => `${k} = ?`).join(', ');
-        const values = [...Object.values(updates), id];
+        const { setClauses: fields, values: __updateValues } = buildUpdateQuery('medical_requests', updates);
+        if (!fields) return 0;
+        const values = [...__updateValues, id];
         return await conn.query(`UPDATE medical_requests SET ${fields} WHERE id = ?`, values);
     }
 
@@ -104,10 +153,9 @@ class MedicalRequestRepository {
     }
 
     async addItem(data, conn = pool) {
-        const fields = Object.keys(data).join(', ');
-        const placeholders = Object.keys(data).map(() => '?').join(', ');
-        const values = Object.values(data);
-        return await conn.query(`INSERT INTO medical_request_items (${fields}) VALUES (${placeholders})`, values);
+        const { columns, placeholders, values } = buildInsertQuery('medical_request_items', data);
+        if (!columns) throw new Error('No valid columns provided for medical_request_items create');
+        return await conn.query(`INSERT INTO medical_request_items (${columns}) VALUES (${placeholders})`, values);
     }
 
     async getRequestAggregates(type, dateColumn, dateValue, isExactDate, doctor_id, conn = pool) {

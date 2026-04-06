@@ -1,4 +1,5 @@
 const { pool } = require('../db');
+const { buildUpdateQuery } = require('../utils/sqlUtils');
 
 /**
  * LicenseRepository
@@ -88,8 +89,9 @@ class LicenseRepository {
     }
 
     async update(id, updates, conn = pool) {
-        const setClauses = Object.keys(updates).map(key => `${key} = ?`).join(', ');
-        const params = [...Object.values(updates), id];
+        const { setClauses, values: updateValues } = buildUpdateQuery('licenses', updates);
+        if (!setClauses) return 0;
+        const params = [...updateValues, id];
         return await conn.query(`UPDATE medical_licenses SET ${setClauses} WHERE id = ?`, params);
     }
 
