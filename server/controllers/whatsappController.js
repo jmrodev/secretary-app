@@ -52,17 +52,24 @@ const broadcastMessage = async (req, res) => {
         failed: []
     };
 
-    for (const contact of contacts) {
+    const promises = contacts.map(async (contact) => {
         try {
             // If components need to be dynamic per user, this logic needs to be smarter.
             // For now, assuming static components for broadcast or simple templates.
             const response = await whatsappService.sendTemplateMessage(contact.phone, templateName, languageCode, components);
-            results.success.push({ phone: contact.phone, messageId: response.messages?.[0]?.id });
+            return { success: true, phone: contact.phone, messageId: response.messages?.[0]?.id };
         } catch (error) {
-            results.failed.push({
-                phone: contact.phone,
-                error: error.message
-            });
+            return { success: false, phone: contact.phone, error: error.message };
+        }
+    });
+
+    const settledResults = await Promise.all(promises);
+
+    for (const result of settledResults) {
+        if (result.success) {
+            results.success.push({ phone: result.phone, messageId: result.messageId });
+        } else {
+            results.failed.push({ phone: result.phone, error: result.error });
         }
     }
 
