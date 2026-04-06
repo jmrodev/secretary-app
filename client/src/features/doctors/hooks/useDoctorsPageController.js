@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import api from '@/api/axios';
-import { useAuth } from '@/features/auth';
-import { useModal } from '@/context/ModalContext';
-import { useMessage } from '@/context/MessageContext';
-import { useLanguage } from '@/context/LanguageContext';
-import { useUsers } from '@/features/users';
-import { useFetch } from '@/hooks/useFetch';
+import api from '../../../api/axios';
+import { useAuth } from '../../auth';
+import { useModal } from '../../../context/ModalContext';
+import { useMessage } from '../../../context/MessageContext';
+import { useLanguage } from '../../../context/LanguageContext';
+import { useUsers } from '../../users';
+import { useFetch } from '../../../hooks/useFetch';
 
 export const useDoctorsPageController = () => {
     const { t } = useLanguage();

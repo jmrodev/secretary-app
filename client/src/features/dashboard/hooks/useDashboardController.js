@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { usePermissions } from '@/hooks/usePermissions';
-import { useMessage } from '@/context/MessageContext';
-import { useLanguage } from '@/context/LanguageContext';
-import { useConfig } from '@/context/ConfigContext';
-import { useAppointments } from '@/features/appointments';
-import api from '@/api/axios';
+import { usePermissions } from '../../../hooks/usePermissions';
+import { useMessage } from '../../../context/MessageContext';
+import { useLanguage } from '../../../context/LanguageContext';
+import { useConfig } from '../../../context/ConfigContext';
+import { useAppointments } from '../../appointments';
+import api from '../../../api/axios';
 
 import { useDashboardStats } from './useDashboardStats';
 import { useDashboardReminders } from './useDashboardReminders';

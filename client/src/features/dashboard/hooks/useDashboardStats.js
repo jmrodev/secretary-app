@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useFetch } from '@/hooks/useFetch';
+import { useFetch } from '../../../hooks/useFetch';
 
 export const useDashboardStats = (isStaff = false) => {
     // Stats Fetching
