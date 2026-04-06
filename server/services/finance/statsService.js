@@ -25,17 +25,43 @@ exports.getDetailedStats = async (doctor_id) => {
         // 2. Expense Aggregates
         const expenseStats = await transactionRepository.getExpenseAggregates(todayStr, monthStr, yearStr, doctor_id);
 
-        // 3. Request Breakdowns
+        // 3. Request Breakdowns (Optimized)
         const types = ['prescription', 'license', 'certificate'];
         const requestData = {};
 
+        // Initialize with default values to handle types that might not have any records
         for (const type of types) {
             requestData[type] = {
-                today: await medicalRequestRepository.getRequestAggregates(type, 'created_at', todayStr, true, doctor_id),
-                month: await medicalRequestRepository.getRequestAggregates(type, 'created_at', monthStr, false, doctor_id),
-                year: await medicalRequestRepository.getRequestAggregates(type, 'created_at', yearStr, false, doctor_id)
+                today: { count: 0, paid: 0, debt: 0, bonified: 0 },
+                month: { count: 0, paid: 0, debt: 0, bonified: 0 },
+                year: { count: 0, paid: 0, debt: 0, bonified: 0 }
             };
         }
+
+        // Fetch aggregates for all types in parallel for the three timeframes
+        const [todayAggs, monthAggs, yearAggs] = await Promise.all([
+            medicalRequestRepository.getAllTypesRequestAggregates(types, 'created_at', todayStr, true, doctor_id),
+            medicalRequestRepository.getAllTypesRequestAggregates(types, 'created_at', monthStr, false, doctor_id),
+            medicalRequestRepository.getAllTypesRequestAggregates(types, 'created_at', yearStr, false, doctor_id)
+        ]);
+
+        // Helper to populate the data
+        const populateData = (aggs, period) => {
+            for (const row of aggs) {
+                if (requestData[row.type]) {
+                    requestData[row.type][period] = {
+                        count: Number(row.count || 0),
+                        paid: Number(row.paid || 0),
+                        debt: Number(row.debt || 0),
+                        bonified: Number(row.bonified || 0)
+                    };
+                }
+            }
+        };
+
+        populateData(todayAggs, 'today');
+        populateData(monthAggs, 'month');
+        populateData(yearAggs, 'year');
 
         // 4. Appointment Results
         const apptToday = await appointmentRepository.getAppointmentSummaryStats('appointment_date', todayStr, true, doctor_id);
