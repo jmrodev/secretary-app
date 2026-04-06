@@ -57,17 +57,17 @@ const BalanceFinancialSummary = ({
             )}
 
             <div className="balance-view__summary-item balance-view__summary-item--subtotal">
-                <span>SUBTOTAL INGRESOS:</span>
+                <span>{t("subtotal_income")}:</span>
                 <span>$ {totalIncome.toLocaleString()}</span>
             </div>
 
             <div className="balance-view__summary-item balance-view__summary-item--withdrawals">
-                <span>(+) Retiros Doctora:</span>
+                <span>{t('doctor_withdrawals')}:</span>
                 <span>$ {totalWithdrawals.toLocaleString()}</span>
             </div>
 
             <div className="balance-view__summary-item balance-view__summary-item--net">
-                <span>RESULTADO NETO:</span>
+                <span>{t("result_neto")}:</span>
                 <span>$ {netTotal.toLocaleString()}</span>
             </div>
         </section>
