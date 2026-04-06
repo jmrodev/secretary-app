@@ -1,18 +1,18 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { institutionService } from '@/services/institutionService';
 import { useMessage } from '@/context/MessageContext';
 import { useModal } from '@/context/ModalContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { capitalizeWords } from '@/utils/stringUtils';
+import { useFetch } from '@/hooks/useFetch';
 
 export const useInstitutionsController = () => {
     const { showMessage } = useMessage();
     const { confirm } = useModal();
     const { t } = useLanguage();
 
-    // Data State
-    const [institutions, setInstitutions] = useState([]);
-    const [loading, setLoading] = useState(true);
+    // Data State using custom hook
+    const { data: institutions = [], loading, refetch: fetchInstitutions } = useFetch('/institutions', { initialData: [] });
 
     // UI State
     const [activeTab, setActiveTab] = useState('list'); // 'list' | 'finances'
@@ -28,24 +28,6 @@ export const useInstitutionsController = () => {
         phoneNumbers: []
     };
     const [formData, setFormData] = useState(initialFormState);
-
-    // Fetch Data
-    const fetchInstitutions = async () => {
-        setLoading(true);
-        try {
-            const data = await institutionService.getAllInstitutions();
-            setInstitutions(data);
-        } catch (err) {
-            console.error(err);
-            showMessage('Error al cargar instituciones', 'error');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchInstitutions();
-    }, []);
 
     // Handlers
     const handleOpenFormModal = useCallback((inst = null) => {
