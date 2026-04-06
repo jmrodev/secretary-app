@@ -24,9 +24,6 @@ const verifyToken = async (req, res, next) => {
         const decoded = jwt.verify(bearerToken, process.env.JWT_SECRET);
         req.user = decoded;
 
-        // Debug Log
-        // console.log(`[Auth] Verified User: ${decoded.username} (${decoded.role})`);
-
         // Check if token_version is still valid
         const conn = await pool.getConnection();
         const rows = await conn.query("SELECT token_version FROM users WHERE id = ?", [decoded.user_id]);
