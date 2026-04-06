@@ -1,4 +1,5 @@
 const { pool } = require('../db');
+const { buildUpdateQuery } = require('../utils/sqlUtils');
 
 class AppointmentRepository {
     async findById(id, conn) {
@@ -44,10 +45,11 @@ class AppointmentRepository {
 
     async update(id, updates, conn) {
         if (!updates || Object.keys(updates).length === 0) return 0;
+        const { setClauses, values: updateValues } = buildUpdateQuery('appointments', updates);
+        if (!setClauses) return 0;
         const connection = conn || await pool.getConnection();
         try {
-            const setClauses = Object.keys(updates).map(key => `${key} = ?`).join(', ');
-            const values = [...Object.values(updates), id];
+            const values = [...updateValues, id];
             const result = await connection.query(`UPDATE appointments SET ${setClauses} WHERE id = ?`, values);
             return result.affectedRows;
         } finally {
