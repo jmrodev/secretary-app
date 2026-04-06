@@ -132,6 +132,6 @@ export const useAppointmentsPageController = () => {
         showNextSlotModal: nextSlot.showModal, setShowNextSlotModal: nextSlot.setShowModal,
         holidays, booking, patientSearch, nextSlot, currentDoctor: viewDoctorId ? doctors.find(d => d.id === Number(viewDoctorId)) : null,
         filteredAppointments: appointments, appointments, calendarStats, doctorSchedule,
-        searchPatientId, patientAppointments, patientApptLoading, handlers, rescheduleAppt
+        searchPatientId, patientAppointments, patientApptLoading, handlers, rescheduleAppt, exitRescheduleMode
     };
 };
