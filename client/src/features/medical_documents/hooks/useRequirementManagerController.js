@@ -4,6 +4,7 @@ import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useModal } from '@/context/ModalContext';
 import { usePermissions } from '@/hooks/usePermissions';
+import { useFetch } from '@/hooks/useFetch';
 import { extractMedicationDetails } from '@/utils/medicationHelpers';
 
 /**
@@ -11,21 +12,55 @@ import { extractMedicationDetails } from '@/utils/medicationHelpers';
  * Orchestrates the listed requests, history, and recycle bin.
  */
 export const useRequirementManagerController = (user) => {
-    // State
-    const [requests, setRequests] = useState([]);
-    const [loading, setLoading] = useState(true);
+    // Contexts
+    const { showMessage } = useMessage();
+    const { t } = useLanguage();
+    const { doubleConfirm, confirm } = useModal();
+    const { canDeleteRequest } = usePermissions();
+
+    // View State
+    const [activeTab, setActiveTab] = useState('list'); // 'new' | 'list' | 'recycle'
+    const [filter, setFilter] = useState('active'); // 'active' | 'history'
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(25);
+
+    // --- FETCH DATA using useFetch ---
+
+    // Requests
+    const { 
+        data: requestsData = { requests: [], totalCount: 0 }, 
+        loading: requestsLoading, 
+        refetch: fetchRequests 
+    } = useFetch('/medical/requests', {
+        params: {
+            page: currentPage,
+            limit: itemsPerPage,
+            status: filter === 'active' ? ['pending', 'consult'] : ['completed', 'rejected']
+        },
+        initialData: { requests: [], totalCount: 0 }
+    });
+
+    const requests = requestsData.requests || [];
+    const totalCount = requestsData.totalCount || 0;
+
+    // Doctors
+    const { data: doctors = [] } = useFetch('/users/doctors', { initialData: [] });
+
+    // Recycle Bin
+    const { 
+        data: recycleBinData = [], 
+        refetch: fetchRecycleBin 
+    } = useFetch('/logs/recycle-bin', {
+        initialData: [],
+        immediate: activeTab === 'recycle' && ['admin', 'secretary'].includes(user?.role)
+    });
+
+    const recycleRequests = recycleBinData.filter(item => item.entity_type === 'medical_request');
+
+    // Selection/Edit State
     const [selectedRequest, setSelectedRequest] = useState(null);
     const [actionModal, setActionModal] = useState({ open: false, type: '', id: null });
     const [actionNote, setActionNote] = useState('');
-    const [activeTab, setActiveTab] = useState('list'); // 'new' | 'list' | 'recycle'
-    const [recycleRequests, setRecycleRequests] = useState([]);
-    const [doctors, setDoctors] = useState([]);
-    const [filter, setFilter] = useState('active'); // 'active' | 'history'
-
-    // Pagination State
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalCount, setTotalCount] = useState(0);
-    const [itemsPerPage] = useState(25);
 
     // Medication/Edit State
     const [patientMeds, setPatientMeds] = useState([]);
@@ -36,69 +71,13 @@ export const useRequirementManagerController = (user) => {
     const [editDoctorNote, setEditDoctorNote] = useState('');
     const [newMedInput, setNewMedInput] = useState({ name: '', dose: '', frequency: '', quantity: '' });
 
-    // Contexts
-    const { showMessage } = useMessage();
-    const { t } = useLanguage();
-    const { doubleConfirm, confirm } = useModal();
-
-    const fetchRequests = useCallback(async () => {
-        try {
-            setLoading(true);
-            const statusFilter = filter === 'active' ? ['pending', 'consult'] : ['completed', 'rejected'];
-            const params = {
-                page: currentPage,
-                limit: itemsPerPage,
-                status: statusFilter
-            };
-            const res = await api.get('/medical/requests', { params });
-            setRequests(res.data.requests || []);
-            setTotalCount(res.data.totalCount || 0);
-        } catch (err) {
-            console.error("[RequirementManagerController] Failed to fetch requests", err);
-            setRequests([]);
-        } finally {
-            setLoading(false);
-        }
-    }, [filter, currentPage, itemsPerPage]);
-
-    const fetchDoctors = useCallback(async () => {
-        try {
-            const res = await api.get('/users/doctors');
-            setDoctors(res.data);
-        } catch (err) {
-            console.error("[RequirementManagerController] Failed to fetch doctors", err);
-        }
-    }, []);
-
-    const fetchRecycleBin = useCallback(async () => {
-        if (!['admin', 'secretary'].includes(user?.role)) return;
-        try {
-            const res = await api.get('/logs/recycle-bin');
-            setRecycleRequests(res.data.filter(item => item.entity_type === 'medical_request'));
-        } catch (err) {
-            console.error("[RequirementManagerController] Failed to fetch recycle bin", err);
-        }
-    }, [user?.role]);
-
-    useEffect(() => {
-        fetchRequests();
-    }, [fetchRequests]);
-
-    useEffect(() => {
-        fetchDoctors();
-    }, [fetchDoctors]);
-
+    // Polling Logic
     useEffect(() => {
         const interval = setInterval(fetchRequests, 30000);
         return () => clearInterval(interval);
     }, [fetchRequests]);
 
-
-    useEffect(() => {
-        if (activeTab === 'recycle') {
-            fetchRecycleBin();
-        }
-    }, [activeTab, fetchRecycleBin]);
+    const loading = requestsLoading;
 
     useEffect(() => {
         if (selectedRequest) {
@@ -276,8 +255,6 @@ export const useRequirementManagerController = (user) => {
             return pmName.includes(reqName) || reqName.includes(pmName);
         });
     };
-
-    const { canDeleteRequest } = usePermissions();
 
     return {
         requests,

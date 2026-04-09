@@ -1,6 +1,6 @@
 import { useMessage } from '@/context/MessageContext';
 import { useConfig } from '@/context/ConfigContext';
-import { useAuth } from '../../auth';
+import { useAuth } from '@/features/auth';
 import { copyToClipboard } from '@/utils/clipboardUtils';
 import api from '@/api/axios';
 

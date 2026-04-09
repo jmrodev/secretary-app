@@ -1,7 +1,7 @@
 
 import React from 'react';
 import Pagination from '@/components/atoms/Pagination';
-import { useAuth } from '../../auth';
+import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/context/LanguageContext';
 import { isToday } from '@/utils/time';
 import { formatPrice } from '@/utils/format';

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { TransactionModal } from '../../finances';
+import { TransactionModal } from '@/features/finances';
 
 // Local Feature Components
 import StatusActionModal from './StatusActionModal';

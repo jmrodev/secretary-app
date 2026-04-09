@@ -1,81 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import api from '@/api/axios';
-import { useAuth } from '../auth';
-import { useMessage } from '@/context/MessageContext';
-import { useLanguage } from '@/context/LanguageContext';
+import React from 'react';
 import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { formatPrice } from '@/utils/format';
 import { formatDate } from '@/utils/dateUtils';
+import { useRentalsController } from './hooks/useRentalsController';
 
 /**
  * RentalsPage (Orchestrator).
  * Interface for doctors to book offices and for staff to manage availability.
  */
 const RentalsPage = () => {
-    const { t } = useLanguage();
-    const { showMessage } = useMessage();
-    const [consultorios, setConsultorios] = useState([]);
-    const [rentals, setRentals] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const { user } = useAuth();
-
-    // Form state for new rental
-    const [selectedOffice, setSelectedOffice] = useState('');
-    const [date, setDate] = useState('');
-    const [startTime, setStartTime] = useState('');
-    const [endTime, setEndTime] = useState('');
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const cRes = await api.get('/consultorios');
-                setConsultorios(cRes.data);
-
-                if (user && user.role === 'doctor') {
-                    const rRes = await api.get('/consultorios/my-rentals');
-                    setRentals(rRes.data);
-                }
-            } catch (err) {
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchData();
-    }, [user?.role]);
-
-    const handleRent = async (e) => {
-        e.preventDefault();
-        try {
-            await api.post('/consultorios/rent', {
-                consultorio_id: selectedOffice,
-                rental_date: date,
-                start_time: startTime,
-                end_time: endTime,
-                cost: 50.00 // Fixed cost for demo
-            });
-
-            // Refresh rentals
-            if (user && user.role === 'doctor') {
-                const rRes = await api.get('/consultorios/my-rentals');
-                setRentals(rRes.data);
-            }
-
-            showMessage(t('rental_booked') || 'Alquiler reservado con éxito', 'success');
-
-            // Reset form
-            setSelectedOffice('');
-            setDate('');
-            setStartTime('');
-            setEndTime('');
-        } catch (err) {
-            console.error(err);
-            showMessage(t('failed_book_rental') || 'Error al reservar el alquiler', 'error');
-        }
-    };
+    const {
+        user,
+        t,
+        consultorios,
+        rentals,
+        loading,
+        selectedOffice,
+        setSelectedOffice,
+        date,
+        setDate,
+        startTime,
+        setStartTime,
+        endTime,
+        setEndTime,
+        handleRent
+    } = useRentalsController();
 
     return (
         <MainLayout wide>

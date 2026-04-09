@@ -1,4 +1,4 @@
-import { useAuth } from '../../auth';
+import { useAuth } from '@/features/auth';
 import { useMessage } from '@/context/MessageContext';
 import { useFloatingChatController } from '../hooks/useFloatingChatController';
 import Icon from '@/components/atoms/Icon';

@@ -11,7 +11,7 @@ import DoctorGoogleSettings from './DoctorGoogleSettings';
 import DoctorScheduleSettings from './DoctorScheduleSettings';
 import DoctorFiscalSettings from './DoctorFiscalSettings';
 import DoctorMessagesForm from './DoctorMessagesForm';
-import { UserForm } from '../../users';
+import { UserForm } from '@/features/users';
 import { useDoctorFiscalController } from '../hooks/useDoctorFiscalController';
 import './DoctorEditModal.css';
 

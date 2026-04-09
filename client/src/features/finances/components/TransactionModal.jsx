@@ -19,7 +19,7 @@ import Icon from '@/components/atoms/Icon';
 import CurrencyInput from '@/components/atoms/CurrencyInput';
 import AutoTextarea from '@/components/atoms/AutoTextarea';
 import FormGroup from '@/components/molecules/FormGroup';
-import { MedicationInput } from '../../medical_documents';
+import { MedicationInput } from '@/features/medical_documents';
 import './TransactionModal.css';
 
 /**

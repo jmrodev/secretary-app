@@ -1,5 +1,5 @@
 import React from 'react';
-import { ICONS } from '../../constants/icons';
+import { ICONS } from '@/constants/icons';
 import './Icon.css';
 
 /**

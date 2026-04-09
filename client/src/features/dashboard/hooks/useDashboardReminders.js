@@ -1,20 +1,14 @@
-import { useState } from 'react';
+import { useFetch } from '@/hooks/useFetch';
 import api from '@/api/axios';
 
 export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
-    const [reminders, setReminders] = useState([]);
-    const [loadingReminders, setLoadingReminders] = useState(true);
-
-    const fetchReminders = async () => {
-        try {
-            const res = await api.get('/users/reminders');
-            setReminders(res.data);
-        } catch (err) {
-            console.error("Failed to fetch reminders", err);
-        } finally {
-            setLoadingReminders(false);
-        }
-    };
+    const { 
+        data: reminders = [], 
+        loading: loadingReminders, 
+        refetch: fetchReminders 
+    } = useFetch('/users/reminders', {
+        initialData: []
+    });
 
     const handleCompleteReminder = async (reminder, type) => {
         try {

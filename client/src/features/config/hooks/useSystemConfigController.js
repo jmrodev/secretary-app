@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '../../auth';
+import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/context/LanguageContext';
 import { useMessage } from '@/context/MessageContext';
 import { useModal } from '@/context/ModalContext';

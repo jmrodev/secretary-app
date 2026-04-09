@@ -3,7 +3,7 @@ import api from '@/api/axios';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useConfig } from '@/context/ConfigContext';
-import { useAuth } from '../../auth';
+import { useAuth } from '@/features/auth';
 import { capitalizeFirst } from '@/utils/stringUtils';
 
 /**

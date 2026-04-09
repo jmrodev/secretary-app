@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useModal } from '@/context/ModalContext';
-import { useAuth } from '../../auth';
+import { useAuth } from '@/features/auth';
 import { financeService } from '@/services/financeService';
 import { userService } from '@/services/userService';
 import { getServiceTypes } from '@/constants/transactionOptions';

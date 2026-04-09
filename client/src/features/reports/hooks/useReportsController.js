@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useModal } from '@/context/ModalContext';
-import { useAppointments } from '../../appointments';
-import { useDoctors } from '../../users';
+import { useAppointments } from '@/features/appointments';
+import { useDoctors } from '@/features/users';
 import api from '@/api/axios';
 
 export const useReportsController = () => {

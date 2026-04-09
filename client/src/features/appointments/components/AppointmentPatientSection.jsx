@@ -1,5 +1,5 @@
 import React from 'react';
-import { PatientSearchSelect } from '../../patients';
+import { PatientSearchSelect } from '@/features/patients';
 import { capitalizeWords } from '@/utils/stringUtils';
 
 /**

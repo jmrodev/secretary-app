@@ -3,8 +3,8 @@ import { useLanguage } from '@/context/LanguageContext';
 import Button from '@/components/atoms/Button';
 
 // Molecules
-import ScheduleBulkActions from '../../appointments/components/ScheduleBulkActions';
-import ScheduleTimeBlock from '../../appointments/components/ScheduleTimeBlock';
+import ScheduleBulkActions from '@/features/appointments/components/ScheduleBulkActions';
+import ScheduleTimeBlock from '@/features/appointments/components/ScheduleTimeBlock';
 
 import './DoctorScheduleSettings.css';
 

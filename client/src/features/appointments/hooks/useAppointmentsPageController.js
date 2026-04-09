@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '@/api/axios';
 import { usePermissions } from '@/hooks/usePermissions';
@@ -6,6 +6,7 @@ import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useModal } from '@/context/ModalContext';
 import { useConfig } from '@/context/ConfigContext';
+import { useFetch } from '@/hooks/useFetch';
 
 import { useAppointments } from './useAppointments';
 import { useHolidays } from './useHolidays';
@@ -31,9 +32,6 @@ export const useAppointmentsPageController = () => {
     const location = useLocation();
 
     const [viewDoctorId, setViewDoctorId] = useState(location.state?.viewDoctorId || localStorage.getItem('last_selected_doctor_id') || '');
-    const [doctors, setDoctors] = useState([]);
-    const [institutions, setInstitutions] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [selectedDate, setSelectedDate] = useState(location.state?.selectedDate ? new Date(location.state.selectedDate) : new Date());
     const [activeTab, setActiveTab] = useState(location.state?.activeTab || 'calendar');
     const [showOutOfHours, setShowOutOfHours] = useState(false);
@@ -44,7 +42,23 @@ export const useAppointmentsPageController = () => {
     const [prescribeModal, setPrescribeModal] = useState({ open: false, apptId: null, patientName: '', medications: '', instructions: '' });
     const [authModalOpen, setAuthModalOpen] = useState(false);
     const [retryAction, setRetryAction] = useState(null);
-    const [calendarStats, setCalendarStats] = useState({});
+
+    // --- Data Fetching using useFetch ---
+    
+    // Doctors and Institutions
+    const { data: doctors = [], loading: doctorsLoading } = useFetch('/users/doctors', { initialData: [] });
+    const { data: institutions = [], loading: institutionsLoading } = useFetch('/institutions', { initialData: [] });
+
+    // Calendar Stats
+    const { data: calendarStats = {}, loading: statsLoading } = useFetch('/appointments/stats', {
+        params: {
+            year: selectedDate.getFullYear(),
+            month: selectedDate.getMonth() + 1,
+            doctor_id: viewDoctorId
+        },
+        immediate: !!viewDoctorId,
+        initialData: {}
+    });
 
     const { updateStatus, updateAppointment, cancelAppointment, deleteAppointment, rescheduleAppointment, savePrescription } = useAppointments();
     const { holidays, addHoliday, deleteHoliday } = useHolidays();
@@ -55,34 +69,14 @@ export const useAppointmentsPageController = () => {
     const booking = useAppointmentBooking(doctors);
     const nextSlot = useNextFreeSlot(viewDoctorId || booking.selectedDoctor);
 
-    const fetchAllData = useCallback(async () => {
-        await fetchAppointments();
-        try {
-            const [dRes, iRes] = await Promise.all([api.get('/users/doctors'), api.get('/institutions')]);
-            setDoctors(dRes.data); setInstitutions(iRes.data);
-        } catch (err) { console.error(err); }
-        finally { setLoading(false); }
-    }, [fetchAppointments]);
-
-    useEffect(() => { fetchAllData(); }, [fetchAllData]);
+    const loading = doctorsLoading || institutionsLoading || patientApptLoading;
 
     useEffect(() => {
         const doctorId = viewDoctorId || booking.selectedDoctor;
         if (doctorId) localStorage.setItem('last_selected_doctor_id', doctorId);
         if (viewDoctorId && !booking.selectedDoctor) booking.setSelectedDoctor(viewDoctorId);
         if (booking.selectedDoctor && !viewDoctorId) setViewDoctorId(booking.selectedDoctor);
-    }, [viewDoctorId, booking.selectedDoctor]);
-
-    useEffect(() => {
-        if (!viewDoctorId) return;
-        const fetchStats = async () => {
-            try {
-                const res = await api.get(`/appointments/stats?year=${selectedDate.getFullYear()}&month=${selectedDate.getMonth() + 1}&doctor_id=${viewDoctorId}`);
-                setCalendarStats(res.data);
-            } catch (e) { console.error(e); }
-        };
-        fetchStats();
-    }, [viewDoctorId, selectedDate.getMonth(), selectedDate.getFullYear(), appointments?.length]);
+    }, [viewDoctorId, booking.selectedDoctor, booking.setSelectedDoctor]);
 
     const rescheduleAppt = location.state?.rescheduleAppt;
     const syncAppt = location.state?.syncAppt;
@@ -91,11 +85,16 @@ export const useAppointmentsPageController = () => {
     useEffect(() => {
         if (rescheduleAppt) { setViewDoctorId(rescheduleAppt.doctor_id); return; }
         if (syncAppt) { setViewDoctorId(syncAppt.doctor_id); setSelectedDate(new Date(syncAppt.appointment_date)); }
-        if (isDoctor && doctors.length > 0) {
+        
+        // Initial doctor selection for doctors
+        if (isDoctor && doctors.length > 0 && !viewDoctorId) {
             const profile = doctors.find(d => d.user_id === (user.user_id || user.id));
-            if (profile) setViewDoctorId(profile.id);
+            if (profile) {
+                setViewDoctorId(profile.id);
+                booking.setSelectedDoctor(profile.id);
+            }
         }
-    }, [user, doctors, rescheduleAppt, syncAppt]);
+    }, [user, doctors, rescheduleAppt, syncAppt, isDoctor]);
 
     const hookHandlers = useAppointmentsHandlers({
         user, t, showMessage, confirm, navigate, selectedDate, setSelectedDate,

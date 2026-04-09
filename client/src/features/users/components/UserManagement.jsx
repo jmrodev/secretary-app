@@ -15,6 +15,7 @@ import UserForm from './UserForm';
 const UserManagement = ({ excludeRoles = [], role = null }) => {
     const { t } = useLanguage();
     const {
+        users,
         fetchUsers,
         createUser,
         updateUser,
@@ -22,9 +23,8 @@ const UserManagement = ({ excludeRoles = [], role = null }) => {
         resetPassword,
         loading,
         isSubmitting
-    } = useUsers();
+    } = useUsers({ role, excludeRoles });
 
-    const [users, setUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [modalState, setModalState] = useState({
         isOpen: false,
@@ -33,20 +33,7 @@ const UserManagement = ({ excludeRoles = [], role = null }) => {
         formData: {}
     });
 
-    const loadData = React.useCallback(async () => {
-        const data = await fetchUsers({ role, excludeRoles });
-        setUsers(data);
-    }, [fetchUsers, role, excludeRoles]);
-
-    useEffect(() => {
-        let isMounted = true;
-        const initLoad = async () => {
-            const data = await fetchUsers({ role, excludeRoles });
-            if (isMounted) setUsers(data);
-        };
-        initLoad();
-        return () => { isMounted = false; };
-    }, [fetchUsers, role, excludeRoles]);
+    const loadData = () => fetchUsers();
 
     // Handlers
     const openModal = (type, u = null) => {

@@ -1,39 +1,42 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useMemo } from 'react';
 import api from '@/api/axios';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useModal } from '@/context/ModalContext';
+import { useFetch } from '@/hooks/useFetch';
 
-export const useUsers = () => {
+/**
+ * useUsers Hook (Feature-based).
+ * Manages users list and administrative actions.
+ */
+export const useUsers = (options = {}) => {
+    const { role, excludeRoles = [] } = options;
     const { showMessage } = useMessage();
     const { t } = useLanguage();
     const { doubleConfirm } = useModal();
-    const [loading, setLoading] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const fetchUsers = useCallback(async (options = {}) => {
-        const { role, excludeRoles = [] } = options;
-        try {
-            setLoading(true);
-            const res = await api.get('/users/admin/users');
-            let data = res.data;
+    // Fetch all users for admin
+    const { 
+        data: allUsers = [], 
+        loading, 
+        refetch: fetchUsers 
+    } = useFetch('/users/admin/users', { 
+        initialData: [],
+        immediate: true 
+    });
 
-            if (role) {
-                data = data.filter(u => u.role === role);
-            }
-            if (excludeRoles.length > 0) {
-                data = data.filter(u => !excludeRoles.includes(u.role));
-            }
-
-            return data;
-        } catch (err) {
-            console.error(err);
-            showMessage('Error fetching users', 'error');
-            return [];
-        } finally {
-            setLoading(false);
+    // Filtered data in-memory (as the backend returns all for admin management)
+    const users = useMemo(() => {
+        let filtered = allUsers;
+        if (role) {
+            filtered = filtered.filter(u => u.role === role);
         }
-    }, [showMessage]);
+        if (excludeRoles.length > 0) {
+            filtered = filtered.filter(u => !excludeRoles.includes(u.role));
+        }
+        return filtered;
+    }, [allUsers, role, excludeRoles]);
 
     const createUser = async (formData, onSuccess) => {
         try {
@@ -42,6 +45,7 @@ export const useUsers = () => {
             await api.post('/users/admin/users', payload);
             showMessage(t('user_created'), 'success');
             if (onSuccess) onSuccess();
+            fetchUsers();
             return { success: true };
         } catch (err) {
             console.error(err);
@@ -59,6 +63,7 @@ export const useUsers = () => {
             await api.put(`/users/admin/users/${id}`, formData);
             showMessage(t('user_updated'), 'success');
             if (onSuccess) onSuccess();
+            fetchUsers();
             return { success: true };
         } catch (err) {
             console.error(err);
@@ -89,6 +94,7 @@ export const useUsers = () => {
             await api.delete(`/users/admin/users/${id}`);
             showMessage(t('user_deleted'), 'success');
             if (onSuccess) onSuccess();
+            fetchUsers();
             return { success: true };
         } catch (err) {
             console.error(err);
@@ -118,6 +124,7 @@ export const useUsers = () => {
     };
 
     return {
+        users,
         fetchUsers,
         createUser,
         updateUser,
@@ -128,34 +135,15 @@ export const useUsers = () => {
     };
 };
 
+/**
+ * useDoctors Hook (Feature-based).
+ * Specialized hook for fetching medical staff.
+ */
 export const useDoctors = () => {
-    const [doctors, setDoctors] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [hasFetched, setHasFetched] = useState(false);
-
-    useEffect(() => {
-        let isMounted = true;
-        if (!hasFetched) {
-            api.get('/users/doctors')
-                .then(res => {
-                    if (isMounted) {
-                        if (Array.isArray(res.data)) {
-                            setDoctors(res.data);
-                        }
-                        setHasFetched(true);
-                        setLoading(false);
-                    }
-                })
-                .catch(err => {
-                    console.error("Error fetching doctors:", err);
-                    if (isMounted) {
-                        setHasFetched(true);
-                        setLoading(false);
-                    }
-                });
-        }
-        return () => { isMounted = false; };
-    }, [hasFetched]);
+    const { data: doctors = [], loading } = useFetch('/users/doctors', { 
+        initialData: [],
+        immediate: true 
+    });
 
     return { doctors, loading };
 };

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import api from '@/api/axios';
-import { useAuth } from '../../auth';
+import { useAuth } from '@/features/auth';
 import { useMessage } from '@/context/MessageContext';
 
 /**

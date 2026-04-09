@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ConfigField } from '../../config';
+import { ConfigField } from '@/features/config';
 import Button from '@/components/atoms/Button';
 import api from '@/api/axios';
 import { useMessage } from '@/context/MessageContext';

@@ -1,33 +1,21 @@
-import { useState, useEffect, useCallback } from 'react';
-import api from '@/api/axios';
-import { useAuth } from '../../auth';
+import { useState } from 'react';
+import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/context/LanguageContext';
+import { useFetch } from '@/hooks/useFetch';
 
 export const useAuditLogsController = () => {
     const { user } = useAuth();
     const { t } = useLanguage();
-    const [logs, setLogs] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [selectedLog, setSelectedLog] = useState(null);
 
-    const fetchLogs = useCallback(async () => {
-        try {
-            const res = await api.get('/logs');
-            setLogs(res.data);
-        } catch (err) {
-            console.error("Failed to fetch logs", err);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        if (user && user.role === 'admin') {
-            fetchLogs();
-        } else {
-            setLoading(false);
-        }
-    }, [user?.role, fetchLogs]);
+    const { 
+        data: logs = [], 
+        loading, 
+        refetch: fetchLogs 
+    } = useFetch('/logs', {
+        initialData: [],
+        immediate: user?.role === 'admin'
+    });
 
     return {
         logs,

@@ -3,7 +3,7 @@ import Modal from '@/components/molecules/Modal';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/context/LanguageContext';
-import { useAuth } from '../../auth';
+import { useAuth } from '@/features/auth';
 import { useMessage } from '@/context/MessageContext';
 import { useModal } from '@/context/ModalContext';
 import { useConfig } from '@/context/ConfigContext';

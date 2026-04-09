@@ -6,7 +6,7 @@ import PrescriptionReportTable from './PrescriptionReportTable';
 import LicenseReportTable from './LicenseReportTable';
 import CertificateReportTable from './CertificateReportTable';
 import BalanceView from './BalanceView';
-import { PageHeader } from '../../layout';
+import { PageHeader } from '@/features/layout';
 import Icon from '@/components/atoms/Icon';
 import './ReportsView.css';
 

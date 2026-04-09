@@ -1,9 +1,9 @@
 
 import React from 'react';
-import { useAuth } from '../../auth';
+import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/context/LanguageContext';
 import { useMessage } from '@/context/MessageContext';
-import { PatientSearchSelect } from '../../patients';
+import { PatientSearchSelect } from '@/features/patients';
 import Card from '@/components/atoms/Card';
 import Button from '@/components/atoms/Button';
 import FormGroup from '@/components/molecules/FormGroup';

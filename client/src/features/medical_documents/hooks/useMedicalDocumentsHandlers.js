@@ -42,10 +42,6 @@ export const useMedicalDocumentsHandlers = ({
     // Setters
     setReqNote,
     setSendToDoctor,
-    setFiles,
-    setRequests,
-    setPrescriptions,
-    setLicenses,
     setFileDesc,
     setFilePatient,
     setSelectedFile,

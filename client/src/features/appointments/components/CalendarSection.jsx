@@ -3,7 +3,7 @@ import Calendar from './Calendar.jsx';
 import HolidayForm from './HolidayForm.jsx';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import { PatientSearchSelect } from '../../patients';
+import { PatientSearchSelect } from '@/features/patients';
 import './CalendarSection.css';
 
 /**
