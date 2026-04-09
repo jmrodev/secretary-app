@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
-import api from '@/api/axios';
+import { useState, useEffect, useRef } from 'react';
+import { useFetch } from '@/hooks/useFetch';
 
 /**
  * useMedicationAutocomplete Feature Hook.
@@ -7,36 +7,27 @@ import api from '@/api/axios';
  */
 export const useMedicationAutocomplete = (initialValue = '', onChange, onSelectMedication) => {
     const [searchTerm, setSearchTerm] = useState(initialValue);
-    const [suggestions, setSuggestions] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
-    const [loading, setLoading] = useState(false);
     const [cursor, setCursor] = useState(-1);
     const debounceTimer = useRef(null);
+
+    // --- Data Fetching ---
+    const { 
+        data: suggestions = [], 
+        loading, 
+        refetch: fetchSuggestions 
+    } = useFetch(searchTerm.length >= 2 ? `/medical/vademecum/search?q=${encodeURIComponent(searchTerm)}` : null, {
+        initialData: [],
+        immediate: false, // We control it with debounce
+        onSuccess: (data) => {
+            setShowSuggestions(data.length > 0);
+            setCursor(-1);
+        }
+    });
 
     useEffect(() => {
         setSearchTerm(initialValue || '');
     }, [initialValue]);
-
-    const fetchSuggestions = useCallback(async (text) => {
-        if (text.length < 2) {
-            setSuggestions([]);
-            setShowSuggestions(false);
-            return;
-        }
-
-        setLoading(true);
-        try {
-            const res = await api.get(`/medical/vademecum/search?q=${encodeURIComponent(text)}`);
-            setSuggestions(res.data);
-            setShowSuggestions(res.data.length > 0);
-            setCursor(-1);
-        } catch (err) {
-            console.error("Error fetching med suggestions:", err);
-            setSuggestions([]);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
 
     const handleSearch = (text) => {
         setSearchTerm(text);
@@ -44,7 +35,11 @@ export const useMedicationAutocomplete = (initialValue = '', onChange, onSelectM
 
         if (debounceTimer.current) clearTimeout(debounceTimer.current);
         debounceTimer.current = setTimeout(() => {
-            fetchSuggestions(text);
+            if (text.length >= 2) {
+                fetchSuggestions();
+            } else {
+                setShowSuggestions(false);
+            }
         }, 300);
     };
 
@@ -59,7 +54,6 @@ export const useMedicationAutocomplete = (initialValue = '', onChange, onSelectM
     const handleClear = () => {
         setSearchTerm('');
         if (onChange) onChange('');
-        setSuggestions([]);
         setShowSuggestions(false);
     };
 

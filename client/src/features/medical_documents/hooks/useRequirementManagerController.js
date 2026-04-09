@@ -62,9 +62,17 @@ export const useRequirementManagerController = (user) => {
     const [actionModal, setActionModal] = useState({ open: false, type: '', id: null });
     const [actionNote, setActionNote] = useState('');
 
+    // --- Side Effects for Medications ---
+
+    const { 
+        data: patientMeds = [], 
+        loading: fetchingMeds,
+        refetch: fetchPatientMeds 
+    } = useFetch(selectedRequest?.patient_id ? `/medical/patients/${selectedRequest.patient_id}/medications` : null, {
+        initialData: []
+    });
+
     // Medication/Edit State
-    const [patientMeds, setPatientMeds] = useState([]);
-    const [fetchingMeds, setFetchingMeds] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editMeds, setEditMeds] = useState([]);
     const [editNotes, setEditNotes] = useState('');
@@ -86,12 +94,6 @@ export const useRequirementManagerController = (user) => {
             setEditMeds(meds);
             setEditNotes(notes);
             setEditDoctorNote(selectedRequest.doctor_note || '');
-
-            if (selectedRequest.patient_id) {
-                fetchPatientMeds(selectedRequest.patient_id);
-            } else {
-                setPatientMeds([]);
-            }
         }
     }, [selectedRequest]);
 
@@ -170,19 +172,6 @@ export const useRequirementManagerController = (user) => {
         }
     };
 
-    const fetchPatientMeds = async (patientId) => {
-        setFetchingMeds(true);
-        try {
-            const res = await api.get(`/medical/patients/${patientId}/medications`);
-            setPatientMeds(res.data || []);
-        } catch (err) {
-            console.error("Error fetching patient meds:", err);
-            setPatientMeds([]);
-        } finally {
-            setFetchingMeds(false);
-        }
-    };
-
     const addToChronic = async (medName) => {
         if (!await confirm(`¿Desea agregar "${medName}" a la lista de medicación crónica del paciente?`)) return;
 
@@ -193,7 +182,7 @@ export const useRequirementManagerController = (user) => {
                 is_chronic: true,
                 status: 'active'
             });
-            fetchPatientMeds(selectedRequest.patient_id);
+            fetchPatientMeds();
             showMessage('Medicación agregada exitosamente', 'success');
         } catch (e) {
             console.error(e);

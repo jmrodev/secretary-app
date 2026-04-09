@@ -1,20 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useLanguage } from '@/context/LanguageContext';
 import { useConfig } from '@/context/ConfigContext';
-import api from '@/api/axios';
+import { useFetch } from '@/hooks/useFetch';
 
 /**
  * Controller hook for the Sidebar orchestration.
  * Handles navigation state, user session, and external data fetching (doctors/spreadsheets).
  */
 export const useSidebarController = () => {
-    const { user, isStaff, isAdmin, isSecretary, isDoctor, isPatient, isMedicalStaff, logout } = usePermissions();
-    const { t, toggleLanguage } = useLanguage();
+    const { user, logout, isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff } = usePermissions();
+    const { t } = useLanguage();
     const { settings } = useConfig();
     const location = useLocation();
-    const [doctors, setDoctors] = useState([]);
+
+    // --- Data Fetching ---
+    const { 
+        data: doctors = [], 
+        refetch: fetchSidebarDoctors 
+    } = useFetch('/users/doctors', {
+        initialData: [],
+        immediate: !!user && isMedicalStaff
+    });
 
     // Logic to keep the administration section open if a subpath is active
     const [isAdminOpen, setIsAdminOpen] = useState(() => {
@@ -22,26 +30,10 @@ export const useSidebarController = () => {
         return adminPaths.some(path => location.pathname === path);
     });
 
-    /**
-     * Fetches doctors list for spreadsheet links.
-     * Listens to 'doctors-updated' custom event for real-time refresh.
-     */
-    const fetchSidebarDoctors = () => {
-        if (isMedicalStaff) {
-            api.get('/users/doctors')
-                .then(res => setDoctors(res.data))
-                .catch(err => console.error("Error fetching doctors in sidebar:", err));
-        }
-    };
-
     useEffect(() => {
-        if (user) {
-            fetchSidebarDoctors();
-        }
-
         window.addEventListener('doctors-updated', fetchSidebarDoctors);
         return () => window.removeEventListener('doctors-updated', fetchSidebarDoctors);
-    }, [isMedicalStaff]);
+    }, [fetchSidebarDoctors]);
 
     /**
      * Helper to determine active link styling based on current path.

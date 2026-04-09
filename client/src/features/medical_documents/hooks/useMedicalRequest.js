@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import api from '@/api/axios';
+import { useFetch } from '@/hooks/useFetch';
 
 /**
  * useMedicalRequest Hook (Feature-based).
@@ -10,13 +11,20 @@ export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMe
     const [selectedDoctor, setSelectedDoctor] = useState(localStorage.getItem('last_selected_doctor_id') || '');
     const [selectedPatient, setSelectedPatient] = useState('');
     const [patientData, setPatientData] = useState(null);
-    const [patientMeds, setPatientMeds] = useState([]);
     const [reqType, setReqType] = useState(initialType || 'prescription');
     const [reqNote, setReqNote] = useState('');
     const [medicationItems, setMedicationItems] = useState([]);
     const [sendToDoctor, setSendToDoctor] = useState(initialSendToDoctor !== undefined ? initialSendToDoctor : true);
     const [bonified, setBonified] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // --- Data Fetching ---
+    const { 
+        data: patientMeds = [], 
+        refetch: fetchPatientMeds 
+    } = useFetch(selectedPatient && reqType === 'prescription' ? `/medical/patients/${selectedPatient}/medications` : null, {
+        initialData: []
+    });
 
     // Temporary medication states (for auto-add on submit)
     const [tempMed, setTempMed] = useState('');
@@ -32,23 +40,6 @@ export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMe
             localStorage.setItem('last_selected_doctor_id', selectedDoctor);
         }
     }, [selectedDoctor]);
-
-    useEffect(() => {
-        if (selectedPatient && reqType === 'prescription') {
-            fetchPatientMeds(selectedPatient);
-        } else {
-            setPatientMeds([]);
-        }
-    }, [selectedPatient, reqType]);
-
-    const fetchPatientMeds = async (pid) => {
-        try {
-            const res = await api.get(`/medical/patients/${pid}/medications`);
-            setPatientMeds(res.data);
-        } catch (err) {
-            console.error("Error fetching patient meds", err);
-        }
-    };
 
     const handleCreateRequest = async (e, initialItems = [], initialNote = '') => {
         if (e) e.preventDefault();

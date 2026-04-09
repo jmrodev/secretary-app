@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import api from '@/api/axios';
+import { useFetch } from '@/hooks/useFetch';
 
 /**
  * Controller hook for FloatingChat component.
@@ -7,34 +8,22 @@ import api from '@/api/axios';
  */
 export const useFloatingChatController = (user, showMessage) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [conversations, setConversations] = useState([]);
     const [selectedConvo, setSelectedConvo] = useState(null);
 
     // Refs to track state inside callbacks without adding dependencies
-    const conversationsRef = useRef(conversations);
-    const selectedConvoRef = useRef(selectedConvo);
+    const selectedConvoRef = useRef(null);
+    useEffect(() => { selectedConvoRef.current = selectedConvo; }, [selectedConvo]);
 
-    const [thread, setThread] = useState([]);
-    const [unreadCount, setUnreadCount] = useState(0);
+    const [unreadCountState, setUnreadCountState] = useState(0);
     const [messageText, setMessageText] = useState('');
-    const [loading, setLoading] = useState(false);
     const [sending, setSending] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
-    const [recipients, setRecipients] = useState([]);
     const [isOtherTyping, setIsOtherTyping] = useState(false);
     const [permissionGranted, setPermissionGranted] = useState(false);
 
     const scrollRef = useRef(null);
     const typingTimeoutRef = useRef(null);
     const notificationSound = useRef(new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3'));
-
-    useEffect(() => {
-        conversationsRef.current = conversations;
-    }, [conversations]);
-
-    useEffect(() => {
-        selectedConvoRef.current = selectedConvo;
-    }, [selectedConvo]);
 
     const playNotification = useCallback((convo) => {
         notificationSound.current.play().catch(() => { });
@@ -46,16 +35,20 @@ export const useFloatingChatController = (user, showMessage) => {
         }
     }, []);
 
-    const loadConversations = useCallback(async () => {
-        try {
-            const res = await api.get('/messages/conversations');
-            const newData = Array.isArray(res.data) ? res.data : [];
-            const currentConversations = conversationsRef.current;
-            const currentSelectedConvo = selectedConvoRef.current;
+    // --- Data Fetching using useFetch ---
 
-            if (currentConversations.length > 0 && newData.length > 0) {
+    // Conversations
+    const { 
+        data: conversations = [], 
+        refetch: fetchConversations 
+    } = useFetch('/messages/conversations', {
+        initialData: [],
+        immediate: !!user && user.role !== 'patient',
+        onSuccess: (newData) => {
+            const currentSelectedConvo = selectedConvoRef.current;
+            if (conversations.length > 0 && newData.length > 0) {
                 const totalUnreadNew = newData.reduce((acc, c) => acc + (c.unread_count || 0), 0);
-                const totalUnreadOld = currentConversations.reduce((acc, c) => acc + (c.unread_count || 0), 0);
+                const totalUnreadOld = conversations.reduce((acc, c) => acc + (c.unread_count || 0), 0);
 
                 if (totalUnreadNew > totalUnreadOld) {
                     const latestMsg = newData.find(c => (c.unread_count || 0) > 0);
@@ -64,41 +57,35 @@ export const useFloatingChatController = (user, showMessage) => {
                     }
                 }
             }
-            setConversations(newData);
-        } catch (err) {
-            console.error('Error loading conversations:', err);
         }
-    }, [playNotification]);
+    });
 
-    const loadThread = useCallback(async (otherId, silent = false) => {
-        if (!silent) setLoading(true);
-        try {
-            const res = await api.get(`/messages/thread/${otherId}`);
-            setThread(Array.isArray(res.data) ? res.data : []);
-        } catch (err) {
-            console.error('Error loading thread:', err);
-        } finally {
-            if (!silent) setLoading(false);
-        }
-    }, []);
+    // Unread Count
+    const { 
+        data: unreadData = { unread_count: 0 }, 
+        refetch: fetchUnreadCount 
+    } = useFetch('/messages/unread-count', {
+        initialData: { unread_count: 0 },
+        immediate: !!user && user.role !== 'patient',
+        onSuccess: (data) => setUnreadCountState(data.unread_count || 0)
+    });
+    const unreadCount = unreadCountState;
 
-    const loadUnreadCount = useCallback(async () => {
-        try {
-            const res = await api.get('/messages/unread-count');
-            setUnreadCount(res.data.unread_count || 0);
-        } catch (err) {
-            console.error('Error loading unread count:', err);
-        }
-    }, []);
+    // Recipients
+    const { data: recipients = [] } = useFetch('/messages/recipients', {
+        initialData: [],
+        immediate: !!user && user.role !== 'patient'
+    });
 
-    const loadRecipients = useCallback(async () => {
-        try {
-            const res = await api.get('/messages/recipients');
-            setRecipients(res.data || []);
-        } catch (err) {
-            console.error('Error loading recipients:', err);
-        }
-    }, []);
+    // Thread
+    const { 
+        data: thread = [], 
+        loading, 
+        refetch: fetchThread,
+        setData: setThread
+    } = useFetch(selectedConvo ? `/messages/thread/${selectedConvo.other_user_id}` : null, {
+        initialData: []
+    });
 
     const checkTypingStatus = useCallback(async (otherId) => {
         try {
@@ -127,28 +114,23 @@ export const useFloatingChatController = (user, showMessage) => {
             });
         }
 
-        loadConversations();
-        loadUnreadCount();
-        loadRecipients();
-
         const interval = setInterval(() => {
-            loadConversations();
-            loadUnreadCount();
+            fetchConversations();
+            fetchUnreadCount();
         }, 15000);
 
         return () => clearInterval(interval);
-    }, [user, loadConversations, loadUnreadCount, loadRecipients]);
+    }, [user, fetchConversations, fetchUnreadCount]);
 
     useEffect(() => {
         if (selectedConvo) {
-            loadThread(selectedConvo.other_user_id);
             const threadInterval = setInterval(() => {
-                loadThread(selectedConvo.other_user_id, true);
+                fetchThread();
                 checkTypingStatus(selectedConvo.other_user_id);
             }, 5000);
             return () => clearInterval(threadInterval);
         }
-    }, [selectedConvo, loadThread, checkTypingStatus]);
+    }, [selectedConvo, fetchThread, checkTypingStatus]);
 
     useEffect(() => {
         if (scrollRef.current) {
@@ -203,13 +185,11 @@ export const useFloatingChatController = (user, showMessage) => {
                 message: textToSend
             });
 
-            // The loadThread will replace the optimistic message with the real one
-            loadThread(selectedConvo.other_user_id, true);
-            loadConversations();
+            fetchThread();
+            fetchConversations();
         } catch (err) {
             console.error('Error sending message:', err);
             showMessage('Error al enviar mensaje', 'error');
-            // Rollback optimistic update
             setThread(prev => prev.filter(m => m.id !== optimisticId));
             setMessageText(textToSend); // Restore text
         } finally {

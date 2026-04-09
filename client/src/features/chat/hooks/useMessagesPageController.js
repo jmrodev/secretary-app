@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import api from '@/api/axios';
 import { useAuth } from '@/features/auth';
 import { useMessage } from '@/context/MessageContext';
+import { useFetch } from '@/hooks/useFetch';
 
 /**
  * Controller hook for the Messages full-page view.
@@ -11,86 +12,67 @@ export const useMessagesPageController = () => {
     const { showMessage } = useMessage();
 
     // State
-    const [conversations, setConversations] = useState([]);
     const [selectedConvo, setSelectedConvo] = useState(null);
-    const [thread, setThread] = useState([]);
-    const [recipients, setRecipients] = useState([]);
-    const [unreadCount, setUnreadCount] = useState(0);
-    const [loading, setLoading] = useState(false);
     const [sending, setSending] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [messageText, setMessageText] = useState('');
-
     const scrollRef = useRef(null);
 
-    // Loaders
-    const loadConversations = async () => {
-        try {
-            const res = await api.get('/messages/conversations');
-            setConversations(Array.isArray(res.data) ? res.data : []);
-        } catch (err) {
-            console.error('Error loading conversations:', err);
-        }
-    };
+    // --- Data Fetching using useFetch ---
 
-    const loadUnreadCount = async () => {
-        try {
-            const res = await api.get('/messages/unread-count');
-            setUnreadCount(res.data.unread_count);
-        } catch (err) {
-            console.error('Error loading unread count:', err);
-        }
-    };
+    // Conversations
+    const { 
+        data: conversations = [], 
+        refetch: fetchConversations 
+    } = useFetch('/messages/conversations', { 
+        initialData: [],
+        immediate: true 
+    });
 
-    const loadRecipients = async () => {
-        try {
-            const res = await api.get('/messages/recipients');
-            setRecipients(res.data || []);
-        } catch (err) {
-            console.error('Error loading recipients:', err);
-        }
-    };
+    // Unread Count
+    const { 
+        data: unreadData = { unread_count: 0 }, 
+        refetch: fetchUnreadCount 
+    } = useFetch('/messages/unread-count', {
+        initialData: { unread_count: 0 },
+        immediate: true
+    });
+    const unreadCount = unreadData?.unread_count || 0;
 
-    const loadThread = async (otherId, silent = false) => {
-        if (!silent) setLoading(true);
-        try {
-            const res = await api.get(`/messages/thread/${otherId}`);
-            setThread(Array.isArray(res.data) ? res.data : []);
-            const hasUnread = (Array.isArray(res.data) ? res.data : []).some(msg => msg.sender_id == otherId && msg.read_status < 2);
+    // Recipients
+    const { data: recipients = [] } = useFetch('/messages/recipients', { 
+        initialData: [],
+        immediate: true 
+    });
+
+    // Selected Thread
+    const { 
+        data: thread = [], 
+        loading, 
+        refetch: fetchThread 
+    } = useFetch(selectedConvo ? `/messages/thread/${selectedConvo.other_user_id}` : null, {
+        initialData: [],
+        onSuccess: (data) => {
+            const hasUnread = data.some(msg => msg.sender_id == selectedConvo?.other_user_id && msg.read_status < 2);
             if (hasUnread) {
-                loadUnreadCount();
-                loadConversations();
+                fetchUnreadCount();
+                fetchConversations();
             }
-        } catch (err) {
-            console.error('Error loading thread:', err);
-        } finally {
-            if (!silent) setLoading(false);
         }
-    };
+    });
 
+    // Polling Logic
     useEffect(() => {
-        loadConversations();
-        loadUnreadCount();
-        loadRecipients();
-
         const interval = setInterval(() => {
-            loadConversations();
-            loadUnreadCount();
+            fetchConversations();
+            fetchUnreadCount();
+            if (selectedConvo) {
+                fetchThread();
+            }
         }, 10000);
 
         return () => clearInterval(interval);
-    }, []);
-
-    // Thread polling
-    useEffect(() => {
-        if (selectedConvo) {
-            loadThread(selectedConvo.other_user_id);
-            const threadInterval = setInterval(() => {
-                loadThread(selectedConvo.other_user_id, true);
-            }, 5000);
-            return () => clearInterval(threadInterval);
-        }
-    }, [selectedConvo]);
+    }, [fetchConversations, fetchUnreadCount, fetchThread, selectedConvo]);
 
     // Scroll to bottom
     useEffect(() => {
@@ -101,7 +83,7 @@ export const useMessagesPageController = () => {
 
     // Actions
     const handleSendMessage = async (e) => {
-        e.preventDefault();
+        if (e) e.preventDefault();
         if (!messageText.trim() || !selectedConvo) return;
 
         setSending(true);
@@ -114,8 +96,8 @@ export const useMessagesPageController = () => {
             });
 
             setMessageText('');
-            loadThread(selectedConvo.other_user_id, true);
-            loadConversations();
+            fetchThread();
+            fetchConversations();
         } catch (err) {
             console.error('Error sending message:', err);
             showMessage('Error al enviar mensaje', 'error');
@@ -134,12 +116,9 @@ export const useMessagesPageController = () => {
                 other_display_name: recipient.display_name,
                 subject: 'Nuevo Mensaje'
             });
-            setThread([]);
         }
         setSearchTerm(''); // Clear search to show the chat
     };
-
-
 
     return {
         user,
