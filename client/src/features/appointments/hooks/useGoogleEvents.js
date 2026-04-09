@@ -1,25 +1,22 @@
-import { useState, useEffect } from 'react';
 import { useMessage } from '@/context/MessageContext';
 import api from '@/api/axios';
+import { useFetch } from '@/hooks/useFetch';
 
 /**
  * useGoogleEvents (Handler Hook).
  * Manages doctor's schedules and Google Calendar synchronization for specific days.
  */
 export const useGoogleEvents = (viewDoctorId, selectedDate, userRole) => {
-    const [doctorSchedule, setDoctorSchedule] = useState([]);
     const { showMessage } = useMessage();
 
-    useEffect(() => {
-        const fetchSchedule = async () => {
-            if (!viewDoctorId) { setDoctorSchedule([]); return; }
-            try {
-                const res = await api.get(`/schedules/${viewDoctorId}`);
-                setDoctorSchedule(res.data);
-            } catch (err) { /* Fetch failed silently */ }
-        };
-        fetchSchedule();
-    }, [viewDoctorId, selectedDate, userRole]);
+    // --- Data Fetching ---
+    const { 
+        data: doctorSchedule = [] 
+    } = useFetch(viewDoctorId ? `/schedules/${viewDoctorId}` : null, {
+        initialData: [],
+        immediate: !!viewDoctorId,
+        dependencies: [viewDoctorId, selectedDate, userRole]
+    });
 
     const syncDayToGoogle = async (doctorId, date) => {
         if (!doctorId) { showMessage("Por favor selecciona un doctor", "error"); return; }

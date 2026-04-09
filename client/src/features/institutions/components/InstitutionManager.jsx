@@ -5,6 +5,7 @@ import InstitutionFormModal from './InstitutionFormModal';
 import Icon from '@/components/atoms/Icon';
 import TabNav from '@/components/molecules/TabNav';
 import TabButton from '@/components/atoms/TabButton';
+import Button from '@/components/atoms/Button';
 import './InstitutionManager.css';
 
 const InstitutionManager = ({

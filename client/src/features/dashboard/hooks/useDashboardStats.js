@@ -11,27 +11,27 @@ export const useDashboardStats = (isStaff = false) => {
         initialData: { current_new: 0, currentDay: 0, currentWeek: 0, currentMonth: 0, currentYear: 0, lastYear: 0 }
     });
 
-    const { data: requests = [], refetch: fetchRequests } = useFetch('/medical/requests', {
-        initialData: [],
+    const { 
+        data: requestsData = { requests: [], totalCount: 0 }, 
+        refetch: fetchRequests 
+    } = useFetch('/medical/requests', {
+        initialData: { requests: [], totalCount: 0 },
         params: { status: ['pending', 'consult'] }
     });
 
+    const requests = requestsData.requests || [];
 
     // Computed
-    const pendingReqCount = useMemo(() => {
-        return requests.filter(r => r.status === 'pending' || r.status === 'consult').length;
-    }, [requests]);
-
+    const pendingReqCount = requestsData.totalCount || 0;
 
     return {
         stats,
         newPatientStats,
-        pendingReqCount,
+        pendingReqCount: Number(pendingReqCount),
         doctors,
         fetchStats,
-        fetchDoctors: () => {}, // doctors are fetched automatically by useFetch
-        fetchNewPatientStats,
-        fetchRequests
+        fetchRequests,
+        fetchNewPatientStats
     };
 };
 

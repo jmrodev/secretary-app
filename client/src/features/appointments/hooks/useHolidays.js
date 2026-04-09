@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useFetch } from '@/hooks/useFetch';
 import api from '@/api/axios';
 import { useMessage } from '@/context/MessageContext';
 
@@ -6,28 +6,21 @@ import { useMessage } from '@/context/MessageContext';
  * Hook to manage national holidays or personal days off within the agenda.
  */
 export const useHolidays = () => {
-    const [holidays, setHolidays] = useState([]);
-    const [loading, setLoading] = useState(false);
     const { showMessage } = useMessage();
 
-    const fetchHolidays = async () => {
-        try {
-            setLoading(true);
-            const res = await api.get('/holidays');
-            setHolidays(res.data);
-        } catch (err) {
-            console.error("Failed to fetch holidays", err);
-            showMessage('Error al cargar feriados', 'error');
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { 
+        data: holidays = [], 
+        loading, 
+        refetch: fetchHolidays 
+    } = useFetch('/holidays', {
+        initialData: []
+    });
 
     const addHoliday = async (date, description) => {
         try {
             await api.post('/holidays', { date, description });
             showMessage('Feriado agregado con éxito', 'success');
-            await fetchHolidays();
+            fetchHolidays();
             return { success: true };
         } catch (err) {
             console.error(err);
@@ -41,7 +34,7 @@ export const useHolidays = () => {
         try {
             await api.delete(`/holidays/${id}`);
             showMessage('Feriado eliminado', 'success');
-            await fetchHolidays();
+            fetchHolidays();
             return { success: true };
         } catch (err) {
             console.error(err);
@@ -49,10 +42,6 @@ export const useHolidays = () => {
             return { success: false };
         }
     };
-
-    useEffect(() => {
-        fetchHolidays();
-    }, []);
 
     return {
         holidays,
