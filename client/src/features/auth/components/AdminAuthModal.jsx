@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Modal from '../../../components/molecules/Modal';
-import Icon from '../../../components/atoms/Icon';
+import Modal from '@/components/molecules/Modal';
+import Icon from '@/components/atoms/Icon';
 
 /**
  * AdminAuthModal Feature Molecule.

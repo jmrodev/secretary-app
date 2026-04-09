@@ -1,12 +1,12 @@
 import React from 'react';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { useRequirementManagerController } from '../hooks/useRequirementManagerController';
 
 // Components
-import Button from '../../../components/atoms/Button';
-import TabButton from '../../../components/atoms/TabButton';
-import Icon from '../../../components/atoms/Icon';
-import Loading from '../../../components/atoms/Loading';
+import Button from '@/components/atoms/Button';
+import TabButton from '@/components/atoms/TabButton';
+import Icon from '@/components/atoms/Icon';
+import Loading from '@/components/atoms/Loading';
 import MedicalRequestForm from './MedicalRequestForm';
 import MedicalRequirementTable from './MedicalRequirementTable';
 import MedicalRequirementRecycleBin from './MedicalRequirementRecycleBin';

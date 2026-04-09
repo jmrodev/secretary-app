@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import api from '../../../api/axios';
+import api from '@/api/axios';
 
 export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
     const [reminders, setReminders] = useState([]);

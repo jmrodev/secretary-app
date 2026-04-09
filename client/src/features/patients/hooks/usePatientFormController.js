@@ -1,10 +1,10 @@
 
 import { useState, useEffect } from 'react';
-import api from '../../../api/axios';
-import { useLanguage } from '../../../context/LanguageContext';
-import { useMessage } from '../../../context/MessageContext';
-import { capitalizeWords } from '../../../utils/stringUtils';
-import { PATIENT_CAPITALIZE_FIELDS } from '../../../constants/patientConstants';
+import api from '@/api/axios';
+import { useLanguage } from '@/context/LanguageContext';
+import { useMessage } from '@/context/MessageContext';
+import { capitalizeWords } from '@/utils/stringUtils';
+import { PATIENT_CAPITALIZE_FIELDS } from '@/constants/patientConstants';
 
 /**
  * usePatientFormController (Orchestrator).

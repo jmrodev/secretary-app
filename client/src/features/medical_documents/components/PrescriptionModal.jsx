@@ -1,10 +1,10 @@
 
 import React, { useState, useMemo } from 'react';
-import Modal from '../../../components/molecules/Modal';
-import Button from '../../../components/atoms/Button';
-import Icon from '../../../components/atoms/Icon';
-import { useMessage } from '../../../context/MessageContext';
-import { capitalizeFirst } from '../../../utils/stringUtils';
+import Modal from '@/components/molecules/Modal';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
+import { useMessage } from '@/context/MessageContext';
+import { capitalizeFirst } from '@/utils/stringUtils';
 
 // Local Feature Components
 import PrescriptionHabitualMeds from './PrescriptionHabitualMeds';
@@ -50,7 +50,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
     // ── Fetch data ──────────────────────────────────────────────────────────
     React.useEffect(() => {
         if (isOpen && patientId) {
-            import('../../../api/axios').then(module => {
+            import('@/api/axios').then(module => {
                 const api = module.default;
 
                 // Fetch habitual meds

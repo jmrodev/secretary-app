@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import api from '../../../api/axios';
-import { useMessage } from '../../../context/MessageContext';
-import { useLanguage } from '../../../context/LanguageContext';
-import { useModal } from '../../../context/ModalContext';
+import api from '@/api/axios';
+import { useMessage } from '@/context/MessageContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { useModal } from '@/context/ModalContext';
 
 export const useUsers = () => {
     const { showMessage } = useMessage();

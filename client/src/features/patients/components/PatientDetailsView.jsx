@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import api from '../../../api/axios';
-import Button from '../../../components/atoms/Button';
-import Icon from '../../../components/atoms/Icon';
+import api from '@/api/axios';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 
 // Local Feature Components
 import PatientInfoBlock from './PatientInfoBlock';

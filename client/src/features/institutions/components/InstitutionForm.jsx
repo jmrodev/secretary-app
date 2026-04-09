@@ -1,10 +1,10 @@
 import React from 'react';
-import Button from '../../../components/atoms/Button';
-import Input from '../../../components/atoms/Input';
-import Select from '../../../components/atoms/Select';
-import PhoneNumbersManager from '../../../components/molecules/PhoneNumbersManager';
-import { useLanguage } from '../../../context/LanguageContext';
-import { capitalizeWords } from '../../../utils/stringUtils';
+import Button from '@/components/atoms/Button';
+import Input from '@/components/atoms/Input';
+import Select from '@/components/atoms/Select';
+import PhoneNumbersManager from '@/components/molecules/PhoneNumbersManager';
+import { useLanguage } from '@/context/LanguageContext';
+import { capitalizeWords } from '@/utils/stringUtils';
 import './InstitutionForm.css';
 
 const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isEditing, isSubmitting = false }) => {

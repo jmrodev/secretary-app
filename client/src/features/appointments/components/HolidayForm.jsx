@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import Button from '../../../components/atoms/Button';
-import Icon from '../../../components/atoms/Icon';
-import FormGroup from '../../../components/molecules/FormGroup';
-import Input from '../../../components/atoms/Input';
-import { capitalizeFirst } from '../../../utils/stringUtils';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
+import FormGroup from '@/components/molecules/FormGroup';
+import Input from '@/components/atoms/Input';
+import { capitalizeFirst } from '@/utils/stringUtils';
 
 /**
  * HolidayForm (Internal to feature).

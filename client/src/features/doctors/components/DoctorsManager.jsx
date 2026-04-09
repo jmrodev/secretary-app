@@ -1,10 +1,10 @@
 import React from 'react';
-import Button from '../../../components/atoms/Button';
-import Loading from '../../../components/atoms/Loading';
-import Icon from '../../../components/atoms/Icon';
+import Button from '@/components/atoms/Button';
+import Loading from '@/components/atoms/Loading';
+import Icon from '@/components/atoms/Icon';
 import DoctorCard from './DoctorCard';
 import DoctorEditModal from './DoctorEditModal';
-import SearchBar from '../../../components/molecules/SearchBar';
+import SearchBar from '@/components/molecules/SearchBar';
 import './DoctorsInfo.css';
 
 const DoctorsManager = ({

@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { usePermissions } from '../../../hooks/usePermissions';
-import { useLanguage } from '../../../context/LanguageContext';
-import { useConfig } from '../../../context/ConfigContext';
-import api from '../../../api/axios';
+import { usePermissions } from '@/hooks/usePermissions';
+import { useLanguage } from '@/context/LanguageContext';
+import { useConfig } from '@/context/ConfigContext';
+import api from '@/api/axios';
 
 /**
  * Controller hook for the Sidebar orchestration.

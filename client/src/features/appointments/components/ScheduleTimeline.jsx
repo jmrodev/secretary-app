@@ -1,6 +1,6 @@
 import React from 'react';
 import AppointmentCard from './AppointmentCard';
-import { formatTime, isPast as checkIsPast } from '../../../utils/dateUtils';
+import { formatTime, isPast as checkIsPast } from '@/utils/dateUtils';
 
 /**
  * ScheduleTimeline (Executor Component).

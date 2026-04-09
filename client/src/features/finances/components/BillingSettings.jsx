@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { ConfigField } from '../../config';
-import Button from '../../../components/atoms/Button';
-import api from '../../../api/axios';
-import { useMessage } from '../../../context/MessageContext';
-import { useLanguage } from '../../../context/LanguageContext';
-import { useModal } from '../../../context/ModalContext';
+import Button from '@/components/atoms/Button';
+import api from '@/api/axios';
+import { useMessage } from '@/context/MessageContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { useModal } from '@/context/ModalContext';
 import './BillingSettings.css';
 
 /**

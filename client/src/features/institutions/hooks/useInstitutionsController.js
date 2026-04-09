@@ -1,10 +1,10 @@
 import { useState, useCallback } from 'react';
-import { institutionService } from '../../../services/institutionService';
-import { useMessage } from '../../../context/MessageContext';
-import { useModal } from '../../../context/ModalContext';
-import { useLanguage } from '../../../context/LanguageContext';
-import { capitalizeWords } from '../../../utils/stringUtils';
-import { useFetch } from '../../../hooks/useFetch';
+import { institutionService } from '@/services/institutionService';
+import { useMessage } from '@/context/MessageContext';
+import { useModal } from '@/context/ModalContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { capitalizeWords } from '@/utils/stringUtils';
+import { useFetch } from '@/hooks/useFetch';
 
 export const useInstitutionsController = () => {
     const { showMessage } = useMessage();

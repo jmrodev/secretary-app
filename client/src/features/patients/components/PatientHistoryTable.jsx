@@ -1,8 +1,8 @@
 
 import React from 'react';
-import Icon from '../../../components/atoms/Icon';
-import Button from '../../../components/atoms/Button';
-import { formatDate, formatTime } from '../../../utils/dateUtils';
+import Icon from '@/components/atoms/Icon';
+import Button from '@/components/atoms/Button';
+import { formatDate, formatTime } from '@/utils/dateUtils';
 
 /**
  * PatientHistoryTable (Executor).

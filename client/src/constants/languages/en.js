@@ -111,9 +111,11 @@ export const en = {
     rescheduled: "Rescheduled",
     suspended: "Suspended",
     absent: "Absent",
+    consult: "In Consultation",
     external: "Google Calendar (Sync Needed)",
     paid: "Paid",
     debt: "Debt",
+
     cancellation_reason_prompt: "Please enter a reason for cancellation:",
     change_status: "Change Status",
     reschedule: "Reschedule",

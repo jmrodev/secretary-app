@@ -1,6 +1,6 @@
 import React from 'react';
-import Modal from '../../../components/molecules/Modal';
-import { useLanguage } from '../../../context/LanguageContext';
+import Modal from '@/components/molecules/Modal';
+import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '../../auth';
 
 import AppointmentSyncAlert from './AppointmentSyncAlert.jsx';

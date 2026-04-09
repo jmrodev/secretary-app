@@ -1,7 +1,7 @@
 import React from 'react';
-import Icon from '../../../components/atoms/Icon';
+import Icon from '@/components/atoms/Icon';
 import MedicationCard from './MedicationCard';
-import { calculateDuration } from '../../../utils/medicationHelpers';
+import { calculateDuration } from '@/utils/medicationHelpers';
 
 /**
  * RequirementMedicationList Feature Molecule.

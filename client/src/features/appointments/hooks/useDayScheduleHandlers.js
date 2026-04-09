@@ -1,5 +1,5 @@
-import { useLanguage } from '../../../context/LanguageContext';
-import { useModal } from '../../../context/ModalContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { useModal } from '@/context/ModalContext';
 
 /**
  * useDayScheduleHandlers Hook (Internal to appointments feature).

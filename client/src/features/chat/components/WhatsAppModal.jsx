@@ -1,10 +1,10 @@
 import React from 'react';
-import Modal from '../../../components/molecules/Modal';
-import Button from '../../../components/atoms/Button';
-import Icon from '../../../components/atoms/Icon';
-import FormGroup from '../../../components/molecules/FormGroup';
-import { useLanguage } from '../../../context/LanguageContext';
-import { useMessage } from '../../../context/MessageContext';
+import Modal from '@/components/molecules/Modal';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
+import FormGroup from '@/components/molecules/FormGroup';
+import { useLanguage } from '@/context/LanguageContext';
+import { useMessage } from '@/context/MessageContext';
 import './WhatsAppModal.css';
 
 /**

@@ -1,9 +1,9 @@
 import React from 'react';
-import Modal from '../../../components/molecules/Modal';
-import Button from '../../../components/atoms/Button';
-import Icon from '../../../components/atoms/Icon';
-import CurrencyInput from '../../../components/atoms/CurrencyInput';
-import FormGroup from '../../../components/molecules/FormGroup';
+import Modal from '@/components/molecules/Modal';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
+import CurrencyInput from '@/components/atoms/CurrencyInput';
+import FormGroup from '@/components/molecules/FormGroup';
 import './CashBoxDeliveryModal.css';
 
 /**

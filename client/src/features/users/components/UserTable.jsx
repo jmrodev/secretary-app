@@ -1,7 +1,7 @@
 import React from 'react';
-import Badge from '../../../components/atoms/Badge';
-import Button from '../../../components/atoms/Button';
-import { useLanguage } from '../../../context/LanguageContext';
+import Badge from '@/components/atoms/Badge';
+import Button from '@/components/atoms/Button';
+import { useLanguage } from '@/context/LanguageContext';
 import './UserTable.css';
 
 const UserTable = ({ users, onEdit, onReset, onDelete }) => {

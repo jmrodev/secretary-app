@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useLanguage } from '../../../context/LanguageContext';
-import { useModal } from '../../../context/ModalContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { useModal } from '@/context/ModalContext';
 import { useAuth } from '../../auth';
-import { financeService } from '../../../services/financeService';
-import { userService } from '../../../services/userService';
-import { getServiceTypes } from '../../../constants/transactionOptions';
-import { capitalizeFirst } from '../../../utils/stringUtils';
-import { toInputDateTime } from '../../../utils/dateUtils';
+import { financeService } from '@/services/financeService';
+import { userService } from '@/services/userService';
+import { getServiceTypes } from '@/constants/transactionOptions';
+import { capitalizeFirst } from '@/utils/stringUtils';
+import { toInputDateTime } from '@/utils/dateUtils';
 
 export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, onClose) => {
     const { t } = useLanguage();

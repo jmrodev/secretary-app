@@ -1,11 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
-import Modal from '../../../components/molecules/Modal';
-import Button from '../../../components/atoms/Button';
-import TabButton from '../../../components/atoms/TabButton';
-import api from '../../../api/axios';
-import { useLanguage } from '../../../context/LanguageContext';
-import Icon from '../../../components/atoms/Icon';
+import Modal from '@/components/molecules/Modal';
+import Button from '@/components/atoms/Button';
+import TabButton from '@/components/atoms/TabButton';
+import api from '@/api/axios';
+import { useLanguage } from '@/context/LanguageContext';
+import Icon from '@/components/atoms/Icon';
 import './PatientHistoryModal.css';
 
 /**

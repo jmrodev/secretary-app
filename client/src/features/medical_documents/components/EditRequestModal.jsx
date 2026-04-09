@@ -1,7 +1,7 @@
 
 import React from 'react';
-import Modal from '../../../components/molecules/Modal';
-import Button from '../../../components/atoms/Button';
+import Modal from '@/components/molecules/Modal';
+import Button from '@/components/atoms/Button';
 import PrescriptionItemsList from './PrescriptionItemsList';
 import './PrescriptionModal.css';
 

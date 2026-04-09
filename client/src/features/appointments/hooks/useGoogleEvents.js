@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useMessage } from '../../../context/MessageContext';
-import api from '../../../api/axios';
+import { useMessage } from '@/context/MessageContext';
+import api from '@/api/axios';
 
 /**
  * useGoogleEvents (Handler Hook).

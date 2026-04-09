@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import api from '../../../api/axios';
+import api from '@/api/axios';
 
 /**
  * useMedicationAutocomplete Feature Hook.

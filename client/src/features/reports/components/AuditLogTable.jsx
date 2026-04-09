@@ -1,6 +1,6 @@
 import React from 'react';
-import Button from '../../../components/atoms/Button';
-import Badge from '../../../components/atoms/Badge';
+import Button from '@/components/atoms/Button';
+import Badge from '@/components/atoms/Badge';
 
 const AuditLogTable = ({ logs, onSelectLog, t }) => {
 

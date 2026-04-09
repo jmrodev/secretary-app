@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import api from '../../../api/axios';
+import api from '@/api/axios';
 
 /**
  * Controller Hook for Fiscal Settings Logic

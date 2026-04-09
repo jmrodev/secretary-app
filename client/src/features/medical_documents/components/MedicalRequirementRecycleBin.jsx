@@ -1,7 +1,7 @@
 import React from 'react';
-import Button from '../../../components/atoms/Button';
-import Icon from '../../../components/atoms/Icon';
-import { formatDate, formatDateTimeLong } from '../../../utils/dateUtils';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
+import { formatDate, formatDateTimeLong } from '@/utils/dateUtils';
 
 const MedicalRequirementRecycleBin = ({ recycleRequests, handleRestore, t }) => {
     if (recycleRequests.length === 0) {

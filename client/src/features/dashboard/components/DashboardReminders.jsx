@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import Button from '../../../components/atoms/Button';
-import Icon from '../../../components/atoms/Icon';
-import TabButton from '../../../components/atoms/TabButton';
-import { formatDate } from '../../../utils/dateUtils';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
+import TabButton from '@/components/atoms/TabButton';
+import { formatDate } from '@/utils/dateUtils';
 import './DashboardReminders.css';
 
 /**

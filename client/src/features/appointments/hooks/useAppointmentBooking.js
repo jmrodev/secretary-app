@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import api from '../../../api/axios';
-import { useMessage } from '../../../context/MessageContext';
-import { useLanguage } from '../../../context/LanguageContext';
-import { useConfig } from '../../../context/ConfigContext';
+import api from '@/api/axios';
+import { useMessage } from '@/context/MessageContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { useConfig } from '@/context/ConfigContext';
 import { useAuth } from '../../auth';
-import { capitalizeFirst } from '../../../utils/stringUtils';
+import { capitalizeFirst } from '@/utils/stringUtils';
 
 /**
  * Hook to manage the appointment booking lifecycle.

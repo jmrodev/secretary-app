@@ -13,11 +13,11 @@ import { TransactionModal } from '../finances';
 import AppointmentActionModal from '../appointments/components/AppointmentActionModal.jsx';
 
 // Global Atomic Components
-import MainLayout from '../../components/templates/MainLayout';
-import Button from '../../components/atoms/Button';
-import Icon from '../../components/atoms/Icon';
-import Badge from '../../components/atoms/Badge';
-import Loading from '../../components/atoms/Loading';
+import MainLayout from '@/components/templates/MainLayout';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
+import Badge from '@/components/atoms/Badge';
+import Loading from '@/components/atoms/Loading';
 
 import './DashboardPage.css';
 

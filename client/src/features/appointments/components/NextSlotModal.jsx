@@ -1,9 +1,9 @@
 import React, { Fragment, useEffect } from 'react';
-import Modal from '../../../components/molecules/Modal';
-import Button from '../../../components/atoms/Button';
-import Icon from '../../../components/atoms/Icon';
-import { formatDate } from '../../../utils/dateUtils';
-import { useLanguage } from '../../../context/LanguageContext';
+import Modal from '@/components/molecules/Modal';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
+import { formatDate } from '@/utils/dateUtils';
+import { useLanguage } from '@/context/LanguageContext';
 import './NextSlotModal.css';
 
 /**

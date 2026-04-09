@@ -2,7 +2,7 @@ import React from 'react';
 import { useAuditLogsController } from './hooks/useAuditLogsController';
 import AuditLogManager from './components/AuditLogManager';
 
-import MainLayout from '../../components/templates/MainLayout';
+import MainLayout from '@/components/templates/MainLayout';
 
 /**
  * AuditLogsPage (Orchestrator).

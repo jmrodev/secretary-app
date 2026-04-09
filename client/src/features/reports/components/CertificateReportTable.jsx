@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatDate } from '../../../utils/dateUtils';
+import { formatDate } from '@/utils/dateUtils';
 import './MedicalReportTable.css';
 
 const CertificateReportTable = ({ data, t }) => {

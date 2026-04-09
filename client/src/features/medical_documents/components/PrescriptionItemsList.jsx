@@ -1,7 +1,7 @@
 
 import React from 'react';
-import Icon from '../../../components/atoms/Icon';
-import Button from '../../../components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
+import Button from '@/components/atoms/Button';
 import './PrescriptionItemsList.css';
 
 /**

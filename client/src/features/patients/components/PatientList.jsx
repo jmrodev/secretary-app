@@ -1,8 +1,8 @@
 
 import React from 'react';
-import Button from '../../../components/atoms/Button';
-import Badge from '../../../components/atoms/Badge';
-import Icon from '../../../components/atoms/Icon';
+import Button from '@/components/atoms/Button';
+import Badge from '@/components/atoms/Badge';
+import Icon from '@/components/atoms/Icon';
 import './PatientList.css';
 
 /**

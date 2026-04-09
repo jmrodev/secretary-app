@@ -1,8 +1,8 @@
 import { useAuth } from '../../auth';
-import { useMessage } from '../../../context/MessageContext';
+import { useMessage } from '@/context/MessageContext';
 import { useFloatingChatController } from '../hooks/useFloatingChatController';
-import Icon from '../../../components/atoms/Icon';
-import Button from '../../../components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
+import Button from '@/components/atoms/Button';
 
 // Local Components
 import ChatThread from './ChatThread';

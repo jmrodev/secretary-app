@@ -1,12 +1,12 @@
 
 import React from 'react';
-import { useLanguage } from '../../../context/LanguageContext';
-import { useMessage } from '../../../context/MessageContext';
-import { useConfig } from '../../../context/ConfigContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { useMessage } from '@/context/MessageContext';
+import { useConfig } from '@/context/ConfigContext';
 import { useAuth } from '../../auth'; // Assuming auth is a sibling feature
-import api from '../../../api/axios';
-import Icon from '../../../components/atoms/Icon';
-import Button from '../../../components/atoms/Button';
+import api from '@/api/axios';
+import Icon from '@/components/atoms/Icon';
+import Button from '@/components/atoms/Button';
 import './PatientMedications.css';
 
 // Local Feature Hooks

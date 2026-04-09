@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from '../../../components/atoms/Icon';
+import Icon from '@/components/atoms/Icon';
 
 /**
  * RequirementDetailHeader Feature Molecule.

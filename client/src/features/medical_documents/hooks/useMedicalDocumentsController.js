@@ -1,13 +1,12 @@
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import api from '../../../api/axios';
-import { useAuth } from '../../auth';
-import { useMessage } from '../../../context/MessageContext';
-import { useLanguage } from '../../../context/LanguageContext';
-import { useModal } from '../../../context/ModalContext';
-import { isToday } from '../../../utils/time';
-import { usePermissions } from '../../../hooks/usePermissions';
+import api from '@/api/axios';
+import { useAuth } from '@/features/auth';
+import { useMessage } from '@/context/MessageContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { useModal } from '@/context/ModalContext';
+import { usePermissions } from '@/hooks/usePermissions';
+import { useFetch } from '@/hooks/useFetch';
 import { useMedicalDocumentsHandlers } from './useMedicalDocumentsHandlers';
 
 /**
@@ -19,7 +18,6 @@ export const useMedicalDocumentsController = () => {
     const { showMessage } = useMessage();
     const { t } = useLanguage();
     const { confirm, doubleConfirm } = useModal();
-    const location = useLocation();
     const { canDeletePrescription, canDeleteLicense, canDeleteFile, canDeleteRequest } = usePermissions();
 
     // --- State ---
@@ -31,24 +29,81 @@ export const useMedicalDocumentsController = () => {
 
     // Pagination State for Requests
     const [requestsPage, setRequestsPage] = useState(1);
-    const [requestsTotal, setRequestsTotal] = useState(0);
     const [requestsLimit] = useState(25);
 
     // Pagination State for History
     const [prescriptionsPage, setPrescriptionsPage] = useState(1);
-    const [prescriptionsTotal, setPrescriptionsTotal] = useState(0);
     const [prescriptionsLimit] = useState(25);
 
     const [licensesPage, setLicensesPage] = useState(1);
-    const [licensesTotal, setLicensesTotal] = useState(0);
     const [licensesLimit] = useState(25);
 
-    // Data State
-    const [requests, setRequests] = useState([]);
-    const [files, setFiles] = useState([]);
-    const [prescriptions, setPrescriptions] = useState([]);
-    const [licenses, setLicenses] = useState([]);
-    const [doctors, setDoctors] = useState([]);
+    // --- FETCH DATA using useFetch ---
+
+    // Doctors
+    const { data: doctors = [] } = useFetch('/users/doctors', { initialData: [] });
+
+    // Requests
+    const { 
+        data: requestsData = { requests: [], totalCount: 0 }, 
+        loading: requestsLoading, 
+        refetch: fetchRequests 
+    } = useFetch('/medical/requests', {
+        params: {
+            page: requestsPage,
+            limit: requestsLimit,
+            status: requestsSubTab === 'list' ? ['pending', 'consult'] : ['completed', 'rejected']
+        },
+        initialData: { requests: [], totalCount: 0 }
+    });
+
+    const requests = requestsData.requests || [];
+    const requestsTotal = requestsData.totalCount || 0;
+
+    // Files
+    const { 
+        data: files = [], 
+        loading: filesLoading, 
+        refetch: fetchFiles 
+    } = useFetch('/medical/files', { 
+        initialData: [],
+        immediate: activeTab === 'files'
+    });
+
+    // Prescriptions
+    const { 
+        data: prescriptionsData = { prescriptions: [], totalCount: 0 }, 
+        loading: prescriptionsLoading, 
+        refetch: fetchPrescriptions 
+    } = useFetch('/medical/prescriptions', {
+        params: { page: prescriptionsPage, limit: prescriptionsLimit },
+        initialData: { prescriptions: [], totalCount: 0 },
+        immediate: ['prescriptions', 'history'].includes(activeTab)
+    });
+
+    const prescriptions = prescriptionsData.prescriptions || [];
+    const prescriptionsTotal = prescriptionsData.totalCount || 0;
+
+    // Licenses
+    const { 
+        data: licensesData = { licenses: [], totalCount: 0 }, 
+        loading: licensesLoading, 
+        refetch: fetchLicenses 
+    } = useFetch('/medical/licenses', {
+        params: { page: licensesPage, limit: licensesLimit },
+        initialData: { licenses: [], totalCount: 0 },
+        immediate: ['licenses', 'history'].includes(activeTab)
+    });
+
+    const licenses = licensesData.licenses || [];
+    const licensesTotal = licensesData.totalCount || 0;
+
+    const fetchHistory = () => {
+        fetchPrescriptions();
+        fetchLicenses();
+    };
+
+    const loading = requestsLoading || filesLoading || prescriptionsLoading || licensesLoading;
 
     // Selection/Edit State
     const [selectedPatient, setSelectedPatient] = useState('');
@@ -95,76 +150,12 @@ export const useMedicalDocumentsController = () => {
         );
     };
 
-    // --- API Calls ---
-    const fetchResources = async () => {
-        try {
-            const dRes = await api.get('/users/doctors');
-            setDoctors(dRes.data);
-        } catch (err) { console.error(err); }
-    };
-
-    const fetchRequests = async () => {
-        try {
-            const statusFilter = requestsSubTab === 'list' 
-                ? ['pending', 'consult'] 
-                : ['completed', 'rejected']; // Just a default, will be overridden by tab logic if needed
-
-            const params = {
-                page: requestsPage,
-                limit: requestsLimit,
-                status: statusFilter
-            };
-            const res = await api.get('/medical/requests', { params });
-            
-            // We expect { requests, totalCount } from our new paginated backend
-            setRequests(res.data.requests || []);
-            setRequestsTotal(res.data.totalCount || 0);
-        } catch (err) { console.error(err); }
-    };
-
-    const fetchFiles = async () => {
-        try {
-            const res = await api.get('/medical/files');
-            setFiles(res.data);
-        } catch (err) { console.error(err); }
-    };
-
-    const fetchHistory = async () => {
-        try {
-            const [pRes, lRes] = await Promise.all([
-                api.get('/medical/prescriptions', { params: { page: prescriptionsPage, limit: prescriptionsLimit } }),
-                api.get('/medical/licenses', { params: { page: licensesPage, limit: licensesLimit } })
-            ]);
-            setPrescriptions(pRes.data.prescriptions || []);
-            setPrescriptionsTotal(pRes.data.totalCount || 0);
-            setLicenses(lRes.data.licenses || []);
-            setLicensesTotal(lRes.data.totalCount || 0);
-        } catch (err) { console.error(err); }
-    };
-
-
-    // --- Effects ---
-
-    useEffect(() => {
-        if (activeTab === 'requests') {
-            fetchResources();
-            fetchRequests();
-        } else if (activeTab === 'files') {
-            fetchResources();
-            fetchFiles();
-        } else if (activeTab === 'history' || ['prescriptions', 'licenses', 'certificates'].includes(activeTab)) {
-            fetchHistory();
-            fetchRequests(); // Requests needed for combined views
-        }
-    }, [activeTab, requestsPage, requestsSubTab, prescriptionsPage, licensesPage]);
-
     useEffect(() => {
         if (selectedDoctor) {
             localStorage.setItem('last_selected_doctor_id', selectedDoctor);
         }
     }, [selectedDoctor]);
-
-    const [printData, setPrintData] = useState([]);
+    const [printData] = useState([]);
 
     // --- Handlers Hook ---
     const handlers = useMedicalDocumentsHandlers({
@@ -178,8 +169,7 @@ export const useMedicalDocumentsController = () => {
         actionModal, actionNote, paymentModal, searchTerm, activeTab, requestsSubTab,
 
         // Setters
-        setReqNote, setSendToDoctor, setFiles, setRequests, setPrescriptions,
-        setLicenses, setFileDesc, setFilePatient, setSelectedFile, setFileToDelete,
+        setReqNote, setSendToDoctor, setFileDesc, setFilePatient, setSelectedFile, setFileToDelete,
         setIsSubmitting, setIsEditing, setSelectedPrescription, setSelectedLicense,
         setSelectedRequest, setEditData, setLicenseEditData, setRequestEditData,
         setActionModal, setPaymentModal, setSearchTerm, setActiveTab, setRequestsSubTab,
@@ -209,6 +199,7 @@ export const useMedicalDocumentsController = () => {
         fileToDelete, setFileToDelete, actionModal, setActionModal, actionNote, setActionNote,
         paymentModal, setPaymentModal, editData, setEditData, licenseEditData, setLicenseEditData,
         requestEditData, setRequestEditData,
+        loading,
 
         // Permissions
         canDeletePrescription,
@@ -221,3 +212,4 @@ export const useMedicalDocumentsController = () => {
         handlers
     };
 };
+

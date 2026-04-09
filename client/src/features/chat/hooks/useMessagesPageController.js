@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import api from '../../../api/axios';
+import api from '@/api/axios';
 import { useAuth } from '../../auth';
-import { useMessage } from '../../../context/MessageContext';
+import { useMessage } from '@/context/MessageContext';
 
 /**
  * Controller hook for the Messages full-page view.

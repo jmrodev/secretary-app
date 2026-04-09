@@ -1,12 +1,12 @@
 import React from 'react';
-import Button from '../../components/atoms/Button';
-import Loading from '../../components/atoms/Loading';
-import Icon from '../../components/atoms/Icon';
-import SearchBar from '../../components/molecules/SearchBar';
+import Button from '@/components/atoms/Button';
+import Loading from '@/components/atoms/Loading';
+import Icon from '@/components/atoms/Icon';
+import SearchBar from '@/components/molecules/SearchBar';
 import { useInsurancesController, InsuranceList, InsuranceFormModal } from './index';
 import './InsurancesPage.css';
 
-import MainLayout from '../../components/templates/MainLayout';
+import MainLayout from '@/components/templates/MainLayout';
 
 /**
  * InsurancesPage (Orchestrator).

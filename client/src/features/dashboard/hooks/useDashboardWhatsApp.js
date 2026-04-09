@@ -1,4 +1,4 @@
-import { copyToClipboard } from '../../../utils/clipboardUtils';
+import { copyToClipboard } from '@/utils/clipboardUtils';
 
 export const useDashboardWhatsApp = ({ user, settings, showMessage }) => {
 

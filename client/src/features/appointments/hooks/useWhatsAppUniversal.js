@@ -1,8 +1,8 @@
-import { useMessage } from '../../../context/MessageContext';
-import { useConfig } from '../../../context/ConfigContext';
+import { useMessage } from '@/context/MessageContext';
+import { useConfig } from '@/context/ConfigContext';
 import { useAuth } from '../../auth';
-import { copyToClipboard } from '../../../utils/clipboardUtils';
-import api from '../../../api/axios';
+import { copyToClipboard } from '@/utils/clipboardUtils';
+import api from '@/api/axios';
 
 /**
  * useWhatsAppUniversal (Handler Hook).

@@ -1,6 +1,6 @@
 import React from 'react';
 import { PatientSearchSelect } from '../../patients';
-import { capitalizeWords } from '../../../utils/stringUtils';
+import { capitalizeWords } from '@/utils/stringUtils';
 
 /**
  * AppointmentPatientSection Molecule (Internal to feature).

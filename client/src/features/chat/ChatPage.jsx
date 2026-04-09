@@ -1,6 +1,6 @@
 import React from 'react';
 import { useMessagesPageController, ChatSidebar, ChatWindow } from './index';
-import MainLayout from '../../components/templates/MainLayout';
+import MainLayout from '@/components/templates/MainLayout';
 
 
 /**

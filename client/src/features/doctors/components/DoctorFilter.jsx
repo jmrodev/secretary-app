@@ -1,7 +1,7 @@
 import React from 'react';
-import TabButton from '../../../components/atoms/TabButton';
-import Icon from '../../../components/atoms/Icon';
-import TabNav from '../../../components/molecules/TabNav';
+import TabButton from '@/components/atoms/TabButton';
+import Icon from '@/components/atoms/Icon';
+import TabNav from '@/components/molecules/TabNav';
 import './DoctorFilter.css';
 
 const DoctorFilter = ({ activeTab, userRole, isStaff, isAdmin, viewDoctorId, setViewDoctorId, doctors }) => {

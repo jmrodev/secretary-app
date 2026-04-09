@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useAuth } from '../AuthContext';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { useNavigate } from 'react-router-dom';
-import { capitalizeWords } from '../../../utils/stringUtils';
+import { capitalizeWords } from '@/utils/stringUtils';
 
 /**
  * Controller hook for the Register form.

@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import api from '../../../api/axios';
-import { usePermissions } from '../../../hooks/usePermissions';
-import { useMessage } from '../../../context/MessageContext';
-import { useLanguage } from '../../../context/LanguageContext';
-import { useModal } from '../../../context/ModalContext';
-import { useConfig } from '../../../context/ConfigContext';
+import api from '@/api/axios';
+import { usePermissions } from '@/hooks/usePermissions';
+import { useMessage } from '@/context/MessageContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { useModal } from '@/context/ModalContext';
+import { useConfig } from '@/context/ConfigContext';
 
 import { useAppointments } from './useAppointments';
 import { useHolidays } from './useHolidays';
@@ -15,7 +15,7 @@ import { useWhatsAppUniversal } from './useWhatsAppUniversal';
 import { useGoogleEvents } from './useGoogleEvents';
 import { usePatientSearch } from './usePatientSearch';
 import { useAppointmentsHandlers } from './useAppointmentsHandlers';
-import { copyToClipboard } from '../../../utils/clipboardUtils';
+import { copyToClipboard } from '@/utils/clipboardUtils';
 
 /**
  * useAppointmentsPageController (Handler Hook).

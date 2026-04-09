@@ -11,12 +11,12 @@ import {
 } from './index'; // Using local index for feature components
 
 // Global Atomic Components
-import MainLayout from '../../components/templates/MainLayout';
-import Loading from '../../components/atoms/Loading';
-import Icon from '../../components/atoms/Icon';
-import TabButton from '../../components/atoms/TabButton';
-import TabNav from '../../components/molecules/TabNav';
-import { formatDate } from '../../utils/dateUtils';
+import MainLayout from '@/components/templates/MainLayout';
+import Loading from '@/components/atoms/Loading';
+import Icon from '@/components/atoms/Icon';
+import TabButton from '@/components/atoms/TabButton';
+import TabNav from '@/components/molecules/TabNav';
+import { formatDate } from '@/utils/dateUtils';
 
 // Styles
 import './MedicalDocumentsPage.css';

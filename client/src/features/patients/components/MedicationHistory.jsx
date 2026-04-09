@@ -1,8 +1,8 @@
 
 import React from 'react';
-import Icon from '../../../components/atoms/Icon';
-import { useLanguage } from '../../../context/LanguageContext';
-import { formatDate } from '../../../utils/dateUtils';
+import Icon from '@/components/atoms/Icon';
+import { useLanguage } from '@/context/LanguageContext';
+import { formatDate } from '@/utils/dateUtils';
 
 /**
  * MedicationHistory (Executor).

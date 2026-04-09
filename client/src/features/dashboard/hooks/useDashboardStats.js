@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useFetch } from '../../../hooks/useFetch';
+import { useFetch } from '@/hooks/useFetch';
 
 export const useDashboardStats = (isStaff = false) => {
     // Stats Fetching
@@ -11,12 +11,17 @@ export const useDashboardStats = (isStaff = false) => {
         initialData: { current_new: 0, currentDay: 0, currentWeek: 0, currentMonth: 0, currentYear: 0, lastYear: 0 }
     });
 
-    const { data: requests = [], refetch: fetchRequests } = useFetch('/medical/requests', { initialData: [] });
+    const { data: requests = [], refetch: fetchRequests } = useFetch('/medical/requests', {
+        initialData: [],
+        params: { status: ['pending', 'consult'] }
+    });
+
 
     // Computed
     const pendingReqCount = useMemo(() => {
-        return requests.filter(r => r.status === 'pending').length;
+        return requests.filter(r => r.status === 'pending' || r.status === 'consult').length;
     }, [requests]);
+
 
     return {
         stats,

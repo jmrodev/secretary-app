@@ -1,7 +1,7 @@
 import React from 'react';
-import Button from '../../../components/atoms/Button';
-import Switch from '../../../components/atoms/Switch';
-import { formatDate } from '../../../utils/dateUtils';
+import Button from '@/components/atoms/Button';
+import Switch from '@/components/atoms/Switch';
+import { formatDate } from '@/utils/dateUtils';
 
 /**
  * DayScheduleHeader (Internal to feature).

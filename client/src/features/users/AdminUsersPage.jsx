@@ -1,12 +1,12 @@
 import React from 'react';
 import { useAuth } from '../auth';
-import { useLanguage } from '../../context/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 // Atomic Design Components
-import MainLayout from '../../components/templates/MainLayout';
+import MainLayout from '@/components/templates/MainLayout';
 import { UserManagement } from './index';
-import Button from '../../components/atoms/Button';
-import Icon from '../../components/atoms/Icon';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 
 /**
  * AdminUsersPage (Orchestrator).

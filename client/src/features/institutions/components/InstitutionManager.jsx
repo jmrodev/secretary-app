@@ -2,9 +2,9 @@ import React from 'react';
 import InstitutionList from './InstitutionList';
 import { InstitutionFinances } from '../../finances';
 import InstitutionFormModal from './InstitutionFormModal';
-import Icon from '../../../components/atoms/Icon';
-import TabNav from '../../../components/molecules/TabNav';
-import TabButton from '../../../components/atoms/TabButton';
+import Icon from '@/components/atoms/Icon';
+import TabNav from '@/components/molecules/TabNav';
+import TabButton from '@/components/atoms/TabButton';
 import './InstitutionManager.css';
 
 const InstitutionManager = ({

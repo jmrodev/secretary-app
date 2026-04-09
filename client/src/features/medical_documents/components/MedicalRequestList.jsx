@@ -1,13 +1,13 @@
 
 import React from 'react';
-import Pagination from '../../../components/atoms/Pagination';
+import Pagination from '@/components/atoms/Pagination';
 import { useAuth } from '../../auth';
-import { useLanguage } from '../../../context/LanguageContext';
-import { isToday } from '../../../utils/time';
-import { formatPrice } from '../../../utils/format';
-import { formatDate } from '../../../utils/dateUtils';
-import Button from '../../../components/atoms/Button';
-import Icon from '../../../components/atoms/Icon';
+import { useLanguage } from '@/context/LanguageContext';
+import { isToday } from '@/utils/time';
+import { formatPrice } from '@/utils/format';
+import { formatDate } from '@/utils/dateUtils';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import './MedicalRequestList.css';
 
 /**

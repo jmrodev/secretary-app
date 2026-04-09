@@ -1,13 +1,13 @@
 import { useState, useMemo, useCallback } from 'react';
-import { usePermissions } from '../../../hooks/usePermissions';
-import { useMessage } from '../../../context/MessageContext';
-import { useLanguage } from '../../../context/LanguageContext';
-import { useConfig } from '../../../context/ConfigContext';
-import { useModal } from '../../../context/ModalContext';
-import { useAppointments } from '../../appointments';
-import { useUsers } from '../../users';
+import { usePermissions } from '@/hooks/usePermissions';
+import { useMessage } from '@/context/MessageContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { useConfig } from '@/context/ConfigContext';
+import { useModal } from '@/context/ModalContext';
+import { useAppointments } from '@/features/appointments';
+import { useUsers } from '@/features/users';
 import { usePatientsHandlers } from './usePatientsHandlers';
-import { useFetch } from '../../../hooks/useFetch';
+import { useFetch } from '@/hooks/useFetch';
 
 /**
  * usePatientsPageController (Orchestrator).

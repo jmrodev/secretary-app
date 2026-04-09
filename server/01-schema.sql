@@ -378,7 +378,8 @@ CREATE TABLE `medical_requests` (
   `patient_id` int(11) NOT NULL,
   `doctor_id` int(11) NOT NULL,
   `secretary_id` int(11) DEFAULT NULL,
-  `status` enum('pending','completed','rejected') DEFAULT 'pending',
+  `status` enum('pending','completed','rejected','consult') DEFAULT 'pending',
+
   `request_note` text DEFAULT NULL,
   `doctor_note` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),

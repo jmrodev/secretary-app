@@ -1,12 +1,12 @@
 import React from 'react';
-import Button from '../../../components/atoms/Button';
-import Badge from '../../../components/atoms/Badge';
-import Icon from '../../../components/atoms/Icon';
-import { copyToClipboard } from '../../../utils/clipboardUtils';
-import { useMessage } from '../../../context/MessageContext';
-import { useModal } from '../../../context/ModalContext';
-import { formatDate } from '../../../utils/format';
-import { printInvoice } from '../../../utils/printInvoice';
+import Button from '@/components/atoms/Button';
+import Badge from '@/components/atoms/Badge';
+import Icon from '@/components/atoms/Icon';
+import { copyToClipboard } from '@/utils/clipboardUtils';
+import { useMessage } from '@/context/MessageContext';
+import { useModal } from '@/context/ModalContext';
+import { formatDate } from '@/utils/format';
+import { printInvoice } from '@/utils/printInvoice';
 import './AppointmentHeader.css';
 
 /**

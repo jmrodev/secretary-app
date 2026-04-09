@@ -1,6 +1,6 @@
 
 import React from 'react';
-import CurrencyInput from '../../../components/atoms/CurrencyInput';
+import CurrencyInput from '@/components/atoms/CurrencyInput';
 
 /**
  * PatientAdminFields Molecule (Sub-Executor).

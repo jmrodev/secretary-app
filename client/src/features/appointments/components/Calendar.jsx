@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import CalendarDayCell from './CalendarDayCell.jsx';
 import CalendarHeader from './CalendarHeader.jsx';
 import DayHeaders from './DayHeaders.jsx';
-import { useLanguage } from '../../../context/LanguageContext';
-import { isPastDay, isSameDay } from '../../../utils/dateUtils';
+import { useLanguage } from '@/context/LanguageContext';
+import { isPastDay, isSameDay } from '@/utils/dateUtils';
 import './Calendar.css';
 
 /**

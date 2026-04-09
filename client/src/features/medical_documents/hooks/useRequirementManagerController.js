@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import api from '../../../api/axios';
-import { useMessage } from '../../../context/MessageContext';
-import { useLanguage } from '../../../context/LanguageContext';
-import { useModal } from '../../../context/ModalContext';
-import { usePermissions } from '../../../hooks/usePermissions';
-import { extractMedicationDetails } from '../../../utils/medicationHelpers';
+import api from '@/api/axios';
+import { useMessage } from '@/context/MessageContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { useModal } from '@/context/ModalContext';
+import { usePermissions } from '@/hooks/usePermissions';
+import { extractMedicationDetails } from '@/utils/medicationHelpers';
 
 /**
  * Controller hook for the Medical Documents Manager.
@@ -89,9 +89,10 @@ export const useRequirementManagerController = (user) => {
     }, [fetchDoctors]);
 
     useEffect(() => {
-        const interval = setInterval(fetchRequests, 15000);
+        const interval = setInterval(fetchRequests, 30000);
         return () => clearInterval(interval);
     }, [fetchRequests]);
+
 
     useEffect(() => {
         if (activeTab === 'recycle') {

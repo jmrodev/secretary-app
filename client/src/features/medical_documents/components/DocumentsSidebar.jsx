@@ -1,9 +1,9 @@
 import React from 'react';
-import TabNav from '../../../components/molecules/TabNav';
-import TabButton from '../../../components/atoms/TabButton';
-import Icon from '../../../components/atoms/Icon';
-import SearchBar from '../../../components/molecules/SearchBar';
-import Button from '../../../components/atoms/Button';
+import TabNav from '@/components/molecules/TabNav';
+import TabButton from '@/components/atoms/TabButton';
+import Icon from '@/components/atoms/Icon';
+import SearchBar from '@/components/molecules/SearchBar';
+import Button from '@/components/atoms/Button';
 
 /**
  * DocumentsSidebar Feature Organism.

@@ -1,9 +1,9 @@
 import { useState, useCallback } from 'react';
-import api from '../../../api/axios';
-import { useMessage } from '../../../context/MessageContext';
-import { useLanguage } from '../../../context/LanguageContext';
-import { useModal } from '../../../context/ModalContext';
-import { useConfig } from '../../../context/ConfigContext';
+import api from '@/api/axios';
+import { useMessage } from '@/context/MessageContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { useModal } from '@/context/ModalContext';
+import { useConfig } from '@/context/ConfigContext';
 
 /**
  * Hook to manage individual appointment CRUD operations.

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../api/axios';
+import api from '@/api/axios';
 import { useAuth } from '../auth';
-import { useMessage } from '../../context/MessageContext';
-import { useLanguage } from '../../context/LanguageContext';
-import MainLayout from '../../components/templates/MainLayout';
-import Loading from '../../components/atoms/Loading';
-import Button from '../../components/atoms/Button';
-import Icon from '../../components/atoms/Icon';
-import { formatPrice } from '../../utils/format';
-import { formatDate } from '../../utils/dateUtils';
+import { useMessage } from '@/context/MessageContext';
+import { useLanguage } from '@/context/LanguageContext';
+import MainLayout from '@/components/templates/MainLayout';
+import Loading from '@/components/atoms/Loading';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
+import { formatPrice } from '@/utils/format';
+import { formatDate } from '@/utils/dateUtils';
 
 /**
  * RentalsPage (Orchestrator).

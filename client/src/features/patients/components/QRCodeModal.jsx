@@ -1,12 +1,12 @@
 import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import Modal from '../../../components/molecules/Modal';
-import Button from '../../../components/atoms/Button';
-import Icon from '../../../components/atoms/Icon';
-import { useLanguage } from '../../../context/LanguageContext';
-import { useModal } from '../../../context/ModalContext';
-import { useConfig } from '../../../context/ConfigContext';
-import { copyToClipboard } from '../../../utils/clipboardUtils';
+import Modal from '@/components/molecules/Modal';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
+import { useLanguage } from '@/context/LanguageContext';
+import { useModal } from '@/context/ModalContext';
+import { useConfig } from '@/context/ConfigContext';
+import { copyToClipboard } from '@/utils/clipboardUtils';
 
 import './QRCodeModal.css';
 

@@ -1,10 +1,10 @@
 import React from 'react';
 import { useAppointmentsPageController } from './hooks/useAppointmentsPageController';
-import MainLayout from '../../components/templates/MainLayout';
-import Loading from '../../components/atoms/Loading';
-import NavTabs from '../../components/molecules/NavTabs';
+import MainLayout from '@/components/templates/MainLayout';
+import Loading from '@/components/atoms/Loading';
+import NavTabs from '@/components/molecules/NavTabs';
 import { DoctorFilter } from '../doctors';
-import Modal from '../../components/molecules/Modal';
+import Modal from '@/components/molecules/Modal';
 import { PatientManagerModal, PatientHistoryModal } from '../patients';
 import { PrescriptionModal } from '../medical_documents';
 import WhatsAppModal from '../chat/components/WhatsAppModal';

@@ -8,8 +8,8 @@ import InstitutionPatientsTable from './InstitutionPatientsTable';
 import InstitutionPaymentModal from './InstitutionPaymentModal';
 
 // Atoms
-import Button from '../../../components/atoms/Button';
-import Icon from '../../../components/atoms/Icon';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 
 import './InstitutionFinances.css';
 

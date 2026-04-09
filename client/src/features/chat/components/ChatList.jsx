@@ -1,6 +1,6 @@
 import React from 'react';
-import Icon from '../../../components/atoms/Icon';
-import Input from '../../../components/atoms/Input';
+import Icon from '@/components/atoms/Icon';
+import Input from '@/components/atoms/Input';
 import ChatConversationItem from './ChatConversationItem';
 
 /**

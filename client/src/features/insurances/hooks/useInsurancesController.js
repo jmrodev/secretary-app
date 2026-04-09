@@ -1,10 +1,10 @@
 import { useState, useCallback, useMemo } from 'react';
-import api from '../../../api/axios';
-import { useMessage } from '../../../context/MessageContext';
-import { useModal } from '../../../context/ModalContext';
-import { useLanguage } from '../../../context/LanguageContext';
-import { capitalizeWords } from '../../../utils/stringUtils';
-import { useFetch } from '../../../hooks/useFetch';
+import api from '@/api/axios';
+import { useMessage } from '@/context/MessageContext';
+import { useModal } from '@/context/ModalContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { capitalizeWords } from '@/utils/stringUtils';
+import { useFetch } from '@/hooks/useFetch';
 
 export const useInsurancesController = () => {
     const { showMessage } = useMessage();

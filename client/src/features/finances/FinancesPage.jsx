@@ -1,8 +1,8 @@
 import React from 'react';
 
 // Atomic Design Components
-import MainLayout from '../../components/templates/MainLayout';
-import Loading from '../../components/atoms/Loading';
+import MainLayout from '@/components/templates/MainLayout';
+import Loading from '@/components/atoms/Loading';
 
 import { useFinancesPageController } from './hooks/useFinancesPageController';
 import FinanceStatsCards from './components/FinanceStatsCards';

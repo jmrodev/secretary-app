@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import Modal from '../../../components/molecules/Modal';
-import Button from '../../../components/atoms/Button';
-import Input from '../../../components/atoms/Input';
-import Select from '../../../components/atoms/Select';
-import Icon from '../../../components/atoms/Icon';
-import FormGroup from '../../../components/molecules/FormGroup';
+import Modal from '@/components/molecules/Modal';
+import Button from '@/components/atoms/Button';
+import Input from '@/components/atoms/Input';
+import Select from '@/components/atoms/Select';
+import Icon from '@/components/atoms/Icon';
+import FormGroup from '@/components/molecules/FormGroup';
 import './HistoricalWithdrawalModal.css';
 
 /**

@@ -1,8 +1,8 @@
 import React from 'react';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { useDayScheduleHandlers } from '../hooks/useDayScheduleHandlers';
-import { useConfig } from '../../../context/ConfigContext';
-import { isSameDay } from '../../../utils/dateUtils';
+import { useConfig } from '@/context/ConfigContext';
+import { isSameDay } from '@/utils/dateUtils';
 
 import DayScheduleHeader from './DayScheduleHeader.jsx';
 import ScheduleTimeline from './ScheduleTimeline.jsx';

@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSidebarController } from '../hooks/useSidebarController';
-import Button from '../../../components/atoms/Button';
-import Icon from '../../../components/atoms/Icon';
-import LanguageSelector from '../../../components/atoms/LanguageSelector';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
+import LanguageSelector from '@/components/atoms/LanguageSelector';
 import './Sidebar.css';
 
 /**

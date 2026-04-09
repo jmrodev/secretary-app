@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import ConfigField from './ConfigField';
-import Icon from '../../../components/atoms/Icon';
+import Icon from '@/components/atoms/Icon';
 import MessageTemplateEditor from './MessageTemplateEditor';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 /**
  * CommunicationSettings Feature Component.

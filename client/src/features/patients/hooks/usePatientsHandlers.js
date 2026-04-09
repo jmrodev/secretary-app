@@ -1,6 +1,6 @@
 
 import { useCallback } from 'react';
-import api from '../../../api/axios';
+import api from '@/api/axios';
 
 /**
  * Hook that contains specific logic for patient lifecycle actions (CRUD, details, debt, QR).

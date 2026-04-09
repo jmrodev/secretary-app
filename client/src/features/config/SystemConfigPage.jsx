@@ -11,10 +11,10 @@ import { QRCodeModal } from '../patients'; // Fixed import from patients feature
 import { useInstitutionsController } from '../institutions';
 
 // Global Atomic Components
-import MainLayout from '../../components/templates/MainLayout';
-import Button from '../../components/atoms/Button';
-import Icon from '../../components/atoms/Icon';
-import Loading from '../../components/atoms/Loading';
+import MainLayout from '@/components/templates/MainLayout';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
+import Loading from '@/components/atoms/Loading';
 
 // Lazy load heavy components
 const DoctorsManager = React.lazy(() => import('../doctors').then(module => ({ default: module.DoctorsManager })));
@@ -23,7 +23,7 @@ const InstitutionManager = React.lazy(() => import('../institutions').then(modul
 const AuditLogManager = React.lazy(() => import('../reports').then(module => ({ default: module.AuditLogManager })));
 const UserManager = React.lazy(() => import('../users').then(module => ({ default: module.UserManager })));
 
-import { printReport } from '../../utils/reportPrintHelper';
+import { printReport } from '@/utils/reportPrintHelper';
 import './SystemConfigPage.css';
 
 // --- Sub-sections Orchestrated within the Page ---

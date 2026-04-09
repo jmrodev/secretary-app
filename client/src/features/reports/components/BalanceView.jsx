@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatDate } from '../../../utils/dateUtils';
+import { formatDate } from '@/utils/dateUtils';
 
 // Molecules
 import { BalanceFinancialSummary, BalanceCashFlowTable, BalanceDebtsTable } from '../../finances';

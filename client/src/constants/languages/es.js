@@ -107,9 +107,11 @@ export const es = {
     rescheduled: "Reprogramado",
     suspended: "Suspendido",
     absent: "Ausente",
+    consult: "Consulta Secretaria",
     external: "Google Calendar (Sincronizar)",
     paid: "Pagado",
     debt: "Deuda",
+
     cancellation_reason_prompt: "Por favor, ingrese el motivo de la cancelación:",
     change_status: "Cambiar Estado",
     reschedule: "Reprogramar",

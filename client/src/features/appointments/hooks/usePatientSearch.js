@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useMessage } from '../../../context/MessageContext';
-import { useLanguage } from '../../../context/LanguageContext';
-import api from '../../../api/axios';
+import { useMessage } from '@/context/MessageContext';
+import { useLanguage } from '@/context/LanguageContext';
+import api from '@/api/axios';
 
 /**
  * Hook to search patients and their specific appointment results.

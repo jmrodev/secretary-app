@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
-import Card from '../../../components/atoms/Card';
-import { formatTime } from '../../../utils/dateUtils';
-import Pagination from '../../../components/atoms/Pagination';
+import Card from '@/components/atoms/Card';
+import { formatTime } from '@/utils/dateUtils';
+import Pagination from '@/components/atoms/Pagination';
 
 // Local Feature Components
 import TransactionRow from './TransactionRow';

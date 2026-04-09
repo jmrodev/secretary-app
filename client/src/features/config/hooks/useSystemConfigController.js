@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../auth';
-import { useLanguage } from '../../../context/LanguageContext';
-import { useMessage } from '../../../context/MessageContext';
-import { useModal } from '../../../context/ModalContext';
-import { useConfig } from '../../../context/ConfigContext';
-import api from '../../../api/axios';
+import { useLanguage } from '@/context/LanguageContext';
+import { useMessage } from '@/context/MessageContext';
+import { useModal } from '@/context/ModalContext';
+import { useConfig } from '@/context/ConfigContext';
+import api from '@/api/axios';
 
 /**
  * System Configuration Controller (Feature Hook).

@@ -1,7 +1,7 @@
 import React from 'react';
-import Card from '../../../components/atoms/Card';
-import Button from '../../../components/atoms/Button';
-import Icon from '../../../components/atoms/Icon';
+import Card from '@/components/atoms/Card';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import './CashBoxSummary.css';
 
 /**

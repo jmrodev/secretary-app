@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
-import api from '../../../api/axios';
-import { useMessage } from '../../../context/MessageContext';
+import api from '@/api/axios';
+import { useMessage } from '@/context/MessageContext';
 
 /**
  * Hook to scan the agenda and find the next available slots for a given doctor.

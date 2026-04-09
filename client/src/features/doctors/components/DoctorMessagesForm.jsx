@@ -1,7 +1,7 @@
 import React, { useMemo, useEffect } from 'react';
 import MessageTemplateEditor from '../../config/components/MessageTemplateEditor';
-import Icon from '../../../components/atoms/Icon';
-import Button from '../../../components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
+import Button from '@/components/atoms/Button';
 import './DoctorMessagesForm.css';
 
 /**

@@ -1,8 +1,8 @@
 import React from 'react';
-import { usePublicPrescriptionRequestController } from '../../controllers/usePublicPrescriptionRequestController';
-import StatusDisplay from '../../components/molecules/StatusDisplay';
-import Button from '../../components/atoms/Button';
-import Icon from '../../components/atoms/Icon';
+import { usePublicPrescriptionRequestController } from '@/controllers/usePublicPrescriptionRequestController';
+import StatusDisplay from '@/components/molecules/StatusDisplay';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import './PublicRequestPage.css';
 
 /**

@@ -1,16 +1,16 @@
 
 import React from 'react';
 import { useAuth } from '../../auth';
-import { useLanguage } from '../../../context/LanguageContext';
-import { useMessage } from '../../../context/MessageContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { useMessage } from '@/context/MessageContext';
 import { PatientSearchSelect } from '../../patients';
-import Card from '../../../components/atoms/Card';
-import Button from '../../../components/atoms/Button';
-import FormGroup from '../../../components/molecules/FormGroup';
-import Select from '../../../components/atoms/Select';
-import Icon from '../../../components/atoms/Icon';
-import Badge from '../../../components/atoms/Badge';
-import { formatDate } from '../../../utils/dateUtils';
+import Card from '@/components/atoms/Card';
+import Button from '@/components/atoms/Button';
+import FormGroup from '@/components/molecules/FormGroup';
+import Select from '@/components/atoms/Select';
+import Icon from '@/components/atoms/Icon';
+import Badge from '@/components/atoms/Badge';
+import { formatDate } from '@/utils/dateUtils';
 import './MedicalRequestForm.css';
 
 // Hooks

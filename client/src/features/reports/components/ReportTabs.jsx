@@ -1,7 +1,7 @@
 import React from 'react';
-import TabButton from '../../../components/atoms/TabButton';
-import TabNav from '../../../components/molecules/TabNav';
-import Icon from '../../../components/atoms/Icon';
+import TabButton from '@/components/atoms/TabButton';
+import TabNav from '@/components/molecules/TabNav';
+import Icon from '@/components/atoms/Icon';
 
 const ReportTabs = ({ activeTab, onTabChange, t }) => {
     return (

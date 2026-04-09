@@ -1,10 +1,10 @@
 import React from 'react';
-import Button from '../../../components/atoms/Button';
-import Icon from '../../../components/atoms/Icon';
-import Input from '../../../components/atoms/Input';
-import Switch from '../../../components/atoms/Switch';
-import FormGroup from '../../../components/molecules/FormGroup';
-import { useLanguage } from '../../../context/LanguageContext';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
+import Input from '@/components/atoms/Input';
+import Switch from '@/components/atoms/Switch';
+import FormGroup from '@/components/molecules/FormGroup';
+import { useLanguage } from '@/context/LanguageContext';
 import './DoctorFiscalSettings.css';
 
 /**

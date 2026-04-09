@@ -1,7 +1,7 @@
 import React from 'react';
-import Button from '../../../components/atoms/Button';
-import Badge from '../../../components/atoms/Badge';
-import { useLanguage } from '../../../context/LanguageContext';
+import Button from '@/components/atoms/Button';
+import Badge from '@/components/atoms/Badge';
+import { useLanguage } from '@/context/LanguageContext';
 import './InsuranceList.css';
 
 const InsuranceList = ({ insurances, onEdit, onDelete, hasFilter }) => {

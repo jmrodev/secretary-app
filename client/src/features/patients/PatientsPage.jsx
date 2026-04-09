@@ -1,20 +1,20 @@
 
 import React from 'react';
 import { usePatientsPageController } from './hooks/usePatientsPageController';
-import { usePermissions } from '../../hooks/usePermissions';
+import { usePermissions } from '@/hooks/usePermissions';
 
 // Atoms (Shared)
-import MainLayout from '../../components/templates/MainLayout';
-import Button from '../../components/atoms/Button';
-import Loading from '../../components/atoms/Loading';
-import TabButton from '../../components/atoms/TabButton';
-import Icon from '../../components/atoms/Icon';
+import MainLayout from '@/components/templates/MainLayout';
+import Button from '@/components/atoms/Button';
+import Loading from '@/components/atoms/Loading';
+import TabButton from '@/components/atoms/TabButton';
+import Icon from '@/components/atoms/Icon';
 
 // Molecules (Shared/Global)
 import QRCodeModal from './components/QRCodeModal';
-import SearchBar from '../../components/molecules/SearchBar';
-import Pagination from '../../components/molecules/Pagination';
-import TabNav from '../../components/molecules/TabNav';
+import SearchBar from '@/components/molecules/SearchBar';
+import Pagination from '@/components/molecules/Pagination';
+import TabNav from '@/components/molecules/TabNav';
 
 // Feature components (Internal - Local to this folder)
 import PatientList from './components/PatientList';

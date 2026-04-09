@@ -1,5 +1,5 @@
 import React from 'react';
-import MainLayout from '../../components/templates/MainLayout';
+import MainLayout from '@/components/templates/MainLayout';
 import DoctorsManager from './components/DoctorsManager';
 
 import { useDoctorsPageController } from './hooks/useDoctorsPageController';

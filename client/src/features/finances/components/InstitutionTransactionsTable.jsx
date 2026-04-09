@@ -1,7 +1,7 @@
 import React from 'react';
-import Badge from '../../../components/atoms/Badge';
-import Icon from '../../../components/atoms/Icon';
-import Button from '../../../components/atoms/Button';
+import Badge from '@/components/atoms/Badge';
+import Icon from '@/components/atoms/Icon';
+import Button from '@/components/atoms/Button';
 
 /**
  * InstitutionTransactionsTable Molecule.

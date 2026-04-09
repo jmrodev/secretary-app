@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useUsers } from '../hooks/useUsers';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 // Atoms & Molecules
-import Button from '../../../components/atoms/Button';
-import Input from '../../../components/atoms/Input'; // Note: check case in next list_dir if needed
-import Card from '../../../components/atoms/Card';
-import Modal from '../../../components/molecules/Modal';
+import Button from '@/components/atoms/Button';
+import Input from '@/components/atoms/Input'; // Note: check case in next list_dir if needed
+import Card from '@/components/atoms/Card';
+import Modal from '@/components/molecules/Modal';
 
 // Feature Components
 import UserTable from './UserTable';

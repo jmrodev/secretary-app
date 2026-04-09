@@ -1,7 +1,7 @@
 import React from 'react';
-import Button from '../../../components/atoms/Button';
-import Icon from '../../../components/atoms/Icon';
-import { printInvoice } from '../../../utils/printInvoice';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
+import { printInvoice } from '@/utils/printInvoice';
 import './InvoiceDetailContent.css';
 
 /**
