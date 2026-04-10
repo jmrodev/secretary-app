@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import Button from '@/components/atoms/Button';
+import Badge from '@/components/atoms/Badge';
 import Icon from '@/components/atoms/Icon';
 import './AppointmentCard.css';
 
@@ -28,7 +29,18 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
             <div className="appointment-card__info">
                 <div className="appointment-card__patient-name">
                     {appt.type === 'virtual' && <Icon name="videocam" size="1.1rem" className="mr-1" />}
-                    {appt.patient_name || 'S/N'}
+                    <span className="appointment-card__patient-name-text">
+                        {appt.patient_name || 'S/N'}
+                    </span>
+                    {appt.attended_appointments > 0 && (
+                        <Badge 
+                            variant="success" 
+                            className="appointment-card__visit-count" 
+                            title={`${t('attended_appointments') || 'Visitas'}: ${appt.attended_appointments}`}
+                        >
+                            <Icon name="history" size="0.9rem" /> {appt.attended_appointments} {t('visits') || 'visitas'}
+                        </Badge>
+                    )}
                 </div>
                 {appt.patient_phone && (
                     <Button
@@ -46,6 +58,12 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
                         {appt.doctor_name}
                     </span>
                     {appt.reason && <span className="appointment-card__reason">• {appt.reason}</span>}
+                    {appt.rescheduled_from_date && (
+                        <span className="appointment-card__rescheduled-info" title={`Reprogramado del ${new Date(appt.rescheduled_from_date).toLocaleString()}`}>
+                            <Icon name="history" size="0.9rem" />
+                            {new Date(appt.rescheduled_from_date).toLocaleDateString()}
+                        </span>
+                    )}
                 </div>
             </div>
 

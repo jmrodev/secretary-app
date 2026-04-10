@@ -182,15 +182,16 @@ const Sidebar = () => {
                         <span className="sidebar-user__name">{user?.full_name || user?.username}</span>
                         <span className="sidebar-user__role">{t(user?.role) || user?.role}</span>
                     </div>
-                    <Button
-                        variant="ghost"
-                        size="sm-compact"
-                        onClick={logout}
-                        className="sidebar-user__logout"
-                        title={t('sign_out')}
-                        icon={<Icon name="logout" size="1.25rem" />}
-                    />
                 </div>
+
+                <Button
+                    variant="ghost"
+                    onClick={logout}
+                    className="sidebar__logout-btn"
+                    icon={<Icon name="logout" size="1.1rem" />}
+                >
+                    {t('sign_out')}
+                </Button>
             </footer>
         </aside>
     );

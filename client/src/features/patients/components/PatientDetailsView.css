@@ -446,6 +446,19 @@
     font-weight: 600;
 }
 
+.patient-details__reschedule-info {
+    margin-top: 0.5rem;
+    padding: 0.4rem 0.6rem;
+    background-color: var(--amber-50);
+    border-left: 3px solid var(--amber-400);
+    color: var(--amber-800);
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    border-radius: 0 4px 4px 0;
+}
+
 /* Tools Sidebar */
 .patient-details__tools-list {
     display: flex;

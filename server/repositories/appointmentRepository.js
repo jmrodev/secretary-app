@@ -93,6 +93,7 @@ class AppointmentRepository {
                 (SELECT COALESCE(SUM(t.amount), 0) FROM transactions t WHERE t.appointment_id = a.id AND t.status = 'paid') as paid_amount,
                 (SELECT COALESCE(SUM(t.amount), 0) FROM transactions t WHERE t.appointment_id = a.id AND t.status = 'pending') as pending_amount,
                 (SELECT COUNT(*) FROM appointments a2 WHERE a2.patient_id = p.id) as total_appointments,
+                (SELECT COUNT(*) FROM appointments a2 WHERE a2.patient_id = p.id AND a2.status IN ('attended', 'completed')) as attended_appointments,
                 (SELECT COUNT(*) FROM appointments a2 WHERE a2.patient_id = p.id AND (a2.status = 'absent' OR (a2.status = 'cancelled' AND COALESCE(a2.cancellation_reason, '') NOT LIKE '%error%'))) as missed_appointments,
                 (SELECT GROUP_CONCAT(DISTINCT t.method) FROM transactions t WHERE t.appointment_id = a.id AND t.status = 'paid') as payment_methods,
                 (SELECT i.cbte_nro FROM invoices i JOIN transactions t ON i.transaction_id = t.id WHERE t.appointment_id = a.id LIMIT 1) as invoice_number,
@@ -135,7 +136,7 @@ class AppointmentRepository {
     async findMonthlyAppointments(month, year, doctorId, conn = pool) {
         let query = `
             SELECT 
-                a.id, a.appointment_date, a.reason, a.status, a.payment_status, a.type, a.is_out_of_hours, a.bonified,
+                a.id, a.appointment_date, a.reason, a.status, a.payment_status, a.type, a.is_out_of_hours, a.bonified, a.rescheduled_from_date,
                 p.full_name as patient_name, d.full_name as doctor_name,
                 (SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE appointment_id = a.id AND is_withdrawal = 0 AND status = 'paid') as paid_amount,
                 (SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE appointment_id = a.id AND is_withdrawal = 0 AND status = 'paid' AND (method = 'cash' OR method = 'efectivo')) as cash_amount,
@@ -159,6 +160,7 @@ class AppointmentRepository {
             SELECT a.*, p.full_name as patient_name, p.phone as patient_phone,
                    COALESCE(SUM(CASE WHEN t.status = 'paid' THEN t.amount ELSE 0 END), 0) as amount_paid,
                    COALESCE(SUM(CASE WHEN t.status = 'pending' THEN t.amount ELSE 0 END), 0) as amount_debt,
+                   (SELECT COUNT(*) FROM appointments a2 WHERE a2.patient_id = p.id AND a2.status IN ('attended', 'completed')) as attended_appointments,
                    (SELECT base_price FROM institutions inst WHERE inst.id = a.institution_id) as institution_base_price
             FROM appointments a
             LEFT JOIN patients p ON a.patient_id = p.id

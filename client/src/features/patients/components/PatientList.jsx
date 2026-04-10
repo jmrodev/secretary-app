@@ -106,6 +106,11 @@ const PatientList = ({
                                         {p.full_name}
                                     </strong>
                                     {p.is_new_patient === 1 && <Badge variant="blue" size="sm">NEW</Badge>}
+                                    {p.attended_appointments > 0 && (
+                                        <Badge variant="success" size="sm" title={`${t('attended_appointments') || 'Visitas'}: ${p.attended_appointments}`}>
+                                            <Icon name="history" size="0.8rem" /> {p.attended_appointments}
+                                        </Badge>
+                                    )}
                                 </div>
                             </td>
                             <td>
@@ -160,11 +165,11 @@ const PatientList = ({
                                 <div className="rating-group">
                                     <div className="rating-item" title={`${t('rating_financial_tooltip')}\nDeuda Actual: $${p.total_debt}`}>
                                         <span className="rating-item__label">FIN</span>
-                                        {renderStars(calculateFinancialRating(Number(p.total_debt)), 'gold')}
+                                        {renderStars(p.financial_rating, 'gold')}
                                     </div>
                                     <div className="rating-item" title={`${t('rating_attendance_tooltip')}\nResumen: ${p.total_appointments - p.missed_appointments}/${p.total_appointments}`}>
                                         <span className="rating-item__label">ASIST</span>
-                                        {renderStars(calculateAttendanceRating(p.total_appointments, p.missed_appointments), 'blue')}
+                                        {renderStars(p.attendance_rating, 'blue')}
                                     </div>
                                     <div
                                         className="rating-item rating-item--interactive"

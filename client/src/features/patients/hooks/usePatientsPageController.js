@@ -104,25 +104,7 @@ export const usePatientsPageController = () => {
         });
     }, [prescribeModal.data, savePrescription]);
 
-    // --- RATING HELPERS ---
-    const calculateFinancialRating = useCallback((debt) => {
-        const d = Number(debt) || 0;
-        if (d <= 0) return 5;
-        if (d < 1000) return 4;
-        if (d < 5000) return 3;
-        if (d < 10000) return 2;
-        return 1;
-    }, []);
 
-    const calculateAttendanceRating = useCallback((total, missed) => {
-        if (!total || total === 0) return 5;
-        const ratio = (total - missed) / total;
-        if (ratio >= 0.95) return 5;
-        if (ratio >= 0.85) return 4;
-        if (ratio >= 0.70) return 3;
-        if (ratio >= 0.50) return 2;
-        return 1;
-    }, []);
 
     return {
         // State
@@ -150,8 +132,6 @@ export const usePatientsPageController = () => {
             ...hookHandlers,
             fetchPatients, fetchRecycleBin,
             handleSavePrescription,
-            calculateFinancialRating,
-            calculateAttendanceRating,
         }
     };
 };

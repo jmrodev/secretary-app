@@ -58,6 +58,7 @@ CREATE TABLE `appointments` (
   `institution_id` int(11) DEFAULT NULL,
   `duration` int(11) DEFAULT NULL,
   `bonified` tinyint(1) DEFAULT 0,
+  `rescheduled_from_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `patient_id` (`patient_id`),
   KEY `doctor_id` (`doctor_id`),

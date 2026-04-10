@@ -104,6 +104,7 @@ class ModificationService {
                     await helper.freeSlot(conn, appt.doctor_id, appt.appointment_date);
                     await helper.occupySlot(conn, appt.doctor_id, newDate);
                     updates.status = 'rescheduled';
+                    updates.rescheduled_from_date = appt.appointment_date;
                 }
                 updates.appointment_date = newDate;
             }

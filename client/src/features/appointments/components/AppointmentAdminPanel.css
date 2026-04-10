@@ -3,8 +3,24 @@
 .appointment-admin-panel {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
-    padding: 0.5rem 0;
+    gap: 1rem;
+    padding: 0.25rem 0;
+}
+
+.appointment-admin-panel__tabs {
+    border-bottom: 2px solid var(--gray-100);
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+    overflow-x: auto;
+    scrollbar-width: none; /* Hide scrollbar for cleaner look */
+}
+
+.appointment-admin-panel__tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.appointment-admin-panel__content {
+    min-height: 180px; /* Prevent jumpy height changes */
 }
 
 .appointment-admin-panel__group {
@@ -15,6 +31,11 @@
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.appointment-admin-panel__group:last-child {
+    margin-bottom: 0;
 }
 
 .appointment-admin-panel__group--highlight {
@@ -25,7 +46,6 @@
 .appointment-admin-panel__group--danger {
     background-color: var(--red-50);
     border-color: var(--red-200);
-    margin-top: 0.5rem;
 }
 
 .appointment-admin-panel__group-title {
@@ -52,8 +72,30 @@
     width: 100%;
 }
 
+.appointment-admin-panel__phone-display {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+    margin-bottom: 0.75rem;
+}
+
+.appointment-admin-panel__phone-number {
+    font-family: var(--font-mono, monospace);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
 @media (max-width: 480px) {
     .appointment-admin-panel__grid {
         grid-template-columns: 1fr;
+    }
+
+    .appointment-admin-panel__tabs {
+        justify-content: flex-start;
     }
 }

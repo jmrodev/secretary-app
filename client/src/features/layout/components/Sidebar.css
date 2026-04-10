@@ -182,16 +182,20 @@
     text-transform: capitalize;
 }
 
-.sidebar-user__logout,
-.sidebar-user__logout.btn {
-    color: var(--error);
-    opacity: 0.7;
-    transition: opacity 0.2s;
-    background: transparent;
+.sidebar__logout-btn {
+    width: 100%;
+    justify-content: flex-start !important;
+    color: var(--error) !important;
+    padding: 0.75rem 1rem !important;
+    font-weight: 600 !important;
+    gap: 0.75rem !important;
+    border-radius: 10px !important;
+    transition: all 0.2s !important;
 }
 
-.sidebar-user__logout:hover {
-    opacity: 1;
+.sidebar__logout-btn:hover {
+    background: var(--red-50) !important;
+    color: var(--error-700) !important;
 }
 
 /* Custom Scrollbar for Nav */

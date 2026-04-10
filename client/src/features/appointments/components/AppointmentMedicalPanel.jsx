@@ -20,7 +20,7 @@ const AppointmentMedicalPanel = ({
         <div className={baseClass}>
             <h4 className={`${baseClass}__title`}>
                 <Icon name="medical_services" size="1.1rem" />
-                {t('medical_panel') || 'Panel Médico'}
+                {t('medical_panel')}
             </h4>
             <div className={`${baseClass}__actions`}>
                 {showHistory && (
@@ -29,7 +29,7 @@ const AppointmentMedicalPanel = ({
                         onClick={() => onHistory(appt)}
                         icon={<Icon name="history" size="1rem" />}
                     >
-                        {t('view_history') || 'Ver H. Clínica'}
+                        {t('view_history')}
                     </Button>
                 )}
                 {showPrescribe && (
@@ -38,7 +38,7 @@ const AppointmentMedicalPanel = ({
                         onClick={() => onPrescribe(appt)}
                         icon={<Icon name="medication" size="1rem" />}
                     >
-                        {t('prescribe') || 'Recetar'}
+                        {t('prescribe')}
                     </Button>
                 )}
                 {isDoctorOrAdmin && (appt.status === 'arrived' || (appt.type === 'virtual' && appt.status === 'confirmed')) && (
@@ -52,14 +52,14 @@ const AppointmentMedicalPanel = ({
                         }}
                         icon={<Icon name="check_circle" size="1rem" />}
                     >
-                        {t('attended') || 'Atendido'}
+                        {t('attended')}
                     </Button>
                 )}
             </div>
             <div className={`${baseClass}__note-section`}>
                 <Input
                     type="text" className={`${baseClass}__note-input`}
-                    placeholder={t('evolution_note_placeholder') || "Nota de evolución / Razón..."}
+                    placeholder={t('evolution_note_placeholder')}
                     value={note} onChange={(e) => setNote(e.target.value)}
                 />
                 <Button

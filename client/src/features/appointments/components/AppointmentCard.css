@@ -33,11 +33,54 @@
 .appointment-card__time { font-size: 0.875rem; font-weight: 700; color: var(--slate-900); }
 
 .appointment-card__info { flex: 1; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
-.appointment-card__patient-name { font-weight: 700; color: var(--slate-800); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.appointment-card__patient-name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    color: var(--slate-800);
+    min-width: 0;
+}
+
+.appointment-card__patient-name-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    flex: 0 1 auto;
+}
+
+.appointment-card__visit-count {
+    font-size: 0.95rem !important;
+    padding: 0.25rem 0.75rem !important;
+    font-weight: 800 !important;
+    border-radius: 8px !important;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex-shrink: 0;
+    background-color: var(--emerald-50) !important;
+    border: 1px solid var(--emerald-200) !important;
+    color: var(--emerald-700) !important;
+    white-space: nowrap;
+}
+
 .appointment-card__phone { font-size: 10px; color: var(--indigo-600); font-weight: 500; text-decoration: none; width: fit-content; }
 .appointment-card__details { display: flex; align-items: center; gap: 0.5rem; font-size: 11px; color: var(--slate-500); overflow: hidden; min-width: 0; }
 .appointment-card__doctor { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex-shrink: 0; }
-.appointment-card__reason { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1; font-style: italic; opacity: 0.75; }
+.appointment-card__reason { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex-shrink: 1; font-style: italic; opacity: 0.75; }
+
+.appointment-card__rescheduled-info {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 10px;
+    color: var(--amber-600);
+    background: var(--amber-50);
+    padding: 0 4px;
+    border-radius: 4px;
+    font-weight: 600;
+}
 
 .appointment-card__status { display: flex; flex-direction: column; align-items: flex-end; min-width: 80px; }
 .appt-status__col { display: flex; flex-direction: column; align-items: flex-end; }

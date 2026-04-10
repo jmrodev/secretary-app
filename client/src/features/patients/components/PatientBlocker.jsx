@@ -5,10 +5,10 @@ import Icon from '@/components/atoms/Icon';
 import './PatientBlocker.css';
 
 const PatientBlocker = () => {
-    const { logout } = useAuth(); // Assuming logout is in useAuth
+    const { logout } = useAuth();
 
     const handleLogout = () => {
-        localStorage.clear();
+        logout();
         window.location.href = '/';
     };
 

@@ -4,6 +4,7 @@ import HolidayForm from './HolidayForm.jsx';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { PatientSearchSelect } from '@/features/patients';
+import { useLanguage } from '@/context/LanguageContext';
 import './CalendarSection.css';
 
 /**
@@ -15,6 +16,8 @@ const CalendarSection = ({
     onAddHoliday, showOutOfHours, viewDoctorId, onSearchPatientId, searchPatientId,
     onCreatePatient, onNextFreeSlot, onSyncDayToGoogle, className = ""
 }) => {
+    const { t } = useLanguage();
+
     return (
         <div className={`calendar-section ${className}`}>
             {(activeTab === 'calendar' || activeTab === 'monthly') ? (
@@ -30,11 +33,11 @@ const CalendarSection = ({
                             <div className="dashboard-card">
                                 <h3 className="dashboard-card__title">
                                     <Icon name="history" size="1rem" />
-                                    Buscar Historial
+                                    {t('search_history')}
                                 </h3>
                                 <div className="calendar-section__filter-group">
                                     <PatientSearchSelect
-                                        value={searchPatientId} placeholder="Nombre o DNI..."
+                                        value={searchPatientId} placeholder={t('search_placeholder')}
                                         onChange={onSearchPatientId} onCreatePatient={onCreatePatient}
                                     />
                                 </div>
@@ -43,18 +46,18 @@ const CalendarSection = ({
                             <div className="dashboard-card">
                                 <h3 className="dashboard-card__title">
                                     <Icon name="build" size="1rem" />
-                                    Herramientas
+                                    {t('tools')}
                                 </h3>
                                 <div className="flex gap-2">
                                     <Button
                                         variant="outline" className="flex-1 justify-center"
                                         onClick={onNextFreeSlot} icon={<Icon name="search" size="1.1rem" />}
                                     >
-                                        Próximo Libre
+                                        {t('next_free_slot')}
                                     </Button>
                                     <Button
                                         variant="outline" onClick={() => onSyncDayToGoogle && onSyncDayToGoogle()}
-                                        title="Sincronizar Google Calendar" className="px-3"
+                                        title={t('sync_google_calendar')} className="px-3"
                                         icon={<Icon name="sync" size="1.1rem" />}
                                     />
                                 </div>
@@ -66,10 +69,10 @@ const CalendarSection = ({
                 <div className="dashboard-card holiday-card">
                     <h3 className="dashboard-card__title">
                         <Icon name="event_busy" size="1rem" />
-                        Bloquear Agenda
+                        {t('block_agenda')}
                     </h3>
                     <p className="text-xs text-slate-500 mb-4 leading-relaxed">
-                        Crea un feriado o licencia para bloquear turnos en los días seleccionados.
+                        {t('holiday_license_info')}
                     </p>
                     <HolidayForm onAdd={onAddHoliday} />
                 </div>

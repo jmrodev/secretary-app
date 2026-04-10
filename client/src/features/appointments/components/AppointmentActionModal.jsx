@@ -81,6 +81,7 @@ const AppointmentActionModal = ({
                         t={t} onPay={onPay} onUpdateStatus={onUpdateStatus} onReschedule={onReschedule}
                         onCancel={onCancel} onDelete={onDelete} onUpdateType={onUpdateType}
                         onHardEdit={onHardEdit} onBonify={onBonify} onClose={onClose} note={note}
+                        onWhatsApp={onWhatsApp}
                     />
                 )}
             </div>

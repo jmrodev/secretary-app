@@ -321,12 +321,8 @@ class FinanceService {
             conn.release();
         }
     }
-<<<<<<< HEAD
-async syncAppointmentPaymentStatus(appointmentId, userId, conn) {
-=======
 
     async syncAppointmentPaymentStatus(appointmentId, userId, conn) {
->>>>>>> origin/add-holiday-service-error-test-2732673805038106600
         const { totalPaid, totalPending, hasPaid, hasPending } = await transactionRepository.getPaymentSummary(appointmentId, conn);
         let finalStatus = (hasPaid && hasPending) ? 'partial' : (hasPaid ? 'paid' : (hasPending ? 'debt' : 'pending'));
         await appointmentRepository.update(appointmentId, {

@@ -43,7 +43,10 @@ class PatientService {
                 ...r,
                 total_debt: Number(r.total_debt),
                 total_appointments: Number(r.total_appointments),
-                missed_appointments: Number(r.missed_appointments)
+                attended_appointments: Number(r.attended_appointments || 0),
+                missed_appointments: Number(r.missed_appointments),
+                financial_rating: Number(r.financial_rating || 5),
+                attendance_rating: Number(r.attendance_rating || 5)
             }));
 
             return {

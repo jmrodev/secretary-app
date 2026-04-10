@@ -7,7 +7,7 @@ import { useAuth } from '../features/auth';
  * Ensures clean code by abstracting permission logic away from components.
  */
 export const usePermissions = () => {
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
     const [permissions, setPermissions] = useState({
         canDeletePrescription: false,
         canDeleteLicense: false,
@@ -78,6 +78,7 @@ export const usePermissions = () => {
         isPatient: user?.role === 'patient',
         isStaff: user?.role === 'admin' || user?.role === 'secretary',
         isMedicalStaff: user?.role === 'admin' || user?.role === 'secretary' || user?.role === 'doctor',
-        user
+        user,
+        logout
     };
 };
