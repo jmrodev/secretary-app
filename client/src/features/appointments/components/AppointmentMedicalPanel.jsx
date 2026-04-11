@@ -17,7 +17,7 @@ const AppointmentMedicalPanel = ({
     const baseClass = 'appointment-medical-panel';
 
     return (
-        <div className={baseClass}>
+        <section className={baseClass}>
             <h4 className={`${baseClass}__title`}>
                 <Icon name="medical_services" size="1.1rem" />
                 {t('medical_panel')}
@@ -25,7 +25,7 @@ const AppointmentMedicalPanel = ({
             <div className={`${baseClass}__actions`}>
                 {showHistory && (
                     <Button
-                        variant="primary" size="sm" className={`${baseClass}__action`}
+                        variant="primary" className={`${baseClass}__action`}
                         onClick={() => onHistory(appt)}
                         icon={<Icon name="history" size="1rem" />}
                     >
@@ -34,7 +34,7 @@ const AppointmentMedicalPanel = ({
                 )}
                 {showPrescribe && (
                     <Button
-                        variant="accent" size="sm" className={`${baseClass}__action`}
+                        variant="accent" className={`${baseClass}__action`}
                         onClick={() => onPrescribe(appt)}
                         icon={<Icon name="medication" size="1rem" />}
                     >
@@ -43,7 +43,7 @@ const AppointmentMedicalPanel = ({
                 )}
                 {isDoctorOrAdmin && (appt.status === 'arrived' || (appt.type === 'virtual' && appt.status === 'confirmed')) && (
                     <Button
-                        variant="success" size="sm" className={`${baseClass}__action ${baseClass}__action--full`}
+                        variant="success" className={`${baseClass}__action ${baseClass}__action--full`}
                         onClick={async () => {
                             if (await confirm(t('confirm_attended'))) {
                                 onUpdateStatus(appt.id, 'completed');
@@ -63,11 +63,11 @@ const AppointmentMedicalPanel = ({
                     value={note} onChange={(e) => setNote(e.target.value)}
                 />
                 <Button
-                    variant="secondary" size="sm" className={`${baseClass}__save-btn`}
+                    variant="secondary" className={`${baseClass}__save-btn`}
                     onClick={onSaveNote} icon={<Icon name="save" size="1.1rem" />}
                 />
             </div>
-        </div>
+        </section>
     );
 };
 

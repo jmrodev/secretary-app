@@ -11,27 +11,43 @@ import './AppointmentHeader.css';
 const AppointmentHeader = ({ appt, t }) => {
     const { alert } = useModal();
 
+    const getStatusVariant = (status) => {
+        switch (status) {
+            case 'completed':
+            case 'attended': return 'success';
+            case 'confirmed': return 'blue';
+            case 'arrived': return 'accent';
+            case 'rescheduled': return 'default';
+            case 'suspended': return 'warning';
+            case 'absent':
+            case 'cancelled': return 'danger';
+            case 'pending': return 'pending';
+            case 'consult': return 'consult';
+            default: return 'default';
+        }
+    };
+
     const baseClass = 'appointment-header';
 
     return (
-        <div className={baseClass}>
-            <div className={`${baseClass}__patient-info`}>
+        <header className={baseClass}>
+            <section className={`${baseClass}__patient-info`}>
                 <p className={`${baseClass}__text`}>
                     <strong className={`${baseClass}__strong`}>{t('patient_label')}:</strong> {appt.patient_name || appt.reason || t('sync_required')}
                 </p>
                 <p className={`${baseClass}__date`}>
                     <strong className={`${baseClass}__strong`}>{t('date_label')}:</strong> {formatDate(appt.appointment_date, true)}
                 </p>
-            </div>
+            </section>
 
-            <div className={`${baseClass}__badges`}>
-                <Badge variant={appt.status}>
+            <aside className={`${baseClass}__badges`}>
+                <Badge variant={getStatusVariant(appt.status)}>
                     {t(appt.status) || appt.status}
                 </Badge>
                 
                 {/* Payment badge: only show if NOT bonified */}
                 {!(appt.bonified === 1 || appt.bonified === true) ? (
-                    <Badge variant={appt.payment_status === 'paid' ? 'green' : 'red'}>
+                    <Badge variant={appt.payment_status === 'paid' ? 'success' : 'danger'}>
                         {appt.payment_status === 'paid' ? t('paid') : t('debt')}
                     </Badge>
                 ) : (
@@ -39,8 +55,8 @@ const AppointmentHeader = ({ appt, t }) => {
                         {t('bonified')}
                     </Badge>
                 )}
-            </div>
-        </div>
+            </aside>
+        </header>
     );
 };
 

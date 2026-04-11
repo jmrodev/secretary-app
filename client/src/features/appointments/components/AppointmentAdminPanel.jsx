@@ -36,13 +36,12 @@ const AppointmentAdminPanel = ({
     const baseClass = 'appointment-admin-panel';
 
     return (
-        <div className={baseClass}>
+        <section className={baseClass}>
             {/* Tab Navigation */}
             <TabNav className={`${baseClass}__tabs`}>
                 <TabButton
                     isActive={activeTab === 'attendance'}
                     onClick={() => setActiveTab('attendance')}
-                    variant="underline"
                     activeColor="green"
                 >
                     {t('attendance')}
@@ -50,7 +49,6 @@ const AppointmentAdminPanel = ({
                 <TabButton
                     isActive={activeTab === 'management'}
                     onClick={() => setActiveTab('management')}
-                    variant="underline"
                     activeColor="blue"
                 >
                     {t('management')}
@@ -59,7 +57,6 @@ const AppointmentAdminPanel = ({
                     <TabButton
                         isActive={activeTab === 'contact'}
                         onClick={() => setActiveTab('contact')}
-                        variant="underline"
                         activeColor="blue"
                     >
                         {t('contact')}
@@ -68,7 +65,6 @@ const AppointmentAdminPanel = ({
                 <TabButton
                     isActive={activeTab === 'status'}
                     onClick={() => setActiveTab('status')}
-                    variant="underline"
                     activeColor="amber"
                 >
                     {t('status_label')}
@@ -76,7 +72,6 @@ const AppointmentAdminPanel = ({
                 <TabButton
                     isActive={activeTab === 'danger'}
                     onClick={() => setActiveTab('danger')}
-                    variant="underline"
                     activeColor="purple"
                 >
                     {t('more')}
@@ -86,29 +81,29 @@ const AppointmentAdminPanel = ({
             <div className={`${baseClass}__content`}>
                 {/* ATTENDANCE TAB */}
                 {activeTab === 'attendance' && (
-                    <div className={`${baseClass}__tab-pane animate-fadeIn`}>
+                    <article className={`${baseClass}__tab-pane animate-fadeIn`}>
                         {isPendingPayment && !isGoogle && (
-                            <div className={`${baseClass}__group ${baseClass}__group--highlight`}>
+                            <section className={`${baseClass}__group ${baseClass}__group--highlight`}>
                                 <h4 className={`${baseClass}__group-title`}>{t('pending_payment')}</h4>
                                 <div className={`${baseClass}__grid`}>
                                     <Button
-                                        variant="primary" className={`${baseClass}__action`} onClick={() => { onPay(appt); onClose(); }}
+                                        variant="success" className={`${baseClass}__action`} onClick={() => { onPay(appt); onClose(); }}
                                         icon={<Icon name="payments" size="1rem" />}
                                     >
                                         {t('pay')}
                                     </Button>
                                     <Button
-                                        variant="secondary" className={`${baseClass}__action`} onClick={() => { onBonify(appt); onClose(); }}
+                                        variant="accent" className={`${baseClass}__action`} onClick={() => { onBonify(appt); onClose(); }}
                                         icon={<Icon name="card_giftcard" size="1rem" />}
                                     >
                                         {t('bonify')}
                                     </Button>
                                 </div>
-                            </div>
+                            </section>
                         )}
 
                         {showAdminPanel && (
-                            <div className={`${baseClass}__group`}>
+                            <section className={`${baseClass}__group`}>
                                 <h4 className={`${baseClass}__group-title`}>{t('attendance_flow')}</h4>
                                 <div className={`${baseClass}__grid`}>
                                     {canConfirm && (
@@ -136,19 +131,19 @@ const AppointmentAdminPanel = ({
                                         </Button>
                                     )}
                                 </div>
-                            </div>
+                            </section>
                         )}
-                    </div>
+                    </article>
                 )}
 
                 {/* MANAGEMENT TAB */}
                 {activeTab === 'management' && showAdminPanel && (
-                    <div className={`${baseClass}__tab-pane animate-fadeIn`}>
-                        <div className={`${baseClass}__group`}>
+                    <article className={`${baseClass}__tab-pane animate-fadeIn`}>
+                        <section className={`${baseClass}__group`}>
                             <h4 className={`${baseClass}__group-title`}>{t('appointment_modification')}</h4>
                             <div className={`${baseClass}__grid`}>
                                 <Button
-                                    variant="secondary" className={`${baseClass}__action`} onClick={() => { onHardEdit(appt); onClose(); }}
+                                    variant="primary" className={`${baseClass}__action`} onClick={() => { onHardEdit(appt); onClose(); }}
                                     icon={<Icon name="edit" size="1rem" />}
                                 >
                                     {t('edit')}
@@ -170,26 +165,26 @@ const AppointmentAdminPanel = ({
                                     </Button>
                                 )}
                             </div>
-                        </div>
-                    </div>
+                        </section>
+                    </article>
                 )}
 
                 {/* CONTACT TAB */}
                 {activeTab === 'contact' && appt.patient_phone && (
-                    <div className={`${baseClass}__tab-pane animate-fadeIn`}>
-                        <div className={`${baseClass}__group`}>
+                    <article className={`${baseClass}__tab-pane animate-fadeIn`}>
+                        <section className={`${baseClass}__group`}>
                             <h4 className={`${baseClass}__group-title`}>{t('patient_contact')}</h4>
                             <div className={`${baseClass}__phone-display`}>
                                 <span className={`${baseClass}__phone-number`}>{appt.patient_phone}</span>
                                 <Button
-                                    variant="ghost" size="sm" onClick={handleCopyPhone}
+                                    variant="secondary" size="sm" onClick={handleCopyPhone}
                                     icon={<Icon name="content_copy" size="1rem" />}
                                 />
                             </div>
                             <div className={`${baseClass}__grid`}>
                                     <Button
                                         to={`tel:${appt.patient_phone.replace(/[^0-9+]/g, '')}`}
-                                        variant="outline-info" className={`${baseClass}__action`}
+                                        variant="primary" className={`${baseClass}__action`}
                                         icon={<Icon name="call" size="1rem" />}
                                 >
                                     {t('call')}
@@ -213,19 +208,19 @@ const AppointmentAdminPanel = ({
                                     </>
                                 )}
                             </div>
-                        </div>
-                    </div>
+                        </section>
+                    </article>
                 )}
 
                 {/* STATUS TAB */}
                 {activeTab === 'status' && showAdminPanel && (
-                    <div className={`${baseClass}__tab-pane animate-fadeIn`}>
-                        <div className={`${baseClass}__group`}>
+                    <article className={`${baseClass}__tab-pane animate-fadeIn`}>
+                        <section className={`${baseClass}__group`}>
                             <h4 className={`${baseClass}__group-title`}>{t('exception_status')}</h4>
                             <div className={`${baseClass}__grid`}>
                                 {canSuspend && (
                                     <Button
-                                        variant="outline-warning" className={`${baseClass}__action`} onClick={() => { onUpdateStatus(appt.id, 'suspended'); onClose(); }}
+                                        variant="warning" className={`${baseClass}__action`} onClick={() => { onUpdateStatus(appt.id, 'suspended'); onClose(); }}
                                         icon={<Icon name="pause_circle" size="1rem" />}
                                     >
                                         {t('suspend')}
@@ -233,25 +228,25 @@ const AppointmentAdminPanel = ({
                                 )}
                                 {canMarkAbsent && (
                                     <Button
-                                        variant="outline-danger" className={`${baseClass}__action`} onClick={() => { onUpdateStatus(appt.id, 'absent'); onClose(); }}
+                                        variant="danger" className={`${baseClass}__action`} onClick={() => { onUpdateStatus(appt.id, 'absent'); onClose(); }}
                                         icon={<Icon name="block" size="1rem" />}
                                     >
                                         {t('absent')}
                                     </Button>
                                 )}
                             </div>
-                        </div>
-                    </div>
+                        </section>
+                    </article>
                 )}
 
                 {/* DANGER/SYSTEM TAB */}
                 {activeTab === 'danger' && !isGoogle && (
-                    <div className={`${baseClass}__tab-pane animate-fadeIn`}>
-                        <div className={`${baseClass}__group ${baseClass}__group--danger`}>
+                    <article className={`${baseClass}__tab-pane animate-fadeIn`}>
+                        <section className={`${baseClass}__group ${baseClass}__group--danger`}>
                             <h4 className={`${baseClass}__group-title`}>{t('danger_zone')}</h4>
                             <div className={`${baseClass}__grid`}>
                                 <Button
-                                    variant="outline-danger" className={`${baseClass}__action`} onClick={() => { onCancel(appt.id, note); onClose(); }}
+                                    variant="secondary" className={`${baseClass}__action`} onClick={() => { onCancel(appt.id, note); onClose(); }}
                                     icon={<Icon name="cancel" size="1rem" />}
                                 >
                                     {t('cancel')}
@@ -263,11 +258,11 @@ const AppointmentAdminPanel = ({
                                     {t('delete_error')}
                                 </Button>
                             </div>
-                        </div>
-                    </div>
+                        </section>
+                    </article>
                 )}
             </div>
-        </div>
+        </section>
     );
 };
 

@@ -198,6 +198,11 @@ secretary-app/
 
 ### Frontend (React)
 
+#### Semántica HTML5 (A11y & SEO)
+- **Cero "Div-soup"**: Queda estrictamente prohibido el uso indiscriminado de `<div>` genéricos para representar regiones estructurales del DOM.
+- **Estructura lógica**: Las vistas y componentes grandes deben emplear etiquetas semánticas validadas como `<section>`, `<article>`, `<aside>`, `<header>`, `<main>` o `<footer>` según corresponda la naturaleza de su contenido.
+- **Jerarquía y Títulos**: Todo elemento estructural de tipo `<section>` o `<article>` debería (en la medida de lo posible) estar introducido por un tag de encabezado (`<h1>` - `<h6>`), respetando el flujo de accesibilidad. Ejemplo: `AppointmentActionModal` se dividirá en un `<section>` general, y cada una de sus pestañas/módulos independientes en `<article>` o `<section>` subordinados.
+
 #### Componentes
 ```jsx
 // ✅ CORRECTO
