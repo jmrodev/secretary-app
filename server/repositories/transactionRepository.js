@@ -452,6 +452,7 @@ class TransactionRepository {
             const query = `
                 SELECT 
                     DATE(t.transaction_date) as date,
+                    MAX(TIME(t.transaction_date)) as lastTime,
                     t.doctor_id,
                     d.full_name as doctor_name,
                     SUM(CASE WHEN t.method = 'cash' THEN 

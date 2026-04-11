@@ -45,7 +45,7 @@ const AppointmentMedicalPanel = ({
                     <Button
                         variant="success" size="sm" className={`${baseClass}__action ${baseClass}__action--full`}
                         onClick={async () => {
-                            if (await confirm(t('confirm_attended') || 'Mark as Attended/Completed?')) {
+                            if (await confirm(t('confirm_attended'))) {
                                 onUpdateStatus(appt.id, 'completed');
                                 onClose();
                             }

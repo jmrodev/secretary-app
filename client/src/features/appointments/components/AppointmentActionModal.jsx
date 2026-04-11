@@ -4,7 +4,6 @@ import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/features/auth';
-import { useMessage } from '@/context/MessageContext';
 import { useModal } from '@/context/ModalContext';
 import { useConfig } from '@/context/ConfigContext';
 import { usePermissions } from '@/hooks/usePermissions';
@@ -43,15 +42,15 @@ const AppointmentActionModal = ({
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={`${t('appointment_title') || 'Turno'}: ${appt.patient_name || appt.reason || 'Sincronización requerida'}`}
+            title={`${t('appointment_title')}: ${appt.patient_name || appt.reason || t('sync_required')}`}
             className="appointment-modal"
         >
             <div className="appointment-modal__content">
-                <AppointmentHeader appt={appt} t={t} onWhatsApp={onWhatsApp} />
+                <AppointmentHeader appt={appt} t={t} />
 
                 <div className="appointment-modal__reason">
                     <p className="appointment-modal__text">
-                        <strong className="appointment-modal__strong">{t('reason')}:</strong> {appt.reason || t('no_description') || 'No description'}
+                        <strong className="appointment-modal__strong">{t('reason')}:</strong> {appt.reason || t('no_description')}
                     </p>
                 </div>
 
@@ -71,7 +70,7 @@ const AppointmentActionModal = ({
                         onClick={() => onSync(appt)}
                         icon={<Icon name="auto_awesome" size="1.1rem" />}
                     >
-                        {t('sync_db') || 'Ingresar Ajuste (Sincronizar BBDD)'}
+                        {t('sync_db')}
                     </Button>
                 )}
 

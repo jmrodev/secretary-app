@@ -116,6 +116,7 @@ export const es = {
     cancellation_reason_prompt: "Por favor, ingrese el motivo de la cancelación:",
     change_status: "Cambiar Estado",
     reschedule: "Reprogramar",
+    reminder: "Recordatorio",
     pay: "Pagar",
     bonify: "Bonificar",
     bonified: "Bonificado",

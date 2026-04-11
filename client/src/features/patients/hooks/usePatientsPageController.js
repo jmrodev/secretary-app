@@ -37,10 +37,11 @@ export const usePatientsPageController = () => {
     
     // Main Patients Data
     const { 
-        data: patientData = { patients: [], totalCount: 0 }, 
+        data: patientData, 
         loading: patientsLoading, 
         refetch: fetchPatients 
     } = useFetch('/users/patients', {
+        initialData: { patients: [], totalCount: 0 },
         params: {
             page: currentPage,
             limit: itemsPerPage,
@@ -48,8 +49,8 @@ export const usePatientsPageController = () => {
         }
     });
 
-    const patients = patientData.patients || [];
-    const totalCount = patientData.totalCount || 0;
+    const patients = patientData?.patients || [];
+    const totalCount = patientData?.totalCount || 0;
 
     // Supplementary Lists
     const { data: doctors = [] } = useFetch('/users/doctors', { initialData: [] });

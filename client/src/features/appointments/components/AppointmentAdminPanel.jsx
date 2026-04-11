@@ -98,7 +98,7 @@ const AppointmentAdminPanel = ({
                                         {t('pay')}
                                     </Button>
                                     <Button
-                                        variant="secondary" outline className={`${baseClass}__action`} onClick={() => { onBonify(appt); onClose(); }}
+                                        variant="secondary" className={`${baseClass}__action`} onClick={() => { onBonify(appt); onClose(); }}
                                         icon={<Icon name="card_giftcard" size="1rem" />}
                                     >
                                         {t('bonify')}
@@ -148,14 +148,14 @@ const AppointmentAdminPanel = ({
                             <h4 className={`${baseClass}__group-title`}>{t('appointment_modification')}</h4>
                             <div className={`${baseClass}__grid`}>
                                 <Button
-                                    variant="secondary" outline className={`${baseClass}__action`} onClick={() => { onHardEdit(appt); onClose(); }}
+                                    variant="secondary" className={`${baseClass}__action`} onClick={() => { onHardEdit(appt); onClose(); }}
                                     icon={<Icon name="edit" size="1rem" />}
                                 >
                                     {t('edit')}
                                 </Button>
                                 {canReschedule && (
                                     <Button
-                                        variant="primary" outline className={`${baseClass}__action`} onClick={() => { onReschedule(appt); onClose(); }}
+                                        variant="primary" className={`${baseClass}__action`} onClick={() => { onReschedule(appt); onClose(); }}
                                         icon={<Icon name="calendar_month" size="1rem" />}
                                     >
                                         {t('reschedule')}
@@ -189,7 +189,7 @@ const AppointmentAdminPanel = ({
                             <div className={`${baseClass}__grid`}>
                                     <Button
                                         to={`tel:${appt.patient_phone.replace(/[^0-9+]/g, '')}`}
-                                        variant="phone" className={`${baseClass}__action`}
+                                        variant="outline-info" className={`${baseClass}__action`}
                                         icon={<Icon name="call" size="1rem" />}
                                 >
                                     {t('call')}
@@ -197,7 +197,7 @@ const AppointmentAdminPanel = ({
                                 {appt.status !== 'completed' && (
                                     <>
                                         <Button
-                                            variant="whatsapp" className={`${baseClass}__action`}
+                                            variant="success" className={`${baseClass}__action`}
                                             onClick={() => onWhatsApp(appt, 'reminder')}
                                             icon={<Icon name="send" size="1rem" />}
                                         >
@@ -225,7 +225,7 @@ const AppointmentAdminPanel = ({
                             <div className={`${baseClass}__grid`}>
                                 {canSuspend && (
                                     <Button
-                                        variant="warning" outline className={`${baseClass}__action`} onClick={() => { onUpdateStatus(appt.id, 'suspended'); onClose(); }}
+                                        variant="outline-warning" className={`${baseClass}__action`} onClick={() => { onUpdateStatus(appt.id, 'suspended'); onClose(); }}
                                         icon={<Icon name="pause_circle" size="1rem" />}
                                     >
                                         {t('suspend')}
@@ -233,7 +233,7 @@ const AppointmentAdminPanel = ({
                                 )}
                                 {canMarkAbsent && (
                                     <Button
-                                        variant="danger" outline className={`${baseClass}__action`} onClick={() => { onUpdateStatus(appt.id, 'absent'); onClose(); }}
+                                        variant="outline-danger" className={`${baseClass}__action`} onClick={() => { onUpdateStatus(appt.id, 'absent'); onClose(); }}
                                         icon={<Icon name="block" size="1rem" />}
                                     >
                                         {t('absent')}
@@ -251,7 +251,7 @@ const AppointmentAdminPanel = ({
                             <h4 className={`${baseClass}__group-title`}>{t('danger_zone')}</h4>
                             <div className={`${baseClass}__grid`}>
                                 <Button
-                                    variant="danger" outline className={`${baseClass}__action`} onClick={() => { onCancel(appt.id, note); onClose(); }}
+                                    variant="outline-danger" className={`${baseClass}__action`} onClick={() => { onCancel(appt.id, note); onClose(); }}
                                     icon={<Icon name="cancel" size="1rem" />}
                                 >
                                     {t('cancel')}

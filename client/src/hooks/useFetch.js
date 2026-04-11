@@ -12,22 +12,28 @@ import api from '@/api/axios';
  * @returns {Object} { data, loading, error, refetch, setData }
  */
 export const useFetch = (url, options = {}) => {
-    const { immediate = true, initialData = null, ...apiOptions } = options;
+    const { immediate = true, initialData, ...apiOptions } = options;
 
     const [data, setData] = useState(initialData);
     const [loading, setLoading] = useState(immediate);
     const [error, setError] = useState(null);
 
     const execute = useCallback(async (customUrl) => {
+        const finalUrl = customUrl || url;
+        if (!finalUrl) {
+            setLoading(false);
+            return;
+        }
+
         setLoading(true);
         setError(null);
         try {
-            const res = await api.get(customUrl || url, apiOptions);
+            const res = await api.get(finalUrl, apiOptions);
             setData(res.data);
             return res.data;
         } catch (err) {
             setError(err);
-            console.error(`[useFetch] Error fetching ${customUrl || url}:`, err);
+            console.error(`[useFetch] Error fetching ${finalUrl}:`, err);
             throw err;
         } finally {
             setLoading(false);

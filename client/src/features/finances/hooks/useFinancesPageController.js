@@ -6,6 +6,7 @@ import { useModal } from '@/context/ModalContext';
 import { useMessage } from '@/context/MessageContext';
 import { useConfig } from '@/context/ConfigContext';
 import { useFetch } from '@/hooks/useFetch';
+import { useFinanceHandlers } from './useFinanceHandlers';
 
 export const useFinancesPageController = () => {
     const { user } = useAuth();
@@ -20,6 +21,8 @@ export const useFinancesPageController = () => {
     const [selectedDoctorFilter, setSelectedDoctorFilter] = useState(localStorage.getItem('last_selected_doctor_id') || '');
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
+    const [historicalWithdrawalOpen, setHistoricalWithdrawalOpen] = useState(false);
+    const [isActionLoading, setIsActionLoading] = useState(false);
 
     // Debounce search
     useEffect(() => {
@@ -41,10 +44,11 @@ export const useFinancesPageController = () => {
     
     // Transactions
     const { 
-        data: txData = { transactions: [], totalCount: 0 }, 
+        data: txData, 
         loading: txLoading, 
         refetch: fetchTransactions 
     } = useFetch('/finances/transactions', {
+        initialData: { transactions: [], totalCount: 0 },
         params: {
             doctor_id: selectedDoctorFilter || 'all',
             page: currentPage,
@@ -68,9 +72,9 @@ export const useFinancesPageController = () => {
         initialData: []
     });
 
-    const transactions = txData.transactions || [];
-    const totalCount = txData.totalCount || 0;
-    const loading = txLoading || statsLoading || closuresLoading;
+    const transactions = txData?.transactions || [];
+    const totalCount = txData?.totalCount || 0;
+    const loading = txLoading || statsLoading || closuresLoading || isActionLoading;
 
     // --- UI State ---
     const [modalOpen, setModalOpen] = useState(false);
@@ -86,66 +90,19 @@ export const useFinancesPageController = () => {
         fetchClosures();
     }, [fetchTransactions, fetchStats, fetchClosures]);
 
+    const baseHandlers = useFinanceHandlers({
+        user, t, showMessage, confirm, alert,
+        transactions, pendingClosures, duplicateClosures: [],
+        closeBoxModal, closeAmount, editingTx,
+        setLoading: setIsActionLoading,
+        fetchData, setEditingTx, setModalOpen,
+        setHistoricalWithdrawalOpen, setPendingClosuresOpen,
+        setCloseBoxModal, setCloseAmount, setSelectedDoctorFilter
+    });
+
     const onSelectDoctor = (id) => {
         setSelectedDoctorFilter(id);
         setCurrentPage(1);
-    };
-
-    const handleDeleteTransaction = async (id) => {
-        if (!await confirm(t('confirm_delete') || "¿Eliminar transacción?")) return;
-        try {
-            await api.delete(`/finances/transactions/${id}`);
-            showMessage(t('deleted_successfully'), 'success');
-            fetchData();
-        } catch (err) {
-            alert(t('error_deleting'));
-        }
-    };
-
-    const handleUpdateTransaction = async () => {
-        if (!editingTx) return;
-        try {
-            await api.put(`/finances/transactions/${editingTx.id}`, editingTx);
-            showMessage(t('updated_successfully'), 'success');
-            setEditingTx(null);
-            fetchData();
-        } catch (err) {
-            alert(t('error_updating'));
-        }
-    };
-
-    const handleOpenCloseBox = (doctor, balance) => {
-        setCloseBoxModal({ open: true, doctorId: doctor.id, doctorName: doctor.full_name, balance });
-        setCloseAmount(balance);
-    };
-
-    const handleCloseBox = async () => {
-        try {
-            await api.post('/finances/transactions/close', {
-                doctor_id: closeBoxModal.doctorId,
-                amount_delivered: closeAmount,
-                description: `Entrega de Caja: ${closeBoxModal.doctorName}`
-            });
-            showMessage(t('box_closed_success'), 'success');
-            setCloseBoxModal({ open: false, doctorId: '', doctorName: '', balance: 0 });
-            fetchData();
-        } catch (err) {
-            alert(t('error_closing_box'));
-        }
-    };
-
-    const handleAutoClosure = async (dayData) => {
-        try {
-            await api.post('/finances/transactions/close', {
-                doctor_id: dayData.doctor_id,
-                amount_delivered: dayData.balance,
-                description: `Cierre Automático (${dayData.date})`,
-                transaction_date: dayData.date
-            });
-            fetchData();
-        } catch (err) {
-            showMessage("Error en cierre automático", "error");
-        }
     };
 
     const calculateBalanceByMethod = (doctorId) => {
@@ -179,20 +136,8 @@ export const useFinancesPageController = () => {
         t,
         alert,
         handlers: {
+            ...baseHandlers,
             onSelectDoctor,
-            onOpenNewTransaction: () => setModalOpen(true),
-            onCloseNewTransaction: () => setModalOpen(false),
-            onOpenCloseBox: handleOpenCloseBox,
-            onCloseCloseBox: () => setCloseBoxModal({ open: false, doctorId: '', doctorName: '', balance: 0 }),
-            onCloseBox: handleCloseBox,
-            onRefresh: fetchData,
-            onEditTransaction: setEditingTx,
-            onUpdateTransaction: handleUpdateTransaction,
-            onDeleteTransaction: handleDeleteTransaction,
-            setCloseAmount,
-            setPendingClosuresOpen,
-            setEditingTx,
-            handleAutoClosure,
             setSearchQuery,
             onPageChange: setCurrentPage,
             calculateBalanceByMethod,
