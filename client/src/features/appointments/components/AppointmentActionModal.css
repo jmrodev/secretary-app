@@ -1,9 +1,5 @@
 /* --- Appointment Action Modal (BEM) --- */
 
-.modal-content.appointment-modal {
-    background-color: var(--gray-500);
-}
-
 .appointment-modal__content {
     display: flex;
     flex-direction: column;

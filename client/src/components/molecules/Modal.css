@@ -17,7 +17,7 @@
 }
 
 .modal-content {
-    background: var(--card-bg);
+    background: var(--modal-bg);
     color: var(--text-main);
     border-radius: var(--radius);
     width: 100%;
@@ -118,4 +118,31 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Modal Dark Variant */
+.modal-content--dark {
+    background-color: var(--modal-bg-dark);
+}
+
+.modal-content--dark .modal-header {
+    border-bottom-color: var(--gray-400);
+}
+
+.modal-content--dark .modal-header__title {
+    color: var(--white);
+}
+
+.modal-content--dark .modal-close {
+    color: var(--gray-200);
+}
+
+.modal-content--dark .modal-close:hover {
+    color: var(--white);
+    background-color: var(--gray-600);
+}
+
+.modal-content--dark .modal-footer {
+    background-color: var(--gray-600);
+    border-top-color: var(--gray-400);
 }

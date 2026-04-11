@@ -43,6 +43,7 @@ const AppointmentActionModal = ({
             isOpen={isOpen}
             onClose={onClose}
             title={`${t('appointment_title')}: ${appt.patient_name || appt.reason || t('sync_required')}`}
+            variant="dark"
             className="appointment-modal"
         >
             <div className="appointment-modal__content">

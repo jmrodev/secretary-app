@@ -12,6 +12,10 @@
     /* gray-300 - Intermediate gray */
     --card-bg: #f3f4f6;
     /* gray-100 - Soft gray card */
+    --modal-bg: var(--card-bg);
+    /* Default modal aligns with cards */
+    --modal-bg-dark: #5757bd94;
+    /* gray-500 - Specialized dark modal */
     --text-main: #1f2937;
     /* gray-800 */
     --text-muted: #6b7280;

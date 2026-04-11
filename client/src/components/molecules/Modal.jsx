@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import './Modal.css';
 
-const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', className = '' }) => {
+const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', variant = 'light', className = '' }) => {
     // Prevent scrolling on body when modal is open
     useEffect(() => {
         if (isOpen) {
@@ -18,7 +18,7 @@ const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', classNam
     return ReactDOM.createPortal(
         <div className="modal-overlay" onClick={onClose}>
             <div
-                className={`modal-content ${size && size !== 'md' ? `modal-content--${size}` : ''} ${className}`}
+                className={`modal-content ${size && size !== 'md' ? `modal-content--${size}` : ''} ${variant === 'dark' ? 'modal-content--dark' : ''} ${className}`}
                 onClick={e => e.stopPropagation()}
             >
                 <header className="modal-header">
