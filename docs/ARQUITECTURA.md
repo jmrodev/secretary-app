@@ -203,6 +203,11 @@ secretary-app/
 - **Estructura lógica**: Las vistas y componentes grandes deben emplear etiquetas semánticas validadas como `<section>`, `<article>`, `<aside>`, `<header>`, `<main>` o `<footer>` según corresponda la naturaleza de su contenido.
 - **Jerarquía y Títulos**: Todo elemento estructural de tipo `<section>` o `<article>` debería (en la medida de lo posible) estar introducido por un tag de encabezado (`<h1>` - `<h6>`), respetando el flujo de accesibilidad. Ejemplo: `AppointmentActionModal` se dividirá en un `<section>` general, y cada una de sus pestañas/módulos independientes en `<article>` o `<section>` subordinados.
 
+#### Estructura de Contraste Visual (Bento Box)
+- **Regla Anti-Camuflaje**: Nunca se deben encadenar fondos grises sobre contenedores grises (ej: `gray-100` sobre `card-bg` o `gray-50`). Esto destruye la división visual en monitores de bajo contraste.
+- **Jerarquía de Cajas (Modales y Vistas)**: El fondo central (modal o app base) utiliza `var(--card-bg)` o un gris apagado. Los paneles interactivos y grupos de acción interiores (`<article>` o `<section>`) **deben forzar un contraste brillante**, habitualmente utilizando `var(--white)` puro acompañado de `border: 1px solid var(--gray-300)` y `box-shadow: var(--shadow-sm)`.
+- **Zonas Semánticas**: Las únicas excepciones a la regla de tarjeta blanca son las alertas funcionales graves o destacadas, las cuales consumen fondos pálidos propios (`var(--red-50)`, `var(--blue-50)`) y marcos oscurecidos.
+
 #### Componentes
 ```jsx
 // ✅ CORRECTO
