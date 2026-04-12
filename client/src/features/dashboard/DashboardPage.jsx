@@ -9,6 +9,8 @@ import { PageHeader } from '../layout';
 import { PrescriptionModal, MedicalRequirementManager } from '../medical_documents';
 import { PatientHistoryModal } from '../patients';
 import { TransactionModal } from '../finances';
+import heroBg from './assets/dashboard_hero.png'; // Canva-style background
+
 
 // Internal component from another feature (keeping as is or move to molecules if shared)
 import AppointmentActionModal from '../appointments/components/AppointmentActionModal.jsx';
@@ -76,23 +78,37 @@ const DashboardPage = () => {
     return (
         <MainLayout wide>
             <section className="dashboard-page-orchestrator">
+                <header className="dashboard-hero">
+                    <div className="dashboard-hero__background" style={{ backgroundImage: `url(${heroBg})` }}></div>
+                    <div className="dashboard-hero__content">
+                        <PageHeader 
+                            className="dashboard-header--premium"
+                            title={
+                                <>
+                                    {t('dashboard')}
+                                    <div className="dashboard-live-indicator">
+                                        <span className="dashboard-live-indicator__dot"></span>
+                                        <span className="dashboard-live-indicator__text">{t('live') || 'LIVE'}</span>
+                                    </div>
+                                </>
+                            }
+                            subtitle={
+                                <>
+                                    {t('welcome_back')}, <strong>{user?.full_name || user?.username}</strong>. {t('dashboard_subtitle')}
+                                </>
+                            }
+                        />
+                        <div className="dashboard-hero__search">
+                            <div className="dashboard-search-bar">
+                                <Icon name="search" />
+                                <input type="text" placeholder={t('search_placeholder') || "¿Qué quieres buscar hoy?"} />
+                                <Badge variant="info">CMS</Badge>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
                 <section className="dashboard-page">
-                    <PageHeader 
-                        title={
-                            <>
-                                {t('dashboard')}
-                                <div className="dashboard-live-indicator">
-                                    <span className="dashboard-live-indicator__dot"></span>
-                                    <span className="dashboard-live-indicator__text">{t('live') || 'LIVE'}</span>
-                                </div>
-                            </>
-                        }
-                        subtitle={
-                            <>
-                                {t('welcome_back')}, <strong>{user?.full_name || user?.username}</strong>. {t('dashboard_subtitle')}
-                            </>
-                        }
-                    />
 
                     <div className="dashboard-grid animate-fadeIn">
                         {/* Sidebar Stats */}
