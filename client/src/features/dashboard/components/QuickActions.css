@@ -73,29 +73,29 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    background-color: var(--gray-50);
-    border: 1px solid var(--gray-200);
-    border-radius: 0.75rem;
-    color: var(--text-main);
-    font-size: 0.875rem;
-    font-weight: 600;
+    padding: 0.5rem 0.75rem;
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    color: var(--white);
+    font-size: 0.8125rem;
+    font-weight: 500;
     text-align: left;
     transition: all 0.2s ease;
     cursor: pointer;
 }
 
 .quick-actions__btn:hover {
-    background-color: var(--white);
+    background-color: rgba(255, 255, 255, 0.08);
     border-color: var(--primary-color);
-    color: var(--primary-color);
-    box-shadow: var(--shadow-sm);
-    transform: translateX(4px);
+    color: var(--white);
+    transform: translateX(2px);
 }
 
 .quick-actions__btn .icon {
-    color: var(--text-muted);
-    transition: color 0.2s ease;
+    color: var(--white);
+    opacity: 0.6;
+    font-size: 1.1rem;
 }
 
 .quick-actions__btn:hover .icon {

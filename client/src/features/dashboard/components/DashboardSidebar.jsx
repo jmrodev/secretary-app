@@ -20,34 +20,30 @@ const DashboardSidebar = ({ stats, newPatientStats, user, t }) => {
                         <Icon name="analytics" size="1rem" />
                         {t('general_stats') || 'Estadísticas Generales'}
                     </h4>
-                    <div className="dashboard-sidebar__grid">
+                    <div className="dashboard-sidebar__list">
                         <StatCard
-                            size="sm"
+                            layout="list"
                             icon="calendar_today"
                             label={t('turnos_hoy')}
                             value={stats.appointments_today}
-                            variant={stats.appointments_today > 0 ? 'success' : 'default'}
                         />
                         <StatCard
-                            size="sm"
+                            layout="list"
                             icon="view_week"
                             label={t('turnos_semana')}
                             value={stats.appointments_week}
-                            variant="accent"
                         />
                         <StatCard
-                            size="sm"
+                            layout="list"
                             icon="date_range"
                             label={t('turnos_mes')}
                             value={stats.appointments_month}
-                            variant="warning"
                         />
                         <StatCard
-                            size="sm"
+                            layout="list"
                             icon="groups"
                             label={t('pacientes_label')}
                             value={stats.total_patients}
-                            variant="dark"
                         />
                     </div>
                 </section>
@@ -58,38 +54,33 @@ const DashboardSidebar = ({ stats, newPatientStats, user, t }) => {
                 <section className="dashboard-sidebar__section animate-fadeIn" style={{ animationDelay: '0.1s' }}>
                     <h4 className="dashboard-sidebar__title">
                         <Icon name="auto_awesome" size="1rem" />
-                        {t('new_patients_stat')}
+                        {t('new_patients_stat') || 'Crecimiento de Pacientes'}
                     </h4>
-                    <div className="dashboard-sidebar__grid">
+                    <div className="dashboard-sidebar__list">
                         <StatCard
-                            size="sm"
+                            layout="list"
                             icon="flare"
                             label={t('this_day')}
                             value={newPatientStats.currentDay}
-                            variant={newPatientStats.currentDay > 0 ? 'success' : 'accent'}
                         />
                         <StatCard
-                            size="sm"
+                            layout="list"
                             icon="calendar_today"
                             label={t('this_week')}
                             value={newPatientStats.currentWeek}
-                            trend={newPatientStats.currentWeek > 0 ? '↑' : ''}
                         />
                         <StatCard
-                            size="sm"
+                            layout="list"
                             icon="bar_chart"
                             label={t('this_month')}
                             value={newPatientStats.currentMonth}
-                            variant="dark"
                         />
                         <StatCard
-                            size="sm"
+                            layout="list"
                             icon="trending_up"
                             label={t('this_year')}
                             value={newPatientStats.currentYear}
-                            variant="success"
                             trend="↑"
-                            trendLabel="mejora"
                         />
                     </div>
                 </section>

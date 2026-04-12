@@ -7,19 +7,19 @@
     --accent-color: #06b6d4; /* Cyan 500 */
     --accent-hover: #0891b2; /* Cyan 600 */
     
-    --background-bg: #f8fafc; /* Slate 50 - Extremely clean */
-    --card-bg: #ffffff; /* Pure white */
+    --background-bg: #94a3b8; /* Slate 400 - Solicitado: Studio Gray más profundo */
+    --card-bg: #ffffff;
     --modal-bg: #ffffff;
-    --modal-bg-dark: rgba(15, 23, 42, 0.9); /* Dark slate overlay */
+    --modal-bg-dark: rgba(158, 171, 202, 0.75);
     
-    --text-main: #0f172a; /* Slate 900 */
-    --text-muted: #64748b; /* Slate 500 */
-    --text-secondary: #475569; /* Slate 600 */
+    --text-main: #0f172a; 
+    --text-muted: #475569; 
+    --text-secondary: #1e293b; /* Slate 800 for better legibility on 400 bg surfaces if needed */
     
-    --border-color: #e2e8f0; /* Slate 200 */
-    --error: #f43f5e; /* Rose 500 */
-    --success: #10b981; /* Emerald 500 */
-    --warning: #f59e0b; /* Amber 500 */
+    --border-color: #64748b; /* Slate 500 - Stronger borders for Slate-400 bg */
+    --error: #ef4444; 
+    --success: #10b981;
+    --warning: #f59e0b;
 
     /* Gray Scale (Using Slate for a premium feel) */
     --white: #ffffff;
@@ -144,11 +144,13 @@
     /* UI Tokens */
     --radius: 1rem;
     --radius-sm: 0.5rem;
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --shadow-premium: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.15), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.2), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-premium: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
     --font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
-    --glass: rgba(255, 255, 255, 0.8);
+    --glass: rgba(255, 255, 255, 0.85); 
     --sidebar-width: 280px;
+    --sidebar-bg: var(--secondary-color); /* Slate 900 */
+    --sidebar-text: #ffffff;
 }

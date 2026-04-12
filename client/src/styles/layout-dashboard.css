@@ -5,28 +5,26 @@
  * Used for title and subtitle at the very top.
  */
 .dashboard-header {
-    margin-bottom: clamp(0.5rem, 2vh, 1rem);
+    margin-bottom: clamp(0.4rem, 1.5vh, 0.75rem);
     display: flex;
     flex-direction: column;
-    gap: 0.15rem;
+    gap: 0.1rem;
 }
 
 .dashboard-header__title {
-    font-size: clamp(1.5rem, 3vw, 2rem);
-    /* Slightly smaller/more refined */
+    font-size: clamp(1.25rem, 2.5vw, 1.5rem);
     font-weight: 800;
-    color: white;
-    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    color: var(--text-main);
     margin: 0;
     line-height: 1.1;
+    letter-spacing: -0.025em;
 }
 
 .dashboard-header__subtitle {
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.9rem;
+    color: var(--text-muted);
     margin: 0;
     max-width: 800px;
-    /* Prevent long descriptors from stretching full width */
     line-height: 1.5;
 }
 
@@ -34,7 +32,7 @@
 
 /* --- Content Container (Beneath Header) --- */
 .layout-content-area {
-    padding: clamp(1rem, 2vh, 2rem) clamp(1rem, 3vw, 2.5rem);
+    padding: clamp(0.25rem, 1vh, 0.75rem) clamp(1rem, 3vw, 2.5rem);
     max-width: var(--max-width, 1600px);
     margin: 0 auto;
     width: 100%;
@@ -136,7 +134,7 @@
     --card-border: var(--gray-300);
     --card-shadow: var(--shadow-sm);
     --card-header-bg: var(--gray-50);
-    --card-title-color: var(--gray-400);
+    --card-title-color: #475569; /* Slate 600 - Better contrast */
     /* ------------------------------ */
 
     background-color: var(--card-bg);

@@ -13,6 +13,7 @@ const StatCard = ({
     value,
     variant = 'default', // 'default' | 'accent' | 'dark' | 'success' | 'warning'
     size = 'md', // 'sm' | 'md' | 'lg'
+    layout = 'card', // 'card' | 'list'
     trend = null, // e.g., '+12%'
     trendLabel = '', // e.g., 'vs ayer'
     className = ''
@@ -20,12 +21,13 @@ const StatCard = ({
     const baseClass = 'stat-card';
     const variantClass = variant !== 'default' ? `${baseClass}--${variant}` : '';
     const sizeClass = size !== 'md' ? `${baseClass}--${size}` : '';
+    const layoutClass = `${baseClass}--${layout}`;
 
     return (
-        <article className={`${baseClass} ${variantClass} ${sizeClass} ${className}`}>
+        <article className={`${baseClass} ${variantClass} ${sizeClass} ${layoutClass} ${className}`}>
             <div className={`${baseClass}__header`}>
                 <div className={`${baseClass}__icon-wrapper`}>
-                    <Icon name={icon} size={size === 'sm' ? '1rem' : '1.5rem'} />
+                    <Icon name={icon} size={(size === 'sm' || layout === 'list') ? '1rem' : '1.5rem'} />
                 </div>
                 <div className={`${baseClass}__label-group`}>
                     <span className={`${baseClass}__label`}>{label}</span>
