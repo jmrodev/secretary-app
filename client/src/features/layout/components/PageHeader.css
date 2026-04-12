@@ -6,13 +6,67 @@
     --header-divider-color: var(--border-color);
     /* ------------------------------ */
 
-    margin-bottom: clamp(0.5rem, 2vh, 1.5rem);
+    margin-bottom: clamp(1rem, 2vh, 1.5rem);
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding-bottom: 0.5rem;
+    padding: 0.5rem 0;
+}
+
+/* --- Premium Hero Variant --- */
+.page-header--premium {
+    position: relative;
+    height: 140px;
+    min-height: 140px;
+    background-color: var(--primary-dark, #4338ca);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0px;
+}
+
+.page-header--premium__content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: var(--max-width, 1600px);
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.page-header__background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.8) saturate(1.1);
+    transform: scale(1.02);
+    animation: headerSlowZoom 20s infinite alternate linear;
+}
+
+.page-header--premium .page-header--premium__title {
+    color: var(--white);
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.1;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.page-header--premium .page-header--premium__subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.95rem;
+    margin: 0.25rem 0 0 0;
 }
 
 .page-header__title-container {
@@ -49,4 +103,15 @@
 .page-header--divider {
     border-bottom: 1px solid var(--header-divider-color);
     padding-bottom: 1.25rem;
+}
+
+/* --- Global Header Animations --- */
+@keyframes headerSlowZoom {
+    from { transform: scale(1.02); }
+    to { transform: scale(1.08); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
 }

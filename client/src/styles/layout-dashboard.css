@@ -32,6 +32,16 @@
 
 
 
+/* --- Content Container (Beneath Header) --- */
+.layout-content-area {
+    padding: clamp(1rem, 2vh, 2rem) clamp(1rem, 3vw, 2.5rem);
+    max-width: var(--max-width, 1600px);
+    margin: 0 auto;
+    width: 100%;
+    position: relative;
+    z-index: 5;
+}
+
 /**
  * 2. Navigation & Filters Bar
  * Centralized bar for tabs and doctor filters.
@@ -99,7 +109,10 @@
     padding: 0 clamp(0.5rem, 2vw, 1.5rem);
     align-items: center;
     position: sticky;
-    top: 0.5rem;
+    top: 1.5rem; /* Better offset from viewport top */
+    align-self: start;
+    height: auto;
+    z-index: 5;
 }
 
 /* Ensure children containers inside sidebar take full width if they are sections */

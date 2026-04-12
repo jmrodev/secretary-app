@@ -17,7 +17,7 @@ import { useDashboardWhatsApp } from './useDashboardWhatsApp';
  */
 export const useDashboardController = () => {
     const permissions = usePermissions();
-    const { user, isStaff, isAdmin, isSecretary, isDoctor, isPatient, isMedicalStaff } = permissions;
+    const { user, isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff } = permissions;
     const { showMessage } = useMessage();
     const { t } = useLanguage();
     const { settings } = useConfig();

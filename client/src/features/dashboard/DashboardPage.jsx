@@ -1,10 +1,8 @@
 import React from 'react';
-import { 
-    useDashboardController, 
-    DashboardSidebar, 
-    DashboardReminders,
-    QuickActions
-} from './index'; // Local index
+import { useDashboardController } from './hooks/useDashboardController';
+import DashboardSidebar from './components/DashboardSidebar';
+import DashboardReminders from './components/DashboardReminders';
+import QuickActions from './components/QuickActions';
 import { PageHeader } from '../layout';
 import { PrescriptionModal, MedicalRequirementManager } from '../medical_documents';
 import { PatientHistoryModal } from '../patients';
@@ -78,41 +76,37 @@ const DashboardPage = () => {
     return (
         <MainLayout wide>
             <section className="dashboard-page-orchestrator">
-                <header className="dashboard-hero">
-                    <div className="dashboard-hero__background" style={{ backgroundImage: `url(${heroBg})` }}></div>
-                    <div className="dashboard-hero__content">
-                        <PageHeader 
-                            className="dashboard-header--premium"
-                            title={
-                                <>
-                                    {t('dashboard')}
-                                    <div className="dashboard-live-indicator">
-                                        <span className="dashboard-live-indicator__dot"></span>
-                                        <span className="dashboard-live-indicator__text">{t('live') || 'LIVE'}</span>
-                                    </div>
-                                </>
-                            }
-                            subtitle={
-                                <>
-                                    {t('welcome_back')}, <strong>{user?.full_name || user?.username}</strong>. {t('dashboard_subtitle')}
-                                </>
-                            }
-                        />
-                        <div className="dashboard-hero__search">
-                            <div className="dashboard-search-bar">
-                                <Icon name="search" />
-                                <input type="text" placeholder={t('search_placeholder') || "¿Qué quieres buscar hoy?"} />
-                                <Badge variant="info">CMS</Badge>
+                <PageHeader 
+                    variant="premium"
+                    backgroundUrl={heroBg}
+                    title={
+                        <>
+                            {t('dashboard')}
+                            <div className="dashboard-live-indicator">
+                                <span className="dashboard-live-indicator__dot"></span>
+                                <span className="dashboard-live-indicator__text">{t('live') || 'LIVE'}</span>
                             </div>
-                        </div>
-                    </div>
-                </header>
+                        </>
+                    }
+                    subtitle={
+                        <>
+                            {t('welcome_back')}, <strong>{user?.full_name || user?.username}</strong>. {t('dashboard_subtitle')}
+                        </>
+                    }
+                />
 
-                <section className="dashboard-page">
+                <section className="layout-content-area">
 
                     <div className="dashboard-grid animate-fadeIn">
                         {/* Sidebar: Utils & Metrics */}
                         <aside className="dashboard-sidebar">
+                            {/* Consolidated Search in Sidebar */}
+                            <div className="dashboard-search-bar" style={{ width: '100%', marginBottom: '0.5rem' }}>
+                                <Icon name="search" />
+                                <input type="text" placeholder={t('search_placeholder') || "¿Qué buscar?"} />
+                                <Badge variant="info">CMS</Badge>
+                            </div>
+                            
                             <DashboardSidebar
                                 stats={stats}
                                 newPatientStats={newPatientStats}

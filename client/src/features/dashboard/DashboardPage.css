@@ -2,12 +2,12 @@
 
 .dashboard-page-orchestrator {
     /* --- Local Component Tokens --- */
-    --hero-height: 320px;
-    --hero-padding: 3rem;
+    --hero-height: 140px;
+    --hero-padding: 1.5rem 2rem;
     --hero-text-color: var(--white);
     --search-bg: rgba(255, 255, 255, 0.9);
-    --search-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-    --live-indicator-bg: rgba(255, 255, 255, 0.2);
+    --search-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    --live-indicator-bg: rgba(255, 255, 255, 0.15);
     --live-indicator-dot: #4ade80; /* Flashing green */
     --live-indicator-text: var(--white);
     /* ------------------------------ */
@@ -18,61 +18,8 @@
     background-color: var(--gray-50);
 }
 
-/* --- Hero Section --- */
-.dashboard-hero {
-    position: relative;
-    height: 320px; /* Force height directly to avoid var issues */
-    min-height: 320px;
-    background-color: var(--primary-color, #6366f1);
-    overflow: hidden;
-    margin-bottom: -6rem; /* Deeper overlap for premium Bento look */
-}
-
-.dashboard-hero__background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    filter: brightness(0.85) saturate(1.1);
-    transform: scale(1.05);
-    animation: slowZoom 20s infinite alternate linear;
-}
-
-.dashboard-hero__content {
-    position: relative;
-    z-index: 2;
-    max-width: var(--max-width);
-    margin: 0 auto;
-    padding: var(--hero-padding);
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 2rem;
-}
-
-/* Glassmorphism for Header */
-.dashboard-header--premium .page-header__title {
-    color: var(--hero-text-color);
-    font-size: 2.5rem;
-    font-weight: 800;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.dashboard-header--premium .page-header__subtitle {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 1.125rem;
-    max-width: 600px;
-}
-
-/* --- Search Bar (Canva Style) --- */
-.dashboard-hero__search {
-    max-width: 500px;
-    animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
+/* --- Content Wrapper --- */
+.dashboard-page {
 
 .dashboard-search-bar {
     display: flex;
@@ -102,15 +49,7 @@
     outline: none;
 }
 
-/* --- Content Wrapper --- */
-.dashboard-page {
-    position: relative;
-    z-index: 3;
-    max-width: var(--max-width, 1600px);
-    margin: 0 auto;
-    width: 100%;
-    padding: 0 2rem 3rem; /* Re-add padding here instead of layout */
-}
+/* --- Search Bar --- */
 
 /* --- Live Indicator --- */
 .dashboard-live-indicator {

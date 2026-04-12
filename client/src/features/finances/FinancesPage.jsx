@@ -3,6 +3,7 @@ import React from 'react';
 // Atomic Design Components
 import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
+import { PageHeader } from '../layout';
 
 import { useFinancesPageController } from './hooks/useFinancesPageController';
 import FinanceStatsCards from './components/FinanceStatsCards';
@@ -44,57 +45,60 @@ const FinancesPage = () => {
     return (
         <MainLayout wide>
             <div className="finances-page">
-            <header className="dashboard-header animate-fadeIn">
-                <h1 className="dashboard-header__title">{t('finances')}</h1>
-                <p className="dashboard-header__subtitle">{t('finances_subtitle') || 'Control de caja y transacciones médicas.'}</p>
-            </header>
+            <PageHeader 
+                variant="premium"
+                title={t('finances')}
+                subtitle={t('finances_subtitle') || 'Control de caja y transacciones médicas.'}
+            />
 
-            {loading ? (
-                <Loading variant="centered" text={t('loading') || "Cargando..."} />
-            ) : (
-                <div className="dashboard-grid animate-fadeIn">
-                    <FinanceSidebar
-                        isAdminOrSecretary={isAdminOrSecretary}
-                        user={user}
-                        doctors={doctors}
-                        selectedDoctorFilter={selectedDoctorFilter}
-                        pendingClosuresCount={controller.pendingClosures.length}
-                        onOpenNewTransaction={handlers.onOpenNewTransaction}
-                        onOpenPendingClosures={() => handlers.setPendingClosuresOpen(true)}
-                        onSelectDoctor={handlers.onSelectDoctor}
-                        onOpenCloseBox={handlers.onOpenCloseBox}
-                        calculateBalance={handlers.calculateBalance}
-                        calculateBalanceByMethod={handlers.calculateBalanceByMethod}
-                        filters={filters}
-                        handlers={handlers}
-                        t={t}
-                    />
+            <div className="layout-content-area">
+                {loading ? (
+                    <Loading variant="centered" text={t('loading') || "Cargando..."} />
+                ) : (
+                    <div className="dashboard-grid animate-fadeIn">
+                        <FinanceSidebar
+                            isAdminOrSecretary={isAdminOrSecretary}
+                            user={user}
+                            doctors={doctors}
+                            selectedDoctorFilter={selectedDoctorFilter}
+                            pendingClosuresCount={controller.pendingClosures.length}
+                            onOpenNewTransaction={handlers.onOpenNewTransaction}
+                            onOpenPendingClosures={() => handlers.setPendingClosuresOpen(true)}
+                            onSelectDoctor={handlers.onSelectDoctor}
+                            onOpenCloseBox={handlers.onOpenCloseBox}
+                            calculateBalance={handlers.calculateBalance}
+                            calculateBalanceByMethod={handlers.calculateBalanceByMethod}
+                            filters={filters}
+                            handlers={handlers}
+                            t={t}
+                        />
 
-                    <main className="dashboard-main">
-                        {isAdminOrSecretary && stats.length > 0 && (
-                            <FinanceStatsCards stats={stats} t={t} />
-                        )}
+                        <main className="dashboard-main">
+                            {isAdminOrSecretary && stats.length > 0 && (
+                                <FinanceStatsCards stats={stats} t={t} />
+                            )}
 
-                        <div className="dashboard-card no-padding">
-                            <TransactionsTable
-                                transactions={filteredTransactions}
-                                totalCount={controller.totalCount}
-                                currentPage={controller.currentPage}
-                                totalPages={controller.totalPages}
-                                onPageChange={handlers.onPageChange}
-                                user={user}
-                                settings={settings}
-                                t={t}
-                                onEdit={handlers.onEditTransaction}
-                                onDelete={handlers.onDeleteTransaction}
-                                onGenerateInvoice={handlers.onGenerateInvoice}
-                                onSync={handlers.onSyncTransaction}
-                                alert={controller.alert}
-                            />
-                        </div>
-                    </main>
-                </div>
-            )}
+                            <div className="dashboard-card no-padding">
+                                <TransactionsTable
+                                    transactions={filteredTransactions}
+                                    totalCount={controller.totalCount}
+                                    currentPage={controller.currentPage}
+                                    totalPages={controller.totalPages}
+                                    onPageChange={handlers.onPageChange}
+                                    user={user}
+                                    settings={settings}
+                                    t={t}
+                                    onEdit={handlers.onEditTransaction}
+                                    onDelete={handlers.onDeleteTransaction}
+                                    onGenerateInvoice={handlers.onGenerateInvoice}
+                                    onSync={handlers.onSyncTransaction}
+                                    alert={controller.alert}
+                                />
+                            </div>
+                        </main>
+                    </div>
+                )}
+            </div>
 
             {/* --- Modals --- */}
             <TransactionModal

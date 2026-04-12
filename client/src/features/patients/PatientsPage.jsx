@@ -11,6 +11,7 @@ import TabButton from '@/components/atoms/TabButton';
 import Icon from '@/components/atoms/Icon';
 
 // Molecules (Shared/Global)
+import { PageHeader } from '../layout';
 import QRCodeModal from './components/QRCodeModal';
 import SearchBar from '@/components/molecules/SearchBar';
 import Pagination from '@/components/molecules/Pagination';
@@ -103,12 +104,14 @@ const PatientsPage = () => {
             ) : (
                 // --- LIST VIEW ---
                 <>
-                    <header className="dashboard-header">
-                        <h1 className="dashboard-header__title">{t('patients')}</h1>
-                        <p className="dashboard-header__subtitle">{t('patients_subtitle')}</p>
-                    </header>
+                    <PageHeader 
+                        variant="premium"
+                        title={t('patients')}
+                        subtitle={t('patients_subtitle')}
+                    />
 
-                    <div className="dashboard-grid animate-fadeIn">
+                    <div className="layout-content-area">
+                        <div className="dashboard-grid animate-fadeIn">
                         <aside className="dashboard-sidebar">
                             <div className="dashboard-nav-bar">
                                 <TabNav className="patients__nav">
@@ -202,6 +205,7 @@ const PatientsPage = () => {
                                 />
                             )}
                         </main>
+                        </div>
                     </div>
                 </>
             )}

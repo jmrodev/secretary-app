@@ -12,7 +12,7 @@ const DashboardSidebar = ({ stats, newPatientStats, user, t }) => {
     const navigate = useNavigate();
 
     return (
-        <aside className="dashboard-sidebar">
+        <aside className="dashboard-sidebar-stats">
             {/* General Statistics Section */}
             {stats && (
                 <section className="dashboard-sidebar__section animate-fadeIn">
