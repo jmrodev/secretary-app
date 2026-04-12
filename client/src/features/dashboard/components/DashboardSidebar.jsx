@@ -26,24 +26,28 @@ const DashboardSidebar = ({ stats, newPatientStats, user, t }) => {
                             icon="calendar_today"
                             label={t('turnos_hoy')}
                             value={stats.appointments_today}
+                            variant={stats.appointments_today > 0 ? 'success' : 'default'}
                         />
                         <StatCard
                             size="sm"
                             icon="view_week"
                             label={t('turnos_semana')}
                             value={stats.appointments_week}
+                            variant="accent"
                         />
                         <StatCard
                             size="sm"
                             icon="date_range"
                             label={t('turnos_mes')}
                             value={stats.appointments_month}
+                            variant="warning"
                         />
                         <StatCard
                             size="sm"
                             icon="groups"
                             label={t('pacientes_label')}
                             value={stats.total_patients}
+                            variant="dark"
                         />
                     </div>
                 </section>
@@ -62,26 +66,30 @@ const DashboardSidebar = ({ stats, newPatientStats, user, t }) => {
                             icon="flare"
                             label={t('this_day')}
                             value={newPatientStats.currentDay}
-                            variant="accent"
+                            variant={newPatientStats.currentDay > 0 ? 'success' : 'accent'}
                         />
                         <StatCard
                             size="sm"
                             icon="calendar_today"
                             label={t('this_week')}
                             value={newPatientStats.currentWeek}
+                            trend={newPatientStats.currentWeek > 0 ? '↑' : ''}
                         />
                         <StatCard
                             size="sm"
                             icon="bar_chart"
                             label={t('this_month')}
                             value={newPatientStats.currentMonth}
+                            variant="dark"
                         />
                         <StatCard
                             size="sm"
                             icon="trending_up"
                             label={t('this_year')}
                             value={newPatientStats.currentYear}
-                            variant="dark"
+                            variant="success"
+                            trend="↑"
+                            trendLabel="mejora"
                         />
                     </div>
                 </section>

@@ -102,11 +102,6 @@
   --doc-accent: #0369a1;
 }
 
-:root {
-  --color-primary: #102d4b;
-  --color-secondary: #f69411;
-  /* ... more variables ... */
-}
 
 /* Base Styles */
 .app-loading {

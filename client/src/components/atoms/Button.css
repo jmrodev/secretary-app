@@ -48,29 +48,28 @@
 /* Semantic Variants for CRUD and Actions */
 
 .btn--primary {
+    --btn-bg: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+    --btn-text: var(--white);
+    --btn-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+    --btn-hover-bg: linear-gradient(135deg, var(--primary-hover) 0%, var(--indigo-700) 100%);
+    --btn-hover-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* Create / Save / Accent Action */
+.btn--accent {
     --btn-bg: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
     --btn-text: var(--white);
-    --btn-shadow: 0 2px 4px rgba(63, 131, 248, 0.1);
-    --btn-hover-bg: linear-gradient(135deg, var(--accent-hover) 0%, var(--blue-700) 100%);
-    --btn-hover-shadow: 0 4px 12px rgba(63, 131, 248, 0.2);
+    --btn-shadow: 0 2px 4px rgba(6, 182, 212, 0.2);
+    --btn-hover-bg: linear-gradient(135deg, var(--accent-hover) 0%, var(--cyan-700) 100%);
+    --btn-hover-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
 }
 
-/* Create / Save */
 .btn--success {
-    --btn-bg: linear-gradient(135deg, var(--green-500) 0%, var(--green-600) 100%);
+    --btn-bg: linear-gradient(135deg, var(--success) 0%, var(--green-600) 100%);
     --btn-text: var(--white);
-    --btn-shadow: 0 2px 4px rgba(16, 185, 129, 0.1);
+    --btn-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
     --btn-hover-bg: linear-gradient(135deg, var(--green-600) 0%, var(--green-700) 100%);
-    --btn-hover-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-}
-
-/* Edit / Special */
-.btn--accent {
-    --btn-bg: linear-gradient(135deg, var(--indigo-500) 0%, var(--indigo-600) 100%);
-    --btn-text: var(--white);
-    --btn-shadow: 0 2px 4px rgba(99, 102, 241, 0.1);
-    --btn-hover-bg: linear-gradient(135deg, var(--indigo-600) 0%, var(--indigo-700) 100%);
-    --btn-hover-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+    --btn-hover-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
 /* Delete / Warning Action */

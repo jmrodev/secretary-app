@@ -75,7 +75,6 @@ h6 {
 h1 {
     font-size: 2.25rem;
     color: var(--text-main);
-    text-shadow: none;
 }
 
 h2 {
@@ -90,27 +89,19 @@ h4 {
     font-size: 1.25rem;
 }
 
-h5 {
-    font-size: 1.1rem;
-}
-
-h6 {
-    font-size: 1rem;
-}
-
 p {
     margin-bottom: 1rem;
     color: var(--text-secondary);
 }
 
 a {
-    color: var(--accent-color);
+    color: var(--primary-color);
     text-decoration: none;
     transition: color 0.2s;
 }
 
 a:hover {
-    color: var(--accent-hover);
+    color: var(--primary-hover);
 }
 
 /* Base Form Elements */
@@ -138,8 +129,8 @@ select:focus,
 textarea:focus,
 .form-control:focus,
 .input-field:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(63, 131, 248, 0.1);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
     transform: translateY(-1px);
 }
 
@@ -161,31 +152,24 @@ label {
     font-size: 0.9rem;
 }
 
-/* =========================================
-   Tables - Striped alternating Rows
-   ========================================= */
+/* Tables */
 .table-base {
     width: 100%;
     border-collapse: collapse;
 }
 
 .table-base tbody tr:nth-child(even) {
-    background-color: var(--gray-200); /* High contrast grey */
+    background-color: var(--gray-50);
 }
 
 .table-base tbody tr:nth-child(odd) {
-    background-color: var(--blue-200); /* Darker contrast blue */
+    background-color: var(--white);
 }
 
 .table-base td {
-    border-bottom: 1.5px solid var(--gray-400); /* Strongly distinct separating line */
+    border-bottom: 1px solid var(--gray-200);
 }
 
 .table-base tbody tr:hover {
-    background-color: rgba(0, 0, 0, 0.02) !important;
+    background-color: rgba(99, 102, 241, 0.02) !important;
 }
-
-/* Legacy Buttons (Moved to Button.css / Should use Button atom) */
-/* 
-button, .btn { ... }
-*/

@@ -1,35 +1,28 @@
 :root {
-    /* Core Semantic Colors */
-    --primary-color: #374151;
-    /* gray-700 */
-    --secondary-color: #4b5563;
-    /* gray-600 */
-    --accent-color: #3f83f8;
-    /* Muted blue */
-    --accent-hover: #1c64f2;
-    /* Darker blue */
-    --background-bg: #d1d5db;
-    /* gray-300 - Intermediate gray */
-    --card-bg: #f3f4f6;
-    /* gray-100 - Soft gray card */
-    --modal-bg: var(--card-bg);
-    /* Default modal aligns with cards */
-    --modal-bg-dark: #5757bd94;
-    /* gray-500 - Specialized dark modal */
-    --text-main: #1f2937;
-    /* gray-800 */
-    --text-muted: #6b7280;
-    /* gray-500 */
-    --text-secondary: #4b5563;
-    /* gray-600 */
-    --border-color: #94a3b8;
-    /* gray-400 */
-    --error: #ef4444;
-    --success: #10b981;
-    --warning: #f59e0b;
+    /* Core Semantic Colors - MODERN VIBRANT */
+    --primary-color: #6366f1; /* Indigo 500 */
+    --primary-hover: #4f46e5; /* Indigo 600 */
+    --secondary-color: #0f172a; /* Slate 900 */
+    
+    --accent-color: #06b6d4; /* Cyan 500 */
+    --accent-hover: #0891b2; /* Cyan 600 */
+    
+    --background-bg: #f8fafc; /* Slate 50 - Extremely clean */
+    --card-bg: #ffffff; /* Pure white */
+    --modal-bg: #ffffff;
+    --modal-bg-dark: rgba(15, 23, 42, 0.9); /* Dark slate overlay */
+    
+    --text-main: #0f172a; /* Slate 900 */
+    --text-muted: #64748b; /* Slate 500 */
+    --text-secondary: #475569; /* Slate 600 */
+    
+    --border-color: #e2e8f0; /* Slate 200 */
+    --error: #f43f5e; /* Rose 500 */
+    --success: #10b981; /* Emerald 500 */
+    --warning: #f59e0b; /* Amber 500 */
 
-    /* Gray Scale */
-    --white: #fafafa; /* Darken pure white for eye comfort */
+    /* Gray Scale (Using Slate for a premium feel) */
+    --white: #ffffff;
     --gray-50: #f8fafc;
     --gray-100: #f1f5f9;
     --gray-200: #e2e8f0;

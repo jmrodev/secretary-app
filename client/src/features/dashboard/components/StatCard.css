@@ -116,21 +116,24 @@
 
 /* Color Variants */
 .stat-card--accent {
-    --card-icon-bg: var(--purple-50);
-    --card-icon-color: var(--purple-600);
-    --card-border: var(--purple-100);
+    --card-icon-bg: var(--indigo-50);
+    --card-icon-color: var(--indigo-600);
+    --card-border: var(--indigo-100);
+    background: linear-gradient(135deg, var(--white) 60%, var(--indigo-50) 100%);
 }
 
 .stat-card--success {
     --card-icon-bg: var(--emerald-50);
     --card-icon-color: var(--emerald-600);
     --card-border: var(--emerald-100);
+    background: linear-gradient(135deg, var(--white) 60%, var(--emerald-50) 100%);
 }
 
 .stat-card--warning {
     --card-icon-bg: var(--amber-50);
     --card-icon-color: var(--amber-600);
     --card-border: var(--amber-100);
+    background: linear-gradient(135deg, var(--white) 60%, var(--amber-50) 100%);
 }
 
 .stat-card--dark {
@@ -140,4 +143,5 @@
     --card-value-color: var(--white);
     --card-icon-bg: rgba(255, 255, 255, 0.1);
     --card-icon-color: var(--white);
+    background: linear-gradient(135deg, var(--gray-900) 0%, #1a1b1e 100%);
 }
