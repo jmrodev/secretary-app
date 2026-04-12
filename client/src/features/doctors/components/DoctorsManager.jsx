@@ -19,7 +19,7 @@ const DoctorsManager = ({
     settings
 }) => {
     return (
-        <div className="doctors-manager">
+        <section className="doctors-manager">
             <header className="dashboard-header animate-fadeIn">
                 <h1 className="dashboard-header__title">{t('doctors_title')}</h1>
                 <p className="dashboard-header__subtitle">{t('doctors_subtitle') || 'Administra el personal médico y sus configuraciones.'}</p>
@@ -118,7 +118,7 @@ const DoctorsManager = ({
                     />
                 )
             }
-        </div>
+        </section>
     );
 };
 

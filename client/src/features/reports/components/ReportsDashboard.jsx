@@ -29,7 +29,7 @@ const ReportsDashboard = ({
     onPrint
 }) => {
     return (
-        <div className="reports-dashboard">
+        <section className="reports-dashboard">
             <PageHeader 
                 title={t('reports_page_title') || 'Reportes y Exportaciones'}
                 subtitle={t('reports_page_subtitle') || 'Generación de reportes mensuales de turnos y recetas.'}
@@ -95,7 +95,7 @@ const ReportsDashboard = ({
                     </div>
                 </main>
             </div>
-        </div>
+        </section>
     );
 };
 

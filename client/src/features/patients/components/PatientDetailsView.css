@@ -10,7 +10,7 @@
     align-items: center;
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
-    border-bottom: 2px solid var(--slate-100);
+    border-bottom: 2px solid var(--gray-100);
 }
 
 .patient-details__title {
@@ -18,7 +18,7 @@
     font-weight: 900;
     text-transform: capitalize;
     margin-bottom: 2rem;
-    color: var(--slate-900);
+    color: var(--gray-900);
     letter-spacing: -0.04em;
     line-height: 1;
 }
@@ -49,8 +49,15 @@
 
 /* Unified Block Structure */
 .details-block {
-    background: white;
-    border: 1px solid var(--slate-200);
+    /* --- Local Component Tokens --- */
+    --block-bg: var(--white);
+    --block-border: var(--gray-200);
+    --block-header-bg: var(--gray-50);
+    --block-title-color: var(--gray-800);
+    /* ------------------------------ */
+
+    background-color: var(--block-bg);
+    border: 1px solid var(--block-border);
     border-radius: 1rem;
     overflow: hidden;
     box-shadow: var(--shadow-sm);
@@ -60,7 +67,7 @@
 
 .details-block__header {
     padding: 1.25rem 1.5rem;
-    background: var(--slate-50);
+    background-color: var(--block-header-bg);
     border-bottom: 2px solid var(--blue-500);
     display: flex;
     justify-content: space-between;
@@ -70,7 +77,7 @@
 .details-block__title {
     font-size: 1rem;
     font-weight: 800;
-    color: var(--slate-800);
+    color: var(--block-title-color);
     margin: 0;
     display: flex;
     align-items: center;
@@ -126,7 +133,7 @@
 }
 
 .patient-details__info-row {
-    border-bottom: 1px solid var(--slate-50);
+    border-bottom: 1px solid var(--gray-50);
 }
 
 .patient-details__info-row:last-child {
@@ -150,13 +157,13 @@
     padding: 1rem 1.5rem;
     font-size: 1rem;
     font-weight: 600;
-    color: var(--slate-800);
+    color: var(--gray-800);
 }
 
 .patient-details__info-hint {
     font-size: 0.85rem;
     font-weight: 500;
-    color: var(--slate-400);
+    color: var(--gray-400);
     margin-left: 0.5rem;
 }
 
@@ -297,8 +304,8 @@
 
 /* Financial Debt Block */
 .patient-details__financial-card {
-    background: linear-gradient(135deg, var(--slate-800), var(--slate-900));
-    color: white;
+    background: linear-gradient(135deg, var(--gray-800), var(--gray-900));
+    color: var(--white);
     text-align: center;
     border-radius: 1rem;
     box-shadow: var(--shadow-xl);

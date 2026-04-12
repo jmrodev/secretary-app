@@ -8,7 +8,7 @@ const UserTable = ({ users, onEdit, onReset, onDelete }) => {
     const { t } = useLanguage();
 
     return (
-        <div className="user-table-wrapper">
+        <section className="user-table-wrapper">
             <table className="user-table__table table-base">
                 <thead>
                     <tr className="user-table__header">
@@ -54,7 +54,7 @@ const UserTable = ({ users, onEdit, onReset, onDelete }) => {
                     ))}
                 </tbody>
             </table>
-        </div>
+        </section>
     );
 };
 

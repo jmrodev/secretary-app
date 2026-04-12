@@ -1,10 +1,21 @@
 .tab-btn {
+    /* --- Local Component Tokens --- */
+    --tab-bg: transparent;
+    --tab-color: var(--gray-500);
+    --tab-hover-bg: var(--gray-100);
+    --tab-hover-color: var(--gray-700);
+    --tab-active-bg: var(--white);
+    --tab-active-color: var(--blue-600);
+    --tab-active-border: var(--gray-200);
+    --tab-active-shadow: var(--shadow-md);
+    /* ------------------------------ */
+
     padding: 0.625rem 1.25rem;
-    background: transparent;
+    background-color: var(--tab-bg);
     border: none;
     cursor: pointer;
     font-size: 0.9375rem;
-    color: var(--gray-500);
+    color: var(--tab-color);
     transition: all 0.2s ease;
     border-radius: 0.75rem;
     font-weight: 500;
@@ -14,16 +25,16 @@
 }
 
 .tab-btn:hover:not(.tab-btn--active) {
-    background: var(--gray-100);
-    color: var(--gray-700);
+    background-color: var(--tab-hover-bg);
+    color: var(--tab-hover-color);
 }
 
 .tab-btn--active {
-    background: white;
-    color: var(--blue-600);
+    background-color: var(--tab-active-bg);
+    color: var(--tab-active-color);
     font-weight: 600;
-    box-shadow: var(--shadow-md);
-    border: 1px solid var(--gray-200);
+    box-shadow: var(--tab-active-shadow);
+    border: 1px solid var(--tab-active-border);
 }
 
 .tab-btn--underline {
@@ -33,26 +44,26 @@
 }
 
 .tab-btn--underline.tab-btn--active {
-    background: transparent;
+    background-color: transparent;
     box-shadow: none;
     border: none;
-    border-bottom: 2px solid var(--blue-600);
+    border-bottom: 2px solid var(--tab-active-color);
 }
 /* Color Modifiers for active states */
 .tab-btn--green.tab-btn--active {
-    color: var(--green-600);
+    --tab-active-color: var(--green-600);
 }
 
 .tab-btn--amber.tab-btn--active {
-    color: var(--amber-600);
+    --tab-active-color: var(--amber-600);
 }
 
 .tab-btn--purple.tab-btn--active {
-    color: var(--purple-600);
+    --tab-active-color: var(--purple-600);
 }
 
 .tab-btn--red.tab-btn--active {
-    color: var(--red-600);
+    --tab-active-color: var(--red-600);
 }
 
 /* Underline Color Modifiers */

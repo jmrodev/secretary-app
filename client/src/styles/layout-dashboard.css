@@ -37,18 +37,24 @@
  * Centralized bar for tabs and doctor filters.
  */
 .dashboard-nav-bar {
-    background: var(--card-bg);
+    /* --- Local Component Tokens --- */
+    --nav-bar-bg: var(--card-bg);
+    --nav-bar-border: var(--border-color);
+    --nav-bar-shadow: var(--shadow-md);
+    /* ------------------------------ */
+
+    background-color: var(--nav-bar-bg);
     padding: clamp(0.4rem, 1vw, 0.5rem) clamp(0.75rem, 1.5vw, 1rem);
     margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
     width: 100%;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--nav-bar-border);
     border-radius: var(--radius-lg);
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--nav-bar-shadow);
 }
 
 /* Modifier for centered nav bar when no secondary items exist */
@@ -109,18 +115,29 @@
 }
 
 /**
- * 4. Standard Dashboard Card
+ * 4. Standard Dashboard Card (Bento Box Style)
  */
 .dashboard-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
+    /* --- Local Component Tokens --- */
+    --card-bg: var(--white);
+    --card-border: var(--gray-300);
+    --card-shadow: var(--shadow-sm);
+    --card-header-bg: var(--gray-50);
+    --card-title-color: var(--gray-400);
+    /* ------------------------------ */
+
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    /* Remove overflow:hidden to prevent clipping of shadows/buttons,
-       but use it on sub-elements like images or tables if needed */
+    box-shadow: var(--card-shadow);
     display: flex;
     flex-direction: column;
     padding: clamp(0.75rem, 1.5vw, 1.25rem);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-card:hover {
+    box-shadow: var(--shadow-md);
 }
 
 /* Helper to handle internal table overflow without clipping the card itself */
@@ -136,8 +153,8 @@
 
 .dashboard-card__header {
     padding: clamp(0.75rem, 1.5vw, 1.25rem);
-    border-bottom: 1px solid var(--border-color);
-    background: var(--gray-50);
+    border-bottom: 1px solid var(--card-border);
+    background-color: var(--card-header-bg);
 }
 
 .dashboard-card__content {
@@ -153,7 +170,7 @@
 .dashboard-card__title {
     font-size: 0.7rem;
     font-weight: 800;
-    color: var(--gray-400);
+    color: var(--card-title-color);
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin-bottom: 0.5rem;
@@ -164,8 +181,8 @@
 }
 
 /* Special padding-less card for tables/list */
-.dashboard-card.no-padding {
-    padding: 0 !important;
+.dashboard-card.dashboard-card--no-padding {
+    padding: 0;
 }
 
 /* Animations */

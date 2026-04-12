@@ -1,16 +1,21 @@
 /* ReportFilters Component Styles (BEM) */
 
 .report-filters {
+    /* --- Local Component Tokens --- */
+    --filter-bg: var(--white);
+    --filter-border: var(--gray-300);
+    /* ------------------------------ */
+
     display: flex;
     flex-wrap: wrap;
     gap: 1.5rem;
     align-items: flex-end;
     padding: 1.5rem;
-    background: var(--card-bg);
+    background-color: var(--filter-bg);
     border-radius: var(--radius);
     box-shadow: var(--shadow-sm);
     margin-bottom: 2rem;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--filter-border);
 }
 
 .report-filters__group {

@@ -1,25 +1,30 @@
 import React from 'react';
 import './Card.css';
 
-const Card = ({ children, className = '', title = '', footer = null }) => {
+const Card = ({ children, className = '', title = '', footer = null, noPadding = false, as: Component = 'section' }) => {
     const baseClass = 'card';
+    const combinedClasses = [
+        baseClass,
+        noPadding ? `${baseClass}--no-padding` : '',
+        className
+    ].filter(Boolean).join(' ');
 
     return (
-        <div className={`${baseClass} ${className}`}>
+        <Component className={combinedClasses}>
             {title && (
-                <div className={`${baseClass}__header`}>
+                <header className={`${baseClass}__header`}>
                     <h3 className={`${baseClass}__title`}>{title}</h3>
-                </div>
+                </header>
             )}
             <div className={`${baseClass}__content`}>
                 {children}
             </div>
             {footer && (
-                <div className={`${baseClass}__footer`}>
+                <footer className={`${baseClass}__footer`}>
                     {footer}
-                </div>
+                </footer>
             )}
-        </div>
+        </Component>
     );
 };
 

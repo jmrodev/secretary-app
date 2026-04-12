@@ -1,6 +1,14 @@
 /* InsuranceList.css */
 
 .insurance-list {
+    /* --- Local Component Tokens --- */
+    --ins-card-bg: var(--white);
+    --ins-card-border: var(--gray-300);
+    --ins-avatar-bg: var(--blue-500);
+    --ins-empty-bg: var(--gray-50);
+    --ins-empty-border: var(--gray-200);
+    /* ------------------------------ */
+
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -9,8 +17,8 @@
 .insurance-list__empty {
     text-align: center;
     padding: 3rem;
-    background-color: var(--slate-50);
-    border: 2px dashed var(--slate-200);
+    background-color: var(--ins-empty-bg);
+    border: 2px dashed var(--ins-empty-border);
     border-radius: 0.75rem;
 }
 
@@ -26,7 +34,7 @@
 }
 
 .insurance-card {
-    background: white;
+    background-color: var(--ins-card-bg);
     border-radius: 1rem;
     box-shadow: var(--shadow-sm);
     padding: 1.25rem;
@@ -34,7 +42,7 @@
     flex-direction: column;
     gap: 1rem;
     transition: transform 0.2s, box-shadow 0.2s;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--ins-card-border);
 }
 
 .insurance-card:hover {
@@ -52,8 +60,8 @@
     width: 3.5rem;
     height: 3.5rem;
     border-radius: 0.75rem;
-    background-color: var(--blue-500);
-    color: white;
+    background-color: var(--ins-avatar-bg);
+    color: var(--white);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -151,5 +159,5 @@
     gap: 0.75rem;
     margin-top: 0.5rem;
     padding-top: 1rem;
-    border-top: 1px solid var(--slate-100);
+    border-top: 1px solid var(--gray-100);
 }

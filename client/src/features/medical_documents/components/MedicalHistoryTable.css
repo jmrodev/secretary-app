@@ -15,11 +15,18 @@
 }
 
 .medical-history__container {
-    background: white;
+    /* --- Local Component Tokens --- */
+    --history-bg: var(--white);
+    --history-border: var(--gray-300);
+    --history-header-bg: var(--gray-50);
+    --history-row-hover: var(--gray-50);
+    /* ------------------------------ */
+
+    background-color: var(--history-bg);
     border-radius: var(--radius);
     overflow: hidden;
     box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--history-border);
 }
 
 .medical-history__table {
@@ -30,8 +37,8 @@
 .medical-history__th {
     padding: 1rem;
     text-align: left;
-    background: var(--gray-50);
-    border-bottom: 2px solid var(--border-color);
+    background-color: var(--history-header-bg);
+    border-bottom: 2px solid var(--history-border);
     font-size: 0.75rem;
     font-weight: 700;
     color: var(--text-muted);

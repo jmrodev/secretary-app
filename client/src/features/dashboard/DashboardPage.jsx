@@ -2,7 +2,8 @@ import React from 'react';
 import { 
     useDashboardController, 
     DashboardSidebar, 
-    DashboardReminders 
+    DashboardReminders,
+    QuickActions
 } from './index'; // Local index
 import { PageHeader } from '../layout';
 import { PrescriptionModal, MedicalRequirementManager } from '../medical_documents';
@@ -74,8 +75,8 @@ const DashboardPage = () => {
 
     return (
         <MainLayout wide>
-            <div className="dashboard-page-orchestrator">
-                <div className="dashboard-page">
+            <section className="dashboard-page-orchestrator">
+                <section className="dashboard-page">
                     <PageHeader 
                         title={
                             <>
@@ -105,9 +106,20 @@ const DashboardPage = () => {
                         </aside>
 
                         {/* Main Content Area */}
-                        <main className="dashboard-main">
+                        <main className="dashboard-main flex flex-col gap-8">
+                            {/* NEW: Quick Actions Section */}
+                            {(isAdmin || isSecretary || isDoctor) && (
+                                <QuickActions 
+                                    t={t} 
+                                    handlers={handlers} 
+                                    isAdmin={isAdmin} 
+                                    isSecretary={isSecretary} 
+                                    isDoctor={isDoctor} 
+                                />
+                            )}
+
                             {(isAdminOrSecretary || isDoctor) && (
-                                <div className="dashboard-nav-bar dashboard-nav-bar--centered mb-6">
+                                <nav className="dashboard-nav-bar dashboard-nav-bar--centered mb-6">
                                     <div className="flex items-center gap-6">
                                         <div className="dashboard-nav-bar__button-wrapper">
                                             <Button
@@ -134,19 +146,19 @@ const DashboardPage = () => {
                                             <Badge count={reminders?.length || 0} position="top-right" variant="danger" />
                                         </div>
                                     </div>
-                                </div>
+                                </nav>
                             )}
 
-                            <div className="dashboard-card no-padding">
+                            <article className="dashboard-card dashboard-card--no-padding">
                                 <div className="dashboard-card__content">
                                     {activeTab === 'requirements' && (isAdminOrSecretary || isDoctor) && (
                                         <div className="dashboard-requirements">
-                                            <div className="dashboard-requirements__header">
+                                            <header className="dashboard-requirements__header">
                                                 <h3 className="dashboard-requirements__title">
                                                     <Icon name="description" size="1.2rem" />
                                                     {t('pending_requests')}
                                                 </h3>
-                                            </div>
+                                            </header>
                                             <MedicalRequirementManager user={user} hideTabs={true} hideFilters={true} setPaymentModal={setPaymentModal} />
                                         </div>
                                     )}
@@ -162,7 +174,7 @@ const DashboardPage = () => {
                                         />
                                     )}
                                 </div>
-                            </div>
+                            </article>
                         </main>
                     </div>
 
@@ -215,8 +227,8 @@ const DashboardPage = () => {
                             refreshDashboard();
                         }}
                     />
-                </div>
-            </div>
+                </section>
+            </section>
         </MainLayout>
     );
 

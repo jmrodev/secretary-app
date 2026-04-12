@@ -6,11 +6,25 @@
 }
 
 .medical-requests__container {
-    background: white;
+    /* --- Local Component Tokens --- */
+    --requests-bg: var(--white);
+    --requests-border: var(--gray-300);
+    --requests-header-bg: var(--gray-50);
+    --requests-row-hover: var(--gray-50);
+    
+    --type-rx-bg: var(--blue-100);
+    --type-rx-text: var(--blue-700);
+    --type-lic-bg: var(--amber-100);
+    --type-lic-text: var(--amber-700);
+    --type-cert-bg: var(--purple-100);
+    --type-cert-text: var(--purple-700);
+    /* ------------------------------ */
+
+    background-color: var(--requests-bg);
     border-radius: var(--radius);
     overflow-x: auto;
     box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--requests-border);
 }
 
 .medical-requests__table {
@@ -85,18 +99,18 @@
 }
 
 .medical-requests__type-tag--prescription {
-    background: #e0f2fe;
-    color: #0369a1;
+    background-color: var(--type-rx-bg);
+    color: var(--type-rx-text);
 }
 
 .medical-requests__type-tag--license {
-    background: #fef3c7;
-    color: #92400e;
+    background-color: var(--type-lic-bg);
+    color: var(--type-lic-text);
 }
 
 .medical-requests__type-tag--certificate {
-    background: #f3e8ff;
-    color: #6b21a8;
+    background-color: var(--type-cert-bg);
+    color: var(--type-cert-text);
 }
 
 .medical-requests__type-tag--clickable {
@@ -149,21 +163,21 @@
 }
 
 .medical-requests__status-tag--pending {
-    background: #fff7ed;
-    color: #9a3412;
-    border: 1px solid #ffedd5;
+    background-color: var(--amber-50);
+    color: var(--amber-700);
+    border: 1px solid var(--amber-100);
 }
 
 .medical-requests__status-tag--completed {
-    background: #f0fdf4;
-    color: #166534;
-    border: 1px solid #dcfce7;
+    background-color: var(--green-50);
+    color: var(--green-700);
+    border: 1px solid var(--green-100);
 }
 
 .medical-requests__status-tag--rejected {
-    background: #fef2f2;
-    color: #991b1b;
-    border: 1px solid #fee2e2;
+    background-color: var(--red-50);
+    color: var(--red-700);
+    border: 1px solid var(--red-100);
 }
 
 .medical-requests__reply {

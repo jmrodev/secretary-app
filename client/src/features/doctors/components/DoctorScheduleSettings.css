@@ -1,11 +1,20 @@
 /* DoctorScheduleSettings Styles (BEM) */
 
 .schedule-settings {
-    background-color: white;
+    /* --- Local Component Tokens --- */
+    --schedule-container-bg: var(--white);
+    --schedule-container-border: var(--gray-300);
+    --schedule-day-inactive-bg: var(--gray-50);
+    --schedule-day-active-bg: var(--white);
+    --schedule-day-border: var(--gray-200);
+    --schedule-day-active-border: var(--blue-500);
+    /* ------------------------------ */
+
+    background-color: var(--schedule-container-bg);
     padding: 1.5rem;
     border-radius: var(--radius);
     box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--schedule-container-border);
 }
 
 .schedule-settings__title {
@@ -37,9 +46,9 @@
 .schedule-bulk {
     margin-bottom: 2rem;
     padding: 1.25rem;
-    background-color: var(--gray-50);
+    background-color: var(--schedule-day-inactive-bg);
     border-radius: var(--radius);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--schedule-day-border);
 }
 
 .schedule-bulk__title {
@@ -83,16 +92,16 @@
 .schedule-day {
     padding: 1.25rem;
     border-radius: var(--radius);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--schedule-day-border);
     transition: all 0.2s ease;
-    background-color: var(--gray-50);
+    background-color: var(--schedule-day-inactive-bg);
     opacity: 0.75;
 }
 
 .schedule-day--active {
-    background-color: white;
-    border-color: var(--accent-color);
-    box-shadow: var(--shadow-sm);
+    background-color: var(--schedule-day-active-bg);
+    border-color: var(--schedule-day-active-border);
+    box-shadow: var(--shadow-md);
     opacity: 1;
 }
 

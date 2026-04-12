@@ -103,9 +103,11 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
     if (loading) return <div className="schedule-settings__loading">Cargando horarios...</div>;
 
     return (
-        <div className="schedule-settings">
-            <h3 className="schedule-settings__title">Configuración de Horarios de Atención</h3>
-            <p className="schedule-settings__desc">Defina los días y franjas horarias en las que este médico atiende.</p>
+        <section className="schedule-settings">
+            <header className="schedule-settings__header">
+                <h3 className="schedule-settings__title">Configuración de Horarios de Atención</h3>
+                <p className="schedule-settings__desc">Defina los días y franjas horarias en las que este médico atiende.</p>
+            </header>
 
             <ScheduleBulkActions
                 bulkStart={bulkStart}
@@ -133,9 +135,9 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                     const isActive = dayBlocks.length > 0;
 
                     return (
-                        <div key={day.id} className={`schedule-day ${isActive ? 'schedule-day--active' : ''}`}>
+                        <article key={day.id} className={`schedule-day ${isActive ? 'schedule-day--active' : ''}`}>
                             <div className="schedule-day__header">
-                                <div className="schedule-day__toggle">
+                                <header className="schedule-day__toggle">
                                     <input
                                         type="checkbox"
                                         id={`day-${day.id}`}
@@ -143,7 +145,7 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                                         onChange={() => toggleDay(day.id)}
                                         className="schedule-day__checkbox"
                                     />
-                                </div>
+                                </header>
                                 <div className="schedule-day__content">
                                     <label htmlFor={`day-${day.id}`} className="schedule-day__name">
                                         {day.name}
@@ -176,11 +178,11 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
                                     )}
                                 </div>
                             </div>
-                        </div>
+                        </article>
                     );
                 })}
             </div>
-        </div>
+        </section>
     );
 };
 

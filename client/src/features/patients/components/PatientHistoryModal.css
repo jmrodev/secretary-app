@@ -1,6 +1,17 @@
 /* PatientHistoryModal Styles (BEM) - Feature Specific */
 
 .patient-history {
+    /* --- Local Component Tokens --- */
+    --history-item-bg: var(--gray-50);
+    --history-item-border: var(--gray-200);
+    --history-cancelled-bg: var(--red-50);
+    --history-cancelled-border: var(--red-100);
+    
+    --record-rx-bg: var(--green-50);
+    --record-req-bg: var(--purple-50);
+    --record-lic-bg: var(--orange-50);
+    /* ------------------------------ */
+
     display: flex;
     flex-direction: column;
 }
@@ -26,14 +37,14 @@
 .patient-history__item {
     padding: 1rem;
     border-radius: var(--radius-sm);
-    border: 1px solid var(--border-color);
-    background: var(--gray-50);
+    border: 1px solid var(--history-item-border);
+    background-color: var(--history-item-bg);
     transition: all 0.2s;
 }
 
 .patient-history__item--cancelled {
-    background: var(--red-50);
-    border-color: var(--red-100);
+    background-color: var(--history-cancelled-bg);
+    border-color: var(--history-cancelled-border);
 }
 
 .patient-history__item-header {
@@ -98,19 +109,19 @@
 }
 
 .patient-history__record--rx {
-    background: var(--green-50);
+    background-color: var(--record-rx-bg);
     border-color: var(--green-100);
     color: var(--green-900);
 }
 
 .patient-history__record--req {
-    background: var(--purple-50);
+    background-color: var(--record-req-bg);
     border-color: var(--purple-100);
     color: var(--purple-900);
 }
 
 .patient-history__record--lic {
-    background: var(--orange-50);
+    background-color: var(--record-lic-bg);
     border-color: var(--orange-100);
     color: var(--orange-900);
 }

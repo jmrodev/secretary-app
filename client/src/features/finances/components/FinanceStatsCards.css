@@ -1,6 +1,13 @@
 /* FinanceStatsCards Component Styles (BEM) */
 
 .finance-stats {
+    /* --- Local Component Tokens --- */
+    --stats-card-bg: var(--white);
+    --stats-card-border: var(--gray-300);
+    --stats-header-color: var(--gray-400);
+    --stats-summary-bg: var(--gray-50);
+    /* ------------------------------ */
+
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
@@ -14,12 +21,14 @@
     padding: 0.75rem 1rem;
     flex: 1;
     min-width: 320px;
+    background-color: var(--stats-card-bg);
+    border: 1px solid var(--stats-card-border);
 }
 
 .finance-stats__title {
     font-size: 0.65rem;
     font-weight: 800;
-    color: var(--text-muted);
+    color: var(--stats-header-color);
     text-transform: uppercase;
     letter-spacing: 0.08em;
     margin-bottom: 0.75rem;
@@ -120,7 +129,7 @@
 }
 
 .finance-stats__summary-row {
-    background-color: var(--gray-50);
+    background-color: var(--stats-summary-bg);
 }
 
 .finance-stats__summary-row td {

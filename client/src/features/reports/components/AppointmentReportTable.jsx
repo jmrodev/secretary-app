@@ -56,10 +56,12 @@ const AppointmentReportTable = ({ data, t }) => {
     };
 
     return (
-        <div className="appointment-report">
+        <section className="appointment-report">
             {/* Summary Table */}
-            <div className="appointment-report__summary">
-                <h3 className="appointment-report__summary-title">{t('daily_summary')}</h3>
+            <article className="appointment-report__summary">
+                <header className="appointment-report__summary-header">
+                    <h3 className="appointment-report__summary-title">{t('daily_summary')}</h3>
+                </header>
                 <table className="appointment-report__table appointment-report__table--summary">
                     <thead>
                         <tr>
@@ -107,7 +109,7 @@ const AppointmentReportTable = ({ data, t }) => {
                         </tr>
                     </tfoot>
                 </table>
-            </div>
+            </article>
 
             {/* Detailed Daily Breakdown */}
             <div className="table-responsive">
@@ -169,7 +171,7 @@ const AppointmentReportTable = ({ data, t }) => {
                     </tbody>
                 </table>
             </div>
-        </div>
+        </section>
     );
 };
 

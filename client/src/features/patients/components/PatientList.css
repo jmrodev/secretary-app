@@ -1,10 +1,22 @@
 .patient-list-container {
+    /* --- Local Component Tokens --- */
+    --list-bg: var(--white);
+    --list-border: var(--gray-300);
+    --table-header-bg: var(--gray-50);
+    --table-row-hover: var(--blue-50);
+    --table-border-inner: var(--gray-100);
+    
+    --rating-gold: var(--amber-500);
+    --rating-blue: var(--blue-500);
+    --rating-pink: var(--pink-500);
+    /* ------------------------------ */
+
     width: 100%;
-    background: white;
+    background-color: var(--list-bg);
     border-radius: 1rem;
     overflow: hidden;
     box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border-color, #e2e8f0);
+    border: 1px solid var(--list-border);
 }
 
 .patient-table {
@@ -15,8 +27,8 @@
 .patient-table th {
     padding: 1rem;
     text-align: left;
-    background: var(--gray-50);
-    border-bottom: 1px solid var(--border-color);
+    background-color: var(--table-header-bg);
+    border-bottom: 1px solid var(--list-border);
     font-size: 0.75rem;
     font-weight: 700;
     color: var(--text-muted);
@@ -39,7 +51,7 @@
 
 .patient-table td {
     padding: 1rem;
-    border-bottom: 1px solid var(--gray-100);
+    border-bottom: 1px solid var(--table-border-inner);
     vertical-align: middle;
 }
 
@@ -187,15 +199,15 @@
 }
 
 .rating-item__stars--gold {
-    color: #f59e0b;
+    color: var(--rating-gold);
 }
 
 .rating-item__stars--blue {
-    color: #3b82f6;
+    color: var(--rating-blue);
 }
 
 .rating-item__stars--pink {
-    color: #ec4899;
+    color: var(--rating-pink);
 }
 
 .patient-table td .patient-table__debt-badge {

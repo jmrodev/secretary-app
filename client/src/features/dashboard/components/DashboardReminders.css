@@ -1,4 +1,20 @@
 .dashboard-reminders {
+    /* --- Local Component Tokens --- */
+    --reminders-tabs-bg: var(--gray-100);
+    --reminders-item-bg: var(--white);
+    --reminders-item-border: var(--gray-300);
+    --reminders-item-hover: var(--accent-color);
+    
+    --badge-visit-bg: var(--amber-100);
+    --badge-visit-text: var(--amber-800);
+    --badge-prescription-bg: var(--green-100);
+    --badge-prescription-text: var(--green-800);
+    --badge-medication-bg: var(--red-100);
+    --badge-medication-text: var(--red-800);
+    --badge-license-bg: var(--blue-100);
+    --badge-license-text: var(--blue-800);
+    /* ------------------------------ */
+
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -13,7 +29,7 @@
 .dashboard-reminders__tabs {
     display: flex;
     gap: 0.5rem;
-    background: var(--gray-100);
+    background-color: var(--reminders-tabs-bg);
     padding: 0.25rem;
     border-radius: 100px;
 }
@@ -33,19 +49,20 @@
 }
 
 .dashboard-reminders__item {
-    background: white;
+    background-color: var(--reminders-item-bg);
     padding: 1rem;
     border-radius: 12px;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--reminders-item-border);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
 
 .dashboard-reminders__item:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-md);
+    border-color: var(--reminders-item-hover);
 }
 
 .dashboard-reminders__item-info {
@@ -74,23 +91,23 @@
 }
 
 .dashboard-reminders__badge--visit {
-    background: #fef3c7;
-    color: #92400e;
+    background-color: var(--badge-visit-bg);
+    color: var(--badge-visit-text);
 }
 
 .dashboard-reminders__badge--prescription {
-    background: #dcfce7;
-    color: #166534;
+    background-color: var(--badge-prescription-bg);
+    color: var(--badge-prescription-text);
 }
 
 .dashboard-reminders__badge--medication {
-    background: #fee2e2;
-    color: #991b1b;
+    background-color: var(--badge-medication-bg);
+    color: var(--badge-medication-text);
 }
 
 .dashboard-reminders__badge--license {
-    background: #eff6ff;
-    color: #1e40af;
+    background-color: var(--badge-license-bg);
+    color: var(--badge-license-text);
 }
 
 .dashboard-reminders__item-actions {

@@ -1,18 +1,26 @@
 /* Chat Window Component Styles */
 .chat-main {
+    /* --- Local Component Tokens --- */
+    --chat-bg: var(--gray-50);
+    --chat-header-bg: var(--white);
+    --chat-input-bg: var(--white);
+    --chat-border: var(--gray-200);
+    --chat-avatar-bg: var(--gray-200);
+    /* ------------------------------ */
+
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: white;
+    background-color: var(--white);
     position: relative;
-    flex: 1; /* Ensure it grows in flex container */
+    flex: 1;
     min-width: 0;
 }
 
 .chat-main--empty {
     align-items: center;
     justify-content: center;
-    background: #f8fafc;
+    background-color: var(--chat-bg);
     text-align: center;
     padding: 2rem;
 }
@@ -26,12 +34,12 @@
 .chat-main__empty-title {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #334155;
+    color: var(--gray-800);
     margin-bottom: 0.5rem;
 }
 
 .chat-main__empty-text {
-    color: #64748b;
+    color: var(--gray-600);
     max-width: 28rem;
 }
 
@@ -40,18 +48,18 @@
     align-items: center;
     gap: 1rem;
     padding: 1rem;
-    border-bottom: 1px solid #f1f5f9;
-    background: white;
+    border-bottom: 1px solid var(--chat-border);
+    background-color: var(--chat-header-bg);
     z-index: 10;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-sm);
 }
 
 .convo-avatar {
     width: 2.5rem;
     height: 2.5rem;
     font-size: 1.125rem;
-    background: #e2e8f0;
-    color: #475569;
+    background-color: var(--chat-avatar-bg);
+    color: var(--gray-700);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -62,13 +70,13 @@
 .chat-header__title {
     font-size: 1.125rem;
     font-weight: bold;
-    color: #1e293b;
+    color: var(--gray-900);
     margin: 0;
     line-height: 1.25;
 }
 
 .chat-header__subtitle {
-    color: #64748b;
+    color: var(--gray-500);
     font-size: 0.75rem;
 }
 
@@ -76,7 +84,7 @@
     flex: 1;
     overflow-y: auto;
     padding: 1rem;
-    background: #f8fafc;
+    background-color: var(--chat-bg);
 }
 
 .chat-messages--loading {
@@ -102,8 +110,8 @@
 
 .chat-input-area {
     padding: 1rem;
-    background: white;
-    border-top: 1px solid #f1f5f9;
+    background-color: var(--chat-input-bg);
+    border-top: 1px solid var(--chat-border);
     display: flex;
     gap: 0.5rem;
     align-items: center;
@@ -118,7 +126,7 @@
     width: 100%;
     padding: 0.75rem 1rem;
     border-radius: 9999px;
-    background: #f1f5f9;
+    background-color: var(--gray-100);
     border: none;
     outline: none;
     transition: all 0.2s ease;

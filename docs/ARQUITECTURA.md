@@ -241,9 +241,22 @@ const ComponentName = ({ prop1, prop2 }) => {
 };
 ```
 
-#### CSS
+#### CSS (Tokens y BEM)
+**Sistema de Tokens (Custom Properties)**
+La aplicación sigue una arquitectura de 3 niveles para `var(--)`:
+1. **Tokens Globales / Primitivos**: Sólo colores crudos (`--blue-500`, `--white`). Residen en `variables.css`.
+2. **Tokens Semánticos**: Definen roles genéricos a nivel de app (`--modal-bg`, `--card-bg`, `--text-main`). Residen en `variables.css`.
+3. **Tokens de Componente (Locales)**: Las variables específicas de un componente (ej. `--panel-group-bg`) **NUNCA deben polucionar `variables.css`**. Deben declararse al inicio de la clase raíz BEM del componente en su archivo local, apuntando a los globales.
+
 ```css
-/* ✅ CORRECTO - BEM */
+/* ✅ CORRECTO - Tokens Locales y BEM */
+.appointment-admin-panel {
+    --panel-bg: var(--white);
+    --panel-border: var(--gray-300);
+}
+.appointment-admin-panel__group {
+    background-color: var(--panel-bg);
+}
 .appointment-report { }
 .appointment-report__table { }
 .appointment-report__row { }

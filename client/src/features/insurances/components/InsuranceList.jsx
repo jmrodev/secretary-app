@@ -18,20 +18,20 @@ const InsuranceList = ({ insurances, onEdit, onDelete, hasFilter }) => {
 
     if (insurances.length === 0) {
         return (
-            <div className="insurance-list__empty">
+            <section className="insurance-list__empty">
                 <p className="insurance-list__empty-text">
                     {hasFilter ? t('no_results_found') : t('no_insurances_registered')}
                 </p>
-            </div>
+            </section>
         );
     }
 
     return (
-        <div className="insurance-list">
+        <section className="insurance-list">
             <div className="insurance-list__grid">
                 {insurances.map(ins => (
-                    <div key={ins.id} className="insurance-card">
-                        <div className="insurance-card__header">
+                    <article key={ins.id} className="insurance-card">
+                        <header className="insurance-card__header">
                             <div className="insurance-card__avatar">
                                 {getInitials(ins.name)}
                             </div>
@@ -42,7 +42,7 @@ const InsuranceList = ({ insurances, onEdit, onDelete, hasFilter }) => {
                                     {t(ins.status || 'active')}
                                 </Badge>
                             </div>
-                        </div>
+                        </header>
 
                         <div className="insurance-card__body">
                             <div className="insurance-card__data-list">
@@ -97,7 +97,7 @@ const InsuranceList = ({ insurances, onEdit, onDelete, hasFilter }) => {
                             </div>
                         </div>
 
-                        <div className="insurance-card__footer">
+                        <footer className="insurance-card__footer">
                             <Button
                                 variant="secondary"
                                 size="sm-compact"
@@ -112,11 +112,11 @@ const InsuranceList = ({ insurances, onEdit, onDelete, hasFilter }) => {
                             >
                                 {t('delete')}
                             </Button>
-                        </div>
-                    </div>
+                        </footer>
+                    </article>
                 ))}
             </div>
-        </div>
+        </section>
     );
 };
 

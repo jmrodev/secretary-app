@@ -1,7 +1,15 @@
-x.alert {
+.alert {
+    /* --- Local Component Tokens --- */
+    --alert-bg: var(--gray-50);
+    --alert-border: var(--gray-200);
+    --alert-text: var(--gray-800);
+    /* ------------------------------ */
+
     padding: 1rem;
     border-radius: 0.75rem;
-    border: 1px solid transparent;
+    border: 1px solid var(--alert-border);
+    background-color: var(--alert-bg);
+    color: var(--alert-text);
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -9,21 +17,21 @@ x.alert {
 }
 
 .alert--info {
-    background-color: var(--blue-50);
-    border-color: var(--blue-200);
-    color: var(--blue-800);
+    --alert-bg: var(--blue-50);
+    --alert-border: var(--blue-200);
+    --alert-text: var(--blue-800);
 }
 
 .alert--warning {
-    background-color: var(--amber-50);
-    border-color: var(--amber-200);
-    color: var(--amber-800);
+    --alert-bg: var(--amber-50);
+    --alert-border: var(--amber-200);
+    --alert-text: var(--amber-800);
 }
 
 .alert--success {
-    background-color: var(--green-50);
-    border-color: var(--green-200);
-    color: var(--green-800);
+    --alert-bg: var(--green-50);
+    --alert-border: var(--green-200);
+    --alert-text: var(--green-800);
 }
 
 .alert__title {

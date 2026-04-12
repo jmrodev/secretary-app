@@ -32,13 +32,13 @@ const MedicalHistoryTable = ({
     const safeItems = Array.isArray(items) ? items : [];
 
     return (
-        <div className="medical-history">
-            <h3 className="medical-history__title">
+        <section className="medical-history">
+            <header className="medical-history__title">
                 <span className="medical-history__title-icon">
                     <Icon name={icon} size="1.2rem" />
                 </span>
                 {title}
-            </h3>
+            </header>
 
             <div className="medical-history__wrapper">
                 <table className="medical-history__table table-base">
@@ -123,17 +123,17 @@ const MedicalHistoryTable = ({
                 )}
 
                 {totalPages > 1 && (
-                    <div className="medical-history__pagination">
+                    <footer className="medical-history__pagination">
                         <Pagination 
                             currentPage={currentPage}
                             totalPages={totalPages}
                             onPageChange={onPageChange}
                             t={t}
                         />
-                    </div>
+                    </footer>
                 )}
             </div>
-        </div>
+        </section>
     );
 };
 

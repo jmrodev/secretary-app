@@ -1,13 +1,21 @@
 .app-layout {
+    /* --- Local Component Tokens --- */
+    --layout-bg: var(--background-bg);
+    /* ------------------------------ */
+
     display: flex;
     height: 100vh;
     overflow: hidden;
-    background-color: var(--background-bg);
+    background-color: var(--layout-bg);
 }
 
 .main-content {
+    /* --- Local Component Tokens --- */
+    --content-padding: clamp(0.75rem, 2vh, 1.25rem) clamp(1rem, 3vw, 2.5rem);
+    /* ------------------------------ */
+
     flex: 1;
-    padding: clamp(0.75rem, 2vh, 1.25rem) clamp(1rem, 3vw, 2.5rem);
+    padding: var(--content-padding);
     overflow-y: auto;
     min-height: 0;
     display: flex;

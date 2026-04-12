@@ -35,7 +35,7 @@ const FinanceStatsCards = ({ stats, t }) => {
     };
 
     return (
-        <div className="finance-stats">
+        <section className="finance-stats">
             {/* Breakdown Cards (Appointments, Prescriptions, Licenses, Certificates) */}
             {otherStats.map((s, idx) => (
                 <Card key={idx} className="finance-stats__card">
@@ -168,7 +168,7 @@ const FinanceStatsCards = ({ stats, t }) => {
                     </div>
                 </Card>
             )}
-        </div>
+        </section>
     );
 };
 

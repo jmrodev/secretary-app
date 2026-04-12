@@ -1,6 +1,18 @@
 /* --- Appointment Action Modal (BEM) --- */
 
 .appointment-modal__content {
+    /* --- Local Component Tokens --- */
+    --modal-reason-bg: var(--white);
+    --modal-reason-border: var(--gray-50);
+    --modal-reason-border-left: var(--purple-400);
+    --modal-reason-border-hover: var(--purple-500);
+
+    --medical-panel-bg: var(--blue-50);
+    --medical-panel-border: var(--blue-200);
+    --medical-panel-border-left: var(--indigo-500);
+    --medical-panel-border-hover: var(--indigo-600);
+    /* ------------------------------ */
+
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -8,11 +20,11 @@
 
 /* Reason Box */
 .appointment-modal__reason {
-    background-color: var(--white);
+    background-color: var(--modal-reason-bg);
     padding: 1.15rem 1.25rem;
     border-radius: var(--radius-lg, 0.75rem);
-    border: 1px solid var(--gray-50);
-    border-left: 4px solid var(--purple-400);
+    border: 1px solid var(--modal-reason-border);
+    border-left: 4px solid var(--modal-reason-border-left);
     box-shadow: var(--shadow-sm);
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -20,7 +32,7 @@
 .appointment-modal__reason:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
-    border-left-color: var(--purple-500);
+    border-left-color: var(--modal-reason-border-hover);
 }
 
 .appointment-modal__text {
@@ -42,11 +54,11 @@
 
 /* Medical Panel Styles */
 .appointment-medical-panel {
-    background-color: var(--blue-50);
+    background-color: var(--medical-panel-bg);
     padding: 1.5rem 1.25rem;
     border-radius: var(--radius-lg, 0.75rem);
-    border: 1px solid var(--blue-200);
-    border-left: 4px solid var(--indigo-500);
+    border: 1px solid var(--medical-panel-border);
+    border-left: 4px solid var(--medical-panel-border-left);
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -57,7 +69,7 @@
 .appointment-medical-panel:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
-    border-left-color: var(--indigo-600);
+    border-left-color: var(--medical-panel-border-hover);
 }
 
 .appointment-medical-panel__title {

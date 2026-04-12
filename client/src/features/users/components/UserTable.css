@@ -1,4 +1,11 @@
 .user-table-wrapper {
+    /* --- Local Component Tokens --- */
+    --user-table-header-bg: var(--gray-50);
+    --user-table-border: var(--gray-200);
+    --user-table-text: var(--gray-800);
+    --user-table-muted: var(--gray-500);
+    /* ------------------------------ */
+
     overflow-x: auto;
 }
 
@@ -10,15 +17,15 @@
 .user-table__header-cell {
     text-align: left;
     padding: 12px 16px;
-    background: var(--slate-50);
-    color: var(--slate-600);
+    background-color: var(--user-table-header-bg);
+    color: var(--user-table-muted);
     font-weight: 600;
     font-size: 0.875rem;
-    border-bottom: 1px solid var(--slate-200);
+    border-bottom: 1px solid var(--user-table-border);
 }
 
 .user-table__row {
-    border-bottom: 1px solid var(--slate-100);
+    border-bottom: 1px solid var(--gray-100);
 }
 
 .user-table__cell {
@@ -28,22 +35,22 @@
 
 .user-table__username {
     font-weight: 600;
-    color: var(--slate-800);
+    color: var(--user-table-text);
 }
 
 .user-table__dni {
     font-size: 0.75rem;
-    color: var(--slate-500);
+    color: var(--user-table-muted);
 }
 
 .user-table__full-name {
-    color: var(--slate-800);
+    color: var(--user-table-text);
     font-size: 0.9rem;
 }
 
 .user-table__phone-container {
     font-size: 0.75rem;
-    color: var(--slate-500);
+    color: var(--user-table-muted);
     display: flex;
     align-items: center;
     gap: 4px;

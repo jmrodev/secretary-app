@@ -11,8 +11,10 @@ const StatCard = ({
     icon, // Material symbol name
     label,
     value,
-    variant = 'default', // 'default' | 'accent' | 'dark'
-    size = 'md', // 'sm' | 'md'
+    variant = 'default', // 'default' | 'accent' | 'dark' | 'success' | 'warning'
+    size = 'md', // 'sm' | 'md' | 'lg'
+    trend = null, // e.g., '+12%'
+    trendLabel = '', // e.g., 'vs ayer'
     className = ''
 }) => {
     const baseClass = 'stat-card';
@@ -20,17 +22,25 @@ const StatCard = ({
     const sizeClass = size !== 'md' ? `${baseClass}--${size}` : '';
 
     return (
-        <div className={`${baseClass} ${variantClass} ${sizeClass} ${className}`}>
+        <article className={`${baseClass} ${variantClass} ${sizeClass} ${className}`}>
             <div className={`${baseClass}__header`}>
                 <div className={`${baseClass}__icon-wrapper`}>
-                    <Icon name={icon} size="1.25rem" />
+                    <Icon name={icon} size={size === 'sm' ? '1rem' : '1.5rem'} />
                 </div>
-                <span className={`${baseClass}__label`}>{label}</span>
+                <div className={`${baseClass}__label-group`}>
+                    <span className={`${baseClass}__label`}>{label}</span>
+                    {trend && (
+                        <div className={`${baseClass}__trend`}>
+                            <span className={`${baseClass}__trend-value`}>{trend}</span>
+                            {trendLabel && <span className={`${baseClass}__trend-label`}>{trendLabel}</span>}
+                        </div>
+                    )}
+                </div>
             </div>
             <div className={`${baseClass}__value`}>
                 {value}
             </div>
-        </div>
+        </article>
     );
 };
 

@@ -1,6 +1,23 @@
 /* AppointmentAdminPanel Molecule Styles (BEM) */
 
 .appointment-admin-panel {
+    /* --- Local Component Tokens --- */
+    --panel-group-bg: var(--white);
+    --panel-group-border: var(--gray-300);
+    --panel-group-border-left: var(--gray-400);
+    --panel-group-border-hover: var(--gray-500);
+
+    --panel-highlight-bg: var(--blue-50);
+    --panel-highlight-border: var(--blue-200);
+    --panel-highlight-border-left: var(--blue-500);
+    --panel-highlight-border-hover: var(--blue-600);
+
+    --panel-danger-bg: var(--red-50);
+    --panel-danger-border: var(--red-200);
+    --panel-danger-border-left: var(--red-500);
+    --panel-danger-border-hover: var(--red-600);
+    /* ------------------------------ */
+
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -22,11 +39,11 @@
 }
 
 .appointment-admin-panel__group {
-    background-color: var(--white);
+    background-color: var(--panel-group-bg);
     border-radius: var(--radius);
     padding: 1.25rem;
-    border: 1px solid var(--gray-300);
-    border-left: 4px solid var(--gray-400);
+    border: 1px solid var(--panel-group-border);
+    border-left: 4px solid var(--panel-group-border-left);
     display: flex;
     flex-direction: column;
     gap: 0.85rem;
@@ -38,7 +55,7 @@
 .appointment-admin-panel__group:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
-    border-left-color: var(--gray-500);
+    border-left-color: var(--panel-group-border-hover);
 }
 
 .appointment-admin-panel__group:last-child {
@@ -46,23 +63,23 @@
 }
 
 .appointment-admin-panel__group--highlight {
-    background-color: var(--blue-50);
-    border-color: var(--blue-200);
-    border-left-color: var(--blue-500);
+    background-color: var(--panel-highlight-bg);
+    border-color: var(--panel-highlight-border);
+    border-left-color: var(--panel-highlight-border-left);
 }
 
 .appointment-admin-panel__group--highlight:hover {
-    border-left-color: var(--blue-600);
+    border-left-color: var(--panel-highlight-border-hover);
 }
 
 .appointment-admin-panel__group--danger {
-    background-color: var(--red-50);
-    border-color: var(--red-200);
-    border-left-color: var(--red-500);
+    background-color: var(--panel-danger-bg);
+    border-color: var(--panel-danger-border);
+    border-left-color: var(--panel-danger-border-left);
 }
 
 .appointment-admin-panel__group--danger:hover {
-    border-left-color: var(--red-600);
+    border-left-color: var(--panel-danger-border-hover);
 }
 
 .appointment-admin-panel__group-title {

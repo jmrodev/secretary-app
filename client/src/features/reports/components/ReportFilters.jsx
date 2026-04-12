@@ -30,8 +30,8 @@ const ReportFilters = ({
     }));
 
     return (
-        <div className="report-filters">
-            <div className="report-filters__group">
+        <section className="report-filters">
+            <article className="report-filters__group">
                 <label className="report-filters__label">{t('month')}</label>
                 <div className="report-filters__control-row">
                     <Button
@@ -57,9 +57,9 @@ const ReportFilters = ({
                         <Icon name="ARROW_FORWARD" size="1.2rem" />
                     </Button>
                 </div>
-            </div>
+            </article>
 
-            <div className="report-filters__group">
+            <article className="report-filters__group">
                 <label className="report-filters__label">{t('year')}</label>
                 <div className="report-filters__control-row">
                     <Button
@@ -87,9 +87,9 @@ const ReportFilters = ({
                         <Icon name="ARROW_FORWARD" size="1.2rem" />
                     </Button>
                 </div>
-            </div>
+            </article>
 
-            <div className="report-filters__group">
+            <article className="report-filters__group">
                 <label className="report-filters__label">{t('doctor') || 'Médico'}</label>
                 <Select
                     value={selectedDoctorId}
@@ -103,9 +103,9 @@ const ReportFilters = ({
                     ]}
                     className="report-filters__select report-filters__select--doctor"
                 />
-            </div>
+            </article>
 
-            <div className="report-filters__actions">
+            <footer className="report-filters__actions">
                 <Button
                     onClick={onGenerate}
                     disabled={isSubmitting}
@@ -122,7 +122,7 @@ const ReportFilters = ({
                             onClick={onDownload}
                             className="report-filters__btn"
                         >
-                            <Icon name="DOCUMENTS" size="1.1rem" className="mr-1" />
+                            <Icon name="attachment" size="1.1rem" className="mr-1" />
                             {t('download_json') || 'JSON'}
                         </Button>
                         <Button
@@ -130,13 +130,13 @@ const ReportFilters = ({
                             onClick={onPrint}
                             className="report-filters__btn"
                         >
-                            <Icon name="FINANCES" size="1.1rem" className="mr-1" />
+                            <Icon name="print" size="1.1rem" className="mr-1" />
                             {t('print') || 'Imprimir'}
                         </Button>
                     </>
                 )}
-            </div>
-        </div>
+            </footer>
+        </section>
     );
 };
 

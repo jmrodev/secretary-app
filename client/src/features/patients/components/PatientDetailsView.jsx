@@ -62,7 +62,7 @@ const PatientDetailsView = ({
 
     return (
         <>
-            <div className="patient-details animate-fadeIn no-print-section">
+            <section className="patient-details animate-fadeIn no-print-section">
                 <header className="patient-details__header">
                     <Button variant="secondary" onClick={onBack}>
                         &larr; {t('back_to_list')}
@@ -97,7 +97,7 @@ const PatientDetailsView = ({
 
                 <div className="patient-details__grid">
                     {/* Main Content Area */}
-                    <div className="patient-details__main">
+                    <main className="patient-details__main">
                         <PatientInfoBlock
                             details={details}
                             t={t}
@@ -111,20 +111,22 @@ const PatientDetailsView = ({
                         />
 
                         {children}
-                    </div>
+                    </main>
 
                     {/* Sidebar Info Area */}
-                    <PatientFinancialSidebar
-                        details={details}
-                        t={t}
-                        user={user}
-                        onPayDebt={onPayDebt}
-                        onGenerateQR={onGenerateQR}
-                        onGeneratePrescriptionLink={onGeneratePrescriptionLink}
-                        onDelete={onDelete}
-                    />
+                    <aside className="patient-details__sidebar">
+                        <PatientFinancialSidebar
+                            details={details}
+                            t={t}
+                            user={user}
+                            onPayDebt={onPayDebt}
+                            onGenerateQR={onGenerateQR}
+                            onGeneratePrescriptionLink={onGeneratePrescriptionLink}
+                            onDelete={onDelete}
+                        />
+                    </aside>
                 </div>
-            </div>
+            </section>
         </>
     );
 };

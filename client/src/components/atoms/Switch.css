@@ -1,4 +1,12 @@
 .switch {
+    /* --- Local Component Tokens --- */
+    --switch-bg: var(--gray-300);
+    --switch-checked-bg: var(--blue-600);
+    --switch-dot-bg: var(--white);
+    --switch-focus-ring: rgba(37, 99, 235, 0.2);
+    --switch-label-color: var(--text-main);
+    /* ------------------------------ */
+
     display: inline-flex;
     align-items: center;
     gap: 0.75rem;
@@ -27,7 +35,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: var(--gray-300);
+    background-color: var(--switch-bg);
     transition: .4s;
     border-radius: 24px;
 }
@@ -39,18 +47,18 @@
     width: 18px;
     left: 3px;
     bottom: 3px;
-    background-color: white;
+    background-color: var(--switch-dot-bg);
     transition: .4s;
     border-radius: 50%;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .switch__input:checked+.switch__slider {
-    background-color: var(--blue-600);
+    background-color: var(--switch-checked-bg);
 }
 
 .switch__input:focus+.switch__slider {
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    box-shadow: 0 0 0 3px var(--switch-focus-ring);
 }
 
 .switch__input:checked+.switch__slider:before {
@@ -60,7 +68,7 @@
 .switch__label {
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--text-main, #1e293b);
+    color: var(--switch-label-color);
     user-select: none;
     white-space: nowrap;
 }

@@ -3,12 +3,19 @@
 
 /* ── Root container ── */
 .prescription-modal {
+    /* --- Local Component Tokens --- */
+    --modal-bg: var(--white);
+    --modal-island-bg: var(--gray-50);
+    --modal-border: var(--gray-200);
+    --btn-active-bg: var(--blue-600);
+    --btn-hover-bg: var(--blue-50);
+    /* ------------------------------ */
+
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
 }
 
-/* ── Generic group (stacked column with gap) ── */
 .prescription-modal__group {
     display: flex;
     flex-direction: column;
@@ -55,24 +62,24 @@
     padding: 0.3rem 0.65rem;
     font-size: 0.72rem;
     font-weight: 600;
-    background: var(--gray-100, #f3f4f6);
+    background-color: var(--modal-island-bg);
     color: var(--text-muted);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--modal-border);
     border-radius: 99px;
     cursor: pointer;
     transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
 .prescription-modal__freq-btn:hover {
-    background: var(--blue-50, #eff6ff);
-    color: var(--blue-700, #1d4ed8);
-    border-color: var(--blue-200, #bfdbfe);
+    background-color: var(--btn-hover-bg);
+    color: var(--blue-700);
+    border-color: var(--blue-200);
 }
 
 .prescription-modal__freq-btn--active {
-    background: var(--blue-600, #2563eb);
-    color: #fff;
-    border-color: var(--blue-700, #1d4ed8);
+    background-color: var(--btn-active-bg);
+    color: var(--white);
+    border-color: var(--blue-700);
 }
 
 /* ── Numeric fields row (3 inputs + add btn) ── */
@@ -127,8 +134,8 @@
     flex-direction: column;
     gap: 0.5rem;
     padding: 0.75rem;
-    background: var(--gray-50, #f9fafb);
-    border: 1px solid var(--border-color);
+    background-color: var(--modal-island-bg);
+    border: 1px solid var(--modal-border);
     border-radius: 0.75rem;
 }
 

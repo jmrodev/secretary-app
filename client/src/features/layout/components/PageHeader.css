@@ -1,5 +1,11 @@
 /* PageHeader Component Styles */
 .page-header {
+    /* --- Local Component Tokens --- */
+    --header-title-color: var(--text-main);
+    --header-subtitle-color: var(--text-muted);
+    --header-divider-color: var(--border-color);
+    /* ------------------------------ */
+
     margin-bottom: clamp(0.5rem, 2vh, 1.5rem);
     display: flex;
     flex-wrap: wrap;
@@ -17,7 +23,7 @@
 .page-header__title {
     font-size: clamp(1.5rem, 3vw, 2.25rem);
     font-weight: 800;
-    color: var(--text-main);
+    color: var(--header-title-color);
     margin: 0;
     line-height: 1.1;
     letter-spacing: -0.02em;
@@ -28,7 +34,7 @@
 
 .page-header__subtitle {
     font-size: 1rem;
-    color: var(--text-muted);
+    color: var(--header-subtitle-color);
     margin: 0.25rem 0 0 0;
     max-width: 800px;
     line-height: 1.5;
@@ -41,6 +47,6 @@
 }
 
 .page-header--divider {
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--header-divider-color);
     padding-bottom: 1.25rem;
 }

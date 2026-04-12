@@ -97,8 +97,10 @@ const renderContent = (activeTab, controller) => {
             return <AuditLogsSection />;
         case 'general':
             return (
-                <div className="settings-content-wrapper">
-                    <h2 className="settings-content-title">{t('general') || 'Configuración General'}</h2>
+                <section className="settings-content-wrapper">
+                    <header className="settings-content-header">
+                        <h2 className="settings-content-title">{t('general') || 'Configuración General'}</h2>
+                    </header>
                     <GeneralSettings
                         user={user}
                         settings={settings}
@@ -108,11 +110,11 @@ const renderContent = (activeTab, controller) => {
                             setQrModal({ open: true, url, expiry: null });
                         }}
                     />
-                    <div className="system-config-page__documentation animate-fadeIn">
-                        <div className="system-config-page__section-header">
+                    <article className="system-config-page__documentation animate-fadeIn">
+                        <header className="system-config-page__section-header">
                             <Icon name="description" size="1.2rem" className="system-config-page__section-icon" />
                             <h3 className="system-config-page__section-title">Documentación y Ayuda</h3>
-                        </div>
+                        </header>
                         <div className="system-config-page__actions">
                             <Button
                                 variant="ghost"
@@ -131,8 +133,8 @@ const renderContent = (activeTab, controller) => {
                                 Guía de Configuración
                             </Button>
                         </div>
-                    </div>
-                </div>
+                    </article>
+                </section>
             );
         case 'communications':
             return (
@@ -214,7 +216,7 @@ const SystemConfigPage = () => {
 
     return (
         <MainLayout wide>
-            <div className="system-config-page">
+            <section className="system-config-page">
                 <div className="system-config-container animate-fadeIn">
                     <main className="system-config-main">
                         <Suspense fallback={<Loading variant="centered" />}>
@@ -229,7 +231,7 @@ const SystemConfigPage = () => {
                         expiresAt={qrModal.expiry}
                     />
                 </div>
-            </div>
+            </section>
         </MainLayout>
     );
 };

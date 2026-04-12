@@ -11,10 +11,10 @@ import Input from '@/components/atoms/Input';
  */
 const renderPermissionsGroup = (settings, updateSetting, isAdmin) => {
     return (
-        <div className="config-group">
-            <div className="config-group__header">
+        <article className="config-group">
+            <header className="config-group__header">
                 <h4 className="config-group__title">Gestión de Secretarias (CRUD)</h4>
-            </div>
+            </header>
             <div className="config-group__items">
                 <ConfigToggle
                     id="sec-crud-appointments"
@@ -52,7 +52,7 @@ const renderPermissionsGroup = (settings, updateSetting, isAdmin) => {
                     disabled={!isAdmin}
                 />
             </div>
-        </div>
+        </article>
     );
 };
 
@@ -106,11 +106,11 @@ const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => {
     return (
         <div className="tab-panel animate-fadeIn">
             {/* Functionalities and Permissions */}
-            <div className="config-section">
-                <div className="config-section__header">
+            <article className="config-section">
+                <header className="config-section__header">
                     <Icon name="settings" size="1.5rem" className="config-section__icon" />
                     <h3 className="config-section__title">Funcionalidades y Permisos</h3>
-                </div>
+                </header>
 
                 <div className="config-section__body">
                     <ConfigToggle
@@ -147,33 +147,33 @@ const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => {
                         disabled={!isAdmin}
                     />
                 </div>
-            </div>
+            </article>
 
             {/* System URLs */}
-            <div className="config-section">
-                <div className="config-section__header">
+            <article className="config-section">
+                <header className="config-section__header">
                     <Icon name="link" size="1.5rem" className="config-section__icon" />
                     <h3 className="config-section__title">Direcciones del Sistema</h3>
-                </div>
+                </header>
 
                 <div className="config-section__body">
                     {renderUrlConfiguration(settings, updateSetting, isAdmin, onShowQr)}
                 </div>
-            </div>
+            </article>
 
             {/* Mobile App Download */}
-            <div className="config-section">
-                <div className="config-section__header">
+            <article className="config-section">
+                <header className="config-section__header">
                     <Icon name="smartphone" size="1.5rem" className="config-section__icon" />
                     <h3 className="config-section__title">Aplicación Móvil</h3>
-                </div>
+                </header>
 
                 <div className="config-section__body">
-                    <div className="system-config-page__app-card">
-                        <div className="system-config-page__app-info">
+                    <article className="system-config-page__app-card">
+                        <header className="system-config-page__app-info">
                             <h4 className="system-config-page__app-title">Descargar APK para Android</h4>
                             <p className="system-config-page__app-description">Instala la aplicación nativa para una gestión más rápida desde el celular.</p>
-                        </div>
+                        </header>
                         <Button
                             variant="primary"
                             icon={<Icon name="DOWNLOAD" size="1.1rem" />}
@@ -181,9 +181,9 @@ const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => {
                         >
                             Descargar APK
                         </Button>
-                    </div>
+                    </article>
                 </div>
-            </div>
+            </article>
         </div>
     );
 };

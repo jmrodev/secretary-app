@@ -64,9 +64,9 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
     const currentTasks = activeSection === 'pending' ? pendingTasks : notifiedTasks;
 
     return (
-        <div className="dashboard-reminders">
-            <div className="dashboard-reminders__header">
-                <div className="dashboard-reminders__tabs">
+        <section className="dashboard-reminders">
+            <header className="dashboard-reminders__header">
+                <nav className="dashboard-reminders__tabs">
                     <TabButton
                         isActive={activeSection === 'pending'}
                         onClick={() => setActiveSection('pending')}
@@ -83,8 +83,8 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                         {t('notified') || 'Avisados'}
                         <span className="dashboard-reminders__count">{notifiedTasks.length}</span>
                     </TabButton>
-                </div>
-            </div>
+                </nav>
+            </header>
 
             <div className="dashboard-reminders__list">
                 {currentTasks.length === 0 ? (
@@ -99,9 +99,9 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                     </div>
                 ) : (
                     currentTasks.map((task, idx) => (
-                        <div key={`${task.id}-${task.taskType}-${idx}`} className="dashboard-reminders__item animate-fadeIn">
+                        <article key={`${task.id}-${task.taskType}-${idx}`} className="dashboard-reminders__item animate-fadeIn">
                             <div className="dashboard-reminders__item-info">
-                                <div className="dashboard-reminders__item-name">{task.full_name}</div>
+                                <h4 className="dashboard-reminders__item-name">{task.full_name}</h4>
                                 <div className="dashboard-reminders__item-details">
                                     <span className={`dashboard-reminders__badge dashboard-reminders__badge--${task.badgeClass}`}>
                                         {task.label}
@@ -159,11 +159,11 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                                     {t('profile') || 'Perfil'}
                                 </Button>
                             </div>
-                        </div>
+                        </article>
                     ))
                 )}
             </div>
-        </div>
+        </section>
     );
 };
 

@@ -33,16 +33,16 @@ const MedicalRequestList = ({
 
     if (!requests || requests.length === 0) {
         return (
-            <div className="medical-requests__empty">
+            <section className="medical-requests__empty">
                 <Icon name="description" size="3rem" className="medical-requests__empty-icon" />
                 {t('no_requests')}
-            </div>
+            </section>
         );
     }
 
     return (
-        <div className="medical-requests">
-            <div className="medical-requests__container">
+        <section className="medical-requests">
+            <article className="medical-requests__container">
                 <table className="medical-requests__table table-base">
                     <thead>
                         <tr>
@@ -218,19 +218,19 @@ const MedicalRequestList = ({
                         })}
                     </tbody>
                 </table>
-            </div>
+            </article>
 
             {totalPages > 1 && (
-                <div className="medical-requests__pagination">
+                <footer className="medical-requests__pagination">
                     <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}
                         onPageChange={onPageChange}
                         t={t}
                     />
-                </div>
+                </footer>
             )}
-        </div>
+        </section>
     );
 };
 

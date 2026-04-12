@@ -1,6 +1,13 @@
 /* SystemConfigPage Styles (BEM) */
 
 .system-config-page {
+    /* --- Local Component Tokens --- */
+    --config-bg: var(--white);
+    --config-border: var(--gray-300);
+    --config-island-bg: var(--gray-50);
+    --config-header-color: var(--gray-800);
+    /* ------------------------------ */
+
     display: flex;
     flex-direction: column;
     gap: 2rem;
@@ -24,9 +31,9 @@
 .system-config-page__documentation,
 .system-config-page__data-management,
 .system-config-page__app-card {
-    background: white;
+    background-color: var(--config-bg);
     box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--config-border);
     padding: 2rem;
     border-radius: var(--radius-sm);
     margin-top: 2rem;
@@ -37,18 +44,18 @@
     justify-content: space-between;
     align-items: center;
     gap: 2rem;
-    background: var(--gray-50);
+    background-color: var(--config-island-bg);
 }
 
 .system-config-page__app-title {
     font-weight: 700;
-    color: var(--slate-800);
+    color: var(--config-header-color);
     margin-bottom: 0.25rem;
 }
 
 .system-config-page__app-description {
     font-size: 0.875rem;
-    color: var(--slate-500);
+    color: var(--gray-500);
     margin: 0;
 }
 
@@ -188,34 +195,34 @@
 }
 
 .config-guide {
-    background: var(--slate-50);
+    background-color: var(--config-island-bg);
     padding: 1.5rem;
     border-radius: var(--radius-sm);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--config-border);
 }
 
 .config-guide__title {
     margin-bottom: 0.75rem;
-    color: var(--slate-800);
+    color: var(--config-header-color);
     font-weight: 700;
 }
 
 .config-guide__list {
     padding-left: 1.25rem;
     font-size: 0.875rem;
-    color: var(--slate-600);
+    color: var(--gray-600);
     line-height: 1.6;
     margin: 0;
 }
 
 .config-url-display {
     padding: 0.75rem 1rem;
-    background: var(--slate-100);
+    background-color: var(--gray-100);
     border-radius: var(--radius-xs);
     font-family: monospace;
     font-size: 0.875rem;
-    color: var(--slate-700);
-    border: 1px solid var(--border-color);
+    color: var(--gray-700);
+    border: 1px solid var(--config-border);
 }
 
 

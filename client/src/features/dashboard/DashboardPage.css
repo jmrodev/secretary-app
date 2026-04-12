@@ -1,6 +1,12 @@
 /* DashboardPage Styles (BEM) */
 
 .dashboard-page-orchestrator {
+    /* --- Local Component Tokens --- */
+    --live-indicator-bg: var(--blue-50);
+    --live-indicator-dot: var(--blue-500);
+    --live-indicator-text: var(--blue-600);
+    /* ------------------------------ */
+
     display: flex;
     flex-direction: column;
 }
@@ -11,7 +17,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.25rem 0.75rem;
-    background: var(--blue-50);
+    background-color: var(--live-indicator-bg);
     border-radius: 9999px;
     margin-left: 1rem;
     animation: fadeIn 0.5s ease-out;
@@ -20,7 +26,7 @@
 .dashboard-live-indicator__dot {
     width: 0.5rem;
     height: 0.5rem;
-    background: var(--blue-500);
+    background-color: var(--live-indicator-dot);
     border-radius: 50%;
     animation: pulse 2s infinite;
 }
@@ -28,7 +34,7 @@
 .dashboard-live-indicator__text {
     font-size: 0.75rem;
     font-weight: 700;
-    color: var(--blue-600);
+    color: var(--live-indicator-text);
     letter-spacing: 0.025em;
 }
 

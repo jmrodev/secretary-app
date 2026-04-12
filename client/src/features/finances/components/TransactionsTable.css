@@ -1,6 +1,14 @@
 /* TransactionsTable Feature Styles (BEM) */
 
 .transactions-table__container {
+    /* --- Local Component Tokens --- */
+    --ledger-bg: var(--white);
+    --ledger-border: var(--gray-300);
+    --ledger-row-hover: var(--gray-50);
+    --ledger-group-bg: var(--blue-50);
+    --ledger-header-bg: var(--gray-50);
+    /* ------------------------------ */
+
     padding: 0;
     overflow: hidden;
     margin-top: 1rem;
@@ -70,12 +78,12 @@
 }
 
 .transactions-table__table th {
-    background-color: var(--gray-50);
+    background-color: var(--ledger-header-bg);
     padding: 1rem 0.5rem;
     text-align: left;
     font-weight: 800;
     color: var(--text-secondary);
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: 2px solid var(--ledger-border);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-size: 0.65rem;
@@ -91,11 +99,11 @@
 }
 
 .transactions-table__row--grouped {
-    background-color: var(--blue-50);
+    background-color: var(--ledger-group-bg);
 }
 
 .transactions-table__row:hover:not(.transactions-table__row--grouped) td {
-    background-color: var(--gray-50);
+    background-color: var(--ledger-row-hover);
 }
 
 .transactions-table__date {
@@ -240,7 +248,7 @@
 }
 
 .transactions-table__group-footer {
-    background-color: var(--gray-50);
+    background-color: var(--ledger-header-bg);
 }
 
 .transactions-table__group-total {

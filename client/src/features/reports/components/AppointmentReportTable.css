@@ -1,16 +1,26 @@
 /* AppointmentReportTable Component Styles (BEM) */
 
 .appointment-report {
+    /* --- Local Component Tokens --- */
+    --report-card-bg: var(--white);
+    --report-card-border: var(--gray-300);
+    --report-summary-bg: var(--gray-50);
+    --report-header-bg: var(--gray-100);
+    --report-row-hover: var(--gray-50);
+    --report-accent-blue: var(--blue-50);
+    --report-accent-text: var(--blue-700);
+    /* ------------------------------ */
+
     display: flex;
     flex-direction: column;
     gap: 3rem;
 }
 
 .appointment-report__summary {
-    background: var(--gray-50);
+    background-color: var(--report-summary-bg);
     border-radius: var(--radius);
     padding: 2rem;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--report-card-border);
 }
 
 .appointment-report__summary-title {
@@ -25,21 +35,22 @@
 .appointment-report__table {
     width: 100%;
     border-collapse: collapse;
-    background: var(--card-bg);
+    background-color: var(--report-card-bg);
     border-radius: var(--radius);
     overflow: hidden;
+    border: 1px solid var(--report-card-border);
 }
 
 .appointment-report__table th {
     text-align: left;
     padding: 1rem 1.25rem;
-    background: var(--gray-100);
+    background-color: var(--report-header-bg);
     color: var(--text-muted);
     font-size: 0.75rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: 2px solid var(--report-card-border);
 }
 
 .appointment-report__row {
@@ -101,17 +112,17 @@
 }
 
 .appointment-report__badge--status-completed {
-    background: var(--green-100);
+    background-color: var(--green-100);
     color: var(--green-700);
 }
 
 .appointment-report__badge--status-cancelled {
-    background: var(--red-100);
+    background-color: var(--red-100);
     color: var(--red-700);
 }
 
 .appointment-report__badge--status-absent {
-    background: var(--amber-100);
+    background-color: var(--amber-100);
     color: var(--amber-700);
 }
 
