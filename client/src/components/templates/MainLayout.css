@@ -9,6 +9,61 @@
     background-color: var(--layout-bg);
 }
 
+@media screen and (max-width: 1024px) {
+    .app-layout {
+        flex-direction: column;
+        height: auto;
+        overflow: auto;
+    }
+
+    .main-content {
+        padding: 0.5rem;
+        height: auto;
+        overflow: visible;
+    }
+
+    .sidebar {
+        width: 100% !important;
+        height: auto !important;
+        position: sticky !important;
+        top: 0;
+        z-index: 1000;
+        border-right: none;
+        border-bottom: 1px solid var(--sidebar-border);
+        flex-direction: row !important;
+    }
+
+    .sidebar__header, 
+    .sidebar__footer, 
+    .sidebar-user,
+    .sidebar__section-title {
+        display: none !important;
+    }
+
+    .sidebar__nav {
+        flex-direction: row !important;
+        overflow-x: auto;
+        padding: 0.5rem !important;
+        gap: 1rem !important;
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .sidebar__link {
+        padding: 0.5rem 0.75rem !important;
+        white-space: nowrap;
+        font-size: 0.75rem !important;
+        min-width: fit-content;
+        flex-direction: row !important;
+        gap: 0.4rem !important;
+        border-radius: 6px !important;
+    }
+
+    .sidebar__link-icon {
+        font-size: 1.1rem !important;
+    }
+}
+
 .main-content {
     /* --- Local Component Tokens --- */
     --content-padding: clamp(0.75rem, 2vh, 1.25rem) clamp(1rem, 3vw, 2.5rem);

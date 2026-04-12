@@ -41,6 +41,8 @@ const DashboardPage = () => {
         isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff
     } = controller;
 
+    const isAdminOrSecretary = isAdmin || isSecretary;
+
     const {
         refreshDashboard,
         handleUpdateStatus,
@@ -71,7 +73,7 @@ const DashboardPage = () => {
         return <Loading variant="full-page" />;
     }
 
-    const isAdminOrSecretary = isStaff;
+    const [showMobileSidebar, setShowMobileSidebar] = React.useState(false);
 
     return (
         <MainLayout wide>
@@ -94,17 +96,45 @@ const DashboardPage = () => {
                         </>
                     }
                 />
-
                 <section className="layout-content-area">
+                    <div className="dashboard-top-actions animate-fadeIn">
+                        <div className="dashboard-search-bar">
+                            <span className="material-symbols-outlined search-icon">search</span>
+                            <input type="text" placeholder={t('search_placeholder') || "¿Qué buscar?"} />
+                        </div>
 
-                    <div className="dashboard-grid animate-fadeIn">
-                        {/* Sidebar: Utils & Metrics */}
+                        <Button 
+                            variant="premium" 
+                            size="sm" 
+                            onClick={() => setShowMobileSidebar(!showMobileSidebar)}
+                            className="dashboard-sidebar-toggle-mobile"
+                            title={showMobileSidebar ? t('close_panel') : t('view_metrics')}
+                        >
+                            <Icon name={showMobileSidebar ? 'expand_less' : 'analytics'} />
+                            <span className="mobile-only-label">
+                                {showMobileSidebar ? t('close_panel') : t('view_metrics')}
+                            </span>
+                        </Button>
+                    </div>
+
+                    <div className={`dashboard-grid ${showMobileSidebar ? 'dashboard-grid--sidebar-visible' : ''}`}>
+                        {/* Mobile Overlay / Backdrop */}
+                        {showMobileSidebar && (
+                            <div 
+                                className="dashboard-mobile-backdrop" 
+                                onClick={() => setShowMobileSidebar(false)}
+                            />
+                        )}
+
+                        {/* Sidebar: Utils & Metrics (Drawer on Mobile) */}
                         <aside className="dashboard-sidebar">
-                            {/* Consolidated Search in Sidebar */}
-                            <div className="dashboard-search-bar" style={{ width: '100%', marginBottom: '0.5rem' }}>
-                                <Icon name="search" />
-                                <input type="text" placeholder={t('search_placeholder') || "¿Qué buscar?"} />
-                                <Badge variant="info">CMS</Badge>
+                            <div className="dashboard-sidebar-mobile-header">
+                                <h3 className="flex items-center gap-2">
+                                    <Icon name="analytics" /> {t('metrics_and_tools') || 'Métricas y Herramientas'}
+                                </h3>
+                                <Button variant="ghost" size="sm" onClick={() => setShowMobileSidebar(false)}>
+                                    <Icon name="close" />
+                                </Button>
                             </div>
                             
                             <DashboardSidebar
@@ -115,7 +145,7 @@ const DashboardPage = () => {
                             />
                             
                             {/* QuickActions moved here as a support element */}
-                            {(isAdmin || isSecretary || isDoctor) && (
+                            {(isAdminOrSecretary || isDoctor) && (
                                 <QuickActions 
                                     t={t} 
                                     handlers={handlers} 
@@ -138,14 +168,17 @@ const DashboardPage = () => {
                                                     <Icon name="description" size="1.5rem" />
                                                     {t('pending_requests')}
                                                 </h3>
-                                                {/* Secondary tab if someone really needs reminders */}
-                                                <Button 
-                                                    variant="ghost" 
-                                                    size="sm" 
-                                                    onClick={() => setActiveTab(activeTab === 'reminders' ? 'requirements' : 'reminders')}
-                                                >
-                                                    {activeTab === 'reminders' ? t('back_to_requests') : `${t('view_reminders')} (${reminders?.length || 0})`}
-                                                </Button>
+                                                
+                                                <div className="dashboard-header-actions flex gap-2">
+                                                    {/* Secondary tab if someone really needs reminders */}
+                                                    <Button 
+                                                        variant="ghost" 
+                                                        size="sm" 
+                                                        onClick={() => setActiveTab(activeTab === 'reminders' ? 'requirements' : 'reminders')}
+                                                    >
+                                                        {activeTab === 'reminders' ? t('back_to_requests') : `${t('view_reminders')} (${reminders?.length || 0})`}
+                                                    </Button>
+                                                </div>
                                             </header>
 
                                             {activeTab === 'requirements' ? (
