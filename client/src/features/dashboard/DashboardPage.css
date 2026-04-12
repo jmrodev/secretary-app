@@ -21,10 +21,11 @@
 /* --- Hero Section --- */
 .dashboard-hero {
     position: relative;
-    height: var(--hero-height);
-    background-color: var(--primary-color);
+    height: 320px; /* Force height directly to avoid var issues */
+    min-height: 320px;
+    background-color: var(--primary-color, #6366f1);
     overflow: hidden;
-    margin-bottom: -4rem; /* Overlap with grid for Bento look */
+    margin-bottom: -6rem; /* Deeper overlap for premium Bento look */
 }
 
 .dashboard-hero__background {
@@ -105,10 +106,10 @@
 .dashboard-page {
     position: relative;
     z-index: 3;
-    max-width: var(--max-width);
+    max-width: var(--max-width, 1600px);
     margin: 0 auto;
     width: 100%;
-    padding: 0 var(--hero-padding) 3rem;
+    padding: 0 2rem 3rem; /* Re-add padding here instead of layout */
 }
 
 /* --- Live Indicator --- */

@@ -111,7 +111,7 @@ const DashboardPage = () => {
                 <section className="dashboard-page">
 
                     <div className="dashboard-grid animate-fadeIn">
-                        {/* Sidebar Stats */}
+                        {/* Sidebar: Utils & Metrics */}
                         <aside className="dashboard-sidebar">
                             <DashboardSidebar
                                 stats={stats}
@@ -119,11 +119,8 @@ const DashboardPage = () => {
                                 user={user}
                                 t={t}
                             />
-                        </aside>
-
-                        {/* Main Content Area */}
-                        <main className="dashboard-main flex flex-col gap-8">
-                            {/* NEW: Quick Actions Section */}
+                            
+                            {/* QuickActions moved here as a support element */}
                             {(isAdmin || isSecretary || isDoctor) && (
                                 <QuickActions 
                                     t={t} 
@@ -131,63 +128,49 @@ const DashboardPage = () => {
                                     isAdmin={isAdmin} 
                                     isSecretary={isSecretary} 
                                     isDoctor={isDoctor} 
+                                    compact={true}
                                 />
                             )}
+                        </aside>
 
-                            {(isAdminOrSecretary || isDoctor) && (
-                                <nav className="dashboard-nav-bar dashboard-nav-bar--centered mb-6">
-                                    <div className="flex items-center gap-6">
-                                        <div className="dashboard-nav-bar__button-wrapper">
-                                            <Button
-                                                variant="ghost"
-                                                active={activeTab === 'requirements'}
-                                                onClick={() => setActiveTab('requirements')}
-                                                icon={<Icon name="description" size="1.2rem" />}
-                                                className="px-6"
-                                            >
-                                                {t('ongoing_requirements')}
-                                            </Button>
-                                            <Badge count={pendingReqCount} position="top-right" />
-                                        </div>
-                                        <div className="dashboard-nav-bar__button-wrapper">
-                                            <Button
-                                                variant="ghost"
-                                                active={activeTab === 'reminders'}
-                                                onClick={() => setActiveTab('reminders')}
-                                                icon={<Icon name="notifications" size="1.2rem" />}
-                                                className="px-6"
-                                            >
-                                                {t('reminders')}
-                                            </Button>
-                                            <Badge count={reminders?.length || 0} position="top-right" variant="danger" />
-                                        </div>
-                                    </div>
-                                </nav>
-                            )}
-
-                            <article className="dashboard-card dashboard-card--no-padding">
+                        {/* Main Area: Priority Content */}
+                        <main className="dashboard-main">
+                            <article className="dashboard-card dashboard-card--no-padding dashboard-card--priority">
                                 <div className="dashboard-card__content">
-                                    {activeTab === 'requirements' && (isAdminOrSecretary || isDoctor) && (
+                                    {(isAdminOrSecretary || isDoctor) ? (
                                         <div className="dashboard-requirements">
-                                            <header className="dashboard-requirements__header">
-                                                <h3 className="dashboard-requirements__title">
-                                                    <Icon name="description" size="1.2rem" />
+                                            <header className="dashboard-requirements__header flex justify-between items-center mb-4">
+                                                <h3 className="dashboard-requirements__title flex items-center gap-2">
+                                                    <Icon name="description" size="1.5rem" />
                                                     {t('pending_requests')}
                                                 </h3>
+                                                {/* Secondary tab if someone really needs reminders */}
+                                                <Button 
+                                                    variant="ghost" 
+                                                    size="sm" 
+                                                    onClick={() => setActiveTab(activeTab === 'reminders' ? 'requirements' : 'reminders')}
+                                                >
+                                                    {activeTab === 'reminders' ? t('back_to_requests') : `${t('view_reminders')} (${reminders?.length || 0})`}
+                                                </Button>
                                             </header>
-                                            <MedicalRequirementManager user={user} hideTabs={true} hideFilters={true} setPaymentModal={setPaymentModal} />
-                                        </div>
-                                    )}
 
-                                    {activeTab === 'reminders' && (
-                                        <DashboardReminders
-                                            reminders={reminders}
-                                            t={t}
-                                            onWhatsApp={handleWhatsAppReminder}
-                                            onComplete={handleCompleteReminder}
-                                            onMarkNotified={handleMarkNotified}
-                                            onViewProfile={(id) => navigate('/patients', { state: { selectedPatientId: id } })}
-                                        />
+                                            {activeTab === 'requirements' ? (
+                                                <MedicalRequirementManager user={user} hideTabs={true} hideFilters={true} setPaymentModal={setPaymentModal} />
+                                            ) : (
+                                                <DashboardReminders
+                                                    reminders={reminders}
+                                                    t={t}
+                                                    onWhatsApp={handleWhatsAppReminder}
+                                                    onComplete={handleCompleteReminder}
+                                                    onMarkNotified={handleMarkNotified}
+                                                    onViewProfile={(id) => navigate('/patients', { state: { selectedPatientId: id } })}
+                                                />
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <div className="p-8 text-center text-muted">
+                                            {t('no_permissions_view')}
+                                        </div>
                                     )}
                                 </div>
                             </article>

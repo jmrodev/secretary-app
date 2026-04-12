@@ -31,7 +31,7 @@
 }
 
 .main-content.dashboard-wide {
-    padding: clamp(0.75rem, 1.5vh, 1.25rem) 0.5rem;
+    padding: 0;
 }
 
 .main-content.dashboard-wide>* {

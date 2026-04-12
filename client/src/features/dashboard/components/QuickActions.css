@@ -34,6 +34,18 @@
     gap: 1.5rem;
 }
 
+.quick-actions--compact .quick-actions__grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.quick-actions--compact {
+    padding: 1rem;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
 .quick-actions__section {
     display: flex;
     flex-direction: column;
