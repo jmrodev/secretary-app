@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useRegisterController } from '../hooks/useRegisterController';
 import Button from '@/components/atoms/Button';
 import Input from '@/components/atoms/Input';
+import Select from '@/components/atoms/Select';
 import FormGroup from '@/components/molecules/FormGroup';
 import './RegisterForm.css';
 
@@ -34,17 +35,17 @@ const RegisterForm = () => {
 
                 <form className="auth-card__form" onSubmit={handleSubmit}>
                     <FormGroup label={t('i_am')}>
-                        <select
+                        <Select
                             name="role"
-                            className="input"
                             value={formData.role}
                             onChange={handleChange}
                             disabled={loading}
-                        >
-                            <option value="patient">{t('patient')}</option>
-                            <option value="doctor">{t('doctor')}</option>
-                            <option value="secretary">{t('secretary')}</option>
-                        </select>
+                            options={[
+                                { value: 'patient', label: t('patient') },
+                                { value: 'doctor', label: t('doctor') },
+                                { value: 'secretary', label: t('secretary') }
+                            ]}
+                        />
                     </FormGroup>
 
                     <FormGroup label={t('full_name')}>

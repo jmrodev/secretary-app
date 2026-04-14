@@ -1,6 +1,9 @@
-import React from 'react';
 import Button from '@/components/atoms/Button';
 import Input from '@/components/atoms/Input';
+import Select from '@/components/atoms/Select';
+import Switch from '@/components/atoms/Switch';
+import Icon from '@/components/atoms/Icon';
+import './ScheduleTimeBlock.css';
 
 /**
  * ScheduleTimeBlock Feature Molecule.
@@ -16,22 +19,22 @@ const ScheduleTimeBlock = ({
     t
 }) => {
     return (
-        <div className="time-block p-4 bg-white border border-slate-100 rounded-sm flex flex-wrap items-center gap-4 shadow-sm animate-fadeIn mb-3">
-            <div className="time-block__inputs flex items-center gap-2">
+        <div className="time-block">
+            <div className="time-block__inputs">
                 <Input
                     type="time"
                     size="sm"
-                    className="!py-1 !px-2 border-slate-200 focus:border-accent text-sm w-[90px]"
+                    className="time-block__input"
                     value={String(block.start_time || '').slice(0, 5)}
                     onFocus={onFocus}
                     onBlur={onBlur}
                     onChange={(e) => onChange(block.originalIndex, 'start_time', e.target.value)}
                 />
-                <span className="time-block__connector text-[10px] font-bold text-slate-300 uppercase tracking-tighter">a</span>
+                <span className="time-block__connector">a</span>
                 <Input
                     type="time"
                     size="sm"
-                    className="!py-1 !px-2 border-slate-200 focus:border-accent text-sm w-[90px]"
+                    className="time-block__input"
                     value={String(block.end_time || '').slice(0, 5)}
                     onFocus={onFocus}
                     onBlur={onBlur}
@@ -39,37 +42,39 @@ const ScheduleTimeBlock = ({
                 />
             </div>
 
-            <div className="time-block__divider w-px h-8 bg-slate-100 hidden md:block" />
+            <div className="time-block__divider" />
 
             <div className="time-block__type">
-                <select
-                    className={`time-block__type-select py-1.5 px-3 rounded-sm border-slate-200 text-sm font-bold transition-all focus:ring-2 focus:ring-accent/20 ${block.default_type === 'virtual' ? 'text-blue-600 bg-blue-50 border-blue-100' : 'text-slate-700 bg-white'}`}
+                <Select
+                    className={`time-block__type-select ${block.default_type === 'virtual' ? 'time-block__type-select--virtual' : ''}`}
                     value={block.default_type || 'consultation'}
                     onChange={(e) => onChange(block.originalIndex, 'default_type', e.target.value)}
-                >
-                    <option value="consultation">🏥 Presencial</option>
-                    <option value="virtual">📹 Videollamada</option>
-                </select>
+                    options={[
+                        { value: 'consultation', label: t('in_person') || 'Presencial', icon: 'APPOINTMENTS' },
+                        { value: 'virtual', label: t('virtual_type') || 'Videollamada', icon: 'VIRTUAL' }
+                    ]}
+                />
             </div>
 
-            <div className="time-block__options flex items-center gap-4 ml-auto">
-                <label className="time-block__alignment flex items-center gap-2 cursor-pointer group">
-                    <input
-                        type="checkbox"
-                        className="time-block__checkbox rounded-sm text-accent focus:ring-accent border-slate-300"
+            <div className="time-block__options">
+                <div className="time-block__alignment">
+                    <Switch
+                        id={`align-${block.originalIndex}`}
                         checked={block.force_hour_alignment === 1}
-                        onChange={(e) => onChange(block.originalIndex, 'force_hour_alignment', e.target.checked ? 1 : 0)}
+                        onChange={(val) => onChange(block.originalIndex, 'force_hour_alignment', val ? 1 : 0)}
                     />
-                    <span className="time-block__alignment-text text-xs font-bold text-slate-400 group-hover:text-accent transition-colors">🕒 Coord. :00</span>
-                </label>
+                    <span className="time-block__alignment-text">
+                        <Icon name="TIME" size="0.8rem" /> :00
+                    </span>
+                </div>
 
                 <Button
                     variant="ghost"
-                    size="sm-compact"
+                    size="sm"
                     onClick={onRemove}
-                    className="time-block__remove text-gray-300 hover:text-red-500 hover:bg-red-50 p-2"
+                    className="time-block__remove"
                     title="Eliminar franja"
-                    icon="🗑️"
+                    icon="DELETE"
                 />
             </div>
         </div>

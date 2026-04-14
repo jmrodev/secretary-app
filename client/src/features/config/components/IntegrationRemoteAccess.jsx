@@ -4,6 +4,7 @@ import ConfigField from './ConfigField';
 import Select from '@/components/atoms/Select';
 import StatusIndicator from '@/components/atoms/StatusIndicator';
 import Alert from '@/components/atoms/Alert';
+import Icon from '@/components/atoms/Icon';
 
 /**
  * IntegrationRemoteAccess Feature Molecule.
@@ -15,7 +16,7 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
     return (
         <div className="config-section animate-fadeIn">
             <div className="config-section__header">
-                <span className="config-section__icon">🌐</span>
+                <Icon name="GOOGLE" className="config-section__icon" />
                 <h3 className="config-section__title">Acceso Remoto (Internet)</h3>
             </div>
 
@@ -72,15 +73,18 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
                                 variant="secondary"
                                 onClick={onRefreshTunnel}
                                 disabled={loading || !settings.duckdns_domain || !settings.duckdns_token}
+                                icon="SYNC"
                             >
-                                🔄 Renovar IP
+                                Renovar IP
                             </Button>
                         </div>
 
                         <div className="config-section__divider"></div>
 
                         <div className="config-guide">
-                            <h4 className="config-guide__title">📖 Guía de Configuración DuckDNS</h4>
+                            <h4 className="config-guide__title">
+                                <Icon name="BOOK" /> Guía de Configuración DuckDNS
+                            </h4>
                             <ol className="config-guide__list">
                                 <li>Registre un subdominio gratuito en <a href="https://www.duckdns.org" target="_blank" rel="noreferrer" className="config-link">duckdns.org</a>.</li>
                                 <li>Copie el <b>Token</b> y el <b>Subdominio</b> en los campos de arriba.</li>

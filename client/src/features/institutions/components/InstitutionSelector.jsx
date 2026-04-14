@@ -1,6 +1,7 @@
 import React from 'react';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
+import Select from '@/components/atoms/Select';
 import './InstitutionSelector.css';
 
 /**
@@ -23,16 +24,15 @@ const InstitutionSelector = ({
                     <Icon name="business" size="1.2rem" color="var(--accent-color)" />
                     {(t('institutions') || 'Instituciones') + ':'}
                 </label>
-                <select
+                <Select
                     className="inst-finances__select"
                     value={selectedInstId}
                     onChange={e => setSelectedInstId(e.target.value)}
-                >
-                    <option value="">{t('select_institution')}</option>
-                    {institutions.map(i => (
-                        <option key={i.id} value={i.id}>{i.name}</option>
-                    ))}
-                </select>
+                    options={[
+                        { value: '', label: t('select_institution') },
+                        ...institutions.map(i => ({ value: i.id, label: i.name }))
+                    ]}
+                />
             </div>
 
             {selectedInstId && (

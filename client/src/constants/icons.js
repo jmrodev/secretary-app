@@ -24,6 +24,7 @@ export const ICONS = {
     FISCAL: 'receipt_long',
     MESSAGES: 'chat',
     GOOGLE: 'public',
+    BOOK: 'menu_book',
 
     // Stats / Dashboard
     STATS: 'analytics',
@@ -58,6 +59,8 @@ export const ICONS = {
     RESTORE: 'restore',
     VIEW_LIST: 'view_list',
     VIEW: 'visibility',
+    LINK: 'link',
+    OPEN_IN_NEW: 'open_in_new',
 
     // Status / Medical
     PENDING: 'timer',

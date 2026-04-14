@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Badge from '@/components/atoms/Badge';
+import Icon from '@/components/atoms/Icon';
 import './DoctorGoogleSettings.css';
 
 const DoctorGoogleSettings = ({
@@ -31,7 +32,7 @@ const DoctorGoogleSettings = ({
                             className="w-full"
                             size="lg"
                             onClick={onConnect}
-                            icon="🔗"
+                            icon="LINK"
                         >
                             Conectar Cuenta G-Suite
                         </Button>
@@ -45,7 +46,7 @@ const DoctorGoogleSettings = ({
                         className="w-full text-danger"
                         size="lg"
                         onClick={onDisconnect}
-                        icon="❌"
+                        icon="CLOSE"
                     >
                         Desvincular Cuenta
                     </Button>
@@ -54,23 +55,23 @@ const DoctorGoogleSettings = ({
 
             {connected && (
                 <div className="doctor-google-settings__tools">
-                    <Button variant="secondary" onClick={onVerifyCalendar} icon="📅">
+                    <Button variant="secondary" onClick={onVerifyCalendar} icon="APPOINTMENTS">
                         Verificar Turnos en Calendar
                     </Button>
-                    <Button variant="primary" onClick={onImportContacts} icon="📥">
+                    <Button variant="primary" onClick={onImportContacts} icon="SYNC">
                         Sincronizar Contactos
                     </Button>
                     <div className="doctor-google-settings__divider" />
                     <div className="doctor-google-settings__reset-box">
                         <p className="doctor-google-settings__reset-notice">
-                            ⚠️ ¿Problemas con la planilla? Si la borraste de Drive, usa este botón para que el sistema genere una nueva.
+                            <Icon name="WARNING" size="sm" /> ¿Problemas con la planilla? Si la borraste de Drive, usa este botón para que el sistema genere una nueva.
                         </p>
                         <Button
                             variant="ghost"
                             size="sm"
                             className="doctor-google-settings__reset-btn"
                             onClick={onResetSpreadsheet}
-                            icon="♻️"
+                            icon="RESTORE"
                         >
                             Re-generar Planilla de Finanzas
                         </Button>
