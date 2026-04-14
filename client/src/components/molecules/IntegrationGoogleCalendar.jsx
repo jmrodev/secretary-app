@@ -4,6 +4,7 @@ import StatusIndicator from '../atoms/StatusIndicator';
 import ConfigToggle from '../molecules/ConfigToggle';
 import ConfigField from '../molecules/ConfigField';
 import Alert from '../atoms/Alert';
+import './IntegrationGoogleCalendar.css';
 
 /**
  * IntegrationGoogleCalendar Molecule.
@@ -40,14 +41,14 @@ const IntegrationGoogleCalendar = ({
                         </div>
 
                         {!googleUnlinked && (
-                            <div className="config-flex config-flex--column" style={{ alignItems: 'flex-end', gap: '0.5rem' }}>
+                            <div className="config-flex config-flex--column google-calendar-integration__status-container">
                                 <ConfigToggle
                                     id="google-sync-toggle"
                                     label={settings.google_sync_enabled === 'false' ? '⏸️ Sincronización PAUSADA' : '✅ Sincronización ACTIVA'}
                                     checked={settings.google_sync_enabled !== 'false'}
                                     onChange={(val) => updateSetting('google_sync_enabled', val ? 'true' : 'false')}
                                 />
-                                <p className="config-field__hint" style={{ textAlign: 'right', margin: 0 }}>
+                                <p className="config-field__hint google-calendar-integration__hint--right">
                                     Si pausas, los cambios en la App no se enviarán a Google.
                                 </p>
                             </div>
@@ -74,7 +75,7 @@ const IntegrationGoogleCalendar = ({
                                     size="sm"
                                     onClick={onRetryGoogle}
                                     disabled={loading}
-                                    style={{ marginTop: '0.5rem' }}
+                                    className="google-calendar-integration__retry-btn"
                                 >
                                     ⚡ Reintentar Elementos Fallidos
                                 </Button>

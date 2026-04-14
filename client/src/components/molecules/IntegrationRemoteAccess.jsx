@@ -3,6 +3,7 @@ import Button from '../atoms/Button';
 import ConfigField from '../molecules/ConfigField';
 import StatusIndicator from '../atoms/StatusIndicator';
 import Alert from '../atoms/Alert';
+import './IntegrationRemoteAccess.css';
 
 /**
  * IntegrationRemoteAccess Molecule.
@@ -80,8 +81,8 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
                         <div className="config-section__divider"></div>
 
                         <div className="config-guide">
-                            <h4 style={{ marginBottom: '0.75rem', color: 'var(--slate-800)' }}>📖 Guía de Configuración DuckDNS</h4>
-                            <ol className="config-guide__list" style={{ paddingLeft: '1.25rem', fontSize: '0.875rem', color: 'var(--slate-600)', lineHeight: '1.6' }}>
+                            <h4 className="remote-access__guide-title">📖 Guía de Configuración DuckDNS</h4>
+                            <ol className="config-guide__list remote-access__guide-list">
                                 <li>Registre un subdominio gratuito en <a href="https://www.duckdns.org" target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">duckdns.org</a>.</li>
                                 <li>Copie el <b>Token</b> y el <b>Subdominio</b> en los campos de arriba.</li>
                                 <li>Lo más importante: Debe configurar el <b>Port Forwarding</b> en su Router.</li>

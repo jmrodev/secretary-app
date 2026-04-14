@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import './AutoTextarea.css';
 
 /**
  * AutoTextarea Atom follows Atomic Design & BEM.
@@ -7,7 +8,6 @@ import React, { useEffect, useRef } from 'react';
  */
 const AutoTextarea = ({
     value,
-    style,
     className = '',
     size = 'md',
     variant = 'default',
@@ -17,10 +17,11 @@ const AutoTextarea = ({
 
     const baseClass = 'input';
     const typeClass = `${baseClass}--textarea`;
+    const autoHeightClass = `${baseClass}--auto-height`;
     const variantClass = variant !== 'default' ? `${baseClass}--${variant}` : '';
     const sizeClass = size !== 'md' ? `${baseClass}--${size}` : '';
 
-    const combinedClassName = `${baseClass} ${typeClass} ${variantClass} ${sizeClass} ${className}`.trim();
+    const combinedClassName = `${baseClass} ${typeClass} ${autoHeightClass} ${variantClass} ${sizeClass} ${className}`.trim();
 
     const adjustHeight = () => {
         const el = textareaRef.current;
@@ -40,7 +41,6 @@ const AutoTextarea = ({
             value={value}
             onInput={adjustHeight}
             className={combinedClassName}
-            style={{ ...style, overflow: 'hidden', resize: 'none' }}
         />
     );
 };

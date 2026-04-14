@@ -1,0 +1,11 @@
+.remote-access__guide-title {
+    margin-bottom: 0.75rem;
+    color: var(--slate-800);
+}
+
+.remote-access__guide-list {
+    padding-left: 1.25rem;
+    font-size: 0.875rem;
+    color: var(--slate-600);
+    line-height: 1.6;
+}
