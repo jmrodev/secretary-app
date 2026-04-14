@@ -74,11 +74,11 @@ const RequirementMedicationList = ({
 
             {notes && (
                 <div className="requirements-detail__notes mt-6">
-                    <strong className="requirements-detail__label flex items-center gap-2 mb-2">
+                    <strong className="requirements-detail__label">
                         <Icon name="notes" size="1rem" color="var(--text-secondary)" />
                         {meds.length > 0 ? t('additional_notes') : t('detail_reason')}:
                     </strong>
-                    <div className="requirements-detail__notes-content p-4 bg-gray-50 rounded-sm border border-gray-100 text-sm italic">
+                    <div className="requirements-detail__notes-content">
                         {notes}
                     </div>
                 </div>

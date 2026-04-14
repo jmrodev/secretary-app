@@ -21,3 +21,17 @@
 }
 .holiday-list__date::before { content: '📅'; font-size: 0.8rem; }
 .holiday-list__description { font-size: 0.9375rem; font-weight: 600; color: var(--text-main); }
+
+.holiday-list__empty-icon {
+    color: var(--slate-300);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.holiday-list__delete-btn {
+    color: var(--red-500, #ef4444);
+}
+
+.holiday-list__delete-btn:hover {
+    background-color: var(--red-50, #fef2f2);
+}

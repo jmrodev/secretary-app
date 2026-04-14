@@ -25,7 +25,7 @@ const ChatThread = ({
         <>
             <div className="floating-chat__messages" ref={scrollRef}>
                 {loading && thread.length === 0 ? (
-                    <p className="text-center p-4 text-muted">Cargando...</p>
+                    <p className="floating-chat__loading-text">{t ? t('loading') : 'Cargando...'}</p>
                 ) : (
                     thread.map(msg => (
                         <ChatMessageBubble

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useMessagesPageController, ChatSidebar, ChatWindow } from './index';
 import MainLayout from '@/components/templates/MainLayout';
+import './ChatPage.css';
 
 
 /**
@@ -26,7 +27,7 @@ const ChatPage = () => {
 
     return (
         <MainLayout wide>
-            <div className="chat-container app-layout h-screen overflow-hidden flex animate-fadeIn">
+            <div className="chat-container animate-fadeIn">
                 <ChatSidebar
                     conversations={conversations}
                     selectedConvo={selectedConvo}

@@ -1,0 +1,7 @@
+/* ChatPage.css */
+
+.chat-container {
+    display: flex;
+    height: calc(100vh - var(--header-height, 60px));
+    overflow: hidden;
+}

@@ -258,3 +258,17 @@
     color: currentColor;
     opacity: 0.6;
 }
+
+.floating-chat__loading-text {
+    text-align: center;
+    padding: 1rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+.floating-chat__empty {
+    text-align: center;
+    padding: 1rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
