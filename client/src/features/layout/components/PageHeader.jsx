@@ -24,7 +24,7 @@ const PageHeader = ({
             {isPremium && backgroundUrl && (
                 <div 
                     className="page-header__background" 
-                    style={{ backgroundImage: `url(${backgroundUrl})` }}
+                    style={{ '--page-header-bg': `url(${backgroundUrl})` }}
                 ></div>
             )}
             

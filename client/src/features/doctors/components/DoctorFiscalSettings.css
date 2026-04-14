@@ -53,6 +53,10 @@
     margin-bottom: 1.5rem;
 }
 
+.doctor-fiscal-settings__file-input {
+    display: none;
+}
+
 .doctor-fiscal-settings__csr-box {
     background-color: white;
     padding: 1.25rem;

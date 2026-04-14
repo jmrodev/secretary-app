@@ -171,13 +171,12 @@ const PatientPrintableView = ({
                             {filterByDateAndLimit(details.appointments, 'appointment_date').map(app => {
                                 const isExcluded = excludedItems.has(`appt_${app.id}`);
                                 return (
-                                    <li key={app.id} className={isExcluded ? 'no-print' : ''} style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                                    <li key={app.id} className={`${isExcluded ? 'no-print' : ''} printable-list-item--flex`}>
                                         <input 
                                             type="checkbox" 
                                             checked={!isExcluded} 
                                             onChange={() => toggleExclude(`appt_${app.id}`)} 
-                                            className="no-print"
-                                            style={{ cursor: 'pointer' }}
+                                            className="no-print cursor-pointer"
                                         />
                                         <div>
                                             <strong>{new Date(app.appointment_date).toLocaleDateString('es-AR')} {new Date(app.appointment_date).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}</strong> 

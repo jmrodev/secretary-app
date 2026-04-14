@@ -92,7 +92,7 @@ const DoctorFiscalSettings = ({
                         ref={fileInputRef}
                         onChange={handleFileChange}
                         accept=".crt,.key"
-                        style={{ display: 'none' }}
+                        className="doctor-fiscal-settings__file-input"
                     />
                     <Button size="sm" variant="ghost" onClick={handleUploadClick} loading={uploading} icon={<Icon name="upload" size="1.1rem" />}>
                         {t('upload_certificate')}

@@ -130,7 +130,7 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink }) => {
                         <tr className="patient-details__info-row">
                             <th className="patient-details__info-label">{t('attendance')}</th>
                             <td className="patient-details__info-value">
-                                <div className="config-flex config-flex--gap-2" style={{ alignItems: 'center' }}>
+                                <div className="config-flex config-flex--gap-2">
                                     <span>
                                         <strong>{details.attended_appointments}</strong> {t('attended') || 'Atendidos'}
                                     </span>
