@@ -151,12 +151,12 @@ const PublicRequestPage = () => {
                         Notas (Opcional)
                     </h2>
                     <textarea
-                        className="input-field"
-                        style={{ minHeight: '120px' }}
+                        className="input-field public-prescription__notes"
                         placeholder="Ej: Retiro por secretaría el miércoles..."
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
                     ></textarea>
+
                 </section>
 
                 <div className="public-prescription__footer">

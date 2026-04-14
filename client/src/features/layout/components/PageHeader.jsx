@@ -22,11 +22,13 @@ const PageHeader = ({
     return (
         <header className={`${baseClass} ${dividerClass} ${className} animate-fadeIn`}>
             {isPremium && backgroundUrl && (
-                <div 
-                    className="page-header__background" 
-                    style={{ '--page-header-bg': `url(${backgroundUrl})` }}
-                ></div>
+                <img 
+                    src={backgroundUrl} 
+                    alt="" 
+                    className="page-header__background-img" 
+                />
             )}
+
             
             <div className={`${baseClass}__content`}>
                 <div className={`${baseClass}__title-container`}>

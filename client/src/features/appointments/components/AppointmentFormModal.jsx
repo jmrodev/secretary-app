@@ -30,10 +30,11 @@ const AppointmentFormModal = ({
             size="2xl"
         >
             <form onSubmit={onSubmit} id="new-appointment-form" className="appointment-form-modal" autoComplete="off">
-                <div style={{ position: 'absolute', opacity: 0, top: -1000, left: -1000, height: 0, width: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+                <div className="appointment-form-modal__autofill-trap">
                     <input type="text" name="fake_user_trap_appt" autoComplete="username" tabIndex={-1} />
                     <input type="password" name="fake_pass_trap_appt" autoComplete="new-password" tabIndex={-1} />
                 </div>
+
 
                 <AppointmentSyncAlert info={syncReferenceInfo} />
 

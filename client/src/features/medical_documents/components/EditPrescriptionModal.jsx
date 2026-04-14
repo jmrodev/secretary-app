@@ -4,6 +4,8 @@ import Modal from '@/components/molecules/Modal';
 import Button from '@/components/atoms/Button';
 import MedicationAutocomplete from './MedicationAutocomplete';
 import PrescriptionItemsList from './PrescriptionItemsList';
+import './EditPrescriptionModal.css';
+
 
 /**
  * EditPrescriptionModal Molecule.
@@ -84,8 +86,9 @@ const EditPrescriptionModal = ({
                                 onChange={e => onEditDataChange('bonified', e.target.checked)}
                             />
                             <span className="checkmark"></span>
-                            <span className="checkbox-label" style={{ marginLeft: '10px' }}>
+                            <span className="checkbox-label edit-prescription-modal__label">
                                 {t('bonified') || 'Bonificado (Sin Costo)'}
+
                             </span>
                         </label>
                     </div>

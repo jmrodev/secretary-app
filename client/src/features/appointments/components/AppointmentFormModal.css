@@ -71,3 +71,15 @@
 .appointment-form-modal__extra-badge--pulse { animation: pulse 2s infinite; }
 
 .appointment-form-modal__checkbox { margin-right: 0.5rem; }
+
+.appointment-form-modal__autofill-trap {
+    position: absolute;
+    opacity: 0;
+    top: -1000px;
+    left: -1000px;
+    height: 0;
+    width: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+

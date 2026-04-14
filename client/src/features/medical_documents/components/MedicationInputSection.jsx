@@ -4,6 +4,8 @@ import Input from '@/components/atoms/Input';
 import Tooltip from '@/components/atoms/Tooltip';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+import './MedicationInputSection.css';
+
 
 /**
  * MedicationInputSection Feature Molecule.
@@ -81,15 +83,9 @@ const MedicationInputSection = ({
                             {t('units_per_box') || 'Caja de (X) pastillas'}
                         </label>
                         <select
-                            className={`input input--sm ${baseClass}__select`}
-                            style={{ 
-                                width: '100%', 
-                                padding: '0.4rem 0.6rem',
-                                borderRadius: 'var(--radius-sm)',
-                                border: '1px solid var(--border-color)',
-                                fontSize: '0.875rem'
-                            }}
+                            className={`input input--sm ${baseClass}__select medication-input-section__select`}
                             value={tempUnitsPerBox}
+
                             onChange={e => setTempUnitsPerBox(e.target.value)}
                         >
                             <option value="">{t('select_option') || 'Sel.'}</option>
@@ -104,15 +100,9 @@ const MedicationInputSection = ({
                             {t('daily_units') || 'Pastillas por día'}
                         </label>
                         <select
-                            className={`input input--sm ${baseClass}__select`}
-                            style={{ 
-                                width: '100%',
-                                padding: '0.4rem 0.6rem',
-                                borderRadius: 'var(--radius-sm)',
-                                border: '1px solid var(--border-color)',
-                                fontSize: '0.875rem'
-                            }}
+                            className={`input input--sm ${baseClass}__select medication-input-section__select`}
                             value={tempDailyUnits}
+
                             onChange={e => {
                                 const val = e.target.value;
                                 setTempDailyUnits(val);

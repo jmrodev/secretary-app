@@ -5,6 +5,8 @@ import Tooltip from '@/components/atoms/Tooltip';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import MedicationAutocomplete from './MedicationAutocomplete';
+import './PrescriptionFormFields.css';
+
 
 /**
  * PrescriptionFormFields Molecule.
@@ -75,9 +77,9 @@ const PrescriptionFormFields = ({
                         {t('units_per_box') || 'Caja de (X) pastillas'}
                     </label>
                     <select
-                        className="input input--sm"
-                        style={{ width: '100%' }}
+                        className="input input--sm prescription-form-fields__select"
                         value={tempUnitsPerBox}
+
                         onChange={e => setTempUnitsPerBox(e.target.value)}
                     >
                         <option value="">{t('select_option') || 'Sel.'}</option>
@@ -92,9 +94,9 @@ const PrescriptionFormFields = ({
                         {t('daily_units') || 'Pastillas por día'}
                     </label>
                     <select
-                        className="input input--sm"
-                        style={{ width: '100%' }}
+                        className="input input--sm prescription-form-fields__select"
                         value={tempDailyUnits}
+
                         onChange={e => {
                             setTempDailyUnits(e.target.value);
                         }}
