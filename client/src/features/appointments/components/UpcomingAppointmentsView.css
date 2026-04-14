@@ -21,6 +21,10 @@
     box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.2);
 }
 
+.upcoming-appointments-view__icon {
+    color: var(--white);
+}
+
 .upcoming-appointments-view__grid {
     display: grid;
     grid-template-columns: repeat(1, minmax(0, 1fr));

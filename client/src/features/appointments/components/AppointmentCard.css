@@ -80,12 +80,15 @@
 .appt-status__amount--paid { color: var(--emerald-600); }
 .appt-status__amount--debt { color: var(--rose-600); }
 
-.appointment-card__status-chip {
-    font-size: 10px; padding: 2px 8px; border-radius: 9999px; margin-top: 4px;
-    font-weight: 600; text-transform: capitalize; border: 1px solid currentColor;
+.appt-status__bonified {
+    color: var(--blue-600);
+    text-transform: uppercase;
+    font-size: 10px;
 }
-.appointment-card__status-chip--confirmed { color: var(--blue-600); background: var(--blue-50); }
-.appointment-card__status-chip--completed { color: var(--green-600); background: var(--green-50); }
+
+.appt-status__icon--blue {
+    color: var(--blue-500);
+}
 
 .appointment-card__actions { display: flex; gap: 0.25rem; }
 .appointment-card__action-btn:hover {

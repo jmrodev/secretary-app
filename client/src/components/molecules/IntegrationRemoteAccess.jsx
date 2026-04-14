@@ -19,7 +19,7 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
             </div>
 
             <div className="config-section__body">
-                <p className="config-field__hint" style={{ marginBottom: '1.5rem' }}>
+                <p className="config-field__hint config-field__hint--mb-15">
                     Elija cómo desea acceder a la aplicación cuando no esté en el consultorio.
                 </p>
 
@@ -42,7 +42,7 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
 
                 {method === 'duckdns' && (
                     <div className="animate-fadeIn">
-                        <div className="config-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div className="config-grid config-grid--2col config-grid--gap-1">
                             <ConfigField
                                 id="duckdns-domain"
                                 label="Subdominio DuckDNS"
@@ -63,8 +63,8 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
                             />
                         </div>
 
-                        <div className="config-flex config-flex--gap-2" style={{ marginTop: '1rem', alignItems: 'center' }}>
-                            <div className="config-url-display" style={{ flex: 1, margin: 0 }}>
+                        <div className="config-flex config-flex--align-center config-flex--mt-1">
+                            <div className="config-url-display config-flex__item--grow">
                                 URL: {settings.duckdns_domain ? `http://${settings.duckdns_domain}.duckdns.org` : 'Configure su dominio'}
                             </div>
                             <Button

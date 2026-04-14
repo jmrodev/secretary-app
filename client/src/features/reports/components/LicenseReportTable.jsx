@@ -55,7 +55,7 @@ const LicenseReportTable = ({ data, t }) => {
                                 <td>{day.date}</td>
                                 <td className="text-right">$ {day.cash.toLocaleString()}</td>
                                 <td className="text-right">$ {day.others.toLocaleString()}</td>
-                                <td className="text-right" style={{ fontWeight: 'bold' }}>
+                                <td className="text-right font-bold">
                                     $ {day.total.toLocaleString()}
                                 </td>
                             </tr>

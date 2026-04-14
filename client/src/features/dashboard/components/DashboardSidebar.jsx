@@ -51,7 +51,7 @@ const DashboardSidebar = ({ stats, newPatientStats, user, t }) => {
 
             {/* New Patient Growth Section */}
             {newPatientStats && (
-                <section className="dashboard-sidebar__section animate-fadeIn" style={{ animationDelay: '0.1s' }}>
+                <section className="dashboard-sidebar__section dashboard-sidebar__section--delayed animate-fadeIn">
                     <h4 className="dashboard-sidebar__title">
                         <Icon name="auto_awesome" size="1rem" />
                         {t('new_patients_stat') || 'Crecimiento de Pacientes'}

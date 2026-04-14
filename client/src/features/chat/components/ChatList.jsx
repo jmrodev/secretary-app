@@ -42,7 +42,7 @@ const ChatList = ({
             </div>
 
             {filteredConvos.length === 0 && suggestedRecipients.length === 0 ? (
-                <p className="text-center text-muted p-4" style={{ fontSize: '0.85rem' }}>
+                <p className="text-center text-muted p-4 text-sm-compact">
                     No se encontraron resultados
                 </p>
             ) : (

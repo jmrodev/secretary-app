@@ -15,7 +15,7 @@ const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, loading,
             </div>
 
             <div className="config-section__body">
-                <p className="config-field__hint" style={{ marginBottom: '1.5rem' }}>
+                <p className="config-field__hint config-field__hint--mb-15">
                     Configure las credenciales de WhatsApp Cloud API.
                 </p>
 

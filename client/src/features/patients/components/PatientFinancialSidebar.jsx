@@ -21,11 +21,11 @@ const PatientFinancialSidebar = ({
             {/* Sidebar Block 1: Financial Status */}
             <div className="patient-details__financial-card">
                 <header className="patient-details__financial-header">
-                    <h4 className="details-block__title" style={{ color: 'rgba(255,255,255,0.6)', justifyContent: 'center' }}>
+                    <h4 className="details-block__title details-block__title--centered details-block__title--muted-white">
                         {t('financial_history_debt')}
                     </h4>
                 </header>
-                <div className="patient-details__financial-content" style={{ padding: '2rem' }}>
+                <div className="patient-details__financial-content patient-details__financial-content--padded-xl">
                     <span className={`patient-details__financial-amount ${Number(details.total_debt) > 0 ? 'patient-details__financial-amount--debt' : 'patient-details__financial-amount--clear'}`}>
                         ${Number(details.total_debt).toFixed(2)}
                     </span>

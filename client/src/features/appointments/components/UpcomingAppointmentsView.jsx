@@ -29,7 +29,7 @@ const UpcomingAppointmentsView = ({ appointments, loading, t, onAction, onWhatsA
         <div className="upcoming-appointments-view animate-fadeIn">
             <h2 className="upcoming-appointments-view__title">
                 <div className="upcoming-appointments-view__icon-wrapper">
-                    <Icon name="upcoming" size="1.4rem" style={{ color: 'white' }} />
+                    <Icon name="upcoming" size="1.4rem" className="upcoming-appointments-view__icon" />
                 </div>
                 {t('next_appointments')}
             </h2>

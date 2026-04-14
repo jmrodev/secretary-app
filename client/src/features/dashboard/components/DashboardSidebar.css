@@ -11,6 +11,10 @@
     gap: 0.25rem;
 }
 
+.dashboard-sidebar__section--delayed {
+    animation-delay: 0.1s;
+}
+
 .dashboard-sidebar__title {
     margin: 0;
     padding-bottom: 0.25rem;

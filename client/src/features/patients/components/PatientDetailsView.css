@@ -324,6 +324,19 @@
     gap: 1.5rem;
 }
 
+.details-block__title--centered {
+    justify-content: center;
+    width: 100%;
+}
+
+.details-block__title--muted-white {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.patient-details__financial-content--padded-xl {
+    padding: 2rem !important;
+}
+
 .patient-details__financial-amount {
     font-size: 3rem;
     font-weight: 900;

@@ -31,9 +31,9 @@ const IntegrationGoogleCalendar = ({
 
             <div className="config-section__body">
                 <div className="config-group">
-                    <div className="config-group__header config-flex config-flex--gap-2" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div className="config-group__header config-group__header--flex-spaced">
                         <div>
-                            <p className="config-field__hint" style={{ marginBottom: '0.75rem' }}>
+                            <p className="config-field__hint config-field__hint--mb-075">
                                 Conecta tu cuenta de Google para sincronizar turnos automáticamente.
                             </p>
                             <StatusIndicator status={status} label={`Estado: ${statusLabel}`} />
