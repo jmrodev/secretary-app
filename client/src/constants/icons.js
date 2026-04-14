@@ -20,6 +20,10 @@ export const ICONS = {
     LOGOUT: 'logout',
     EXPAND_MORE: 'expand_more',
     EXPAND_LESS: 'expand_less',
+    TIME: 'schedule',
+    FISCAL: 'receipt_long',
+    MESSAGES: 'chat',
+    GOOGLE: 'public',
 
     // Stats / Dashboard
     STATS: 'analytics',

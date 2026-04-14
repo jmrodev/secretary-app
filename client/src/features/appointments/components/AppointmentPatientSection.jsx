@@ -3,6 +3,7 @@ import { PatientSearchSelect } from '@/features/patients';
 import { capitalizeWords } from '@/utils/stringUtils';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+import Input from '@/components/atoms/Input';
 
 /**
  * AppointmentPatientSection Molecule (Internal to feature).
@@ -49,7 +50,7 @@ const AppointmentPatientSection = ({
                         <span className="patient-quick-info__label">
                             <Icon name="phone" size="1rem" /> {t('phone')}
                         </span>
-                        <input
+                        <Input
                             type="text"
                             className="patient-quick-info__input"
                             value={selectedPatientData?.phone || ''}

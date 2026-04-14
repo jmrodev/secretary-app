@@ -83,22 +83,17 @@ const UserManagement = ({ excludeRoles = [], role = null }) => {
     return (
         <div className="user-management-organism">
             <section className="action-bar">
-                <div className="action-bar__search">
-                    <div className="search-box__wrapper">
-                        <span className="search-box__icon">🔍</span>
-                        <input
-                            type="text"
-                            placeholder={t('search_users_placeholder')}
-                            className="search-box__input"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                    </div>
-                </div>
+                    <Input
+                        placeholder={t('search_users_placeholder')}
+                        icon="SEARCH"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="user-management__search-input"
+                    />
                 <div className="action-bar__tools">
-                    <Button variant="ghost" onClick={loadData}>🔄</Button>
-                    <Button variant="primary" onClick={() => openModal('CREATE')}>
-                        ✨ {t('new') || 'Nuevo'}
+                    <Button variant="ghost" onClick={loadData} icon="SYNC" />
+                    <Button variant="primary" onClick={() => openModal('CREATE')} icon="ADD">
+                        {t('new') || 'Nuevo'}
                     </Button>
                 </div>
             </section>

@@ -46,12 +46,11 @@ const AuditLogTable = ({ logs, onSelectLog, t }) => {
                                         <div className="flex items-center gap-2">
                                             <span className="text-main-500 truncate block max-w-[200px]">{log.details}</span>
                                             <Button
-                                                variant="ghost"
+                                                variant="link"
                                                 size="sm-compact"
-                                                className="text-blue-600 hover:text-blue-800 font-semibold bg-blue-50 border border-blue-100 whitespace-nowrap"
                                                 onClick={() => onSelectLog(log)}
                                             >
-                                                Ver más
+                                                {t('view_more')}
                                             </Button>
                                         </div>
                                     ) : <span className="text-main-500">{log.details}</span>
@@ -64,7 +63,7 @@ const AuditLogTable = ({ logs, onSelectLog, t }) => {
                     ))}
                     {logs.length === 0 && (
                         <tr>
-                            <td colSpan="5" className="p-8 text-center text-muted">Thinking... No logs found.</td>
+                            <td colSpan="5" className="p-8 text-center text-muted">{t('no_logs_found')}</td>
                         </tr>
                     )}
                 </tbody>
