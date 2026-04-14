@@ -1,5 +1,6 @@
 import React from 'react';
 import Modal from '@/components/molecules/Modal';
+import Button from '@/components/atoms/Button';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/features/auth';
 
@@ -26,7 +27,7 @@ const AppointmentFormModal = ({
     return (
         <Modal
             isOpen={isOpen} onClose={onClose}
-            title={editModeId ? (t('edit_appointment') || 'Editar Turno') : t('new_appointment')}
+            title={editModeId ? t('edit_appointment') : t('new_appointment')}
             size="2xl"
         >
             <form onSubmit={onSubmit} id="new-appointment-form" className="appointment-form-modal" autoComplete="off">
@@ -39,14 +40,14 @@ const AppointmentFormModal = ({
                 <AppointmentSyncAlert info={syncReferenceInfo} />
 
                 <div className="input-group">
-                    <label className="form-label">{t('doctors') || 'Doctor'}</label>
+                    <label className="form-label">{t('doctors')}</label>
                     {user?.role === 'doctor' ? (
                         <div className="form-control form-control--disabled">
                             {doctors.find(d => d.id === Number(selectedDoctor))?.full_name || 'Usted'}
                         </div>
                     ) : (
                         <select className="form-control" value={selectedDoctor || ''} onChange={e => handleDoctorChange(e.target.value)} required>
-                            <option value="">Seleccionar Doctor</option>
+                            <option value="">{t('select_doctor')}</option>
                             {doctors.map(d => (
                                 <option key={d.id} value={d.id}>{d.full_name} ({d.specialty})</option>
                             ))}
@@ -65,27 +66,27 @@ const AppointmentFormModal = ({
                 )}
 
                 <div className="input-group">
-                    <label className="form-label">{t('date_time') || 'Fecha y Hora'}</label>
+                    <label className="form-label">{t('date_time')}</label>
                     <input type="datetime-local" className="form-control" value={date} onChange={e => handleDateChange(e.target.value)} required />
                     {isOutOfHours && (
                         <div className="appointment-form-modal__extra-badge appointment-form-modal__extra-badge--pulse">
-                            ⚠️ Turno Fuera de Horario (Extra)
+                            ⚠️ {t('out_of_hours_appointment')}
                         </div>
                     )}
                 </div>
 
                 <div className="input-group">
-                    <label className="form-label">{t('reason') || 'Motivo de Consulta'}</label>
+                    <label className="form-label">{t('reason')}</label>
                     <textarea className="form-control" rows="3" value={reason} onChange={e => handleReasonChange(e.target.value)} required></textarea>
                 </div>
 
                 <div className="input-group">
-                    <label className="form-label">Obra Social / Institución</label>
+                    <label className="form-label">{t('institution')}</label>
                     <select className="form-control" value={selectedInstitution} onChange={e => handleInstitutionChange(e.target.value)}>
                         <option value="">
-                            {selectedPatientData ? `Institución del Paciente (${selectedPatientData.institution_name || 'Ninguna'})` : 'Institución del Paciente'}
+                            {selectedPatientData ? `${t('patient_institution')} (${selectedPatientData.institution_name || t('none')})` : t('patient_institution')}
                         </option>
-                        <option value="none">Particular / Sin Institución</option>
+                        <option value="none">{t('particular_no_institution')}</option>
                         {institutions.map(inst => (
                             <option key={inst.id} value={inst.id}>{inst.name}</option>
                         ))}
@@ -94,13 +95,17 @@ const AppointmentFormModal = ({
 
                 <div className="input-group checkbox-group">
                     <input type="checkbox" id="bonified" checked={bonified} onChange={e => handleBonifiedChange(e.target.checked)} className="appointment-form-modal__checkbox" />
-                    <label htmlFor="bonified" className="input-label checkbox-label">Bonificado (Sin Costo)</label>
+                    <label htmlFor="bonified" className="input-label checkbox-label">{t('bonified')}</label>
                 </div>
 
                 <div className="form-actions">
-                    <button type="submit" className="btn btn-accent form-actions__submit">
-                        {editModeId ? (t('save_changes') || 'Guardar Cambios') : t('confirm_booking')}
-                    </button>
+                    <Button 
+                        type="submit" 
+                        variant="accent" 
+                        className="form-actions__submit"
+                    >
+                        {editModeId ? t('save_changes') : t('confirm_booking')}
+                    </Button>
                 </div>
             </form>
         </Modal>

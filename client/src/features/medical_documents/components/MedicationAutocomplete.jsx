@@ -3,6 +3,8 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useMedicationAutocomplete } from '../hooks/useMedicationAutocomplete';
 import Input from '@/components/atoms/Input';
 import Badge from '@/components/atoms/Badge';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import './MedicationAutocomplete.css';
 
 /**
@@ -81,23 +83,25 @@ const MedicationAutocomplete = ({
                     onChange={(e) => handleSearch(e.target.value)}
                     onFocus={() => searchTerm.length >= 2 && setShowSuggestions(true)}
                     onKeyDown={handleKeyDown}
-                    placeholder={placeholder || t('search_medication') || "Buscar medicamento..."}
+                    placeholder={placeholder || t('search_medication')}
                     autoComplete="off"
                 />
                 <div className={`${baseClass}__actions`}>
                     {loading ? (
                         <div className={`${baseClass}__spinner`}></div>
                     ) : searchTerm ? (
-                        <button
-                            type="button"
+                        <Button
+                            variant="ghost"
+                            size="sm-compact"
                             onClick={handleClear}
-                            aria-label={t('clear') || "Limpiar"}
-                            tabIndex="-1"
-                        >
-                            ✕
-                        </button>
+                            title={t('clear')}
+                            tabIndex={-1}
+                            icon={<Icon name="close" size="1.2rem" />}
+                        />
                     ) : (
-                        <span className="medication-autocomplete__icon">🔍</span>
+                        <span className="medication-autocomplete__icon">
+                            <Icon name="search" size="1.2rem" />
+                        </span>
                     )}
                 </div>
             </div>
@@ -133,7 +137,7 @@ const MedicationAutocomplete = ({
                     <li className={`${baseClass}__footer`}>
                         <span className={`${baseClass}__footer-brand`}>{t('iosfa_vademecum')}</span>
                         <span className={`${baseClass}__footer-count`}>
-                            {suggestions.length} {t('results') || 'resultados'}
+                            {suggestions.length} {t('results')}
                         </span>
                     </li>
                 </ul>

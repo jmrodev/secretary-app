@@ -1,4 +1,6 @@
 import React from 'react';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import './CalendarHeader.css';
 
 /**
@@ -8,9 +10,25 @@ import './CalendarHeader.css';
 const CalendarHeader = ({ month, year, onPrevMonth, onNextMonth }) => {
   return (
     <div className="calendar-header">
-      <button className="calendar-header__nav-button" onClick={onPrevMonth} aria-label="Previous month">⬅️</button>
+      <Button 
+        variant="ghost" 
+        size="sm-compact" 
+        onClick={onPrevMonth} 
+        aria-label="Previous month"
+        className="calendar-header__nav-button"
+        icon={<Icon name="chevron_left" />}
+      />
+      
       <h3 className="calendar-header__title">{month} {year}</h3>
-      <button className="calendar-header__nav-button" onClick={onNextMonth} aria-label="Next month">➡️</button>
+      
+      <Button 
+        variant="ghost" 
+        size="sm-compact" 
+        onClick={onNextMonth} 
+        aria-label="Next month"
+        className="calendar-header__nav-button"
+        icon={<Icon name="chevron_right" />}
+      />
     </div>
   );
 };

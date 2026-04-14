@@ -122,12 +122,12 @@ const NextSlotModal = ({
                                                         </span>
                                                         {slot.is_break && (
                                                             <span className={`${baseClass}__slot-badge ${baseClass}__slot-badge--extra`}>
-                                                                EXT
+                                                                {t('ext')}
                                                             </span>
                                                         )}
                                                         {slot.is_out_of_hours && (
                                                             <span className={`${baseClass}__slot-badge ${baseClass}__slot-badge--out-of-hours`}>
-                                                                EXTRA
+                                                                {t('extra')}
                                                             </span>
                                                         )}
                                                     </div>
@@ -211,7 +211,7 @@ const NextSlotModal = ({
 
                 <div className={`${baseClass}__help-footer`}>
                     <span>{t('keyboard_nav_help')}</span>
-                    <button className={`${baseClass}__close-btn`} onClick={onClose}>{t('close')}</button>
+                    <Button variant="ghost" onClick={onClose}>{t('close')}</Button>
                 </div>
             </div>
         </Modal>

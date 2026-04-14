@@ -27,11 +27,11 @@ const PrescriptionFormFields = ({
     return (
         <div className="prescription-modal__group">
             <div className="prescription-modal__field-wrapper">
-                <label className="prescription-modal__label">{t('medication') || 'Medicamento'}</label>
+                <label className="prescription-modal__label">{t('medication')}</label>
                 <MedicationAutocomplete
                     value={tempMed}
                     onChange={setTempMed}
-                    placeholder={t('search_medication') || 'Buscar medicamento...'}
+                    placeholder={t('search_medication')}
                     onSelectMedication={handleSelectMedication}
                 />
             </div>
@@ -39,8 +39,8 @@ const PrescriptionFormFields = ({
             {/* Dose */}
             <div className="prescription-modal__field-wrapper">
                 <label className="prescription-modal__label">
-                    {t('dose') || 'Dosis'}
-                    <Tooltip text={t('dose_help') || 'Concentración / presentación (ej: 500mg, 10mg/ml)'} />
+                    {t('dose')}
+                    <Tooltip text={t('dose_help')} />
                 </label>
                 <Input
                     size="sm"
@@ -53,19 +53,20 @@ const PrescriptionFormFields = ({
             {/* Frequency presets */}
             <div className="prescription-modal__field-wrapper">
                 <label className="prescription-modal__label">
-                    {t('frequency') || 'Frecuencia'}
-                    <Tooltip text="Selecciona la frecuencia de toma. Esto determina cuántas pastillas/día consume el paciente." />
+                    {t('frequency')}
+                    <Tooltip text={t('frequency_help')} />
                 </label>
                 <div className="prescription-modal__freq-presets">
                     {freqPresets.map((p, idx) => (
-                        <button
+                        <Button
                             key={idx}
                             type="button"
+                            variant={tempFreqPreset === idx ? 'accent' : 'ghost'}
                             className={`prescription-modal__freq-btn${tempFreqPreset === idx ? ' prescription-modal__freq-btn--active' : ''}`}
                             onClick={() => handleFreqPreset(idx)}
                         >
                             {p.label}
-                        </button>
+                        </Button>
                     ))}
                 </div>
             </div>
@@ -74,15 +75,14 @@ const PrescriptionFormFields = ({
             <div className="prescription-modal__numeric-row">
                 <div className="prescription-modal__numeric-field">
                     <label className="prescription-modal__label">
-                        {t('units_per_box') || 'Caja de (X) pastillas'}
+                        {t('units_per_box')}
                     </label>
                     <select
                         className="input input--sm prescription-form-fields__select"
                         value={tempUnitsPerBox}
-
                         onChange={e => setTempUnitsPerBox(e.target.value)}
                     >
-                        <option value="">{t('select_option') || 'Sel.'}</option>
+                        <option value="">{t('select_option')}</option>
                         {[10, 14, 20, 28, 30, 40, 50, 60, 100].map(v => (
                             <option key={v} value={v}>{v}</option>
                         ))}
@@ -91,17 +91,16 @@ const PrescriptionFormFields = ({
 
                 <div className="prescription-modal__numeric-field">
                     <label className="prescription-modal__label">
-                        {t('daily_units') || 'Pastillas por día'}
+                        {t('daily_units')}
                     </label>
                     <select
                         className="input input--sm prescription-form-fields__select"
                         value={tempDailyUnits}
-
                         onChange={e => {
                             setTempDailyUnits(e.target.value);
                         }}
                     >
-                        <option value="">{t('select_option') || 'Sel.'}</option>
+                        <option value="">{t('select_option')}</option>
                         {[0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4].map(v => (
                             <option key={v} value={v}>
                                 {v === 0.25 ? '1/4' : v === 0.5 ? '1/2' : v === 0.75 ? '3/4' : v}
@@ -112,8 +111,8 @@ const PrescriptionFormFields = ({
 
                 <div className="prescription-modal__numeric-field">
                     <label className="prescription-modal__label">
-                        {t('boxes') || 'Cantidad de cajas'}
-                        <Tooltip text="Cantidad de cajas que se prescribe." />
+                        {t('boxes')}
+                        <Tooltip text={t('boxes_help')} />
                     </label>
                     <Input
                         size="sm"
@@ -131,10 +130,10 @@ const PrescriptionFormFields = ({
                     <Button
                         type="button"
                         onClick={handleAddItem}
-                        icon={<Icon name="ADD" />}
+                        icon={<Icon name="add" />}
                         disabled={!canAdd}
                     >
-                        {t('add') || 'Agregar'}
+                        {t('add')}
                     </Button>
                 </div>
             </div>
@@ -142,11 +141,11 @@ const PrescriptionFormFields = ({
             {/* Days supply preview */}
             {daysSupply !== null && (
                 <div className="prescription-modal__supply-preview">
-                    <Icon name="NOTIFICATIONS" size="1rem" />
+                    <Icon name="notifications" size="1rem" />
                     <span>
-                        {t('supply_prefix') || 'Abastece'} <strong>~{daysSupply} {t('days') || 'días'}</strong>
+                        {t('supply_prefix')} <strong>~{daysSupply} {t('days')}</strong>
                         {refillDateStr && (
-                            <> · {t('automatic_reminder') || 'Recordatorio automático'}: <strong>{refillDateStr}</strong></>
+                            <> · {t('automatic_reminder')}: <strong>{refillDateStr}</strong></>
                         )}
                     </span>
                 </div>

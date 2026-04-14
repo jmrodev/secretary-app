@@ -1,6 +1,7 @@
 import React from 'react';
 import Badge from '@/components/atoms/Badge';
 import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/context/LanguageContext';
 import './UserTable.css';
 
@@ -12,10 +13,10 @@ const UserTable = ({ users, onEdit, onReset, onDelete }) => {
             <table className="user-table__table table-base">
                 <thead>
                     <tr className="user-table__header">
-                        <th className="user-table__header-cell">{t('user_header') || 'Usuario'}</th>
-                        <th className="user-table__header-cell">{t('role_header') || 'Rol'}</th>
-                        <th className="user-table__header-cell">{t('name_contact_header') || 'Nombre y Teléfono'}</th>
-                        <th className="user-table__header-cell">{t('actions') || 'Acciones'}</th>
+                        <th className="user-table__header-cell">{t('user_header')}</th>
+                        <th className="user-table__header-cell">{t('role_header')}</th>
+                        <th className="user-table__header-cell">{t('name_contact_header')}</th>
+                        <th className="user-table__header-cell">{t('actions')}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,10 +44,28 @@ const UserTable = ({ users, onEdit, onReset, onDelete }) => {
                             </td>
                             <td className="user-table__cell">
                                 <div className="user-table__actions">
-                                    <Button variant="secondary" size="sm" onClick={() => onEdit(u)} title={t('edit')}>✏️</Button>
-                                    <Button variant="secondary" size="sm" onClick={() => onReset(u)} title={t('reset_pwd')}>🔑</Button>
+                                    <Button 
+                                        variant="secondary" 
+                                        size="sm" 
+                                        onClick={() => onEdit(u)} 
+                                        title={t('edit')}
+                                        icon={<Icon name="edit" />}
+                                    />
+                                    <Button 
+                                        variant="secondary" 
+                                        size="sm" 
+                                        onClick={() => onReset(u)} 
+                                        title={t('reset_pwd')}
+                                        icon={<Icon name="vpn_key" />}
+                                    />
                                     {u.role !== 'admin' && (
-                                        <Button variant="outline-danger" size="sm" onClick={() => onDelete(u)} title={t('delete')}>🗑️</Button>
+                                        <Button 
+                                            variant="outline-danger" 
+                                            size="sm" 
+                                            onClick={() => onDelete(u)} 
+                                            title={t('delete')}
+                                            icon={<Icon name="delete" />}
+                                        />
                                     )}
                                 </div>
                             </td>

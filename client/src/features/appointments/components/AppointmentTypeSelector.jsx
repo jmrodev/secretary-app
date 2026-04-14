@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 
 /**
@@ -10,24 +11,26 @@ const AppointmentTypeSelector = ({ type, onChange, t }) => {
 
     return (
         <div className="input-group">
-            <label className="form-label">{t('appointment_type') || 'Tipo de Turno'}</label>
+            <label className="form-label">{t('appointment_type')}</label>
             <div className="appointment-type-selector">
-                <button
-                    type="button"
-                    className={`appointment-type-selector__btn ${!isVirtual ? 'appointment-type-selector__btn--active' : ''}`}
+                <Button
+                    variant="ghost"
+                    active={!isVirtual}
+                    className="appointment-type-selector__btn"
                     onClick={() => onChange('consultation')}
+                    icon={<Icon name="person" size="1.2rem" />}
                 >
-                    <Icon name="person" size="1.2rem" />
-                    <span>{t('in_person') || 'Presencial'}</span>
-                </button>
-                <button
-                    type="button"
-                    className={`appointment-type-selector__btn ${isVirtual ? 'appointment-type-selector__btn--active' : ''}`}
+                    {t('in_person')}
+                </Button>
+                <Button
+                    variant="ghost"
+                    active={isVirtual}
+                    className="appointment-type-selector__btn"
                     onClick={() => onChange('virtual')}
+                    icon={<Icon name="videocam" size="1.2rem" />}
                 >
-                    <Icon name="videocam" size="1.2rem" />
-                    <span>{t('virtual_type') || 'Virtual'}</span>
-                </button>
+                    {t('virtual_type')}
+                </Button>
             </div>
         </div>
     );

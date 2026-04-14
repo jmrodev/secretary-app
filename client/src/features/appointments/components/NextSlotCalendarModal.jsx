@@ -92,12 +92,24 @@ const NextSlotCalendarModal = ({
                 <span className="calendar-slot-controls__label flex items-center gap-1"><Icon name="lock_open" size="1rem" />{t('include_overtime')}</span>
             </label>
             <div className="calendar-slot-controls__toggle-group">
-                <button className={`calendar-slot-controls__toggle-btn ${viewMode === 'calendar' ? 'calendar-slot-controls__toggle-btn--active' : ''}`} onClick={() => setViewMode('calendar')}>
-                    <Icon name="calendar_today" size="1rem" />{t('calendar')}
-                </button>
-                <button className={`calendar-slot-controls__toggle-btn ${viewMode === 'list' ? 'calendar-slot-controls__toggle-btn--active' : ''}`} onClick={() => setViewMode('list')}>
-                    <Icon name="list" size="1rem" />{t('list')}
-                </button>
+                <Button 
+                    variant="ghost" 
+                    size="sm-compact"
+                    className={`calendar-slot-controls__toggle-btn ${viewMode === 'calendar' ? 'calendar-slot-controls__toggle-btn--active' : ''}`} 
+                    onClick={() => setViewMode('calendar')}
+                    icon={<Icon name="calendar_today" size="1rem" />}
+                >
+                    {t('calendar')}
+                </Button>
+                <Button 
+                    variant="ghost" 
+                    size="sm-compact"
+                    className={`calendar-slot-controls__toggle-btn ${viewMode === 'list' ? 'calendar-slot-controls__toggle-btn--active' : ''}`} 
+                    onClick={() => setViewMode('list')}
+                    icon={<Icon name="list" size="1rem" />}
+                >
+                    {t('list')}
+                </Button>
             </div>
         </div>
     );
@@ -119,7 +131,14 @@ const NextSlotCalendarModal = ({
                             </td>
                             <td className="slots-list__cell slots-list__cell--actions">
                                 <div className="slots-list__actions">
-                                    <button className="slots-list__wa-btn" onClick={(e) => { e.stopPropagation(); onWhatsApp(slot); }} title="WhatsApp"><Icon name="chat" size="1.1rem" /></button>
+                                    <Button 
+                                        variant="ghost" 
+                                        size="sm-compact" 
+                                        className="slots-list__wa-btn" 
+                                        onClick={(e) => { e.stopPropagation(); onWhatsApp(slot); }} 
+                                        title="WhatsApp"
+                                        icon={<Icon name="chat" size="1.1rem" />}
+                                    />
                                     <Button variant={type === 'normal' ? 'primary' : 'secondary'} size="sm-compact" onClick={() => onSelect(slot.iso, slot.is_out_of_hours)}>
                                         {type === 'normal' ? t('select') : (type === 'break' ? t('assign_ext') : t('assign_extra'))}
                                     </Button>
@@ -144,9 +163,21 @@ const NextSlotCalendarModal = ({
                     ) : viewMode === 'calendar' ? (
                         <div className="calendar-grid">
                             <div className="calendar-header">
-                                <button onClick={handlePrevMonth} className="calendar-header__nav-button"><Icon name="chevron_left" size="1.2rem" /></button>
+                                <Button 
+                                    variant="ghost" 
+                                    size="sm-compact" 
+                                    onClick={handlePrevMonth} 
+                                    className="calendar-header__nav-button"
+                                    icon={<Icon name="chevron_left" size="1.2rem" />}
+                                />
                                 <h3 className="calendar-header__title">{monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}</h3>
-                                <button onClick={handleNextMonth} className="calendar-header__nav-button"><Icon name="chevron_right" size="1.2rem" /></button>
+                                <Button 
+                                    variant="ghost" 
+                                    size="sm-compact" 
+                                    onClick={handleNextMonth} 
+                                    className="calendar-header__nav-button"
+                                    icon={<Icon name="chevron_right" size="1.2rem" />}
+                                />
                             </div>
                             <div className="day-headers">{dayNames.map(day => <div key={day} className="day-headers__day">{day}</div>)}</div>
                             <div className="calendar-grid__body">{calendarDays.map((dayData, idx) => {
@@ -155,7 +186,10 @@ const NextSlotCalendarModal = ({
                                 const hasSlots = slots && slots.total > 0;
                                 return (
                                     <div key={dateStr} className={`calendar-day-cell ${dateStr < todayIso ? 'calendar-day-cell--disabled' : ''} ${hasSlots ? 'calendar-day-cell--interactive' : ''} ${isToday ? 'calendar-day-cell--today' : ''}`} onClick={() => hasSlots && handleDateClick(dateStr)}>
-                                        <div className="calendar-day-cell__date"><span className="calendar-day-cell__number">{day}</span>{isToday && <span className="calendar-day-cell__today-marker">HOY</span>}</div>
+                                        <div className="calendar-day-cell__date">
+                                            <span className="calendar-day-cell__number">{day}</span>
+                                            {isToday && <span className="calendar-day-cell__today-marker">{t('today_marker') || 'HOY'}</span>}
+                                        </div>
                                         {hasSlots && (
                                             <div className="calendar-slot__indicators">
                                                 {slots.inHours > 0 && <div className="calendar-slot__badge calendar-slot__badge--normal">{slots.inHours}</div>}
@@ -171,7 +205,15 @@ const NextSlotCalendarModal = ({
                         <div className="slots-list">
                             <div className="slots-list__header">
                                 <h3 className="slots-list__title">{slotsByDate[selectedDate]?.dayName} - {new Date(selectedDate + 'T12:00:00').toLocaleDateString()}</h3>
-                                <button onClick={() => setViewMode('calendar')} className="slots-list__back-btn flex items-center gap-1"><Icon name="arrow_back" size="1.1rem" />{t('back_to_calendar')}</button>
+                                <Button 
+                                    variant="ghost" 
+                                    size="sm-compact" 
+                                    onClick={() => setViewMode('calendar')} 
+                                    className="slots-list__back-btn"
+                                    icon={<Icon name="arrow_back" size="1.1rem" />}
+                                >
+                                    {t('back_to_calendar')}
+                                </Button>
                             </div>
                             <div className="slots-list__body">
                                 {renderSection(<div className="flex items-center gap-2"><Icon name="lock_open" size="1.1rem" /> {t('before_hours_extra')}</div>, selectedSlots.filter(s => s.is_out_of_hours && s.iso < (selectedSlots.find(n => !n.is_out_of_hours && !n.is_break)?.iso || '99:99')), 'before')}

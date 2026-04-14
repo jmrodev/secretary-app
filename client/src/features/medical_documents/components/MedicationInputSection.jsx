@@ -60,10 +60,11 @@ const MedicationInputSection = ({
                         </label>
                         <div className={`${baseClass}__freq-presets`}>
                             {freqPresets.map((p, idx) => (
-                                <button
+                                <Button
                                     key={idx}
-                                    type="button"
-                                    className={`${baseClass}__freq-btn ${tempFreqPreset === idx ? `${baseClass}__freq-btn--active` : ''}`}
+                                    variant="ghost"
+                                    active={tempFreqPreset === idx}
+                                    className={`${baseClass}__freq-btn`}
                                     onClick={() => {
                                         setTempFreqPreset(idx);
                                         setTempFreq(p.text);
@@ -71,7 +72,7 @@ const MedicationInputSection = ({
                                     }}
                                 >
                                     {p.label}
-                                </button>
+                                </Button>
                             ))}
                         </div>
                     </div>
@@ -80,7 +81,7 @@ const MedicationInputSection = ({
                 <div className={`${baseClass}__field-group-row ${baseClass}__field-group-row--numeric`}>
                     <div className={`${baseClass}__field-wrapper`}>
                         <label className={`${baseClass}__field-label`}>
-                            {t('units_per_box') || 'Caja de (X) pastillas'}
+                            {t('units_per_box')}
                         </label>
                         <select
                             className={`input input--sm ${baseClass}__select medication-input-section__select`}
@@ -88,7 +89,7 @@ const MedicationInputSection = ({
 
                             onChange={e => setTempUnitsPerBox(e.target.value)}
                         >
-                            <option value="">{t('select_option') || 'Sel.'}</option>
+                            <option value="">{t('select_option')}</option>
                             {[10, 14, 20, 28, 30, 40, 50, 60, 100].map(v => (
                                 <option key={v} value={v}>{v}</option>
                             ))}
@@ -97,7 +98,7 @@ const MedicationInputSection = ({
 
                     <div className={`${baseClass}__field-wrapper`}>
                         <label className={`${baseClass}__field-label`}>
-                            {t('daily_units') || 'Pastillas por día'}
+                            {t('daily_units')}
                         </label>
                         <select
                             className={`input input--sm ${baseClass}__select medication-input-section__select`}
@@ -119,7 +120,7 @@ const MedicationInputSection = ({
                                 }
                             }}
                         >
-                            <option value="">{t('select_option') || 'Sel.'}</option>
+                            <option value="">{t('select_option')}</option>
                             {[0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4].map(v => (
                                 <option key={v} value={v}>
                                     {v === 0.25 ? '1/4' : v === 0.5 ? '1/2' : v === 0.75 ? '3/4' : v}
@@ -130,7 +131,7 @@ const MedicationInputSection = ({
 
                     <div className={`${baseClass}__field-wrapper`}>
                         <label className={`${baseClass}__field-label`}>
-                            {t('quantity') || 'Cantidad de cajas'}
+                            {t('quantity')}
                         </label>
                         <Input
                             size="sm"
@@ -147,10 +148,10 @@ const MedicationInputSection = ({
                     <div className={`${baseClass}__supply-preview animate-fadeIn`}>
                         <Icon name="notifications" size="1.1rem" color="var(--accent-color)" />
                         <div className={`${baseClass}__supply-text`}>
-                            {t('supply_prefix') || 'Abastece'} <strong className="text-accent">~{daysSupply} {t('days') || 'días'}</strong>
+                            {t('supply_prefix')} <strong className="text-accent">~{daysSupply} {t('days')}</strong>
                             {refillDateStr && (
                                 <span className={`${baseClass}__refill-date`}>
-                                    {' '}· {t('automatic_reminder') || 'Sugerido'}: <strong>{refillDateStr}</strong>
+                                    {' '}· {t('automatic_reminder')}: <strong>{refillDateStr}</strong>
                                 </span>
                             )}
                         </div>

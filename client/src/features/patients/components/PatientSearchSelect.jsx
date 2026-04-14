@@ -5,6 +5,7 @@ import api from '@/api/axios';
 import { components } from 'react-select';
 
 import { useLanguage } from '@/context/LanguageContext';
+import Button from '@/components/atoms/Button';
 
 const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, autoFocus = false, selectedData }) => {
     const { t } = useLanguage();
@@ -61,9 +62,9 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
                         {t('no_results_for')} "{inputValue}"
                     </p>
                     {onCreatePatient && inputValue && (
-                        <button
-                            type="button" // Prevent form submit
-                            className="btn btn-sm btn-outline-primary"
+                        <Button
+                            variant="primary"
+                            size="sm"
                             onMouseDown={(e) => {
                                 e.preventDefault(); // Prevent blur
                                 e.stopPropagation();
@@ -71,7 +72,7 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
                             }}
                         >
                             {t('create_new_patient')}
-                        </button>
+                        </Button>
                     )}
                 </div>
             )}

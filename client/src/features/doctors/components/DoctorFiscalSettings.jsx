@@ -103,7 +103,9 @@ const DoctorFiscalSettings = ({
                     <div className="doctor-fiscal-settings__csr-box animate-fadeIn">
                         <div className="doctor-fiscal-settings__csr-header">
                             <h6 className="doctor-fiscal-settings__csr-title">{t('csr_generated_title')}</h6>
-                            <button onClick={onHideCsrInfo} className="doctor-fiscal-settings__csr-close">{t('hide')}</button>
+                            <Button onClick={onHideCsrInfo} variant="ghost" size="sm" className="doctor-fiscal-settings__csr-close">
+                                {t('hide')}
+                            </Button>
                         </div>
                         <textarea
                             readOnly

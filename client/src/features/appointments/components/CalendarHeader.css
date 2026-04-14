@@ -9,9 +9,11 @@
 .calendar-header__title { font-size: 1rem; font-weight: 800; color: var(--slate-800); margin: 0; }
 
 .calendar-header__nav-button {
-    background: white; border: 1px solid var(--gray-300); cursor: pointer;
-    width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
-    border-radius: 50%; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 32px;
+    height: 32px;
+    transform: scale(1);
 }
 
-.calendar-header__nav-button:hover { background: var(--blue-50); border-color: var(--blue-300); transform: scale(1.1); }
+.calendar-header__nav-button:hover {
+    transform: scale(1.1);
+}

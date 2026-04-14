@@ -1,5 +1,6 @@
 import React from 'react';
 import Icon from '@/components/atoms/Icon';
+import Button from '@/components/atoms/Button';
 import './InstitutionSelector.css';
 
 /**
@@ -20,7 +21,7 @@ const InstitutionSelector = ({
             <div className="inst-finances__selector-group">
                 <label className="inst-finances__label">
                     <Icon name="business" size="1.2rem" color="var(--accent-color)" />
-                    {t('institutions') || 'Instituciones'}:
+                    {(t('institutions') || 'Instituciones') + ':'}
                 </label>
                 <select
                     className="inst-finances__select"
@@ -36,7 +37,8 @@ const InstitutionSelector = ({
 
             {selectedInstId && (
                 <div className="inst-finances__view-toggle">
-                    <button
+                    <Button
+                        variant={viewMode === 'transactions' ? 'primary' : 'ghost'}
                         className={`inst-finances__toggle-btn ${
                             viewMode === 'transactions' 
                             ? 'inst-finances__toggle-btn--active' 
@@ -46,8 +48,9 @@ const InstitutionSelector = ({
                     >
                         <Icon name="analytics" size="1.1rem" />
                         {t('finances')}
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant={viewMode === 'patients' ? 'primary' : 'ghost'}
                         className={`inst-finances__toggle-btn ${
                             viewMode === 'patients' 
                             ? 'inst-finances__toggle-btn--active' 
@@ -57,7 +60,7 @@ const InstitutionSelector = ({
                     >
                         <Icon name="groups" size="1.1rem" />
                         {t('patients')}
-                    </button>
+                    </Button>
                 </div>
             )}
         </div>

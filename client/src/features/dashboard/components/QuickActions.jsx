@@ -1,5 +1,6 @@
 import React from 'react';
 import Icon from '@/components/atoms/Icon';
+import Button from '@/components/atoms/Button';
 import './QuickActions.css';
 
 /**
@@ -73,14 +74,15 @@ const QuickActions = ({ t, handlers, isAdmin, isSecretary, isDoctor, compact = f
                         </div>
                         <div className="quick-actions__buttons">
                             {section.actions.map((action, idx) => (
-                                <button 
+                                <Button 
                                     key={idx} 
+                                    variant="ghost" 
                                     className="quick-actions__btn"
                                     onClick={action.onClick}
                                 >
                                     <Icon name={action.icon} size="1.1rem" />
                                     <span>{action.label}</span>
-                                </button>
+                                </Button>
                             ))}
                         </div>
                     </div>

@@ -21,7 +21,8 @@ const Button = ({
     icon = null,
     active = false,
     target = '_self',
-    rel = 'noopener noreferrer'
+    rel = 'noopener noreferrer',
+    ...props
 }) => {
     const baseClass = 'btn';
 
@@ -58,6 +59,7 @@ const Button = ({
                 title={title}
                 data-tooltip={tooltip}
                 onClick={onClick}
+                {...props}
             >
                 {content}
             </Link>
@@ -74,6 +76,7 @@ const Button = ({
                 target={target}
                 rel={rel}
                 onClick={onClick}
+                {...props}
             >
                 {content}
             </a>
@@ -88,6 +91,7 @@ const Button = ({
             className={combinedClassName}
             title={title}
             data-tooltip={tooltip}
+            {...props}
         >
             {content}
         </button>

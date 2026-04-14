@@ -1,6 +1,7 @@
 import React from 'react';
 import AutoTextarea from '@/components/atoms/AutoTextarea';
 import ConfigField from './ConfigField';
+import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import './MessageTemplateEditor.css';
 
@@ -59,16 +60,17 @@ const MessageTemplateEditor = ({
                 <p className="message-template-editor__variables-label">{t('available_variables')}</p>
                 <div className="message-template-editor__buttons">
                     {variables.map(v => (
-                        <button
+                        <Button
                             key={v}
-                            type="button"
+                            variant="ghost"
+                            size="sm"
                             className="message-template-editor__variable-btn"
                             onClick={() => insertVariable(id, v, settingKey)}
                             title={t('insert_variable_title').replace('{variable}', v)}
                             disabled={disabled}
                         >
                             {getFriendlyVarLabel(v, t)}
-                        </button>
+                        </Button>
                     ))}
                 </div>
             </div>
@@ -78,7 +80,7 @@ const MessageTemplateEditor = ({
                     <ConfigField
                         label={t('meta_template_name')}
                         type="text"
-                        placeholder="ej: reminder_template"
+                        placeholder={t('meta_template_name_placeholder')}
                         value={metaTemplateName || ''}
                         onChange={(e) => updateSetting(
                             settingKey === 'appointment_reminder_template'
@@ -92,7 +94,7 @@ const MessageTemplateEditor = ({
                         <ConfigField
                             label={t('variable_order')}
                             type="text"
-                            placeholder="{patient_name}, {date}..."
+                            placeholder={t('variable_order_placeholder')}
                             value={metaParamsOrder || ''}
                             onChange={(e) => updateSetting(
                                 settingKey === 'appointment_reminder_template'

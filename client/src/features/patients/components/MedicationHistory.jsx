@@ -1,6 +1,6 @@
-
 import React from 'react';
 import Icon from '@/components/atoms/Icon';
+import Button from '@/components/atoms/Button';
 import { useLanguage } from '@/context/LanguageContext';
 import { formatDate } from '@/utils/dateUtils';
 
@@ -13,16 +13,16 @@ const MedicationHistory = ({ recentRequests, t, onRepeat }) => {
         <section className="details-block details-block--medications">
             <header className="details-block__header">
                 <h3 className="details-block__title">
-                    <Icon name="HISTORY" size="1.2rem" />
-                    {t('recent_prescriptions') || 'Historial de Recetas'}
+                    <Icon name="history" size="1.2rem" />
+                    {t('recent_prescriptions')}
                 </h3>
             </header>
 
             <div className="details-block__content">
                 {recentRequests.length === 0 ? (
                     <div className="patient-medications__empty-state">
-                        <Icon name="DOCUMENTS" size="2rem" />
-                        <p>{t('no_history') || 'No se han generado recetas para este paciente.'}</p>
+                        <Icon name="documents" size="2rem" />
+                        <p>{t('no_history')}</p>
                     </div>
                 ) : (
                     <div className="patient-medications__history-container">
@@ -32,7 +32,7 @@ const MedicationHistory = ({ recentRequests, t, onRepeat }) => {
                                     <th>{t('date')}</th>
                                     <th>{t('prescription_detail')}</th>
                                     <th>{t('status')}</th>
-                                    <th>{t('actions') || 'Acciones'}</th>
+                                    <th>{t('actions')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -53,17 +53,17 @@ const MedicationHistory = ({ recentRequests, t, onRepeat }) => {
                                         </td>
                                         <td className="patient-medications__table-cell">
                                             <span className={`patient-medications__status-tag status-${req.status === 'completed' ? 'completed' : 'pending'}`}>
-                                                {req.status === 'completed' ? t('delivered') || 'Entregado' : t('pending') || 'Pendiente'}
+                                                {req.status === 'completed' ? t('delivered') : t('pending')}
                                             </span>
                                         </td>
                                         <td className="patient-medications__table-cell">
-                                            <button
-                                                className="btn-icon btn-icon--primary"
-                                                title={t('repeat_prescription') || 'Repetir Receta'}
+                                            <Button
+                                                variant="primary"
+                                                size="sm-compact"
+                                                title={t('repeat_prescription')}
                                                 onClick={() => onRepeat && onRepeat(req)}
-                                            >
-                                                <Icon name="HISTORY" size="1.2rem" />
-                                            </button>
+                                                icon={<Icon name="history" size="1.2rem" />}
+                                            />
                                         </td>
                                     </tr>
                                 ))}

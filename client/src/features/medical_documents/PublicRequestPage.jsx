@@ -10,6 +10,7 @@ import './PublicRequestPage.css';
  * Patient-facing portal for requesting prescriptions.
  */
 const PublicRequestPage = () => {
+    const { t } = useLanguage();
     const {
         loading,
         error,
@@ -30,27 +31,27 @@ const PublicRequestPage = () => {
         handleSubmit
     } = handlers;
 
-    if (loading && !patientInfo) return <StatusDisplay type="loading" message="Cargando..." />;
-    if (error && !patientInfo) return <StatusDisplay type="error" title="Error" message={error} />;
-    if (success) return <StatusDisplay type="success" title="¡Solicitud Enviada!" message="Tu médico recibirá la solicitud. Te notificaremos cuando las recetas estén listas." />;
+    if (loading && !patientInfo) return <StatusDisplay type="loading" message={t('loading')} />;
+    if (error && !patientInfo) return <StatusDisplay type="error" title={t('error')} message={error} />;
+    if (success) return <StatusDisplay type="success" title={t('request_sent_title')} message={t('request_sent_message')} />;
 
     return (
         <div className="public-prescription">
             <div className="public-prescription__container">
                 <header className="public-prescription__header">
                     <div className="public-prescription__icon-wrapper">
-                        <Icon name="PRESCRIPTION" size="2rem" />
+                        <Icon name="prescriptions" size="2rem" />
                     </div>
-                    <h1 className="public-prescription__title">Solicitud de Recetas</h1>
+                    <h1 className="public-prescription__title">{t('prescription_request_title')}</h1>
                     <p className="public-prescription__subtitle">
-                        Paciente: <span className="public-prescription__patient-name">{patientInfo?.patientName}</span>
+                        {t('patient')}: <span className="public-prescription__patient-name">{patientInfo?.patientName}</span>
                     </p>
                 </header>
 
                 {error && patientInfo && (
                     <div className="public-prescription__error-banner animate-fadeIn">
                         <p className="public-prescription__error-text">
-                            <Icon name="WARNING" className="mr-1" /> {error}
+                            <Icon name="warning" className="mr-1" /> {error}
                         </p>
                     </div>
                 )}
@@ -58,19 +59,20 @@ const PublicRequestPage = () => {
                 {patientInfo?.recentMeds?.length > 0 && (
                     <section className="public-prescription__section">
                         <h2 className="public-prescription__section-title">
-                            <Icon name="HISTORY" size="1.2rem" className="mr-2" />
-                            Medicación Reciente
+                            <Icon name="history" size="1.2rem" className="mr-2" />
+                            {t('recent_medication')}
                         </h2>
                         <div className="med-chip-grid">
                             {patientInfo.recentMeds.map((med, idx) => (
-                                <button
+                                <Button
                                     key={idx}
+                                    variant="ghost"
                                     onClick={() => handleToggleMedSelection(med)}
                                     className={`med-chip ${selectedMeds.includes(med) ? 'med-chip--active' : ''}`}
                                     title={med}
                                 >
                                     {med}
-                                </button>
+                                </Button>
                             ))}
                         </div>
                     </section>
@@ -79,20 +81,21 @@ const PublicRequestPage = () => {
                 {selectedMeds.length > 0 && (
                     <section className="public-prescription__section animate-fadeIn">
                         <h2 className="public-prescription__section-title">
-                            <Icon name="CHECK" size="1.2rem" className="mr-2" />
-                            Seleccionados ({selectedMeds.length})
+                            <Icon name="check" size="1.2rem" className="mr-2" />
+                            {t('selected_items')} ({selectedMeds.length})
                         </h2>
                         <ul className="selected-list list-none">
                             {selectedMeds.map((med, idx) => (
                                 <li key={idx} className="selected-item">
                                     <span className="selected-item__name">{med}</span>
-                                    <button
+                                    <Button
+                                        variant="ghost"
+                                        size="sm-compact"
                                         onClick={() => handleToggleMedSelection(med)}
                                         className="selected-item__remove"
-                                        title="Quitar"
-                                    >
-                                        ✕
-                                    </button>
+                                        title={t('remove')}
+                                        icon={<Icon name="close" size="1.2rem" />}
+                                    />
                                 </li>
                             ))}
                         </ul>
@@ -101,13 +104,13 @@ const PublicRequestPage = () => {
 
                 <section className="public-prescription__section">
                     <h2 className="public-prescription__section-title">
-                        <Icon name="SEARCH" size="1.2rem" className="mr-2" />
-                        Buscar otra medicación
+                        <Icon name="search" size="1.2rem" className="mr-2" />
+                        {t('search_other_medication')}
                     </h2>
                     <div className="search-wrapper">
                         <input
                             type="text"
-                            placeholder="Ej: Losartan, Atenolol..."
+                            placeholder={t('search_medication_placeholder')}
                             className="search-input"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
@@ -118,28 +121,29 @@ const PublicRequestPage = () => {
                     {searchResults.length > 0 && (
                         <div className="search-results scrollbar-hide">
                             {searchResults.map((res) => (
-                                <button
+                                <Button
                                     key={res.id}
+                                    variant="ghost"
                                     onClick={() => handleToggleMedSelection(res.full_label)}
                                     className="search-result-item"
                                 >
                                     <span className="search-result-item__name">{res.name}</span>
                                     <span className="search-result-item__desc">{res.presentation} - {res.drug}</span>
-                                </button>
+                                </Button>
                             ))}
                         </div>
                     )}
 
                     {searchTerm.length >= 3 && !searching && searchResults.length === 0 && (
                         <div className="empty-state">
-                            <p className="empty-state__text">¿No encuentras lo que buscas? Puedes agregarlo manualmente:</p>
+                            <p className="empty-state__text">{t('medication_not_found_manual')}</p>
                             <Button
                                 variant="secondary"
                                 size="sm"
                                 onClick={handleAddManualMed}
-                                icon={<Icon name="ADD" size="1rem" />}
+                                icon={<Icon name="add" size="1rem" />}
                             >
-                                Agregar "{searchTerm}"
+                                {t('add_manual')} "{searchTerm}"
                             </Button>
                         </div>
                     )}
@@ -147,12 +151,12 @@ const PublicRequestPage = () => {
 
                 <section className="public-prescription__section">
                     <h2 className="public-prescription__section-title">
-                        <Icon name="NOTES" size="1.2rem" className="mr-2" />
-                        Notas (Opcional)
+                        <Icon name="notes" size="1.2rem" className="mr-2" />
+                        {t('notes_optional')}
                     </h2>
                     <textarea
                         className="input-field public-prescription__notes"
-                        placeholder="Ej: Retiro por secretaría el miércoles..."
+                        placeholder={t('prescription_notes_placeholder')}
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
                     ></textarea>
@@ -166,12 +170,12 @@ const PublicRequestPage = () => {
                         className="w-full btn--submit"
                         disabled={selectedMeds.length === 0 || loading}
                         onClick={handleSubmit}
-                        icon={<Icon name="SEND" size="1.2rem" />}
+                        icon={<Icon name="send" size="1.2rem" />}
                     >
-                        {loading ? 'Enviando...' : 'Enviar Solicitud'}
+                        {loading ? t('sending') : t('send_request')}
                     </Button>
                     <p className="public-prescription__brand">
-                        Sistema Seguro de Gestión Médica • CIMA
+                        {t('secure_system_footer')}
                     </p>
                 </div>
             </div>

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { useLanguage } from '@/context/LanguageContext';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import './ConfirmModal.css';
 
 const ConfirmModal = ({
@@ -39,10 +41,13 @@ const ConfirmModal = ({
                     <h3 className="modal-header-bem__title">
                         {title || (type === 'alert' ? t('alert') : t('confirm'))}
                     </h3>
-                    <button
+                    <Button
+                        variant="ghost"
                         className="modal-header-bem__close"
                         onClick={handleCancelClick}
-                    >&times;</button>
+                    >
+                        <Icon name="close" size="1.25rem" />
+                    </Button>
                 </div>
                 <div className="modal-body-bem">
                     <div className={`modal-body-bem__text ${type === 'prompt' ? 'modal-body-bem__text--prompt' : ''}`}>
@@ -62,19 +67,19 @@ const ConfirmModal = ({
                 </div>
                 <div className="modal-footer-bem">
                     {type !== 'alert' && (
-                        <button
-                            className="btn-text btn-text--secondary"
+                        <Button
+                            variant="secondary"
                             onClick={handleCancelClick}
                         >
                             {t('cancel')}
-                        </button>
+                        </Button>
                     )}
-                    <button
-                        className="btn-base btn-base--primary"
+                    <Button
+                        variant="primary"
                         onClick={handleConfirm}
                     >
                         {t('accept')}
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>,
