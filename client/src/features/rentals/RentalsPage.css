@@ -158,6 +158,10 @@
     border-bottom: 2px solid var(--gray-100);
 }
 
+.rentals-page__th--right {
+    text-align: right;
+}
+
 .rentals-page__tr {
     border-bottom: 1px solid var(--gray-50);
 }

@@ -162,7 +162,7 @@ const RentalsPage = () => {
                                                         <th className="rentals-page__th">{t('office')}</th>
                                                         <th className="rentals-page__th">{t('date')}</th>
                                                         <th className="rentals-page__th">{t('time')}</th>
-                                                        <th className="rentals-page__th" style={{ textAlign: 'right' }}>{t('cost')}</th>
+                                                        <th className="rentals-page__th rentals-page__th--right">{t('cost')}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
