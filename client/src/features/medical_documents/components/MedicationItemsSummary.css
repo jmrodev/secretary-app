@@ -1,0 +1,46 @@
+.medication-items-summary {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.medication-items-summary__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    background-color: var(--white);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--gray-100);
+    box-shadow: var(--shadow-sm);
+}
+
+.medication-items-summary__info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.medication-items-summary__name {
+    font-weight: 700;
+}
+
+.medication-items-summary__dose {
+    color: var(--gray-500);
+}
+
+.medication-items-summary__freq {
+    color: var(--accent-color);
+    font-weight: 500;
+}
+
+.medication-items-summary__qty {
+    font-weight: 700;
+    color: var(--gray-700);
+}
+
+.medication-items-summary__remove-btn:hover {
+    background-color: #fef2f2; /* Light red/red-50 equivalent */
+}

@@ -1,0 +1,56 @@
+.medical-documents__tab-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-base);
+}
+
+.medical-documents__tab-button:hover {
+    background-color: var(--gray-50);
+}
+
+.medical-documents__tab-icon {
+    margin-right: 0.75rem;
+    color: var(--accent-color);
+    font-weight: 700;
+}
+
+.medical-documents__tab-label {
+    font-weight: 700;
+    font-size: 0.875rem;
+    letter-spacing: -0.01em;
+}
+
+.medical-documents__search-card {
+    margin: 0 1rem;
+}
+
+.medical-documents__action-card {
+    margin: 0 1rem;
+    background-color: #f0f9ff; /* Light blue / blue-50 equivalent */
+    border-color: #e0f2fe; /* blue-100 */
+}
+
+.medical-documents__action-title {
+    color: var(--blue-900);
+    border-bottom: 1px solid #e0f2fe;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.medical-documents__action-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.medical-documents__action-btn {
+    width: 100%;
+    justify-content: flex-start;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 10px;
+}

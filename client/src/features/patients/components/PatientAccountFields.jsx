@@ -1,5 +1,6 @@
-
 import React from 'react';
+import Input from '@/components/atoms/Input';
+import './PatientAccountFields.css';
 
 /**
  * PatientAccountFields Molecule (Sub-Executor).
@@ -7,32 +8,32 @@ import React from 'react';
  */
 const PatientAccountFields = ({ formData, handleChange, t }) => {
     return (
-        <div className="patient-form__row">
-            <div className="patient-form__group">
-                <label className="patient-form__label">{t('username')}</label>
-                <input
-                    type="text"
-                    name="username"
-                    className="patient-form__field"
-                    value={formData.username}
-                    onChange={handleChange}
-                    required
-                    autoComplete="off"
-                    data-lpignore="true"
-                />
-            </div>
-            <div className="patient-form__group">
-                <label className="patient-form__label">{t('password')}</label>
-                <input
-                    type="password"
-                    name="password"
-                    className="patient-form__field"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                    autoComplete="new-password"
-                    data-lpignore="true"
-                />
+        <div className="patient-account-fields">
+            <div className="patient-account-fields__row">
+                <div className="patient-account-fields__group">
+                    <label className="patient-account-fields__label">{t('username')}</label>
+                    <Input
+                        type="text"
+                        name="username"
+                        className="patient-account-fields__field"
+                        value={formData.username}
+                        onChange={handleChange}
+                        required
+                        autoComplete="off"
+                    />
+                </div>
+                <div className="patient-account-fields__group">
+                    <label className="patient-account-fields__label">{t('password')}</label>
+                    <Input
+                        type="password"
+                        name="password"
+                        className="patient-account-fields__field"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                        autoComplete="new-password"
+                    />
+                </div>
             </div>
         </div>
     );

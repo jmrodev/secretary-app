@@ -1,0 +1,57 @@
+.patient-address-fields__section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gray-800);
+    margin: 1.5rem 0 1rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--blue-100);
+}
+
+.patient-address-fields__row {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    margin-bottom: 1.25rem;
+}
+
+@media (max-width: 768px) {
+    .patient-address-fields__row {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
+.patient-address-fields__group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.patient-address-fields__group--expand-3 {
+    flex: 3;
+}
+
+.patient-address-fields__group--expand-1 {
+    flex: 1;
+}
+
+.patient-address-fields__label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--gray-500);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.patient-address-fields__field {
+    width: 100%;
+}
+
+.patient-address-fields__map-action {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 0.5rem;
+}

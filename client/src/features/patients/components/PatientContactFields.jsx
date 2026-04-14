@@ -1,8 +1,9 @@
-
 import React from 'react';
 import PhoneNumbersManager from '@/components/molecules/PhoneNumbersManager';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+import Input from '@/components/atoms/Input';
+import './PatientContactFields.css';
 
 /**
  * PatientContactFields Molecule (Sub-Executor).
@@ -10,14 +11,14 @@ import Icon from '@/components/atoms/Icon';
  */
 const PatientContactFields = ({ formData, handleChange, handlePhoneChange, t }) => {
     return (
-        <div className="patient-form__section">
-            <div className="patient-form__row">
-                <div className="patient-form__group">
-                    <label className="patient-form__label">Email</label>
-                    <input
+        <div className="patient-contact-fields">
+            <div className="patient-contact-fields__row">
+                <div className="patient-contact-fields__group">
+                    <label className="patient-contact-fields__label">{t('email') || 'Email'}</label>
+                    <Input
                         type="email"
                         name="email"
-                        className="patient-form__field"
+                        className="patient-contact-fields__field"
                         value={formData.email}
                         onChange={handleChange}
                     />
@@ -26,7 +27,7 @@ const PatientContactFields = ({ formData, handleChange, handlePhoneChange, t }) 
                             to={`mailto:${formData.email}`}
                             variant="link"
                             size="sm"
-                            className="patient-form__email-link"
+                            className="patient-contact-fields__email-link"
                             icon={<Icon name="mail" size="1rem" />}
                         >
                             {t('send_email')}
@@ -35,7 +36,7 @@ const PatientContactFields = ({ formData, handleChange, handlePhoneChange, t }) 
                 </div>
             </div>
 
-            <div className="patient-form__section-divider">
+            <div className="patient-contact-fields__section-divider">
                 <PhoneNumbersManager
                     phoneNumbers={formData.phoneNumbers}
                     onChange={handlePhoneChange}

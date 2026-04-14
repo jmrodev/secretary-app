@@ -2,6 +2,7 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+import Input from '@/components/atoms/Input';
 
 // Local Feature Components
 import PatientIdentityFields from './PatientIdentityFields';
@@ -90,11 +91,11 @@ const PatientForm = ({
 
             <div className="patient-form__group">
                 <label className="patient-form__label">{t('medical_history')}</label>
-                <textarea
+                <Input
+                    type="textarea"
                     name="medical_history"
-                    className="patient-form__field"
-                    rows="3"
-                    value={formData.medical_history}
+                    rows={3}
+                    value={formData.medical_history || ''}
                     onChange={handleChange}
                 />
             </div>
@@ -124,7 +125,7 @@ const PatientForm = ({
                 <Button
                     type="submit"
                     variant="success"
-                    className="w-full md:w-auto"
+                    className="patient-form__submit-btn"
                     disabled={isSubmitting}
                     icon={<Icon name="save" />}
                 >

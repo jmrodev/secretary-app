@@ -1,6 +1,7 @@
 
 import React from 'react';
 import Input from '@/components/atoms/Input';
+import Select from '@/components/atoms/Select';
 import Tooltip from '@/components/atoms/Tooltip';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
@@ -24,6 +25,19 @@ const PrescriptionFormFields = ({
     freqPresets,
     t
 }) => {
+    const unitsPerBoxOptions = [
+        { value: '', label: t('select_option') },
+        ...[10, 14, 20, 28, 30, 40, 50, 60, 100].map(v => ({ value: v, label: String(v) }))
+    ];
+
+    const dailyUnitsOptions = [
+        { value: '', label: t('select_option') },
+        ...[0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4].map(v => ({
+            value: v,
+            label: v === 0.25 ? '1/4' : v === 0.5 ? '1/2' : v === 0.75 ? '3/4' : String(v)
+        }))
+    ];
+
     return (
         <div className="prescription-modal__group">
             <div className="prescription-modal__field-wrapper">
@@ -77,36 +91,26 @@ const PrescriptionFormFields = ({
                     <label className="prescription-modal__label">
                         {t('units_per_box')}
                     </label>
-                    <select
-                        className="input input--sm prescription-form-fields__select"
+                    <Select
+                        size="sm"
+                        className="prescription-form-fields__select"
                         value={tempUnitsPerBox}
+                        options={unitsPerBoxOptions}
                         onChange={e => setTempUnitsPerBox(e.target.value)}
-                    >
-                        <option value="">{t('select_option')}</option>
-                        {[10, 14, 20, 28, 30, 40, 50, 60, 100].map(v => (
-                            <option key={v} value={v}>{v}</option>
-                        ))}
-                    </select>
+                    />
                 </div>
 
                 <div className="prescription-modal__numeric-field">
                     <label className="prescription-modal__label">
                         {t('daily_units')}
                     </label>
-                    <select
-                        className="input input--sm prescription-form-fields__select"
+                    <Select
+                        size="sm"
+                        className="prescription-form-fields__select"
                         value={tempDailyUnits}
-                        onChange={e => {
-                            setTempDailyUnits(e.target.value);
-                        }}
-                    >
-                        <option value="">{t('select_option')}</option>
-                        {[0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4].map(v => (
-                            <option key={v} value={v}>
-                                {v === 0.25 ? '1/4' : v === 0.5 ? '1/2' : v === 0.75 ? '3/4' : v}
-                            </option>
-                        ))}
-                    </select>
+                        options={dailyUnitsOptions}
+                        onChange={e => setTempDailyUnits(e.target.value)}
+                    />
                 </div>
 
                 <div className="prescription-modal__numeric-field">
