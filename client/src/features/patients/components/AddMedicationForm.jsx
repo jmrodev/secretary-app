@@ -4,6 +4,9 @@ import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import MedicationAutocomplete from '@/features/medical_documents/components/MedicationAutocomplete';
 
+// Local CSS
+import './AddMedicationForm.css';
+
 // Local Feature Components
 import MedicationPendingList from './MedicationPendingList';
 import MedicationConfigFields from './MedicationConfigFields';
@@ -153,10 +156,10 @@ const AddMedicationForm = ({
     };
 
     return (
-        <div className="patient-medications__form">
-            <div className="patient-medications__form-card">
-                <div className="config-field">
-                    <label className="config-field__label">{t('search_medication') || 'Buscar Medicamento'}</label>
+        <div className="add-medication-form">
+            <div className="add-medication-form__card">
+                <div className="add-medication-form__search-group">
+                    <label className="add-medication-form__label">{t('search_medication') || 'Buscar Medicamento'}</label>
                     <MedicationAutocomplete
                         value={currentMed.medication_name}
                         onChange={(val) => setCurrentMed({ ...currentMed, medication_name: val })}
@@ -186,7 +189,7 @@ const AddMedicationForm = ({
                 />
             )}
 
-            <div className="patient-medications__form-actions">
+            <div className="add-medication-form__actions">
                 <Button variant="ghost" onClick={onCancel} icon={<Icon name="close" />}>
                     {t('cancel')}
                 </Button>
@@ -204,3 +207,4 @@ const AddMedicationForm = ({
 };
 
 export default AddMedicationForm;
+

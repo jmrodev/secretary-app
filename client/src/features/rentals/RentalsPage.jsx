@@ -1,14 +1,19 @@
+
 import React from 'react';
 import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+import Input from '@/components/atoms/Input';
+import Select from '@/components/atoms/Select';
+import Badge from '@/components/atoms/Badge';
 import { formatPrice } from '@/utils/format';
 import { formatDate } from '@/utils/dateUtils';
 import { useRentalsController } from './hooks/useRentalsController';
+import './RentalsPage.css';
 
 /**
- * RentalsPage (Orchestrator).
+ * RentalsPage Orchestrator.
  * Interface for doctors to book offices and for staff to manage availability.
  */
 const RentalsPage = () => {
@@ -29,115 +34,152 @@ const RentalsPage = () => {
         handleRent
     } = useRentalsController();
 
+    const officeOptions = [
+        { value: '', label: `-- ${t('select_office')} --` },
+        ...consultorios.map(c => ({
+            value: c.id,
+            label: `${c.name} - ${t(c.status) || c.status}`
+        }))
+    ];
+
     return (
         <MainLayout wide>
-            <div className="rentals-page-orchestrator">
-                <header className="dashboard-header animate-fadeIn">
-                    <h1 className="dashboard-header__title">{t('office_rentals') || 'Alquiler de Consultorios'}</h1>
-                    <p className="dashboard-header__subtitle">Gestione la disponibilidad y reservas de espacios de trabajo.</p>
+            <div className="rentals-page">
+                <header className="rentals-page__header animate-fadeIn">
+                    <h1 className="rentals-page__title">{t('office_rentals')}</h1>
+                    <p className="rentals-page__subtitle">
+                        {t('rentals_subtitle') || 'Gestione la disponibilidad y reservas de espacios de trabajo.'}
+                    </p>
                 </header>
 
-                <div className="dashboard-nav-bar animate-fadeIn">
-                    <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
-                        <Icon name="domain" size="1.2rem" />
-                        {consultorios.length} {t('offices_count') || 'Consultorios disponibles'}
-                    </div>
+                <div className="rentals-page__summary animate-fadeIn">
+                    <Icon name="domain" />
+                    {consultorios.length} {t('offices_count')}
                 </div>
 
                 {loading ? (
                     <Loading variant="centered" text={t('loading_rentals')} />
                 ) : (
-                    <div className="dashboard-grid animate-fadeIn">
-                        <aside className="dashboard-sidebar">
+                    <div className="rentals-page__grid animate-fadeIn">
+                        <aside className="rentals-page__sidebar">
                             {/* Booking Form (Doctors only) */}
-                            {user && user.role === 'doctor' && (
-                                <div className="dashboard-card">
-                                    <h3 className="dashboard-card__title">
-                                        <Icon name="calendar_month" size="1.2rem" />
-                                        {t('book_office') || 'Nueva Reserva'}
-                                    </h3>
-                                    <form onSubmit={handleRent} className="flex flex-col gap-4 mt-2">
-                                        <div className="input-group">
+                            {user?.role === 'doctor' && (
+                                <div className="rentals-page__card">
+                                    <div className="rentals-page__card-header">
+                                        <h3 className="rentals-page__card-title">
+                                            <Icon name="calendar_month" />
+                                            {t('book_office')}
+                                        </h3>
+                                    </div>
+                                    <form onSubmit={handleRent} className="rentals-page__booking-form">
+                                        <div className="rentals-page__group">
                                             <label className="input-label">{t('select_office')}</label>
-                                            <select className="input-field" value={selectedOffice} onChange={(e) => setSelectedOffice(e.target.value)} required>
-                                                <option value="">-- {t('select_office')} --</option>
-                                                {consultorios.map(c => (
-                                                    <option key={c.id} value={c.id}>{c.name} - {t(c.status) || c.status}</option>
-                                                ))}
-                                            </select>
+                                            <Select
+                                                value={selectedOffice}
+                                                options={officeOptions}
+                                                onChange={(e) => setSelectedOffice(e.target.value)}
+                                                required
+                                            />
                                         </div>
-                                        <div className="input-group">
+                                        <div className="rentals-page__group">
                                             <label className="input-label">{t('date')}</label>
-                                            <input type="date" className="input-field" value={date} onChange={(e) => setDate(e.target.value)} required />
+                                            <Input
+                                                type="date"
+                                                value={date}
+                                                onChange={(e) => setDate(e.target.value)}
+                                                required
+                                            />
                                         </div>
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <div className="input-group">
+                                        <div className="rentals-page__form-row">
+                                            <div className="rentals-page__group">
                                                 <label className="input-label">{t('start_time')}</label>
-                                                <input type="time" className="input-field" value={startTime} onChange={(e) => setStartTime(e.target.value)} required />
+                                                <Input
+                                                    type="time"
+                                                    value={startTime}
+                                                    onChange={(e) => setStartTime(e.target.value)}
+                                                    required
+                                                />
                                             </div>
-                                            <div className="input-group">
+                                            <div className="rentals-page__group">
                                                 <label className="input-label">{t('end_time')}</label>
-                                                <input type="time" className="input-field" value={endTime} onChange={(e) => setEndTime(e.target.value)} required />
+                                                <Input
+                                                    type="time"
+                                                    value={endTime}
+                                                    onChange={(e) => setEndTime(e.target.value)}
+                                                    required
+                                                />
                                             </div>
                                         </div>
-                                        <Button type="submit" variant="primary" className="w-full mt-2">
-                                            {t('book_rental_btn') || 'Confirmar Reserva'}
+                                        <Button type="submit" variant="primary" className="rentals-page__submit">
+                                            {t('book_rental_btn')}
                                         </Button>
                                     </form>
                                 </div>
                             )}
 
                             {/* Available Offices List */}
-                            <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">
-                                    <Icon name="meeting_room" size="1.2rem" />
-                                    {t('available_offices') || 'Espacios Disponibles'}
-                                </h3>
-                                <div className="flex flex-col gap-3">
+                            <div className="rentals-page__card">
+                                <div className="rentals-page__card-header">
+                                    <h3 className="rentals-page__card-title">
+                                        <Icon name="meeting_room" />
+                                        {t('available_offices')}
+                                    </h3>
+                                </div>
+                                <div className="rentals-page__office-list">
                                     {consultorios.map(c => (
-                                        <div key={c.id} className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-                                            <div className="flex justify-between items-start">
-                                                <strong className="text-slate-800 text-sm">{c.name}</strong>
-                                                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold uppercase ${c.status === 'available' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                        <div key={c.id} className="rentals-page__office-item">
+                                            <div className="rentals-page__office-info">
+                                                <strong className="rentals-page__office-name">{c.name}</strong>
+                                                <Badge variant={c.status === 'available' ? 'success' : 'danger'}>
                                                     {t(c.status) || c.status}
-                                                </span>
+                                                </Badge>
                                             </div>
-                                            <p className="text-xs text-slate-500 mt-1">{c.description || 'Sin descripción'}</p>
+                                            <p className="rentals-page__office-desc">
+                                                {c.description || t('no_description')}
+                                            </p>
                                         </div>
                                     ))}
                                 </div>
                             </div>
                         </aside>
 
-                        <main className="dashboard-main">
+                        <main className="rentals-page__main">
                              {/* My Rentals List */}
-                            {user && user.role === 'doctor' && (
-                                <div className="dashboard-card no-padding">
-                                    <div className="p-5 border-b border-border-color">
-                                        <h3 className="text-lg font-bold text-slate-800 m-0">{t('my_rentals') || 'Mis Alquileres'}</h3>
+                            {user?.role === 'doctor' && (
+                                <div className="rentals-page__card">
+                                    <div className="rentals-page__card-header">
+                                        <h3 className="rentals-page__card-title">{t('my_rentals')}</h3>
                                     </div>
-                                    <div className="table-responsive">
+                                    <div className="rentals-page__table-container">
                                         {rentals.length === 0 ? (
-                                            <div className="py-20 text-center text-slate-400 italic">
-                                                No tienes alquileres registrados.
+                                            <div className="rentals-page__empty-state">
+                                                {t('no_rentals_found') || 'No tienes alquileres registrados.'}
                                             </div>
                                         ) : (
-                                            <table className="table-base w-full">
+                                            <table className="rentals-page__table">
                                                 <thead>
                                                     <tr>
-                                                        <th className="pl-6">{t('office')}</th>
-                                                        <th>{t('date')}</th>
-                                                        <th>{t('time')}</th>
-                                                        <th className="pr-6 text-right">{t('cost')}</th>
+                                                        <th className="rentals-page__th">{t('office')}</th>
+                                                        <th className="rentals-page__th">{t('date')}</th>
+                                                        <th className="rentals-page__th">{t('time')}</th>
+                                                        <th className="rentals-page__th" style={{ textAlign: 'right' }}>{t('cost')}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {rentals.map(r => (
-                                                        <tr key={r.id}>
-                                                            <td className="pl-6 font-bold text-slate-800">{r.consultorio_name}</td>
-                                                            <td>{formatDate(r.rental_date)}</td>
-                                                            <td>{r.start_time} - {r.end_time}</td>
-                                                            <td className="pr-6 text-right font-mono text-green-600 font-bold">{formatPrice(r.cost)}</td>
+                                                        <tr key={r.id} className="rentals-page__tr">
+                                                            <td className="rentals-page__td rentals-page__td--bold">
+                                                                {r.consultorio_name}
+                                                            </td>
+                                                            <td className="rentals-page__td">
+                                                                {formatDate(r.rental_date)}
+                                                            </td>
+                                                            <td className="rentals-page__td">
+                                                                {r.start_time} - {r.end_time}
+                                                            </td>
+                                                            <td className="rentals-page__td rentals-page__td--price">
+                                                                {formatPrice(r.cost)}
+                                                            </td>
                                                         </tr>
                                                     ))}
                                                 </tbody>
@@ -149,12 +191,12 @@ const RentalsPage = () => {
 
                             {/* Staff View (Secretary/Admin) */}
                             {user && (user.role === 'secretary' || user.role === 'admin') && (
-                                <div className="dashboard-card">
-                                    <div className="py-20 text-center">
-                                        <Icon name="payments" size="3rem" className="text-slate-200 mb-4 mx-auto" />
-                                        <h3 className="text-slate-400 font-medium">Panel de Gestión de Alquileres</h3>
-                                        <p className="text-slate-400 text-sm max-w-xs mx-auto mt-2 italic">
-                                            Próximamente podrá ver el resumen de alquileres de todos los médicos.
+                                <div className="rentals-page__card">
+                                    <div className="rentals-page__staff-placeholder">
+                                        <Icon name="payments" size="3rem" />
+                                        <h3 className="rentals-page__staff-title">{t('rentals_management_panel')}</h3>
+                                        <p className="rentals-page__staff-desc">
+                                            {t('rentals_coming_soon') || 'Próximamente podrá ver el resumen de alquileres de todos los médicos.'}
                                         </p>
                                     </div>
                                 </div>
@@ -167,4 +209,6 @@ const RentalsPage = () => {
     );
 };
 
+
 export default RentalsPage;
+

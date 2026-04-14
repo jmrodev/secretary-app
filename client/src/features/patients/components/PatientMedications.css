@@ -48,29 +48,6 @@
     vertical-align: top;
 }
 
-.patient-medications__date-badge {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--blue-600);
-    background-color: var(--blue-50);
-    padding: 0.2rem 0.6rem;
-    border-radius: 1rem;
-    white-space: nowrap;
-}
-
-.patient-medications__doctor-name {
-    font-size: 0.75rem;
-    color: var(--slate-400);
-    margin-top: 0.25rem;
-}
-
-.patient-medications__request-note {
-    font-weight: 600;
-    color: var(--slate-700);
-    white-space: pre-line;
-}
-
-/* Active Meds Table */
 .patient-medications__status-badge {
     padding: 0.2rem 0.5rem;
     border-radius: 0.5rem;
@@ -109,7 +86,7 @@
     100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
 }
 
-/* Adding Form */
+/* Adding Form Container */
 .patient-medications__form {
     background-color: var(--slate-50);
     border: 1px solid var(--slate-200);
@@ -117,48 +94,6 @@
     padding: 1.5rem;
     margin-bottom: 2rem;
     animation: fadeIn 0.3s ease;
-}
-
-.patient-medications__form-card {
-    background-color: white;
-    border: 1px solid var(--blue-100);
-    border-radius: 0.75rem;
-    padding: 1.25rem;
-    margin-bottom: 1.5rem;
-    box-shadow: var(--shadow-sm);
-}
-
-.patient-medications__mode-selector {
-    background: var(--slate-100);
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-    border: 1px solid var(--slate-200);
-}
-
-.patient-medications__mode-badge {
-    opacity: 0.6;
-    font-size: 0.65rem;
-    font-weight: 500;
-}
-
-.patient-medications__config-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-.patient-medications__config-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.patient-medications__config-footer {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
 }
 
 .patient-medications__pending-list {
@@ -194,11 +129,4 @@
     border: 2px dashed var(--slate-200);
     border-radius: 1rem;
     color: var(--slate-400);
-}
-
-@media (max-width: 768px) {
-    .patient-medications__config-grid,
-    .patient-medications__config-row {
-        grid-template-columns: 1fr;
-    }
 }
