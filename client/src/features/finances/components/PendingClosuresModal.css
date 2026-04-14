@@ -82,11 +82,11 @@
 }
 
 .pending-closures-table__cell--right {
-    text-align: right !important;
+    text-align: right;
 }
 
 .pending-closures-table__cell--center {
-    text-align: center !important;
+    text-align: center;
 }
 
 .pending-closures-table__date-group {
@@ -122,7 +122,7 @@
 }
 
 .pending-closures-table__empty {
-    padding: 3rem !important;
+    padding: 3rem;
     text-align: center;
     color: var(--text-muted);
     font-style: italic;

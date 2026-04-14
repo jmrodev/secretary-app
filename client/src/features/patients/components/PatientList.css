@@ -79,8 +79,8 @@
     cursor: default;
 }
 
-.patient-table__row--institution:hover {
-    background-color: transparent !important;
+.patient-table .patient-table__row--institution:hover {
+    background-color: transparent;
 }
 
 .patient-table__inst-icon {
@@ -97,8 +97,8 @@
     color: var(--text-muted);
 }
 
-.patient-table__row--divider:hover {
-    background-color: transparent !important;
+.patient-table .patient-table__row--divider:hover {
+    background-color: transparent;
 }
 
 .patient-table__divider {

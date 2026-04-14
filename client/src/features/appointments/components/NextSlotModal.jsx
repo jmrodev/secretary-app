@@ -190,7 +190,7 @@ const NextSlotModal = ({
                     {hasPrevGroup && (
                         <Button 
                             variant="secondary" 
-                            className={`${baseClass}__footer-btn`} 
+                            className={`${baseClass}__footer-btn ${baseClass}__footer-btn--action`} 
                             onClick={onPrevGroup}
                         >
                             <Icon name="chevron_left" size="1.2rem" />

@@ -51,18 +51,9 @@
 }
 
 .appointment-card__visit-count {
-    font-size: 0.95rem !important;
-    padding: 0.25rem 0.75rem !important;
-    font-weight: 800 !important;
-    border-radius: 8px !important;
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
     flex-shrink: 0;
-    background-color: var(--emerald-50) !important;
-    border: 1px solid var(--emerald-200) !important;
-    color: var(--emerald-700) !important;
     white-space: nowrap;
+    gap: 0.3rem;
 }
 
 .appointment-card__phone { font-size: 10px; color: var(--indigo-600); font-weight: 500; text-decoration: none; width: fit-content; }
