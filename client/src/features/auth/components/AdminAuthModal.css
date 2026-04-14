@@ -35,3 +35,10 @@
     padding-top: 1.5rem;
     border-top: 1px solid var(--gray-100);
 }
+
+.admin-auth__password-input {
+    text-align: center;
+    letter-spacing: 0.5em;
+    font-size: 1.125rem;
+    font-weight: 700;
+}

@@ -1,6 +1,12 @@
 import React from 'react';
 import './Input.css';
 
+/**
+ * Input Atom.
+ * Renders a text input, textarea, or any other input type.
+ * Accepts all native HTML input props via `...rest`
+ * (checked, autoFocus, readOnly, accept, tabIndex, min, max, etc.)
+ */
 const Input = ({
     type = 'text',
     value,
@@ -13,7 +19,8 @@ const Input = ({
     required = false,
     rows = 3,
     variant = 'default', // 'default' | 'error' | 'success'
-    size = 'md' // 'sm' | 'md' | 'lg'
+    size = 'md',         // 'sm' | 'md' | 'lg'
+    ...rest              // forwards: checked, autoFocus, readOnly, accept, tabIndex, min, max, etc.
 }) => {
     const baseClass = 'input';
 
@@ -41,6 +48,7 @@ const Input = ({
                 disabled={disabled}
                 required={required}
                 rows={rows}
+                {...rest}
             />
         );
     }
@@ -56,6 +64,7 @@ const Input = ({
             className={combinedClassName}
             disabled={disabled}
             required={required}
+            {...rest}
         />
     );
 };

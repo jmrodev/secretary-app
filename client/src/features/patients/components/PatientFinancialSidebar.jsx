@@ -21,7 +21,7 @@ const PatientFinancialSidebar = ({
             {/* Sidebar Block 1: Financial Status */}
             <div className="patient-details__financial-card">
                 <header className="patient-details__financial-header">
-                    <h4 className="details-block__title details-block__title--centered details-block__title--muted-white">
+                    <h4 className="patient-details__financial-title">
                         {t('financial_history_debt')}
                     </h4>
                 </header>

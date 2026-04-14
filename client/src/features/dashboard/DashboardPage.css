@@ -81,7 +81,53 @@
     text-transform: uppercase;
 }
 
+/* --- Dashboard Requirements Section --- */
+
+.dashboard-requirements__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.dashboard-requirements__title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--slate-800);
+    margin: 0;
+}
+
+.dashboard-header-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* --- Sidebar Mobile Header --- */
+
+.dashboard-sidebar-mobile-header__title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--slate-800);
+    margin: 0;
+}
+
+/* --- No permissions state --- */
+
+.dashboard-no-permissions {
+    padding: 2rem;
+    text-align: center;
+    color: var(--slate-400);
+}
+
 /* --- Animations --- */
+
 @keyframes slowZoom {
     from { transform: scale(1.05); }
     to { transform: scale(1.15); }

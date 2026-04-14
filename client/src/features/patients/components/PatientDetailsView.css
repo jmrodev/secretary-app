@@ -334,8 +334,29 @@
 }
 
 .patient-details__financial-content--padded-xl {
-    padding: 2rem !important;
+    padding: 2rem;
 }
+
+/* Financial title in dark card */
+.patient-details__financial-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+    width: 100%;
+}
+
+/* Attendance stats flex row */
+.patient-details__attend-flex {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+
 
 .patient-details__financial-amount {
     font-size: 3rem;

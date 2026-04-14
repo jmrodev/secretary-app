@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Modal from '@/components/molecules/Modal';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
+import Input from '@/components/atoms/Input';
 import { useLanguage } from '@/context/LanguageContext';
 import './AdminAuthModal.css';
 
@@ -42,9 +43,9 @@ const AdminAuthModal = ({ isOpen, onClose, onConfirm }) => {
                 </p>
                 <form onSubmit={handleSubmit} className="admin-auth__form">
                     <div className="admin-auth__input-group">
-                        <input
+                        <Input
                             type="password"
-                            className="input-field text-center tracking-[0.5em] text-lg font-bold"
+                            className="admin-auth__password-input"
                             placeholder="••••••••"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}

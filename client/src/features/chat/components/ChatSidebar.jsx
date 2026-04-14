@@ -1,5 +1,8 @@
 import React from 'react';
+import Input from '@/components/atoms/Input';
+import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/context/LanguageContext';
+import './ChatSidebar.css';
 
 /**
  * ChatSidebar Component (Feature Component).
@@ -46,25 +49,28 @@ const ChatSidebar = ({
 
     return (
         <div className="chat-sidebar">
-            <div className="sidebar-header flex flex-col gap-4 p-4 border-b border-slate-100 bg-white">
-                <div className="flex justify-between items-center w-full">
-                    <h2 className="text-xl font-bold text-slate-800">Chat {unreadCount > 0 && <span className="convo-badge ml-2">{unreadCount}</span>}</h2>
+            <div className="chat-sidebar__header">
+                <div className="chat-sidebar__title-row">
+                    <h2 className="chat-sidebar__title">
+                        {t('chat') || 'Chat'}
+                        {unreadCount > 0 && <span className="convo-badge">{unreadCount}</span>}
+                    </h2>
                 </div>
-                <div className="w-full relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
-                    <input
+                <div className="chat-sidebar__search-wrapper">
+                    <Icon name="search" className="chat-sidebar__search-icon" />
+                    <Input
                         type="text"
-                        placeholder={t('search_chats_contacts') || "Buscar chats o contactos..."}
-                        className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-blue-500 transition-all outline-none text-sm"
+                        placeholder={t('search_chats_contacts') || 'Buscar chats o contactos...'}
+                        className="chat-sidebar__search-input"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
             </div>
 
-            <div className="conversations-list overflow-y-auto custom-scrollbar h-full">
+            <div className="chat-sidebar__list custom-scrollbar">
                 {filteredConvos.length === 0 && suggestedRecipients.length === 0 && (
-                    <div className="p-8 text-center text-slate-400 text-sm">
+                    <div className="chat-sidebar__empty">
                         <p>{q ? t('no_results_found') : t('no_conversations')}</p>
                     </div>
                 )}
@@ -92,7 +98,7 @@ const ChatSidebar = ({
                 ))}
 
                 {suggestedRecipients.length > 0 && (
-                    <div className="px-4 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider mt-2 bg-slate-50">
+                    <div className="chat-sidebar__section-label">
                         {t('contacts') || 'Contactos'}
                     </div>
                 )}
@@ -100,19 +106,19 @@ const ChatSidebar = ({
                 {suggestedRecipients.map(r => (
                     <div
                         key={`recipient-${r.id}`}
-                        className={`convo-item hover:bg-slate-50 cursor-pointer`}
+                        className="convo-item chat-sidebar__recipient"
                         onClick={() => onStartNewChat(r)}
                     >
-                        <div className="convo-avatar bg-slate-200 text-slate-500 shadow-none">
+                        <div className="convo-avatar chat-sidebar__recipient-avatar">
                             {r.display_name[0].toUpperCase()}
                         </div>
                         <div className="convo-info">
                             <div className="convo-header-item">
-                                <span className="convo-name text-slate-700">{r.display_name}</span>
-                                <span className="convo-date text-xs text-slate-400 uppercase border border-slate-100 px-1 rounded">{r.role}</span>
+                                <span className="convo-name">{r.display_name}</span>
+                                <span className="chat-sidebar__recipient-role">{r.role}</span>
                             </div>
                             <div className="convo-last-msg">
-                                <span className="last-text italic text-slate-400 text-xs">{t('start_chat_now')}</span>
+                                <span className="chat-sidebar__recipient-hint">{t('start_chat_now')}</span>
                             </div>
                         </div>
                     </div>

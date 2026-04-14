@@ -130,19 +130,19 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink }) => {
                         <tr className="patient-details__info-row">
                             <th className="patient-details__info-label">{t('attendance')}</th>
                             <td className="patient-details__info-value">
-                                <div className="config-flex config-flex--gap-2">
+                                <div className="patient-details__attend-flex">
                                     <span>
-                                        <strong>{details.attended_appointments}</strong> {t('attended') || 'Atendidos'}
+                                        <strong>{details.attended_appointments}</strong> {t('attended')}
                                     </span>
                                     <span className="patient-details__info-hint">
-                                        / {details.total_appointments} {t('total_appointments') || 'Totales'}
+                                        / {details.total_appointments} {t('total_appointments')}
                                     </span>
                                 </div>
                             </td>
                         </tr>
                         {(details.license_expiry_date || details.next_suggested_visit_date || details.next_suggested_prescription_date) && (
                             <tr className="patient-details__info-row">
-                                <th className="patient-details__info-label">{t('important_dates') || 'Plazos y Seguimiento'}</th>
+                                <th className="patient-details__info-label">{t('important_dates')}</th>
                                 <td className="patient-details__info-value">
                                     <div className="patient-details__date-indicators">
                                         {details.license_expiry_date && (

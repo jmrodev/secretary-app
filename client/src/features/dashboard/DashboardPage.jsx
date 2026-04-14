@@ -129,7 +129,7 @@ const DashboardPage = () => {
                         {/* Sidebar: Utils & Metrics (Drawer on Mobile) */}
                         <aside className="dashboard-sidebar">
                             <div className="dashboard-sidebar-mobile-header">
-                                <h3 className="flex items-center gap-2">
+                                <h3 className="dashboard-sidebar-mobile-header__title">
                                     <Icon name="analytics" /> {t('metrics_and_tools') || 'Métricas y Herramientas'}
                                 </h3>
                                 <Button variant="ghost" size="sm" onClick={() => setShowMobileSidebar(false)}>
@@ -163,13 +163,13 @@ const DashboardPage = () => {
                                 <div className="dashboard-card__content">
                                     {(isAdminOrSecretary || isDoctor) ? (
                                         <div className="dashboard-requirements">
-                                            <header className="dashboard-requirements__header flex justify-between items-center mb-4">
-                                                <h3 className="dashboard-requirements__title flex items-center gap-2">
+                                            <header className="dashboard-requirements__header">
+                                                <h3 className="dashboard-requirements__title">
                                                     <Icon name="description" size="1.5rem" />
                                                     {t('pending_requests')}
                                                 </h3>
                                                 
-                                                <div className="dashboard-header-actions flex gap-2">
+                                                <div className="dashboard-header-actions">
                                                     {/* Secondary tab if someone really needs reminders */}
                                                     <Button 
                                                         variant="ghost" 
@@ -195,7 +195,7 @@ const DashboardPage = () => {
                                             )}
                                         </div>
                                     ) : (
-                                        <div className="p-8 text-center text-muted">
+                                        <div className="dashboard-no-permissions">
                                             {t('no_permissions_view')}
                                         </div>
                                     )}

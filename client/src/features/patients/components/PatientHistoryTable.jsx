@@ -81,7 +81,7 @@ const PatientHistoryTable = ({ details, t, onPayDebt }) => {
                                                 {app.rescheduled_from_date && (
                                                     <div className="patient-details__reschedule-info" title={`Originalmente para ${new Date(app.rescheduled_from_date).toLocaleString()}`}>
                                                         <Icon name="history" size="0.8rem" className="mr-1" />
-                                                        {t('rescheduled_from') || 'Reprogramado del'}: {formatDate(app.rescheduled_from_date)}
+                                                        {t('rescheduled_from')}: {formatDate(app.rescheduled_from_date)}
                                                     </div>
                                                 )}
                                             </div>

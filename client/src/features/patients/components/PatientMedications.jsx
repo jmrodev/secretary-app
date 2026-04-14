@@ -72,11 +72,11 @@ const PatientMedications = ({ patientId, patientName }) => {
             />
 
             {/* Block 4: Active/Chronic Medications */}
-            <section className="details-block details-block--medications">
-                <header className="details-block__header">
-                    <h3 className="details-block__title">
+            <section className="patient-medications__section">
+                <header className="patient-medications__header">
+                    <h3 className="patient-medications__title">
                         <Icon name="medication" size="1.2rem" />
-                        {t('patient_current_meds') || 'Medicación Habitual / Crónicos'}
+                        {t('patient_current_meds')}
                     </h3>
                     {!isAdding && (
                         <Button
@@ -85,12 +85,12 @@ const PatientMedications = ({ patientId, patientName }) => {
                             onClick={() => setIsAdding(true)}
                             icon={<Icon name="settings" size="1rem" />}
                         >
-                            {t('configure') || 'Configurar'}
+                            {t('configure')}
                         </Button>
                     )}
                 </header>
 
-                <div className="details-block__content">
+                <div className="patient-medications__content">
                     {/* Adding Form */}
                     {isAdding && (
                         <AddMedicationForm

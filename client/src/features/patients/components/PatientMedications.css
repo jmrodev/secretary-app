@@ -1,4 +1,4 @@
-/* PatientMedications Styles - Feature Specific */
+/* PatientMedications Styles - Organism Shell */
 
 .patient-medications {
     display: flex;
@@ -6,61 +6,41 @@
     gap: 2rem;
 }
 
-/* History List into Table */
-.patient-medications__history-container {
-    max-height: 480px;
-    overflow-y: auto;
+/* Section: Active/Chronic Medications */
+.patient-medications__section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background-color: var(--white, #fff);
+    border: 1px solid var(--slate-200);
+    border-radius: 1rem;
+    overflow: hidden;
 }
 
-.patient-medications__table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: white;
+.patient-medications__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--slate-100);
+    background-color: var(--slate-50);
 }
 
-.patient-medications__table-header th {
-    background: linear-gradient(to right, var(--blue-600), var(--blue-700));
-    padding: 1rem;
-    font-size: 0.7rem;
-    font-weight: 800;
-    color: white;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-bottom: 2px solid var(--blue-800);
-    text-align: left;
+.patient-medications__title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--slate-700);
+    margin: 0;
 }
 
-.patient-medications__table-row:nth-child(even) {
-    background-color: var(--blue-50);
+.patient-medications__content {
+    padding: 1.5rem;
 }
 
-.patient-medications__table-row:hover {
-    background-color: var(--blue-100/30);
-}
-
-.patient-medications__table-row {
-    border-bottom: 1px solid var(--slate-50);
-}
-
-.patient-medications__table-cell {
-    padding: 1rem;
-    font-size: 0.9rem;
-    vertical-align: top;
-}
-
-.patient-medications__status-badge {
-    padding: 0.2rem 0.5rem;
-    border-radius: 0.5rem;
-    font-size: 0.65rem;
-    font-weight: 800;
-    text-transform: uppercase;
-}
-
-.patient-medications__status-badge--chronic {
-    background-color: var(--indigo-100);
-    color: var(--indigo-700);
-}
-
+/* Refill Info (used in ActiveMedicationsList) */
 .patient-medications__refill-info {
     font-size: 0.7rem;
     color: var(--orange-600);
@@ -81,47 +61,12 @@
 }
 
 @keyframes pulse-rose {
-    0% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.4); }
-    70% { box-shadow: 0 0 0 10px rgba(225, 29, 72, 0); }
+    0%   { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.4); }
+    70%  { box-shadow: 0 0 0 10px rgba(225, 29, 72, 0); }
     100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
 }
 
-/* Adding Form Container */
-.patient-medications__form {
-    background-color: var(--slate-50);
-    border: 1px solid var(--slate-200);
-    border-radius: 1rem;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-    animation: fadeIn 0.3s ease;
-}
-
-.patient-medications__pending-list {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--slate-100);
-}
-
-.patient-medications__pending-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem;
-    background-color: var(--blue-50);
-    border: 1px solid var(--blue-100);
-    border-radius: 0.5rem;
-    margin-bottom: 0.5rem;
-}
-
-.patient-medications__form-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--slate-200);
-}
-
+/* Empty state */
 .patient-medications__empty-state {
     text-align: center;
     padding: 3rem;
