@@ -24,32 +24,31 @@
     width: 100%;
 }
 
-.doctors-page__grid {
+.doctors-manager__grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.5rem;
 }
 
 @media (min-width: 768px) {
-    .doctors-page__grid {
+    .doctors-manager__grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (min-width: 1280px) {
-    .doctors-page__grid {
+    .doctors-manager__grid {
         grid-template-columns: repeat(2, 1fr);
-        /* 2 columns in main area is usually enough if sidebar exists */
     }
 }
 
 @media (min-width: 1600px) {
-    .doctors-page__grid {
+    .doctors-manager__grid {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
-.doctors-page__empty-state {
+.doctors-manager__empty-state {
     grid-column: 1 / -1;
     display: flex;
     flex-direction: column;
@@ -62,14 +61,14 @@
     text-align: center;
 }
 
-.doctors-page__empty-icon {
+.doctors-manager__empty-icon {
     font-size: 3.5rem;
     margin-bottom: 1rem;
     opacity: 0.5;
     color: var(--gray-400);
 }
 
-.doctors-page__empty-text {
+.doctors-manager__empty-text {
     font-size: 1.125rem;
     font-weight: 600;
     color: var(--text-muted);
