@@ -53,3 +53,11 @@
     align-items: center;
     gap: 1rem;
 }
+
+.admin-users-page__table-wrapper {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden; /* ensures the table header stays within radius */
+}

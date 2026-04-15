@@ -27,8 +27,9 @@ const ChatPage = () => {
 
     return (
         <MainLayout wide>
-            <div className="chat-container animate-fadeIn">
+            <div className="chat-page-orchestrator animate-fadeIn">
                 <ChatSidebar
+                    className="chat-sidebar"
                     conversations={conversations}
                     selectedConvo={selectedConvo}
                     onSelectConvo={setSelectedConvo}
@@ -40,6 +41,7 @@ const ChatPage = () => {
                 />
 
                 <ChatWindow
+                    className="chat-window"
                     selectedConvo={selectedConvo}
                     thread={thread}
                     user={user}

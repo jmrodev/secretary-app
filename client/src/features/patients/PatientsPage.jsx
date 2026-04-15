@@ -113,7 +113,7 @@ const PatientsPage = () => {
                     />
 
                     <div className="layout-content-area">
-                        <div className="dashboard-grid animate-fadeIn">
+                        <section className="patients-page__dashboard-grid animate-fadeIn">
                         <aside className="dashboard-sidebar">
                             <div className="dashboard-nav-bar">
                                 <TabNav className="patients__nav">
@@ -186,7 +186,7 @@ const PatientsPage = () => {
                         <main className="dashboard-main">
                             {activeTab === 'list' ? (
                                 <div className="patients-list-view">
-                                    <div className="dashboard-card no-padding">
+                                    <section className="patients-page__list-container">
                                         <PatientList
                                             patients={patients}
                                             institutions={institutions}
@@ -206,7 +206,7 @@ const PatientsPage = () => {
                                             onPageChange={handlePageChange}
                                             t={t}
                                         />
-                                    </div>
+                                    </section>
                                 </div>
                             ) : (
                                 <PatientRecycleBin
@@ -216,7 +216,7 @@ const PatientsPage = () => {
                                 />
                             )}
                         </main>
-                        </div>
+                        </section>
                     </div>
                 </>
             )}

@@ -13,23 +13,23 @@ const ChatConversationItem = ({
     const avatarChar = (convo.other_display_name || convo.display_name || '?')[0].toUpperCase();
 
     return (
-        <div
+        <article
             className={`floating-chat__item ${unreadCount > 0 ? 'floating-chat__item--unread' : ''}`}
             onClick={onClick}
         >
-            <div className={`floating-chat__avatar`} style={isContact ? { background: 'var(--gray-200)', color: 'var(--text-muted)' } : {}}>
+            <div className={`floating-chat__avatar ${isContact ? 'floating-chat__avatar--contact' : ''}`}>
                 {avatarChar}
             </div>
             <div className="floating-chat__item-info">
                 <span className="floating-chat__item-name">
                     {convo.other_display_name || convo.display_name}
                 </span>
-                <span className="floating-chat__item-last" style={isContact ? { fontStyle: 'italic' } : {}}>
+                <span className={`floating-chat__item-last ${isContact ? 'floating-chat__item-last--contact' : ''}`}>
                     {isContact ? 'Iniciar chat ahora' : convo.message}
                 </span>
             </div>
             {unreadCount > 0 && <span className="floating-chat__badge">{unreadCount}</span>}
-        </div>
+        </article>
     );
 };
 

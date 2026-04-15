@@ -83,7 +83,7 @@ const UserManagement = ({ excludeRoles = [], role = null }) => {
 
     return (
         <div className="user-management-organism">
-            <section className="action-bar">
+            <header className="user-management__action-bar">
                 <Input
                     placeholder={t('search_users_placeholder')}
                     icon="SEARCH"
@@ -91,13 +91,13 @@ const UserManagement = ({ excludeRoles = [], role = null }) => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="user-management__search-input"
                 />
-                <div className="action-bar__tools">
+                <div className="user-management__action-bar-tools">
                     <Button variant="ghost" onClick={loadData} icon="SYNC" />
                     <Button variant="primary" onClick={() => openModal('CREATE')} icon="ADD">
                         {t('new') || 'Nuevo'}
                     </Button>
                 </div>
-            </section>
+            </header>
 
             <Card className="user-management__table-container">
                 {loading ? (

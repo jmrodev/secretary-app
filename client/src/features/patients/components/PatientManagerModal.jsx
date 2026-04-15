@@ -46,9 +46,9 @@ const PatientManagerModal = ({
             title={title}
             size="lg"
         >
-            <div className={baseClass}>
+            <article className={baseClass}>
                 {referenceInfo && !isEdit && (
-                    <div className={`${baseClass}__reference`}>
+                    <header className={`${baseClass}__reference`}>
                         <span className={`${baseClass}__reference-label`}>
                             <Icon name="description" size="1.2rem" />
                             {t('appointment_info_reference') || 'Info de Turno (Referencia)'}
@@ -56,7 +56,7 @@ const PatientManagerModal = ({
                         <div className={`${baseClass}__reference-content`}>
                             {referenceInfo}
                         </div>
-                    </div>
+                    </header>
                 )}
 
                 {loadingData ? (
@@ -69,7 +69,7 @@ const PatientManagerModal = ({
                         isAdmin={true}
                     />
                 )}
-            </div>
+            </article>
         </Modal>
     );
 };

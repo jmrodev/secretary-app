@@ -72,11 +72,11 @@ const AdminUsersPage = () => {
                     </aside>
 
                     <main className="dashboard-main">
-                        <div className="dashboard-card no-padding">
+                        <section className="admin-users-page__table-wrapper">
                             <UserManagement
                                 excludeRoles={['patient']}
                             />
-                        </div>
+                        </section>
                     </main>
                 </div>
             </div>
