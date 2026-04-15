@@ -22,15 +22,3 @@
 - MISSING_SEMANTIC_TAGS: Component seems to be a view/orchestrator but relies only on <div>.
 ### ./client/src/features/medical_documents/components/PrescriptionModal.jsx
 - SECTION_WITHOUT_HEADING: Found 3 <section>/<article> tags but no <h1-6> headings.
-### ./client/src/features/medical_documents/components/MedicalRequestList.jsx
-- SECTION_WITHOUT_HEADING: Found 3 <section>/<article> tags but no <h1-6> headings.
-### ./client/src/features/chat/ChatPage.jsx
-- MISSING_SEMANTIC_TAGS: Component seems to be a view/orchestrator but relies only on <div>.
-### ./client/src/features/chat/components/ChatMessageBubble.jsx
-- SECTION_WITHOUT_HEADING: Found 1 <section>/<article> tags but no <h1-6> headings.
-### ./client/src/features/chat/components/ChatConversationItem.jsx
-- SECTION_WITHOUT_HEADING: Found 1 <section>/<article> tags but no <h1-6> headings.
-### ./client/src/features/patients/components/PatientManagerModal.jsx
-- SECTION_WITHOUT_HEADING: Found 1 <section>/<article> tags but no <h1-6> headings.
-### ./client/src/components/molecules/PhoneNumbersManager.jsx
-- MISSING_SEMANTIC_TAGS: Component seems to be a view/orchestrator but relies only on <div>.

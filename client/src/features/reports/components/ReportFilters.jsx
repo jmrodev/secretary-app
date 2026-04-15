@@ -31,7 +31,7 @@ const ReportFilters = ({
 
     return (
         <section className="report-filters">
-            <h2 className="visually-hidden">{t('filters') || 'Filtros'}</h2>
+            <h2 className="visually-hidden">{t('filters')}</h2>
             <fieldset className="report-filters__group">
                 <legend className="report-filters__label">{t('month')}</legend>
                 <div className="report-filters__control-row">
@@ -113,7 +113,7 @@ const ReportFilters = ({
                     variant="primary"
                     className="report-filters__btn report-filters__btn--generate"
                 >
-                    {isSubmitting ? '...' : (t('generate_report') || 'Generar Reporte')}
+                    {isSubmitting ? '...' : t('generate_report')}
                 </Button>
 
                 {hasData && (
@@ -124,7 +124,7 @@ const ReportFilters = ({
                             className="report-filters__btn"
                         >
                             <Icon name="attachment" size="1.1rem" className="report-filters__btn-icon" />
-                            {t('download_json') || 'JSON'}
+                            {t('download_json')}
                         </Button>
                         <Button
                             variant="accent"
@@ -132,7 +132,7 @@ const ReportFilters = ({
                             className="report-filters__btn"
                         >
                             <Icon name="print" size="1.1rem" className="report-filters__btn-icon" />
-                            {t('print') || 'Imprimir'}
+                            {t('print')}
                         </Button>
                     </>
                 )}

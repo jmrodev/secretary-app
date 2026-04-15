@@ -39,13 +39,15 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
     };
 
     return (
-        <div className="phone-manager--container">
+        <section className="phone-manager--container">
+            <h3 className="visually-hidden">{t('phone_numbers')}</h3>
             <label className="phone-manager__header-label">
                 <Icon name="smartphone" size="1.2rem" color="var(--accent-color)" />
-                {t('phone_numbers') || 'Números de Contacto'}
+                {t('phone_numbers')}
             </label>
             {displayPhoneNumbers.map((pn, index) => (
-                <div key={index} className="phone-manager__item-card">
+                <article key={index} className="phone-manager__item-card">
+                    <h4 className="visually-hidden">{pn.label || t('phone_number')}</h4>
                     <input
                         className="phone-manager__input-label"
                         value={pn.label}
@@ -91,7 +93,7 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
                                 checked={pn.is_primary}
                                 onChange={() => handleUpdate(index, 'is_primary', true)}
                             />
-                            <span className="phone-manager__primary-text">{t('primary') || 'Principal'}</span>
+                            <span className="phone-manager__primary-text">{t('primary')}</span>
                         </label>
                     </div>
                     <Button
@@ -102,7 +104,7 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
                         title={t('delete')}
                         icon={<Icon name="delete" size="1.1rem" />}
                     />
-                </div>
+                </article>
             ))}
             <div className="phone-manager__footer">
                 <Button
@@ -112,10 +114,10 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
                     onClick={handleAdd}
                     icon={<Icon name="add" size="1rem" />}
                 >
-                    {t('add_phone') || 'Agregar Contacto'}
+                    {t('add_phone')}
                 </Button>
             </div>
-        </div>
+        </section>
     );
 };
 
