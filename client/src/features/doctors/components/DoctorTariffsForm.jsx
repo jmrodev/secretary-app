@@ -3,6 +3,7 @@ import FormGroup from '@/components/molecules/FormGroup';
 import Input from '@/components/atoms/Input';
 import Select from '@/components/atoms/Select';
 import CurrencyInput from '@/components/atoms/CurrencyInput';
+import AutoTextarea from '@/components/atoms/AutoTextarea';
 import './DoctorTariffsForm.css';
 
 const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
@@ -32,7 +33,7 @@ const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
                                 />
                             </FormGroup>
                             <FormGroup label={t('cost')}>
-                                <CurrencyInput className="input-field" value={data.rental_cost} onChange={e => handleChange('rental_cost', e.target.value)} />
+                                <CurrencyInput value={data.rental_cost} onChange={e => handleChange('rental_cost', e.target.value)} />
                             </FormGroup>
                         </div>
                     </div>
@@ -43,21 +44,21 @@ const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
                 <h4 className="doctor-tariffs-form__title">
                     {t('consultation_prices') || 'Precios de Consulta'} ({data.appointment_duration}m)
                 </h4>
-                <div className="doctor-tariffs-form__grid doctor-tariffs-form__grid--3col">
+                 <div className="doctor-tariffs-form__grid doctor-tariffs-form__grid--3col">
                     <FormGroup label={t('consultation_price')}>
-                        <CurrencyInput className="input-field" value={data.consultation_price} onChange={e => handleChange('consultation_price', e.target.value)} />
+                        <CurrencyInput value={data.consultation_price} onChange={e => handleChange('consultation_price', e.target.value)} />
                     </FormGroup>
                     <FormGroup label={t('virtual_consultation_price') || 'Consulta Virtual'}>
-                        <CurrencyInput className="input-field" value={data.virtual_consultation_price} onChange={e => handleChange('virtual_consultation_price', e.target.value)} />
+                        <CurrencyInput value={data.virtual_consultation_price} onChange={e => handleChange('virtual_consultation_price', e.target.value)} />
                     </FormGroup>
                     <FormGroup label={t('prescription_price') || 'Recetas'}>
-                        <CurrencyInput className="input-field" value={data.prescription_price} onChange={e => handleChange('prescription_price', e.target.value)} />
+                        <CurrencyInput value={data.prescription_price} onChange={e => handleChange('prescription_price', e.target.value)} />
                     </FormGroup>
                     <FormGroup label={t('medical_license_price') || 'Licencia Médica'}>
-                        <CurrencyInput className="input-field" value={data.medical_license_price} onChange={e => handleChange('medical_license_price', e.target.value)} />
+                        <CurrencyInput value={data.medical_license_price} onChange={e => handleChange('medical_license_price', e.target.value)} />
                     </FormGroup>
                     <FormGroup label={t('certificate_price') || 'Certificados'}>
-                        <CurrencyInput className="input-field" value={data.certificate_price} onChange={e => handleChange('certificate_price', e.target.value)} />
+                        <CurrencyInput value={data.certificate_price} onChange={e => handleChange('certificate_price', e.target.value)} />
                     </FormGroup>
                 </div>
             </div>
@@ -73,8 +74,8 @@ const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
                     <Input value={data.alias || ''} onChange={(e) => handleChange('alias', e.target.value)} placeholder="mi.alias.pago" />
                 </FormGroup>
                 <FormGroup label={t('professional_bio') || 'Bio Profesional'}>
-                    <textarea
-                        className="input-field doctor-tariffs-form__bio-field"
+                    <AutoTextarea
+                        className="doctor-tariffs-form__bio-field"
                         value={data.bio || ''}
                         onChange={(e) => handleChange('bio', e.target.value)}
                         placeholder="Breve currículum o información relevante..."
