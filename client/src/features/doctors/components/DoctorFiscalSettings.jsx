@@ -3,6 +3,7 @@ import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Input from '@/components/atoms/Input';
 import Switch from '@/components/atoms/Switch';
+import AutoTextarea from '@/components/atoms/AutoTextarea';
 import FormGroup from '@/components/molecules/FormGroup';
 import { useLanguage } from '@/context/LanguageContext';
 import './DoctorFiscalSettings.css';
@@ -107,7 +108,7 @@ const DoctorFiscalSettings = ({
                                 {t('hide')}
                             </Button>
                         </div>
-                        <textarea
+                        <AutoTextarea
                             readOnly
                             value={generatedCsr}
                             className="doctor-fiscal-settings__textarea"
