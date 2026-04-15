@@ -98,13 +98,6 @@
     vertical-align: middle;
 }
 
-.transactions-table__row--grouped {
-    background-color: var(--ledger-group-bg);
-}
-
-.transactions-table__row:hover:not(.transactions-table__row--grouped) td {
-    background-color: var(--ledger-row-hover);
-}
 
 .transactions-table__date {
     font-weight: 700;
@@ -155,97 +148,7 @@
     padding-right: 1.5rem;
 }
 
-.transactions-table__cell--center {
-    text-align: center;
-}
 
-.transactions-table__cell--right {
-    text-align: right;
-}
-
-.transactions-table__beneficiary {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-}
-
-.transactions-table__beneficiary-name {
-    font-weight: 700;
-    font-size: 0.875rem;
-    color: var(--text-main);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.transactions-table__beneficiary-icon {
-    color: var(--blue-600);
-    opacity: 0.8;
-}
-
-.transactions-table__patient {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    font-weight: 500;
-}
-
-.transactions-table__method {
-    font-weight: 500;
-    color: var(--text-secondary);
-}
-
-.transactions-table__amount {
-    font-weight: 800;
-    font-size: 0.9375rem;
-    white-space: nowrap;
-}
-
-.transactions-table__amount--income {
-    color: var(--success);
-}
-
-.transactions-table__amount--expense {
-    color: var(--error);
-}
-
-.transactions-table__amount--withdrawal {
-    color: var(--warning, #f59e0b);
-}
-
-.transactions-table__invoice-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-}
-
-.transactions-table__invoice-number {
-    font-size: 0.7rem;
-    font-weight: 800;
-    color: var(--blue-600);
-    font-family: inherit;
-}
-
-.transactions-table__proof-link {
-    color: var(--text-muted);
-    display: inline-flex;
-    transition: color 0.2s;
-}
-
-.transactions-table__proof-link:hover {
-    color: var(--accent-color);
-}
-
-.transactions-table__no-proof {
-    color: var(--text-muted);
-    opacity: 0.5;
-}
-
-.transactions-table__actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.15rem;
-}
 
 .transactions-table__group-footer {
     background-color: var(--ledger-header-bg);

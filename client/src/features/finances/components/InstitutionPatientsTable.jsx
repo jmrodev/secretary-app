@@ -11,13 +11,13 @@ const InstitutionPatientsTable = ({
     t
 }) => {
     return (
-        <div className="institution-patients animate-fadeIn">
-            <div className="institution-patients__header">
+        <section className="institution-patients animate-fadeIn">
+            <header className="institution-patients__header">
                 <h3 className="institution-patients__title">
                     <Icon name="PATIENTS" size="1.2rem" /> {t('patient_list_padron')}
                     <span className="institution-patients__badge">{patients.length}</span>
                 </h3>
-            </div>
+            </header>
 
             <div className="institution-patients__wrapper">
                 <table className="institution-patients__table">
@@ -58,7 +58,7 @@ const InstitutionPatientsTable = ({
                     </tbody>
                 </table>
             </div>
-        </div>
+        </section>
     );
 };
 

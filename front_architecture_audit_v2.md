@@ -19,14 +19,6 @@ Falta: /home/cima/Documentos/secretary-app/client/src/context/MessageContext.css
 Falta: /home/cima/Documentos/secretary-app/client/src/context/ModalContext.css
 Falta: /home/cima/Documentos/secretary-app/client/src/routes/AppRouter.css
 Falta: /home/cima/Documentos/secretary-app/client/src/features/doctors/DoctorsPage.css
-Falta: /home/cima/Documentos/secretary-app/client/src/features/finances/components/BalanceDebtsTable.css
-Falta: /home/cima/Documentos/secretary-app/client/src/features/finances/components/TransactionRow.css
-Falta: /home/cima/Documentos/secretary-app/client/src/features/finances/components/BalanceFinancialSummary.css
-Falta: /home/cima/Documentos/secretary-app/client/src/features/finances/components/BalanceCashFlowTable.css
-Falta: /home/cima/Documentos/secretary-app/client/src/features/finances/components/InstitutionPatientsTable.css
-Falta: /home/cima/Documentos/secretary-app/client/src/features/finances/components/InstitutionSummary.css
-Falta: /home/cima/Documentos/secretary-app/client/src/features/finances/components/InstitutionPaymentModal.css
-Falta: /home/cima/Documentos/secretary-app/client/src/features/finances/components/InstitutionTransactionsTable.css
 Falta: /home/cima/Documentos/secretary-app/client/src/features/auth/AuthContext.css
 Falta: /home/cima/Documentos/secretary-app/client/src/features/auth/ProfilePage.css
 Falta: /home/cima/Documentos/secretary-app/client/src/features/auth/RegisterPage.css

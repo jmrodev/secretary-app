@@ -145,7 +145,7 @@ const InstitutionTransactionsTable = ({
                     </tbody>
                 </table>
             </div>
-        </div>
+        </section>
     );
 };
 

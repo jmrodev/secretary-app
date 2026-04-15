@@ -16,7 +16,7 @@ const InstitutionSummary = ({
     if (!report) return null;
 
     return (
-        <div className="institution-summary animate-fadeIn">
+        <section className="institution-summary animate-fadeIn">
             <div className="institution-summary__stats">
                 <div className="institution-summary__stat-item">
                     <div className="institution-summary__stat-icon institution-summary__stat-icon--blue">
@@ -64,7 +64,7 @@ const InstitutionSummary = ({
                     </div>
                 )}
             </div>
-        </div>
+        </section>
     );
 };
 
