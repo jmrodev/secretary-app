@@ -6,6 +6,14 @@
     gap: 1.5rem;
 }
 
+.doctor-google-settings__connect-btn {
+    width: 100%;
+}
+
+.doctor-google-settings__disconnect-btn {
+    width: 100%;
+}
+
 .doctor-google-settings__status-card {
     background: var(--gray-50);
     padding: 1.5rem;

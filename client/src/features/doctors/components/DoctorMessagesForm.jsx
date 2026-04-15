@@ -61,8 +61,8 @@ const DoctorMessagesForm = ({ data, onChange, settings, t }) => {
     return (
         <div className="doctor-messages-form">
             <header className="doctor-messages-form__header">
-                <div className="config-flex config-flex--between config-flex--center w-100">
-                    <div className="config-flex config-flex--gap-2 config-flex--center">
+                <div className="doctor-messages-form__header-content">
+                    <div className="doctor-messages-form__title-wrapper">
                         <Icon name="CHAT" size="1.2rem" />
                         <h3 className="doctor-messages-form__title">{t('doctor_messages_config') || 'Configuración de Mensajes Personalizados'}</h3>
                     </div>
@@ -71,8 +71,9 @@ const DoctorMessagesForm = ({ data, onChange, settings, t }) => {
                         variant="ghost"
                         onClick={handleAutoFill}
                         title="Completar vacíos con plantilla por defecto"
+                        className="doctor-messages-form__autofill-btn"
                     >
-                        <Icon name="AUTO" size="1rem" className="mr-1" />
+                        <Icon name="AUTO" size="1rem" />
                         {t('autofill_defaults') || 'Autocompletar Vacíos'}
                     </Button>
                 </div>

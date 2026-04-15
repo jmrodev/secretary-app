@@ -2,12 +2,12 @@
 
 /* Include all styles from the original MedicalDocuments.css */
 @media print {
-    .no-print {
-        display: none !important;
+    #root .no-print {
+        display: none;
     }
 
-    .medical-documents__print-container {
-        display: block !important;
+    #root .medical-documents__print-container {
+        display: block;
     }
 }
 

@@ -117,7 +117,7 @@
 }
 
 /* Local Action UI */
-.patient-medications__table-cell .hover-danger:hover {
-    color: var(--red-600) !important;
+#root .patient-medications__table-cell .hover-danger:hover {
+    color: var(--red-600);
     background-color: var(--red-50);
 }

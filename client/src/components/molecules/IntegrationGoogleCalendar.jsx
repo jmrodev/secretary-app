@@ -1,9 +1,10 @@
 import React from 'react';
-import Button from '../atoms/Button';
-import StatusIndicator from '../atoms/StatusIndicator';
-import ConfigToggle from '../molecules/ConfigToggle';
-import ConfigField from '../molecules/ConfigField';
-import Alert from '../atoms/Alert';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
+import StatusIndicator from '@/components/atoms/StatusIndicator';
+import ConfigToggle from '@/features/config/components/ConfigToggle';
+import ConfigField from '@/features/config/components/ConfigField';
+import Alert from '@/components/atoms/Alert';
 import './IntegrationGoogleCalendar.css';
 
 /**
@@ -26,7 +27,7 @@ const IntegrationGoogleCalendar = ({
     return (
         <div className="config-section">
             <div className="config-section__header">
-                <span className="config-section__icon">📅</span>
+                <Icon name="DATE_RANGE" className="config-section__icon" />
                 <h2 className="config-section__title">Integración con Google Calendar</h2>
             </div>
 
@@ -44,7 +45,16 @@ const IntegrationGoogleCalendar = ({
                             <div className="config-flex config-flex--column google-calendar-integration__status-container">
                                 <ConfigToggle
                                     id="google-sync-toggle"
-                                    label={settings.google_sync_enabled === 'false' ? '⏸️ Sincronización PAUSADA' : '✅ Sincronización ACTIVA'}
+                                    label={
+                                        <span className="config-field__label-with-icon">
+                                            <Icon 
+                                                name={settings.google_sync_enabled === 'false' ? 'CANCEL' : 'CONFIRMED'} 
+                                                size="1rem" 
+                                                className="config-field__label-icon"
+                                            />
+                                            {settings.google_sync_enabled === 'false' ? 'Sincronización PAUSADA' : 'Sincronización ACTIVA'}
+                                        </span>
+                                    }
                                     checked={settings.google_sync_enabled !== 'false'}
                                     onChange={(val) => updateSetting('google_sync_enabled', val ? 'true' : 'false')}
                                 />
@@ -58,11 +68,19 @@ const IntegrationGoogleCalendar = ({
                     {!googleUnlinked ? (
                         <div className="config-group__items">
                             <div className="config-actions">
-                                <Button variant="secondary" onClick={onRefreshToken}>
-                                    🔄 Refrescar Enlace
+                                <Button 
+                                    variant="secondary" 
+                                    onClick={onRefreshToken}
+                                    icon={<Icon name="SYNC" />}
+                                >
+                                    Refrescar Enlace
                                 </Button>
-                                <Button variant="danger" onClick={onDisconnectGoogle}>
-                                    ❌ Desconectar Cuenta
+                                <Button 
+                                    variant="danger" 
+                                    onClick={onDisconnectGoogle}
+                                    icon={<Icon name="CANCEL" />}
+                                >
+                                    Desconectar Cuenta
                                 </Button>
                             </div>
 
@@ -76,8 +94,9 @@ const IntegrationGoogleCalendar = ({
                                     onClick={onRetryGoogle}
                                     disabled={loading}
                                     className="google-calendar-integration__retry-btn"
+                                    icon={<Icon name="SYNC" />}
                                 >
-                                    ⚡ Reintentar Elementos Fallidos
+                                    Reintentar Elementos Fallidos
                                 </Button>
                             </Alert>
 

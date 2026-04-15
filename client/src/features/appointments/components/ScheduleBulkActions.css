@@ -30,10 +30,10 @@
     gap: 0.75rem;
 }
 
-.schedule-bulk__time-input {
-    width: auto !important;
-    padding: 0.25rem 0.75rem !important;
-    font-size: 0.875rem !important;
+#root .schedule-bulk__time-input {
+    width: auto;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
 }
 
 .schedule-bulk__separator {

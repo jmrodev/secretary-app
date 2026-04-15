@@ -29,7 +29,7 @@ const DoctorGoogleSettings = ({
                     <>
                         <Button
                             variant="primary"
-                            className="w-full"
+                            className="doctor-google-settings__connect-btn"
                             size="lg"
                             onClick={onConnect}
                             icon="LINK"
@@ -42,8 +42,8 @@ const DoctorGoogleSettings = ({
                     </>
                 ) : (
                     <Button
-                        variant="secondary"
-                        className="w-full text-danger"
+                        variant="danger"
+                        className="doctor-google-settings__disconnect-btn"
                         size="lg"
                         onClick={onDisconnect}
                         icon="CLOSE"

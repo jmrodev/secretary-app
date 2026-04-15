@@ -44,11 +44,11 @@
     gap: 1rem;
 }
 
-.billing-settings__csr-textarea {
+#root .billing-settings__csr-textarea {
     font-family: var(--font-mono, monospace);
     font-size: 0.75rem;
-    background-color: var(--slate-50) !important;
-    border-color: var(--slate-200) !important;
+    background-color: var(--slate-50);
+    border-color: var(--slate-200);
     line-height: 1.4;
     resize: none;
 }

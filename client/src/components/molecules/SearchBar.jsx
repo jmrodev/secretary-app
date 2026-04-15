@@ -1,4 +1,4 @@
-import React from 'react';
+import Icon from '@/components/atoms/Icon';
 import './SearchBar.css';
 
 /**
@@ -9,7 +9,7 @@ const SearchBar = ({ value, onChange, placeholder, className = '' }) => {
     return (
         <div className={`search-box ${className}`}>
             <div className="search-box__wrapper">
-                <span className="search-box__icon">🔍</span>
+                <Icon name="SEARCH" className="search-box__icon" />
                 <input
                     type="text"
                     placeholder={placeholder || "Buscar..."}

@@ -13,11 +13,30 @@
     border-bottom: 2px solid var(--slate-100);
 }
 
+.doctor-messages-form__header-content {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.doctor-messages-form__title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
 .doctor-messages-form__title {
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--slate-800);
     margin: 0;
+}
+
+.doctor-messages-form__autofill-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .doctor-messages-form__grid {

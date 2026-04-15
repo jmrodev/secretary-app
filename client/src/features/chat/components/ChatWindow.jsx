@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import './ChatWindow.css';
 
 /**
@@ -17,7 +18,6 @@ const ChatWindow = ({
     onSendMessage,
     scrollRef
 }) => {
-
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         const now = new Date();
@@ -30,7 +30,7 @@ const ChatWindow = ({
     if (!selectedConvo) {
         return (
             <section className="chat-main chat-main--empty">
-                <div className="chat-main__empty-icon">💬</div>
+                <Icon name="CHAT" size="3rem" className="chat-main__empty-icon" />
                 <h2 className="chat-main__empty-title">Tus Mensajes</h2>
                 <p className="chat-main__empty-text">Selecciona una conversación de la lista para empezar a chatear o busca un contacto para iniciar un nuevo chat.</p>
             </section>
@@ -58,7 +58,7 @@ const ChatWindow = ({
                     </div>
                 ) : thread.length === 0 ? (
                     <div className="chat-messages--empty">
-                        <div className="chat-messages__empty-icon">👋</div>
+                        <Icon name="INFO" size="2.5rem" className="chat-messages__empty-icon" />
                         <p>¡Dile hola!</p>
                     </div>
                 ) : (
@@ -91,8 +91,9 @@ const ChatWindow = ({
                         className="chat-send-button"
                         disabled={sending || !messageText.trim()}
                         variant="primary"
+                        icon={sending ? undefined : <Icon name="SEND" />}
                     >
-                        {sending ? <div className="loading-spinner"></div> : '➤'}
+                        {sending && <div className="loading-spinner"></div>}
                     </Button>
                 </form>
             </footer>
