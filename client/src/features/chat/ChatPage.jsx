@@ -27,7 +27,7 @@ const ChatPage = () => {
 
     return (
         <MainLayout wide>
-            <div className="chat-page-orchestrator animate-fadeIn">
+            <main className="chat-page-orchestrator animate-fadeIn">
                 <ChatSidebar
                     className="chat-sidebar"
                     conversations={conversations}
@@ -52,7 +52,7 @@ const ChatPage = () => {
                     onSendMessage={handleSendMessage}
                     scrollRef={scrollRef}
                 />
-            </div>
+            </main>
         </MainLayout>
     );
 

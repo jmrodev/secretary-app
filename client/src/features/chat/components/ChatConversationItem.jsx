@@ -17,6 +17,7 @@ const ChatConversationItem = ({
             className={`floating-chat__item ${unreadCount > 0 ? 'floating-chat__item--unread' : ''}`}
             onClick={onClick}
         >
+            <h4 className="visually-hidden">Conversación</h4>
             <div className={`floating-chat__avatar ${isContact ? 'floating-chat__avatar--contact' : ''}`}>
                 {avatarChar}
             </div>

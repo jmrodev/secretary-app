@@ -31,8 +31,9 @@ const ReportFilters = ({
 
     return (
         <section className="report-filters">
-            <article className="report-filters__group">
-                <label className="report-filters__label">{t('month')}</label>
+            <h2 className="visually-hidden">{t('filters') || 'Filtros'}</h2>
+            <fieldset className="report-filters__group">
+                <legend className="report-filters__label">{t('month')}</legend>
                 <div className="report-filters__control-row">
                     <Button
                         variant="ghost"
@@ -57,10 +58,10 @@ const ReportFilters = ({
                         <Icon name="chevron_right" size="1.2rem" />
                     </Button>
                 </div>
-            </article>
+            </fieldset>
 
-            <article className="report-filters__group">
-                <label className="report-filters__label">{t('year')}</label>
+            <fieldset className="report-filters__group">
+                <legend className="report-filters__label">{t('year')}</legend>
                 <div className="report-filters__control-row">
                     <Button
                         variant="ghost"
@@ -87,10 +88,10 @@ const ReportFilters = ({
                         <Icon name="chevron_right" size="1.2rem" />
                     </Button>
                 </div>
-            </article>
+            </fieldset>
 
-            <article className="report-filters__group">
-                <label className="report-filters__label">{t('doctor') || 'Médico'}</label>
+            <fieldset className="report-filters__group">
+                <legend className="report-filters__label">{t('doctor') || 'Médico'}</legend>
                 <Select
                     value={selectedDoctorId}
                     onChange={(e) => onDoctorChange(e.target.value)}
@@ -103,7 +104,7 @@ const ReportFilters = ({
                     ]}
                     className="report-filters__select report-filters__select--doctor"
                 />
-            </article>
+            </fieldset>
 
             <footer className="report-filters__actions">
                 <Button

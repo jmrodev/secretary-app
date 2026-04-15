@@ -34,6 +34,7 @@ const PatientList = ({
     if (patients.length === 0) {
         return (
             <section className="patient-list__empty">
+                <h2 className="visually-hidden">{t('patient_list') || 'Lista de Pacientes'}</h2>
                 <p className="patient-list__empty-text">{t('no_patients_found') || "No patients found"}</p>
             </section>
         );
@@ -41,6 +42,7 @@ const PatientList = ({
 
     return (
         <section className="patient-list-container">
+            <h2 className="visually-hidden">{t('patient_list') || 'Lista de Pacientes'}</h2>
             <table className="patient-table table-base">
                 <thead>
                     <tr>

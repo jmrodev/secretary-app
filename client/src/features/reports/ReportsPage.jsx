@@ -12,9 +12,9 @@ const ReportsPage = () => {
 
     return (
         <MainLayout wide>
-            <div className="reports-page-orchestrator animate-fadeIn">
+            <main className="reports-page-orchestrator animate-fadeIn">
                 <ReportsDashboard {...controller} />
-            </div>
+            </main>
         </MainLayout>
     );
 };

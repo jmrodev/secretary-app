@@ -47,6 +47,7 @@ const PatientManagerModal = ({
             size="lg"
         >
             <article className={baseClass}>
+                <h2 className="visually-hidden">{title}</h2>
                 {referenceInfo && !isEdit && (
                     <header className={`${baseClass}__reference`}>
                         <span className={`${baseClass}__reference-label`}>
