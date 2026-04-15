@@ -36,7 +36,7 @@ const FinanceStatsCards = ({ stats, t }) => {
 
     return (
         <section className="finance-stats">
-            <h2 className="visually-hidden">{t('financial_summary_title') || 'Resumen Financiero'}</h2>
+            <h2 className="visually-hidden">{t('financial_summary_title')}</h2>
             {/* Breakdown Cards (Appointments, Prescriptions, Licenses, Certificates) */}
             {otherStats.map((s, idx) => (
                 <Card key={idx} className="finance-stats__card">

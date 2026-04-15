@@ -17,7 +17,7 @@ const InstitutionSummary = ({
 
     return (
         <section className="institution-summary animate-fadeIn">
-            <h2 className="visually-hidden">{t('institution_billing_summary') || 'Resumen de Liquidación'}</h2>
+            <h2 className="visually-hidden">{t('institution_billing_summary')}</h2>
             <div className="institution-summary__stats">
                 <div className="institution-summary__stat-item">
                     <div className="institution-summary__stat-icon institution-summary__stat-icon--blue">

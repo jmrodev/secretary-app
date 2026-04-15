@@ -45,11 +45,11 @@ const AuditLogManager = ({
             <header className="audit-log-manager__header">
                 <div className="audit-log-manager__header-top">
                     <div>
-                        <h2 className="audit-log-manager__title">{t('audit_logs') || 'Registros de Auditoría'}</h2>
-                        <p className="audit-log-manager__subtitle">{t('audit_logs_subtitle') || 'Historial de acciones y seguridad del sistema.'}</p>
+                        <h2 className="audit-log-manager__title">{t('audit_logs')}</h2>
+                        <p className="audit-log-manager__subtitle">{t('audit_logs_subtitle')}</p>
                     </div>
                     <div className="audit-log-manager__count-badge">
-                        {logs.length} {t('logs_count') || 'registros'}
+                        {logs.length} {t('logs_count')}
                     </div>
                 </div>
             </header>
@@ -67,10 +67,10 @@ const AuditLogManager = ({
             <Modal
                 isOpen={!!selectedLog}
                 onClose={() => setSelectedLog(null)}
-                title={t('log_details') || 'Detalle de Registro'}
+                title={t('log_details')}
                 footer={
                     <Button variant="secondary" onClick={() => setSelectedLog(null)}>
-                        {t('close') || 'Cerrar'}
+                        {t('close')}
                     </Button>
                 }
             >

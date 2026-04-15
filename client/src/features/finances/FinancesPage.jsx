@@ -44,61 +44,65 @@ const FinancesPage = () => {
 
     return (
         <MainLayout wide>
-            <div className="finances-page">
-            <PageHeader 
-                variant="premium"
-                title={t('finances')}
-                subtitle={t('finances_subtitle') || 'Control de caja y transacciones médicas.'}
-            />
+        <MainLayout wide>
+            <main className="finances-page">
+                <PageHeader 
+                    variant="premium"
+                    title={t('finances')}
+                    subtitle={t('finances_subtitle') || 'Control de caja y transacciones médicas.'}
+                />
 
-            <div className="layout-content-area">
-                {loading ? (
-                    <Loading variant="centered" text={t('loading') || "Cargando..."} />
-                ) : (
-                    <div className="dashboard-grid animate-fadeIn">
-                        <FinanceSidebar
-                            isAdminOrSecretary={isAdminOrSecretary}
-                            user={user}
-                            doctors={doctors}
-                            selectedDoctorFilter={selectedDoctorFilter}
-                            pendingClosuresCount={controller.pendingClosures.length}
-                            onOpenNewTransaction={handlers.onOpenNewTransaction}
-                            onOpenPendingClosures={() => handlers.setPendingClosuresOpen(true)}
-                            onSelectDoctor={handlers.onSelectDoctor}
-                            onOpenCloseBox={handlers.onOpenCloseBox}
-                            calculateBalance={handlers.calculateBalance}
-                            calculateBalanceByMethod={handlers.calculateBalanceByMethod}
-                            filters={filters}
-                            handlers={handlers}
-                            t={t}
-                        />
+                <section className="layout-content-area">
+                    <h2 className="visually-hidden">{t('financial_operations_area') || 'Área de Operaciones Financieras'}</h2>
+                    {loading ? (
+                        <Loading variant="centered" text={t('loading')} />
+                    ) : (
+                        <div className="dashboard-grid animate-fadeIn">
+                            <FinanceSidebar
+                                isAdminOrSecretary={isAdminOrSecretary}
+                                user={user}
+                                doctors={doctors}
+                                selectedDoctorFilter={selectedDoctorFilter}
+                                pendingClosuresCount={controller.pendingClosures.length}
+                                onOpenNewTransaction={handlers.onOpenNewTransaction}
+                                onOpenPendingClosures={() => handlers.setPendingClosuresOpen(true)}
+                                onSelectDoctor={handlers.onSelectDoctor}
+                                onOpenCloseBox={handlers.onOpenCloseBox}
+                                calculateBalance={handlers.calculateBalance}
+                                calculateBalanceByMethod={handlers.calculateBalanceByMethod}
+                                filters={filters}
+                                handlers={handlers}
+                                t={t}
+                            />
 
-                        <main className="dashboard-main">
-                            {isAdminOrSecretary && stats.length > 0 && (
-                                <FinanceStatsCards stats={stats} t={t} />
-                            )}
+                            <section className="dashboard-main">
+                                <h3 className="visually-hidden">{t('transactions_and_stats') || 'Transacciones y Estadísticas'}</h3>
+                                {isAdminOrSecretary && stats.length > 0 && (
+                                    <FinanceStatsCards stats={stats} t={t} />
+                                )}
 
-                            <div className="dashboard-card no-padding">
-                                <TransactionsTable
-                                    transactions={filteredTransactions}
-                                    totalCount={controller.totalCount}
-                                    currentPage={controller.currentPage}
-                                    totalPages={controller.totalPages}
-                                    onPageChange={handlers.onPageChange}
-                                    user={user}
-                                    settings={settings}
-                                    t={t}
-                                    onEdit={handlers.onEditTransaction}
-                                    onDelete={handlers.onDeleteTransaction}
-                                    onGenerateInvoice={handlers.onGenerateInvoice}
-                                    onSync={handlers.onSyncTransaction}
-                                    alert={controller.alert}
-                                />
-                            </div>
-                        </main>
-                    </div>
-                )}
-            </div>
+                                <article className="dashboard-card no-padding">
+                                    <h4 className="visually-hidden">{t('transactions_list') || 'Listado de Transacciones'}</h4>
+                                    <TransactionsTable
+                                        transactions={filteredTransactions}
+                                        totalCount={controller.totalCount}
+                                        currentPage={controller.currentPage}
+                                        totalPages={controller.totalPages}
+                                        onPageChange={handlers.onPageChange}
+                                        user={user}
+                                        settings={settings}
+                                        t={t}
+                                        onEdit={handlers.onEditTransaction}
+                                        onDelete={handlers.onDeleteTransaction}
+                                        onGenerateInvoice={handlers.onGenerateInvoice}
+                                        onSync={handlers.onSyncTransaction}
+                                        alert={controller.alert}
+                                    />
+                                </article>
+                            </section>
+                        </div>
+                    )}
+                </section>
 
             {/* --- Modals --- */}
             <TransactionModal

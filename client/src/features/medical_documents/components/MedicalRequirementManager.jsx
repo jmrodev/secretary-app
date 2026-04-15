@@ -77,7 +77,7 @@ const MedicalRequirementManager = ({
 
     return (
         <section className={baseClass}>
-            <h2 className="visually-hidden">{t('medical_requirements') || 'Gestión de Requerimientos Médicos'}</h2>
+            <h2 className="visually-hidden">{t('medical_requirements')}</h2>
             {!hideTabs && (
                 <nav className={`${baseClass}__tabs`}>
                     <TabButton
@@ -106,7 +106,7 @@ const MedicalRequirementManager = ({
                                 variant="pill"
                                 icon={<Icon name="delete" />}
                             >
-                                {t('recycle_bin') || 'Papelera'}
+                                {t('recycle_bin')}
                             </TabButton>
                             {recycleRequests.length > 0 && (
                                 <span className={`${baseClass}__badge`}>{recycleRequests.length}</span>
@@ -117,7 +117,7 @@ const MedicalRequirementManager = ({
             )}
 
             <article className={`${baseClass}__content animate-fadeIn`}>
-                <h3 className="visually-hidden">{t('active_view') || 'Vista Activa'}</h3>
+                <h3 className="visually-hidden">{t('active_view')}</h3>
                 {activeTab === 'new' ? (
                     <MedicalRequestForm
                         doctors={doctors}

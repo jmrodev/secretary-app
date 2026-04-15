@@ -374,6 +374,10 @@ Para garantizar la correcta traducción de mensajes:
   }
   ```
 
+- **Cero Fallbacks (Frontend)**: Está TERMINANTEMENTE PROHIBIDO el uso de fallbacks hardcodeados en la función `t()` (ej: `t('key') || 'Texto'`). 
+    - Si una clave no existe, **debe crearse** en los archivos de idioma correspondientes (`es.js`, `en.js`).
+    - El JSX debe mantenerse limpio de literales para asegurar que la aplicación sea 100% localizable dinámicamente.
+
 ## Convenciones de Nombres
 
 ### Archivos
@@ -456,6 +460,7 @@ Antes de hacer commit, verificar:
 - [ ] ¿El código está documentado?
 - [ ] ¿Las variables CSS están centralizadas?
 - [ ] ¿Los estilos son reutilizables?
+- [ ] ¿Cero fallbacks en traducciones? (Prohibido `t('key') || 'Texto'`)
 
 ## Recursos
 

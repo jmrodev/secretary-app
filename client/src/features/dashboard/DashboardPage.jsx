@@ -86,7 +86,7 @@ const DashboardPage = () => {
                             {t('dashboard')}
                             <div className="dashboard-live-indicator">
                                 <span className="dashboard-live-indicator__dot"></span>
-                                <span className="dashboard-live-indicator__text">{t('live') || 'LIVE'}</span>
+                                <span className="dashboard-live-indicator__text">{t('live')}</span>
                             </div>
                         </>
                     }
@@ -97,11 +97,11 @@ const DashboardPage = () => {
                     }
                 />
                 <section className="layout-content-area">
-                    <h2 className="visually-hidden">{t('dashboard_content') || 'Contenido del Panel'}</h2>
+                    <h2 className="visually-hidden">{t('dashboard_content')}</h2>
                     <div className="dashboard-top-actions animate-fadeIn">
                         <div className="dashboard-search-bar">
                             <span className="material-symbols-outlined search-icon">search</span>
-                            <input type="text" placeholder={t('search_placeholder') || "¿Qué buscar?"} />
+                            <input type="text" placeholder={t('search_placeholder')} />
                         </div>
 
                         <Button 
@@ -131,7 +131,7 @@ const DashboardPage = () => {
                         <aside className="dashboard-sidebar">
                             <div className="dashboard-sidebar-mobile-header">
                                 <h3 className="dashboard-sidebar-mobile-header__title">
-                                    <Icon name="analytics" /> {t('metrics_and_tools') || 'Métricas y Herramientas'}
+                                    <Icon name="analytics" /> {t('metrics_and_tools')}
                                 </h3>
                                 <Button variant="ghost" size="sm" onClick={() => setShowMobileSidebar(false)}>
                                     <Icon name="close" />
@@ -161,7 +161,7 @@ const DashboardPage = () => {
                         {/* Main Area: Priority Content */}
                         <section className="dashboard-main">
                             <article className="dashboard-card dashboard-card--no-padding dashboard-card--priority">
-                                <h3 className="visually-hidden">{t('main_dashboard_priority') || 'Prioridades del Panel'}</h3>
+                                <h3 className="visually-hidden">{t('main_dashboard_priority')}</h3>
                                 <div className="dashboard-card__content">
                                     {(isAdminOrSecretary || isDoctor) ? (
                                         <div className="dashboard-requirements">

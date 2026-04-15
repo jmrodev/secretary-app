@@ -819,6 +819,8 @@ export const es = {
     log_details: "Detalle de Registro",
     prescription_details: "Detalles de Receta",
     cell_phone: "Celular",
+    audit_logs: "Registros de Auditoría",
+    audit_logs_subtitle: "Historial de acciones y seguridad del sistema.",
     medications_label: "Medicamentos",
     view_all: "Ver todos",
     payment_methods_summary: "Resumen de Métodos y Gastos",
