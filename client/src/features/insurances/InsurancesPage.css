@@ -5,6 +5,26 @@
     flex-direction: column;
 }
 
+.insurances-page__counter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.insurances-page__actions-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.insurances-page__add-btn {
+    justify-content: flex-start;
+    width: 100%;
+}
+
 .insurances__content {
     animation: fadeIn 0.4s ease-out;
 }

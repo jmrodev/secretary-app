@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Badge from '@/components/atoms/Badge';
@@ -15,9 +14,7 @@ const PatientList = ({
     onViewDetails,
     onOpenDebt,
     onToggleRating,
-    t,
-    calculateFinancialRating,
-    calculateAttendanceRating
+    t
 }) => {
 
     const renderStars = (rating, colorClass) => {
@@ -90,7 +87,7 @@ const PatientList = ({
 
                     {institutions.filter(inst => Number(inst.total_debt) > 0).length > 0 && (
                         <tr className="patient-table__row--divider">
-                            <td colSpan={6} className="py-2"><hr className="patient-table__divider" /></td>
+                            <td colSpan={6} className="patient-table__divider-cell"><hr className="patient-table__divider" /></td>
                         </tr>
                     )}
 
@@ -128,7 +125,6 @@ const PatientList = ({
                                                 target="_blank"
                                                 variant="whatsapp"
                                                 size="sm-compact"
-                                                className="patient-table__whatsapp-btn"
                                                 onClick={(e) => e.stopPropagation()}
                                                 title="WhatsApp"
                                                 icon={<Icon name="send" size="1.1rem" />}

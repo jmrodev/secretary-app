@@ -4,6 +4,9 @@ import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import { formatDate } from '@/utils/dateUtils';
 
+// Local Styles
+import './PatientInfoBlock.css';
+
 /**
  * PatientInfoBlock (Executor).
  * Renders the basic information table for a patient.

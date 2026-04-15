@@ -20,8 +20,8 @@
     gap: 0.5rem;
 }
 
-.time-block__input {
-    width: 90px !important;
+.time-block .time-block__input {
+    width: 90px;
 }
 
 .time-block__connector {

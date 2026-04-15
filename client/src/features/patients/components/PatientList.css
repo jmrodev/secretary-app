@@ -101,6 +101,11 @@
     background-color: transparent;
 }
 
+.patient-table__divider-cell {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
 .patient-table__divider {
     border-top: 1px solid var(--gray-200);
 }
@@ -183,6 +188,17 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+}
+
+.rating-item--interactive {
+    cursor: pointer;
+    border-radius: 0.25rem;
+    padding: 0.125rem;
+    transition: background-color 0.2s;
+}
+
+.rating-item--interactive:hover {
+    background-color: var(--gray-100);
 }
 
 .rating-item__label {

@@ -1,0 +1,51 @@
+/* AdminUsersPage Styles (BEM) */
+
+.admin-users-page-orchestrator {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-users-page__access-denied {
+    max-width: 448px; /* max-w-md approx */
+    margin: 5rem auto 0; /* mt-20 approx */
+    padding: 2rem;
+    background-color: var(--red-50);
+    border: 1px solid var(--red-100);
+    border-radius: var(--radius-xl, 12px);
+    text-align: center;
+}
+
+.admin-users-page__denied-icon {
+    color: var(--error);
+    margin-bottom: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.admin-users-page__denied-title {
+    color: var(--red-800, #991b1b);
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.admin-users-page__denied-text {
+    color: var(--red-600, #dc2626);
+}
+
+.admin-users-page__actions-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.admin-users-page__btn {
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.admin-users-page__nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}

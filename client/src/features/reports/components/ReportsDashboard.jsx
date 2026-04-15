@@ -6,9 +6,9 @@ import PrescriptionReportTable from './PrescriptionReportTable';
 import LicenseReportTable from './LicenseReportTable';
 import CertificateReportTable from './CertificateReportTable';
 import BalanceView from './BalanceView';
-import { PageHeader } from '@/features/layout';
+import PageHeader from '@/features/layout/components/PageHeader';
 import Icon from '@/components/atoms/Icon';
-import './ReportsView.css';
+import './ReportsDashboard.css';
 
 const ReportsDashboard = ({
     t,

@@ -3,6 +3,9 @@ import React from 'react';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 
+// Local Styles
+import './PatientFinancialSidebar.css';
+
 /**
  * PatientFinancialSidebar (Executor).
  * Renders the sidebar for the patient details view, focusing on financial status and quick actions.

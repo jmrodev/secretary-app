@@ -1,5 +1,29 @@
 /* Doctors-specific Styles */
 
+.doctors-manager {
+    /* Root BEM class */
+}
+
+.doctors-manager__counter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.doctors-manager__actions-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.doctors-manager__add-btn {
+    justify-content: flex-start;
+    width: 100%;
+}
+
 .doctors-page__grid {
     display: grid;
     grid-template-columns: 1fr;

@@ -20,9 +20,10 @@ body {
     line-height: 1.5;
 }
 
-body.dev-mode {
-    background-color: #0d0d0d !important;
-    background-image: none !important;
+/* Specificity increased to avoid !important */
+html body.dev-mode {
+    background-color: #0d0d0d;
+    background-image: none;
     border: none;
 }
 
@@ -170,6 +171,7 @@ label {
     border-bottom: 1px solid var(--gray-200);
 }
 
-.table-base tbody tr:hover {
-    background-color: rgba(99, 102, 241, 0.02) !important;
+/* Increased specificity to avoid !important */
+.table-base tbody tr:hover td {
+    background-color: rgba(99, 102, 241, 0.05);
 }

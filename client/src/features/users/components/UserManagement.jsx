@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useUsers } from '../hooks/useUsers';
 import { useLanguage } from '@/context/LanguageContext';
 
 // Atoms & Molecules
 import Button from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input'; // Note: check case in next list_dir if needed
+import Input from '@/components/atoms/Input';
 import Card from '@/components/atoms/Card';
 import Modal from '@/components/molecules/Modal';
 
 // Feature Components
 import UserTable from './UserTable';
 import UserForm from './UserForm';
+import './UserManagement.css';
 
 const UserManagement = ({ excludeRoles = [], role = null }) => {
     const { t } = useLanguage();
@@ -83,13 +84,13 @@ const UserManagement = ({ excludeRoles = [], role = null }) => {
     return (
         <div className="user-management-organism">
             <section className="action-bar">
-                    <Input
-                        placeholder={t('search_users_placeholder')}
-                        icon="SEARCH"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="user-management__search-input"
-                    />
+                <Input
+                    placeholder={t('search_users_placeholder')}
+                    icon="SEARCH"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="user-management__search-input"
+                />
                 <div className="action-bar__tools">
                     <Button variant="ghost" onClick={loadData} icon="SYNC" />
                     <Button variant="primary" onClick={() => openModal('CREATE')} icon="ADD">
@@ -98,9 +99,9 @@ const UserManagement = ({ excludeRoles = [], role = null }) => {
                 </div>
             </section>
 
-            <Card className="p-0 overflow-hidden">
+            <Card className="user-management__table-container">
                 {loading ? (
-                    <div className="py-12 text-center text-muted animate-pulse">{t('loading_users')}</div>
+                    <div className="user-management__loader">{t('loading_users')}</div>
                 ) : (
                     <UserTable
                         users={filteredUsers}

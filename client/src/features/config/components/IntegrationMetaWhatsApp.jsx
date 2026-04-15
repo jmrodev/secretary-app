@@ -1,6 +1,8 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import ConfigField from './ConfigField';
+import './IntegrationMetaWhatsApp.css';
 
 /**
  * IntegrationMetaWhatsApp Feature Molecule.
@@ -8,14 +10,14 @@ import ConfigField from './ConfigField';
  */
 const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, loading, isAuthorized }) => {
     return (
-        <div className="config-section animate-fadeIn">
+        <div className="config-section animate-fadeIn integration-meta-whatsapp">
             <div className="config-section__header">
-                <span className="config-section__icon">💬</span>
+                <Icon name="chat" size="1.5rem" className="config-section__icon" />
                 <h3 className="config-section__title">Meta Business (WhatsApp API)</h3>
             </div>
 
             <div className="config-section__body">
-                <p className="config-field__hint config-field__hint--mb-15">
+                <p className="config-field__hint integration-meta-whatsapp__intro">
                     Configure las credenciales de WhatsApp Cloud API.
                 </p>
 
@@ -25,7 +27,7 @@ const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, loading,
                     value={settings.meta_phone_number_id || ''}
                     onChange={(e) => updateSetting('meta_phone_number_id', e.target.value)}
                     disabled={!isAuthorized}
-                    className="config-field__input--monospace"
+                    variant="monospace"
                 />
 
                 <ConfigField
@@ -36,21 +38,23 @@ const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, loading,
                     onChange={(e) => updateSetting('meta_access_token', e.target.value)}
                     placeholder={settings.meta_access_token === 'MASKED_PRESENT' ? '•••••••• (Guardado)' : 'Pegar Token aquí...'}
                     disabled={!isAuthorized}
-                    className="config-field__input--monospace"
+                    variant="monospace"
                 />
 
                 <div className="config-actions">
                     <Button
                         onClick={onTestMeta}
                         disabled={loading || !settings.meta_phone_number_id}
+                        icon={<Icon name="build" size="1.1rem" />}
                     >
-                        🧪 Probar Conexión
+                        Probar Conexión
                     </Button>
                     <Button
                         variant="secondary"
                         onClick={() => window.open('https://developers.facebook.com/apps/', '_blank')}
+                        icon={<Icon name="link" size="1.1rem" />}
                     >
-                        🛠️ Setup Guide
+                        Setup Guide
                     </Button>
                 </div>
             </div>
@@ -59,4 +63,3 @@ const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, loading,
 };
 
 export default IntegrationMetaWhatsApp;
-

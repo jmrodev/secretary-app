@@ -1,6 +1,0 @@
-Time: 2026-02-02T15:39:15.511Z
-Error: object is not iterable (cannot read property Symbol(Symbol.iterator))
-Stack: TypeError: object is not iterable (cannot read property Symbol(Symbol.iterator))
-    at exports.createTransaction (/app/controllers/financeController.js:53:30)
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-Body: {"type":"income_patient","payments":"[{\"amount\":\"55000.00\",\"method\":\"cash\"}]","description":"Turno - Juan Marcelo Rodriguez - Invalid Date","related_user_id":"9609","doctor_id":"10","status":"paid","service_type":"consultation","transaction_date":"2026-02-02T12:39","appointment_id":"735"}

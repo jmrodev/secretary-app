@@ -40,7 +40,7 @@ const ReportFilters = ({
                         onClick={() => onStepMonth(-1)}
                         className="report-filters__step-btn"
                     >
-                        <Icon name="ARROW_BACK" size="1.2rem" />
+                        <Icon name="chevron_left" size="1.2rem" />
                     </Button>
                     <Select
                         value={month}
@@ -54,7 +54,7 @@ const ReportFilters = ({
                         onClick={() => onStepMonth(1)}
                         className="report-filters__step-btn"
                     >
-                        <Icon name="ARROW_FORWARD" size="1.2rem" />
+                        <Icon name="chevron_right" size="1.2rem" />
                     </Button>
                 </div>
             </article>
@@ -68,7 +68,7 @@ const ReportFilters = ({
                         onClick={() => onStepYear(-1)}
                         className="report-filters__step-btn"
                     >
-                        <Icon name="ARROW_BACK" size="1.2rem" />
+                        <Icon name="chevron_left" size="1.2rem" />
                     </Button>
                     <Input
                         type="number"
@@ -84,7 +84,7 @@ const ReportFilters = ({
                         onClick={() => onStepYear(1)}
                         className="report-filters__step-btn"
                     >
-                        <Icon name="ARROW_FORWARD" size="1.2rem" />
+                        <Icon name="chevron_right" size="1.2rem" />
                     </Button>
                 </div>
             </article>
@@ -122,7 +122,7 @@ const ReportFilters = ({
                             onClick={onDownload}
                             className="report-filters__btn"
                         >
-                            <Icon name="attachment" size="1.1rem" className="mr-1" />
+                            <Icon name="attachment" size="1.1rem" className="report-filters__btn-icon" />
                             {t('download_json') || 'JSON'}
                         </Button>
                         <Button
@@ -130,7 +130,7 @@ const ReportFilters = ({
                             onClick={onPrint}
                             className="report-filters__btn"
                         >
-                            <Icon name="print" size="1.1rem" className="mr-1" />
+                            <Icon name="print" size="1.1rem" className="report-filters__btn-icon" />
                             {t('print') || 'Imprimir'}
                         </Button>
                     </>

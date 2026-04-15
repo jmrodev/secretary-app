@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '@/features/auth';
 import { PatientBlocker } from '@/features/patients';
+import './ProtectedRoute.css';
 
 /**
  * Route guard layout component.

@@ -1,5 +1,5 @@
 import React from 'react';
-import './Input.css';
+import './Select.css';
 
 const Select = ({
     value,

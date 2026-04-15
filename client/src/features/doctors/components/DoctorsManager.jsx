@@ -5,7 +5,7 @@ import Icon from '@/components/atoms/Icon';
 import DoctorCard from './DoctorCard';
 import DoctorEditModal from './DoctorEditModal';
 import SearchBar from '@/components/molecules/SearchBar';
-import './DoctorsInfo.css';
+import './DoctorsManager.css';
 
 const DoctorsManager = ({
     t,
@@ -26,7 +26,7 @@ const DoctorsManager = ({
             </header>
 
             <div className="dashboard-nav-bar dashboard-nav-bar--centered animate-fadeIn">
-                <div className="flex items-center gap-2 text-sm font-medium text-muted">
+                <div className="doctors-manager__counter">
                     <Icon name="medical_services" size="1.2rem" />
                     {filteredDoctors.length} {t('doctors_count') || 'Médicos activos'}
                 </div>
@@ -54,10 +54,10 @@ const DoctorsManager = ({
                                 <Icon name="build" size="1.2rem" />
                                 {t('actions') || 'Acciones'}
                             </h3>
-                            <div className="flex flex-col gap-3">
+                            <div className="doctors-manager__actions-group">
                                 <Button
                                     variant="primary"
-                                    className="justify-start w-full"
+                                    className="doctors-manager__add-btn"
                                     onClick={() => handlers.onEditDoctor(null)}
                                     icon={<Icon name="add" size="1.1rem" />}
                                 >

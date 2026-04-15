@@ -7,6 +7,7 @@ import MainLayout from '@/components/templates/MainLayout';
 import { UserManagement } from './index';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+import './AdminUsersPage.css';
 
 /**
  * AdminUsersPage (Orchestrator).
@@ -19,10 +20,10 @@ const AdminUsersPage = () => {
     if (!currentUser || currentUser.role !== 'admin') {
         return (
             <MainLayout>
-                <div className="max-w-md mx-auto mt-20 p-8 bg-red-50 border border-red-100 rounded-xl text-center">
-                    <Icon name="block" size="3rem" className="text-red-500 mb-4 mx-auto" />
-                    <h2 className="text-red-800 font-bold text-xl mb-2">Access Denied</h2>
-                    <p className="text-red-600">No tiene permisos para gestionar usuarios.</p>
+                <div className="admin-users-page__access-denied">
+                    <Icon name="block" size="3rem" className="admin-users-page__denied-icon" />
+                    <h2 className="admin-users-page__denied-title">Access Denied</h2>
+                    <p className="admin-users-page__denied-text">No tiene permisos para gestionar usuarios.</p>
                 </div>
             </MainLayout>
         );
@@ -38,7 +39,7 @@ const AdminUsersPage = () => {
 
                 <div className="dashboard-nav-bar animate-fadeIn">
                     <div className="flex-1"></div>
-                    <div className="flex items-center gap-4">
+                    <div className="admin-users-page__nav-actions">
                     </div>
                 </div>
 
@@ -49,10 +50,10 @@ const AdminUsersPage = () => {
                                 <Icon name="build" size="1.2rem" />
                                 {t('actions') || 'Acciones'}
                             </h3>
-                            <div className="flex flex-col gap-3">
+                            <div className="admin-users-page__actions-group">
                                 <Button
                                     variant="primary"
-                                    className="justify-start w-full"
+                                    className="admin-users-page__btn"
                                     onClick={() => window.dispatchEvent(new CustomEvent('OPEN_USER_MODAL', { detail: 'CREATE' }))}
                                     icon={<Icon name="add" size="1.1rem" />}
                                 >
@@ -60,7 +61,7 @@ const AdminUsersPage = () => {
                                 </Button>
                                 <Button
                                     variant="outline"
-                                    className="justify-start w-full"
+                                    className="admin-users-page__btn"
                                     onClick={() => window.location.reload()}
                                     icon={<Icon name="sync" size="1.1rem" />}
                                 >

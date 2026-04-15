@@ -3,6 +3,7 @@ import { useAuditLogsController } from './hooks/useAuditLogsController';
 import AuditLogManager from './components/AuditLogManager';
 
 import MainLayout from '@/components/templates/MainLayout';
+import './AuditLogsPage.css';
 
 /**
  * AuditLogsPage (Orchestrator).

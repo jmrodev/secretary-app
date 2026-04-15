@@ -204,12 +204,15 @@
     vertical-align: middle;
 }
 
-.institution-finances__tr--pending {
-    background-color: var(--red-50) !important;
+.institution-finances__table tr.institution-finances__tr--pending td {
+    background-color: var(--red-50);
 }
 
-.institution-finances__tr--selected {
-    background-color: var(--blue-50) !important;
+.institution-finances__table tr.institution-finances__tr--selected td {
+    background-color: var(--blue-50);
+}
+
+.institution-finances__table tr.institution-finances__tr--selected {
     outline: 2px solid var(--blue-400);
     outline-offset: -2px;
 }
@@ -273,12 +276,14 @@
     color: var(--text-main);
 }
 
-.institution-finances__cell--right {
-    text-align: right !important;
+.institution-finances__table th.institution-finances__cell--right,
+.institution-finances__table td.institution-finances__cell--right {
+    text-align: right;
 }
 
-.institution-finances__cell--center {
-    text-align: center !important;
+.institution-finances__table th.institution-finances__cell--center,
+.institution-finances__table td.institution-finances__cell--center {
+    text-align: center;
 }
 
 .institution-finances__actions {
