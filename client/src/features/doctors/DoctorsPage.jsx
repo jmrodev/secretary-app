@@ -13,9 +13,9 @@ const DoctorsPage = () => {
 
     return (
         <MainLayout wide>
-            <div className="doctors-page-orchestrator animate-fadeIn">
+            <main className="doctors-page-orchestrator animate-fadeIn">
                 <DoctorsManager {...controller} />
-            </div>
+            </main>
         </MainLayout>
     );
 };

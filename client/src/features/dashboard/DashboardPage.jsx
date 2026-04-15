@@ -77,7 +77,7 @@ const DashboardPage = () => {
 
     return (
         <MainLayout wide>
-            <section className="dashboard-page-orchestrator">
+            <main className="dashboard-page-orchestrator">
                 <PageHeader 
                     variant="premium"
                     backgroundUrl={heroBg}
@@ -97,6 +97,7 @@ const DashboardPage = () => {
                     }
                 />
                 <section className="layout-content-area">
+                    <h2 className="visually-hidden">{t('dashboard_content') || 'Contenido del Panel'}</h2>
                     <div className="dashboard-top-actions animate-fadeIn">
                         <div className="dashboard-search-bar">
                             <span className="material-symbols-outlined search-icon">search</span>
@@ -158,8 +159,9 @@ const DashboardPage = () => {
                         </aside>
 
                         {/* Main Area: Priority Content */}
-                        <main className="dashboard-main">
+                        <section className="dashboard-main">
                             <article className="dashboard-card dashboard-card--no-padding dashboard-card--priority">
+                                <h3 className="visually-hidden">{t('main_dashboard_priority') || 'Prioridades del Panel'}</h3>
                                 <div className="dashboard-card__content">
                                     {(isAdminOrSecretary || isDoctor) ? (
                                         <div className="dashboard-requirements">
@@ -201,7 +203,7 @@ const DashboardPage = () => {
                                     )}
                                 </div>
                             </article>
-                        </main>
+                        </section>
                     </div>
 
                     {/* Modals - Orchestrated by Dashboard Controller but located in their respective features */}
@@ -254,7 +256,7 @@ const DashboardPage = () => {
                         }}
                     />
                 </section>
-            </section>
+            </main>
         </MainLayout>
     );
 

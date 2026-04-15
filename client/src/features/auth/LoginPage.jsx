@@ -8,12 +8,12 @@ import './LoginPage.css';
  */
 const LoginPage = () => {
     return (
-        <div className="login-page login-page--hero animate-fadeIn">
+        <main className="login-page login-page--hero animate-fadeIn">
             <div className="login-page__overlay"></div>
             <div className="login-page__content">
                 <LoginForm />
             </div>
-        </div>
+        </main>
     );
 };
 

@@ -30,7 +30,7 @@ const StatCard = ({
                     <Icon name={icon} size={(size === 'sm' || layout === 'list') ? '1rem' : '1.5rem'} />
                 </div>
                 <div className={`${baseClass}__label-group`}>
-                    <span className={`${baseClass}__label`}>{label}</span>
+                    <h3 className={`${baseClass}__label`}>{label}</h3>
                     {trend && (
                         <div className={`${baseClass}__trend`}>
                             <span className={`${baseClass}__trend-value`}>{trend}</span>

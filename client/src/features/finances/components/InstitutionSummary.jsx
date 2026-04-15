@@ -17,6 +17,7 @@ const InstitutionSummary = ({
 
     return (
         <section className="institution-summary animate-fadeIn">
+            <h2 className="visually-hidden">{t('institution_billing_summary') || 'Resumen de Liquidación'}</h2>
             <div className="institution-summary__stats">
                 <div className="institution-summary__stat-item">
                     <div className="institution-summary__stat-icon institution-summary__stat-icon--blue">
@@ -58,7 +59,7 @@ const InstitutionSummary = ({
                             <Icon name="CONFIRMED" size="1.2rem" />
                         </div>
                         <div className="institution-summary__stat-info">
-                            <p className="institution-summary__stat-label">A Cobrar</p>
+                            <p className="institution-summary__stat-label">{t('total_to_charge')}</p>
                             <p className="institution-summary__stat-value institution-summary__stat-value--green">${Number(selectedAmount).toLocaleString()}</p>
                         </div>
                     </div>
