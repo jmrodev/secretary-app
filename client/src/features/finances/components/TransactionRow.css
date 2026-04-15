@@ -19,12 +19,12 @@
     vertical-align: middle;
 }
 
-.transaction-row__cell--first {
-    padding-left: 1.5rem !important;
+.transaction-row .transaction-row__cell--first {
+    padding-left: 1.5rem;
 }
 
-.transaction-row__cell--last {
-    padding-right: 1.5rem !important;
+.transaction-row .transaction-row__cell--last {
+    padding-right: 1.5rem;
 }
 
 .transaction-row__cell--center {

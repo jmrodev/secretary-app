@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react';
+import './MessageContext.css';
 import { useMessageLogic } from './useMessageLogic';
 
 const MessageContext = createContext();

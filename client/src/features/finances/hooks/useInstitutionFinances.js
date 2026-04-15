@@ -15,14 +15,23 @@ export const useInstitutionFinances = (institutions, selectedInstId) => {
     const fetchReport = async (id) => {
         setLoadingReport(true);
         try {
-            const [reportRes, patientsRes] = await Promise.all([
-                api.get(`/institutions/${id}/finances`),
-                api.get(`/institutions/${id}/patients`)
-            ]);
-            setReport(reportRes.data);
-            setPatients(patientsRes.data);
-        } catch (err) {
-            console.error(err);
+            // Fetch finances
+            try {
+                const reportRes = await api.get(`/institutions/${id}/finances`);
+                setReport(reportRes.data);
+            } catch (err) {
+                console.error("Finances Fetch Error:", err);
+                setReport(null);
+            }
+
+            // Fetch patients
+            try {
+                const patientsRes = await api.get(`/institutions/${id}/patients`);
+                setPatients(patientsRes.data);
+            } catch (err) {
+                console.error("Patients Fetch Error:", err);
+                setPatients([]);
+            }
         } finally {
             setLoadingReport(false);
         }

@@ -15,11 +15,16 @@ const { PATIENT_FIELDS } = require('../constants/patientConstants');
  * Handles business logic for patient management.
  */
 class PatientService {
-    async getAllPatients(user, search, page = 1, limit = 50) {
+    async getAllPatients(user, search, page = 1, limit = 50, doctorId = null) {
         const conn = await pool.getConnection();
         try {
             const builder = new PatientsQueryBuilder(user);
             await builder.applyRoleFilter();
+            
+            if (doctorId) {
+                builder.filterByDoctor(doctorId);
+            }
+
             builder.withFullDetails().applySearch(search).sortByDebt();
 
             // 1. Get Total Count (without pagination)

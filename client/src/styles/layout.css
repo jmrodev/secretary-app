@@ -31,8 +31,8 @@ screen and (max-height: 800px) {
     padding: 0 1.5rem;
 }
 
-.overflow-visible {
-    overflow: visible !important;
+#root .overflow-visible {
+    overflow: visible;
 }
 
 .z-10 {

@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react';
+import './ConfigContext.css';
 import { useAuth } from '@/features/auth';
 import { useConfigLogic } from './useConfigLogic';
 

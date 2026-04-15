@@ -102,10 +102,10 @@ class PatientsQueryBuilder extends BaseQueryBuilder {
             ` (
                 SELECT CASE 
                     WHEN COUNT(*) = 0 THEN 5
-                    WHEN (COUNT(*) - COUNT(CASE WHEN (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%'))) THEN 1 END)) / COUNT(*) >= 0.95 THEN 5
-                    WHEN (COUNT(*) - COUNT(CASE WHEN (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%'))) THEN 1 END)) / COUNT(*) >= 0.85 THEN 4
-                    WHEN (COUNT(*) - COUNT(CASE WHEN (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%'))) THEN 1 END)) / COUNT(*) >= 0.70 THEN 3
-                    WHEN (COUNT(*) - COUNT(CASE WHEN (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%'))) THEN 1 END)) / COUNT(*) >= 0.50 THEN 2
+                    WHEN (COUNT(*) - COUNT(CASE WHEN (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%')) THEN 1 END)) / COUNT(*) >= 0.95 THEN 5
+                    WHEN (COUNT(*) - COUNT(CASE WHEN (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%')) THEN 1 END)) / COUNT(*) >= 0.85 THEN 4
+                    WHEN (COUNT(*) - COUNT(CASE WHEN (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%')) THEN 1 END)) / COUNT(*) >= 0.70 THEN 3
+                    WHEN (COUNT(*) - COUNT(CASE WHEN (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%')) THEN 1 END)) / COUNT(*) >= 0.50 THEN 2
                     ELSE 1 
                 END
                 FROM appointments a WHERE a.patient_id = p.id
@@ -134,14 +134,24 @@ class PatientsQueryBuilder extends BaseQueryBuilder {
 
                 if (docRows && docRows.length > 0) {
                     const doctorId = docRows[0].id;
-                    this.innerJoin('patient_doctors pd', 'p.id = pd.patient_id');
-                    this.where('pd.doctor_id = ?', doctorId);
+                    this.filterByDoctor(doctorId);
                 }
             } finally {
                 conn.release();
             }
         }
 
+        return this;
+    }
+
+    /**
+     * Filtra por doctor (asignación en patient_doctors)
+     */
+    filterByDoctor(doctorId) {
+        if (doctorId) {
+            this.innerJoin('patient_doctors pd', 'p.id = pd.patient_id');
+            this.where('pd.doctor_id = ?', doctorId);
+        }
         return this;
     }
 

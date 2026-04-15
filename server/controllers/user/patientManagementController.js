@@ -9,8 +9,8 @@ const { logCRUD } = require('../../utils/audit');
 exports.getAllPatients = async (req, res) => {
     try {
         if (req.user.role === 'patient') return res.status(403).send("Unauthorized");
-        const { page = 1, limit = 50, search = '' } = req.query;
-        const result = await patientService.getAllPatients(req.user, search, parseInt(page), parseInt(limit));
+        const { page = 1, limit = 50, search = '', doctor_id } = req.query;
+        const result = await patientService.getAllPatients(req.user, search, parseInt(page), parseInt(limit), doctor_id);
         res.json(result);
     } catch (err) {
         console.error(err);

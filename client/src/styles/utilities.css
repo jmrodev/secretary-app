@@ -44,8 +44,8 @@
     animation: fadeIn 0.3s ease-out forwards;
 }
 
-.overflow-visible {
-    overflow: visible !important;
+#root .overflow-visible {
+    overflow: visible;
 }
 
 /* Atomic Utilities */

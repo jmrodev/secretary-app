@@ -30,7 +30,7 @@ const InstitutionPatientsTable = ({
                         </tr>
                     </thead>
                     <tbody>
-                        {patients.map(p => (
+                        {Array.isArray(patients) && patients.map(p => (
                             <tr key={p.id}>
                                 <td>
                                     <a href={`/patients?search=${p.dni}`} className="institution-patients__patient-link">

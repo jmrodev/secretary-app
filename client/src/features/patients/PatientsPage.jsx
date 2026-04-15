@@ -24,6 +24,7 @@ import PatientRecycleBin from './components/PatientRecycleBin';
 import PatientMedications from './components/PatientMedications';
 import DebtPaymentModal from './components/DebtPaymentModal';
 import PatientManagerModal from './components/PatientManagerModal';
+import { DoctorFilter } from '../doctors';
 
 import './PatientsPage.css';
 
@@ -32,7 +33,7 @@ import './PatientsPage.css';
  * Coordinates patient listing, search, details, and recycle bin.
  */
 const PatientsPage = () => {
-    const { isStaff, user: authUser } = usePermissions();
+    const { isStaff, isAdmin, user: authUser } = usePermissions();
     const controller = usePatientsPageController();
     const {
         user, t,
@@ -40,6 +41,7 @@ const PatientsPage = () => {
         totalCount, currentPage, totalPages, handlePageChange,
         doctors, insurances, recycleItems, institutions,
         activeTab, setActiveTab,
+        viewDoctorId, setViewDoctorId,
         searchTerm, setSearchTerm,
         selectedPatientId, setSelectedPatientId, patientDetails,
 
@@ -133,6 +135,15 @@ const PatientsPage = () => {
                                         </TabButton>
                                     )}
                                 </TabNav>
+                                <DoctorFilter
+                                    activeTab={activeTab}
+                                    userRole={authUser?.role}
+                                    isStaff={isStaff}
+                                    isAdmin={isAdmin}
+                                    viewDoctorId={viewDoctorId}
+                                    setViewDoctorId={setViewDoctorId}
+                                    doctors={doctors}
+                                />
                             </div>
 
                             <div className="dashboard-card">

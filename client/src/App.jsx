@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast';
 
 // Routing Orchestrator
 import AppRouter from '@/routes/AppRouter';
+import './App.css';
 
 // Global UI Components
 import { FloatingChat } from '@/features/chat';
@@ -24,7 +25,7 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <Toaster position="top-right" containerStyle={{ zIndex: 9999 }} />
+      <Toaster position="top-right" containerClassName="toaster-container" />
       <AppRouter />
       <FloatingChat />
     </ErrorBoundary>

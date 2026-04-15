@@ -38,10 +38,10 @@ static ALLOWED_FIELDS = [
             (
                 SELECT CASE 
                     WHEN COUNT(*) = 0 THEN 5
-                    WHEN (COUNT(*) - COUNT(CASE WHEN (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%'))) THEN 1 END)) / COUNT(*) >= 0.95 THEN 5
-                    WHEN (COUNT(*) - COUNT(CASE WHEN (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%'))) THEN 1 END)) / COUNT(*) >= 0.85 THEN 4
-                    WHEN (COUNT(*) - COUNT(CASE WHEN (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%'))) THEN 1 END)) / COUNT(*) >= 0.70 THEN 3
-                    WHEN (COUNT(*) - COUNT(CASE WHEN (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%'))) THEN 1 END)) / COUNT(*) >= 0.50 THEN 2
+                    WHEN (COUNT(*) - COUNT(CASE WHEN (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%')) THEN 1 END)) / COUNT(*) >= 0.95 THEN 5
+                    WHEN (COUNT(*) - COUNT(CASE WHEN (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%')) THEN 1 END)) / COUNT(*) >= 0.85 THEN 4
+                    WHEN (COUNT(*) - COUNT(CASE WHEN (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%')) THEN 1 END)) / COUNT(*) >= 0.70 THEN 3
+                    WHEN (COUNT(*) - COUNT(CASE WHEN (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%')) THEN 1 END)) / COUNT(*) >= 0.50 THEN 2
                     ELSE 1 
                 END
                 FROM appointments a WHERE a.patient_id = p.id

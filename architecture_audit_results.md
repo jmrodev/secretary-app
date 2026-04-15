@@ -1,0 +1,298 @@
+# Arquitecura Audit Results
+
+Found 294 issues:
+
+- [RULE 3] Emoji found in client/src/App.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/main.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/context/LanguageContext.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/context/ConfigContext.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/context/MessageContext.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/context/ModalContext.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/routes/AppRouter.jsx should have a corresponding AppRouter.css
+- [RULE 3] Emoji found in client/src/routes/AppRouter.jsx. Use <Icon /> instead.
+- [RULE 5.2] !important found in client/src/styles/base.css at line 23
+- [RULE 5.2] !important found in client/src/styles/base.css at line 174
+- [RULE 3] Emoji found in client/src/features/doctors/DoctorsPage.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/doctors/components/DoctorScheduleSettings.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/doctors/components/DoctorTariffsForm.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/doctors/components/DoctorEditModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/doctors/components/DoctorsManager.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/doctors/components/DoctorCard.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/doctors/components/DoctorFilter.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/doctors/components/DoctorMessagesForm.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/doctors/components/DoctorGoogleSettings.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/doctors/components/DoctorFiscalSettings.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/dashboard/DashboardPage.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/dashboard/components/DashboardReminders.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/dashboard/components/StatCard.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/dashboard/components/DashboardSidebar.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/dashboard/components/QuickActions.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/FinancesPage.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/components/BalanceDebtsTable.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/components/FinanceDoctorFilter.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/components/EditTransactionModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/components/TransactionRow.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/components/BalanceFinancialSummary.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/components/BalanceCashFlowTable.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/components/InstitutionFinances.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/components/PendingClosuresModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/components/HistoricalWithdrawalModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/components/TransactionModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/components/CashBoxDeliveryModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/components/InvoiceDetailContent.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/components/CashBoxSummary.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/components/FinanceStatsCards.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/components/InstitutionPatientsTable.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/components/FinanceFilters.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/components/BillingSettings.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/components/InstitutionSummary.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/components/InstitutionPaymentModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/components/TransactionsTable.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/components/FinanceSidebar.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/finances/components/InstitutionTransactionsTable.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/insurances/InsurancesPage.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/insurances/components/InsuranceFormModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/insurances/components/InsuranceList.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/rentals/RentalsPage.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/auth/LoginPage.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/auth/TempAccessPage.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/auth/AuthContext.jsx should have a corresponding AuthContext.css
+- [RULE 3] Emoji found in client/src/features/auth/AuthContext.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/auth/ProfilePage.jsx should have a corresponding ProfilePage.css
+- [RULE 3] Emoji found in client/src/features/auth/ProfilePage.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/auth/RegisterPage.jsx should have a corresponding RegisterPage.css
+- [RULE 3] Emoji found in client/src/features/auth/RegisterPage.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/auth/components/LoginForm.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/auth/components/AdminAuthModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/auth/components/ProfileEditor.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/auth/components/RegisterForm.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/users/AdminUsersPage.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/users/components/UserTable.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/users/components/UserForm.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/users/components/UserManager.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/users/components/UserManagement.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/config/SystemConfigPage.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/config/components/MessageTemplateEditor.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/config/components/CommunicationSettings.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/config/components/IntegrationRemoteAccess.jsx. Use <Icon /> instead.
+- [RULE 5.2] !important found in client/src/features/config/components/BillingSettings.css at line 50
+- [RULE 5.2] !important found in client/src/features/config/components/BillingSettings.css at line 51
+- [RULE 3] Emoji found in client/src/features/config/components/GeneralSettings.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/config/components/IntegrationSettings.jsx should have a corresponding IntegrationSettings.css
+- [RULE 3] Emoji found in client/src/features/config/components/IntegrationSettings.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/config/components/IntegrationMetaWhatsApp.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/config/components/BillingSettings.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/config/components/ConfigToggle.jsx should have a corresponding ConfigToggle.css
+- [RULE 3] Emoji found in client/src/features/config/components/ConfigToggle.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/config/components/IntegrationGoogleCalendar.jsx should have a corresponding IntegrationGoogleCalendar.css
+- [RULE 3] Emoji found in client/src/features/config/components/IntegrationGoogleCalendar.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/config/components/ConfigField.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/appointments/AppointmentsPage.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/appointments/components/AppointmentMedicalPanel.jsx should have a corresponding AppointmentMedicalPanel.css
+- [RULE 3] Emoji found in client/src/features/appointments/components/AppointmentMedicalPanel.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/appointments/components/CalendarDayCell.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/appointments/components/AppointmentTypeSelector.jsx should have a corresponding AppointmentTypeSelector.css
+- [RULE 3] Emoji found in client/src/features/appointments/components/AppointmentTypeSelector.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/appointments/components/ScheduleBulkActions.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/appointments/components/NextSlotCalendarModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/appointments/components/Calendar.jsx. Use <Icon /> instead.
+- [RULE 5.2] !important found in client/src/features/appointments/components/ScheduleBulkActions.css at line 34
+- [RULE 5.2] !important found in client/src/features/appointments/components/ScheduleBulkActions.css at line 35
+- [RULE 5.2] !important found in client/src/features/appointments/components/ScheduleBulkActions.css at line 36
+- [RULE 7] Missing CSS: client/src/features/appointments/components/RescheduleBanner.jsx should have a corresponding RescheduleBanner.css
+- [RULE 3] Emoji found in client/src/features/appointments/components/RescheduleBanner.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/appointments/components/AppointmentSyncAlert.jsx should have a corresponding AppointmentSyncAlert.css
+- [RULE 3] Emoji found in client/src/features/appointments/components/AppointmentSyncAlert.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/appointments/components/AppointmentPatientSection.jsx should have a corresponding AppointmentPatientSection.css
+- [RULE 3] Emoji found in client/src/features/appointments/components/AppointmentPatientSection.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/appointments/components/UpcomingAppointmentsView.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/appointments/components/AppointmentActionModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/appointments/components/CalendarDayIndicator.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/appointments/components/DayScheduleHeader.jsx should have a corresponding DayScheduleHeader.css
+- [RULE 3] Emoji found in client/src/features/appointments/components/DayScheduleHeader.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/appointments/components/HolidayForm.jsx should have a corresponding HolidayForm.css
+- [RULE 3] Emoji found in client/src/features/appointments/components/HolidayForm.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/appointments/components/NextSlotModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/appointments/components/HolidayList.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/appointments/components/ScheduleTimeBlock.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/appointments/components/AppointmentCard.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/appointments/components/CalendarHeader.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/appointments/components/PatientHistoryView.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/appointments/components/DaySchedule.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/appointments/components/DayHeaders.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/appointments/components/AppointmentHeader.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/appointments/components/ScheduleSection.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/appointments/components/AppointmentAdminPanel.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/appointments/components/CalendarSection.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/appointments/components/AppointmentFormModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/appointments/components/ScheduleTimeline.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/RequestsPage.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/MedicalDocumentsPage.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/PublicRequestPage.jsx. Use <Icon /> instead.
+- [RULE 5.2] !important found in client/src/features/medical_documents/MedicalDocumentsPage.css at line 6
+- [RULE 5.2] !important found in client/src/features/medical_documents/MedicalDocumentsPage.css at line 10
+- [RULE 7] Missing CSS: client/src/features/medical_documents/components/RequirementMedicationList.jsx should have a corresponding RequirementMedicationList.css
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/RequirementMedicationList.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/medical_documents/components/StatusActionModal.jsx should have a corresponding StatusActionModal.css
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/StatusActionModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/MedicationAutocomplete.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/medical_documents/components/PrescriptionForm.jsx should have a corresponding PrescriptionForm.css
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/PrescriptionForm.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/RequirementDetailHeader.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/medical_documents/components/MedicalRequirementDetailModal.jsx should have a corresponding MedicalRequirementDetailModal.css
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/MedicalRequirementDetailModal.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/medical_documents/components/MedicalActionModals.jsx should have a corresponding MedicalActionModals.css
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/MedicalActionModals.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/MedicationList.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/MedicationCard.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/MedicalHistoryTable.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/MedicalRequirementManager.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/medical_documents/components/EditLicenseModal.jsx should have a corresponding EditLicenseModal.css
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/EditLicenseModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/MedicalFileRepository.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/medical_documents/components/MedicalRequirementActionModal.jsx should have a corresponding MedicalRequirementActionModal.css
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/MedicalRequirementActionModal.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/medical_documents/components/SimpleRequestForm.jsx should have a corresponding SimpleRequestForm.css
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/SimpleRequestForm.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/DocumentsHeader.jsx. Use <Icon /> instead.
+- [RULE 5.2] !important found in client/src/features/medical_documents/components/PrescriptionModal.css at line 2
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/MedicationInputSection.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/medical_documents/components/RequirementFeedback.jsx should have a corresponding RequirementFeedback.css
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/RequirementFeedback.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/MedicationInput.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/MedicationItemsSummary.jsx. Use <Icon /> instead.
+- [RULE 5.2] !important found in client/src/features/medical_documents/components/MedicationInputSection.css at line 47
+- [RULE 5.2] !important found in client/src/features/medical_documents/components/MedicationInputSection.css at line 48
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/DocumentsSidebar.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/PrescriptionItemsList.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/medical_documents/components/MedicalRequirementTable.jsx should have a corresponding MedicalRequirementTable.css
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/MedicalRequirementTable.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/HabitualMedicationsGrid.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/PrescriptionModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/EditRequestModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/EditPrescriptionModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/PrescriptionFormFields.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/medical_documents/components/PrescriptionHabitualMeds.jsx should have a corresponding PrescriptionHabitualMeds.css
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/PrescriptionHabitualMeds.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/MedicationEditor.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/MedicalRequestList.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/medical_documents/components/DeleteFileModal.jsx should have a corresponding DeleteFileModal.css
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/DeleteFileModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/MedicalRequestForm.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/RequirementItem.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/medical_documents/components/MedicalRequirementRecycleBin.jsx should have a corresponding MedicalRequirementRecycleBin.css
+- [RULE 3] Emoji found in client/src/features/medical_documents/components/MedicalRequirementRecycleBin.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/chat/ChatPage.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/chat/components/ChatList.jsx should have a corresponding ChatList.css
+- [RULE 3] Emoji found in client/src/features/chat/components/ChatList.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/chat/components/FloatingChat.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/chat/components/ChatSidebar.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/chat/components/ChatMessageBubble.jsx should have a corresponding ChatMessageBubble.css
+- [RULE 3] Emoji found in client/src/features/chat/components/ChatMessageBubble.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/chat/components/WhatsAppModal.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/chat/components/ChatThread.jsx should have a corresponding ChatThread.css
+- [RULE 3] Emoji found in client/src/features/chat/components/ChatThread.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/chat/components/ChatConversationItem.jsx should have a corresponding ChatConversationItem.css
+- [RULE 3] Emoji found in client/src/features/chat/components/ChatConversationItem.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/chat/components/ChatWindow.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/PatientsPage.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/PatientBlocker.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/PatientFinancialSidebar.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/MedicationHistory.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/DebtPaymentModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/PatientInfoBlock.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/PatientManagerModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/PatientDetailsView.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/PatientHistoryTable.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/PatientIdentityFields.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/PatientSearchSelect.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/PatientForm.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/MedicationPendingList.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/PatientInstitutionFields.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/PatientAdminFields.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/MedicationConfigFields.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/PatientAccountFields.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/PatientRecycleBin.jsx. Use <Icon /> instead.
+- [RULE 5.2] !important found in client/src/features/patients/components/PatientPrintableView.css at line 215
+- [RULE 5.2] !important found in client/src/features/patients/components/PatientPrintableView.css at line 219
+- [RULE 5.2] !important found in client/src/features/patients/components/PatientPrintableView.css at line 220
+- [RULE 5.2] !important found in client/src/features/patients/components/PatientPrintableView.css at line 221
+- [RULE 5.2] !important found in client/src/features/patients/components/PatientPrintableView.css at line 222
+- [RULE 5.2] !important found in client/src/features/patients/components/PatientPrintableView.css at line 223
+- [RULE 5.2] !important found in client/src/features/patients/components/PatientPrintableView.css at line 224
+- [RULE 5.2] !important found in client/src/features/patients/components/PatientPrintableView.css at line 228
+- [RULE 3] Emoji found in client/src/features/patients/components/AddMedicationForm.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/PatientAddressFields.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/PatientMedications.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/PatientHistoryModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/QRCodeModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/PatientList.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/PatientContactFields.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/ActiveMedicationsList.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/patients/components/PatientPrintableView.jsx. Use <Icon /> instead.
+- [RULE 5.2] !important found in client/src/features/patients/components/ActiveMedicationsList.css at line 121
+- [RULE 3] Emoji found in client/src/features/institutions/InstitutionsPage.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/institutions/components/InstitutionFormModal.jsx should have a corresponding InstitutionFormModal.css
+- [RULE 3] Emoji found in client/src/features/institutions/components/InstitutionFormModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/institutions/components/InstitutionSelector.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/institutions/components/InstitutionList.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/institutions/components/InstitutionManager.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/institutions/components/InstitutionForm.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/layout/components/PageHeader.jsx. Use <Icon /> instead.
+- [RULE 5.2] !important found in client/src/features/layout/components/Sidebar.css at line 212
+- [RULE 3] Emoji found in client/src/features/layout/components/Sidebar.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/reports/AuditLogsPage.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/reports/ReportsPage.jsx should have a corresponding ReportsPage.css
+- [RULE 3] Emoji found in client/src/features/reports/ReportsPage.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/reports/components/AuditLogTable.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/reports/components/BalanceView.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/reports/components/AppointmentReportTable.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/reports/components/ReportsDashboard.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/reports/components/ReportFilters.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/reports/components/LicenseReportTable.jsx should have a corresponding LicenseReportTable.css
+- [RULE 3] Emoji found in client/src/features/reports/components/LicenseReportTable.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/reports/components/PrescriptionReportTable.jsx. Use <Icon /> instead.
+- [RULE 7] Missing CSS: client/src/features/reports/components/CertificateReportTable.jsx should have a corresponding CertificateReportTable.css
+- [RULE 3] Emoji found in client/src/features/reports/components/CertificateReportTable.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/reports/components/ReportTabs.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/features/reports/components/AuditLogManager.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/templates/MainLayout.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/auth/RoleGuard.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/molecules/Modal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/molecules/ErrorBoundary.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/molecules/StatusDisplay.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/molecules/FormGroup.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/molecules/TabNav.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/molecules/NavTabs.jsx. Use <Icon /> instead.
+- [RULE 5.2] !important found in client/src/components/molecules/PhoneNumbersManager.css at line 41
+- [RULE 5.2] !important found in client/src/components/molecules/PhoneNumbersManager.css at line 42
+- [RULE 3] Emoji found in client/src/components/molecules/SearchBar.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/molecules/IntegrationRemoteAccess.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/molecules/ConnectionStatus.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/molecules/PhoneNumbersManager.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/molecules/ConfirmModal.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/molecules/IntegrationMetaWhatsApp.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/molecules/ConfigToggle.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/molecules/IntegrationGoogleCalendar.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/molecules/ConfigField.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/molecules/Pagination.jsx. Use <Icon /> instead.
+- [RULE 3] Native <button> found in client/src/components/atoms/Button.jsx. Use <Button /> instead.
+- [RULE 3] Emoji found in client/src/components/atoms/Button.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/atoms/Input.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/atoms/Card.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/atoms/Switch.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/atoms/CurrencyInput.jsx. Use <Icon /> instead.
+- [RULE 3] Native <button> found in client/src/components/atoms/TabButton.jsx. Use <Button /> instead.
+- [RULE 3] Emoji found in client/src/components/atoms/TabButton.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/atoms/Alert.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/atoms/Icon.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/atoms/ProtectedRoute.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/atoms/Select.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/atoms/Loading.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/atoms/LanguageSelector.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/atoms/AutoTextarea.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/atoms/Badge.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/atoms/MedicationTag.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/atoms/Tooltip.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/atoms/Pagination.jsx. Use <Icon /> instead.
+- [RULE 3] Emoji found in client/src/components/atoms/StatusIndicator.jsx. Use <Icon /> instead.

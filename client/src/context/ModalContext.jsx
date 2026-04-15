@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useMemo } from 'react';
+import './ModalContext.css';
 import ConfirmModal from '../components/molecules/ConfirmModal';
 import { useModalLogic } from './useModalLogic';
 

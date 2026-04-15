@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './CurrencyInput.css';
 
 /**
  * CurrencyInput Atom follows Atomic Design & BEM.

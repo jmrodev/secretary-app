@@ -1,4 +1,5 @@
 import React from 'react';
+import './FormGroup.css';
 
 const FormGroup = ({ label, children, error, required = false, className = '' }) => {
     const baseClass = 'form-group';

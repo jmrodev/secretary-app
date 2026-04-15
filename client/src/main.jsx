@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
-import './index.css';
+import './main.css';
 import { AuthProvider } from '@/features/auth';
 import { MessageProvider } from '@/context/MessageContext';
 import { ConfigProvider } from '@/context/ConfigContext';

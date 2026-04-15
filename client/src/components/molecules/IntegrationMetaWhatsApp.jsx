@@ -1,5 +1,7 @@
 import React from 'react';
+import './IntegrationMetaWhatsApp.css';
 import Button from '../atoms/Button';
+import Icon from '../atoms/Icon';
 import ConfigField from '../molecules/ConfigField';
 
 /**
@@ -10,7 +12,7 @@ const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, loading,
     return (
         <div className="config-section">
             <div className="config-section__header">
-                <span className="config-section__icon">💬</span>
+                <Icon name="CHAT" className="config-section__icon" />
                 <h3 className="config-section__title">Meta Business (WhatsApp API)</h3>
             </div>
 
@@ -43,14 +45,16 @@ const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, loading,
                     <Button
                         onClick={onTestMeta}
                         disabled={loading || !settings.meta_phone_number_id}
+                        icon={<Icon name="SYNC" />}
                     >
-                        🧪 Probar Conexión
+                        Probar Conexión
                     </Button>
                     <Button
                         variant="secondary"
                         onClick={() => window.open('https://developers.facebook.com/apps/', '_blank')}
+                        icon={<Icon name="CONFIG" />}
                     >
-                        🛠️ Setup Guide
+                        Setup Guide
                     </Button>
                 </div>
             </div>

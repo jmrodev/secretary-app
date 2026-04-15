@@ -1,4 +1,5 @@
 import React from 'react';
+import './NavTabs.css';
 import TabButton from '../atoms/TabButton';
 import TabNav from './TabNav';
 import Icon from '../atoms/Icon';
