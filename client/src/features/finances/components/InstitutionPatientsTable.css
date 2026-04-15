@@ -1,0 +1,111 @@
+
+/* InstitutionPatientsTable Molecule Styles (BEM) */
+
+.institution-patients {
+    background: white;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.institution-patients__header {
+    padding: 1.25rem 1.5rem;
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.institution-patients__title {
+    font-size: 0.875rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.institution-patients__badge {
+    background: var(--gray-200);
+    color: var(--text-muted);
+    padding: 0.125rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.institution-patients__wrapper {
+    overflow-x: auto;
+}
+
+.institution-patients__table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.institution-patients__table th {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    background-color: white;
+    border-bottom: 2px solid var(--gray-100);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.institution-patients__table td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--gray-50);
+    font-size: 0.875rem;
+    color: var(--text-main);
+    vertical-align: middle;
+}
+
+.institution-patients__table tr:hover td {
+    background-color: var(--gray-50);
+}
+
+.institution-patients__patient-link {
+    font-weight: 700;
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.institution-patients__patient-link:hover {
+    color: var(--blue-700);
+    text-decoration: underline;
+}
+
+.institution-patients__cell--right {
+    text-align: right;
+}
+
+.institution-patients__cell--center {
+    text-align: center;
+}
+
+.institution-patients__amount-bold {
+    font-weight: 800;
+}
+
+.institution-patients__text-muted {
+    color: var(--text-muted);
+}
+
+.institution-patients__empty {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+}

@@ -4,6 +4,9 @@ import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import { formatDate } from '@/utils/dateUtils';
 
+// Local Styles
+import './ActiveMedicationsList.css';
+
 /**
  * ActiveMedicationsList (Executor).
  * Renders the table of active/chronic medications for a patient.
@@ -29,7 +32,7 @@ const ActiveMedicationsList = ({ medications, loading, t, onDiscontinue, onRemin
                         <th>{t('medication')}</th>
                         <th>{t('dose')}</th>
                         <th>{t('frequency')}</th>
-                        <th className="text-right">{t('actions')}</th>
+                        <th className="patient-medications__table-header--right">{t('actions')}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,7 +54,7 @@ const ActiveMedicationsList = ({ medications, loading, t, onDiscontinue, onRemin
                                     <div className={`patient-medications__refill-info ${new Date(med.next_refill_date) <= new Date(new Date().setDate(new Date().getDate() + 2)) ? 'patient-medications__refill-info--urgent' : ''}`}>
                                         <Icon name="today" size="0.8rem" />
                                         {t('next_refill_date')}: {formatDate(med.next_refill_date)}
-                                        <span className="patient-medications__mode-badge ml-2">
+                                        <span className="patient-medications__mode-badge">
                                             ({med.reminder_mode === 'calculation' ? t('by_calculation') || 'Cálculo' :
                                                 med.reminder_mode === 'fixed_day' ? `${t('day') || 'Día'} ${med.reminder_day}` :
                                                     t('fixed') || 'Fijo'})
@@ -61,7 +64,7 @@ const ActiveMedicationsList = ({ medications, loading, t, onDiscontinue, onRemin
                             </td>
                             <td className="patient-medications__table-cell">{med.dose}</td>
                             <td className="patient-medications__table-cell">{med.frequency}</td>
-                            <td className="patient-medications__table-cell text-right">
+                            <td className="patient-medications__table-cell patient-medications__table-cell--right">
                                 <div className="config-flex config-flex--justify-end config-flex--gap-2">
                                     {med.next_refill_date && (
                                         <Button

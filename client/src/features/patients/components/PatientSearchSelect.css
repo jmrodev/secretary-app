@@ -1,0 +1,83 @@
+
+/* PatientSearchSelect Styles (BEM/Custom) */
+
+.patients-search-select {
+    width: 100%;
+}
+
+/* React Select Custom Class Mappings */
+
+.patients-search-select__control {
+    background-color: var(--white);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-sm);
+    padding: 0.25rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+.patients-search-select__control--focused {
+    border-color: var(--blue-500);
+    box-shadow: 0 0 0 3px var(--blue-100);
+}
+
+.patients-search-select__menu {
+    background-color: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-lg);
+    margin-top: 0.5rem;
+    z-index: 1000;
+}
+
+.patients-search-select__option {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--slate-700);
+    border-bottom: 1px solid var(--gray-50);
+}
+
+.patients-search-select__option:last-child {
+    border-bottom: none;
+}
+
+.patients-search-select__option--focused {
+    background-color: var(--blue-50);
+    color: var(--blue-700);
+}
+
+.patients-search-select__option--selected {
+    background-color: var(--blue-100);
+    color: var(--blue-800);
+    font-weight: 700;
+}
+
+.patients-search-select__placeholder {
+    color: var(--slate-400);
+    font-size: 0.9rem;
+}
+
+.patients-search-select__single-value {
+    color: var(--slate-800);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* No Results section */
+.form-select-no-results {
+    padding: 1.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.form-select-no-results p {
+    color: var(--slate-500);
+    font-size: 0.85rem;
+    font-style: italic;
+    margin: 0;
+}

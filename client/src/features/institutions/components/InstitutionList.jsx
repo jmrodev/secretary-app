@@ -24,7 +24,7 @@ const InstitutionList = ({ institutions, onEdit, onDelete, t }) => {
                         <th className="institution-list__th">{t('base_amount') || 'Monto Base'}</th>
                         <th className="institution-list__th">{t('pending_debt') || 'Deuda Pendiente'}</th>
                         <th className="institution-list__th">{t('status') || 'Estado'}</th>
-                        <th className="institution-list__th text-right">{t('actions') || 'Acciones'}</th>
+                        <th className="institution-list__th institution-list__th--right">{t('actions') || 'Acciones'}</th>
                     </tr>
                 </thead>
                 <tbody>

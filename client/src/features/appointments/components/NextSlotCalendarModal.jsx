@@ -89,7 +89,7 @@ const NextSlotCalendarModal = ({
         <div className="calendar-slot-controls">
             <label className="calendar-slot-controls__checkbox">
                 <input type="checkbox" className="calendar-slot-controls__input" checked={includeOutOfHours} onChange={(e) => onToggleOutOfHours(e.target.checked)} />
-                <span className="calendar-slot-controls__label flex items-center gap-1"><Icon name="lock_open" size="1rem" />{t('include_overtime')}</span>
+                <span className="calendar-slot-controls__label"><Icon name="lock_open" size="1rem" />{t('include_overtime')}</span>
             </label>
             <div className="calendar-slot-controls__toggle-group">
                 <Button 
@@ -152,7 +152,7 @@ const NextSlotCalendarModal = ({
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} title={<div className="flex items-center gap-2"><Icon name="search" size="1.2rem" />{t('search_free_slots')}</div>} size="lg">
+        <Modal isOpen={isOpen} onClose={onClose} title={<div className="calendar-slot-modal__title"><Icon name="search" size="1.2rem" />{t('search_free_slots')}</div>} size="lg">
             <div className="calendar-slot-modal">
                 {renderControls()}
                 <div className="calendar-slot-modal__content">
@@ -216,10 +216,10 @@ const NextSlotCalendarModal = ({
                                 </Button>
                             </div>
                             <div className="slots-list__body">
-                                {renderSection(<div className="flex items-center gap-2"><Icon name="lock_open" size="1.1rem" /> {t('before_hours_extra')}</div>, selectedSlots.filter(s => s.is_out_of_hours && s.iso < (selectedSlots.find(n => !n.is_out_of_hours && !n.is_break)?.iso || '99:99')), 'before')}
-                                {renderSection(<div className="flex items-center gap-2"><Icon name="check_circle" size="1.1rem" /> {t('attention_hours')}</div>, selectedSlots.filter(s => !s.is_out_of_hours && !s.is_break), 'normal')}
-                                {renderSection(<div className="flex items-center gap-2"><Icon name="coffee" size="1.1rem" /> {t('breaks_special_slots')}</div>, selectedSlots.filter(s => s.is_break), 'break')}
-                                {renderSection(<div className="flex items-center gap-2"><Icon name="lock_open" size="1.1rem" /> {t('after_hours_extra')}</div>, selectedSlots.filter(s => s.is_out_of_hours && s.iso > (selectedSlots.filter(n => !n.is_out_of_hours && !n.is_break).pop()?.iso || '00:00')), 'after')}
+                                {renderSection(<div className="slots-list__section-header-title"><Icon name="lock_open" size="1.1rem" /> {t('before_hours_extra')}</div>, selectedSlots.filter(s => s.is_out_of_hours && s.iso < (selectedSlots.find(n => !n.is_out_of_hours && !n.is_break)?.iso || '99:99')), 'before')}
+                                {renderSection(<div className="slots-list__section-header-title"><Icon name="check_circle" size="1.1rem" /> {t('attention_hours')}</div>, selectedSlots.filter(s => !s.is_out_of_hours && !s.is_break), 'normal')}
+                                {renderSection(<div className="slots-list__section-header-title"><Icon name="coffee" size="1.1rem" /> {t('breaks_special_slots')}</div>, selectedSlots.filter(s => s.is_break), 'break')}
+                                {renderSection(<div className="slots-list__section-header-title"><Icon name="lock_open" size="1.1rem" /> {t('after_hours_extra')}</div>, selectedSlots.filter(s => s.is_out_of_hours && s.iso > (selectedSlots.filter(n => !n.is_out_of_hours && !n.is_break).pop()?.iso || '00:00')), 'after')}
                             </div>
                         </div>
                     )}

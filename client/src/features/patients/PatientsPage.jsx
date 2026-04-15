@@ -161,7 +161,7 @@ const PatientsPage = () => {
                                     <div className="patients-sidebar__tools">
                                         <Button
                                             variant="primary"
-                                            className="w-full justify-start"
+                                            className="patients-sidebar__btn-tool"
                                             onClick={handleNewClick}
                                             icon={<Icon name="add" size="1.1rem" />}
                                         >

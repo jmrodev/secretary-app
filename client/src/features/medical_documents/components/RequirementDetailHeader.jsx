@@ -1,5 +1,5 @@
-import React from 'react';
 import Icon from '@/components/atoms/Icon';
+import './RequirementDetailHeader.css';
 
 /**
  * RequirementDetailHeader Feature Molecule.
@@ -12,7 +12,7 @@ const RequirementDetailHeader = ({ selectedRequest }) => {
             <div className="requirements-detail__patient">
                 <span className="requirements-detail__patient-name">{selectedRequest.patient_name}</span>
                 {selectedRequest.patient_dni && (
-                    <small className="requirements-detail__patient-dni text-gray-500 font-medium">DNI: {selectedRequest.patient_dni}</small>
+                    <small className="requirements-detail__patient-dni">DNI: {selectedRequest.patient_dni}</small>
                 )}
             </div>
             <div className="requirements-detail__doctor">

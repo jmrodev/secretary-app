@@ -32,37 +32,6 @@ Fecha: mar 14 abr 2026 21:55:19 -03
 /home/cima/Documentos/secretary-app/client/src/features/users/components/UserManager.jsx:31:            <div className="flex-1 dashboard-card dashboard-card--highlighted overflow-hidden">
 /home/cima/Documentos/secretary-app/client/src/features/users/components/UserManagement.jsx:101:            <Card className="p-0 overflow-hidden">
 /home/cima/Documentos/secretary-app/client/src/features/users/components/UserManagement.jsx:103:                    <div className="py-12 text-center text-muted animate-pulse">{t('loading_users')}</div>
-/home/cima/Documentos/secretary-app/client/src/features/appointments/components/NextSlotCalendarModal.jsx:92:                <span className="calendar-slot-controls__label flex items-center gap-1"><Icon name="lock_open" size="1rem" />{t('include_overtime')}</span>
-/home/cima/Documentos/secretary-app/client/src/features/appointments/components/NextSlotCalendarModal.jsx:155:        <Modal isOpen={isOpen} onClose={onClose} title={<div className="flex items-center gap-2"><Icon name="search" size="1.2rem" />{t('search_free_slots')}</div>} size="lg">
-/home/cima/Documentos/secretary-app/client/src/features/appointments/components/NextSlotCalendarModal.jsx:219:                                {renderSection(<div className="flex items-center gap-2"><Icon name="lock_open" size="1.1rem" /> {t('before_hours_extra')}</div>, selectedSlots.filter(s => s.is_out_of_hours && s.iso < (selectedSlots.find(n => !n.is_out_of_hours && !n.is_break)?.iso || '99:99')), 'before')}
-/home/cima/Documentos/secretary-app/client/src/features/appointments/components/NextSlotCalendarModal.jsx:220:                                {renderSection(<div className="flex items-center gap-2"><Icon name="check_circle" size="1.1rem" /> {t('attention_hours')}</div>, selectedSlots.filter(s => !s.is_out_of_hours && !s.is_break), 'normal')}
-/home/cima/Documentos/secretary-app/client/src/features/appointments/components/NextSlotCalendarModal.jsx:221:                                {renderSection(<div className="flex items-center gap-2"><Icon name="coffee" size="1.1rem" /> {t('breaks_special_slots')}</div>, selectedSlots.filter(s => s.is_break), 'break')}
-/home/cima/Documentos/secretary-app/client/src/features/appointments/components/NextSlotCalendarModal.jsx:222:                                {renderSection(<div className="flex items-center gap-2"><Icon name="lock_open" size="1.1rem" /> {t('after_hours_extra')}</div>, selectedSlots.filter(s => s.is_out_of_hours && s.iso > (selectedSlots.filter(n => !n.is_out_of_hours && !n.is_break).pop()?.iso || '00:00')), 'after')}
-/home/cima/Documentos/secretary-app/client/src/features/appointments/components/CalendarSection.jsx:32:                        <div className="flex flex-col gap-5 mt-5">
-/home/cima/Documentos/secretary-app/client/src/features/appointments/components/CalendarSection.jsx:51:                                <div className="flex gap-2">
-/home/cima/Documentos/secretary-app/client/src/features/appointments/components/CalendarSection.jsx:53:                                        variant="outline" className="flex-1 justify-center"
-/home/cima/Documentos/secretary-app/client/src/features/appointments/components/CalendarSection.jsx:74:                    <p className="text-xs text-slate-500 mb-4 leading-relaxed">
-/home/cima/Documentos/secretary-app/client/src/features/medical_documents/RequestsPage.jsx:26:                    <div className="flex-1"></div>
-/home/cima/Documentos/secretary-app/client/src/features/medical_documents/RequestsPage.jsx:27:                    <div className="dashboard-nav-bar__actions flex items-center gap-4">
-/home/cima/Documentos/secretary-app/client/src/features/medical_documents/MedicalDocumentsPage.jsx:300:                                        {item.instructions && <span className="text-muted italic">{item.instructions}</span>}
-/home/cima/Documentos/secretary-app/client/src/features/medical_documents/components/RequirementDetailHeader.jsx:15:                    <small className="requirements-detail__patient-dni text-gray-500 font-medium">DNI: {selectedRequest.patient_dni}</small>
-/home/cima/Documentos/secretary-app/client/src/features/medical_documents/components/MedicalFileRepository.jsx:78:                                        <th className="pr-6 text-right">{t('actions')}</th>
-/home/cima/Documentos/secretary-app/client/src/features/medical_documents/components/MedicalFileRepository.jsx:97:                                            <td className="pr-6 text-right">
-/home/cima/Documentos/secretary-app/client/src/features/medical_documents/components/MedicalFileRepository.jsx:102:                                                        className="text-danger"
-/home/cima/Documentos/secretary-app/client/src/features/medical_documents/components/MedicalRequirementActionModal.jsx:39:                    {['rejected', 'consult', 'reply'].includes(actionModal.type) && <span className="text-danger">*</span>}
-/home/cima/Documentos/secretary-app/client/src/features/medical_documents/components/PrescriptionItemsList.jsx:50:                            className="text-danger"
-/home/cima/Documentos/secretary-app/client/src/features/patients/PatientsPage.jsx:164:                                            className="w-full justify-start"
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientHistoryTable.jsx:51:                                        <td className="patient-details__history-cell text-success patient-details__table-cell-bold">
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientRecycleBin.jsx:46:                            <th className="w-1/3">{t('patient') || 'Paciente'}</th>
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientRecycleBin.jsx:47:                            <th className="w-1/4">{t('contact_info') || 'Contacto'}</th>
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientRecycleBin.jsx:48:                            <th className="w-1/4">{t('deleted_date') || 'Fecha Eliminación'}</th>
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientRecycleBin.jsx:49:                            <th className="w-1/6 text-right">{t('actions') || 'Acciones'}</th>
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientRecycleBin.jsx:95:                                <td className="text-right">
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/ActiveMedicationsList.jsx:32:                        <th className="text-right">{t('actions')}</th>
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/ActiveMedicationsList.jsx:64:                            <td className="patient-medications__table-cell text-right">
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientPrintableView.jsx:86:        return <p className="printable-text text-preline">{cleanStr}</p>;
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientPrintableView.jsx:230:                                        <div className="flex-1">
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientPrintableView.jsx:231:                                            <div className="printable-item-header mb-1 text-sm-compact">
 /home/cima/Documentos/secretary-app/client/src/features/institutions/components/InstitutionList.jsx:27:                        <th className="institution-list__th text-right">{t('actions') || 'Acciones'}</th>
 /home/cima/Documentos/secretary-app/client/src/features/reports/components/AuditLogTable.jsx:20:        <div className="card table-responsive p-0 overflow-hidden shadow-sm">
 /home/cima/Documentos/secretary-app/client/src/features/reports/components/AuditLogTable.jsx:22:                <thead className="bg-slate-50">
@@ -185,22 +154,6 @@ Fecha: mar 14 abr 2026 21:55:19 -03
 /home/cima/Documentos/secretary-app/client/src/features/medical_documents/components/MedicationInputSection.css:48:    font-size: 0.75rem !important;
 /home/cima/Documentos/secretary-app/client/src/features/medical_documents/MedicalDocumentsPage.css:6:        display: none !important;
 /home/cima/Documentos/secretary-app/client/src/features/medical_documents/MedicalDocumentsPage.css:10:        display: block !important;
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientDetailsView.css:333:    color: rgba(255, 255, 255, 0.6) !important;
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientDetailsView.css:558:        display: none !important;
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientDetailsView.css:562:        padding: 0 !important;
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientDetailsView.css:563:        background: white !important;
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientDetailsView.css:567:        display: flex !important;
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientDetailsView.css:568:        flex-direction: column !important;
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientDetailsView.css:569:        gap: 1.5rem !important;
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientDetailsView.css:573:        width: 100% !important;
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientDetailsView.css:577:        width: 100% !important;
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientDetailsView.css:578:        display: none !important;
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientDetailsView.css:582:        max-height: none !important;
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientDetailsView.css:583:        overflow: visible !important;
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientDetailsView.css:587:        box-shadow: none !important;
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientDetailsView.css:588:        border: 1px solid #e2e8f0 !important;
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientDetailsView.css:597:        font-size: 1.75rem !important;
-/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientDetailsView.css:598:        margin-bottom: 1rem !important;
 /home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientPrintableView.css:215:        display: none !important;
 /home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientPrintableView.css:219:         position: static !important;
 /home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientPrintableView.css:220:         width: auto !important;
@@ -271,11 +224,6 @@ Falta: /home/cima/Documentos/secretary-app/client/src/features/chat/components/C
 Falta: /home/cima/Documentos/secretary-app/client/src/features/chat/components/ChatMessageBubble.css
 Falta: /home/cima/Documentos/secretary-app/client/src/features/chat/components/ChatThread.css
 Falta: /home/cima/Documentos/secretary-app/client/src/features/chat/components/ChatConversationItem.css
-Falta: /home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientFinancialSidebar.css
-Falta: /home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientInfoBlock.css
-Falta: /home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientHistoryTable.css
-Falta: /home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientSearchSelect.css
-Falta: /home/cima/Documentos/secretary-app/client/src/features/patients/components/ActiveMedicationsList.css
 Falta: /home/cima/Documentos/secretary-app/client/src/features/institutions/components/InstitutionFormModal.css
 Falta: /home/cima/Documentos/secretary-app/client/src/features/reports/AuditLogsPage.css
 Falta: /home/cima/Documentos/secretary-app/client/src/features/reports/ReportsPage.css

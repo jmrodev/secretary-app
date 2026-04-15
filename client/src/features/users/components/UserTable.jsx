@@ -37,7 +37,7 @@ const UserTable = ({ users, onEdit, onReset, onDelete }) => {
                                     {u.phoneNumbers && u.phoneNumbers.length > 0 ? (
                                         <>
                                             {u.phoneNumbers.find(p => p.is_primary)?.phone_number || u.phoneNumbers[0].phone_number}
-                                            {u.phoneNumbers.length > 1 && <Badge variant="blue" className="text-[10px] px-1">+{u.phoneNumbers.length - 1}</Badge>}
+                                            {u.phoneNumbers.length > 1 && <Badge variant="blue" className="user-table__count-badge">+{u.phoneNumbers.length - 1}</Badge>}
                                         </>
                                     ) : (u.phone || '-')}
                                 </div>

@@ -38,7 +38,7 @@ const AdminUsersPage = () => {
                 </header>
 
                 <div className="dashboard-nav-bar animate-fadeIn">
-                    <div className="flex-1"></div>
+                    <div className="admin-users-page__spacer"></div>
                     <div className="admin-users-page__nav-actions">
                     </div>
                 </div>

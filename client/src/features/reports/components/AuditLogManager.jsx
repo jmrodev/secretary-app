@@ -13,7 +13,7 @@ const AuditLogManager = ({
 }) => {
 
     const formatDetails = (detailsRaw) => {
-        if (!detailsRaw) return <span className="text-muted">-</span>;
+        if (!detailsRaw) return <span className="audit-log-detail__text--muted">-</span>;
 
         let content = detailsRaw;
         let isJson = false;

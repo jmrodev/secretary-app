@@ -20,10 +20,18 @@
     letter-spacing: 0.05em;
 }
 
+.institution-list__th--right {
+    text-align: right;
+}
+
 .institution-list__td {
     padding: 1.25rem 1rem;
     border-bottom: 1px solid var(--gray-50);
     vertical-align: middle;
+}
+
+.institution-list__td--right {
+    text-align: right;
 }
 
 .institution-list__name {

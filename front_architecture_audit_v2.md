@@ -59,11 +59,6 @@ Falta: /home/cima/Documentos/secretary-app/client/src/features/chat/components/C
 Falta: /home/cima/Documentos/secretary-app/client/src/features/chat/components/ChatMessageBubble.css
 Falta: /home/cima/Documentos/secretary-app/client/src/features/chat/components/ChatThread.css
 Falta: /home/cima/Documentos/secretary-app/client/src/features/chat/components/ChatConversationItem.css
-Falta: /home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientFinancialSidebar.css
-Falta: /home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientInfoBlock.css
-Falta: /home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientHistoryTable.css
-Falta: /home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientSearchSelect.css
-Falta: /home/cima/Documentos/secretary-app/client/src/features/patients/components/ActiveMedicationsList.css
 Falta: /home/cima/Documentos/secretary-app/client/src/features/institutions/components/InstitutionFormModal.css
 Falta: /home/cima/Documentos/secretary-app/client/src/features/reports/AuditLogsPage.css
 Falta: /home/cima/Documentos/secretary-app/client/src/features/reports/ReportsPage.css

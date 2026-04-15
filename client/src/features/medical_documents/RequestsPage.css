@@ -1,0 +1,38 @@
+
+/* RequestsPage Styles (BEM) */
+
+.requests-page-orchestrator {
+    width: 100%;
+}
+
+.requests-page__spacer {
+    flex: 1;
+}
+
+.requests-page__nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.requests-page__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.requests-page__action-btn {
+    width: 100%;
+    justify-content: flex-start;
+}
+
+.requests-page__info-text {
+    font-size: 0.85rem;
+    color: var(--slate-500);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.requests-page__section {
+    width: 100%;
+}

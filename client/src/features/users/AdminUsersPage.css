@@ -5,6 +5,10 @@
     flex-direction: column;
 }
 
+.admin-users-page__spacer {
+    flex: 1;
+}
+
 .admin-users-page__access-denied {
     max-width: 448px; /* max-w-md approx */
     margin: 5rem auto 0; /* mt-20 approx */

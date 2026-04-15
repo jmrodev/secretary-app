@@ -12,12 +12,6 @@ Se detectó un uso extensivo de clases de Tailwind en varios componentes.
 - Referenciar variables de CSS (`var(--color-primary)`, etc.).
 
 **Componentes afectados (Ejemplos):**
-- [ ] `features/doctors/components/DoctorsManager.jsx` (Parcialmente corregido)
-- [ ] `features/insurances/InsurancesPage.jsx` (Parcialmente corregido)
-- [ ] `features/users/AdminUsersPage.jsx`
-- [ ] `features/users/components/UserManager.jsx`
-- [ ] `features/reports/components/AuditLogTable.jsx`
-- [ ] `components/molecules/PhoneNumbersManager.jsx`
 - [ ] (Ver lista completa en `front_architecture_issues.md`)
 
 ### 2. Uso de `!important` en CSS (PROHIBIDO)
@@ -27,11 +21,7 @@ Se encontraron múltiples instancias de `!important` que rompen la jerarquía de
 - Reestructurar el CSS para que el orden de cascada sea natural.
 
 **Archivos afectados:**
-- [ ] `styles/layout-dashboard.css`
-- [ ] `styles/base.css`
-- [ ] `features/finances/components/InstitutionFinances.css` (Corregido)
-- [ ] `features/appointments/components/ScheduleTimeBlock.css`
-- [ ] `features/patients/components/PatientDetailsView.css` (Uso crítico detectado)
+- [ ] (Ver lista completa en `front_architecture_issues.md`)
 
 ### 3. Falta de archivos CSS (Regla: Un Componente = Un CSS)
 Muchos componentes `.jsx` no tienen su correspondiente archivo `.css`.
@@ -40,9 +30,6 @@ Muchos componentes `.jsx` no tienen su correspondiente archivo `.css`.
 - Mover los estilos (incluyendo los de Tailwind extraídos) a este nuevo archivo.
 
 **Archivos afectados:**
-- [ ] `features/auth/LoginPage.jsx` -> Crear `LoginPage.css`
-- [ ] `features/users/AdminUsersPage.jsx` -> Crear `AdminUsersPage.css`
-- [ ] `features/appointments/components/ScheduleTimeline.jsx` -> Crear `ScheduleTimeline.css`
 - [ ] (Ver lista completa en `front_architecture_issues.md`)
 
 ### 4. Paths Relativos Profundos
@@ -83,6 +70,9 @@ Para cada componente con problemas:
 - [x] Finalizada feature `reports`: Refactorizados `ReportTabs.jsx`, `ReportFilters.jsx` y `ReportsDashboard.jsx`. Estandarizados iconos y creados archivos CSS BEM.
 - [x] Creados archivos CSS faltantes para `DoctorsPage.jsx` y `AuditLogsPage.jsx` (Regla 1:1).
 - [x] Refactorizados átomos base: `Select.jsx` y `ProtectedRoute.jsx` ahora tienen su propio CSS.
+- [x] Finalizada feature `patients`: Creados archivos CSS para todos los sub-componentes (`PatientInfoBlock`, `Sidebar`, `HistoryTable`, `ActiveMeds`, `SearchSelect`, `RecycleBin`), eliminado Tailwind de `PatientsPage` y modularizado el CSS de la vista de detalles.
+- [x] Finalizada feature `appointments`: Eliminado Tailwind de `NextSlotCalendarModal` y `CalendarSection`, y aplicados estilos BEM específicos.
+- [x] Finalizada feature `medical_documents`: Creados `RequestsPage.css`, `RequirementDetailHeader.css`, eliminado Tailwind de `MedicalDocumentsPage` y estandarizado el flujo de solicitudes.
 
 ---
 *Referencia: /home/cima/Documentos/secretary-app/docs/ARQUITECTURA.md*

@@ -60,3 +60,8 @@
     display: flex;
     gap: 8px;
 }
+
+.user-table__count-badge {
+    font-size: 10px;
+    padding: 2px 4px;
+}

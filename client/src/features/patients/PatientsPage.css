@@ -10,6 +10,11 @@
     gap: 0.5rem;
 }
 
+.patients-sidebar__btn-tool {
+    width: 100%;
+    justify-content: flex-start;
+}
+
 .patients-list-view .dashboard-card {
     padding: 0;
 }

@@ -133,3 +133,8 @@
     color: var(--slate-600);
     word-break: break-all;
 }
+
+.audit-log-detail__text--muted {
+    color: var(--slate-400);
+    font-style: italic;
+}

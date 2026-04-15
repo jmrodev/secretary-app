@@ -1,0 +1,68 @@
+
+/* BalanceFinancialSummary Molecule Styles (BEM) */
+
+.balance-summary {
+    background: white;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.balance-summary__title {
+    font-size: 0.875rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--gray-100);
+    padding-bottom: 0.75rem;
+}
+
+.balance-summary__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px dashed var(--gray-50);
+}
+
+.balance-summary__item--subtotal {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid var(--gray-100);
+    border-bottom: none;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.balance-summary__item--withdrawals {
+    border-bottom: none;
+    color: var(--error);
+    font-weight: 600;
+}
+
+.balance-summary__item--net {
+    margin-top: 0.5rem;
+    padding: 1rem;
+    background: var(--blue-50);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--blue-100);
+    font-weight: 900;
+    font-size: 1.1rem;
+    color: var(--blue-700);
+}
+
+.balance-summary__amount {
+    font-family: var(--font-mono, monospace);
+    font-weight: 700;
+}
+
+.balance-summary__amount--positive {
+    color: var(--success);
+}
+
+.balance-summary__amount--negative {
+    color: var(--error);
+}

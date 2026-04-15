@@ -6,6 +6,9 @@ import MainLayout from '@/components/templates/MainLayout';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 
+// Local Styles
+import './RequestsPage.css';
+
 /**
  * RequestsPage (Orchestrator).
  * Main entry point for the medical requirements workflow (Staff view).
@@ -23,8 +26,8 @@ const RequestsPage = () => {
                 </header>
 
                 <div className="dashboard-nav-bar animate-fadeIn">
-                    <div className="flex-1"></div>
-                    <div className="dashboard-nav-bar__actions flex items-center gap-4">
+                    <div className="requests-page__spacer"></div>
+                    <div className="dashboard-nav-bar__actions requests-page__nav-actions">
                     </div>
                 </div>
 

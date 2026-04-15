@@ -53,6 +53,14 @@
     border-bottom: 1px solid var(--gray-100);
 }
 
+/* Helper Columns / Alignment */
+.patient-recycle-bin__col-33 { width: 33.33%; }
+.patient-recycle-bin__col-25 { width: 25%; }
+.patient-recycle-bin__col-16 { width: 16.66%; }
+.patient-recycle-bin__cell--right { text-align: right; }
+.patient-recycle-bin__text-right { text-align: right; }
+.patient-recycle-bin__icon-faded { opacity: 0.7; }
+
 .patient-recycle-bin__row:hover {
     background-color: var(--gray-50);
 }

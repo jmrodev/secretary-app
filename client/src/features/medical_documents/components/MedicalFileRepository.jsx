@@ -56,7 +56,7 @@ const MedicalFileRepository = ({
                                 required
                             />
                         </div>
-                        <Button type="submit" className="w-full">{t('upload_file')}</Button>
+                        <Button type="submit" className="medical-file-repository__btn-submit">{t('upload_file')}</Button>
                     </form>
                 </div>
             </section>
@@ -70,22 +70,22 @@ const MedicalFileRepository = ({
                                 {t('no_files')}
                             </div>
                         ) : (
-                            <table className="table-base w-full">
+                            <table className="medical-file-repository__table">
                                 <thead>
                                     <tr>
-                                        <th className="pl-6">{t('file')}</th>
+                                        <th className="medical-file-repository__cell--pl">{t('file')}</th>
                                         <th>{t('patient')}</th>
-                                        <th className="pr-6 text-right">{t('actions')}</th>
+                                        <th className="medical-file-repository__cell--pr medical-file-repository__cell--right">{t('actions')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {files.filter(filterItem).map(f => (
                                         <tr
                                             key={f.id}
-                                            className="hover:bg-slate-50 cursor-pointer"
+                                            className="medical-file-repository__row--interactive"
                                             onClick={() => window.open(f.file_url, '_blank')}
                                         >
-                                            <td className="pl-6 py-4">
+                                            <td className="medical-file-repository__cell--pl medical-file-repository__cell--py">
                                                 <div className="config-flex">
                                                     <Icon name="folder_open" size="1.2rem" className="medical-file-repository__file-icon" />
                                                     <span className="medical-file-repository__file-name">{f.description || f.file_name}</span>
@@ -94,12 +94,12 @@ const MedicalFileRepository = ({
                                             <td>
                                                 <span className="medical-file-repository__patient-name">{f.patient_name}</span>
                                             </td>
-                                            <td className="pr-6 text-right">
+                                            <td className="medical-file-repository__cell--pr medical-file-repository__cell--right">
                                                 {(user?.role === 'admin' || canDeleteFile) && (
                                                     <Button
                                                         variant="ghost"
                                                         size="sm-compact"
-                                                        className="text-danger"
+                                                        className="medical-file-repository__btn--delete"
                                                         onClick={(e) => { e.stopPropagation(); openDeleteFileModal(f); }}
                                                         icon={<Icon name="delete" size="1rem" />}
                                                     />

@@ -44,3 +44,20 @@
 .medical-file-repository__empty-icon {
     opacity: 0.5;
 }
+
+.medical-file-repository__btn-submit {
+    width: 100%;
+}
+
+.medical-file-repository__table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.medical-file-repository__cell--pl { padding-left: 1.5rem; }
+.medical-file-repository__cell--pr { padding-right: 1.5rem; }
+.medical-file-repository__cell--py { padding-top: 1rem; padding-bottom: 1rem; }
+.medical-file-repository__cell--right { text-align: right; }
+.medical-file-repository__row--interactive { cursor: pointer; transition: background-color 0.2s; }
+.medical-file-repository__row--interactive:hover { background-color: var(--slate-50); }
+.medical-file-repository__btn--delete { color: var(--rose-600); }
