@@ -68,13 +68,13 @@ const DoctorsManager = ({
                     </aside>
 
                     <main className="dashboard-main">
-                        <div className="doctors-page__grid">
+                        <div className="doctors-manager__grid">
                             {filteredDoctors.length === 0 ? (
-                                <div className="doctors-page__empty-state">
-                                    <div className="doctors-page__empty-icon">
+                                <div className="doctors-manager__empty-state">
+                                    <div className="doctors-manager__empty-icon">
                                         <Icon name="medical_services" size="3rem" />
                                     </div>
-                                    <p className="doctors-page__empty-text">{t('no_doctors_found')}</p>
+                                    <p className="doctors-manager__empty-text">{t('no_doctors_found')}</p>
                                 </div>
                             ) : filteredDoctors.map(doctor => (
                                 <DoctorCard
