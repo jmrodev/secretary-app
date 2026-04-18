@@ -937,7 +937,7 @@ export const es = {
     new_transaction: "Nueva Transacción",
     deliver_box: "Entregar Caja",
 
-    // ✅ Printable Report (Ficha del Paciente)
+    // Printable Report (Ficha del Paciente)
     personal_data: "Datos",
     personal_data_title: "Datos Personales",
     financial_history: "Balances",

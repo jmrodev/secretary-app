@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '../features/auth';
-import { useLanguage } from '../context/LanguageContext';
-import { useMessage } from '../context/MessageContext';
-import { useModal } from '../context/ModalContext';
-import { useConfig } from '../context/ConfigContext';
-import api from '../api/axios';
+import { useAuth } from '@/features/auth';
+import { useLanguage } from '@/context/LanguageContext';
+import { useMessage } from '@/context/MessageContext';
+import { useModal } from '@/context/ModalContext';
+import { useConfig } from '@/context/ConfigContext';
+import api from '@/api/axios';
 
 /**
  * System Configuration Controller
@@ -127,7 +127,7 @@ export const useSystemConfigController = () => {
         try {
             setLoading(true);
             await api.post('/whatsapp/test', { to: phone });
-            showMessage('✅ Mensaje de prueba enviado. Verifique su WhatsApp.', 'success');
+            showMessage('Mensaje de prueba enviado. Verifique su WhatsApp.', 'success');
         } catch (error) {
             console.error(error);
             showMessage(error.response?.data?.error || 'Error al enviar mensaje de prueba', 'error');

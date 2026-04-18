@@ -832,7 +832,7 @@ export const en = {
     doctor_updated: "Doctor updated successfully",
     doctor_created: "Doctor created successfully",
 
-    // ✅ Printable Report (Patient Sheet)
+    // Printable Report (Patient Sheet)
     personal_data: "Personal Data",
     personal_data_title: "Personal Data",
     financial_history: "Balances",

@@ -1,5 +1,5 @@
 import React from 'react';
-import AppointmentCard from './AppointmentCard';
+import AppointmentCard from '@/features/appointments/components/AppointmentCard';
 import Icon from '@/components/atoms/Icon';
 import { formatTime, isPast as checkIsPast } from '@/utils/dateUtils';
 

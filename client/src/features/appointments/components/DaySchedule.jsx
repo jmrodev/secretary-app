@@ -1,10 +1,10 @@
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { useDayScheduleHandlers } from '../hooks/useDayScheduleHandlers';
+import { useDayScheduleHandlers } from '@/features/appointments/hooks/useDayScheduleHandlers';
 import { isSameDay } from '@/utils/dateUtils';
 
-import DayScheduleHeader from './DayScheduleHeader.jsx';
-import ScheduleTimeline from './ScheduleTimeline.jsx';
+import DayScheduleHeader from '@/features/appointments/components/DayScheduleHeader.jsx';
+import ScheduleTimeline from '@/features/appointments/components/ScheduleTimeline.jsx';
 
 import './DaySchedule.css';
 

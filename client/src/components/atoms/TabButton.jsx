@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from '@/components/atoms/Button';
 import './TabButton.css';
 
 const TabButton = ({
@@ -24,13 +25,14 @@ const TabButton = ({
     `.trim().replace(/\s+/g, ' ');
 
     return (
-        <button
+        <Button
             type="button"
             className={combinedClassName}
             onClick={onClick}
+            unstyled
         >
             {children}
-        </button>
+        </Button>
     );
 };
 
