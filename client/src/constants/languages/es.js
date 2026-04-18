@@ -714,7 +714,7 @@ export const es = {
     fix_duplicates_desc: "Para corregir esto, el sistema eliminará todas las entregas de esos días para que pueda volver a procesarlas limpiamente.",
     fix_conflicts_btn: "Limpiar Conflictos y Resetear Días",
     pending_closures_desc: "Días con saldo pendiente (Efectivo o Transferencias) sin retirar.",
-    deliver_all_month: "🚀 Entregar Todo el Mes ({count} días)",
+    deliver_all_month: "Entregar Todo el Mes ({count} días)",
     all_caught_up: "¡Todo al día!",
     no_closures_pending: "No hay cierres pendientes.",
     virtual_balance: "Saldo Virtual",

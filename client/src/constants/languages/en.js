@@ -638,7 +638,7 @@ export const en = {
     fix_duplicates_desc: "To fix this, the system will delete all deliveries for those days so you can re-process them cleanly.",
     fix_conflicts_btn: "Clean Conflicts and Reset Days",
     pending_closures_desc: "Days with pending balance (Cash or Transfers) not withdrawn.",
-    deliver_all_month: "🚀 Deliver Everything ({count} days)",
+    deliver_all_month: "Deliver Everything ({count} days)",
     all_caught_up: "All caught up!",
     no_closures_pending: "No pending closures.",
     virtual_balance: "Virtual Balance",
