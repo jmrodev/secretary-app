@@ -1,6 +1,6 @@
 import React from 'react';
 import Icon from '@/components/atoms/Icon';
-import MedicationCard from './MedicationCard';
+import MedicationCard from '@/features/medical_documents/components/MedicationCard';
 import { calculateDuration } from '@/utils/medicationHelpers';
 
 /**

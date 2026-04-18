@@ -5,7 +5,7 @@ import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { formatPrice } from '@/utils/format';
 import { formatDate } from '@/utils/dateUtils';
-import { useRentalsController } from './hooks/useRentalsController';
+import { useRentalsController } from '@/features/rentals/hooks/useRentalsController';
 
 /**
  * RentalsPage (Orchestrator).

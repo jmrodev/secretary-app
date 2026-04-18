@@ -1,6 +1,6 @@
 import React from 'react';
-import Calendar from './Calendar.jsx';
-import HolidayForm from './HolidayForm.jsx';
+import Calendar from '@/features/appointments/components/Calendar.jsx';
+import HolidayForm from '@/features/appointments/components/HolidayForm.jsx';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { PatientSearchSelect } from '@/features/patients';

@@ -7,13 +7,13 @@ import Input from '@/components/atoms/Input';
 import Switch from '@/components/atoms/Switch';
 import TabNav from '@/components/molecules/TabNav';
 import TabButton from '@/components/atoms/TabButton';
-import DoctorTariffsForm from './DoctorTariffsForm';
-import DoctorGoogleSettings from './DoctorGoogleSettings';
-import DoctorScheduleSettings from './DoctorScheduleSettings';
-import DoctorFiscalSettings from './DoctorFiscalSettings';
-import DoctorMessagesForm from './DoctorMessagesForm';
+import DoctorTariffsForm from '@/features/doctors/components/DoctorTariffsForm';
+import DoctorGoogleSettings from '@/features/doctors/components/DoctorGoogleSettings';
+import DoctorScheduleSettings from '@/features/doctors/components/DoctorScheduleSettings';
+import DoctorFiscalSettings from '@/features/doctors/components/DoctorFiscalSettings';
+import DoctorMessagesForm from '@/features/doctors/components/DoctorMessagesForm';
 import { UserForm } from '@/features/users';
-import { useDoctorFiscalController } from '../hooks/useDoctorFiscalController';
+import { useDoctorFiscalController } from '@/features/doctors/hooks/useDoctorFiscalController';
 import './DoctorEditModal.css';
 
 const DoctorEditModal = ({

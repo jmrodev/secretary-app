@@ -4,14 +4,14 @@ import {
     DashboardSidebar, 
     DashboardReminders,
     QuickActions
-} from './index'; // Local index
-import { PageHeader } from '../layout';
-import { PrescriptionModal, MedicalRequirementManager } from '../medical_documents';
-import { PatientHistoryModal } from '../patients';
-import { TransactionModal } from '../finances';
+} from '@/features/dashboard/index'; // Local index
+import { PageHeader } from '@/features/layout';
+import { PrescriptionModal, MedicalRequirementManager } from '@/features/medical_documents';
+import { PatientHistoryModal } from '@/features/patients';
+import { TransactionModal } from '@/features/finances';
 
 // Internal component from another feature (keeping as is or move to molecules if shared)
-import AppointmentActionModal from '../appointments/components/AppointmentActionModal.jsx';
+import AppointmentActionModal from '@/features/appointments/components/AppointmentActionModal.jsx';
 
 // Global Atomic Components
 import MainLayout from '@/components/templates/MainLayout';

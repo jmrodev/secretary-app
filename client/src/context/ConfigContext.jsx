@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
-import { useAuth } from '../features/auth';
-import { useConfigLogic } from './useConfigLogic';
+import { useAuth } from '@/features/auth';
+import { useConfigLogic } from '@/context/useConfigLogic';
 
 const ConfigContext = createContext();
 

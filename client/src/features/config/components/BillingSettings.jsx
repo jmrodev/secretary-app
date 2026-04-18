@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ConfigField from './ConfigField';
+import ConfigField from '@/features/config/components/ConfigField';
 import Input from '@/components/atoms/Input';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';

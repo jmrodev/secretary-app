@@ -1,5 +1,5 @@
 import React from 'react';
-import StatCard from './StatCard';
+import StatCard from '@/features/dashboard/components/StatCard';
 import Icon from '@/components/atoms/Icon';
 import './DashboardSidebar.css';
 

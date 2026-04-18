@@ -1,5 +1,5 @@
 import React from 'react';
-import { PatientForm, usePatientFormController } from '../patients';
+import { PatientForm, usePatientFormController } from '@/features/patients';
 import StatusDisplay from '@/components/molecules/StatusDisplay';
 import { useTempAccessController } from '@/controllers/useTempAccessController';
 import { useLanguage } from '@/context/LanguageContext';

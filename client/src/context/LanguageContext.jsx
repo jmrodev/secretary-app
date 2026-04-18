@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import { useLanguageLogic } from './useLanguageLogic';
+import { useLanguageLogic } from '@/context/useLanguageLogic';
 
 const LanguageContext = createContext(null);
 

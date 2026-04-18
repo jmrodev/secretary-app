@@ -1,10 +1,10 @@
 import React from 'react';
-import { useAuth } from '../auth';
+import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/context/LanguageContext';
 
 // Atomic Design Components
 import MainLayout from '@/components/templates/MainLayout';
-import { UserManagement } from './index';
+import { UserManagement } from '@/features/users/index';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 

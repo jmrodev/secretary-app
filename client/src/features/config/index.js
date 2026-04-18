@@ -3,14 +3,14 @@
 // Handles system preferences, integrations and administrative settings
 
 // Controllers & Hooks
-export { useSystemConfigController } from './hooks/useSystemConfigController';
+export { useSystemConfigController } from '@/features/config/hooks/useSystemConfigController';
 
 // Components
-export { default as SystemConfigPage } from './SystemConfigPage';
-export { default as GeneralSettings } from './components/GeneralSettings';
-export { default as CommunicationSettings } from './components/CommunicationSettings';
-export { default as IntegrationSettings } from './components/IntegrationSettings';
-export { default as BillingSettings } from './components/BillingSettings';
-export { default as ConfigToggle } from './components/ConfigToggle';
-export { default as ConfigField } from './components/ConfigField';
-export { default as MessageTemplateEditor } from './components/MessageTemplateEditor';
+export { default as SystemConfigPage } from '@/features/config/SystemConfigPage';
+export { default as GeneralSettings } from '@/features/config/components/GeneralSettings';
+export { default as CommunicationSettings } from '@/features/config/components/CommunicationSettings';
+export { default as IntegrationSettings } from '@/features/config/components/IntegrationSettings';
+export { default as BillingSettings } from '@/features/config/components/BillingSettings';
+export { default as ConfigToggle } from '@/features/config/components/ConfigToggle';
+export { default as ConfigField } from '@/features/config/components/ConfigField';
+export { default as MessageTemplateEditor } from '@/features/config/components/MessageTemplateEditor';

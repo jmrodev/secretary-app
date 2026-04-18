@@ -1,8 +1,8 @@
 import React from 'react';
 import MainLayout from '@/components/templates/MainLayout';
-import DoctorsManager from './components/DoctorsManager';
+import DoctorsManager from '@/features/doctors/components/DoctorsManager';
 
-import { useDoctorsPageController } from './hooks/useDoctorsPageController';
+import { useDoctorsPageController } from '@/features/doctors/hooks/useDoctorsPageController';
 
 /**
  * DoctorsPage (Orchestrator).

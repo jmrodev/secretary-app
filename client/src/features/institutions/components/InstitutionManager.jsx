@@ -1,7 +1,7 @@
 import React from 'react';
-import InstitutionList from './InstitutionList';
+import InstitutionList from '@/features/institutions/components/InstitutionList';
 import { InstitutionFinances } from '@/features/finances';
-import InstitutionFormModal from './InstitutionFormModal';
+import InstitutionFormModal from '@/features/institutions/components/InstitutionFormModal';
 import Icon from '@/components/atoms/Icon';
 import TabNav from '@/components/molecules/TabNav';
 import TabButton from '@/components/atoms/TabButton';

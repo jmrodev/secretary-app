@@ -10,12 +10,12 @@ import Button from '@/components/atoms/Button';
 import './PatientMedications.css';
 
 // Local Feature Hooks
-import { useMedicalRecords } from '../hooks/useMedicalRecords';
+import { useMedicalRecords } from '@/features/patients/hooks/useMedicalRecords';
 
 // Local Feature Components
-import MedicationHistory from './MedicationHistory';
-import ActiveMedicationsList from './ActiveMedicationsList';
-import AddMedicationForm from './AddMedicationForm';
+import MedicationHistory from '@/features/patients/components/MedicationHistory';
+import ActiveMedicationsList from '@/features/patients/components/ActiveMedicationsList';
+import AddMedicationForm from '@/features/patients/components/AddMedicationForm';
 
 /**
  * PatientMedications Organism (Executor/Sub-Orchestrator).

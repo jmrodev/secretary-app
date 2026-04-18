@@ -4,14 +4,14 @@ import React from 'react';
 import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
 
-import { useFinancesPageController } from './hooks/useFinancesPageController';
-import FinanceStatsCards from './components/FinanceStatsCards';
-import EditTransactionModal from './components/EditTransactionModal';
-import TransactionModal from './components/TransactionModal';
-import FinanceSidebar from './components/FinanceSidebar';
-import TransactionsTable from './components/TransactionsTable';
-import CashBoxDeliveryModal from './components/CashBoxDeliveryModal';
-import PendingClosuresModal from './components/PendingClosuresModal';
+import { useFinancesPageController } from '@/features/finances/hooks/useFinancesPageController';
+import FinanceStatsCards from '@/features/finances/components/FinanceStatsCards';
+import EditTransactionModal from '@/features/finances/components/EditTransactionModal';
+import TransactionModal from '@/features/finances/components/TransactionModal';
+import FinanceSidebar from '@/features/finances/components/FinanceSidebar';
+import TransactionsTable from '@/features/finances/components/TransactionsTable';
+import CashBoxDeliveryModal from '@/features/finances/components/CashBoxDeliveryModal';
+import PendingClosuresModal from '@/features/finances/components/PendingClosuresModal';
 
 import './FinancesPage.css';
 

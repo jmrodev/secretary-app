@@ -5,7 +5,7 @@ import { useModal } from '@/context/ModalContext';
 import { useMessage } from '@/context/MessageContext';
 import { useConfig } from '@/context/ConfigContext';
 import { useFetch } from '@/hooks/useFetch';
-import { useFinanceHandlers } from './useFinanceHandlers';
+import { useFinanceHandlers } from '@/features/finances/hooks/useFinanceHandlers';
 
 export const useFinancesPageController = () => {
     const { user } = useAuth();

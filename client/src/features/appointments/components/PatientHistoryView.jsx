@@ -2,7 +2,7 @@ import React from 'react';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import Loading from '@/components/atoms/Loading';
-import AppointmentCard from './AppointmentCard';
+import AppointmentCard from '@/features/appointments/components/AppointmentCard';
 import './PatientHistoryView.css';
 
 /**
