@@ -1,7 +1,12 @@
 import { createContext, useContext } from 'react';
+<<<<<<< HEAD
 import './ConfigContext.css';
 import { useAuth } from '@/features/auth';
 import { useConfigLogic } from './useConfigLogic';
+=======
+import { useAuth } from '@/features/auth';
+import { useConfigLogic } from '@/context/useConfigLogic';
+>>>>>>> main
 
 const ConfigContext = createContext({ settings: {}, loading: true });
 

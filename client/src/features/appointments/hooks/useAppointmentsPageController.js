@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import api from '@/api/axios';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -8,14 +7,14 @@ import { useModal } from '@/context/ModalContext';
 import { useConfig } from '@/context/ConfigContext';
 import { useFetch } from '@/hooks/useFetch';
 
-import { useAppointments } from './useAppointments';
-import { useHolidays } from './useHolidays';
-import { useNextFreeSlot } from './useNextFreeSlot';
-import { useAppointmentBooking } from './useAppointmentBooking';
-import { useWhatsAppUniversal } from './useWhatsAppUniversal';
-import { useGoogleEvents } from './useGoogleEvents';
-import { usePatientSearch } from './usePatientSearch';
-import { useAppointmentsHandlers } from './useAppointmentsHandlers';
+import { useAppointments } from '@/features/appointments/hooks/useAppointments';
+import { useHolidays } from '@/features/appointments/hooks/useHolidays';
+import { useNextFreeSlot } from '@/features/appointments/hooks/useNextFreeSlot';
+import { useAppointmentBooking } from '@/features/appointments/hooks/useAppointmentBooking';
+import { useWhatsAppUniversal } from '@/features/appointments/hooks/useWhatsAppUniversal';
+import { useGoogleEvents } from '@/features/appointments/hooks/useGoogleEvents';
+import { usePatientSearch } from '@/features/appointments/hooks/usePatientSearch';
+import { useAppointmentsHandlers } from '@/features/appointments/hooks/useAppointmentsHandlers';
 import { copyToClipboard } from '@/utils/clipboardUtils';
 
 /**
@@ -50,7 +49,7 @@ export const useAppointmentsPageController = () => {
     const { data: institutions = [], loading: institutionsLoading } = useFetch('/institutions', { initialData: [] });
 
     // Calendar Stats
-    const { data: calendarStats = {}, loading: statsLoading } = useFetch('/appointments/stats', {
+    const { data: calendarStats = {} } = useFetch('/appointments/stats', {
         params: {
             year: selectedDate.getFullYear(),
             month: selectedDate.getMonth() + 1,
@@ -75,26 +74,31 @@ export const useAppointmentsPageController = () => {
         const doctorId = viewDoctorId || booking.selectedDoctor;
         if (doctorId) localStorage.setItem('last_selected_doctor_id', doctorId);
         if (viewDoctorId && !booking.selectedDoctor) booking.setSelectedDoctor(viewDoctorId);
-        if (booking.selectedDoctor && !viewDoctorId) setViewDoctorId(booking.selectedDoctor);
-    }, [viewDoctorId, booking.selectedDoctor, booking.setSelectedDoctor]);
+        if (booking.selectedDoctor && !viewDoctorId) queueMicrotask(() => setViewDoctorId(booking.selectedDoctor));
+    }, [viewDoctorId, booking.selectedDoctor, booking.setSelectedDoctor, booking]);
 
     const rescheduleAppt = location.state?.rescheduleAppt;
     const syncAppt = location.state?.syncAppt;
     const exitRescheduleMode = useCallback(() => navigate(location.pathname, { replace: true, state: {} }), [navigate, location.pathname]);
 
     useEffect(() => {
-        if (rescheduleAppt) { setViewDoctorId(rescheduleAppt.doctor_id); return; }
-        if (syncAppt) { setViewDoctorId(syncAppt.doctor_id); setSelectedDate(new Date(syncAppt.appointment_date)); }
+        if (rescheduleAppt) { queueMicrotask(() => setViewDoctorId(rescheduleAppt.doctor_id)); return; }
+        if (syncAppt) {
+            queueMicrotask(() => {
+                setViewDoctorId(syncAppt.doctor_id);
+                setSelectedDate(new Date(syncAppt.appointment_date));
+            });
+        }
         
         // Initial doctor selection for doctors
         if (isDoctor && doctors.length > 0 && !viewDoctorId) {
             const profile = doctors.find(d => d.user_id === (user.user_id || user.id));
             if (profile) {
-                setViewDoctorId(profile.id);
+                queueMicrotask(() => setViewDoctorId(profile.id));
                 booking.setSelectedDoctor(profile.id);
             }
         }
-    }, [user, doctors, rescheduleAppt, syncAppt, isDoctor]);
+    }, [user, doctors, rescheduleAppt, syncAppt, isDoctor, booking, viewDoctorId]);
 
     const hookHandlers = useAppointmentsHandlers({
         user, t, showMessage, confirm, navigate, selectedDate, setSelectedDate,

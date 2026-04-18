@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useModal } from '@/context/ModalContext';
-import { useAuth } from '@/features/auth';
 import { financeService } from '@/services/financeService';
 import { userService } from '@/services/userService';
 import { getServiceTypes } from '@/constants/transactionOptions';
@@ -11,7 +10,6 @@ import { toInputDateTime } from '@/utils/dateUtils';
 export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, onClose) => {
     const { t } = useLanguage();
     const { alert } = useModal();
-    const { user } = useAuth();
 
     // --- State ---
     const [formData, setFormData] = useState({
@@ -41,13 +39,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
     const [showPatientList, setShowPatientList] = useState(false);
 
     // --- Effects ---
-    useEffect(() => {
-        if (!isOpen) return;
-        fetchDoctors();
-        initializeData();
-    }, [isOpen]);
-
-    const initializeData = () => {
+    const initializeData = useCallback(() => {
         const data = initialData || {};
         let initialServiceType = data.serviceType || data.service_type || 'consultation';
 
@@ -95,7 +87,13 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         if (data.doctorId && data.patientId && (!data.amount || Number(data.amount) === 0)) {
             fetchPricing(data.doctorId, data.patientId, initialServiceType);
         }
-    };
+    }, [initialData]);
+
+    useEffect(() => {
+        if (!isOpen) return;
+        fetchDoctors();
+        initializeData();
+    }, [isOpen, initializeData]);
 
     // --- Patient Search Logic ---
     useEffect(() => {

@@ -1,5 +1,8 @@
 import React from 'react';
+<<<<<<< HEAD
 import Input from '@/components/atoms/Input';
+=======
+>>>>>>> main
 import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/context/LanguageContext';
 import './ChatSidebar.css';
@@ -56,9 +59,15 @@ const ChatSidebar = ({
                         {unreadCount > 0 && <span className="chat-sidebar__badge">{unreadCount}</span>}
                     </h2>
                 </div>
+<<<<<<< HEAD
                 <div className="chat-sidebar__search-wrapper">
                     <Icon name="search" className="chat-sidebar__search-icon" />
                     <Input
+=======
+                <div className="w-full relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"><Icon name="search" /></span>
+                    <input
+>>>>>>> main
                         type="text"
                         placeholder={t('search_chats_contacts') || 'Buscar chats o contactos...'}
                         className="chat-sidebar__search-input"

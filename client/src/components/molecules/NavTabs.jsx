@@ -1,8 +1,14 @@
 import React from 'react';
+<<<<<<< HEAD
 import './NavTabs.css';
 import TabButton from '../atoms/TabButton';
 import TabNav from './TabNav';
 import Icon from '../atoms/Icon';
+=======
+import TabButton from '@/components/atoms/TabButton';
+import TabNav from '@/components/molecules/TabNav';
+import Icon from '@/components/atoms/Icon';
+>>>>>>> main
 
 const NavTabs = ({ activeTab, setActiveTab, userRole, isStaff, isAdmin }) => {
     return (

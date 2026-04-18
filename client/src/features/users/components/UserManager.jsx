@@ -1,5 +1,5 @@
 import React from 'react';
-import UserManagement from './UserManagement';
+import UserManagement from '@/features/users/components/UserManagement';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import './UserManager.css';

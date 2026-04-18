@@ -1,6 +1,10 @@
 import React from 'react';
+<<<<<<< HEAD
 import { LoginForm } from './index';
 import './LoginPage.css';
+=======
+import { LoginForm } from '@/features/auth/index';
+>>>>>>> main
 
 /**
  * LoginPage (Orchestrator).

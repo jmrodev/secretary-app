@@ -1,19 +1,20 @@
 import React from 'react';
 import Modal from '@/components/molecules/Modal';
 import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import FormGroup from '@/components/molecules/FormGroup';
 import Input from '@/components/atoms/Input';
 import Switch from '@/components/atoms/Switch';
 import Icon from '@/components/atoms/Icon';
 import TabNav from '@/components/molecules/TabNav';
 import TabButton from '@/components/atoms/TabButton';
-import DoctorTariffsForm from './DoctorTariffsForm';
-import DoctorGoogleSettings from './DoctorGoogleSettings';
-import DoctorScheduleSettings from './DoctorScheduleSettings';
-import DoctorFiscalSettings from './DoctorFiscalSettings';
-import DoctorMessagesForm from './DoctorMessagesForm';
+import DoctorTariffsForm from '@/features/doctors/components/DoctorTariffsForm';
+import DoctorGoogleSettings from '@/features/doctors/components/DoctorGoogleSettings';
+import DoctorScheduleSettings from '@/features/doctors/components/DoctorScheduleSettings';
+import DoctorFiscalSettings from '@/features/doctors/components/DoctorFiscalSettings';
+import DoctorMessagesForm from '@/features/doctors/components/DoctorMessagesForm';
 import { UserForm } from '@/features/users';
-import { useDoctorFiscalController } from '../hooks/useDoctorFiscalController';
+import { useDoctorFiscalController } from '@/features/doctors/hooks/useDoctorFiscalController';
 import './DoctorEditModal.css';
 
 const DoctorEditModal = ({
@@ -74,11 +75,19 @@ const DoctorEditModal = ({
             {type === 'EDIT' && (
                 <TabNav className="doctor-edit-modal__tabs">
                     {[
+<<<<<<< HEAD
                         { id: 'tariffs', label: t('tariffs') || 'Tarifas', icon: 'FINANCES' },
                         { id: 'schedule', label: t('schedule') || 'Horarios', icon: 'APPOINTMENTS' },
                         { id: 'messages', label: t('messages') || 'Mensajes', icon: 'MESSAGES' },
                         { id: 'google', label: t('google_settings') || 'Google', icon: 'GOOGLE' },
                         { id: 'fiscal', label: t('fiscal_settings') || 'Fiscal', icon: 'FISCAL' }
+=======
+                        { id: 'tariffs', label: <><Icon name="payments" size="1rem" className="mr-1" />Tarifas</> },
+                        { id: 'schedule', label: <><Icon name="calendar_today" size="1rem" className="mr-1" />Horarios</> },
+                        { id: 'messages', label: <><Icon name="chat" size="1rem" className="mr-1" />Mensajes</> },
+                        { id: 'google', label: <><Icon name="language" size="1rem" className="mr-1" />Google</> },
+                        { id: 'fiscal', label: <><Icon name="receipt_long" size="1rem" className="mr-1" />Fiscal</> }
+>>>>>>> main
                     ].map(tab => (
                         <TabButton
                             key={tab.id}
@@ -134,7 +143,11 @@ const DoctorEditModal = ({
 
                             <div className="doctor-edit-modal__overturn-section">
                                 <h4 className="doctor-edit-modal__overturn-title">
+<<<<<<< HEAD
                                     <Icon name="TIME" /> {t('overturn_range_title') || 'Horario Sobreturnos (Fuera de Horario)'}
+=======
+                                    <Icon name="schedule" size="1rem" /> {t('overturn_range_title') || 'Horario Sobreturnos (Fuera de Horario)'}
+>>>>>>> main
                                 </h4>
                                 <div className="doctor-edit-modal__overturn-grid">
                                     <FormGroup label={t('overturn_start_label') || 'Inicio Sobreturnos'}>

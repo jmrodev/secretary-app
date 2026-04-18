@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import Select from '@/components/atoms/Select';
@@ -38,25 +39,33 @@ const InstitutionSelector = ({
             {selectedInstId && (
                 <div className="inst-finances__view-toggle">
                     <Button
+<<<<<<< HEAD
                         variant={viewMode === 'transactions' ? 'primary' : 'ghost'}
+=======
+>>>>>>> main
                         className={`inst-finances__toggle-btn ${
                             viewMode === 'transactions' 
                             ? 'inst-finances__toggle-btn--active' 
                             : ''
                         }`}
                         onClick={() => setViewMode('transactions')}
+                        unstyled
                     >
                         <Icon name="analytics" size="1.1rem" />
                         {t('finances')}
                     </Button>
                     <Button
+<<<<<<< HEAD
                         variant={viewMode === 'patients' ? 'primary' : 'ghost'}
+=======
+>>>>>>> main
                         className={`inst-finances__toggle-btn ${
                             viewMode === 'patients' 
                             ? 'inst-finances__toggle-btn--active' 
                             : ''
                         }`}
                         onClick={() => setViewMode('patients')}
+                        unstyled
                     >
                         <Icon name="groups" size="1.1rem" />
                         {t('patients')}

@@ -28,7 +28,10 @@ const HolidayList = ({ holidays, onDelete }) => {
                 .map(h => (
                     <div key={h.id} className="holiday-list__item animate-fadeIn">
                         <div className="holiday-list__info">
-                            <span className="holiday-list__date">{formatDate(h.date)}</span>
+                            <span className="holiday-list__date">
+                                <Icon name="calendar_today" size="0.9rem" />
+                                {formatDate(h.date)}
+                            </span>
                             <div className="holiday-list__description">{h.description}</div>
                         </div>
                         <Button

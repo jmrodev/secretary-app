@@ -1,12 +1,13 @@
 import React from 'react';
-import ReportTabs from './ReportTabs';
-import ReportFilters from './ReportFilters';
-import AppointmentReportTable from './AppointmentReportTable';
-import PrescriptionReportTable from './PrescriptionReportTable';
-import LicenseReportTable from './LicenseReportTable';
-import CertificateReportTable from './CertificateReportTable';
-import BalanceView from './BalanceView';
-import PageHeader from '@/features/layout/components/PageHeader';
+import ReportTabs from '@/features/reports/components/ReportTabs';
+import ReportFilters from '@/features/reports/components/ReportFilters';
+import AppointmentReportTable from '@/features/reports/components/AppointmentReportTable';
+import PrescriptionReportTable from '@/features/reports/components/PrescriptionReportTable';
+import LicenseReportTable from '@/features/reports/components/LicenseReportTable';
+import CertificateReportTable from '@/features/reports/components/CertificateReportTable';
+import BalanceView from '@/features/reports/components/BalanceView';
+import { PageHeader } from '@/features/layout';
+
 import Icon from '@/components/atoms/Icon';
 import './ReportsDashboard.css';
 

@@ -1,7 +1,11 @@
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
+<<<<<<< HEAD
 import Button from './Button';
 import Icon from './Icon';
+=======
+import Button from '@/components/atoms/Button';
+>>>>>>> main
 import './LanguageSelector.css';
 
 /**

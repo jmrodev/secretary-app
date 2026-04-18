@@ -1,5 +1,4 @@
 import React from 'react';
-import Card from '@/components/atoms/Card';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/context/LanguageContext';
@@ -28,9 +27,7 @@ const PatientRecycleBin = ({
     if (!recycleItems || recycleItems.length === 0) {
         return (
             <div className="patient-recycle-bin__empty-state">
-                <div className="patient-recycle-bin__empty-icon">
-                    <Icon name="DELETE" size="xl" />
-                </div>
+                <div className="patient-recycle-bin__empty-icon"><Icon name="delete" size="2rem" /></div>
                 <p className="patient-recycle-bin__empty-title">{t('recycle_bin_empty') || 'La papelera está vacía.'}</p>
                 <p className="patient-recycle-bin__empty-text">Los pacientes eliminados aparecerán aquí por 30 días.</p>
             </div>
@@ -43,10 +40,10 @@ const PatientRecycleBin = ({
                 <table className="patient-recycle-bin__table">
                     <thead>
                         <tr>
-                            <th className="patient-recycle-bin__col-33">{t('patient') || 'Paciente'}</th>
-                            <th className="patient-recycle-bin__col-25">{t('contact_info') || 'Contacto'}</th>
-                            <th className="patient-recycle-bin__col-25">{t('deleted_date') || 'Fecha Eliminación'}</th>
-                            <th className="patient-recycle-bin__col-16 patient-recycle-bin__text-right">{t('actions') || 'Acciones'}</th>
+                            <th className="w-1/3">{t('patient') || 'Paciente'}</th>
+                            <th className="w-1/4">{t('contact_info') || 'Contacto'}</th>
+                            <th className="w-1/4">{t('deleted_date') || 'Fecha Eliminación'}</th>
+                            <th className="w-1/6 text-right">{t('actions') || 'Acciones'}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -70,14 +67,14 @@ const PatientRecycleBin = ({
                                     <div className="patient-recycle-bin__contact-info">
                                         {item.phone ? (
                                             <div className="patient-recycle-bin__contact-item">
-                                                <Icon name="SMARTPHONE" className="patient-recycle-bin__icon-faded" /> {item.phone}
+                                                <span className="opacity-70"><Icon name="phone" size="1rem" /></span> {item.phone}
                                             </div>
                                         ) : (
                                             <span className="patient-recycle-bin__contact-missing">Sin teléfono</span>
                                         )}
                                         {item.email ? (
                                             <div className="patient-recycle-bin__contact-item">
-                                                <Icon name="MAIL" className="patient-recycle-bin__icon-faded" /> {item.email}
+                                                <span className="opacity-70"><Icon name="mail" size="1rem" /></span> {item.email}
                                             </div>
                                         ) : null}
                                     </div>
@@ -92,7 +89,7 @@ const PatientRecycleBin = ({
                                         </span>
                                     </div>
                                 </td>
-                                <td className="patient-recycle-bin__cell--right">
+                                <td className="text-right">
                                     <div className="patient-recycle-bin__actions">
                                         <Button
                                             size="sm"
@@ -100,7 +97,7 @@ const PatientRecycleBin = ({
                                             className="patient-recycle-bin__action-btn--restore"
                                             onClick={() => onRestore && onRestore(item.id)}
                                             title={t('restore') || 'Restaurar'}
-                                            icon="RESTORE"
+                                            icon={<Icon name="restore" />}
                                         >
                                             {t('restore') || 'Restaurar'}
                                         </Button>
@@ -112,7 +109,7 @@ const PatientRecycleBin = ({
                 </table>
             </div>
             <div className="patient-recycle-bin__footer-hint">
-                <p><Icon name="WARNING" size="sm" /> Los pacientes eliminados permanentemente no se pueden recuperar.</p>
+                <p><Icon name="warning" size="1rem" className="mr-1" />Los pacientes eliminados permanentemente no se pueden recuperar.</p>
             </div>
         </div>
     );

@@ -1,7 +1,10 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+<<<<<<< HEAD
 import { useLanguage } from '@/context/LanguageContext';
+=======
+>>>>>>> main
 import './ChatWindow.css';
 
 /**
@@ -33,9 +36,15 @@ const ChatWindow = ({
     if (!selectedConvo) {
         return (
             <section className="chat-main chat-main--empty">
+<<<<<<< HEAD
                 <Icon name="CHAT" size="3rem" className="chat-main__empty-icon" />
                 <h2 className="chat-main__empty-title">{t('my_messages')}</h2>
                 <p className="chat-main__empty-text">{t('chat_empty_state')}</p>
+=======
+                <div className="chat-main__empty-icon"><Icon name="chat" size="2rem" /></div>
+                <h2 className="chat-main__empty-title">Tus Mensajes</h2>
+                <p className="chat-main__empty-text">Selecciona una conversación de la lista para empezar a chatear o busca un contacto para iniciar un nuevo chat.</p>
+>>>>>>> main
             </section>
         );
     }
@@ -61,9 +70,15 @@ const ChatWindow = ({
                         <div className="loading-spinner"></div>
                     </div>
                 ) : thread.length === 0 ? (
+<<<<<<< HEAD
                     <div className="chat-window__messages-status chat-window__messages-status--empty">
                         <Icon name="INFO" size="2.5rem" className="chat-window__empty-icon" />
                         <p>{t('say_hello')}</p>
+=======
+                    <div className="chat-messages--empty">
+                        <div className="chat-messages__empty-icon"><Icon name="waving_hand" size="2rem" /></div>
+                        <p>¡Dile hola!</p>
+>>>>>>> main
                     </div>
                 ) : (
                     thread.map(msg => (
@@ -98,7 +113,11 @@ const ChatWindow = ({
                         variant="primary"
                         icon={sending ? undefined : <Icon name="SEND" />}
                     >
+<<<<<<< HEAD
                         {sending && <div className="loading-spinner"></div>}
+=======
+                        {sending ? <div className="loading-spinner"></div> : <Icon name="send" size="1.1rem" />}
+>>>>>>> main
                     </Button>
                 </form>
             </footer>

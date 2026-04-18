@@ -1,17 +1,19 @@
 import React from 'react';
-import { useDashboardController } from './hooks/useDashboardController';
-import DashboardSidebar from './components/DashboardSidebar';
-import DashboardReminders from './components/DashboardReminders';
-import QuickActions from './components/QuickActions';
-import { PageHeader } from '../layout';
-import { PrescriptionModal, MedicalRequirementManager } from '../medical_documents';
-import { PatientHistoryModal } from '../patients';
-import { TransactionModal } from '../finances';
+import { 
+    useDashboardController, 
+    DashboardSidebar, 
+    DashboardReminders,
+    QuickActions
+} from '@/features/dashboard/index'; // Local index
+import { PageHeader } from '@/features/layout';
+import { PrescriptionModal, MedicalRequirementManager } from '@/features/medical_documents';
+import { PatientHistoryModal } from '@/features/patients';
+import { TransactionModal } from '@/features/finances';
 import heroBg from './assets/dashboard_hero.png'; // Canva-style background
 
 
 // Internal component from another feature (keeping as is or move to molecules if shared)
-import AppointmentActionModal from '../appointments/components/AppointmentActionModal.jsx';
+import AppointmentActionModal from '@/features/appointments/components/AppointmentActionModal.jsx';
 
 // Global Atomic Components
 import MainLayout from '@/components/templates/MainLayout';
@@ -29,7 +31,7 @@ import './DashboardPage.css';
 const DashboardPage = () => {
     const controller = useDashboardController();
     const {
-        user, t, settings,
+        user, t,
         stats, newPatientStats, reminders, pendingReqCount, activeTab,
         actionModal,
         historyModal,

@@ -1,9 +1,13 @@
 import Button from '@/components/atoms/Button';
 import Input from '@/components/atoms/Input';
+<<<<<<< HEAD
 import Select from '@/components/atoms/Select';
 import Switch from '@/components/atoms/Switch';
 import Icon from '@/components/atoms/Icon';
 import './ScheduleTimeBlock.css';
+=======
+import Icon from '@/components/atoms/Icon';
+>>>>>>> main
 
 /**
  * ScheduleTimeBlock Feature Molecule.
@@ -49,11 +53,18 @@ const ScheduleTimeBlock = ({
                     className={`time-block__type-select ${block.default_type === 'virtual' ? 'time-block__type-select--virtual' : ''}`}
                     value={block.default_type || 'consultation'}
                     onChange={(e) => onChange(block.originalIndex, 'default_type', e.target.value)}
+<<<<<<< HEAD
                     options={[
                         { value: 'consultation', label: t('in_person') || 'Presencial', icon: 'APPOINTMENTS' },
                         { value: 'virtual', label: t('virtual_type') || 'Videollamada', icon: 'VIRTUAL' }
                     ]}
                 />
+=======
+                >
+                    <option value="consultation">Presencial</option>
+                    <option value="virtual">Videollamada</option>
+                </select>
+>>>>>>> main
             </div>
 
             <div className="time-block__options">
@@ -63,10 +74,15 @@ const ScheduleTimeBlock = ({
                         checked={block.force_hour_alignment === 1}
                         onChange={(val) => onChange(block.originalIndex, 'force_hour_alignment', val ? 1 : 0)}
                     />
+<<<<<<< HEAD
                     <span className="time-block__alignment-text">
                         <Icon name="TIME" size="0.8rem" /> :00
                     </span>
                 </div>
+=======
+                    <span className="time-block__alignment-text text-xs font-bold text-slate-400 group-hover:text-accent transition-colors"><Icon name="schedule" size="1rem" className="mr-1" />Coord. :00</span>
+                </label>
+>>>>>>> main
 
                 <Button
                     variant="ghost"
@@ -74,7 +90,11 @@ const ScheduleTimeBlock = ({
                     onClick={onRemove}
                     className="time-block__remove"
                     title="Eliminar franja"
+<<<<<<< HEAD
                     icon="DELETE"
+=======
+                    icon={<Icon name="delete" />}
+>>>>>>> main
                 />
             </div>
         </div>

@@ -5,12 +5,12 @@ import Icon from '@/components/atoms/Icon';
 import Input from '@/components/atoms/Input';
 
 // Local Feature Components
-import PatientIdentityFields from './PatientIdentityFields';
-import PatientAccountFields from './PatientAccountFields';
-import PatientContactFields from './PatientContactFields';
-import PatientAddressFields from './PatientAddressFields';
-import PatientInstitutionFields from './PatientInstitutionFields';
-import PatientAdminFields from './PatientAdminFields';
+import PatientIdentityFields from '@/features/patients/components/PatientIdentityFields';
+import PatientAccountFields from '@/features/patients/components/PatientAccountFields';
+import PatientContactFields from '@/features/patients/components/PatientContactFields';
+import PatientAddressFields from '@/features/patients/components/PatientAddressFields';
+import PatientInstitutionFields from '@/features/patients/components/PatientInstitutionFields';
+import PatientAdminFields from '@/features/patients/components/PatientAdminFields';
 import './PatientForm.css';
 
 /**

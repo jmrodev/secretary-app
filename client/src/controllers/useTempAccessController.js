@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import api from '../api/axios';
-import { useModal } from '../context/ModalContext';
+import api from '@/api/axios';
+import { useModal } from '@/context/ModalContext';
 
 /**
  * Controller hook for the TempAccess page.
@@ -47,7 +47,7 @@ export const useTempAccessController = () => {
     }, [token]);
 
     useEffect(() => {
-        verifyToken();
+        queueMicrotask(verifyToken);
     }, [verifyToken]);
 
     const handleSubmit = async (formData) => {

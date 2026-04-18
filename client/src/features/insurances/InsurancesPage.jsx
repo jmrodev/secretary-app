@@ -3,7 +3,7 @@ import Button from '@/components/atoms/Button';
 import Loading from '@/components/atoms/Loading';
 import Icon from '@/components/atoms/Icon';
 import SearchBar from '@/components/molecules/SearchBar';
-import { useInsurancesController, InsuranceList, InsuranceFormModal } from './index';
+import { useInsurancesController, InsuranceList, InsuranceFormModal } from '@/features/insurances/index';
 import './InsurancesPage.css';
 
 import MainLayout from '@/components/templates/MainLayout';

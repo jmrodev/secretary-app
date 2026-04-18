@@ -77,8 +77,9 @@ const AppointmentReportTable = ({ data, t }) => {
                             <tr key={idx} className={`appointment-report__row ${day.is_weekend ? 'appointment-report__row--weekend' : ''} ${day.is_holiday ? 'appointment-report__row--holiday' : ''}`}>
                                 <td>
                                     {day.date}
-                                    {day.is_holiday && <Icon name="FLARE" size="0.8rem" className="appointment-report__tag-small" />}
-                                    {day.is_weekend && !day.is_holiday && <Icon name="CALENDAR_TODAY" size="0.8rem" className="appointment-report__tag-small" />}
+                                    {day.is_holiday && <span className="appointment-report__tag-small"><Icon name="celebration" size="1rem" /></span>}
+                                    {day.is_weekend && !day.is_holiday && <span className="appointment-report__tag-small"><Icon name="calendar_today" size="1rem" /></span>}
+
                                     <span className="appointment-report__day-name"> {getDayOfWeek(day.date)}</span>
                                 </td>
                                 <td className="text-right">$ {day.cash.toLocaleString()}</td>
@@ -131,8 +132,9 @@ const AppointmentReportTable = ({ data, t }) => {
                             <React.Fragment key={idx}>
                                 <tr className={`appointment-report__day-header ${dayGroup.is_weekend ? 'appointment-report__day-header--weekend' : ''} ${dayGroup.is_holiday ? 'appointment-report__day-header--holiday' : ''}`}>
                                     <td colSpan="7">
-                                        <Icon name="DATE_RANGE" size="1.2rem" className="appointment-report__header-icon" /> {dayGroup.date}
-                                        {dayGroup.is_holiday && <span className="appointment-report__holiday-tag"><Icon name="FLARE" size="1.1rem" /> {dayGroup.holiday_description}</span>}
+                                        <Icon name="calendar_today" size="1rem" className="mr-1" /> {dayGroup.date}
+                                        {dayGroup.is_holiday && <span className="appointment-report__holiday-tag"><Icon name="celebration" size="1rem" className="mr-1" />{dayGroup.holiday_description}</span>}
+
                                         {dayGroup.is_weekend && !dayGroup.is_holiday && <span className="appointment-report__weekend-note">({t('weekend_short') || 'Finde'})</span>}
                                     </td>
                                 </tr>

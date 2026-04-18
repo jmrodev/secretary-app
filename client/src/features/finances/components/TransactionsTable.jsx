@@ -4,7 +4,7 @@ import { formatTime } from '@/utils/dateUtils';
 import Pagination from '@/components/atoms/Pagination';
 
 // Local Feature Components
-import TransactionRow from './TransactionRow';
+import TransactionRow from '@/features/finances/components/TransactionRow';
 
 import './TransactionsTable.css';
 

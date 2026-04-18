@@ -2,7 +2,7 @@ import React from 'react';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import Input from '@/components/atoms/Input';
-import ChatMessageBubble from './ChatMessageBubble';
+import ChatMessageBubble from '@/features/chat/components/ChatMessageBubble';
 
 /**
  * ChatThread Molecule (Feature Component).

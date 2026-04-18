@@ -120,7 +120,7 @@ export const useSystemConfigController = () => {
         try {
             setLoading(true);
             await api.post('/whatsapp/test', { to: phone });
-            showMessage('✅ Mensaje de prueba enviado. Verifique su WhatsApp.', 'success');
+            showMessage('Mensaje de prueba enviado. Verifique su WhatsApp.', 'success');
         } catch (error) {
             console.error(error);
             showMessage(error.response?.data?.error || 'Error al enviar mensaje de prueba', 'error');

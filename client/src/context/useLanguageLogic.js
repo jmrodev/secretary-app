@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
-import { translations } from '../constants/translations';
+import { translations } from '@/constants/translations';
 
 const LANGUAGE_KEY = 'medicare_preferred_language';
 

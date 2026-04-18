@@ -9,8 +9,12 @@ import Select from '@/components/atoms/Select';
 import Badge from '@/components/atoms/Badge';
 import { formatPrice } from '@/utils/format';
 import { formatDate } from '@/utils/dateUtils';
+<<<<<<< HEAD
 import { useRentalsController } from './hooks/useRentalsController';
 import './RentalsPage.css';
+=======
+import { useRentalsController } from '@/features/rentals/hooks/useRentalsController';
+>>>>>>> main
 
 /**
  * RentalsPage Orchestrator.

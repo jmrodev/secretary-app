@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { usePatientsPageController } from './hooks/usePatientsPageController';
+import { usePatientsPageController } from '@/features/patients/hooks/usePatientsPageController';
 import { usePermissions } from '@/hooks/usePermissions';
 
 // Atoms (Shared)
@@ -11,20 +11,22 @@ import TabButton from '@/components/atoms/TabButton';
 import Icon from '@/components/atoms/Icon';
 
 // Molecules (Shared/Global)
-import { PageHeader } from '../layout';
-import QRCodeModal from './components/QRCodeModal';
+// Molecules (Shared/Global)
+import { PageHeader } from '@/features/layout';
+import QRCodeModal from '@/features/patients/components/QRCodeModal';
 import SearchBar from '@/components/molecules/SearchBar';
 import Pagination from '@/components/molecules/Pagination';
 import TabNav from '@/components/molecules/TabNav';
 
 // Feature components (Internal - Local to this folder)
-import PatientList from './components/PatientList';
-import PatientDetailsView from './components/PatientDetailsView';
-import PatientRecycleBin from './components/PatientRecycleBin';
-import PatientMedications from './components/PatientMedications';
-import DebtPaymentModal from './components/DebtPaymentModal';
-import PatientManagerModal from './components/PatientManagerModal';
-import { DoctorFilter } from '../doctors';
+import PatientList from '@/features/patients/components/PatientList';
+import PatientDetailsView from '@/features/patients/components/PatientDetailsView';
+import PatientRecycleBin from '@/features/patients/components/PatientRecycleBin';
+import PatientMedications from '@/features/patients/components/PatientMedications';
+import DebtPaymentModal from '@/features/patients/components/DebtPaymentModal';
+import PatientManagerModal from '@/features/patients/components/PatientManagerModal';
+import { DoctorFilter } from '@/features/doctors';
+
 
 import './PatientsPage.css';
 

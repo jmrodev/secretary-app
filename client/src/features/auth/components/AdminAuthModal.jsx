@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Modal from '@/components/molecules/Modal';
+import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import Input from '@/components/atoms/Input';
@@ -41,6 +42,7 @@ const AdminAuthModal = ({ isOpen, onClose, onConfirm }) => {
                     <Icon name="warning" size="1.1rem" color="var(--warning)" className="inline mr-1" />
                     {t('admin_auth_instruction')}
                 </p>
+<<<<<<< HEAD
                 <form onSubmit={handleSubmit} className="admin-auth__form">
                     <div className="admin-auth__input-group">
                         <Input
@@ -70,6 +72,37 @@ const AdminAuthModal = ({ isOpen, onClose, onConfirm }) => {
                     </div>
                 </form>
             </div>
+=======
+                <div className="input-group mb-8">
+                    <input
+                        type="password"
+                        className="input-field border-gray-200 focus:border-accent text-center tracking-[0.5em] text-lg font-bold"
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        autoFocus
+                    />
+                </div>
+                <div className="flex justify-end gap-3 pt-6 border-t border-gray-50">
+                    <Button
+                        type="button" 
+                        className="btn btn-ghost text-gray-400 hover:text-gray-600 font-bold uppercase tracking-widest text-[10px]" 
+                        onClick={onClose}
+                        unstyled
+                    >
+                        Cancelar
+                    </Button>
+                    <Button
+                        type="submit" 
+                        className="btn btn-primary shadow-lg shadow-accent/20 px-8 font-bold uppercase tracking-widest text-[10px]" 
+                        disabled={!password}
+                        unstyled
+                    >
+                        Confirmar Acción
+                    </Button>
+                </div>
+            </form>
+>>>>>>> main
         </Modal>
     );
 };

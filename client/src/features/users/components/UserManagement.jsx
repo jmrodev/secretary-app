@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
-import { useUsers } from '../hooks/useUsers';
+import React, { useState, useEffect } from 'react';
+import { useUsers } from '@/features/users/hooks/useUsers';
 import { useLanguage } from '@/context/LanguageContext';
 
 // Atoms & Molecules
 import Button from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
 import Card from '@/components/atoms/Card';
+import Icon from '@/components/atoms/Icon';
 import Modal from '@/components/molecules/Modal';
 
 // Feature Components
-import UserTable from './UserTable';
-import UserForm from './UserForm';
-import './UserManagement.css';
+import UserTable from '@/features/users/components/UserTable';
+import UserForm from '@/features/users/components/UserForm';
 
 const UserManagement = ({ excludeRoles = [], role = null }) => {
     const { t } = useLanguage();
@@ -83,21 +82,26 @@ const UserManagement = ({ excludeRoles = [], role = null }) => {
 
     return (
         <div className="user-management-organism">
-            <header className="user-management__action-bar">
-                <Input
-                    placeholder={t('search_users_placeholder')}
-                    icon="SEARCH"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="user-management__search-input"
-                />
-                <div className="user-management__action-bar-tools">
-                    <Button variant="ghost" onClick={loadData} icon="SYNC" />
-                    <Button variant="primary" onClick={() => openModal('CREATE')} icon="ADD">
-                        {t('new') || 'Nuevo'}
+            <section className="action-bar">
+                <div className="action-bar__search">
+                    <div className="search-box__wrapper">
+                        <span className="search-box__icon"><Icon name="search" /></span>
+                        <input
+                            type="text"
+                            placeholder={t('search_users_placeholder')}
+                            className="search-box__input"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+                </div>
+                <div className="action-bar__tools">
+                    <Button variant="ghost" onClick={loadData} icon={<Icon name="sync" />} />
+                    <Button variant="primary" onClick={() => openModal('CREATE')}>
+                        <Icon name="auto_awesome" size="1rem" /> {t('new') || 'Nuevo'}
                     </Button>
                 </div>
-            </header>
+            </section>
 
             <Card className="user-management__table-container">
                 {loading ? (

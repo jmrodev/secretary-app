@@ -1,6 +1,9 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
+<<<<<<< HEAD
 import './HabitualMedicationsGrid.css';
+=======
+>>>>>>> main
 
 /**
  * HabitualMedicationsGrid Feature Molecule.
@@ -24,6 +27,7 @@ const HabitualMedicationsGrid = ({ patientMeds, medicationItems, onSelect, t }) 
                             variant={isSelected ? 'primary' : 'ghost'}
                             className={`habitual-meds__btn ${isSelected ? 'habitual-meds__btn--active' : ''}`}
                             onClick={() => onSelect(m)}
+                            unstyled
                         >
                             <span className="habitual-meds__name">{m.medication_name}</span>
                             {(m.dose || m.daily_intake || m.daily_units) && (

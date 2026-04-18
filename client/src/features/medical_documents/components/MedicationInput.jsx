@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import MedicationAutocomplete from './MedicationAutocomplete';
-import MedicationList from './MedicationList';
+import MedicationAutocomplete from '@/features/medical_documents/components/MedicationAutocomplete';
+import MedicationList from '@/features/medical_documents/components/MedicationList';
 import './MedicationInput.css';
 
 /**

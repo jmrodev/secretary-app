@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
-import ConfigField from './ConfigField';
+import ConfigField from '@/features/config/components/ConfigField';
 import Icon from '@/components/atoms/Icon';
-import MessageTemplateEditor from './MessageTemplateEditor';
+import MessageTemplateEditor from '@/features/config/components/MessageTemplateEditor';
 import { useLanguage } from '@/context/LanguageContext';
 import './CommunicationSettings.css';
 

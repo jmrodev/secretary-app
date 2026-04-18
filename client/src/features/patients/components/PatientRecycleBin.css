@@ -53,14 +53,6 @@
     border-bottom: 1px solid var(--gray-100);
 }
 
-/* Helper Columns / Alignment */
-.patient-recycle-bin__col-33 { width: 33.33%; }
-.patient-recycle-bin__col-25 { width: 25%; }
-.patient-recycle-bin__col-16 { width: 16.66%; }
-.patient-recycle-bin__cell--right { text-align: right; }
-.patient-recycle-bin__text-right { text-align: right; }
-.patient-recycle-bin__icon-faded { opacity: 0.7; }
-
 .patient-recycle-bin__row:hover {
     background-color: var(--gray-50);
 }
@@ -142,13 +134,13 @@
     color: var(--slate-400);
 }
 
-.patient-recycle-bin__actions .patient-recycle-bin__action-btn--restore {
+.patient-recycle-bin__action-btn--restore {
     color: var(--green-600);
     border-color: var(--green-200);
     font-weight: 700;
 }
 
-.patient-recycle-bin__actions .patient-recycle-bin__action-btn--restore:hover {
+.patient-recycle-bin__action-btn--restore:hover {
     background-color: var(--green-50);
     border-color: var(--green-300);
 }

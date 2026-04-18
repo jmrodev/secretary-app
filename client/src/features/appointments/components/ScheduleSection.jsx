@@ -1,8 +1,14 @@
 import React from 'react';
+<<<<<<< HEAD
 import DaySchedule from './DaySchedule.jsx';
 import HolidayList from './HolidayList.jsx';
 import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/context/LanguageContext';
+=======
+import DaySchedule from '@/features/appointments/components/DaySchedule.jsx';
+import HolidayList from '@/features/appointments/components/HolidayList.jsx';
+import Icon from '@/components/atoms/Icon';
+>>>>>>> main
 import './ScheduleSection.css';
 
 /**
@@ -31,9 +37,13 @@ const ScheduleSection = ({
                 />
             ) : (
                 <>
+<<<<<<< HEAD
                     <h3 className="schedule-section__title">
                         <Icon name="LOGS" /> {t('closed_days_list') || 'Lista de Días Cerrados'}
                     </h3>
+=======
+                    <h3 className="schedule-section__title"><Icon name="list" className="mr-1" />Lista de Días Cerrados</h3>
+>>>>>>> main
                     <div className="schedule-section__content">
                         <HolidayList holidays={holidays} onDelete={onDeleteHoliday} />
                     </div>

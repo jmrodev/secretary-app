@@ -211,7 +211,11 @@ const NextSlotModal = ({
 
                 <div className={`${baseClass}__help-footer`}>
                     <span>{t('keyboard_nav_help')}</span>
+<<<<<<< HEAD
                     <Button variant="ghost" onClick={onClose}>{t('close')}</Button>
+=======
+                    <Button className={`${baseClass}__close-btn`} onClick={onClose} unstyled>{t('close')}</Button>
+>>>>>>> main
                 </div>
             </div>
         </Modal>
@@ -219,4 +223,3 @@ const NextSlotModal = ({
 };
 
 export default NextSlotModal;
-

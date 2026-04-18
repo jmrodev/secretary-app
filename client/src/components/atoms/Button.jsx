@@ -19,10 +19,16 @@ const Button = ({
     title = '',
     tooltip = null,
     icon = null,
+    iconRight = null,
     active = false,
+    unstyled = false,
     target = '_self',
     rel = 'noopener noreferrer',
+<<<<<<< HEAD
     ...props
+=======
+    ...rest
+>>>>>>> main
 }) => {
     const baseClass = 'btn';
 
@@ -32,19 +38,22 @@ const Button = ({
     const activeClass = active ? `${baseClass}--active` : '';
     const iconOnlyClass = !children && icon ? `${baseClass}--icon-only` : '';
 
-    const combinedClassName = `
-        ${baseClass} 
-        ${variantClass} 
-        ${sizeClass} 
-        ${activeClass}
-        ${iconOnlyClass}
-        ${className}
-    `.trim().replace(/\s+/g, ' ');
+    const combinedClassName = unstyled
+        ? className
+        : `
+            ${baseClass} 
+            ${variantClass} 
+            ${sizeClass} 
+            ${activeClass}
+            ${iconOnlyClass}
+            ${className}
+        `.trim().replace(/\s+/g, ' ');
 
     const content = (
         <>
             {icon && <span className="btn__icon">{icon}</span>}
             {children && <span className="btn__content">{children}</span>}
+            {iconRight && <span className="btn__icon">{iconRight}</span>}
         </>
     );
 
@@ -59,7 +68,11 @@ const Button = ({
                 title={title}
                 data-tooltip={tooltip}
                 onClick={onClick}
+<<<<<<< HEAD
                 {...props}
+=======
+                {...rest}
+>>>>>>> main
             >
                 {content}
             </Link>
@@ -76,7 +89,11 @@ const Button = ({
                 target={target}
                 rel={rel}
                 onClick={onClick}
+<<<<<<< HEAD
                 {...props}
+=======
+                {...rest}
+>>>>>>> main
             >
                 {content}
             </a>
@@ -91,7 +108,11 @@ const Button = ({
             className={combinedClassName}
             title={title}
             data-tooltip={tooltip}
+<<<<<<< HEAD
             {...props}
+=======
+            {...rest}
+>>>>>>> main
         >
             {content}
         </button>

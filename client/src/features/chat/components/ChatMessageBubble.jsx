@@ -1,6 +1,9 @@
 import React from 'react';
+<<<<<<< HEAD
 import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/context/LanguageContext';
+=======
+>>>>>>> main
 
 /**
  * ChatMessageBubble Molecule (Feature Component).

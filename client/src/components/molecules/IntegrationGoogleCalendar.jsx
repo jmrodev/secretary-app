@@ -2,10 +2,16 @@ import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import StatusIndicator from '@/components/atoms/StatusIndicator';
+<<<<<<< HEAD
 import ConfigToggle from '@/features/config/components/ConfigToggle';
 import ConfigField from '@/features/config/components/ConfigField';
 import Alert from '@/components/atoms/Alert';
 import './IntegrationGoogleCalendar.css';
+=======
+import ConfigToggle from '@/components/molecules/ConfigToggle';
+import ConfigField from '@/components/molecules/ConfigField';
+import Alert from '@/components/atoms/Alert';
+>>>>>>> main
 
 /**
  * IntegrationGoogleCalendar Molecule.
@@ -27,7 +33,11 @@ const IntegrationGoogleCalendar = ({
     return (
         <div className="config-section">
             <div className="config-section__header">
+<<<<<<< HEAD
                 <Icon name="DATE_RANGE" className="config-section__icon" />
+=======
+                <span className="config-section__icon"><Icon name="calendar_today" /></span>
+>>>>>>> main
                 <h2 className="config-section__title">Integración con Google Calendar</h2>
             </div>
 
@@ -45,6 +55,7 @@ const IntegrationGoogleCalendar = ({
                             <div className="config-flex config-flex--column google-calendar-integration__status-container">
                                 <ConfigToggle
                                     id="google-sync-toggle"
+<<<<<<< HEAD
                                     label={
                                         <span className="config-field__label-with-icon">
                                             <Icon 
@@ -55,6 +66,9 @@ const IntegrationGoogleCalendar = ({
                                             {settings.google_sync_enabled === 'false' ? 'Sincronización PAUSADA' : 'Sincronización ACTIVA'}
                                         </span>
                                     }
+=======
+                                    label={settings.google_sync_enabled === 'false' ? 'Sincronización PAUSADA' : 'Sincronización ACTIVA'}
+>>>>>>> main
                                     checked={settings.google_sync_enabled !== 'false'}
                                     onChange={(val) => updateSetting('google_sync_enabled', val ? 'true' : 'false')}
                                 />
@@ -68,6 +82,7 @@ const IntegrationGoogleCalendar = ({
                     {!googleUnlinked ? (
                         <div className="config-group__items">
                             <div className="config-actions">
+<<<<<<< HEAD
                                 <Button 
                                     variant="secondary" 
                                     onClick={onRefreshToken}
@@ -80,6 +95,14 @@ const IntegrationGoogleCalendar = ({
                                     onClick={onDisconnectGoogle}
                                     icon={<Icon name="CANCEL" />}
                                 >
+=======
+                                <Button variant="secondary" onClick={onRefreshToken}>
+                                    <Icon name="sync" className="mr-1" />
+                                    Refrescar Enlace
+                                </Button>
+                                <Button variant="danger" onClick={onDisconnectGoogle}>
+                                    <Icon name="close" className="mr-1" />
+>>>>>>> main
                                     Desconectar Cuenta
                                 </Button>
                             </div>
@@ -96,6 +119,10 @@ const IntegrationGoogleCalendar = ({
                                     className="google-calendar-integration__retry-btn"
                                     icon={<Icon name="SYNC" />}
                                 >
+<<<<<<< HEAD
+=======
+                                    <Icon name="bolt" className="mr-1" />
+>>>>>>> main
                                     Reintentar Elementos Fallidos
                                 </Button>
                             </Alert>

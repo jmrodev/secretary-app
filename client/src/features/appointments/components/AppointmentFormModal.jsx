@@ -1,6 +1,10 @@
 import React from 'react';
 import Modal from '@/components/molecules/Modal';
 import Button from '@/components/atoms/Button';
+<<<<<<< HEAD
+=======
+import Icon from '@/components/atoms/Icon';
+>>>>>>> main
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/features/auth';
 import Select from '@/components/atoms/Select';
@@ -8,9 +12,9 @@ import Input from '@/components/atoms/Input';
 import Switch from '@/components/atoms/Switch';
 import Icon from '@/components/atoms/Icon';
 
-import AppointmentSyncAlert from './AppointmentSyncAlert.jsx';
-import AppointmentTypeSelector from './AppointmentTypeSelector.jsx';
-import AppointmentPatientSection from './AppointmentPatientSection.jsx';
+import AppointmentSyncAlert from '@/features/appointments/components/AppointmentSyncAlert.jsx';
+import AppointmentTypeSelector from '@/features/appointments/components/AppointmentTypeSelector.jsx';
+import AppointmentPatientSection from '@/features/appointments/components/AppointmentPatientSection.jsx';
 
 import './AppointmentFormModal.css';
 
@@ -77,7 +81,12 @@ const AppointmentFormModal = ({
                     <Input type="datetime-local" value={date} onChange={e => handleDateChange(e.target.value)} required />
                     {isOutOfHours && (
                         <div className="appointment-form-modal__extra-badge appointment-form-modal__extra-badge--pulse">
+<<<<<<< HEAD
                             <Icon name="WARNING" size="sm" /> {t('out_of_hours_appointment')}
+=======
+                            <Icon name="warning" size="1rem" className="mr-1" />
+                            Turno Fuera de Horario (Extra)
+>>>>>>> main
                         </div>
                     )}
                 </div>
@@ -113,12 +122,17 @@ const AppointmentFormModal = ({
                 </div>
 
                 <div className="form-actions">
+<<<<<<< HEAD
                     <Button 
                         type="submit" 
                         variant="accent" 
                         className="form-actions__submit"
                     >
                         {editModeId ? t('save_changes') : t('confirm_booking')}
+=======
+                    <Button type="submit" className="btn btn-accent form-actions__submit" unstyled>
+                        {editModeId ? (t('save_changes') || 'Guardar Cambios') : t('confirm_booking')}
+>>>>>>> main
                     </Button>
                 </div>
             </form>

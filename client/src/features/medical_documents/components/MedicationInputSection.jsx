@@ -1,5 +1,5 @@
 import React from 'react';
-import MedicationAutocomplete from './MedicationAutocomplete';
+import MedicationAutocomplete from '@/features/medical_documents/components/MedicationAutocomplete';
 import Input from '@/components/atoms/Input';
 import Select from '@/components/atoms/Select';
 import Tooltip from '@/components/atoms/Tooltip';
@@ -86,6 +86,7 @@ const MedicationInputSection = ({
                                         setTempFreq(p.text);
                                         if (p.unitsPerDay !== null) setTempDailyUnits(String(p.unitsPerDay));
                                     }}
+                                    unstyled
                                 >
                                     {p.label}
                                 </Button>

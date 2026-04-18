@@ -2,9 +2,9 @@
 import React, { useState, useMemo } from 'react';
 
 // Molecules
-import PrescriptionHabitualMeds from './PrescriptionHabitualMeds';
-import PrescriptionFormFields from './PrescriptionFormFields';
-import PrescriptionItemsList from './PrescriptionItemsList';
+import PrescriptionHabitualMeds from '@/features/medical_documents/components/PrescriptionHabitualMeds';
+import PrescriptionFormFields from '@/features/medical_documents/components/PrescriptionFormFields';
+import PrescriptionItemsList from '@/features/medical_documents/components/PrescriptionItemsList';
 
 import './PrescriptionModal.css';
 

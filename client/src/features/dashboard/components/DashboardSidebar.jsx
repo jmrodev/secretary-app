@@ -1,7 +1,6 @@
 import React from 'react';
-import StatCard from './StatCard';
+import StatCard from '@/features/dashboard/components/StatCard';
 import Icon from '@/components/atoms/Icon';
-import { useNavigate } from 'react-router-dom';
 import './DashboardSidebar.css';
 
 /**
@@ -9,8 +8,6 @@ import './DashboardSidebar.css';
  * Displays stats and patient growth using a BEM structure.
  */
 const DashboardSidebar = ({ stats, newPatientStats, user, t }) => {
-    const navigate = useNavigate();
-
     return (
         <aside className="dashboard-sidebar-stats">
             {/* General Statistics Section */}

@@ -21,7 +21,7 @@ export const parseDate = (input) => {
     if (input instanceof Date) return input;
 
     // Check if it's DD/MM/YYYY
-    const ddmmyyyy = /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/;
+    const ddmmyyyy = /^(\d{1,2})[/-](\d{1,2})[/-](\d{4})/;
     const match = input.match(ddmmyyyy);
     if (match) {
         return new Date(match[3], match[2] - 1, match[1]);

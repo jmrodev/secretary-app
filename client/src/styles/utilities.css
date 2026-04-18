@@ -44,7 +44,7 @@
     animation: fadeIn 0.3s ease-out forwards;
 }
 
-#root .overflow-visible {
+.overflow-visible {
     overflow: visible;
 }
 

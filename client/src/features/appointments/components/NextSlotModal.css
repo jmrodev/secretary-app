@@ -260,7 +260,12 @@
     padding: 0 0.5rem;
 }
 
+<<<<<<< HEAD
 .next-slot-modal__footer-btn.next-slot-modal__footer-btn--action {
+=======
+.next-slot-modal__footer-btn {
+    flex: 1;
+>>>>>>> main
     height: auto;
     padding: 1.25rem;
     display: flex;
@@ -282,7 +287,11 @@
     border-color: var(--blue-200);
 }
 
+<<<<<<< HEAD
 .next-slot-modal__footer-btn.next-slot-modal__footer-btn--explore:hover {
+=======
+.next-slot-modal__footer-btn--explore:hover {
+>>>>>>> main
     background: var(--blue-50);
 }
 

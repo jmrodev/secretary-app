@@ -23,14 +23,6 @@ const CurrencyInput = ({
 
     const combinedClassName = `${baseClass} ${variantClass} ${sizeClass} ${className}`.trim();
 
-    useEffect(() => {
-        if (value !== undefined && value !== null) {
-            setDisplayValue(format(value));
-        } else {
-            setDisplayValue('');
-        }
-    }, [value]);
-
     const format = (val) => {
         if (!val && val !== 0) return '';
         return new Intl.NumberFormat('es-AR', {
@@ -39,6 +31,16 @@ const CurrencyInput = ({
             maximumFractionDigits: 0
         }).format(Number(val));
     };
+
+    useEffect(() => {
+        queueMicrotask(() => {
+            if (value !== undefined && value !== null) {
+                setDisplayValue(format(value));
+            } else {
+                setDisplayValue('');
+            }
+        });
+    }, [value]);
 
     const handleChange = (e) => {
         const inputVal = e.target.value;

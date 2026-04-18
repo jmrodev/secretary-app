@@ -1,14 +1,14 @@
 import React, { Suspense } from 'react';
-import { useSystemConfigController } from './hooks/useSystemConfigController';
-import GeneralSettings from './components/GeneralSettings';
-import CommunicationSettings from './components/CommunicationSettings';
-import IntegrationSettings from './components/IntegrationSettings';
-import BillingSettings from './components/BillingSettings';
-import { useDoctorsPageController } from '../doctors';
-import { useProfileController, ProfileEditor } from '../auth';
-import { useReportsController, useAuditLogsController } from '../reports';
-import { QRCodeModal } from '../patients'; // Fixed import from patients feature
-import { useInstitutionsController } from '../institutions';
+import { useSystemConfigController } from '@/features/config/hooks/useSystemConfigController';
+import GeneralSettings from '@/features/config/components/GeneralSettings';
+import CommunicationSettings from '@/features/config/components/CommunicationSettings';
+import IntegrationSettings from '@/features/config/components/IntegrationSettings';
+import BillingSettings from '@/features/config/components/BillingSettings';
+import { useDoctorsPageController } from '@/features/doctors';
+import { useProfileController, ProfileEditor } from '@/features/auth';
+import { useReportsController, useAuditLogsController } from '@/features/reports';
+import { QRCodeModal } from '@/features/patients'; // Fixed import from patients feature
+import { useInstitutionsController } from '@/features/institutions';
 
 // Global Atomic Components
 import MainLayout from '@/components/templates/MainLayout';
@@ -17,11 +17,11 @@ import Icon from '@/components/atoms/Icon';
 import Loading from '@/components/atoms/Loading';
 
 // Lazy load heavy components
-const DoctorsManager = React.lazy(() => import('../doctors').then(module => ({ default: module.DoctorsManager })));
-const ReportsDashboard = React.lazy(() => import('../reports').then(module => ({ default: module.ReportsDashboard })));
-const InstitutionManager = React.lazy(() => import('../institutions').then(module => ({ default: module.InstitutionManager })));
-const AuditLogManager = React.lazy(() => import('../reports').then(module => ({ default: module.AuditLogManager })));
-const UserManager = React.lazy(() => import('../users').then(module => ({ default: module.UserManager })));
+const DoctorsManager = React.lazy(() => import('@/features/doctors').then(module => ({ default: module.DoctorsManager })));
+const ReportsDashboard = React.lazy(() => import('@/features/reports').then(module => ({ default: module.ReportsDashboard })));
+const InstitutionManager = React.lazy(() => import('@/features/institutions').then(module => ({ default: module.InstitutionManager })));
+const AuditLogManager = React.lazy(() => import('@/features/reports').then(module => ({ default: module.AuditLogManager })));
+const UserManager = React.lazy(() => import('@/features/users').then(module => ({ default: module.UserManager })));
 
 import { printReport } from '@/utils/reportPrintHelper';
 import './SystemConfigPage.css';

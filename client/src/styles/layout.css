@@ -31,7 +31,7 @@ screen and (max-height: 800px) {
     padding: 0 1.5rem;
 }
 
-#root .overflow-visible {
+.overflow-visible {
     overflow: visible;
 }
 

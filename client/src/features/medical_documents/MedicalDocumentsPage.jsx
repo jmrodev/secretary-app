@@ -8,7 +8,7 @@ import {
     MedicalActionModals,
     DocumentsHeader,
     DocumentsSidebar
-} from './index'; // Using local index for feature components
+} from '@/features/medical_documents/index'; // Using local index for feature components
 
 // Global Atomic Components
 import MainLayout from '@/components/templates/MainLayout';
@@ -34,13 +34,13 @@ const MedicalDocumentsPage = () => {
         requestsPage, requestsTotalPages,
         prescriptionsPage, prescriptionsTotalPages,
         licensesPage, licensesTotalPages,
-        selectedFile, selectedPrescription,
+        selectedPrescription,
         selectedLicense, selectedRequest,
         filePatient, fileDesc,
         fileToDelete, actionModal, actionNote,
         paymentModal, editData, licenseEditData,
         requestEditData,
-        reqType, reqNote,
+        reqType,
         sendToDoctor,
         canDeletePrescription, canDeleteLicense, canDeleteFile, canDeleteRequest,
         printData,
@@ -55,7 +55,7 @@ const MedicalDocumentsPage = () => {
         handleRequestEditDataChange, handleSelectMedication, toggleEditing,
         closeActionModal, openActionModal, closePaymentModal, openPaymentModal,
         closeDeleteFileModal, openDeleteFileModal,
-        handleCreateRequest, handleUpdateStatus, handleFileUpload, confirmFileDelete,
+        handleUpdateStatus, handleFileUpload, confirmFileDelete,
         handleUpdatePrescription, handleUpdateLicense, handleUpdateRequest, handleDeleteRequest,
         handleDeletePrescription, handleEditItem, handleDeleteLicense, fetchRequests,
         filterItem, handleExportJSON, handlePrintPrescriptions

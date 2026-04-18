@@ -13,7 +13,6 @@ export const useProfileController = () => {
     const { t } = useLanguage();
     const { showMessage } = useMessage();
 
-    const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
 
     // Form data synchronized with profile record
@@ -28,8 +27,6 @@ export const useProfileController = () => {
         const fetchProfile = async () => {
             try {
                 const res = await api.get('/users/profile');
-                setProfile(res.data);
-
                 if (res.data) {
                     setFormData({
                         fullName: res.data.full_name || '',

@@ -3,10 +3,10 @@
 // Centralized hub for statistics, reminders and orchestration
 
 // Controllers & Hooks
-export { useDashboardController } from './hooks/useDashboardController';
+export { useDashboardController } from '@/features/dashboard/hooks/useDashboardController';
 
 // Components
-export { default as DashboardPage } from './DashboardPage';
-export { default as DashboardSidebar } from './components/DashboardSidebar';
-export { default as DashboardReminders } from './components/DashboardReminders';
-export { default as QuickActions } from './components/QuickActions';
+export { default as DashboardPage } from '@/features/dashboard/DashboardPage';
+export { default as DashboardSidebar } from '@/features/dashboard/components/DashboardSidebar';
+export { default as DashboardReminders } from '@/features/dashboard/components/DashboardReminders';
+export { default as QuickActions } from '@/features/dashboard/components/QuickActions';

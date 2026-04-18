@@ -3,11 +3,11 @@ import React from 'react';
 import { TransactionModal } from '@/features/finances';
 
 // Local Feature Components
-import StatusActionModal from './StatusActionModal';
-import DeleteFileModal from './DeleteFileModal';
-import EditPrescriptionModal from './EditPrescriptionModal';
-import EditLicenseModal from './EditLicenseModal';
-import EditRequestModal from './EditRequestModal';
+import StatusActionModal from '@/features/medical_documents/components/StatusActionModal';
+import DeleteFileModal from '@/features/medical_documents/components/DeleteFileModal';
+import EditPrescriptionModal from '@/features/medical_documents/components/EditPrescriptionModal';
+import EditLicenseModal from '@/features/medical_documents/components/EditLicenseModal';
+import EditRequestModal from '@/features/medical_documents/components/EditRequestModal';
 
 /**
  * MedicalActionModals Organism (Feature-based).

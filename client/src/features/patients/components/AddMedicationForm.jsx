@@ -8,8 +8,8 @@ import MedicationAutocomplete from '@/features/medical_documents/components/Medi
 import './AddMedicationForm.css';
 
 // Local Feature Components
-import MedicationPendingList from './MedicationPendingList';
-import MedicationConfigFields from './MedicationConfigFields';
+import MedicationPendingList from '@/features/patients/components/MedicationPendingList';
+import MedicationConfigFields from '@/features/patients/components/MedicationConfigFields';
 
 /**
  * AddMedicationForm Organism (Executor).

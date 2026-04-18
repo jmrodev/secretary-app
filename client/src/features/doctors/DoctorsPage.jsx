@@ -1,8 +1,14 @@
 import React from 'react';
 import MainLayout from '@/components/templates/MainLayout';
+<<<<<<< HEAD
 import DoctorsManager from './components/DoctorsManager';
 import { useDoctorsPageController } from './hooks/useDoctorsPageController';
 import './DoctorsPage.css';
+=======
+import DoctorsManager from '@/features/doctors/components/DoctorsManager';
+
+import { useDoctorsPageController } from '@/features/doctors/hooks/useDoctorsPageController';
+>>>>>>> main
 
 /**
  * DoctorsPage (Orchestrator).

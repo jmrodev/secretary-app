@@ -70,6 +70,7 @@ const PublicRequestPage = () => {
                                     onClick={() => handleToggleMedSelection(med)}
                                     className={`med-chip ${selectedMeds.includes(med) ? 'med-chip--active' : ''}`}
                                     title={med}
+                                    unstyled
                                 >
                                     {med}
                                 </Button>
@@ -89,6 +90,7 @@ const PublicRequestPage = () => {
                                 <li key={idx} className="selected-item">
                                     <span className="selected-item__name">{med}</span>
                                     <Button
+<<<<<<< HEAD
                                         variant="ghost"
                                         size="sm-compact"
                                         onClick={() => handleToggleMedSelection(med)}
@@ -96,6 +98,16 @@ const PublicRequestPage = () => {
                                         title={t('remove')}
                                         icon={<Icon name="close" size="1.2rem" />}
                                     />
+=======
+                                        onClick={() => handleToggleMedSelection(med)}
+                                        className="selected-item__remove"
+                                        title="Quitar"
+                                        unstyled
+                                        icon={<Icon name="close" />}
+                                        aria-label="Quitar"
+                                    >
+                                    </Button>
+>>>>>>> main
                                 </li>
                             ))}
                         </ul>
@@ -126,6 +138,7 @@ const PublicRequestPage = () => {
                                     variant="ghost"
                                     onClick={() => handleToggleMedSelection(res.full_label)}
                                     className="search-result-item"
+                                    unstyled
                                 >
                                     <span className="search-result-item__name">{res.name}</span>
                                     <span className="search-result-item__desc">{res.presentation} - {res.drug}</span>

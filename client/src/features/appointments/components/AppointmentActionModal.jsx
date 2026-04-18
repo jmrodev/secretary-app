@@ -7,9 +7,9 @@ import { useAuth } from '@/features/auth';
 import { useModal } from '@/context/ModalContext';
 import { useConfig } from '@/context/ConfigContext';
 import { usePermissions } from '@/hooks/usePermissions';
-import AppointmentHeader from './AppointmentHeader.jsx';
-import AppointmentMedicalPanel from './AppointmentMedicalPanel.jsx';
-import AppointmentAdminPanel from './AppointmentAdminPanel.jsx';
+import AppointmentHeader from '@/features/appointments/components/AppointmentHeader.jsx';
+import AppointmentMedicalPanel from '@/features/appointments/components/AppointmentMedicalPanel.jsx';
+import AppointmentAdminPanel from '@/features/appointments/components/AppointmentAdminPanel.jsx';
 import './AppointmentActionModal.css';
 
 /**

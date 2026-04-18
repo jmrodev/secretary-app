@@ -7,9 +7,9 @@ import { useMessage } from '@/context/MessageContext';
 import { capitalizeFirst } from '@/utils/stringUtils';
 
 // Local Feature Components
-import PrescriptionHabitualMeds from './PrescriptionHabitualMeds';
-import PrescriptionFormFields from './PrescriptionFormFields';
-import PrescriptionItemsList from './PrescriptionItemsList';
+import PrescriptionHabitualMeds from '@/features/medical_documents/components/PrescriptionHabitualMeds';
+import PrescriptionFormFields from '@/features/medical_documents/components/PrescriptionFormFields';
+import PrescriptionItemsList from '@/features/medical_documents/components/PrescriptionItemsList';
 
 import './PrescriptionModal.css';
 
@@ -31,7 +31,7 @@ const FREQ_PRESETS = [
  */
 const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, t, isSubmitting }) => {
     const { showMessage } = useMessage();
-    const [medications, setMedications] = useState('');
+    const [, setMedications] = useState('');
     const [instructions, setInstructions] = useState('');
     const [items, setItems] = useState([]);
     const [patientMeds, setPatientMeds] = useState([]);

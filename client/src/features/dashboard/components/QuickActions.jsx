@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import './QuickActions.css';
@@ -79,6 +80,7 @@ const QuickActions = ({ t, handlers, isAdmin, isSecretary, isDoctor, compact = f
                                     variant="ghost" 
                                     className="quick-actions__btn"
                                     onClick={action.onClick}
+                                    unstyled
                                 >
                                     <Icon name={action.icon} size="1.1rem" />
                                     <span>{action.label}</span>

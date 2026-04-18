@@ -44,28 +44,10 @@ const UserTable = ({ users, onEdit, onReset, onDelete }) => {
                             </td>
                             <td className="user-table__cell">
                                 <div className="user-table__actions">
-                                    <Button 
-                                        variant="secondary" 
-                                        size="sm" 
-                                        onClick={() => onEdit(u)} 
-                                        title={t('edit')}
-                                        icon={<Icon name="edit" />}
-                                    />
-                                    <Button 
-                                        variant="secondary" 
-                                        size="sm" 
-                                        onClick={() => onReset(u)} 
-                                        title={t('reset_pwd')}
-                                        icon={<Icon name="vpn_key" />}
-                                    />
+                                    <Button variant="secondary" size="sm" onClick={() => onEdit(u)} title={t('edit')} icon={<Icon name="edit" />} />
+                                    <Button variant="secondary" size="sm" onClick={() => onReset(u)} title={t('reset_pwd')} icon={<Icon name="key" />} />
                                     {u.role !== 'admin' && (
-                                        <Button 
-                                            variant="outline-danger" 
-                                            size="sm" 
-                                            onClick={() => onDelete(u)} 
-                                            title={t('delete')}
-                                            icon={<Icon name="delete" />}
-                                        />
+                                        <Button variant="outline-danger" size="sm" onClick={() => onDelete(u)} title={t('delete')} icon={<Icon name="delete" />} />
                                     )}
                                 </div>
                             </td>
@@ -73,7 +55,7 @@ const UserTable = ({ users, onEdit, onReset, onDelete }) => {
                     ))}
                 </tbody>
             </table>
-        </section>
+        </div>
     );
 };
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import CalendarDayCell from './CalendarDayCell.jsx';
-import CalendarHeader from './CalendarHeader.jsx';
-import DayHeaders from './DayHeaders.jsx';
+import CalendarDayCell from '@/features/appointments/components/CalendarDayCell.jsx';
+import CalendarHeader from '@/features/appointments/components/CalendarHeader.jsx';
+import DayHeaders from '@/features/appointments/components/DayHeaders.jsx';
 import { useLanguage } from '@/context/LanguageContext';
 import { isPastDay, isSameDay } from '@/utils/dateUtils';
 import './Calendar.css';
@@ -15,7 +15,7 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
     const { t } = useLanguage();
 
     useEffect(() => {
-        if (selectedDate) setViewDate(new Date(selectedDate));
+        if (selectedDate) queueMicrotask(() => setViewDate(new Date(selectedDate)));
     }, [selectedDate]);
 
     const getDaysInMonth = (date) => {

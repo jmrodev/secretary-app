@@ -64,15 +64,19 @@ const NextSlotCalendarModal = ({
         if (slotsByDate[dateStr]) { setSelectedDate(dateStr); setViewMode('list'); }
     };
 
-    useEffect(() => { if (!isOpen) setHasInitialized(false); }, [isOpen]);
+    useEffect(() => {
+        if (!isOpen) queueMicrotask(() => setHasInitialized(false));
+    }, [isOpen]);
 
     useEffect(() => {
         let isMounted = true;
         if (nextSlotData?.results?.length > 0 && isOpen && !hasInitialized) {
             if (isMounted) {
                 const [year, month] = nextSlotData.results[0].date.split('-');
-                setCurrentMonth(new Date(parseInt(year), parseInt(month) - 1, 1));
-                setHasInitialized(true);
+                queueMicrotask(() => {
+                    setCurrentMonth(new Date(parseInt(year), parseInt(month) - 1, 1));
+                    setHasInitialized(true);
+                });
             }
         }
         return () => { isMounted = false; };
@@ -92,6 +96,7 @@ const NextSlotCalendarModal = ({
                 <span className="calendar-slot-controls__label"><Icon name="lock_open" size="1rem" />{t('include_overtime')}</span>
             </label>
             <div className="calendar-slot-controls__toggle-group">
+<<<<<<< HEAD
                 <Button 
                     variant="ghost" 
                     size="sm-compact"
@@ -109,6 +114,13 @@ const NextSlotCalendarModal = ({
                     icon={<Icon name="list" size="1rem" />}
                 >
                     {t('list')}
+=======
+                <Button className={`calendar-slot-controls__toggle-btn ${viewMode === 'calendar' ? 'calendar-slot-controls__toggle-btn--active' : ''}`} onClick={() => setViewMode('calendar')} unstyled>
+                    <Icon name="calendar_today" size="1rem" />{t('calendar')}
+                </Button>
+                <Button className={`calendar-slot-controls__toggle-btn ${viewMode === 'list' ? 'calendar-slot-controls__toggle-btn--active' : ''}`} onClick={() => setViewMode('list')} unstyled>
+                    <Icon name="list" size="1rem" />{t('list')}
+>>>>>>> main
                 </Button>
             </div>
         </div>
@@ -131,6 +143,7 @@ const NextSlotCalendarModal = ({
                             </td>
                             <td className="slots-list__cell slots-list__cell--actions">
                                 <div className="slots-list__actions">
+<<<<<<< HEAD
                                     <Button 
                                         variant="ghost" 
                                         size="sm-compact" 
@@ -139,6 +152,9 @@ const NextSlotCalendarModal = ({
                                         title="WhatsApp"
                                         icon={<Icon name="chat" size="1.1rem" />}
                                     />
+=======
+                                    <Button className="slots-list__wa-btn" onClick={(e) => { e.stopPropagation(); onWhatsApp(slot); }} title="WhatsApp" unstyled><Icon name="chat" size="1.1rem" /></Button>
+>>>>>>> main
                                     <Button variant={type === 'normal' ? 'primary' : 'secondary'} size="sm-compact" onClick={() => onSelect(slot.iso, slot.is_out_of_hours)}>
                                         {type === 'normal' ? t('select') : (type === 'break' ? t('assign_ext') : t('assign_extra'))}
                                     </Button>
@@ -163,6 +179,7 @@ const NextSlotCalendarModal = ({
                     ) : viewMode === 'calendar' ? (
                         <div className="calendar-grid">
                             <div className="calendar-header">
+<<<<<<< HEAD
                                 <Button 
                                     variant="ghost" 
                                     size="sm-compact" 
@@ -178,6 +195,11 @@ const NextSlotCalendarModal = ({
                                     className="calendar-header__nav-button"
                                     icon={<Icon name="chevron_right" size="1.2rem" />}
                                 />
+=======
+                                <Button onClick={handlePrevMonth} className="calendar-header__nav-button" unstyled><Icon name="chevron_left" size="1.2rem" /></Button>
+                                <h3 className="calendar-header__title">{monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}</h3>
+                                <Button onClick={handleNextMonth} className="calendar-header__nav-button" unstyled><Icon name="chevron_right" size="1.2rem" /></Button>
+>>>>>>> main
                             </div>
                             <div className="day-headers">{dayNames.map(day => <div key={day} className="day-headers__day">{day}</div>)}</div>
                             <div className="calendar-grid__body">{calendarDays.map((dayData, idx) => {
@@ -205,6 +227,7 @@ const NextSlotCalendarModal = ({
                         <div className="slots-list">
                             <div className="slots-list__header">
                                 <h3 className="slots-list__title">{slotsByDate[selectedDate]?.dayName} - {new Date(selectedDate + 'T12:00:00').toLocaleDateString()}</h3>
+<<<<<<< HEAD
                                 <Button 
                                     variant="ghost" 
                                     size="sm-compact" 
@@ -214,6 +237,9 @@ const NextSlotCalendarModal = ({
                                 >
                                     {t('back_to_calendar')}
                                 </Button>
+=======
+                                <Button onClick={() => setViewMode('calendar')} className="slots-list__back-btn flex items-center gap-1" unstyled><Icon name="arrow_back" size="1.1rem" />{t('back_to_calendar')}</Button>
+>>>>>>> main
                             </div>
                             <div className="slots-list__body">
                                 {renderSection(<div className="slots-list__section-header-title"><Icon name="lock_open" size="1.1rem" /> {t('before_hours_extra')}</div>, selectedSlots.filter(s => s.is_out_of_hours && s.iso < (selectedSlots.find(n => !n.is_out_of_hours && !n.is_break)?.iso || '99:99')), 'before')}

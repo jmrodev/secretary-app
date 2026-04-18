@@ -1,11 +1,11 @@
 import React from 'react';
-import { useInstitutionFinances } from '../hooks/useInstitutionFinances';
+import { useInstitutionFinances } from '@/features/finances/hooks/useInstitutionFinances';
 
 // Molecules
-import InstitutionSummary from './InstitutionSummary';
-import InstitutionTransactionsTable from './InstitutionTransactionsTable';
-import InstitutionPatientsTable from './InstitutionPatientsTable';
-import InstitutionPaymentModal from './InstitutionPaymentModal';
+import InstitutionSummary from '@/features/finances/components/InstitutionSummary';
+import InstitutionTransactionsTable from '@/features/finances/components/InstitutionTransactionsTable';
+import InstitutionPatientsTable from '@/features/finances/components/InstitutionPatientsTable';
+import InstitutionPaymentModal from '@/features/finances/components/InstitutionPaymentModal';
 
 // Atoms
 import Button from '@/components/atoms/Button';
@@ -47,12 +47,12 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
         showPendingOnly ? isRealDebt(tr) : true
     ) || [];
 
-    const selectedAmount = React.useMemo(() => {
+    const selectedAmount = (() => {
         if (!report?.transactions) return 0;
         return report.transactions
             .filter(tr => selectedTrs.has(tr.transaction_id))
             .reduce((sum, tr) => sum + Number(tr.amount), 0);
-    }, [selectedTrs, report?.transactions]);
+    })();
 
     React.useEffect(() => {
         if (isPayModalOpen) {
@@ -101,7 +101,11 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
         return (
             <div className="institution-finances">
                 <div className="institution-finances__empty-state">
+<<<<<<< HEAD
                     <Icon name="INSTITUTIONS" size="3rem" className="institution-finances__empty-icon" />
+=======
+                    <span className="institution-finances__empty-icon"><Icon name="local_hospital" size="2rem" /></span>
+>>>>>>> main
                     <p className="institution-finances__empty-text">
                         {t('select_institution_desc') || 'Seleccioná una institución del panel izquierdo'}
                     </p>

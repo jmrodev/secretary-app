@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef } from 'react';
 import ReactDOM from 'react-dom';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/context/LanguageContext';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
@@ -15,19 +17,13 @@ const ConfirmModal = ({
     onCancel
 }) => {
     const { t } = useLanguage();
-    const [inputValue, setInputValue] = useState(initialValue);
-
-    useEffect(() => {
-        if (isOpen) {
-            setInputValue(initialValue);
-        }
-    }, [isOpen, initialValue]);
+    const inputRef = useRef(null);
 
     if (!isOpen) return null;
 
     const handleConfirm = (e) => {
         if (e) e.preventDefault();
-        onConfirm(type === 'prompt' ? inputValue : true);
+        onConfirm(type === 'prompt' ? (inputRef.current?.value ?? initialValue) : true);
     };
 
     const handleCancelClick = () => {
@@ -42,12 +38,21 @@ const ConfirmModal = ({
                         {title || (type === 'alert' ? t('alert') : t('confirm'))}
                     </h3>
                     <Button
+<<<<<<< HEAD
                         variant="ghost"
                         className="modal-header-bem__close"
                         onClick={handleCancelClick}
                     >
                         <Icon name="close" size="1.25rem" />
                     </Button>
+=======
+                        className="modal-header-bem__close"
+                        onClick={handleCancelClick}
+                        unstyled
+                        icon={<Icon name="close" />}
+                        aria-label={t('close')}
+                    />
+>>>>>>> main
                 </div>
                 <div className="modal-body-bem">
                     <div className={`modal-body-bem__text ${type === 'prompt' ? 'modal-body-bem__text--prompt' : ''}`}>
@@ -59,8 +64,8 @@ const ConfirmModal = ({
                                 autoFocus
                                 type="text"
                                 className="input-field"
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
+                                defaultValue={initialValue}
+                                ref={inputRef}
                             />
                         </form>
                     )}
@@ -68,15 +73,25 @@ const ConfirmModal = ({
                 <div className="modal-footer-bem">
                     {type !== 'alert' && (
                         <Button
+<<<<<<< HEAD
                             variant="secondary"
+=======
+                            className="btn-text btn-text--secondary"
+>>>>>>> main
                             onClick={handleCancelClick}
+                            unstyled
                         >
                             {t('cancel')}
                         </Button>
                     )}
                     <Button
+<<<<<<< HEAD
                         variant="primary"
+=======
+                        className="btn-base btn-base--primary"
+>>>>>>> main
                         onClick={handleConfirm}
+                        unstyled
                     >
                         {t('accept')}
                     </Button>

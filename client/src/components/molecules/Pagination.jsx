@@ -1,6 +1,10 @@
 import React from 'react';
+<<<<<<< HEAD
 import Button from '../atoms/Button';
 import Icon from '../atoms/Icon';
+=======
+import Button from '@/components/atoms/Button';
+>>>>>>> main
 import './Pagination.css';
 
 /**

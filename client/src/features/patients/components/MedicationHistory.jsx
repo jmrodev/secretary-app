@@ -1,73 +1,71 @@
 
 import React from 'react';
-import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
-import Badge from '@/components/atoms/Badge';
+import Icon from '@/components/atoms/Icon';
+import { useLanguage } from '@/context/LanguageContext';
 import { formatDate } from '@/utils/dateUtils';
-import './MedicationHistory.css';
 
 /**
- * MedicationHistory Molecule.
+ * MedicationHistory (Executor).
  * Renders the clinical history of prescriptions for a specific patient.
  */
 const MedicationHistory = ({ recentRequests, t, onRepeat }) => {
     return (
-        <section className="medication-history">
-            <header className="medication-history__header">
-                <h3 className="medication-history__title">
-                    <Icon name="history" />
-                    {t('recent_prescriptions')}
+        <section className="details-block details-block--medications">
+            <header className="details-block__header">
+                <h3 className="details-block__title">
+                    <Icon name="HISTORY" size="1.2rem" />
+                    {t('recent_prescriptions') || 'Historial de Recetas'}
                 </h3>
             </header>
 
-            <div className="medication-history__content">
+            <div className="details-block__content">
                 {recentRequests.length === 0 ? (
-                    <div className="medication-history__empty">
-                        <Icon name="documents" size="3rem" />
-                        <p>{t('no_history')}</p>
+                    <div className="patient-medications__empty-state">
+                        <Icon name="DOCUMENTS" size="2rem" />
+                        <p>{t('no_history') || 'No se han generado recetas para este paciente.'}</p>
                     </div>
                 ) : (
-                    <div className="medication-history__table-container">
-                        <table className="medication-history__table">
-                            <thead>
+                    <div className="patient-medications__history-container">
+                        <table className="patient-medications__table">
+                            <thead className="patient-medications__table-header">
                                 <tr>
-                                    <th className="medication-history__th">{t('date')}</th>
-                                    <th className="medication-history__th">{t('prescription_detail')}</th>
-                                    <th className="medication-history__th">{t('status')}</th>
-                                    <th className="medication-history__th"></th>
+                                    <th>{t('date')}</th>
+                                    <th>{t('prescription_detail')}</th>
+                                    <th>{t('status')}</th>
+                                    <th>{t('actions') || 'Acciones'}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {recentRequests.map(req => (
-                                    <tr key={req.id} className="medication-history__tr">
-                                        <td className="medication-history__cell">
-                                            <div className="medication-history__date-wrapper">
-                                                <Badge variant="blue">
-                                                    {formatDate(req.created_at)}
-                                                </Badge>
-                                                <span className="medication-history__doctor">
-                                                    Dr. {req.doctor_name}
-                                                </span>
+                                    <tr key={req.id} className="patient-medications__table-row">
+                                        <td className="patient-medications__table-cell">
+                                            <span className="patient-medications__date-badge">
+                                                {formatDate(req.created_at)}
+                                            </span>
+                                            <div className="patient-medications__doctor-name">
+                                                Dr/a. {req.doctor_name}
                                             </div>
                                         </td>
-                                        <td className="medication-history__cell">
-                                            <div className="medication-history__note">
+                                        <td className="patient-medications__table-cell">
+                                            <div className="patient-medications__request-note">
                                                 {req.request_note}
                                             </div>
                                         </td>
-                                        <td className="medication-history__cell">
-                                            <Badge variant={req.status === 'completed' ? 'success' : 'warning'}>
-                                                {req.status === 'completed' ? t('delivered') : t('pending')}
-                                            </Badge>
+                                        <td className="patient-medications__table-cell">
+                                            <span className={`patient-medications__status-tag status-${req.status === 'completed' ? 'completed' : 'pending'}`}>
+                                                {req.status === 'completed' ? t('delivered') || 'Entregado' : t('pending') || 'Pendiente'}
+                                            </span>
                                         </td>
-                                        <td className="medication-history__cell medication-history__actions">
+                                        <td className="patient-medications__table-cell">
                                             <Button
-                                                variant="secondary"
-                                                size="sm-compact"
+                                                className="btn-icon btn-icon--primary"
+                                                title={t('repeat_prescription') || 'Repetir Receta'}
                                                 onClick={() => onRepeat && onRepeat(req)}
-                                                icon={<Icon name="history" />}
-                                                title={t('repeat_prescription')}
-                                            />
+                                                unstyled
+                                            >
+                                                <Icon name="HISTORY" size="1.2rem" />
+                                            </Button>
                                         </td>
                                     </tr>
                                 ))}

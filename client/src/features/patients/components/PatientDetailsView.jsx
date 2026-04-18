@@ -5,10 +5,10 @@ import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 
 // Local Feature Components
-import PatientInfoBlock from './PatientInfoBlock';
-import PatientHistoryTable from './PatientHistoryTable';
-import PatientFinancialSidebar from './PatientFinancialSidebar';
-import PatientPrintableView from './PatientPrintableView';
+import PatientInfoBlock from '@/features/patients/components/PatientInfoBlock';
+import PatientHistoryTable from '@/features/patients/components/PatientHistoryTable';
+import PatientFinancialSidebar from '@/features/patients/components/PatientFinancialSidebar';
+import PatientPrintableView from '@/features/patients/components/PatientPrintableView';
 
 import './PatientDetailsView.css';
 

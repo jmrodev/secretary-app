@@ -2,7 +2,7 @@ import React from 'react';
 import Modal from '@/components/molecules/Modal';
 import { useLanguage } from '@/context/LanguageContext';
 import { useConfig } from '@/context/ConfigContext';
-import { useTransactionForm } from '../hooks/useTransactionForm';
+import { useTransactionForm } from '@/features/finances/hooks/useTransactionForm';
 import { formatPrice } from '@/utils/format';
 import {
     getTransactionTypes,

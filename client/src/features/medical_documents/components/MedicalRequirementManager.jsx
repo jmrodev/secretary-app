@@ -1,17 +1,16 @@
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { useRequirementManagerController } from '../hooks/useRequirementManagerController';
+import { useRequirementManagerController } from '@/features/medical_documents/hooks/useRequirementManagerController';
 
 // Components
-import Button from '@/components/atoms/Button';
 import TabButton from '@/components/atoms/TabButton';
 import Icon from '@/components/atoms/Icon';
 import Loading from '@/components/atoms/Loading';
-import MedicalRequestForm from './MedicalRequestForm';
-import MedicalRequirementTable from './MedicalRequirementTable';
-import MedicalRequirementRecycleBin from './MedicalRequirementRecycleBin';
-import MedicalRequirementDetailModal from './MedicalRequirementDetailModal';
-import MedicalRequirementActionModal from './MedicalRequirementActionModal';
+import MedicalRequestForm from '@/features/medical_documents/components/MedicalRequestForm';
+import MedicalRequirementTable from '@/features/medical_documents/components/MedicalRequirementTable';
+import MedicalRequirementRecycleBin from '@/features/medical_documents/components/MedicalRequirementRecycleBin';
+import MedicalRequirementDetailModal from '@/features/medical_documents/components/MedicalRequirementDetailModal';
+import MedicalRequirementActionModal from '@/features/medical_documents/components/MedicalRequirementActionModal';
 
 // Styles
 import './MedicalRequirementManager.css';

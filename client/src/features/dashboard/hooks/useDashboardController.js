@@ -6,10 +6,10 @@ import { useConfig } from '@/context/ConfigContext';
 import { useAppointments } from '@/features/appointments';
 import api from '@/api/axios';
 
-import { useDashboardStats } from './useDashboardStats';
-import { useDashboardReminders } from './useDashboardReminders';
-import { useDashboardModals } from './useDashboardModals';
-import { useDashboardWhatsApp } from './useDashboardWhatsApp';
+import { useDashboardStats } from '@/features/dashboard/hooks/useDashboardStats';
+import { useDashboardReminders } from '@/features/dashboard/hooks/useDashboardReminders';
+import { useDashboardModals } from '@/features/dashboard/hooks/useDashboardModals';
+import { useDashboardWhatsApp } from '@/features/dashboard/hooks/useDashboardWhatsApp';
 
 /**
  * Controller hook for Dashboard component.
@@ -52,8 +52,7 @@ export const useDashboardController = () => {
         }, 30000);
         
         return () => clearInterval(interval);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user?.id, isPatient]);
+    }, [user, isPatient, remindersHook, statsHook]);
 
     // Action Handlers
     const handleUpdateStatus = async (id, status) => {
@@ -172,4 +171,3 @@ export const useDashboardController = () => {
         isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff
     };
 };
-

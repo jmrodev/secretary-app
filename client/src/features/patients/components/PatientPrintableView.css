@@ -181,41 +181,14 @@
     margin-bottom: 1rem;
 }
 
-/* Helpers and Utilities */
-.text-preline {
-    white-space: pre-line;
-}
-
-.printable-input--w-60 {
-    width: 60px;
-}
-
-.printable-list-item--flex {
-    display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
-}
-
-.cursor-pointer {
-    cursor: pointer;
-}
-
-.mb-1 {
-    margin-bottom: 0.25rem;
-}
-
-.mt-1 {
-    margin-top: 0.25rem;
-}
-
 /* --- PRINT RULES (What is output to paper) --- */
 @media print {
     /* Hide specific selectors */
-    #root .no-print {
+    .no-print {
         display: none;
     }
 
-    #root .printable-patient-sheet--fullscreen {
+    .printable-patient-sheet--fullscreen {
          position: static;
          width: auto;
          height: auto;
@@ -224,7 +197,7 @@
          color: black;
     }
 
-    #root .printable-patient-sheet__header {
+    .printable-patient-sheet__header {
          display: none;
     }
 

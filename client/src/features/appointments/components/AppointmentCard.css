@@ -51,7 +51,21 @@
 }
 
 .appointment-card__visit-count {
+<<<<<<< HEAD
     flex-shrink: 0;
+=======
+    font-size: 0.95rem;
+    padding: 0.25rem 0.75rem;
+    font-weight: 800;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex-shrink: 0;
+    background-color: var(--emerald-50);
+    border: 1px solid var(--emerald-200);
+    color: var(--emerald-700);
+>>>>>>> main
     white-space: nowrap;
     gap: 0.3rem;
 }

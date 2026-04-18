@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+import React from 'react';
+>>>>>>> main
 import Icon from '@/components/atoms/Icon';
 import './InstitutionSummary.css';
 

@@ -2,7 +2,7 @@ import React from 'react';
 import './RoleGuard.css';
 import { Navigate } from 'react-router-dom';
 import { usePermissions } from '@/hooks/usePermissions';
-import Loading from '../atoms/Loading';
+import Loading from '@/components/atoms/Loading';
 
 /**
  * RoleGuard Component.

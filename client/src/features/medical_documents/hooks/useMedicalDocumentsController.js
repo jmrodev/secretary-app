@@ -1,13 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import api from '@/api/axios';
 import { useAuth } from '@/features/auth';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useModal } from '@/context/ModalContext';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useFetch } from '@/hooks/useFetch';
-import { useMedicalDocumentsHandlers } from './useMedicalDocumentsHandlers';
+import { useMedicalDocumentsHandlers } from '@/features/medical_documents/hooks/useMedicalDocumentsHandlers';
 
 /**
  * useMedicalDocumentsController Hook (Orchestrator).
@@ -212,4 +211,3 @@ export const useMedicalDocumentsController = () => {
         handlers
     };
 };
-

@@ -2,11 +2,19 @@
 
 /* Include all styles from the original MedicalDocuments.css */
 @media print {
+<<<<<<< HEAD
     #root .no-print {
         display: none;
     }
 
     #root .medical-documents__print-container {
+=======
+    .no-print {
+        display: none;
+    }
+
+    .medical-documents__print-container {
+>>>>>>> main
         display: block;
     }
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import AppointmentCard from './AppointmentCard';
+import AppointmentCard from '@/features/appointments/components/AppointmentCard';
 import Loading from '@/components/atoms/Loading';
 import Icon from '@/components/atoms/Icon';
 import './UpcomingAppointmentsView.css';

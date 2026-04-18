@@ -1,10 +1,10 @@
 import React, { useRef, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { useMedicationAutocomplete } from '../hooks/useMedicationAutocomplete';
-import Input from '@/components/atoms/Input';
-import Badge from '@/components/atoms/Badge';
+import { useMedicationAutocomplete } from '@/features/medical_documents/hooks/useMedicationAutocomplete';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+import Input from '@/components/atoms/Input';
+import Badge from '@/components/atoms/Badge';
 import './MedicationAutocomplete.css';
 
 /**
@@ -83,7 +83,7 @@ const MedicationAutocomplete = ({
                     onChange={(e) => handleSearch(e.target.value)}
                     onFocus={() => searchTerm.length >= 2 && setShowSuggestions(true)}
                     onKeyDown={handleKeyDown}
-                    placeholder={placeholder || t('search_medication')}
+                    placeholder={placeholder || t('search_medication') || "Buscar medicamento..."}
                     autoComplete="off"
                 />
                 <div className={`${baseClass}__actions`}>
@@ -91,16 +91,17 @@ const MedicationAutocomplete = ({
                         <div className={`${baseClass}__spinner`}></div>
                     ) : searchTerm ? (
                         <Button
-                            variant="ghost"
-                            size="sm-compact"
+                            type="button"
                             onClick={handleClear}
-                            title={t('clear')}
-                            tabIndex={-1}
-                            icon={<Icon name="close" size="1.2rem" />}
-                        />
+                            aria-label={t('clear') || "Limpiar"}
+                            tabIndex="-1"
+                            unstyled
+                            icon={<Icon name="close" />}
+                        >
+                        </Button>
                     ) : (
                         <span className="medication-autocomplete__icon">
-                            <Icon name="search" size="1.2rem" />
+                            <Icon name="search" />
                         </span>
                     )}
                 </div>
@@ -137,7 +138,7 @@ const MedicationAutocomplete = ({
                     <li className={`${baseClass}__footer`}>
                         <span className={`${baseClass}__footer-brand`}>{t('iosfa_vademecum')}</span>
                         <span className={`${baseClass}__footer-count`}>
-                            {suggestions.length} {t('results')}
+                            {suggestions.length} {t('results') || 'resultados'}
                         </span>
                     </li>
                 </ul>

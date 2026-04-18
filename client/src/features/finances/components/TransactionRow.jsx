@@ -1,8 +1,13 @@
 import Badge from '@/components/atoms/Badge';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+<<<<<<< HEAD
 import InvoiceDetailContent from './InvoiceDetailContent';
 import './TransactionRow.css';
+=======
+import Badge from '@/components/atoms/Badge';
+import InvoiceDetailContent from '@/features/finances/components/InvoiceDetailContent';
+>>>>>>> main
 
 /**
  * TransactionRow Feature Molecule.

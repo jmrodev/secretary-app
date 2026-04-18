@@ -79,7 +79,7 @@
     cursor: default;
 }
 
-.patient-table .patient-table__row--institution:hover {
+.patient-table__row--institution:hover {
     background-color: transparent;
 }
 
@@ -97,13 +97,8 @@
     color: var(--text-muted);
 }
 
-.patient-table .patient-table__row--divider:hover {
+.patient-table__row--divider:hover {
     background-color: transparent;
-}
-
-.patient-table__divider-cell {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
 }
 
 .patient-table__divider {
@@ -188,17 +183,6 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-}
-
-.rating-item--interactive {
-    cursor: pointer;
-    border-radius: 0.25rem;
-    padding: 0.125rem;
-    transition: background-color 0.2s;
-}
-
-.rating-item--interactive:hover {
-    background-color: var(--gray-100);
 }
 
 .rating-item__label {

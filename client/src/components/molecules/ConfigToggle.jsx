@@ -1,6 +1,11 @@
 import React from 'react';
+<<<<<<< HEAD
 import './ConfigToggle.css';
 import Switch from '../atoms/Switch';
+=======
+import './ConfigField.css';
+import Switch from '@/components/atoms/Switch';
+>>>>>>> main
 
 /**
  * ConfigToggle Molecule

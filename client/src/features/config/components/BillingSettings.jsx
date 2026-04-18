@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import ConfigField from './ConfigField';
+=======
+import React, { useState, useEffect } from 'react';
+import ConfigField from '@/features/config/components/ConfigField';
+>>>>>>> main
 import Input from '@/components/atoms/Input';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
@@ -62,7 +67,11 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
             {/* AFIP General Configuration */}
             <div className="config-section">
                 <div className="config-section__header">
+<<<<<<< HEAD
                     <Icon name="receipt" size="1.5rem" className="config-section__icon" />
+=======
+                    <span className="config-section__icon"><Icon name="receipt_long" /></span>
+>>>>>>> main
                     <h4 className="config-section__title">{t('billing_settings_title')}</h4>
                 </div>
 
@@ -120,11 +129,20 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                                         </span>
                                     </div>
                                     {status.error ? (
+<<<<<<< HEAD
                                         <p>{status.error}</p>
                                     ) : (
                                         <p className="config-field__hint">
                                             App: {status.afip_status.AppServer}, DB: {status.afip_status.DbServer}, Auth: {status.afip_status.AuthServer}
                                         </p>
+=======
+                                        <p><Icon name="close" className="mr-1" />{t('afip_status_error')}: {status.error}</p>
+                                    ) : (
+                                        <>
+                                            <p><Icon name="check" className="mr-1" />{t('afip_status_connected')} ({status.environment})</p>
+                                            <p className="config-field__hint">App: {status.afip_status.AppServer}, DB: {status.afip_status.DbServer}, Auth: {status.afip_status.AuthServer}</p>
+                                        </>
+>>>>>>> main
                                     )}
                                 </div>
                             ) : (
@@ -137,7 +155,11 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                                 variant="secondary"
                                 onClick={checkStatus}
                                 loading={checking}
+<<<<<<< HEAD
                                 icon={<Icon name="sync" size="1.1rem" />}
+=======
+                                icon={<Icon name="sync" />}
+>>>>>>> main
                             >
                                 {t('verify_afip_connection')}
                             </Button>
@@ -149,7 +171,11 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
             {/* AFIP Certificates and Key Generation */}
             <div className="config-section">
                 <div className="config-section__header">
+<<<<<<< HEAD
                     <Icon name="vpn_key" size="1.5rem" className="config-section__icon" />
+=======
+                    <span className="config-section__icon"><Icon name="key" /></span>
+>>>>>>> main
                     <h4 className="config-section__title">{t('digital_certificates')}</h4>
                 </div>
                 <div className="config-section__body">
@@ -167,6 +193,7 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                         5. {t('afip_guide_step_5_short')}
                     </div>
                     <div className="config-actions">
+<<<<<<< HEAD
                         <Button
                             variant="primary"
                             onClick={generateCsr}
@@ -182,6 +209,10 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                             icon={<Icon name="upload" size="1.1rem" />}
                         >
                             {t('upload_crt')}
+=======
+                        <Button variant="primary" onClick={generateCsr} loading={generatingCsr} icon={<Icon name="settings" />}>
+                            {t('generate_csr_btn')}
+>>>>>>> main
                         </Button>
                     </div>
 
@@ -199,6 +230,7 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                                 onClick={(e) => e.target.select()}
                                 rows={8}
                             />
+<<<<<<< HEAD
                             <div className="config-actions config-actions--right">
                                 <Button
                                     size="sm"
@@ -206,6 +238,10 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                                     onClick={() => { navigator.clipboard.writeText(generatedCsr); showMessage(t('csr_copied'), 'success'); }}
                                     icon={<Icon name="content_copy" size="1.1rem" />}
                                 >
+=======
+                            <div className="config-actions config-actions--right config-actions--mt-1">
+                                <Button size="sm" variant="secondary" onClick={() => { navigator.clipboard.writeText(generatedCsr); showMessage(t('csr_copied'), 'success'); }} icon={<Icon name="content_copy" />}>
+>>>>>>> main
                                     {t('copy')}
                                 </Button>
                             </div>

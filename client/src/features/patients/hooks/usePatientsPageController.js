@@ -6,7 +6,7 @@ import { useConfig } from '@/context/ConfigContext';
 import { useModal } from '@/context/ModalContext';
 import { useAppointments } from '@/features/appointments';
 import { useUsers } from '@/features/users';
-import { usePatientsHandlers } from './usePatientsHandlers';
+import { usePatientsHandlers } from '@/features/patients/hooks/usePatientsHandlers';
 import { useFetch } from '@/hooks/useFetch';
 
 /**

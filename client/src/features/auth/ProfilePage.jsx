@@ -1,7 +1,7 @@
 import React from 'react';
 import MainLayout from '@/components/templates/MainLayout';
-import ProfileEditor from './components/ProfileEditor';
-import { useProfileController } from './hooks/useProfileController';
+import ProfileEditor from '@/features/auth/components/ProfileEditor';
+import { useProfileController } from '@/features/auth/hooks/useProfileController';
 
 /**
  * ProfilePage (Orchestrator).

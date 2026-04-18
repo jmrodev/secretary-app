@@ -1,6 +1,5 @@
 import React from 'react';
 import Badge from '@/components/atoms/Badge';
-import { useModal } from '@/context/ModalContext';
 import { formatDate } from '@/utils/format';
 import './AppointmentHeader.css';
 
@@ -9,8 +8,6 @@ import './AppointmentHeader.css';
  * Displays patient info and quick actions for an appointment.
  */
 const AppointmentHeader = ({ appt, t }) => {
-    const { alert } = useModal();
-
     const getStatusVariant = (status) => {
         switch (status) {
             case 'completed':

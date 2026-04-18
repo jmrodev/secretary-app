@@ -30,6 +30,7 @@ const PrescriptionHabitualMeds = ({ patientMeds, historyMeds = [], items, handle
                                 title={isSelected ? t('remove') : t('add')}
                                 className={`prescription-modal__habitual-btn${isSelected ? ' prescription-modal__habitual-btn--active' : ''}`}
                                 onClick={() => handleSelectMedication(m)}
+                                unstyled
                             >
                                 <span className="prescription-modal__habitual-name">{name}</span>
                                 <div className="prescription-modal__habitual-meta">

@@ -1,8 +1,14 @@
 import React from 'react';
+<<<<<<< HEAD
 import './IntegrationMetaWhatsApp.css';
 import Button from '../atoms/Button';
 import Icon from '../atoms/Icon';
 import ConfigField from '../molecules/ConfigField';
+=======
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
+import ConfigField from '@/components/molecules/ConfigField';
+>>>>>>> main
 
 /**
  * IntegrationMetaWhatsApp Molecule.
@@ -12,7 +18,11 @@ const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, loading,
     return (
         <div className="config-section">
             <div className="config-section__header">
+<<<<<<< HEAD
                 <Icon name="CHAT" className="config-section__icon" />
+=======
+                <span className="config-section__icon"><Icon name="chat" /></span>
+>>>>>>> main
                 <h3 className="config-section__title">Meta Business (WhatsApp API)</h3>
             </div>
 
@@ -45,14 +55,22 @@ const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, loading,
                     <Button
                         onClick={onTestMeta}
                         disabled={loading || !settings.meta_phone_number_id}
+<<<<<<< HEAD
                         icon={<Icon name="SYNC" />}
+=======
+                        icon={<Icon name="science" />}
+>>>>>>> main
                     >
                         Probar Conexión
                     </Button>
                     <Button
                         variant="secondary"
                         onClick={() => window.open('https://developers.facebook.com/apps/', '_blank')}
+<<<<<<< HEAD
                         icon={<Icon name="CONFIG" />}
+=======
+                        icon={<Icon name="build" />}
+>>>>>>> main
                     >
                         Setup Guide
                     </Button>

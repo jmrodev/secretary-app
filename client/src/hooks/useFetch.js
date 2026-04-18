@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import api from '@/api/axios';
 
 /**
@@ -13,6 +13,8 @@ import api from '@/api/axios';
  */
 export const useFetch = (url, options = {}) => {
     const { immediate = true, initialData, ...apiOptions } = options;
+    const apiOptionsKey = useMemo(() => JSON.stringify(apiOptions), [apiOptions]);
+    const stableApiOptions = useMemo(() => JSON.parse(apiOptionsKey), [apiOptionsKey]);
 
     const [data, setData] = useState(initialData);
     const [loading, setLoading] = useState(immediate);
@@ -28,7 +30,7 @@ export const useFetch = (url, options = {}) => {
         setLoading(true);
         setError(null);
         try {
-            const res = await api.get(finalUrl, apiOptions);
+            const res = await api.get(finalUrl, stableApiOptions);
             setData(res.data);
             return res.data;
         } catch (err) {
@@ -38,8 +40,7 @@ export const useFetch = (url, options = {}) => {
         } finally {
             setLoading(false);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [url, JSON.stringify(apiOptions)]);
+    }, [url, stableApiOptions]);
 
     useEffect(() => {
         let isMounted = true;

@@ -1,8 +1,12 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+<<<<<<< HEAD
 import ConfigField from './ConfigField';
 import './IntegrationMetaWhatsApp.css';
+=======
+import ConfigField from '@/features/config/components/ConfigField';
+>>>>>>> main
 
 /**
  * IntegrationMetaWhatsApp Feature Molecule.
@@ -12,7 +16,11 @@ const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, loading,
     return (
         <div className="config-section animate-fadeIn integration-meta-whatsapp">
             <div className="config-section__header">
+<<<<<<< HEAD
                 <Icon name="chat" size="1.5rem" className="config-section__icon" />
+=======
+                <span className="config-section__icon"><Icon name="chat" /></span>
+>>>>>>> main
                 <h3 className="config-section__title">Meta Business (WhatsApp API)</h3>
             </div>
 
@@ -45,14 +53,22 @@ const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, loading,
                     <Button
                         onClick={onTestMeta}
                         disabled={loading || !settings.meta_phone_number_id}
+<<<<<<< HEAD
                         icon={<Icon name="build" size="1.1rem" />}
+=======
+                        icon={<Icon name="science" />}
+>>>>>>> main
                     >
                         Probar Conexión
                     </Button>
                     <Button
                         variant="secondary"
                         onClick={() => window.open('https://developers.facebook.com/apps/', '_blank')}
+<<<<<<< HEAD
                         icon={<Icon name="link" size="1.1rem" />}
+=======
+                        icon={<Icon name="build" />}
+>>>>>>> main
                     >
                         Setup Guide
                     </Button>

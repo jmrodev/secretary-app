@@ -1,7 +1,7 @@
 // src/features/insurances/index.js
 
-export { useInsurancesController } from './hooks/useInsurancesController';
+export { useInsurancesController } from '@/features/insurances/hooks/useInsurancesController';
 
-export { default as InsuranceFormModal } from './components/InsuranceFormModal';
-export { default as InsurancesPage } from './InsurancesPage';
-export { default as InsuranceList } from './components/InsuranceList';
+export { default as InsuranceFormModal } from '@/features/insurances/components/InsuranceFormModal';
+export { default as InsurancesPage } from '@/features/insurances/InsurancesPage';
+export { default as InsuranceList } from '@/features/insurances/components/InsuranceList';

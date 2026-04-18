@@ -1,8 +1,13 @@
 import React from 'react';
 import AutoTextarea from '@/components/atoms/AutoTextarea';
+<<<<<<< HEAD
 import ConfigField from './ConfigField';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+=======
+import Button from '@/components/atoms/Button';
+import ConfigField from '@/features/config/components/ConfigField';
+>>>>>>> main
 import './MessageTemplateEditor.css';
 
 /**
@@ -68,6 +73,7 @@ const MessageTemplateEditor = ({
                             onClick={() => insertVariable(id, v, settingKey)}
                             title={t('insert_variable_title').replace('{variable}', v)}
                             disabled={disabled}
+                            unstyled
                         >
                             {getFriendlyVarLabel(v, t)}
                         </Button>

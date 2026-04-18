@@ -1,14 +1,9 @@
 import React from 'react';
 import AsyncSelect from 'react-select/async';
 import api from '@/api/axios';
-
-import { components } from 'react-select';
-
-import { useLanguage } from '@/context/LanguageContext';
 import Button from '@/components/atoms/Button';
 
-// Local Styles
-import './PatientSearchSelect.css';
+import { useLanguage } from '@/context/LanguageContext';
 
 const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, autoFocus = false, selectedData }) => {
     const { t } = useLanguage();
@@ -44,11 +39,13 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
         <AsyncSelect
             value={selectedOption}
             classNames={{
-                control: ({ isFocused }) => `patients-search-select__control ${isFocused ? 'patients-search-select__control--focused' : ''}`,
-                menu: () => 'patients-search-select__menu',
-                option: ({ isFocused, isSelected }) => `patients-search-select__option ${isFocused ? 'patients-search-select__option--focused' : ''} ${isSelected ? 'patients-search-select__option--selected' : ''}`,
-                placeholder: () => 'patients-search-select__placeholder',
-                singleValue: () => 'patients-search-select__single-value'
+                control: ({ isFocused }) => `input-field input-flex-container ${isFocused ? 'focus-ring' : ''}`,
+                input: () => 'no-style-input',
+                menu: () => 'dropdown-menu',
+                option: ({ isFocused, isSelected }) => `dropdown-item ${isFocused ? 'active' : ''} ${isSelected ? 'selected' : ''}`,
+                placeholder: () => 'placeholder-text',
+                singleValue: () => 'single-value-text',
+                valueContainer: () => 'value-flex-container'
             }}
             cacheOptions
             defaultOptions
@@ -64,13 +61,14 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
                     </p>
                     {onCreatePatient && inputValue && (
                         <Button
-                            variant="primary"
-                            size="sm"
+                            type="button" // Prevent form submit
+                            className="btn btn-sm btn-outline-primary"
                             onMouseDown={(e) => {
                                 e.preventDefault(); // Prevent blur
                                 e.stopPropagation();
                                 onCreatePatient(inputValue);
                             }}
+                            unstyled
                         >
                             {t('create_new_patient')}
                         </Button>
