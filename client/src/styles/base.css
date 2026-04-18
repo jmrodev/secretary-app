@@ -21,8 +21,8 @@ body {
 }
 
 body.dev-mode {
-    background-color: #0d0d0d !important;
-    background-image: none !important;
+    background-color: #0d0d0d;
+    background-image: none;
     border: none;
 }
 
@@ -171,5 +171,5 @@ label {
 }
 
 .table-base tbody tr:hover {
-    background-color: rgba(99, 102, 241, 0.02) !important;
+    background-color: rgba(99, 102, 241, 0.02);
 }

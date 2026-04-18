@@ -133,7 +133,7 @@
 }
 
 .config-group--bg-white {
-    background: white !important;
+    background: white;
 }
 
 .config-field__hint--mb-05 {

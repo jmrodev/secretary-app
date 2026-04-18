@@ -80,7 +80,7 @@
 }
 
 .patient-table__row--institution:hover {
-    background-color: transparent !important;
+    background-color: transparent;
 }
 
 .patient-table__inst-icon {
@@ -98,7 +98,7 @@
 }
 
 .patient-table__row--divider:hover {
-    background-color: transparent !important;
+    background-color: transparent;
 }
 
 .patient-table__divider {

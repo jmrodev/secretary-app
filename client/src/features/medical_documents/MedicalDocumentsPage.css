@@ -3,11 +3,11 @@
 /* Include all styles from the original MedicalDocuments.css */
 @media print {
     .no-print {
-        display: none !important;
+        display: none;
     }
 
     .medical-documents__print-container {
-        display: block !important;
+        display: block;
     }
 }
 
