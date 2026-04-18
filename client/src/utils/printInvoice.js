@@ -147,7 +147,7 @@ export const printInvoice = async (data) => {
             </head>
             <body>
                 <div class="no-print" style="margin-bottom: 20px; text-align: center;">
-                    <a href="#" role="button" tabindex="0" style="display: inline-block; padding: 10px 30px; background: #2563eb; color: #fff; cursor: pointer; border-radius: 5px; text-decoration: none; border: none;" onclick="window.print(); return false;" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); window.print();}">IMPRIMIR FACTURA</a>
+                    <a href="#" role="button" tabindex="0" style="display: inline-block; padding: 10px 30px; background: #2563eb; color: #fff; cursor: pointer; border-radius: 5px; text-decoration: none; border: none;" onclick="window.print(); return false;" onkeydown="if(event.key === 'Enter' || event.code === 'Space'){event.preventDefault(); window.print();}">IMPRIMIR FACTURA</a>
                     <p style="font-size: 9pt; color: #666; margin-top: 5px;">Nota: Comprobante generado localmente.</p>
                 </div>
 
