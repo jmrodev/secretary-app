@@ -2,8 +2,6 @@ import React from 'react';
 import Button from '@/components/atoms/Button';
 import ConfigField from './ConfigField';
 import Select from '@/components/atoms/Select';
-import StatusIndicator from '@/components/atoms/StatusIndicator';
-import Alert from '@/components/atoms/Alert';
 
 /**
  * IntegrationRemoteAccess Feature Molecule.
@@ -97,4 +95,3 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
 };
 
 export default IntegrationRemoteAccess;
-

@@ -47,7 +47,7 @@ export const useTempAccessController = () => {
     }, [token]);
 
     useEffect(() => {
-        verifyToken();
+        queueMicrotask(verifyToken);
     }, [verifyToken]);
 
     const handleSubmit = async (formData) => {

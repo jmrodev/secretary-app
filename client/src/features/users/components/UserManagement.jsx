@@ -4,7 +4,6 @@ import { useLanguage } from '@/context/LanguageContext';
 
 // Atoms & Molecules
 import Button from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input'; // Note: check case in next list_dir if needed
 import Card from '@/components/atoms/Card';
 import Modal from '@/components/molecules/Modal';
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import Icon from '@/components/atoms/Icon';
 
 /**
  * ChatMessageBubble Molecule (Feature Component).

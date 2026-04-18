@@ -3,7 +3,6 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useRequirementManagerController } from '../hooks/useRequirementManagerController';
 
 // Components
-import Button from '@/components/atoms/Button';
 import TabButton from '@/components/atoms/TabButton';
 import Icon from '@/components/atoms/Icon';
 import Loading from '@/components/atoms/Loading';

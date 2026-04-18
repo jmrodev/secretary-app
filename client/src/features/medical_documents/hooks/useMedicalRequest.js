@@ -20,8 +20,7 @@ export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMe
 
     // --- Data Fetching ---
     const { 
-        data: patientMeds = [], 
-        refetch: fetchPatientMeds 
+        data: patientMeds = []
     } = useFetch(selectedPatient && reqType === 'prescription' ? `/medical/patients/${selectedPatient}/medications` : null, {
         initialData: []
     });

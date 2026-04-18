@@ -26,7 +26,7 @@ export const useMedicationAutocomplete = (initialValue = '', onChange, onSelectM
     });
 
     useEffect(() => {
-        setSearchTerm(initialValue || '');
+        queueMicrotask(() => setSearchTerm(initialValue || ''));
     }, [initialValue]);
 
     const handleSearch = (text) => {

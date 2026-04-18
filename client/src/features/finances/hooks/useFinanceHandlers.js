@@ -69,7 +69,7 @@ export const useFinanceHandlers = ({
         } catch (err) {
             alert(t('failed_close_box'));
         }
-    }, [closeBoxModal, closeAmount, t, showMessage, setCloseBoxModal, setCloseAmount, fetchData, alert]);
+    }, [closeBoxModal, closeAmount, t, showMessage, setCloseBoxModal, setCloseAmount, fetchData, alert, user]);
 
     const handleGenerateInvoice = useCallback(async (transactionId) => {
         if (!await confirm(t('confirm_generate_invoice') || "¿Generar factura electrónica?")) return;
@@ -170,7 +170,7 @@ export const useFinanceHandlers = ({
         } finally {
             setLoading(false);
         }
-    }, [setLoading, showMessage, fetchData, t]);
+    }, [setLoading, showMessage, fetchData, t, user]);
 
     const handleCloseAllPending = useCallback(async () => {
         if (!pendingClosures.length) return;
@@ -209,7 +209,7 @@ export const useFinanceHandlers = ({
         } finally {
             setLoading(false);
         }
-    }, [pendingClosures, confirm, setLoading, showMessage, fetchData, t]);
+    }, [pendingClosures, confirm, setLoading, showMessage, fetchData, t, user]);
 
     const handleFixDuplicates = useCallback(async () => {
         if (!duplicateClosures.length) return;

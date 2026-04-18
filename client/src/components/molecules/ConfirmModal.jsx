@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useLanguage } from '@/context/LanguageContext';
 import './ConfirmModal.css';
@@ -13,19 +13,13 @@ const ConfirmModal = ({
     onCancel
 }) => {
     const { t } = useLanguage();
-    const [inputValue, setInputValue] = useState(initialValue);
-
-    useEffect(() => {
-        if (isOpen) {
-            setInputValue(initialValue);
-        }
-    }, [isOpen, initialValue]);
+    const inputRef = useRef(null);
 
     if (!isOpen) return null;
 
     const handleConfirm = (e) => {
         if (e) e.preventDefault();
-        onConfirm(type === 'prompt' ? inputValue : true);
+        onConfirm(type === 'prompt' ? (inputRef.current?.value ?? initialValue) : true);
     };
 
     const handleCancelClick = () => {
@@ -54,8 +48,8 @@ const ConfirmModal = ({
                                 autoFocus
                                 type="text"
                                 className="input-field"
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
+                                defaultValue={initialValue}
+                                ref={inputRef}
                             />
                         </form>
                     )}

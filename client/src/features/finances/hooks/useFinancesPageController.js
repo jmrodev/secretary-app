@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import api from '@/api/axios';
 import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/context/LanguageContext';
 import { useModal } from '@/context/ModalContext';
@@ -21,7 +20,7 @@ export const useFinancesPageController = () => {
     const [selectedDoctorFilter, setSelectedDoctorFilter] = useState(localStorage.getItem('last_selected_doctor_id') || '');
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
-    const [historicalWithdrawalOpen, setHistoricalWithdrawalOpen] = useState(false);
+    const [, setHistoricalWithdrawalOpen] = useState(false);
     const [isActionLoading, setIsActionLoading] = useState(false);
 
     // Debounce search
@@ -64,7 +63,7 @@ export const useFinancesPageController = () => {
     });
 
     // Doctors
-    const { data: doctors = [], loading: doctorsLoading } = useFetch('/users/doctors', { initialData: [] });
+    const { data: doctors = [] } = useFetch('/users/doctors', { initialData: [] });
 
     // Pending Closures
     const { data: pendingClosures = [], loading: closuresLoading, refetch: fetchClosures } = useFetch(`/finances/pending-closures`, {
@@ -150,4 +149,3 @@ export const useFinancesPageController = () => {
         filteredTransactions: transactions
     };
 };
-
