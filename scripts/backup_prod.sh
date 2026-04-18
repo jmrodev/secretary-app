@@ -49,10 +49,13 @@ if [ $? -eq 0 ]; then
     gzip "${BACKUP_DIR}/${FILENAME}"
     GZ_FILENAME="${FILENAME}.gz"
     
-    # Copy a copy to Desktop as requested for visibility
-    cp "${BACKUP_DIR}/${GZ_FILENAME}" "${DESKTOP_DIR}/BACKUP_SISTEMA_RECIENTE.sql.gz"
-    
-    echo "🚀 Copia de seguridad enviada al Escritorio: BACKUP_SISTEMA_RECIENTE.sql.gz"
+    # Copy a copy to Desktop as requested for visibility (optional)
+    if [ -d "$DESKTOP_DIR" ]; then
+        cp "${BACKUP_DIR}/${GZ_FILENAME}" "${DESKTOP_DIR}/BACKUP_SISTEMA_RECIENTE.sql.gz" 2>/dev/null
+        echo "🚀 Copia de seguridad enviada al Escritorio: BACKUP_SISTEMA_RECIENTE.sql.gz"
+    else
+        echo "ℹ️ Escritorio no detectado, backup disponible en: ${BACKUP_DIR}/${GZ_FILENAME}"
+    fi
     
     # Keep only last 7 days of backups
     find "$BACKUP_DIR" -type f -mtime +7 -delete
