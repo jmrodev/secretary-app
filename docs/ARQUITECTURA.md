@@ -108,7 +108,7 @@
 
 ### 13. CI/CD y Despliegue (Cloudflare)
 - **Gestión Externa**: El sistema de despliegue principal ("Workers Builds: secretary-app") se gestiona externamente a través del dashboard de Cloudflare vinculado al repositorio.
-- **Configuración (wrangler)**: Se utiliza `wrangler.jsonc` en la raíz con un script principal (`worker.js`) y mapeo de activos (`client/dist`). Este esquema de "Worker with Assets" permite el uso de bindings y un control total sobre el ruteo.
+- **Configuración (wrangler)**: Se utiliza `wrangler.toml` en la raíz con un script principal (`worker.js`) y mapeo de activos (`client/dist`). Este esquema de "Worker with Assets" permite el uso de bindings y un control total sobre el ruteo.
 - **Arquitectura de Workspaces**: El proyecto está configurado con **npm workspaces**. Los comandos de construcción y linting deben ejecutarse desde la raíz (`npm run build --workspace=client`) para garantizar la integridad del `package-lock.json` unificado.
 - **Workaround de Rollup**: Para evitar errores de "Module not found" en GitHub Actions, las variantes de `@rollup/rollup-*` para distintas plataformas se declaran explícitamente como `optionalDependencies` en `client/package.json`.
 
