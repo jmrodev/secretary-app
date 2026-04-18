@@ -52,7 +52,6 @@ export const useDashboardController = () => {
         }, 30000);
         
         return () => clearInterval(interval);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user?.id, isPatient]);
 
     // Action Handlers
@@ -172,4 +171,3 @@ export const useDashboardController = () => {
         isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff
     };
 };
-
