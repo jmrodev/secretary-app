@@ -36,17 +36,18 @@ const FinanceStatsCards = ({ stats, t }) => {
 
     return (
         <section className="finance-stats">
+            <h2 className="visually-hidden">{t('financial_summary_title')}</h2>
             {/* Breakdown Cards (Appointments, Prescriptions, Licenses, Certificates) */}
             {otherStats.map((s, idx) => (
                 <Card key={idx} className="finance-stats__card">
-                    <span className="finance-stats__title">
+                    <h3 className="finance-stats__title">
                         <Icon 
                             name={typeIcons[s.type]} 
                             size="0.8rem" 
                             className={`finance-stats__icon finance-stats__icon--${s.type}`} 
                         />
                         {t(s.type) || s.type}
-                    </span>
+                    </h3>
 
                     <div className="finance-stats__breakdown">
                         <table className="finance-stats__table">
@@ -101,10 +102,10 @@ const FinanceStatsCards = ({ stats, t }) => {
             {/* Combined Payment Methods Card with Financial Summary */}
             {(tableStats.length > 0 || financialSummary.length > 0) && (
                 <Card className="finance-stats__card">
-                    <span className="finance-stats__title">
+                    <h3 className="finance-stats__title">
                         <Icon name="payments" size="0.8rem" className="finance-stats__icon" />
                         {t('payment_methods_summary')}
-                    </span>
+                    </h3>
                     <div className="finance-stats__breakdown">
                         <table className="finance-stats__table">
                             <thead>

@@ -83,7 +83,7 @@ const PatientPrintableView = ({
                 </ul>
             );
         }
-        return <p className="printable-text" style={{ whiteSpace: 'pre-line' }}>{cleanStr}</p>;
+        return <p className="printable-text text-preline">{cleanStr}</p>;
     };
 
     return (
@@ -119,14 +119,13 @@ const PatientPrintableView = ({
                         <span>-</span>
                         <input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} className="printable-input" />
                         
-                        <span style={{ marginLeft: '1rem' }}>{t('limit')}</span>
+                        <span className="ml-4">{t('limit')}</span>
                         <input 
                             type="number" 
                             placeholder={t('all')}
                             value={limitCount} 
                             onChange={(e) => setLimitCount(e.target.value)} 
-                            className="printable-input"
-                            style={{ width: '60px' }} 
+                            className="printable-input printable-input--w-60"
                         />
                     </div>
                 </div>
@@ -172,13 +171,12 @@ const PatientPrintableView = ({
                             {filterByDateAndLimit(details.appointments, 'appointment_date').map(app => {
                                 const isExcluded = excludedItems.has(`appt_${app.id}`);
                                 return (
-                                    <li key={app.id} className={isExcluded ? 'no-print' : ''} style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                                    <li key={app.id} className={`${isExcluded ? 'no-print' : ''} printable-list-item--flex`}>
                                         <input 
                                             type="checkbox" 
                                             checked={!isExcluded} 
                                             onChange={() => toggleExclude(`appt_${app.id}`)} 
-                                            className="no-print"
-                                            style={{ cursor: 'pointer' }}
+                                            className="no-print cursor-pointer"
                                         />
                                         <div>
                                             <strong>{new Date(app.appointment_date).toLocaleDateString('es-AR')} {new Date(app.appointment_date).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}</strong> 
@@ -222,16 +220,15 @@ const PatientPrintableView = ({
                             {filterByDateAndLimit(recentRequests, 'created_at').map((p, idx) => {
                                 const isExcluded = excludedItems.has(`req_${p.id}`);
                                 return (
-                                    <li key={idx} className={`printable-list-item--grouped ${isExcluded ? 'no-print' : ''}`} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                                    <li key={idx} className={`printable-list-item--grouped ${isExcluded ? 'no-print' : ''}`}>
                                         <input 
                                             type="checkbox" 
                                             checked={!isExcluded} 
                                             onChange={() => toggleExclude(`req_${p.id}`)} 
-                                            className="no-print"
-                                            style={{ cursor: 'pointer', marginTop: '4px' }}
+                                            className="no-print cursor-pointer mt-1"
                                         />
-                                        <div style={{ flex: 1 }}>
-                                            <div className="printable-item-header" style={{ marginBottom: '0.3rem' }}>
+                                        <div className="flex-1">
+                                            <div className="printable-item-header mb-1 text-sm-compact">
                                                 <strong>{new Date(p.created_at || p.action_date).toLocaleDateString('es-AR')}</strong> 
                                                 {p.doctor_name ? ` | ${t('doctor')}: ${p.doctor_name}` : ''}
                                             </div>

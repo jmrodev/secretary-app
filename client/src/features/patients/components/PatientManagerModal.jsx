@@ -36,7 +36,7 @@ const PatientManagerModal = ({
         t
     } = controller;
 
-    const title = isEdit ? (t('edit_patient') || 'Editar Paciente') : (t('register_new_patient') || 'Registrar Nuevo Paciente');
+    const title = isEdit ? t('edit_patient') : t('register_new_patient');
     const baseClass = 'patient-manager-modal';
 
     return (
@@ -46,21 +46,22 @@ const PatientManagerModal = ({
             title={title}
             size="lg"
         >
-            <div className={baseClass}>
+            <article className={baseClass}>
+                <h2 className="visually-hidden">{title}</h2>
                 {referenceInfo && !isEdit && (
-                    <div className={`${baseClass}__reference`}>
+                    <header className={`${baseClass}__reference`}>
                         <span className={`${baseClass}__reference-label`}>
                             <Icon name="description" size="1.2rem" />
-                            {t('appointment_info_reference') || 'Info de Turno (Referencia)'}
+                            {t('appointment_info_reference')}
                         </span>
                         <div className={`${baseClass}__reference-content`}>
                             {referenceInfo}
                         </div>
-                    </div>
+                    </header>
                 )}
 
                 {loadingData ? (
-                    <Loading text={t('loading_data') || 'Cargando datos...'} />
+                    <Loading text={t('loading_data')} />
                 ) : (
                     <PatientForm
                         controller={controller}
@@ -69,7 +70,7 @@ const PatientManagerModal = ({
                         isAdmin={true}
                     />
                 )}
-            </div>
+            </article>
         </Modal>
     );
 };

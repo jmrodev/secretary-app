@@ -4,6 +4,10 @@
 
 .calendar-section .calendar-grid { width: 100%; margin: 0; }
 .calendar-section__filter-group { display: flex; flex-direction: column; gap: 0.25rem; }
+.calendar-section__tools-container { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 1.25rem; }
+.calendar-section__tools-group { display: flex; gap: 0.5rem; }
+.calendar-section__tool-btn-main { flex: 1; justify-content: center; }
+.calendar-section__info-text { font-size: 0.75rem; color: var(--slate-500); margin-bottom: 1rem; line-height: 1.6; }
 
 /* sidebar compact override */
 .calendar-section .calendar-day-cell__number { font-size: 0.75rem; }

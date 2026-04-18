@@ -43,7 +43,7 @@ const InsurancesPage = () => {
             </header>
 
             <div className="dashboard-nav-bar dashboard-nav-bar--centered animate-fadeIn">
-                <div className="flex items-center gap-2 text-sm font-medium text-muted">
+                <div className="insurances-page__counter">
                     <Icon name="monitor_heart" size="1.2rem" />
                     {filteredInsurances.length} {t('insurances_count') || 'Obras sociales activas'}
                 </div>
@@ -71,10 +71,10 @@ const InsurancesPage = () => {
                                 <Icon name="build" size="1.2rem" />
                                 {t('actions') || 'Acciones'}
                             </h3>
-                            <div className="flex flex-col gap-3">
+                            <div className="insurances-page__actions-group">
                                 <Button
                                     variant="primary"
-                                    className="justify-start w-full"
+                                    className="insurances-page__add-btn"
                                     onClick={handleOpenCreate}
                                     icon={<Icon name="add" size="1.1rem" />}
                                 >

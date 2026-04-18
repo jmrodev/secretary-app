@@ -15,7 +15,7 @@ const HolidayList = ({ holidays, onDelete }) => {
     if (!holidays || holidays.length === 0) {
         return (
             <div className="holiday-list__empty">
-                <Icon name="beach_access" size="3rem" className="mb-2 text-slate-300" />
+                <Icon name="beach_access" size="3rem" className="holiday-list__empty-icon" />
                 No hay feriados configurados.
             </div>
         );
@@ -35,7 +35,7 @@ const HolidayList = ({ holidays, onDelete }) => {
                             <div className="holiday-list__description">{h.description}</div>
                         </div>
                         <Button
-                            variant="ghost" size="sm-compact" className="text-red-500 hover:bg-red-50"
+                            variant="ghost" size="sm-compact" className="holiday-list__delete-btn"
                             onClick={() => onDelete(h.id)} icon={<Icon name="DELETE" size="1rem" />}
                         />
                     </div>

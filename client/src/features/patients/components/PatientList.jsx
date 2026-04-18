@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Badge from '@/components/atoms/Badge';
@@ -15,9 +14,7 @@ const PatientList = ({
     onViewDetails,
     onOpenDebt,
     onToggleRating,
-    t,
-    calculateFinancialRating,
-    calculateAttendanceRating
+    t
 }) => {
 
     const renderStars = (rating, colorClass) => {
@@ -37,13 +34,15 @@ const PatientList = ({
     if (patients.length === 0) {
         return (
             <section className="patient-list__empty">
-                <p className="patient-list__empty-text">{t('no_patients_found') || "No patients found"}</p>
+                <h2 className="visually-hidden">{t('patient_list')}</h2>
+                <p className="patient-list__empty-text">{t('no_patients_found')}</p>
             </section>
         );
     }
 
     return (
         <section className="patient-list-container">
+            <h2 className="visually-hidden">{t('patient_list')}</h2>
             <table className="patient-table table-base">
                 <thead>
                     <tr>
@@ -90,7 +89,7 @@ const PatientList = ({
 
                     {institutions.filter(inst => Number(inst.total_debt) > 0).length > 0 && (
                         <tr className="patient-table__row--divider">
-                            <td colSpan={6} className="py-2"><hr className="patient-table__divider" /></td>
+                            <td colSpan={6} className="patient-table__divider-cell"><hr className="patient-table__divider" /></td>
                         </tr>
                     )}
 
@@ -128,7 +127,6 @@ const PatientList = ({
                                                 target="_blank"
                                                 variant="whatsapp"
                                                 size="sm-compact"
-                                                className="patient-table__whatsapp-btn"
                                                 onClick={(e) => e.stopPropagation()}
                                                 title="WhatsApp"
                                                 icon={<Icon name="send" size="1.1rem" />}

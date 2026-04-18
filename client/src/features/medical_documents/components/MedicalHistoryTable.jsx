@@ -37,7 +37,7 @@ const MedicalHistoryTable = ({
                 <span className="medical-history__title-icon">
                     <Icon name={icon} size="1.2rem" />
                 </span>
-                {title}
+                <h2 className="medical-history__title-text">{title}</h2>
             </header>
 
             <div className="medical-history__wrapper">

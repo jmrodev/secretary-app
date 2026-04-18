@@ -279,7 +279,7 @@ const MedicalDocumentsPage = () => {
                         {printData && printData.map((item, idx) => (
                             <tr key={idx}>
                                 <td>{formatDate(item.date)}</td>
-                                <td className="font-bold">{item.patient_name}</td>
+                                <td className="print-table__cell--bold">{item.patient_name}</td>
                                 <td>{item.doctor_name}</td>
                                 <td>
                                     {item.source_type === 'direct' ? 'Consulta' : 'Solicitud'}
@@ -296,8 +296,8 @@ const MedicalDocumentsPage = () => {
                                 </td>
                                 <td>
                                     <div className="config-flex--column">
-                                        <span className="font-mono">{item.medications}</span>
-                                        {item.instructions && <span className="text-muted italic">{item.instructions}</span>}
+                                        <span className="print-table__cell--mono">{item.medications}</span>
+                                        {item.instructions && <span className="print-table__cell--muted">{item.instructions}</span>}
                                     </div>
                                 </td>
                             </tr>

@@ -83,8 +83,8 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
                         return (
                             <div className="appt-status__col">
                                 <div className="appt-status__text appt-status__amount--paid">
-                                    <span style={{ color: 'var(--blue-600)', textTransform: 'uppercase', fontSize: '10px' }}>{t('bonified') || 'Bonificado'}</span>
-                                    <Icon name="verified" size="1rem" style={{ color: 'var(--blue-500)' }} />
+                                    <span className="appt-status__bonified">{t('bonified') || 'Bonificado'}</span>
+                                    <Icon name="verified" size="1rem" className="appt-status__icon--blue" />
                                 </div>
                             </div>
                         );

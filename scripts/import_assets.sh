@@ -22,7 +22,8 @@ echo "🔓 Iniciando descifrado y restauración..."
 
 # 1. Descifrar
 TEMP_DIR=$(mktemp -d)
-gpg -d "$INPUT_FILE" | tar -xz -C "$TEMP_DIR"
+echo "🔑 Ingresa la contraseña para descifrar:"
+gpg -d --pinentry-mode loopback "$INPUT_FILE" | tar -xz -C "$TEMP_DIR"
 
 if [ $? -ne 0 ]; then
     echo "❌ Error al descifrar el archivo. Asegúrate de que la contraseña sea correcta."

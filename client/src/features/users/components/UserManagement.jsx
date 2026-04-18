@@ -103,9 +103,9 @@ const UserManagement = ({ excludeRoles = [], role = null }) => {
                 </div>
             </section>
 
-            <Card className="p-0 overflow-hidden">
+            <Card className="user-management__table-container">
                 {loading ? (
-                    <div className="py-12 text-center text-muted animate-pulse">{t('loading_users')}</div>
+                    <div className="user-management__loader">{t('loading_users')}</div>
                 ) : (
                     <UserTable
                         users={filteredUsers}

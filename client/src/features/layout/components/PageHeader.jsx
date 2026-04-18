@@ -11,22 +11,36 @@ const PageHeader = ({
     subtitle, 
     children, 
     divider = false,
-    className = ''
+    className = '',
+    variant = 'standard', // 'standard' or 'premium'
+    backgroundUrl // Optional background for premium variant
 }) => {
-    const baseClass = 'page-header';
-    const dividerClass = divider ? `${baseClass}--divider` : '';
+    const isPremium = variant === 'premium';
+    const baseClass = isPremium ? 'page-header--premium' : 'page-header';
+    const dividerClass = divider ? 'page-header--divider' : '';
 
     return (
         <header className={`${baseClass} ${dividerClass} ${className} animate-fadeIn`}>
-            <div className={`${baseClass}__title-container`}>
-                <h1 className={`${baseClass}__title`}>{title}</h1>
-                {subtitle && <p className={`${baseClass}__subtitle`}>{subtitle}</p>}
-            </div>
-            {children && (
-                <div className={`${baseClass}__actions`}>
-                    {children}
-                </div>
+            {isPremium && backgroundUrl && (
+                <img 
+                    src={backgroundUrl} 
+                    alt="" 
+                    className="page-header__background-img" 
+                />
             )}
+
+            
+            <div className={`${baseClass}__content`}>
+                <div className={`${baseClass}__title-container`}>
+                    <h1 className={`${baseClass}__title`}>{title}</h1>
+                    {subtitle && <p className={`${baseClass}__subtitle`}>{subtitle}</p>}
+                </div>
+                {children && (
+                    <div className={`${baseClass}__actions`}>
+                        {children}
+                    </div>
+                )}
+            </div>
         </header>
     );
 };

@@ -29,7 +29,7 @@ const CalendarSection = ({
                     />
 
                     {activeTab === 'calendar' && (
-                        <div className="flex flex-col gap-5 mt-5">
+                        <div className="calendar-section__tools-container">
                             <div className="dashboard-card">
                                 <h3 className="dashboard-card__title">
                                     <Icon name="history" size="1rem" />
@@ -48,16 +48,16 @@ const CalendarSection = ({
                                     <Icon name="build" size="1rem" />
                                     {t('tools')}
                                 </h3>
-                                <div className="flex gap-2">
+                                <div className="calendar-section__tools-group">
                                     <Button
-                                        variant="outline" className="flex-1 justify-center"
+                                        variant="outline" className="calendar-section__tool-btn-main"
                                         onClick={onNextFreeSlot} icon={<Icon name="search" size="1.1rem" />}
                                     >
                                         {t('next_free_slot')}
                                     </Button>
                                     <Button
                                         variant="outline" onClick={() => onSyncDayToGoogle && onSyncDayToGoogle()}
-                                        title={t('sync_google_calendar')} className="px-3"
+                                        title={t('sync_google_calendar')}
                                         icon={<Icon name="sync" size="1.1rem" />}
                                     />
                                 </div>
@@ -71,7 +71,7 @@ const CalendarSection = ({
                         <Icon name="event_busy" size="1rem" />
                         {t('block_agenda')}
                     </h3>
-                    <p className="text-xs text-slate-500 mb-4 leading-relaxed">
+                    <p className="calendar-section__info-text">
                         {t('holiday_license_info')}
                     </p>
                     <HolidayForm onAdd={onAddHoliday} />

@@ -2,9 +2,13 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+import Input from '@/components/atoms/Input';
+import Select from '@/components/atoms/Select';
+import Switch from '@/components/atoms/Switch';
+import './MedicationConfigFields.css';
 
 /**
- * MedicationConfigFields Molecule (Sub-Executor).
+ * MedicationConfigFields Molecule.
  * Handles the configuration of a specific medication, including reminder modes and quantities.
  */
 const MedicationConfigFields = ({
@@ -18,18 +22,31 @@ const MedicationConfigFields = ({
     handleAddToPending,
     t
 }) => {
+    const unitsOptions = [
+        { value: '', label: t('select_option') },
+        ...[10, 14, 20, 28, 30, 40, 50, 60, 100].map(v => ({ value: v, label: v.toString() }))
+    ];
+
+    const dailyIntakeOptions = [
+        { value: '', label: t('select_option') },
+        ...[0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4].map(v => ({
+            value: v,
+            label: v === 0.25 ? '1/4' : v === 0.5 ? '1/2' : v === 0.75 ? '3/4' : v.toString()
+        }))
+    ];
+
     return (
-        <div className="patient-medications__form-card animate-fadeIn">
-            <div className="patient-medications__mode-selector">
-                <label className="config-field__label">{t('reminder_mode') || 'Modo de Recordatorio'}</label>
-                <div className="config-flex config-flex--gap-2">
+        <div className="medication-config-fields animate-fadeIn">
+            <div className="medication-config-fields__mode-selector">
+                <label className="medication-config-fields__label">{t('reminder_mode')}</label>
+                <div className="medication-config-fields__btn-group">
                     <Button
                         size="sm-compact"
                         type="button"
                         variant={currentMed.reminder_mode === 'calculation' ? 'primary' : 'secondary'}
                         onClick={() => handleModeChange('calculation')}
                     >
-                        {t('mode_calculation') || 'Por Cálculo'}
+                        {t('mode_calculation')}
                     </Button>
                     <Button
                         size="sm-compact"
@@ -37,7 +54,7 @@ const MedicationConfigFields = ({
                         variant={currentMed.reminder_mode === 'fixed_day' ? 'primary' : 'secondary'}
                         onClick={() => handleModeChange('fixed_day')}
                     >
-                        {t('mode_fixed_day') || 'Todos los meses'}
+                        {t('mode_fixed_day')}
                     </Button>
                     <Button
                         size="sm-compact"
@@ -45,117 +62,104 @@ const MedicationConfigFields = ({
                         variant={currentMed.reminder_mode === 'fixed_date' ? 'primary' : 'secondary'}
                         onClick={() => handleModeChange('fixed_date')}
                     >
-                        {t('mode_fixed_date') || 'Fecha específica'}
+                        {t('mode_fixed_date')}
                     </Button>
                 </div>
             </div>
 
             {currentMed.reminder_mode === 'calculation' && (
-                <div className="patient-medications__config-grid animate-fadeIn">
-                    <div className="config-field">
-                        <label className="config-field__label">{t('units_per_box') || 'Caja de (X) pastillas'}</label>
-                        <select
-                            className="config-field__input"
+                <div className="medication-config-fields__grid animate-fadeIn">
+                    <div className="medication-config-fields__group">
+                        <label className="medication-config-fields__label">{t('units_per_box')}</label>
+                        <Select
                             value={currentMed.units_per_box}
+                            options={unitsOptions}
                             onChange={e => handleUnitsChange(e.target.value)}
-                        >
-                            <option value="">{t('select_option') || 'Sel.'}</option>
-                            {[10, 14, 20, 28, 30, 40, 50, 60, 100].map(v => (
-                                <option key={v} value={v}>{v}</option>
-                            ))}
-                        </select>
+                        />
                     </div>
-                    <div className="config-field">
-                        <label className="config-field__label">{t('boxes_count') || 'Cantidad de cajas'}</label>
-                        <input
+                    <div className="medication-config-fields__group">
+                        <label className="medication-config-fields__label">{t('boxes_count')}</label>
+                        <Input
                             type="number"
                             min="1"
-                            className="config-field__input"
                             value={currentMed.boxes_count}
                             onChange={e => handleBoxesChange(e.target.value)}
                         />
                     </div>
-                    <div className="config-field">
-                        <label className="config-field__label">{t('daily_intake') || 'Pastillas por día'}</label>
-                        <select
-                            className="config-field__input"
+                    <div className="medication-config-fields__group">
+                        <label className="medication-config-fields__label">{t('daily_intake')}</label>
+                        <Select
                             value={currentMed.daily_intake}
+                            options={dailyIntakeOptions}
                             onChange={e => handleDailyIntakeChange(e.target.value)}
-                        >
-                            <option value="">{t('select_option') || 'Sel.'}</option>
-                            {[0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4].map(v => (
-                                <option key={v} value={v}>
-                                    {v === 0.25 ? '1/4' : v === 0.5 ? '1/2' : v === 0.75 ? '3/4' : v}
-                                </option>
-                            ))}
-                        </select>
+                        />
                     </div>
                 </div>
             )}
 
             {currentMed.reminder_mode === 'fixed_day' && (
-                <div className="config-field animate-fadeIn">
-                    <label className="config-field__label">{t('reminder_day_of_month') || 'Día del mes para el recordatorio'}</label>
-                    <input
+                <div className="medication-config-fields__group animate-fadeIn">
+                    <label className="medication-config-fields__label">{t('reminder_day_of_month')}</label>
+                    <Input
                         type="number"
                         min="1"
                         max="31"
-                        className="config-field__input"
-                        placeholder="Ej: 20"
+                        placeholder="20"
                         value={currentMed.reminder_day}
                         onChange={e => handleReminderDayChange(e.target.value)}
                     />
                 </div>
             )}
 
-            <div className="patient-medications__config-row">
-                <div className="config-field">
-                    <label className="config-field__label">{t('frequency')}</label>
-                    <input
-                        className="config-field__input"
+            <div className="medication-config-fields__row">
+                <div className="medication-config-fields__group">
+                    <label className="medication-config-fields__label">{t('frequency')}</label>
+                    <Input
                         value={currentMed.frequency}
                         onChange={e => setCurrentMed({ ...currentMed, frequency: e.target.value })}
-                        placeholder="Cada 24hs..."
+                        placeholder={t('frequency_placeholder') || "Cada 24hs..."}
                     />
                 </div>
-                <div className="config-field">
-                    <label className="config-field__label">{t('next_refill_date')}</label>
-                    <input
+                <div className="medication-config-fields__group">
+                    <label className="medication-config-fields__label">{t('next_refill_date')}</label>
+                    <Input
                         type="date"
-                        className="config-field__input"
                         value={currentMed.next_refill_date}
                         onChange={e => setCurrentMed({ ...currentMed, next_refill_date: e.target.value })}
-                        readOnly={currentMed.reminder_mode !== 'fixed_date'}
+                        disabled={currentMed.reminder_mode !== 'fixed_date'}
                     />
                     {currentMed.reminder_mode !== 'fixed_date' && (
-                        <div className="patient-medications__hint">
-                            {t('auto_calculated_date') || 'Fecha calculada automáticamente'}
+                        <div className="medication-config-fields__hint">
+                            {t('auto_calculated_date')}
                         </div>
                     )}
                 </div>
             </div>
 
-            <div className="patient-medications__config-footer">
-                <div className="config-field config-field--flex config-field--no-margin">
-                    <input
-                        className="config-field__input"
+            <div className="medication-config-fields__footer">
+                <div className="medication-config-fields__notes">
+                    <Input
                         value={currentMed.notes}
                         onChange={e => setCurrentMed({ ...currentMed, notes: e.target.value })}
-                        placeholder={t('notes_placeholder') || "Notas adicionales..."}
+                        placeholder={t('notes_placeholder')}
                     />
                 </div>
-                <div className="config-flex config-flex--gap-2">
-                    <input
-                        type="checkbox"
-                        id="is_chronic"
-                        checked={currentMed.is_chronic}
-                        onChange={e => setCurrentMed({ ...currentMed, is_chronic: e.target.checked })}
-                        className="patient-medications__checkbox"
-                    />
-                    <label htmlFor="is_chronic" className="patient-medications__checkbox-label">{t('chronic')}</label>
-                </div>
-                <Button size="sm" type="button" variant="accent" onClick={handleAddToPending} icon={<Icon name="add" size="1.2rem" />}>
-                    {t('add_to_list') || 'Agregar'}
+                
+                <Switch
+                    id="is_chronic"
+                    label={t('chronic')}
+                    checked={currentMed.is_chronic}
+                    onChange={checked => setCurrentMed({ ...currentMed, is_chronic: checked })}
+                />
+
+                <Button 
+                    size="md" 
+                    type="button" 
+                    variant="accent" 
+                    onClick={handleAddToPending} 
+                    icon={<Icon name="add" />}
+                >
+                    {t('add_to_list')}
                 </Button>
             </div>
         </div>

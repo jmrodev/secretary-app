@@ -6,6 +6,9 @@ import MainLayout from '@/components/templates/MainLayout';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 
+// Local Styles
+import './RequestsPage.css';
+
 /**
  * RequestsPage (Orchestrator).
  * Main entry point for the medical requirements workflow (Staff view).
@@ -23,8 +26,8 @@ const RequestsPage = () => {
                 </header>
 
                 <div className="dashboard-nav-bar animate-fadeIn">
-                    <div className="flex-1"></div>
-                    <div className="flex items-center gap-4">
+                    <div className="requests-page__spacer"></div>
+                    <div className="dashboard-nav-bar__actions requests-page__nav-actions">
                     </div>
                 </div>
 
@@ -35,10 +38,10 @@ const RequestsPage = () => {
                                 <Icon name="build" size="1.2rem" />
                                 {t('actions') || 'Acciones'}
                             </h3>
-                            <div className="flex flex-col gap-3">
+                            <div className="requests-page__actions">
                                 <Button
                                     variant="outline"
-                                    className="justify-start w-full"
+                                    className="requests-page__action-btn"
                                     onClick={() => window.location.reload()}
                                     icon={<Icon name="sync" size="1.1rem" />}
                                 >
@@ -52,7 +55,7 @@ const RequestsPage = () => {
                                 <Icon name="info" size="1.2rem" />
                                 {t('information') || 'Información'}
                             </h3>
-                            <p className="text-xs text-slate-500 leading-relaxed">
+                             <p className="requests-page__info-text">
                                 Aquí puede ver y procesar las solicitudes realizadas por los pacientes a través del portal público.
                             </p>
                         </div>

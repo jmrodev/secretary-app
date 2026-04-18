@@ -1,6 +1,7 @@
 import React from 'react';
 import { useMessagesPageController, ChatSidebar, ChatWindow } from '@/features/chat/index';
 import MainLayout from '@/components/templates/MainLayout';
+import './ChatPage.css';
 
 
 /**
@@ -26,8 +27,9 @@ const ChatPage = () => {
 
     return (
         <MainLayout wide>
-            <div className="chat-container app-layout h-screen overflow-hidden flex animate-fadeIn">
+            <main className="chat-page-orchestrator animate-fadeIn">
                 <ChatSidebar
+                    className="chat-sidebar"
                     conversations={conversations}
                     selectedConvo={selectedConvo}
                     onSelectConvo={setSelectedConvo}
@@ -39,6 +41,7 @@ const ChatPage = () => {
                 />
 
                 <ChatWindow
+                    className="chat-window"
                     selectedConvo={selectedConvo}
                     thread={thread}
                     user={user}
@@ -49,7 +52,7 @@ const ChatPage = () => {
                     onSendMessage={handleSendMessage}
                     scrollRef={scrollRef}
                 />
-            </div>
+            </main>
         </MainLayout>
     );
 

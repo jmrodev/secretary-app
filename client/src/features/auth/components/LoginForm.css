@@ -1,39 +1,12 @@
-/* Authentication Pages - BEM Methodology */
-.auth-layout {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    padding: 1.5rem;
-    overflow: hidden;
-    background: var(--gray-900);
-}
-
-.auth-layout--hero {
-    background-image: url('https://images.unsplash.com/photo-1576091160550-217359f42f8c?q=80&w=2070&auto=format&fit=crop');
-    background-size: cover;
-    background-position: center;
-}
-
-.auth-layout__overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.8) 100%);
-    content: '';
-    z-index: 1;
-}
+/* LoginForm Component Styles (BEM) */
 
 .auth-card {
-    position: relative;
-    z-index: 10;
-    width: 100%;
-    max-width: 450px;
     background: white;
     padding: 3rem 2.5rem;
     border-radius: 1.5rem;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
 }
 
 .auth-card__header {
@@ -71,6 +44,14 @@
     padding-top: 2rem;
     border-top: 1px solid var(--gray-100);
     text-align: center;
+}
+
+.auth-card__download {
+    margin-bottom: 1.5rem;
+}
+
+.auth-card__download-btn {
+    width: 100%;
 }
 
 .auth-card__footer-text {

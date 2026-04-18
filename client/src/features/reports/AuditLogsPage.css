@@ -1,0 +1,6 @@
+/* AuditLogsPage Styles (BEM) */
+
+.audit-logs-page-orchestrator {
+    display: flex;
+    flex-direction: column;
+}

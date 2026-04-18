@@ -7,8 +7,9 @@ import LicenseReportTable from '@/features/reports/components/LicenseReportTable
 import CertificateReportTable from '@/features/reports/components/CertificateReportTable';
 import BalanceView from '@/features/reports/components/BalanceView';
 import { PageHeader } from '@/features/layout';
+
 import Icon from '@/components/atoms/Icon';
-import './ReportsView.css';
+import './ReportsDashboard.css';
 
 const ReportsDashboard = ({
     t,

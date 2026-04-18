@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+import './MedicationItemsSummary.css';
 
 /**
  * MedicationItemsSummary Feature Molecule.
@@ -11,21 +12,21 @@ const MedicationItemsSummary = ({ items, onRemove, baseClass, t }) => {
     if (!items || items.length === 0) return null;
 
     return (
-        <ul className={`${baseClass}__med-list animate-fadeIn`}>
+        <ul className={`${baseClass ? `${baseClass}__med-list` : 'medication-items-summary'} animate-fadeIn`}>
             {items.map((item, idx) => (
-                <li key={idx} className={`${baseClass}__med-item flex justify-between items-center p-2 mb-2 bg-white rounded-sm border border-gray-100 shadow-sm`}>
-                    <div className={`${baseClass}__med-info flex flex-wrap gap-2 text-sm`}>
-                        <span className={`${baseClass}__med-name font-bold`}>{item.name}</span>
-                        {item.dose && <span className={`${baseClass}__med-dose text-gray-500`}>{item.dose}</span>}
-                        {item.frequency && <span className={`${baseClass}__med-freq text-accent font-medium`}>{item.frequency}</span>}
-                        {item.quantity && <span className={`${baseClass}__med-qty font-bold text-gray-700`}>x{item.quantity}</span>}
+                <li key={idx} className={`${baseClass ? `${baseClass}__med-item` : ''} medication-items-summary__item`}>
+                    <div className={`${baseClass ? `${baseClass}__med-info` : ''} medication-items-summary__info`}>
+                        <span className={`${baseClass ? `${baseClass}__med-name` : ''} medication-items-summary__name`}>{item.name}</span>
+                        {item.dose && <span className={`${baseClass ? `${baseClass}__med-dose` : ''} medication-items-summary__dose`}>{item.dose}</span>}
+                        {item.frequency && <span className={`${baseClass ? `${baseClass}__med-freq` : ''} medication-items-summary__freq`}>{item.frequency}</span>}
+                        {item.quantity && <span className={`${baseClass ? `${baseClass}__med-qty` : ''} medication-items-summary__qty`}>x{item.quantity}</span>}
                     </div>
                     <Button
                         variant="ghost"
                         size="sm-compact"
                         onClick={() => onRemove(idx)}
                         icon={<Icon name="close" size="1.1rem" color="var(--error)" />}
-                        className="hover:bg-red-50"
+                        className="medication-items-summary__remove-btn"
                     />
                 </li>
             ))}

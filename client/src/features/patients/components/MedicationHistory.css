@@ -1,0 +1,116 @@
+/* MedicationHistory.css */
+
+.medication-history {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    border: 1px solid var(--gray-100);
+    margin-bottom: 1.5rem;
+}
+
+.medication-history__header {
+    background-color: var(--gray-50);
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.medication-history__title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gray-700);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.medication-history__empty {
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--gray-400);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    background-color: var(--white);
+}
+
+.medication-history__empty p {
+    margin: 0;
+    font-weight: 500;
+}
+
+.medication-history__table-container {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.medication-history__table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.medication-history__th {
+    background: var(--gray-50);
+    padding: 1rem 1.5rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid var(--gray-100);
+    text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.medication-history__tr {
+    border-bottom: 1px solid var(--gray-50);
+    transition: background-color 0.2s ease;
+}
+
+.medication-history__tr:hover {
+    background-color: var(--blue-50/30);
+}
+
+.medication-history__cell {
+    padding: 1rem 1.5rem;
+    font-size: 0.9375rem;
+    vertical-align: middle;
+    color: var(--gray-700);
+}
+
+.medication-history__date-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.medication-history__doctor {
+    font-size: 0.8125rem;
+    color: var(--gray-400);
+    font-weight: 500;
+}
+
+.medication-history__note {
+    font-weight: 600;
+    color: var(--gray-800);
+    white-space: pre-line;
+    line-height: 1.5;
+}
+
+.medication-history__actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+    .medication-history__th:nth-child(2),
+    .medication-history__cell:nth-child(2) {
+        display: none;
+    }
+}

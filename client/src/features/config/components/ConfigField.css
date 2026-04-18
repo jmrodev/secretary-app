@@ -1,0 +1,31 @@
+/* ConfigField Component Styles (BEM) */
+
+.config-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.config-field__label {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--gray-700, #334155);
+    margin: 0;
+}
+
+.config-field__hint {
+    font-size: 0.75rem;
+    color: var(--gray-500, #64748b);
+    line-height: 1.4;
+}
+
+.config-field__hint--mb-15 {
+    margin-bottom: 1.5rem;
+}
+
+/* Modifier for monospace inputs (IDs, Tokens) */
+.config-field--monospace .config-field__input {
+    font-family: var(--font-mono, monospace);
+    letter-spacing: 0.025em;
+    font-size: 0.85rem;
+}

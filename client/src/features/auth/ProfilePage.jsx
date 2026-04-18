@@ -12,9 +12,9 @@ const ProfilePage = () => {
 
     return (
         <MainLayout wide>
-            <div className="profile-page animate-fadeIn">
+            <main className="profile-page animate-fadeIn">
                 <ProfileEditor {...profileProps} />
-            </div>
+            </main>
         </MainLayout>
     );
 };

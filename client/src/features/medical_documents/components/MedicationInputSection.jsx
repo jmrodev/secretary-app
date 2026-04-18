@@ -1,9 +1,12 @@
 import React from 'react';
 import MedicationAutocomplete from '@/features/medical_documents/components/MedicationAutocomplete';
 import Input from '@/components/atoms/Input';
+import Select from '@/components/atoms/Select';
 import Tooltip from '@/components/atoms/Tooltip';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+import './MedicationInputSection.css';
+
 
 /**
  * MedicationInputSection Feature Molecule.
@@ -22,11 +25,26 @@ const MedicationInputSection = ({
     onAddItem, onVademecumSelect,
     freqPresets, baseClass, t
 }) => {
+    const compClass = 'medication-input-section';
+
+    const unitsPerBoxOptions = [
+        { value: '', label: t('select_option') },
+        ...[10, 14, 20, 28, 30, 40, 50, 60, 100].map(v => ({ value: v, label: String(v) }))
+    ];
+
+    const dailyUnitsOptions = [
+        { value: '', label: t('select_option') },
+        ...[0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4].map(v => ({
+            value: v,
+            label: v === 0.25 ? '1/4' : v === 0.5 ? '1/2' : v === 0.75 ? '3/4' : String(v)
+        }))
+    ];
+
     return (
-        <div className={`${baseClass}__med-input-row animate-fadeIn`}>
-            <div className={`${baseClass}__inputs-grid`}>
-                <div className={`${baseClass}__field-wrapper`}>
-                    <label className={`${baseClass}__field-label`}>
+        <div className={`${baseClass ? `${baseClass}__med-input-row` : ''} ${compClass}__med-input-row animate-fadeIn`}>
+            <div className={`${baseClass ? `${baseClass}__inputs-grid` : ''} ${compClass}__inputs-grid`}>
+                <div className={`${baseClass ? `${baseClass}__field-wrapper` : ''} ${compClass}__field-wrapper`}>
+                    <label className={`${baseClass ? `${baseClass}__field-label` : ''} ${compClass}__field-label`}>
                         {t('medication')}
                     </label>
                     <MedicationAutocomplete
@@ -37,9 +55,9 @@ const MedicationInputSection = ({
                     />
                 </div>
 
-                <div className={`${baseClass}__field-group-row`}>
-                    <div className={`${baseClass}__field-wrapper`}>
-                        <label className={`${baseClass}__field-label`}>
+                <div className={`${baseClass ? `${baseClass}__field-group-row` : ''} ${compClass}__field-group-row`}>
+                    <div className={`${baseClass ? `${baseClass}__field-wrapper` : ''} ${compClass}__field-wrapper`}>
+                        <label className={`${baseClass ? `${baseClass}__field-label` : ''} ${compClass}__field-label`}>
                             {t('dose')}
                             <Tooltip text={t('dose_help') || "Concentración (ej: 500mg, 10mg/ml)"} />
                         </label>
@@ -51,17 +69,18 @@ const MedicationInputSection = ({
                         />
                     </div>
 
-                    <div className={`${baseClass}__field-wrapper`}>
-                        <label className={`${baseClass}__field-label`}>
+                    <div className={`${baseClass ? `${baseClass}__field-wrapper` : ''} ${compClass}__field-wrapper`}>
+                        <label className={`${baseClass ? `${baseClass}__field-label` : ''} ${compClass}__field-label`}>
                             {t('frequency')}
                             <Tooltip text={t('freq_help') || "Selecciona o escribe la frecuencia"} />
                         </label>
-                        <div className={`${baseClass}__freq-presets`}>
+                        <div className={`${baseClass ? `${baseClass}__freq-presets` : ''} ${compClass}__freq-presets`}>
                             {freqPresets.map((p, idx) => (
                                 <Button
                                     key={idx}
-                                    type="button"
-                                    className={`${baseClass}__freq-btn ${tempFreqPreset === idx ? `${baseClass}__freq-btn--active` : ''}`}
+                                    variant="ghost"
+                                    active={tempFreqPreset === idx}
+                                    className={`${baseClass ? `${baseClass}__freq-btn` : ''} ${compClass}__freq-btn`}
                                     onClick={() => {
                                         setTempFreqPreset(idx);
                                         setTempFreq(p.text);
@@ -76,44 +95,29 @@ const MedicationInputSection = ({
                     </div>
                 </div>
 
-                <div className={`${baseClass}__field-group-row ${baseClass}__field-group-row--numeric`}>
-                    <div className={`${baseClass}__field-wrapper`}>
-                        <label className={`${baseClass}__field-label`}>
-                            {t('units_per_box') || 'Caja de (X) pastillas'}
+                <div className={`${baseClass ? `${baseClass}__field-group-row` : ''} ${compClass}__field-group-row ${compClass}__field-group-row--numeric`}>
+                    <div className={`${baseClass ? `${baseClass}__field-wrapper` : ''} ${compClass}__field-wrapper`}>
+                        <label className={`${baseClass ? `${baseClass}__field-label` : ''} ${compClass}__field-label`}>
+                            {t('units_per_box')}
                         </label>
-                        <select
-                            className={`input input--sm ${baseClass}__select`}
-                            style={{ 
-                                width: '100%', 
-                                padding: '0.4rem 0.6rem',
-                                borderRadius: 'var(--radius-sm)',
-                                border: '1px solid var(--border-color)',
-                                fontSize: '0.875rem'
-                            }}
+                        <Select
+                            size="sm"
                             value={tempUnitsPerBox}
+                            options={unitsPerBoxOptions}
                             onChange={e => setTempUnitsPerBox(e.target.value)}
-                        >
-                            <option value="">{t('select_option') || 'Sel.'}</option>
-                            {[10, 14, 20, 28, 30, 40, 50, 60, 100].map(v => (
-                                <option key={v} value={v}>{v}</option>
-                            ))}
-                        </select>
+                            className={`${baseClass ? `${baseClass}__select` : ''} ${compClass}__select`}
+                        />
                     </div>
 
-                    <div className={`${baseClass}__field-wrapper`}>
-                        <label className={`${baseClass}__field-label`}>
-                            {t('daily_units') || 'Pastillas por día'}
+                    <div className={`${baseClass ? `${baseClass}__field-wrapper` : ''} ${compClass}__field-wrapper`}>
+                        <label className={`${baseClass ? `${baseClass}__field-label` : ''} ${compClass}__field-label`}>
+                            {t('daily_units')}
                         </label>
-                        <select
-                            className={`input input--sm ${baseClass}__select`}
-                            style={{ 
-                                width: '100%',
-                                padding: '0.4rem 0.6rem',
-                                borderRadius: 'var(--radius-sm)',
-                                border: '1px solid var(--border-color)',
-                                fontSize: '0.875rem'
-                            }}
+                        <Select
+                            size="sm"
                             value={tempDailyUnits}
+                            options={dailyUnitsOptions}
+                            className={`${baseClass ? `${baseClass}__select` : ''} ${compClass}__select`}
                             onChange={e => {
                                 const val = e.target.value;
                                 setTempDailyUnits(val);
@@ -129,19 +133,12 @@ const MedicationInputSection = ({
                                     setTempFreq(fStr);
                                 }
                             }}
-                        >
-                            <option value="">{t('select_option') || 'Sel.'}</option>
-                            {[0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4].map(v => (
-                                <option key={v} value={v}>
-                                    {v === 0.25 ? '1/4' : v === 0.5 ? '1/2' : v === 0.75 ? '3/4' : v}
-                                </option>
-                            ))}
-                        </select>
+                        />
                     </div>
 
-                    <div className={`${baseClass}__field-wrapper`}>
-                        <label className={`${baseClass}__field-label`}>
-                            {t('quantity') || 'Cantidad de cajas'}
+                    <div className={`${baseClass ? `${baseClass}__field-wrapper` : ''} ${compClass}__field-wrapper`}>
+                        <label className={`${baseClass ? `${baseClass}__field-label` : ''} ${compClass}__field-label`}>
+                            {t('quantity')}
                         </label>
                         <Input
                             size="sm"
@@ -155,13 +152,13 @@ const MedicationInputSection = ({
                 </div>
 
                 {daysSupply !== null && (
-                    <div className={`${baseClass}__supply-preview animate-fadeIn`}>
+                    <div className={`${baseClass ? `${baseClass}__supply-preview` : ''} ${compClass}__supply-preview animate-fadeIn`}>
                         <Icon name="notifications" size="1.1rem" color="var(--accent-color)" />
-                        <div className={`${baseClass}__supply-text`}>
-                            {t('supply_prefix') || 'Abastece'} <strong className="text-accent">~{daysSupply} {t('days') || 'días'}</strong>
+                        <div className={`${baseClass ? `${baseClass}__supply-text` : ''} ${compClass}__supply-text`}>
+                            {t('supply_prefix')} <strong className={compClass + '__text-accent'}>~{daysSupply} {t('days')}</strong>
                             {refillDateStr && (
-                                <span className={`${baseClass}__refill-date`}>
-                                    {' '}· {t('automatic_reminder') || 'Sugerido'}: <strong>{refillDateStr}</strong>
+                                <span className={`${baseClass ? `${baseClass}__refill-date` : ''} ${compClass}__refill-date`}>
+                                    {' '}· {t('automatic_reminder')}: <strong>{refillDateStr}</strong>
                                 </span>
                             )}
                         </div>
@@ -173,7 +170,7 @@ const MedicationInputSection = ({
                 variant="primary"
                 onClick={onAddItem}
                 icon={<Icon name="add" size="1.2rem" />}
-                className="self-end mb-[2px]"
+                className={compClass + "__add-btn"}
             />
         </div>
     );

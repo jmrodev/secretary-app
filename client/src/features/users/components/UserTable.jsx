@@ -9,14 +9,14 @@ const UserTable = ({ users, onEdit, onReset, onDelete }) => {
     const { t } = useLanguage();
 
     return (
-        <section className="user-table-wrapper">
-            <table className="user-table__table table-base">
+        <div className="user-table-wrapper">
+            <table className="user-table__table">
                 <thead>
                     <tr className="user-table__header">
-                        <th className="user-table__header-cell">{t('user_header') || 'Usuario'}</th>
-                        <th className="user-table__header-cell">{t('role_header') || 'Rol'}</th>
-                        <th className="user-table__header-cell">{t('name_contact_header') || 'Nombre y Teléfono'}</th>
-                        <th className="user-table__header-cell">{t('actions') || 'Acciones'}</th>
+                        <th className="user-table__header-cell">{t('user_header')}</th>
+                        <th className="user-table__header-cell">{t('role_header')}</th>
+                        <th className="user-table__header-cell">{t('name_contact_header')}</th>
+                        <th className="user-table__header-cell">{t('actions')}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,7 +37,7 @@ const UserTable = ({ users, onEdit, onReset, onDelete }) => {
                                     {u.phoneNumbers && u.phoneNumbers.length > 0 ? (
                                         <>
                                             {u.phoneNumbers.find(p => p.is_primary)?.phone_number || u.phoneNumbers[0].phone_number}
-                                            {u.phoneNumbers.length > 1 && <Badge variant="blue" className="text-[10px] px-1">+{u.phoneNumbers.length - 1}</Badge>}
+                                            {u.phoneNumbers.length > 1 && <Badge variant="blue" className="user-table__count-badge">+{u.phoneNumbers.length - 1}</Badge>}
                                         </>
                                     ) : (u.phone || '-')}
                                 </div>
@@ -55,7 +55,7 @@ const UserTable = ({ users, onEdit, onReset, onDelete }) => {
                     ))}
                 </tbody>
             </table>
-        </section>
+        </div>
     );
 };
 

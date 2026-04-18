@@ -1,5 +1,4 @@
-.input,
-.select {
+.input {
     /* --- Local Component Tokens --- */
     --input-bg: var(--white);
     --input-border: var(--gray-200);
@@ -26,15 +25,13 @@
     outline: none;
 }
 
-.input:focus,
-.select:focus {
+.input:focus {
     border-color: var(--input-focus-border);
     box-shadow: 0 0 0 4px var(--input-focus-ring);
     transform: translateY(-1px);
 }
 
-.input:disabled,
-.select:disabled {
+.input:disabled {
     background-color: var(--input-disabled-bg);
     color: var(--input-disabled-text);
     cursor: not-allowed;
@@ -46,18 +43,15 @@
     min-height: 100px;
 }
 
-.input--error,
-.select--error {
+.input--error {
     border-color: var(--red-500);
 }
 
-.input--error:focus,
-.select--error:focus {
+.input--error:focus {
     box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
 }
 
-.input--sm,
-.select--sm {
+.input--sm {
     padding: 0.5rem 0.75rem;
     font-size: 0.8125rem;
     border-radius: 0.5rem;

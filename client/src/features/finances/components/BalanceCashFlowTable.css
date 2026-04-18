@@ -1,0 +1,74 @@
+
+/* BalanceCashFlowTable Molecule Styles (BEM) */
+
+.balance-cashflow {
+    background: white;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.balance-cashflow__title {
+    font-size: 0.875rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+.balance-cashflow__subtitle {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin: -1rem 0 0.5rem 0;
+}
+
+.balance-cashflow__table-wrapper {
+    overflow-x: auto;
+}
+
+.balance-cashflow__table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.balance-cashflow__table th {
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    padding: 0.75rem 0.5rem;
+    border-bottom: 2px solid var(--gray-50);
+}
+
+.balance-cashflow__table td {
+    padding: 0.85rem 0.5rem;
+    border-bottom: 1px solid var(--gray-50);
+    font-size: 0.875rem;
+}
+
+.balance-cashflow__cell--right {
+    text-align: right;
+}
+
+.balance-cashflow__cell--bold {
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.balance-cashflow__table tfoot tr {
+    background-color: var(--gray-50);
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.balance-cashflow__table tfoot td {
+    border-top: 2px solid var(--gray-200);
+    border-bottom: none;
+    padding: 1rem 0.5rem;
+}

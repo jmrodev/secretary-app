@@ -4,6 +4,8 @@ import Modal from '@/components/molecules/Modal';
 import Button from '@/components/atoms/Button';
 import PrescriptionItemsList from '@/features/medical_documents/components/PrescriptionItemsList';
 import './PrescriptionModal.css';
+import './EditRequestModal.css';
+
 
 /**
  * EditRequestModal Molecule.
@@ -76,8 +78,9 @@ const EditRequestModal = ({
                                 onChange={e => onEditDataChange('payment_status', e.target.checked ? 'bonified' : 'debt')}
                             />
                             <span className="checkmark"></span>
-                            <span className="checkbox-label" style={{ marginLeft: '10px' }}>
+                            <span className="checkbox-label edit-request-modal__label">
                                 {t('bonified') || 'Bonificado (Sin Costo)'}
+
                             </span>
                         </label>
                     </div>

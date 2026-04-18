@@ -5,8 +5,8 @@ import TabNav from '@/components/molecules/TabNav';
 import './DoctorFilter.css';
 
 const DoctorFilter = ({ activeTab, userRole, isStaff, isAdmin, viewDoctorId, setViewDoctorId, doctors }) => {
-    // Show filter on monthly view as well
-    if ((activeTab !== 'calendar' && activeTab !== 'upcoming' && activeTab !== 'monthly') || !isStaff) {
+    // Show filter on calendar, upcoming, monthly and patient list views
+    if ((activeTab !== 'calendar' && activeTab !== 'upcoming' && activeTab !== 'monthly' && activeTab !== 'list') || !isStaff) {
         return null;
     }
 

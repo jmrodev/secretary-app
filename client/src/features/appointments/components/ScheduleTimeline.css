@@ -1,0 +1,100 @@
+/* ScheduleTimeline Styles (BEM) */
+
+.schedule-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.time-slot {
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius-md, 8px);
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.time-slot--closed {
+    opacity: 0.6;
+}
+
+.time-slot--past {
+    opacity: 0.8;
+}
+
+.slot-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+/* Available Slot (Empty space) */
+.available-slot {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    background-color: var(--white, #ffffff);
+    border: 1px dashed var(--gray-200, #e2e8f0);
+    border-radius: var(--radius-md, 8px);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.available-slot:hover {
+    border-style: solid;
+    border-color: var(--blue-400, #60a5fa);
+    background-color: var(--blue-50, #eff6ff);
+    transform: translateX(4px);
+}
+
+.available-slot--closed {
+    background-color: var(--gray-50, #f8fafc);
+    border-style: solid;
+    cursor: not-allowed;
+}
+
+.available-slot--closed:hover {
+    transform: none;
+    background-color: var(--gray-100, #f1f5f9);
+    border-color: var(--gray-300, #d1d5db);
+}
+
+.available-slot__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: var(--gray-100, #f1f5f9);
+    color: var(--gray-400, #94a3b8);
+    font-size: 1.25rem;
+}
+
+.available-slot:hover .available-slot__icon {
+    background-color: var(--blue-100, #dbeafe);
+    color: var(--blue-500, #3b82f6);
+}
+
+.available-slot--closed .available-slot__icon {
+    color: var(--red-300, #fca5a5);
+}
+
+.available-slot__info {
+    display: flex;
+    flex-direction: column;
+}
+
+.available-slot__time {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--slate-700, #334155);
+}
+
+.available-slot__label {
+    font-size: 0.75rem;
+    color: var(--slate-400, #94a3b8);
+    font-weight: 500;
+}

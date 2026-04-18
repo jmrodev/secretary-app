@@ -2,34 +2,35 @@ import React from 'react';
 import UserManagement from '@/features/users/components/UserManagement';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+import './UserManager.css';
 
 const UserManager = ({ t }) => {
     return (
-        <div className="user-manager h-full flex flex-col">
-            <header className="mb-6 border-b pb-4">
-                <h2 className="text-2xl font-bold text-slate-800">{t('user_management') || 'Gestión de Usuarios'}</h2>
-                <p className="text-slate-500">{t('manage_users_subtitle') || 'Administra cuentas de médicos, secretarias y administradores.'}</p>
+        <div className="user-manager">
+            <header className="user-manager__header">
+                <h2 className="user-manager__title">{t('user_management')}</h2>
+                <p className="user-manager__subtitle">{t('manage_users_subtitle')}</p>
             </header>
 
-            <div className="flex gap-4 mb-6">
+            <div className="user-manager__actions">
                 <Button
                     variant="primary"
                     onClick={() => window.dispatchEvent(new CustomEvent('OPEN_USER_MODAL', { detail: 'CREATE' }))}
                     icon={<Icon name="add" size="1.1rem" />}
                 >
-                    {t('add_user') || 'Agregar Usuario'}
+                    {t('add_user')}
                 </Button>
                 <Button
                     variant="outline"
                     onClick={() => window.location.reload()}
                     icon={<Icon name="sync" size="1.1rem" />}
                 >
-                    {t('refresh') || 'Actualizar'}
+                    {t('refresh')}
                 </Button>
             </div>
 
-            <div className="flex-1 dashboard-card dashboard-card--highlighted overflow-hidden">
-                <div className="h-full overflow-y-auto">
+            <div className="user-manager__content dashboard-card dashboard-card--highlighted">
+                <div className="user-manager__scrollable">
                     <UserManagement excludeRoles={['patient']} />
                 </div>
             </div>

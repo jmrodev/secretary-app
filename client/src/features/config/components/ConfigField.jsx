@@ -1,6 +1,7 @@
 import React from 'react';
 import Input from '@/components/atoms/Input';
 import Select from '@/components/atoms/Select';
+import './ConfigField.css';
 
 /**
  * ConfigField Molecule (Feature Component).
@@ -16,13 +17,16 @@ const ConfigField = ({
     disabled = false,
     placeholder = '',
     id,
+    variant = '', // e.g., 'monospace'
     className = '',
     options = [] // Only used if type="select"
 }) => {
     const isSelect = type === 'select';
+    const rootClass = `config-field ${variant ? `config-field--${variant}` : ''}`;
+    const inputClassName = `config-field__input ${className}`.trim();
 
     return (
-        <div className={`config-field ${className}`}>
+        <div className={rootClass}>
             <label className="config-field__label" htmlFor={id}>
                 {label}
             </label>
@@ -34,7 +38,7 @@ const ConfigField = ({
                     options={options}
                     onChange={onChange}
                     disabled={disabled}
-                    className="config-field__input"
+                    className={inputClassName}
                 />
             ) : (
                 <Input
@@ -44,7 +48,7 @@ const ConfigField = ({
                     onChange={onChange}
                     disabled={disabled}
                     placeholder={placeholder}
-                    className="config-field__input"
+                    className={inputClassName}
                 />
             )}
 
@@ -56,4 +60,3 @@ const ConfigField = ({
 };
 
 export default ConfigField;
-

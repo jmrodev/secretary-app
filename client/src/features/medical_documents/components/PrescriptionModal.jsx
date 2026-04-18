@@ -342,6 +342,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
             }
         >
             <section className="prescription-modal">
+                <h2 className="visually-hidden">{t('prescription_details')}</h2>
                 <PrescriptionHabitualMeds
                     patientMeds={patientMeds}
                     historyMeds={historyMeds}
@@ -373,7 +374,8 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
                 />
 
                 <article className="prescription-modal__group">
-                    <label className="prescription-modal__label">{t('instructions') || 'Instrucciones'}</label>
+                    <h3 className="visually-hidden">{t('instructions')}</h3>
+                    <label className="prescription-modal__label">{t('instructions')}</label>
                     <textarea
                         className="input-field"
                         rows="3"
@@ -384,6 +386,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
                 </article>
 
                 <article className="prescription-modal__group checkbox-group">
+                    <h3 className="visually-hidden">{t('bonified')}</h3>
                     <input
                         type="checkbox"
                         id="bonified-prescription"
@@ -392,7 +395,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
                         className="prescription-modal__checkbox"
                     />
                     <label htmlFor="bonified-prescription" className="input-label checkbox-label">
-                        {t('bonified') || 'Bonificado (Sin costo)'}
+                        {t('bonified')}
                     </label>
                 </article>
             </section>

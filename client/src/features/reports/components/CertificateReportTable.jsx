@@ -40,22 +40,22 @@ const CertificateReportTable = ({ data, t }) => {
             {/* Summary Table */}
             <div className="medical-report__summary">
                 <h3 className="medical-report__summary-title">{t('daily_summary')}</h3>
-                <table className="medical-report__table medical-report__table--summary">
+                <table className="medical-report__table">
                     <thead>
                         <tr>
                             <th>{t('date_label')}</th>
-                            <th className="text-right">{t('cash_cash_only')}</th>
-                            <th className="text-right">{t('other_methods')}</th>
-                            <th className="text-right">{t('daily_total')}</th>
+                            <th className="medical-report__cell--right">{t('cash_cash_only')}</th>
+                            <th className="medical-report__cell--right">{t('other_methods')}</th>
+                            <th className="medical-report__cell--right">{t('daily_total')}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {dailySummary.map((day, idx) => (
                             <tr key={idx} className="medical-report__row">
                                 <td>{day.date}</td>
-                                <td className="text-right">$ {day.cash.toLocaleString()}</td>
-                                <td className="text-right">$ {day.others.toLocaleString()}</td>
-                                <td className="text-right" style={{ fontWeight: 'bold' }}>
+                                <td className="medical-report__cell--right">$ {day.cash.toLocaleString()}</td>
+                                <td className="medical-report__cell--right">$ {day.others.toLocaleString()}</td>
+                                <td className="medical-report__cell--right medical-report__cell--bold">
                                     $ {day.total.toLocaleString()}
                                 </td>
                             </tr>
@@ -64,19 +64,19 @@ const CertificateReportTable = ({ data, t }) => {
                     <tfoot>
                         <tr className="medical-report__footer-subtotal">
                             <td>{t('monthly_cash_total')}</td>
-                            <td colSpan="3" className="text-right">
+                            <td colSpan="3" className="medical-report__cell--right">
                                 $ {dailySummary.reduce((acc, day) => acc + day.cash, 0).toLocaleString()}
                             </td>
                         </tr>
                         <tr className="medical-report__footer-subtotal">
                             <td>{t('monthly_others_total')}</td>
-                            <td colSpan="3" className="text-right">
+                            <td colSpan="3" className="medical-report__cell--right">
                                 $ {dailySummary.reduce((acc, day) => acc + day.others, 0).toLocaleString()}
                             </td>
                         </tr>
                         <tr className="medical-report__footer">
                             <td>{t('monthly_accumulated_total')}</td>
-                            <td colSpan="3" className="text-right">
+                            <td colSpan="3" className="medical-report__cell--right">
                                 $ {monthlyTotal.toLocaleString()}
                             </td>
                         </tr>
@@ -99,7 +99,7 @@ const CertificateReportTable = ({ data, t }) => {
                                     <th>{t('description')}</th>
                                     <th>{t('method_label')}</th>
                                     <th>{t('payment_status')}</th>
-                                    <th className="text-right">{t('amount')}</th>
+                                    <th className="medical-report__cell--right">{t('amount')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -128,7 +128,7 @@ const CertificateReportTable = ({ data, t }) => {
                                                             item.payment_status === 'bonified' ? t('bonified') : item.payment_status}
                                             </span>
                                         </td>
-                                        <td className="medical-report__cell-amount text-right">
+                                        <td className="medical-report__cell--right medical-report__cell--bold">
                                             {Number(item.amount) > 0 ? `$${item.amount.toLocaleString()}` : '-'}
                                         </td>
                                     </tr>

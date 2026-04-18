@@ -1,0 +1,58 @@
+.schedule-bulk {
+    padding: 1.5rem;
+    background-color: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    margin-bottom: 2rem;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.schedule-bulk__title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--gray-700);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.schedule-bulk__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.schedule-bulk__time-inputs {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+#root .schedule-bulk__time-input {
+    width: auto;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.schedule-bulk__separator {
+    font-weight: 500;
+    color: var(--gray-400);
+    text-transform: lowercase;
+    font-style: italic;
+    font-size: 0.75rem;
+}
+
+.schedule-bulk__buttons {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.schedule-bulk__btn-text {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    height: 2.25rem;
+}

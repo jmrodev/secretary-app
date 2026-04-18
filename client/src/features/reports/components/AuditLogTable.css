@@ -1,0 +1,91 @@
+/* AuditLogTable Styles (BEM) */
+
+.audit-log-table-container {
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.audit-log-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.audit-log-table__thead {
+    background-color: var(--gray-50);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.audit-log-table__th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+}
+
+.audit-log-table__th--details {
+    width: 33.333%;
+}
+
+.audit-log-table__row {
+    border-bottom: 1px solid var(--gray-100);
+    transition: background-color 0.2s;
+}
+
+.audit-log-table__row:hover {
+    background-color: var(--gray-50);
+}
+
+.audit-log-table__cell {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: var(--text-main);
+}
+
+.audit-log-table__cell--time {
+    white-space: nowrap;
+    color: var(--text-muted);
+}
+
+.audit-log-table__cell--user {
+    font-weight: 500;
+}
+
+.audit-log-table__cell--details {
+    max-width: 320px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.audit-log-table__details-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.audit-log-table__details-text {
+    display: block;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-muted);
+}
+
+.audit-log-table__cell--ip {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono, monospace);
+}
+
+.audit-log-table__empty {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-muted);
+}

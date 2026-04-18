@@ -3,6 +3,7 @@ import React from 'react';
 // Atomic Design Components
 import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
+import { PageHeader } from '../layout';
 
 import { useFinancesPageController } from '@/features/finances/hooks/useFinancesPageController';
 import FinanceStatsCards from '@/features/finances/components/FinanceStatsCards';
@@ -42,58 +43,64 @@ const FinancesPage = () => {
 
     return (
         <MainLayout wide>
-            <div className="finances-page">
-            <header className="dashboard-header animate-fadeIn">
-                <h1 className="dashboard-header__title">{t('finances')}</h1>
-                <p className="dashboard-header__subtitle">{t('finances_subtitle') || 'Control de caja y transacciones médicas.'}</p>
-            </header>
+            <main className="finances-page">
+                <PageHeader 
+                    variant="premium"
+                    title={t('finances')}
+                    subtitle={t('finances_subtitle') || 'Control de caja y transacciones médicas.'}
+                />
 
-            {loading ? (
-                <Loading variant="centered" text={t('loading') || "Cargando..."} />
-            ) : (
-                <div className="dashboard-grid animate-fadeIn">
-                    <FinanceSidebar
-                        isAdminOrSecretary={isAdminOrSecretary}
-                        user={user}
-                        doctors={doctors}
-                        selectedDoctorFilter={selectedDoctorFilter}
-                        pendingClosuresCount={controller.pendingClosures.length}
-                        onOpenNewTransaction={handlers.onOpenNewTransaction}
-                        onOpenPendingClosures={() => handlers.setPendingClosuresOpen(true)}
-                        onSelectDoctor={handlers.onSelectDoctor}
-                        onOpenCloseBox={handlers.onOpenCloseBox}
-                        calculateBalance={handlers.calculateBalance}
-                        calculateBalanceByMethod={handlers.calculateBalanceByMethod}
-                        filters={filters}
-                        handlers={handlers}
-                        t={t}
-                    />
-
-                    <main className="dashboard-main">
-                        {isAdminOrSecretary && stats.length > 0 && (
-                            <FinanceStatsCards stats={stats} t={t} />
-                        )}
-
-                        <div className="dashboard-card no-padding">
-                            <TransactionsTable
-                                transactions={filteredTransactions}
-                                totalCount={controller.totalCount}
-                                currentPage={controller.currentPage}
-                                totalPages={controller.totalPages}
-                                onPageChange={handlers.onPageChange}
+                <section className="layout-content-area">
+                    <h2 className="visually-hidden">{t('financial_operations_area') || 'Área de Operaciones Financieras'}</h2>
+                    {loading ? (
+                        <Loading variant="centered" text={t('loading')} />
+                    ) : (
+                        <div className="dashboard-grid animate-fadeIn">
+                            <FinanceSidebar
+                                isAdminOrSecretary={isAdminOrSecretary}
                                 user={user}
-                                settings={settings}
+                                doctors={doctors}
+                                selectedDoctorFilter={selectedDoctorFilter}
+                                pendingClosuresCount={controller.pendingClosures.length}
+                                onOpenNewTransaction={handlers.onOpenNewTransaction}
+                                onOpenPendingClosures={() => handlers.setPendingClosuresOpen(true)}
+                                onSelectDoctor={handlers.onSelectDoctor}
+                                onOpenCloseBox={handlers.onOpenCloseBox}
+                                calculateBalance={handlers.calculateBalance}
+                                calculateBalanceByMethod={handlers.calculateBalanceByMethod}
+                                filters={filters}
+                                handlers={handlers}
                                 t={t}
-                                onEdit={handlers.onEditTransaction}
-                                onDelete={handlers.onDeleteTransaction}
-                                onGenerateInvoice={handlers.onGenerateInvoice}
-                                onSync={handlers.onSyncTransaction}
-                                alert={controller.alert}
                             />
+
+                            <section className="dashboard-main">
+                                <h3 className="visually-hidden">{t('transactions_and_stats') || 'Transacciones y Estadísticas'}</h3>
+                                {isAdminOrSecretary && stats.length > 0 && (
+                                    <FinanceStatsCards stats={stats} t={t} />
+                                )}
+
+                                <article className="dashboard-card no-padding">
+                                    <h4 className="visually-hidden">{t('transactions_list') || 'Listado de Transacciones'}</h4>
+                                    <TransactionsTable
+                                        transactions={filteredTransactions}
+                                        totalCount={controller.totalCount}
+                                        currentPage={controller.currentPage}
+                                        totalPages={controller.totalPages}
+                                        onPageChange={handlers.onPageChange}
+                                        user={user}
+                                        settings={settings}
+                                        t={t}
+                                        onEdit={handlers.onEditTransaction}
+                                        onDelete={handlers.onDeleteTransaction}
+                                        onGenerateInvoice={handlers.onGenerateInvoice}
+                                        onSync={handlers.onSyncTransaction}
+                                        alert={controller.alert}
+                                    />
+                                </article>
+                            </section>
                         </div>
-                    </main>
-                </div>
-            )}
+                    )}
+                </section>
 
             {/* --- Modals --- */}
             <TransactionModal
@@ -140,7 +147,7 @@ const FinancesPage = () => {
                 onResetDay={handlers.handleResetDay}
                 t={t}
             />
-        </div>
+            </main>
         </MainLayout>
     );
 };

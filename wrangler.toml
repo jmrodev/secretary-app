@@ -1,0 +1,13 @@
+name = "secretary-app"
+compatibility_date = "2025-01-01"
+main = "worker.js"
+
+[build]
+command = "npm run build --workspace=client"
+
+[assets]
+directory = "client/dist"
+binding = "ASSETS"
+
+[observability]
+enabled = true

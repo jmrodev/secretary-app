@@ -11,6 +11,8 @@ import TabButton from '@/components/atoms/TabButton';
 import Icon from '@/components/atoms/Icon';
 
 // Molecules (Shared/Global)
+// Molecules (Shared/Global)
+import { PageHeader } from '@/features/layout';
 import QRCodeModal from '@/features/patients/components/QRCodeModal';
 import SearchBar from '@/components/molecules/SearchBar';
 import Pagination from '@/components/molecules/Pagination';
@@ -23,6 +25,8 @@ import PatientRecycleBin from '@/features/patients/components/PatientRecycleBin'
 import PatientMedications from '@/features/patients/components/PatientMedications';
 import DebtPaymentModal from '@/features/patients/components/DebtPaymentModal';
 import PatientManagerModal from '@/features/patients/components/PatientManagerModal';
+import { DoctorFilter } from '@/features/doctors';
+
 
 import './PatientsPage.css';
 
@@ -31,7 +35,7 @@ import './PatientsPage.css';
  * Coordinates patient listing, search, details, and recycle bin.
  */
 const PatientsPage = () => {
-    const { isStaff, user: authUser } = usePermissions();
+    const { isStaff, isAdmin, user: authUser } = usePermissions();
     const controller = usePatientsPageController();
     const {
         user, t,
@@ -39,6 +43,7 @@ const PatientsPage = () => {
         totalCount, currentPage, totalPages, handlePageChange,
         doctors, insurances, recycleItems, institutions,
         activeTab, setActiveTab,
+        viewDoctorId, setViewDoctorId,
         searchTerm, setSearchTerm,
         selectedPatientId, setSelectedPatientId, patientDetails,
 
@@ -103,12 +108,14 @@ const PatientsPage = () => {
             ) : (
                 // --- LIST VIEW ---
                 <>
-                    <header className="dashboard-header">
-                        <h1 className="dashboard-header__title">{t('patients')}</h1>
-                        <p className="dashboard-header__subtitle">{t('patients_subtitle')}</p>
-                    </header>
+                    <PageHeader 
+                        variant="premium"
+                        title={t('patients')}
+                        subtitle={t('patients_subtitle')}
+                    />
 
-                    <div className="dashboard-grid animate-fadeIn">
+                    <div className="layout-content-area">
+                        <section className="patients-page__dashboard-grid animate-fadeIn">
                         <aside className="dashboard-sidebar">
                             <div className="dashboard-nav-bar">
                                 <TabNav className="patients__nav">
@@ -130,6 +137,15 @@ const PatientsPage = () => {
                                         </TabButton>
                                     )}
                                 </TabNav>
+                                <DoctorFilter
+                                    activeTab={activeTab}
+                                    userRole={authUser?.role}
+                                    isStaff={isStaff}
+                                    isAdmin={isAdmin}
+                                    viewDoctorId={viewDoctorId}
+                                    setViewDoctorId={setViewDoctorId}
+                                    doctors={doctors}
+                                />
                             </div>
 
                             <div className="dashboard-card">
@@ -158,7 +174,7 @@ const PatientsPage = () => {
                                     <div className="patients-sidebar__tools">
                                         <Button
                                             variant="primary"
-                                            className="w-full justify-start"
+                                            className="patients-sidebar__btn-tool"
                                             onClick={handleNewClick}
                                             icon={<Icon name="add" size="1.1rem" />}
                                         >
@@ -172,7 +188,7 @@ const PatientsPage = () => {
                         <main className="dashboard-main">
                             {activeTab === 'list' ? (
                                 <div className="patients-list-view">
-                                    <div className="dashboard-card no-padding">
+                                    <section className="patients-page__list-container">
                                         <PatientList
                                             patients={patients}
                                             institutions={institutions}
@@ -192,7 +208,7 @@ const PatientsPage = () => {
                                             onPageChange={handlePageChange}
                                             t={t}
                                         />
-                                    </div>
+                                    </section>
                                 </div>
                             ) : (
                                 <PatientRecycleBin
@@ -202,6 +218,7 @@ const PatientsPage = () => {
                                 />
                             )}
                         </main>
+                        </section>
                     </div>
                 </>
             )}

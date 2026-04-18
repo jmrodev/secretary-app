@@ -1,4 +1,4 @@
-import React from 'react';
+import './BalanceFinancialSummary.css';
 
 /**
  * BalanceFinancialSummary Molecule.
@@ -16,57 +16,57 @@ const BalanceFinancialSummary = ({
     t
 }) => {
     return (
-        <section className="balance-view__card balance-view__card--summary">
-            <h3 className="balance-view__card-title">Resumen Financiero</h3>
+        <section className="balance-summary animate-fadeIn">
+            <h3 className="balance-summary__title">Resumen Financiero</h3>
 
-            <div className="balance-view__summary-item">
+            <div className="balance-summary__item">
                 <span>Total Turnos:</span>
-                <span className="balance-view__amount balance-view__amount--positive">
+                <span className="balance-summary__amount balance-summary__amount--positive">
                     $ {totalAppts.toLocaleString()}
                 </span>
             </div>
 
-            <div className="balance-view__summary-item">
+            <div className="balance-summary__item">
                 <span>Total Recetas:</span>
-                <span className="balance-view__amount balance-view__amount--positive">
+                <span className="balance-summary__amount balance-summary__amount--positive">
                     $ {totalPres.toLocaleString()}
                 </span>
             </div>
 
-            <div className="balance-view__summary-item">
+            <div className="balance-summary__item">
                 <span>Total Licencias:</span>
-                <span className="balance-view__amount balance-view__amount--positive">
+                <span className="balance-summary__amount balance-summary__amount--positive">
                     $ {totalLicenses.toLocaleString()}
                 </span>
             </div>
 
-            <div className="balance-view__summary-item">
+            <div className="balance-summary__item">
                 <span>Total Certificados:</span>
-                <span className="balance-view__amount balance-view__amount--positive">
+                <span className="balance-summary__amount balance-summary__amount--positive">
                     $ {totalCertificates.toLocaleString()}
                 </span>
             </div>
 
             {otherOrPastIncome > 0 && (
-                <div className="balance-view__summary-item">
+                <div className="balance-summary__item">
                     <span>Otros Ingresos / Cobro Deudas:</span>
-                    <span className="balance-view__amount balance-view__amount--positive">
+                    <span className="balance-summary__amount balance-summary__amount--positive">
                         $ {otherOrPastIncome.toLocaleString()}
                     </span>
                 </div>
             )}
 
-            <div className="balance-view__summary-item balance-view__summary-item--subtotal">
+            <div className="balance-summary__item balance-summary__item--subtotal">
                 <span>{t("subtotal_income")}:</span>
                 <span>$ {totalIncome.toLocaleString()}</span>
             </div>
 
-            <div className="balance-view__summary-item balance-view__summary-item--withdrawals">
+            <div className="balance-summary__item balance-summary__item--withdrawals">
                 <span>{t('doctor_withdrawals')}:</span>
                 <span>$ {totalWithdrawals.toLocaleString()}</span>
             </div>
 
-            <div className="balance-view__summary-item balance-view__summary-item--net">
+            <div className="balance-summary__item balance-summary__item--net">
                 <span>{t("result_neto")}:</span>
                 <span>$ {netTotal.toLocaleString()}</span>
             </div>

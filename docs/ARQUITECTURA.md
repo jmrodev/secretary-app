@@ -106,7 +106,11 @@
 - **Whitelisting**: Los métodos `update` deben usar una lista blanca de campos permitidos (`ALLOWED_FIELDS`) para evitar inyecciones de parámetros no deseados.
 - **sqlUtils**: Utilizar la utilidad centralizada `@/utils/sqlUtils.js` para construir consultas dinámicas de forma segura.
 
-
+### 13. CI/CD y Despliegue (Cloudflare)
+- **Gestión Externa**: El sistema de despliegue principal ("Workers Builds: secretary-app") se gestiona externamente a través del dashboard de Cloudflare vinculado al repositorio.
+- **Configuración (wrangler)**: Se utiliza `wrangler.toml` en la raíz con un script principal (`worker.js`) y mapeo de activos (`client/dist`). Este esquema de "Worker with Assets" permite el uso de bindings y un control total sobre el ruteo.
+- **Arquitectura de Workspaces**: El proyecto está configurado con **npm workspaces**. Los comandos de construcción y linting deben ejecutarse desde la raíz (`npm run build --workspace=client`) para garantizar la integridad del `package-lock.json` unificado.
+- **Workaround de Rollup**: Para evitar errores de "Module not found" en GitHub Actions, las variantes de `@rollup/rollup-*` para distintas plataformas se declaran explícitamente como `optionalDependencies` en `client/package.json`.
 
 ## Estructura del Proyecto
 
@@ -374,6 +378,10 @@ Para garantizar la correcta traducción de mensajes:
   }
   ```
 
+- **Cero Fallbacks (Frontend)**: Está TERMINANTEMENTE PROHIBIDO el uso de fallbacks hardcodeados en la función `t()` (ej: `t('key') || 'Texto'`). 
+    - Si una clave no existe, **debe crearse** en los archivos de idioma correspondientes (`es.js`, `en.js`).
+    - El JSX debe mantenerse limpio de literales para asegurar que la aplicación sea 100% localizable dinámicamente.
+
 ## Convenciones de Nombres
 
 ### Archivos
@@ -456,6 +464,7 @@ Antes de hacer commit, verificar:
 - [ ] ¿El código está documentado?
 - [ ] ¿Las variables CSS están centralizadas?
 - [ ] ¿Los estilos son reutilizables?
+- [ ] ¿Cero fallbacks en traducciones? (Prohibido `t('key') || 'Texto'`)
 
 ## Recursos
 

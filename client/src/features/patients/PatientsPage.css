@@ -10,15 +10,25 @@
     gap: 0.5rem;
 }
 
-.patients-list-view .dashboard-card {
+.patients-sidebar__btn-tool {
+    width: 100%;
+    justify-content: flex-start;
+}
+
+.patients-page__list-container {
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden; /* For table border radius */
     padding: 0;
 }
 
 /* Pagination container inside patient card */
-.patients-list-view .pagination {
+.patients-page__list-container .pagination {
     padding: 1rem 1.5rem;
     border-top: 1px solid var(--border-color);
-    background: var(--bg-secondary);
+    background: var(--gray-50);
 }
 
 .patients__dot-badge {

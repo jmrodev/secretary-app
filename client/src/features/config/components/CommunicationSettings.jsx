@@ -3,6 +3,7 @@ import ConfigField from '@/features/config/components/ConfigField';
 import Icon from '@/components/atoms/Icon';
 import MessageTemplateEditor from '@/features/config/components/MessageTemplateEditor';
 import { useLanguage } from '@/context/LanguageContext';
+import './CommunicationSettings.css';
 
 /**
  * CommunicationSettings Feature Component.
@@ -18,11 +19,11 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
     ], []);
 
     return (
-        <div className="tab-panel animate-fadeIn">
+        <div className="tab-panel animate-fadeIn communication-settings">
             {/* Clinic Address */}
             <div className="config-section">
                 <div className="config-section__header">
-                    <Icon name="CONFIG" size="1.2rem" className="config-section__icon" />
+                    <Icon name="settings" size="1.2rem" className="config-section__icon" />
                     <h4 className="config-section__title">{t('clinic_address_title')}</h4>
                 </div>
 
@@ -43,14 +44,19 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
             {/* Appointment Reminders */}
             <div className="config-section">
                 <div className="config-section__header">
-                    <Icon name="APPOINTMENTS" size="1.2rem" className="config-section__icon" />
+                    <Icon name="event" size="1.2rem" className="config-section__icon" />
                     <h4 className="config-section__title">{t('appointment_reminders_title')}</h4>
                 </div>
 
                 <div className="config-section__body">
                     <MessageTemplateEditor
                         id="reminder-template"
-                        label={<span className="config-field__label-with-icon"><Icon name="HISTORY" size="1rem" /> {t('presential_reminder_label')}</span>}
+                        label={
+                            <span className="communication-settings__label-with-icon">
+                                <Icon name="history" size="1rem" className="communication-settings__label-icon" /> 
+                                {t('presential_reminder_label')}
+                            </span>
+                        }
                         value={settings.appointment_reminder_template}
                         settingKey="appointment_reminder_template"
                         variables={commonVars}
@@ -66,7 +72,12 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
 
                     <MessageTemplateEditor
                         id="reminder-virtual-template"
-                        label={<span className="config-field__label-with-icon"><Icon name="VIRTUAL" size="1rem" /> {t('virtual_reminder_label')}</span>}
+                        label={
+                            <span className="communication-settings__label-with-icon">
+                                <Icon name="video_chat" size="1rem" className="communication-settings__label-icon" /> 
+                                {t('virtual_reminder_label')}
+                            </span>
+                        }
                         value={settings.appointment_reminder_virtual_template}
                         settingKey="appointment_reminder_virtual_template"
                         variables={commonVars}
@@ -81,14 +92,19 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
             {/* Appointment Confirmation */}
             <div className="config-section">
                 <div className="config-section__header">
-                    <Icon name="CHECK" size="1.2rem" className="config-section__icon" />
+                    <Icon name="check_circle" size="1.2rem" className="config-section__icon" />
                     <h4 className="config-section__title">{t('appointment_confirmation_title')}</h4>
                 </div>
 
                 <div className="config-section__body">
                     <MessageTemplateEditor
                         id="confirmation-template"
-                        label={<span className="config-field__label-with-icon"><Icon name="CHECK" size="1rem" /> {t('presential_confirmation_label')}</span>}
+                        label={
+                            <span className="communication-settings__label-with-icon">
+                                <Icon name="check" size="1rem" className="communication-settings__label-icon" /> 
+                                {t('presential_confirmation_label')}
+                            </span>
+                        }
                         value={settings.appointment_confirmation_template}
                         settingKey="appointment_confirmation_template"
                         variables={commonVars}
@@ -105,7 +121,12 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
 
                     <MessageTemplateEditor
                         id="confirmation-virtual-template"
-                        label={<span className="config-field__label-with-icon"><Icon name="VIRTUAL" size="1rem" /> {t('virtual_confirmation_label')}</span>}
+                        label={
+                            <span className="communication-settings__label-with-icon">
+                                <Icon name="video_chat" size="1rem" className="communication-settings__label-icon" /> 
+                                {t('virtual_confirmation_label')}
+                            </span>
+                        }
                         value={settings.appointment_confirmation_virtual_template}
                         settingKey="appointment_confirmation_virtual_template"
                         variables={commonVars}
@@ -120,14 +141,19 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
             {/* Public Requests / QR Links */}
             <div className="config-section">
                 <div className="config-section__header">
-                    <Icon name="DOCUMENTS" size="1.2rem" className="config-section__icon" />
+                    <Icon name="description" size="1.2rem" className="config-section__icon" />
                     <h4 className="config-section__title">{t('public_requests_title')}</h4>
                 </div>
 
                 <div className="config-section__body">
                     <ConfigField
                         id="google-review-link"
-                        label={<span className="config-field__label-with-icon"><Icon name="STAR" size="1rem" /> {t('google_review_link_label') || 'Enlace de Reseñas de Google'}</span>}
+                        label={
+                            <span className="communication-settings__label-with-icon">
+                                <Icon name="star" size="1rem" className="communication-settings__label-icon" /> 
+                                {t('google_review_link_label') || 'Enlace de Reseñas de Google'}
+                            </span>
+                        }
                         type="url"
                         placeholder="Ej. https://g.page/r/.../review"
                         value={settings.google_review_link || ''}
@@ -141,7 +167,12 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
 
                     <MessageTemplateEditor
                         id="whatsapp-prescription-template"
-                        label={<span className="config-field__label-with-icon"><Icon name="PRESCRIPTION" size="1rem" /> {t('prescription_request_whatsapp')}</span>}
+                        label={
+                            <span className="communication-settings__label-with-icon">
+                                <Icon name="medication" size="1rem" className="communication-settings__label-icon" /> 
+                                {t('prescription_request_whatsapp')}
+                            </span>
+                        }
                         value={settings.whatsapp_prescription_request_template}
                         settingKey="whatsapp_prescription_request_template"
                         variables={['{patient_name}', '{link}']}
@@ -157,7 +188,12 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
 
                     <MessageTemplateEditor
                         id="whatsapp-patient-data-template"
-                        label={<span className="config-field__label-with-icon"><Icon name="PROFILE" size="1rem" /> {t('data_update_whatsapp')}</span>}
+                        label={
+                            <span className="communication-settings__label-with-icon">
+                                <Icon name="account_circle" size="1rem" className="communication-settings__label-icon" /> 
+                                {t('data_update_whatsapp')}
+                            </span>
+                        }
                         value={settings.whatsapp_patient_data_request_template}
                         settingKey="whatsapp_patient_data_request_template"
                         variables={['{patient_name}', '{link}']}
@@ -173,7 +209,12 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
 
                     <MessageTemplateEditor
                         id="medication-refill-template"
-                        label={<span className="config-field__label-with-icon"><Icon name="PRESCRIPTION" size="1rem" /> {t('medication_refill_reminder_label') || 'Recordatorio de Renovación de Medicación'}</span>}
+                        label={
+                            <span className="communication-settings__label-with-icon">
+                                <Icon name="medication" size="1rem" className="communication-settings__label-icon" /> 
+                                {t('medication_refill_reminder_label') || 'Recordatorio de Renovación de Medicación'}
+                            </span>
+                        }
                         value={settings.medication_refill_reminder_template}
                         settingKey="medication_refill_reminder_template"
                         variables={['{patient_name}', '{medication_name}']}

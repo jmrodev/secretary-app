@@ -79,6 +79,7 @@ const AppointmentReportTable = ({ data, t }) => {
                                     {day.date}
                                     {day.is_holiday && <span className="appointment-report__tag-small"><Icon name="celebration" size="1rem" /></span>}
                                     {day.is_weekend && !day.is_holiday && <span className="appointment-report__tag-small"><Icon name="calendar_today" size="1rem" /></span>}
+
                                     <span className="appointment-report__day-name"> {getDayOfWeek(day.date)}</span>
                                 </td>
                                 <td className="text-right">$ {day.cash.toLocaleString()}</td>
@@ -133,6 +134,7 @@ const AppointmentReportTable = ({ data, t }) => {
                                     <td colSpan="7">
                                         <Icon name="calendar_today" size="1rem" className="mr-1" /> {dayGroup.date}
                                         {dayGroup.is_holiday && <span className="appointment-report__holiday-tag"><Icon name="celebration" size="1rem" className="mr-1" />{dayGroup.holiday_description}</span>}
+
                                         {dayGroup.is_weekend && !dayGroup.is_holiday && <span className="appointment-report__weekend-note">({t('weekend_short') || 'Finde'})</span>}
                                     </td>
                                 </tr>

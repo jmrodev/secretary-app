@@ -4,6 +4,7 @@ import ConfigField from '@/features/config/components/ConfigField';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Input from '@/components/atoms/Input';
+import './GeneralSettings.css';
 
 /**
  * GeneralSettings Feature Component.
@@ -58,7 +59,7 @@ const renderPermissionsGroup = (settings, updateSetting, isAdmin) => {
 
 const renderUrlConfiguration = (settings, updateSetting, isAdmin, onShowQr) => {
     return (
-        <div className="config-grid config-grid--2col">
+        <div className="config-grid">
             <ConfigField
                 id="public-base-url"
                 label="URL Pública (Internet)"
@@ -73,11 +74,11 @@ const renderUrlConfiguration = (settings, updateSetting, isAdmin, onShowQr) => {
                 <label className="config-field__label" htmlFor="staff-base-url">
                     URL Local (Red Clínica)
                 </label>
-                <div className="config-flex config-flex--gap-2">
+                <div className="general-settings__url-group">
                     <Input
                         type="text"
                         id="staff-base-url"
-                        className="config-field__input config-flex__item--grow"
+                        className="general-settings__url-input"
                         placeholder="http://192.168.0.x:5173"
                         value={settings.staff_base_url || ''}
                         onChange={(e) => updateSetting('staff_base_url', e.target.value)}
@@ -104,7 +105,7 @@ const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => {
     const isAdmin = user?.role === 'admin';
 
     return (
-        <div className="tab-panel animate-fadeIn">
+        <div className="tab-panel animate-fadeIn general-settings">
             {/* Functionalities and Permissions */}
             <article className="config-section">
                 <header className="config-section__header">
@@ -169,10 +170,10 @@ const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => {
                 </header>
 
                 <div className="config-section__body">
-                    <article className="system-config-page__app-card">
-                        <header className="system-config-page__app-info">
-                            <h4 className="system-config-page__app-title">Descargar APK para Android</h4>
-                            <p className="system-config-page__app-description">Instala la aplicación nativa para una gestión más rápida desde el celular.</p>
+                    <article className="general-settings__app-card">
+                        <header className="general-settings__app-info">
+                            <h4 className="general-settings__app-title">Descargar APK para Android</h4>
+                            <p className="general-settings__app-description">Instala la aplicación nativa para una gestión más rápida desde el celular.</p>
                         </header>
                         <Button
                             variant="primary"

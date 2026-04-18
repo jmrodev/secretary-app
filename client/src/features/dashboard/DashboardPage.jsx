@@ -9,6 +9,8 @@ import { PageHeader } from '@/features/layout';
 import { PrescriptionModal, MedicalRequirementManager } from '@/features/medical_documents';
 import { PatientHistoryModal } from '@/features/patients';
 import { TransactionModal } from '@/features/finances';
+import heroBg from './assets/dashboard_hero.png'; // Canva-style background
+
 
 // Internal component from another feature (keeping as is or move to molecules if shared)
 import AppointmentActionModal from '@/features/appointments/components/AppointmentActionModal.jsx';
@@ -17,7 +19,6 @@ import AppointmentActionModal from '@/features/appointments/components/Appointme
 import MainLayout from '@/components/templates/MainLayout';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import Badge from '@/components/atoms/Badge';
 import Loading from '@/components/atoms/Loading';
 
 import './DashboardPage.css';
@@ -30,7 +31,7 @@ const DashboardPage = () => {
     const controller = useDashboardController();
     const {
         user, t,
-        stats, newPatientStats, reminders, pendingReqCount, activeTab,
+        stats, newPatientStats, reminders, activeTab,
         actionModal,
         historyModal,
         prescribeModal,
@@ -40,6 +41,8 @@ const DashboardPage = () => {
         handlers,
         isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff
     } = controller;
+
+    const isAdminOrSecretary = isAdmin || isSecretary;
 
     const {
         refreshDashboard,
@@ -67,115 +70,141 @@ const DashboardPage = () => {
         navigate
     } = handlers;
 
+    const [showMobileSidebar, setShowMobileSidebar] = React.useState(false);
+
     if (!user) {
         return <Loading variant="full-page" />;
     }
 
-    const isAdminOrSecretary = isStaff;
-
     return (
         <MainLayout wide>
-            <section className="dashboard-page-orchestrator">
-                <section className="dashboard-page">
-                    <PageHeader 
-                        title={
-                            <>
-                                {t('dashboard')}
-                                <div className="dashboard-live-indicator">
-                                    <span className="dashboard-live-indicator__dot"></span>
-                                    <span className="dashboard-live-indicator__text">{t('live') || 'LIVE'}</span>
-                                </div>
-                            </>
-                        }
-                        subtitle={
-                            <>
-                                {t('welcome_back')}, <strong>{user?.full_name || user?.username}</strong>. {t('dashboard_subtitle')}
-                            </>
-                        }
-                    />
+            <main className="dashboard-page-orchestrator">
+                <PageHeader 
+                    variant="premium"
+                    backgroundUrl={heroBg}
+                    title={
+                        <>
+                            {t('dashboard')}
+                            <div className="dashboard-live-indicator">
+                                <span className="dashboard-live-indicator__dot"></span>
+                                <span className="dashboard-live-indicator__text">{t('live')}</span>
+                            </div>
+                        </>
+                    }
+                    subtitle={
+                        <>
+                            {t('welcome_back')}, <strong>{user?.full_name || user?.username}</strong>. {t('dashboard_subtitle')}
+                        </>
+                    }
+                />
+                <section className="layout-content-area">
+                    <h2 className="visually-hidden">{t('dashboard_content')}</h2>
+                    <div className="dashboard-top-actions animate-fadeIn">
+                        <div className="dashboard-search-bar">
+                            <span className="material-symbols-outlined search-icon">search</span>
+                            <input type="text" placeholder={t('search_placeholder')} />
+                        </div>
 
-                    <div className="dashboard-grid animate-fadeIn">
-                        {/* Sidebar Stats */}
+                        <Button 
+                            variant="premium" 
+                            size="sm" 
+                            onClick={() => setShowMobileSidebar(!showMobileSidebar)}
+                            className="dashboard-sidebar-toggle-mobile"
+                            title={showMobileSidebar ? t('close_panel') : t('view_metrics')}
+                        >
+                            <Icon name={showMobileSidebar ? 'expand_less' : 'analytics'} />
+                            <span className="mobile-only-label">
+                                {showMobileSidebar ? t('close_panel') : t('view_metrics')}
+                            </span>
+                        </Button>
+                    </div>
+
+                    <div className={`dashboard-grid ${showMobileSidebar ? 'dashboard-grid--sidebar-visible' : ''}`}>
+                        {/* Mobile Overlay / Backdrop */}
+                        {showMobileSidebar && (
+                            <div 
+                                className="dashboard-mobile-backdrop" 
+                                onClick={() => setShowMobileSidebar(false)}
+                            />
+                        )}
+
+                        {/* Sidebar: Utils & Metrics (Drawer on Mobile) */}
                         <aside className="dashboard-sidebar">
+                            <div className="dashboard-sidebar-mobile-header">
+                                <h3 className="dashboard-sidebar-mobile-header__title">
+                                    <Icon name="analytics" /> {t('metrics_and_tools')}
+                                </h3>
+                                <Button variant="ghost" size="sm" onClick={() => setShowMobileSidebar(false)}>
+                                    <Icon name="close" />
+                                </Button>
+                            </div>
+                            
                             <DashboardSidebar
                                 stats={stats}
                                 newPatientStats={newPatientStats}
                                 user={user}
                                 t={t}
                             />
-                        </aside>
-
-                        {/* Main Content Area */}
-                        <main className="dashboard-main flex flex-col gap-8">
-                            {/* NEW: Quick Actions Section */}
-                            {(isAdmin || isSecretary || isDoctor) && (
+                            
+                            {/* QuickActions moved here as a support element */}
+                            {(isAdminOrSecretary || isDoctor) && (
                                 <QuickActions 
                                     t={t} 
                                     handlers={handlers} 
                                     isAdmin={isAdmin} 
                                     isSecretary={isSecretary} 
                                     isDoctor={isDoctor} 
+                                    compact={true}
                                 />
                             )}
+                        </aside>
 
-                            {(isAdminOrSecretary || isDoctor) && (
-                                <nav className="dashboard-nav-bar dashboard-nav-bar--centered mb-6">
-                                    <div className="flex items-center gap-6">
-                                        <div className="dashboard-nav-bar__button-wrapper">
-                                            <Button
-                                                variant="ghost"
-                                                active={activeTab === 'requirements'}
-                                                onClick={() => setActiveTab('requirements')}
-                                                icon={<Icon name="description" size="1.2rem" />}
-                                                className="px-6"
-                                            >
-                                                {t('ongoing_requirements')}
-                                            </Button>
-                                            <Badge count={pendingReqCount} position="top-right" />
-                                        </div>
-                                        <div className="dashboard-nav-bar__button-wrapper">
-                                            <Button
-                                                variant="ghost"
-                                                active={activeTab === 'reminders'}
-                                                onClick={() => setActiveTab('reminders')}
-                                                icon={<Icon name="notifications" size="1.2rem" />}
-                                                className="px-6"
-                                            >
-                                                {t('reminders')}
-                                            </Button>
-                                            <Badge count={reminders?.length || 0} position="top-right" variant="danger" />
-                                        </div>
-                                    </div>
-                                </nav>
-                            )}
-
-                            <article className="dashboard-card dashboard-card--no-padding">
+                        {/* Main Area: Priority Content */}
+                        <section className="dashboard-main">
+                            <article className="dashboard-card dashboard-card--no-padding dashboard-card--priority">
+                                <h3 className="visually-hidden">{t('main_dashboard_priority')}</h3>
                                 <div className="dashboard-card__content">
-                                    {activeTab === 'requirements' && (isAdminOrSecretary || isDoctor) && (
+                                    {(isAdminOrSecretary || isDoctor) ? (
                                         <div className="dashboard-requirements">
                                             <header className="dashboard-requirements__header">
                                                 <h3 className="dashboard-requirements__title">
-                                                    <Icon name="description" size="1.2rem" />
+                                                    <Icon name="description" size="1.5rem" />
                                                     {t('pending_requests')}
                                                 </h3>
+                                                
+                                                <div className="dashboard-header-actions">
+                                                    {/* Secondary tab if someone really needs reminders */}
+                                                    <Button 
+                                                        variant="ghost" 
+                                                        size="sm" 
+                                                        onClick={() => setActiveTab(activeTab === 'reminders' ? 'requirements' : 'reminders')}
+                                                    >
+                                                        {activeTab === 'reminders' ? t('back_to_requests') : `${t('view_reminders')} (${reminders?.length || 0})`}
+                                                    </Button>
+                                                </div>
                                             </header>
-                                            <MedicalRequirementManager user={user} hideTabs={true} hideFilters={true} setPaymentModal={setPaymentModal} />
-                                        </div>
-                                    )}
 
-                                    {activeTab === 'reminders' && (
-                                        <DashboardReminders
-                                            reminders={reminders}
-                                            t={t}
-                                            onWhatsApp={handleWhatsAppReminder}
-                                            onComplete={handleCompleteReminder}
-                                            onMarkNotified={handleMarkNotified}
-                                            onViewProfile={(id) => navigate('/patients', { state: { selectedPatientId: id } })}
-                                        />
+                                            {activeTab === 'requirements' ? (
+                                                <MedicalRequirementManager user={user} hideTabs={true} hideFilters={true} setPaymentModal={setPaymentModal} />
+                                            ) : (
+                                                <DashboardReminders
+                                                    reminders={reminders}
+                                                    t={t}
+                                                    onWhatsApp={handleWhatsAppReminder}
+                                                    onComplete={handleCompleteReminder}
+                                                    onMarkNotified={handleMarkNotified}
+                                                    onViewProfile={(id) => navigate('/patients', { state: { selectedPatientId: id } })}
+                                                />
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <div className="dashboard-no-permissions">
+                                            {t('no_permissions_view')}
+                                        </div>
                                     )}
                                 </div>
                             </article>
-                        </main>
+                        </section>
                     </div>
 
                     {/* Modals - Orchestrated by Dashboard Controller but located in their respective features */}
@@ -228,7 +257,7 @@ const DashboardPage = () => {
                         }}
                     />
                 </section>
-            </section>
+            </main>
         </MainLayout>
     );
 

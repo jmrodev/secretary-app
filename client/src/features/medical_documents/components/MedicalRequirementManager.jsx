@@ -75,7 +75,8 @@ const MedicalRequirementManager = ({
     const baseClass = 'medical-requirement-manager';
 
     return (
-        <div className={baseClass}>
+        <section className={baseClass}>
+            <h2 className="visually-hidden">{t('medical_requirements')}</h2>
             {!hideTabs && (
                 <nav className={`${baseClass}__tabs`}>
                     <TabButton
@@ -104,7 +105,7 @@ const MedicalRequirementManager = ({
                                 variant="pill"
                                 icon={<Icon name="delete" />}
                             >
-                                {t('recycle_bin') || 'Papelera'}
+                                {t('recycle_bin')}
                             </TabButton>
                             {recycleRequests.length > 0 && (
                                 <span className={`${baseClass}__badge`}>{recycleRequests.length}</span>
@@ -114,7 +115,8 @@ const MedicalRequirementManager = ({
                 </nav>
             )}
 
-            <div className={`${baseClass}__content animate-fadeIn`}>
+            <article className={`${baseClass}__content animate-fadeIn`}>
+                <h3 className="visually-hidden">{t('active_view')}</h3>
                 {activeTab === 'new' ? (
                     <MedicalRequestForm
                         doctors={doctors}
@@ -149,7 +151,7 @@ const MedicalRequirementManager = ({
                         t={t}
                     />
                 )}
-            </div>
+            </article>
 
             <MedicalRequirementDetailModal
                 selectedRequest={selectedRequest}
@@ -168,7 +170,7 @@ const MedicalRequirementManager = ({
                 actionNote={actionNote}
                 setActionNote={setActionNote}
             />
-        </div>
+        </section>
     );
 };
 

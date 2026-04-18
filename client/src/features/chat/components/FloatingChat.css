@@ -115,6 +115,11 @@
     flex-shrink: 0;
 }
 
+.floating-chat__avatar--contact {
+    background: var(--gray-200);
+    color: var(--text-muted);
+}
+
 .floating-chat__item-info {
     flex: 1;
     min-width: 0;
@@ -137,6 +142,11 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.floating-chat__item-last--contact {
+    font-style: italic;
+    color: var(--primary);
 }
 
 .floating-chat__messages {
@@ -257,4 +267,18 @@
 .floating-chat__tick--grey {
     color: currentColor;
     opacity: 0.6;
+}
+
+.floating-chat__loading-text {
+    text-align: center;
+    padding: 1rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+.floating-chat__empty {
+    text-align: center;
+    padding: 1rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
 }

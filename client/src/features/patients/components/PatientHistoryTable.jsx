@@ -4,6 +4,9 @@ import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import { formatDate, formatTime } from '@/utils/dateUtils';
 
+// Local Styles
+import './PatientHistoryTable.css';
+
 /**
  * PatientHistoryTable (Executor).
  * Renders the appointment and payment history for a specific patient.
@@ -48,11 +51,11 @@ const PatientHistoryTable = ({ details, t, onPayDebt }) => {
                                                 {t(app.status) || app.status}
                                             </span>
                                         </td>
-                                        <td className="patient-details__history-cell text-success patient-details__table-cell-bold">
+                                        <td className="patient-details__history-cell patient-details__history-cell--success patient-details__table-cell-bold">
                                             {Number(app.paid_amount) > 0 ? `$${app.paid_amount}` : '-'}
                                         </td>
                                         <td className="patient-details__history-cell">
-                                            <div className={`patient-details__table-cell-bold ${Number(app.pending_amount) > 0 ? 'text-danger' : 'text-muted'}`}>
+                                            <div className={`patient-details__table-cell-bold ${Number(app.pending_amount) > 0 ? 'patient-details__table-cell-bold--danger' : 'patient-details__table-cell-bold--muted'}`}>
                                                 {Number(app.pending_amount) > 0 ? `$${app.pending_amount}` : '$0'}
                                                 {Number(app.pending_amount) > 0 && (
                                                     <div className="patient-details__pay-action">
@@ -74,14 +77,14 @@ const PatientHistoryTable = ({ details, t, onPayDebt }) => {
                                                 {app.reason}
                                                 {app.cancellation_reason && (
                                                     <div className="patient-details__cancel-reason">
-                                                        <Icon name="block" size="0.8rem" className="mr-1" />
+                                                        <Icon name="block" size="0.8rem" />
                                                         {app.cancellation_reason}
                                                     </div>
                                                 )}
                                                 {app.rescheduled_from_date && (
                                                     <div className="patient-details__reschedule-info" title={`Originalmente para ${new Date(app.rescheduled_from_date).toLocaleString()}`}>
-                                                        <Icon name="history" size="0.8rem" className="mr-1" />
-                                                        {t('rescheduled_from') || 'Reprogramado del'}: {formatDate(app.rescheduled_from_date)}
+                                                        <Icon name="history" size="0.8rem" />
+                                                        {t('rescheduled_from')}: {formatDate(app.rescheduled_from_date)}
                                                     </div>
                                                 )}
                                             </div>

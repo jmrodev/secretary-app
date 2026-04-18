@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -25,6 +25,10 @@ export const usePatientsPageController = () => {
     const { deleteUser } = useUsers();
 
     // View State (Pagination)
+    const [viewDoctorId, setViewDoctorId] = useState(() => {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('doctor_id') || localStorage.getItem('last_selected_doctor_id') || '';
+    });
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(50);
     const [activeTab, setActiveTab] = useState('list'); // 'list' | 'recycle'
@@ -32,6 +36,13 @@ export const usePatientsPageController = () => {
         const params = new URLSearchParams(window.location.search);
         return params.get('search') || '';
     });
+
+    // Save doctor selection to localStorage
+    useEffect(() => {
+        if (viewDoctorId) {
+            localStorage.setItem('last_selected_doctor_id', viewDoctorId);
+        }
+    }, [viewDoctorId]);
 
     // --- FETCH DATA (Server-Side) using useFetch ---
     
@@ -45,7 +56,8 @@ export const usePatientsPageController = () => {
         params: {
             page: currentPage,
             limit: itemsPerPage,
-            search: searchTerm
+            search: searchTerm,
+            doctor_id: viewDoctorId
         }
     });
 
@@ -118,6 +130,7 @@ export const usePatientsPageController = () => {
         loading: patientsLoading, 
         detailsLoading,
         activeTab, setActiveTab,
+        viewDoctorId, setViewDoctorId,
         searchTerm, setSearchTerm: handleSearchChange,
         selectedPatientId, setSelectedPatientId,
         patientDetails, setPatientDetails,

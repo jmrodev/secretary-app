@@ -31,8 +31,9 @@ const ReportFilters = ({
 
     return (
         <section className="report-filters">
-            <article className="report-filters__group">
-                <label className="report-filters__label">{t('month')}</label>
+            <h2 className="visually-hidden">{t('filters')}</h2>
+            <fieldset className="report-filters__group">
+                <legend className="report-filters__label">{t('month')}</legend>
                 <div className="report-filters__control-row">
                     <Button
                         variant="ghost"
@@ -40,7 +41,7 @@ const ReportFilters = ({
                         onClick={() => onStepMonth(-1)}
                         className="report-filters__step-btn"
                     >
-                        <Icon name="ARROW_BACK" size="1.2rem" />
+                        <Icon name="chevron_left" size="1.2rem" />
                     </Button>
                     <Select
                         value={month}
@@ -54,13 +55,13 @@ const ReportFilters = ({
                         onClick={() => onStepMonth(1)}
                         className="report-filters__step-btn"
                     >
-                        <Icon name="ARROW_FORWARD" size="1.2rem" />
+                        <Icon name="chevron_right" size="1.2rem" />
                     </Button>
                 </div>
-            </article>
+            </fieldset>
 
-            <article className="report-filters__group">
-                <label className="report-filters__label">{t('year')}</label>
+            <fieldset className="report-filters__group">
+                <legend className="report-filters__label">{t('year')}</legend>
                 <div className="report-filters__control-row">
                     <Button
                         variant="ghost"
@@ -68,7 +69,7 @@ const ReportFilters = ({
                         onClick={() => onStepYear(-1)}
                         className="report-filters__step-btn"
                     >
-                        <Icon name="ARROW_BACK" size="1.2rem" />
+                        <Icon name="chevron_left" size="1.2rem" />
                     </Button>
                     <Input
                         type="number"
@@ -84,13 +85,13 @@ const ReportFilters = ({
                         onClick={() => onStepYear(1)}
                         className="report-filters__step-btn"
                     >
-                        <Icon name="ARROW_FORWARD" size="1.2rem" />
+                        <Icon name="chevron_right" size="1.2rem" />
                     </Button>
                 </div>
-            </article>
+            </fieldset>
 
-            <article className="report-filters__group">
-                <label className="report-filters__label">{t('doctor') || 'Médico'}</label>
+            <fieldset className="report-filters__group">
+                <legend className="report-filters__label">{t('doctor') || 'Médico'}</legend>
                 <Select
                     value={selectedDoctorId}
                     onChange={(e) => onDoctorChange(e.target.value)}
@@ -103,7 +104,7 @@ const ReportFilters = ({
                     ]}
                     className="report-filters__select report-filters__select--doctor"
                 />
-            </article>
+            </fieldset>
 
             <footer className="report-filters__actions">
                 <Button
@@ -112,7 +113,7 @@ const ReportFilters = ({
                     variant="primary"
                     className="report-filters__btn report-filters__btn--generate"
                 >
-                    {isSubmitting ? '...' : (t('generate_report') || 'Generar Reporte')}
+                    {isSubmitting ? '...' : t('generate_report')}
                 </Button>
 
                 {hasData && (
@@ -122,16 +123,16 @@ const ReportFilters = ({
                             onClick={onDownload}
                             className="report-filters__btn"
                         >
-                            <Icon name="attachment" size="1.1rem" className="mr-1" />
-                            {t('download_json') || 'JSON'}
+                            <Icon name="attachment" size="1.1rem" className="report-filters__btn-icon" />
+                            {t('download_json')}
                         </Button>
                         <Button
                             variant="accent"
                             onClick={onPrint}
                             className="report-filters__btn"
                         >
-                            <Icon name="print" size="1.1rem" className="mr-1" />
-                            {t('print') || 'Imprimir'}
+                            <Icon name="print" size="1.1rem" className="report-filters__btn-icon" />
+                            {t('print')}
                         </Button>
                     </>
                 )}

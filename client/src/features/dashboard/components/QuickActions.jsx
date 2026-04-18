@@ -7,7 +7,7 @@ import './QuickActions.css';
  * QuickActions Organism.
  * Bento-style grid for frequent tasks.
  */
-const QuickActions = ({ t, handlers, isAdmin, isSecretary, isDoctor }) => {
+const QuickActions = ({ t, handlers, isAdmin, isSecretary, isDoctor, compact = false }) => {
     const { 
         navigate, 
         setPaymentModal, 
@@ -52,14 +52,13 @@ const QuickActions = ({ t, handlers, isAdmin, isSecretary, isDoctor }) => {
             icon: 'description',
             actions: [
                 { label: t('new_request'), icon: 'assignment_add', onClick: () => navigate('/medical/requests') },
-                { label: t('view_history'), icon: 'history_edu', onClick: () => navigate('/medical') },
             ],
             visible: true
         }
     ].filter(s => s.visible);
 
     return (
-        <section className="quick-actions">
+        <section className={`quick-actions ${compact ? 'quick-actions--compact' : ''}`}>
             <header className="quick-actions__header">
                 <h3 className="quick-actions__title">
                     <Icon name="bolt" size="1.25rem" />
@@ -77,6 +76,7 @@ const QuickActions = ({ t, handlers, isAdmin, isSecretary, isDoctor }) => {
                             {section.actions.map((action, idx) => (
                                 <Button 
                                     key={idx} 
+                                    variant="ghost" 
                                     className="quick-actions__btn"
                                     onClick={action.onClick}
                                     unstyled

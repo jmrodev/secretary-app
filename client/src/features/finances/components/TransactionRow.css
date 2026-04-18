@@ -1,0 +1,153 @@
+
+/* TransactionRow Molecule Styles (BEM) */
+
+.transaction-row {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.transaction-row--grouped {
+    background-color: var(--blue-50);
+}
+
+.transaction-row:hover:not(.transaction-row--grouped) td {
+    background-color: var(--gray-50);
+}
+
+.transaction-row__cell {
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid var(--gray-100);
+    vertical-align: middle;
+}
+
+.transaction-row .transaction-row__cell--first {
+    padding-left: 1.5rem;
+}
+
+.transaction-row .transaction-row__cell--last {
+    padding-right: 1.5rem;
+}
+
+.transaction-row__cell--center {
+    text-align: center;
+}
+
+.transaction-row__cell--right {
+    text-align: right;
+}
+
+.transaction-row__date {
+    font-weight: 700;
+    color: var(--text-main);
+    font-size: 0.75rem;
+    line-height: 1.2;
+}
+
+.transaction-row__time {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
+
+.transaction-row__description-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.transaction-row__type-tag {
+    align-self: flex-start;
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+}
+
+.transaction-row__description {
+    font-weight: 500;
+    color: var(--text-main);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.transaction-row__beneficiary {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.transaction-row__beneficiary-name {
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.transaction-row__beneficiary-icon {
+    color: var(--blue-600);
+    opacity: 0.8;
+}
+
+.transaction-row__patient {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.transaction-row__method {
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.transaction-row__amount {
+    font-weight: 800;
+    font-size: 0.9375rem;
+    white-space: nowrap;
+}
+
+.transaction-row__amount--income {
+    color: var(--success);
+}
+
+.transaction-row__amount--expense {
+    color: var(--error);
+}
+
+.transaction-row__amount--withdrawal {
+    color: var(--warning, #f59e0b);
+}
+
+.transaction-row__invoice-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.transaction-row__invoice-number {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--blue-600);
+}
+
+.transaction-row__proof-link {
+    color: var(--text-muted);
+    display: inline-flex;
+    transition: color 0.2s;
+}
+
+.transaction-row__proof-link:hover {
+    color: var(--accent-color);
+}
+
+.transaction-row__no-proof {
+    color: var(--text-muted);
+    opacity: 0.5;
+}
+
+.transaction-row__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.15rem;
+}

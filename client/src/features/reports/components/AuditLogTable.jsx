@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Badge from '@/components/atoms/Badge';
+import './AuditLogTable.css';
 
 const AuditLogTable = ({ logs, onSelectLog, t }) => {
 
@@ -17,54 +18,53 @@ const AuditLogTable = ({ logs, onSelectLog, t }) => {
     };
 
     return (
-        <div className="card table-responsive p-0 overflow-hidden shadow-sm">
-            <table className="table-base table-base-lg w-full">
-                <thead className="bg-slate-50">
-                    <tr className="border-b text-left text-xs uppercase tracking-wider text-main-500">
-                        <th className="py-3 px-4">{t('time_header')}</th>
-                        <th className="py-3 px-4">{t('user_header')}</th>
-                        <th className="py-3 px-4">{t('action_header')}</th>
-                        <th className="py-3 px-4 w-1/3">{t('details_header')}</th>
-                        <th className="py-3 px-4">{t('ip_header')}</th>
+        <div className="audit-log-table-container">
+            <table className="audit-log-table">
+                <thead className="audit-log-table__thead">
+                    <tr>
+                        <th className="audit-log-table__th">{t('time_header')}</th>
+                        <th className="audit-log-table__th">{t('user_header')}</th>
+                        <th className="audit-log-table__th">{t('action_header')}</th>
+                        <th className="audit-log-table__th audit-log-table__th--details">{t('details_header')}</th>
+                        <th className="audit-log-table__th">{t('ip_header')}</th>
                     </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="audit-log-table__tbody">
                     {logs.map(log => (
-                        <tr key={log.id} className="hover:bg-slate-50 transition-colors">
-                            <td className="py-3 px-4 text-sm text-main-500 whitespace-nowrap">
+                        <tr key={log.id} className="audit-log-table__row">
+                            <td className="audit-log-table__cell audit-log-table__cell--time">
                                 {new Date(log.created_at).toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}
                             </td>
-                            <td className="py-3 px-4 text-sm font-medium text-main-700">
+                            <td className="audit-log-table__cell audit-log-table__cell--user">
                                 {log.username}
                             </td>
-                            <td className="py-3 px-4">
+                            <td className="audit-log-table__cell">
                                 {formatAction(log.action)}
                             </td>
-                            <td className="py-3 px-4 text-sm max-w-xs truncate" title={log.details}>
+                            <td className="audit-log-table__cell audit-log-table__cell--details" title={log.details}>
                                 {log.details ? (
                                     log.details.length > 60 ? (
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-main-500 truncate block max-w-[200px]">{log.details}</span>
+                                        <div className="audit-log-table__details-wrapper">
+                                            <span className="audit-log-table__details-text">{log.details}</span>
                                             <Button
-                                                variant="ghost"
+                                                variant="link"
                                                 size="sm-compact"
-                                                className="text-blue-600 hover:text-blue-800 font-semibold bg-blue-50 border border-blue-100 whitespace-nowrap"
                                                 onClick={() => onSelectLog(log)}
                                             >
-                                                Ver más
+                                                {t('view_more')}
                                             </Button>
                                         </div>
-                                    ) : <span className="text-main-500">{log.details}</span>
-                                ) : <span className="text-main-300">-</span>}
+                                    ) : <span className="audit-log-table__details-text">{log.details}</span>
+                                ) : <span className="audit-log-table__details-text">-</span>}
                             </td>
-                            <td className="py-3 px-4 text-xs text-muted font-mono">
+                            <td className="audit-log-table__cell audit-log-table__cell--ip">
                                 {log.ip_address}
                             </td>
                         </tr>
                     ))}
                     {logs.length === 0 && (
                         <tr>
-                            <td colSpan="5" className="p-8 text-center text-muted">Thinking... No logs found.</td>
+                            <td colSpan="5" className="audit-log-table__empty">{t('no_logs_found')}</td>
                         </tr>
                     )}
                 </tbody>

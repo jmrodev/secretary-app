@@ -1,0 +1,156 @@
+
+/* InstitutionTransactionsTable Molecule Styles (BEM) */
+
+.institution-transactions {
+    background: white;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.institution-transactions__header {
+    padding: 1.25rem 1.5rem;
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.institution-transactions__title {
+    font-size: 0.875rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.institution-transactions__badge {
+    background: var(--gray-200);
+    color: var(--text-muted);
+    padding: 0.125rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.institution-transactions__actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.institution-transactions__view-toggle {
+    display: flex;
+    background: var(--gray-100);
+    padding: 0.2rem;
+    border-radius: var(--radius-sm);
+    gap: 0.2rem;
+}
+
+.institution-transactions__wrapper {
+    overflow-x: auto;
+}
+
+.institution-transactions__table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.institution-transactions__table th {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    background-color: white;
+    border-bottom: 2px solid var(--gray-100);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.institution-transactions__table td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--gray-50);
+    font-size: 0.875rem;
+    color: var(--text-main);
+    vertical-align: middle;
+}
+
+.institution-transactions__tr--pending td {
+    background-color: var(--red-50);
+}
+
+.institution-transactions__tr--selected td {
+    background-color: var(--blue-50);
+}
+
+.institution-transactions__tr--selected {
+    outline: 2px solid var(--blue-400);
+    outline-offset: -2px;
+}
+
+.institution-transactions__table tr:hover:not(.institution-transactions__tr--selected) td {
+    background-color: var(--gray-50);
+}
+
+.institution-transactions__cell--right {
+    text-align: right;
+}
+
+.institution-transactions__cell--center {
+    text-align: center;
+}
+
+.institution-transactions__patient-link {
+    font-weight: 700;
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.institution-transactions__patient-link:hover {
+    color: var(--blue-700);
+    text-decoration: underline;
+}
+
+.institution-transactions__amount-bold {
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.institution-transactions__age-badge {
+    padding: 0.125rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.institution-transactions__age-badge--warning {
+    background-color: var(--warning-bg, #fef3c7);
+    color: var(--warning-text, #92400e);
+}
+
+.institution-transactions__age-badge--critical {
+    background-color: var(--error-bg, #fee2e2);
+    color: var(--error, #b91c1c);
+}
+
+.institution-transactions__text-muted {
+    color: var(--text-muted);
+}
+
+.institution-transactions__empty {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+}

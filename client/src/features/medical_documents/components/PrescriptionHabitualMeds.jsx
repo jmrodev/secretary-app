@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Button from '@/components/atoms/Button';
 
@@ -27,6 +26,7 @@ const PrescriptionHabitualMeds = ({ patientMeds, historyMeds = [], items, handle
                             <Button
                                 key={`${name}-${idx}`}
                                 type="button"
+                                variant={isSelected ? 'accent' : 'ghost'}
                                 title={isSelected ? t('remove') : t('add')}
                                 className={`prescription-modal__habitual-btn${isSelected ? ' prescription-modal__habitual-btn--active' : ''}`}
                                 onClick={() => handleSelectMedication(m)}

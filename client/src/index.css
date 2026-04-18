@@ -103,21 +103,7 @@
 }
 
 
-/* Base Styles */
-.app-loading {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--color-bg-primary, white);
-}
-
-.app-loading__content {
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: var(--color-primary);
-}
-
+/* Doctor Theming Colors (Global variables) */
 .doctor-color-7 {
   --doc-bg: rgba(234, 179, 8, 0.15);
   --doc-border: rgba(234, 179, 8, 0.3);

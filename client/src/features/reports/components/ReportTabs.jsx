@@ -2,10 +2,11 @@ import React from 'react';
 import TabButton from '@/components/atoms/TabButton';
 import TabNav from '@/components/molecules/TabNav';
 import Icon from '@/components/atoms/Icon';
+import './ReportTabs.css';
 
 const ReportTabs = ({ activeTab, onTabChange, t }) => {
     return (
-        <TabNav className="mb-6">
+        <TabNav className="report-tabs">
             <TabButton
                 isActive={activeTab === 'appointments'}
                 onClick={() => onTabChange('appointments')}

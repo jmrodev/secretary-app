@@ -26,6 +26,7 @@ body.dev-mode {
     border: none;
 }
 
+
 body.dev-mode::before {
     content: "DESARROLLO";
     position: fixed;
@@ -173,3 +174,4 @@ label {
 .table-base tbody tr:hover {
     background-color: rgba(99, 102, 241, 0.02);
 }
+

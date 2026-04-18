@@ -7,9 +7,9 @@ import { RegisterForm } from '@/features/auth/index';
  */
 const RegisterPage = () => {
     return (
-        <div className="register-page-orchestrator animate-fadeIn">
+        <main className="register-page-orchestrator animate-fadeIn">
             <RegisterForm />
-        </div>
+        </main>
     );
 };
 

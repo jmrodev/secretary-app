@@ -1,4 +1,4 @@
-import React from 'react';
+import './BalanceCashFlowTable.css';
 
 /**
  * BalanceCashFlowTable Feature Molecule.
@@ -20,18 +20,20 @@ const BalanceCashFlowTable = ({ appointments = [], t }) => {
     const totalOthers = totalIncome - totalCash;
 
     return (
-        <section className="balance-view__card balance-view__card--cash animate-fadeIn">
-            <h3 className="balance-view__card-title">Rendición de Caja</h3>
-            <p className="balance-view__subtitle">Detalle de ingresos diarios por método de pago</p>
+        <section className="balance-cashflow animate-fadeIn">
+            <header>
+                <h3 className="balance-cashflow__title">Rendición de Caja</h3>
+                <p className="balance-cashflow__subtitle">Detalle de ingresos diarios por método de pago</p>
+            </header>
 
-            <div className="balance-view__table-wrapper">
-                <table className="balance-view__table">
+            <div className="balance-cashflow__table-wrapper">
+                <table className="balance-cashflow__table">
                     <thead>
                         <tr>
                             <th>Fecha</th>
-                            <th className="balance-view__cell--right">Efectivo</th>
-                            <th className="balance-view__cell--right">Otros Métodos</th>
-                            <th className="balance-view__cell--right">Total Día</th>
+                            <th className="balance-cashflow__cell--right">Efectivo</th>
+                            <th className="balance-cashflow__cell--right">Otros Métodos</th>
+                            <th className="balance-cashflow__cell--right">Total Día</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,9 +45,9 @@ const BalanceCashFlowTable = ({ appointments = [], t }) => {
                             return (
                                 <tr key={idx}>
                                     <td>{day.date}</td>
-                                    <td className="balance-view__cell--right">$ {cash.toLocaleString()}</td>
-                                    <td className="balance-view__cell--right">$ {others.toLocaleString()}</td>
-                                    <td className="balance-view__cell--right balance-view__cell--bold">
+                                    <td className="balance-cashflow__cell--right">$ {cash.toLocaleString()}</td>
+                                    <td className="balance-cashflow__cell--right">$ {others.toLocaleString()}</td>
+                                    <td className="balance-cashflow__cell--right balance-cashflow__cell--bold">
                                         $ {total.toLocaleString()}
                                     </td>
                                 </tr>
@@ -53,11 +55,11 @@ const BalanceCashFlowTable = ({ appointments = [], t }) => {
                         })}
                     </tbody>
                     <tfoot>
-                        <tr className="balance-view__table-footer">
+                        <tr>
                             <td>TOTAL:</td>
-                            <td className="balance-view__cell--right">$ {totalCash.toLocaleString()}</td>
-                            <td className="balance-view__cell--right">$ {totalOthers.toLocaleString()}</td>
-                            <td className="balance-view__cell--right balance-view__cell--bold">$ {totalIncome.toLocaleString()}</td>
+                            <td className="balance-cashflow__cell--right">$ {totalCash.toLocaleString()}</td>
+                            <td className="balance-cashflow__cell--right">$ {totalOthers.toLocaleString()}</td>
+                            <td className="balance-cashflow__cell--right balance-cashflow__cell--bold">$ {totalIncome.toLocaleString()}</td>
                         </tr>
                     </tfoot>
                 </table>

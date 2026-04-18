@@ -1,0 +1,32 @@
+/* LoginPage Styles (BEM) */
+
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 1.5rem;
+    overflow: hidden;
+    background-color: var(--gray-900);
+}
+
+.login-page--hero {
+    background-image: url('https://images.unsplash.com/photo-1576091160550-217359f42f8c?q=80&w=2070&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+}
+
+.login-page__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.8) 100%);
+    z-index: 1;
+}
+
+.login-page__content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 450px;
+}
