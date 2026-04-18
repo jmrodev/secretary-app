@@ -3,8 +3,6 @@ import ReactDOM from 'react-dom';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/context/LanguageContext';
-import Button from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
 import './ConfirmModal.css';
 
 const ConfirmModal = ({
@@ -38,21 +36,12 @@ const ConfirmModal = ({
                         {title || (type === 'alert' ? t('alert') : t('confirm'))}
                     </h3>
                     <Button
-<<<<<<< HEAD
-                        variant="ghost"
-                        className="modal-header-bem__close"
-                        onClick={handleCancelClick}
-                    >
-                        <Icon name="close" size="1.25rem" />
-                    </Button>
-=======
                         className="modal-header-bem__close"
                         onClick={handleCancelClick}
                         unstyled
                         icon={<Icon name="close" />}
                         aria-label={t('close')}
                     />
->>>>>>> main
                 </div>
                 <div className="modal-body-bem">
                     <div className={`modal-body-bem__text ${type === 'prompt' ? 'modal-body-bem__text--prompt' : ''}`}>
@@ -73,11 +62,7 @@ const ConfirmModal = ({
                 <div className="modal-footer-bem">
                     {type !== 'alert' && (
                         <Button
-<<<<<<< HEAD
-                            variant="secondary"
-=======
                             className="btn-text btn-text--secondary"
->>>>>>> main
                             onClick={handleCancelClick}
                             unstyled
                         >
@@ -85,11 +70,7 @@ const ConfirmModal = ({
                         </Button>
                     )}
                     <Button
-<<<<<<< HEAD
-                        variant="primary"
-=======
                         className="btn-base btn-base--primary"
->>>>>>> main
                         onClick={handleConfirm}
                         unstyled
                     >

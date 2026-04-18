@@ -1,12 +1,6 @@
 import React, { createContext, useContext, useMemo } from 'react';
-<<<<<<< HEAD
-import './ModalContext.css';
-import ConfirmModal from '../components/molecules/ConfirmModal';
-import { useModalLogic } from './useModalLogic';
-=======
 import ConfirmModal from '@/components/molecules/ConfirmModal';
 import { useModalLogic } from '@/context/useModalLogic';
->>>>>>> main
 
 const ModalContext = createContext();
 

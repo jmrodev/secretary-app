@@ -24,17 +24,9 @@
     background: white;
     box-shadow: var(--shadow-sm);
     font-size: 1.1rem;
-<<<<<<< HEAD
-    transition: all 0.2s ease;
-=======
->>>>>>> main
 }
 
 .search-box__input:focus {
     border-color: var(--blue-500);
     box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-<<<<<<< HEAD
-    outline: none;
-=======
->>>>>>> main
 }

@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 import React from 'react';
->>>>>>> main
 import Icon from '@/components/atoms/Icon';
 import './SearchBar.css';
 
@@ -13,11 +10,7 @@ const SearchBar = ({ value, onChange, placeholder, className = '' }) => {
     return (
         <div className={`search-box ${className}`}>
             <div className="search-box__wrapper">
-<<<<<<< HEAD
-                <Icon name="SEARCH" className="search-box__icon" />
-=======
                 <span className="search-box__icon"><Icon name="search" /></span>
->>>>>>> main
                 <input
                     type="text"
                     placeholder={placeholder || "Buscar..."}

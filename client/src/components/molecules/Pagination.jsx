@@ -1,10 +1,5 @@
 import React from 'react';
-<<<<<<< HEAD
-import Button from '../atoms/Button';
-import Icon from '../atoms/Icon';
-=======
 import Button from '@/components/atoms/Button';
->>>>>>> main
 import './Pagination.css';
 
 /**
@@ -31,9 +26,8 @@ const Pagination = ({
                     size="sm"
                     disabled={currentPage === 1}
                     onClick={() => onPageChange(currentPage - 1)}
-                    icon={<Icon name="CHEVRON_LEFT" />}
                 >
-                    {t('previous')}
+                    ← {t('previous')}
                 </Button>
                 <div className="pagination__page-indicator">
                     {currentPage} / {totalPages}
@@ -43,9 +37,8 @@ const Pagination = ({
                     size="sm"
                     disabled={currentPage === totalPages}
                     onClick={() => onPageChange(currentPage + 1)}
-                    iconTrailing={<Icon name="CHEVRON_RIGHT" />}
                 >
-                    {t('next')}
+                    {t('next')} →
                 </Button>
             </div>
         </div>

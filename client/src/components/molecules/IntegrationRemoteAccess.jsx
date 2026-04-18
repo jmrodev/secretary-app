@@ -1,15 +1,7 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
-<<<<<<< HEAD
-import ConfigField from '@/components/molecules/ConfigField';
-import StatusIndicator from '@/components/atoms/StatusIndicator';
-import Alert from '@/components/atoms/Alert';
-import Icon from '@/components/atoms/Icon';
-import './IntegrationRemoteAccess.css';
-=======
 import Icon from '@/components/atoms/Icon';
 import ConfigField from '@/components/molecules/ConfigField';
->>>>>>> main
 
 /**
  * IntegrationRemoteAccess Molecule.
@@ -21,16 +13,12 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
     return (
         <div className="config-section">
             <div className="config-section__header">
-<<<<<<< HEAD
-                <Icon name="LANGUAGE" className="config-section__icon" />
-=======
                 <span className="config-section__icon"><Icon name="language" /></span>
->>>>>>> main
                 <h3 className="config-section__title">Acceso Remoto (Internet)</h3>
             </div>
 
             <div className="config-section__body">
-                <p className="config-field__hint config-field__hint--mb-15">
+                <p className="config-field__hint" style={{ marginBottom: '1.5rem' }}>
                     Elija cómo desea acceder a la aplicación cuando no esté en el consultorio.
                 </p>
 
@@ -53,7 +41,7 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
 
                 {method === 'duckdns' && (
                     <div className="animate-fadeIn">
-                        <div className="config-grid config-grid--2col config-grid--gap-1">
+                        <div className="config-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                             <ConfigField
                                 id="duckdns-domain"
                                 label="Subdominio DuckDNS"
@@ -74,8 +62,8 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
                             />
                         </div>
 
-                        <div className="config-flex config-flex--align-center config-flex--mt-1">
-                            <div className="config-url-display config-flex__item--grow">
+                        <div className="config-flex config-flex--gap-2" style={{ marginTop: '1rem', alignItems: 'center' }}>
+                            <div className="config-url-display" style={{ flex: 1, margin: 0 }}>
                                 URL: {settings.duckdns_domain ? `http://${settings.duckdns_domain}.duckdns.org` : 'Configure su dominio'}
                             </div>
                             <Button
@@ -83,11 +71,7 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
                                 variant="secondary"
                                 onClick={onRefreshTunnel}
                                 disabled={loading || !settings.duckdns_domain || !settings.duckdns_token}
-<<<<<<< HEAD
-                                icon={<Icon name="SYNC" />}
-=======
                                 icon={<Icon name="sync" />}
->>>>>>> main
                             >
                                 Renovar IP
                             </Button>
@@ -96,15 +80,8 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
                         <div className="config-section__divider"></div>
 
                         <div className="config-guide">
-<<<<<<< HEAD
-                            <h4 className="remote-access__guide-title">
-                                <Icon name="MENU_BOOK" size="1.2rem" /> Guía de Configuración DuckDNS
-                            </h4>
-                            <ol className="config-guide__list remote-access__guide-list">
-=======
                             <h4 style={{ marginBottom: '0.75rem', color: 'var(--slate-800)' }}><Icon name="menu_book" className="mr-1" />Guía de Configuración DuckDNS</h4>
                             <ol className="config-guide__list" style={{ paddingLeft: '1.25rem', fontSize: '0.875rem', color: 'var(--slate-600)', lineHeight: '1.6' }}>
->>>>>>> main
                                 <li>Registre un subdominio gratuito en <a href="https://www.duckdns.org" target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">duckdns.org</a>.</li>
                                 <li>Copie el <b>Token</b> y el <b>Subdominio</b> en los campos de arriba.</li>
                                 <li>Lo más importante: Debe configurar el <b>Port Forwarding</b> en su Router.</li>

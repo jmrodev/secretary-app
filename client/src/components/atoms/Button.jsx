@@ -24,11 +24,7 @@ const Button = ({
     unstyled = false,
     target = '_self',
     rel = 'noopener noreferrer',
-<<<<<<< HEAD
-    ...props
-=======
     ...rest
->>>>>>> main
 }) => {
     const baseClass = 'btn';
 
@@ -68,11 +64,7 @@ const Button = ({
                 title={title}
                 data-tooltip={tooltip}
                 onClick={onClick}
-<<<<<<< HEAD
-                {...props}
-=======
                 {...rest}
->>>>>>> main
             >
                 {content}
             </Link>
@@ -89,11 +81,7 @@ const Button = ({
                 target={target}
                 rel={rel}
                 onClick={onClick}
-<<<<<<< HEAD
-                {...props}
-=======
                 {...rest}
->>>>>>> main
             >
                 {content}
             </a>
@@ -108,11 +96,7 @@ const Button = ({
             className={combinedClassName}
             title={title}
             data-tooltip={tooltip}
-<<<<<<< HEAD
-            {...props}
-=======
             {...rest}
->>>>>>> main
         >
             {content}
         </button>

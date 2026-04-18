@@ -1,11 +1,6 @@
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-<<<<<<< HEAD
-import Button from './Button';
-import Icon from './Icon';
-=======
 import Button from '@/components/atoms/Button';
->>>>>>> main
 import './LanguageSelector.css';
 
 /**
@@ -22,10 +17,12 @@ const LanguageSelector = () => {
                 className="language-selector__button"
                 onClick={toggleLanguage}
                 title={language === 'es' ? 'Switch to English' : 'Cambiar a Español'}
-                icon={<Icon name="LANGUAGE" />}
             >
+                <span className="language-selector__icon">
+                    {language === 'es' ? '🇪🇸' : '🇺🇸'}
+                </span>
                 <span className="language-selector__text">
-                    {language === 'es' ? 'ES' : 'EN'}
+                    {language === 'es' ? 'Español' : 'English'}
                 </span>
             </Button>
         </div>
