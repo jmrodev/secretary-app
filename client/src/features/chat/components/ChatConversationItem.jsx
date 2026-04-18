@@ -13,11 +13,21 @@ const ChatConversationItem = ({
 }) => {
     const { t } = useLanguage();
     const avatarChar = (convo.other_display_name || convo.display_name || '?')[0].toUpperCase();
+    const handleKeyDown = (event) => {
+        if (!onClick) return;
+        if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') {
+            event.preventDefault();
+            onClick(event);
+        }
+    };
 
     return (
         <article
             className={`floating-chat__item ${unreadCount > 0 ? 'floating-chat__item--unread' : ''}`}
             onClick={onClick}
+            onKeyDown={handleKeyDown}
+            role="button"
+            tabIndex={0}
         >
             <h4 className="visually-hidden">{t('conversation')}</h4>
             <div className={`floating-chat__avatar ${isContact ? 'floating-chat__avatar--contact' : ''}`}>

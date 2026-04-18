@@ -21,7 +21,7 @@ class PatientService {
             const builder = new PatientsQueryBuilder(user);
             await builder.applyRoleFilter();
             
-            if (doctorId) {
+            if (doctorId && user?.role !== 'doctor') {
                 builder.filterByDoctor(doctorId);
             }
 

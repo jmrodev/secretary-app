@@ -18,10 +18,12 @@ const ConfigField = ({
     placeholder = '',
     id,
     variant = '', // e.g., 'monospace'
+    className = '',
     options = [] // Only used if type="select"
 }) => {
     const isSelect = type === 'select';
     const rootClass = `config-field ${variant ? `config-field--${variant}` : ''}`;
+    const inputClassName = `config-field__input ${className}`.trim();
 
     return (
         <div className={rootClass}>
@@ -36,7 +38,7 @@ const ConfigField = ({
                     options={options}
                     onChange={onChange}
                     disabled={disabled}
-                    className="config-field__input"
+                    className={inputClassName}
                 />
             ) : (
                 <Input
@@ -46,7 +48,7 @@ const ConfigField = ({
                     onChange={onChange}
                     disabled={disabled}
                     placeholder={placeholder}
-                    className="config-field__input"
+                    className={inputClassName}
                 />
             )}
 

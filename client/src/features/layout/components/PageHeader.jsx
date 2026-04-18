@@ -17,7 +17,7 @@ const PageHeader = ({
 }) => {
     const isPremium = variant === 'premium';
     const baseClass = isPremium ? 'page-header--premium' : 'page-header';
-    const dividerClass = divider ? `${baseClass}--divider` : '';
+    const dividerClass = divider ? 'page-header--divider' : '';
 
     return (
         <header className={`${baseClass} ${dividerClass} ${className} animate-fadeIn`}>

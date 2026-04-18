@@ -8,8 +8,8 @@ const UserManager = ({ t }) => {
     return (
         <div className="user-manager">
             <header className="user-manager__header">
-                <h2 className="user-manager__title">{t('user_management') || 'Gestión de Usuarios'}</h2>
-                <p className="user-manager__subtitle">{t('manage_users_subtitle') || 'Administra cuentas de médicos, secretarias y administradores.'}</p>
+                <h2 className="user-manager__title">{t('user_management')}</h2>
+                <p className="user-manager__subtitle">{t('manage_users_subtitle')}</p>
             </header>
 
             <div className="user-manager__actions">
@@ -18,14 +18,14 @@ const UserManager = ({ t }) => {
                     onClick={() => window.dispatchEvent(new CustomEvent('OPEN_USER_MODAL', { detail: 'CREATE' }))}
                     icon={<Icon name="add" size="1.1rem" />}
                 >
-                    {t('add_user') || 'Agregar Usuario'}
+                    {t('add_user')}
                 </Button>
                 <Button
                     variant="outline"
                     onClick={() => window.location.reload()}
                     icon={<Icon name="sync" size="1.1rem" />}
                 >
-                    {t('refresh') || 'Actualizar'}
+                    {t('refresh')}
                 </Button>
             </div>
 
