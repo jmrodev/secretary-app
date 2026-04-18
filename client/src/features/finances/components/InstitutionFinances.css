@@ -205,11 +205,11 @@
 }
 
 .institution-finances__tr--pending {
-    background-color: var(--red-50) !important;
+    background-color: var(--red-50);
 }
 
 .institution-finances__tr--selected {
-    background-color: var(--blue-50) !important;
+    background-color: var(--blue-50);
     outline: 2px solid var(--blue-400);
     outline-offset: -2px;
 }
@@ -274,11 +274,11 @@
 }
 
 .institution-finances__cell--right {
-    text-align: right !important;
+    text-align: right;
 }
 
 .institution-finances__cell--center {
-    text-align: center !important;
+    text-align: center;
 }
 
 .institution-finances__actions {

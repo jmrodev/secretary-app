@@ -1,11 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '@/features/auth';
-import { useLanguage } from '@/context/LanguageContext';
-import { useMessage } from '@/context/MessageContext';
-import { useModal } from '@/context/ModalContext';
-import { useConfig } from '@/context/ConfigContext';
-import api from '@/api/axios';
-import { useLocation } from 'react-router-dom';
+import { useAuth } from '../features/auth';
+import { useLanguage } from '../context/LanguageContext';
+import { useMessage } from '../context/MessageContext';
+import { useModal } from '../context/ModalContext';
+import { useConfig } from '../context/ConfigContext';
+import api from '../api/axios';
 
 /**
  * System Configuration Controller
@@ -74,7 +73,7 @@ export const useSystemConfigController = () => {
             const newUrl = newSearch ? `${window.location.pathname}?${newSearch}` : window.location.pathname;
             window.history.replaceState({}, document.title, newUrl);
         }
-    }, [showMessage]);
+    }, [showMessage, activeTab]);
 
     /**
      * Single Responsibility: Initiate Google OAuth flow

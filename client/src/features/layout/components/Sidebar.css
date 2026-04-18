@@ -212,7 +212,7 @@
     text-transform: capitalize;
 }
 
-/* Increasing specificity (0, 2, 0) by combining classes to avoid !important */
+/* Increasing specificity (0, 2, 0) by combining classes */
 .sidebar .sidebar__logout-btn {
     width: 100%;
     justify-content: flex-start;

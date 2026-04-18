@@ -15,7 +15,7 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
     const { t } = useLanguage();
 
     useEffect(() => {
-        if (selectedDate) setViewDate(new Date(selectedDate));
+        if (selectedDate) queueMicrotask(() => setViewDate(new Date(selectedDate)));
     }, [selectedDate]);
 
     const getDaysInMonth = (date) => {

@@ -1,11 +1,10 @@
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { useDayScheduleHandlers } from '@/features/appointments/hooks/useDayScheduleHandlers';
-import { useConfig } from '@/context/ConfigContext';
+import { useDayScheduleHandlers } from '../hooks/useDayScheduleHandlers';
 import { isSameDay } from '@/utils/dateUtils';
 
-import DayScheduleHeader from '@/features/appointments/components/DayScheduleHeader.jsx';
-import ScheduleTimeline from '@/features/appointments/components/ScheduleTimeline.jsx';
+import DayScheduleHeader from './DayScheduleHeader.jsx';
+import ScheduleTimeline from './ScheduleTimeline.jsx';
 
 import './DaySchedule.css';
 
@@ -18,7 +17,6 @@ const DaySchedule = ({
     holidays = [], showOutOfHours, setShowOutOfHours
 }) => {
     const { t } = useLanguage();
-    const { settings } = useConfig();
     const [showCancelled, setShowCancelled] = React.useState(false);
 
     const { handlePrint, handlePrevDay, handleNextDay, handleToday, handleSlotAction } = useDayScheduleHandlers({

@@ -1,5 +1,6 @@
 
 import React from 'react';
+import Button from '@/components/atoms/Button';
 
 /**
  * PrescriptionHabitualMeds Molecule.
@@ -23,12 +24,13 @@ const PrescriptionHabitualMeds = ({ patientMeds, historyMeds = [], items, handle
                         const name = m.medication_name || m.name;
                         const isSelected = items.some(i => i.name === name);
                         return (
-                            <button
+                            <Button
                                 key={`${name}-${idx}`}
                                 type="button"
                                 title={isSelected ? t('remove') : t('add')}
                                 className={`prescription-modal__habitual-btn${isSelected ? ' prescription-modal__habitual-btn--active' : ''}`}
                                 onClick={() => handleSelectMedication(m)}
+                                unstyled
                             >
                                 <span className="prescription-modal__habitual-name">{name}</span>
                                 <div className="prescription-modal__habitual-meta">
@@ -39,7 +41,7 @@ const PrescriptionHabitualMeds = ({ patientMeds, historyMeds = [], items, handle
                                         </span>
                                     )}
                                 </div>
-                            </button>
+                            </Button>
                         );
                     })}
                 </div>

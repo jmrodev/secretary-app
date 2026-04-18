@@ -63,14 +63,15 @@ const PublicRequestPage = () => {
                         </h2>
                         <div className="med-chip-grid">
                             {patientInfo.recentMeds.map((med, idx) => (
-                                <button
+                                <Button
                                     key={idx}
                                     onClick={() => handleToggleMedSelection(med)}
                                     className={`med-chip ${selectedMeds.includes(med) ? 'med-chip--active' : ''}`}
                                     title={med}
+                                    unstyled
                                 >
                                     {med}
-                                </button>
+                                </Button>
                             ))}
                         </div>
                     </section>
@@ -86,13 +87,15 @@ const PublicRequestPage = () => {
                             {selectedMeds.map((med, idx) => (
                                 <li key={idx} className="selected-item">
                                     <span className="selected-item__name">{med}</span>
-                                    <button
+                                    <Button
                                         onClick={() => handleToggleMedSelection(med)}
                                         className="selected-item__remove"
                                         title="Quitar"
+                                        unstyled
+                                        icon={<Icon name="close" />}
+                                        aria-label="Quitar"
                                     >
-                                        ✕
-                                    </button>
+                                    </Button>
                                 </li>
                             ))}
                         </ul>
@@ -118,14 +121,15 @@ const PublicRequestPage = () => {
                     {searchResults.length > 0 && (
                         <div className="search-results scrollbar-hide">
                             {searchResults.map((res) => (
-                                <button
+                                <Button
                                     key={res.id}
                                     onClick={() => handleToggleMedSelection(res.full_label)}
                                     className="search-result-item"
+                                    unstyled
                                 >
                                     <span className="search-result-item__name">{res.name}</span>
                                     <span className="search-result-item__desc">{res.presentation} - {res.drug}</span>
-                                </button>
+                                </Button>
                             ))}
                         </div>
                     )}

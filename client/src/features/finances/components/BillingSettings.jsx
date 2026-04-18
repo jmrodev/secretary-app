@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ConfigField } from '@/features/config';
 import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import api from '@/api/axios';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -54,7 +55,7 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
         <div className="tab-panel animate-fadeIn">
             <div className="config-section">
                 <div className="config-section__header">
-                    <span className="config-section__icon">🧾</span>
+                    <span className="config-section__icon"><Icon name="receipt_long" /></span>
                     <h4 className="config-section__title">{t('billing_settings_title')}</h4>
                 </div>
 
@@ -103,10 +104,10 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                             {status ? (
                                 <div className={`config-group__status ${status.error ? 'config-group__status--error' : 'config-group__status--success'}`}>
                                     {status.error ? (
-                                        <p>❌ {t('afip_status_error')}: {status.error}</p>
+                                        <p><Icon name="close" className="mr-1" />{t('afip_status_error')}: {status.error}</p>
                                     ) : (
                                         <>
-                                            <p>✅ {t('afip_status_connected')} ({status.environment})</p>
+                                            <p><Icon name="check" className="mr-1" />{t('afip_status_connected')} ({status.environment})</p>
                                             <p className="config-group__status-details">
                                                 App: {status.afip_status.AppServer} · DB: {status.afip_status.DbServer} · Auth: {status.afip_status.AuthServer}
                                             </p>
@@ -124,8 +125,9 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                                 onClick={checkStatus}
                                 loading={checking}
                                 className="config-btn-full"
+                                icon={<Icon name="sync" />}
                             >
-                                🔄 {t('verify_afip_connection')}
+                                {t('verify_afip_connection')}
                             </Button>
                         </div>
                     </div>
@@ -134,7 +136,7 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
 
             <div className="config-section config-section--boxed">
                 <div className="config-section__header">
-                    <span className="config-section__icon">🔑</span>
+                    <span className="config-section__icon"><Icon name="key" /></span>
                     <h4 className="config-section__title">{t('digital_certificates')}</h4>
                 </div>
                 <div className="config-section__body">
@@ -147,8 +149,8 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                         <p>5. {t('afip_guide_step_5_short')}</p>
                     </div>
                     <div className="config-actions">
-                        <Button variant="primary" onClick={generateCsr} loading={generatingCsr}>
-                            ⚙️ {t('generate_csr_btn')}
+                        <Button variant="primary" onClick={generateCsr} loading={generatingCsr} icon={<Icon name="settings" />}>
+                            {t('generate_csr_btn')}
                         </Button>
                         <Button variant="ghost" disabled={true} title="Próximamente" className="opacity-50 cursor-not-allowed">
                             {t('upload_crt')}
@@ -168,8 +170,8 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                                 onClick={(e) => e.target.select()}
                             />
                             <div className="config-actions config-actions--right">
-                                <Button size="sm" variant="accent" onClick={() => { navigator.clipboard.writeText(generatedCsr); showMessage(t('csr_copied'), 'success'); }}>
-                                    📋 {t('copy')}
+                                <Button size="sm" variant="accent" onClick={() => { navigator.clipboard.writeText(generatedCsr); showMessage(t('csr_copied'), 'success'); }} icon={<Icon name="content_copy" />}>
+                                    {t('copy')}
                                 </Button>
                             </div>
                         </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/context/LanguageContext';
 
 /**
@@ -51,7 +52,7 @@ const ChatSidebar = ({
                     <h2 className="text-xl font-bold text-slate-800">Chat {unreadCount > 0 && <span className="convo-badge ml-2">{unreadCount}</span>}</h2>
                 </div>
                 <div className="w-full relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"><Icon name="search" /></span>
                     <input
                         type="text"
                         placeholder={t('search_chats_contacts') || "Buscar chats o contactos..."}

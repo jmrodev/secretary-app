@@ -4,7 +4,6 @@ import { useAuth } from '@/features/auth';
 import { useModal } from '@/context/ModalContext';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { useUsers } from '@/features/users';
 import { useFetch } from '@/hooks/useFetch';
 
 export const useDoctorsPageController = () => {
@@ -12,8 +11,6 @@ export const useDoctorsPageController = () => {
     const { user: currentUser } = useAuth();
     const { showMessage } = useMessage();
     const { confirm } = useModal();
-    const { updateUser, isSubmitting: isUpdating } = useUsers();
-
     // Data State using useFetch
     const { data: doctors = [], loading: doctorsLoading, refetch: fetchDoctors } = useFetch('/users/doctors', { initialData: [] });
     const { data: settings = {}, loading: settingsLoading } = useFetch('/settings', { initialData: {} });
@@ -241,4 +238,3 @@ export const useDoctorsPageController = () => {
         t // pass translation helper
     };
 };
-

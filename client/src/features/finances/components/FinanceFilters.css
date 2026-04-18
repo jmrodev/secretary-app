@@ -22,8 +22,8 @@
 }
 
 .finance-filters__search-input {
-    padding-left: 2.75rem !important;
-    background-color: var(--gray-50) !important;
+    padding-left: 2.75rem;
+    background-color: var(--gray-50);
 }
 
 .finance-filters__groups {
@@ -44,11 +44,11 @@
 .finance-filters__clear {
     width: 100%;
     justify-content: center;
-    border: 1px solid var(--gray-200) !important;
-    font-weight: 700 !important;
+    border: 1px solid var(--gray-200);
+    font-weight: 700;
 }
 
 .finance-filters__clear:hover {
-    background: var(--gray-100) !important;
-    border-color: var(--gray-300) !important;
+    background: var(--gray-100);
+    border-color: var(--gray-300);
 }

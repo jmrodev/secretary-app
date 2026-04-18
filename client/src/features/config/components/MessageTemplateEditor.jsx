@@ -1,7 +1,7 @@
 import React from 'react';
 import AutoTextarea from '@/components/atoms/AutoTextarea';
-import ConfigField from '@/features/config/components/ConfigField';
-import Icon from '@/components/atoms/Icon';
+import Button from '@/components/atoms/Button';
+import ConfigField from './ConfigField';
 import './MessageTemplateEditor.css';
 
 /**
@@ -59,16 +59,17 @@ const MessageTemplateEditor = ({
                 <p className="message-template-editor__variables-label">{t('available_variables')}</p>
                 <div className="message-template-editor__buttons">
                     {variables.map(v => (
-                        <button
+                        <Button
                             key={v}
                             type="button"
                             className="message-template-editor__variable-btn"
                             onClick={() => insertVariable(id, v, settingKey)}
                             title={t('insert_variable_title').replace('{variable}', v)}
                             disabled={disabled}
+                            unstyled
                         >
                             {getFriendlyVarLabel(v, t)}
-                        </button>
+                        </Button>
                     ))}
                 </div>
             </div>

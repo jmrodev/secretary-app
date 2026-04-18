@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import './InstitutionSelector.css';
 
@@ -36,28 +37,30 @@ const InstitutionSelector = ({
 
             {selectedInstId && (
                 <div className="inst-finances__view-toggle">
-                    <button
+                    <Button
                         className={`inst-finances__toggle-btn ${
                             viewMode === 'transactions' 
                             ? 'inst-finances__toggle-btn--active' 
                             : ''
                         }`}
                         onClick={() => setViewMode('transactions')}
+                        unstyled
                     >
                         <Icon name="analytics" size="1.1rem" />
                         {t('finances')}
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         className={`inst-finances__toggle-btn ${
                             viewMode === 'patients' 
                             ? 'inst-finances__toggle-btn--active' 
                             : ''
                         }`}
                         onClick={() => setViewMode('patients')}
+                        unstyled
                     >
                         <Icon name="groups" size="1.1rem" />
                         {t('patients')}
-                    </button>
+                    </Button>
                 </div>
             )}
         </div>

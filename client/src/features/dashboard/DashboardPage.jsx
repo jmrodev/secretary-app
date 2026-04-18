@@ -29,7 +29,7 @@ import './DashboardPage.css';
 const DashboardPage = () => {
     const controller = useDashboardController();
     const {
-        user, t, settings,
+        user, t,
         stats, newPatientStats, reminders, pendingReqCount, activeTab,
         actionModal,
         historyModal,

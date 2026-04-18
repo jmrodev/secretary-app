@@ -45,7 +45,7 @@
 }
 
 .overflow-visible {
-    overflow: visible !important;
+    overflow: visible;
 }
 
 /* Atomic Utilities */

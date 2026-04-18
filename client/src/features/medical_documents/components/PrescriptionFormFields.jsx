@@ -56,14 +56,15 @@ const PrescriptionFormFields = ({
                 </label>
                 <div className="prescription-modal__freq-presets">
                     {freqPresets.map((p, idx) => (
-                        <button
+                        <Button
                             key={idx}
                             type="button"
                             className={`prescription-modal__freq-btn${tempFreqPreset === idx ? ' prescription-modal__freq-btn--active' : ''}`}
                             onClick={() => handleFreqPreset(idx)}
+                            unstyled
                         >
                             {p.label}
-                        </button>
+                        </Button>
                     ))}
                 </div>
             </div>

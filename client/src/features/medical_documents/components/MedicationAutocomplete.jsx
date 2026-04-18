@@ -1,6 +1,8 @@
 import React, { useRef, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { useMedicationAutocomplete } from '@/features/medical_documents/hooks/useMedicationAutocomplete';
+import { useMedicationAutocomplete } from '../hooks/useMedicationAutocomplete';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import Input from '@/components/atoms/Input';
 import Badge from '@/components/atoms/Badge';
 import './MedicationAutocomplete.css';
@@ -88,16 +90,19 @@ const MedicationAutocomplete = ({
                     {loading ? (
                         <div className={`${baseClass}__spinner`}></div>
                     ) : searchTerm ? (
-                        <button
+                        <Button
                             type="button"
                             onClick={handleClear}
                             aria-label={t('clear') || "Limpiar"}
                             tabIndex="-1"
+                            unstyled
+                            icon={<Icon name="close" />}
                         >
-                            ✕
-                        </button>
+                        </Button>
                     ) : (
-                        <span className="medication-autocomplete__icon">🔍</span>
+                        <span className="medication-autocomplete__icon">
+                            <Icon name="search" />
+                        </span>
                     )}
                 </div>
             </div>

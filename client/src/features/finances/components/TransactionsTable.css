@@ -148,19 +148,19 @@
 }
 
 .transactions-table__cell--first {
-    padding-left: 1.5rem !important;
+    padding-left: 1.5rem;
 }
 
 .transactions-table__cell--last {
-    padding-right: 1.5rem !important;
+    padding-right: 1.5rem;
 }
 
 .transactions-table__cell--center {
-    text-align: center !important;
+    text-align: center;
 }
 
 .transactions-table__cell--right {
-    text-align: right !important;
+    text-align: right;
 }
 
 .transactions-table__beneficiary {
@@ -261,7 +261,7 @@
 }
 
 .transactions-table__cell--empty-state {
-    padding: 6rem !important;
+    padding: 6rem;
     text-align: center;
     color: var(--text-muted);
     font-weight: 600;

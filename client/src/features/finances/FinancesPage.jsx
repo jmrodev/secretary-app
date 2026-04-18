@@ -22,7 +22,6 @@ import './FinancesPage.css';
 const FinancesPage = () => {
     const controller = useFinancesPageController();
     const {
-        transactions,
         stats,
         loading,
         doctors,

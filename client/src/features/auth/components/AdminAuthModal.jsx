@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Modal from '@/components/molecules/Modal';
+import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 
 /**
@@ -43,20 +44,22 @@ const AdminAuthModal = ({ isOpen, onClose, onConfirm }) => {
                     />
                 </div>
                 <div className="flex justify-end gap-3 pt-6 border-t border-gray-50">
-                    <button 
+                    <Button
                         type="button" 
                         className="btn btn-ghost text-gray-400 hover:text-gray-600 font-bold uppercase tracking-widest text-[10px]" 
                         onClick={onClose}
+                        unstyled
                     >
                         Cancelar
-                    </button>
-                    <button 
+                    </Button>
+                    <Button
                         type="submit" 
                         className="btn btn-primary shadow-lg shadow-accent/20 px-8 font-bold uppercase tracking-widest text-[10px]" 
                         disabled={!password}
+                        unstyled
                     >
                         Confirmar Acción
-                    </button>
+                    </Button>
                 </div>
             </form>
         </Modal>

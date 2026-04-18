@@ -275,7 +275,7 @@ export const useMedicalDocumentsHandlers = ({
         if (item._origin === 'prescription') {
             setSelectedPrescription(item);
             let parsedItems = [];
-            try { if (item.raw_medication_data) parsedItems = JSON.parse(item.raw_medication_data); } catch (e) { }
+            try { if (item.raw_medication_data) parsedItems = JSON.parse(item.raw_medication_data); } catch (e) { console.debug(e); }
             setEditData({
                 medications: item.medications || '',
                 instructions: item.instructions || '',
@@ -293,7 +293,7 @@ export const useMedicalDocumentsHandlers = ({
         } else if (item._origin === 'request') {
             setSelectedRequest(item);
             let parsedItems = [];
-            try { if (item.raw_medication_data) parsedItems = JSON.parse(item.raw_medication_data); } catch (e) { }
+            try { if (item.raw_medication_data) parsedItems = JSON.parse(item.raw_medication_data); } catch (e) { console.debug(e); }
             setRequestEditData({
                 request_note: item.request_note || '',
                 doctor_note: item.doctor_note || '',

@@ -1,6 +1,7 @@
 import React from 'react';
-import DaySchedule from '@/features/appointments/components/DaySchedule.jsx';
-import HolidayList from '@/features/appointments/components/HolidayList.jsx';
+import DaySchedule from './DaySchedule.jsx';
+import HolidayList from './HolidayList.jsx';
+import Icon from '@/components/atoms/Icon';
 import './ScheduleSection.css';
 
 /**
@@ -28,7 +29,7 @@ const ScheduleSection = ({
                 />
             ) : (
                 <>
-                    <h3 className="schedule-section__title">📋 Lista de Días Cerrados</h3>
+                    <h3 className="schedule-section__title"><Icon name="list" className="mr-1" />Lista de Días Cerrados</h3>
                     <div className="schedule-section__content">
                         <HolidayList holidays={holidays} onDelete={onDeleteHoliday} />
                     </div>

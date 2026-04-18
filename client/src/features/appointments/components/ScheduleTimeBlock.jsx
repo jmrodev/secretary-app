@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Input from '@/components/atoms/Input';
+import Icon from '@/components/atoms/Icon';
 
 /**
  * ScheduleTimeBlock Feature Molecule.
@@ -47,8 +48,8 @@ const ScheduleTimeBlock = ({
                     value={block.default_type || 'consultation'}
                     onChange={(e) => onChange(block.originalIndex, 'default_type', e.target.value)}
                 >
-                    <option value="consultation">🏥 Presencial</option>
-                    <option value="virtual">📹 Videollamada</option>
+                    <option value="consultation">Presencial</option>
+                    <option value="virtual">Videollamada</option>
                 </select>
             </div>
 
@@ -60,7 +61,7 @@ const ScheduleTimeBlock = ({
                         checked={block.force_hour_alignment === 1}
                         onChange={(e) => onChange(block.originalIndex, 'force_hour_alignment', e.target.checked ? 1 : 0)}
                     />
-                    <span className="time-block__alignment-text text-xs font-bold text-slate-400 group-hover:text-accent transition-colors">🕒 Coord. :00</span>
+                    <span className="time-block__alignment-text text-xs font-bold text-slate-400 group-hover:text-accent transition-colors"><Icon name="schedule" size="1rem" className="mr-1" />Coord. :00</span>
                 </label>
 
                 <Button
@@ -69,7 +70,7 @@ const ScheduleTimeBlock = ({
                     onClick={onRemove}
                     className="time-block__remove text-gray-300 hover:text-red-500 hover:bg-red-50 p-2"
                     title="Eliminar franja"
-                    icon="🗑️"
+                    icon={<Icon name="delete" />}
                 />
             </div>
         </div>

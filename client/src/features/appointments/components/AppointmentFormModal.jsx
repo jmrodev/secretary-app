@@ -1,5 +1,7 @@
 import React from 'react';
 import Modal from '@/components/molecules/Modal';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/features/auth';
 
@@ -68,7 +70,8 @@ const AppointmentFormModal = ({
                     <input type="datetime-local" className="form-control" value={date} onChange={e => handleDateChange(e.target.value)} required />
                     {isOutOfHours && (
                         <div className="appointment-form-modal__extra-badge appointment-form-modal__extra-badge--pulse">
-                            ⚠️ Turno Fuera de Horario (Extra)
+                            <Icon name="warning" size="1rem" className="mr-1" />
+                            Turno Fuera de Horario (Extra)
                         </div>
                     )}
                 </div>
@@ -97,9 +100,9 @@ const AppointmentFormModal = ({
                 </div>
 
                 <div className="form-actions">
-                    <button type="submit" className="btn btn-accent form-actions__submit">
+                    <Button type="submit" className="btn btn-accent form-actions__submit" unstyled>
                         {editModeId ? (t('save_changes') || 'Guardar Cambios') : t('confirm_booking')}
-                    </button>
+                    </Button>
                 </div>
             </form>
         </Modal>
