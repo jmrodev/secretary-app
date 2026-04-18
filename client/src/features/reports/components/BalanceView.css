@@ -102,11 +102,11 @@
 }
 
 .balance-view__cell--right {
-    text-align: right !important;
+    text-align: right;
 }
 
 .balance-view__cell--bold {
-    font-weight: 800 !important;
+    font-weight: 800;
 }
 
 .balance-view__empty-state {
