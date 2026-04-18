@@ -1,6 +1,7 @@
 import React from 'react';
 import Modal from '@/components/molecules/Modal';
 import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import FormGroup from '@/components/molecules/FormGroup';
 import Input from '@/components/atoms/Input';
 import Switch from '@/components/atoms/Switch';
@@ -73,11 +74,11 @@ const DoctorEditModal = ({
             {type === 'EDIT' && (
                 <TabNav className="doctor-edit-modal__tabs">
                     {[
-                        { id: 'tariffs', label: '💰 Tarifas' },
-                        { id: 'schedule', label: '📅 Horarios' },
-                        { id: 'messages', label: '💬 Mensajes' },
-                        { id: 'google', label: '🌐 Google' },
-                        { id: 'fiscal', label: '🧾 Fiscal' }
+                        { id: 'tariffs', label: <><Icon name="payments" size="1rem" className="mr-1" />Tarifas</> },
+                        { id: 'schedule', label: <><Icon name="calendar_today" size="1rem" className="mr-1" />Horarios</> },
+                        { id: 'messages', label: <><Icon name="chat" size="1rem" className="mr-1" />Mensajes</> },
+                        { id: 'google', label: <><Icon name="language" size="1rem" className="mr-1" />Google</> },
+                        { id: 'fiscal', label: <><Icon name="receipt_long" size="1rem" className="mr-1" />Fiscal</> }
                     ].map(tab => (
                         <TabButton
                             key={tab.id}
@@ -131,7 +132,7 @@ const DoctorEditModal = ({
 
                             <div className="doctor-edit-modal__overturn-section">
                                 <h4 className="doctor-edit-modal__overturn-title">
-                                    <span>🕒</span> {t('overturn_range_title') || 'Horario Sobreturnos (Fuera de Horario)'}
+                                    <Icon name="schedule" size="1rem" /> {t('overturn_range_title') || 'Horario Sobreturnos (Fuera de Horario)'}
                                 </h4>
                                 <div className="doctor-edit-modal__overturn-grid">
                                     <FormGroup label={t('overturn_start_label') || 'Inicio Sobreturnos'}>

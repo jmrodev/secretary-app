@@ -1,6 +1,7 @@
 import React from 'react';
 import Badge from '@/components/atoms/Badge';
 import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/context/LanguageContext';
 import './UserTable.css';
 
@@ -43,10 +44,10 @@ const UserTable = ({ users, onEdit, onReset, onDelete }) => {
                             </td>
                             <td className="user-table__cell">
                                 <div className="user-table__actions">
-                                    <Button variant="secondary" size="sm" onClick={() => onEdit(u)} title={t('edit')}>✏️</Button>
-                                    <Button variant="secondary" size="sm" onClick={() => onReset(u)} title={t('reset_pwd')}>🔑</Button>
+                                    <Button variant="secondary" size="sm" onClick={() => onEdit(u)} title={t('edit')} icon={<Icon name="edit" />} />
+                                    <Button variant="secondary" size="sm" onClick={() => onReset(u)} title={t('reset_pwd')} icon={<Icon name="key" />} />
                                     {u.role !== 'admin' && (
-                                        <Button variant="outline-danger" size="sm" onClick={() => onDelete(u)} title={t('delete')}>🗑️</Button>
+                                        <Button variant="outline-danger" size="sm" onClick={() => onDelete(u)} title={t('delete')} icon={<Icon name="delete" />} />
                                     )}
                                 </div>
                             </td>

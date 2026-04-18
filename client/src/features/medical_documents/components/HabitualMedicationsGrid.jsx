@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from '@/components/atoms/Button';
 
 /**
  * HabitualMedicationsGrid Feature Molecule.
@@ -17,7 +18,7 @@ const HabitualMedicationsGrid = ({ patientMeds, medicationItems, onSelect, baseC
                 {patientMeds.map(m => {
                     const isSelected = medicationItems.some(i => i.name === m.medication_name);
                     return (
-                        <button
+                        <Button
                             key={m.id}
                             type="button"
                             className={`${baseClass}__habitual-btn p-3 rounded-sm border transition-all text-left flex flex-col ${
@@ -26,6 +27,7 @@ const HabitualMedicationsGrid = ({ patientMeds, medicationItems, onSelect, baseC
                                 : 'bg-white border-gray-100 hover:border-accent hover:bg-gray-50 text-gray-800'
                             }`}
                             onClick={() => onSelect(m)}
+                            unstyled
                         >
                             <span className={`${baseClass}__habitual-name font-bold text-sm block mb-1`}>{m.medication_name}</span>
                             {(m.dose || m.daily_intake || m.daily_units) && (
@@ -33,7 +35,7 @@ const HabitualMedicationsGrid = ({ patientMeds, medicationItems, onSelect, baseC
                                     {m.dose} {m.dose && (m.daily_intake || m.daily_units) ? '·' : ''} {m.daily_intake || m.daily_units ? `${m.daily_intake || m.daily_units}/d` : ''}
                                 </span>
                             )}
-                        </button>
+                        </Button>
                     );
                 })}
             </div>

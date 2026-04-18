@@ -1,4 +1,6 @@
 import React from 'react';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import { PatientSearchSelect } from '@/features/patients';
 import { capitalizeWords } from '@/utils/stringUtils';
 
@@ -27,22 +29,24 @@ const AppointmentPatientSection = ({
             {missingData.length > 0 && (
                 <div className="missing-data-alert">
                     <span className="missing-data-alert__text">
-                        ⚠️ <strong>Datos incompletos:</strong> {missingData.join(', ')}.
+                        <Icon name="warning" size="1rem" className="mr-1" />
+                        <strong>Datos incompletos:</strong> {missingData.join(', ')}.
                     </span>
-                    <button
+                    <Button
                         type="button"
                         className="missing-data-alert__action"
                         onClick={onOpenEditPatient}
+                        unstyled
                     >
                         Completar
-                    </button>
+                    </Button>
                 </div>
             )}
 
             {selectedPatient && (
                 <div className="patient-quick-info">
                     <div className="patient-quick-info__field">
-                        <span className="patient-quick-info__label">📱 Teléfono</span>
+                        <span className="patient-quick-info__label"><Icon name="phone" size="1rem" className="mr-1" />Teléfono</span>
                         <input
                             type="text"
                             className="patient-quick-info__input"

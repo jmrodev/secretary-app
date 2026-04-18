@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ConfigField from './ConfigField';
 import Input from '@/components/atoms/Input';
 import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import api from '@/api/axios';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -60,7 +61,7 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
             {/* AFIP General Configuration */}
             <div className="config-section">
                 <div className="config-section__header">
-                    <span className="config-section__icon">🧾</span>
+                    <span className="config-section__icon"><Icon name="receipt_long" /></span>
                     <h4 className="config-section__title">{t('billing_settings_title')}</h4>
                 </div>
 
@@ -109,10 +110,10 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                             {status ? (
                                 <div className={`config-status ${status.error ? 'config-status--error' : 'config-status--success'}`}>
                                     {status.error ? (
-                                        <p>❌ {t('afip_status_error')}: {status.error}</p>
+                                        <p><Icon name="close" className="mr-1" />{t('afip_status_error')}: {status.error}</p>
                                     ) : (
                                         <>
-                                            <p>✅ {t('afip_status_connected')} ({status.environment})</p>
+                                            <p><Icon name="check" className="mr-1" />{t('afip_status_connected')} ({status.environment})</p>
                                             <p className="config-field__hint">App: {status.afip_status.AppServer}, DB: {status.afip_status.DbServer}, Auth: {status.afip_status.AuthServer}</p>
                                         </>
                                     )}
@@ -127,8 +128,9 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                                 variant="secondary"
                                 onClick={checkStatus}
                                 loading={checking}
+                                icon={<Icon name="sync" />}
                             >
-                                🔄 {t('verify_afip_connection')}
+                                {t('verify_afip_connection')}
                             </Button>
                         </div>
                     </div>
@@ -138,7 +140,7 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
             {/* AFIP Certificates and Key Generation */}
             <div className="config-section">
                 <div className="config-section__header">
-                    <span className="config-section__icon">🔑</span>
+                    <span className="config-section__icon"><Icon name="key" /></span>
                     <h4 className="config-section__title">{t('digital_certificates')}</h4>
                 </div>
                 <div className="config-section__body">
@@ -156,8 +158,8 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                         5. {t('afip_guide_step_5_short')}
                     </div>
                     <div className="config-actions">
-                        <Button variant="primary" onClick={generateCsr} loading={generatingCsr}>
-                            ⚙️ {t('generate_csr_btn')}
+                        <Button variant="primary" onClick={generateCsr} loading={generatingCsr} icon={<Icon name="settings" />}>
+                            {t('generate_csr_btn')}
                         </Button>
                         <Button variant="ghost" disabled={true} title="Próximamente">{t('upload_crt')}</Button>
                     </div>
@@ -177,8 +179,8 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                                 rows={8}
                             />
                             <div className="config-actions config-actions--right config-actions--mt-1">
-                                <Button size="sm" variant="secondary" onClick={() => { navigator.clipboard.writeText(generatedCsr); showMessage(t('csr_copied'), 'success'); }}>
-                                    📋 {t('copy')}
+                                <Button size="sm" variant="secondary" onClick={() => { navigator.clipboard.writeText(generatedCsr); showMessage(t('csr_copied'), 'success'); }} icon={<Icon name="content_copy" />}>
+                                    {t('copy')}
                                 </Button>
                             </div>
                         </div>

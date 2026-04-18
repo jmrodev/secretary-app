@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/context/LanguageContext';
 import './ConfirmModal.css';
 
@@ -39,10 +41,13 @@ const ConfirmModal = ({
                     <h3 className="modal-header-bem__title">
                         {title || (type === 'alert' ? t('alert') : t('confirm'))}
                     </h3>
-                    <button
+                    <Button
                         className="modal-header-bem__close"
                         onClick={handleCancelClick}
-                    >&times;</button>
+                        unstyled
+                        icon={<Icon name="close" />}
+                        aria-label={t('close')}
+                    />
                 </div>
                 <div className="modal-body-bem">
                     <div className={`modal-body-bem__text ${type === 'prompt' ? 'modal-body-bem__text--prompt' : ''}`}>
@@ -62,19 +67,21 @@ const ConfirmModal = ({
                 </div>
                 <div className="modal-footer-bem">
                     {type !== 'alert' && (
-                        <button
+                        <Button
                             className="btn-text btn-text--secondary"
                             onClick={handleCancelClick}
+                            unstyled
                         >
                             {t('cancel')}
-                        </button>
+                        </Button>
                     )}
-                    <button
+                    <Button
                         className="btn-base btn-base--primary"
                         onClick={handleConfirm}
+                        unstyled
                     >
                         {t('accept')}
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>,

@@ -1,5 +1,6 @@
 
 import React from 'react';
+import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/context/LanguageContext';
 import { formatDate } from '@/utils/dateUtils';
@@ -57,13 +58,14 @@ const MedicationHistory = ({ recentRequests, t, onRepeat }) => {
                                             </span>
                                         </td>
                                         <td className="patient-medications__table-cell">
-                                            <button
+                                            <Button
                                                 className="btn-icon btn-icon--primary"
                                                 title={t('repeat_prescription') || 'Repetir Receta'}
                                                 onClick={() => onRepeat && onRepeat(req)}
+                                                unstyled
                                             >
                                                 <Icon name="HISTORY" size="1.2rem" />
-                                            </button>
+                                            </Button>
                                         </td>
                                     </tr>
                                 ))}
