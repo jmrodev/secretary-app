@@ -52,7 +52,7 @@ export const useDayScheduleHandlers = ({ date, appointments, doctor, onDateSelec
     const handleSlotAction = async (slot) => {
         const isOutOfHours = slot.type === 'closed';
         if (isOutOfHours) {
-            if (await confirm(t('confirm_out_of_hours') || "⚠️ ¿Desea asignar un turno en horario NO LABORABLE?")) {
+            if (await confirm(t('confirm_out_of_hours') || "¿Desea asignar un turno en horario NO LABORABLE?")) {
                 onSlotClick(slot.time.getHours(), null, slot.time.getMinutes(), true);
             }
         } else {

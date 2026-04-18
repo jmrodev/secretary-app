@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { useMedicationAutocomplete } from '../hooks/useMedicationAutocomplete';
+import { useMedicationAutocomplete } from '@/features/medical_documents/hooks/useMedicationAutocomplete';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Input from '@/components/atoms/Input';

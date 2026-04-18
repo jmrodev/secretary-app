@@ -194,7 +194,7 @@ const generateAppointmentsPrint = (reportData, monthName, year, t) => {
         return `
             <div class="day-group">
                 <div class="day-header ${day.is_weekend ? 'day-header--weekend' : ''} ${day.is_holiday ? 'day-header--holiday' : ''}">
-                    <span>📅 ${day.date || ''}</span>
+                    <span>${t('date_label') || 'Fecha'}: ${day.date || ''}</span>
                     ${day.is_holiday ? `<span class="tag tag--holiday">${day.holiday_description || t('holiday')}</span>` : ''}
                     ${day.is_weekend && !day.is_holiday ? `<span style="font-size: 10px; opacity: 0.8;">(${t('weekend') || 'Finde'})</span>` : ''}
                 </div>

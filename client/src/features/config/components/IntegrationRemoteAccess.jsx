@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import ConfigField from './ConfigField';
+import ConfigField from '@/features/config/components/ConfigField';
 import Select from '@/components/atoms/Select';
 
 /**

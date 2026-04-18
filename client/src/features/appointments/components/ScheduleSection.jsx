@@ -1,6 +1,6 @@
 import React from 'react';
-import DaySchedule from './DaySchedule.jsx';
-import HolidayList from './HolidayList.jsx';
+import DaySchedule from '@/features/appointments/components/DaySchedule.jsx';
+import HolidayList from '@/features/appointments/components/HolidayList.jsx';
 import Icon from '@/components/atoms/Icon';
 import './ScheduleSection.css';
 
