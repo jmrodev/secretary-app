@@ -4,7 +4,6 @@ import './App.css';
 
 // Routing Orchestrator
 import AppRouter from '@/routes/AppRouter';
-import './App.css';
 
 // Global UI Components
 import { FloatingChat } from '@/features/chat';
