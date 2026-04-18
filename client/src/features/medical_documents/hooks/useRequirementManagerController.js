@@ -89,11 +89,13 @@ export const useRequirementManagerController = (user) => {
 
     useEffect(() => {
         if (selectedRequest) {
-            setIsEditing(false);
-            const { meds, notes } = extractMedicationDetails(selectedRequest);
-            setEditMeds(meds);
-            setEditNotes(notes);
-            setEditDoctorNote(selectedRequest.doctor_note || '');
+            queueMicrotask(() => {
+                setIsEditing(false);
+                const { meds, notes } = extractMedicationDetails(selectedRequest);
+                setEditMeds(meds);
+                setEditNotes(notes);
+                setEditDoctorNote(selectedRequest.doctor_note || '');
+            });
         }
     }, [selectedRequest]);
 

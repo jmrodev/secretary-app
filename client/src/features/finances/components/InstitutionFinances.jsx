@@ -47,12 +47,12 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
         showPendingOnly ? isRealDebt(tr) : true
     ) || [];
 
-    const selectedAmount = React.useMemo(() => {
+    const selectedAmount = (() => {
         if (!report?.transactions) return 0;
         return report.transactions
             .filter(tr => selectedTrs.has(tr.transaction_id))
             .reduce((sum, tr) => sum + Number(tr.amount), 0);
-    }, [selectedTrs, report?.transactions]);
+    })();
 
     React.useEffect(() => {
         if (isPayModalOpen) {

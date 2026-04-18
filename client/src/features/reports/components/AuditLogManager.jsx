@@ -1,7 +1,6 @@
 import React from 'react';
 import AuditLogTable from './AuditLogTable';
 import Button from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
 import Modal from '@/components/molecules/Modal';
 import { formatDate } from '@/utils/dateUtils';
 

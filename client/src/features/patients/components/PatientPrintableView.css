@@ -185,20 +185,20 @@
 @media print {
     /* Hide specific selectors */
     .no-print {
-        display: none !important;
+        display: none;
     }
 
     .printable-patient-sheet--fullscreen {
-         position: static !important;
-         width: auto !important;
-         height: auto !important;
-         padding: 0 !important;
-         overflow: visible !important;
-         color: black !important;
+         position: static;
+         width: auto;
+         height: auto;
+         padding: 0;
+         overflow: visible;
+         color: black;
     }
 
     .printable-patient-sheet__header {
-         display: none !important;
+         display: none;
     }
 
     /* Long lists flow on multiple pages safely */

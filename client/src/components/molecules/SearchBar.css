@@ -18,15 +18,15 @@
 
 .search-box__input {
     width: 100%;
-    padding: 1rem 1rem 1rem 3rem !important;
-    border-radius: var(--radius) !important;
-    border: 1px solid var(--gray-200) !important;
-    background: white !important;
-    box-shadow: var(--shadow-sm) !important;
-    font-size: 1.1rem !important;
+    padding: 1rem 1rem 1rem 3rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--gray-200);
+    background: white;
+    box-shadow: var(--shadow-sm);
+    font-size: 1.1rem;
 }
 
 .search-box__input:focus {
-    border-color: var(--blue-500) !important;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important;
+    border-color: var(--blue-500);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
 }

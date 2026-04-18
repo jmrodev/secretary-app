@@ -135,14 +135,14 @@
 }
 
 .patient-recycle-bin__action-btn--restore {
-    color: var(--green-600) !important;
-    border-color: var(--green-200) !important;
-    font-weight: 700 !important;
+    color: var(--green-600);
+    border-color: var(--green-200);
+    font-weight: 700;
 }
 
 .patient-recycle-bin__action-btn--restore:hover {
-    background-color: var(--green-50) !important;
-    border-color: var(--green-300) !important;
+    background-color: var(--green-50);
+    border-color: var(--green-300);
 }
 
 .patient-recycle-bin__footer-hint {

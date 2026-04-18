@@ -32,7 +32,7 @@ screen and (max-height: 800px) {
 }
 
 .overflow-visible {
-    overflow: visible !important;
+    overflow: visible;
 }
 
 .z-10 {

@@ -21,14 +21,16 @@ const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) =
 
     useEffect(() => {
         if (isOpen) {
-            setAmount('');
-            const today = new Date().toISOString().split('T')[0];
-            setDate(today);
-            setTime('12:30');
-            setDescription('Cierre manual de caja');
-            if (doctors && doctors.length > 0) {
-                setDoctorId(doctors[0].id);
-            }
+            queueMicrotask(() => {
+                setAmount('');
+                const today = new Date().toISOString().split('T')[0];
+                setDate(today);
+                setTime('12:30');
+                setDescription('Cierre manual de caja');
+                if (doctors && doctors.length > 0) {
+                    setDoctorId(doctors[0].id);
+                }
+            });
         }
     }, [isOpen, doctors]);
 

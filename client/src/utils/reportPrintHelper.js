@@ -31,9 +31,9 @@ export const printReport = (data, options) => {
             .row--net { font-size: 16px; font-weight: 900; border-top: 2px solid #000; padding-top: 10px; margin-top: 10px; }
             .day-group { margin-top: 15px; page-break-inside: avoid; }
             .day-header { font-weight: bold; font-size: 12px; background: #f0f0f0; padding: 3px 8px; border: 1px solid #ccc; display: flex; justify-content: space-between; }
-            .day-header--weekend { background: #fffbe6 !important; color: #856404; }
-            .day-header--holiday { background: #f8d7da !important; color: #721c24; }
-            .row--overturn { background-color: #e7f3ff !important; }
+            .day-header--weekend { background: #fffbe6; color: #856404; }
+            .day-header--holiday { background: #f8d7da; color: #721c24; }
+            .row--overturn { background-color: #e7f3ff; }
             .tag { font-size: 9px; font-weight: bold; text-transform: uppercase; padding: 1px 3px; border-radius: 2px; margin-left: 5px; }
             .tag--overturn { background: #bbdefb; color: #1e40af; }
             .tag--holiday { background: #f5c6cb; color: #721c24; }
@@ -236,7 +236,6 @@ const generateAppointmentsPrint = (reportData, monthName, year, t) => {
 
 const generatePrescriptionsPrint = (reportData, monthName, year, t) => {
     const list = Array.isArray(reportData?.prescriptions) ? reportData.prescriptions : [];
-    const withdrawals = Array.isArray(reportData?.withdrawals) ? reportData.withdrawals : [];
     let total = 0;
 
     return `

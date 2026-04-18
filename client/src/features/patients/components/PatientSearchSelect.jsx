@@ -3,8 +3,6 @@ import AsyncSelect from 'react-select/async';
 import api from '@/api/axios';
 import Button from '@/components/atoms/Button';
 
-import { components } from 'react-select';
-
 import { useLanguage } from '@/context/LanguageContext';
 
 const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, autoFocus = false, selectedData }) => {
