@@ -3,7 +3,6 @@ import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Input from '@/components/atoms/Input';
 import Switch from '@/components/atoms/Switch';
-import AutoTextarea from '@/components/atoms/AutoTextarea';
 import FormGroup from '@/components/molecules/FormGroup';
 import { useLanguage } from '@/context/LanguageContext';
 import './DoctorFiscalSettings.css';
@@ -93,7 +92,7 @@ const DoctorFiscalSettings = ({
                         ref={fileInputRef}
                         onChange={handleFileChange}
                         accept=".crt,.key"
-                        className="doctor-fiscal-settings__file-input"
+                        style={{ display: 'none' }}
                     />
                     <Button size="sm" variant="ghost" onClick={handleUploadClick} loading={uploading} icon={<Icon name="upload" size="1.1rem" />}>
                         {t('upload_certificate')}
@@ -104,15 +103,9 @@ const DoctorFiscalSettings = ({
                     <div className="doctor-fiscal-settings__csr-box animate-fadeIn">
                         <div className="doctor-fiscal-settings__csr-header">
                             <h6 className="doctor-fiscal-settings__csr-title">{t('csr_generated_title')}</h6>
-<<<<<<< HEAD
-                            <Button onClick={onHideCsrInfo} variant="ghost" size="sm" className="doctor-fiscal-settings__csr-close">
-                                {t('hide')}
-                            </Button>
-=======
                             <Button onClick={onHideCsrInfo} className="doctor-fiscal-settings__csr-close" unstyled>{t('hide')}</Button>
->>>>>>> main
                         </div>
-                        <AutoTextarea
+                        <textarea
                             readOnly
                             value={generatedCsr}
                             className="doctor-fiscal-settings__textarea"

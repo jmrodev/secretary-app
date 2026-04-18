@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-#root .toaster-container {
-    z-index: 9999;
-=======
 .app__toaster-container {
   z-index: 9999;
->>>>>>> main
 }

@@ -1,8 +1,6 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import Button from '@/components/atoms/Button';
-import Select from '@/components/atoms/Select';
 import './InstitutionSelector.css';
 
 /**
@@ -23,26 +21,23 @@ const InstitutionSelector = ({
             <div className="inst-finances__selector-group">
                 <label className="inst-finances__label">
                     <Icon name="business" size="1.2rem" color="var(--accent-color)" />
-                    {(t('institutions') || 'Instituciones') + ':'}
+                    {t('institutions') || 'Instituciones'}:
                 </label>
-                <Select
+                <select
                     className="inst-finances__select"
                     value={selectedInstId}
                     onChange={e => setSelectedInstId(e.target.value)}
-                    options={[
-                        { value: '', label: t('select_institution') },
-                        ...institutions.map(i => ({ value: i.id, label: i.name }))
-                    ]}
-                />
+                >
+                    <option value="">{t('select_institution')}</option>
+                    {institutions.map(i => (
+                        <option key={i.id} value={i.id}>{i.name}</option>
+                    ))}
+                </select>
             </div>
 
             {selectedInstId && (
                 <div className="inst-finances__view-toggle">
                     <Button
-<<<<<<< HEAD
-                        variant={viewMode === 'transactions' ? 'primary' : 'ghost'}
-=======
->>>>>>> main
                         className={`inst-finances__toggle-btn ${
                             viewMode === 'transactions' 
                             ? 'inst-finances__toggle-btn--active' 
@@ -55,10 +50,6 @@ const InstitutionSelector = ({
                         {t('finances')}
                     </Button>
                     <Button
-<<<<<<< HEAD
-                        variant={viewMode === 'patients' ? 'primary' : 'ghost'}
-=======
->>>>>>> main
                         className={`inst-finances__toggle-btn ${
                             viewMode === 'patients' 
                             ? 'inst-finances__toggle-btn--active' 

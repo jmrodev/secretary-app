@@ -29,14 +29,10 @@ const DoctorGoogleSettings = ({
                     <>
                         <Button
                             variant="primary"
-                            className="doctor-google-settings__connect-btn"
+                            className="w-full"
                             size="lg"
                             onClick={onConnect}
-<<<<<<< HEAD
-                            icon="LINK"
-=======
                             icon={<Icon name="link" />}
->>>>>>> main
                         >
                             Conectar Cuenta G-Suite
                         </Button>
@@ -46,15 +42,11 @@ const DoctorGoogleSettings = ({
                     </>
                 ) : (
                     <Button
-                        variant="danger"
-                        className="doctor-google-settings__disconnect-btn"
+                        variant="secondary"
+                        className="w-full text-danger"
                         size="lg"
                         onClick={onDisconnect}
-<<<<<<< HEAD
-                        icon="CLOSE"
-=======
                         icon={<Icon name="close" />}
->>>>>>> main
                     >
                         Desvincular Cuenta
                     </Button>
@@ -63,38 +55,23 @@ const DoctorGoogleSettings = ({
 
             {connected && (
                 <div className="doctor-google-settings__tools">
-<<<<<<< HEAD
-                    <Button variant="secondary" onClick={onVerifyCalendar} icon="APPOINTMENTS">
-                        Verificar Turnos en Calendar
-                    </Button>
-                    <Button variant="primary" onClick={onImportContacts} icon="SYNC">
-=======
                     <Button variant="secondary" onClick={onVerifyCalendar} icon={<Icon name="calendar_today" />}>
                         Verificar Turnos en Calendar
                     </Button>
                     <Button variant="primary" onClick={onImportContacts} icon={<Icon name="file_download" />}>
->>>>>>> main
                         Sincronizar Contactos
                     </Button>
                     <div className="doctor-google-settings__divider" />
                     <div className="doctor-google-settings__reset-box">
                         <p className="doctor-google-settings__reset-notice">
-<<<<<<< HEAD
-                            <Icon name="WARNING" size="sm" /> ¿Problemas con la planilla? Si la borraste de Drive, usa este botón para que el sistema genere una nueva.
-=======
                             <Icon name="warning" size="1rem" className="mr-1" />¿Problemas con la planilla? Si la borraste de Drive, usa este botón para que el sistema genere una nueva.
->>>>>>> main
                         </p>
                         <Button
                             variant="ghost"
                             size="sm"
                             className="doctor-google-settings__reset-btn"
                             onClick={onResetSpreadsheet}
-<<<<<<< HEAD
-                            icon="RESTORE"
-=======
                             icon={<Icon name="restore" />}
->>>>>>> main
                         >
                             Re-generar Planilla de Finanzas
                         </Button>

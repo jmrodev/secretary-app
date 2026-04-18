@@ -133,11 +133,7 @@
 }
 
 .config-group--bg-white {
-<<<<<<< HEAD
-    background: var(--white);
-=======
     background: white;
->>>>>>> main
 }
 
 .config-field__hint--mb-05 {

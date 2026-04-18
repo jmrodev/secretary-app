@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-import React, { useState } from 'react';
-import ConfigField from './ConfigField';
-=======
 import React, { useState, useEffect } from 'react';
 import ConfigField from '@/features/config/components/ConfigField';
->>>>>>> main
 import Input from '@/components/atoms/Input';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
@@ -12,7 +7,6 @@ import api from '@/api/axios';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useModal } from '@/context/ModalContext';
-import './BillingSettings.css';
 
 /**
  * BillingSettings Feature Component.
@@ -63,22 +57,17 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
     };
 
     return (
-        <div className="tab-panel animate-fadeIn billing-settings">
+        <div className="tab-panel animate-fadeIn">
             {/* AFIP General Configuration */}
             <div className="config-section">
                 <div className="config-section__header">
-<<<<<<< HEAD
-                    <Icon name="receipt" size="1.5rem" className="config-section__icon" />
-=======
                     <span className="config-section__icon"><Icon name="receipt_long" /></span>
->>>>>>> main
                     <h4 className="config-section__title">{t('billing_settings_title')}</h4>
                 </div>
 
                 <div className="config-section__body">
-                    <div className="config-grid">
+                    <div className="config-grid config-grid--2col">
                         <ConfigField
-                            id="afip-cuit"
                             label={t('billing_cuit')}
                             type="text"
                             placeholder="Ej: 20111111112"
@@ -88,7 +77,6 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                             hint={t('afip_guide_step_1')}
                         />
                         <ConfigField
-                            id="afip-pto-vta"
                             label={t('pto_vta')}
                             type="number"
                             placeholder="1"
@@ -100,7 +88,6 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                     </div>
 
                     <ConfigField
-                        id="afip-env"
                         label={t('afip_environment')}
                         type="select"
                         value={settings.afip_environment || 'testing'}
@@ -121,28 +108,14 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                         </div>
                         <div className="config-group__items">
                             {status ? (
-                                <div className={`billing-settings__status ${status.error ? 'billing-settings__status--error' : 'billing-settings__status--success'}`}>
-                                    <div className="billing-settings__status-header">
-                                        <Icon name={status.error ? 'error' : 'check_circle'} size="1.2rem" />
-                                        <span>
-                                            {status.error ? t('afip_status_error') : `${t('afip_status_connected')} (${status.environment})`}
-                                        </span>
-                                    </div>
+                                <div className={`config-status ${status.error ? 'config-status--error' : 'config-status--success'}`}>
                                     {status.error ? (
-<<<<<<< HEAD
-                                        <p>{status.error}</p>
-                                    ) : (
-                                        <p className="config-field__hint">
-                                            App: {status.afip_status.AppServer}, DB: {status.afip_status.DbServer}, Auth: {status.afip_status.AuthServer}
-                                        </p>
-=======
                                         <p><Icon name="close" className="mr-1" />{t('afip_status_error')}: {status.error}</p>
                                     ) : (
                                         <>
                                             <p><Icon name="check" className="mr-1" />{t('afip_status_connected')} ({status.environment})</p>
                                             <p className="config-field__hint">App: {status.afip_status.AppServer}, DB: {status.afip_status.DbServer}, Auth: {status.afip_status.AuthServer}</p>
                                         </>
->>>>>>> main
                                     )}
                                 </div>
                             ) : (
@@ -150,16 +123,12 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                             )}
                         </div>
 
-                        <div className="config-actions">
+                        <div className="config-actions config-actions--mt-1">
                             <Button
                                 variant="secondary"
                                 onClick={checkStatus}
                                 loading={checking}
-<<<<<<< HEAD
-                                icon={<Icon name="sync" size="1.1rem" />}
-=======
                                 icon={<Icon name="sync" />}
->>>>>>> main
                             >
                                 {t('verify_afip_connection')}
                             </Button>
@@ -171,15 +140,11 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
             {/* AFIP Certificates and Key Generation */}
             <div className="config-section">
                 <div className="config-section__header">
-<<<<<<< HEAD
-                    <Icon name="vpn_key" size="1.5rem" className="config-section__icon" />
-=======
                     <span className="config-section__icon"><Icon name="key" /></span>
->>>>>>> main
                     <h4 className="config-section__title">{t('digital_certificates')}</h4>
                 </div>
                 <div className="config-section__body">
-                    <div className="config-field__hint">
+                    <div className="config-field__hint config-field__hint--mb-15">
                         {t('valid_certificate_needed')}
                         <br /><br />
                         1. {t('afip_guide_step_1_short')}
@@ -193,55 +158,28 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
                         5. {t('afip_guide_step_5_short')}
                     </div>
                     <div className="config-actions">
-<<<<<<< HEAD
-                        <Button
-                            variant="primary"
-                            onClick={generateCsr}
-                            loading={generatingCsr}
-                            icon={<Icon name="build" size="1.1rem" />}
-                        >
-                            {t('generate_csr_btn')}
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            disabled={true}
-                            title="Próximamente"
-                            icon={<Icon name="upload" size="1.1rem" />}
-                        >
-                            {t('upload_crt')}
-=======
                         <Button variant="primary" onClick={generateCsr} loading={generatingCsr} icon={<Icon name="settings" />}>
                             {t('generate_csr_btn')}
->>>>>>> main
                         </Button>
+                        <Button variant="ghost" disabled={true} title="Próximamente">{t('upload_crt')}</Button>
                     </div>
 
                     {generatedCsr && (
-                        <div className="billing-settings__csr-box">
+                        <div className="config-group config-group--bg-white">
                             <div className="config-group__header">
                                 <h5 className="config-group__title">{t('your_csr')}</h5>
                             </div>
-                            <p className="config-field__hint">{t('copy_to_wsass')}:</p>
+                            <p className="config-field__hint config-field__hint--mb-05">{t('copy_to_wsass')}:</p>
                             <Input
                                 type="textarea"
-                                className="billing-settings__csr-textarea"
+                                className="config-field__input config-field__input--monospace"
                                 readOnly
                                 value={generatedCsr}
                                 onClick={(e) => e.target.select()}
                                 rows={8}
                             />
-<<<<<<< HEAD
-                            <div className="config-actions config-actions--right">
-                                <Button
-                                    size="sm"
-                                    variant="secondary"
-                                    onClick={() => { navigator.clipboard.writeText(generatedCsr); showMessage(t('csr_copied'), 'success'); }}
-                                    icon={<Icon name="content_copy" size="1.1rem" />}
-                                >
-=======
                             <div className="config-actions config-actions--right config-actions--mt-1">
                                 <Button size="sm" variant="secondary" onClick={() => { navigator.clipboard.writeText(generatedCsr); showMessage(t('csr_copied'), 'success'); }} icon={<Icon name="content_copy" />}>
->>>>>>> main
                                     {t('copy')}
                                 </Button>
                             </div>

@@ -101,11 +101,7 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
         return (
             <div className="institution-finances">
                 <div className="institution-finances__empty-state">
-<<<<<<< HEAD
-                    <Icon name="INSTITUTIONS" size="3rem" className="institution-finances__empty-icon" />
-=======
                     <span className="institution-finances__empty-icon"><Icon name="local_hospital" size="2rem" /></span>
->>>>>>> main
                     <p className="institution-finances__empty-text">
                         {t('select_institution_desc') || 'Seleccioná una institución del panel izquierdo'}
                     </p>
@@ -140,37 +136,28 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
 
             {loadingReport && <div className="institution-finances__loading">{t('loading_report')}</div>}
 
-            {!loadingReport && viewMode === 'transactions' && (
+            {report && viewMode === 'transactions' && (
                 <div className="institution-finances__grid">
-                    {report ? (
-                        <>
-                            <InstitutionSummary
-                                report={report}
-                                selectedAmount={selectedAmount}
-                                t={t}
-                            />
-                            <InstitutionTransactionsTable
-                                transactions={filteredTransactions}
-                                showPendingOnly={showPendingOnly}
-                                setShowPendingOnly={setShowPendingOnly}
-                                selectedTrs={selectedTrs}
-                                onToggleSelect={handleToggleSelect}
-                                onSelectAll={handleSelectAll}
-                                onPayClick={() => setIsPayModalOpen(true)}
-                                formatDate={formatDate}
-                                t={t}
-                            />
-                        </>
-                    ) : (
-                        <div className="institution-finances__empty-state">
-                            <Icon name="error" size="2rem" />
-                            <p>{t('error_loading_finances') || 'Error al cargar datos financieros'}</p>
-                        </div>
-                    )}
+                    <InstitutionSummary
+                        report={report}
+                        selectedAmount={selectedAmount}
+                        t={t}
+                    />
+                    <InstitutionTransactionsTable
+                        transactions={filteredTransactions}
+                        showPendingOnly={showPendingOnly}
+                        setShowPendingOnly={setShowPendingOnly}
+                        selectedTrs={selectedTrs}
+                        onToggleSelect={handleToggleSelect}
+                        onSelectAll={handleSelectAll}
+                        onPayClick={() => setIsPayModalOpen(true)}
+                        formatDate={formatDate}
+                        t={t}
+                    />
                 </div>
             )}
 
-            {!loadingReport && viewMode === 'patients' && (
+            {report && viewMode === 'patients' && (
                 <div className="institution-finances__grid">
                     <InstitutionPatientsTable
                         patients={patients}

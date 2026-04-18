@@ -48,11 +48,7 @@ const InsuranceList = ({ insurances, onEdit, onDelete, hasFilter }) => {
                         <div className="insurance-card__body">
                             <div className="insurance-card__data-list">
                                 <div className="insurance-card__data-row">
-<<<<<<< HEAD
-                                    <Icon name="MAP" className="insurance-card__data-icon" />
-=======
                                     <span className="insurance-card__data-icon"><Icon name="map" size="1rem" /></span>
->>>>>>> main
                                     <a
                                         href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ins.address || `${ins.name} Tandil`)}`}
                                         target="_blank"
@@ -63,11 +59,7 @@ const InsuranceList = ({ insurances, onEdit, onDelete, hasFilter }) => {
                                     </a>
                                 </div>
                                 <div className="insurance-card__data-row">
-<<<<<<< HEAD
-                                    <Icon name="PHONE" className="insurance-card__data-icon" />
-=======
                                     <span className="insurance-card__data-icon"><Icon name="phone" size="1rem" /></span>
->>>>>>> main
                                     <div className="insurance-card__data-value">
                                         {ins.phoneNumbers && ins.phoneNumbers.length > 0 ? (
                                             <div className="insurance-card__phones">
@@ -86,11 +78,7 @@ const InsuranceList = ({ insurances, onEdit, onDelete, hasFilter }) => {
                                     </div>
                                 </div>
                                 <div className="insurance-card__data-row">
-<<<<<<< HEAD
-                                    <Icon name="MAIL" className="insurance-card__data-icon" />
-=======
                                     <span className="insurance-card__data-icon"><Icon name="mail" size="1rem" /></span>
->>>>>>> main
                                     <div className="insurance-card__data-value">
                                         {ins.email ? (
                                             <a href={`mailto:${ins.email}`} className="insurance-card__link">
@@ -101,11 +89,7 @@ const InsuranceList = ({ insurances, onEdit, onDelete, hasFilter }) => {
                                 </div>
                                 {ins.website && (
                                     <div className="insurance-card__data-row">
-<<<<<<< HEAD
-                                        <Icon name="LANGUAGE" className="insurance-card__data-icon" />
-=======
                                         <span className="insurance-card__data-icon"><Icon name="language" size="1rem" /></span>
->>>>>>> main
                                         <a href={ins.website.startsWith('http') ? ins.website : `https://${ins.website}`} target="_blank" rel="noreferrer" className="insurance-card__data-value insurance-card__link" title={ins.website}>
                                             {ins.website}
                                         </a>

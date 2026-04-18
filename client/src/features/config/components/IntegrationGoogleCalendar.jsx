@@ -26,11 +26,7 @@ const IntegrationGoogleCalendar = ({
     return (
         <div className="config-section animate-fadeIn">
             <div className="config-section__header">
-<<<<<<< HEAD
-                <Icon name="APPOINTMENTS" className="config-section__icon" />
-=======
                 <span className="config-section__icon"><Icon name="calendar_today" /></span>
->>>>>>> main
                 <h2 className="config-section__title">Integración con Google Calendar</h2>
             </div>
 
@@ -48,20 +44,7 @@ const IntegrationGoogleCalendar = ({
                             <div className="config-group__sync-controls">
                                 <ConfigToggle
                                     id="google-sync-toggle"
-<<<<<<< HEAD
-                                    label={
-                                        <span className="config-field__label-with-icon">
-                                            <Icon 
-                                                name={settings.google_sync_enabled === 'false' ? 'CANCEL' : 'CONFIRMED'} 
-                                                size="1rem" 
-                                                className="config-field__label-icon"
-                                            />
-                                            {settings.google_sync_enabled === 'false' ? 'Sincronización PAUSADA' : 'Sincronización ACTIVA'}
-                                        </span>
-                                    }
-=======
                                     label={settings.google_sync_enabled === 'false' ? 'Sincronización PAUSADA' : 'Sincronización ACTIVA'}
->>>>>>> main
                                     checked={settings.google_sync_enabled !== 'false'}
                                     onChange={(val) => updateSetting('google_sync_enabled', val ? 'true' : 'false')}
                                 />
@@ -75,27 +58,12 @@ const IntegrationGoogleCalendar = ({
                     {!googleUnlinked ? (
                         <div className="config-group__items">
                             <div className="config-actions">
-<<<<<<< HEAD
-                                <Button 
-                                    variant="secondary" 
-                                    onClick={onRefreshToken}
-                                    icon={<Icon name="SYNC" />}
-                                >
-                                    Refrescar Enlace
-                                </Button>
-                                <Button 
-                                    variant="danger" 
-                                    onClick={onDisconnectGoogle}
-                                    icon={<Icon name="CANCEL" />}
-                                >
-=======
                                 <Button variant="secondary" onClick={onRefreshToken}>
                                     <Icon name="sync" className="mr-1" />
                                     Refrescar Enlace
                                 </Button>
                                 <Button variant="danger" onClick={onDisconnectGoogle}>
                                     <Icon name="close" className="mr-1" />
->>>>>>> main
                                     Desconectar Cuenta
                                 </Button>
                             </div>
@@ -110,12 +78,8 @@ const IntegrationGoogleCalendar = ({
                                     onClick={onRetryGoogle}
                                     disabled={loading}
                                     className="config-actions--mt-05"
-                                    icon={<Icon name="SYNC" />}
                                 >
-<<<<<<< HEAD
-=======
                                     <Icon name="bolt" className="mr-1" />
->>>>>>> main
                                     Reintentar Elementos Fallidos
                                 </Button>
                             </Alert>

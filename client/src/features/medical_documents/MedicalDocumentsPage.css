@@ -2,19 +2,11 @@
 
 /* Include all styles from the original MedicalDocuments.css */
 @media print {
-<<<<<<< HEAD
-    #root .no-print {
-        display: none;
-    }
-
-    #root .medical-documents__print-container {
-=======
     .no-print {
         display: none;
     }
 
     .medical-documents__print-container {
->>>>>>> main
         display: block;
     }
 }
@@ -57,18 +49,4 @@
 .print-table th {
     background-color: var(--gray-100);
     font-weight: bold;
-}
-
-.print-table__cell--bold {
-    font-weight: 700;
-}
-
-.print-table__cell--mono {
-    font-family: monospace;
-}
-
-.print-table__cell--muted {
-    color: var(--gray-500);
-    font-style: italic;
-    font-size: 0.65rem;
 }

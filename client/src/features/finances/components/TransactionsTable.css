@@ -98,6 +98,13 @@
     vertical-align: middle;
 }
 
+.transactions-table__row--grouped {
+    background-color: var(--ledger-group-bg);
+}
+
+.transactions-table__row:hover:not(.transactions-table__row--grouped) td {
+    background-color: var(--ledger-row-hover);
+}
 
 .transactions-table__date {
     font-weight: 700;
@@ -148,9 +155,6 @@
     padding-right: 1.5rem;
 }
 
-<<<<<<< HEAD
-
-=======
 .transactions-table__cell--center {
     text-align: center;
 }
@@ -242,7 +246,6 @@
     justify-content: flex-end;
     gap: 0.15rem;
 }
->>>>>>> main
 
 .transactions-table__group-footer {
     background-color: var(--ledger-header-bg);

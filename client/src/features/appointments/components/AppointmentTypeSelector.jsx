@@ -11,27 +11,9 @@ const AppointmentTypeSelector = ({ type, onChange, t }) => {
 
     return (
         <div className="input-group">
-            <label className="form-label">{t('appointment_type')}</label>
+            <label className="form-label">{t('appointment_type') || 'Tipo de Turno'}</label>
             <div className="appointment-type-selector">
                 <Button
-<<<<<<< HEAD
-                    variant="ghost"
-                    active={!isVirtual}
-                    className="appointment-type-selector__btn"
-                    onClick={() => onChange('consultation')}
-                    icon={<Icon name="person" size="1.2rem" />}
-                >
-                    {t('in_person')}
-                </Button>
-                <Button
-                    variant="ghost"
-                    active={isVirtual}
-                    className="appointment-type-selector__btn"
-                    onClick={() => onChange('virtual')}
-                    icon={<Icon name="videocam" size="1.2rem" />}
-                >
-                    {t('virtual_type')}
-=======
                     type="button"
                     className={`appointment-type-selector__btn ${!isVirtual ? 'appointment-type-selector__btn--active' : ''}`}
                     onClick={() => onChange('consultation')}
@@ -48,7 +30,6 @@ const AppointmentTypeSelector = ({ type, onChange, t }) => {
                 >
                     <Icon name="videocam" size="1.2rem" />
                     <span>{t('virtual_type') || 'Virtual'}</span>
->>>>>>> main
                 </Button>
             </div>
         </div>

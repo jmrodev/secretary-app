@@ -51,9 +51,6 @@
 }
 
 .appointment-card__visit-count {
-<<<<<<< HEAD
-    flex-shrink: 0;
-=======
     font-size: 0.95rem;
     padding: 0.25rem 0.75rem;
     font-weight: 800;
@@ -65,9 +62,7 @@
     background-color: var(--emerald-50);
     border: 1px solid var(--emerald-200);
     color: var(--emerald-700);
->>>>>>> main
     white-space: nowrap;
-    gap: 0.3rem;
 }
 
 .appointment-card__phone { font-size: 10px; color: var(--indigo-600); font-weight: 500; text-decoration: none; width: fit-content; }
@@ -94,15 +89,12 @@
 .appt-status__amount--paid { color: var(--emerald-600); }
 .appt-status__amount--debt { color: var(--rose-600); }
 
-.appt-status__bonified {
-    color: var(--blue-600);
-    text-transform: uppercase;
-    font-size: 10px;
+.appointment-card__status-chip {
+    font-size: 10px; padding: 2px 8px; border-radius: 9999px; margin-top: 4px;
+    font-weight: 600; text-transform: capitalize; border: 1px solid currentColor;
 }
-
-.appt-status__icon--blue {
-    color: var(--blue-500);
-}
+.appointment-card__status-chip--confirmed { color: var(--blue-600); background: var(--blue-50); }
+.appointment-card__status-chip--completed { color: var(--green-600); background: var(--green-50); }
 
 .appointment-card__actions { display: flex; gap: 0.25rem; }
 .appointment-card__action-btn:hover {

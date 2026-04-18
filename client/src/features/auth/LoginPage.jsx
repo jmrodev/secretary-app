@@ -1,10 +1,5 @@
 import React from 'react';
-<<<<<<< HEAD
-import { LoginForm } from './index';
-import './LoginPage.css';
-=======
 import { LoginForm } from '@/features/auth/index';
->>>>>>> main
 
 /**
  * LoginPage (Orchestrator).
@@ -12,12 +7,9 @@ import { LoginForm } from '@/features/auth/index';
  */
 const LoginPage = () => {
     return (
-        <main className="login-page login-page--hero animate-fadeIn">
-            <div className="login-page__overlay"></div>
-            <div className="login-page__content">
-                <LoginForm />
-            </div>
-        </main>
+        <div className="login-page-orchestrator animate-fadeIn">
+            <LoginForm />
+        </div>
     );
 };
 

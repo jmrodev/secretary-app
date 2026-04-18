@@ -1,13 +1,7 @@
 import React from 'react';
 import AutoTextarea from '@/components/atoms/AutoTextarea';
-<<<<<<< HEAD
-import ConfigField from './ConfigField';
-import Button from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-=======
 import Button from '@/components/atoms/Button';
 import ConfigField from '@/features/config/components/ConfigField';
->>>>>>> main
 import './MessageTemplateEditor.css';
 
 /**
@@ -67,8 +61,7 @@ const MessageTemplateEditor = ({
                     {variables.map(v => (
                         <Button
                             key={v}
-                            variant="ghost"
-                            size="sm"
+                            type="button"
                             className="message-template-editor__variable-btn"
                             onClick={() => insertVariable(id, v, settingKey)}
                             title={t('insert_variable_title').replace('{variable}', v)}
@@ -86,7 +79,7 @@ const MessageTemplateEditor = ({
                     <ConfigField
                         label={t('meta_template_name')}
                         type="text"
-                        placeholder={t('meta_template_name_placeholder')}
+                        placeholder="ej: reminder_template"
                         value={metaTemplateName || ''}
                         onChange={(e) => updateSetting(
                             settingKey === 'appointment_reminder_template'
@@ -100,7 +93,7 @@ const MessageTemplateEditor = ({
                         <ConfigField
                             label={t('variable_order')}
                             type="text"
-                            placeholder={t('variable_order_placeholder')}
+                            placeholder="{patient_name}, {date}..."
                             value={metaParamsOrder || ''}
                             onChange={(e) => updateSetting(
                                 settingKey === 'appointment_reminder_template'

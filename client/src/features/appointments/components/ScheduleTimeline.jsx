@@ -1,12 +1,7 @@
 import React from 'react';
-<<<<<<< HEAD
-import AppointmentCard from './AppointmentCard';
-=======
 import AppointmentCard from '@/features/appointments/components/AppointmentCard';
->>>>>>> main
 import Icon from '@/components/atoms/Icon';
 import { formatTime, isPast as checkIsPast } from '@/utils/dateUtils';
-import './ScheduleTimeline.css';
 
 /**
  * ScheduleTimeline (Executor Component).
@@ -43,15 +38,9 @@ const ScheduleTimeline = ({
                                         className={`available-slot ${isSlotClosed ? 'available-slot--closed' : ''}`}
                                         onClick={() => onSlotAction(slot)}
                                     >
-<<<<<<< HEAD
-                                        <div className="available-slot__icon">
-                                            <Icon name={isSlotClosed ? 'block' : 'add'} size="1.25rem" />
-                                        </div>
-=======
                                         <span className="available-slot__icon">
                                             <Icon name={isSlotClosed ? 'block' : 'add'} size="1rem" />
                                         </span>
->>>>>>> main
                                         <div className="available-slot__info">
                                             <span className="available-slot__time">{formatTime(slot.time)}</span>
                                             <span className="available-slot__label">

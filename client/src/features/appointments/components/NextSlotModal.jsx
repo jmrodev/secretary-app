@@ -122,12 +122,12 @@ const NextSlotModal = ({
                                                         </span>
                                                         {slot.is_break && (
                                                             <span className={`${baseClass}__slot-badge ${baseClass}__slot-badge--extra`}>
-                                                                {t('ext')}
+                                                                EXT
                                                             </span>
                                                         )}
                                                         {slot.is_out_of_hours && (
                                                             <span className={`${baseClass}__slot-badge ${baseClass}__slot-badge--out-of-hours`}>
-                                                                {t('extra')}
+                                                                EXTRA
                                                             </span>
                                                         )}
                                                     </div>
@@ -190,7 +190,7 @@ const NextSlotModal = ({
                     {hasPrevGroup && (
                         <Button 
                             variant="secondary" 
-                            className={`${baseClass}__footer-btn ${baseClass}__footer-btn--action`} 
+                            className={`${baseClass}__footer-btn`} 
                             onClick={onPrevGroup}
                         >
                             <Icon name="chevron_left" size="1.2rem" />
@@ -211,11 +211,7 @@ const NextSlotModal = ({
 
                 <div className={`${baseClass}__help-footer`}>
                     <span>{t('keyboard_nav_help')}</span>
-<<<<<<< HEAD
-                    <Button variant="ghost" onClick={onClose}>{t('close')}</Button>
-=======
                     <Button className={`${baseClass}__close-btn`} onClick={onClose} unstyled>{t('close')}</Button>
->>>>>>> main
                 </div>
             </div>
         </Modal>

@@ -25,16 +25,6 @@ const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', variant 
             >
                 <header className="modal-header">
                     <h3 className="modal-header__title">{title}</h3>
-<<<<<<< HEAD
-                    <Button 
-                        variant="ghost" 
-                        className="modal-close" 
-                        onClick={onClose} 
-                        aria-label="Close"
-                    >
-                        <Icon name="close" />
-                    </Button>
-=======
                     <Button
                         className="modal-close"
                         onClick={onClose}
@@ -42,7 +32,6 @@ const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', variant 
                         unstyled
                         icon={<Icon name="close" />}
                     />
->>>>>>> main
                 </header>
 
                 <div className="modal-body">

@@ -12,21 +12,11 @@ const RescheduleBanner = ({ rescheduleAppt, onExit, t }) => {
     return (
         <div className="reschedule-banner-container">
             <div>
-<<<<<<< HEAD
-                <Icon name="rocket_launch" size="1.2rem" />
-                {t('rescheduling_mode')}: <strong>{rescheduleAppt.patient_name}</strong>. {t('reschedule_instruction')}
-            </div>
-            <Button
-                variant="outline"
-                size="sm"
-                className="reschedule-exit-btn"
-=======
                 <Icon name="rocket_launch" size="1rem" className="mr-1" />
                 {t('rescheduling_mode')}: <strong>{rescheduleAppt.patient_name}</strong>. {t('reschedule_instruction')}
             </div>
             <Button
                 type="button" className="reschedule-exit-btn"
->>>>>>> main
                 onClick={(e) => { e.preventDefault(); onExit(); }}
                 unstyled
             >

@@ -1,14 +1,7 @@
 import React from 'react';
-<<<<<<< HEAD
-import DaySchedule from './DaySchedule.jsx';
-import HolidayList from './HolidayList.jsx';
-import Icon from '@/components/atoms/Icon';
-import { useLanguage } from '@/context/LanguageContext';
-=======
 import DaySchedule from '@/features/appointments/components/DaySchedule.jsx';
 import HolidayList from '@/features/appointments/components/HolidayList.jsx';
 import Icon from '@/components/atoms/Icon';
->>>>>>> main
 import './ScheduleSection.css';
 
 /**
@@ -20,7 +13,6 @@ const ScheduleSection = ({
     doctorSchedule = [], holidays = [], onSlotClick, onDeleteHoliday,
     onDateSelect, showOutOfHours, setShowOutOfHours, className
 }) => {
-    const { t } = useLanguage();
     const getDoctorThemeModifier = () => viewDoctorId ? `schedule-section--doctor-${Number(viewDoctorId) % 10}` : '';
     const isCalendar = activeTab === 'calendar';
     const variantClass = isCalendar ? 'schedule-section__container' : 'schedule-section__card';
@@ -37,13 +29,7 @@ const ScheduleSection = ({
                 />
             ) : (
                 <>
-<<<<<<< HEAD
-                    <h3 className="schedule-section__title">
-                        <Icon name="LOGS" /> {t('closed_days_list') || 'Lista de Días Cerrados'}
-                    </h3>
-=======
                     <h3 className="schedule-section__title"><Icon name="list" className="mr-1" />Lista de Días Cerrados</h3>
->>>>>>> main
                     <div className="schedule-section__content">
                         <HolidayList holidays={holidays} onDelete={onDeleteHoliday} />
                     </div>

@@ -1,16 +1,9 @@
 import React from 'react';
 import Modal from '@/components/molecules/Modal';
 import Button from '@/components/atoms/Button';
-<<<<<<< HEAD
-=======
 import Icon from '@/components/atoms/Icon';
->>>>>>> main
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/features/auth';
-import Select from '@/components/atoms/Select';
-import Input from '@/components/atoms/Input';
-import Switch from '@/components/atoms/Switch';
-import Icon from '@/components/atoms/Icon';
 
 import AppointmentSyncAlert from '@/features/appointments/components/AppointmentSyncAlert.jsx';
 import AppointmentTypeSelector from '@/features/appointments/components/AppointmentTypeSelector.jsx';
@@ -35,34 +28,30 @@ const AppointmentFormModal = ({
     return (
         <Modal
             isOpen={isOpen} onClose={onClose}
-            title={editModeId ? t('edit_appointment') : t('new_appointment')}
+            title={editModeId ? (t('edit_appointment') || 'Editar Turno') : t('new_appointment')}
             size="2xl"
         >
             <form onSubmit={onSubmit} id="new-appointment-form" className="appointment-form-modal" autoComplete="off">
-                <div className="appointment-form-modal__autofill-trap">
-                    <Input type="text" name="fake_user_trap_appt" tabIndex={-1} />
-                    <Input type="password" name="fake_pass_trap_appt" tabIndex={-1} />
+                <div style={{ position: 'absolute', opacity: 0, top: -1000, left: -1000, height: 0, width: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+                    <input type="text" name="fake_user_trap_appt" autoComplete="username" tabIndex={-1} />
+                    <input type="password" name="fake_pass_trap_appt" autoComplete="new-password" tabIndex={-1} />
                 </div>
-
 
                 <AppointmentSyncAlert info={syncReferenceInfo} />
 
                 <div className="input-group">
-                    <label className="form-label">{t('doctors')}</label>
+                    <label className="form-label">{t('doctors') || 'Doctor'}</label>
                     {user?.role === 'doctor' ? (
                         <div className="form-control form-control--disabled">
                             {doctors.find(d => d.id === Number(selectedDoctor))?.full_name || 'Usted'}
                         </div>
                     ) : (
-                        <Select
-                            value={selectedDoctor || ''}
-                            onChange={e => handleDoctorChange(e.target.value)}
-                            required
-                            options={[
-                                { value: '', label: t('select_doctor') },
-                                ...doctors.map(d => ({ value: d.id, label: `${d.full_name} (${d.specialty})` }))
-                            ]}
-                        />
+                        <select className="form-control" value={selectedDoctor || ''} onChange={e => handleDoctorChange(e.target.value)} required>
+                            <option value="">Seleccionar Doctor</option>
+                            {doctors.map(d => (
+                                <option key={d.id} value={d.id}>{d.full_name} ({d.specialty})</option>
+                            ))}
+                        </select>
                     )}
                 </div>
 
@@ -77,62 +66,42 @@ const AppointmentFormModal = ({
                 )}
 
                 <div className="input-group">
-                    <label className="form-label">{t('date_time')}</label>
-                    <Input type="datetime-local" value={date} onChange={e => handleDateChange(e.target.value)} required />
+                    <label className="form-label">{t('date_time') || 'Fecha y Hora'}</label>
+                    <input type="datetime-local" className="form-control" value={date} onChange={e => handleDateChange(e.target.value)} required />
                     {isOutOfHours && (
                         <div className="appointment-form-modal__extra-badge appointment-form-modal__extra-badge--pulse">
-<<<<<<< HEAD
-                            <Icon name="WARNING" size="sm" /> {t('out_of_hours_appointment')}
-=======
                             <Icon name="warning" size="1rem" className="mr-1" />
                             Turno Fuera de Horario (Extra)
->>>>>>> main
                         </div>
                     )}
                 </div>
 
                 <div className="input-group">
-                    <label className="form-label">{t('reason')}</label>
-                    <Input type="textarea" rows="3" value={reason} onChange={e => handleReasonChange(e.target.value)} required />
+                    <label className="form-label">{t('reason') || 'Motivo de Consulta'}</label>
+                    <textarea className="form-control" rows="3" value={reason} onChange={e => handleReasonChange(e.target.value)} required></textarea>
                 </div>
 
                 <div className="input-group">
-                    <label className="form-label">{t('institution')}</label>
-                    <Select
-                        value={selectedInstitution}
-                        onChange={e => handleInstitutionChange(e.target.value)}
-                        options={[
-                            {
-                                value: '',
-                                label: selectedPatientData ? `${t('patient_institution')} (${selectedPatientData.institution_name || t('none')})` : t('patient_institution')
-                            },
-                            { value: 'none', label: t('particular_no_institution') },
-                            ...institutions.map(inst => ({ value: inst.id, label: inst.name }))
-                        ]}
-                    />
+                    <label className="form-label">Obra Social / Institución</label>
+                    <select className="form-control" value={selectedInstitution} onChange={e => handleInstitutionChange(e.target.value)}>
+                        <option value="">
+                            {selectedPatientData ? `Institución del Paciente (${selectedPatientData.institution_name || 'Ninguna'})` : 'Institución del Paciente'}
+                        </option>
+                        <option value="none">Particular / Sin Institución</option>
+                        {institutions.map(inst => (
+                            <option key={inst.id} value={inst.id}>{inst.name}</option>
+                        ))}
+                    </select>
                 </div>
 
                 <div className="input-group checkbox-group">
-                    <Switch
-                        id="bonified"
-                        checked={bonified}
-                        onChange={handleBonifiedChange}
-                        label={t('bonified')}
-                    />
+                    <input type="checkbox" id="bonified" checked={bonified} onChange={e => handleBonifiedChange(e.target.checked)} className="appointment-form-modal__checkbox" />
+                    <label htmlFor="bonified" className="input-label checkbox-label">Bonificado (Sin Costo)</label>
                 </div>
 
                 <div className="form-actions">
-<<<<<<< HEAD
-                    <Button 
-                        type="submit" 
-                        variant="accent" 
-                        className="form-actions__submit"
-                    >
-                        {editModeId ? t('save_changes') : t('confirm_booking')}
-=======
                     <Button type="submit" className="btn btn-accent form-actions__submit" unstyled>
                         {editModeId ? (t('save_changes') || 'Guardar Cambios') : t('confirm_booking')}
->>>>>>> main
                     </Button>
                 </div>
             </form>

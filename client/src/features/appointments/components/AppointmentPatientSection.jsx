@@ -3,9 +3,6 @@ import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { PatientSearchSelect } from '@/features/patients';
 import { capitalizeWords } from '@/utils/stringUtils';
-import Button from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import Input from '@/components/atoms/Input';
 
 /**
  * AppointmentPatientSection Molecule (Internal to feature).
@@ -16,12 +13,12 @@ const AppointmentPatientSection = ({
 }) => {
     return (
         <div className="input-group">
-            <label className="form-label">{t('patients')}</label>
+            <label className="form-label">{t('patients') || 'Paciente'}</label>
             <PatientSearchSelect
                 value={selectedPatient}
                 selectedData={selectedPatientData}
                 autoFocus={true}
-                placeholder={t('search_patient')}
+                placeholder="Buscar Paciente..."
                 onCreatePatient={async (name) => {
                     handlePatientChange(null, { full_name: capitalizeWords(name) });
                     onOpenEditPatient();
@@ -32,29 +29,16 @@ const AppointmentPatientSection = ({
             {missingData.length > 0 && (
                 <div className="missing-data-alert">
                     <span className="missing-data-alert__text">
-<<<<<<< HEAD
-                        <Icon name="warning" size="1.2rem" />
-                        <strong>{t('missing_data_alert')}:</strong> {missingData.join(', ')}.
-                    </span>
-                    <Button
-                        variant="link"
-                        size="sm"
-=======
                         <Icon name="warning" size="1rem" className="mr-1" />
                         <strong>Datos incompletos:</strong> {missingData.join(', ')}.
                     </span>
                     <Button
                         type="button"
->>>>>>> main
                         className="missing-data-alert__action"
                         onClick={onOpenEditPatient}
                         unstyled
                     >
-<<<<<<< HEAD
-                        {t('complete')}
-=======
                         Completar
->>>>>>> main
                     </Button>
                 </div>
             )}
@@ -62,20 +46,13 @@ const AppointmentPatientSection = ({
             {selectedPatient && (
                 <div className="patient-quick-info">
                     <div className="patient-quick-info__field">
-<<<<<<< HEAD
-                        <span className="patient-quick-info__label">
-                            <Icon name="phone" size="1rem" /> {t('phone')}
-                        </span>
-                        <Input
-=======
                         <span className="patient-quick-info__label"><Icon name="phone" size="1rem" className="mr-1" />Teléfono</span>
                         <input
->>>>>>> main
                             type="text"
                             className="patient-quick-info__input"
                             value={selectedPatientData?.phone || ''}
                             onChange={e => handlePhoneChange(e.target.value)}
-                            placeholder={t('no_phone')}
+                            placeholder="Sin teléfono"
                         />
                     </div>
                 </div>
