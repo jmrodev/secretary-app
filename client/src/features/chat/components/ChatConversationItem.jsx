@@ -15,7 +15,7 @@ const ChatConversationItem = ({
     const avatarChar = (convo.other_display_name || convo.display_name || '?')[0].toUpperCase();
     const handleKeyDown = (event) => {
         if (!onClick) return;
-        if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') {
+        if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();
             onClick(event);
         }
