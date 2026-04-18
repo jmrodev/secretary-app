@@ -3,8 +3,7 @@
   "name": "secretary-app",
   "compatibility_date": "2025-01-01",
   "assets": {
-    "directory": "client/dist",
-    "binding": "ASSETS"
+    "directory": "client/dist"
   },
   "compatibility_flags": [
     "nodejs_compat"
