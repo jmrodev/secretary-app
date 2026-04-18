@@ -1,5 +1,4 @@
 import React from 'react';
-import Card from '@/components/atoms/Card';
 import Button from '@/components/atoms/Button';
 import { useLanguage } from '@/context/LanguageContext';
 import { formatDate, formatTime } from '@/utils/dateUtils';

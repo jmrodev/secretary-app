@@ -2,8 +2,6 @@ import React from 'react';
 import AsyncSelect from 'react-select/async';
 import api from '@/api/axios';
 
-import { components } from 'react-select';
-
 import { useLanguage } from '@/context/LanguageContext';
 
 const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, autoFocus = false, selectedData }) => {

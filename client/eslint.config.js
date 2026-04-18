@@ -37,7 +37,7 @@ export default defineConfig([
         args: 'none',
         ignoreRestSiblings: true,
         caughtErrors: 'none',
-        varsIgnorePattern: '^(React|use[A-Z].*|is[A-Z].*|set[A-Z].*|handle[A-Z].*|[A-Z].*|t|api|user|settings|navigate|components)$',
+        varsIgnorePattern: '^(React|use[A-Z].*|is[A-Z].*|set[A-Z].*|handle[A-Z].*|t|api|user|settings|navigate|components)$',
       }],
       'no-dupe-keys': 'error',
       'no-empty': 'warn',

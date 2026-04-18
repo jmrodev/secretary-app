@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useModal } from '@/context/ModalContext';
-import { useAuth } from '@/features/auth';
 import { financeService } from '@/services/financeService';
 import { userService } from '@/services/userService';
 import { getServiceTypes } from '@/constants/transactionOptions';
@@ -11,7 +10,6 @@ import { toInputDateTime } from '@/utils/dateUtils';
 export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, onClose) => {
     const { t } = useLanguage();
     const { alert } = useModal();
-    const { user } = useAuth();
 
     // --- State ---
     const [formData, setFormData] = useState({

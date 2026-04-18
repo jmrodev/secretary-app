@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import api from '@/api/axios';
 import { useAuth } from '@/features/auth';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -212,4 +211,3 @@ export const useMedicalDocumentsController = () => {
         handlers
     };
 };
-
