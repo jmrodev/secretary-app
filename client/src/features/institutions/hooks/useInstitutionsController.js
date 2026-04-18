@@ -6,6 +6,14 @@ import { useLanguage } from '@/context/LanguageContext';
 import { capitalizeWords } from '@/utils/stringUtils';
 import { useFetch } from '@/hooks/useFetch';
 
+const INITIAL_FORM_STATE = {
+    name: '',
+    description: '',
+    status: 'active',
+    base_price: 0,
+    phoneNumbers: []
+};
+
 export const useInstitutionsController = () => {
     const { showMessage } = useMessage();
     const { confirm } = useModal();
@@ -20,14 +28,7 @@ export const useInstitutionsController = () => {
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
 
     // Form Initial State
-    const initialFormState = {
-        name: '',
-        description: '',
-        status: 'active',
-        base_price: 0,
-        phoneNumbers: []
-    };
-    const [formData, setFormData] = useState(initialFormState);
+    const [formData, setFormData] = useState(INITIAL_FORM_STATE);
 
     // Handlers
     const handleOpenFormModal = useCallback((inst = null) => {
@@ -42,7 +43,7 @@ export const useInstitutionsController = () => {
             });
         } else {
             setEditingInstitution(null);
-            setFormData(initialFormState);
+            setFormData(INITIAL_FORM_STATE);
         }
         setIsFormModalOpen(true);
     }, []);
@@ -50,7 +51,7 @@ export const useInstitutionsController = () => {
     const handleCloseFormModal = useCallback(() => {
         setIsFormModalOpen(false);
         setEditingInstitution(null);
-        setFormData(initialFormState);
+        setFormData(INITIAL_FORM_STATE);
     }, []);
 
     const handleFormSubmit = useCallback(async (e) => {

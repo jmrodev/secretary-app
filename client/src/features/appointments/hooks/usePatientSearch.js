@@ -1,7 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useMessage } from '@/context/MessageContext';
-import { useLanguage } from '@/context/LanguageContext';
-import api from '@/api/axios';
+import { useState, useEffect } from 'react';
 import { useFetch } from '@/hooks/useFetch';
 
 /**
@@ -12,8 +9,6 @@ export const usePatientSearch = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchPatientId, setSearchPatientId] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
-    const { showMessage } = useMessage();
-    const { t } = useLanguage();
 
     // Debounce search term
     useEffect(() => {
@@ -35,8 +30,7 @@ export const usePatientSearch = () => {
     // Patient History Fetch
     const { 
         data: patientAppointments = [], 
-        loading: patientApptLoading,
-        refetch: fetchPatientAppointments
+        loading: patientApptLoading
     } = useFetch('/appointments', {
         params: { patientId: searchPatientId },
         initialData: [],

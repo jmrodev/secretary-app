@@ -52,7 +52,7 @@ export const useDashboardController = () => {
         }, 30000);
         
         return () => clearInterval(interval);
-    }, [user?.id, isPatient]);
+    }, [user, isPatient, remindersHook, statsHook]);
 
     // Action Handlers
     const handleUpdateStatus = async (id, status) => {

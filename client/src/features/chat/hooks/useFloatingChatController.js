@@ -19,7 +19,6 @@ export const useFloatingChatController = (user, showMessage) => {
     const [sending, setSending] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [isOtherTyping, setIsOtherTyping] = useState(false);
-    const [permissionGranted, setPermissionGranted] = useState(false);
 
     const scrollRef = useRef(null);
     const typingTimeoutRef = useRef(null);
@@ -62,8 +61,7 @@ export const useFloatingChatController = (user, showMessage) => {
 
     // Unread Count
     const { 
-        data: unreadData = { unread_count: 0 }, 
-        refetch: fetchUnreadCount 
+        refetch: fetchUnreadCount
     } = useFetch('/messages/unread-count', {
         initialData: { unread_count: 0 },
         immediate: !!user && user.role !== 'patient',
@@ -109,9 +107,7 @@ export const useFloatingChatController = (user, showMessage) => {
         if (!user || user.role === 'patient') return;
 
         if ("Notification" in window && Notification.permission !== "granted") {
-            Notification.requestPermission().then(permission => {
-                setPermissionGranted(permission === "granted");
-            });
+            Notification.requestPermission();
         }
 
         const interval = setInterval(() => {

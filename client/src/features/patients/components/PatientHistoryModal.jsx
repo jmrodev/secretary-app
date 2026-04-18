@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Modal from '@/components/molecules/Modal';
 import Button from '@/components/atoms/Button';
 import TabButton from '@/components/atoms/TabButton';
@@ -24,13 +24,7 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
         requests: []
     });
 
-    useEffect(() => {
-        if (isOpen && patientId) {
-            fetchHistory();
-        }
-    }, [isOpen, patientId]);
-
-    const fetchHistory = async () => {
+    const fetchHistory = useCallback(async () => {
         setLoading(true);
         try {
             const [apptRes, prescRes, licRes, reqRes] = await Promise.all([
@@ -51,7 +45,13 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [patientId]);
+
+    useEffect(() => {
+        if (isOpen && patientId) {
+            fetchHistory();
+        }
+    }, [isOpen, patientId, fetchHistory]);
 
     const formatDate = (dateStr) => {
         if (!dateStr) return '';

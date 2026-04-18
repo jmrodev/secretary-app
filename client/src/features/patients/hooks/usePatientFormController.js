@@ -87,7 +87,7 @@ export const usePatientFormController = ({
         };
 
         fetchResources();
-    }, []);
+    }, [doctors.length, insurances.length]);
 
     // Load Initial Values
     useEffect(() => {

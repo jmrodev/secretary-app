@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useFetch } from '@/hooks/useFetch';
 
 export const useDashboardStats = (isStaff = false) => {
@@ -19,8 +18,6 @@ export const useDashboardStats = (isStaff = false) => {
         params: { status: ['pending', 'consult'] }
     });
 
-    const requests = requestsData.requests || [];
-
     // Computed
     const pendingReqCount = requestsData.totalCount || 0;
 
@@ -34,4 +31,3 @@ export const useDashboardStats = (isStaff = false) => {
         fetchNewPatientStats
     };
 };
-

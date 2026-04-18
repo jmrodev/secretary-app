@@ -31,7 +31,7 @@ const FREQ_PRESETS = [
  */
 const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, t, isSubmitting }) => {
     const { showMessage } = useMessage();
-    const [medications, setMedications] = useState('');
+    const [, setMedications] = useState('');
     const [instructions, setInstructions] = useState('');
     const [items, setItems] = useState([]);
     const [patientMeds, setPatientMeds] = useState([]);

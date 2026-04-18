@@ -236,7 +236,6 @@ const generateAppointmentsPrint = (reportData, monthName, year, t) => {
 
 const generatePrescriptionsPrint = (reportData, monthName, year, t) => {
     const list = Array.isArray(reportData?.prescriptions) ? reportData.prescriptions : [];
-    const withdrawals = Array.isArray(reportData?.withdrawals) ? reportData.withdrawals : [];
     let total = 0;
 
     return `
