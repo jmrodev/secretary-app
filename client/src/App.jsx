@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
+import './App.css';
 
 // Routing Orchestrator
 import AppRouter from '@/routes/AppRouter';
@@ -24,7 +25,7 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <Toaster position="top-right" containerStyle={{ zIndex: 9999 }} />
+      <Toaster position="top-right" containerClassName="app__toaster-container" />
       <AppRouter />
       <FloatingChat />
     </ErrorBoundary>
