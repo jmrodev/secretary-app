@@ -1,5 +1,5 @@
 import React from 'react';
-import AuditLogTable from './AuditLogTable';
+import AuditLogTable from '@/features/reports/components/AuditLogTable';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Modal from '@/components/molecules/Modal';

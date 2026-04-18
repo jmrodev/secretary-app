@@ -3,9 +3,9 @@ import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Card from '@/components/atoms/Card';
 import Badge from '@/components/atoms/Badge';
-import FinanceDoctorFilter from './FinanceDoctorFilter';
-import CashBoxSummary from './CashBoxSummary';
-import FinanceFilters from './FinanceFilters';
+import FinanceDoctorFilter from '@/features/finances/components/FinanceDoctorFilter';
+import CashBoxSummary from '@/features/finances/components/CashBoxSummary';
+import FinanceFilters from '@/features/finances/components/FinanceFilters';
 import './FinanceSidebar.css';
 
 /**

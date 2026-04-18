@@ -1,8 +1,8 @@
 import React from 'react';
-import Button from '../atoms/Button';
-import ConfigField from '../molecules/ConfigField';
-import StatusIndicator from '../atoms/StatusIndicator';
-import Alert from '../atoms/Alert';
+import Button from '@/components/atoms/Button';
+import ConfigField from '@/components/molecules/ConfigField';
+import StatusIndicator from '@/components/atoms/StatusIndicator';
+import Alert from '@/components/atoms/Alert';
 
 /**
  * IntegrationRemoteAccess Molecule.

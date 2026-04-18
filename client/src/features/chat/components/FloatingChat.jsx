@@ -1,12 +1,12 @@
 import { useAuth } from '@/features/auth';
 import { useMessage } from '@/context/MessageContext';
-import { useFloatingChatController } from '../hooks/useFloatingChatController';
+import { useFloatingChatController } from '@/features/chat/hooks/useFloatingChatController';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 
 // Local Components
-import ChatThread from './ChatThread';
-import ChatList from './ChatList';
+import ChatThread from '@/features/chat/components/ChatThread';
+import ChatList from '@/features/chat/components/ChatList';
 
 import './FloatingChat.css';
 

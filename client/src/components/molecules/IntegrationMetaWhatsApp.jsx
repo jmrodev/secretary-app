@@ -1,6 +1,6 @@
 import React from 'react';
-import Button from '../atoms/Button';
-import ConfigField from '../molecules/ConfigField';
+import Button from '@/components/atoms/Button';
+import ConfigField from '@/components/molecules/ConfigField';
 
 /**
  * IntegrationMetaWhatsApp Molecule.

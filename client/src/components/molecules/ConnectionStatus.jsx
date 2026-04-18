@@ -1,6 +1,6 @@
 import React from 'react';
-import StatusIndicator from '../atoms/StatusIndicator';
-import Button from '../atoms/Button';
+import StatusIndicator from '@/components/atoms/StatusIndicator';
+import Button from '@/components/atoms/Button';
 
 import './ConnectionStatus.css';
 

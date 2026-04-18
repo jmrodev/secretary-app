@@ -1,25 +1,25 @@
 import React from 'react';
-import { useAppointmentsPageController } from './hooks/useAppointmentsPageController';
+import { useAppointmentsPageController } from '@/features/appointments/hooks/useAppointmentsPageController';
 import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
 import NavTabs from '@/components/molecules/NavTabs';
-import { DoctorFilter } from '../doctors';
+import { DoctorFilter } from '@/features/doctors';
 import Modal from '@/components/molecules/Modal';
-import { PatientManagerModal, PatientHistoryModal } from '../patients';
-import { PrescriptionModal } from '../medical_documents';
-import WhatsAppModal from '../chat/components/WhatsAppModal';
-import AdminAuthModal from '../auth/components/AdminAuthModal';
-import { TransactionModal } from '../finances';
+import { PatientManagerModal, PatientHistoryModal } from '@/features/patients';
+import { PrescriptionModal } from '@/features/medical_documents';
+import WhatsAppModal from '@/features/chat/components/WhatsAppModal';
+import AdminAuthModal from '@/features/auth/components/AdminAuthModal';
+import { TransactionModal } from '@/features/finances';
 
 // Feature Components (Executors)
-import CalendarSection from './components/CalendarSection';
-import ScheduleSection from './components/ScheduleSection';
-import RescheduleBanner from './components/RescheduleBanner';
-import AppointmentActionModal from './components/AppointmentActionModal';
-import AppointmentFormModal from './components/AppointmentFormModal';
-import PatientHistoryView from './components/PatientHistoryView';
-import UpcomingAppointmentsView from './components/UpcomingAppointmentsView';
-import NextSlotCalendarModal from './components/NextSlotCalendarModal';
+import CalendarSection from '@/features/appointments/components/CalendarSection';
+import ScheduleSection from '@/features/appointments/components/ScheduleSection';
+import RescheduleBanner from '@/features/appointments/components/RescheduleBanner';
+import AppointmentActionModal from '@/features/appointments/components/AppointmentActionModal';
+import AppointmentFormModal from '@/features/appointments/components/AppointmentFormModal';
+import PatientHistoryView from '@/features/appointments/components/PatientHistoryView';
+import UpcomingAppointmentsView from '@/features/appointments/components/UpcomingAppointmentsView';
+import NextSlotCalendarModal from '@/features/appointments/components/NextSlotCalendarModal';
 
 import './AppointmentsPage.css';
 

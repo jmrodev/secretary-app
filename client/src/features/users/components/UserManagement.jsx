@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useUsers } from '../hooks/useUsers';
+import { useUsers } from '@/features/users/hooks/useUsers';
 import { useLanguage } from '@/context/LanguageContext';
 
 // Atoms & Molecules
@@ -9,8 +9,8 @@ import Card from '@/components/atoms/Card';
 import Modal from '@/components/molecules/Modal';
 
 // Feature Components
-import UserTable from './UserTable';
-import UserForm from './UserForm';
+import UserTable from '@/features/users/components/UserTable';
+import UserForm from '@/features/users/components/UserForm';
 
 const UserManagement = ({ excludeRoles = [], role = null }) => {
     const { t } = useLanguage();

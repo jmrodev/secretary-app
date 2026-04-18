@@ -8,14 +8,14 @@ import { useModal } from '@/context/ModalContext';
 import { useConfig } from '@/context/ConfigContext';
 import { useFetch } from '@/hooks/useFetch';
 
-import { useAppointments } from './useAppointments';
-import { useHolidays } from './useHolidays';
-import { useNextFreeSlot } from './useNextFreeSlot';
-import { useAppointmentBooking } from './useAppointmentBooking';
-import { useWhatsAppUniversal } from './useWhatsAppUniversal';
-import { useGoogleEvents } from './useGoogleEvents';
-import { usePatientSearch } from './usePatientSearch';
-import { useAppointmentsHandlers } from './useAppointmentsHandlers';
+import { useAppointments } from '@/features/appointments/hooks/useAppointments';
+import { useHolidays } from '@/features/appointments/hooks/useHolidays';
+import { useNextFreeSlot } from '@/features/appointments/hooks/useNextFreeSlot';
+import { useAppointmentBooking } from '@/features/appointments/hooks/useAppointmentBooking';
+import { useWhatsAppUniversal } from '@/features/appointments/hooks/useWhatsAppUniversal';
+import { useGoogleEvents } from '@/features/appointments/hooks/useGoogleEvents';
+import { usePatientSearch } from '@/features/appointments/hooks/usePatientSearch';
+import { useAppointmentsHandlers } from '@/features/appointments/hooks/useAppointmentsHandlers';
 import { copyToClipboard } from '@/utils/clipboardUtils';
 
 /**

@@ -1,6 +1,6 @@
 import { useReducer, useEffect, useCallback, useMemo } from 'react';
-import { authService } from './authService';
-import { authReducer, initialState, TOKEN_KEY, USER_KEY } from './authReducer';
+import { authService } from '@/features/auth/authService';
+import { authReducer, initialState, TOKEN_KEY, USER_KEY } from '@/features/auth/authReducer';
 
 export const useAuthLogic = () => {
     const [state, dispatch] = useReducer(authReducer, initialState);

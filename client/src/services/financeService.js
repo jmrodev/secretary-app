@@ -1,4 +1,4 @@
-import api from '../api/axios';
+import api from '@/api/axios';
 
 export const financeService = {
     getPricing: async (doctorId, patientId, serviceType) => {

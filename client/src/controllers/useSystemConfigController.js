@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '../features/auth';
-import { useLanguage } from '../context/LanguageContext';
-import { useMessage } from '../context/MessageContext';
-import { useModal } from '../context/ModalContext';
-import { useConfig } from '../context/ConfigContext';
-import api from '../api/axios';
+import { useAuth } from '@/features/auth';
+import { useLanguage } from '@/context/LanguageContext';
+import { useMessage } from '@/context/MessageContext';
+import { useModal } from '@/context/ModalContext';
+import { useConfig } from '@/context/ConfigContext';
+import api from '@/api/axios';
 import { useLocation } from 'react-router-dom';
 
 /**

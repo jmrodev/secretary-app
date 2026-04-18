@@ -1,7 +1,7 @@
 import React from 'react';
-import { useAuth } from '../auth';
+import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/context/LanguageContext';
-import { MedicalRequirementManager } from './index';
+import { MedicalRequirementManager } from '@/features/medical_documents/index';
 import MainLayout from '@/components/templates/MainLayout';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';

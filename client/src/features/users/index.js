@@ -3,11 +3,11 @@
 // Managing administrators, secretaries, and doctors accounts
 
 // Controllers and Hooks
-export { useUsers, useDoctors } from './hooks/useUsers';
+export { useUsers, useDoctors } from '@/features/users/hooks/useUsers';
 
 // Components
-export { default as AdminUsersPage } from './AdminUsersPage';
-export { default as UserManager } from './components/UserManager';
-export { default as UserManagement } from './components/UserManagement';
-export { default as UserTable } from './components/UserTable';
-export { default as UserForm } from './components/UserForm';
+export { default as AdminUsersPage } from '@/features/users/AdminUsersPage';
+export { default as UserManager } from '@/features/users/components/UserManager';
+export { default as UserManagement } from '@/features/users/components/UserManagement';
+export { default as UserTable } from '@/features/users/components/UserTable';
+export { default as UserForm } from '@/features/users/components/UserForm';

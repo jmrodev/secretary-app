@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import Button from './Button';
+import Button from '@/components/atoms/Button';
 import './LanguageSelector.css';
 
 /**

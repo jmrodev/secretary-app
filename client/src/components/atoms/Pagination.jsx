@@ -1,6 +1,6 @@
 import React from 'react';
-import Button from './Button';
-import Icon from './Icon';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import './Pagination.css';
 
 const Pagination = ({ currentPage, totalPages, onPageChange, t }) => {

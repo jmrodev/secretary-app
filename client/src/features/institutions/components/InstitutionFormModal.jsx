@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from '@/components/molecules/Modal';
-import InstitutionForm from './InstitutionForm';
+import InstitutionForm from '@/features/institutions/components/InstitutionForm';
 
 const InstitutionFormModal = ({ isOpen, onClose, onSubmit, formData, onChange, isEditing, t }) => {
     return (

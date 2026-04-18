@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
-import ConfigField from './ConfigField';
+import ConfigField from '@/features/config/components/ConfigField';
 import Select from '@/components/atoms/Select';
 import StatusIndicator from '@/components/atoms/StatusIndicator';
 import Alert from '@/components/atoms/Alert';

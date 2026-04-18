@@ -1,5 +1,5 @@
 import React from 'react';
-import MedicationAutocomplete from './MedicationAutocomplete';
+import MedicationAutocomplete from '@/features/medical_documents/components/MedicationAutocomplete';
 import Input from '@/components/atoms/Input';
 import Tooltip from '@/components/atoms/Tooltip';
 import Button from '@/components/atoms/Button';

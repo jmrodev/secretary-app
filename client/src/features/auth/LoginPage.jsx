@@ -1,5 +1,5 @@
 import React from 'react';
-import { LoginForm } from './index';
+import { LoginForm } from '@/features/auth/index';
 
 /**
  * LoginPage (Orchestrator).

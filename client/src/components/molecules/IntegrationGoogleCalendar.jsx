@@ -1,9 +1,9 @@
 import React from 'react';
-import Button from '../atoms/Button';
-import StatusIndicator from '../atoms/StatusIndicator';
-import ConfigToggle from '../molecules/ConfigToggle';
-import ConfigField from '../molecules/ConfigField';
-import Alert from '../atoms/Alert';
+import Button from '@/components/atoms/Button';
+import StatusIndicator from '@/components/atoms/StatusIndicator';
+import ConfigToggle from '@/components/molecules/ConfigToggle';
+import ConfigField from '@/components/molecules/ConfigField';
+import Alert from '@/components/atoms/Alert';
 
 /**
  * IntegrationGoogleCalendar Molecule.

@@ -1,5 +1,5 @@
 import React from 'react';
-import CalendarDayIndicator from './CalendarDayIndicator';
+import CalendarDayIndicator from '@/features/appointments/components/CalendarDayIndicator';
 import './CalendarDayCell.css';
 
 /**

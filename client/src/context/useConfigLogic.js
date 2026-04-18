@@ -1,5 +1,5 @@
 import { useReducer, useEffect, useCallback, useMemo } from 'react';
-import api from '../api/axios';
+import api from '@/api/axios';
 
 const initialState = {
     settings: {

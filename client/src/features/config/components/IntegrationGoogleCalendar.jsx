@@ -1,8 +1,8 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import StatusIndicator from '@/components/atoms/StatusIndicator';
-import ConfigToggle from './ConfigToggle';
-import ConfigField from './ConfigField';
+import ConfigToggle from '@/features/config/components/ConfigToggle';
+import ConfigField from '@/features/config/components/ConfigField';
 import Alert from '@/components/atoms/Alert';
 
 /**

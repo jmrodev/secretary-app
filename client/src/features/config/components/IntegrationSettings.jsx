@@ -1,9 +1,9 @@
 import React from 'react';
 
 // Feature Molecules
-import IntegrationGoogleCalendar from './IntegrationGoogleCalendar';
-import IntegrationMetaWhatsApp from './IntegrationMetaWhatsApp';
-import IntegrationRemoteAccess from './IntegrationRemoteAccess';
+import IntegrationGoogleCalendar from '@/features/config/components/IntegrationGoogleCalendar';
+import IntegrationMetaWhatsApp from '@/features/config/components/IntegrationMetaWhatsApp';
+import IntegrationRemoteAccess from '@/features/config/components/IntegrationRemoteAccess';
 
 /**
  * IntegrationSettings Feature Organism.

@@ -8,7 +8,7 @@ import {
     MedicalActionModals,
     DocumentsHeader,
     DocumentsSidebar
-} from './index'; // Using local index for feature components
+} from '@/features/medical_documents/index'; // Using local index for feature components
 
 // Global Atomic Components
 import MainLayout from '@/components/templates/MainLayout';

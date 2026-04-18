@@ -14,11 +14,11 @@ import { formatDate } from '@/utils/dateUtils';
 import './MedicalRequestForm.css';
 
 // Hooks
-import { useMedicalRequest } from '../hooks/useMedicalRequest';
+import { useMedicalRequest } from '@/features/medical_documents/hooks/useMedicalRequest';
 
 // Sub-components
-import PrescriptionForm from './PrescriptionForm';
-import SimpleRequestForm from './SimpleRequestForm';
+import PrescriptionForm from '@/features/medical_documents/components/PrescriptionForm';
+import SimpleRequestForm from '@/features/medical_documents/components/SimpleRequestForm';
 
 /**
  * MedicalRequestForm Organism (Feature-based).

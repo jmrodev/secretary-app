@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import Button from '../atoms/Button';
-import Icon from '../atoms/Icon';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import './PhoneNumbersManager.css';
 
 /**

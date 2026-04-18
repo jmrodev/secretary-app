@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import api from '../api/axios';
+import api from '@/api/axios';
 
 /**
  * Custom hook to handle medication autocomplete logic.

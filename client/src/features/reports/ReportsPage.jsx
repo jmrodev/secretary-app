@@ -1,7 +1,7 @@
 import React from 'react';
 import MainLayout from '@/components/templates/MainLayout';
-import { useReportsController } from './hooks/useReportsController';
-import ReportsDashboard from './components/ReportsDashboard';
+import { useReportsController } from '@/features/reports/hooks/useReportsController';
+import ReportsDashboard from '@/features/reports/components/ReportsDashboard';
 
 /**
  * ReportsPage (Orchestrator).

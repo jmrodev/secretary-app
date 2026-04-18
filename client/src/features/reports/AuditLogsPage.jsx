@@ -1,6 +1,6 @@
 import React from 'react';
-import { useAuditLogsController } from './hooks/useAuditLogsController';
-import AuditLogManager from './components/AuditLogManager';
+import { useAuditLogsController } from '@/features/reports/hooks/useAuditLogsController';
+import AuditLogManager from '@/features/reports/components/AuditLogManager';
 
 import MainLayout from '@/components/templates/MainLayout';
 
