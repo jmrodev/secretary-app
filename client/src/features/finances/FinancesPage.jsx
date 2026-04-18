@@ -43,7 +43,6 @@ const FinancesPage = () => {
 
     return (
         <MainLayout wide>
-        <MainLayout wide>
             <main className="finances-page">
                 <PageHeader 
                     variant="premium"
@@ -148,7 +147,7 @@ const FinancesPage = () => {
                 onResetDay={handlers.handleResetDay}
                 t={t}
             />
-        </div>
+            </main>
         </MainLayout>
     );
 };
