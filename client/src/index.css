@@ -1,0 +1,194 @@
+@import './styles/variables.css';
+@import './styles/base.css';
+@import './styles/utilities.css';
+@import './styles/layout.css';
+@import './styles/layout-dashboard.css';
+@import './styles/components.css';
+
+/* =========================================
+   GLOBAL LEGACY STYLES (To be refactored)
+   ========================================= */
+
+.type-chip-link {
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.type-chip-link:hover {
+  opacity: 0.85;
+}
+
+/* Autocomplete / Dropdown Utilities */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  box-shadow: var(--shadow-lg);
+  color: var(--text-main);
+}
+
+.dropdown-item {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  border-bottom: 1px solid var(--gray-50);
+  font-size: 0.9rem;
+}
+
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.dropdown-item:hover {
+  background-color: var(--blue-50);
+}
+
+/* Doctor Theming Colors (Global variables) */
+.doctor-color-0 {
+  --doc-bg: rgba(75, 85, 99, 0.15);
+  --doc-border: rgba(75, 85, 99, 0.25);
+  --doc-text: #374151;
+  --doc-accent: #1f2937;
+}
+
+.doctor-color-1 {
+  --doc-bg: rgba(59, 130, 246, 0.15);
+  --doc-border: rgba(59, 130, 246, 0.3);
+  --doc-text: #2563eb;
+  --doc-accent: #1d4ed8;
+}
+
+.doctor-color-2 {
+  --doc-bg: rgba(16, 185, 129, 0.15);
+  --doc-border: rgba(16, 185, 129, 0.3);
+  --doc-text: #059669;
+  --doc-accent: #047857;
+}
+
+.doctor-color-3 {
+  --doc-bg: rgba(245, 158, 11, 0.15);
+  --doc-border: rgba(245, 158, 11, 0.3);
+  --doc-text: #d97706;
+  --doc-accent: #b45309;
+}
+
+.doctor-color-4 {
+  --doc-bg: rgba(139, 92, 246, 0.15);
+  --doc-border: rgba(139, 92, 246, 0.3);
+  --doc-text: #7c3aed;
+  --doc-accent: #6d28d9;
+}
+
+.doctor-color-5 {
+  --doc-bg: rgba(236, 72, 153, 0.15);
+  --doc-border: rgba(236, 72, 153, 0.3);
+  --doc-text: #db2777;
+  --doc-accent: #be185d;
+}
+
+.doctor-color-6 {
+  --doc-bg: rgba(14, 165, 233, 0.15);
+  --doc-border: rgba(14, 165, 233, 0.3);
+  --doc-text: #0284c7;
+  --doc-accent: #0369a1;
+}
+
+
+/* Doctor Theming Colors (Global variables) */
+.doctor-color-7 {
+  --doc-bg: rgba(234, 179, 8, 0.15);
+  --doc-border: rgba(234, 179, 8, 0.3);
+  --doc-text: #ca8a04;
+  --doc-accent: #a16207;
+}
+
+.doctor-color-8 {
+  --doc-bg: rgba(99, 102, 241, 0.15);
+  --doc-border: rgba(99, 102, 241, 0.3);
+  --doc-text: #4f46e5;
+  --doc-accent: #4338ca;
+}
+
+.doctor-color-9 {
+  --doc-bg: rgba(20, 184, 166, 0.15);
+  --doc-border: rgba(20, 184, 166, 0.3);
+  --doc-text: #0d9488;
+  --doc-accent: #0f766e;
+}
+
+.doctor-themed-bg {
+  background-color: var(--doc-bg);
+  border-color: var(--doc-border);
+}
+
+.doctor-themed-text {
+  color: var(--doc-text);
+}
+
+.doctor-themed-accent {
+  background-color: var(--doc-accent);
+  color: white;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes modal-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Base Form Tags (Retro-compatibility if atoms not used) */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--gray-100);
+  color: var(--gray-600);
+}
+
+.tag-completed {
+  background: var(--green-100);
+  color: var(--green-700);
+}
+
+.tag-rejected {
+  background: var(--red-100);
+  color: var(--red-700);
+}
+
+.tag-pending {
+  background: var(--amber-100);
+  color: var(--amber-700);
+}
