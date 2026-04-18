@@ -3,6 +3,7 @@ import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import Input from '@/components/atoms/Input';
 import ChatMessageBubble from '@/features/chat/components/ChatMessageBubble';
+import { useLanguage } from '@/context/LanguageContext';
 
 /**
  * ChatThread Molecule (Feature Component).
@@ -21,11 +22,13 @@ const ChatThread = ({
     handleTyping,
     handleSendMessage
 }) => {
+    const { t } = useLanguage();
+
     return (
         <>
             <div className="floating-chat__messages" ref={scrollRef}>
                 {loading && thread.length === 0 ? (
-                    <p className="floating-chat__loading-text">{t ? t('loading') : 'Cargando...'}</p>
+                    <p className="floating-chat__loading-text">{t('loading')}</p>
                 ) : (
                     thread.map(msg => (
                         <ChatMessageBubble

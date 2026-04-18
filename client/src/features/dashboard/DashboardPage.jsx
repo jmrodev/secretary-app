@@ -19,7 +19,6 @@ import AppointmentActionModal from '@/features/appointments/components/Appointme
 import MainLayout from '@/components/templates/MainLayout';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import Badge from '@/components/atoms/Badge';
 import Loading from '@/components/atoms/Loading';
 
 import './DashboardPage.css';
@@ -32,7 +31,7 @@ const DashboardPage = () => {
     const controller = useDashboardController();
     const {
         user, t,
-        stats, newPatientStats, reminders, pendingReqCount, activeTab,
+        stats, newPatientStats, reminders, activeTab,
         actionModal,
         historyModal,
         prescribeModal,
@@ -71,11 +70,11 @@ const DashboardPage = () => {
         navigate
     } = handlers;
 
+    const [showMobileSidebar, setShowMobileSidebar] = React.useState(false);
+
     if (!user) {
         return <Loading variant="full-page" />;
     }
-
-    const [showMobileSidebar, setShowMobileSidebar] = React.useState(false);
 
     return (
         <MainLayout wide>
