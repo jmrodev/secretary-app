@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import StatusIndicator from '@/components/atoms/StatusIndicator';
 import ConfigToggle from './ConfigToggle';
 import ConfigField from './ConfigField';
@@ -25,7 +26,7 @@ const IntegrationGoogleCalendar = ({
     return (
         <div className="config-section animate-fadeIn">
             <div className="config-section__header">
-                <span className="config-section__icon">📅</span>
+                <span className="config-section__icon"><Icon name="calendar_today" /></span>
                 <h2 className="config-section__title">Integración con Google Calendar</h2>
             </div>
 
@@ -43,7 +44,7 @@ const IntegrationGoogleCalendar = ({
                             <div className="config-group__sync-controls">
                                 <ConfigToggle
                                     id="google-sync-toggle"
-                                    label={settings.google_sync_enabled === 'false' ? '⏸️ Sincronización PAUSADA' : '✅ Sincronización ACTIVA'}
+                                    label={settings.google_sync_enabled === 'false' ? 'Sincronización PAUSADA' : 'Sincronización ACTIVA'}
                                     checked={settings.google_sync_enabled !== 'false'}
                                     onChange={(val) => updateSetting('google_sync_enabled', val ? 'true' : 'false')}
                                 />
@@ -58,10 +59,12 @@ const IntegrationGoogleCalendar = ({
                         <div className="config-group__items">
                             <div className="config-actions">
                                 <Button variant="secondary" onClick={onRefreshToken}>
-                                    🔄 Refrescar Enlace
+                                    <Icon name="sync" className="mr-1" />
+                                    Refrescar Enlace
                                 </Button>
                                 <Button variant="danger" onClick={onDisconnectGoogle}>
-                                    ❌ Desconectar Cuenta
+                                    <Icon name="close" className="mr-1" />
+                                    Desconectar Cuenta
                                 </Button>
                             </div>
 
@@ -76,7 +79,8 @@ const IntegrationGoogleCalendar = ({
                                     disabled={loading}
                                     className="config-actions--mt-05"
                                 >
-                                    ⚡ Reintentar Elementos Fallidos
+                                    <Icon name="bolt" className="mr-1" />
+                                    Reintentar Elementos Fallidos
                                 </Button>
                             </Alert>
 
@@ -112,4 +116,3 @@ const IntegrationGoogleCalendar = ({
 };
 
 export default IntegrationGoogleCalendar;
-

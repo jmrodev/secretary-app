@@ -1,4 +1,6 @@
 import React from 'react';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 
 /**
  * RescheduleBanner (Executor Component).
@@ -10,14 +12,16 @@ const RescheduleBanner = ({ rescheduleAppt, onExit, t }) => {
     return (
         <div className="reschedule-banner-container">
             <div>
-                🚀 {t('rescheduling_mode')}: <strong>{rescheduleAppt.patient_name}</strong>. {t('reschedule_instruction')}
+                <Icon name="rocket_launch" size="1rem" className="mr-1" />
+                {t('rescheduling_mode')}: <strong>{rescheduleAppt.patient_name}</strong>. {t('reschedule_instruction')}
             </div>
-            <button
+            <Button
                 type="button" className="reschedule-exit-btn"
                 onClick={(e) => { e.preventDefault(); onExit(); }}
+                unstyled
             >
                 {t('exit_reschedule')}
-            </button>
+            </Button>
         </div>
     );
 };

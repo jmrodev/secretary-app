@@ -58,7 +58,7 @@ const MedicationInputSection = ({
                         </label>
                         <div className={`${baseClass}__freq-presets`}>
                             {freqPresets.map((p, idx) => (
-                                <button
+                                <Button
                                     key={idx}
                                     type="button"
                                     className={`${baseClass}__freq-btn ${tempFreqPreset === idx ? `${baseClass}__freq-btn--active` : ''}`}
@@ -67,9 +67,10 @@ const MedicationInputSection = ({
                                         setTempFreq(p.text);
                                         if (p.unitsPerDay !== null) setTempDailyUnits(String(p.unitsPerDay));
                                     }}
+                                    unstyled
                                 >
                                     {p.label}
-                                </button>
+                                </Button>
                             ))}
                         </div>
                     </div>

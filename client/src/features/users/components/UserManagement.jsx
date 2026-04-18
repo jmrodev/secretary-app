@@ -5,6 +5,7 @@ import { useLanguage } from '@/context/LanguageContext';
 // Atoms & Molecules
 import Button from '@/components/atoms/Button';
 import Card from '@/components/atoms/Card';
+import Icon from '@/components/atoms/Icon';
 import Modal from '@/components/molecules/Modal';
 
 // Feature Components
@@ -84,7 +85,7 @@ const UserManagement = ({ excludeRoles = [], role = null }) => {
             <section className="action-bar">
                 <div className="action-bar__search">
                     <div className="search-box__wrapper">
-                        <span className="search-box__icon">🔍</span>
+                        <span className="search-box__icon"><Icon name="search" /></span>
                         <input
                             type="text"
                             placeholder={t('search_users_placeholder')}
@@ -95,9 +96,9 @@ const UserManagement = ({ excludeRoles = [], role = null }) => {
                     </div>
                 </div>
                 <div className="action-bar__tools">
-                    <Button variant="ghost" onClick={loadData}>🔄</Button>
+                    <Button variant="ghost" onClick={loadData} icon={<Icon name="sync" />} />
                     <Button variant="primary" onClick={() => openModal('CREATE')}>
-                        ✨ {t('new') || 'Nuevo'}
+                        <Icon name="auto_awesome" size="1rem" /> {t('new') || 'Nuevo'}
                     </Button>
                 </div>
             </section>

@@ -101,7 +101,7 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
         return (
             <div className="institution-finances">
                 <div className="institution-finances__empty-state">
-                    <span className="institution-finances__empty-icon">🏥</span>
+                    <span className="institution-finances__empty-icon"><Icon name="local_hospital" size="2rem" /></span>
                     <p className="institution-finances__empty-text">
                         {t('select_institution_desc') || 'Seleccioná una institución del panel izquierdo'}
                     </p>

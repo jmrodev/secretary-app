@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 
 /**
  * ScheduleBulkActions Feature Molecule.
@@ -10,7 +11,7 @@ const ScheduleBulkActions = ({ bulkStart, setBulkStart, bulkEnd, setBulkEnd, onA
     return (
         <div className="schedule-bulk p-6 bg-slate-50 border border-slate-100 rounded-sm mb-8 animate-fadeIn">
             <h4 className="schedule-bulk__title text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
-                <span className="text-lg">🗓️</span>
+                <span className="text-lg"><Icon name="calendar_month" size="1.2rem" /></span>
                 Aplicar a múltiples días (Sobrescribe horarios)
             </h4>
             <div className="schedule-bulk__actions flex flex-wrap items-center gap-6">

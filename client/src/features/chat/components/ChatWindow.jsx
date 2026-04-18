@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import './ChatWindow.css';
 
 /**
@@ -30,7 +31,7 @@ const ChatWindow = ({
     if (!selectedConvo) {
         return (
             <section className="chat-main chat-main--empty">
-                <div className="chat-main__empty-icon">💬</div>
+                <div className="chat-main__empty-icon"><Icon name="chat" size="2rem" /></div>
                 <h2 className="chat-main__empty-title">Tus Mensajes</h2>
                 <p className="chat-main__empty-text">Selecciona una conversación de la lista para empezar a chatear o busca un contacto para iniciar un nuevo chat.</p>
             </section>
@@ -58,7 +59,7 @@ const ChatWindow = ({
                     </div>
                 ) : thread.length === 0 ? (
                     <div className="chat-messages--empty">
-                        <div className="chat-messages__empty-icon">👋</div>
+                        <div className="chat-messages__empty-icon"><Icon name="waving_hand" size="2rem" /></div>
                         <p>¡Dile hola!</p>
                     </div>
                 ) : (
@@ -92,7 +93,7 @@ const ChatWindow = ({
                         disabled={sending || !messageText.trim()}
                         variant="primary"
                     >
-                        {sending ? <div className="loading-spinner"></div> : '➤'}
+                        {sending ? <div className="loading-spinner"></div> : <Icon name="send" size="1.1rem" />}
                     </Button>
                 </form>
             </footer>

@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import ConfigField from './ConfigField';
 import Select from '@/components/atoms/Select';
 
@@ -13,7 +14,7 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
     return (
         <div className="config-section animate-fadeIn">
             <div className="config-section__header">
-                <span className="config-section__icon">🌐</span>
+                <span className="config-section__icon"><Icon name="language" /></span>
                 <h3 className="config-section__title">Acceso Remoto (Internet)</h3>
             </div>
 
@@ -70,15 +71,16 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
                                 variant="secondary"
                                 onClick={onRefreshTunnel}
                                 disabled={loading || !settings.duckdns_domain || !settings.duckdns_token}
+                                icon={<Icon name="sync" />}
                             >
-                                🔄 Renovar IP
+                                Renovar IP
                             </Button>
                         </div>
 
                         <div className="config-section__divider"></div>
 
                         <div className="config-guide">
-                            <h4 className="config-guide__title">📖 Guía de Configuración DuckDNS</h4>
+                            <h4 className="config-guide__title"><Icon name="menu_book" className="mr-1" />Guía de Configuración DuckDNS</h4>
                             <ol className="config-guide__list">
                                 <li>Registre un subdominio gratuito en <a href="https://www.duckdns.org" target="_blank" rel="noreferrer" className="config-link">duckdns.org</a>.</li>
                                 <li>Copie el <b>Token</b> y el <b>Subdominio</b> en los campos de arriba.</li>

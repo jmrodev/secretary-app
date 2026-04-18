@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
 import './Modal.css';
 
 const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', variant = 'light', className = '' }) => {
@@ -23,9 +25,13 @@ const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', variant 
             >
                 <header className="modal-header">
                     <h3 className="modal-header__title">{title}</h3>
-                    <button className="modal-close" onClick={onClose} aria-label="Close">
-                        &times;
-                    </button>
+                    <Button
+                        className="modal-close"
+                        onClick={onClose}
+                        aria-label="Close"
+                        unstyled
+                        icon={<Icon name="close" />}
+                    />
                 </header>
 
                 <div className="modal-body">

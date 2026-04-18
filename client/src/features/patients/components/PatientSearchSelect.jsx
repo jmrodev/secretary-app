@@ -1,6 +1,7 @@
 import React from 'react';
 import AsyncSelect from 'react-select/async';
 import api from '@/api/axios';
+import Button from '@/components/atoms/Button';
 
 import { useLanguage } from '@/context/LanguageContext';
 
@@ -59,7 +60,7 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
                         {t('no_results_for')} "{inputValue}"
                     </p>
                     {onCreatePatient && inputValue && (
-                        <button
+                        <Button
                             type="button" // Prevent form submit
                             className="btn btn-sm btn-outline-primary"
                             onMouseDown={(e) => {
@@ -67,9 +68,10 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
                                 e.stopPropagation();
                                 onCreatePatient(inputValue);
                             }}
+                            unstyled
                         >
                             {t('create_new_patient')}
-                        </button>
+                        </Button>
                     )}
                 </div>
             )}
