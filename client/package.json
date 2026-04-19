@@ -21,7 +21,7 @@
     "react-textarea-autosize": "^8.5.9"
   },
   "optionalDependencies": {
-    "@rollup/rollup-android-arm-eabi": "4.60.1",
+    "@rollup/rollup-android-arm-eabi": "4.60.2",
     "@rollup/rollup-android-arm64": "4.60.1",
     "@rollup/rollup-darwin-arm64": "4.60.1",
     "@rollup/rollup-darwin-x64": "4.60.1",
