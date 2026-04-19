@@ -109,45 +109,12 @@ const server = app.listen(PORT, '0.0.0.0', async () => {
 
         conn.release();
 
-        // --- DEBUG INJECTION WITH CATCH ---
-        const fs = require('fs');
-        const debugData = {};
-        try {
-            debugData.rRows = await pool.query(`
-                SELECT r.*, p.full_name as patient_name, d.full_name as doctor_name
-                FROM medical_requests r
-                LEFT JOIN patients p ON r.patient_id = p.id
-                LEFT JOIN doctors d ON r.doctor_id = d.id
-                WHERE DATE(r.created_at) = CURRENT_DATE()
-                OR p.full_name LIKE '%zaffora%'
-                OR p.full_name LIKE '%zafora%'
-                OR p.full_name LIKE '%emer%'
-                ORDER BY r.created_at DESC
-            `);
-        } catch (e) { debugData.rError = e.message; }
-
-        try {
-            debugData.pRows = await pool.query(`
-                SELECT id, full_name, user_id FROM patients
-                WHERE full_name LIKE '%zaffora%' OR full_name LIKE '%zafora%' OR full_name LIKE '%emer%'
-            `);
-        } catch (e) { debugData.pError = e.message; }
-
-        try {
-            fs.writeFileSync('/app/requests_today.json', JSON.stringify(debugData, null, 2));
-            console.log("=== WRITTEN TO /app/requests_today.json ===");
-        } catch (err) {
-            fs.writeFileSync('/app/debug_error2.txt', err.stack || err.message);
-        }
-        // --- END DEBUG INJECTION ---
 
         // Start Google Sync Worker
         const { startSyncWorker } = require('./services/googleSyncService');
         startSyncWorker();
 
-        // Start Remote Access Manager (Cloudflare or DuckDNS)
-        const { initRemoteAccess } = require('./utils/remoteAccessService');
-        initRemoteAccess();
+
 
     } catch (err) {
         console.error('Failed to connect to MariaDB:', err);
