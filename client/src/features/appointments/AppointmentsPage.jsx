@@ -83,56 +83,56 @@ const AppointmentsPage = () => {
                 </header>
 
                 <section className="appointments-page__body">
-                {searchPatientId ? (
-                    <section className="appointments-page__panel appointments-page__panel--agenda">
-                        <PatientHistoryView
-                            patientAppointments={patientAppointments} loading={patientApptLoading}
-                            onClose={() => setSearchPatientId('')} t={t} searchPatientId={searchPatientId} handlers={handlers}
-                        />
-                    </section>
-                ) : activeTab === 'upcoming' ? (
-                    <section className="appointments-page__panel appointments-page__panel--agenda">
-                        <UpcomingAppointmentsView
-                            appointments={filteredAppointments} loading={loading} t={t}
-                            onAction={(a) => setActionModal({ open: true, appt: a })}
-                            onWhatsApp={handlers.handleWhatsAppUniversal}
-                        />
-                    </section>
-                ) : (
-                    <section className={activeTab === 'monthly' ? 'appointments-page__grid appointments-page__grid--monthly' : 'appointments-page__grid'}>
-                        <aside className="appointments-page__sidebar">
-                            <section className="appointments-page__panel appointments-page__panel--nav">
+                    {searchPatientId ? (
+                        <section className="appointments-page__panel appointments-page__panel--agenda">
+                            <PatientHistoryView
+                                patientAppointments={patientAppointments} loading={patientApptLoading}
+                                onClose={() => setSearchPatientId('')} t={t} searchPatientId={searchPatientId} handlers={handlers}
+                            />
+                        </section>
+                    ) : activeTab === 'upcoming' ? (
+                        <section className="appointments-page__panel appointments-page__panel--agenda">
+                            <UpcomingAppointmentsView
+                                appointments={filteredAppointments} loading={loading} t={t}
+                                onAction={(a) => setActionModal({ open: true, appt: a })}
+                                onWhatsApp={handlers.handleWhatsAppUniversal}
+                            />
+                        </section>
+                    ) : (
+                        <section className={activeTab === 'monthly' ? 'appointments-page__grid appointments-page__grid--monthly' : 'appointments-page__grid'}>
+                            <aside className="appointments-page__sidebar">
+                                {/*  <section className="appointments-page__panel appointments-page__panel--nav">
                                 <NavTabs activeTab={activeTab} setActiveTab={setActiveTab} userRole={user?.role} isStaff={isStaff} isAdmin={isAdmin} />
                                 <DoctorFilter
                                     activeTab={activeTab} userRole={user?.role} isStaff={isStaff} isAdmin={isAdmin} viewDoctorId={viewDoctorId}
                                     setViewDoctorId={setViewDoctorId} doctors={doctors}
                                 />
-                            </section>
+                            </section> */}
 
-                            <section className="appointments-page__panel appointments-page__panel--calendar">
-                                <CalendarSection
-                                    activeTab={activeTab} selectedDate={selectedDate} onDateSelect={handlers.handleDateSelect}
-                                    appointments={filteredAppointments} calendarStats={calendarStats} holidays={holidays}
-                                    onAddHoliday={handlers.handleAddHoliday} showOutOfHours={showOutOfHours}
-                                    viewDoctorId={viewDoctorId} onSearchPatientId={setSearchPatientId} searchPatientId={searchPatientId}
-                                    onCreatePatient={booking.createPatient} onNextFreeSlot={handlers.openNextSlot}
-                                    onSyncDayToGoogle={() => handlers.syncDayToGoogle(viewDoctorId, selectedDate)}
-                                />
-                            </section>
-                        </aside>
+                                <section className="appointments-page__panel appointments-page__panel--calendar">
+                                    <CalendarSection
+                                        activeTab={activeTab} selectedDate={selectedDate} onDateSelect={handlers.handleDateSelect}
+                                        appointments={filteredAppointments} calendarStats={calendarStats} holidays={holidays}
+                                        onAddHoliday={handlers.handleAddHoliday} showOutOfHours={showOutOfHours}
+                                        viewDoctorId={viewDoctorId} onSearchPatientId={setSearchPatientId} searchPatientId={searchPatientId}
+                                        onCreatePatient={booking.createPatient} onNextFreeSlot={handlers.openNextSlot}
+                                        onSyncDayToGoogle={() => handlers.syncDayToGoogle(viewDoctorId, selectedDate)}
+                                    />
+                                </section>
+                            </aside>
 
-                        {activeTab !== 'monthly' && (
-                            <section className="appointments-page__panel appointments-page__panel--agenda">
-                                <ScheduleSection
-                                    activeTab={activeTab} selectedDate={selectedDate} onDateSelect={handlers.handleDateSelect}
-                                    selectedDoctor={currentDoctor} viewDoctorId={viewDoctorId} appointments={appointments}
-                                    doctorSchedule={doctorSchedule} holidays={holidays} onSlotClick={handlers.handleSlotClick}
-                                    onDeleteHoliday={handlers.handleDeleteHoliday} showOutOfHours={showOutOfHours} setShowOutOfHours={setShowOutOfHours}
-                                />
-                            </section>
-                        )}
-                    </section>
-                )}
+                            {activeTab !== 'monthly' && (
+                                <section className="appointments-page__panel appointments-page__panel--agenda">
+                                    <ScheduleSection
+                                        activeTab={activeTab} selectedDate={selectedDate} onDateSelect={handlers.handleDateSelect}
+                                        selectedDoctor={currentDoctor} viewDoctorId={viewDoctorId} appointments={appointments}
+                                        doctorSchedule={doctorSchedule} holidays={holidays} onSlotClick={handlers.handleSlotClick}
+                                        onDeleteHoliday={handlers.handleDeleteHoliday} showOutOfHours={showOutOfHours} setShowOutOfHours={setShowOutOfHours}
+                                    />
+                                </section>
+                            )}
+                        </section>
+                    )}
                 </section>
             </article>
 

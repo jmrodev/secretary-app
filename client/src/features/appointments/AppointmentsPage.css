@@ -125,6 +125,7 @@
 }
 
 .appointments-page__panel--calendar {
+    padding: 2rem;
     background: var(--appointments-surface);
 }
 
