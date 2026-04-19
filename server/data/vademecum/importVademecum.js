@@ -4,7 +4,7 @@ const csv = require('csv-parser');
 const mariadb = require('mariadb');
 const dotenv = require('dotenv');
 
-dotenv.config({ path: path.join(__dirname, '.env') });
+dotenv.config({ path: path.join(__dirname, '../../.env') });
 
 const pool = mariadb.createPool({
     host: process.env.DB_HOST || 'localhost',
@@ -21,7 +21,7 @@ async function importVademecum() {
         console.log("Connected to DB. Clearing existing vademecum data...");
         await conn.query("TRUNCATE TABLE vademecum");
 
-        const filePath = path.join(__dirname, '../vademecum_iosfa.csv');
+        const filePath = path.join(__dirname, 'vademecum_iosfa.csv');
         if (!fs.existsSync(filePath)) {
             console.error("CSV file not found:", filePath);
             return;
