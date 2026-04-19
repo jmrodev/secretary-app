@@ -105,7 +105,7 @@
     margin: 0;
 }
 
-.dashboard-page__header-actions {
+.dashboard-page-orchestrator__header-actions {
     display: flex;
     gap: 0.5rem;
     align-items: center;
@@ -131,11 +131,11 @@
     color: var(--slate-400);
 }
 
-.dashboard-page__state {
+.dashboard-page-orchestrator__state {
     padding: 0.5rem 0;
 }
 
-.dashboard-page__state-card {
+.dashboard-page-orchestrator__state-card {
     background: var(--white);
     border: 1px solid var(--gray-300);
     border-radius: 1rem;
@@ -147,13 +147,13 @@
     align-items: flex-start;
 }
 
-.dashboard-page__state-title {
+.dashboard-page-orchestrator__state-title {
     margin: 0;
     color: var(--text-main);
     font-size: 1.125rem;
 }
 
-.dashboard-page__state-message {
+.dashboard-page-orchestrator__state-message {
     margin: 0;
     color: var(--text-muted);
 }

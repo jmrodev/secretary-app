@@ -3,7 +3,8 @@ import {
     useDashboardController, 
     DashboardSidebar, 
     DashboardReminders,
-    QuickActions
+    QuickActions,
+    DashboardLayout
 } from '@/features/dashboard/index'; // Local index
 import { PageHeader } from '@/features/layout';
 import { PrescriptionModal, MedicalRequirementManager } from '@/features/medical_documents';
@@ -81,7 +82,15 @@ const DashboardPage = () => {
         return <Loading variant="full-page" />;
     }
 
-    const hasDashboardData = Boolean(stats) || Boolean(newPatientStats) || reminders.length > 0;
+    const hasLoadedStats = (
+        !loading &&
+        stats !== null &&
+        stats !== undefined &&
+        typeof stats === 'object' &&
+        Object.keys(stats).length > 0
+    );
+    const hasLoadedReminders = Array.isArray(reminders) && reminders.length > 0;
+    const hasDashboardData = hasLoadedStats || hasLoadedReminders;
     const shouldShowLoadingState = loading && !hasDashboardData;
     const shouldShowErrorState = Boolean(error) && !hasDashboardData;
 
@@ -108,40 +117,15 @@ const DashboardPage = () => {
                 />
                 <section className="layout-content-area">
                     <h2 className="visually-hidden">{t('dashboard_content')}</h2>
-                    <div className="dashboard-top-actions animate-fadeIn">
-                        <form className="dashboard-search-bar" role="search" onSubmit={handleSearchSubmit}>
-                            <Icon name="search" className="dashboard-search-bar__icon" />
-                            <input
-                                type="text"
-                                className="dashboard-search-bar__input"
-                                placeholder={t('search_placeholder')}
-                                aria-label={t('search_placeholder')}
-                            />
-                        </form>
-
-                        <Button 
-                            variant="premium" 
-                            size="sm" 
-                            onClick={() => setShowMobileSidebar(!showMobileSidebar)}
-                            className="dashboard-sidebar-toggle-mobile"
-                            title={showMobileSidebar ? t('close_panel') : t('view_metrics')}
-                        >
-                            <Icon name={showMobileSidebar ? 'expand_less' : 'analytics'} />
-                            <span className="mobile-only-label">
-                                {showMobileSidebar ? t('close_panel') : t('view_metrics')}
-                            </span>
-                        </Button>
-                    </div>
-
                     {shouldShowLoadingState ? (
-                        <section className="dashboard-page__state dashboard-page__state--loading" aria-live="polite">
+                        <section className="dashboard-page-orchestrator__state dashboard-page-orchestrator__state--loading" aria-live="polite">
                             <Loading variant="centered" text={t('loading')} />
                         </section>
                     ) : shouldShowErrorState ? (
-                        <section className="dashboard-page__state dashboard-page__state--error" aria-live="polite">
-                            <article className="dashboard-page__state-card">
-                                <h3 className="dashboard-page__state-title">{t('dashboard_error_title')}</h3>
-                                <p className="dashboard-page__state-message">{t('dashboard_error_message')}</p>
+                        <section className="dashboard-page-orchestrator__state dashboard-page-orchestrator__state--error" aria-live="polite">
+                            <article className="dashboard-page-orchestrator__state-card">
+                                <h3 className="dashboard-page-orchestrator__state-title">{t('dashboard_error_title')}</h3>
+                                <p className="dashboard-page-orchestrator__state-message">{t('dashboard_error_message')}</p>
                                 <Button variant="premium" size="sm" onClick={refreshDashboard}>
                                     <Icon name="refresh" />
                                     {t('retry')}
@@ -149,48 +133,53 @@ const DashboardPage = () => {
                             </article>
                         </section>
                     ) : (
-                    <div className={`dashboard-grid ${showMobileSidebar ? 'dashboard-grid--sidebar-visible' : ''}`}>
-                        {/* Mobile Overlay / Backdrop */}
-                        {showMobileSidebar && (
-                            <div 
-                                className="dashboard-mobile-backdrop" 
-                                onClick={() => setShowMobileSidebar(false)}
-                            />
-                        )}
-
-                        {/* Sidebar: Utils & Metrics (Drawer on Mobile) */}
-                        <aside className="dashboard-sidebar">
-                            <div className="dashboard-sidebar-mobile-header">
-                                <h3 className="dashboard-sidebar-mobile-header__title">
-                                    <Icon name="analytics" /> {t('metrics_and_tools')}
-                                </h3>
-                                <Button variant="ghost" size="sm" onClick={() => setShowMobileSidebar(false)}>
-                                    <Icon name="close" />
-                                </Button>
-                            </div>
-                            
-                            <DashboardSidebar
-                                stats={stats}
-                                newPatientStats={newPatientStats}
-                                user={user}
-                                t={t}
-                            />
-                            
-                            {/* QuickActions moved here as a support element */}
-                            {(isAdminOrSecretary || isDoctor) && (
-                                <QuickActions 
-                                    t={t} 
-                                    handlers={handlers} 
-                                    isAdmin={isAdmin} 
-                                    isSecretary={isSecretary} 
-                                    isDoctor={isDoctor} 
-                                    compact={true}
+                    <DashboardLayout
+                        t={t}
+                        showMobileSidebar={showMobileSidebar}
+                        onToggleSidebar={() => setShowMobileSidebar(!showMobileSidebar)}
+                        onCloseSidebar={() => setShowMobileSidebar(false)}
+                        searchSlot={(
+                            <form className="dashboard-search-bar" role="search" onSubmit={handleSearchSubmit}>
+                                <Icon name="search" className="dashboard-search-bar__icon" />
+                                <input
+                                    type="text"
+                                    className="dashboard-search-bar__input"
+                                    placeholder={t('search_placeholder')}
+                                    aria-label={t('search_placeholder')}
                                 />
-                            )}
-                        </aside>
+                            </form>
+                        )}
+                        sidebarSlot={(
+                            <>
+                                <div className="dashboard-sidebar-mobile-header">
+                                    <h3 className="dashboard-sidebar-mobile-header__title">
+                                        <Icon name="analytics" /> {t('metrics_and_tools')}
+                                    </h3>
+                                    <Button variant="ghost" size="sm" onClick={() => setShowMobileSidebar(false)}>
+                                        <Icon name="close" />
+                                    </Button>
+                                </div>
 
-                        {/* Main Area: Priority Content */}
-                        <section className="dashboard-main">
+                                <DashboardSidebar
+                                    stats={stats}
+                                    newPatientStats={newPatientStats}
+                                    user={user}
+                                    t={t}
+                                />
+
+                                {(isAdminOrSecretary || isDoctor) && (
+                                    <QuickActions
+                                        t={t}
+                                        handlers={handlers}
+                                        isAdmin={isAdmin}
+                                        isSecretary={isSecretary}
+                                        isDoctor={isDoctor}
+                                        compact={true}
+                                    />
+                                )}
+                            </>
+                        )}
+                        mainSlot={(
                             <article className="dashboard-card dashboard-card--no-padding dashboard-card--priority">
                                 <h3 className="visually-hidden">{t('main_dashboard_priority')}</h3>
                                 <div className="dashboard-card__content">
@@ -201,12 +190,11 @@ const DashboardPage = () => {
                                                     <Icon name="description" size="1.5rem" />
                                                     {t('pending_requests')}
                                                 </h3>
-                                                
-                                                <div className="dashboard-page__header-actions">
-                                                    {/* Secondary tab if someone really needs reminders */}
-                                                    <Button 
-                                                        variant="ghost" 
-                                                        size="sm" 
+
+                                                <div className="dashboard-page-orchestrator__header-actions">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
                                                         onClick={() => setActiveTab(activeTab === 'reminders' ? 'requirements' : 'reminders')}
                                                     >
                                                         {activeTab === 'reminders' ? t('back_to_requests') : `${t('view_reminders')} (${reminders?.length || 0})`}
@@ -234,8 +222,8 @@ const DashboardPage = () => {
                                     )}
                                 </div>
                             </article>
-                        </section>
-                    </div>
+                        )}
+                    />
                     )}
 
                     {/* Modals - Orchestrated by Dashboard Controller but located in their respective features */}
