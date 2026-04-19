@@ -1,12 +1,19 @@
 /* LoginForm Component Styles (BEM) */
 
 .auth-card {
-    background: white;
+    background: var(--white);
     padding: 3rem 2.5rem;
     border-radius: 1.5rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 24px 45px -20px rgba(15, 23, 42, 0.45);
+    border: 1px solid var(--gray-200);
     width: 100%;
+    backdrop-filter: blur(2px);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.auth-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 28px 55px -20px rgba(15, 23, 42, 0.5);
 }
 
 .auth-card__header {
@@ -37,6 +44,31 @@
     font-weight: 500;
     text-align: center;
     border: 1px solid var(--red-100);
+}
+
+.auth-card__form {
+    display: grid;
+    gap: 1rem;
+}
+
+.auth-card__form .form-group {
+    margin-bottom: 0.25rem;
+}
+
+.auth-card__form .form-group__label {
+    color: var(--gray-700);
+    font-weight: 600;
+}
+
+.auth-card__form .input {
+    border-color: var(--gray-300);
+    background-color: var(--white);
+}
+
+.auth-card__form .input:focus,
+.auth-card__form .input:focus-visible {
+    border-color: var(--blue-500);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.18);
 }
 
 .auth-card__footer {
@@ -72,5 +104,10 @@
 
 .auth-card__button--submit {
     width: 100%;
-    margin-top: 1rem;
+    margin-top: 0.5rem;
+    min-height: 2.75rem;
+}
+
+.auth-card .btn:focus-visible {
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.22);
 }

@@ -1,0 +1,7 @@
+name = "secretary-app"
+main = "./worker.js"
+compatibility_date = "2026-04-19"
+
+[assets]
+directory = "./client/dist"
+binding = "ASSETS"
