@@ -30,7 +30,7 @@ import './AppointmentsPage.css';
 const AppointmentsPage = () => {
     const controller = useAppointmentsPageController();
     const {
-        t, user, loading, activeTab, showOutOfHours,
+        t, language, user, loading, activeTab, showOutOfHours,
         viewDoctorId, doctors, institutions, selectedDate, filteredAppointments,
         appointments, doctorSchedule, holidays, calendarStats, currentDoctor,
         searchPatientId, patientAppointments, patientApptLoading,
@@ -45,7 +45,8 @@ const AppointmentsPage = () => {
         setSearchPatientId, setPaymentModal, setActionModal, setHistoryModal,
         setPrescribeModal, setEditPatientModalOpen, setAuthModalOpen
     } = handlers;
-    const formattedSelectedDate = selectedDate?.toLocaleDateString(undefined, {
+    const dateLocale = language === 'en' ? 'en-US' : 'es-AR';
+    const formattedSelectedDate = selectedDate?.toLocaleDateString(dateLocale, {
         weekday: 'long',
         day: 'numeric',
         month: 'long',

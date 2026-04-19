@@ -280,7 +280,7 @@ export const en = {
     confirm_attended: "Mark as Attended/Completed?",
     cannot_delete_attended: "Cannot delete an appointment that has been attended.",
     confirm_delete_appointment: "Are you sure? This will remove the record permanently.",
-    appointments_title: "Appointments Agenda",
+    appointments_title: "Appointment Schedule",
     appointments_subtitle: "Organize your daily schedule with calendar and day-by-day focus.",
 
     // Patients
