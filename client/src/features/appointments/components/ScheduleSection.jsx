@@ -19,7 +19,7 @@ const ScheduleSection = ({
     const themedClass = (isCalendar && viewDoctorId) ? "schedule-section__container--themed" : "";
 
     return (
-        <main className={`schedule-section ${variantClass} ${getDoctorThemeModifier()} ${themedClass} ${className || ''}`}>
+        <section className={`schedule-section ${variantClass} ${getDoctorThemeModifier()} ${themedClass} ${className || ''}`}>
             {isCalendar ? (
                 <DaySchedule
                     date={selectedDate} onDateSelect={onDateSelect}
@@ -35,7 +35,7 @@ const ScheduleSection = ({
                     </div>
                 </>
             )}
-        </main>
+        </section>
     );
 };
 

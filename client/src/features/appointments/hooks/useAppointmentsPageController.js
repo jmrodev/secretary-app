@@ -32,7 +32,7 @@ export const useAppointmentsPageController = () => {
 
     const [viewDoctorId, setViewDoctorId] = useState(location.state?.viewDoctorId || localStorage.getItem('last_selected_doctor_id') || '');
     const [selectedDate, setSelectedDate] = useState(location.state?.selectedDate ? new Date(location.state.selectedDate) : new Date());
-    const [activeTab, setActiveTab] = useState(location.state?.activeTab || 'calendar');
+    const [activeTab, setActiveTab] = useState('calendar');
     const [showOutOfHours, setShowOutOfHours] = useState(false);
     const [editPatientModalOpen, setEditPatientModalOpen] = useState(false);
     const [paymentModal, setPaymentModal] = useState({ open: false, initialData: {} });
