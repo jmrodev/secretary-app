@@ -1,0 +1,24 @@
+.dashboard-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.dashboard-layout__toolbar {
+    width: 100%;
+}
+
+.dashboard-layout__content {
+    width: 100%;
+}
+
+.dashboard-layout__backdrop {
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+.dashboard-layout__sidebar,
+.dashboard-layout__main {
+    width: 100%;
+}

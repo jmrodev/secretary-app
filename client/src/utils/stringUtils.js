@@ -1,20 +1,19 @@
-
-/**
- * Capitalizes the first letter of each word in a string.
- * @param {string} str 
- * @returns {string}
- */
-export const capitalizeWords = (str) => {
-    if (!str || typeof str !== 'string') return str;
-    return str.replace(/(^|\s)\S/g, l => l.toUpperCase());
+export const replaceTemplateVariables = (template, replacements = {}) => {
+    return Object.entries(replacements).reduce(
+        (acc, [key, value]) => acc.replaceAll(`{${key}}`, value ?? ''),
+        template
+    );
 };
 
-/**
- * Capitalizes the first letter of the string only.
- * @param {string} str 
- * @returns {string}
- */
-export const capitalizeFirst = (str) => {
-    if (!str || typeof str !== 'string') return str;
-    return str.charAt(0).toUpperCase() + str.slice(1);
+export const capitalizeFirst = (value = '') => {
+    if (!value) return '';
+    return value.charAt(0).toUpperCase() + value.slice(1);
+};
+
+export const capitalizeWords = (value = '') => {
+    return value
+        .split(' ')
+        .filter(Boolean)
+        .map(capitalizeFirst)
+        .join(' ');
 };

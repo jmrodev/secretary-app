@@ -15,7 +15,7 @@ const DashboardSidebar = ({ stats, newPatientStats, user, t }) => {
                 <section className="dashboard-sidebar__section animate-fadeIn">
                     <h4 className="dashboard-sidebar__title">
                         <Icon name="analytics" size="1rem" />
-                        {t('general_stats') || 'Estadísticas Generales'}
+                        {t('general_stats')}
                     </h4>
                     <div className="dashboard-sidebar__list">
                         <StatCard
@@ -51,7 +51,7 @@ const DashboardSidebar = ({ stats, newPatientStats, user, t }) => {
                 <section className="dashboard-sidebar__section dashboard-sidebar__section--delayed animate-fadeIn">
                     <h4 className="dashboard-sidebar__title">
                         <Icon name="auto_awesome" size="1rem" />
-                        {t('new_patients_stat') || 'Crecimiento de Pacientes'}
+                        {t('new_patients_stat')}
                     </h4>
                     <div className="dashboard-sidebar__list">
                         <StatCard

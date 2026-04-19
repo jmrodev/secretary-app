@@ -22,7 +22,7 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                 ...r,
                 taskType: 'visit',
                 isNotified: !!r.visit_notified,
-                label: `${t('visit_overdue') || 'Control pendiente'} (${formatDate(r.next_suggested_visit_date)})`,
+                label: `${t('visit_overdue')} (${formatDate(r.next_suggested_visit_date)})`,
                 badgeClass: 'visit'
             });
         }
@@ -32,7 +32,7 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                 ...r,
                 taskType: 'prescription',
                 isNotified: !!r.prescription_notified,
-                label: `${t('prescription_overdue') || 'Renovación sugerida'} (${formatDate(r.next_suggested_prescription_date)})`,
+                label: `${t('prescription_overdue')} (${formatDate(r.next_suggested_prescription_date)})`,
                 badgeClass: 'prescription'
             });
         }
@@ -42,7 +42,7 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                 ...r,
                 taskType: 'license',
                 isNotified: !!r.license_notified,
-                label: `${t('license_expiring') || 'Licencia por vencer'} (${formatDate(r.license_expiry_date)})`,
+                label: `${t('license_expiring')} (${formatDate(r.license_expiry_date)})`,
                 badgeClass: 'license'
             });
         }
@@ -52,7 +52,7 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                 ...r,
                 taskType: 'medication',
                 isNotified: !!r.meds_all_notified_min,
-                label: `${t('meds_expiring') || 'Faltan medicamentos'}: ${r.expiring_meds}`,
+                label: `${t('meds_expiring')}: ${r.expiring_meds}`,
                 badgeClass: 'medication'
             });
         }
@@ -72,7 +72,7 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                         onClick={() => setActiveSection('pending')}
                         variant="pill"
                     >
-                        {t('pending') || 'Pendientes'}
+                        {t('pending')}
                         <span className="dashboard-reminders__count">{pendingTasks.length}</span>
                     </TabButton>
                     <TabButton
@@ -80,7 +80,7 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                         onClick={() => setActiveSection('notified')}
                         variant="pill"
                     >
-                        {t('notified') || 'Avisados'}
+                        {t('notified')}
                         <span className="dashboard-reminders__count">{notifiedTasks.length}</span>
                     </TabButton>
                 </nav>
@@ -92,8 +92,8 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                         <Icon name="info" size="3rem" color="var(--slate-300)" />
                         <p>
                             {activeSection === 'pending'
-                                ? (t('no_pending_reminders') || 'No hay recordatorios pendientes.')
-                                : (t('no_notified_reminders') || 'No hay recordatorios marcados como avisados.')
+                                ? t('no_pending_reminders')
+                                : t('no_notified_reminders')
                             }
                         </p>
                     </div>
@@ -114,9 +114,9 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                                     size="sm-compact"
                                     onClick={() => onWhatsApp(task, task.taskType)}
                                     icon={<Icon name="chat" size="1rem" />}
-                                    tooltip={t('notify_via_whatsapp') || 'Avisar por WhatsApp'}
+                                    tooltip={t('notify_via_whatsapp')}
                                 >
-                                    WhatsApp
+                                    {t('whatsapp_label')}
                                 </Button>
 
                                 {activeSection === 'pending' ? (
@@ -125,9 +125,9 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                                         size="sm-compact"
                                         onClick={() => onMarkNotified(task, task.taskType, true)}
                                         icon={<Icon name="notifications_active" size="1rem" />}
-                                        tooltip={t('mark_as_notified') || 'Marcar Avisado'}
+                                        tooltip={t('mark_as_notified')}
                                     >
-                                        {t('notified') || 'Avisado'}
+                                        {t('notified')}
                                     </Button>
                                 ) : (
                                     <Button
@@ -135,9 +135,9 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                                         size="sm-compact"
                                         onClick={() => onMarkNotified(task, task.taskType, false)}
                                         icon={<Icon name="undo" size="1rem" />}
-                                        tooltip={t('unmark_notified') || 'Quitar de Avisados'}
+                                        tooltip={t('unmark_notified')}
                                     >
-                                        {t('undo') || 'Deshacer'}
+                                        {t('undo')}
                                     </Button>
                                 )}
 
@@ -147,7 +147,7 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                                     onClick={() => onComplete(task, task.taskType)}
                                     icon={<Icon name="check" size="1rem" />}
                                 >
-                                    {t('done') || 'Realizado'}
+                                    {t('done')}
                                 </Button>
 
                                 <Button
@@ -156,7 +156,7 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                                     onClick={() => onViewProfile(task.id)}
                                     icon={<Icon name="person" size="1rem" />}
                                 >
-                                    {t('profile') || 'Perfil'}
+                                    {t('profile')}
                                 </Button>
                             </div>
                         </article>
