@@ -23,7 +23,7 @@ import { copyToClipboard } from '@/utils/clipboardUtils';
  */
 export const useAppointmentsPageController = () => {
     const { user, isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff } = usePermissions();
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const { showMessage } = useMessage();
     const { settings } = useConfig();
     const { confirm } = useModal();
@@ -128,7 +128,7 @@ export const useAppointmentsPageController = () => {
 
     return {
         viewDoctorId, doctors, institutions, loading, selectedDate,
-        activeTab, showOutOfHours, t, user,
+        activeTab, showOutOfHours, t, language, user,
         editPatientModalOpen, paymentModal,
         actionModal, historyModal, prescribeModal,
         authModalOpen, whatsappModal: booking.whatsappModal, setWhatsappModal: booking.setWhatsappModal,
