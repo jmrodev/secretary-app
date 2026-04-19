@@ -1,8 +1,8 @@
 const bcrypt = require('bcrypt');
-const userRepository = require('./repositories/userRepository');
+const userRepository = require('../repositories/userRepository');
 const dotenv = require('dotenv');
 
-dotenv.config();
+dotenv.config({ path: require('path').resolve(__dirname, '../.env') });
 
 const username = process.argv[2] || 'admin';
 const password = process.argv[3] || 'admin123';

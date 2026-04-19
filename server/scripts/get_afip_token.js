@@ -4,10 +4,10 @@ const fs = require('fs');
 
 async function getAuth() {
     const cuit = '27252572592';
-    const certPath = path.resolve(__dirname, '../server/certs/doctors/10/cert.crt');
-    const keyPath = path.resolve(__dirname, '../server/certs/doctors/10/private.key');
+    const certPath = path.resolve(__dirname, '../certs/doctors/10/cert.crt');
+    const keyPath = path.resolve(__dirname, '../certs/doctors/10/private.key');
     const wsaaUrl = 'https://wsaahomo.afip.gov.ar/ws/services/LoginCms';
-    const cachePath = path.resolve(__dirname, '../server/certs/doctors/10/ta_dev.json');
+    const cachePath = path.resolve(__dirname, '../certs/doctors/10/ta_dev.json');
 
     const lt = new LoginTicket();
 
