@@ -1,12 +1,7 @@
 import { copyToClipboard } from '@/utils/clipboardUtils';
+import { replaceTemplateVariables } from '@/utils/stringUtils';
 
 export const useDashboardWhatsApp = ({ user, settings, showMessage, t }) => {
-    const formatTemplate = (template, replacements) =>
-        Object.entries(replacements).reduce(
-            (acc, [key, value]) => acc.replaceAll(`{${key}}`, value ?? ''),
-            template
-        );
-
     const handleWhatsApp = (appt, type) => {
         let phone = appt.patient_phone;
         if (!phone) {
@@ -28,7 +23,7 @@ export const useDashboardWhatsApp = ({ user, settings, showMessage, t }) => {
             if (!messageTemplate || !messageTemplate.trim()) {
                 messageTemplate = t('whatsapp_appointment_reminder_template');
             }
-            message = formatTemplate(messageTemplate, {
+            message = replaceTemplateVariables(messageTemplate, {
                 patient_name: appt.patient_name || appt.reason,
                 date: dateStr,
                 time: timeStr,
@@ -36,7 +31,7 @@ export const useDashboardWhatsApp = ({ user, settings, showMessage, t }) => {
                 secretary_name: user?.full_name || user?.name || t('secretary')
             });
         } else {
-            message = formatTemplate(t('whatsapp_appointment_confirmed_template'), {
+            message = replaceTemplateVariables(t('whatsapp_appointment_confirmed_template'), {
                 patient_name: appt.patient_name,
                 date: dateStr,
                 time: timeStr

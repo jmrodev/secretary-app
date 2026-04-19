@@ -73,6 +73,9 @@ const DashboardPage = () => {
     } = handlers;
 
     const [showMobileSidebar, setShowMobileSidebar] = React.useState(false);
+    const handleSearchSubmit = (event) => {
+        event.preventDefault();
+    };
 
     if (!user) {
         return <Loading variant="full-page" />;
@@ -106,7 +109,7 @@ const DashboardPage = () => {
                 <section className="layout-content-area">
                     <h2 className="visually-hidden">{t('dashboard_content')}</h2>
                     <div className="dashboard-top-actions animate-fadeIn">
-                        <form className="dashboard-search-bar" role="search" onSubmit={(event) => event.preventDefault()}>
+                        <form className="dashboard-search-bar" role="search" onSubmit={handleSearchSubmit}>
                             <Icon name="search" className="dashboard-search-bar__icon" />
                             <input
                                 type="text"
@@ -199,7 +202,7 @@ const DashboardPage = () => {
                                                     {t('pending_requests')}
                                                 </h3>
                                                 
-                                                <div className="dashboard-requirements__actions">
+                                                <div className="dashboard-page__header-actions">
                                                     {/* Secondary tab if someone really needs reminders */}
                                                     <Button 
                                                         variant="ghost" 

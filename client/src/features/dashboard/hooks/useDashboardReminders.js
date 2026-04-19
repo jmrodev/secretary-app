@@ -1,5 +1,6 @@
 import { useFetch } from '@/hooks/useFetch';
 import api from '@/api/axios';
+import { replaceTemplateVariables } from '@/utils/stringUtils';
 
 export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
     const { 
@@ -10,12 +11,6 @@ export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
     } = useFetch('/users/reminders', {
         initialData: []
     });
-
-    const formatTemplate = (template, replacements) =>
-        Object.entries(replacements).reduce(
-            (acc, [key, value]) => acc.replaceAll(`{${key}}`, value ?? ''),
-            template
-        );
 
     const handleCompleteReminder = async (reminder, type) => {
         try {
@@ -63,21 +58,21 @@ export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
         if (type === 'medication') {
             const template = settings.medication_refill_reminder_template ||
                 t('whatsapp_medication_reminder_template');
-            message = formatTemplate(template, {
+            message = replaceTemplateVariables(template, {
                 patient_name: reminder.full_name,
                 medication_name: reminder.expiring_meds,
                 secretary_name: user.full_name || user.name || ''
             });
         } else if (type === 'visit') {
-            message = formatTemplate(t('whatsapp_visit_reminder_template'), {
+            message = replaceTemplateVariables(t('whatsapp_visit_reminder_template'), {
                 patient_name: reminder.full_name
             });
         } else if (type === 'prescription') {
-            message = formatTemplate(t('whatsapp_prescription_reminder_template'), {
+            message = replaceTemplateVariables(t('whatsapp_prescription_reminder_template'), {
                 patient_name: reminder.full_name
             });
         } else if (type === 'license') {
-            message = formatTemplate(t('whatsapp_license_reminder_template'), {
+            message = replaceTemplateVariables(t('whatsapp_license_reminder_template'), {
                 patient_name: reminder.full_name
             });
         }
