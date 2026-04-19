@@ -18,7 +18,7 @@ import AppointmentActionModal from '@/features/appointments/components/Appointme
 import AppointmentFormModal from '@/features/appointments/components/AppointmentFormModal';
 import PatientHistoryView from '@/features/appointments/components/PatientHistoryView';
 import UpcomingAppointmentsView from '@/features/appointments/components/UpcomingAppointmentsView';
-import NextSlotCalendarModal from '@/features/appointments/components/NextSlotCalendarModal';
+import NextSlotModal from '@/features/appointments/components/NextSlotModal';
 
 import './AppointmentsPage.css';
 
@@ -164,13 +164,15 @@ const AppointmentsPage = () => {
                 onMessageChange={(msg) => setWhatsappModal({ ...whatsappModal, message: msg })}
             />
 
-            <NextSlotCalendarModal
+            <NextSlotModal
                 isOpen={showNextSlotModal} onClose={() => setShowNextSlotModal(false)}
                 loading={nextSlot.loading} nextSlotData={nextSlot.nextSlotData}
                 includeOutOfHours={nextSlot.includeOutOfHours}
                 onToggleOutOfHours={(val) => { nextSlot.setIncludeOutOfHours(val); handlers.handleNextFreeSlot(null, val); }}
+                slotsPage={nextSlot.slotsPage} setSlotsPage={nextSlot.setSlotsPage} slotPages={nextSlot.slotPages}
                 onSelect={handlers.confirmNextSlot} onWhatsApp={handlers.handleWhatsAppSlot}
-                onLoadMore={nextSlot.loadMoreSlots} hasMore={!!nextSlot.nextSlotData?.nextStartDate}
+                onNextGroup={nextSlot.handleNextPage} onPrevGroup={nextSlot.handlePrevPage}
+                hasPrevGroup={nextSlot.slotHistory?.length > 0} hasNextGroup={!!nextSlot.nextSlotData?.nextStartDate}
             />
 
             {editPatientModalOpen && (

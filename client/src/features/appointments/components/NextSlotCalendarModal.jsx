@@ -99,7 +99,12 @@ const NextSlotCalendarModal = ({
                 <Button className={`calendar-slot-controls__toggle-btn ${viewMode === 'calendar' ? 'calendar-slot-controls__toggle-btn--active' : ''}`} onClick={() => setViewMode('calendar')} unstyled>
                     <Icon name="calendar_today" size="1rem" />{t('calendar')}
                 </Button>
-                <Button className={`calendar-slot-controls__toggle-btn ${viewMode === 'list' ? 'calendar-slot-controls__toggle-btn--active' : ''}`} onClick={() => setViewMode('list')} unstyled>
+                <Button className={`calendar-slot-controls__toggle-btn ${viewMode === 'list' ? 'calendar-slot-controls__toggle-btn--active' : ''}`} onClick={() => {
+                    if (!selectedDate && nextSlotData?.results?.length > 0) {
+                        setSelectedDate(nextSlotData.results[0].date);
+                    }
+                    setViewMode('list');
+                }} unstyled>
                     <Icon name="list" size="1rem" />{t('list')}
                 </Button>
             </div>
@@ -174,7 +179,10 @@ const NextSlotCalendarModal = ({
                     ) : (
                         <div className="slots-list">
                             <div className="slots-list__header">
-                                <h3 className="slots-list__title">{slotsByDate[selectedDate]?.dayName} - {new Date(selectedDate + 'T12:00:00').toLocaleDateString()}</h3>
+                                <h3 className="slots-list__title">
+                                    {slotsByDate[selectedDate]?.dayName || t('search_free_slots')} 
+                                    {selectedDate ? ` - ${new Date(selectedDate + 'T12:00:00').toLocaleDateString()}` : ''}
+                                </h3>
                                 <Button onClick={() => setViewMode('calendar')} className="slots-list__back-btn flex items-center gap-1" unstyled><Icon name="arrow_back" size="1.1rem" />{t('back_to_calendar')}</Button>
                             </div>
                             <div className="slots-list__body">
