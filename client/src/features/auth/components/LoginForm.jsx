@@ -21,7 +21,7 @@ const LoginForm = () => {
     const { setUsername, setPassword, handleSubmit } = handlers;
 
     return (
-        <main className="auth-card">
+        <section className="auth-card">
             <header className="auth-card__header">
                 <h1 className="auth-card__title">{t('welcome_back')}</h1>
                 <p className="auth-card__subtitle">{t('sign_in_subtitle')}</p>
@@ -35,7 +35,7 @@ const LoginForm = () => {
                         type="text"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        placeholder="Usuario"
+                        placeholder={t('username_placeholder')}
                         disabled={loading}
                         required
                     />
@@ -58,7 +58,7 @@ const LoginForm = () => {
                     className="auth-card__button--submit"
                     disabled={loading}
                 >
-                    {loading ? 'Accediendo...' : t('sign_in')}
+                    {loading ? t('signing_in') : t('sign_in')}
                 </Button>
             </form>
 
@@ -75,10 +75,10 @@ const LoginForm = () => {
                     </Button>
                 </div>
                 <p className="auth-card__footer-text">
-                    © {new Date().getFullYear()} Consultorio Médico.
+                    © {new Date().getFullYear()} {t('app_name')}
                 </p>
             </footer>
-        </main>
+        </section>
     );
 };
 

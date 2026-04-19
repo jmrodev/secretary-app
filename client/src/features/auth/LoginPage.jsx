@@ -1,5 +1,6 @@
 import React from 'react';
 import { LoginForm } from '@/features/auth/index';
+import './LoginPage.css';
 
 /**
  * LoginPage (Orchestrator).
@@ -7,9 +8,12 @@ import { LoginForm } from '@/features/auth/index';
  */
 const LoginPage = () => {
     return (
-        <div className="login-page-orchestrator animate-fadeIn">
-            <LoginForm />
-        </div>
+        <main className="login-page login-page--hero animate-fadeIn">
+            <div className="login-page__overlay" aria-hidden="true"></div>
+            <section className="login-page__content">
+                <LoginForm />
+            </section>
+        </main>
     );
 };
 
