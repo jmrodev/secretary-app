@@ -109,7 +109,7 @@ const TransactionsTable = ({
         let lastKey = null;
 
         transactions.forEach(tx => {
-            let key = null;
+            let key;
             if (tx.appointment_id) key = `appt_${tx.appointment_id}`;
             else if (tx.request_id) key = `req_${tx.request_id}`;
             else key = `gen_${tx.transaction_date}_${tx.doctor_id}_${tx.description}`;
