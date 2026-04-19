@@ -137,7 +137,7 @@ const NextSlotCalendarModal = ({
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} title={<div className="flex items-center gap-2"><Icon name="search" size="1.2rem" />{t('search_free_slots')}</div>} size="lg">
+        <Modal isOpen={isOpen} onClose={onClose} title={<div className="flex items-center gap-2"><Icon name="search" size="1.2rem" />{t('search_free_slots')}</div>} size="lg" className="calendar-slot-modal-container">
             <div className="calendar-slot-modal">
                 {renderControls()}
                 <div className="calendar-slot-modal__content">

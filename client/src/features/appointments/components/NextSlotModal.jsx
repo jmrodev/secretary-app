@@ -43,28 +43,31 @@ const NextSlotModal = ({
                 </div>
             } 
             size="lg"
+            className={`${baseClass}-container`}
         >
             <div className={baseClass}>
-                <div className={`${baseClass}__info-box`}>
-                    <div className={`${baseClass}__info-content`}>
-                        <Icon name="info" size="1.1rem" className={`${baseClass}__info-icon`} />
-                        <p className={`${baseClass}__info-text`}>{t('search_limit_3_months')}</p>
+                <div className={`${baseClass}__controls`}>
+                    <div className={`${baseClass}__info-box`}>
+                        <div className={`${baseClass}__info-content`}>
+                            <Icon name="info" size="1rem" className={`${baseClass}__info-icon`} />
+                            <span className={`${baseClass}__info-text`}>{t('search_limit_3_months')}</span>
+                        </div>
                     </div>
-                </div>
 
-                <div className={`${baseClass}__toggle-row`}>
-                    <label className={`${baseClass}__toggle-label`}>
-                        <input 
-                            type="checkbox" 
-                            className={`${baseClass}__toggle-checkbox`} 
-                            checked={includeOutOfHours} 
-                            onChange={(e) => onToggleOutOfHours(e.target.checked)} 
-                        />
-                        <span className={`${baseClass}__toggle-text`}>
-                            <Icon name="lock_open" size="1rem" />
-                            {t('include_overtime_short')}
-                        </span>
-                    </label>
+                    <div className={`${baseClass}__toggle-row`}>
+                        <label className={`${baseClass}__toggle-label`}>
+                            <input
+                                type="checkbox"
+                                className={`${baseClass}__toggle-checkbox`}
+                                checked={includeOutOfHours}
+                                onChange={(e) => onToggleOutOfHours(e.target.checked)}
+                            />
+                            <span className={`${baseClass}__toggle-text`}>
+                                <Icon name="lock_open" size="1rem" />
+                                {t('include_overtime_short')}
+                            </span>
+                        </label>
+                    </div>
                 </div>
 
                 {(!nextSlotData || loading) ? (
