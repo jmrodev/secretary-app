@@ -1,5 +1,7 @@
 /* NextSlotModal.css - BEM Methodology */
 
+.next-slot-modal-container { background-color: var(--card-bg); }
+
 .next-slot-modal {
     display: flex;
     flex-direction: column;
@@ -15,12 +17,24 @@
     gap: 0.5rem;
 }
 
+.next-slot-modal__controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--white);
+    padding: 0.75rem 1rem;
+    border-radius: 1rem;
+    border: 1px solid var(--gray-300);
+    box-shadow: var(--shadow-sm);
+    gap: 1rem;
+}
+
 .next-slot-modal__info-box {
     background: var(--blue-50);
     border: 1px solid var(--blue-200);
     border-radius: 0.75rem;
     padding: 0.75rem 1rem;
-    margin: 0 0.5rem;
+    flex: 1;
 }
 
 .next-slot-modal__info-content {
@@ -42,7 +56,6 @@
 .next-slot-modal__toggle-row {
     display: flex;
     justify-content: flex-end;
-    padding: 0 0.5rem;
 }
 
 .next-slot-modal__toggle-label {
@@ -86,10 +99,10 @@
 }
 
 .next-slot-modal__table-wrapper {
-    border: 1px solid var(--slate-200);
+    border: 1px solid var(--gray-300);
     border-radius: 1rem;
     overflow: hidden;
-    background: white;
+    background: var(--white);
     box-shadow: var(--shadow-sm);
 }
 

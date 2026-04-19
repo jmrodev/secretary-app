@@ -6,9 +6,9 @@
     align-items: stretch;
     gap: 0;
     width: 100%;
-    background-color: var(--card-bg, white);
-    border: 2px solid var(--gray-300);
-    border-radius: var(--radius-lg);
+    background-color: var(--white);
+    border: 1px solid var(--gray-300);
+    border-radius: 1rem;
     box-shadow: var(--shadow-sm);
     overflow: hidden;
 }
