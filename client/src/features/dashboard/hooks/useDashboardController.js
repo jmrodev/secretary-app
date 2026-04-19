@@ -27,7 +27,7 @@ export const useDashboardController = () => {
     const statsHook = useDashboardStats(isStaff);
     const remindersHook = useDashboardReminders({ user, t, settings, showMessage });
     const modalsHook = useDashboardModals();
-    const whatsAppHook = useDashboardWhatsApp({ user, settings, showMessage });
+    const whatsAppHook = useDashboardWhatsApp({ user, settings, showMessage, t });
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [activeTab, setActiveTab] = useState('requirements');
@@ -70,11 +70,11 @@ export const useDashboardController = () => {
     const handleSaveNote = async (id, note, date) => {
         try {
             await api.put(`/appointments/${id}`, { reason: note, appointment_date: date });
-            showMessage(t('note_saved') || 'Nota actualizada', 'success');
+            showMessage(t('note_saved'), 'success');
             refreshDashboard();
         } catch (e) {
             console.error(e);
-            showMessage('Error al guardar nota', 'error');
+            showMessage(t('error_saving_note'), 'error');
         }
     };
 
@@ -153,9 +153,26 @@ export const useDashboardController = () => {
         navigate: modalsHook.navigate
     };
 
+    const loading = (
+        statsHook.loadingStats ||
+        statsHook.loadingDoctors ||
+        statsHook.loadingRequests ||
+        remindersHook.loadingReminders ||
+        (isStaff && statsHook.loadingNewPatientStats)
+    );
+
+    const error =
+        statsHook.errorStats ||
+        statsHook.errorDoctors ||
+        statsHook.errorRequests ||
+        remindersHook.errorReminders ||
+        (isStaff ? statsHook.errorNewPatientStats : null);
+
     return {
         // State exposed for orchestration
         user, t, settings,
+        loading,
+        error,
         stats: statsHook.stats,
         newPatientStats: statsHook.newPatientStats,
         reminders: remindersHook.reminders,

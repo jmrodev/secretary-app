@@ -31,6 +31,8 @@ const DashboardPage = () => {
     const controller = useDashboardController();
     const {
         user, t,
+        loading,
+        error,
         stats, newPatientStats, reminders, activeTab,
         actionModal,
         historyModal,
@@ -76,6 +78,10 @@ const DashboardPage = () => {
         return <Loading variant="full-page" />;
     }
 
+    const hasDashboardData = Boolean(stats) || Boolean(newPatientStats) || reminders.length > 0;
+    const shouldShowLoadingState = loading && !hasDashboardData;
+    const shouldShowErrorState = Boolean(error) && !hasDashboardData;
+
     return (
         <MainLayout wide>
             <main className="dashboard-page-orchestrator">
@@ -100,10 +106,15 @@ const DashboardPage = () => {
                 <section className="layout-content-area">
                     <h2 className="visually-hidden">{t('dashboard_content')}</h2>
                     <div className="dashboard-top-actions animate-fadeIn">
-                        <div className="dashboard-search-bar">
-                            <span className="material-symbols-outlined search-icon">search</span>
-                            <input type="text" placeholder={t('search_placeholder')} />
-                        </div>
+                        <form className="dashboard-search-bar" role="search" onSubmit={(event) => event.preventDefault()}>
+                            <Icon name="search" className="dashboard-search-bar__icon" />
+                            <input
+                                type="text"
+                                className="dashboard-search-bar__input"
+                                placeholder={t('search_placeholder')}
+                                aria-label={t('search_placeholder')}
+                            />
+                        </form>
 
                         <Button 
                             variant="premium" 
@@ -119,6 +130,22 @@ const DashboardPage = () => {
                         </Button>
                     </div>
 
+                    {shouldShowLoadingState ? (
+                        <section className="dashboard-page__state dashboard-page__state--loading" aria-live="polite">
+                            <Loading variant="centered" text={t('loading')} />
+                        </section>
+                    ) : shouldShowErrorState ? (
+                        <section className="dashboard-page__state dashboard-page__state--error" aria-live="polite">
+                            <article className="dashboard-page__state-card">
+                                <h3 className="dashboard-page__state-title">{t('dashboard_error_title')}</h3>
+                                <p className="dashboard-page__state-message">{t('dashboard_error_message')}</p>
+                                <Button variant="premium" size="sm" onClick={refreshDashboard}>
+                                    <Icon name="refresh" />
+                                    {t('retry')}
+                                </Button>
+                            </article>
+                        </section>
+                    ) : (
                     <div className={`dashboard-grid ${showMobileSidebar ? 'dashboard-grid--sidebar-visible' : ''}`}>
                         {/* Mobile Overlay / Backdrop */}
                         {showMobileSidebar && (
@@ -172,7 +199,7 @@ const DashboardPage = () => {
                                                     {t('pending_requests')}
                                                 </h3>
                                                 
-                                                <div className="dashboard-header-actions">
+                                                <div className="dashboard-requirements__actions">
                                                     {/* Secondary tab if someone really needs reminders */}
                                                     <Button 
                                                         variant="ghost" 
@@ -206,6 +233,7 @@ const DashboardPage = () => {
                             </article>
                         </section>
                     </div>
+                    )}
 
                     {/* Modals - Orchestrated by Dashboard Controller but located in their respective features */}
                     <AppointmentActionModal

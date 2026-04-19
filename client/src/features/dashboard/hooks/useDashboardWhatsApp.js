@@ -1,6 +1,11 @@
 import { copyToClipboard } from '@/utils/clipboardUtils';
 
-export const useDashboardWhatsApp = ({ user, settings, showMessage }) => {
+export const useDashboardWhatsApp = ({ user, settings, showMessage, t }) => {
+    const formatTemplate = (template, replacements) =>
+        Object.entries(replacements).reduce(
+            (acc, [key, value]) => acc.replaceAll(`{${key}}`, value ?? ''),
+            template
+        );
 
     const handleWhatsApp = (appt, type) => {
         let phone = appt.patient_phone;
@@ -9,7 +14,7 @@ export const useDashboardWhatsApp = ({ user, settings, showMessage }) => {
             if (phoneMatch) {
                 phone = phoneMatch[0];
             } else {
-                showMessage("No phone number available. Please adjust/sync the appointment first.", "error");
+                showMessage(t('no_phone_available_sync_first'), 'error');
                 return;
             }
         }
@@ -21,23 +26,25 @@ export const useDashboardWhatsApp = ({ user, settings, showMessage }) => {
         if (type === 'reminder') {
             let messageTemplate = settings.appointment_reminder_template;
             if (!messageTemplate || !messageTemplate.trim()) {
-                messageTemplate = `Hola {patient_name}, te escribimos para confirmar tu turno del día {date} a las {time} con el/la Dr/a. {doctor_name}. Por favor confirma asistencia. Gracias!`;
+                messageTemplate = t('whatsapp_appointment_reminder_template');
             }
-            message = messageTemplate
-                .replace(/{patient_name}/g, appt.patient_name || appt.reason)
-                .replace(/{date}/g, dateStr)
-                .replace(/{time}/g, timeStr)
-                .replace(/{doctor_name}/g, appt.doctor_name)
-                .replace(/{secretary_name}/g, user?.name || 'Secretaria');
+            message = formatTemplate(messageTemplate, {
+                patient_name: appt.patient_name || appt.reason,
+                date: dateStr,
+                time: timeStr,
+                doctor_name: appt.doctor_name,
+                secretary_name: user?.full_name || user?.name || t('secretary')
+            });
         } else {
-            message = `Hola {patient_name}, tu turno ha sido confirmado para el {date} a las {time}. Gracias por confiar en nosotros!`
-                .replace(/{patient_name}/g, appt.patient_name)
-                .replace(/{date}/g, dateStr)
-                .replace(/{time}/g, timeStr);
+            message = formatTemplate(t('whatsapp_appointment_confirmed_template'), {
+                patient_name: appt.patient_name,
+                date: dateStr,
+                time: timeStr
+            });
         }
 
         copyToClipboard(message).then(() => {
-            showMessage("Texto copiado! Abriendo WhatsApp...", "success");
+            showMessage(t('whatsapp_text_copied_opening'), 'success');
             phone = phone.replace(/\D/g, '');
             if (!phone.startsWith('54') && phone.length >= 10) {
                 phone = '549' + phone;
@@ -55,7 +62,7 @@ export const useDashboardWhatsApp = ({ user, settings, showMessage }) => {
             }
         }).catch(err => {
             console.error(err);
-            showMessage("Error al copiar texto", "error");
+            showMessage(t('error_copying_text'), 'error');
         });
     };
 

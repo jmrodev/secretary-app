@@ -156,7 +156,7 @@
     padding: 0.6rem 0.25rem;
     background: transparent;
     border: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Very subtle separator */
+    border-bottom: 1px solid var(--gray-200);
     box-shadow: none;
     border-radius: 0;
     gap: 1rem;
@@ -164,7 +164,7 @@
 
 .stat-card--list:hover {
     transform: none;
-    background-color: rgba(255, 255, 255, 0.03);
+    background-color: var(--gray-50);
 }
 
 .stat-card--list .stat-card__header {
@@ -177,10 +177,10 @@
     width: 1.5rem;
     height: 1.5rem;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--gray-300);
     border-radius: 4px;
-    color: var(--white);
-    opacity: 0.6;
+    color: var(--gray-700);
+    opacity: 1;
 }
 
 .stat-card--list .stat-card__label {
@@ -188,14 +188,14 @@
     text-transform: none;
     letter-spacing: normal;
     font-weight: 500;
-    color: var(--white);
-    opacity: 0.8;
+    color: var(--text-main);
+    opacity: 1;
 }
 
 .stat-card--list .stat-card__value {
     font-size: 0.95rem;
     font-weight: 700;
-    color: var(--white);
+    color: var(--text-main);
 }
 
 .stat-card--list .stat-card__trend {

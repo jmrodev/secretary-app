@@ -74,10 +74,10 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0.5rem 0.75rem;
-    background-color: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: var(--gray-50);
+    border: 1px solid var(--gray-300);
     border-radius: 0.5rem;
-    color: var(--white);
+    color: var(--text-main);
     font-size: 0.8125rem;
     font-weight: 500;
     text-align: left;
@@ -86,15 +86,15 @@
 }
 
 .quick-actions__btn:hover {
-    background-color: rgba(255, 255, 255, 0.08);
+    background-color: var(--white);
     border-color: var(--primary-color);
-    color: var(--white);
+    color: var(--text-main);
     transform: translateX(2px);
 }
 
 .quick-actions__btn .icon {
-    color: var(--white);
-    opacity: 0.6;
+    color: var(--text-muted);
+    opacity: 0.9;
     font-size: 1.1rem;
 }
 
