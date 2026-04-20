@@ -70,7 +70,7 @@ export const useWhatsAppUniversal = (doctors) => {
         const doctor = doctors.find(d => Number(d.id) === Number(appt.doctor_id));
         const isVirtual = appt.type === 'virtual';
 
-        let messageTemplate = '';
+        let messageTemplate;
         if (type === 'reminder') {
             messageTemplate = (isVirtual ? doctor?.reminder_virtual_template : doctor?.reminder_template) || (isVirtual ? settings.appointment_reminder_virtual_template : settings.appointment_reminder_template);
             if (!messageTemplate?.trim()) messageTemplate = isVirtual ? `Hola {patient_name}, recordamos tu turno VIRTUAL para el {date} a las {time} con Dr/a. {doctor_name}.` : `Hola {patient_name}, recordamos tu turno para el {date} a las {time} con Dr/a. {doctor_name} en {appointment_location}. Confirma asistencia.`;

@@ -45,12 +45,14 @@ export const useFetch = (url, options = {}) => {
     useEffect(() => {
         let isMounted = true;
         if (immediate) {
-            execute().then(res => {
-                if (!isMounted) return;
-                // Side effects if needed
-            }).catch(e => {
-                if (!isMounted) return;
-                // Error handled in execute
+            queueMicrotask(() => {
+                execute().then(res => {
+                    if (!isMounted) return;
+                    // Side effects if needed
+                }).catch(e => {
+                    if (!isMounted) return;
+                    // Error handled in execute
+                });
             });
         }
         return () => {
