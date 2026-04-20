@@ -3,7 +3,6 @@ import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Card from '@/components/atoms/Card';
 import Badge from '@/components/atoms/Badge';
-import FinanceDoctorFilter from '@/features/finances/components/FinanceDoctorFilter';
 import CashBoxSummary from '@/features/finances/components/CashBoxSummary';
 import FinanceFilters from '@/features/finances/components/FinanceFilters';
 import './FinanceSidebar.css';
@@ -34,19 +33,6 @@ const FinanceSidebar = ({
             {/* Main Action & Doctor Filter Card */}
             <Card className="finance-sidebar__card">
                 <div className="finance-sidebar__stack">
-                    {isAdminOrSecretary && (
-                        <div className="finance-sidebar__section">
-                            <label className="finance-sidebar__label">{t('doctor_label')}</label>
-                            <FinanceDoctorFilter
-                                doctors={doctors}
-                                selectedDoctorFilter={selectedDoctorFilter}
-                                setSelectedDoctorFilter={onSelectDoctor}
-                                t={t}
-                                className="finance-sidebar__doctor-filter"
-                            />
-                        </div>
-                    )}
-
                     {user.role !== 'patient' && (
                         <div className="finance-sidebar__section">
                             <div className="finance-sidebar__actions">

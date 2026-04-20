@@ -16,6 +16,7 @@ import { useGoogleEvents } from '@/features/appointments/hooks/useGoogleEvents';
 import { usePatientSearch } from '@/features/appointments/hooks/usePatientSearch';
 import { useAppointmentsHandlers } from '@/features/appointments/hooks/useAppointmentsHandlers';
 import { copyToClipboard } from '@/utils/clipboardUtils';
+import { useDoctors } from '@/context/DoctorContext';
 
 /**
  * useAppointmentsPageController (Handler Hook).
@@ -30,7 +31,7 @@ export const useAppointmentsPageController = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [viewDoctorId, setViewDoctorId] = useState(location.state?.viewDoctorId || localStorage.getItem('last_selected_doctor_id') || '');
+    const { viewDoctorId, setViewDoctorId, doctors, doctorsLoading } = useDoctors();
     const [selectedDate, setSelectedDate] = useState(location.state?.selectedDate ? new Date(location.state.selectedDate) : new Date());
     const [activeTab, setActiveTab] = useState(location.state?.activeTab || 'calendar');
     const [showOutOfHours, setShowOutOfHours] = useState(false);
@@ -44,8 +45,7 @@ export const useAppointmentsPageController = () => {
 
     // --- Data Fetching using useFetch ---
     
-    // Doctors and Institutions
-    const { data: doctors = [], loading: doctorsLoading } = useFetch('/users/doctors', { initialData: [] });
+    // Institutions
     const { data: institutions = [], loading: institutionsLoading } = useFetch('/institutions', { initialData: [] });
 
     // Calendar Stats
@@ -71,11 +71,8 @@ export const useAppointmentsPageController = () => {
     const loading = doctorsLoading || institutionsLoading || patientApptLoading;
 
     useEffect(() => {
-        const doctorId = viewDoctorId || booking.selectedDoctor;
-        if (doctorId) localStorage.setItem('last_selected_doctor_id', doctorId);
-        if (viewDoctorId && !booking.selectedDoctor) booking.setSelectedDoctor(viewDoctorId);
-        if (booking.selectedDoctor && !viewDoctorId) queueMicrotask(() => setViewDoctorId(booking.selectedDoctor));
-    }, [viewDoctorId, booking.selectedDoctor, booking.setSelectedDoctor, booking]);
+        // syncing logic simplified by context
+    }, [viewDoctorId, booking]);
 
     const rescheduleAppt = location.state?.rescheduleAppt;
     const syncAppt = location.state?.syncAppt;
@@ -90,14 +87,7 @@ export const useAppointmentsPageController = () => {
             });
         }
         
-        // Initial doctor selection for doctors
-        if (isDoctor && doctors.length > 0 && !viewDoctorId) {
-            const profile = doctors.find(d => d.user_id === (user.user_id || user.id));
-            if (profile) {
-                queueMicrotask(() => setViewDoctorId(profile.id));
-                booking.setSelectedDoctor(profile.id);
-            }
-        }
+        // Initial logic moved to DoctorContext
     }, [user, doctors, rescheduleAppt, syncAppt, isDoctor, booking, viewDoctorId]);
 
     const hookHandlers = useAppointmentsHandlers({

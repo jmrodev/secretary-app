@@ -13,6 +13,7 @@ import FinanceSidebar from '@/features/finances/components/FinanceSidebar';
 import TransactionsTable from '@/features/finances/components/TransactionsTable';
 import CashBoxDeliveryModal from '@/features/finances/components/CashBoxDeliveryModal';
 import PendingClosuresModal from '@/features/finances/components/PendingClosuresModal';
+import { DoctorSelector } from '@/features/doctors';
 
 import './FinancesPage.css';
 
@@ -26,7 +27,7 @@ const FinancesPage = () => {
         stats,
         loading,
         doctors,
-        selectedDoctorFilter,
+        selectedDoctorFilter, // This is a string like '3' or 'all'
         modalOpen,
         closeBoxModal,
         closeAmount,

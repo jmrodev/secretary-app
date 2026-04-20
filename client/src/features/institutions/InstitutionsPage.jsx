@@ -5,6 +5,8 @@ import Loading from '@/components/atoms/Loading';
 import Icon from '@/components/atoms/Icon';
 import { InstitutionFinances } from '@/features/finances';
 import { useInstitutionsController, InstitutionFormModal } from '@/features/institutions/index';
+import { PageHeader } from '@/features/layout';
+import heroBg from '@/features/dashboard/assets/dashboard_hero.png';
 import './InstitutionsPage.css';
 
 /**
@@ -36,15 +38,19 @@ const InstitutionsPage = () => {
     return (
         <MainLayout wide>
             <div className="institutions-page-orchestrator">
-                <header className="dashboard-header animate-fadeIn">
-                    <h1 className="dashboard-header__title">{t('institutions') || 'Instituciones'}</h1>
-                    <p className="dashboard-header__subtitle">{t('institutions_subtitle') || 'Gestiona instituciones pagadoras y convenios.'}</p>
-                </header>
-
-                {loading ? (
-                    <Loading variant="centered" text={t('loading') || "Cargando..."} />
-                ) : (
-                    <div className="dashboard-grid animate-fadeIn">
+                <PageHeader 
+                    variant="premium"
+                    backgroundUrl={heroBg}
+                    title={t('institutions') || 'Instituciones'}
+                    subtitle={t('institutions_subtitle') || 'Gestiona instituciones pagadoras y convenios.'}
+                    hideDoctorSelector={true}
+                />
+                
+                <div className="layout-content-area animate-fadeIn">
+                    {loading ? (
+                        <Loading variant="centered" text={t('loading') || "Cargando..."} />
+                    ) : (
+                        <div className="dashboard-grid animate-fadeIn">
                         <aside className="dashboard-sidebar">
                             <div className="dashboard-card">
                                 <h3 className="dashboard-card__title">
@@ -135,6 +141,7 @@ const InstitutionsPage = () => {
                     isEditing={!!editingInstitution}
                     t={t}
                 />
+                </div>
             </div>
         </MainLayout>
     );

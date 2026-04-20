@@ -25,8 +25,6 @@ import PatientRecycleBin from '@/features/patients/components/PatientRecycleBin'
 import PatientMedications from '@/features/patients/components/PatientMedications';
 import DebtPaymentModal from '@/features/patients/components/DebtPaymentModal';
 import PatientManagerModal from '@/features/patients/components/PatientManagerModal';
-import { DoctorFilter } from '@/features/doctors';
-
 
 import './PatientsPage.css';
 
@@ -54,6 +52,9 @@ const PatientsPage = () => {
 
         handlers,
     } = controller;
+
+    const currentDoctor = viewDoctorId ? doctors.find(d => d.id === Number(viewDoctorId)) : null;
+    const doctorDisplayName = currentDoctor ? currentDoctor.full_name : null;
 
     const {
         fetchRecycleBin,
@@ -137,15 +138,6 @@ const PatientsPage = () => {
                                         </TabButton>
                                     )}
                                 </TabNav>
-                                <DoctorFilter
-                                    activeTab={activeTab}
-                                    userRole={authUser?.role}
-                                    isStaff={isStaff}
-                                    isAdmin={isAdmin}
-                                    viewDoctorId={viewDoctorId}
-                                    setViewDoctorId={setViewDoctorId}
-                                    doctors={doctors}
-                                />
                             </div>
 
                             <div className="dashboard-card">

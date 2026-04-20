@@ -1,4 +1,5 @@
 import React from 'react';
+import { DoctorSelector } from '@/features/doctors';
 import './PageHeader.css';
 
 /**
@@ -13,7 +14,8 @@ const PageHeader = ({
     divider = false,
     className = '',
     variant = 'standard', // 'standard' or 'premium'
-    backgroundUrl // Optional background for premium variant
+    backgroundUrl, // Optional background for premium variant
+    hideDoctorSelector = false // NEW: Allows disabling global selector
 }) => {
     const isPremium = variant === 'premium';
     const baseClass = isPremium ? 'page-header--premium' : 'page-header';
@@ -33,7 +35,14 @@ const PageHeader = ({
             <div className={`${baseClass}__content`}>
                 <div className={`${baseClass}__title-container`}>
                     <h1 className={`${baseClass}__title`}>{title}</h1>
-                    {subtitle && <p className={`${baseClass}__subtitle`}>{subtitle}</p>}
+                    {subtitle && (
+                        <div className={`${baseClass}__subtitle`}>
+                            {subtitle}
+                            {isPremium && !hideDoctorSelector && (
+                                <DoctorSelector />
+                            )}
+                        </div>
+                    )}
                 </div>
                 {children && (
                     <div className={`${baseClass}__actions`}>

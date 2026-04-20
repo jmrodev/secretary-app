@@ -73,9 +73,14 @@
 }
 
 .page-header--premium .page-header--premium__subtitle {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.8rem;
-    margin: 0.1rem 0 0 0;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
+    margin: 0.25rem 0 0 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    line-height: 1.4;
 }
 
 .page-header__title-container {

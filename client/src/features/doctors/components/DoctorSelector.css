@@ -1,0 +1,52 @@
+/* DoctorSelector Organism Styles */
+
+.doctor-inline-selector {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.2rem 0.75rem;
+    background-color: #ffffff;
+    border-radius: 2rem;
+    margin-left: 0.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    transition: all 0.2s ease;
+    vertical-align: middle;
+}
+
+.doctor-inline-selector:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+    background-color: #fcfcfc;
+}
+
+.doctor-inline-selector__select {
+    border: none;
+    background: transparent;
+    padding: 0 1.5rem 0 0; /* Space for the arrow */
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #1e293b; /* Slate 800 - High contrast */
+    cursor: pointer;
+    width: auto;
+    outline: none;
+    background-position: right center;
+}
+
+/* Ensure options are always readable */
+.doctor-inline-selector__select option {
+    background-color: #ffffff;
+    color: #1e293b;
+    font-weight: 400;
+}
+
+.doctor-selector-display-name {
+    color: inherit; /* Inherit from subtitle (usually white in premium) */
+    font-size: 0.85rem;
+    margin-left: 0.5rem;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 0.2rem 0.6rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}

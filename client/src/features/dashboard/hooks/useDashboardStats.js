@@ -1,13 +1,15 @@
 import { useFetch } from '@/hooks/useFetch';
 
-export const useDashboardStats = (isStaff = false) => {
+export const useDashboardStats = (isStaff = false, doctor_id = '') => {
     // Stats Fetching
     const {
         data: stats = null,
         loading: loadingStats,
         error: errorStats,
         refetch: fetchStats
-    } = useFetch('/users/stats');
+    } = useFetch('/users/stats', {
+        params: { doctor_id }
+    });
     const {
         data: doctors = [],
         loading: loadingDoctors,

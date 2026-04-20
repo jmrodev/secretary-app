@@ -9,6 +9,7 @@ import { ConfigProvider } from '@/context/ConfigContext';
 
 import { LanguageProvider } from '@/context/LanguageContext';
 import { ModalProvider } from '@/context/ModalContext';
+import { DoctorProvider } from '@/context/DoctorContext';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -17,9 +18,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <LanguageProvider>
           <MessageProvider>
             <ConfigProvider>
-              <ModalProvider>
-                <App />
-              </ModalProvider>
+              <DoctorProvider>
+                <ModalProvider>
+                  <App />
+                </ModalProvider>
+              </DoctorProvider>
             </ConfigProvider>
           </MessageProvider>
         </LanguageProvider>
