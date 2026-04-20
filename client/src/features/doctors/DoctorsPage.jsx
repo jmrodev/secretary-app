@@ -3,6 +3,8 @@ import MainLayout from '@/components/templates/MainLayout';
 import DoctorsManager from '@/features/doctors/components/DoctorsManager';
 
 import { useDoctorsPageController } from '@/features/doctors/hooks/useDoctorsPageController';
+import { PageHeader } from '@/features/layout';
+import heroBg from '@/features/dashboard/assets/dashboard_hero.png';
 
 /**
  * DoctorsPage (Orchestrator).
@@ -13,7 +15,14 @@ const DoctorsPage = () => {
 
     return (
         <MainLayout wide>
-            <div className="doctors-page-orchestrator animate-fadeIn">
+            <PageHeader 
+                variant="premium"
+                backgroundUrl={heroBg}
+                title="Gestión de Profesionales"
+                subtitle="Configura el staff médico, horarios y especialidades."
+                hideDoctorSelector={true}
+            />
+            <div className="layout-content-area animate-fadeIn">
                 <DoctorsManager {...controller} />
             </div>
         </MainLayout>

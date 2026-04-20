@@ -12,7 +12,6 @@ export { default as FinancesPage } from '@/features/finances/FinancesPage';
 export { default as TransactionModal } from '@/features/finances/components/TransactionModal';
 export { default as EditTransactionModal } from '@/features/finances/components/EditTransactionModal';
 export { default as BalanceFinancialSummary } from '@/features/finances/components/BalanceFinancialSummary';
-export { default as FinanceDoctorFilter } from '@/features/finances/components/FinanceDoctorFilter';
 export { default as FinanceFilters } from '@/features/finances/components/FinanceFilters';
 export { default as FinanceStatsCards } from '@/features/finances/components/FinanceStatsCards';
 export { default as FinanceSidebar } from '@/features/finances/components/FinanceSidebar';

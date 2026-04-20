@@ -2,8 +2,10 @@ import React from 'react';
 import { useAppointmentsPageController } from '@/features/appointments/hooks/useAppointmentsPageController';
 import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
-import NavTabs from '@/components/molecules/NavTabs';
-import { DoctorFilter } from '@/features/doctors';
+import { PageHeader } from '@/features/layout';
+import heroBg from '@/features/dashboard/assets/dashboard_hero.png';
+import { DoctorSelector } from '@/features/doctors';
+import Icon from '@/components/atoms/Icon';
 import { PatientManagerModal, PatientHistoryModal } from '@/features/patients';
 import { PrescriptionModal } from '@/features/medical_documents';
 import WhatsAppModal from '@/features/chat/components/WhatsAppModal';
@@ -52,89 +54,102 @@ const AppointmentsPage = () => {
         month: 'long',
         year: 'numeric'
     });
-    const doctorDisplayName = currentDoctor?.full_name || currentDoctor?.name;
 
     if (loading || !user) return <Loading variant="full-page" />;
 
     return (
         <MainLayout wide>
-            <article className="appointments-page animate-fadeIn">
-                <RescheduleBanner rescheduleAppt={rescheduleAppt} onExit={exitRescheduleMode} t={t} />
+            <main className="appointments-page-orchestrator">
+                <PageHeader 
+                    variant="premium"
+                    backgroundUrl={heroBg}
+                    title={
+                        <>
+                            {t('appointments_title')}
+                            <div className="appointments-live-indicator">
+                                <span className="appointments-live-indicator__dot"></span>
+                                <span className="appointments-live-indicator__text">{t('agenda_today')}</span>
+                            </div>
+                        </>
+                    }
+                    subtitle={
+                        <>
+                            {t('appointments_subtitle')} — <strong>{formattedSelectedDate}</strong>
+                        </>
+                    }
+                />
 
-                <header className="appointments-page__header">
-                    <div className="appointments-page__heading">
-                        <h1 className="appointments-page__title">{t('appointments_title')}</h1>
-                        <p className="appointments-page__subtitle">{t('appointments_subtitle')}</p>
-                    </div>
+                <section className="layout-content-area">
+                    <header className="appointments-top-actions animate-fadeIn">
+                        <div className="appointments-top-actions__main">
+                            <form className="appointments-search-bar" role="search" onSubmit={(e) => e.preventDefault()}>
+                                <Icon name="search" className="appointments-search-bar__icon" />
+                                <input
+                                    type="text"
+                                    className="appointments-search-bar__input"
+                                    placeholder={t('search_placeholder')}
+                                    onChange={(e) => setSearchPatientId(e.target.value)}
+                                    value={searchPatientId}
+                                    aria-label={t('search_placeholder')}
+                                />
+                            </form>
+                        </div>
+                    </header>
 
-                    <section className="appointments-page__context" aria-label={t('today_schedule')}>
-                        <p className="appointments-page__context-item">
-                            <span className="appointments-page__context-label">{t('date_label')}</span>
-                            <strong className="appointments-page__context-value">{formattedSelectedDate}</strong>
-                        </p>
+                    <RescheduleBanner rescheduleAppt={rescheduleAppt} onExit={exitRescheduleMode} t={t} />
 
-                        {doctorDisplayName && (
-                            <p className="appointments-page__context-item">
-                                <span className="appointments-page__context-label">{t('doctor')}</span>
-                                <strong className="appointments-page__context-value">{doctorDisplayName}</strong>
-                            </p>
+                    <section className="appointments-page__body">
+                        {searchPatientId ? (
+                            <section className="appointments-page__panel appointments-page__panel--agenda">
+                                <PatientHistoryView
+                                    patientAppointments={patientAppointments} 
+                                    loading={patientApptLoading}
+                                    onClose={() => setSearchPatientId('')} 
+                                    t={t} 
+                                    searchPatientId={searchPatientId} 
+                                    handlers={handlers}
+                                />
+                            </section>
+                        ) : activeTab === 'upcoming' ? (
+                            <section className="appointments-page__panel appointments-page__panel--agenda">
+                                <UpcomingAppointmentsView
+                                    appointments={filteredAppointments} 
+                                    loading={loading} 
+                                    t={t}
+                                    onAction={(a) => setActionModal({ open: true, appt: a })}
+                                    onWhatsApp={handlers.handleWhatsAppUniversal}
+                                />
+                            </section>
+                        ) : (
+                            <section className={activeTab === 'monthly' ? 'appointments-page__grid appointments-page__grid--monthly' : 'appointments-page__grid'}>
+                                <aside className="appointments-page__sidebar">
+                                    <section className="appointments-page__panel appointments-page__panel--calendar">
+                                        <CalendarSection
+                                            activeTab={activeTab} selectedDate={selectedDate} onDateSelect={handlers.handleDateSelect}
+                                            appointments={filteredAppointments} calendarStats={calendarStats} holidays={holidays}
+                                            onAddHoliday={handlers.handleAddHoliday} showOutOfHours={showOutOfHours}
+                                            viewDoctorId={viewDoctorId} onSearchPatientId={setSearchPatientId} searchPatientId={searchPatientId}
+                                            onCreatePatient={booking.createPatient} onNextFreeSlot={handlers.openNextSlot}
+                                            onSyncDayToGoogle={() => handlers.syncDayToGoogle(viewDoctorId, selectedDate)}
+                                        />
+                                    </section>
+                                </aside>
+
+                                {activeTab !== 'monthly' && (
+                                    <section className="appointments-page__panel appointments-page__panel--agenda">
+                                        <ScheduleSection
+                                            activeTab={activeTab} selectedDate={selectedDate} onDateSelect={handlers.handleDateSelect}
+                                            selectedDoctor={currentDoctor} viewDoctorId={viewDoctorId} appointments={appointments}
+                                            doctorSchedule={doctorSchedule} holidays={holidays} onSlotClick={handlers.handleSlotClick}
+                                            onDeleteHoliday={handlers.handleDeleteHoliday} showOutOfHours={showOutOfHours} setShowOutOfHours={setShowOutOfHours}
+                                        />
+                                    </section>
+                                )}
+                            </section>
                         )}
                     </section>
-                </header>
-
-                <section className="appointments-page__body">
-                    {searchPatientId ? (
-                        <section className="appointments-page__panel appointments-page__panel--agenda">
-                            <PatientHistoryView
-                                patientAppointments={patientAppointments} loading={patientApptLoading}
-                                onClose={() => setSearchPatientId('')} t={t} searchPatientId={searchPatientId} handlers={handlers}
-                            />
-                        </section>
-                    ) : activeTab === 'upcoming' ? (
-                        <section className="appointments-page__panel appointments-page__panel--agenda">
-                            <UpcomingAppointmentsView
-                                appointments={filteredAppointments} loading={loading} t={t}
-                                onAction={(a) => setActionModal({ open: true, appt: a })}
-                                onWhatsApp={handlers.handleWhatsAppUniversal}
-                            />
-                        </section>
-                    ) : (
-                        <section className={activeTab === 'monthly' ? 'appointments-page__grid appointments-page__grid--monthly' : 'appointments-page__grid'}>
-                            <aside className="appointments-page__sidebar">
-                                <section className="appointments-page__panel appointments-page__panel--nav">
-                                    <NavTabs activeTab={activeTab} setActiveTab={setActiveTab} userRole={user?.role} isStaff={isStaff} isAdmin={isAdmin} />
-                                    <DoctorFilter
-                                        activeTab={activeTab} userRole={user?.role} isStaff={isStaff} isAdmin={isAdmin} viewDoctorId={viewDoctorId}
-                                        setViewDoctorId={setViewDoctorId} doctors={doctors}
-                                    />
-                                </section>
-
-                                <section className="appointments-page__panel appointments-page__panel--calendar">
-                                    <CalendarSection
-                                        activeTab={activeTab} selectedDate={selectedDate} onDateSelect={handlers.handleDateSelect}
-                                        appointments={filteredAppointments} calendarStats={calendarStats} holidays={holidays}
-                                        onAddHoliday={handlers.handleAddHoliday} showOutOfHours={showOutOfHours}
-                                        viewDoctorId={viewDoctorId} onSearchPatientId={setSearchPatientId} searchPatientId={searchPatientId}
-                                        onCreatePatient={booking.createPatient} onNextFreeSlot={handlers.openNextSlot}
-                                        onSyncDayToGoogle={() => handlers.syncDayToGoogle(viewDoctorId, selectedDate)}
-                                    />
-                                </section>
-                            </aside>
-
-                            {activeTab !== 'monthly' && (
-                                <section className="appointments-page__panel appointments-page__panel--agenda">
-                                    <ScheduleSection
-                                        activeTab={activeTab} selectedDate={selectedDate} onDateSelect={handlers.handleDateSelect}
-                                        selectedDoctor={currentDoctor} viewDoctorId={viewDoctorId} appointments={appointments}
-                                        doctorSchedule={doctorSchedule} holidays={holidays} onSlotClick={handlers.handleSlotClick}
-                                        onDeleteHoliday={handlers.handleDeleteHoliday} showOutOfHours={showOutOfHours} setShowOutOfHours={setShowOutOfHours}
-                                    />
-                                </section>
-                            )}
-                        </section>
-                    )}
                 </section>
-            </article>
+            </main>
 
             {/* --- Modals --- */}
             <AppointmentActionModal

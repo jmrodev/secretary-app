@@ -21,6 +21,7 @@ import MainLayout from '@/components/templates/MainLayout';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Loading from '@/components/atoms/Loading';
+import { DoctorSelector } from '@/features/doctors';
 
 import './DashboardPage.css';
 
@@ -111,7 +112,7 @@ const DashboardPage = () => {
                     }
                     subtitle={
                         <>
-                            {t('welcome_back')}, <strong>{user?.full_name || user?.username}</strong>. {t('dashboard_subtitle')}
+                            {t('welcome_back')}, <strong>{user?.full_name || user?.username}</strong>.
                         </>
                     }
                 />

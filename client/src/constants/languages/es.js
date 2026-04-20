@@ -164,6 +164,7 @@ export const es = {
     view_reminders: "Ver Recordatorios",
     back_to_requests: "Volver a Solicitudes",
     live: "EN VIVO",
+    agenda_today: "AGENDA HOY",
     new_patients_stat: "Crecimiento de Pacientes",
     this_day: "Hoy",
     this_week: "Esta Sem.",

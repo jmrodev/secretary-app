@@ -153,6 +153,7 @@ export const en = {
     view_reminders: "View Reminders",
     back_to_requests: "Back to Requests",
     live: "LIVE",
+    agenda_today: "AGENDA TODAY",
     no_permissions_view: "You don't have permissions to view this section.",
     general_stats: "General Statistics",
     turnos_hoy: "Today",

@@ -23,8 +23,10 @@ export const useDashboardController = () => {
     const { settings } = useConfig();
 
     const { updateStatus, cancelAppointment, deleteAppointment, savePrescription } = useAppointments();
+    
+    const [viewDoctorId, setViewDoctorId] = useState(localStorage.getItem('last_selected_doctor_id') || '');
 
-    const statsHook = useDashboardStats(isStaff);
+    const statsHook = useDashboardStats(isStaff, viewDoctorId);
     const remindersHook = useDashboardReminders({ user, t, settings, showMessage });
     const modalsHook = useDashboardModals();
     const whatsAppHook = useDashboardWhatsApp({ user, settings, showMessage, t });
@@ -146,6 +148,10 @@ export const useDashboardController = () => {
         handleWhatsAppReminder: remindersHook.handleWhatsAppReminder,
         handleMarkNotified: remindersHook.handleMarkNotified,
         setActiveTab,
+        setViewDoctorId: (id) => {
+            setViewDoctorId(id);
+            localStorage.setItem('last_selected_doctor_id', id);
+        },
         setActionModal: modalsHook.setActionModal,
         setHistoryModal: modalsHook.setHistoryModal,
         setPrescribeModal: modalsHook.setPrescribeModal,
@@ -183,6 +189,8 @@ export const useDashboardController = () => {
         prescribeModal: modalsHook.prescribeModal,
         paymentModal: modalsHook.paymentModal,
         isSubmitting,
+        viewDoctorId,
+        setViewDoctorId,
         doctors: statsHook.doctors,
         handlers,
         isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff
