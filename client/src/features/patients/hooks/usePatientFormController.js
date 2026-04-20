@@ -91,7 +91,9 @@ export const usePatientFormController = ({
 
     // Load Initial Values
     useEffect(() => {
-        if (initialValues) {
+        if (!initialValues) return;
+        
+        queueMicrotask(() => {
             setFormData(prev => ({
                 ...prev,
                 ...initialValues,
@@ -108,7 +110,7 @@ export const usePatientFormController = ({
             if (initialValues.institution_id) {
                 setCoveredByInstitution(true);
             }
-        }
+        });
     }, [initialValues]);
 
     // Handlers

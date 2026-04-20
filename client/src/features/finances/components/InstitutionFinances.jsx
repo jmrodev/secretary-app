@@ -34,7 +34,7 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
     const [selectedTrs, setSelectedTrs] = React.useState(new Set());
 
     // Reset selection when institution changes
-    React.useEffect(() => { setSelectedTrs(new Set()); }, [selectedInstId]);
+    React.useEffect(() => { queueMicrotask(() => setSelectedTrs(new Set())); }, [selectedInstId]);
 
     const isRealDebt = (tr) => {
         const paymentLower = (tr.payment_status || '').toLowerCase();

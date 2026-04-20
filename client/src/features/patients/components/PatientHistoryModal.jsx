@@ -48,7 +48,7 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
 
     useEffect(() => {
         if (isOpen && patientId) {
-            fetchHistory();
+            queueMicrotask(() => fetchHistory());
         }
     }, [isOpen, patientId, fetchHistory]);
 

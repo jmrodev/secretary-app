@@ -38,12 +38,14 @@ export const useInstitutionFinances = (institutions, selectedInstId) => {
     };
 
     useEffect(() => {
-        if (selectedInstId) {
-            fetchReport(selectedInstId);
-        } else {
-            setReport(null);
-            setPatients([]);
-        }
+        queueMicrotask(() => {
+            if (selectedInstId) {
+                fetchReport(selectedInstId);
+            } else {
+                setReport(null);
+                setPatients([]);
+            }
+        });
     }, [selectedInstId]);
 
     const handlePaymentSubmit = async () => {
