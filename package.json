@@ -11,6 +11,7 @@
     "test": "npm run test --workspace=server"
   },
   "devDependencies": {
+    "vite": "^7.2.4",
     "wrangler": "^4.83.0"
   }
 }
