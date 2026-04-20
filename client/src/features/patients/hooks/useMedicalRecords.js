@@ -31,7 +31,7 @@ export const useMedicalRecords = (patientId, showMessage, t) => {
     }, [patientId]);
 
     useEffect(() => {
-        fetchMedications();
+        queueMicrotask(() => fetchMedications());
     }, [fetchMedications]);
 
     const calculateRefillDate = (units, daily, boxes = 1) => {

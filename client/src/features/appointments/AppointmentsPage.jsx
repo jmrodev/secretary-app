@@ -2,7 +2,8 @@ import React from 'react';
 import { useAppointmentsPageController } from '@/features/appointments/hooks/useAppointmentsPageController';
 import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
-
+import NavTabs from '@/components/molecules/NavTabs';
+import { DoctorFilter } from '@/features/doctors';
 import { PatientManagerModal, PatientHistoryModal } from '@/features/patients';
 import { PrescriptionModal } from '@/features/medical_documents';
 import WhatsAppModal from '@/features/chat/components/WhatsAppModal';
@@ -100,13 +101,13 @@ const AppointmentsPage = () => {
                     ) : (
                         <section className={activeTab === 'monthly' ? 'appointments-page__grid appointments-page__grid--monthly' : 'appointments-page__grid'}>
                             <aside className="appointments-page__sidebar">
-                                {/*  <section className="appointments-page__panel appointments-page__panel--nav">
-                                <NavTabs activeTab={activeTab} setActiveTab={setActiveTab} userRole={user?.role} isStaff={isStaff} isAdmin={isAdmin} />
-                                <DoctorFilter
-                                    activeTab={activeTab} userRole={user?.role} isStaff={isStaff} isAdmin={isAdmin} viewDoctorId={viewDoctorId}
-                                    setViewDoctorId={setViewDoctorId} doctors={doctors}
-                                />
-                            </section> */}
+                                <section className="appointments-page__panel appointments-page__panel--nav">
+                                    <NavTabs activeTab={activeTab} setActiveTab={setActiveTab} userRole={user?.role} isStaff={isStaff} isAdmin={isAdmin} />
+                                    <DoctorFilter
+                                        activeTab={activeTab} userRole={user?.role} isStaff={isStaff} isAdmin={isAdmin} viewDoctorId={viewDoctorId}
+                                        setViewDoctorId={setViewDoctorId} doctors={doctors}
+                                    />
+                                </section>
 
                                 <section className="appointments-page__panel appointments-page__panel--calendar">
                                     <CalendarSection

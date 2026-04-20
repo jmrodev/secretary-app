@@ -36,25 +36,27 @@ export const useAppointmentBooking = (doctors) => {
 
     // Check for missing patient info for quality tracking
     useEffect(() => {
-        if (!selectedPatientData) {
-            setMissingData([]);
-            return;
-        }
-        const missing = [];
-        if (!selectedPatientData.dni) missing.push(t('dni') || 'DNI');
-        if (!selectedPatientData.phone) missing.push(t('phone') || 'Teléfono');
-        if (!selectedPatientData.email) missing.push(t('email') || 'Email');
-        if (!selectedPatientData.street_name) missing.push(t('address') || 'Dirección');
-        if (!selectedPatientData.insurance_name && !selectedPatientData.insurance_id) {
-            missing.push(t('insurance') || 'Obra Social');
-        }
-        setMissingData(missing);
+        queueMicrotask(() => {
+            if (!selectedPatientData) {
+                setMissingData([]);
+                return;
+            }
+            const missing = [];
+            if (!selectedPatientData.dni) missing.push(t('dni') || 'DNI');
+            if (!selectedPatientData.phone) missing.push(t('phone') || 'Teléfono');
+            if (!selectedPatientData.email) missing.push(t('email') || 'Email');
+            if (!selectedPatientData.street_name) missing.push(t('address') || 'Dirección');
+            if (!selectedPatientData.insurance_name && !selectedPatientData.insurance_id) {
+                missing.push(t('insurance') || 'Obra Social');
+            }
+            setMissingData(missing);
+        });
     }, [selectedPatientData, t]);
 
     // Sync institution from patient data
     useEffect(() => {
         if (selectedPatientData?.institution_id) {
-            setSelectedInstitution(selectedPatientData.institution_id);
+            queueMicrotask(() => setSelectedInstitution(selectedPatientData.institution_id));
         }
     }, [selectedPatientData]);
 
