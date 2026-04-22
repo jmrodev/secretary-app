@@ -11,6 +11,9 @@ router.use(verifyToken);
 // Send a single message (e.g. from Appointment Flow) - Allowed for Secretary/Doctor
 router.post('/send', whatsappController.sendMessage);
 
+// Send a direct message via local bridge
+router.post('/send-direct', whatsappController.sendDirectMessage);
+
 // Broadcast - Maybe restricted to higher roles? Let's keep it generally consistent for now.
 router.post('/broadcast', authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), whatsappController.broadcastMessage);
 

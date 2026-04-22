@@ -1,5 +1,6 @@
 const axios = require('axios');
 const systemSettingsRepository = require('../repositories/systemSettingsRepository');
+const appointmentRepository = require('../repositories/appointmentRepository');
 
 const getMetaCredentials = async () => {
     const rows = await systemSettingsRepository.findManyByKeys(['meta_phone_number_id', 'meta_access_token']);
@@ -52,6 +53,88 @@ const sendTemplateMessage = async (to, templateName, languageCode = 'es', compon
 };
 
 /**
+ * Send a direct text message using the local WhatsApp Bridge (MCP/Go)
+ * @param {string} to - Recipient phone number
+ * @param {string} message - Plain text message
+ */
+const sendMessageDirect = async (to, message) => {
+    try {
+        const response = await axios.post('http://localhost:8080/api/send', {
+            recipient: to,
+            message: message
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Local WhatsApp Bridge Error:', error.response?.data || error.message);
+        throw new Error('Local WhatsApp bridge is not responding. Ensure the bridge service is running.');
+    }
+};
+
+/**
+ * Automated task to send reminders for tomorrow's appointments
+ */
+const sendAutomatedReminders = async () => {
+    try {
+        const isEnabled = await systemSettingsRepository.findByKey('whatsapp_use_local_bridge');
+        if (!isEnabled || isEnabled.setting_value !== 'true') {
+            console.log('[WhatsApp] Automated reminders skipped (bridge not enabled in settings)');
+            return;
+        }
+
+        const appointments = await appointmentRepository.findTomorrowAppointments();
+        if (appointments.length === 0) {
+            console.log('[WhatsApp] No appointments for tomorrow to remind.');
+            return;
+        }
+
+        console.log(`[WhatsApp] Sending ${appointments.length} automated reminders...`);
+
+        // Fetch global settings for templates
+        const settingsRows = await systemSettingsRepository.findAll();
+        const settings = {};
+        settingsRows.forEach(r => settings[r.setting_key] = r.setting_value);
+
+        for (const appt of appointments) {
+            try {
+                const isVirtual = appt.type === 'virtual';
+                let template = isVirtual ? appt.reminder_virtual_template : appt.reminder_template;
+                
+                if (!template?.trim()) {
+                    template = isVirtual ? settings.appointment_reminder_virtual_template : settings.appointment_reminder_template;
+                }
+
+                if (!template?.trim()) {
+                    template = isVirtual 
+                        ? "Hola {patient_name}, recordamos tu turno VIRTUAL para el {date} a las {time} con Dr/a. {doctor_name}."
+                        : "Hola {patient_name}, recordamos tu turno para el {date} a las {time} con Dr/a. {doctor_name} en {appointment_location}. Confirma asistencia.";
+                }
+
+                const dateStr = new Date(appt.appointment_date).toLocaleDateString('es-AR');
+                const timeStr = new Date(appt.appointment_date).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false });
+                const address = settings.clinic_address || 'Montiel 1255';
+
+                const message = template
+                    .replace(/{patient_name}/g, appt.patient_name)
+                    .replace(/{date}/g, dateStr)
+                    .replace(/{time}/g, timeStr)
+                    .replace(/{doctor_name}/g, appt.doctor_name)
+                    .replace(/{appointment_location}/g, isVirtual ? 'Virtual' : address);
+
+                let phone = appt.patient_phone.replace(/\D/g, '');
+                if (!phone.startsWith('54') && phone.length >= 10) phone = '549' + phone;
+
+                await sendMessageDirect(phone, message);
+                console.log(`[WhatsApp] Automated reminder sent to ${phone} (${appt.patient_name})`);
+            } catch (err) {
+                console.error(`[WhatsApp] Failed to send automated reminder to ${appt.patient_name}:`, err.message);
+            }
+        }
+    } catch (err) {
+        console.error('[WhatsApp] Error in sendAutomatedReminders task:', err);
+    }
+};
+
+/**
  * Send a generic test message to verify connection
  */
 const sendTestMessage = async (to) => {
@@ -61,5 +144,7 @@ const sendTestMessage = async (to) => {
 
 module.exports = {
     sendTemplateMessage,
-    sendTestMessage
+    sendTestMessage,
+    sendMessageDirect,
+    sendAutomatedReminders
 };
