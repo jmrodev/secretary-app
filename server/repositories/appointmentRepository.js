@@ -295,6 +295,19 @@ class AppointmentRepository {
         const [row] = await conn.query(query, doctor_id ? [doctor_id] : []);
         return row?.total || 0;
     }
+
+    async findTomorrowAppointments(conn = pool) {
+        return await conn.query(`
+            SELECT a.*, p.full_name as patient_name, p.phone as patient_phone, d.full_name as doctor_name,
+                   d.reminder_template, d.reminder_virtual_template
+            FROM appointments a
+            LEFT JOIN patients p ON a.patient_id = p.id
+            JOIN doctors d ON a.doctor_id = d.id
+            WHERE DATE(a.appointment_date) = DATE_ADD(CURRENT_DATE(), INTERVAL 1 DAY)
+              AND a.status = 'pending'
+              AND (p.phone IS NOT NULL AND p.phone != '')
+        `);
+    }
 }
 
 module.exports = new AppointmentRepository();

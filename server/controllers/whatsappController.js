@@ -79,8 +79,27 @@ const broadcastMessage = async (req, res) => {
     });
 };
 
+/**
+ * Send a direct message using the local bridge
+ */
+const sendDirectMessage = async (req, res) => {
+    const { to, message } = req.body;
+
+    if (!to || !message) {
+        return res.status(400).json({ error: 'Missing required parameters (to, message)' });
+    }
+
+    try {
+        const result = await whatsappService.sendMessageDirect(to, message);
+        res.json({ success: true, data: result });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 module.exports = {
     sendMessage,
     broadcastMessage,
-    testConnection
+    testConnection,
+    sendDirectMessage
 };

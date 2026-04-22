@@ -87,13 +87,29 @@ export const useWhatsAppUniversal = (doctors) => {
             .replace(/{price}/g, new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(isVirtual ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0)))
             .replace(/{secretary_name}/g, user.name || 'Secretaria');
 
+        // Normalize phone for both bridge and manual
+        let normalizedPhone = phone.replace(/\D/g, '');
+        if (!normalizedPhone.startsWith('54') && normalizedPhone.length >= 10) normalizedPhone = '549' + normalizedPhone;
+
+        // Phase 2: Local Bridge Integration (Automated Send)
+        if (settings.whatsapp_use_local_bridge === 'true' || settings.whatsapp_use_local_bridge === true) {
+            try {
+                showMessage('Enviando mensaje automáticamente...', 'info');
+                await api.post('/whatsapp/send-direct', { to: normalizedPhone, message });
+                showMessage('Mensaje enviado automáticamente', 'success');
+                return; // Exit if sent successfully
+            } catch (err) {
+                console.error("Local Bridge Error:", err);
+                showMessage("Puente local no disponible. Procediendo con copia manual.", "info");
+                // Fallback to manual copy...
+            }
+        }
+
         try {
             await copyToClipboard(message);
             showMessage(`${type === 'reminder' ? 'Recordatorio' : 'Comprobante'} copiado! Abriendo WhatsApp...`, "success");
-            phone = phone.replace(/\D/g, '');
-            if (!phone.startsWith('54') && phone.length >= 10) phone = '549' + phone;
-            window.location.href = `whatsapp://send?phone=${phone}&text=${encodeURIComponent(message)}`;
-            setTimeout(() => { if (!document.hasFocus()) window.open(`https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`, '_blank') }, 2500);
+            window.location.href = `whatsapp://send?phone=${normalizedPhone}&text=${encodeURIComponent(message)}`;
+            setTimeout(() => { if (!document.hasFocus()) window.open(`https://web.whatsapp.com/send?phone=${normalizedPhone}&text=${encodeURIComponent(message)}`, '_blank') }, 2500);
         } catch (err) { showMessage("Error al procesar WhatsApp", "error"); }
     };
 
