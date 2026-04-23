@@ -65,9 +65,13 @@ export const usePatientsPageController = () => {
     const totalCount = patientData?.totalCount || 0;
 
     // Supplementary Lists
-    const { data: doctors = [] } = useFetch('/users/doctors', { initialData: [] });
-    const { data: insurances = [] } = useFetch('/insurances', { initialData: [] });
-    const { data: institutions = [] } = useFetch('/institutions', { initialData: [] });
+    const { data: doctorsData = [] } = useFetch('/users/doctors', { initialData: [] });
+    const { data: insurancesData = [] } = useFetch('/insurances', { initialData: [] });
+    const { data: institutionsData = [] } = useFetch('/institutions', { initialData: [] });
+
+    const doctors = doctorsData?.doctors || [];
+    const insurances = insurancesData?.insurances || [];
+    const institutions = institutionsData?.institutions || [];
     const { data: recycleItems = [], refetch: fetchRecycleBin } = useFetch('/logs/recycle-bin', { 
         initialData: [],
         immediate: isStaff // only fetch if user is staff

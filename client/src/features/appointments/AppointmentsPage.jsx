@@ -33,7 +33,7 @@ const AppointmentsPage = () => {
     const controller = useAppointmentsPageController();
     const {
         t, language, user, loading, activeTab, showOutOfHours,
-        viewDoctorId, doctors, institutions, selectedDate, filteredAppointments,
+        viewDoctorId, doctors, institutions, insurances, selectedDate, filteredAppointments,
         appointments, doctorSchedule, holidays, calendarStats, currentDoctor,
         searchPatientId, patientAppointments, patientApptLoading,
         paymentModal, actionModal, historyModal,
@@ -196,6 +196,7 @@ const AppointmentsPage = () => {
                     patient={booking.selectedPatientData} referenceInfo={booking.syncReferenceInfo}
                     onUpdate={(updatedData) => { booking.setSelectedPatient(updatedData.id); booking.setSelectedPatientData(updatedData); }}
                     doctors={doctors}
+                    insurances={insurances}
                 />
             )}
 

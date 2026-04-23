@@ -108,20 +108,29 @@ class AuthService {
     }
 
     async _createPatientProfile(conn, userId, data) {
-        const firstName = data.first_name || data.fullName;
-        const lastName = data.last_name || '';
-        const patientId = await patientRepository.create({
+        const firstName = data.first_name || data.fullName?.split(' ')[0] || '';
+        const lastName = data.last_name || data.fullName?.split(' ').slice(1).join(' ') || '';
+        
+        // Prepare data for repository creation
+        const patientData = {
             user_id: userId,
             full_name: data.fullName,
             first_name: firstName,
             last_name: lastName,
+            email: data.email || null,
             dob: data.dob || null,
             phone: data.phone || null,
-            medical_history: data.medicalHistory || null,
+            medical_history: data.medicalHistory || data.medical_history || null,
             dni: data.dni || null,
             insurance_id: data.insurance_id || null,
             institution_id: data.institution_id || null,
             affiliate_number: data.affiliate_number || null,
+            tariff_percent: data.tariff_percent || 0,
+            tariff_override: data.tariff_override || null,
+            visit_interval_days: data.visit_interval_days || 0,
+            prescription_interval_days: data.prescription_interval_days || 0,
+            is_new_patient: 1, // Default to 1 for new registrations
+            marked_new_at: new Date().toISOString().slice(0, 19).replace('T', ' '),
             street_name: data.street_name || null,
             street_number: data.street_number || null,
             floor: data.floor || null,
@@ -129,7 +138,9 @@ class AuthService {
             city: data.city || 'Tandil',
             province: data.province || 'Buenos Aires',
             country: data.country || 'Argentina'
-        }, conn);
+        };
+
+        const patientId = await patientRepository.create(patientData, conn);
 
         if (Array.isArray(data.phoneNumbers) && data.phoneNumbers.length > 0) {
             const primaryPhone = await phoneRepository.syncPhones('patient', patientId, data.phoneNumbers, conn);

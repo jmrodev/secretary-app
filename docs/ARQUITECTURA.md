@@ -475,5 +475,17 @@ Antes de hacer commit, verificar:
 
 ---
 
-**Última actualización**: 2026-04-06
+### 14. Estándar de Respuesta de API (Listados)
+Para garantizar la compatibilidad con el sistema de paginación y el hook `useFetch`, todos los endpoints que devuelvan listas de entidades deben seguir este formato:
+
+- **Estructura**: `{ [nombre_entidad]: Array, totalCount: Number }`
+- **Ejemplo**: 
+  ```json
+  {
+    "patients": [...],
+    "totalCount": 42
+  }
+  ```
+- **Razón**: Permite que el frontend gestione la paginación de forma consistente sin importar si es una búsqueda, un filtrado o una lista completa.
+- **Excepción**: Endpoints de detalle único (GET /:id) siguen devolviendo el objeto directo.
 **Mantenedor**: Equipo de Desarrollo (Estandarización de useFetch, Lazy Loading y Git Flow completada)

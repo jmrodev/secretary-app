@@ -18,13 +18,15 @@ export const useUsers = (options = {}) => {
 
     // Fetch all users for admin
     const { 
-        data: allUsers = [], 
+        data: userData, 
         loading, 
         refetch: fetchUsers 
     } = useFetch('/users/admin/users', { 
-        initialData: [],
+        initialData: { users: [], totalCount: 0 },
         immediate: true 
     });
+
+    const allUsers = userData?.users || [];
 
     // Filtered data in-memory (as the backend returns all for admin management)
     const users = useMemo(() => {
@@ -140,10 +142,12 @@ export const useUsers = (options = {}) => {
  * Specialized hook for fetching medical staff.
  */
 export const useDoctors = () => {
-    const { data: doctors = [], loading } = useFetch('/users/doctors', { 
-        initialData: [],
+    const { data: docData, loading } = useFetch('/users/doctors', { 
+        initialData: { doctors: [], totalCount: 0 },
         immediate: true 
     });
+
+    const doctors = docData?.doctors || [];
 
     return { doctors, loading };
 };

@@ -59,10 +59,15 @@ const sendTemplateMessage = async (to, templateName, languageCode = 'es', compon
  */
 const sendMessageDirect = async (to, message) => {
     try {
-        const response = await axios.post('http://localhost:8080/api/send', {
+        const bridgeUrl = process.env.WHATSAPP_BRIDGE_URL || 'http://172.18.0.1:8080/api/send';
+        console.log(`[WhatsApp Bridge] Sending to: ${to}, URL: ${bridgeUrl}`);
+        
+        const response = await axios.post(bridgeUrl, {
             recipient: to,
             message: message
         });
+        
+        console.log(`[WhatsApp Bridge] Response:`, response.data);
         return response.data;
     } catch (error) {
         console.error('Local WhatsApp Bridge Error:', error.response?.data || error.message);
@@ -118,7 +123,8 @@ const sendAutomatedReminders = async () => {
                     .replace(/{date}/g, dateStr)
                     .replace(/{time}/g, timeStr)
                     .replace(/{doctor_name}/g, appt.doctor_name)
-                    .replace(/{appointment_location}/g, isVirtual ? 'Virtual' : address);
+                    .replace(/{appointment_location}/g, isVirtual ? 'Virtual' : address)
+                    .replace(/{appointment_type}/g, isVirtual ? 'VIRTUAL' : 'PRESENCIAL');
 
                 let phone = appt.patient_phone.replace(/\D/g, '');
                 if (!phone.startsWith('54') && phone.length >= 10) phone = '549' + phone;

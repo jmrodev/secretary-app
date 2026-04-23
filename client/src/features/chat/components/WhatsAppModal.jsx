@@ -39,12 +39,30 @@ const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange }) => 
             const webUrl = `https://web.whatsapp.com/send?phone=${cleanPhone}&text=${encodedText}`;
             window.location.href = appUrl;
             setTimeout(() => {
-                window.open(webUrl, '_blank');
+                if (document.hasFocus()) {
+                    window.open(webUrl, '_blank');
+                }
             }, 1000);
         }
 
         onClose();
         showMessage(t('message_copied_opening_wa') || "Mensaje copiado. Intentando abrir WhatsApp...", "success");
+    };
+
+    const handleAutoSend = async () => {
+        const safePhone = String(phone || '');
+        let cleanPhone = safePhone.replace(/\D/g, '');
+        if (!cleanPhone.startsWith('54') && cleanPhone.length >= 10) cleanPhone = '549' + cleanPhone;
+
+        try {
+            showMessage(t('sending_via_bridge') || "Enviando por puente local...", "info");
+            await api.post('/whatsapp/send-direct', { to: cleanPhone, message });
+            showMessage(t('sent_via_bridge_success') || "Mensaje enviado automáticamente", "success");
+            onClose();
+        } catch (err) {
+            console.error("Bridge send failed:", err);
+            showMessage(t('bridge_failed_fallback') || "Error en el puente. Usá el modo manual.", "error");
+        }
     };
 
     return (
@@ -65,9 +83,17 @@ const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange }) => 
                     <Button
                         variant="accent"
                         className="whatsapp-modal__send-btn"
+                        onClick={handleAutoSend}
+                    >
+                        <Icon name="bolt" size="1.1rem" className="mr-1" />
+                        {t('send_automatically') || 'Envío Automático'}
+                    </Button>
+                    <Button
+                        variant="primary"
+                        className="whatsapp-modal__send-btn"
                         onClick={handleSend}
                     >
-                        {t('send_via_whatsapp') || 'Enviar por WhatsApp'}
+                        {t('send_via_whatsapp') || 'Enviar Manual (Copiar)'}
                     </Button>
                 </div>
             }

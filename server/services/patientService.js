@@ -7,6 +7,7 @@ const userRepository = require('../repositories/userRepository');
 const bcrypt = require('bcrypt');
 const { pool } = require('../db');
 const { PatientsQueryBuilder } = require('../utils/queryBuilders');
+const { formatLocalSQL, formatDateOnlySQL, nowLocalSQL } = require('../utils/dateUtils');
 
 const { PATIENT_FIELDS } = require('../constants/patientConstants');
 
@@ -101,6 +102,13 @@ class PatientService {
                 Object.entries(rest).filter(([key]) => PATIENT_FIELDS.has(key))
             );
 
+            // Saneamiento de fechas para MariaDB
+            if (patientUpdates.dob) patientUpdates.dob = formatDateOnlySQL(patientUpdates.dob);
+            if (patientUpdates.marked_new_at) patientUpdates.marked_new_at = formatLocalSQL(patientUpdates.marked_new_at);
+            if (patientUpdates.license_expiry_date) patientUpdates.license_expiry_date = formatDateOnlySQL(patientUpdates.license_expiry_date);
+            if (patientUpdates.next_suggested_visit_date) patientUpdates.next_suggested_visit_date = formatDateOnlySQL(patientUpdates.next_suggested_visit_date);
+            if (patientUpdates.next_suggested_prescription_date) patientUpdates.next_suggested_prescription_date = formatDateOnlySQL(patientUpdates.next_suggested_prescription_date);
+
             if (Object.keys(patientUpdates).length > 0) {
                 await patientRepository.update(id, patientUpdates, conn);
             }
@@ -158,7 +166,7 @@ class PatientService {
         const newStatus = !patient.is_new_patient;
         await patientRepository.update(id, {
             is_new_patient: newStatus ? 1 : 0,
-            marked_new_at: newStatus ? new Date() : null
+            marked_new_at: newStatus ? nowLocalSQL() : null
         });
         return newStatus;
     }

@@ -5,6 +5,15 @@
     flex-direction: column;
 }
 
+/* Eliminar márgenes del modal body para que el formulario use todo el ancho */
+:global(.modal-body) {
+    padding: 0 !important;
+}
+
+.patient-manager-modal--full-width {
+    width: 100%;
+}
+
 .patient-manager-modal__loading {
     padding: 3rem;
     display: flex;
@@ -13,16 +22,18 @@
 }
 
 .patient-manager-modal__reference {
-    margin-bottom: 2rem;
-    padding: 1.25rem;
+    margin: 1rem;
+    padding: 1rem;
     background-color: var(--amber-50);
-    border: 1px solid var(--amber-200);
-    border-radius: var(--radius);
+    border: 0.0625rem solid var(--amber-200);
+    border-radius: var(--radius-md);
     animation: fadeIn 0.4s ease-out;
 }
 
 .patient-manager-modal__reference-label {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     font-size: 0.75rem;
     font-weight: 800;
     color: var(--amber-700);

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import api from '@/api/axios';
 import { useLanguage } from '@/context/LanguageContext';
 import { useMessage } from '@/context/MessageContext';
+import { useConfig } from '@/context/ConfigContext';
 import { capitalizeWords } from '@/utils/stringUtils';
 import { PATIENT_CAPITALIZE_FIELDS } from '@/constants/patientConstants';
 
@@ -22,6 +23,7 @@ export const usePatientFormController = ({
 }) => {
     const { t } = useLanguage();
     const { showMessage } = useMessage();
+    const { settings } = useConfig();
 
     // Data State
     const [insurances, setInsurances] = useState(providedInsurances);
@@ -76,9 +78,16 @@ export const usePatientFormController = ({
 
                 const results = await Promise.all(promises);
                 let idx = 0;
-                if (insurances.length === 0) setInsurances(results[idx++].data);
-                if (doctors.length === 0) setDoctors(results[idx++].data);
-                setInstitutions(results[idx++].data);
+                if (insurances.length === 0) {
+                    const res = results[idx++];
+                    setInsurances(Array.isArray(res.data) ? res.data : (res.data.insurances || []));
+                }
+                if (doctors.length === 0) {
+                    const res = results[idx++];
+                    setDoctors(Array.isArray(res.data) ? res.data : (res.data.doctors || []));
+                }
+                const instRes = results[idx++];
+                setInstitutions(Array.isArray(instRes.data) ? instRes.data : (instRes.data.institutions || []));
             } catch (err) {
                 console.error("Failed to fetch form resources", err);
             } finally {
@@ -89,25 +98,44 @@ export const usePatientFormController = ({
         fetchResources();
     }, [doctors.length, insurances.length]);
 
+    // Helper to ensure date is YYYY-MM-DD
+    const formatDate = (dateStr) => {
+        if (!dateStr) return '';
+        return dateStr.split('T')[0];
+    };
+
     // Load Initial Values
     useEffect(() => {
         if (!initialValues) return;
         
         queueMicrotask(() => {
+            const sanitized = { ...initialValues };
+            
+            // Format dates for <input type="date">
+            if (sanitized.dob) sanitized.dob = formatDate(sanitized.dob);
+            if (sanitized.next_suggested_visit_date) sanitized.next_suggested_visit_date = formatDate(sanitized.next_suggested_visit_date);
+            if (sanitized.next_suggested_prescription_date) sanitized.next_suggested_prescription_date = formatDate(sanitized.next_suggested_prescription_date);
+            if (sanitized.license_expiry_date) sanitized.license_expiry_date = formatDate(sanitized.license_expiry_date);
+            
+            // Ensure no null values for controlled inputs
+            Object.keys(sanitized).forEach(key => {
+                if (sanitized[key] === null) sanitized[key] = '';
+            });
+
             setFormData(prev => ({
                 ...prev,
-                ...initialValues,
-                phoneNumbers: (initialValues.phoneNumbers && initialValues.phoneNumbers.length > 0)
-                    ? initialValues.phoneNumbers
+                ...sanitized,
+                phoneNumbers: (sanitized.phoneNumbers && sanitized.phoneNumbers.length > 0)
+                    ? sanitized.phoneNumbers
                     : [{ phone_number: '+549', label: 'Celular', is_primary: true }],
-                assignedDoctors: initialValues.assignedDoctors ?
-                    (Array.isArray(initialValues.assignedDoctors) && typeof initialValues.assignedDoctors[0] === 'object'
-                        ? initialValues.assignedDoctors.map(d => d.id)
-                        : initialValues.assignedDoctors)
+                assignedDoctors: sanitized.assignedDoctors ?
+                    (Array.isArray(sanitized.assignedDoctors) && typeof sanitized.assignedDoctors[0] === 'object'
+                        ? sanitized.assignedDoctors.map(d => d.id)
+                        : sanitized.assignedDoctors)
                     : []
             }));
 
-            if (initialValues.institution_id) {
+            if (sanitized.institution_id) {
                 setCoveredByInstitution(true);
             }
         });
@@ -232,16 +260,39 @@ export const usePatientFormController = ({
                     const res = await api.post('/auth/register', payload);
 
                     const derivedPhone = formData.phoneNumbers?.find(p => p.is_primary)?.phone_number || formData.phoneNumbers?.[0]?.phone_number || '';
+                    const insuranceName = insurances.find(i => i.id == formData.insurance_id)?.name || 'Particular';
 
                     const newPatient = {
                         id: res.data.patient_id,
                         user_id: res.data.user_id,
                         ...formData,
                         phone: derivedPhone,
-                        insurance_name: insurances.find(i => i.id == formData.insurance_id)?.name
+                        insurance_name: insuranceName
                     };
 
                     showMessage(t('patient_created') || 'Patient created successfully', 'success');
+
+                    // SEND WELCOME MESSAGE VIA WHATSAPP BRIDGE
+                    if (derivedPhone && (settings.whatsapp_use_local_bridge === 'true' || settings.whatsapp_use_local_bridge === true)) {
+                        try {
+                            const welcomeTemplate = settings.whatsapp_welcome_template || 
+                                "Hola {patient_name}, ¡bienvenido/a! Te confirmamos tu registro con DNI: {dni} y Obra Social: {insurance_name}.";
+                            
+                            const welcomeMessage = welcomeTemplate
+                                .replace(/{patient_name}/g, constructedFullName)
+                                .replace(/{dni}/g, formData.dni || 'N/A')
+                                .replace(/{insurance_name}/g, insuranceName);
+
+                            let normalizedPhone = derivedPhone.replace(/\D/g, '');
+                            if (!normalizedPhone.startsWith('54') && normalizedPhone.length >= 10) normalizedPhone = '549' + normalizedPhone;
+
+                            await api.post('/whatsapp/send-direct', { to: normalizedPhone, message: welcomeMessage });
+                            console.log("Welcome WhatsApp sent automatically");
+                        } catch (waErr) {
+                            console.warn("Failed to send welcome WhatsApp:", waErr);
+                        }
+                    }
+
                     if (onUpdate) onUpdate(newPatient);
                 }
                 if (onClose) onClose();

@@ -46,7 +46,16 @@ export const useAppointmentsPageController = () => {
     // --- Data Fetching using useFetch ---
     
     // Institutions
-    const { data: institutions = [], loading: institutionsLoading } = useFetch('/institutions', { initialData: [] });
+    const { data: instData, loading: institutionsLoading } = useFetch('/institutions', { 
+        initialData: { institutions: [], totalCount: 0 } 
+    });
+    const institutions = instData?.institutions || [];
+
+    // Insurances (Required for PatientManagerModal)
+    const { data: insData } = useFetch('/insurances', { 
+        initialData: { insurances: [], totalCount: 0 } 
+    });
+    const insurances = insData?.insurances || [];
 
     // Calendar Stats
     const { data: calendarStats = {} } = useFetch('/appointments/stats', {
@@ -117,7 +126,7 @@ export const useAppointmentsPageController = () => {
     };
 
     return {
-        viewDoctorId, doctors, institutions, loading, selectedDate,
+        viewDoctorId, doctors, institutions, insurances, loading, selectedDate,
         activeTab, showOutOfHours, t, language, user,
         editPatientModalOpen, paymentModal,
         actionModal, historyModal, prescribeModal,

@@ -21,10 +21,12 @@ export const DoctorProvider = ({ children }) => {
     );
 
     // Doctors List (Cached globally)
-    const { data: doctors = [], loading: doctorsLoading } = useFetch('/users/doctors', {
-        initialData: [],
+    const { data: doctorData, loading: doctorsLoading } = useFetch('/users/doctors', {
+        initialData: { doctors: [], totalCount: 0 },
         immediate: !!user // Fetch only if logged in
     });
+
+    const doctors = doctorData?.doctors || [];
 
     const setViewDoctorId = useCallback((id) => {
         const stringId = id ? String(id) : '';
