@@ -2,7 +2,7 @@
     --form-bg: var(--background-bg);
     --step-content-bg: var(--white);
     --accent: var(--primary-color);
-    
+
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -15,7 +15,8 @@
     flex-shrink: 0;
     background: var(--white);
     z-index: 10;
-    box-shadow: 0 0.25rem 1rem rgba(0,0,0,0.02); /* Very subtle shadow instead of line */
+    box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.02);
+    /* Very subtle shadow instead of line */
 }
 
 .patient-form__stepper {
@@ -47,7 +48,7 @@
     padding: 1.5rem 2rem;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
     -webkit-overflow-scrolling: touch;
 }
 
@@ -62,10 +63,12 @@
 /* 3. FOOTER: Actions (Fixed & Tonal) */
 .patient-form__footer {
     flex-shrink: 0;
-    background: var(--gray-50); /* Tonal shift instead of white to separate from content */
+    background: var(--gray-50);
+    /* Tonal shift instead of white to separate from content */
     padding: 1.25rem 2rem;
     z-index: 10;
-    box-shadow: 0 -0.25rem 1rem rgba(0,0,0,0.03); /* Ambient shadow instead of line */
+    box-shadow: 0 -0.25rem 1rem rgba(0, 0, 0, 0.03);
+    /* Ambient shadow instead of line */
 }
 
 .patient-form__actions {
@@ -143,7 +146,15 @@
 }
 
 @media (max-width: 37.5rem) {
-    .patient-form__step-label { display: none; }
-    .patient-form__stepper { padding: 1rem; }
-    .patient-form__main { padding: 1rem; }
+    .patient-form__step-label {
+        display: none;
+    }
+
+    .patient-form__stepper {
+        padding: 1rem;
+    }
+
+    .patient-form__main {
+        padding: 1rem;
+    }
 }
