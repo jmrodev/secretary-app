@@ -104,10 +104,6 @@ const DashboardPage = () => {
                     title={
                         <div className="dashboard-header-title">
                             {t('dashboard')}
-                            <div className="dashboard-live-indicator">
-                                <span className="dashboard-live-indicator__dot"></span>
-                                <span className="dashboard-live-indicator__text">{t('live')}</span>
-                            </div>
                         </div>
                     }
                     subtitle={

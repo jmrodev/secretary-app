@@ -20,27 +20,35 @@ const DashboardSidebar = ({ stats, newPatientStats, user, t }) => {
                     </header>
                     <div className="dashboard-sidebar__horizontal-card">
                         <div className="horizontal-item">
-                            <Icon name="calendar_today" size="0.875rem" className="horizontal-item__icon" />
                             <span className="horizontal-item__value">{stats.appointments_today}</span>
-                            <span className="horizontal-item__label">{t('turnos_hoy')}</span>
+                            <div className="horizontal-item__meta">
+                                <Icon name="calendar_today" size="0.75rem" className="horizontal-item__icon" />
+                                <span className="horizontal-item__label">{t('turnos_hoy')}</span>
+                            </div>
                         </div>
                         <div className="horizontal-divider"></div>
                         <div className="horizontal-item">
-                            <Icon name="view_week" size="0.875rem" className="horizontal-item__icon" />
                             <span className="horizontal-item__value">{stats.appointments_week}</span>
-                            <span className="horizontal-item__label">{t('turnos_semana')}</span>
+                            <div className="horizontal-item__meta">
+                                <Icon name="view_week" size="0.75rem" className="horizontal-item__icon" />
+                                <span className="horizontal-item__label">{t('turnos_semana')}</span>
+                            </div>
                         </div>
                         <div className="horizontal-divider"></div>
                         <div className="horizontal-item">
-                            <Icon name="date_range" size="0.875rem" className="horizontal-item__icon" />
                             <span className="horizontal-item__value">{stats.appointments_month}</span>
-                            <span className="horizontal-item__label">{t('turnos_mes')}</span>
+                            <div className="horizontal-item__meta">
+                                <Icon name="date_range" size="0.75rem" className="horizontal-item__icon" />
+                                <span className="horizontal-item__label">{t('turnos_mes')}</span>
+                            </div>
                         </div>
                         <div className="horizontal-divider"></div>
                         <div className="horizontal-item">
-                            <Icon name="groups" size="0.875rem" className="horizontal-item__icon" />
                             <span className="horizontal-item__value">{stats.total_patients}</span>
-                            <span className="horizontal-item__label">{t('pacientes_label')}</span>
+                            <div className="horizontal-item__meta">
+                                <Icon name="groups" size="0.75rem" className="horizontal-item__icon" />
+                                <span className="horizontal-item__label">{t('pacientes_label')}</span>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -57,17 +65,23 @@ const DashboardSidebar = ({ stats, newPatientStats, user, t }) => {
                     <div className="dashboard-sidebar__horizontal-card">
                         <div className="horizontal-item">
                             <span className="horizontal-item__value">{newPatientStats.currentDay}</span>
-                            <span className="horizontal-item__label">{t('this_day')}</span>
+                            <div className="horizontal-item__meta">
+                                <span className="horizontal-item__label">{t('this_day')}</span>
+                            </div>
                         </div>
                         <div className="horizontal-divider"></div>
                         <div className="horizontal-item">
                             <span className="horizontal-item__value">{newPatientStats.currentWeek}</span>
-                            <span className="horizontal-item__label">{t('this_week')}</span>
+                            <div className="horizontal-item__meta">
+                                <span className="horizontal-item__label">{t('this_week')}</span>
+                            </div>
                         </div>
                         <div className="horizontal-divider"></div>
                         <div className="horizontal-item">
                             <span className="horizontal-item__value">{newPatientStats.currentMonth}</span>
-                            <span className="horizontal-item__label">{t('this_month')}</span>
+                            <div className="horizontal-item__meta">
+                                <span className="horizontal-item__label">{t('this_month')}</span>
+                            </div>
                         </div>
                         <div className="horizontal-divider"></div>
                         <div className="horizontal-item horizontal-item--highlight">
@@ -75,7 +89,9 @@ const DashboardSidebar = ({ stats, newPatientStats, user, t }) => {
                                 {newPatientStats.currentYear}
                                 <Icon name="trending_up" size="0.75rem" className="horizontal-item__trend" />
                             </span>
-                            <span className="horizontal-item__label">{t('this_year')}</span>
+                            <div className="horizontal-item__meta">
+                                <span className="horizontal-item__label">{t('this_year')}</span>
+                            </div>
                         </div>
                     </div>
                 </section>

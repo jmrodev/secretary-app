@@ -26,13 +26,13 @@
 /* --- Premium Hero Variant --- */
 .page-header--premium {
     position: relative;
-    height: 80px;
-    min-height: 80px;
+    min-height: 120px; /* Increased from 80px */
     background-color: var(--secondary-color); /* Slate 900 */
     overflow: hidden;
     display: flex;
     align-items: center;
-    margin-bottom: 0px;
+    margin-bottom: 1.5rem;
+    padding: 1.5rem 0; /* Added vertical padding */
 }
 
 .page-header--premium__content {
@@ -40,11 +40,12 @@
     z-index: 2;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end; /* Align to bottom for a more editorial feel */
     width: 100%;
     max-width: var(--max-width, 1600px);
     margin: 0 auto;
     padding: 0 2rem;
+    gap: 2rem;
 }
 
 .page-header__background-img {
@@ -63,24 +64,29 @@
 
 .page-header--premium .page-header--premium__title {
     color: var(--white);
-    font-size: 1.15rem;
-    font-weight: 700;
+    font-size: 2.25rem; /* Large and elegant */
+    font-weight: 800;
+    font-family: var(--font-newsreader);
     margin: 0;
-    line-height: 1.1;
+    line-height: 1;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 1rem;
+    letter-spacing: -0.04em;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .page-header--premium .page-header--premium__subtitle {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.85rem;
-    margin: 0.25rem 0 0 0;
+    color: rgba(255, 255, 255, 0.9);
+    font-family: var(--font-manrope);
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0.5rem 0 0 0;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    line-height: 1.4;
+    gap: 0.75rem;
+    line-height: 1.5;
 }
 
 .page-header__title-container {

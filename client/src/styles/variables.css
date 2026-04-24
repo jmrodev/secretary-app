@@ -150,10 +150,15 @@
     --shadow-sm: 0 4px 12px rgba(25, 28, 30, 0.04);
     --shadow-md: 0 8px 24px rgba(25, 28, 30, 0.06);
     --shadow-lg: 0 12px 32px rgba(25, 28, 30, 0.08);
-    --shadow-premium: 0 20px 40px -10px rgba(0, 61, 155, 0.08); /* Tinted ambient shadow */
+    --shadow-premium: 0 24px 48px -12px rgba(0, 61, 155, 0.15); /* Tinted ambient shadow */
     
-    --font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    --glass: rgba(255, 255, 255, 0.85); 
+    --font-main: 'Manrope', 'Inter', system-ui, sans-serif;
+    --font-newsreader: 'Newsreader', 'Georgia', serif;
+    --font-manrope: 'Manrope', sans-serif;
+    
+    --glass: rgba(255, 255, 255, 0.7); 
+    --glass-dark: rgba(25, 28, 30, 0.7);
+    
     --sidebar-width: 280px;
     --sidebar-bg: var(--secondary-color); /* Slate 900 */
     --sidebar-text: #ffffff;
