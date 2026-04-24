@@ -49,7 +49,7 @@ const QuickActions = ({ t, handlers, isAdmin, isSecretary, isDoctor, compact = f
             title: t('documents'),
             icon: 'description',
             actions: [
-                { label: t('new_request'), icon: 'assignment_add', onClick: () => navigate('/medical/requests') },
+                { label: t('new_request'), icon: 'assignment_add', onClick: () => navigate('/requests') },
             ],
             visible: true
         }
