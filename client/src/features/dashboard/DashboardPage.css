@@ -27,9 +27,57 @@
 /* Glassmorphic Page Header overrides */
 .dashboard-page-orchestrator .page-header--premium {
     border-radius: 0 0 2.5rem 2.5rem;
-    padding: 3rem 2rem 5rem 2rem;
-    margin-bottom: -3rem; /* Overlap with grid */
+    padding: 3rem 2rem 4rem 2rem;
+    margin-bottom: 0; /* Removed overlap for better stability */
     z-index: 1;
+}
+
+.dashboard-search-bar {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius, 1.5rem);
+    padding: 0.5rem 1.25rem;
+    width: 100%;
+    max-width: 380px;
+    transition: all 0.3s ease;
+}
+
+.dashboard-search-bar:focus-within {
+    background: var(--white);
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-md);
+}
+
+.dashboard-search-bar__icon {
+    color: rgba(255, 255, 255, 0.6);
+    margin-right: 0.75rem;
+    transition: color 0.3s ease;
+}
+
+.dashboard-search-bar:focus-within .dashboard-search-bar__icon {
+    color: var(--primary-color);
+}
+
+.dashboard-search-bar__input {
+    background: transparent;
+    border: none;
+    color: var(--white);
+    font-family: var(--font-manrope);
+    font-size: 0.9rem;
+    font-weight: 500;
+    width: 100%;
+    outline: none;
+}
+
+.dashboard-search-bar:focus-within .dashboard-search-bar__input {
+    color: var(--text-main);
+}
+
+.dashboard-search-bar__input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .dashboard-live-indicator {
