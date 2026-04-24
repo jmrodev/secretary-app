@@ -2,24 +2,25 @@
 
 .appointments-page-orchestrator {
     /* --- Local Component Tokens --- */
-    --appointments-surface: var(--card-bg);
+    --appointments-surface: var(--white);
     --appointments-panel-bg: var(--white);
-    --appointments-panel-border: var(--gray-300);
+    --appointments-panel-border: transparent; /* No-line rule */
     --appointments-panel-shadow: var(--shadow-sm);
-    --appointments-gap: 1rem;
-    --appointments-radius: 1rem;
+    --appointments-gap: 1.5rem; /* Breathable spacing */
+    --appointments-radius: var(--radius); /* 1.5rem Bento Radius */
 
-    --live-indicator-bg: rgba(255, 255, 255, 0.15);
-    --live-indicator-dot: #4ade80; 
-    --live-indicator-text: var(--white);
-    --search-bg: rgba(255, 255, 255, 0.9);
-    --search-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    --live-indicator-bg: rgba(0, 61, 155, 0.08);
+    --live-indicator-dot: var(--success); 
+    --live-indicator-text: var(--primary-color);
+    --search-bg: var(--white);
+    --search-shadow: var(--shadow-md);
     /* ------------------------------ */
 
     flex: 1;
     min-height: 0;
     display: flex;
     flex-direction: column;
+    background-color: var(--background-bg);
 }
 
 /* --- Top Actions (Search Bar & Filters) --- */
@@ -89,15 +90,14 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    background-color: var(--search-bg);
-    backdrop-filter: blur(8px);
-    padding: 0.75rem 1.25rem;
-    border-radius: 1rem;
-    box-shadow: var(--search-shadow);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    transition: all 0.3s ease;
+    background-color: var(--white);
+    padding: 0.85rem 1.5rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--gray-100);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     flex: 1;
-    max-width: 600px;
+    max-width: 500px;
 }
 
 .appointments-search-bar:focus-within {

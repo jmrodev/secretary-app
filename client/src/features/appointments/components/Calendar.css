@@ -6,21 +6,20 @@
     align-items: stretch;
     gap: 0;
     width: 100%;
-    background-color: var(--white);
-    border: 1px solid var(--gray-300);
-    border-radius: 1rem;
-    box-shadow: var(--shadow-sm);
+    background-color: transparent;
+    border: none;
+    border-radius: var(--radius);
     overflow: hidden;
 }
 
 .calendar-grid__simple-title {
-    padding: 1rem;
-    text-align: center;
+    padding: 1.25rem;
+    text-align: left;
     font-weight: 800;
-    font-size: 1.125rem;
+    font-size: 1.25rem;
     color: var(--text-main);
-    background-color: var(--gray-50);
-    border-bottom: 1px solid var(--gray-200);
+    background-color: transparent;
+    letter-spacing: -0.01em;
 }
 
 .calendar-grid__main-container {
