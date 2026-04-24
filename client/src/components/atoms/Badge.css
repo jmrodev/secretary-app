@@ -6,12 +6,12 @@
 
     display: inline-flex;
     align-items: center;
-    padding: 0.35rem 0.85rem;
+    padding: 0.2rem 0.65rem;
     border-radius: 2rem;
     background-color: var(--badge-bg);
     color: var(--badge-color);
     font-family: var(--font-manrope);
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
     font-weight: 800;
     line-height: 1;
     white-space: nowrap;
