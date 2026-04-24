@@ -12,6 +12,7 @@ import {
 
 // Global Atomic Components
 import MainLayout from '@/components/templates/MainLayout';
+import { PageHeader } from '@/features/layout';
 import Loading from '@/components/atoms/Loading';
 import Icon from '@/components/atoms/Icon';
 import TabButton from '@/components/atoms/TabButton';
@@ -92,16 +93,19 @@ const MedicalDocumentsPage = () => {
     ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
     if (loading) return (
-        <MainLayout wide>
+        <MainLayout wide flush>
             <Loading variant="centered" />
         </MainLayout>
     );
 
     return (
-        <MainLayout wide>
+        <MainLayout wide flush>
             <div className="medical-documents-page">
                 <div className="medical-documents no-print">
-                <DocumentsHeader t={t} />
+                <PageHeader
+                    variant="premium"
+                    title={t('documents') || 'Documentos Médicos'}
+                />
 
                 <div className="dashboard-grid animate-fadeIn">
                     <DocumentsSidebar

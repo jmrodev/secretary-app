@@ -112,7 +112,6 @@ const PatientsPage = () => {
                     <PageHeader 
                         variant="premium"
                         title={t('patients')}
-                        subtitle={t('patients_subtitle')}
                     />
 
                     <div className="layout-content-area">

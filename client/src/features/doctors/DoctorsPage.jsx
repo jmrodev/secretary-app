@@ -16,8 +16,6 @@ const DoctorsPage = () => {
             <PageHeader 
                 variant="premium"
                 title="Gestión de Profesionales"
-                subtitle="Configura el staff médico, horarios y especialidades."
-                hideDoctorSelector={true}
             />
             <div className="layout-content-area animate-fadeIn">
                 <DoctorsManager {...controller} />

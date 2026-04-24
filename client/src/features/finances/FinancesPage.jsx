@@ -48,7 +48,6 @@ const FinancesPage = () => {
                 <PageHeader 
                     variant="premium"
                     title={t('finances')}
-                    subtitle={t('finances_subtitle') || 'Control de caja y transacciones médicas.'}
                 />
 
                 <section className="layout-content-area">

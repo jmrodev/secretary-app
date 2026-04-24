@@ -40,8 +40,6 @@ const InstitutionsPage = () => {
                 <PageHeader 
                     variant="premium"
                     title={t('institutions') || 'Instituciones'}
-                    subtitle={t('institutions_subtitle') || 'Gestiona instituciones pagadoras y convenios.'}
-                    hideDoctorSelector={true}
                 />
                 
                 <div className="layout-content-area animate-fadeIn">
