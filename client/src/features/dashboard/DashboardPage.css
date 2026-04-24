@@ -26,10 +26,18 @@
 
 /* Glassmorphic Page Header overrides */
 .dashboard-page-orchestrator .page-header--premium {
-    border-radius: 0 0 2.5rem 2.5rem;
-    padding: 3rem 2rem 4rem 2rem;
-    margin-bottom: 0; /* Removed overlap for better stability */
-    z-index: 1;
+    border-radius: 0; 
+    padding: 3rem 2rem 4rem 2rem; 
+    margin: 0;
+    width: 100%;
+    z-index: 10;
+}
+
+.layout-content-area {
+    padding: 2rem; /* Re-apply padding removed from MainLayout */
+    max-width: 1920px;
+    margin: 0 auto;
+    width: 100%;
 }
 
 .dashboard-search-bar {

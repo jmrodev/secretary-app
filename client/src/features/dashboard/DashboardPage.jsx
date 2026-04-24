@@ -125,7 +125,6 @@ const DashboardPage = () => {
                 />
 
                 <section className="layout-content-area">
-                    <h2 className="visually-hidden">{t('dashboard_content')}</h2>
                     
                     {shouldShowLoadingState ? (
                         <Loading variant="centered" text={t('loading')} />

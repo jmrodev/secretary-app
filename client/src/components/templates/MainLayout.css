@@ -86,7 +86,7 @@
 }
 
 .main-content.dashboard-wide {
-    padding: 2rem;
+    padding: 0;
 }
 
 .main-content.dashboard-wide>* {
