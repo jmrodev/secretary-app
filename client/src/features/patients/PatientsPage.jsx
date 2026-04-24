@@ -12,7 +12,6 @@ import Icon from '@/components/atoms/Icon';
 
 // Molecules (Shared/Global)
 // Molecules (Shared/Global)
-import { PageHeader } from '@/features/layout';
 import QRCodeModal from '@/features/patients/components/QRCodeModal';
 import SearchBar from '@/components/molecules/SearchBar';
 import Pagination from '@/components/molecules/Pagination';
@@ -89,7 +88,7 @@ const PatientsPage = () => {
     );
 
     return (
-        <MainLayout wide flush>
+        <MainLayout wide flush title={(!selectedPatientId || !patientDetails) ? t('patients') : null}>
             {(selectedPatientId && patientDetails) ? (
                 // --- DETAILS VIEW ---
                 <PatientDetailsView
@@ -108,14 +107,8 @@ const PatientsPage = () => {
                 </PatientDetailsView>
             ) : (
                 // --- LIST VIEW ---
-                <>
-                    <PageHeader 
-                        variant="premium"
-                        title={t('patients')}
-                    />
-
-                    <div className="layout-content-area">
-                        <section className="patients-page__dashboard-grid animate-fadeIn">
+                <div className="layout-content-area">
+                    <section className="patients-page__dashboard-grid animate-fadeIn">
                         <aside className="dashboard-sidebar">
                             <div className="dashboard-nav-bar">
                                 <TabNav className="patients__nav">
@@ -209,9 +202,8 @@ const PatientsPage = () => {
                                 />
                             )}
                         </main>
-                        </section>
-                    </div>
-                </>
+                    </section>
+                </div>
             )}
 
             {/* --- GLOBALLY HOISTED MODALS --- */}

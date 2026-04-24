@@ -30,12 +30,8 @@ const AdminUsersPage = () => {
     }
 
     return (
-        <MainLayout wide>
+        <MainLayout wide title={t('user_management') || 'Gestión de Usuarios'}>
             <div className="admin-users-page-orchestrator">
-                <header className="dashboard-header animate-fadeIn">
-                    <h1 className="dashboard-header__title">{t('user_management') || 'Gestión de Usuarios'}</h1>
-                    <p className="dashboard-header__subtitle">{t('manage_users_subtitle') || 'Administra cuentas de médicos, secretarias y administradores.'}</p>
-                </header>
 
                 <div className="dashboard-nav-bar animate-fadeIn">
                     <div className="admin-users-page__spacer"></div>

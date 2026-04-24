@@ -3,8 +3,6 @@ import React from 'react';
 // Atomic Design Components
 import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
-import { PageHeader } from '../layout';
-
 import { useFinancesPageController } from '@/features/finances/hooks/useFinancesPageController';
 import FinanceStatsCards from '@/features/finances/components/FinanceStatsCards';
 import EditTransactionModal from '@/features/finances/components/EditTransactionModal';
@@ -43,17 +41,13 @@ const FinancesPage = () => {
     const isAdminOrSecretary = user && (user.role === 'admin' || user.role === 'secretary');
 
     return (
-        <MainLayout wide flush>
-            <main className="finances-page">
-                <PageHeader 
-                    variant="premium"
-                    title={t('finances')}
-                />
+        <MainLayout wide flush title={t('finances') || 'Finanzas'}>
+            <div className="finances-page">
 
                 <section className="layout-content-area">
                     <h2 className="visually-hidden">{t('financial_operations_area') || 'Área de Operaciones Financieras'}</h2>
                     {loading ? (
-                        <Loading variant="centered" text={t('loading')} />
+                        <Loading variant="centered" text={t('loading') || 'Cargando...'} />
                     ) : (
                         <div className="dashboard-grid animate-fadeIn">
                             <FinanceSidebar
@@ -147,7 +141,7 @@ const FinancesPage = () => {
                 onResetDay={handlers.handleResetDay}
                 t={t}
             />
-            </main>
+            </div>
         </MainLayout>
     );
 };

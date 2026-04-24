@@ -2,7 +2,6 @@ import React from 'react';
 import { useAppointmentsPageController } from '@/features/appointments/hooks/useAppointmentsPageController';
 import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
-import { PageHeader } from '@/features/layout';
 import { DoctorSelector } from '@/features/doctors';
 import Icon from '@/components/atoms/Icon';
 import { PatientManagerModal, PatientHistoryModal } from '@/features/patients';
@@ -57,13 +56,8 @@ const AppointmentsPage = () => {
     if (loading || !user) return <Loading variant="full-page" />;
 
     return (
-        <MainLayout wide flush>
+        <MainLayout wide flush title={t('appointments_title')}>
             <main className="appointments-page-orchestrator">
-                <PageHeader 
-                    variant="premium"
-                    title={t('appointments_title')}
-                />
-
                 <section className="layout-content-area">
                     <header className="appointments-top-actions animate-fadeIn">
                         <div className="appointments-top-actions__main">

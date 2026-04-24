@@ -4,7 +4,6 @@ import Loading from '@/components/atoms/Loading';
 import Icon from '@/components/atoms/Icon';
 import SearchBar from '@/components/molecules/SearchBar';
 import { useInsurancesController, InsuranceList, InsuranceFormModal } from '@/features/insurances/index';
-import { PageHeader } from '@/features/layout';
 import MainLayout from '@/components/templates/MainLayout';
 import './InsurancesPage.css';
 
@@ -35,12 +34,8 @@ const InsurancesPage = () => {
     } = handlers;
 
     return (
-        <MainLayout wide flush>
+        <MainLayout wide flush title={t('insurances') || 'Obras Sociales'}>
             <div className="insurances-page-orchestrator">
-                <PageHeader
-                    variant="premium"
-                    title={t('insurances') || 'Obras Sociales'}
-                />
 
                 <div className="layout-content-area animate-fadeIn">
                     {loading ? (

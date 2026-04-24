@@ -12,7 +12,6 @@ import {
 
 // Global Atomic Components
 import MainLayout from '@/components/templates/MainLayout';
-import { PageHeader } from '@/features/layout';
 import Loading from '@/components/atoms/Loading';
 import Icon from '@/components/atoms/Icon';
 import TabButton from '@/components/atoms/TabButton';
@@ -99,13 +98,9 @@ const MedicalDocumentsPage = () => {
     );
 
     return (
-        <MainLayout wide flush>
+        <MainLayout wide flush title={t('documents') || 'Documentos Médicos'}>
             <div className="medical-documents-page">
                 <div className="medical-documents no-print">
-                <PageHeader
-                    variant="premium"
-                    title={t('documents') || 'Documentos Médicos'}
-                />
 
                 <div className="dashboard-grid animate-fadeIn">
                     <DocumentsSidebar

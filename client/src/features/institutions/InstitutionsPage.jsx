@@ -5,7 +5,6 @@ import Loading from '@/components/atoms/Loading';
 import Icon from '@/components/atoms/Icon';
 import { InstitutionFinances } from '@/features/finances';
 import { useInstitutionsController, InstitutionFormModal } from '@/features/institutions/index';
-import { PageHeader } from '@/features/layout';
 import './InstitutionsPage.css';
 
 /**
@@ -35,12 +34,8 @@ const InstitutionsPage = () => {
     const [viewMode, setViewMode] = React.useState('transactions');
 
     return (
-        <MainLayout wide flush>
+        <MainLayout wide flush title={t('institutions') || 'Instituciones'}>
             <div className="institutions-page-orchestrator">
-                <PageHeader 
-                    variant="premium"
-                    title={t('institutions') || 'Instituciones'}
-                />
                 
                 <div className="layout-content-area animate-fadeIn">
                     {loading ? (

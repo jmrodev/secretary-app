@@ -78,11 +78,19 @@
 }
 
 /* Base constraint for content inside main layout */
-.main-content>* {
+.main-content > :not(.page-header--premium):not(.page-header) {
     width: 100%;
     max-width: 1360px;
     /* Focused container for standard pages */
     margin: 0 auto;
+}
+
+/* Ensure PageHeader is always full width and at the top */
+.main-content > .page-header--premium,
+.main-content > .page-header {
+    width: 100%;
+    max-width: none;
+    margin: 0;
 }
 
 .main-content.dashboard-wide {

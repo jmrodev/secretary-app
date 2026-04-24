@@ -6,7 +6,6 @@ import {
     QuickActions,
     DashboardLayout
 } from '@/features/dashboard/index'; // Local index
-import { PageHeader } from '@/features/layout';
 import { PrescriptionModal, MedicalRequirementManager } from '@/features/medical_documents';
 import { PatientHistoryModal } from '@/features/patients';
 import { TransactionModal } from '@/features/finances';
@@ -95,13 +94,8 @@ const DashboardPage = () => {
     const shouldShowErrorState = Boolean(error) && !hasDashboardData;
 
     return (
-        <MainLayout wide flush>
+        <MainLayout wide flush title={t('dashboard')}>
             <main className="dashboard-page-orchestrator">
-                <PageHeader 
-                    variant="premium"
-                    title={t('dashboard')}
-                />
-
                 <section className="layout-content-area">
                     
                     {shouldShowLoadingState ? (
