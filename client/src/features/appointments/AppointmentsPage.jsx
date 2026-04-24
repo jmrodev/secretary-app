@@ -67,8 +67,8 @@ const AppointmentsPage = () => {
                                     type="text"
                                     className="appointments-search-bar__input"
                                     placeholder={t('search_placeholder')}
-                                    onChange={(e) => setSearchPatientId(e.target.value)}
-                                    value={searchPatientId}
+                                    onChange={(e) => handlers.setSearchTerm(e.target.value)}
+                                    value={controller.searchTerm}
                                     aria-label={t('search_placeholder')}
                                 />
                             </form>

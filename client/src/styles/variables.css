@@ -142,9 +142,9 @@
     --teal-700: #0f766e;
 
     /* UI Tokens - Clinical Curator Strategy */
-    --radius: 1.5rem; /* Editorial XL Corners */
-    --radius-md: 1rem;
-    --radius-sm: 0.625rem;
+    --radius: 1rem; /* Reduced from 1.5rem for more professional look */
+    --radius-md: 0.75rem;
+    --radius-sm: 0.5rem;
     
     /* Ambient Shadows (Extra-diffused) */
     --shadow-sm: 0 4px 12px rgba(25, 28, 30, 0.04);

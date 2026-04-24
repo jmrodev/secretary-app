@@ -11,7 +11,8 @@
     display: flex; 
     flex-direction: column; 
     overflow: hidden;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-sm); /* More technical/subtle radius */
+    box-shadow: var(--shadow-sm); /* Added for Bento lift */
 }
 
 .calendar-day-cell:hover { 
@@ -29,7 +30,7 @@
 
 .calendar-day-cell__content { display: flex; flex-direction: column; height: 100%; width: 100%; position: relative; padding-top: 1.15rem; }
 .calendar-day-cell__date { position: absolute; top: 0.25rem; left: 0.5rem; right: 0.5rem; display: flex; justify-content: space-between; align-items: center; z-index: 2; }
-.calendar-day-cell__number { font-weight: 800; font-size: 0.9rem; color: var(--text-main); }
+.calendar-day-cell__number { font-weight: 800; font-size: 0.8rem; color: var(--text-main); }
 
 .calendar-day-cell--selected .calendar-day-cell__number { color: white; }
 

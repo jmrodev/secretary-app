@@ -8,18 +8,20 @@
     width: 100%;
     background-color: transparent;
     border: none;
-    border-radius: var(--radius);
+    border-radius: var(--radius-md);
     overflow: hidden;
 }
 
 .calendar-grid__simple-title {
-    padding: 1.25rem;
+    padding: 0.5rem 1rem 1.25rem;
     text-align: left;
-    font-weight: 800;
-    font-size: 1.25rem;
-    color: var(--text-main);
+    font-weight: 400; /* Newsreader looks better at lower weight */
+    font-size: 1.5rem;
+    font-family: var(--font-newsreader);
+    font-style: italic; /* Signature Curator style */
+    color: var(--primary-color);
     background-color: transparent;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
 }
 
 .calendar-grid__main-container {
@@ -33,7 +35,7 @@
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     background-color: transparent;
-    gap: 2px;
+    gap: 0.5rem; /* Bento separation */
 }
 
 /* Sunday Column */
@@ -44,7 +46,7 @@
 .calendar-grid__cell--empty {
     background: transparent;
     border: none;
-    min-height: 65px;
+    aspect-ratio: 1 / 1;
     pointer-events: none;
     opacity: 0;
 }
