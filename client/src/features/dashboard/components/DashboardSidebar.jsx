@@ -10,75 +10,78 @@ import './DashboardSidebar.css';
 const DashboardSidebar = ({ stats, newPatientStats, user, t }) => {
     return (
         <aside className="dashboard-sidebar-stats">
-            {/* General Statistics Section */}
+            {/* General Statistics Section - 2x2 Bento Grid */}
             {stats && (
                 <section className="dashboard-sidebar__section animate-fadeIn">
-                    <h4 className="dashboard-sidebar__title">
-                        <Icon name="analytics" size="1rem" />
-                        {t('general_stats')}
-                    </h4>
-                    <div className="dashboard-sidebar__list">
+                    <header className="dashboard-sidebar__header">
+                        <h4 className="dashboard-sidebar__title">
+                            {t('general_stats')}
+                        </h4>
+                    </header>
+                    <div className="dashboard-sidebar__grid">
                         <StatCard
-                            layout="list"
+                            size="sm"
                             icon="calendar_today"
                             label={t('turnos_hoy')}
                             value={stats.appointments_today}
+                            className="stat-card--bento"
                         />
                         <StatCard
-                            layout="list"
+                            size="sm"
                             icon="view_week"
                             label={t('turnos_semana')}
                             value={stats.appointments_week}
+                            className="stat-card--bento"
                         />
                         <StatCard
-                            layout="list"
+                            size="sm"
                             icon="date_range"
                             label={t('turnos_mes')}
                             value={stats.appointments_month}
+                            className="stat-card--bento"
                         />
                         <StatCard
-                            layout="list"
+                            size="sm"
                             icon="groups"
                             label={t('pacientes_label')}
                             value={stats.total_patients}
+                            className="stat-card--bento"
                         />
                     </div>
                 </section>
             )}
 
-            {/* New Patient Growth Section */}
+            {/* New Patient Growth Section - Sparkline Bento Layout */}
             {newPatientStats && (
-                <section className="dashboard-sidebar__section dashboard-sidebar__section--delayed animate-fadeIn">
-                    <h4 className="dashboard-sidebar__title">
-                        <Icon name="auto_awesome" size="1rem" />
-                        {t('new_patients_stat')}
-                    </h4>
-                    <div className="dashboard-sidebar__list">
-                        <StatCard
-                            layout="list"
-                            icon="flare"
-                            label={t('this_day')}
-                            value={newPatientStats.currentDay}
-                        />
-                        <StatCard
-                            layout="list"
-                            icon="calendar_today"
-                            label={t('this_week')}
-                            value={newPatientStats.currentWeek}
-                        />
-                        <StatCard
-                            layout="list"
-                            icon="bar_chart"
-                            label={t('this_month')}
-                            value={newPatientStats.currentMonth}
-                        />
-                        <StatCard
-                            layout="list"
-                            icon="trending_up"
-                            label={t('this_year')}
-                            value={newPatientStats.currentYear}
-                            trend="↑"
-                        />
+                <section className="dashboard-sidebar__section dashboard-sidebar__section--growth animate-fadeIn">
+                    <header className="dashboard-sidebar__header">
+                        <h4 className="dashboard-sidebar__title">
+                            {t('new_patients_stat')}
+                        </h4>
+                    </header>
+                    <div className="dashboard-sidebar__sparkline-card">
+                        <div className="sparkline-item">
+                            <span className="sparkline-item__label">{t('this_day')}</span>
+                            <span className="sparkline-item__value">{newPatientStats.currentDay}</span>
+                        </div>
+                        <div className="sparkline-divider"></div>
+                        <div className="sparkline-item">
+                            <span className="sparkline-item__label">{t('this_week')}</span>
+                            <span className="sparkline-item__value">{newPatientStats.currentWeek}</span>
+                        </div>
+                        <div className="sparkline-divider"></div>
+                        <div className="sparkline-item">
+                            <span className="sparkline-item__label">{t('this_month')}</span>
+                            <span className="sparkline-item__value">{newPatientStats.currentMonth}</span>
+                        </div>
+                        <div className="sparkline-divider"></div>
+                        <div className="sparkline-item sparkline-item--highlight">
+                            <span className="sparkline-item__label">{t('this_year')}</span>
+                            <span className="sparkline-item__value">
+                                {newPatientStats.currentYear}
+                                <Icon name="trending_up" size="0.75rem" className="sparkline-item__trend" />
+                            </span>
+                        </div>
                     </div>
                 </section>
             )}
