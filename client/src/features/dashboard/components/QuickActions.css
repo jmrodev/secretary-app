@@ -1,23 +1,21 @@
 .quick-actions {
     --qa-bg: var(--white);
     --qa-border: var(--gray-300);
-    --qa-title-color: var(--text-main);
-    
-    background-color: var(--qa-bg);
-    border: 1px solid var(--qa-border);
-    border-radius: 1.25rem;
-    padding: 1.5rem;
-    box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1.5rem;
+}
+
+.quick-actions__section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
 }
 
 .quick-actions__header {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    color: var(--gray-400);
+    padding-left: 0.25rem;
 }
 
 .quick-actions__title {
@@ -25,82 +23,59 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    color: var(--gray-400);
     margin: 0;
-    color: var(--primary-color);
 }
 
-.quick-actions__grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-}
-
-.quick-actions__section {
+.quick-actions__horizontal-card {
     background-color: var(--white);
-    border-radius: 1.25rem;
-    padding: 1rem;
+    border-radius: 1.5rem;
+    padding: 0.75rem 1rem;
     display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+    justify-content: space-between;
+    align-items: center;
     box-shadow: var(--shadow-sm);
     transition: transform 0.2s ease;
 }
 
-.quick-actions__section:hover {
+.quick-actions__horizontal-card:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-premium);
 }
 
-.quick-actions__section-header {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.625rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--primary-color);
-}
-
-.quick-actions__buttons {
+.horizontal-action-btn {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-}
-
-.quick-actions__btn {
-    display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.625rem 0.875rem;
-    border-radius: 0.75rem;
-    background-color: var(--gray-50);
-    color: var(--text-main);
-    font-size: 0.8125rem;
-    font-weight: 600;
-    transition: all 0.2s ease;
+    gap: 0.25rem;
+    flex: 1;
+    background: transparent;
     border: none;
     cursor: pointer;
-    text-align: left;
-    width: 100%;
+    color: var(--text-main);
+    transition: all 0.2s ease;
+    padding: 0.25rem;
 }
 
-.quick-actions__btn:hover {
-    background-color: var(--blue-50);
+.horizontal-action-btn:hover {
     color: var(--primary-color);
 }
 
-.quick-actions__btn span {
-    flex: 1;
+.horizontal-action-btn span {
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    text-align: center;
 }
 
-/* Compact mode for Sidebar */
-.quick-actions--compact .quick-actions__grid {
-    grid-template-columns: 1fr;
+.horizontal-action-btn .icon {
+    color: var(--primary-color);
+    opacity: 0.8;
 }
 
-@media (min-width: 64rem) and (not (.quick-actions--compact)) {
-    .quick-actions__grid {
-        grid-template-columns: repeat(2, 1fr);
+@media (max-width: 48rem) {
+    .quick-actions__horizontal-card {
+        padding: 0.625rem;
     }
 }

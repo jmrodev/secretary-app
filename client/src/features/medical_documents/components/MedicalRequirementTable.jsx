@@ -67,8 +67,6 @@ const MedicalRequirementTable = ({
                                 <th className="medical-requirement-manager__table-header">{t('type') || 'Tipo'}</th>
                                 <th className="medical-requirement-manager__table-header">{t('date') || 'Fecha'}</th>
                                 <th className="medical-requirement-manager__table-header">{t('patient') || 'Paciente'}</th>
-                                <th className="medical-requirement-manager__table-header">{t('doctor') || 'Doctor'}</th>
-                                <th className="medical-requirement-manager__table-header">{t('requested_by') || 'Solicitado Por'}</th>
                                 <th className="medical-requirement-manager__table-header">{t('status') || 'Estado'}</th>
                                 <th className="medical-requirement-manager__table-header">{t('actions') || 'Acciones'}</th>
                             </tr>
