@@ -2,9 +2,20 @@ import { createContext, useContext } from 'react';
 import { useAuth } from '@/features/auth';
 import { useConfigLogic } from '@/context/useConfigLogic';
 
-const ConfigContext = createContext();
+const defaultContextValue = {
+    settings: { enable_office_rentals: 'true' },
+    loading: true,
+    updateSetting: () => {},
+    refreshSettings: () => {},
+};
 
-export const useConfig = () => useContext(ConfigContext);
+const ConfigContext = createContext(defaultContextValue);
+
+export const useConfig = () => {
+    const ctx = useContext(ConfigContext);
+    if (!ctx) return defaultContextValue;
+    return ctx;
+};
 
 export const ConfigProvider = ({ children }) => {
     const { user } = useAuth(); // Needed to check login status

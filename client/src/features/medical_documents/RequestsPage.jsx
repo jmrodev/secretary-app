@@ -2,6 +2,7 @@ import React from 'react';
 import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/context/LanguageContext';
 import { MedicalRequirementManager } from '@/features/medical_documents/index';
+import MainLayout from '@/components/templates/MainLayout';
 import { PageHeader } from '@/features/layout';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
@@ -18,7 +19,7 @@ const RequestsPage = () => {
     const { t } = useLanguage();
 
     return (
-        <MainLayout wide>
+        <MainLayout wide flush>
             <div className="requests-page-orchestrator">
                 <PageHeader 
                     variant="premium"

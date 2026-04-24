@@ -10,7 +10,6 @@ import { PageHeader } from '@/features/layout';
 import { PrescriptionModal, MedicalRequirementManager } from '@/features/medical_documents';
 import { PatientHistoryModal } from '@/features/patients';
 import { TransactionModal } from '@/features/finances';
-import heroBg from './assets/dashboard_hero.png'; // Canva-style background
 
 
 // Internal component from another feature (keeping as is or move to molecules if shared)
@@ -96,32 +95,11 @@ const DashboardPage = () => {
     const shouldShowErrorState = Boolean(error) && !hasDashboardData;
 
     return (
-        <MainLayout wide>
+        <MainLayout wide flush>
             <main className="dashboard-page-orchestrator">
                 <PageHeader 
                     variant="premium"
-                    backgroundUrl={heroBg}
-                    title={
-                        <div className="dashboard-header-title">
-                            {t('dashboard')}
-                        </div>
-                    }
-                    subtitle={
-                        <>
-                            {t('welcome_back')}, <strong>{user?.full_name || user?.username}</strong>.
-                        </>
-                    }
-                    actionSlot={(
-                        <form className="dashboard-search-bar" role="search" onSubmit={handleSearchSubmit}>
-                            <Icon name="search" className="dashboard-search-bar__icon" />
-                            <input
-                                type="text"
-                                className="dashboard-search-bar__input"
-                                placeholder={t('search_placeholder')}
-                                aria-label={t('search_placeholder')}
-                            />
-                        </form>
-                    )}
+                    title={t('dashboard')}
                 />
 
                 <section className="layout-content-area">

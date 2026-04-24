@@ -43,7 +43,7 @@ const FinancesPage = () => {
     const isAdminOrSecretary = user && (user.role === 'admin' || user.role === 'secretary');
 
     return (
-        <MainLayout wide>
+        <MainLayout wide flush>
             <main className="finances-page">
                 <PageHeader 
                     variant="premium"

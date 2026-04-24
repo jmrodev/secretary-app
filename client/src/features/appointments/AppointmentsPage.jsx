@@ -3,7 +3,6 @@ import { useAppointmentsPageController } from '@/features/appointments/hooks/use
 import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
 import { PageHeader } from '@/features/layout';
-import heroBg from '@/features/dashboard/assets/dashboard_hero.png';
 import { DoctorSelector } from '@/features/doctors';
 import Icon from '@/components/atoms/Icon';
 import { PatientManagerModal, PatientHistoryModal } from '@/features/patients';
@@ -58,25 +57,11 @@ const AppointmentsPage = () => {
     if (loading || !user) return <Loading variant="full-page" />;
 
     return (
-        <MainLayout wide>
+        <MainLayout wide flush>
             <main className="appointments-page-orchestrator">
                 <PageHeader 
                     variant="premium"
-                    backgroundUrl={heroBg}
-                    title={
-                        <>
-                            {t('appointments_title')}
-                            <div className="appointments-live-indicator">
-                                <span className="appointments-live-indicator__dot"></span>
-                                <span className="appointments-live-indicator__text">{t('agenda_today')}</span>
-                            </div>
-                        </>
-                    }
-                    subtitle={
-                        <>
-                            {t('appointments_subtitle')} — <strong>{formattedSelectedDate}</strong>
-                        </>
-                    }
+                    title={t('appointments_title')}
                 />
 
                 <section className="layout-content-area">

@@ -77,19 +77,19 @@ const PatientsPage = () => {
     } = handlers;
 
     if (loading || !authUser) return (
-        <MainLayout wide>
+        <MainLayout wide flush>
             <Loading variant="centered" text={t('loading')} />
         </MainLayout>
     );
 
     if (detailsLoading) return (
-        <MainLayout wide>
+        <MainLayout wide flush>
             <Loading variant="centered" />
         </MainLayout>
     );
 
     return (
-        <MainLayout wide>
+        <MainLayout wide flush>
             {(selectedPatientId && patientDetails) ? (
                 // --- DETAILS VIEW ---
                 <PatientDetailsView

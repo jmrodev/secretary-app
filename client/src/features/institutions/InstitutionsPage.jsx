@@ -6,7 +6,6 @@ import Icon from '@/components/atoms/Icon';
 import { InstitutionFinances } from '@/features/finances';
 import { useInstitutionsController, InstitutionFormModal } from '@/features/institutions/index';
 import { PageHeader } from '@/features/layout';
-import heroBg from '@/features/dashboard/assets/dashboard_hero.png';
 import './InstitutionsPage.css';
 
 /**
@@ -36,11 +35,10 @@ const InstitutionsPage = () => {
     const [viewMode, setViewMode] = React.useState('transactions');
 
     return (
-        <MainLayout wide>
+        <MainLayout wide flush>
             <div className="institutions-page-orchestrator">
                 <PageHeader 
                     variant="premium"
-                    backgroundUrl={heroBg}
                     title={t('institutions') || 'Instituciones'}
                     subtitle={t('institutions_subtitle') || 'Gestiona instituciones pagadoras y convenios.'}
                     hideDoctorSelector={true}

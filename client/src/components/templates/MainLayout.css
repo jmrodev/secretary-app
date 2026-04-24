@@ -86,7 +86,11 @@
 }
 
 .main-content.dashboard-wide {
-    padding: 0;
+    padding: 2rem;
+}
+
+.main-content--flush {
+    padding: 0 !important;
 }
 
 .main-content.dashboard-wide>* {

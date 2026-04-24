@@ -1,10 +1,12 @@
 /* PageHeader Component Styles */
+
+/* =============================================
+   STANDARD VARIANT
+   ============================================= */
 .page-header {
-    /* --- Local Component Tokens --- */
     --header-title-color: var(--text-main);
     --header-subtitle-color: var(--text-muted);
     --header-divider-color: var(--border-color);
-    /* ------------------------------ */
 
     margin-bottom: clamp(1rem, 2vh, 1.5rem);
     display: flex;
@@ -21,72 +23,6 @@
     align-items: center;
     gap: 1rem;
     width: 100%;
-}
-
-/* --- Premium Hero Variant --- */
-.page-header--premium {
-    position: relative;
-    min-height: 120px; /* Increased from 80px */
-    background-color: var(--secondary-color); /* Slate 900 */
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    margin-bottom: 0;
-    padding: 1.5rem 0; /* Added vertical padding */
-}
-
-.page-header--premium__content {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end; /* Align to bottom for a more editorial feel */
-    width: 100%;
-    max-width: var(--max-width, 1600px);
-    margin: 0 auto;
-    padding: 0 2rem;
-    gap: 2rem;
-}
-
-.page-header__background-img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: brightness(0.4) grayscale(0.2);
-    opacity: 0.6;
-    animation: headerSlowZoom 20s infinite alternate linear;
-    pointer-events: none;
-}
-
-
-.page-header--premium .page-header--premium__title {
-    color: var(--white);
-    font-size: 1.75rem; /* Reduced from 2.25rem for density */
-    font-weight: 800;
-    font-family: var(--font-newsreader);
-    margin: 0;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    letter-spacing: -0.03em;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-.page-header--premium .page-header--premium__subtitle {
-    color: rgba(255, 255, 255, 0.9);
-    font-family: var(--font-manrope);
-    font-size: 0.875rem; /* Reduced from 1rem */
-    font-weight: 500;
-    margin: 0.25rem 0 0 0; /* Reduced from 0.5rem */
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    line-height: 1.4;
 }
 
 .page-header__title-container {
@@ -125,13 +61,120 @@
     padding-bottom: 1.25rem;
 }
 
-/* --- Global Header Animations --- */
-@keyframes headerSlowZoom {
-    from { transform: scale(1.02); }
-    to { transform: scale(1.08); }
+
+/* =============================================
+   PREMIUM VARIANT — Clinical Curator Header
+   Idéntico en todas las páginas de la app.
+   ============================================= */
+.page-header--premium {
+    position: relative;
+    height: 110px; /* Fixed — identical across all pages */
+    background-color: var(--secondary-color);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
+/* Imagen de fondo hero */
+.page-header__background-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.4) grayscale(0.2);
+    opacity: 0.6;
+    animation: headerSlowZoom 20s infinite alternate linear;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Contenedor del contenido (sobre la imagen) */
+.page-header--premium__content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+    padding: 1.25rem 2rem;
+    gap: 2rem;
+}
+
+.page-header--premium__title-container {
+    flex: 1;
+    min-width: 0;
+}
+
+.page-header--premium__title {
+    color: var(--white);
+    font-size: 1.75rem;
+    font-weight: 800;
+    font-family: var(--font-newsreader);
+    margin: 0;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    letter-spacing: -0.03em;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.page-header--premium__subtitle {
+    color: rgba(255, 255, 255, 0.88);
+    font-family: var(--font-manrope);
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin: 0.3rem 0 0 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;   /* Never wrap to a second line */
+    gap: 0.5rem;
+    line-height: 1.4;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.page-header--premium__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+/* Live Clock */
+.page-header__clock {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-manrope);
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.page-header__clock-date {
+    text-transform: capitalize; /* Viernes, 24 de abril */
+}
+
+.page-header__clock-separator {
+    opacity: 0.5;
+}
+
+.page-header__clock-time {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums; /* Digits don't jump */
+    letter-spacing: 0.03em;
+}
+
+
+/* =============================================
+   ANIMATIONS
+   ============================================= */
+@keyframes headerSlowZoom {
+    from { transform: scale(1.02); }
+    to   { transform: scale(1.08); }
 }
