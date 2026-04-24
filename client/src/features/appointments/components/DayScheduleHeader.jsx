@@ -3,6 +3,7 @@ import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Switch from '@/components/atoms/Switch';
 import { formatDate } from '@/utils/dateUtils';
+import './DayScheduleHeader.css';
 
 /**
  * DayScheduleHeader (Internal to feature).
@@ -10,7 +11,7 @@ import { formatDate } from '@/utils/dateUtils';
  */
 const DayScheduleHeader = ({
     date, holiday, showOutOfHours, setShowOutOfHours, showCancelled, setShowCancelled,
-    onPrevDay, onToday, onNextDay, onPrint, t
+    onPrevDay, onToday, onNextDay, onPrint, onNextFreeSlot, t
 }) => {
     return (
         <header className="day-schedule__header">
@@ -29,6 +30,14 @@ const DayScheduleHeader = ({
 
             <div className="day-schedule__toolbar">
                 <div className="day-schedule__controls">
+                    <Button 
+                        variant="ghost" 
+                        size="sm-compact" 
+                        onClick={onNextFreeSlot} 
+                        icon={<Icon name="search" />}
+                    >
+                        {t('next_free_slot')}
+                    </Button>
                     <Switch label={t('show_out_of_hours')} checked={showOutOfHours} onChange={setShowOutOfHours} />
                     <Switch label={t('show_cancelled')} checked={showCancelled} onChange={setShowCancelled} />
                 </div>

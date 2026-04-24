@@ -21,6 +21,7 @@ export const usePatientSearch = () => {
     // Main Appointments Fetch
     const { 
         data: appointments = [], 
+        loading: appointmentsLoading,
         refetch: fetchAppointments 
     } = useFetch('/appointments', {
         params: { search: debouncedSearch },
@@ -42,7 +43,7 @@ export const usePatientSearch = () => {
         searchPatientId, setSearchPatientId,
         appointments,
         patientAppointments,
-        patientApptLoading,
+        patientApptLoading: patientApptLoading || appointmentsLoading,
         fetchAppointments
     };
 };

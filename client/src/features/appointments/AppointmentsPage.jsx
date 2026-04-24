@@ -33,7 +33,7 @@ const AppointmentsPage = () => {
         t, language, user, loading, activeTab, showOutOfHours,
         viewDoctorId, doctors, institutions, insurances, selectedDate, filteredAppointments,
         appointments, doctorSchedule, holidays, calendarStats, currentDoctor,
-        searchPatientId, patientAppointments, patientApptLoading,
+        searchTerm, searchPatientId, patientAppointments, patientApptLoading,
         paymentModal, actionModal, historyModal,
         prescribeModal, whatsappModal, setWhatsappModal, showNextSlotModal, setShowNextSlotModal,
         editPatientModalOpen, authModalOpen,
@@ -42,7 +42,7 @@ const AppointmentsPage = () => {
     } = controller;
     const {
         setActiveTab, setShowOutOfHours, setViewDoctorId, setSelectedDate,
-        setSearchPatientId, setPaymentModal, setActionModal, setHistoryModal,
+        setSearchPatientId, setSearchTerm, setPaymentModal, setActionModal, setHistoryModal,
         setPrescribeModal, setEditPatientModalOpen, setAuthModalOpen
     } = handlers;
     const dateLocale = language === 'en' ? 'en-US' : 'es-AR';
@@ -67,8 +67,8 @@ const AppointmentsPage = () => {
                                     type="text"
                                     className="appointments-search-bar__input"
                                     placeholder={t('search_placeholder')}
-                                    onChange={(e) => handlers.setSearchTerm(e.target.value)}
-                                    value={controller.searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    value={searchTerm}
                                     aria-label={t('search_placeholder')}
                                 />
                             </form>
@@ -78,14 +78,14 @@ const AppointmentsPage = () => {
                     <RescheduleBanner rescheduleAppt={rescheduleAppt} onExit={exitRescheduleMode} t={t} />
 
                     <section className="appointments-page__body">
-                        {searchPatientId ? (
+                        {searchPatientId || searchTerm ? (
                             <section className="appointments-page__panel appointments-page__panel--agenda">
                                 <PatientHistoryView
-                                    patientAppointments={patientAppointments} 
+                                    patientAppointments={searchPatientId ? patientAppointments : appointments} 
                                     loading={patientApptLoading}
-                                    onClose={() => setSearchPatientId('')} 
+                                    onClose={() => { setSearchPatientId(''); handlers.setSearchTerm(''); }} 
                                     t={t} 
-                                    searchPatientId={searchPatientId} 
+                                    searchPatientId={searchPatientId || searchTerm} 
                                     handlers={handlers}
                                 />
                             </section>
@@ -121,6 +121,7 @@ const AppointmentsPage = () => {
                                             selectedDoctor={currentDoctor} viewDoctorId={viewDoctorId} appointments={appointments}
                                             doctorSchedule={doctorSchedule} holidays={holidays} onSlotClick={handlers.handleSlotClick}
                                             onDeleteHoliday={handlers.handleDeleteHoliday} showOutOfHours={showOutOfHours} setShowOutOfHours={setShowOutOfHours}
+                                            onNextFreeSlot={handlers.openNextSlot}
                                         />
                                     </section>
                                 )}
