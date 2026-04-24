@@ -116,7 +116,6 @@ const MedicalRequirementManager = ({
             )}
 
             <article className={`${baseClass}__content animate-fadeIn`}>
-                <h3 className="visually-hidden">{t('active_view')}</h3>
                 {activeTab === 'new' ? (
                     <MedicalRequestForm
                         doctors={doctors}
