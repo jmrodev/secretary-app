@@ -45,33 +45,44 @@
 
 .horizontal-action-btn {
     display: flex;
-    flex-direction: column;
+    flex-direction: row; /* Icon on side for consistency */
     align-items: center;
-    gap: 0.25rem;
+    justify-content: center;
+    gap: 0.5rem;
     flex: 1;
     background: transparent;
     border: none;
     cursor: pointer;
     color: var(--text-main);
     transition: all 0.2s ease;
-    padding: 0.25rem;
+    padding: 0.5rem;
 }
 
 .horizontal-action-btn:hover {
     color: var(--primary-color);
+    transform: scale(1.02);
 }
 
 .horizontal-action-btn span {
     font-size: 0.625rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.01em;
-    text-align: center;
+    letter-spacing: 0.02em;
+    text-align: left;
+    white-space: nowrap;
 }
 
 .horizontal-action-btn .icon {
     color: var(--primary-color);
     opacity: 0.8;
+    flex-shrink: 0;
+}
+
+.horizontal-divider {
+    width: 1px;
+    height: 1.25rem;
+    background-color: var(--gray-100);
+    margin: 0 0.25rem;
 }
 
 @media (max-width: 48rem) {
