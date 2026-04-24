@@ -64,29 +64,29 @@
 
 .page-header--premium .page-header--premium__title {
     color: var(--white);
-    font-size: 2.25rem; /* Large and elegant */
+    font-size: 1.75rem; /* Reduced from 2.25rem for density */
     font-weight: 800;
     font-family: var(--font-newsreader);
     margin: 0;
     line-height: 1;
     display: flex;
     align-items: center;
-    gap: 1rem;
-    letter-spacing: -0.04em;
+    gap: 0.75rem;
+    letter-spacing: -0.03em;
     text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .page-header--premium .page-header--premium__subtitle {
     color: rgba(255, 255, 255, 0.9);
     font-family: var(--font-manrope);
-    font-size: 1rem;
+    font-size: 0.875rem; /* Reduced from 1rem */
     font-weight: 500;
-    margin: 0.5rem 0 0 0;
+    margin: 0.25rem 0 0 0; /* Reduced from 0.5rem */
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 0.75rem;
-    line-height: 1.5;
+    gap: 0.5rem;
+    line-height: 1.4;
 }
 
 .page-header__title-container {
