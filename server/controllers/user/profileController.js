@@ -18,6 +18,6 @@ exports.updateProfile = async (req, res) => {
     } catch (err) {
         if (err.message === "Profile not found") return res.status(404).send(err.message);
         console.error("Update Profile Error:", err);
-        res.status(500).send("Server Error: " + err.message);
+        res.status(500).json({ error: "Server Error" });
     }
 };

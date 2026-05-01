@@ -72,10 +72,11 @@ class BillingService {
     }
 
     async generateCsr(doctorId, aliasSuffix) {
-        const certsDir = path.resolve(__dirname, `../certs/doctors/${doctorId}`);
+        const safeDoctorId = path.basename(String(doctorId));
+        const certsDir = path.resolve(__dirname, `../certs/doctors/${safeDoctorId}`);
         const keyPath = path.join(certsDir, 'private.key');
         const csrPath = path.join(certsDir, 'request.csr');
-        const alias = `secretary-doc-${doctorId}-${aliasSuffix || 'test'}`;
+        const alias = `secretary-doc-${safeDoctorId}-${aliasSuffix || 'test'}`;
 
         if (!fs.existsSync(certsDir)) {
             fs.mkdirSync(certsDir, { recursive: true });
@@ -88,7 +89,7 @@ class BillingService {
                 if (error) return reject(new Error('Failed to generate CSR: ' + error.message));
 
                 try {
-                    const relativeKeyPath = `certs/doctors/${doctorId}/private.key`;
+                    const relativeKeyPath = `certs/doctors/${safeDoctorId}/private.key`;
                     const csrContent = fs.readFileSync(csrPath, 'utf8');
 
                     // Update DB
@@ -189,7 +190,8 @@ class BillingService {
     }
 
     async uploadCert(doctorId, file) {
-        const certsDir = path.resolve(__dirname, `../certs/doctors/${doctorId}`);
+        const safeDoctorId = path.basename(String(doctorId));
+        const certsDir = path.resolve(__dirname, `../certs/doctors/${safeDoctorId}`);
         if (!fs.existsSync(certsDir)) fs.mkdirSync(certsDir, { recursive: true });
 
         const isKey = file.originalname.endsWith('.key');
@@ -199,7 +201,7 @@ class BillingService {
         fs.renameSync(file.path, targetPath);
 
         const dbField = isKey ? 'afip_key_path' : 'afip_cert_path';
-        const relativePath = `certs/doctors/${doctorId}/${targetName}`;
+        const relativePath = `certs/doctors/${safeDoctorId}/${targetName}`;
 
         const updates = {};
         updates[dbField] = relativePath;
