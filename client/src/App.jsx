@@ -6,7 +6,6 @@ import './App.css';
 import AppRouter from '@/routes/AppRouter';
 
 // Global UI Components
-import { FloatingChat } from '@/features/chat';
 import GlobalWhatsappMessenger from '@/components/organisms/GlobalWhatsappMessenger';
 import ErrorBoundary from '@/components/molecules/ErrorBoundary';
 
@@ -28,9 +27,6 @@ function App() {
     <ErrorBoundary>
       <Toaster position="top-right" containerClassName="app__toaster-container" />
       <AppRouter />
-      
-      {/* INTERNAL STAFF CHAT */}
-      <FloatingChat />
       
       {/* WHATSAPP PATIENT MESSENGER */}
       <GlobalWhatsappMessenger />

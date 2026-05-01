@@ -52,9 +52,6 @@ const PatientsPage = () => {
         handlers,
     } = controller;
 
-    const currentDoctor = viewDoctorId ? doctors.find(d => d.id === Number(viewDoctorId)) : null;
-    const doctorDisplayName = currentDoctor ? currentDoctor.full_name : null;
-
     const {
         fetchRecycleBin,
         handleNewClick,
