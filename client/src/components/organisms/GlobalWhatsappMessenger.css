@@ -105,6 +105,27 @@
     font-weight: 700;
 }
 
+.global-wa-messenger__doctor-filter {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    background: #e7fce3;
+    border: 1px solid #c2f0b8;
+    color: #0b6e00;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 8px;
+    max-width: 140px;
+}
+
+.global-wa-messenger__doctor-filter span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .global-wa-messenger__close-mobile {
     display: none; /* Only mobile */
     background: none;
@@ -406,14 +427,56 @@
     max-width: 320px;
 }
 
+.global-wa-messenger__pairing-icon-wrapper {
+    position: relative;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .global-wa-messenger__pairing-icon {
+    width: 80px;
+    height: 80px;
+    background: #f0f2f5;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #075e54;
-    margin-bottom: 1rem;
+    position: relative;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.global-wa-messenger__pairing-icon--offline {
+    color: #ef4444;
+}
+
+.global-wa-messenger__pulse-ring {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(37, 211, 102, 0.2);
+    z-index: 1;
+    animation: pulse 2s infinite;
+}
+
+.global-wa-messenger__pulse-ring--offline {
+    background: rgba(239, 68, 68, 0.2);
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.6); opacity: 0; }
 }
 
 .global-wa-messenger__pairing h3 {
     margin: 0 0 0.5rem 0;
     color: #1f2937;
+    font-size: 1.25rem;
+    font-weight: 700;
 }
 
 .global-wa-messenger__pairing p {
@@ -425,19 +488,31 @@
 
 .global-wa-messenger__qr-container {
     position: relative;
-    padding: 1.5rem;
+    padding: 1rem;
     background: white;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
-    margin-bottom: 1.5rem;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    overflow: hidden;
 }
 
 .global-wa-messenger__qr-image {
     display: block;
-    width: 240px;
-    height: 240px;
+    width: 200px;
+    height: 200px;
     image-rendering: pixelated;
+}
+
+.global-wa-messenger__qr-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 8px;
+    border-radius: 8px;
+    color: #25D366;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .global-wa-messenger__qr-placeholder {
@@ -462,15 +537,26 @@
     color: #6b7280;
 }
 
-.global-wa-messenger__status-dot {
+.global-wa-messenger__status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background: #f3f4f6;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.global-wa-messenger__status-indicator::before {
+    content: '';
     width: 8px;
     height: 8px;
     border-radius: 50%;
 }
 
-.global-wa-messenger__status-dot--offline { background: #ef4444; }
-.global-wa-messenger__status-dot--disconnected { background: #f59e0b; }
-.global-wa-messenger__status-dot--connected { background: #25d366; }
+.global-wa-messenger__status-indicator--offline::before { background: #ef4444; }
+.global-wa-messenger__status-indicator--disconnected::before { background: #f59e0b; }
+.global-wa-messenger__status-indicator--connected::before { background: #25d366; }
 
 .animate-spin {
     animation: spin 2s linear infinite;
@@ -482,10 +568,28 @@
 }
 
 .animate-fadeIn {
-    animation: fadeIn 0.5s ease-out;
+    animation: fadeIn 0.4s ease-out;
 }
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-zoomIn {
+    animation: zoomIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes zoomIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.global-wa-messenger__loader {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #25D366;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
 }

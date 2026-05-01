@@ -4,6 +4,7 @@ import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import WhatsappChatHistory from '@/features/patients/components/WhatsappChatHistory';
 import { useLanguage } from '@/context/LanguageContext';
+import { useDoctors } from '@/context/DoctorContext';
 import './GlobalWhatsappMessenger.css';
 
 /**
@@ -17,6 +18,7 @@ import './GlobalWhatsappMessenger.css';
  */
 const GlobalWhatsappMessenger = () => {
     const { t } = useLanguage();
+    const { viewDoctorId, doctorDisplayName } = useDoctors();
     const [isOpen, setIsOpen] = useState(false);
     const [selectedPatientId, setSelectedPatientId] = useState(null);
     const [conversations, setConversations] = useState([]);
@@ -27,7 +29,9 @@ const GlobalWhatsappMessenger = () => {
     const fetchConversations = useCallback(async (isAuto = false) => {
         if (!isAuto) setLoading(true);
         try {
-            const res = await api.get('/whatsapp/recent');
+            const res = await api.get('/whatsapp/recent', {
+                params: { doctor_id: viewDoctorId }
+            });
             if (res.data.success) {
                 setConversations(res.data.data);
             }
@@ -70,7 +74,7 @@ const GlobalWhatsappMessenger = () => {
                 if (conversationsInterval) clearInterval(conversationsInterval);
             };
         }
-    }, [isOpen, selectedPatientId, fetchConversations, fetchStatus, bridgeStatus.status]);
+    }, [isOpen, selectedPatientId, fetchConversations, fetchStatus, bridgeStatus.status, viewDoctorId]);
 
     const handlePatientClick = (patientId) => {
         setSelectedPatientId(patientId);
@@ -117,6 +121,12 @@ const GlobalWhatsappMessenger = () => {
                         <Icon name="whatsapp" size="1.2rem" />
                         <h3>{t('my_messages')}</h3>
                     </div>
+                    {viewDoctorId && (
+                        <div className="global-wa-messenger__doctor-filter" title={t('filtering_by_doctor')}>
+                            <Icon name="person" size="0.9rem" />
+                            <span>{doctorDisplayName || t('doctor')}</span>
+                        </div>
+                    )}
                     <div className="global-wa-messenger__header-actions">
                         <Button 
                             variant="ghost" 
@@ -212,40 +222,58 @@ const GlobalWhatsappMessenger = () => {
                     {bridgeStatus.status !== 'connected' ? (
                         <div className="global-wa-messenger__pairing">
                             <div className="global-wa-messenger__pairing-card animate-fadeIn">
-                                <div className="global-wa-messenger__pairing-icon">
-                                    <Icon name="qr_code_scanner" size="3rem" />
-                                </div>
-                                <h3>{t('whatsapp_pairing_required') || 'Vincular WhatsApp'}</h3>
-                                <p>{t('whatsapp_pairing_desc') || 'Escaneá este código desde tu celular (Ajustes > Dispositivos vinculados)'}</p>
-                                
-                                {bridgeStatus.qr_code ? (
-                                    <div className="global-wa-messenger__qr-container">
-                                        <img 
-                                            src={`https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(bridgeStatus.qr_code)}`}
-                                            alt="WhatsApp QR Code"
-                                            className="global-wa-messenger__qr-image"
-                                            onError={(e) => console.error("QR Image Load Error", e)}
-                                        />
+                                <div className="global-wa-messenger__pairing-icon-wrapper">
+                                    <div className={`global-wa-messenger__pairing-icon global-wa-messenger__pairing-icon--${bridgeStatus.status}`}>
+                                        <Icon name={bridgeStatus.status === 'offline' ? 'cloud_off' : 'qr_code_scanner'} size="2.5rem" />
                                     </div>
-                                ) : (
-                                    <div className="global-wa-messenger__qr-placeholder">
-                                        <Icon name="sync" size="2rem" className="animate-spin" />
-                                        <span>{t('waiting_for_qr')}</span>
+                                    <div className={`global-wa-messenger__pulse-ring global-wa-messenger__pulse-ring--${bridgeStatus.status}`}></div>
+                                </div>
+                                
+                                <h3>{t(bridgeStatus.status === 'offline' ? 'bridge_offline_title' : 'whatsapp_pairing_required') || (bridgeStatus.status === 'offline' ? 'Servicio Desconectado' : 'Vincular WhatsApp')}</h3>
+                                <p>
+                                    {bridgeStatus.status === 'offline' 
+                                        ? t('bridge_offline_desc') || 'El puente de WhatsApp no está respondiendo. Por favor, verificá que el servicio esté corriendo.'
+                                        : t('whatsapp_pairing_desc') || 'Escaneá este código desde tu celular (Ajustes > Dispositivos vinculados)'}
+                                </p>
+                                
+                                {bridgeStatus.status !== 'offline' && (
+                                    <div className="global-wa-messenger__qr-wrapper">
+                                        {bridgeStatus.qr_code ? (
+                                            <div className="global-wa-messenger__qr-container animate-zoomIn">
+                                                <img 
+                                                    src={`https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(bridgeStatus.qr_code)}`}
+                                                    alt="WhatsApp QR Code"
+                                                    className="global-wa-messenger__qr-image"
+                                                />
+                                                <div className="global-wa-messenger__qr-overlay">
+                                                    <Icon name="whatsapp" size="2rem" />
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="global-wa-messenger__qr-placeholder">
+                                                <div className="global-wa-messenger__loader"></div>
+                                                <span>{t('generating_qr') || 'Generando código...'}</span>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                                 
-                                <Button 
-                                    variant="secondary" 
-                                    size="sm" 
-                                    onClick={fetchStatus}
-                                    icon={<Icon name="refresh" size="1rem" />}
-                                >
-                                    {t('whatsapp_refresh')}
-                                </Button>
+                                <div className="global-wa-messenger__pairing-actions">
+                                    <Button 
+                                        variant="secondary" 
+                                        size="sm" 
+                                        onClick={fetchStatus}
+                                        loading={statusLoading}
+                                        icon={<Icon name="refresh" size="1rem" />}
+                                    >
+                                        {t('whatsapp_refresh')}
+                                    </Button>
+                                </div>
                                 
                                 <div className="global-wa-messenger__pairing-footer">
-                                    <span className={`global-wa-messenger__status-dot global-wa-messenger__status-dot--${bridgeStatus.status}`}></span>
-                                    <span>{bridgeStatus.status === 'offline' ? t('bridge_offline') : t('waiting_connection')}</span>
+                                    <span className={`global-wa-messenger__status-indicator global-wa-messenger__status-indicator--${bridgeStatus.status}`}>
+                                        {bridgeStatus.status === 'offline' ? t('offline') : t('waiting_connection')}
+                                    </span>
                                 </div>
                             </div>
                         </div>

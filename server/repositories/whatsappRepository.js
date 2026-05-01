@@ -28,8 +28,8 @@ class WhatsappRepository {
         return await conn.query(query, [status, whatsappId]);
     }
 
-    async getRecentConversations(conn = pool) {
-        const query = `
+    async getRecentConversations(doctorId = null, conn = pool) {
+        let query = `
             SELECT wm.*, p.full_name as patient_name, p.phone as patient_phone
             FROM whatsapp_messages wm
             INNER JOIN (
@@ -38,9 +38,20 @@ class WhatsappRepository {
                 GROUP BY patient_id
             ) latest ON wm.patient_id = latest.patient_id AND wm.created_at = latest.max_date
             LEFT JOIN patients p ON wm.patient_id = p.id
-            ORDER BY wm.created_at DESC
         `;
-        return await conn.query(query);
+
+        const params = [];
+        if (doctorId) {
+            query += `
+                INNER JOIN patient_doctors pd ON p.id = pd.patient_id
+                WHERE pd.doctor_id = ?
+            `;
+            params.push(doctorId);
+        }
+
+        query += ` ORDER BY wm.created_at DESC`;
+        
+        return await conn.query(query, params);
     }
 
     async findPatientByPhone(phone, conn = pool) {

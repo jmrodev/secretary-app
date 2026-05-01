@@ -148,7 +148,8 @@ const getPatientHistory = async (req, res) => {
  */
 const getRecentConversations = async (req, res) => {
     try {
-        const conversations = await whatsappRepository.getRecentConversations();
+        const { doctor_id } = req.query;
+        const conversations = await whatsappRepository.getRecentConversations(doctor_id);
         res.json({ success: true, data: conversations });
     } catch (error) {
         res.status(500).json({ error: error.message });
