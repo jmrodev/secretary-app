@@ -1,20 +1,6 @@
 const insuranceController = require('../../controllers/insuranceController');
 const insuranceService = require('../../services/insuranceService');
 
-<<<<<<< HEAD
-// Mock the service
-jest.mock('../../services/insuranceService');
-
-describe('insuranceController.createInsurance', () => {
-    let req, res;
-
-    beforeEach(() => {
-        req = {
-            body: {
-                name: 'Test Insurance',
-                plan: 'Basic'
-            }
-=======
 // Mock the insuranceService
 jest.mock('../../services/insuranceService');
 
@@ -29,7 +15,6 @@ describe('insuranceController', () => {
         // Setup req and res objects
         req = {
             body: {}
->>>>>>> origin/jules-add-insurance-tests-4375803155309765088
         };
         res = {
             status: jest.fn().mockReturnThis(),
@@ -37,42 +22,11 @@ describe('insuranceController', () => {
             send: jest.fn()
         };
 
-<<<<<<< HEAD
-        // Suppress console.error in tests
-=======
         // Mock console.error to avoid noise in test output
->>>>>>> origin/jules-add-insurance-tests-4375803155309765088
         jest.spyOn(console, 'error').mockImplementation(() => {});
     });
 
     afterEach(() => {
-<<<<<<< HEAD
-        jest.clearAllMocks();
-        console.error.mockRestore();
-    });
-
-    it('should successfully create an insurance and return 201', async () => {
-        const mockResult = { id: 1, name: 'Test Insurance', plan: 'Basic' };
-        insuranceService.createInsurance.mockResolvedValue(mockResult);
-
-        await insuranceController.createInsurance(req, res);
-
-        expect(insuranceService.createInsurance).toHaveBeenCalledWith(req.body);
-        expect(res.status).toHaveBeenCalledWith(201);
-        expect(res.json).toHaveBeenCalledWith(mockResult);
-    });
-
-    it('should handle errors and return 500', async () => {
-        const error = new Error('Database connection failed');
-        insuranceService.createInsurance.mockRejectedValue(error);
-
-        await insuranceController.createInsurance(req, res);
-
-        expect(insuranceService.createInsurance).toHaveBeenCalledWith(req.body);
-        expect(console.error).toHaveBeenCalledWith(error);
-        expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.send).toHaveBeenCalledWith('Server Error');
-=======
         console.error.mockRestore();
     });
 
@@ -103,6 +57,5 @@ describe('insuranceController', () => {
             expect(res.status).toHaveBeenCalledWith(500);
             expect(res.send).toHaveBeenCalledWith('Server Error');
         });
->>>>>>> origin/jules-add-insurance-tests-4375803155309765088
     });
 });
