@@ -12,11 +12,6 @@
     /* ------------------------------ */
 
     width: 100%;
-    background-color: var(--list-bg);
-    border-radius: 1rem;
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--list-border);
 }
 
 .patient-table {
