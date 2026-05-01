@@ -14,7 +14,7 @@ import './DaySchedule.css';
  */
 const DaySchedule = ({
     date, appointments, onSlotClick, doctor, schedule, onDateSelect,
-    holidays = [], showOutOfHours, setShowOutOfHours
+    holidays = [], showOutOfHours, setShowOutOfHours, onNextFreeSlot
 }) => {
     const { t } = useLanguage();
     const [showCancelled, setShowCancelled] = React.useState(false);
@@ -125,7 +125,9 @@ const DaySchedule = ({
             <DayScheduleHeader
                 date={date} holiday={holiday} showOutOfHours={showOutOfHours} setShowOutOfHours={setShowOutOfHours}
                 showCancelled={showCancelled} setShowCancelled={setShowCancelled}
-                onPrevDay={handlePrevDay} onToday={handleToday} onNextDay={handleNextDay} onPrint={handlePrint} t={t}
+                onPrevDay={handlePrevDay} onToday={handleToday} onNextDay={handleNextDay} onPrint={handlePrint}
+                onNextFreeSlot={onNextFreeSlot}
+                t={t}
             />
             <ScheduleTimeline
                 timeSlots={timeSlots} showOutOfHours={showOutOfHours} showCancelled={showCancelled}

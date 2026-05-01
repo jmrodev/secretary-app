@@ -44,7 +44,8 @@ export const useRequirementManagerController = (user) => {
     const totalCount = requestsData.totalCount || 0;
 
     // Doctors
-    const { data: doctors = [] } = useFetch('/users/doctors', { initialData: [] });
+    const { data: doctorsData } = useFetch('/users/doctors', { initialData: { doctors: [], totalCount: 0 } });
+    const doctors = doctorsData?.doctors || [];
 
     // Recycle Bin
     const { 

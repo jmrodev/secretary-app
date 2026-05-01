@@ -12,7 +12,6 @@ import Icon from '@/components/atoms/Icon';
 
 // Molecules (Shared/Global)
 // Molecules (Shared/Global)
-import { PageHeader } from '@/features/layout';
 import QRCodeModal from '@/features/patients/components/QRCodeModal';
 import SearchBar from '@/components/molecules/SearchBar';
 import Pagination from '@/components/molecules/Pagination';
@@ -53,9 +52,6 @@ const PatientsPage = () => {
         handlers,
     } = controller;
 
-    const currentDoctor = viewDoctorId ? doctors.find(d => d.id === Number(viewDoctorId)) : null;
-    const doctorDisplayName = currentDoctor ? currentDoctor.full_name : null;
-
     const {
         fetchRecycleBin,
         handleNewClick,
@@ -77,19 +73,19 @@ const PatientsPage = () => {
     } = handlers;
 
     if (loading || !authUser) return (
-        <MainLayout wide>
+        <MainLayout wide flush>
             <Loading variant="centered" text={t('loading')} />
         </MainLayout>
     );
 
     if (detailsLoading) return (
-        <MainLayout wide>
+        <MainLayout wide flush>
             <Loading variant="centered" />
         </MainLayout>
     );
 
     return (
-        <MainLayout wide>
+        <MainLayout wide flush title={(!selectedPatientId || !patientDetails) ? t('patients') : null}>
             {(selectedPatientId && patientDetails) ? (
                 // --- DETAILS VIEW ---
                 <PatientDetailsView
@@ -108,15 +104,8 @@ const PatientsPage = () => {
                 </PatientDetailsView>
             ) : (
                 // --- LIST VIEW ---
-                <>
-                    <PageHeader 
-                        variant="premium"
-                        title={t('patients')}
-                        subtitle={t('patients_subtitle')}
-                    />
-
-                    <div className="layout-content-area">
-                        <section className="patients-page__dashboard-grid animate-fadeIn">
+                <div className="layout-content-area">
+                    <section className="dashboard-grid animate-fadeIn">
                         <aside className="dashboard-sidebar">
                             <div className="dashboard-nav-bar">
                                 <TabNav className="patients__nav">
@@ -180,7 +169,7 @@ const PatientsPage = () => {
                         <main className="dashboard-main">
                             {activeTab === 'list' ? (
                                 <div className="patients-list-view">
-                                    <section className="patients-page__list-container">
+                                    <section className="dashboard-card dashboard-card--no-padding dashboard-card--scroll-horizontal">
                                         <PatientList
                                             patients={patients}
                                             institutions={institutions}
@@ -210,9 +199,8 @@ const PatientsPage = () => {
                                 />
                             )}
                         </main>
-                        </section>
-                    </div>
-                </>
+                    </section>
+                </div>
             )}
 
             {/* --- GLOBALLY HOISTED MODALS --- */}

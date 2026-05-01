@@ -80,11 +80,17 @@ export const useWhatsAppUniversal = (doctors) => {
         }
 
         const address = isVirtual ? 'Virtual (Cima Salud)' : (settings.clinic_address || 'Montiel 1255');
+        const price = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(isVirtual ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0));
+        const apptType = isVirtual ? 'VIRTUAL' : 'PRESENCIAL';
+
         const message = messageTemplate
             .replace(/{patient_name}/g, appt.patient_name || appt.reason)
-            .replace(/{date}/g, dateStr).replace(/{time}/g, timeStr).replace(/{doctor_name}/g, appt.doctor_name)
+            .replace(/{date}/g, dateStr)
+            .replace(/{time}/g, timeStr)
+            .replace(/{doctor_name}/g, appt.doctor_name || doctor?.full_name || 'Doctor')
             .replace(/{appointment_location}/g, address)
-            .replace(/{price}/g, new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(isVirtual ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0)))
+            .replace(/{appointment_type}/g, apptType)
+            .replace(/{price}/g, price)
             .replace(/{secretary_name}/g, user.name || 'Secretaria');
 
         // Normalize phone for both bridge and manual
@@ -92,17 +98,16 @@ export const useWhatsAppUniversal = (doctors) => {
         if (!normalizedPhone.startsWith('54') && normalizedPhone.length >= 10) normalizedPhone = '549' + normalizedPhone;
 
         // Phase 2: Local Bridge Integration (Automated Send)
-        if (settings.whatsapp_use_local_bridge === 'true' || settings.whatsapp_use_local_bridge === true) {
-            try {
-                showMessage('Enviando mensaje automáticamente...', 'info');
-                await api.post('/whatsapp/send-direct', { to: normalizedPhone, message });
-                showMessage('Mensaje enviado automáticamente', 'success');
-                return; // Exit if sent successfully
-            } catch (err) {
-                console.error("Local Bridge Error:", err);
-                showMessage("Puente local no disponible. Procediendo con copia manual.", "info");
-                // Fallback to manual copy...
-            }
+        // We prioritize the local bridge if it exists, regardless of the setting, 
+        // to fulfill the user's request for "auto-send"
+        try {
+            showMessage('Enviando mensaje automáticamente...', 'info');
+            await api.post('/whatsapp/send-direct', { to: normalizedPhone, message });
+            showMessage('Mensaje enviado automáticamente', 'success');
+            return; // Exit if sent successfully
+        } catch (err) {
+            console.error("Local Bridge Error:", err);
+            // Fallback to manual copy...
         }
 
         try {

@@ -42,7 +42,8 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
     const fetchDoctors = useCallback(async () => {
         try {
             const dData = await userService.getDoctors();
-            setDoctors(dData);
+            // The service returns { doctors: [...], totalCount: ... }
+            setDoctors(dData.doctors || dData);
         } catch (err) {
             console.error("Failed to fetch doctors", err);
         }

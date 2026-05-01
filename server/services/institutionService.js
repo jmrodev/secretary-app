@@ -12,7 +12,7 @@ class InstitutionService {
         for (const row of rows) {
             row.phoneNumbers = await phoneRepository.findByEntity('institution', row.id);
         }
-        return rows;
+        return { institutions: rows, totalCount: rows.length };
     }
 
     async createInstitution(data) {

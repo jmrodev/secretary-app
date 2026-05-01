@@ -12,7 +12,11 @@ export const useDoctorsPageController = () => {
     const { showMessage } = useMessage();
     const { confirm } = useModal();
     // Data State using useFetch
-    const { data: doctors = [], loading: doctorsLoading, refetch: fetchDoctors } = useFetch('/users/doctors', { initialData: [] });
+    const { data: docData, loading: doctorsLoading, refetch: fetchDoctors } = useFetch('/users/doctors', { 
+        initialData: { doctors: [], totalCount: 0 } 
+    });
+
+    const doctors = docData?.doctors || [];
     const { data: settings = {}, loading: settingsLoading } = useFetch('/settings', { initialData: {} });
 
     const [searchTerm, setSearchTerm] = useState('');

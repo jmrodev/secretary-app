@@ -11,7 +11,7 @@ const bcrypt = require('bcrypt');
 exports.getUsersForAdmin = async (req, res) => {
     try {
         const users = await userRepository.findAllStaff();
-        res.json(users);
+        res.json({ users, totalCount: users.length });
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");

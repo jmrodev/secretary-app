@@ -13,7 +13,7 @@ class InsuranceService {
             const phoneNumbers = await phoneRepository.findByEntity('insurance', row.id);
             row.phoneNumbers = phoneNumbers;
         }
-        return rows;
+        return { insurances: rows, totalCount: rows.length };
     }
 
     async getInsuranceById(id) {

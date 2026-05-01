@@ -13,7 +13,10 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
         if (!inputValue || inputValue.length < 2) return [];
         try {
             const res = await api.get(`/users/patients?search=${inputValue}`);
-            return res.data.map(p => ({
+            // El backend ahora devuelve { patients, totalCount }
+            const patients = Array.isArray(res.data) ? res.data : (res.data.patients || []);
+            
+            return patients.map(p => ({
                 value: p.id,
                 label: `${p.full_name} - DNI: ${p.dni || 'N/A'} - ${p.street_name || ''}`,
                 patient: p

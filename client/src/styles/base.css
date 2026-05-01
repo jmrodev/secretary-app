@@ -26,7 +26,6 @@ body.dev-mode {
     border: none;
 }
 
-
 body.dev-mode::before {
     content: "DESARROLLO";
     position: fixed;
@@ -40,23 +39,6 @@ body.dev-mode::before {
     z-index: 999999; /* Overlays on top of cards and tables */
     pointer-events: none;
     white-space: nowrap;
-}
-
-body.dev-mode::after {
-    content: "MODO DESARROLLO";
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #333333;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 8px;
-    z-index: 99999;
-    font-weight: bold;
-    font-size: 0.9rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-    pointer-events: none;
-    border: 1px solid #555;
 }
 
 /* Base Typography */
@@ -174,4 +156,3 @@ label {
 .table-base tbody tr:hover {
     background-color: rgba(99, 102, 241, 0.02);
 }
-

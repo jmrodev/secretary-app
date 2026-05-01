@@ -1,8 +1,11 @@
 /* DayHeaders Styles (BEM) */
 
 .day-headers {
-    display: grid; grid-template-columns: repeat(7, 1fr);
-    background-color: white; padding: 0.25rem 0;
+    display: grid; 
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    background-color: transparent; 
+    padding: 0.25rem 0;
 }
 
 /* Sunday Header */
@@ -11,6 +14,10 @@
 .day-headers > :nth-child(7n) { color: var(--indigo-600); }
 
 .day-headers__day {
-    text-align: center; font-size: 0.625rem; font-weight: 800;
-    color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;
+    text-align: center; 
+    font-size: 0.7rem; 
+    font-weight: 800;
+    color: var(--gray-600); 
+    text-transform: uppercase; 
+    letter-spacing: 0.08em;
 }

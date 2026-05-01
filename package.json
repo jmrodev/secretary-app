@@ -10,6 +10,10 @@
     "build": "npm run build --workspace=client",
     "test": "npm run test --workspace=server"
   },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
   "devDependencies": {
     "@vitejs/plugin-react": "^6.0.1",
     "vite": "^8.0.10",

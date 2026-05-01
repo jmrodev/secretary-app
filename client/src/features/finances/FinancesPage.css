@@ -3,6 +3,8 @@
 .finances-page {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    min-height: 0;
 }
 
 /* Include any refinement needed for the dashboard grid layout */

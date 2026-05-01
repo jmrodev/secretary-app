@@ -71,6 +71,18 @@ export const es = {
     particular: "Particular",
     years: "años",
 
+    // Patient Form Stepper
+    step_personal: "Personal",
+    step_insurance: "Cobertura",
+    step_address: "Dirección",
+    step_contact: "Contacto",
+    step_medical: "Ficha Médica",
+    step_admin: "Gestión",
+    next: "Siguiente",
+    back: "Anterior",
+    medical_history_notes: "Historia Clínica / Notas",
+    medical_history_placeholder: "Antecedentes, alergias, notas importantes...",
+
     // Actions
     confirm_action: "Confirmar Acción",
     cancel: "Cancelar",
@@ -786,6 +798,7 @@ export const es = {
     afip_guide_step_1_short: "Genera el pedido de certificado (CSR) con el botón de abajo.",
     afip_guide_step_2_short: "Ingresa a AFIP con Clave Fiscal:",
     afip_guide_step_3_short: "Busca el servicio \"WSASS - Autogestión Certificados Homologación\".",
+
     afip_guide_step_4_short: "Crea un certificado nuevo pegando el texto CSR.",
     afip_guide_step_5_short: "Descarga el archivo .crt y súbelo aquí.",
     access_afip: "Acceder a AFIP",
@@ -997,7 +1010,7 @@ export const es = {
     no_appointments_registered: "No hay turnos registrados.",
     no_chronic_medication: "No hay registros de medicación crónica.",
     no_prescription_history: "No hay historial de recetas emitidas.",
-    back: "Volver",
+    back_simple: "Volver",
     phone: "Teléfono",
     location: "Ubicación",
     insurance: "OS / Prepaga",
@@ -1008,5 +1021,30 @@ export const es = {
     dose: "Dosis",
     obs: "Obs",
     derived_institution: "Derivado de Institución",
-    print: "Imprimir"
+    print: "Imprimir",
+    whatsapp_messenger: "Mensajería WhatsApp",
+    no_recent_chats: "Sin mensajes recientes",
+    select_chat_title: "Tus conversaciones",
+    select_chat_desc: "Selecciona un paciente para ver el historial y enviar mensajes.",
+    whatsapp_refresh: "Actualizar",
+    whatsapp_back: "Volver",
+    whatsapp_chat_with: "Chatear con",
+    you: "Tú",
+    unread_messages: "Mensajes sin leer",
+    
+    // Pairing & Bridge
+    whatsapp_pairing_required: "Vincular WhatsApp",
+    whatsapp_pairing_desc: "Escaneá este código desde tu celular (Ajustes > Dispositivos vinculados)",
+    waiting_for_qr: "Generando código...",
+    bridge_offline: "Puente desconectado (Offline)",
+    waiting_connection: "Esperando conexión...",
+    sending_whatsapp: "Enviando WhatsApp...",
+    whatsapp_sent: "Mensaje enviado",
+    sending_via_bridge: "Enviando por puente local...",
+    sent_via_bridge_success: "Enviado correctamente",
+    bridge_failed_fallback: "Error en el puente. Usando modo manual.",
+    send_automatically: "Envío Automático",
+    sending_whatsapp_auto: "Enviando automáticamente...",
+    whatsapp_sent_auto: "Mensaje enviado automáticamente",
+    sync: "Sincronizar"
 };

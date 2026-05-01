@@ -30,12 +30,8 @@ const RentalsPage = () => {
     } = useRentalsController();
 
     return (
-        <MainLayout wide>
+        <MainLayout wide flush title={t('office_rentals') || 'Alquiler de Consultorios'}>
             <div className="rentals-page-orchestrator">
-                <header className="dashboard-header animate-fadeIn">
-                    <h1 className="dashboard-header__title">{t('office_rentals') || 'Alquiler de Consultorios'}</h1>
-                    <p className="dashboard-header__subtitle">Gestione la disponibilidad y reservas de espacios de trabajo.</p>
-                </header>
 
                 <div className="dashboard-nav-bar animate-fadeIn">
                     <div className="flex items-center gap-2 text-sm font-medium text-slate-500">

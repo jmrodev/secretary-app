@@ -37,6 +37,12 @@ extracted_patients.json
 builds/
 !builds/old_gradle/
 
+# WhatsApp Bridge
+whatsapp-bridge-go/main
+whatsapp-bridge-go/*.db
+whatsapp-bridge-go/examplestore.db
+
+
 # Keys and certs
 *.key
 *.csr

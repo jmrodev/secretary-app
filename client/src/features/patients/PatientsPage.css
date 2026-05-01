@@ -15,17 +15,8 @@
     justify-content: flex-start;
 }
 
-.patients-page__list-container {
-    background: var(--white);
-    border-radius: var(--radius-xl);
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-sm);
-    overflow: hidden; /* For table border radius */
-    padding: 0;
-}
-
 /* Pagination container inside patient card */
-.patients-page__list-container .pagination {
+.patients-list-view .dashboard-card .pagination {
     padding: 1rem 1.5rem;
     border-top: 1px solid var(--border-color);
     background: var(--gray-50);

@@ -44,10 +44,9 @@ const PatientManagerModal = ({
             isOpen={isOpen}
             onClose={onClose}
             title={title}
-            size="lg"
+            size="xl"
         >
-            <article className={baseClass}>
-                <h2 className="visually-hidden">{title}</h2>
+            <article className={`${baseClass} ${baseClass}--full-width`}>
                 {referenceInfo && !isEdit && (
                     <header className={`${baseClass}__reference`}>
                         <span className={`${baseClass}__reference-label`}>

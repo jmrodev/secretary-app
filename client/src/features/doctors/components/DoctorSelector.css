@@ -3,21 +3,23 @@
 .doctor-inline-selector {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    padding: 0.2rem 0.75rem;
-    background-color: #ffffff;
-    border-radius: 2rem;
-    margin-left: 0.5rem;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-    transition: all 0.2s ease;
+    gap: 0.5rem;
+    padding: 0.35rem 1rem;
+    background-color: var(--glass);
+    backdrop-filter: blur(12px);
+    border-radius: var(--radius, 1.5rem);
+    margin-left: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     vertical-align: middle;
 }
 
 .doctor-inline-selector:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
-    background-color: #fcfcfc;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    background-color: var(--white);
+    border-color: var(--primary-color);
 }
 
 .doctor-inline-selector__select {

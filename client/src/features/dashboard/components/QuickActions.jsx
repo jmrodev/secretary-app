@@ -11,8 +11,6 @@ const QuickActions = ({ t, handlers, isAdmin, isSecretary, isDoctor, compact = f
     const { 
         navigate, 
         setPaymentModal, 
-        setPrescribeModal,
-        // Assuming these handlers might need to be passed or inferred
     } = handlers;
 
     const sections = [
@@ -51,7 +49,7 @@ const QuickActions = ({ t, handlers, isAdmin, isSecretary, isDoctor, compact = f
             title: t('documents'),
             icon: 'description',
             actions: [
-                { label: t('new_request'), icon: 'assignment_add', onClick: () => navigate('/medical/requests') },
+                { label: t('new_request'), icon: 'assignment_add', onClick: () => navigate('/requests') },
             ],
             visible: true
         }
@@ -59,36 +57,29 @@ const QuickActions = ({ t, handlers, isAdmin, isSecretary, isDoctor, compact = f
 
     return (
         <section className={`quick-actions ${compact ? 'quick-actions--compact' : ''}`}>
-            <header className="quick-actions__header">
-                <h3 className="quick-actions__title">
-                    <Icon name="bolt" size="1.25rem" />
-                    {t('quick_actions')}
-                </h3>
-            </header>
-            <div className="quick-actions__grid">
-                {sections.map(section => (
-                    <div key={section.id} className="quick-actions__section">
-                        <div className="quick-actions__section-header">
-                            <Icon name={section.icon} size="1rem" />
-                            <span>{section.title}</span>
-                        </div>
-                        <div className="quick-actions__buttons">
-                            {section.actions.map((action, idx) => (
-                                <Button 
-                                    key={idx} 
-                                    variant="ghost" 
-                                    className="quick-actions__btn"
+            {sections.map(section => (
+                <div key={section.id} className="quick-actions__section">
+                    <header className="quick-actions__header">
+                        <h4 className="quick-actions__title">
+                            {section.title}
+                        </h4>
+                    </header>
+                    <div className="quick-actions__horizontal-card">
+                        {section.actions.map((action, idx) => (
+                            <React.Fragment key={idx}>
+                                {idx > 0 && <div className="horizontal-divider"></div>}
+                                <button 
+                                    className="horizontal-action-btn"
                                     onClick={action.onClick}
-                                    unstyled
                                 >
-                                    <Icon name={action.icon} size="1.1rem" />
+                                    <Icon name={action.icon} size="1rem" />
                                     <span>{action.label}</span>
-                                </Button>
-                            ))}
-                        </div>
+                                </button>
+                            </React.Fragment>
+                        ))}
                     </div>
-                ))}
-            </div>
+                </div>
+            ))}
         </section>
     );
 };

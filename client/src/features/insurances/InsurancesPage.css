@@ -3,6 +3,8 @@
 .insurances-page-orchestrator {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    min-height: 0;
 }
 
 .insurances-page__counter {

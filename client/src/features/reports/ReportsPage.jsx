@@ -11,7 +11,7 @@ const ReportsPage = () => {
     const controller = useReportsController();
 
     return (
-        <MainLayout wide>
+        <MainLayout wide title={controller.t('reports')}>
             <main className="reports-page-orchestrator animate-fadeIn">
                 <ReportsDashboard {...controller} />
             </main>

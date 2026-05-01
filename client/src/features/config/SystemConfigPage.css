@@ -10,6 +10,8 @@
 
     display: flex;
     flex-direction: column;
+    flex: 1;
+    min-height: 0;
     gap: 2rem;
     padding: 1rem;
 }

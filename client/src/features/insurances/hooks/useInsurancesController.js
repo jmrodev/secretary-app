@@ -12,7 +12,11 @@ export const useInsurancesController = () => {
     const { t } = useLanguage();
 
     // Data State using custom hook
-    const { data: insurances = [], loading, refetch: fetchInsurances } = useFetch('/insurances', { initialData: [] });
+    const { data: insData, loading, refetch: fetchInsurances } = useFetch('/insurances', { 
+        initialData: { insurances: [], totalCount: 0 } 
+    });
+
+    const insurances = insData?.insurances || [];
 
     // UI State
     const [searchTerm, setSearchTerm] = useState('');

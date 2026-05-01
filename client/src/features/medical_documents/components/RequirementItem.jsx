@@ -40,14 +40,6 @@ const RequirementItem = ({
                 {patient_name}
             </td>
             <td className="requirement-item__cell">
-                <span className="requirement-item__doctor">Dr. {doctor_name}</span>
-            </td>
-            <td className="requirement-item__cell">
-                <span className="requirement-item__author">
-                    {secretary_name || 'Secretaría'}
-                </span>
-            </td>
-            <td className="requirement-item__cell">
                 <Badge variant={status}>
                     {t(status) || status}
                 </Badge>

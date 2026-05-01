@@ -1,6 +1,7 @@
 const axios = require('axios');
 const systemSettingsRepository = require('../repositories/systemSettingsRepository');
 const appointmentRepository = require('../repositories/appointmentRepository');
+const whatsappRepository = require('../repositories/whatsappRepository');
 
 const getMetaCredentials = async () => {
     const rows = await systemSettingsRepository.findManyByKeys(['meta_phone_number_id', 'meta_access_token']);
@@ -57,12 +58,21 @@ const sendTemplateMessage = async (to, templateName, languageCode = 'es', compon
  * @param {string} to - Recipient phone number
  * @param {string} message - Plain text message
  */
-const sendMessageDirect = async (to, message) => {
+const sendMessageDirect = async (to, message, patientId = null) => {
     try {
-        const response = await axios.post('http://localhost:8080/api/send', {
+        const bridgeUrl = process.env.WHATSAPP_BRIDGE_URL || 'http://127.0.0.1:8090/api/send';
+        console.log(`[WhatsApp Bridge] Sending to: ${to}, URL: ${bridgeUrl}`);
+        
+        const response = await axios.post(bridgeUrl, {
             recipient: to,
             message: message
         });
+        
+        if (patientId) {
+            await whatsappRepository.createMessage(patientId, 'outbound', message, null, 'sent');
+        }
+
+        console.log(`[WhatsApp Bridge] Response:`, response.data);
         return response.data;
     } catch (error) {
         console.error('Local WhatsApp Bridge Error:', error.response?.data || error.message);
@@ -118,13 +128,14 @@ const sendAutomatedReminders = async () => {
                     .replace(/{date}/g, dateStr)
                     .replace(/{time}/g, timeStr)
                     .replace(/{doctor_name}/g, appt.doctor_name)
-                    .replace(/{appointment_location}/g, isVirtual ? 'Virtual' : address);
+                    .replace(/{appointment_location}/g, isVirtual ? 'Virtual' : address)
+                    .replace(/{appointment_type}/g, isVirtual ? 'VIRTUAL' : 'PRESENCIAL');
 
                 let phone = appt.patient_phone.replace(/\D/g, '');
                 if (!phone.startsWith('54') && phone.length >= 10) phone = '549' + phone;
 
-                await sendMessageDirect(phone, message);
-                console.log(`[WhatsApp] Automated reminder sent to ${phone} (${appt.patient_name})`);
+                await sendMessageDirect(phone, message, appt.patient_id);
+                console.log(`[WhatsApp Bridge] Automated reminder sent to ${phone} (${appt.patient_name})`);
             } catch (err) {
                 console.error(`[WhatsApp] Failed to send automated reminder to ${appt.patient_name}:`, err.message);
             }
@@ -142,9 +153,23 @@ const sendTestMessage = async (to) => {
     return sendTemplateMessage(to, 'hello_world', 'en_US');
 };
 
+/**
+ * Get bridge status from Go service
+ */
+const getBridgeStatus = async () => {
+    try {
+        const bridgeUrl = process.env.WHATSAPP_BRIDGE_STATUS_URL || 'http://127.0.0.1:8090/api/status';
+        const response = await axios.get(bridgeUrl, { timeout: 2000 });
+        return response.data;
+    } catch (error) {
+        return { status: 'offline', qr_code: '' };
+    }
+};
+
 module.exports = {
     sendTemplateMessage,
     sendTestMessage,
     sendMessageDirect,
-    sendAutomatedReminders
+    sendAutomatedReminders,
+    getBridgeStatus
 };

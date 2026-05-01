@@ -92,16 +92,15 @@ const MedicalDocumentsPage = () => {
     ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
     if (loading) return (
-        <MainLayout wide>
+        <MainLayout wide flush>
             <Loading variant="centered" />
         </MainLayout>
     );
 
     return (
-        <MainLayout wide>
+        <MainLayout wide flush title={t('documents') || 'Documentos Médicos'}>
             <div className="medical-documents-page">
                 <div className="medical-documents no-print">
-                <DocumentsHeader t={t} />
 
                 <div className="dashboard-grid animate-fadeIn">
                     <DocumentsSidebar

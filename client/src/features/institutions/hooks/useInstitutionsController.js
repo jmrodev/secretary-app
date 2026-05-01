@@ -20,7 +20,11 @@ export const useInstitutionsController = () => {
     const { t } = useLanguage();
 
     // Data State using custom hook
-    const { data: institutions = [], loading, refetch: fetchInstitutions } = useFetch('/institutions', { initialData: [] });
+    const { data: instData, loading, refetch: fetchInstitutions } = useFetch('/institutions', { 
+        initialData: { institutions: [], totalCount: 0 } 
+    });
+
+    const institutions = instData?.institutions || [];
 
     // UI State
     const [activeTab, setActiveTab] = useState('list'); // 'list' | 'finances'

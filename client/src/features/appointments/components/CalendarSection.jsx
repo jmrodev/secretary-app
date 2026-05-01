@@ -28,42 +28,7 @@ const CalendarSection = ({
                         holidays={holidays} showOutOfHours={showOutOfHours}
                     />
 
-                    {activeTab === 'calendar' && (
-                        <div className="calendar-section__tools-container">
-                            <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">
-                                    <Icon name="history" size="1rem" />
-                                    {t('search_history')}
-                                </h3>
-                                <div className="calendar-section__filter-group">
-                                    <PatientSearchSelect
-                                        value={searchPatientId} placeholder={t('search_placeholder')}
-                                        onChange={onSearchPatientId} onCreatePatient={onCreatePatient}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">
-                                    <Icon name="build" size="1rem" />
-                                    {t('tools')}
-                                </h3>
-                                <div className="calendar-section__tools-group">
-                                    <Button
-                                        variant="outline" className="calendar-section__tool-btn-main"
-                                        onClick={onNextFreeSlot} icon={<Icon name="search" size="1.1rem" />}
-                                    >
-                                        {t('next_free_slot')}
-                                    </Button>
-                                    <Button
-                                        variant="outline" onClick={() => onSyncDayToGoogle && onSyncDayToGoogle()}
-                                        title={t('sync_google_calendar')}
-                                        icon={<Icon name="sync" size="1.1rem" />}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    )}
+                    {/* Tools section removed per user request */}
                 </>
             ) : (
                 <div className="dashboard-card holiday-card">

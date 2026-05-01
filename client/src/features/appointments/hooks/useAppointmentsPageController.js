@@ -46,7 +46,16 @@ export const useAppointmentsPageController = () => {
     // --- Data Fetching using useFetch ---
     
     // Institutions
-    const { data: institutions = [], loading: institutionsLoading } = useFetch('/institutions', { initialData: [] });
+    const { data: instData, loading: institutionsLoading } = useFetch('/institutions', { 
+        initialData: { institutions: [], totalCount: 0 } 
+    });
+    const institutions = instData?.institutions || [];
+
+    // Insurances (Required for PatientManagerModal)
+    const { data: insData } = useFetch('/insurances', { 
+        initialData: { insurances: [], totalCount: 0 } 
+    });
+    const insurances = insData?.insurances || [];
 
     // Calendar Stats
     const { data: calendarStats = {} } = useFetch('/appointments/stats', {
@@ -62,7 +71,10 @@ export const useAppointmentsPageController = () => {
     const { updateStatus, updateAppointment, cancelAppointment, deleteAppointment, rescheduleAppointment, savePrescription } = useAppointments();
     const { holidays, addHoliday, deleteHoliday } = useHolidays();
     const patientSearch = usePatientSearch();
-    const { searchPatientId, setSearchPatientId, appointments, patientAppointments, patientApptLoading, fetchAppointments } = patientSearch;
+    const { 
+        searchTerm, setSearchTerm, searchPatientId, setSearchPatientId, 
+        appointments, patientAppointments, patientApptLoading, fetchAppointments 
+    } = patientSearch;
     const { doctorSchedule, syncDayToGoogle } = useGoogleEvents(viewDoctorId, selectedDate, user?.role);
     const { handleWhatsAppUniversal } = useWhatsAppUniversal(doctors);
     const booking = useAppointmentBooking(doctors);
@@ -113,11 +125,11 @@ export const useAppointmentsPageController = () => {
         exitRescheduleMode, rescheduleAppt,
         setActiveTab, setShowOutOfHours, setViewDoctorId, setSelectedDate,
         setEditPatientModalOpen, setPaymentModal, setActionModal, setHistoryModal,
-        setPrescribeModal, setAuthModalOpen, setSearchPatientId
+        setPrescribeModal, setAuthModalOpen, setSearchPatientId, setSearchTerm
     };
 
     return {
-        viewDoctorId, doctors, institutions, loading, selectedDate,
+        viewDoctorId, doctors, institutions, insurances, loading, selectedDate,
         activeTab, showOutOfHours, t, language, user,
         editPatientModalOpen, paymentModal,
         actionModal, historyModal, prescribeModal,
@@ -125,6 +137,6 @@ export const useAppointmentsPageController = () => {
         showNextSlotModal: nextSlot.showModal, setShowNextSlotModal: nextSlot.setShowModal,
         holidays, booking, patientSearch, nextSlot, currentDoctor: viewDoctorId ? doctors.find(d => d.id === Number(viewDoctorId)) : null,
         filteredAppointments: appointments, appointments, calendarStats, doctorSchedule,
-        searchPatientId, patientAppointments, patientApptLoading, handlers, rescheduleAppt, exitRescheduleMode
+        searchTerm, searchPatientId, patientAppointments, patientApptLoading, handlers, rescheduleAppt, exitRescheduleMode
     };
 };

@@ -1,13 +1,9 @@
 const insuranceService = require('./insuranceService');
 const insuranceRepository = require('../repositories/insuranceRepository');
 const phoneRepository = require('../repositories/phoneRepository');
-<<<<<<< HEAD
 const { pool } = require('../db');
 
-=======
-
 // Mock dependencies
->>>>>>> origin/test-insuranceservice-getallinsurances-9046453175004388680
 jest.mock('../repositories/insuranceRepository');
 jest.mock('../repositories/phoneRepository');
 jest.mock('../db', () => ({
@@ -17,21 +13,23 @@ jest.mock('../db', () => ({
 }));
 
 describe('InsuranceService', () => {
-<<<<<<< HEAD
-    let mockConn;
-
     beforeEach(() => {
-        mockConn = {
-            beginTransaction: jest.fn(),
-            commit: jest.fn(),
-            rollback: jest.fn(),
-            release: jest.fn()
-        };
-        pool.getConnection.mockResolvedValue(mockConn);
         jest.clearAllMocks();
     });
 
     describe('createInsurance', () => {
+        let mockConn;
+
+        beforeEach(() => {
+            mockConn = {
+                beginTransaction: jest.fn(),
+                commit: jest.fn(),
+                rollback: jest.fn(),
+                release: jest.fn()
+            };
+            pool.getConnection.mockResolvedValue(mockConn);
+        });
+
         it('should commit transaction and release connection if successful', async () => {
             const data = { name: 'Test Insurance', phoneNumbers: ['123456789'] };
             insuranceRepository.create.mockResolvedValue(1);
@@ -83,9 +81,7 @@ describe('InsuranceService', () => {
             expect(mockConn.rollback).toHaveBeenCalled();
             expect(mockConn.commit).not.toHaveBeenCalled();
             expect(mockConn.release).toHaveBeenCalled();
-=======
-    beforeEach(() => {
-        jest.clearAllMocks();
+        });
     });
 
     describe('getAllInsurances', () => {
@@ -94,7 +90,7 @@ describe('InsuranceService', () => {
 
             const result = await insuranceService.getAllInsurances();
 
-            expect(result).toEqual([]);
+            expect(result).toEqual({ insurances: [], totalCount: 0 });
             expect(insuranceRepository.findAll).toHaveBeenCalledTimes(1);
             expect(phoneRepository.findByEntity).not.toHaveBeenCalled();
         });
@@ -118,10 +114,13 @@ describe('InsuranceService', () => {
 
             const result = await insuranceService.getAllInsurances();
 
-            expect(result).toEqual([
-                { id: 1, name: 'OSDE', phoneNumbers: mockPhones1 },
-                { id: 2, name: 'Swiss Medical', phoneNumbers: mockPhones2 }
-            ]);
+            expect(result).toEqual({
+                insurances: [
+                    { id: 1, name: 'OSDE', phoneNumbers: mockPhones1 },
+                    { id: 2, name: 'Swiss Medical', phoneNumbers: mockPhones2 }
+                ],
+                totalCount: 2
+            });
 
             expect(insuranceRepository.findAll).toHaveBeenCalledTimes(1);
             expect(phoneRepository.findByEntity).toHaveBeenCalledTimes(2);
@@ -150,7 +149,6 @@ describe('InsuranceService', () => {
             await expect(insuranceService.getAllInsurances()).rejects.toThrow(error);
             expect(insuranceRepository.findAll).toHaveBeenCalledTimes(1);
             expect(phoneRepository.findByEntity).toHaveBeenCalledTimes(1);
->>>>>>> origin/test-insuranceservice-getallinsurances-9046453175004388680
         });
     });
 });

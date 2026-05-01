@@ -11,10 +11,12 @@ export const useDashboardStats = (isStaff = false, doctor_id = '') => {
         params: { doctor_id }
     });
     const {
-        data: doctors = [],
+        data: doctorData,
         loading: loadingDoctors,
         error: errorDoctors
-    } = useFetch('/users/doctors', { initialData: [] });
+    } = useFetch('/users/doctors', { initialData: { doctors: [], totalCount: 0 } });
+
+    const doctors = doctorData?.doctors || [];
     
     const {
         data: newPatientStats = null,

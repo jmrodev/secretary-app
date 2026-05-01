@@ -11,7 +11,7 @@ import './ScheduleSection.css';
 const ScheduleSection = ({
     activeTab, selectedDate, selectedDoctor, viewDoctorId, appointments = [],
     doctorSchedule = [], holidays = [], onSlotClick, onDeleteHoliday,
-    onDateSelect, showOutOfHours, setShowOutOfHours, className
+    onDateSelect, showOutOfHours, setShowOutOfHours, onNextFreeSlot, className
 }) => {
     const getDoctorThemeModifier = () => viewDoctorId ? `schedule-section--doctor-${Number(viewDoctorId) % 10}` : '';
     const isCalendar = activeTab === 'calendar';
@@ -26,6 +26,7 @@ const ScheduleSection = ({
                     appointments={selectedDoctor ? appointments.filter(a => a.doctor_id === selectedDoctor.id) : appointments}
                     onSlotClick={onSlotClick} doctor={selectedDoctor} schedule={doctorSchedule}
                     holidays={holidays} showOutOfHours={showOutOfHours} setShowOutOfHours={setShowOutOfHours}
+                    onNextFreeSlot={onNextFreeSlot}
                 />
             ) : (
                 <>

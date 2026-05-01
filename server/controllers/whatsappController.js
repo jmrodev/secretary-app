@@ -1,4 +1,5 @@
 const whatsappService = require('../services/whatsappService');
+const whatsappRepository = require('../repositories/whatsappRepository');
 
 /**
  * Send a templated message (Generic Endpoint)
@@ -83,16 +84,89 @@ const broadcastMessage = async (req, res) => {
  * Send a direct message using the local bridge
  */
 const sendDirectMessage = async (req, res) => {
-    const { to, message } = req.body;
+    const { to, message, patientId } = req.body;
 
     if (!to || !message) {
         return res.status(400).json({ error: 'Missing required parameters (to, message)' });
     }
 
     try {
-        const result = await whatsappService.sendMessageDirect(to, message);
+        const result = await whatsappService.sendMessageDirect(to, message, patientId);
         res.json({ success: true, data: result });
     } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+/**
+ * Webhook for incoming messages from Go bridge
+ */
+const receiveWebhook = async (req, res) => {
+    try {
+        const { sender, message, isFromMe } = req.body;
+        console.log(`[WhatsApp Webhook] Message from ${sender}: ${message}`);
+
+        // Extract phone without suffix
+        const phone = sender.split('@')[0];
+        
+        // Find patient by phone
+        const patientId = await whatsappRepository.findPatientByPhone(phone);
+        
+        if (patientId) {
+            const direction = isFromMe ? 'outbound' : 'inbound';
+            await whatsappRepository.createMessage(patientId, direction, message, null, 'delivered');
+            console.log(`[WhatsApp Webhook] Saved ${direction} message for patient ID: ${patientId}`);
+        } else {
+            console.log(`[WhatsApp Webhook] Message from unknown number: ${phone}`);
+        }
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('[WhatsApp Webhook Error]:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+/**
+ * Get WhatsApp history for a patient
+ */
+const getPatientHistory = async (req, res) => {
+    try {
+        const { patientId } = req.body;
+        if (!patientId) {
+            return res.status(400).json({ error: 'Missing required parameter (patientId)' });
+        }
+        const history = await whatsappRepository.getHistoryByPatient(patientId);
+        res.json({ success: true, data: history });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+/**
+ * Get recent conversations for the global messenger
+ */
+const getRecentConversations = async (req, res) => {
+    try {
+        const { doctor_id } = req.query;
+        const conversations = await whatsappRepository.getRecentConversations(doctor_id);
+        res.json({ success: true, data: conversations });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+/**
+ * Get the status of the local WhatsApp bridge
+ */
+const getBridgeStatus = async (req, res) => {
+    try {
+        const whatsappService = require('../services/whatsappService');
+        const status = await whatsappService.getBridgeStatus();
+        console.log(`[WhatsApp Controller] Bridge Status: ${status.status}, QR present: ${!!status.qr_code}`);
+        res.json({ success: true, ...status });
+    } catch (error) {
+        console.error('[WhatsApp Controller] Error getting status:', error.message);
         res.status(500).json({ error: error.message });
     }
 };
@@ -101,5 +175,9 @@ module.exports = {
     sendMessage,
     broadcastMessage,
     testConnection,
-    sendDirectMessage
+    sendDirectMessage,
+    receiveWebhook,
+    getPatientHistory,
+    getRecentConversations,
+    getBridgeStatus
 };
