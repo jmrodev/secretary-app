@@ -152,6 +152,21 @@ const getRecentConversations = async (req, res) => {
     }
 };
 
+/**
+ * Get the status of the local WhatsApp bridge
+ */
+const getBridgeStatus = async (req, res) => {
+    try {
+        const whatsappService = require('../services/whatsappService');
+        const status = await whatsappService.getBridgeStatus();
+        console.log(`[WhatsApp Controller] Bridge Status: ${status.status}, QR present: ${!!status.qr_code}`);
+        res.json({ success: true, ...status });
+    } catch (error) {
+        console.error('[WhatsApp Controller] Error getting status:', error.message);
+        res.status(500).json({ error: error.message });
+    }
+};
+
 module.exports = {
     sendMessage,
     broadcastMessage,
@@ -159,5 +174,6 @@ module.exports = {
     sendDirectMessage,
     receiveWebhook,
     getPatientHistory,
-    getRecentConversations
+    getRecentConversations,
+    getBridgeStatus
 };

@@ -60,7 +60,7 @@ const sendTemplateMessage = async (to, templateName, languageCode = 'es', compon
  */
 const sendMessageDirect = async (to, message, patientId = null) => {
     try {
-        const bridgeUrl = process.env.WHATSAPP_BRIDGE_URL || 'http://192.168.1.12:8090/api/send';
+        const bridgeUrl = process.env.WHATSAPP_BRIDGE_URL || 'http://127.0.0.1:8090/api/send';
         console.log(`[WhatsApp Bridge] Sending to: ${to}, URL: ${bridgeUrl}`);
         
         const response = await axios.post(bridgeUrl, {
@@ -153,9 +153,23 @@ const sendTestMessage = async (to) => {
     return sendTemplateMessage(to, 'hello_world', 'en_US');
 };
 
+/**
+ * Get bridge status from Go service
+ */
+const getBridgeStatus = async () => {
+    try {
+        const bridgeUrl = process.env.WHATSAPP_BRIDGE_STATUS_URL || 'http://127.0.0.1:8090/api/status';
+        const response = await axios.get(bridgeUrl, { timeout: 2000 });
+        return response.data;
+    } catch (error) {
+        return { status: 'offline', qr_code: '' };
+    }
+};
+
 module.exports = {
     sendTemplateMessage,
     sendTestMessage,
     sendMessageDirect,
-    sendAutomatedReminders
+    sendAutomatedReminders,
+    getBridgeStatus
 };

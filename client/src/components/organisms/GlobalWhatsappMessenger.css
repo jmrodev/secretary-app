@@ -1,8 +1,8 @@
-/* The floating button in the bottom left */
+/* The floating button in the bottom right */
 .global-wa-btn {
     position: fixed;
     bottom: var(--space-xl, 2rem);
-    left: var(--space-xl, 2rem);
+    right: var(--space-xl, 2rem);
     width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -23,25 +23,57 @@
     box-shadow: 0 6px 16px rgba(37, 211, 102, 0.5);
 }
 
-/* The open messenger panel - SPLIT LAYOUT */
+/* The open messenger panel - MOBILE/MINIMALIST LAYOUT */
 .global-wa-messenger {
     position: fixed;
     bottom: var(--space-xl, 2rem);
-    left: var(--space-xl, 2rem);
-    width: 900px; /* Wider for split view */
-    max-width: calc(100vw - 4rem);
-    height: 550px;
-    max-height: 75vh;
+    right: var(--space-xl, 2rem);
+    width: 420px; /* Very narrow and minimalist */
+    max-width: calc(100vw - 2rem);
+    height: 600px; /* Taller for mobile feel */
+    max-height: 85vh;
     background: var(--white, #ffffff);
     border-radius: var(--radius-xl, 16px);
-    box-shadow: var(--shadow-xl);
-    display: grid;
-    grid-template-columns: 320px 1fr; /* Sidebar and Chat area */
+    box-shadow: var(--shadow-2xl);
+    display: flex; /* Flex instead of grid for single column */
+    flex-direction: column;
     z-index: 10000;
     overflow: hidden;
     border: 1px solid var(--border-color, #e0e0e0);
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+/* Ensure sections take full width in single column */
+.global-wa-messenger__sidebar,
+.global-wa-messenger__chat-area {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: white;
+    transition: transform 0.3s ease;
+}
+
+/* Logic to slide between list and chat (handled by JSX classes if possible, or just hide one) */
+.global-wa-messenger__sidebar {
+    z-index: 2;
+}
+
+.global-wa-messenger__chat-area {
+    z-index: 3;
+    transform: translateX(100%);
+}
+
+.global-wa-messenger--chat-active .global-wa-messenger__chat-area {
+    transform: translateX(0);
+}
+
+.global-wa-messenger--chat-active .global-wa-messenger__sidebar {
+    transform: translateX(-20%);
+    opacity: 0.5;
+}
+
 
 /* Sidebar Styling */
 .global-wa-messenger__sidebar {
@@ -52,7 +84,7 @@
 }
 
 .global-wa-messenger__sidebar-header {
-    padding: 1.25rem 1rem;
+    padding: 0.75rem 1rem;
     border-bottom: 1px solid var(--border-color);
     background: var(--gray-50, #f9fafb);
     display: flex;
@@ -96,8 +128,8 @@
 .global-wa-messenger__list-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 1rem;
+    gap: 10px;
+    padding: 0.75rem 1rem;
     cursor: pointer;
     border-bottom: 1px solid rgba(0,0,0,0.05);
     transition: background-color 0.2s;
@@ -350,4 +382,110 @@
         opacity: 1;
         transform: translateY(0) scale(1);
     }
+}
+
+/* Pairing Screen Styles */
+.global-wa-messenger__pairing {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: #f0f2f5;
+}
+
+.global-wa-messenger__pairing-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 320px;
+}
+
+.global-wa-messenger__pairing-icon {
+    color: #075e54;
+    margin-bottom: 1rem;
+}
+
+.global-wa-messenger__pairing h3 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+}
+
+.global-wa-messenger__pairing p {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+}
+
+.global-wa-messenger__qr-container {
+    position: relative;
+    padding: 1.5rem;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.global-wa-messenger__qr-image {
+    display: block;
+    width: 240px;
+    height: 240px;
+    image-rendering: pixelated;
+}
+
+.global-wa-messenger__qr-placeholder {
+    width: 200px;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: #9ca3af;
+    background: #f9fafb;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.global-wa-messenger__pairing-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+.global-wa-messenger__status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.global-wa-messenger__status-dot--offline { background: #ef4444; }
+.global-wa-messenger__status-dot--disconnected { background: #f59e0b; }
+.global-wa-messenger__status-dot--connected { background: #25d366; }
+
+.animate-spin {
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }

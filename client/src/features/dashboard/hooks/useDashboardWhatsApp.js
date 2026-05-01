@@ -1,5 +1,8 @@
 import { copyToClipboard } from '@/utils/clipboardUtils';
 import { replaceTemplateVariables } from '@/utils/stringUtils';
+import { useLanguage } from '@/context/LanguageContext';
+import { useMessage } from '@/context/MessageContext';
+import api from '@/api/axios';
 
 export const useDashboardWhatsApp = ({ user, settings, showMessage, t }) => {
     const handleWhatsApp = (appt, type) => {
@@ -38,27 +41,39 @@ export const useDashboardWhatsApp = ({ user, settings, showMessage, t }) => {
             });
         }
 
-        copyToClipboard(message).then(() => {
-            showMessage(t('whatsapp_text_copied_opening'), 'success');
-            phone = phone.replace(/\D/g, '');
-            if (!phone.startsWith('54') && phone.length >= 10) {
-                phone = '549' + phone;
-            }
-            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        const cleanPhone = phone.replace(/\D/g, '');
+        let normalizedPhone = cleanPhone;
+        if (!normalizedPhone.startsWith('54') && normalizedPhone.length >= 10) normalizedPhone = '549' + normalizedPhone;
 
-            if (isMobile) {
-                const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-                window.open(url, '_blank');
-            } else {
-                const appUrl = `whatsapp://send?phone=${phone}&text=${encodeURIComponent(message)}`;
-                const webUrl = `https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
-                window.location.href = appUrl;
-                setTimeout(() => window.open(webUrl, '_blank'), 2500);
+        const sendDirect = async () => {
+            try {
+                showMessage(t('sending_whatsapp') || 'Enviando WhatsApp...', 'info');
+                await api.post('/whatsapp/send-direct', {
+                    to: normalizedPhone,
+                    message: message
+                });
+                showMessage(t('whatsapp_sent') || 'Mensaje enviado!', 'success');
+            } catch (err) {
+                console.error("Direct send failed, falling back to manual", err);
+                
+                copyToClipboard(message).then(() => {
+                    showMessage(t('whatsapp_text_copied_opening'), 'success');
+                    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+                    if (isMobile) {
+                        const url = `https://wa.me/${normalizedPhone}?text=${encodeURIComponent(message)}`;
+                        window.open(url, '_blank');
+                    } else {
+                        const appUrl = `whatsapp://send?phone=${normalizedPhone}&text=${encodeURIComponent(message)}`;
+                        const webUrl = `https://web.whatsapp.com/send?phone=${normalizedPhone}&text=${encodeURIComponent(message)}`;
+                        window.location.href = appUrl;
+                        setTimeout(() => window.open(webUrl, '_blank'), 2500);
+                    }
+                });
             }
-        }).catch(err => {
-            console.error(err);
-            showMessage(t('error_copying_text'), 'error');
-        });
+        };
+
+        sendDirect();
     };
 
     return {

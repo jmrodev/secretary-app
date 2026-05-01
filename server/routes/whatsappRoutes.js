@@ -29,4 +29,7 @@ router.post('/broadcast', authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), whatsappCon
 // Test Connection - Admin Config only
 router.post('/test', authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), whatsappController.testConnection);
 
+// Bridge Status (Internal check)
+router.get('/status', whatsappController.getBridgeStatus);
+
 module.exports = router;

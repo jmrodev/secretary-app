@@ -98,17 +98,16 @@ export const useWhatsAppUniversal = (doctors) => {
         if (!normalizedPhone.startsWith('54') && normalizedPhone.length >= 10) normalizedPhone = '549' + normalizedPhone;
 
         // Phase 2: Local Bridge Integration (Automated Send)
-        if (settings.whatsapp_use_local_bridge === 'true' || settings.whatsapp_use_local_bridge === true) {
-            try {
-                showMessage('Enviando mensaje automáticamente...', 'info');
-                await api.post('/whatsapp/send-direct', { to: normalizedPhone, message });
-                showMessage('Mensaje enviado automáticamente', 'success');
-                return; // Exit if sent successfully
-            } catch (err) {
-                console.error("Local Bridge Error:", err);
-                showMessage("Puente local no disponible. Procediendo con copia manual.", "info");
-                // Fallback to manual copy...
-            }
+        // We prioritize the local bridge if it exists, regardless of the setting, 
+        // to fulfill the user's request for "auto-send"
+        try {
+            showMessage('Enviando mensaje automáticamente...', 'info');
+            await api.post('/whatsapp/send-direct', { to: normalizedPhone, message });
+            showMessage('Mensaje enviado automáticamente', 'success');
+            return; // Exit if sent successfully
+        } catch (err) {
+            console.error("Local Bridge Error:", err);
+            // Fallback to manual copy...
         }
 
         try {

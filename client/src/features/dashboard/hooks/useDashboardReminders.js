@@ -78,10 +78,29 @@ export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
         }
 
         const cleanPhone = phone.replace(/\D/g, '');
-        window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`, '_blank');
+        let normalizedPhone = cleanPhone;
+        if (!normalizedPhone.startsWith('54') && normalizedPhone.length >= 10) normalizedPhone = '549' + normalizedPhone;
 
-        // Auto-mark as notified
-        handleMarkNotified(reminder, type, true);
+        // Try direct send via bridge
+        const sendDirect = async () => {
+            try {
+                showMessage(t('sending_whatsapp') || 'Enviando WhatsApp...', 'info');
+                await api.post('/whatsapp/send-direct', {
+                    to: normalizedPhone,
+                    message: message
+                });
+                showMessage(t('whatsapp_sent') || 'Mensaje enviado!', 'success');
+                // Auto-mark as notified
+                handleMarkNotified(reminder, type, true);
+            } catch (err) {
+                console.error("Direct send failed, falling back to manual", err);
+                window.open(`https://wa.me/${normalizedPhone}?text=${encodeURIComponent(message)}`, '_blank');
+                // Still mark as notified as we opened the link
+                handleMarkNotified(reminder, type, true);
+            }
+        };
+
+        sendDirect();
     };
 
     return {

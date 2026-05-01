@@ -1,37 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import api from '@/api/axios';
 import Icon from '@/components/atoms/Icon';
+import Button from '@/components/atoms/Button';
 import WhatsappChatHistory from '@/features/patients/components/WhatsappChatHistory';
 import { useLanguage } from '@/context/LanguageContext';
 import './GlobalWhatsappMessenger.css';
 
+/**
+ * GlobalWhatsappMessenger Organism
+ * 
+ * Follows ARQUITECTURA.md:
+ * - Atomic Design: Organism
+ * - BEM naming
+ * - i18n support (no hardcoded strings)
+ * - Uses atoms (Button, Icon)
+ */
 const GlobalWhatsappMessenger = () => {
     const { t } = useLanguage();
     const [isOpen, setIsOpen] = useState(false);
     const [selectedPatientId, setSelectedPatientId] = useState(null);
     const [conversations, setConversations] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [bridgeStatus, setBridgeStatus] = useState({ status: 'connected', qr_code: '' });
+    const [statusLoading, setStatusLoading] = useState(true);
 
-    useEffect(() => {
-        if (isOpen && !selectedPatientId) {
-            fetchConversations();
-            
-            const intervalId = setInterval(() => {
-                api.get('/whatsapp/recent')
-                   .then(res => {
-                       if (res.data.success) {
-                           setConversations(res.data.data);
-                       }
-                   }).catch(err => console.error("Auto-poll error", err));
-            }, 3000);
-            
-            return () => clearInterval(intervalId);
-        }
-    }, [isOpen, selectedPatientId]);
-
-    const fetchConversations = async () => {
+    const fetchConversations = useCallback(async (isAuto = false) => {
+        if (!isAuto) setLoading(true);
         try {
-            setLoading(true);
             const res = await api.get('/whatsapp/recent');
             if (res.data.success) {
                 setConversations(res.data.data);
@@ -39,9 +34,43 @@ const GlobalWhatsappMessenger = () => {
         } catch (error) {
             console.error("Error fetching recent conversations", error);
         } finally {
-            setLoading(false);
+            if (!isAuto) setLoading(false);
         }
-    };
+    }, []);
+
+    const fetchStatus = useCallback(async () => {
+        try {
+            const res = await api.get('/whatsapp/status');
+            console.log("[WhatsApp] Status response:", res.data);
+            if (res.data.success) {
+                setBridgeStatus({ status: res.data.status, qr_code: res.data.qr_code });
+            }
+        } catch (error) {
+            console.error("[WhatsApp] Failed to fetch status:", error);
+            setBridgeStatus({ status: 'offline', qr_code: '' });
+        } finally {
+            setStatusLoading(false);
+        }
+    }, []);
+
+    // Polling logic
+    useEffect(() => {
+        if (isOpen) {
+            fetchStatus();
+            const statusInterval = setInterval(fetchStatus, 5000);
+            
+            let conversationsInterval;
+            if (bridgeStatus.status === 'connected' && !selectedPatientId) {
+                fetchConversations();
+                conversationsInterval = setInterval(() => fetchConversations(true), 5000);
+            }
+
+            return () => {
+                clearInterval(statusInterval);
+                if (conversationsInterval) clearInterval(conversationsInterval);
+            };
+        }
+    }, [isOpen, selectedPatientId, fetchConversations, fetchStatus, bridgeStatus.status]);
 
     const handlePatientClick = (patientId) => {
         setSelectedPatientId(patientId);
@@ -65,36 +94,52 @@ const GlobalWhatsappMessenger = () => {
 
     if (!isOpen) {
         return (
-            <button className="global-wa-btn" onClick={() => setIsOpen(true)}>
-                <Icon name="whatsapp" size="1.8rem" />
-            </button>
+            <Button 
+                className="global-wa-btn" 
+                onClick={() => setIsOpen(true)}
+                variant="success"
+                icon={<Icon name="whatsapp" size="1.8rem" />}
+                unstyled // We use custom floating styles in CSS
+            />
         );
     }
 
     return (
-        <aside className={`global-wa-messenger ${selectedPatientId ? 'global-wa-messenger--has-chat' : ''} animate-slideUp`}>
+        <aside className={`
+            global-wa-messenger 
+            ${selectedPatientId ? 'global-wa-messenger--chat-active' : ''} 
+            animate-slideUp
+        `}>
             {/* Sidebar: Conversations List */}
             <section className="global-wa-messenger__sidebar">
                 <header className="global-wa-messenger__sidebar-header">
                     <div className="global-wa-messenger__title">
                         <Icon name="whatsapp" size="1.2rem" />
-                        <h3>{t('chats') || 'Chats'}</h3>
+                        <h3>{t('my_messages')}</h3>
                     </div>
                     <div className="global-wa-messenger__header-actions">
-                        <button className="global-wa-messenger__action-btn-gray" onClick={fetchConversations} title={t('refresh')}>
-                            <Icon name="refresh" size="1.1rem" />
-                        </button>
-                        <button className="global-wa-messenger__close-mobile" onClick={() => setIsOpen(false)}>
-                            <Icon name="x" size="1.2rem" />
-                        </button>
+                        <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => fetchConversations()} 
+                            title={t('whatsapp_refresh')}
+                            icon={<Icon name="refresh" size="1.1rem" />}
+                        />
+                        <Button 
+                            variant="ghost"
+                            size="sm"
+                            className="global-wa-messenger__close-mobile" 
+                            onClick={() => setIsOpen(false)}
+                            icon={<Icon name="close" size="1.2rem" />}
+                        />
                     </div>
                 </header>
                 
                 <div className="global-wa-messenger__inbox">
                     {loading && conversations.length === 0 ? (
-                        <div className="global-wa-messenger__empty">{t('loading') || 'Cargando...'}</div>
+                        <div className="global-wa-messenger__empty">{t('loading')}</div>
                     ) : conversations.length === 0 ? (
-                        <div className="global-wa-messenger__empty">{t('no_recent_chats') || 'Sin mensajes'}</div>
+                        <div className="global-wa-messenger__empty">{t('no_recent_chats')}</div>
                     ) : (
                         <ul className="global-wa-messenger__list">
                             {conversations.map(conv => (
@@ -108,15 +153,15 @@ const GlobalWhatsappMessenger = () => {
                                     </div>
                                     <div className="global-wa-messenger__item-info">
                                         <div className="global-wa-messenger__item-header">
-                                            <strong>{conv.patient_name || conv.patient_phone || 'Desconocido'}</strong>
+                                            <strong>{conv.patient_name || conv.patient_phone || t('unknown')}</strong>
                                             <span className="global-wa-messenger__item-time">{formatTime(conv.created_at)}</span>
                                         </div>
                                         <p className="global-wa-messenger__item-body">
-                                            {conv.direction === 'outbound' ? 'Tú: ' : ''}{conv.body}
+                                            {conv.direction === 'outbound' ? `${t('you')}: ` : ''}{conv.body}
                                         </p>
                                     </div>
                                     {conv.direction === 'inbound' && selectedPatientId !== conv.patient_id && (
-                                        <div className="global-wa-messenger__unread-dot" title="Mensaje sin leer"></div>
+                                        <div className="global-wa-messenger__unread-dot" title={t('unread_messages')}></div>
                                     )}
                                 </li>
                             ))}
@@ -130,33 +175,81 @@ const GlobalWhatsappMessenger = () => {
                 <header className="global-wa-messenger__chat-header">
                     <div className="global-wa-messenger__header-left">
                         {selectedPatientId && (
-                            <button className="global-wa-messenger__back-btn" onClick={handleBack}>
-                                <Icon name="arrow_back" size="1.2rem" />
-                            </button>
+                            <Button 
+                                variant="ghost"
+                                size="sm"
+                                className="global-wa-messenger__back-btn" 
+                                onClick={handleBack}
+                                icon={<Icon name="arrow_back" size="1.2rem" />}
+                            />
                         )}
                         <div className="global-wa-messenger__chat-user">
                             {selectedPatientId ? (
                                 <>
-                                    <strong>{conversations.find(c => c.patient_id === selectedPatientId)?.patient_name || 'Chat'}</strong>
-                                    <span className="global-wa-messenger__online-status">En línea</span>
+                                    <strong>{conversations.find(c => c.patient_id === selectedPatientId)?.patient_name || t('conversation')}</strong>
+                                    <span className="global-wa-messenger__online-status">{t('live')}</span>
                                 </>
                             ) : (
                                 <div className="global-wa-messenger__chat-placeholder-header">
-                                    {t('whatsapp_messenger') || 'WhatsApp Messenger'}
+                                    {t('whatsapp_messenger')}
                                 </div>
                             )}
                         </div>
                     </div>
                     
                     <div className="global-wa-messenger__header-actions">
-                        <button className="global-wa-messenger__action-btn global-wa-messenger__close-desktop" onClick={() => setIsOpen(false)}>
-                            <Icon name="x" size="1.2rem" />
-                        </button>
+                        <Button 
+                            variant="ghost"
+                            size="sm"
+                            className="global-wa-messenger__close-desktop" 
+                            onClick={() => setIsOpen(false)}
+                            icon={<Icon name="close" size="1.2rem" />}
+                        />
                     </div>
                 </header>
 
                 <div className="global-wa-messenger__chat-content">
-                    {selectedPatientId ? (
+                    {bridgeStatus.status !== 'connected' ? (
+                        <div className="global-wa-messenger__pairing">
+                            <div className="global-wa-messenger__pairing-card animate-fadeIn">
+                                <div className="global-wa-messenger__pairing-icon">
+                                    <Icon name="qr_code_scanner" size="3rem" />
+                                </div>
+                                <h3>{t('whatsapp_pairing_required') || 'Vincular WhatsApp'}</h3>
+                                <p>{t('whatsapp_pairing_desc') || 'Escaneá este código desde tu celular (Ajustes > Dispositivos vinculados)'}</p>
+                                
+                                {bridgeStatus.qr_code ? (
+                                    <div className="global-wa-messenger__qr-container">
+                                        <img 
+                                            src={`https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(bridgeStatus.qr_code)}`}
+                                            alt="WhatsApp QR Code"
+                                            className="global-wa-messenger__qr-image"
+                                            onError={(e) => console.error("QR Image Load Error", e)}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="global-wa-messenger__qr-placeholder">
+                                        <Icon name="sync" size="2rem" className="animate-spin" />
+                                        <span>{t('waiting_for_qr')}</span>
+                                    </div>
+                                )}
+                                
+                                <Button 
+                                    variant="secondary" 
+                                    size="sm" 
+                                    onClick={fetchStatus}
+                                    icon={<Icon name="refresh" size="1rem" />}
+                                >
+                                    {t('whatsapp_refresh')}
+                                </Button>
+                                
+                                <div className="global-wa-messenger__pairing-footer">
+                                    <span className={`global-wa-messenger__status-dot global-wa-messenger__status-dot--${bridgeStatus.status}`}></span>
+                                    <span>{bridgeStatus.status === 'offline' ? t('bridge_offline') : t('waiting_connection')}</span>
+                                </div>
+                            </div>
+                        </div>
+                    ) : selectedPatientId ? (
                         <div className="global-wa-messenger__chat-wrapper">
                             <WhatsappChatHistory patientId={selectedPatientId} t={t} hideHeader={true} />
                         </div>
@@ -165,8 +258,8 @@ const GlobalWhatsappMessenger = () => {
                             <div className="global-wa-messenger__placeholder-icon">
                                 <Icon name="whatsapp" size="4rem" />
                             </div>
-                            <h3>{t('select_chat_title') || 'Tus conversaciones'}</h3>
-                            <p>{t('select_chat_desc') || 'Selecciona un paciente para ver el historial y enviar mensajes.'}</p>
+                            <h3>{t('select_chat_title')}</h3>
+                            <p>{t('select_chat_desc')}</p>
                         </div>
                     )}
                 </div>

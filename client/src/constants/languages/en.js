@@ -922,5 +922,30 @@ export const en = {
     cancellation: "Cancellation",
     dose: "Dose",
     obs: "Obs",
-    derived_institution: "Derived from Institution"
+    derived_institution: "Derived from Institution",
+    whatsapp_messenger: "WhatsApp Messenger",
+    no_recent_chats: "No recent messages",
+    select_chat_title: "Your conversations",
+    select_chat_desc: "Select a patient to see history and send messages.",
+    whatsapp_refresh: "Refresh",
+    whatsapp_back: "Back",
+    whatsapp_chat_with: "Chat with",
+    you: "You",
+    unread_messages: "Unread messages",
+    
+    // Pairing & Bridge
+    whatsapp_pairing_required: "WhatsApp Pairing Required",
+    whatsapp_pairing_desc: "Scan this code from your phone (Settings > Linked Devices)",
+    waiting_for_qr: "Generating code...",
+    bridge_offline: "Bridge Offline",
+    waiting_connection: "Waiting for connection...",
+    sending_whatsapp: "Sending WhatsApp...",
+    whatsapp_sent: "Message sent",
+    sending_via_bridge: "Sending via local bridge...",
+    sent_via_bridge_success: "Sent successfully",
+    bridge_failed_fallback: "Bridge error. Using manual mode.",
+    send_automatically: "Auto Send",
+    sending_whatsapp_auto: "Sending automatically...",
+    whatsapp_sent_auto: "Message sent automatically",
+    sync: "Sync"
 };

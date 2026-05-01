@@ -114,6 +114,11 @@ const server = app.listen(PORT, '0.0.0.0', async () => {
         const { startSyncWorker } = require('./services/googleSyncService');
         startSyncWorker();
 
+        // Start WhatsApp Bridge (Go)
+        // The bridge is now managed by docker-compose
+        // const whatsappBridgeService = require('./services/whatsappBridgeService');
+        // whatsappBridgeService.init();
+
 
 
     } catch (err) {
