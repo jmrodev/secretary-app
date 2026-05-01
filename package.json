@@ -11,8 +11,8 @@
     "test": "npm run test --workspace=server"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^6.4.2",
+    "@vitejs/plugin-react": "^6.0.1",
+    "vite": "^8.0.10",
     "wrangler": "^4.83.0"
   }
 }
