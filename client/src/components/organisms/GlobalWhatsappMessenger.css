@@ -1,0 +1,353 @@
+/* The floating button in the bottom left */
+.global-wa-btn {
+    position: fixed;
+    bottom: var(--space-xl, 2rem);
+    left: var(--space-xl, 2rem);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #25D366;
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.global-wa-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(37, 211, 102, 0.5);
+}
+
+/* The open messenger panel - SPLIT LAYOUT */
+.global-wa-messenger {
+    position: fixed;
+    bottom: var(--space-xl, 2rem);
+    left: var(--space-xl, 2rem);
+    width: 900px; /* Wider for split view */
+    max-width: calc(100vw - 4rem);
+    height: 550px;
+    max-height: 75vh;
+    background: var(--white, #ffffff);
+    border-radius: var(--radius-xl, 16px);
+    box-shadow: var(--shadow-xl);
+    display: grid;
+    grid-template-columns: 320px 1fr; /* Sidebar and Chat area */
+    z-index: 10000;
+    overflow: hidden;
+    border: 1px solid var(--border-color, #e0e0e0);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Sidebar Styling */
+.global-wa-messenger__sidebar {
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    background: var(--white);
+}
+
+.global-wa-messenger__sidebar-header {
+    padding: 1.25rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--gray-50, #f9fafb);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.global-wa-messenger__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #075e54;
+}
+
+.global-wa-messenger__title h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.global-wa-messenger__close-mobile {
+    display: none; /* Only mobile */
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+}
+
+/* Conversations List */
+.global-wa-messenger__inbox {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.global-wa-messenger__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.global-wa-messenger__list-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    transition: background-color 0.2s;
+    position: relative;
+}
+
+.global-wa-messenger__list-item:hover {
+    background-color: var(--gray-50);
+}
+
+.global-wa-messenger__list-item--active {
+    background-color: #e7fce3 !important;
+}
+
+/* Unread Dot */
+.global-wa-messenger__unread-dot {
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    width: 10px;
+    height: 10px;
+    background-color: #25D366;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px white;
+}
+
+.global-wa-messenger__item-avatar {
+    width: 48px;
+    height: 48px;
+    background: #075e54;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.global-wa-messenger__item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.global-wa-messenger__item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+}
+
+.global-wa-messenger__item-header strong {
+    font-size: 0.95rem;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.global-wa-messenger__item-time {
+    font-size: 0.85rem;
+    color: #374151;
+}
+
+.global-wa-messenger__item-body {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #1f2937;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Chat Area Styling */
+.global-wa-messenger__chat-area {
+    display: flex;
+    flex-direction: column;
+    background: var(--white);
+    position: relative;
+}
+
+.global-wa-messenger__chat-header {
+    padding: 0 1.25rem;
+    background: #075e54;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    flex-shrink: 0;
+}
+
+.global-wa-messenger__back-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    margin-right: 12px;
+    display: none; /* Responsive toggle */
+}
+
+.global-wa-messenger__header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.global-wa-messenger__action-btn-gray {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.global-wa-messenger__action-btn-gray:hover {
+    background-color: var(--gray-200);
+}
+
+.global-wa-messenger__chat-user {
+    display: flex;
+    flex-direction: column;
+}
+
+.global-wa-messenger__chat-user strong {
+    font-size: 1rem;
+    line-height: 1.2;
+}
+
+.global-wa-messenger__online-status {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+.global-wa-messenger__chat-placeholder-header {
+    font-weight: 600;
+    opacity: 0.9;
+}
+
+.global-wa-messenger__header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.global-wa-messenger__action-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.global-wa-messenger__action-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.global-wa-messenger__chat-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #e5ddd5; /* Classic WA Background Color */
+}
+
+/* Chat History Override */
+.global-wa-messenger__chat-wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Placeholder State */
+.global-wa-messenger__placeholder {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+}
+
+.global-wa-messenger__placeholder-icon {
+    color: #e0e0e0;
+    margin-bottom: 1.5rem;
+}
+
+.global-wa-messenger__placeholder h3 {
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
+
+/* Responsive Logic */
+@media (max-width: 900px) {
+    .global-wa-messenger {
+        width: 100%;
+        left: 0;
+        bottom: 0;
+        height: 100%;
+        max-height: 100%;
+        border-radius: 0;
+        grid-template-columns: 1fr; /* Single column on small screens */
+    }
+
+    .global-wa-messenger:not(.global-wa-messenger--has-chat) .global-wa-messenger__chat-area {
+        display: none;
+    }
+
+    .global-wa-messenger.global-wa-messenger--has-chat .global-wa-messenger__sidebar {
+        display: none;
+    }
+
+    .global-wa-messenger--has-chat .global-wa-messenger__back-btn {
+        display: block;
+    }
+    
+    .global-wa-messenger__close-mobile {
+        display: block;
+    }
+
+    .global-wa-messenger__close-desktop {
+        display: none;
+    }
+}
+
+.animate-slideUp {
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
