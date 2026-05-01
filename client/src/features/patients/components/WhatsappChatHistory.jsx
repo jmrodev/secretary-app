@@ -14,7 +14,7 @@ const WhatsappChatHistory = ({ patientId, t, hideHeader = false }) => {
     const fetchHistory = async () => {
         try {
             setLoading(true);
-            const res = await api.get(`/whatsapp/patient/${patientId}`);
+            const res = await api.post('/whatsapp/history', { patientId });
             if (res.data.success) {
                 setMessages(res.data.data);
             }
@@ -31,7 +31,7 @@ const WhatsappChatHistory = ({ patientId, t, hideHeader = false }) => {
             
             // Auto-polling para sentirlo en vivo (cada 3 segundos)
             const intervalId = setInterval(() => {
-                api.get(`/whatsapp/patient/${patientId}`)
+                api.post('/whatsapp/history', { patientId })
                    .then(res => {
                        if (res.data.success) {
                            setMessages(res.data.data);
