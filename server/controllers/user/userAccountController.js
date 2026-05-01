@@ -31,7 +31,7 @@ exports.adminResetPassword = async (req, res) => {
         res.json({ message: "Password reset successfully" });
     } catch (err) {
         console.error("Reset Password Error:", err);
-        res.status(500).send("Server Error: " + err.message);
+        res.status(500).json({ error: "Server Error" });
     }
 };
 
@@ -42,7 +42,7 @@ exports.createUser = async (req, res) => {
         res.status(201).json({ message: "User created", userId });
     } catch (err) {
         console.error("Create User Error:", err);
-        res.status(500).send("Server Error: " + err.message);
+        res.status(500).json({ error: "Server Error" });
     }
 };
 
@@ -54,7 +54,7 @@ exports.updateUser = async (req, res) => {
         res.json({ message: "User updated" });
     } catch (err) {
         console.error("Update User Error:", err);
-        res.status(500).send("Server Error: " + err.message);
+        res.status(500).json({ error: "Server Error" });
     }
 };
 
@@ -66,6 +66,6 @@ exports.deleteUser = async (req, res) => {
         res.json({ message: "User deleted successfully" });
     } catch (err) {
         console.error("Delete User Error:", err);
-        res.status(500).send("Server Error: " + err.message);
+        res.status(500).json({ error: "Server Error" });
     }
 };

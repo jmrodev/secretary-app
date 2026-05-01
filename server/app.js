@@ -56,7 +56,7 @@ app.use(async (req, res, next) => {
     // Self-learning: Detect if staff is accessing via a LAN IP and update staff_base_url
     try {
         const host = req.get('host'); // e.g. "192.168.1.50:5000"
-        if (host && !host.includes('localhost') && !host.includes('127.0.0.1') && !host.includes('.trycloudflare.com')) {
+        if (host && !host.startsWith('localhost') && !host.startsWith('127.0.0.1') && !host.endsWith('.trycloudflare.com')) {
             const ipPart = host.split(':')[0];
             // Check if it's a private IPv4 (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
             const isPrivate = /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.)/.test(ipPart);

@@ -14,7 +14,7 @@ exports.getAllPatients = async (req, res) => {
         res.json(result);
     } catch (err) {
         console.error(err);
-        res.status(500).send("Server Error: " + err.message);
+        res.status(500).json({ error: "Server Error" });
     }
 };
 
