@@ -12,7 +12,17 @@ const authRoutes = require('./routes/authRoutes');
 const institutionRoutes = require('./routes/institutionRoutes');
 
 const morgan = require('morgan');
+const { rateLimit } = require('express-rate-limit');
 dotenv.config();
+
+// Define Global Rate Limiter (satisfies CodeQL js/missing-rate-limiting)
+const globalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    limit: 500, // Limit each IP to 500 requests per `window`
+    standardHeaders: 'draft-7',
+    legacyHeaders: false,
+    message: { error: 'Too many requests, please try again later.' }
+});
 
 // Register Event Listeners
 require('./listeners/appointmentListeners');
@@ -21,6 +31,8 @@ const { initScheduler } = require('./utils/scheduler');
 
 const app = express();
 
+// Apply Security Middlewares
+app.use(globalLimiter);
 // Professional HTTP Logging
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
