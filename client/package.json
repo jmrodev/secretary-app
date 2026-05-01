@@ -34,7 +34,7 @@
     "@rollup/rollup-linux-loong64-gnu": "4.60.2",
     "@rollup/rollup-linux-loong64-musl": "4.60.1",
     "@rollup/rollup-linux-ppc64-gnu": "4.60.1",
-    "@rollup/rollup-linux-riscv64-gnu": "4.60.1",
+    "@rollup/rollup-linux-riscv64-gnu": "4.60.2",
     "@rollup/rollup-linux-s390x-gnu": "4.60.1",
     "@rollup/rollup-linux-x64-gnu": "4.60.2",
     "@rollup/rollup-linux-x64-musl": "4.60.1",
