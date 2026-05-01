@@ -108,7 +108,7 @@ const PatientsPage = () => {
             ) : (
                 // --- LIST VIEW ---
                 <div className="layout-content-area">
-                    <section className="patients-page__dashboard-grid animate-fadeIn">
+                    <section className="dashboard-grid animate-fadeIn">
                         <aside className="dashboard-sidebar">
                             <div className="dashboard-nav-bar">
                                 <TabNav className="patients__nav">
@@ -172,7 +172,7 @@ const PatientsPage = () => {
                         <main className="dashboard-main">
                             {activeTab === 'list' ? (
                                 <div className="patients-list-view">
-                                    <section className="patients-page__list-container">
+                                    <section className="dashboard-card dashboard-card--no-padding dashboard-card--scroll-horizontal">
                                         <PatientList
                                             patients={patients}
                                             institutions={institutions}
