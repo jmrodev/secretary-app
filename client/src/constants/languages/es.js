@@ -1010,7 +1010,7 @@ export const es = {
     no_appointments_registered: "No hay turnos registrados.",
     no_chronic_medication: "No hay registros de medicación crónica.",
     no_prescription_history: "No hay historial de recetas emitidas.",
-    back: "Volver",
+    back_simple: "Volver",
     phone: "Teléfono",
     location: "Ubicación",
     insurance: "OS / Prepaga",
