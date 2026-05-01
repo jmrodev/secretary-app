@@ -28,7 +28,7 @@
     "@rollup/rollup-freebsd-arm64": "4.60.1",
     "@rollup/rollup-freebsd-x64": "4.60.1",
     "@rollup/rollup-linux-arm-gnueabihf": "4.60.1",
-    "@rollup/rollup-linux-arm-musleabihf": "4.60.1",
+    "@rollup/rollup-linux-arm-musleabihf": "4.60.2",
     "@rollup/rollup-linux-arm64-gnu": "4.60.1",
     "@rollup/rollup-linux-arm64-musl": "4.60.2",
     "@rollup/rollup-linux-loong64-gnu": "4.60.2",
