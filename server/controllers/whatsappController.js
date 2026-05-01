@@ -132,10 +132,7 @@ const receiveWebhook = async (req, res) => {
  */
 const getPatientHistory = async (req, res) => {
     try {
-        const { patientId } = req.body;
-        if (!patientId) {
-            return res.status(400).json({ error: 'Missing required parameter (patientId)' });
-        }
+        const { patientId } = req.params;
         const history = await whatsappRepository.getHistoryByPatient(patientId);
         res.json({ success: true, data: history });
     } catch (error) {
