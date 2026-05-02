@@ -16,7 +16,9 @@
 
 .patient-table {
     width: 100%;
+    min-width: 1000px; /* Force minimum width to prevent clipping and enable horizontal scroll */
     border-collapse: collapse;
+    table-layout: auto;
 }
 
 .patient-table th {
@@ -68,6 +70,7 @@
     font-weight: 700;
     color: var(--text-main);
     text-transform: capitalize;
+    white-space: nowrap;
 }
 
 .patient-table__row--institution {

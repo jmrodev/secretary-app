@@ -33,7 +33,7 @@
 /* --- Content Container (Beneath Header) --- */
 .layout-content-area {
     padding: clamp(0.25rem, 1vh, 0.75rem) clamp(1rem, 3vw, 2.5rem);
-    max-width: var(--max-width, 1600px);
+    max-width: var(--max-width, 1800px);
     margin: 0 auto;
     width: 100%;
     position: relative;

@@ -1,14 +1,10 @@
 {
   "name": "secretary-app",
   "private": true,
-  "workspaces": [
-    "client",
-    "server"
-  ],
   "scripts": {
-    "lint": "npm run lint --workspace=client",
-    "build": "npm run build --workspace=client",
-    "test": "npm run test --workspace=server"
+    "lint": "pnpm --filter client run lint",
+    "build": "pnpm --filter client run build",
+    "test": "pnpm --filter server run test"
   },
   "dependencies": {
     "react": "^19.2.0",
@@ -18,5 +14,13 @@
     "@vitejs/plugin-react": "^6.0.1",
     "vite": "^8.0.10",
     "wrangler": "^4.83.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "form-data": "^4.0.1",
+      "qs": "^6.11.0",
+      "follow-redirects": "^1.15.4",
+      "tough-cookie": "^4.1.3"
+    }
   }
 }

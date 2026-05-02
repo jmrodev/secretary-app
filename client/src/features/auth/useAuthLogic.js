@@ -18,7 +18,8 @@ export const useAuthLogic = () => {
             return { success: true, user: userData };
         } catch (error) {
             console.error("Auth helper error:", error);
-            const message = error.response?.data || errorMsgDefault;
+            const responseData = error.response?.data;
+            const message = (typeof responseData === 'object' ? (responseData.error || responseData.message) : responseData) || errorMsgDefault;
             dispatch({ type: 'AUTH_ERROR', payload: message });
             return { success: false, message };
         }

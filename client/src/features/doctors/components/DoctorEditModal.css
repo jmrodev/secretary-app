@@ -1,11 +1,58 @@
-/* DoctorEditModal Component Styles */
+.doctor-edit-modal__header-info {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, var(--blue-50) 0%, var(--white) 100%);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--blue-100);
+}
+
+.doctor-edit-modal__avatar {
+    width: 3.5rem;
+    height: 3.5rem;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.2);
+}
+
+.doctor-edit-modal__doctor-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.doctor-edit-modal__doctor-name {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--slate-900);
+}
+
+.doctor-edit-modal__doctor-specialty {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--slate-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
 
 .doctor-edit-modal__tabs {
     margin-bottom: 2rem;
+    border-bottom: 1px solid var(--slate-200);
+}
+
+.doctor-edit-modal__tab-icon {
+    margin-right: 0.5rem;
 }
 
 .doctor-edit-modal__content {
-    min-height: 400px;
+    min-height: 450px;
 }
 
 /* Schedule Tab Styles */
@@ -19,9 +66,10 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
-    background: var(--gray-50);
+    background: var(--slate-50);
     padding: 1.5rem;
     border-radius: var(--radius);
+    border: 1px solid var(--slate-100);
 }
 
 .doctor-edit-modal__overturn-section {
@@ -39,6 +87,8 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
 }
 
 .doctor-edit-modal__overturn-grid {

@@ -16,7 +16,7 @@ export const useDoctorsPageController = () => {
         initialData: { doctors: [], totalCount: 0 } 
     });
 
-    const doctors = docData?.doctors || [];
+    const doctors = useMemo(() => docData?.doctors || [], [docData]);
     const { data: settings = {}, loading: settingsLoading } = useFetch('/settings', { initialData: {} });
 
     const [searchTerm, setSearchTerm] = useState('');
@@ -115,7 +115,9 @@ export const useDoctorsPageController = () => {
             reminder_template: doc.reminder_template || '',
             confirmation_template: doc.confirmation_template || '',
             reminder_virtual_template: doc.reminder_virtual_template || '',
-            confirmation_virtual_template: doc.confirmation_virtual_template || ''
+            confirmation_virtual_template: doc.confirmation_virtual_template || '',
+            gemini_context: doc.gemini_context || '',
+            gemini_history_limit: doc.gemini_history_limit || 3
         };
 
         setModalState({

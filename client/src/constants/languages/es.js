@@ -545,9 +545,9 @@ export const es = {
     after_hours_extra: "Después del Horario (Extra)",
     available_variables: "Variables disponibles (Haz clic para insertar):",
     insert_variable_title: "Insertar {variable}",
-    clinic_address_title: "Dirección del Consultorio",
-    physical_address_label: "Dirección Física (para turnos Presenciales)",
-    physical_address_hint: "Esta dirección se usará para reemplazar la variable {appointment_location} si el turno es presencial.",
+    clinic_address_title: "Ubicación de la Clínica",
+    physical_address_label: "Dirección Física",
+    physical_address_hint: "Esta dirección se usará para reemplazar la variable {appointment_location} en los mensajes.",
     appointment_reminders_title: "Recordatorios de Turno",
     presential_reminder_label: "Recordatorio Presencial (General)",
     virtual_reminder_label: "Recordatorio Virtual (Telemedicina)",
@@ -881,6 +881,11 @@ export const es = {
     cbu_var: "CBU",
     alias_var: "Alias",
     bio_var: "Bio",
+    patient_var: "Paciente",
+    date_var: "Fecha",
+    time_var: "Hora",
+    doctor_var: "Doctor",
+    name_var: "Nombre",
     placeholder_prescription_req: "Hola {patient_name}, por favor ingresa al siguiente enlace para solicitar tus recetas: {link}",
     placeholder_data_req: "Hola {patient_name}, por favor ingresa al siguiente enlace para completar tus datos: {link}",
     select: "Seleccionar",
@@ -1046,5 +1051,27 @@ export const es = {
     send_automatically: "Envío Automático",
     sending_whatsapp_auto: "Enviando automáticamente...",
     whatsapp_sent_auto: "Mensaje enviado automáticamente",
-    sync: "Sincronizar"
+    sync: "Sincronizar",
+    bridge_offline_title: "Puente de WhatsApp Desconectado",
+    bridge_offline_desc: "No se pudo establecer conexión con el servidor de WhatsApp. Por favor, verifica que el puente esté activo.",
+
+    // Configuration Tabs
+    communications: "Comunicaciones",
+    integrations: "Integraciones",
+    billing: "Facturación",
+    ai: "IA",
+    logs: "Registros",
+    data_management_title: "Datos y Seguridad",
+    coming_soon: "Próximamente...",
+
+    // Communication Settings Extra
+    google_review_link_label: "Enlace de Reseñas de Google",
+    google_review_hint: "Ingresa el enlace directo para que los pacientes te dejen una reseña en Google (Perfil de Empresa).",
+    medication_refill_reminder_label: "Recordatorio de Renovación de Medicación",
+    medication_refill_hint: "Mensaje enviado para recordar la renovación de recetas crónicas.",
+    
+    // WhatsApp Automation
+    whatsapp_automation_title: "Automatización de WhatsApp (IA)",
+    whatsapp_auto_respond_unknown_label: "Responder automáticamente a números desconocidos",
+    whatsapp_auto_respond_unknown_hint: "Si está activado, la IA enviará automáticamente un saludo y el link de registro a cualquier número que no esté en tu agenda."
 };

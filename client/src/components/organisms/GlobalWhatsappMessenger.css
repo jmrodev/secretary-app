@@ -131,7 +131,7 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: var(--text-muted);
+    color: white; /* Changed to white for dark bg */
 }
 
 /* Conversations List */
@@ -250,7 +250,6 @@
     color: white;
     cursor: pointer;
     margin-right: 12px;
-    display: none; /* Responsive toggle */
 }
 
 .global-wa-messenger__header-left {
@@ -296,10 +295,18 @@
     opacity: 0.9;
 }
 
-.global-wa-messenger__header-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.global-wa-messenger__header-actions .button,
+.global-wa-messenger__header-actions .button i,
+.global-wa-messenger__header-actions .button span {
+    color: white !important;
+}
+
+.global-wa-messenger__close-desktop {
+    color: white !important;
+}
+
+.global-wa-messenger__close-mobile {
+    color: white !important;
 }
 
 .global-wa-messenger__action-btn {

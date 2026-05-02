@@ -16,7 +16,7 @@ import { useGoogleEvents } from '@/features/appointments/hooks/useGoogleEvents';
 import { usePatientSearch } from '@/features/appointments/hooks/usePatientSearch';
 import { useAppointmentsHandlers } from '@/features/appointments/hooks/useAppointmentsHandlers';
 import { copyToClipboard } from '@/utils/clipboardUtils';
-import { useDoctors } from '@/context/DoctorContext';
+import { useDoctors } from '@/context/DoctorContextDefinition';
 
 /**
  * useAppointmentsPageController (Handler Hook).
@@ -100,7 +100,7 @@ export const useAppointmentsPageController = () => {
         }
         
         // Initial logic moved to DoctorContext
-    }, [user, doctors, rescheduleAppt, syncAppt, isDoctor, booking, viewDoctorId]);
+    }, [user, doctors, rescheduleAppt, syncAppt, isDoctor, booking, viewDoctorId, setViewDoctorId]);
 
     const hookHandlers = useAppointmentsHandlers({
         user, t, showMessage, confirm, navigate, selectedDate, setSelectedDate,

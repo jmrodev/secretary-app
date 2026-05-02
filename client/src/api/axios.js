@@ -9,9 +9,16 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
+    const doctorId = localStorage.getItem('global_selected_doctor_id');
+
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
+
+    if (doctorId) {
+        config.headers['x-doctor-id'] = doctorId;
+    }
+
     return config;
 });
 

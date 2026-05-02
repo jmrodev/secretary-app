@@ -1,5 +1,4 @@
 import React from 'react';
-import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import './QuickActions.css';
 

@@ -21,7 +21,7 @@ const RequirementItem = ({
     setPaymentModal,
     t
 }) => {
-    const { id, type, created_at, patient_name, doctor_name, secretary_name, status, payment_status, debt_amount, payment_method, patient_id, patient_user_id, doctor_id } = request;
+    const { id, type, created_at, patient_name, status, payment_status, debt_amount, payment_method, patient_id, patient_user_id, doctor_id } = request;
 
     return (
         <tr className="requirement-item animate-fadeIn">

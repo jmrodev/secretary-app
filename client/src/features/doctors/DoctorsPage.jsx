@@ -2,7 +2,6 @@ import React from 'react';
 import MainLayout from '@/components/templates/MainLayout';
 import DoctorsManager from '@/features/doctors/components/DoctorsManager';
 import { useDoctorsPageController } from '@/features/doctors/hooks/useDoctorsPageController';
-import { PageHeader } from '@/features/layout';
 
 /**
  * DoctorsPage (Orchestrator).

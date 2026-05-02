@@ -3,42 +3,78 @@
 .system-config-page {
     /* --- Local Component Tokens --- */
     --config-bg: var(--white);
-    --config-border: var(--gray-300);
-    --config-island-bg: var(--gray-50);
-    --config-header-color: var(--gray-800);
+    --config-border: var(--gray-200);
+    --config-island-bg: #f8fafc;
+    --config-header-color: var(--slate-800);
     /* ------------------------------ */
-
     display: flex;
     flex-direction: column;
     flex: 1;
     min-height: 0;
-    gap: 2rem;
-    padding: 1rem;
-}
-
-.settings-content-wrapper {
-    display: flex;
-    flex-direction: column;
     gap: 1.5rem;
+    padding: 1.5rem;
+    background-color: var(--gray-50);
 }
 
-.settings-content-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--slate-800);
-    margin-bottom: 1.5rem;
-}
-
-/* Documentation and Data Sections */
-.system-config-page__documentation,
-.system-config-page__data-management,
-.system-config-page__app-card {
-    background-color: var(--config-bg);
+.system-config-tabs {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+    padding: 0.5rem;
+    background: white;
+    border-radius: var(--radius-lg, 12px);
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--config-border);
-    padding: 2rem;
-    border-radius: var(--radius-sm);
-    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.system-config-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.system-config-tabs .tab-button {
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius-md, 8px);
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
+}
+
+.system-config-tabs .tab-button--active {
+    background-color: var(--accent-color);
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(var(--accent-rgb, 14, 165, 233), 0.3);
+}
+
+.system-config-tabs .tab-button:not(.tab-button--active):hover {
+    background-color: var(--gray-100);
+    color: var(--accent-color);
+}
+
+.system-config-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.system-config-main {
+    background: white;
+    border-radius: var(--radius-lg, 12px);
+    border: 1px solid var(--config-border);
+    box-shadow: var(--shadow-sm);
+    padding: 2.5rem;
+    flex: 1;
+    overflow-y: auto;
 }
 
 .system-config-page__app-card {

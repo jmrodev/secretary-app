@@ -71,7 +71,7 @@
 
     flex: 1;
     padding: var(--content-padding);
-    overflow-y: auto;
+    overflow: auto; /* Allow both X and Y overflow */
     min-height: 0;
     display: flex;
     flex-direction: column;
@@ -80,9 +80,11 @@
 /* Base constraint for content inside main layout */
 .main-content > :not(.page-header--premium):not(.page-header) {
     width: 100%;
-    max-width: 1360px;
-    /* Focused container for standard pages */
+    max-width: var(--layout-max-width, 1600px);
     margin: 0 auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Ensure PageHeader is always full width and at the top */

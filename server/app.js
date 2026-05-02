@@ -18,7 +18,7 @@ dotenv.config();
 // Define Global Rate Limiter (satisfies CodeQL js/missing-rate-limiting)
 const globalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    limit: 500, // Limit each IP to 500 requests per `window`
+    limit: 5000, // Increased to 5000 to avoid blocking during development/intense use
     standardHeaders: 'draft-7',
     legacyHeaders: false,
     message: { error: 'Too many requests, please try again later.' }
@@ -76,6 +76,21 @@ app.use(async (req, res, next) => {
         // Silently fail to not block the request
     }
 
+    next();
+});
+
+// SPA Fallback: Redirect common frontend routes to root for HashRouter compatibility
+const frontendRoutes = ['/login', '/register', '/dashboard', '/patients', '/appointments', '/finances', '/p/register'];
+app.get(frontendRoutes, (req, res) => {
+    res.redirect('/#' + req.path);
+});
+
+// Extract Doctor Context from Headers
+app.use((req, res, next) => {
+    const doctorId = req.headers['x-doctor-id'];
+    if (doctorId) {
+        req.doctorId = doctorId;
+    }
     next();
 });
 

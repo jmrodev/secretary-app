@@ -5,7 +5,7 @@ import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import WhatsappChatHistory from '@/features/patients/components/WhatsappChatHistory';
 import { useLanguage } from '@/context/LanguageContext';
-import { useDoctors } from '@/context/DoctorContext';
+import { useDoctors } from '@/context/DoctorContextDefinition';
 import './GlobalWhatsappMessenger.css';
 
 /**
@@ -41,7 +41,7 @@ const GlobalWhatsappMessenger = () => {
         } finally {
             if (!isAuto) setLoading(false);
         }
-    }, []);
+    }, [viewDoctorId]);
 
     const fetchStatus = useCallback(async () => {
         try {

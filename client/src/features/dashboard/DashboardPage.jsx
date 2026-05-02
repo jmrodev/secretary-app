@@ -3,8 +3,7 @@ import {
     useDashboardController, 
     DashboardSidebar, 
     DashboardReminders,
-    QuickActions,
-    DashboardLayout
+    QuickActions
 } from '@/features/dashboard/index'; // Local index
 import { PrescriptionModal, MedicalRequirementManager } from '@/features/medical_documents';
 import { PatientHistoryModal } from '@/features/patients';
@@ -19,7 +18,6 @@ import MainLayout from '@/components/templates/MainLayout';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Loading from '@/components/atoms/Loading';
-import { DoctorSelector } from '@/features/doctors';
 
 import './DashboardPage.css';
 
@@ -72,7 +70,6 @@ const DashboardPage = () => {
         navigate
     } = handlers;
 
-    const [showMobileSidebar, setShowMobileSidebar] = React.useState(false);
     const handleSearchSubmit = (event) => {
         event.preventDefault();
     };

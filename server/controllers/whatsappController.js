@@ -126,14 +126,22 @@ const receiveWebhook = async (req, res) => {
             // Save the message with null patientId but with sender_phone
             await whatsappRepository.createMessage(null, direction, message, null, 'delivered', phone);
             
-            // AUTOMATIC REPLY FOR UNKNOWN NUMBERS
+            // AUTOMATIC REPLY FOR UNKNOWN NUMBERS (If enabled in settings)
             if (!isFromMe) {
-                const registrationLink = `https://jmro.duckdns.org/#/p/register?phone=${phone}`;
-                const autoReply = `¡Hola! 👋 Soy la asistente virtual de MediCare. No tenemos tus datos registrados.\n\nPor favor, completá tus datos en este link para que podamos agendar tu turno de forma inmediata:\n${registrationLink}\n\n⚠️ *Nota:* Si no podés completar el formulario, la secretaría te ayudará manualmente cuando esté disponible, pero esto puede demorar un tiempo. ¡El formulario es mucho más rápido! 🚀`;
-                
                 try {
-                    await whatsappService.sendMessageDirect(phone, autoReply);
-                    console.log(`[WhatsApp Webhook] Registration link sent to unknown number: ${phone}`);
+                    const systemSettingsRepository = require('../repositories/systemSettingsRepository');
+                    const autoRespondSetting = await systemSettingsRepository.findByKey('whatsapp_auto_respond_unknown');
+                    const isAutoRespondEnabled = autoRespondSetting ? autoRespondSetting.setting_value === '1' : false; // Default to false for privacy/control
+
+                    if (isAutoRespondEnabled) {
+                        const registrationLink = `https://jmro.duckdns.org/#/p/register?phone=${phone}`;
+                        const autoReply = `¡Hola! 👋 Soy la asistente virtual de MediCare. No tenemos tus datos registrados.\n\nPor favor, completá tus datos en este link para que podamos agendar tu turno de forma inmediata:\n${registrationLink}\n\n⚠️ *Nota:* Si no podés completar el formulario, la secretaría te ayudará manualmente cuando esté disponible, pero esto puede demorar un tiempo. ¡El formulario es mucho más rápido! 🚀`;
+                        
+                        await whatsappService.sendMessageDirect(phone, autoReply);
+                        console.log(`[WhatsApp Webhook] Registration link sent to unknown number: ${phone}`);
+                    } else {
+                        console.log(`[WhatsApp Webhook] Auto-respond is DISABLED for unknown numbers.`);
+                    }
                 } catch (err) {
                     console.error(`[WhatsApp Webhook] Error sending auto-reply:`, err.message);
                 }

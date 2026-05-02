@@ -6,7 +6,6 @@ import {
     MedicalHistoryTable,
     MedicalFileRepository,
     MedicalActionModals,
-    DocumentsHeader,
     DocumentsSidebar
 } from '@/features/medical_documents/index'; // Using local index for feature components
 
