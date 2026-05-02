@@ -76,32 +76,41 @@ class BillingService {
         const certsDir = path.resolve(__dirname, `../certs/doctors/${safeDoctorId}`);
         const keyPath = path.join(certsDir, 'private.key');
         const csrPath = path.join(certsDir, 'request.csr');
-        const alias = `secretary-doc-${safeDoctorId}-${aliasSuffix || 'test'}`;
+        const safeAlias = String(aliasSuffix || 'test').replace(/[^a-zA-Z0-9_-]/g, '');
+        const alias = `secretary-doc-${safeDoctorId}-${safeAlias}`;
+        const subj = `/C=AR/ST=Buenos Aires/L=Ciudad Autonoma de Buenos Aires/O=Doctor${safeDoctorId}/OU=IT/CN=${alias}`;
 
         if (!fs.existsSync(certsDir)) {
             fs.mkdirSync(certsDir, { recursive: true });
         }
 
-        const command = `openssl genrsa -out "${keyPath}" 2048 && openssl req -new -key "${keyPath}" -out "${csrPath}" -subj "/C=AR/ST=Buenos Aires/L=Ciudad Autonoma de Buenos Aires/O=Doctor${doctorId}/OU=IT/CN=${alias}"`;
+        const { execFile } = require('child_process');
 
         return new Promise((resolve, reject) => {
-            exec(command, async (error) => {
-                if (error) return reject(new Error('Failed to generate CSR: ' + error.message));
+            // Step 1: Generate private key
+            execFile('openssl', ['genrsa', '-out', keyPath, '2048'], async (error) => {
+                if (error) return reject(new Error('Failed to generate key: ' + error.message));
 
-                try {
-                    const relativeKeyPath = `certs/doctors/${safeDoctorId}/private.key`;
-                    const csrContent = fs.readFileSync(csrPath, 'utf8');
+                // Step 2: Generate CSR
+                execFile('openssl', ['req', '-new', '-key', keyPath, '-out', csrPath, '-subj', subj], async (error2) => {
+                    if (error2) return reject(new Error('Failed to generate CSR: ' + error2.message));
 
-                    // Update DB
-                    await doctorRepository.updateAfipSettings(doctorId, { afip_key_path: relativeKeyPath });
+                    try {
+                        const relativeKeyPath = `certs/doctors/${safeDoctorId}/private.key`;
+                        const csrContent = fs.readFileSync(csrPath, 'utf8');
 
-                    resolve({ csr: csrContent, keyPath: relativeKeyPath });
-                } catch (readError) {
-                    reject(new Error('Failed to read generated CSR: ' + readError.message));
-                }
+                        // Update DB
+                        await doctorRepository.updateAfipSettings(safeDoctorId, { afip_key_path: relativeKeyPath });
+
+                        resolve({ csr: csrContent, keyPath: relativeKeyPath });
+                    } catch (readError) {
+                        reject(new Error('Failed to read generated CSR: ' + readError.message));
+                    }
+                });
             });
         });
     }
+
 
     async createInvoice(transactionId, cbteTipo) {
         const conn = await pool.getConnection();
