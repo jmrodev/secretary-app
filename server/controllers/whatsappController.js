@@ -1,5 +1,8 @@
 const whatsappService = require('../services/whatsappService');
 const whatsappRepository = require('../repositories/whatsappRepository');
+const { exec } = require('child_process');
+const util = require('util');
+const execPromise = util.promisify(exec);
 
 /**
  * Send a templated message (Generic Endpoint)
@@ -132,11 +135,43 @@ const receiveWebhook = async (req, res) => {
  */
 const getPatientHistory = async (req, res) => {
     try {
-        const { patientId } = req.params;
+        const { patientId } = req.body;
         const history = await whatsappRepository.getHistoryByPatient(patientId);
         res.json({ success: true, data: history });
     } catch (error) {
         res.status(500).json({ error: error.message });
+    }
+};
+
+/**
+ * Get AI suggestion for a response using Gemini CLI
+ */
+const getAiSuggestion = async (req, res) => {
+    try {
+        const { patientId } = req.body;
+        if (!patientId) return res.status(400).json({ error: 'patientId is required' });
+
+        // Get recent history for context
+        const history = await whatsappRepository.getHistoryByPatient(patientId);
+        const lastMessages = history.slice(-3).map(m => `${m.direction === 'inbound' ? 'Paciente' : 'Secretaría'}: ${m.body}`).join('\n');
+
+        if (!lastMessages) {
+            return res.json({ success: true, suggestion: 'No hay mensajes previos para generar una sugerencia.' });
+        }
+
+        const prompt = `Actuá como la secretaría de un consultorio médico. Basado en este historial reciente de WhatsApp con un paciente, sugerí una respuesta breve, profesional y amable en español (máximo 20 palabras). Respondé SOLO con la sugerencia, sin explicaciones ni comillas.\n\nHistorial:\n${lastMessages}\n\nRespuesta sugerida:`;
+        
+        // Escape prompt for shell
+        const escapedPrompt = prompt.replace(/"/g, '\\"');
+        
+        // Call Gemini CLI (using npx to ensure it's found in node_modules)
+        const { stdout } = await execPromise(`echo "${escapedPrompt}" | npx gemini -o text --raw-output --accept-raw-output-risk`);
+        
+        const suggestion = stdout.trim();
+        res.json({ success: true, suggestion });
+    } catch (error) {
+        console.error('[AI Suggestion Error]:', error);
+        res.status(500).json({ error: 'No se pudo generar la sugerencia IA.' });
     }
 };
 
@@ -176,5 +211,6 @@ module.exports = {
     receiveWebhook,
     getPatientHistory,
     getRecentConversations,
-    getBridgeStatus
+    getBridgeStatus,
+    getAiSuggestion
 };

@@ -19,8 +19,7 @@ exports.createLicense = async (req, res) => {
 
 exports.getLicenses = async (req, res) => {
     try {
-        const { page = 1, limit = 50 } = req.query;
-        const { patientId } = req.body;
+        const { page = 1, limit = 50, patientId } = req.query;
         const filters = {
             patientId,
             limit: parseInt(limit),

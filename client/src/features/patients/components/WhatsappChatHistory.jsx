@@ -9,6 +9,7 @@ const WhatsappChatHistory = ({ patientId, t, hideHeader = false }) => {
     const [loading, setLoading] = useState(true);
     const [newMessage, setNewMessage] = useState('');
     const [sending, setSending] = useState(false);
+    const [aiLoading, setAiLoading] = useState(false);
     const messagesEndRef = useRef(null);
 
     const fetchHistory = async () => {
@@ -57,6 +58,21 @@ const WhatsappChatHistory = ({ patientId, t, hideHeader = false }) => {
     const formatDate = (dateString) => {
         const d = new Date(dateString);
         return d.toLocaleDateString();
+    };
+
+    const handleGetAiSuggestion = async () => {
+        if (aiLoading) return;
+        try {
+            setAiLoading(true);
+            const res = await api.post('/whatsapp/ai-suggestion', { patientId });
+            if (res.data.success && res.data.suggestion) {
+                setNewMessage(res.data.suggestion);
+            }
+        } catch (error) {
+            console.error("Error getting AI suggestion", error);
+        } finally {
+            setAiLoading(false);
+        }
     };
 
     const handleSendMessage = async (e) => {
@@ -137,6 +153,15 @@ const WhatsappChatHistory = ({ patientId, t, hideHeader = false }) => {
                     onChange={(e) => setNewMessage(e.target.value)}
                     disabled={sending}
                 />
+                <button 
+                    type="button" 
+                    className={`whatsapp-chat__ai-btn ${aiLoading ? 'whatsapp-chat__ai-btn--loading' : ''}`}
+                    onClick={handleGetAiSuggestion}
+                    title="Sugerencia IA (Gemini)"
+                    disabled={aiLoading || sending}
+                >
+                    <Icon name="auto_awesome" size="1.2rem" />
+                </button>
                 <button type="submit" className="whatsapp-chat__send-btn" disabled={sending || !newMessage.trim()}>
                     <Icon name="send" size="1.2rem" />
                 </button>

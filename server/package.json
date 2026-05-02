@@ -25,11 +25,12 @@
     "fs": "^0.0.1-security",
     "googleapis": "^169.0.0",
     "jsonwebtoken": "^9.0.3",
-    "mariadb": "3.5.2",
+    "mariadb": "2.5.6",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "mysql2": "^3.16.1",
-    "node-cron": "^4.2.1"
+    "node-cron": "^4.2.1",
+    "@google/gemini-cli": "latest"
   },
   "devDependencies": {
     "jest": "^30.3.0",

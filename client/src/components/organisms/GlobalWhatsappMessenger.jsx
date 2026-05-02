@@ -241,13 +241,10 @@ const GlobalWhatsappMessenger = () => {
                                         {bridgeStatus.qr_code ? (
                                             <div className="global-wa-messenger__qr-container animate-zoomIn">
                                                 <img 
-                                                    src={`https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(bridgeStatus.qr_code)}`}
+                                                    src={`https://api.qrserver.com/v1/create-qr-code/?size=240x240&ecc=H&data=${encodeURIComponent(bridgeStatus.qr_code)}`}
                                                     alt="WhatsApp QR Code"
                                                     className="global-wa-messenger__qr-image"
                                                 />
-                                                <div className="global-wa-messenger__qr-overlay">
-                                                    <Icon name="whatsapp" size="2rem" />
-                                                </div>
                                             </div>
                                         ) : (
                                             <div className="global-wa-messenger__qr-placeholder">

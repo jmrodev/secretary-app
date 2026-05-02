@@ -14,6 +14,9 @@ router.use(verifyToken);
 // Get WhatsApp history for a patient (POST to avoid sensitive data in URL)
 router.post('/history', whatsappController.getPatientHistory);
 
+// Get AI suggestion for a response
+router.post('/ai-suggestion', whatsappController.getAiSuggestion);
+
 // Get recent conversations for the global messenger inbox
 router.get('/recent', whatsappController.getRecentConversations);
 
