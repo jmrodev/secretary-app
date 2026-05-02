@@ -20,7 +20,7 @@ const GlobalWhatsappMessenger = () => {
     const { t } = useLanguage();
     const { viewDoctorId, doctorDisplayName } = useDoctors();
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedPatientId, setSelectedPatientId] = useState(null);
+    const [activeChat, setActiveChat] = useState(null); // { patientId: number | null, phone: string }
     const [conversations, setConversations] = useState([]);
     const [loading, setLoading] = useState(false);
     const [bridgeStatus, setBridgeStatus] = useState({ status: 'connected', qr_code: '' });
@@ -64,7 +64,7 @@ const GlobalWhatsappMessenger = () => {
             const statusInterval = setInterval(fetchStatus, 5000);
             
             let conversationsInterval;
-            if (bridgeStatus.status === 'connected' && !selectedPatientId) {
+            if (bridgeStatus.status === 'connected' && !activeChat) {
                 fetchConversations();
                 conversationsInterval = setInterval(() => fetchConversations(true), 5000);
             }
@@ -74,14 +74,14 @@ const GlobalWhatsappMessenger = () => {
                 if (conversationsInterval) clearInterval(conversationsInterval);
             };
         }
-    }, [isOpen, selectedPatientId, fetchConversations, fetchStatus, bridgeStatus.status, viewDoctorId]);
+    }, [isOpen, activeChat, fetchConversations, fetchStatus, bridgeStatus.status, viewDoctorId]);
 
-    const handlePatientClick = (patientId) => {
-        setSelectedPatientId(patientId);
+    const handlePatientClick = (conv) => {
+        setActiveChat({ patientId: conv.patient_id, phone: conv.patient_phone });
     };
 
     const handleBack = () => {
-        setSelectedPatientId(null);
+        setActiveChat(null);
         fetchConversations();
     };
 
@@ -111,7 +111,7 @@ const GlobalWhatsappMessenger = () => {
     return (
         <aside className={`
             global-wa-messenger 
-            ${selectedPatientId ? 'global-wa-messenger--chat-active' : ''} 
+            ${activeChat ? 'global-wa-messenger--chat-active' : ''} 
             animate-slideUp
         `}>
             {/* Sidebar: Conversations List */}
@@ -152,12 +152,17 @@ const GlobalWhatsappMessenger = () => {
                         <div className="global-wa-messenger__empty">{t('no_recent_chats')}</div>
                     ) : (
                         <ul className="global-wa-messenger__list">
-                            {conversations.map(conv => (
-                                <li 
-                                    key={conv.patient_id} 
-                                    className={`global-wa-messenger__list-item ${selectedPatientId === conv.patient_id ? 'global-wa-messenger__list-item--active' : ''}`} 
-                                    onClick={() => handlePatientClick(conv.patient_id)}
-                                >
+                             {conversations.map(conv => {
+                                 const isSelected = activeChat && 
+                                    (conv.patient_id ? activeChat.patientId === conv.patient_id : activeChat.phone === conv.patient_phone);
+                                 const chatKey = conv.patient_id || conv.patient_phone;
+                                 
+                                 return (
+                                    <li 
+                                        key={chatKey} 
+                                        className={`global-wa-messenger__list-item ${isSelected ? 'global-wa-messenger__list-item--active' : ''}`} 
+                                        onClick={() => handlePatientClick(conv)}
+                                    >
                                     <div className="global-wa-messenger__item-avatar">
                                         {(conv.patient_name || 'U').charAt(0).toUpperCase()}
                                     </div>
@@ -170,11 +175,12 @@ const GlobalWhatsappMessenger = () => {
                                             {conv.direction === 'outbound' ? `${t('you')}: ` : ''}{conv.body}
                                         </p>
                                     </div>
-                                    {conv.direction === 'inbound' && selectedPatientId !== conv.patient_id && (
-                                        <div className="global-wa-messenger__unread-dot" title={t('unread_messages')}></div>
-                                    )}
-                                </li>
-                            ))}
+                                     {conv.direction === 'inbound' && !isSelected && (
+                                         <div className="global-wa-messenger__unread-dot" title={t('unread_messages')}></div>
+                                     )}
+                                 </li>
+                                 );
+                             })}
                         </ul>
                     )}
                 </div>
@@ -183,8 +189,8 @@ const GlobalWhatsappMessenger = () => {
             {/* Main: Chat View */}
             <section className="global-wa-messenger__chat-area">
                 <header className="global-wa-messenger__chat-header">
-                    <div className="global-wa-messenger__header-left">
-                        {selectedPatientId && (
+                     <div className="global-wa-messenger__header-left">
+                        {activeChat && (
                             <Button 
                                 variant="ghost"
                                 size="sm"
@@ -194,9 +200,9 @@ const GlobalWhatsappMessenger = () => {
                             />
                         )}
                         <div className="global-wa-messenger__chat-user">
-                            {selectedPatientId ? (
+                            {activeChat ? (
                                 <>
-                                    <strong>{conversations.find(c => c.patient_id === selectedPatientId)?.patient_name || t('conversation')}</strong>
+                                    <strong>{activeChat.patientId ? (conversations.find(c => c.patient_id === activeChat.patientId)?.patient_name) : activeChat.phone}</strong>
                                     <span className="global-wa-messenger__online-status">{t('live')}</span>
                                 </>
                             ) : (
@@ -208,6 +214,23 @@ const GlobalWhatsappMessenger = () => {
                     </div>
                     
                     <div className="global-wa-messenger__header-actions">
+                        {activeChat && !activeChat.patientId && (
+                            <Button 
+                                variant="primary" 
+                                size="sm" 
+                                className="global-wa-messenger__register-manual-btn"
+                                onClick={() => {
+                                    // Custom event or logic to open registration modal with phone
+                                    const event = new CustomEvent('openPatientRegistration', { 
+                                        detail: { phone: activeChat.phone } 
+                                    });
+                                    window.dispatchEvent(event);
+                                }}
+                                icon={<Icon name="person_add" size="1rem" />}
+                            >
+                                {t('register_contact') || 'Registrar'}
+                            </Button>
+                        )}
                         <Button 
                             variant="ghost"
                             size="sm"
@@ -274,9 +297,14 @@ const GlobalWhatsappMessenger = () => {
                                 </div>
                             </div>
                         </div>
-                    ) : selectedPatientId ? (
+                    ) : activeChat ? (
                         <div className="global-wa-messenger__chat-wrapper">
-                            <WhatsappChatHistory patientId={selectedPatientId} t={t} hideHeader={true} />
+                            <WhatsappChatHistory 
+                                patientId={activeChat.patientId} 
+                                phone={activeChat.phone}
+                                t={t} 
+                                hideHeader={true} 
+                            />
                         </div>
                     ) : (
                         <div className="global-wa-messenger__placeholder">

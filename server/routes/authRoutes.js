@@ -4,6 +4,7 @@ const authController = require('../controllers/authController');
 const { verifyToken } = require('../middleware/authMiddleware');
 
 router.post('/register', authController.register);
+router.post('/public-register', authController.publicRegister);
 router.post('/login', authController.login);
 router.get('/verify', verifyToken, authController.verify);
 

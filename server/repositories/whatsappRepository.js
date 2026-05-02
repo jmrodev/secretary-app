@@ -1,22 +1,31 @@
 const { pool } = require('../db');
 
 class WhatsappRepository {
-    async createMessage(patientId, direction, body, whatsappId = null, status = 'sent', conn = pool) {
+    async createMessage(patientId, direction, body, whatsappId = null, status = 'sent', senderPhone = null, conn = pool) {
         const query = `
-            INSERT INTO whatsapp_messages (patient_id, direction, body, whatsapp_id, status) 
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO whatsapp_messages (patient_id, sender_phone, direction, body, whatsapp_id, status) 
+            VALUES (?, ?, ?, ?, ?, ?)
         `;
-        const result = await conn.query(query, [patientId, direction, body, whatsappId, status]);
+        const result = await conn.query(query, [patientId, senderPhone, direction, body, whatsappId, status]);
         return Number(result.insertId);
     }
 
-    async getHistoryByPatient(patientId, conn = pool) {
-        const query = `
-            SELECT * FROM whatsapp_messages 
-            WHERE patient_id = ? 
-            ORDER BY created_at ASC
-        `;
-        return await conn.query(query, [patientId]);
+    async getHistoryByPatient(patientId, phone = null, conn = pool) {
+        let query = `SELECT * FROM whatsapp_messages WHERE `;
+        let params = [];
+
+        if (patientId) {
+            query += `patient_id = ? `;
+            params.push(patientId);
+        } else if (phone) {
+            query += `sender_phone = ? `;
+            params.push(phone);
+        } else {
+            return [];
+        }
+
+        query += `ORDER BY created_at ASC`;
+        return await conn.query(query, params);
     }
 
     async updateMessageStatus(whatsappId, status, conn = pool) {
@@ -30,26 +39,28 @@ class WhatsappRepository {
 
     async getRecentConversations(doctorId = null, conn = pool) {
         let query = `
-            SELECT wm.*, p.full_name as patient_name, p.phone as patient_phone
+            SELECT wm.*, 
+                   COALESCE(p.full_name, wm.sender_phone) as patient_name, 
+                   COALESCE(p.phone, wm.sender_phone) as patient_phone
             FROM whatsapp_messages wm
             INNER JOIN (
-                SELECT patient_id, MAX(created_at) as max_date
+                SELECT COALESCE(patient_id, sender_phone) as identifier, MAX(created_at) as max_date
                 FROM whatsapp_messages
-                GROUP BY patient_id
-            ) latest ON wm.patient_id = latest.patient_id AND wm.created_at = latest.max_date
+                GROUP BY identifier
+            ) latest ON (COALESCE(wm.patient_id, wm.sender_phone) = latest.identifier) AND wm.created_at = latest.max_date
             LEFT JOIN patients p ON wm.patient_id = p.id
         `;
 
         const params = [];
         if (doctorId) {
             query += `
-                INNER JOIN patient_doctors pd ON p.id = pd.patient_id
-                WHERE pd.doctor_id = ?
+                LEFT JOIN patient_doctors pd ON p.id = pd.patient_id
+                WHERE (pd.doctor_id = ? OR wm.patient_id IS NULL)
             `;
             params.push(doctorId);
         }
 
-        query += ` ORDER BY wm.created_at DESC`;
+        query += ` GROUP BY identifier ORDER BY wm.created_at DESC`;
         
         return await conn.query(query, params);
     }

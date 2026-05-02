@@ -70,6 +70,9 @@ const sendMessageDirect = async (to, message, patientId = null) => {
         
         if (patientId) {
             await whatsappRepository.createMessage(patientId, 'outbound', message, null, 'sent');
+        } else {
+            // Save for unknown contact
+            await whatsappRepository.createMessage(null, 'outbound', message, null, 'sent', to);
         }
 
         console.log(`[WhatsApp Bridge] Response:`, response.data);

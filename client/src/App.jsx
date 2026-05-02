@@ -7,6 +7,7 @@ import AppRouter from '@/routes/AppRouter';
 
 // Global UI Components
 import GlobalWhatsappMessenger from '@/components/organisms/GlobalWhatsappMessenger';
+import GlobalPatientRegistrar from '@/components/organisms/GlobalPatientRegistrar';
 import ErrorBoundary from '@/components/molecules/ErrorBoundary';
 
 /**
@@ -30,6 +31,7 @@ function App() {
       
       {/* WHATSAPP PATIENT MESSENGER */}
       <GlobalWhatsappMessenger />
+      <GlobalPatientRegistrar />
     </ErrorBoundary>
   );
 }
