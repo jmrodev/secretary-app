@@ -7,7 +7,11 @@ const DoctorContext = createContext();
 export const useDoctors = () => {
     const context = useContext(DoctorContext);
     if (!context) {
-        throw new Error('useDoctors must be used within a DoctorProvider');
+        if (import.meta.env.DEV) {
+            console.error('[DoctorContext] useDoctors called outside DoctorProvider — returning safe defaults. Likely an HMR boundary issue; please do a full page reload.');
+        }
+        // Return safe defaults to prevent a full app crash
+        return { doctors: [], doctorsLoading: false, viewDoctorId: null, setViewDoctorId: () => {}, currentDoctor: null, doctorDisplayName: null, isStaff: false };
     }
     return context;
 };
