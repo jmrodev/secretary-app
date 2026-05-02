@@ -14,5 +14,13 @@
     "@vitejs/plugin-react": "^6.0.1",
     "vite": "^8.0.10",
     "wrangler": "^4.83.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "form-data": "^4.0.1",
+      "qs": "^6.11.0",
+      "follow-redirects": "^1.15.4",
+      "tough-cookie": "^4.1.3"
+    }
   }
 }
