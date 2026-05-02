@@ -9,6 +9,7 @@ import PatientInfoBlock from '@/features/patients/components/PatientInfoBlock';
 import PatientHistoryTable from '@/features/patients/components/PatientHistoryTable';
 import PatientFinancialSidebar from '@/features/patients/components/PatientFinancialSidebar';
 import PatientPrintableView from '@/features/patients/components/PatientPrintableView';
+import WhatsappChatHistory from '@/features/patients/components/WhatsappChatHistory';
 
 import './PatientDetailsView.css';
 
@@ -40,7 +41,7 @@ const PatientDetailsView = ({
             .then(res => setChronicMeds(res.data))
             .catch(err => console.error("Error fetching chronic meds:", err));
 
-        api.get(`/medical/requests?patientId=${details.id}`)
+        api.post('/medical/requests', { patientId: details.id })
             .then(res => {
                 const prescriptions = res.data.filter(r => r.type === 'prescription');
                 setRecentRequests(prescriptions);
@@ -108,6 +109,12 @@ const PatientDetailsView = ({
                             details={details}
                             t={t}
                             onPayDebt={onPayDebt}
+                        />
+
+                        {/* WhatsApp Live Chat History */}
+                        <WhatsappChatHistory 
+                            patientId={details.id} 
+                            t={t} 
                         />
 
                         {children}

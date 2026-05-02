@@ -11,7 +11,7 @@ import './ScheduleSection.css';
 const ScheduleSection = ({
     activeTab, selectedDate, selectedDoctor, viewDoctorId, appointments = [],
     doctorSchedule = [], holidays = [], onSlotClick, onDeleteHoliday,
-    onDateSelect, showOutOfHours, setShowOutOfHours, className
+    onDateSelect, showOutOfHours, setShowOutOfHours, onNextFreeSlot, className
 }) => {
     const getDoctorThemeModifier = () => viewDoctorId ? `schedule-section--doctor-${Number(viewDoctorId) % 10}` : '';
     const isCalendar = activeTab === 'calendar';
@@ -19,13 +19,14 @@ const ScheduleSection = ({
     const themedClass = (isCalendar && viewDoctorId) ? "schedule-section__container--themed" : "";
 
     return (
-        <main className={`schedule-section ${variantClass} ${getDoctorThemeModifier()} ${themedClass} ${className || ''}`}>
+        <section className={`schedule-section ${variantClass} ${getDoctorThemeModifier()} ${themedClass} ${className || ''}`}>
             {isCalendar ? (
                 <DaySchedule
                     date={selectedDate} onDateSelect={onDateSelect}
                     appointments={selectedDoctor ? appointments.filter(a => a.doctor_id === selectedDoctor.id) : appointments}
                     onSlotClick={onSlotClick} doctor={selectedDoctor} schedule={doctorSchedule}
                     holidays={holidays} showOutOfHours={showOutOfHours} setShowOutOfHours={setShowOutOfHours}
+                    onNextFreeSlot={onNextFreeSlot}
                 />
             ) : (
                 <>
@@ -35,7 +36,7 @@ const ScheduleSection = ({
                     </div>
                 </>
             )}
-        </main>
+        </section>
     );
 };
 

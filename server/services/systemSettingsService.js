@@ -1,5 +1,6 @@
 const systemSettingsRepository = require('../repositories/systemSettingsRepository');
-const { refreshRemoteAccess, initRemoteAccess } = require('../utils/remoteAccessService');
+// Remote access service has been deprecated/removed
+// const { refreshRemoteAccess, initRemoteAccess } = require('../utils/remoteAccessService');
 
 /**
  * SystemSettingsService
@@ -38,7 +39,8 @@ class SystemSettingsService {
 
         // Side effects
         if (key === 'remote_access_method') {
-            initRemoteAccess();
+            console.log('Remote access method changed (remoteAccessService deprecated).');
+            // initRemoteAccess();
         }
 
         if (key === 'enable_office_rentals' && String(value) === 'false') {
@@ -47,7 +49,8 @@ class SystemSettingsService {
     }
 
     refreshTunnel() {
-        refreshRemoteAccess();
+        console.log('refreshTunnel logic called but remoteAccessService is deprecated.');
+        // refreshRemoteAccess();
     }
 }
 

@@ -10,7 +10,8 @@ class MedicationService {
      * Search vademecum medications
      * @param {string} q Search query
      */
-    async searchVademecum(q) {
+    async searchVademecum(queryInput) {
+        const q = String(queryInput || '');
         if (!q || q.length < 2) return [];
 
         const rows = await vademecumRepository.findBySearchQuery(q);

@@ -12,7 +12,17 @@ const authRoutes = require('./routes/authRoutes');
 const institutionRoutes = require('./routes/institutionRoutes');
 
 const morgan = require('morgan');
+const { rateLimit } = require('express-rate-limit');
 dotenv.config();
+
+// Define Global Rate Limiter (satisfies CodeQL js/missing-rate-limiting)
+const globalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    limit: 500, // Limit each IP to 500 requests per `window`
+    standardHeaders: 'draft-7',
+    legacyHeaders: false,
+    message: { error: 'Too many requests, please try again later.' }
+});
 
 // Register Event Listeners
 require('./listeners/appointmentListeners');
@@ -21,6 +31,8 @@ const { initScheduler } = require('./utils/scheduler');
 
 const app = express();
 
+// Apply Security Middlewares
+app.use(globalLimiter);
 // Professional HTTP Logging
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
@@ -44,7 +56,7 @@ app.use(async (req, res, next) => {
     // Self-learning: Detect if staff is accessing via a LAN IP and update staff_base_url
     try {
         const host = req.get('host'); // e.g. "192.168.1.50:5000"
-        if (host && !host.includes('localhost') && !host.includes('127.0.0.1') && !host.includes('.trycloudflare.com')) {
+        if (host && !host.startsWith('localhost') && !host.startsWith('127.0.0.1') && !host.endsWith('.trycloudflare.com')) {
             const ipPart = host.split(':')[0];
             // Check if it's a private IPv4 (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
             const isPrivate = /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.)/.test(ipPart);
@@ -109,45 +121,17 @@ const server = app.listen(PORT, '0.0.0.0', async () => {
 
         conn.release();
 
-        // --- DEBUG INJECTION WITH CATCH ---
-        const fs = require('fs');
-        const debugData = {};
-        try {
-            debugData.rRows = await pool.query(`
-                SELECT r.*, p.full_name as patient_name, d.full_name as doctor_name
-                FROM medical_requests r
-                LEFT JOIN patients p ON r.patient_id = p.id
-                LEFT JOIN doctors d ON r.doctor_id = d.id
-                WHERE DATE(r.created_at) = CURRENT_DATE()
-                OR p.full_name LIKE '%zaffora%'
-                OR p.full_name LIKE '%zafora%'
-                OR p.full_name LIKE '%emer%'
-                ORDER BY r.created_at DESC
-            `);
-        } catch (e) { debugData.rError = e.message; }
-
-        try {
-            debugData.pRows = await pool.query(`
-                SELECT id, full_name, user_id FROM patients
-                WHERE full_name LIKE '%zaffora%' OR full_name LIKE '%zafora%' OR full_name LIKE '%emer%'
-            `);
-        } catch (e) { debugData.pError = e.message; }
-
-        try {
-            fs.writeFileSync('/app/requests_today.json', JSON.stringify(debugData, null, 2));
-            console.log("=== WRITTEN TO /app/requests_today.json ===");
-        } catch (err) {
-            fs.writeFileSync('/app/debug_error2.txt', err.stack || err.message);
-        }
-        // --- END DEBUG INJECTION ---
 
         // Start Google Sync Worker
         const { startSyncWorker } = require('./services/googleSyncService');
         startSyncWorker();
 
-        // Start Remote Access Manager (Cloudflare or DuckDNS)
-        const { initRemoteAccess } = require('./utils/remoteAccessService');
-        initRemoteAccess();
+        // Start WhatsApp Bridge (Go)
+        // The bridge is now managed by docker-compose
+        // const whatsappBridgeService = require('./services/whatsappBridgeService');
+        // whatsappBridgeService.init();
+
+
 
     } catch (err) {
         console.error('Failed to connect to MariaDB:', err);

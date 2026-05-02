@@ -16,6 +16,7 @@ import { useGoogleEvents } from '@/features/appointments/hooks/useGoogleEvents';
 import { usePatientSearch } from '@/features/appointments/hooks/usePatientSearch';
 import { useAppointmentsHandlers } from '@/features/appointments/hooks/useAppointmentsHandlers';
 import { copyToClipboard } from '@/utils/clipboardUtils';
+import { useDoctors } from '@/context/DoctorContext';
 
 /**
  * useAppointmentsPageController (Handler Hook).
@@ -23,14 +24,14 @@ import { copyToClipboard } from '@/utils/clipboardUtils';
  */
 export const useAppointmentsPageController = () => {
     const { user, isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff } = usePermissions();
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const { showMessage } = useMessage();
     const { settings } = useConfig();
     const { confirm } = useModal();
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [viewDoctorId, setViewDoctorId] = useState(location.state?.viewDoctorId || localStorage.getItem('last_selected_doctor_id') || '');
+    const { viewDoctorId, setViewDoctorId, doctors, doctorsLoading } = useDoctors();
     const [selectedDate, setSelectedDate] = useState(location.state?.selectedDate ? new Date(location.state.selectedDate) : new Date());
     const [activeTab, setActiveTab] = useState(location.state?.activeTab || 'calendar');
     const [showOutOfHours, setShowOutOfHours] = useState(false);
@@ -44,9 +45,17 @@ export const useAppointmentsPageController = () => {
 
     // --- Data Fetching using useFetch ---
     
-    // Doctors and Institutions
-    const { data: doctors = [], loading: doctorsLoading } = useFetch('/users/doctors', { initialData: [] });
-    const { data: institutions = [], loading: institutionsLoading } = useFetch('/institutions', { initialData: [] });
+    // Institutions
+    const { data: instData, loading: institutionsLoading } = useFetch('/institutions', { 
+        initialData: { institutions: [], totalCount: 0 } 
+    });
+    const institutions = instData?.institutions || [];
+
+    // Insurances (Required for PatientManagerModal)
+    const { data: insData } = useFetch('/insurances', { 
+        initialData: { insurances: [], totalCount: 0 } 
+    });
+    const insurances = insData?.insurances || [];
 
     // Calendar Stats
     const { data: calendarStats = {} } = useFetch('/appointments/stats', {
@@ -62,7 +71,10 @@ export const useAppointmentsPageController = () => {
     const { updateStatus, updateAppointment, cancelAppointment, deleteAppointment, rescheduleAppointment, savePrescription } = useAppointments();
     const { holidays, addHoliday, deleteHoliday } = useHolidays();
     const patientSearch = usePatientSearch();
-    const { searchPatientId, setSearchPatientId, appointments, patientAppointments, patientApptLoading, fetchAppointments } = patientSearch;
+    const { 
+        searchTerm, setSearchTerm, searchPatientId, setSearchPatientId, 
+        appointments, patientAppointments, patientApptLoading, fetchAppointments 
+    } = patientSearch;
     const { doctorSchedule, syncDayToGoogle } = useGoogleEvents(viewDoctorId, selectedDate, user?.role);
     const { handleWhatsAppUniversal } = useWhatsAppUniversal(doctors);
     const booking = useAppointmentBooking(doctors);
@@ -71,11 +83,8 @@ export const useAppointmentsPageController = () => {
     const loading = doctorsLoading || institutionsLoading || patientApptLoading;
 
     useEffect(() => {
-        const doctorId = viewDoctorId || booking.selectedDoctor;
-        if (doctorId) localStorage.setItem('last_selected_doctor_id', doctorId);
-        if (viewDoctorId && !booking.selectedDoctor) booking.setSelectedDoctor(viewDoctorId);
-        if (booking.selectedDoctor && !viewDoctorId) queueMicrotask(() => setViewDoctorId(booking.selectedDoctor));
-    }, [viewDoctorId, booking.selectedDoctor, booking.setSelectedDoctor, booking]);
+        // syncing logic simplified by context
+    }, [viewDoctorId, booking]);
 
     const rescheduleAppt = location.state?.rescheduleAppt;
     const syncAppt = location.state?.syncAppt;
@@ -90,14 +99,7 @@ export const useAppointmentsPageController = () => {
             });
         }
         
-        // Initial doctor selection for doctors
-        if (isDoctor && doctors.length > 0 && !viewDoctorId) {
-            const profile = doctors.find(d => d.user_id === (user.user_id || user.id));
-            if (profile) {
-                queueMicrotask(() => setViewDoctorId(profile.id));
-                booking.setSelectedDoctor(profile.id);
-            }
-        }
+        // Initial logic moved to DoctorContext
     }, [user, doctors, rescheduleAppt, syncAppt, isDoctor, booking, viewDoctorId]);
 
     const hookHandlers = useAppointmentsHandlers({
@@ -123,18 +125,18 @@ export const useAppointmentsPageController = () => {
         exitRescheduleMode, rescheduleAppt,
         setActiveTab, setShowOutOfHours, setViewDoctorId, setSelectedDate,
         setEditPatientModalOpen, setPaymentModal, setActionModal, setHistoryModal,
-        setPrescribeModal, setAuthModalOpen, setSearchPatientId
+        setPrescribeModal, setAuthModalOpen, setSearchPatientId, setSearchTerm
     };
 
     return {
-        viewDoctorId, doctors, institutions, loading, selectedDate,
-        activeTab, showOutOfHours, t, user,
+        viewDoctorId, doctors, institutions, insurances, loading, selectedDate,
+        activeTab, showOutOfHours, t, language, user,
         editPatientModalOpen, paymentModal,
         actionModal, historyModal, prescribeModal,
         authModalOpen, whatsappModal: booking.whatsappModal, setWhatsappModal: booking.setWhatsappModal,
         showNextSlotModal: nextSlot.showModal, setShowNextSlotModal: nextSlot.setShowModal,
         holidays, booking, patientSearch, nextSlot, currentDoctor: viewDoctorId ? doctors.find(d => d.id === Number(viewDoctorId)) : null,
         filteredAppointments: appointments, appointments, calendarStats, doctorSchedule,
-        searchPatientId, patientAppointments, patientApptLoading, handlers, rescheduleAppt, exitRescheduleMode
+        searchTerm, searchPatientId, patientAppointments, patientApptLoading, handlers, rescheduleAppt, exitRescheduleMode
     };
 };

@@ -1,0 +1,7 @@
+version: 2
+updates:
+  - package-ecosystem: "npm" # Le indicamos que el proyecto usa paquetes de Node (NPM)
+    directory: "/" # Como tenés "workspaces" configurados en tu carpeta principal, le decimos que mire desde la raíz
+    schedule:
+      interval: "weekly" # Va a buscar actualizaciones 1 vez por semana
+    open-pull-requests-limit: 10 # Para que no te inunde de notificaciones, limitamos a 10 sugerencias máximas a la vez.

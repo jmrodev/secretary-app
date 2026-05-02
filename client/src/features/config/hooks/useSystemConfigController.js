@@ -50,7 +50,7 @@ export const useSystemConfigController = () => {
         const tab = urlParams.get('tab');
 
         if (tab && tab !== activeTab) {
-            setActiveTab(tab);
+            queueMicrotask(() => setActiveTab(tab));
         }
 
         if (status === 'success') {

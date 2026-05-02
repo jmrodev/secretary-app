@@ -13,22 +13,23 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.625rem 1.25rem;
-    border-radius: var(--radius-lg, 0.75rem);
-    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius, 1.5rem); /* XL corners */
+    font-family: var(--font-manrope);
+    font-weight: 700;
     cursor: pointer;
     border: 1px solid var(--btn-border);
     background: var(--btn-bg);
     color: var(--btn-text);
     box-shadow: var(--btn-shadow);
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     font-size: 0.875rem;
-    gap: 0.5rem;
+    gap: 0.625rem;
     user-select: none;
     outline: none;
     text-decoration: none;
     white-space: nowrap;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
 }
 
 .btn:hover:not(:disabled) {
@@ -48,20 +49,19 @@
 /* Semantic Variants for CRUD and Actions */
 
 .btn--primary {
-    --btn-bg: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+    --btn-bg: var(--primary-color);
     --btn-text: var(--white);
-    --btn-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
-    --btn-hover-bg: linear-gradient(135deg, var(--primary-hover) 0%, var(--indigo-700) 100%);
-    --btn-hover-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    --btn-shadow: var(--shadow-premium);
+    --btn-hover-bg: var(--primary-hover);
+    --btn-hover-shadow: var(--shadow-lg);
 }
 
 /* Create / Save / Accent Action */
 .btn--accent {
-    --btn-bg: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
+    --btn-bg: var(--accent-color);
     --btn-text: var(--white);
-    --btn-shadow: 0 2px 4px rgba(6, 182, 212, 0.2);
-    --btn-hover-bg: linear-gradient(135deg, var(--accent-hover) 0%, var(--cyan-700) 100%);
-    --btn-hover-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+    --btn-shadow: var(--shadow-premium);
+    --btn-hover-bg: var(--accent-hover);
 }
 
 .btn--success {
@@ -173,10 +173,27 @@
 
 .btn--ghost {
     --btn-bg: transparent;
-    --btn-text: var(--gray-600);
-    --btn-hover-bg: var(--gray-200);
-    --btn-hover-text: var(--gray-900);
+    --btn-text: var(--text-muted);
+    --btn-hover-bg: var(--gray-100);
+    --btn-hover-text: var(--text-main);
     --btn-hover-y: 0;
+}
+
+/* NEW: Premium Glass Variant for Headers */
+.btn--glass-premium {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--white);
+    font-family: var(--font-manrope);
+    font-weight: 700;
+}
+
+.btn--glass-premium:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: var(--white);
+    transform: translateY(-2px);
 }
 
 .btn--link {

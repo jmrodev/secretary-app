@@ -30,7 +30,7 @@ export const usePublicPrescriptionRequestController = () => {
 
     useEffect(() => {
         if (searchTerm.length < 3) {
-            setSearchResults([]);
+            queueMicrotask(() => setSearchResults([]));
             return;
         }
 

@@ -215,7 +215,7 @@ const SystemConfigPage = () => {
     const { setQrModal } = handlers;
 
     return (
-        <MainLayout wide>
+        <MainLayout wide flush title={controller.t('config') || 'Configuración del Sistema'}>
             <section className="system-config-page">
                 <div className="system-config-container animate-fadeIn">
                     <main className="system-config-main">

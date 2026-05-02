@@ -3,7 +3,7 @@
 .medical-requirement-manager {
     display: flex;
     flex-direction: column;
-    gap: clamp(0.75rem, 2vw, 1.5rem);
+    gap: 0.5rem;
     padding: 0;
 }
 
@@ -38,11 +38,11 @@
 .medical-requirement-manager__filters {
     display: flex;
     gap: 0.5rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .medical-requirement-manager__content {
-    min-height: 400px;
+    min-height: 200px;
 }
 
 .medical-requirement-manager__empty {
@@ -50,16 +50,16 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: clamp(2rem, 10vw, 5rem);
+    padding: 2rem;
     background: rgba(255, 255, 255, 0.5);
     border: 2px dashed var(--border-color);
     border-radius: 1.25rem;
     color: var(--text-muted);
-    gap: 1.25rem;
+    gap: 1rem;
 }
 
 .medical-requirement-manager__empty p {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 500;
     margin: 0;
 }
@@ -80,8 +80,8 @@
 
 .medical-requirement-manager__table-header {
     background-color: var(--gray-50);
-    padding: 0.75rem 1rem;
-    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.7rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -98,14 +98,14 @@
 .medical-requirement-manager__form-label {
     font-weight: 600;
     color: var(--text-secondary);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
 /* Detail & Edit specific */
 .requirements-detail {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
 }
 
 .requirements-detail__info-bar {
@@ -130,24 +130,24 @@
     display: flex;
     align-items: center;
     gap: 0.65rem;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 700;
-    padding: 1.25rem;
+    padding: 1rem;
     background: var(--gray-50);
     border-bottom: 1px solid var(--border-color);
     margin: 0;
 }
 
 .requirements-detail__notes {
-    padding: 1.25rem;
+    padding: 1rem;
     border-top: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.5rem;
 }
 
 .requirements-detail__actions {
-    padding: 1.25rem;
+    padding: 1rem;
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;

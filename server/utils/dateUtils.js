@@ -42,8 +42,21 @@ function nowLocalSQL() {
     return formatLocalSQL(new Date());
 }
 
+/**
+ * Formats a date object or string into a MariaDB-compatible DATE string (YYYY-MM-DD)
+ */
+function formatDateOnlySQL(dateInput) {
+    if (!dateInput) return null;
+    const d = new Date(dateInput);
+    if (isNaN(d.getTime())) return null;
+    
+    const pad = (n) => n.toString().padStart(2, '0');
+    return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
+}
+
 module.exports = {
     TIMEZONE,
     formatLocalSQL,
+    formatDateOnlySQL,
     nowLocalSQL
 };

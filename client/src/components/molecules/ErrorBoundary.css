@@ -57,6 +57,13 @@
     margin-top: 0.5rem;
 }
 
-.error-reload-btn {
-    margin: 0 auto;
+.error-boundary-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.error-reload-btn, .error-copy-btn {
+    min-width: 160px;
 }

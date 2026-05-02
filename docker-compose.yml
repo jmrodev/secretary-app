@@ -57,6 +57,8 @@ services:
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}
+      - WHATSAPP_BRIDGE_URL=http://whatsapp-bridge:8090/api/send
+      - WHATSAPP_BRIDGE_STATUS_URL=http://whatsapp-bridge:8090/api/status
     depends_on:
       db:
         condition: service_healthy
@@ -100,7 +102,29 @@ services:
           cpus: '0.5'
           memory: 512M
 
+  whatsapp-bridge:
+    build: ./whatsapp-bridge-go
+    restart: always
+    container_name: secretary-whatsapp-bridge
+    logging: *default-logging
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./whatsapp-bridge-go/examplestore.db:/app/examplestore.db
+    environment:
+      - TZ=America/Argentina/Buenos_Aires
+      - WHATSAPP_WEBHOOK_URL=http://server:5000/api/whatsapp/webhook
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
   # [MONITORING] Real-time log viewer (Dev version)
+
   dozzle:
     image: amir20/dozzle:latest
     container_name: secretary-logs-dev

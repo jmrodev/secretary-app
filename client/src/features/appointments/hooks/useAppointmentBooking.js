@@ -36,25 +36,27 @@ export const useAppointmentBooking = (doctors) => {
 
     // Check for missing patient info for quality tracking
     useEffect(() => {
-        if (!selectedPatientData) {
-            setMissingData([]);
-            return;
-        }
-        const missing = [];
-        if (!selectedPatientData.dni) missing.push(t('dni') || 'DNI');
-        if (!selectedPatientData.phone) missing.push(t('phone') || 'Teléfono');
-        if (!selectedPatientData.email) missing.push(t('email') || 'Email');
-        if (!selectedPatientData.street_name) missing.push(t('address') || 'Dirección');
-        if (!selectedPatientData.insurance_name && !selectedPatientData.insurance_id) {
-            missing.push(t('insurance') || 'Obra Social');
-        }
-        setMissingData(missing);
+        queueMicrotask(() => {
+            if (!selectedPatientData) {
+                setMissingData([]);
+                return;
+            }
+            const missing = [];
+            if (!selectedPatientData.dni) missing.push(t('dni') || 'DNI');
+            if (!selectedPatientData.phone) missing.push(t('phone') || 'Teléfono');
+            if (!selectedPatientData.email) missing.push(t('email') || 'Email');
+            if (!selectedPatientData.street_name) missing.push(t('address') || 'Dirección');
+            if (!selectedPatientData.insurance_name && !selectedPatientData.insurance_id) {
+                missing.push(t('insurance') || 'Obra Social');
+            }
+            setMissingData(missing);
+        });
     }, [selectedPatientData, t]);
 
     // Sync institution from patient data
     useEffect(() => {
         if (selectedPatientData?.institution_id) {
-            setSelectedInstitution(selectedPatientData.institution_id);
+            queueMicrotask(() => setSelectedInstitution(selectedPatientData.institution_id));
         }
     }, [selectedPatientData]);
 
@@ -194,10 +196,29 @@ export const useAppointmentBooking = (doctors) => {
                             : `Hola {patient_name}, te confirmamos tu turno del día {date} a las {time} con el/la Dr/a. {doctor_name} en {appointment_location}.`;
                     }
 
+                    const message = fillTemplate(template, context);
+                    let normalizedPhone = targetPhone.replace(/\D/g, '');
+                    if (!normalizedPhone.startsWith('54') && normalizedPhone.length >= 10) normalizedPhone = '549' + normalizedPhone;
+
+                    // Try local bridge if enabled before showing modal
+                    if (settings.whatsapp_use_local_bridge === 'true' || settings.whatsapp_use_local_bridge === true) {
+                        try {
+                            showMessage(t('sending_automated') || 'Enviando confirmación automática...', 'info');
+                            await api.post('/whatsapp/send-direct', { to: normalizedPhone, message });
+                            showMessage(t('automated_sent') || 'Confirmación enviada por WhatsApp', 'success');
+                            resetForm();
+                            if (onSuccess) onSuccess();
+                            return; // Success! No need for modal.
+                        } catch (bridgeErr) {
+                            console.error("Local Bridge confirmation failed:", bridgeErr);
+                            // If bridge fails, we continue to the modal
+                        }
+                    }
+
                     setWhatsappModal({
                         open: true,
                         phone: targetPhone,
-                        message: fillTemplate(template, context)
+                        message: message
                     });
                 }
             } else if (!targetPhone) {

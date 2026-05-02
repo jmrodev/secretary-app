@@ -2,6 +2,7 @@ const fs = require('fs');
 const csv = require('csv-parser');
 const { pool } = require('../db');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const { logAction } = require('../utils/audit');
 const patientRepository = require('../repositories/patientRepository');
 const userRepository = require('../repositories/userRepository');
@@ -104,8 +105,8 @@ class ImportService {
             results.updated++;
         } else {
             const cleanName = data.name.toLowerCase().replace(/[^a-z0-9]/g, '.');
-            const username = `pac.${cleanName.slice(0, 20)}.${Math.floor(Math.random() * 10000)}`;
-            const hash = await bcrypt.hash(Math.random().toString(36).slice(-8), 10);
+            const username = `pac.${cleanName.slice(0, 20)}.${crypto.randomInt(1000, 9999)}`;
+            const hash = await bcrypt.hash(crypto.randomBytes(8).toString('hex'), 10);
 
             const userId = await userRepository.create({
                 username,

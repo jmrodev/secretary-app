@@ -1,10 +1,12 @@
 import { useFetch } from '@/hooks/useFetch';
 import api from '@/api/axios';
+import { replaceTemplateVariables } from '@/utils/stringUtils';
 
 export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
     const { 
         data: reminders = [], 
         loading: loadingReminders, 
+        error: errorReminders,
         refetch: fetchReminders 
     } = useFetch('/users/reminders', {
         initialData: []
@@ -17,11 +19,11 @@ export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
                 type: type,
                 medIds: reminder.expiring_med_ids
             });
-            showMessage(t('reminder_completed') || 'Recordatorio completado', 'success');
+            showMessage(t('reminder_completed'), 'success');
             fetchReminders();
         } catch (err) {
             console.error(err);
-            showMessage(t('error_completing_reminder') || 'Error al completar recordatorio', 'error');
+            showMessage(t('error_completing_reminder'), 'error');
         }
     };
 
@@ -33,11 +35,11 @@ export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
                 medIds: reminder.expiring_med_ids,
                 notified: notified
             });
-            showMessage(t('status_updated') || 'Estado actualizado', 'success');
+            showMessage(t('status_updated'), 'success');
             fetchReminders();
         } catch (err) {
             console.error(err);
-            showMessage(t('error_updating_status') || 'Error al actualizar estado', 'error');
+            showMessage(t('error_updating_status'), 'error');
         }
     };
 
@@ -55,29 +57,56 @@ export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
         let message = '';
         if (type === 'medication') {
             const template = settings.medication_refill_reminder_template ||
-                'Hola {patient_name}, te recordamos que según nuestros registros tu medicación ({medication_name}) está próxima a terminarse. ¿Necesitas que te preparemos la receta? Atte: {secretary_name}';
-            message = template
-                .replace('{patient_name}', reminder.full_name)
-                .replace('{medication_name}', reminder.expiring_meds)
-                .replace('{secretary_name}', user.full_name || '');
+                t('whatsapp_medication_reminder_template');
+            message = replaceTemplateVariables(template, {
+                patient_name: reminder.full_name,
+                medication_name: reminder.expiring_meds,
+                secretary_name: user.full_name || user.name || ''
+            });
         } else if (type === 'visit') {
-            message = `Hola ${reminder.full_name}, te escribimos de Cima Salud para recordarte que ya es tiempo de tu próximo control sugerido. ¿Te gustaría agendar un turno?`;
+            message = replaceTemplateVariables(t('whatsapp_visit_reminder_template'), {
+                patient_name: reminder.full_name
+            });
         } else if (type === 'prescription') {
-            message = `Hola ${reminder.full_name}, te escribimos de Cima Salud para recordarte que es tiempo de renovar tu receta.`;
+            message = replaceTemplateVariables(t('whatsapp_prescription_reminder_template'), {
+                patient_name: reminder.full_name
+            });
         } else if (type === 'license') {
-            message = `Hola ${reminder.full_name}, te recordamos que tu licencia médica está por vencer.`;
+            message = replaceTemplateVariables(t('whatsapp_license_reminder_template'), {
+                patient_name: reminder.full_name
+            });
         }
 
         const cleanPhone = phone.replace(/\D/g, '');
-        window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`, '_blank');
+        let normalizedPhone = cleanPhone;
+        if (!normalizedPhone.startsWith('54') && normalizedPhone.length >= 10) normalizedPhone = '549' + normalizedPhone;
 
-        // Auto-mark as notified
-        handleMarkNotified(reminder, type, true);
+        // Try direct send via bridge
+        const sendDirect = async () => {
+            try {
+                showMessage(t('sending_whatsapp') || 'Enviando WhatsApp...', 'info');
+                await api.post('/whatsapp/send-direct', {
+                    to: normalizedPhone,
+                    message: message
+                });
+                showMessage(t('whatsapp_sent') || 'Mensaje enviado!', 'success');
+                // Auto-mark as notified
+                handleMarkNotified(reminder, type, true);
+            } catch (err) {
+                console.error("Direct send failed, falling back to manual", err);
+                window.open(`https://wa.me/${normalizedPhone}?text=${encodeURIComponent(message)}`, '_blank');
+                // Still mark as notified as we opened the link
+                handleMarkNotified(reminder, type, true);
+            }
+        };
+
+        sendDirect();
     };
 
     return {
         reminders,
         loadingReminders,
+        errorReminders,
         fetchReminders,
         handleCompleteReminder,
         handleMarkNotified,

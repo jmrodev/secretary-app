@@ -27,10 +27,10 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
         setLoading(true);
         try {
             const [apptRes, prescRes, licRes, reqRes] = await Promise.all([
-                api.get(`/appointments?patientId=${patientId}`),
-                api.get(`/medical/prescriptions?patientId=${patientId}`),
-                api.get(`/medical/licenses?patientId=${patientId}`),
-                api.get(`/medical/requests?patientId=${patientId}`)
+                api.post('/appointments', { patientId }),
+                api.post('/medical/prescriptions', { patientId }),
+                api.post('/medical/licenses', { patientId }),
+                api.post('/medical/requests', { patientId })
             ]);
 
             setHistory({
@@ -48,7 +48,7 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
 
     useEffect(() => {
         if (isOpen && patientId) {
-            fetchHistory();
+            queueMicrotask(() => fetchHistory());
         }
     }, [isOpen, patientId, fetchHistory]);
 

@@ -33,8 +33,8 @@
         flex-direction: row;
     }
 
-    .sidebar__header, 
-    .sidebar__footer, 
+    .sidebar__header,
+    .sidebar__footer,
     .sidebar-user,
     .sidebar__section-title {
         display: none;
@@ -78,15 +78,27 @@
 }
 
 /* Base constraint for content inside main layout */
-.main-content>* {
+.main-content > :not(.page-header--premium):not(.page-header) {
     width: 100%;
     max-width: 1360px;
     /* Focused container for standard pages */
     margin: 0 auto;
 }
 
+/* Ensure PageHeader is always full width and at the top */
+.main-content > .page-header--premium,
+.main-content > .page-header {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+}
+
 .main-content.dashboard-wide {
-    padding: 0;
+    padding: 2rem;
+}
+
+.main-content--flush {
+    padding: 0 !important;
 }
 
 .main-content.dashboard-wide>* {

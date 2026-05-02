@@ -39,6 +39,35 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
     const [showPatientList, setShowPatientList] = useState(false);
 
     // --- Effects ---
+    const fetchDoctors = useCallback(async () => {
+        try {
+            const dData = await userService.getDoctors();
+            // The service returns { doctors: [...], totalCount: ... }
+            setDoctors(dData.doctors || dData);
+        } catch (err) {
+            console.error("Failed to fetch doctors", err);
+        }
+    }, []);
+
+    const fetchPricing = useCallback(async (docId, patId, serviceType = 'consultation') => {
+        if (!docId || !patId) return;
+        try {
+            const data = await financeService.getPricing(docId, patId, serviceType);
+            if (data) {
+                setFormData(prev => {
+                    const newPayments = prev.payments.map((p, index) => 
+                        index === 0 ? { ...p, amount: data.price } : p
+                    );
+                    return { ...prev, payments: newPayments };
+                });
+                setTotalPrice(Number(data.price));
+                setPricingInfo(data.explanation);
+            }
+        } catch (err) {
+            console.error("Failed to fetch pricing", err);
+        }
+    }, []);
+
     const initializeData = useCallback(() => {
         const data = initialData || {};
         let initialServiceType = data.serviceType || data.service_type || 'consultation';
@@ -87,13 +116,15 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         if (data.doctorId && data.patientId && (!data.amount || Number(data.amount) === 0)) {
             fetchPricing(data.doctorId, data.patientId, initialServiceType);
         }
-    }, [initialData]);
+    }, [initialData, fetchPricing]);
 
     useEffect(() => {
         if (!isOpen) return;
-        fetchDoctors();
-        initializeData();
-    }, [isOpen, initializeData]);
+        queueMicrotask(() => {
+            fetchDoctors();
+            initializeData();
+        });
+    }, [isOpen, initializeData, fetchDoctors]);
 
     // --- Patient Search Logic ---
     useEffect(() => {
@@ -111,33 +142,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         return () => clearTimeout(timer);
     }, [patientSearch, isOpen]);
 
-    const fetchDoctors = async () => {
-        try {
-            const dData = await userService.getDoctors();
-            setDoctors(dData);
-        } catch (err) {
-            console.error("Failed to fetch doctors", err);
-        }
-    };
 
-    const fetchPricing = async (docId, patId, serviceType = 'consultation') => {
-        if (!docId || !patId) return;
-        try {
-            const data = await financeService.getPricing(docId, patId, serviceType);
-            if (data) {
-                setFormData(prev => {
-                    const newPayments = prev.payments.map((p, index) => 
-                        index === 0 ? { ...p, amount: data.price } : p
-                    );
-                    return { ...prev, payments: newPayments };
-                });
-                setTotalPrice(Number(data.price));
-                setPricingInfo(data.explanation);
-            }
-        } catch (err) {
-            console.error("Failed to fetch pricing", err);
-        }
-    };
 
     // --- Handlers ---
     const updateField = (field, value) => {

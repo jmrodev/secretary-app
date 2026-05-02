@@ -2,8 +2,8 @@ import React from 'react';
 import { useAppointmentsPageController } from '@/features/appointments/hooks/useAppointmentsPageController';
 import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
-import NavTabs from '@/components/molecules/NavTabs';
-import { DoctorFilter } from '@/features/doctors';
+import { DoctorSelector } from '@/features/doctors';
+import Icon from '@/components/atoms/Icon';
 import { PatientManagerModal, PatientHistoryModal } from '@/features/patients';
 import { PrescriptionModal } from '@/features/medical_documents';
 import WhatsAppModal from '@/features/chat/components/WhatsAppModal';
@@ -18,7 +18,7 @@ import AppointmentActionModal from '@/features/appointments/components/Appointme
 import AppointmentFormModal from '@/features/appointments/components/AppointmentFormModal';
 import PatientHistoryView from '@/features/appointments/components/PatientHistoryView';
 import UpcomingAppointmentsView from '@/features/appointments/components/UpcomingAppointmentsView';
-import NextSlotCalendarModal from '@/features/appointments/components/NextSlotCalendarModal';
+import NextSlotModal from '@/features/appointments/components/NextSlotModal';
 
 import './AppointmentsPage.css';
 
@@ -30,10 +30,10 @@ import './AppointmentsPage.css';
 const AppointmentsPage = () => {
     const controller = useAppointmentsPageController();
     const {
-        t, user, loading, activeTab, showOutOfHours,
-        viewDoctorId, doctors, institutions, selectedDate, filteredAppointments,
+        t, language, user, loading, activeTab, showOutOfHours,
+        viewDoctorId, doctors, institutions, insurances, selectedDate, filteredAppointments,
         appointments, doctorSchedule, holidays, calendarStats, currentDoctor,
-        searchPatientId, patientAppointments, patientApptLoading,
+        searchTerm, searchPatientId, patientAppointments, patientApptLoading,
         paymentModal, actionModal, historyModal,
         prescribeModal, whatsappModal, setWhatsappModal, showNextSlotModal, setShowNextSlotModal,
         editPatientModalOpen, authModalOpen,
@@ -42,64 +42,94 @@ const AppointmentsPage = () => {
     } = controller;
     const {
         setActiveTab, setShowOutOfHours, setViewDoctorId, setSelectedDate,
-        setSearchPatientId, setPaymentModal, setActionModal, setHistoryModal,
+        setSearchPatientId, setSearchTerm, setPaymentModal, setActionModal, setHistoryModal,
         setPrescribeModal, setEditPatientModalOpen, setAuthModalOpen
     } = handlers;
+    const dateLocale = language === 'en' ? 'en-US' : 'es-AR';
+    const formattedSelectedDate = selectedDate?.toLocaleDateString(dateLocale, {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    });
 
     if (loading || !user) return <Loading variant="full-page" />;
 
     return (
-        <MainLayout wide>
-            <RescheduleBanner rescheduleAppt={rescheduleAppt} onExit={exitRescheduleMode} t={t} />
-
-            <header className="dashboard-header animate-fadeIn">
-                <h1 className="dashboard-header__title">{t('appointments_title') || 'Agenda de Turnos'}</h1>
-                <p className="dashboard-header__subtitle">{t('appointments_subtitle') || 'Gestiona tu agenda diaria.'}</p>
-            </header>
-
-            <div className="appointments-tab-content animate-fadeIn">
-                {searchPatientId ? (
-                    <PatientHistoryView
-                        patientAppointments={patientAppointments} loading={patientApptLoading}
-                        onClose={() => setSearchPatientId('')} t={t} searchPatientId={searchPatientId} handlers={handlers}
-                    />
-                ) : activeTab === 'upcoming' ? (
-                    <UpcomingAppointmentsView
-                        appointments={filteredAppointments} loading={loading} t={t}
-                        onAction={(a) => setActionModal({ open: true, appt: a })}
-                        onWhatsApp={handlers.handleWhatsAppUniversal}
-                    />
-                ) : (
-                    <div className={activeTab === 'monthly' ? "appointments-grid--monthly" : "dashboard-grid"}>
-                        <aside className="dashboard-sidebar">
-                            <div className="dashboard-nav-bar animate-fadeIn">
-                                <NavTabs activeTab={activeTab} setActiveTab={setActiveTab} userRole={user?.role} isStaff={isStaff} isAdmin={isAdmin} />
-                                <DoctorFilter
-                                    activeTab={activeTab} userRole={user?.role} isStaff={isStaff} isAdmin={isAdmin} viewDoctorId={viewDoctorId}
-                                    setViewDoctorId={setViewDoctorId} doctors={doctors}
+        <MainLayout wide flush title={t('appointments_title')}>
+            <main className="appointments-page-orchestrator">
+                <section className="layout-content-area">
+                    <header className="appointments-top-actions animate-fadeIn">
+                        <div className="appointments-top-actions__main">
+                            <form className="appointments-search-bar" role="search" onSubmit={(e) => e.preventDefault()}>
+                                <Icon name="search" className="appointments-search-bar__icon" />
+                                <input
+                                    type="text"
+                                    className="appointments-search-bar__input"
+                                    placeholder={t('search_placeholder')}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    value={searchTerm}
+                                    aria-label={t('search_placeholder')}
                                 />
-                            </div>
-                            <CalendarSection
-                                activeTab={activeTab} selectedDate={selectedDate} onDateSelect={handlers.handleDateSelect}
-                                appointments={filteredAppointments} calendarStats={calendarStats} holidays={holidays}
-                                onAddHoliday={handlers.handleAddHoliday} showOutOfHours={showOutOfHours}
-                                viewDoctorId={viewDoctorId} onSearchPatientId={setSearchPatientId} searchPatientId={searchPatientId}
-                                onCreatePatient={booking.createPatient} onNextFreeSlot={handlers.openNextSlot}
-                                onSyncDayToGoogle={() => handlers.syncDayToGoogle(viewDoctorId, selectedDate)}
-                            />
-                        </aside>
+                            </form>
+                        </div>
+                    </header>
 
-                        {activeTab !== 'monthly' && (
-                            <ScheduleSection
-                                activeTab={activeTab} selectedDate={selectedDate} onDateSelect={handlers.handleDateSelect}
-                                selectedDoctor={currentDoctor} viewDoctorId={viewDoctorId} appointments={appointments}
-                                doctorSchedule={doctorSchedule} holidays={holidays} onSlotClick={handlers.handleSlotClick}
-                                onDeleteHoliday={handlers.handleDeleteHoliday} showOutOfHours={showOutOfHours} setShowOutOfHours={setShowOutOfHours}
-                            />
+                    <RescheduleBanner rescheduleAppt={rescheduleAppt} onExit={exitRescheduleMode} t={t} />
+
+                    <section className="appointments-page__body">
+                        {searchPatientId || searchTerm ? (
+                            <section className="appointments-page__panel appointments-page__panel--agenda">
+                                <PatientHistoryView
+                                    patientAppointments={searchPatientId ? patientAppointments : appointments} 
+                                    loading={patientApptLoading}
+                                    onClose={() => { setSearchPatientId(''); handlers.setSearchTerm(''); }} 
+                                    t={t} 
+                                    searchPatientId={searchPatientId || searchTerm} 
+                                    handlers={handlers}
+                                />
+                            </section>
+                        ) : activeTab === 'upcoming' ? (
+                            <section className="appointments-page__panel appointments-page__panel--agenda">
+                                <UpcomingAppointmentsView
+                                    appointments={filteredAppointments} 
+                                    loading={loading} 
+                                    t={t}
+                                    onAction={(a) => setActionModal({ open: true, appt: a })}
+                                    onWhatsApp={handlers.handleWhatsAppUniversal}
+                                />
+                            </section>
+                        ) : (
+                            <section className={activeTab === 'monthly' ? 'appointments-page__grid appointments-page__grid--monthly' : 'appointments-page__grid'}>
+                                <aside className="appointments-page__sidebar">
+                                    <section className="appointments-page__panel appointments-page__panel--calendar">
+                                        <CalendarSection
+                                            activeTab={activeTab} selectedDate={selectedDate} onDateSelect={handlers.handleDateSelect}
+                                            appointments={filteredAppointments} calendarStats={calendarStats} holidays={holidays}
+                                            onAddHoliday={handlers.handleAddHoliday} showOutOfHours={showOutOfHours}
+                                            viewDoctorId={viewDoctorId} onSearchPatientId={setSearchPatientId} searchPatientId={searchPatientId}
+                                            onCreatePatient={booking.createPatient} onNextFreeSlot={handlers.openNextSlot}
+                                            onSyncDayToGoogle={() => handlers.syncDayToGoogle(viewDoctorId, selectedDate)}
+                                        />
+                                    </section>
+                                </aside>
+
+                                {activeTab !== 'monthly' && (
+                                    <section className="appointments-page__panel appointments-page__panel--agenda">
+                                        <ScheduleSection
+                                            activeTab={activeTab} selectedDate={selectedDate} onDateSelect={handlers.handleDateSelect}
+                                            selectedDoctor={currentDoctor} viewDoctorId={viewDoctorId} appointments={appointments}
+                                            doctorSchedule={doctorSchedule} holidays={holidays} onSlotClick={handlers.handleSlotClick}
+                                            onDeleteHoliday={handlers.handleDeleteHoliday} showOutOfHours={showOutOfHours} setShowOutOfHours={setShowOutOfHours}
+                                            onNextFreeSlot={handlers.openNextSlot}
+                                        />
+                                    </section>
+                                )}
+                            </section>
                         )}
-                    </div>
-                )}
-            </div>
+                    </section>
+                </section>
+            </main>
 
             {/* --- Modals --- */}
             <AppointmentActionModal
@@ -129,13 +159,15 @@ const AppointmentsPage = () => {
                 onMessageChange={(msg) => setWhatsappModal({ ...whatsappModal, message: msg })}
             />
 
-            <NextSlotCalendarModal
+            <NextSlotModal
                 isOpen={showNextSlotModal} onClose={() => setShowNextSlotModal(false)}
                 loading={nextSlot.loading} nextSlotData={nextSlot.nextSlotData}
                 includeOutOfHours={nextSlot.includeOutOfHours}
                 onToggleOutOfHours={(val) => { nextSlot.setIncludeOutOfHours(val); handlers.handleNextFreeSlot(null, val); }}
+                slotsPage={nextSlot.slotsPage} setSlotsPage={nextSlot.setSlotsPage} slotPages={nextSlot.slotPages}
                 onSelect={handlers.confirmNextSlot} onWhatsApp={handlers.handleWhatsAppSlot}
-                onLoadMore={nextSlot.loadMoreSlots} hasMore={!!nextSlot.nextSlotData?.nextStartDate}
+                onNextGroup={nextSlot.handleNextPage} onPrevGroup={nextSlot.handlePrevPage}
+                hasPrevGroup={nextSlot.slotHistory?.length > 0} hasNextGroup={!!nextSlot.nextSlotData?.nextStartDate}
             />
 
             {editPatientModalOpen && (
@@ -144,6 +176,7 @@ const AppointmentsPage = () => {
                     patient={booking.selectedPatientData} referenceInfo={booking.syncReferenceInfo}
                     onUpdate={(updatedData) => { booking.setSelectedPatient(updatedData.id); booking.setSelectedPatientData(updatedData); }}
                     doctors={doctors}
+                    insurances={insurances}
                 />
             )}
 

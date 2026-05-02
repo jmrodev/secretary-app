@@ -6,7 +6,7 @@ import './ErrorBoundary.css';
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, error: null, errorInfo: null };
+    this.state = { hasError: false, error: null, errorInfo: null, copied: false };
   }
 
   static getDerivedStateFromError(error) {
@@ -22,6 +22,14 @@ class ErrorBoundary extends React.Component {
 
   handleReload = () => {
     window.location.reload();
+  };
+
+  handleCopy = () => {
+    const errorText = `${this.state.error?.toString()}\n\n${this.state.errorInfo?.componentStack}`;
+    navigator.clipboard.writeText(errorText).then(() => {
+      this.setState({ copied: true });
+      setTimeout(() => this.setState({ copied: false }), 2000);
+    });
   };
 
   render() {
@@ -42,14 +50,25 @@ class ErrorBoundary extends React.Component {
                         <pre>{this.state.errorInfo && this.state.errorInfo.componentStack}</pre>
                     </details>
                 )}
-                <Button
-                    variant="primary"
-                    onClick={this.handleReload}
-                    icon={<Icon name="refresh" />}
-                    className="error-reload-btn"
-                >
-                    Recargar Página
-                </Button>
+                <div className="error-boundary-actions">
+                    <Button
+                        variant="primary"
+                        onClick={this.handleReload}
+                        icon={<Icon name="refresh" />}
+                        className="error-reload-btn"
+                    >
+                        Recargar Página
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        outline
+                        onClick={this.handleCopy}
+                        icon={<Icon name={this.state.copied ? "check" : "content_copy"} />}
+                        className="error-copy-btn"
+                    >
+                        {this.state.copied ? "¡Copiado!" : "Copiar Error"}
+                    </Button>
+                </div>
             </div>
         </div>
       );

@@ -1,0 +1,100 @@
+
+> client@1.9.3 lint
+> eslint .
+
+
+/home/cima/Documentos/secretary-app/client/src/features/appointments/hooks/useAppointmentBooking.js
+  51:9  warning  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  49 |             missing.push(t('insurance') || 'Obra Social');
+  50 |         }
+> 51 |         setMissingData(missing);
+     |         ^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  52 |     }, [selectedPatientData, t]);
+  53 |
+  54 |     // Sync institution from patient data  react-hooks/set-state-in-effect
+
+/home/cima/Documentos/secretary-app/client/src/features/finances/hooks/useTransactionForm.js
+  68:8  warning  React Hook useCallback has an unnecessary dependency: 't'. Either exclude it or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/cima/Documentos/secretary-app/client/src/features/medical_documents/components/PrescriptionModal.jsx
+  103:13  warning  Error: Cannot access variable before it is declared
+
+`resetFields` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  101 |         }
+  102 |         if (!isOpen) {
+> 103 |             resetFields();
+      |             ^^^^^^^^^^^ `resetFields` accessed before it is declared
+  104 |         }
+  105 |     }, [isOpen, patientId]);
+  106 |
+
+  121 |
+  122 |     // ── Reset helpers ─────────────────────────────────────────────────────────
+> 123 |     const resetFields = () => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 124 |         setTempMed('');
+      | ^^^^^^^^^^^^^^^^^^^^^^^
+> 125 |         setTempDose('');
+      | ^^^^^^^^^^^^^^^^^^^^^^^
+> 126 |         setTempUnitsPerBox('');
+      | ^^^^^^^^^^^^^^^^^^^^^^^
+> 127 |         setTempDailyUnits('');
+      | ^^^^^^^^^^^^^^^^^^^^^^^
+> 128 |         setTempBoxes('');
+      | ^^^^^^^^^^^^^^^^^^^^^^^
+> 129 |         setTempFreqPreset(null);
+      | ^^^^^^^^^^^^^^^^^^^^^^^
+> 130 |         setCurrentVademecumId(null);
+      | ^^^^^^^^^^^^^^^^^^^^^^^
+> 131 |         setBonified(false);
+      | ^^^^^^^^^^^^^^^^^^^^^^^
+> 132 |     };
+      | ^^^^^^^ `resetFields` is declared here
+  133 |
+  134 |     // ── Handlers ─────────────────────────────────────────────────────────────
+  135 |     const handleSelectMedication = (med) => {  react-hooks/immutability
+
+/home/cima/Documentos/secretary-app/client/src/features/patients/components/PatientHistoryModal.jsx
+  51:13  warning  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  49 |     useEffect(() => {
+  50 |         if (isOpen && patientId) {
+> 51 |             fetchHistory();
+     |             ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  52 |         }
+  53 |     }, [isOpen, patientId, fetchHistory]);
+  54 |  react-hooks/set-state-in-effect
+
+/home/cima/Documentos/secretary-app/client/src/features/patients/hooks/useMedicalRecords.js
+  34:9  warning  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  32 |
+  33 |     useEffect(() => {
+> 34 |         fetchMedications();
+     |         ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  35 |     }, [fetchMedications]);
+  36 |
+  37 |     const calculateRefillDate = (units, daily, boxes = 1) => {  react-hooks/set-state-in-effect
+
+✖ 5 problems (0 errors, 5 warnings)
+

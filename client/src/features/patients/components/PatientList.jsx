@@ -10,12 +10,13 @@ import './PatientList.css';
  */
 const PatientList = ({
     patients,
-    institutions = [],
+    institutions: rawInstitutions = [],
     onViewDetails,
     onOpenDebt,
     onToggleRating,
     t
 }) => {
+    const institutions = Array.isArray(rawInstitutions) ? rawInstitutions : (rawInstitutions?.institutions || []);
 
     const renderStars = (rating, colorClass) => {
         return (

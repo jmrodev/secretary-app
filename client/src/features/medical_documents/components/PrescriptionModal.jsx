@@ -48,6 +48,24 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
     const [currentVademecumId, setCurrentVademecumId] = useState(null);
 
     // ── Fetch data ──────────────────────────────────────────────────────────
+    // ── Helpers ─────────────────────────────────────────────────────────────
+    const ds = (upb, boxes, daily) => {
+        if (!upb || !boxes || !daily || daily <= 0) return null;
+        return Math.floor((upb * boxes) / daily);
+    };
+
+    const resetFields = () => {
+        setTempMed('');
+        setTempDose('');
+        setTempUnitsPerBox('');
+        setTempDailyUnits('');
+        setTempBoxes('');
+        setTempFreqPreset(null);
+        setCurrentVademecumId(null);
+        setBonified(false);
+    };
+
+    // ── Fetch data ──────────────────────────────────────────────────────────
     React.useEffect(() => {
         if (isOpen && patientId) {
             import('@/api/axios').then(module => {
@@ -59,7 +77,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
                     .catch(err => console.error("Error fetching meds", err));
 
                 // Fetch recent prescriptions to build history list
-                api.get(`/medical/requests?patientId=${patientId}&type=prescription`)
+                api.post('/medical/requests', { patientId, type: 'prescription' })
                     .then(res => {
                         const historyItems = [];
                         const seenNames = new Set();
@@ -100,16 +118,11 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
             });
         }
         if (!isOpen) {
-            resetFields();
+            queueMicrotask(() => resetFields());
         }
     }, [isOpen, patientId]);
 
     // ── Live days-supply calculation ─────────────────────────────────────────
-    const ds = (upb, boxes, daily) => {
-        if (!upb || !boxes || !daily || daily <= 0) return null;
-        return Math.floor((upb * boxes) / daily);
-    };
-
     const daysSupply = useMemo(() => ds(parseFloat(tempUnitsPerBox), parseFloat(tempBoxes), parseFloat(tempDailyUnits)), [tempUnitsPerBox, tempBoxes, tempDailyUnits]);
 
     const refillDateStr = useMemo(() => {
@@ -119,17 +132,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
         return d.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
     }, [daysSupply]);
 
-    // ── Reset helpers ─────────────────────────────────────────────────────────
-    const resetFields = () => {
-        setTempMed('');
-        setTempDose('');
-        setTempUnitsPerBox('');
-        setTempDailyUnits('');
-        setTempBoxes('');
-        setTempFreqPreset(null);
-        setCurrentVademecumId(null);
-        setBonified(false);
-    };
+
 
     // ── Handlers ─────────────────────────────────────────────────────────────
     const handleSelectMedication = (med) => {

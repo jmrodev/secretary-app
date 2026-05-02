@@ -50,6 +50,19 @@ exports.initScheduler = () => {
         timezone: "America/Argentina/Buenos_Aires"
     });
 
+    // Automated WhatsApp Reminders - Every day at 08:30
+    cron.schedule('30 8 * * *', async () => {
+        console.log('[Scheduler] Running automated WhatsApp reminders...');
+        try {
+            const { sendAutomatedReminders } = require('../services/whatsappService');
+            await sendAutomatedReminders();
+        } catch (err) {
+            console.error('[Scheduler] Error in automated reminders:', err);
+        }
+    }, {
+        timezone: "America/Argentina/Buenos_Aires"
+    });
+
     console.log('[Scheduler] ✅ Cron jobs initialized (timezone: America/Argentina/Buenos_Aires)');
     console.log('[Scheduler] - Weekly stats: Every Sunday at 23:55');
     console.log('[Scheduler] - Monthly stats: Last day of month at 23:55');

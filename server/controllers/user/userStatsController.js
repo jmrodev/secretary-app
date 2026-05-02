@@ -12,6 +12,6 @@ exports.getStats = async (req, res) => {
     } catch (err) {
         if (err.message === "Doctor profile not found") return res.status(404).send(err.message);
         console.error("getStats Error:", err);
-        res.status(500).send("Server Error: " + err.message);
+        res.status(500).json({ error: "Server Error" });
     }
 };

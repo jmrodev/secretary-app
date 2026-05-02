@@ -20,11 +20,6 @@ const DoctorsManager = ({
 }) => {
     return (
         <section className="doctors-manager">
-            <header className="dashboard-header animate-fadeIn">
-                <h1 className="dashboard-header__title">{t('doctors_title')}</h1>
-                <p className="dashboard-header__subtitle">{t('doctors_subtitle') || 'Administra el personal médico y sus configuraciones.'}</p>
-            </header>
-
             <div className="dashboard-nav-bar dashboard-nav-bar--centered animate-fadeIn">
                 <div className="doctors-manager__counter">
                     <Icon name="medical_services" size="1.2rem" />

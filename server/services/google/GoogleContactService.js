@@ -4,6 +4,7 @@ const googleAuthService = require('./GoogleAuthService');
 const patientRepository = require('../../repositories/patientRepository');
 const userRepository = require('../../repositories/userRepository');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 
 /**
  * GoogleContactService
@@ -124,8 +125,8 @@ class GoogleContactService {
                     });
                     results.updated++;
                 } else {
-                    const username = name.toLowerCase().replace(/\s+/g, '.') + Math.floor(Math.random() * 1000);
-                    const password = Math.random().toString(36).slice(-8);
+                    const username = name.toLowerCase().replace(/\s+/g, '.') + crypto.randomInt(1000, 9999);
+                    const password = crypto.randomBytes(8).toString('hex');
                     const hash = await bcrypt.hash(password, 10);
 
                     // We need a transaction here? Multi-table insert.

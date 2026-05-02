@@ -4,6 +4,7 @@ import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useConfig } from '@/context/ConfigContext';
 import { useModal } from '@/context/ModalContext';
+import { useDoctors } from '@/context/DoctorContext';
 import { useAppointments } from '@/features/appointments';
 import { useUsers } from '@/features/users';
 import { usePatientsHandlers } from '@/features/patients/hooks/usePatientsHandlers';
@@ -21,14 +22,11 @@ export const usePatientsPageController = () => {
     const { t } = useLanguage();
     const { settings } = useConfig();
     const { confirm } = useModal();
+    const { viewDoctorId, setViewDoctorId } = useDoctors();
     const { savePrescription } = useAppointments();
     const { deleteUser } = useUsers();
 
     // View State (Pagination)
-    const [viewDoctorId, setViewDoctorId] = useState(() => {
-        const params = new URLSearchParams(window.location.search);
-        return params.get('doctor_id') || localStorage.getItem('last_selected_doctor_id') || '';
-    });
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(50);
     const [activeTab, setActiveTab] = useState('list'); // 'list' | 'recycle'
@@ -36,13 +34,6 @@ export const usePatientsPageController = () => {
         const params = new URLSearchParams(window.location.search);
         return params.get('search') || '';
     });
-
-    // Save doctor selection to localStorage
-    useEffect(() => {
-        if (viewDoctorId) {
-            localStorage.setItem('last_selected_doctor_id', viewDoctorId);
-        }
-    }, [viewDoctorId]);
 
     // --- FETCH DATA (Server-Side) using useFetch ---
     
@@ -65,9 +56,13 @@ export const usePatientsPageController = () => {
     const totalCount = patientData?.totalCount || 0;
 
     // Supplementary Lists
-    const { data: doctors = [] } = useFetch('/users/doctors', { initialData: [] });
-    const { data: insurances = [] } = useFetch('/insurances', { initialData: [] });
-    const { data: institutions = [] } = useFetch('/institutions', { initialData: [] });
+    const { data: doctorsData = [] } = useFetch('/users/doctors', { initialData: [] });
+    const { data: insurancesData = [] } = useFetch('/insurances', { initialData: [] });
+    const { data: institutionsData = [] } = useFetch('/institutions', { initialData: [] });
+
+    const doctors = doctorsData?.doctors || [];
+    const insurances = insurancesData?.insurances || [];
+    const institutions = institutionsData?.institutions || [];
     const { data: recycleItems = [], refetch: fetchRecycleBin } = useFetch('/logs/recycle-bin', { 
         initialData: [],
         immediate: isStaff // only fetch if user is staff

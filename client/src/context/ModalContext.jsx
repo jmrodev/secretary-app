@@ -2,9 +2,21 @@ import React, { createContext, useContext, useMemo } from 'react';
 import ConfirmModal from '@/components/molecules/ConfirmModal';
 import { useModalLogic } from '@/context/useModalLogic';
 
-const ModalContext = createContext();
+const ModalContext = createContext(null);
 
-export const useModal = () => useContext(ModalContext);
+export const useModal = () => {
+    const context = useContext(ModalContext);
+    if (!context) {
+        // Safe fallback to prevent crashes if used outside provider
+        return {
+            alert: () => Promise.resolve(),
+            confirm: () => Promise.resolve(false),
+            prompt: () => Promise.resolve(null),
+            doubleConfirm: () => Promise.resolve(false)
+        };
+    }
+    return context;
+};
 
 export const ModalProvider = ({ children }) => {
     const { 

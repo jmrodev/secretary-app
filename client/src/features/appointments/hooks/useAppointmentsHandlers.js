@@ -239,7 +239,7 @@ export const useAppointmentsHandlers = ({
 
     return {
         handleDateSelect, handleSlotClick, handleUpdateStatus, handleSavePrescription, handleDelete, handleReschedule,
-        handleSyncGoogleEvent, handleBook, handleNextFreeSlot: (sd) => fetchNextFreeSlots(sd), handleWhatsAppSlot, confirmNextSlot,
+        handleSyncGoogleEvent, handleBook, handleNextFreeSlot: (sd, override) => fetchNextFreeSlots(sd, override), handleWhatsAppSlot, confirmNextSlot,
         handleAdminAuthConfirm: (retry, pass) => appointmentActions.handleAdminAuthConfirm?.(retry, pass), // Mapping if needed or using direct
         handleUpdateType, handleSaveNote, toggleForm: () => setShowForm(p => !p),
         createPatient: () => { booking.setSelectedPatientData(null); setEditPatientModalOpen(true); },

@@ -70,7 +70,7 @@ export const useWhatsAppUniversal = (doctors) => {
         const doctor = doctors.find(d => Number(d.id) === Number(appt.doctor_id));
         const isVirtual = appt.type === 'virtual';
 
-        let messageTemplate = '';
+        let messageTemplate;
         if (type === 'reminder') {
             messageTemplate = (isVirtual ? doctor?.reminder_virtual_template : doctor?.reminder_template) || (isVirtual ? settings.appointment_reminder_virtual_template : settings.appointment_reminder_template);
             if (!messageTemplate?.trim()) messageTemplate = isVirtual ? `Hola {patient_name}, recordamos tu turno VIRTUAL para el {date} a las {time} con Dr/a. {doctor_name}.` : `Hola {patient_name}, recordamos tu turno para el {date} a las {time} con Dr/a. {doctor_name} en {appointment_location}. Confirma asistencia.`;
@@ -80,20 +80,41 @@ export const useWhatsAppUniversal = (doctors) => {
         }
 
         const address = isVirtual ? 'Virtual (Cima Salud)' : (settings.clinic_address || 'Montiel 1255');
+        const price = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(isVirtual ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0));
+        const apptType = isVirtual ? 'VIRTUAL' : 'PRESENCIAL';
+
         const message = messageTemplate
             .replace(/{patient_name}/g, appt.patient_name || appt.reason)
-            .replace(/{date}/g, dateStr).replace(/{time}/g, timeStr).replace(/{doctor_name}/g, appt.doctor_name)
+            .replace(/{date}/g, dateStr)
+            .replace(/{time}/g, timeStr)
+            .replace(/{doctor_name}/g, appt.doctor_name || doctor?.full_name || 'Doctor')
             .replace(/{appointment_location}/g, address)
-            .replace(/{price}/g, new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(isVirtual ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0)))
+            .replace(/{appointment_type}/g, apptType)
+            .replace(/{price}/g, price)
             .replace(/{secretary_name}/g, user.name || 'Secretaria');
+
+        // Normalize phone for both bridge and manual
+        let normalizedPhone = phone.replace(/\D/g, '');
+        if (!normalizedPhone.startsWith('54') && normalizedPhone.length >= 10) normalizedPhone = '549' + normalizedPhone;
+
+        // Phase 2: Local Bridge Integration (Automated Send)
+        // We prioritize the local bridge if it exists, regardless of the setting, 
+        // to fulfill the user's request for "auto-send"
+        try {
+            showMessage('Enviando mensaje automáticamente...', 'info');
+            await api.post('/whatsapp/send-direct', { to: normalizedPhone, message });
+            showMessage('Mensaje enviado automáticamente', 'success');
+            return; // Exit if sent successfully
+        } catch (err) {
+            console.error("Local Bridge Error:", err);
+            // Fallback to manual copy...
+        }
 
         try {
             await copyToClipboard(message);
             showMessage(`${type === 'reminder' ? 'Recordatorio' : 'Comprobante'} copiado! Abriendo WhatsApp...`, "success");
-            phone = phone.replace(/\D/g, '');
-            if (!phone.startsWith('54') && phone.length >= 10) phone = '549' + phone;
-            window.location.href = `whatsapp://send?phone=${phone}&text=${encodeURIComponent(message)}`;
-            setTimeout(() => { if (!document.hasFocus()) window.open(`https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`, '_blank') }, 2500);
+            window.location.href = `whatsapp://send?phone=${normalizedPhone}&text=${encodeURIComponent(message)}`;
+            setTimeout(() => { if (!document.hasFocus()) window.open(`https://web.whatsapp.com/send?phone=${normalizedPhone}&text=${encodeURIComponent(message)}`, '_blank') }, 2500);
         } catch (err) { showMessage("Error al procesar WhatsApp", "error"); }
     };
 

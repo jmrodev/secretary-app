@@ -34,17 +34,14 @@ const InstitutionsPage = () => {
     const [viewMode, setViewMode] = React.useState('transactions');
 
     return (
-        <MainLayout wide>
+        <MainLayout wide flush title={t('institutions') || 'Instituciones'}>
             <div className="institutions-page-orchestrator">
-                <header className="dashboard-header animate-fadeIn">
-                    <h1 className="dashboard-header__title">{t('institutions') || 'Instituciones'}</h1>
-                    <p className="dashboard-header__subtitle">{t('institutions_subtitle') || 'Gestiona instituciones pagadoras y convenios.'}</p>
-                </header>
-
-                {loading ? (
-                    <Loading variant="centered" text={t('loading') || "Cargando..."} />
-                ) : (
-                    <div className="dashboard-grid animate-fadeIn">
+                
+                <div className="layout-content-area animate-fadeIn">
+                    {loading ? (
+                        <Loading variant="centered" text={t('loading') || "Cargando..."} />
+                    ) : (
+                        <div className="dashboard-grid animate-fadeIn">
                         <aside className="dashboard-sidebar">
                             <div className="dashboard-card">
                                 <h3 className="dashboard-card__title">
@@ -135,6 +132,7 @@ const InstitutionsPage = () => {
                     isEditing={!!editingInstitution}
                     t={t}
                 />
+                </div>
             </div>
         </MainLayout>
     );

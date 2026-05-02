@@ -6,6 +6,7 @@ import { useMessage } from '@/context/MessageContext';
 import { useConfig } from '@/context/ConfigContext';
 import { useFetch } from '@/hooks/useFetch';
 import { useFinanceHandlers } from '@/features/finances/hooks/useFinanceHandlers';
+import { useDoctors } from '@/context/DoctorContext';
 
 export const useFinancesPageController = () => {
     const { user } = useAuth();
@@ -17,7 +18,7 @@ export const useFinancesPageController = () => {
     // --- View State ---
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(50);
-    const [selectedDoctorFilter, setSelectedDoctorFilter] = useState(localStorage.getItem('last_selected_doctor_id') || '');
+    const { viewDoctorId: selectedDoctorFilter, setViewDoctorId: setSelectedDoctorFilter, doctors, doctorsLoading } = useDoctors();
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
     const [, setHistoricalWithdrawalOpen] = useState(false);
@@ -32,12 +33,14 @@ export const useFinancesPageController = () => {
         return () => clearTimeout(timer);
     }, [searchQuery]);
 
-    // Save filter preference
+    // Persistance handled by context
+    /*
     useEffect(() => {
         if (selectedDoctorFilter) {
             localStorage.setItem('last_selected_doctor_id', selectedDoctorFilter);
         }
     }, [selectedDoctorFilter]);
+    */
 
     // --- FETCH DATA using useFetch ---
     
@@ -62,8 +65,8 @@ export const useFinancesPageController = () => {
         initialData: []
     });
 
-    // Doctors
-    const { data: doctors = [] } = useFetch('/users/doctors', { initialData: [] });
+    // Doctors provided by context
+    // const { data: doctors = [] } = useFetch('/users/doctors', { initialData: [] });
 
     // Pending Closures
     const { data: pendingClosures = [], loading: closuresLoading, refetch: fetchClosures } = useFetch(`/finances/pending-closures`, {
@@ -73,7 +76,7 @@ export const useFinancesPageController = () => {
 
     const transactions = txData?.transactions || [];
     const totalCount = txData?.totalCount || 0;
-    const loading = txLoading || statsLoading || closuresLoading || isActionLoading;
+    const loading = txLoading || statsLoading || closuresLoading || isActionLoading || doctorsLoading;
 
     // --- UI State ---
     const [modalOpen, setModalOpen] = useState(false);

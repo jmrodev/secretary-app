@@ -15,7 +15,10 @@ class DoctorService {
                 r.phoneNumbers = phoneMap[r.id] || [];
             });
         }
-        return rows;
+        return {
+            doctors: rows,
+            totalCount: rows.length
+        };
     }
 
     async updateDoctor(id, updates) {
