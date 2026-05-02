@@ -1046,5 +1046,7 @@ export const es = {
     send_automatically: "Envío Automático",
     sending_whatsapp_auto: "Enviando automáticamente...",
     whatsapp_sent_auto: "Mensaje enviado automáticamente",
-    sync: "Sincronizar"
+    sync: "Sincronizar",
+    bridge_offline_title: "Puente de WhatsApp Desconectado",
+    bridge_offline_desc: "No se pudo establecer conexión con el servidor de WhatsApp. Por favor, verifica que el puente esté activo."
 };

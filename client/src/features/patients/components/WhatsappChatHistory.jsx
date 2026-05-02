@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import api from '@/api/axios';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+import { useMessage } from '@/context/MessageContext';
 import './WhatsappChatHistory.css';
 
 const normalizePhone = (raw) => {
@@ -10,6 +11,7 @@ const normalizePhone = (raw) => {
 };
 
 const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
+    const { showMessage } = useMessage();
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [newMessage, setNewMessage] = useState('');
@@ -69,12 +71,21 @@ const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
         if (aiLoading) return;
         try {
             setAiLoading(true);
+            console.log("[AI] Solicitando sugerencia para paciente:", patientId);
+            
             const res = await api.post('/whatsapp/ai-suggestion', { patientId });
+            
             if (res.data.success && res.data.suggestion) {
                 setNewMessage(res.data.suggestion);
+                console.log("[AI] Sugerencia recibida:", res.data.suggestion);
+            } else {
+                console.warn("[AI] El servidor no devolvió una sugerencia válida:", res.data);
+                showMessage(t('ai_no_context') || "La IA no pudo generar una respuesta. Verificá si el doctor tiene el contexto configurado.", "warning");
             }
         } catch (error) {
-            console.error("Error getting AI suggestion", error);
+            console.error("[AI] Error al obtener sugerencia:", error);
+            const errorMsg = error.response?.data?.error || "Error de conexión con la IA";
+            showMessage(errorMsg, "error");
         } finally {
             setAiLoading(false);
         }

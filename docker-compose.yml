@@ -39,7 +39,7 @@ services:
     build: ./server
     restart: always
     container_name: secretary-app-server-1
-    command: npm run dev
+    command: pnpm run dev
     logging: *default-logging
     ports:
       - "5000:5000"
@@ -57,6 +57,8 @@ services:
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_CLI_TRUST_WORKSPACE=true
       - WHATSAPP_BRIDGE_URL=http://whatsapp-bridge:8090/api/send
       - WHATSAPP_BRIDGE_STATUS_URL=http://whatsapp-bridge:8090/api/status
     depends_on:

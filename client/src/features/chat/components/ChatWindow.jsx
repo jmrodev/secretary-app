@@ -16,7 +16,8 @@ const ChatWindow = ({
     messageText,
     setMessageText,
     onSendMessage,
-    scrollRef
+    scrollRef,
+    onBack // Added onBack prop
 }) => {
 
     const formatDate = (dateString) => {
@@ -30,44 +31,49 @@ const ChatWindow = ({
 
     if (!selectedConvo) {
         return (
-            <section className="chat-main chat-main--empty">
-                <div className="chat-main__empty-icon"><Icon name="chat" size="2rem" /></div>
-                <h2 className="chat-main__empty-title">Tus Mensajes</h2>
-                <p className="chat-main__empty-text">Selecciona una conversación de la lista para empezar a chatear o busca un contacto para iniciar un nuevo chat.</p>
+            <section className="chat-window chat-window--empty">
+                <div className="chat-window__empty-icon"><Icon name="chat" size="4rem" /></div>
+                <h2 className="chat-window__empty-title">Tus Mensajes</h2>
+                <p className="chat-window__empty-text">Selecciona una conversación de la lista para empezar a chatear o busca un contacto para iniciar un nuevo chat.</p>
             </section>
         );
     }
 
     return (
-        <section className="chat-main">
+        <section className="chat-window">
             {/* Header */}
-            <header className="chat-header">
-                <div className="convo-avatar">
+            <header className="chat-window__header">
+                {/* Back button for mobile navigation */}
+                <button className="chat-window__back-button" onClick={onBack} title="Volver a la lista">
+                    <Icon name="arrow_back" />
+                </button>
+
+                <div className="chat-window__convo-avatar">
                     {selectedConvo.other_display_name ? selectedConvo.other_display_name[0].toUpperCase() : '?'}
                 </div>
-                <div className="chat-header__info">
-                    <h3 className="chat-header__title">{selectedConvo.other_display_name || selectedConvo.other_username}</h3>
-                    <small className="chat-header__subtitle">{selectedConvo.subject || 'Conversación activa'}</small>
+                <div className="chat-window__header-info">
+                    <h3 className="chat-window__header-title">{selectedConvo.other_display_name || selectedConvo.other_username}</h3>
+                    <small className="chat-window__header-subtitle">{selectedConvo.subject || 'Conversación activa'}</small>
                 </div>
             </header>
 
             {/* Messages Area */}
-            <section className="chat-messages" ref={scrollRef}>
+            <section className="chat-window__messages" ref={scrollRef}>
                 {loading ? (
-                    <div className="chat-messages--loading">
+                    <div className="chat-window__messages-status">
                         <div className="loading-spinner"></div>
                     </div>
                 ) : thread.length === 0 ? (
-                    <div className="chat-messages--empty">
-                        <div className="chat-messages__empty-icon"><Icon name="waving_hand" size="2rem" /></div>
+                    <div className="chat-window__messages-status chat-window__messages-status--empty">
+                        <div className="chat-window__empty-icon"><Icon name="waving_hand" size="2rem" /></div>
                         <p>¡Dile hola!</p>
                     </div>
                 ) : (
                     thread.map(msg => (
-                        <article key={msg.id} className={`message-bubble ${msg.sender_id === user?.user_id ? 'sent' : 'received'}`}>
-                            <div className="bubble-content">
+                        <article key={msg.id} className={`chat-window__bubble ${msg.sender_id === user?.user_id ? 'chat-window__bubble--sent' : 'chat-window__bubble--received'}`}>
+                            <div className="chat-window__bubble-content">
                                 {msg.message}
-                                <span className="bubble-time">{formatDate(msg.created_at)}</span>
+                                <span className="chat-window__bubble-time">{formatDate(msg.created_at)}</span>
                             </div>
                         </article>
                     ))
@@ -75,13 +81,13 @@ const ChatWindow = ({
             </section>
 
             {/* Input Area */}
-            <footer className="chat-input-footer">
-                <form className="chat-input-area" onSubmit={onSendMessage}>
-                    <div className="chat-input-wrapper">
+            <footer className="chat-window__footer">
+                <form className="chat-window__input-area" onSubmit={onSendMessage}>
+                    <div className="chat-window__input-wrapper">
                         <input
                             type="text"
                             placeholder="Escribe un mensaje aquí..."
-                            className="chat-input"
+                            className="chat-window__input"
                             value={messageText}
                             onChange={(e) => setMessageText(e.target.value)}
                             disabled={sending}
@@ -89,7 +95,7 @@ const ChatWindow = ({
                     </div>
                     <Button
                         type="submit"
-                        className="chat-send-button"
+                        className="chat-window__send-button"
                         disabled={sending || !messageText.trim()}
                         variant="primary"
                     >

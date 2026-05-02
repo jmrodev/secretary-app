@@ -79,6 +79,15 @@ app.use(async (req, res, next) => {
     next();
 });
 
+// Extract Doctor Context from Headers
+app.use((req, res, next) => {
+    const doctorId = req.headers['x-doctor-id'];
+    if (doctorId) {
+        req.doctorId = doctorId;
+    }
+    next();
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/appointments', require('./routes/appointmentRoutes'));

@@ -27,7 +27,7 @@ const ChatPage = () => {
 
     return (
         <MainLayout wide>
-            <main className="chat-page-orchestrator animate-fadeIn">
+            <main className={`chat-page-orchestrator ${selectedConvo ? 'chat-page-orchestrator--convo-selected' : ''} animate-fadeIn`}>
                 <ChatSidebar
                     className="chat-sidebar"
                     conversations={conversations}
@@ -51,6 +51,7 @@ const ChatPage = () => {
                     setMessageText={setMessageText}
                     onSendMessage={handleSendMessage}
                     scrollRef={scrollRef}
+                    onBack={() => setSelectedConvo(null)} // Call setSelectedConvo(null) to go back
                 />
             </main>
         </MainLayout>

@@ -204,3 +204,26 @@
     justify-content: center;
     flex-shrink: 0;
 }
+
+.chat-window__back-button {
+    display: none; /* Hidden by default on desktop */
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--text-muted);
+    border-radius: 50%;
+    transition: background 0.2s;
+    margin-right: 0.5rem;
+}
+
+.chat-window__back-button:hover {
+    background: var(--gray-100);
+    color: var(--text-main);
+}
+
+@media (max-width: 768px) {
+    .chat-window__back-button {
+        display: flex;
+    }
+}
