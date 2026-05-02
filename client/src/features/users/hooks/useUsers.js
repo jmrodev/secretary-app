@@ -26,7 +26,7 @@ export const useUsers = (options = {}) => {
         immediate: true 
     });
 
-    const allUsers = userData?.users || [];
+    const allUsers = useMemo(() => userData?.users || [], [userData]);
 
     // Filtered data in-memory (as the backend returns all for admin management)
     const users = useMemo(() => {
@@ -147,7 +147,7 @@ export const useDoctors = () => {
         immediate: true 
     });
 
-    const doctors = docData?.doctors || [];
+    const doctors = useMemo(() => docData?.doctors || [], [docData]);
 
     return { doctors, loading };
 };

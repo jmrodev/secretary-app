@@ -16,7 +16,7 @@ export const useDoctorsPageController = () => {
         initialData: { doctors: [], totalCount: 0 } 
     });
 
-    const doctors = docData?.doctors || [];
+    const doctors = useMemo(() => docData?.doctors || [], [docData]);
     const { data: settings = {}, loading: settingsLoading } = useFetch('/settings', { initialData: {} });
 
     const [searchTerm, setSearchTerm] = useState('');

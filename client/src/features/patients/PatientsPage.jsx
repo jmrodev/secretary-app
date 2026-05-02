@@ -40,7 +40,6 @@ const PatientsPage = () => {
         totalCount, currentPage, totalPages, handlePageChange,
         doctors, insurances, recycleItems, institutions,
         activeTab, setActiveTab,
-        viewDoctorId, setViewDoctorId,
         searchTerm, setSearchTerm,
         selectedPatientId, setSelectedPatientId, patientDetails,
 

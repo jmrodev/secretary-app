@@ -2,7 +2,6 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import Input from '@/components/atoms/Input';
 
 // Local Feature Components
 import PatientIdentityFields from '@/features/patients/components/PatientIdentityFields';

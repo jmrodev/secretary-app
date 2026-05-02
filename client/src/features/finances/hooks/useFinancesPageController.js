@@ -6,7 +6,7 @@ import { useMessage } from '@/context/MessageContext';
 import { useConfig } from '@/context/ConfigContext';
 import { useFetch } from '@/hooks/useFetch';
 import { useFinanceHandlers } from '@/features/finances/hooks/useFinanceHandlers';
-import { useDoctors } from '@/context/DoctorContext';
+import { useDoctors } from '@/context/DoctorContextDefinition';
 
 export const useFinancesPageController = () => {
     const { user } = useAuth();

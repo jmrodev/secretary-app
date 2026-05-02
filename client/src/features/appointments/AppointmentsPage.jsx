@@ -2,7 +2,6 @@ import React from 'react';
 import { useAppointmentsPageController } from '@/features/appointments/hooks/useAppointmentsPageController';
 import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
-import { DoctorSelector } from '@/features/doctors';
 import Icon from '@/components/atoms/Icon';
 import { PatientManagerModal, PatientHistoryModal } from '@/features/patients';
 import { PrescriptionModal } from '@/features/medical_documents';
@@ -30,7 +29,7 @@ import './AppointmentsPage.css';
 const AppointmentsPage = () => {
     const controller = useAppointmentsPageController();
     const {
-        t, language, user, loading, activeTab, showOutOfHours,
+        t, user, loading, activeTab, showOutOfHours,
         viewDoctorId, doctors, institutions, insurances, selectedDate, filteredAppointments,
         appointments, doctorSchedule, holidays, calendarStats, currentDoctor,
         searchTerm, searchPatientId, patientAppointments, patientApptLoading,
@@ -40,18 +39,12 @@ const AppointmentsPage = () => {
         handlers, booking, nextSlot, rescheduleAppt, exitRescheduleMode,
         isStaff, isAdmin, isDoctor, isPatient, isMedicalStaff
     } = controller;
+
     const {
         setActiveTab, setShowOutOfHours, setViewDoctorId, setSelectedDate,
         setSearchPatientId, setSearchTerm, setPaymentModal, setActionModal, setHistoryModal,
         setPrescribeModal, setEditPatientModalOpen, setAuthModalOpen
     } = handlers;
-    const dateLocale = language === 'en' ? 'en-US' : 'es-AR';
-    const formattedSelectedDate = selectedDate?.toLocaleDateString(dateLocale, {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-    });
 
     if (loading || !user) return <Loading variant="full-page" />;
 

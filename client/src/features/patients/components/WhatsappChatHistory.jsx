@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import api from '@/api/axios';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
@@ -19,7 +19,7 @@ const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
     const [aiLoading, setAiLoading] = useState(false);
     const messagesEndRef = useRef(null);
 
-    const fetchHistory = async () => {
+    const fetchHistory = useCallback(async () => {
         try {
             setLoading(true);
             const res = await api.post('/whatsapp/history', { patientId, phone });
@@ -31,7 +31,7 @@ const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [patientId, phone]);
 
     useEffect(() => {
         if (patientId || phone) {
@@ -49,7 +49,7 @@ const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
             
             return () => clearInterval(intervalId);
         }
-    }, [patientId, phone]);
+    }, [patientId, phone, fetchHistory]);
 
     useEffect(() => {
         if (messagesEndRef.current) {

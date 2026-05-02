@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useFetch } from '@/hooks/useFetch';
 import { usePermissions } from '@/hooks/usePermissions';
 import { DoctorContext } from './DoctorContextDefinition';
 
-export { useDoctors } from './DoctorContextDefinition';
-
+/**
+ * DoctorProvider
+ * Manages the global state of doctors and the currently selected doctor filter.
+ */
 export const DoctorProvider = ({ children }) => {
     const { user, isStaff, isDoctor } = usePermissions();
     
@@ -19,7 +21,7 @@ export const DoctorProvider = ({ children }) => {
         immediate: !!user // Fetch only if logged in
     });
 
-    const doctors = doctorData?.doctors || [];
+    const doctors = useMemo(() => doctorData?.doctors || [], [doctorData]);
 
     const setViewDoctorId = useCallback((id) => {
         const stringId = id ? String(id) : '';
@@ -37,9 +39,11 @@ export const DoctorProvider = ({ children }) => {
         }
     }, [isDoctor, doctors, user, viewDoctorId, setViewDoctorId]);
 
-    const currentDoctor = doctors.find(d => String(d.id) === String(viewDoctorId)) || null;
+    const currentDoctor = useMemo(() => 
+        doctors.find(d => String(d.id) === String(viewDoctorId)) || null
+    , [doctors, viewDoctorId]);
 
-    const value = {
+    const value = useMemo(() => ({
         doctors,
         doctorsLoading,
         viewDoctorId,
@@ -47,7 +51,7 @@ export const DoctorProvider = ({ children }) => {
         currentDoctor,
         doctorDisplayName: currentDoctor ? currentDoctor.full_name : null,
         isStaff
-    };
+    }), [doctors, doctorsLoading, viewDoctorId, setViewDoctorId, currentDoctor, isStaff]);
 
     return (
         <DoctorContext.Provider value={value}>

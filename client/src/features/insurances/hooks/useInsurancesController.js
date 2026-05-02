@@ -16,7 +16,7 @@ export const useInsurancesController = () => {
         initialData: { insurances: [], totalCount: 0 } 
     });
 
-    const insurances = insData?.insurances || [];
+    const insurances = useMemo(() => insData?.insurances || [], [insData]);
 
     // UI State
     const [searchTerm, setSearchTerm] = useState('');
