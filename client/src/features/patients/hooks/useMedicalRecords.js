@@ -20,7 +20,7 @@ export const useMedicalRecords = (patientId, showMessage, t) => {
             const res = await api.get(`/medical/patients/${patientId}/medications`);
             setMedications(res.data);
 
-            const reqRes = await api.get(`/medical/requests?patientId=${patientId}`);
+            const reqRes = await api.post('/medical/requests', { patientId });
             setRecentRequests(reqRes.data.filter(r => r.type === 'prescription'));
 
         } catch (err) {
