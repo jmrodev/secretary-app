@@ -226,7 +226,7 @@ const getAiSuggestion = async (req, res) => {
                     .replace(/{secretary_name}/g, secretaryName)
                     .replace(/{horarios}/g, formattedSchedules || 'No configurados')
                     .replace(/{feriados}/g, formattedHolidays || 'No hay feriados próximos')
-                    .replace(/{price}/g, doctor.consultation_price || 'A convenir')
+                    .replace(/{price}/g, doctor.consultation_price ?? 'A convenir')
                     .replace(/{appointment_location}/g, doctor.office_number || 'Consultorio central')
                     .replace(/{cbu}/g, doctor.cbu || '')
                     .replace(/{alias}/g, doctor.alias || '')
