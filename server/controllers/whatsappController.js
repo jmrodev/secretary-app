@@ -292,7 +292,9 @@ REGLAS PARA LA IA:
         `.trim();
         
         // Escape prompt for shell
-        const escapedPrompt = prompt.replace(/"/g, '\\"');
+        const escapedPrompt = prompt
+            .replace(/\\/g, '\\\\')
+            .replace(/"/g, '\\"');
         
         // Call Gemini API directly (Extremely fast, no CLI overhead)
         const apiKey = process.env.GEMINI_API_KEY;
