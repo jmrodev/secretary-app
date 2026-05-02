@@ -101,7 +101,7 @@ func handleSend(w http.ResponseWriter, r *http.Request) {
 
 func handleStatus(w http.ResponseWriter, r *http.Request) {
 	status := "disconnected"
-	if client != nil && client.IsConnected() {
+	if client != nil && client.IsLoggedIn() {
 		status = "connected"
 	}
 	

@@ -13,6 +13,52 @@ const phoneRepository = require('../repositories/phoneRepository');
  * Handles business logic for user registration and authentication.
  */
 class AuthService {
+    async publicRegister(req, registrationData) {
+        const conn = await pool.getConnection();
+        try {
+            const { fullName, dni, phone, dob } = registrationData;
+            if (!(fullName && dni && phone)) throw new Error('Missing required fields (Name, DNI, Phone)');
+
+            // Auto-generate username and password from DNI
+            const username = `p${dni}`;
+            const password = dni;
+
+            await conn.beginTransaction();
+
+            const existingUser = await userRepository.findByUsername(username, conn);
+            if (existingUser) throw new Error('User already exists');
+
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const userId = await userRepository.create({ username, password_hash: hashedPassword, role: 'patient' }, conn);
+
+            const profileId = await this._createPatientProfile(conn, userId, {
+                fullName,
+                dni,
+                phone,
+                dob,
+                street_name: registrationData.street_name,
+                role: 'patient'
+            });
+
+            // LINK ORPHAN MESSAGES
+            // Update any messages that were saved with this phone number but no patient_id
+            await conn.query(
+                "UPDATE whatsapp_messages SET patient_id = ? WHERE sender_phone = ? AND patient_id IS NULL",
+                [profileId, phone]
+            );
+
+            await conn.commit();
+            logAction({ body: { username }, ip: req.ip }, 'PUBLIC_REGISTER', `New patient registered and messages linked: ${username}`);
+
+            return { user_id: userId, username, patient_id: profileId };
+        } catch (error) {
+            await conn.rollback();
+            throw error;
+        } finally {
+            conn.release();
+        }
+    }
+
     async register(req, registrationData) {
         const conn = await pool.getConnection();
         try {

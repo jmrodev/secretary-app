@@ -4,17 +4,23 @@ import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import './WhatsappChatHistory.css';
 
-const WhatsappChatHistory = ({ patientId, t, hideHeader = false }) => {
+const normalizePhone = (raw) => {
+    const digits = raw.replace(/\D/g, '');
+    return !digits.startsWith('54') && digits.length >= 10 ? '549' + digits : digits;
+};
+
+const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [newMessage, setNewMessage] = useState('');
     const [sending, setSending] = useState(false);
+    const [aiLoading, setAiLoading] = useState(false);
     const messagesEndRef = useRef(null);
 
     const fetchHistory = async () => {
         try {
             setLoading(true);
-            const res = await api.post('/whatsapp/history', { patientId });
+            const res = await api.post('/whatsapp/history', { patientId, phone });
             if (res.data.success) {
                 setMessages(res.data.data);
             }
@@ -26,12 +32,12 @@ const WhatsappChatHistory = ({ patientId, t, hideHeader = false }) => {
     };
 
     useEffect(() => {
-        if (patientId) {
+        if (patientId || phone) {
             fetchHistory();
             
             // Auto-polling para sentirlo en vivo (cada 3 segundos)
             const intervalId = setInterval(() => {
-                api.post('/whatsapp/history', { patientId })
+                api.post('/whatsapp/history', { patientId, phone })
                    .then(res => {
                        if (res.data.success) {
                            setMessages(res.data.data);
@@ -41,7 +47,7 @@ const WhatsappChatHistory = ({ patientId, t, hideHeader = false }) => {
             
             return () => clearInterval(intervalId);
         }
-    }, [patientId]);
+    }, [patientId, phone]);
 
     useEffect(() => {
         if (messagesEndRef.current) {
@@ -59,21 +65,43 @@ const WhatsappChatHistory = ({ patientId, t, hideHeader = false }) => {
         return d.toLocaleDateString();
     };
 
+    const handleGetAiSuggestion = async () => {
+        if (aiLoading) return;
+        try {
+            setAiLoading(true);
+            const res = await api.post('/whatsapp/ai-suggestion', { patientId });
+            if (res.data.success && res.data.suggestion) {
+                setNewMessage(res.data.suggestion);
+            }
+        } catch (error) {
+            console.error("Error getting AI suggestion", error);
+        } finally {
+            setAiLoading(false);
+        }
+    };
+
     const handleSendMessage = async (e) => {
         e.preventDefault();
         if (!newMessage.trim() || sending) return;
 
         try {
             setSending(true);
-            // Primero obtenemos el paciente para saber su teléfono
-            const patientRes = await api.get(`/users/patients/${patientId}`);
-            let phone = patientRes.data.phone.replace(/\D/g, '');
-            if (!phone.startsWith('54') && phone.length >= 10) phone = '549' + phone;
+            let targetPhone;
+            if (patientId) {
+                // Get phone from patient record
+                const patientRes = await api.get(`/users/patients/${patientId}`);
+                targetPhone = normalizePhone(patientRes.data.phone);
+            } else if (phone) {
+                // Use the phone passed directly (unknown contact)
+                targetPhone = normalizePhone(phone);
+            } else {
+                return;
+            }
 
             await api.post('/whatsapp/send-direct', {
-                to: phone,
+                to: targetPhone,
                 message: newMessage,
-                patientId: patientId
+                patientId: patientId || null
             });
             
             setNewMessage('');
@@ -137,6 +165,15 @@ const WhatsappChatHistory = ({ patientId, t, hideHeader = false }) => {
                     onChange={(e) => setNewMessage(e.target.value)}
                     disabled={sending}
                 />
+                <button 
+                    type="button" 
+                    className={`whatsapp-chat__ai-btn ${aiLoading ? 'whatsapp-chat__ai-btn--loading' : ''}`}
+                    onClick={handleGetAiSuggestion}
+                    title="Sugerencia IA (Gemini)"
+                    disabled={aiLoading || sending}
+                >
+                    <Icon name="auto_awesome" size="1.2rem" />
+                </button>
                 <button type="submit" className="whatsapp-chat__send-btn" disabled={sending || !newMessage.trim()}>
                     <Icon name="send" size="1.2rem" />
                 </button>

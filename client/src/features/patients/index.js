@@ -4,6 +4,7 @@
 
 // Main Page Component
 export { default as PatientsPage } from '@/features/patients/PatientsPage';
+export { default as PublicRegisterPage } from '@/features/patients/PublicRegisterPage';
 
 // Controllers and Hooks
 export { usePatientsPageController } from '@/features/patients/hooks/usePatientsPageController';

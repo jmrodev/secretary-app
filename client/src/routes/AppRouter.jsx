@@ -29,6 +29,8 @@ const ProfilePage = lazy(() => import('@/features/auth').then(m => ({ default: m
 const DoctorsPage = lazy(() => import('@/features/doctors').then(m => ({ default: m.DoctorsPage })));
 const ReportsPage = lazy(() => import('@/features/reports').then(m => ({ default: m.ReportsPage })));
 
+const PublicRegisterPage = lazy(() => import('@/features/patients').then(m => ({ default: m.PublicRegisterPage })));
+
 /**
  * AppRouter Component.
  * Pure Executor component that defines the routing tree.
@@ -40,6 +42,7 @@ const AppRouter = () => {
             {/* Public Routes */}
             <Route path="/" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/p/register" element={<PublicRegisterPage />} />
             <Route path="/patient-access/:token" element={<TempAccessPage />} />
             <Route path="/p/request-recipe/:token" element={<PublicRequestPage />} />
 

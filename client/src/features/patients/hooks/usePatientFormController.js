@@ -69,25 +69,44 @@ export const usePatientFormController = ({
     // Initial Load of Resources
     useEffect(() => {
         const fetchResources = async () => {
+            if (loadingData) return;
             setLoadingData(true);
+            
             try {
-                const promises = [];
-                if (insurances.length === 0) promises.push(api.get('/insurances'));
-                if (doctors.length === 0) promises.push(api.get('/users/doctors'));
-                promises.push(api.get('/institutions'));
+                // Fetch independently to avoid index mixups and handle partial failures
+                const fetchInsurances = async () => {
+                    if (insurances.length > 0) return;
+                    try {
+                        const res = await api.get('/insurances');
+                        const data = Array.isArray(res.data) ? res.data : (res.data.insurances || []);
+                        setInsurances(data);
+                    } catch (e) { console.error("Error fetching insurances", e); }
+                };
 
-                const results = await Promise.all(promises);
-                let idx = 0;
-                if (insurances.length === 0) {
-                    const res = results[idx++];
-                    setInsurances(Array.isArray(res.data) ? res.data : (res.data.insurances || []));
-                }
-                if (doctors.length === 0) {
-                    const res = results[idx++];
-                    setDoctors(Array.isArray(res.data) ? res.data : (res.data.doctors || []));
-                }
-                const instRes = results[idx++];
-                setInstitutions(Array.isArray(instRes.data) ? instRes.data : (instRes.data.institutions || []));
+                const fetchDoctors = async () => {
+                    if (doctors.length > 0) return;
+                    try {
+                        const res = await api.get('/users/doctors');
+                        const data = Array.isArray(res.data) ? res.data : (res.data.doctors || []);
+                        setDoctors(data);
+                    } catch (e) { console.error("Error fetching doctors", e); }
+                };
+
+                const fetchInstitutions = async () => {
+                    if (institutions.length > 0) return;
+                    try {
+                        const res = await api.get('/institutions');
+                        const data = Array.isArray(res.data) ? res.data : (res.data.institutions || []);
+                        setInstitutions(data);
+                    } catch (e) { console.error("Error fetching institutions", e); }
+                };
+
+                await Promise.allSettled([
+                    fetchInsurances(),
+                    fetchDoctors(),
+                    fetchInstitutions()
+                ]);
+
             } catch (err) {
                 console.error("Failed to fetch form resources", err);
             } finally {
@@ -96,7 +115,8 @@ export const usePatientFormController = ({
         };
 
         fetchResources();
-    }, [doctors.length, insurances.length]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // Run once on mount. State variables inside will check if they need to fetch.
 
     // Helper to ensure date is YYYY-MM-DD
     const formatDate = (dateStr) => {
