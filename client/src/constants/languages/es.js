@@ -545,9 +545,9 @@ export const es = {
     after_hours_extra: "Después del Horario (Extra)",
     available_variables: "Variables disponibles (Haz clic para insertar):",
     insert_variable_title: "Insertar {variable}",
-    clinic_address_title: "Dirección del Consultorio",
-    physical_address_label: "Dirección Física (para turnos Presenciales)",
-    physical_address_hint: "Esta dirección se usará para reemplazar la variable {appointment_location} si el turno es presencial.",
+    clinic_address_title: "Ubicación de la Clínica",
+    physical_address_label: "Dirección Física",
+    physical_address_hint: "Esta dirección se usará para reemplazar la variable {appointment_location} en los mensajes.",
     appointment_reminders_title: "Recordatorios de Turno",
     presential_reminder_label: "Recordatorio Presencial (General)",
     virtual_reminder_label: "Recordatorio Virtual (Telemedicina)",
@@ -1073,10 +1073,5 @@ export const es = {
     // WhatsApp Automation
     whatsapp_automation_title: "Automatización de WhatsApp (IA)",
     whatsapp_auto_respond_unknown_label: "Responder automáticamente a números desconocidos",
-    whatsapp_auto_respond_unknown_hint: "Si está activado, la IA enviará automáticamente un saludo y el link de registro a cualquier número que no esté en tu agenda.",
-
-    // General Config Labels
-    physical_address_label: "Dirección del Consultorio",
-    physical_address_hint: "Esta dirección se usará para reemplazar la variable {appointment_location} en los mensajes.",
-    clinic_address_title: "Ubicación de la Clínica"
+    whatsapp_auto_respond_unknown_hint: "Si está activado, la IA enviará automáticamente un saludo y el link de registro a cualquier número que no esté en tu agenda."
 };
