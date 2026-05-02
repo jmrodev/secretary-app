@@ -20,7 +20,7 @@ exports.createRequest = async (req, res) => {
 exports.getRequests = async (req, res) => {
     try {
         const { page = 1, limit = 50, status, doctorId } = req.query;
-        const patientId = (req.body && req.body.patientId) || req.query.patientId;
+        const patientId = req.body && req.body.patientId;
         const filters = {
             patientId,
             doctorId,
