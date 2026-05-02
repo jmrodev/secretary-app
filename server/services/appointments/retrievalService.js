@@ -7,6 +7,7 @@ const doctorRepository = require('../../repositories/doctorRepository');
 class RetrievalService {
     async getAppointments(user, query) {
         const { role, user_id } = user;
+        // patientId may come from body (POST) or query (GET)
         const filters = {
             patient_id: query.patientId,
             search: query.search

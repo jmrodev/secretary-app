@@ -77,7 +77,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
                     .catch(err => console.error("Error fetching meds", err));
 
                 // Fetch recent prescriptions to build history list
-                api.get(`/medical/requests?patientId=${patientId}&type=prescription`)
+                api.post('/medical/requests', { patientId, type: 'prescription' })
                     .then(res => {
                         const historyItems = [];
                         const seenNames = new Set();

@@ -61,7 +61,14 @@ const PatientPrintableView = ({
 
     const formatMedicationData = (dataStr) => {
         if (!dataStr) return '-';
-        const cleanStr = dataStr.replace(/<[^>]*>/g, '').trim();
+        // Iteratively strip tags until none remain, preventing multi-char bypass attacks
+        let cleanStr = String(dataStr);
+        let prev;
+        do {
+            prev = cleanStr;
+            cleanStr = cleanStr.replace(/<[^>]*>/g, '');
+        } while (cleanStr !== prev);
+        cleanStr = cleanStr.trim();
         if (cleanStr.startsWith('[') || cleanStr.startsWith('{')) {
             try {
                 const parsed = JSON.parse(cleanStr);
