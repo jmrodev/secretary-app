@@ -2,8 +2,7 @@ const retrievalService = require('../../services/appointments/retrievalService')
 
 exports.getAppointments = async (req, res) => {
     try {
-        // Sensitive filters (patientId) arrive in the POST body only
-        const query = { ...req.body, search: req.query.search };
+        const query = { ...(req.body || {}), search: req.query.search };
         const appointments = await retrievalService.getAppointments(req.user, query);
         res.json(appointments);
     } catch (err) {
@@ -14,7 +13,7 @@ exports.getAppointments = async (req, res) => {
 
 exports.getMonthlyReport = async (req, res) => {
     try {
-        const { doctor_id, month, year } = req.query;
+        const { doctor_id, month, year } = { ...req.query, ...req.body };
         const report = await retrievalService.getMonthlyReport(doctor_id, month, year);
         res.json(report);
     } catch (err) {
