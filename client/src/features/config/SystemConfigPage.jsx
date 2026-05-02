@@ -4,6 +4,7 @@ import GeneralSettings from '@/features/config/components/GeneralSettings';
 import CommunicationSettings from '@/features/config/components/CommunicationSettings';
 import IntegrationSettings from '@/features/config/components/IntegrationSettings';
 import BillingSettings from '@/features/config/components/BillingSettings';
+import AiSettings from '@/features/config/components/AiSettings';
 import { useDoctorsPageController } from '@/features/doctors';
 import { useProfileController, ProfileEditor } from '@/features/auth';
 import { useReportsController, useAuditLogsController } from '@/features/reports';
@@ -15,6 +16,8 @@ import MainLayout from '@/components/templates/MainLayout';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Loading from '@/components/atoms/Loading';
+import TabNav from '@/components/molecules/TabNav';
+import TabButton from '@/components/atoms/TabButton';
 
 // Lazy load heavy components
 const DoctorsManager = React.lazy(() => import('@/features/doctors').then(module => ({ default: module.DoctorsManager })));
@@ -62,6 +65,23 @@ const UserSection = () => {
     return <UserManager t={t} />;
 };
 
+const getTabMetadata = (tab, t) => {
+    const meta = {
+        profile: { title: t('profile'), icon: 'person', desc: 'Gestiona tu información personal y profesional.' },
+        doctors: { title: t('doctors'), icon: 'medical_services', desc: 'Administra la lista de profesionales y sus consultorios.' },
+        reports: { title: t('reports'), icon: 'assessment', desc: 'Genera reportes detallados y estadísticas del sistema.' },
+        institutions: { title: t('institutions'), icon: 'business', desc: 'Configura las clínicas y centros de atención.' },
+        users: { title: t('users'), icon: 'group', desc: 'Gestiona los accesos y roles de los usuarios.' },
+        logs: { title: t('logs'), icon: 'list_alt', desc: 'Historial de auditoría y seguridad del sistema.' },
+        general: { title: t('general'), icon: 'settings', desc: 'Configuración básica y enlaces de ayuda.' },
+        communications: { title: t('communications'), icon: 'chat', desc: 'Plantillas de mensajes y automatización de WhatsApp.' },
+        integrations: { title: t('integrations'), icon: 'extension', desc: 'Conexión con Google, Meta y otros servicios.' },
+        billing: { title: t('billing'), icon: 'payments', desc: 'Configuración de facturación y ARCA (AFIP).' },
+        data: { title: t('data_management_title'), icon: 'database', desc: 'Seguridad, respaldos y gestión de base de datos.' }
+    };
+    return meta[tab] || { title: tab, icon: 'settings', desc: '' };
+};
+
 const renderContent = (activeTab, controller) => {
     const {
         user,
@@ -82,25 +102,41 @@ const renderContent = (activeTab, controller) => {
         handleRefreshTunnel
     } = handlers;
 
+    const metadata = getTabMetadata(activeTab, t);
+
+    const wrap = (content) => (
+        <section className="settings-content-wrapper animate-fadeInUp">
+            <header className="settings-content-header">
+                <div className="settings-content-header__icon">
+                    <Icon name={metadata.icon} size="1.5rem" />
+                </div>
+                <div className="settings-content-header__text">
+                    <h2 className="settings-content-title">{metadata.title}</h2>
+                    <p className="settings-content-description">{metadata.desc}</p>
+                </div>
+            </header>
+            <div className="settings-content-body">
+                {content}
+            </div>
+        </section>
+    );
+
     switch (activeTab) {
         case 'profile':
-            return <ProfileSection />;
+            return wrap(<ProfileSection />);
         case 'doctors':
-            return <DoctorsSection />;
+            return wrap(<DoctorsSection />);
         case 'reports':
-            return <ReportsSection />;
+            return wrap(<ReportsSection />);
         case 'institutions':
-            return <InstitutionsSection />;
+            return wrap(<InstitutionsSection />);
         case 'users':
-            return <UserSection />;
+            return wrap(<UserSection />);
         case 'logs':
-            return <AuditLogsSection />;
+            return wrap(<AuditLogsSection />);
         case 'general':
-            return (
-                <section className="settings-content-wrapper">
-                    <header className="settings-content-header">
-                        <h2 className="settings-content-title">{t('general') || 'Configuración General'}</h2>
-                    </header>
+            return wrap(
+                <>
                     <GeneralSettings
                         user={user}
                         settings={settings}
@@ -134,64 +170,60 @@ const renderContent = (activeTab, controller) => {
                             </Button>
                         </div>
                     </article>
-                </section>
+                </>
             );
         case 'communications':
-            return (
-                <div className="settings-content-wrapper">
-                    <h2 className="settings-content-title">{t('communications') || 'Comunicaciones'}</h2>
-                    <CommunicationSettings
-                        user={user}
-                        settings={settings}
-                        updateSetting={updateSetting}
-                        insertVariable={insertVariable}
-                    />
-                </div>
+            return wrap(
+                <CommunicationSettings
+                    user={user}
+                    settings={settings}
+                    updateSetting={updateSetting}
+                    insertVariable={insertVariable}
+                />
             );
         case 'integrations':
-            return (
-                <div className="settings-content-wrapper">
-                    <h2 className="settings-content-title">{t('integrations') || 'Integraciones'}</h2>
-                    <IntegrationSettings
-                        user={user}
-                        settings={settings}
-                        updateSetting={updateSetting}
-                        loading={loading}
-                        googleUnlinked={googleUnlinked}
-                        onGoogleAuth={handleGoogleAuth}
-                        onDisconnectGoogle={handleDisconnectGoogle}
-                        onRefreshToken={handleGoogleAuth}
-                        onRetryGoogle={handleRetryGoogleFailed}
-                        onRefreshTunnel={handleRefreshTunnel}
-                        onTestMeta={handleTestMeta}
-                    />
-                </div>
+            return wrap(
+                <IntegrationSettings
+                    user={user}
+                    settings={settings}
+                    updateSetting={updateSetting}
+                    loading={loading}
+                    googleUnlinked={googleUnlinked}
+                    onGoogleAuth={handleGoogleAuth}
+                    onDisconnectGoogle={handleDisconnectGoogle}
+                    onRefreshToken={handleGoogleAuth}
+                    onRetryGoogle={handleRetryGoogleFailed}
+                    onRefreshTunnel={handleRefreshTunnel}
+                    onTestMeta={handleTestMeta}
+                />
             );
         case 'billing':
-            return (
-                <div className="settings-content-wrapper">
-                    <h2 className="settings-content-title">{t('billing') || 'Facturación'}</h2>
-                    <BillingSettings
-                        user={user}
-                        settings={settings}
-                        updateSetting={updateSetting}
-                    />
-                </div>
+            return wrap(
+                <BillingSettings
+                    user={user}
+                    settings={settings}
+                    updateSetting={updateSetting}
+                />
+            );
+        case 'ai':
+            return wrap(
+                <AiSettings
+                    user={user}
+                    settings={settings}
+                    updateSetting={updateSetting}
+                />
             );
         case 'data':
-            return (
-                <div className="settings-content-wrapper">
-                    <h2 className="settings-content-title">{t('data_management_title') || 'Datos y Seguridad'}</h2>
-                    <div className="system-config-page__data-management animate-fadeIn">
-                        <div className="system-config-page__section-header">
-                            <Icon name="payments" size="1.2rem" className="system-config-page__section-icon" />
-                            <h3 className="system-config-page__section-title">
-                                {t('data_management_title') || 'Gestión de Datos y Copias de Seguridad'}
-                            </h3>
-                        </div>
-                        <div className="system-config-page__placeholder">
-                            <p className="system-config-page__placeholder-text">{t('coming_soon') || 'Próximamente...'}</p>
-                        </div>
+            return wrap(
+                <div className="system-config-page__data-management animate-fadeIn">
+                    <div className="system-config-page__section-header">
+                        <Icon name="payments" size="1.2rem" className="system-config-page__section-icon" />
+                        <h3 className="system-config-page__section-title">
+                            {t('data_management_title') || 'Gestión de Datos y Copias de Seguridad'}
+                        </h3>
+                    </div>
+                    <div className="system-config-page__placeholder">
+                        <p className="system-config-page__placeholder-text">{t('coming_soon') || 'Próximamente...'}</p>
                     </div>
                 </div>
             );
@@ -217,6 +249,72 @@ const SystemConfigPage = () => {
     return (
         <MainLayout wide flush title={controller.t('config') || 'Configuración del Sistema'}>
             <section className="system-config-page">
+                <TabNav className="system-config-tabs">
+                    <TabButton 
+                        isActive={activeTab === 'general'} 
+                        onClick={() => handlers.setActiveTab('general')}
+                    >
+                        <Icon name="settings" size="1.2rem" />
+                        {controller.t('general')}
+                    </TabButton>
+                    <TabButton 
+                        isActive={activeTab === 'profile'} 
+                        onClick={() => handlers.setActiveTab('profile')}
+                    >
+                        <Icon name="person" size="1.2rem" />
+                        {controller.t('profile')}
+                    </TabButton>
+                    <TabButton 
+                        isActive={activeTab === 'communications'} 
+                        onClick={() => handlers.setActiveTab('communications')}
+                    >
+                        <Icon name="chat" size="1.2rem" />
+                        {controller.t('communications')}
+                    </TabButton>
+                    <TabButton 
+                        isActive={activeTab === 'ai'} 
+                        onClick={() => handlers.setActiveTab('ai')}
+                    >
+                        <Icon name="psychology" size="1.2rem" />
+                        {controller.t('ai')}
+                    </TabButton>
+                    <TabButton 
+                        isActive={activeTab === 'doctors'} 
+                        onClick={() => handlers.setActiveTab('doctors')}
+                    >
+                        <Icon name="medical_services" size="1.2rem" />
+                        {controller.t('doctors')}
+                    </TabButton>
+                    <TabButton 
+                        isActive={activeTab === 'integrations'} 
+                        onClick={() => handlers.setActiveTab('integrations')}
+                    >
+                        <Icon name="extension" size="1.2rem" />
+                        {controller.t('integrations')}
+                    </TabButton>
+                    <TabButton 
+                        isActive={activeTab === 'users'} 
+                        onClick={() => handlers.setActiveTab('users')}
+                    >
+                        <Icon name="group" size="1.2rem" />
+                        {controller.t('users')}
+                    </TabButton>
+                    <TabButton 
+                        isActive={activeTab === 'billing'} 
+                        onClick={() => handlers.setActiveTab('billing')}
+                    >
+                        <Icon name="payments" size="1.2rem" />
+                        {controller.t('billing')}
+                    </TabButton>
+                    <TabButton 
+                        isActive={activeTab === 'logs'} 
+                        onClick={() => handlers.setActiveTab('logs')}
+                    >
+                        <Icon name="list_alt" size="1.2rem" />
+                        {controller.t('logs')}
+                    </TabButton>
+                </TabNav>
+
                 <div className="system-config-container animate-fadeIn">
                     <main className="system-config-main">
                         <Suspense fallback={<Loading variant="centered" />}>

@@ -1,20 +1,9 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useFetch } from '@/hooks/useFetch';
 import { usePermissions } from '@/hooks/usePermissions';
+import { DoctorContext } from './DoctorContextDefinition';
 
-const DoctorContext = createContext();
-
-export const useDoctors = () => {
-    const context = useContext(DoctorContext);
-    if (!context) {
-        const message = '[DoctorContext] useDoctors must be used within a DoctorProvider. If this happened during HMR, do a full page reload.';
-        if (import.meta.env.DEV) {
-            console.error(message);
-        }
-        throw new Error(message);
-    }
-    return context;
-};
+export { useDoctors } from './DoctorContextDefinition';
 
 export const DoctorProvider = ({ children }) => {
     const { user, isStaff, isDoctor } = usePermissions();

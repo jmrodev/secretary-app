@@ -14,8 +14,17 @@ export const useLanguageLogic = () => {
         localStorage.setItem(LANGUAGE_KEY, language);
     }, [language]);
 
-    const t = useCallback((key) => {
-        return translations[language][key] || key;
+    const t = useCallback((key, params = {}) => {
+        let text = translations[language]?.[key] || key;
+        
+        // Handle variable interpolation: {variable_name} -> params.variable_name
+        if (params && typeof params === 'object') {
+            Object.entries(params).forEach(([k, v]) => {
+                text = text.replace(new RegExp(`{${k}}`, 'g'), v);
+            });
+        }
+        
+        return text;
     }, [language]);
 
     const toggleLanguage = useCallback(() => {

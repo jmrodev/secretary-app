@@ -72,19 +72,32 @@ const DoctorEditModal = ({
             }
         >
             {type === 'EDIT' && (
+                <div className="doctor-edit-modal__header-info animate-fadeIn">
+                    <div className="doctor-edit-modal__avatar">
+                        <Icon name="person" size="1.5rem" />
+                    </div>
+                    <div className="doctor-edit-modal__doctor-info">
+                        <h4 className="doctor-edit-modal__doctor-name">{data.full_name}</h4>
+                        <p className="doctor-edit-modal__doctor-specialty">{data.specialty || t('no_specialty')}</p>
+                    </div>
+                </div>
+            )}
+
+            {type === 'EDIT' && (
                 <TabNav className="doctor-edit-modal__tabs">
                     {[
-                        { id: 'tariffs', label: <><Icon name="payments" size="1rem" className="mr-1" />Tarifas</> },
-                        { id: 'schedule', label: <><Icon name="calendar_today" size="1rem" className="mr-1" />Horarios</> },
-                        { id: 'messages', label: <><Icon name="chat" size="1rem" className="mr-1" />Mensajes</> },
-                        { id: 'google', label: <><Icon name="language" size="1rem" className="mr-1" />Google</> },
-                        { id: 'fiscal', label: <><Icon name="receipt_long" size="1rem" className="mr-1" />Fiscal</> }
+                        { id: 'tariffs', label: t('tariffs'), icon: 'payments' },
+                        { id: 'schedule', label: t('schedule'), icon: 'calendar_today' },
+                        { id: 'messages', label: t('messages'), icon: 'chat' },
+                        { id: 'google', label: t('integrations'), icon: 'language' },
+                        { id: 'fiscal', label: t('fiscal'), icon: 'receipt_long' }
                     ].map(tab => (
                         <TabButton
                             key={tab.id}
                             isActive={activeTab === tab.id}
                             onClick={() => onTabChange(tab.id)}
                         >
+                            <Icon name={tab.icon} size="1rem" className="doctor-edit-modal__tab-icon" />
                             {tab.label}
                         </TabButton>
                     ))}
@@ -211,7 +224,7 @@ const DoctorEditModal = ({
                     )}
                 </div>
             )}
-        </Modal >
+        </Modal>
     );
 };
 
