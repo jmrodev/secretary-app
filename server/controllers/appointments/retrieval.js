@@ -2,8 +2,8 @@ const retrievalService = require('../../services/appointments/retrievalService')
 
 exports.getAppointments = async (req, res) => {
     try {
-        // Accept sensitive filters from body (POST) or query (GET) for backwards compatibility
-        const query = { ...req.query, ...req.body };
+        // Sensitive filters (patientId) arrive in the POST body only
+        const query = { ...req.body, search: req.query.search };
         const appointments = await retrievalService.getAppointments(req.user, query);
         res.json(appointments);
     } catch (err) {

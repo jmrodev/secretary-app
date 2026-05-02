@@ -20,9 +20,7 @@ exports.createRequest = async (req, res) => {
 exports.getRequests = async (req, res) => {
     try {
         const { page = 1, limit = 50, status } = req.query;
-        // Accept patientId/doctorId from body (POST) or query (GET) for backwards compatibility
-        const patientId = req.body?.patientId || req.query.patientId;
-        const doctorId = req.body?.doctorId || req.query.doctorId;
+        const { patientId, doctorId } = req.body;
         const filters = {
             patientId,
             doctorId,
