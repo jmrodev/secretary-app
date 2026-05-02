@@ -60,7 +60,7 @@ class WhatsappRepository {
             params.push(doctorId);
         }
 
-        query += ` GROUP BY identifier ORDER BY wm.created_at DESC`;
+        query += ` ORDER BY wm.created_at DESC`;
         
         return await conn.query(query, params);
     }
