@@ -13,11 +13,7 @@ const transactionRepository = require('../repositories/transactionRepository');
 exports.getPricing = async (req, res) => {
     try {
         const { service_type } = req.query;
-        const { doctor_id } = req.query;
-        if (Object.prototype.hasOwnProperty.call(req.query, 'patient_id')) {
-            return res.status(400).send("patient_id must be sent in request body, not query string");
-        }
-        const patient_id = req.body?.patient_id;
+        const { doctor_id, patient_id } = req.body;
         if (!doctor_id) return res.status(400).send("Doctor ID required");
         const result = await financeService.getPricing(doctor_id, patient_id, service_type);
         res.json({ price: result.price.toFixed(2), explanation: result.explanation });

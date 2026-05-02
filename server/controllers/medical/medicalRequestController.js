@@ -19,8 +19,8 @@ exports.createRequest = async (req, res) => {
 
 exports.getRequests = async (req, res) => {
     try {
-        const { page = 1, limit = 50, status, doctorId } = req.query;
-        const patientId = req.body && req.body.patientId;
+        const { page = 1, limit = 50, status } = req.query;
+        const { patientId, doctorId } = req.body;
         const filters = {
             patientId,
             doctorId,
