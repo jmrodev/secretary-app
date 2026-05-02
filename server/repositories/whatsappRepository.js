@@ -46,7 +46,7 @@ class WhatsappRepository {
             INNER JOIN (
                 SELECT COALESCE(patient_id, sender_phone) as identifier, MAX(created_at) as max_date
                 FROM whatsapp_messages
-                GROUP BY identifier
+                GROUP BY COALESCE(patient_id, sender_phone)
             ) latest ON (COALESCE(wm.patient_id, wm.sender_phone) = latest.identifier) AND wm.created_at = latest.max_date
             LEFT JOIN patients p ON wm.patient_id = p.id
         `;

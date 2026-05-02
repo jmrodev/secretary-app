@@ -4,9 +4,6 @@ const doctorRepository = require('../repositories/doctorRepository');
 const scheduleRepository = require('../repositories/scheduleRepository');
 const holidayRepository = require('../repositories/holidayRepository');
 const { pool } = require('../db');
-const { exec } = require('child_process');
-const util = require('util');
-const execPromise = util.promisify(exec);
 
 /**
  * Send a templated message (Generic Endpoint)
@@ -164,7 +161,7 @@ const getPatientHistory = async (req, res) => {
 };
 
 /**
- * Get AI suggestion for a response using Gemini CLI
+ * Get AI suggestion for a response using Gemini HTTP API
  */
 const getAiSuggestion = async (req, res) => {
     try {
@@ -255,7 +252,7 @@ ${formattedFreeSlots || 'No hay turnos libres próximamente.'}
 
 DATOS DEL DOCTOR:
 - Especialidad: ${doctor.specialty || 'N/A'}
-- Precio Consulta: $${doctor.consultation_price || 'A convenir'}
+- Precio Consulta: ${doctor.consultation_price != null ? `$${doctor.consultation_price}` : 'A convenir'}
 - Consultorio/Dirección: ${doctor.office_number || 'Consultorio central'}
 - Pagos: ${doctor.alias || doctor.cbu || 'Consultar'}
 
@@ -291,12 +288,7 @@ REGLAS PARA LA IA:
         Respuesta sugerida:
         `.trim();
         
-        // Escape prompt for shell
-        const escapedPrompt = prompt
-            .replace(/\\/g, '\\\\')
-            .replace(/"/g, '\\"');
-        
-        // Call Gemini API directly (Extremely fast, no CLI overhead)
+        // Call Gemini HTTP API directly
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) {
             console.error("[AI] Error: GEMINI_API_KEY is not defined in environment variables.");
@@ -324,17 +316,16 @@ REGLAS PARA LA IA:
         });
 
         const result = await response.json();
-        console.log("[Gemini API Full Response]:", JSON.stringify(result));
 
         if (!response.ok) {
-            console.error("[Gemini API Error Response]:", JSON.stringify(result));
+            console.error(`[Gemini API] Request failed with status ${response.status}: ${result.error?.message}`);
             return res.status(response.status).json({ 
                 success: false, 
                 error: result.error?.message || 'Error en la API de Google Gemini' 
             });
         }
 
-        console.log("[Gemini API Success Response]:", JSON.stringify(result).substring(0, 200) + "...");
+        console.log(`[Gemini API] Success — candidates: ${result.candidates?.length ?? 0}`);
         const suggestion = result.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
 
         if (!suggestion) {

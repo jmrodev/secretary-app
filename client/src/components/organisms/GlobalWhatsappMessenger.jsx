@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import api from '@/api/axios';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
@@ -263,9 +264,10 @@ const GlobalWhatsappMessenger = () => {
                                     <div className="global-wa-messenger__qr-wrapper">
                                         {bridgeStatus.qr_code ? (
                                             <div className="global-wa-messenger__qr-container animate-zoomIn">
-                                                <img 
-                                                    src={`https://api.qrserver.com/v1/create-qr-code/?size=240x240&ecc=H&data=${encodeURIComponent(bridgeStatus.qr_code)}`}
-                                                    alt="WhatsApp QR Code"
+                                                <QRCodeSVG 
+                                                    value={bridgeStatus.qr_code}
+                                                    size={240}
+                                                    level="H"
                                                     className="global-wa-messenger__qr-image"
                                                 />
                                             </div>
