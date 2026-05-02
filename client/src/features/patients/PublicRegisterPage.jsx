@@ -52,8 +52,7 @@ const PublicRegisterPage = () => {
                 fullName: `${formData.firstName} ${formData.lastName}`.trim(),
                 dni: formData.dni,
                 phone: formData.phone,
-                street_name: formData.address,
-                dob: '2000-01-01' // Default since we don't ask it
+                street_name: formData.address
             };
             await request('auth/public-register', 'POST', submitData);
             setSuccess(true);
