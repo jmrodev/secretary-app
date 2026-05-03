@@ -2,9 +2,9 @@
   "name": "secretary-app",
   "private": true,
   "scripts": {
-    "lint": "cd client && npm run lint",
-    "build": "cd client && npm run build",
-    "test": "cd server && npm run test"
+    "lint": "pnpm --filter client run lint",
+    "build": "pnpm --filter client run build",
+    "test": "pnpm --filter server run test"
   },
   "dependencies": {
     "react": "^19.2.0",

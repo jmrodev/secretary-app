@@ -24,39 +24,30 @@ jobs:
             echo "should_run=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-
           if jq -e '.scripts.build' server/package.json >/dev/null; then
             echo "should_run=true" >> "$GITHUB_OUTPUT"
           else
             echo "should_run=false" >> "$GITHUB_OUTPUT"
           fi
 
-  client-build:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
       - uses: actions/setup-node@v4
         with:
           node-version: 20.x
-          cache: 'npm'
-          cache-dependency-path: client/package-lock.json
+          cache: pnpm
       - name: Install dependencies
-        run: cd client && npm install
-      - name: Run build
-        run: cd client && npm run build
-
-  server-build:
-    runs-on: ubuntu-latest
+        run: pnpm install --no-frozen-lockfile
+      - name: Run client build
+        run: pnpm --filter client build
+      - name: Run server build (conditional)
+        run: |
+          if [ "${{ needs.detect-server-build.outputs.should_run }}" == "true" ]; then
+            pnpm --filter server build
+          fi
     needs: detect-server-build
-    if: needs.detect-server-build.outputs.should_run == 'true'
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-          cache: 'npm'
-          cache-dependency-path: server/package-lock.json
-      - name: Install dependencies
-        run: cd server && npm install
-      - name: Run build
-        run: cd server && npm run build
