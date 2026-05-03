@@ -30,7 +30,7 @@ const DocumentsSidebar = ({
                         { id: 'files', label: t('file_repository'), icon: 'folder_open' },
                         { id: 'prescriptions', label: t('prescriptions'), icon: 'medication' },
                         { id: 'licenses', label: t('medical_licenses'), icon: 'description' },
-                        { id: 'certificates', label: t('certificates') || 'Certificados', icon: 'verified' }
+                        { id: 'certificates', label: t('certificates'), icon: 'verified' }
                     ].map(tab => (
                         <TabButton
                             key={tab.id}
@@ -50,7 +50,7 @@ const DocumentsSidebar = ({
             <div className="dashboard-card medical-documents__search-card">
                 <h3 className="dashboard-card__title">
                     <Icon name="search" size="1.2rem" color="var(--accent-color)" />
-                    {t('search') || 'Buscar'}
+                    {t('search')}
                 </h3>
                 <SearchBar
                     value={searchTerm}
@@ -64,7 +64,7 @@ const DocumentsSidebar = ({
                 <div className="dashboard-card medical-documents__action-card">
                     <h3 className="dashboard-card__title medical-documents__action-title">
                         <Icon name="settings" size="1.1rem" color="var(--blue-600)" />
-                        {t('actions') || 'Acciones'}
+                        {t('actions')}
                     </h3>
                     <div className="medical-documents__action-list">
                         <Button
@@ -93,7 +93,7 @@ const DocumentsSidebar = ({
                 <div className="dashboard-card medical-documents__action-card">
                     <h3 className="dashboard-card__title medical-documents__action-title">
                         <Icon name="settings" size="1.1rem" color="var(--blue-600)" />
-                        {t('actions') || 'Acciones'}
+                        {t('actions')}
                     </h3>
                     <div className="medical-documents__action-list">
                         {activeTab === 'prescriptions' && (

@@ -26,33 +26,37 @@ const ChatPage = () => {
     } = useMessagesPageController();
 
     return (
-        <MainLayout wide>
+        <MainLayout wide flush>
             <main className={`chat-page-orchestrator ${selectedConvo ? 'chat-page-orchestrator--convo-selected' : ''} animate-fadeIn`}>
-                <ChatSidebar
-                    className="chat-sidebar"
-                    conversations={conversations}
-                    selectedConvo={selectedConvo}
-                    onSelectConvo={setSelectedConvo}
-                    searchTerm={searchTerm}
-                    setSearchTerm={setSearchTerm}
-                    recipients={recipients}
-                    onStartNewChat={startNewChat}
-                    unreadCount={unreadCount}
-                />
+                <div className="layout-content-area">
+                    <div className="chat-page-container">
+                        <ChatSidebar
+                            className="chat-sidebar"
+                            conversations={conversations}
+                            selectedConvo={selectedConvo}
+                            onSelectConvo={setSelectedConvo}
+                            searchTerm={searchTerm}
+                            setSearchTerm={setSearchTerm}
+                            recipients={recipients}
+                            onStartNewChat={startNewChat}
+                            unreadCount={unreadCount}
+                        />
 
-                <ChatWindow
-                    className="chat-window"
-                    selectedConvo={selectedConvo}
-                    thread={thread}
-                    user={user}
-                    loading={loading}
-                    sending={sending}
-                    messageText={messageText}
-                    setMessageText={setMessageText}
-                    onSendMessage={handleSendMessage}
-                    scrollRef={scrollRef}
-                    onBack={() => setSelectedConvo(null)} // Call setSelectedConvo(null) to go back
-                />
+                        <ChatWindow
+                            className="chat-window"
+                            selectedConvo={selectedConvo}
+                            thread={thread}
+                            user={user}
+                            loading={loading}
+                            sending={sending}
+                            messageText={messageText}
+                            setMessageText={setMessageText}
+                            onSendMessage={handleSendMessage}
+                            scrollRef={scrollRef}
+                            onBack={() => setSelectedConvo(null)} // Call setSelectedConvo(null) to go back
+                        />
+                    </div>
+                </div>
             </main>
         </MainLayout>
     );

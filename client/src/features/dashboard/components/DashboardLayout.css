@@ -12,7 +12,7 @@
     margin-bottom: 0.25rem;
 }
 
-.dashboard-grid {
+.dashboard-layout__grid {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-auto-rows: 1fr; /* Fill space */
@@ -56,7 +56,7 @@
 }
 
 @media (max-width: 48rem) {
-    .dashboard-grid {
+    .dashboard-layout__grid {
         display: flex;
         flex-direction: column;
     }
@@ -76,7 +76,7 @@
         display: none;
     }
 
-    .dashboard-grid--sidebar-visible .dashboard-layout__sidebar {
+    .dashboard-layout__grid--sidebar-visible .dashboard-layout__sidebar {
         display: flex;
         position: fixed;
         top: 0;

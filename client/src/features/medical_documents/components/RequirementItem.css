@@ -42,3 +42,11 @@
 .requirement-item__badge-clickable:hover {
     transform: scale(1.05);
 }
+
+.requirement-item__status-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    align-items: flex-start;
+}
+

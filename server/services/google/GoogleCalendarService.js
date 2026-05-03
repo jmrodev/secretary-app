@@ -144,7 +144,7 @@ class GoogleCalendarService {
         if (!appointments?.length) return { message: "No appointments found", total: 0 };
 
         const results = { created: 0, updated: 0, errors: 0, total: appointments.length };
-        const statusLabels = { 'pending': 'Pendiente', 'confirmed': 'Confirmado', 'arrived': 'En sala', 'completed': 'Completado', 'absent': 'Ausente' };
+        const statusLabels = { 'pending': 'Pending', 'confirmed': 'Confirmed', 'arrived': 'Arrived', 'completed': 'Completed', 'absent': 'Absent' };
 
         for (const appt of appointments) {
             try {
@@ -166,13 +166,13 @@ class GoogleCalendarService {
         const duration = appt.duration || 60;
         const endTime = new Date(startTime.getTime() + duration * 60000);
 
-        let desc = `Motivo: ${appt.reason || 'Consulta'}\nEstado: ${statusLabels[appt.status] || appt.status}\nTipo: ${appt.type || 'Consulta'}`;
-        if (appt.patient_phone) desc += `\nTeléfono: ${appt.patient_phone}`;
+        let desc = `Reason: ${appt.reason || 'Consultation'}\nStatus: ${statusLabels[appt.status] || appt.status}\nType: ${appt.type || 'Consultation'}`;
+        if (appt.patient_phone) desc += `\nPhone: ${appt.patient_phone}`;
         if (appt.payment_status === 'paid' && appt.amount_paid > 0) desc += `\n💰 $${appt.amount_paid}`;
         else if (appt.payment_status === 'debt' && appt.amount_debt > 0) desc += `\n⚠️ $${appt.amount_debt}`;
 
         return {
-            summary: appt.patient_name || 'Turno',
+            summary: appt.patient_name || 'Appointment',
             description: desc,
             start: { dateTime: startTime.toISOString(), timeZone: TIMEZONE },
             end: { dateTime: endTime.toISOString(), timeZone: TIMEZONE },

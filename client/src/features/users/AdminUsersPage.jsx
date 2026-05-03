@@ -30,50 +30,51 @@ const AdminUsersPage = () => {
     }
 
     return (
-        <MainLayout wide title={t('user_management') || 'Gestión de Usuarios'}>
+        <MainLayout wide flush title={t('user_management') || 'Gestión de Usuarios'}>
             <div className="admin-users-page-orchestrator">
-
-                <div className="dashboard-nav-bar animate-fadeIn">
-                    <div className="admin-users-page__spacer"></div>
-                    <div className="admin-users-page__nav-actions">
-                    </div>
-                </div>
-
-                <div className="dashboard-grid animate-fadeIn">
-                    <aside className="dashboard-sidebar">
-                        <div className="dashboard-card">
-                            <h3 className="dashboard-card__title">
-                                <Icon name="build" size="1.2rem" />
-                                {t('actions') || 'Acciones'}
-                            </h3>
-                            <div className="admin-users-page__actions-group">
-                                <Button
-                                    variant="primary"
-                                    className="admin-users-page__btn"
-                                    onClick={() => window.dispatchEvent(new CustomEvent('OPEN_USER_MODAL', { detail: 'CREATE' }))}
-                                    icon={<Icon name="add" size="1.1rem" />}
-                                >
-                                    {t('add_user') || 'Agregar Usuario'}
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    className="admin-users-page__btn"
-                                    onClick={() => window.location.reload()}
-                                    icon={<Icon name="sync" size="1.1rem" />}
-                                >
-                                    {t('refresh') || 'Actualizar'}
-                                </Button>
-                            </div>
+                <div className="layout-content-area animate-fadeIn">
+                    <div className="dashboard-nav-bar">
+                        <div className="admin-users-page__spacer"></div>
+                        <div className="admin-users-page__nav-actions">
                         </div>
-                    </aside>
+                    </div>
 
-                    <main className="dashboard-main">
-                        <section className="admin-users-page__table-wrapper">
-                            <UserManagement
-                                excludeRoles={['patient']}
-                            />
-                        </section>
-                    </main>
+                    <div className="dashboard-grid">
+                        <aside className="dashboard-sidebar">
+                            <div className="dashboard-card">
+                                <h3 className="dashboard-card__title">
+                                    <Icon name="build" size="1.2rem" />
+                                    {t('actions') || 'Acciones'}
+                                </h3>
+                                <div className="admin-users-page__actions-group">
+                                    <Button
+                                        variant="primary"
+                                        className="admin-users-page__btn"
+                                        onClick={() => window.dispatchEvent(new CustomEvent('OPEN_USER_MODAL', { detail: 'CREATE' }))}
+                                        icon={<Icon name="add" size="1.1rem" />}
+                                    >
+                                        {t('add_user') || 'Agregar Usuario'}
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        className="admin-users-page__btn"
+                                        onClick={() => window.location.reload()}
+                                        icon={<Icon name="sync" size="1.1rem" />}
+                                    >
+                                        {t('refresh') || 'Actualizar'}
+                                    </Button>
+                                </div>
+                            </div>
+                        </aside>
+
+                        <main className="dashboard-main">
+                            <section className="admin-users-page__table-wrapper">
+                                <UserManagement
+                                    excludeRoles={['patient']}
+                                />
+                            </section>
+                        </main>
+                    </div>
                 </div>
             </div>
         </MainLayout>

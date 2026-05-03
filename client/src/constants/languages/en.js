@@ -949,5 +949,8 @@ export const en = {
     whatsapp_sent_auto: "Message sent automatically",
     sync: "Sync",
     bridge_offline_title: "WhatsApp Bridge Offline",
-    bridge_offline_desc: "Could not connect to the WhatsApp bridge. Please ensure the service is running."
+    bridge_offline_desc: "Could not connect to the WhatsApp bridge. Please ensure the service is running.",
+    generated_at: "Generated at",
+    prescription_requests_report: "Prescription and Request Report",
+    detail_meds: "Details / Medications",
 };

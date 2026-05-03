@@ -107,7 +107,7 @@ const DashboardPage = () => {
                             </Button>
                         </article>
                     ) : (
-                        <div className="dashboard-grid animate-fadeIn">
+                        <div className="dashboard-layout__grid animate-fadeIn">
                             {/* Left Side: Metrics & Quick Actions (Span 4) */}
                             <aside className="dashboard-layout__sidebar">
                                 <DashboardSidebar

@@ -30,7 +30,7 @@ const DashboardLayout = ({
                 </Button>
             </header>
 
-            <section className={`dashboard-layout__content dashboard-grid ${showMobileSidebar ? 'dashboard-grid--sidebar-visible' : ''}`}>
+            <section className={`dashboard-layout__content dashboard-layout__grid ${showMobileSidebar ? 'dashboard-layout__grid--sidebar-visible' : ''}`}>
                 {showMobileSidebar && (
                     <button
                         type="button"

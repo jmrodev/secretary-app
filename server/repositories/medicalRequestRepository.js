@@ -15,7 +15,8 @@ class MedicalRequestRepository {
     async findAll(filters = {}, conn = pool) {
         let query = `
             SELECT r.*, p.full_name as patient_name, p.user_id as patient_user_id, d.full_name as doctor_name, d.user_id as doctor_user_id,
-            COALESCE(NULLIF(r.debt_amount, 0), 0) as resolved_debt_amount
+            COALESCE(NULLIF(r.debt_amount, 0), 0) as resolved_debt_amount,
+            (SELECT COALESCE(SUM(t.amount), 0) FROM transactions t WHERE t.request_id = r.id AND t.status = 'paid') as paid_amount
             FROM medical_requests r
             LEFT JOIN patients p ON r.patient_id = p.id
             LEFT JOIN doctors d ON r.doctor_id = d.id

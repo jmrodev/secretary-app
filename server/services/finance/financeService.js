@@ -379,11 +379,11 @@ class FinanceService {
         try {
             if (type === 'appointment') {
                 const appt = await appointmentRepository.findById(id, connection);
-                if (!appt) throw new Error("Turno no encontrado");
+                if (!appt) throw new Error("appointment_not_found");
 
                 // Check if already paid (and not bonified)
                 if (appt.payment_status === 'paid' && !appt.bonified) {
-                    throw new Error("No se puede bonificar un turno que ya ha sido pagado.");
+                    throw new Error("cannot_bonify_paid_appointment");
                 }
 
                 const pendings = await transactionRepository.findPendingByAppointment(id, connection);
@@ -414,11 +414,11 @@ class FinanceService {
                 await appointmentRepository.update(id, { payment_status: 'paid', bonified: 1 }, connection);
             } else if (type === 'request') {
                 const req = await medicalRequestRepository.findById(id, connection);
-                if (!req) throw new Error("Solicitud no encontrada");
+                if (!req) throw new Error("request_not_found");
 
                 // Check if already paid
                 if (req.payment_status === 'paid') {
-                    throw new Error("No se puede bonificar una solicitud que ya ha sido pagada.");
+                    throw new Error("cannot_bonify_paid_request");
                 }
 
                 const pendings = await transactionRepository.findPendingByRequest(id, connection);
@@ -436,7 +436,7 @@ class FinanceService {
                         await transactionRepository.create({
                             type: 'income',
                             amount: 0,
-                            description: `Solicitud: ${req.type} (Bonificado)`,
+                            description: `Request: ${req.type} (Bonified)`,
                             related_user_id: req.user_id,
                             doctor_id: req.doctor_id,
                             request_id: id,
@@ -450,7 +450,7 @@ class FinanceService {
             } else if (type === 'prescription') {
                 // Here id is prescriptionId
                 const prescription = await prescriptionRepository.findById(id, connection);
-                if (!prescription) throw new Error("Receta no encontrada");
+                if (!prescription) throw new Error("prescription_not_found");
 
                 // Check if already bonified. If not, check if it has paid transactions
                 // (Prescriptions usually don't have their own payment_status in the main table yet, 
@@ -465,7 +465,7 @@ class FinanceService {
                         [prescription.appointment_id]
                     );
                     if (paidTx.length > 0) {
-                        throw new Error("No se puede bonificar una receta que ya ha sido pagada.");
+                        throw new Error("cannot_bonify_paid_prescription");
                     }
 
                     await connection.query(
