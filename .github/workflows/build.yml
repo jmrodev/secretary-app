@@ -30,7 +30,7 @@ jobs:
             echo "should_run=false" >> "$GITHUB_OUTPUT"
           fi
 
-  build:
+  client-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -45,9 +45,21 @@ jobs:
         run: pnpm install --no-frozen-lockfile
       - name: Run client build
         run: pnpm --filter client build
-      - name: Run server build (conditional)
-        run: |
-          if [ "${{ needs.detect-server-build.outputs.should_run }}" == "true" ]; then
-            pnpm --filter server build
-          fi
+
+  server-build:
+    runs-on: ubuntu-latest
     needs: detect-server-build
+    if: needs.detect-server-build.outputs.should_run == 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+      - name: Run server build
+        run: pnpm --filter server build
