@@ -48,7 +48,9 @@ export const useMedicalDocumentsController = () => {
 
     // Reset to page 1 when search changes
     useEffect(() => {
-        setRequestsPage(1);
+        // Envolver en timeout para evitar actualización síncrona en el efecto
+        const t = setTimeout(() => setRequestsPage(1), 0);
+        return () => clearTimeout(t);
     }, [debouncedSearch]);
 
     // --- FETCH DATA using useFetch ---
@@ -81,7 +83,8 @@ export const useMedicalDocumentsController = () => {
         initialData: { requests: [], totalCount: 0 }
     });
 
-    const requests = requestsData.requests || [];
+    const requestsDataMemo = useMemo(() => requestsData.requests || [], [requestsData.requests]);
+    const requests = requestsDataMemo;
     const requestsTotal = requestsData.totalCount || 0;
 
     // Files
