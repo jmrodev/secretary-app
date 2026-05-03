@@ -51,9 +51,11 @@ class RestoreService {
     }
 
     async _restorePatient(conn, data) {
-        const { profile, appointments, files, medical_requests, assigned_doctors } = data;
-        const username = profile.email || profile.dni || `restored_patient_${Date.now()}`;
-        const passwordHash = await bcrypt.hash(crypto.randomBytes(16).toString('hex'), 10);
+        const { profile, auth, appointments, files, medical_requests, assigned_doctors } = data;
+        
+        // 1. Restore User Credentials
+        const username = auth?.username || profile.email || profile.dni || `restored_patient_${Date.now()}`;
+        const passwordHash = auth?.password_hash || await bcrypt.hash(crypto.randomBytes(16).toString('hex'), 10);
 
         const [uRes] = await conn.query(
             "INSERT INTO users (username, password_hash, role) VALUES (?, ?, 'patient')",
@@ -61,6 +63,7 @@ class RestoreService {
         );
         const newUserId = uRes.insertId;
 
+        // 2. Restore Patient Profile
         await conn.query(`
             INSERT INTO patients (
                 id, user_id, first_name, last_name, full_name, dob, phone, email,
@@ -83,6 +86,16 @@ class RestoreService {
             profile.street_name, profile.street_number, profile.floor, profile.apartment,
             profile.city, profile.country
         ]);
+
+        // 3. Re-link Transactions that were orphaned
+        if (appointments?.length) {
+            const apptIds = appointments.map(a => a.id);
+            await conn.query("UPDATE transactions SET related_user_id = ? WHERE appointment_id IN (?)", [newUserId, apptIds]);
+        }
+        if (medical_requests?.length) {
+            const reqIds = medical_requests.map(r => r.id);
+            await conn.query("UPDATE transactions SET related_user_id = ? WHERE request_id IN (?)", [newUserId, reqIds]);
+        }
 
         if (assigned_doctors?.length) {
             for (const pd of assigned_doctors) {

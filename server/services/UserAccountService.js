@@ -117,10 +117,10 @@ class UserAccountService {
         try {
             await conn.beginTransaction();
 
-            // 1. Get the user's role
-            const [userRow] = await conn.query("SELECT id, username, role FROM users WHERE id = ?", [userId]);
+            // 1. Get the user's role and auth data
+            const [userRow] = await conn.query("SELECT id, username, role, password_hash FROM users WHERE id = ?", [userId]);
             if (!userRow) throw new Error(`User ${userId} not found`);
-            const role = userRow.role;
+            const { role, password_hash, username: oldUsername } = userRow;
 
             if (role === 'patient') {
                 // 2a. Get patient profile
@@ -137,6 +137,7 @@ class UserAccountService {
                 // Save to recycle bin BEFORE deleting
                 await saveToRecycleBin(req, 'patient', patientId, profile.full_name, {
                     profile,
+                    auth: { username: oldUsername, password_hash }, // Store credentials
                     appointments,
                     files,
                     medical_requests,
