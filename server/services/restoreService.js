@@ -1,5 +1,6 @@
 const { pool } = require('../db');
 const { logAction } = require('../utils/audit');
+const { formatLocalSQL } = require('../utils/dateUtils');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
@@ -57,11 +58,11 @@ class RestoreService {
         const username = auth?.username || profile.email || profile.dni || `restored_patient_${Date.now()}`;
         const passwordHash = auth?.password_hash || await bcrypt.hash(crypto.randomBytes(16).toString('hex'), 10);
 
-        const [uRes] = await conn.query(
+        const uRes = await conn.query(
             "INSERT INTO users (username, password_hash, role) VALUES (?, ?, 'patient')",
             [username, passwordHash]
         );
-        const newUserId = uRes.insertId;
+        const newUserId = Number(uRes.insertId);
 
         // 2. Restore Patient Profile
         await conn.query(`
@@ -75,16 +76,16 @@ class RestoreService {
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [
             profile.id, newUserId, profile.first_name, profile.last_name, profile.full_name,
-            profile.dob, profile.phone, profile.email,
+            formatLocalSQL(profile.dob), profile.phone, profile.email,
             profile.medical_history, profile.dni, profile.affiliate_number,
             profile.insurance_id, profile.institution_id,
             profile.tariff_percent, profile.tariff_override,
             profile.behavior_rating, profile.is_new_patient,
             profile.visit_interval_days, profile.prescription_interval_days,
-            profile.next_suggested_visit_date, profile.next_suggested_prescription_date,
-            profile.license_expiry_date,
+            formatLocalSQL(profile.next_suggested_visit_date), formatLocalSQL(profile.next_suggested_prescription_date),
+            formatLocalSQL(profile.license_expiry_date),
             profile.street_name, profile.street_number, profile.floor, profile.apartment,
-            profile.city, profile.country
+            profile.city, profile.province, profile.country
         ]);
 
         // 3. Re-link Transactions that were orphaned
@@ -115,12 +116,12 @@ class RestoreService {
                 await conn.query(`
                     INSERT INTO patient_files (id, patient_id, uploaded_by, file_name, file_url, file_type, description, created_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                 `, [f.id, profile.id, uploader, f.file_name, f.file_url, f.file_type, f.description, f.created_at]);
-            }
-        }
+                 `, [f.id, profile.id, uploader, f.file_name, f.file_url, f.file_type, f.description, formatLocalSQL(f.created_at)]);
+                }
+                }
 
-        if (appointments?.length) {
-            for (const app of appointments) {
+                if (appointments?.length) {
+                for (const app of appointments) {
                 const [dCheck] = await conn.query("SELECT id FROM doctors WHERE id = ?", [app.doctor_id]);
                 if (dCheck.length === 0) continue;
 
@@ -128,15 +129,15 @@ class RestoreService {
                     INSERT INTO appointments (
                         id, patient_id, doctor_id, consultorio_id, appointment_date, reason, status, 
                         cancellation_reason, cost, is_paid, payment_status, google_event_id, 
-                        is_out_of_hours, type, created_at
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        is_out_of_hours, type
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 `, [
-                    app.id, profile.id, app.doctor_id, app.consultorio_id, app.appointment_date,
+                    app.id, profile.id, app.doctor_id, app.consultorio_id, formatLocalSQL(app.appointment_date),
                     app.reason, app.status, app.cancellation_reason, app.cost, app.is_paid,
-                    app.payment_status, app.google_event_id, app.is_out_of_hours, app.type, app.created_at
+                    app.payment_status, app.google_event_id, app.is_out_of_hours, app.type
                 ]);
-            }
-        }
+                }
+                }
 
         if (medical_requests?.length) {
             for (const req of medical_requests) {
@@ -149,7 +150,7 @@ class RestoreService {
                  `, [
                     req.id, req.type, profile.id, req.doctor_id, req.requires_doctor_approval,
                     req.secretary_id, req.status, req.request_note, req.doctor_note,
-                    req.created_at, req.updated_at, req.payment_status, req.debt_amount, req.completed_at
+                    formatLocalSQL(req.created_at), formatLocalSQL(req.updated_at), req.payment_status, req.debt_amount, formatLocalSQL(req.completed_at)
                 ]);
             }
         }
@@ -159,7 +160,7 @@ class RestoreService {
         const { profile } = data;
         const passwordHash = await bcrypt.hash(crypto.randomBytes(16).toString('hex'), 10);
         const username = profile.full_name.replace(/\s+/g, '.').toLowerCase();
-        const [uRes] = await conn.query("INSERT INTO users (username, password_hash, role) VALUES (?, ?, 'doctor')", [username, passwordHash]);
+        const uRes = await conn.query("INSERT INTO users (username, password_hash, role) VALUES (?, ?, 'doctor')", [username, passwordHash]);
         await conn.query(`INSERT INTO doctors (id, user_id, full_name, specialty, phone) VALUES (?, ?, ?, ?, ?)`,
             [profile.id, uRes.insertId, profile.full_name, profile.specialty, profile.phone]);
     }
@@ -168,7 +169,7 @@ class RestoreService {
         const { profile } = data;
         const passwordHash = await bcrypt.hash(crypto.randomBytes(16).toString('hex'), 10);
         const username = profile.full_name.replace(/\s+/g, '.').toLowerCase();
-        const [uRes] = await conn.query("INSERT INTO users (username, password_hash, role) VALUES (?, ?, 'secretary')", [username, passwordHash]);
+        const uRes = await conn.query("INSERT INTO users (username, password_hash, role) VALUES (?, ?, 'secretary')", [username, passwordHash]);
         await conn.query(`INSERT INTO secretaries (id, user_id, full_name, phone) VALUES (?, ?, ?, ?)`,
             [profile.id, uRes.insertId, profile.full_name, profile.phone]);
     }

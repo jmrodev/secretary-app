@@ -47,7 +47,7 @@ const PatientMedications = ({ patientId, patientName }) => {
         try {
             const payload = {
                 type: 'prescription',
-                patient_id: patientId,
+                patientId: patientId,
                 doctor_id: req.doctor_id || user?.user_id || user?.id,
                 request_note: `[Solicitud Automática / Repetida]\n${req.request_note || ''}`,
                 raw_medication_data: req.raw_medication_data || null,

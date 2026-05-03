@@ -77,7 +77,7 @@ export const useMedicalDocumentsHandlers = ({
         try {
             await api.post('/medical/requests', {
                 type: reqType,
-                patient_id: selectedPatient,
+                patientId: selectedPatient,
                 doctor_id: user?.role === 'doctor' ? (user.user_id || user.id) : selectedDoctor,
                 request_note: reqNote,
                 status: sendToDoctor ? 'pending' : 'completed'

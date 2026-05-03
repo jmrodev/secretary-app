@@ -180,7 +180,7 @@ export const useRequirementManagerController = (user) => {
 
         try {
             await api.post('/medical/patients/medications', {
-                patient_id: selectedRequest.patient_id,
+                patientId: selectedRequest.patient_id,
                 medication_name: medName,
                 is_chronic: true,
                 status: 'active'

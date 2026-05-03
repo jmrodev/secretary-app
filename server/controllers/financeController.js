@@ -15,7 +15,7 @@ exports.getPricing = async (req, res) => {
         const { service_type } = req.query;
         const { doctor_id, patient_id } = req.body || {};
         if (!doctor_id) return res.status(400).send("Doctor ID required");
-        const result = await financeService.getPricing(doctor_id, patient_id, service_type);
+        const result = await financeService.getPricing(doctor_id, patientId, service_type);
         res.json({ price: result.price.toFixed(2), explanation: result.explanation });
     } catch (err) {
         console.error(err);
@@ -44,9 +44,9 @@ exports.createTransaction = async (req, res) => {
 
 exports.getTransactions = async (req, res) => {
     try {
-        let { doctor_id, page, limit, search } = req.query;
+        let { doctor_id, patientId, page, limit, search } = req.query;
         if (doctor_id === 'all' || !doctor_id) doctor_id = null;
-        const result = await financeService.getTransactions(req.user, { doctor_id, page, limit, search });
+        const result = await financeService.getTransactions(req.user, { doctor_id, patientId, page, limit, search });
         res.json(result);
     } catch (err) {
         console.error(err);
