@@ -32,7 +32,7 @@ const AppointmentsPage = () => {
         t, user, loading, activeTab, showOutOfHours,
         viewDoctorId, doctors, institutions, insurances, selectedDate, filteredAppointments,
         appointments, doctorSchedule, holidays, calendarStats, currentDoctor,
-        searchTerm, searchPatientId, patientAppointments, patientApptLoading, searchLoading,
+        searchTerm, searchPatientId, patientAppointments, searchLoading,
         paymentModal, actionModal, historyModal,
         prescribeModal, whatsappModal, setWhatsappModal, showNextSlotModal, setShowNextSlotModal,
         editPatientModalOpen, authModalOpen,

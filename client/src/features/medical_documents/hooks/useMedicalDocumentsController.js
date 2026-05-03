@@ -29,17 +29,6 @@ export const useMedicalDocumentsController = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
 
-    // Debounce the search term: wait 400ms after user stops typing before sending to API
-    useEffect(() => {
-        const timer = setTimeout(() => setDebouncedSearch(searchTerm), 400);
-        return () => clearTimeout(timer);
-    }, [searchTerm]);
-
-    // Reset to page 1 when search changes
-    useEffect(() => {
-        setRequestsPage(1);
-    }, [debouncedSearch]);
-
     // Pagination State for Requests
     const [requestsPage, setRequestsPage] = useState(1);
     const [requestsLimit] = useState(25);
@@ -50,6 +39,17 @@ export const useMedicalDocumentsController = () => {
 
     const [licensesPage, setLicensesPage] = useState(1);
     const [licensesLimit] = useState(25);
+
+    // Debounce the search term: wait 400ms after user stops typing before sending to API
+    useEffect(() => {
+        const timer = setTimeout(() => setDebouncedSearch(searchTerm), 400);
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
+
+    // Reset to page 1 when search changes
+    useEffect(() => {
+        setRequestsPage(1);
+    }, [debouncedSearch]);
 
     // --- FETCH DATA using useFetch ---
 

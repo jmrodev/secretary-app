@@ -212,7 +212,7 @@ export const es = {
     appointment_date: "Fecha",
     appointment_doctor: "Doctor",
     appointment_status: "Estado",
-    appointment_payment: "Pago",
+    appointment_payment: "Estado de Pago",
     appointment_balance: "Saldo",
     appointment_reason: "Motivo",
     generate_qr_access: "Generar QR Acceso",
@@ -338,7 +338,7 @@ export const es = {
     certificate_placeholder: "Ej: Apto físico para natación",
     new_request: "Nueva Solicitud",
     request_type: "Tipo",
-    request_note: "Nota del Paciente",
+    request_note: "Nota de la Solicitud",
     request_saved_completed: "Guardado como Completado",
     pending_requests: "Solicitudes Pendientes",
     no_permissions_view: "No tienes permisos para ver esta sección.",
@@ -373,8 +373,8 @@ export const es = {
     reason_rejection: "Razón del Rechazo",
     message_optional: "Mensaje (Opcional)",
     approve: "Aprobar",
-    doctor_says: "El doctor dice",
-    instructions_notes: "Instrucciones / Notas",
+    doctor_says: "Respuesta del Médico",
+    instructions_notes: "Instrucciones o Notas",
     credit_card: "Tarjeta de Crédito",
     debit_card: "Tarjeta de Débito",
     on_account: "Cuenta Corriente",
@@ -1095,9 +1095,4 @@ export const es = {
     
     // Medical Documents Extra
     edit_request: "Editar Solicitud",
-    doctor_says: "Respuesta del Médico",
-    request_note: "Nota de la Solicitud",
-    no_description: "Sin descripción",
-    instructions_notes: "Instrucciones o Notas",
-    appointment_payment: "Estado de Pago",
 };

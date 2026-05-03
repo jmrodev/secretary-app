@@ -3,7 +3,6 @@ import { useLanguage } from '@/context/LanguageContext';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import Loading from '@/components/atoms/Loading';
-import Badge from '@/components/atoms/Badge';
 import { formatDate } from '@/utils/dateUtils';
 import './PatientHistoryView.css';
 
