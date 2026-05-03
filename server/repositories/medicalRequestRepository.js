@@ -31,13 +31,20 @@ class MedicalRequestRepository {
             params.push(filters.doctorId);
         }
         if (filters.status) {
-            if (Array.isArray(filters.status)) {
-                whereClauses.push(`r.status IN (${filters.status.map(() => '?').join(',')})`);
-                params.push(...filters.status);
-            } else {
-                whereClauses.push("r.status = ?");
-                params.push(filters.status);
-            }
+            const statusArray = Array.isArray(filters.status) ? filters.status : [filters.status];
+            const expandedStatus = [...statusArray];
+            if (statusArray.includes('completed')) expandedStatus.push('completado');
+            if (statusArray.includes('pending')) expandedStatus.push('pendiente');
+            if (statusArray.includes('rejected')) expandedStatus.push('rechazado');
+            if (statusArray.includes('consult')) expandedStatus.push('consulta');
+
+            whereClauses.push(`r.status IN (${expandedStatus.map(() => '?').join(',')})`);
+            params.push(...expandedStatus);
+        }
+        if (filters.search) {
+            const term = `%${filters.search}%`;
+            whereClauses.push("(p.full_name LIKE ? OR d.full_name LIKE ?)");
+            params.push(term, term);
         }
 
         if (whereClauses.length > 0) query += " WHERE " + whereClauses.join(" AND ");
@@ -48,11 +55,20 @@ class MedicalRequestRepository {
             params.push(parseInt(filters.limit), parseInt(filters.offset || 0));
         }
 
-        return await conn.query(query, params);
+        // VERBOSE LOGGING
+        console.log("=== [SQL DEBUG] ===");
+        console.log("Query:", query);
+        console.log("Params:", JSON.stringify(params));
+
+        const rows = await conn.query(query, params);
+        console.log(`[SQL DEBUG] Rows returned: ${rows.length}`);
+        return rows;
     }
 
     async countAll(filters = {}, conn = pool) {
-        let query = "SELECT COUNT(*) as total FROM medical_requests r";
+        let query = `SELECT COUNT(*) as total FROM medical_requests r
+            LEFT JOIN patients p ON r.patient_id = p.id
+            LEFT JOIN doctors d ON r.doctor_id = d.id`;
         const params = [];
         const whereClauses = [];
 
@@ -63,18 +79,33 @@ class MedicalRequestRepository {
             params.push(filters.doctorId);
         }
         if (filters.status) {
-            if (Array.isArray(filters.status)) {
-                whereClauses.push(`r.status IN (${filters.status.map(() => '?').join(',')})`);
-                params.push(...filters.status);
-            } else {
-                whereClauses.push("r.status = ?");
-                params.push(filters.status);
-            }
+            const statusArray = Array.isArray(filters.status) ? filters.status : [filters.status];
+            const expandedStatus = [...statusArray];
+            if (statusArray.includes('completed')) expandedStatus.push('completado');
+            if (statusArray.includes('pending')) expandedStatus.push('pendiente');
+            if (statusArray.includes('rejected')) expandedStatus.push('rechazado');
+            if (statusArray.includes('consult')) expandedStatus.push('consulta');
+
+            whereClauses.push(`r.status IN (${expandedStatus.map(() => '?').join(',')})`);
+            params.push(...expandedStatus);
+        }
+        if (filters.search) {
+            const term = `%${filters.search}%`;
+            // countAll needs a JOIN on patients to search by name
+            whereClauses.push("(p.full_name LIKE ? OR d.full_name LIKE ?)");
+            params.push(term, term);
         }
 
         if (whereClauses.length > 0) query += " WHERE " + whereClauses.join(" AND ");
+        
+        console.log("=== [SQL COUNT DEBUG] ===");
+        console.log("Query:", query);
+        console.log("Params:", JSON.stringify(params));
+
         const [row] = await conn.query(query, params);
-        return row?.total || 0;
+        const total = row?.total || 0;
+        console.log(`[SQL COUNT DEBUG] Total: ${total}`);
+        return total;
     }
 
     async findById(id, conn = pool) {

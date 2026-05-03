@@ -38,8 +38,8 @@ class UserAccountService {
                     street_name, street_number, floor, apartment, city, province, country
                 }, conn);
 
-                // Sync to Google
-                googleContactService.syncContact({ full_name: fullName, dni, phone }).catch(err => console.error("Async Sync Error:", err));
+                // Removed Google Contact Sync as requested (account is only for appointments)
+                // googleContactService.syncContact({ full_name: fullName, dni, phone }).catch(err => console.error("Async Sync Error:", err));
             }
 
             // 2. Handle Phone Numbers

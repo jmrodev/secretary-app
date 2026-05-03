@@ -17,6 +17,161 @@
     background: white;
 }
 
+/* Premium Light Glassmorphism Modal */
+.modal-overlay--glass {
+    backdrop-filter: blur(8px) saturate(150%);
+    background: rgba(15, 23, 42, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content--premium {
+    background: var(--modal-bg);
+    border: 1px solid var(--gray-200);
+    border-radius: 20px;
+    box-shadow: var(--shadow-premium);
+    width: 100%;
+    max-width: 550px;
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+    animation: modalFloat 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalFloat {
+    from { opacity: 0; transform: scale(0.95) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-header {
+    padding: 1.25rem 1.75rem;
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header__title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    letter-spacing: -0.01em;
+}
+
+.modal-header__close {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    color: var(--text-muted);
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.modal-header__close:hover {
+    background: var(--red-50);
+    color: var(--red-600);
+    border-color: var(--red-100);
+}
+
+.modal-body {
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.input-group__label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.input-group__static-text {
+    padding: 0.85rem 1rem;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 0.95rem;
+}
+
+.input-group__textarea {
+    width: 100%;
+    min-height: 110px;
+    padding: 0.85rem 1rem;
+    background: var(--white);
+    border: 1px solid var(--gray-300);
+    border-radius: 12px;
+    color: var(--text-main);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.input-group__textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px var(--blue-50);
+    outline: none;
+}
+
+.input-group__select {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    background: var(--white);
+    border: 1px solid var(--gray-300);
+    border-radius: 12px;
+    color: var(--text-main);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.input-group__select:focus {
+    border-color: var(--primary-color);
+}
+
+.modal-footer {
+    padding: 1.25rem 1.75rem;
+    background: var(--gray-50);
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.medical-documents__main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow-y: auto;
+}
+
 .medical-documents__print-header {
     border-bottom: 2px solid var(--gray-800);
     margin-bottom: 2rem;
@@ -49,4 +204,29 @@
 .print-table th {
     background-color: var(--gray-100);
     font-weight: bold;
+}
+
+/* Transitions & Loading States */
+.animate-fadeIn {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Localized loading dimming */
+.medical-requests--loading,
+.medical-history--loading {
+    opacity: 0.6;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    filter: blur(1px);
+}
+
+/* Prevent layout shift - min heights for main containers */
+.medical-documents__tabs-content {
+    min-height: 400px;
+    position: relative;
 }

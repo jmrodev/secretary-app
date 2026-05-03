@@ -23,9 +23,8 @@
     /* ------------------------------ */
 
     background-color: var(--history-bg);
-    border-radius: var(--radius);
+    border-radius: var(--radius-sm);
     overflow: hidden;
-    box-shadow: var(--shadow-sm);
     border: 1px solid var(--history-border);
 }
 
@@ -35,11 +34,11 @@
 }
 
 .medical-history__th {
-    padding: 1rem;
+    padding: 0.75rem 1rem;
     text-align: left;
     background-color: var(--history-header-bg);
-    border-bottom: 2px solid var(--history-border);
-    font-size: 0.75rem;
+    border-bottom: 1px solid var(--history-border);
+    font-size: 0.7rem;
     font-weight: 700;
     color: var(--text-muted);
     text-transform: uppercase;
@@ -68,9 +67,9 @@
 }
 
 .medical-history__td {
-    padding: 1rem;
+    padding: 0.5rem 1rem;
     border-bottom: 1px solid var(--gray-100);
-    vertical-align: top;
+    vertical-align: middle;
 }
 
 .medical-history__td:first-child {

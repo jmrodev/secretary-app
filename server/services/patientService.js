@@ -148,7 +148,8 @@ class PatientService {
             await conn.commit();
 
             const newData = await patientRepository.findById(id);
-            googleContactService.syncContact(newData).catch(err => console.error("Sync Error:", err));
+            // Removed Google Contact Sync as requested (account is only for appointments)
+            // googleContactService.syncContact(newData).catch(err => console.error("Sync Error:", err));
 
             return { oldData, newData };
         } catch (err) {

@@ -22,9 +22,10 @@ export const useMedicalDocumentsController = () => {
     const { viewDoctorId } = useDoctors();
 
     // --- State ---
-    const [activeTab, setActiveTab] = useState('requests'); // requests | files | prescriptions | licenses | certificates
-    const [requestsSubTab, setRequestsSubTab] = useState('list'); // new | list
+    const [activeTab, setActiveTab] = useState('requests');
+    const [requestsSubTab, setRequestsSubTab] = useState('list');
     const [searchTerm, setSearchTerm] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
 
@@ -38,6 +39,17 @@ export const useMedicalDocumentsController = () => {
 
     const [licensesPage, setLicensesPage] = useState(1);
     const [licensesLimit] = useState(25);
+
+    // Debounce the search term: wait 400ms after user stops typing before sending to API
+    useEffect(() => {
+        const timer = setTimeout(() => setDebouncedSearch(searchTerm), 400);
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
+
+    // Reset to page 1 when search changes
+    useEffect(() => {
+        setRequestsPage(1);
+    }, [debouncedSearch]);
 
     // --- FETCH DATA using useFetch ---
 
@@ -63,7 +75,8 @@ export const useMedicalDocumentsController = () => {
             page: requestsPage,
             limit: requestsLimit,
             status: requestsStatus,
-            doctorId: viewDoctorId // Pass to ensure refetch on change
+            search: debouncedSearch || undefined,
+            doctorId: viewDoctorId
         },
         initialData: { requests: [], totalCount: 0 }
     });
@@ -124,6 +137,28 @@ export const useMedicalDocumentsController = () => {
     };
 
     const loading = requestsLoading || filesLoading || prescriptionsLoading || licensesLoading;
+
+    // DEBUG: Log everything to browser console
+    useEffect(() => {
+        console.log(">>> [FRONTEND STATE DEBUG] <<<");
+        console.log("Current Tab:", activeTab);
+        console.log("SubTab:", requestsSubTab);
+        console.log("Doctor Context ID:", viewDoctorId);
+        console.log("API Status Filters:", JSON.stringify(requestsStatus));
+        console.log("--- Results ---");
+        console.log("Requests Array Length:", requests.length);
+        console.log("Requests Total in DB (according to API):", requestsTotal);
+        console.log("Loading Status:", loading);
+        
+        if (requests.length > 0) {
+            console.log("First request details:", {
+                id: requests[0].id,
+                status: requests[0].status,
+                type: requests[0].type,
+                patient: requests[0].patient_name
+            });
+        }
+    }, [activeTab, requestsSubTab, viewDoctorId, requestsStatus, requests, requestsTotal, loading]);
 
     // Selection/Edit State
     const [selectedPatient, setSelectedPatient] = useState('');

@@ -147,6 +147,7 @@ export const es = {
     qty_help: "Cantidad total a entregar al paciente (ej: 1 caja, 2 frascos).",
     habitual_meds: "Habituales / Histórico",
     medications_added: "Medicamentos agregados",
+    added_medications: "Medicamentos agregados",
     daily_units: "Pastillas/día",
     boxes: "Cajas",
     sending: "Enviando...",
@@ -211,7 +212,7 @@ export const es = {
     appointment_date: "Fecha",
     appointment_doctor: "Doctor",
     appointment_status: "Estado",
-    appointment_payment: "Pago",
+    appointment_payment: "Estado de Pago",
     appointment_balance: "Saldo",
     appointment_reason: "Motivo",
     generate_qr_access: "Generar QR Acceso",
@@ -337,7 +338,7 @@ export const es = {
     certificate_placeholder: "Ej: Apto físico para natación",
     new_request: "Nueva Solicitud",
     request_type: "Tipo",
-    request_note: "Nota del Paciente",
+    request_note: "Nota de la Solicitud",
     request_saved_completed: "Guardado como Completado",
     pending_requests: "Solicitudes Pendientes",
     no_permissions_view: "No tienes permisos para ver esta sección.",
@@ -372,8 +373,8 @@ export const es = {
     reason_rejection: "Razón del Rechazo",
     message_optional: "Mensaje (Opcional)",
     approve: "Aprobar",
-    doctor_says: "El doctor dice",
-    instructions_notes: "Instrucciones / Notas",
+    doctor_says: "Respuesta del Médico",
+    instructions_notes: "Instrucciones o Notas",
     credit_card: "Tarjeta de Crédito",
     debit_card: "Tarjeta de Débito",
     on_account: "Cuenta Corriente",
@@ -1091,5 +1092,7 @@ export const es = {
     whatsapp_automation_title: "Automatización de WhatsApp (IA)",
     whatsapp_auto_respond_unknown_label: "Responder automáticamente a números desconocidos",
     whatsapp_auto_respond_unknown_hint: "Si está activado, la IA enviará automáticamente un saludo y el link de registro a cualquier número que no esté en tu agenda.",
-
+    
+    // Medical Documents Extra
+    edit_request: "Editar Solicitud",
 };

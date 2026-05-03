@@ -19,16 +19,29 @@ exports.createRequest = async (req, res) => {
 
 exports.getRequests = async (req, res) => {
     try {
-        const { page = 1, limit = 50, status, patientId, doctorId: queryDoctorId } = req.query;
+        const { page = 1, limit = 50, status, patientId, doctorId: queryDoctorId, search } = req.query;
         const filters = {
             patientId,
-            doctorId: req.doctorId || queryDoctorId, // Use header doctorId (from secretary selection) if available
+            doctorId: req.doctorId || queryDoctorId,
             status,
+            search: search?.trim() || undefined,
             limit: parseInt(limit),
             offset: (parseInt(page) - 1) * parseInt(limit)
         };
+
+        // VERBOSE CONTROLLER LOGGING
+        console.log("=== [CONTROLLER DEBUG] ===");
+        console.log("x-doctor-id header:", req.headers['x-doctor-id']);
+        console.log("req.doctorId:", req.doctorId);
+        console.log("Filters:", JSON.stringify(filters));
+
         const result = await medicalRequestService.getRequests(req.user, filters);
-        console.log(`[GET_REQUESTS] User: ${req.user.username} (Role: ${req.user.role}). Filters: ${JSON.stringify(filters)}. Total: ${result.totalCount}`);
+        
+        console.log(`[GET_REQUESTS] Result: Total ${result.totalCount}, Items ${result.requests.length}`);
+        if (result.requests.length > 0) {
+            console.log("[GET_REQUESTS] Sample Status:", result.requests[0].status);
+        }
+
         res.json(result);
     } catch (err) {
         console.error(err);

@@ -11,7 +11,6 @@ import {
 
 // Global Atomic Components
 import MainLayout from '@/components/templates/MainLayout';
-import Loading from '@/components/atoms/Loading';
 import Icon from '@/components/atoms/Icon';
 import TabButton from '@/components/atoms/TabButton';
 import TabNav from '@/components/molecules/TabNav';
@@ -91,11 +90,8 @@ const MedicalDocumentsPage = () => {
         }))
     ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-    if (loading) return (
-        <MainLayout wide flush>
-            <Loading variant="centered" />
-        </MainLayout>
-    );
+    // No more global loading returns to avoid jarring layout shifts.
+    // Instead, we pass the loading state to sub-components for localized feedback.
 
     return (
         <MainLayout wide flush title={t('medical_documents')}>
@@ -147,6 +143,7 @@ const MedicalDocumentsPage = () => {
                                     ) : (
                                         <MedicalRequestList
                                             requests={requests}
+                                            loading={loading}
                                             handleDeleteRequest={handleDeleteRequest}
                                             openActionModal={openActionModal}
                                             setPaymentModal={openPaymentModal}
@@ -185,6 +182,7 @@ const MedicalDocumentsPage = () => {
                                             activeTab === 'licenses' ? combinedLicenses :
                                                 combinedCertificates
                                     }
+                                    loading={loading}
                                     onView={handleEditItem}
                                     onDelete={
                                         activeTab === 'prescriptions' ? handleDeletePrescription :

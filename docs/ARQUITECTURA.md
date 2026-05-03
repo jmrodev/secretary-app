@@ -489,3 +489,89 @@ Para garantizar la compatibilidad con el sistema de paginación y el hook `useFe
 - **Razón**: Permite que el frontend gestione la paginación de forma consistente sin importar si es una búsqueda, un filtrado o una lista completa.
 - **Excepción**: Endpoints de detalle único (GET /:id) siguen devolviendo el objeto directo.
 **Mantenedor**: Equipo de Desarrollo (Estandarización de useFetch, Lazy Loading y Git Flow completada)
+
+---
+
+### 15. Estrategia de Rendimiento de Base de Datos (MariaDB)
+
+#### 15.1 Índices
+
+Los índices son **obligatorios** para cualquier columna que aparezca en cláusulas `WHERE`, `ORDER BY`, `GROUP BY` o como clave de `JOIN`. La ausencia de índices convierte búsquedas en full-table-scans que degradan el rendimiento de forma silenciosa y acumulativa.
+
+**Inventario de Índices Activos:**
+
+| Tabla | Índice | Columnas | Propósito |
+|---|---|---|---|
+| `appointments` | `idx_appt_doctor_date` | `(doctor_id, appointment_date)` | Consultas de agenda por médico y fecha |
+| `appointments` | `idx_appt_doctor_status` | `(doctor_id, status)` | Filtros de estado por médico |
+| `appointments` | `idx_appt_status` | `(status)` | Filtros generales por estado |
+| `appointments` | `idx_appt_google_event` | `(google_event_id)` | Sync con Google Calendar |
+| `appointments` | `idx_appt_institution` | `(institution_id)` | Reportes por institución |
+| `appointments` | `idx_appointments_date` | `(appointment_date)` | ORDER BY fecha |
+| `patients` | `idx_patients_full_name` | `(full_name)` | Búsqueda por nombre de paciente |
+| `medical_requests` | `idx_mr_status` | `(status)` | Filtro de solicitudes por estado |
+| `medical_requests` | `idx_mr_created_at` | `(created_at)` | Paginación/orden por fecha |
+| `medical_requests` | `idx_mr_type` | `(type)` | Filtro por tipo (receta/certificado) |
+| `medical_requests` | `idx_mr_payment_status` | `(payment_status)` | Reportes de cobranza |
+| `transactions` | `idx_tx_status` | `(status)` | Filtros pagado/pendiente |
+| `transactions` | `idx_tx_date` | `(transaction_date)` | Reportes cronológicos |
+| `transactions` | `idx_tx_type` | `(type)` | Filtro de tipo de transacción |
+| `prescriptions` | `idx_presc_created` | `(created_at)` | Orden cronológico de recetas |
+| `prescriptions` | `idx_presc_payment` | `(payment_status)` | Reportes de recetas impagas |
+| `medical_licenses` | `idx_license_start` | `(start_date)` | Filtros de licencias activas |
+| `medical_licenses` | `idx_license_payment` | `(payment_status)` | Reportes de licencias |
+| `google_sync_queue` | `idx_gsq_status` | `(status)` | Worker de sincronización pendiente |
+| `google_sync_queue` | `idx_gsq_doctor` | `(doctor_id)` | Sync por médico |
+| `audit_logs` | `idx_audit_created` | `(created_at)` | Paginación de auditoría |
+| `audit_logs` | `idx_audit_action` | `(action)` | Filtro por tipo de acción |
+| `whatsapp_messages` | `idx_wa_created` | `(created_at)` | Orden de mensajes |
+| `whatsapp_messages` | `idx_wa_status` | `(status)` | Filtro de mensajes pendientes |
+
+**Reglas para nuevos índices:**
+- Crear un índice cuando una columna aparezca en `WHERE` en consultas frecuentes con más de ~1.000 filas.
+- Preferir índices **compuestos** `(col_a, col_b)` cuando la consulta filtre siempre por ambas columnas juntas (ej: `doctor_id + appointment_date`). La columna más selectiva va primero.
+- `LIKE '%término%'` **NO usa índices** de B-Tree. Para búsquedas de texto libre en tablas grandes, evaluar `FULLTEXT INDEX` o buscar en columnas secundarias (`phone`, `dni`) que sí admiten prefijo (`LIKE 'término%'`).
+- Documentar aquí cualquier índice nuevo creado mediante migración.
+
+#### 15.2 Patrón: JOINs Pre-Agregados vs. Subconsultas Correlacionadas
+
+**PROHIBIDO** el uso de subconsultas correlacionadas para calcular agregados por fila:
+
+```sql
+-- ❌ MAL: Se ejecuta N veces (una por fila del resultado)
+SELECT a.*,
+  (SELECT SUM(amount) FROM transactions t WHERE t.appointment_id = a.id AND t.status = 'paid') as paid
+FROM appointments a
+```
+
+**OBLIGATORIO** usar derived tables (JOINs pre-agregados):
+
+```sql
+-- ✅ BIEN: Se ejecuta 1 sola vez para todo el resultado
+SELECT a.*, COALESCE(tx.paid_amount, 0) as paid
+FROM appointments a
+LEFT JOIN (
+    SELECT appointment_id,
+        SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) as paid_amount
+    FROM transactions
+    GROUP BY appointment_id
+) tx ON tx.appointment_id = a.id
+```
+
+**Razón:** Con subconsultas correlacionadas, 50 turnos en el resultado = 200 consultas adicionales a `transactions` e `invoices`. El patrón con JOINs pre-agregados ejecuta esas agregaciones una sola vez, independientemente del volumen del resultado.
+
+#### 15.3 Decisión: Funciones Almacenadas (Stored Functions)
+
+**Decisión: NO usar Stored Functions ni Stored Procedures en este proyecto.**
+
+El cálculo de `paid_amount`/`pending_amount` aparece en múltiples queries y podría parecer un buen candidato para una función almacenada. Sin embargo, se descartó por las siguientes razones:
+
+| Criterio | Stored Function | JOIN Pre-Agregado (elegido) |
+|---|---|---|
+| Control de versiones (Git) | ❌ Requiere scripts de migración adicionales | ✅ En el repositorio como código Node.js |
+| Portabilidad | ❌ Acoplado a MariaDB/MySQL | ✅ Agnóstico |
+| Debuggeo | ❌ Difícil de testear unitariamente | ✅ Testeable con Jest |
+| Deploy | ❌ Requiere paso de migración en cada deploy | ✅ Sin pasos extras |
+| Rendimiento | Similar | Similar (misma ganancia) |
+
+**Conclusión:** El mismo beneficio de rendimiento se obtiene con JOINs pre-agregados (sección 15.2), sin el costo operacional de mantener lógica de negocio dentro de la base de datos.

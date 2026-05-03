@@ -11,14 +11,13 @@ import './MedicalHistoryTable.css';
 
 const MedicalHistoryTable = ({ 
     items, 
-    // filterItem removed because filtering is now server-side or handled at orchestrator level
+    loading,
     onView, 
     onDelete, 
     icon, 
     title, 
     originLabel, 
     canDelete,
-    // Pagination Props
     currentPage,
     totalPages,
     onPageChange
@@ -28,11 +27,10 @@ const MedicalHistoryTable = ({
 
     const showDelete = canDelete !== undefined ? canDelete : (user?.role === 'admin' || user?.role === 'secretary');
 
-    // Safety check for items
     const safeItems = Array.isArray(items) ? items : [];
 
     return (
-        <section className="medical-history">
+        <section className={`medical-history ${loading ? 'medical-history--loading' : 'animate-fadeIn'}`}>
             <header className="medical-history__title">
                 <span className="medical-history__title-icon">
                     <Icon name={icon} size="1.2rem" />

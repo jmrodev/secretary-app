@@ -40,7 +40,7 @@ class AvailabilitySearchService {
             : (start_date ? this._parseLocalDate(start_date) : new Date());
         const now = new Date();
 
-        const maxDays = 90;
+        const maxDays = 30;
         let daysChecked = 0;
         let foundRegular = null, foundBreak = null;
 
@@ -51,8 +51,8 @@ class AvailabilitySearchService {
         const tMin = rangeMin.toISOString(), tMax = rangeMax.toISOString();
         const dMin = tMin.split('T')[0], dMax = tMax.split('T')[0];
 
-        let googleBusyAll = [];
-        try { googleBusyAll = await googleCalendarService.getBusyIntervals(doctor_id, tMin, tMax); } catch (e) { }
+        // Removed Google busy intervals check as requested (center is local DB)
+        let googleBusyAll = []; 
 
         const holidays = await holidayRepository.getHolidaysInRange(dMin, dMax);
         const holidayDates = new Set(holidays);
@@ -144,12 +144,14 @@ class AvailabilitySearchService {
         const now = new Date(); const todayZero = new Date(now); todayZero.setHours(0, 0, 0, 0);
         if (currentDay < todayZero) currentDay = new Date(todayZero);
 
-        const maxDaysToCheck = 90; let daysChecked = 0;
+        const maxDaysToCheck = 30; let daysChecked = 0;
         const rangeMax = new Date(currentDay); rangeMax.setDate(rangeMax.getDate() + maxDaysToCheck);
         const tMin = currentDay.toISOString(), tMax = rangeMax.toISOString();
         const dMin = tMin.split('T')[0], dMax = tMax.split('T')[0];
 
-        let googleBusyAll = []; try { googleBusyAll = await googleCalendarService.getBusyIntervals(doctor_id, tMin, tMax); } catch (e) { }
+        // Removed Google busy intervals check as requested (center is local DB)
+        let googleBusyAll = []; 
+        
         const holidays = await holidayRepository.getHolidaysInRange(dMin, dMax);
         const holidayDates = new Set(holidays);
         const schedulesAll = await doctorRepository.getDoctorSchedules(doctor_id);

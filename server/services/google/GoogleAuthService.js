@@ -9,9 +9,7 @@ const systemSettingsRepository = require('../../repositories/systemSettingsRepos
 class GoogleAuthService {
     constructor() {
         this.SCOPES = [
-            'https://www.googleapis.com/auth/contacts',
-            'https://www.googleapis.com/auth/calendar',
-            'https://www.googleapis.com/auth/spreadsheets'
+            'https://www.googleapis.com/auth/calendar'
         ];
     }
 
