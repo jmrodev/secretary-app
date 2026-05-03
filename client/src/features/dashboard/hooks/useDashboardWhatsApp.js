@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from 'react';
 import { copyToClipboard } from '@/utils/clipboardUtils';
 import { replaceTemplateVariables } from '@/utils/stringUtils';
 import { useLanguage } from '@/context/LanguageContext';
@@ -5,7 +6,7 @@ import { useMessage } from '@/context/MessageContext';
 import api from '@/api/axios';
 
 export const useDashboardWhatsApp = ({ user, settings, showMessage, t }) => {
-    const handleWhatsApp = (appt, type) => {
+    const handleWhatsApp = useCallback((appt, type) => {
         let phone = appt.patient_phone;
         if (!phone) {
             const phoneMatch = appt.reason?.match(/\d{9,13}/);
@@ -74,9 +75,9 @@ export const useDashboardWhatsApp = ({ user, settings, showMessage, t }) => {
         };
 
         sendDirect();
-    };
+    }, [t, showMessage, user, settings]);
 
-    return {
+    return useMemo(() => ({
         handleWhatsApp
-    };
+    }), [handleWhatsApp]);
 };

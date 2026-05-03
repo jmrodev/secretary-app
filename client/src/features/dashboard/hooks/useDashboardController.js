@@ -48,13 +48,15 @@ export const useDashboardController = () => {
         if (!user || isPatient) return;
 
         const interval = setInterval(() => {
+            // We use the refreshDashboard method which is already stable via useCallback (inferred)
+            // or just call the internal fetch methods.
+            refreshDashboard();
             remindersHook.fetchReminders();
-            statsHook.fetchRequests();
-            statsHook.fetchStats();
         }, 30000);
         
         return () => clearInterval(interval);
-    }, [user, isPatient, remindersHook, statsHook]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user, isPatient]); // Only re-run if user or role changes
 
     // Action Handlers
     const handleUpdateStatus = async (id, status) => {

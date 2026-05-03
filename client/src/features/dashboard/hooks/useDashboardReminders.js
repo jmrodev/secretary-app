@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from 'react';
 import { useFetch } from '@/hooks/useFetch';
 import api from '@/api/axios';
 import { replaceTemplateVariables } from '@/utils/stringUtils';
@@ -12,7 +13,7 @@ export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
         initialData: []
     });
 
-    const handleCompleteReminder = async (reminder, type) => {
+    const handleCompleteReminder = useCallback(async (reminder, type) => {
         try {
             await api.post('/users/reminders/complete', {
                 patientId: reminder.id,
@@ -25,9 +26,9 @@ export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
             console.error(err);
             showMessage(t('error_completing_reminder'), 'error');
         }
-    };
+    }, [t, showMessage, fetchReminders]);
 
-    const handleMarkNotified = async (reminder, type, notified = true) => {
+    const handleMarkNotified = useCallback(async (reminder, type, notified = true) => {
         try {
             await api.post('/users/reminders/complete', {
                 patientId: reminder.id,
@@ -41,9 +42,9 @@ export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
             console.error(err);
             showMessage(t('error_updating_status'), 'error');
         }
-    };
+    }, [t, showMessage, fetchReminders]);
 
-    const handleWhatsAppReminder = (reminder, typeOverride) => {
+    const handleWhatsAppReminder = useCallback((reminder, typeOverride) => {
         const phone = reminder.phone;
         if (!phone) return showMessage(t('no_phone_available'), 'error');
 
@@ -101,9 +102,9 @@ export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
         };
 
         sendDirect();
-    };
+    }, [t, showMessage, user, settings, handleMarkNotified]);
 
-    return {
+    return useMemo(() => ({
         reminders,
         loadingReminders,
         errorReminders,
@@ -111,5 +112,8 @@ export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
         handleCompleteReminder,
         handleMarkNotified,
         handleWhatsAppReminder
-    };
+    }), [
+        reminders, loadingReminders, errorReminders, fetchReminders,
+        handleCompleteReminder, handleMarkNotified, handleWhatsAppReminder
+    ]);
 };

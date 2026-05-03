@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export const useDashboardModals = () => {
@@ -9,7 +9,7 @@ export const useDashboardModals = () => {
     const [prescribeModal, setPrescribeModal] = useState({ open: false, apptId: null, patientName: '', medications: '', instructions: '' });
     const [paymentModal, setPaymentModal] = useState({ open: false, initialData: {}, apptId: null });
 
-    const handleOpenPayment = (appt) => {
+    const handleOpenPayment = useCallback((appt) => {
         setPaymentModal({
             open: true,
             initialData: {
@@ -26,18 +26,18 @@ export const useDashboardModals = () => {
             apptId: appt.id
         });
         setActionModal(prev => ({ ...prev, open: false }));
-    };
+    }, []);
 
-    const handleOpenHistory = (appt) => {
+    const handleOpenHistory = useCallback((appt) => {
         setHistoryModal({
             open: true,
             patientId: appt.patient_id,
             patientName: appt.patient_name
         });
         setActionModal(prev => ({ ...prev, open: false }));
-    };
+    }, []);
 
-    const handleOpenPrescribe = (appt) => {
+    const handleOpenPrescribe = useCallback((appt) => {
         setPrescribeModal({
             open: true,
             apptId: appt.id,
@@ -46,21 +46,21 @@ export const useDashboardModals = () => {
             instructions: ''
         });
         setActionModal(prev => ({ ...prev, open: false }));
-    };
+    }, []);
 
-    const handleOpenReschedule = (appt) => {
+    const handleOpenReschedule = useCallback((appt) => {
         navigate('/appointments', { state: { rescheduleAppt: appt } });
-    };
+    }, [navigate]);
 
-    const handleOpenSync = (appt) => {
+    const handleOpenSync = useCallback((appt) => {
         navigate('/appointments', { state: { syncAppt: appt } });
-    };
+    }, [navigate]);
 
-    const handleHardEdit = (appt) => {
+    const handleHardEdit = useCallback((appt) => {
         navigate('/appointments', { state: { editAppt: appt } });
-    };
+    }, [navigate]);
 
-    return {
+    return useMemo(() => ({
         actionModal, setActionModal,
         historyModal, setHistoryModal,
         prescribeModal, setPrescribeModal,
@@ -72,5 +72,9 @@ export const useDashboardModals = () => {
         handleOpenSync,
         handleHardEdit,
         navigate
-    };
+    }), [
+        actionModal, historyModal, prescribeModal, paymentModal,
+        handleOpenPayment, handleOpenHistory, handleOpenPrescribe,
+        handleOpenReschedule, handleOpenSync, handleHardEdit, navigate
+    ]);
 };

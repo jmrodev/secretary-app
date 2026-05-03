@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useFetch } from '@/hooks/useFetch';
 
 export const useDashboardStats = (isStaff = false, doctor_id = '') => {
@@ -39,12 +40,12 @@ export const useDashboardStats = (isStaff = false, doctor_id = '') => {
     });
 
     // Computed
-    const pendingReqCount = requestsData.totalCount || 0;
+    const pendingReqCount = Number(requestsData.totalCount || 0);
 
-    return {
+    return useMemo(() => ({
         stats,
         newPatientStats,
-        pendingReqCount: Number(pendingReqCount),
+        pendingReqCount,
         doctors,
         loadingStats,
         loadingDoctors,
@@ -57,5 +58,10 @@ export const useDashboardStats = (isStaff = false, doctor_id = '') => {
         fetchStats,
         fetchRequests,
         fetchNewPatientStats
-    };
+    }), [
+        stats, newPatientStats, pendingReqCount, doctors, 
+        loadingStats, loadingDoctors, loadingNewPatientStats, loadingRequests,
+        errorStats, errorDoctors, errorNewPatientStats, errorRequests,
+        fetchStats, fetchRequests, fetchNewPatientStats
+    ]);
 };

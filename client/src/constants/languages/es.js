@@ -1073,5 +1073,13 @@ export const es = {
     // WhatsApp Automation
     whatsapp_automation_title: "Automatización de WhatsApp (IA)",
     whatsapp_auto_respond_unknown_label: "Responder automáticamente a números desconocidos",
-    whatsapp_auto_respond_unknown_hint: "Si está activado, la IA enviará automáticamente un saludo y el link de registro a cualquier número que no esté en tu agenda."
+    whatsapp_auto_respond_unknown_hint: "Si está activado, la IA enviará automáticamente un saludo y el link de registro a cualquier número que no esté en tu agenda.",
+
+    // WhatsApp Messenger
+    whatsapp_messenger: "WhatsApp Messenger",
+    whatsapp_refresh: "Sincronizar Mensajes",
+    whatsapp_pairing_required: "Vincular WhatsApp",
+    whatsapp_pairing_desc: "Escaneá este código desde tu celular (Ajustes > Dispositivos vinculados)",
+    bridge_offline_title: "Servicio Desconectado",
+    bridge_offline_desc: "El puente de WhatsApp no está respondiendo. Por favor, verificá que el servicio esté corriendo."
 };

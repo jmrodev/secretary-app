@@ -1,26 +1,27 @@
-/* The floating button in the bottom right */
-.global-wa-btn {
+.global-wa-trigger-container {
     position: fixed;
-    bottom: var(--space-xl, 2rem);
-    right: var(--space-xl, 2rem);
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background-color: #25D366;
-    color: white;
-    border: none;
-    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    bottom: 1.5rem;
+    right: 1.5rem;
     z-index: 9999;
-    transition: transform 0.2s, box-shadow 0.2s;
+    animation: slide-up-wa 0.5s ease-out;
 }
 
-.global-wa-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 16px rgba(37, 211, 102, 0.5);
+.global-wa-simple-btn.btn {
+    border-radius: 12px;
+    padding: 0.75rem 1.25rem;
+    font-weight: 700;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-transform: none;
+    letter-spacing: normal;
+    font-size: 0.95rem;
+}
+
+@keyframes slide-up-wa {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
 /* The open messenger panel - MOBILE/MINIMALIST LAYOUT */
@@ -126,12 +127,21 @@
     text-overflow: ellipsis;
 }
 
-.global-wa-messenger__close-mobile {
-    display: none; /* Only mobile */
+.global-wa-messenger__sidebar-header .global-wa-messenger__close-btn {
+    --btn-text: var(--text-main, #333);
+}
+
+.global-wa-messenger__chat-header .global-wa-messenger__close-btn {
+    --btn-text: var(--white);
+}
+
+.global-wa-messenger__close-btn {
     background: none;
     border: none;
     cursor: pointer;
-    color: white; /* Changed to white for dark bg */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Conversations List */
@@ -162,7 +172,7 @@
 }
 
 .global-wa-messenger__list-item--active {
-    background-color: #e7fce3 !important;
+    background-color: #e7fce3;
 }
 
 /* Unread Dot */
@@ -245,9 +255,9 @@
 }
 
 .global-wa-messenger__back-btn {
+    --btn-text: var(--white);
     background: none;
     border: none;
-    color: white;
     cursor: pointer;
     margin-right: 12px;
 }
@@ -295,19 +305,15 @@
     opacity: 0.9;
 }
 
-.global-wa-messenger__header-actions .button,
-.global-wa-messenger__header-actions .button i,
-.global-wa-messenger__header-actions .button span {
-    color: white !important;
+.global-wa-messenger__sidebar-header .global-wa-messenger__header-actions .btn {
+    --btn-text: var(--text-main);
 }
 
-.global-wa-messenger__close-desktop {
-    color: white !important;
+.global-wa-messenger__chat-header .global-wa-messenger__header-actions .btn {
+    --btn-text: var(--white);
 }
 
-.global-wa-messenger__close-mobile {
-    color: white !important;
-}
+/* The global-wa-messenger__close-btn colors are handled above by header context */
 
 .global-wa-messenger__action-btn {
     background: rgba(255, 255, 255, 0.1);
@@ -388,35 +394,26 @@
         display: block;
     }
     
-    .global-wa-messenger__close-mobile {
-        display: block;
-    }
-
-    .global-wa-messenger__close-desktop {
-        display: none;
+    .global-wa-messenger__close-btn {
+        display: flex;
     }
 }
 
 /* Manual Register Button in Header */
 .global-wa-messenger__register-manual-btn {
-    background-color: #ffffff22 !important;
-    border: 1px solid #ffffff44 !important;
-    color: white !important;
-    font-weight: 600 !important;
-    border-radius: 20px !important;
-    padding: 4px 12px !important;
-    font-size: 0.8rem !important;
-    transition: all 0.2s ease !important;
-}
-
-.global-wa-messenger__register-manual-btn:hover {
-    background-color: #ffffff44 !important;
-    transform: translateY(-1px);
+    --btn-bg: rgba(255, 255, 255, 0.13);
+    --btn-border: rgba(255, 255, 255, 0.27);
+    --btn-text: var(--white);
+    --btn-hover-bg: rgba(255, 255, 255, 0.27);
+    font-weight: 600;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
 }
 
 .global-wa-messenger__register-manual-btn i, 
 .global-wa-messenger__register-manual-btn span {
-    color: white !important;
+    color: inherit;
 }
 
 .animate-slideUp {
