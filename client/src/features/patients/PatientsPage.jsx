@@ -11,7 +11,6 @@ import TabButton from '@/components/atoms/TabButton';
 import Icon from '@/components/atoms/Icon';
 
 // Molecules (Shared/Global)
-// Molecules (Shared/Global)
 import QRCodeModal from '@/features/patients/components/QRCodeModal';
 import SearchBar from '@/components/molecules/SearchBar';
 import Pagination from '@/components/molecules/Pagination';
@@ -26,6 +25,7 @@ import DebtPaymentModal from '@/features/patients/components/DebtPaymentModal';
 import PatientManagerModal from '@/features/patients/components/PatientManagerModal';
 
 import './PatientsPage.css';
+import '@/features/dashboard/components/DashboardLayout.css'; // Reuse dashboard grid styles
 
 /**
  * PatientsPage (Orchestrator).
@@ -85,27 +85,27 @@ const PatientsPage = () => {
 
     return (
         <MainLayout wide flush title={(!selectedPatientId || !patientDetails) ? t('patients') : null}>
-            {(selectedPatientId && patientDetails) ? (
-                // --- DETAILS VIEW ---
-                <PatientDetailsView
-                    details={patientDetails}
-                    t={t}
-                    user={user}
-                    onBack={() => setSelectedPatientId(null)}
-                    onEdit={() => handleEditClick(patientDetails)}
-                    onDelete={handleDeletePatient}
-                    onGenerateQR={handleGenerateQR}
-                    onGeneratePrescriptionLink={handleGeneratePrescriptionLink}
-                    onToggleNew={handleToggleNew}
-                    onPayDebt={handleOpenDebtModal}
-                >
-                    <PatientMedications patientId={patientDetails.id} patientName={patientDetails.full_name} />
-                </PatientDetailsView>
-            ) : (
-                // --- LIST VIEW ---
-                <div className="layout-content-area">
-                    <section className="dashboard-grid animate-fadeIn">
-                        <aside className="dashboard-sidebar">
+            <div className="patients-page layout-content-area animate-fadeIn">
+                {(selectedPatientId && patientDetails) ? (
+                    // --- DETAILS VIEW ---
+                    <PatientDetailsView
+                        details={patientDetails}
+                        t={t}
+                        user={user}
+                        onBack={() => setSelectedPatientId(null)}
+                        onEdit={() => handleEditClick(patientDetails)}
+                        onDelete={handleDeletePatient}
+                        onGenerateQR={handleGenerateQR}
+                        onGeneratePrescriptionLink={handleGeneratePrescriptionLink}
+                        onToggleNew={handleToggleNew}
+                        onPayDebt={handleOpenDebtModal}
+                    >
+                        <PatientMedications patientId={patientDetails.id} patientName={patientDetails.full_name} />
+                    </PatientDetailsView>
+                ) : (
+                    // --- LIST VIEW ---
+                    <section className="dashboard-layout__grid">
+                        <aside className="dashboard-layout__sidebar">
                             <div className="dashboard-nav-bar">
                                 <TabNav className="patients__nav">
                                     <TabButton
@@ -165,7 +165,7 @@ const PatientsPage = () => {
                             )}
                         </aside>
 
-                        <main className="dashboard-main">
+                        <main className="dashboard-layout__main">
                             {activeTab === 'list' ? (
                                 <div className="patients-list-view">
                                     <section className="dashboard-card dashboard-card--no-padding dashboard-card--scroll-horizontal">
@@ -199,8 +199,8 @@ const PatientsPage = () => {
                             )}
                         </main>
                     </section>
-                </div>
-            )}
+                )}
+            </div>
 
             {/* --- GLOBALLY HOISTED MODALS --- */}
             <PatientManagerModal

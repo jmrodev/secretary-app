@@ -1,45 +1,92 @@
-/* PatientHistoryModal Styles (BEM) - Feature Specific */
+/* PatientHistoryModal Styles (BEM) - Premium Medical Theme */
 
 .patient-history {
     /* --- Local Component Tokens --- */
-    --history-item-bg: var(--gray-50);
-    --history-item-border: var(--gray-200);
-    --history-cancelled-bg: var(--red-50);
-    --history-cancelled-border: var(--red-100);
+    --history-item-bg: #ffffff;
+    --history-item-border: #e2e8f0;
+    --history-cancelled-bg: #fff5f5;
+    --history-cancelled-border: #feb2b2;
     
-    --record-rx-bg: var(--green-50);
-    --record-req-bg: var(--purple-50);
-    --record-lic-bg: var(--orange-50);
+    --record-rx-bg: #f0fff4;
+    --record-rx-border: #c6f6d5;
+    --record-rx-accent: #2f855a;
+
+    --record-req-bg: #faf5ff;
+    --record-req-border: #e9d8fd;
+    --record-req-accent: #6b46c1;
+
+    --record-lic-bg: #fffaf0;
+    --record-lic-border: #feebc8;
+    --record-lic-accent: #c05621;
+
+    --accent-blue: #3182ce;
     /* ------------------------------ */
 
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
 .patient-history__nav {
     display: flex;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--gray-50);
     border-bottom: 1px solid var(--border-color);
-    margin-bottom: 1rem;
 }
 
 .patient-history__body {
-    max-height: 65vh;
+    flex: 1;
     overflow-y: auto;
-    padding-right: 0.5rem;
+    padding: 1.5rem;
+    background: linear-gradient(to bottom, #ffffff, var(--gray-50));
 }
 
 .patient-history__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+}
+
+/* Specific list layout for medical tab to keep sections vertical but items grid if needed */
+.patient-history__list--vertical {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 2rem;
 }
 
 .patient-history__item {
-    padding: 1rem;
-    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    border-radius: 1rem;
     border: 1px solid var(--history-item-border);
     background-color: var(--history-item-bg);
-    transition: all 0.2s;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.patient-history__item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: var(--accent-blue);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.patient-history__item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.patient-history__item:hover::before {
+    opacity: 1;
 }
 
 .patient-history__item--cancelled {
@@ -47,147 +94,177 @@
     border-color: var(--history-cancelled-border);
 }
 
+.patient-history__item--cancelled::before {
+    background-color: #f56565;
+    opacity: 1;
+}
+
 .patient-history__item-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
 }
 
 .patient-history__date {
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 800;
     color: var(--text-main);
+    letter-spacing: -0.01em;
 }
 
 .patient-history__doctor {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--accent-blue);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
 }
 
 .patient-history__reason {
-    font-style: italic;
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     color: var(--text-secondary);
+    line-height: 1.5;
+    padding: 0.75rem;
+    background-color: var(--gray-50);
+    border-radius: 0.5rem;
     margin-top: 0.5rem;
+    border: 1px dashed var(--gray-200);
 }
 
 .patient-history__cancellation {
-    margin-top: 0.5rem;
-    padding: 0.5rem;
-    background: var(--red-100);
-    color: var(--red-700);
-    font-size: 0.75rem;
-    border-radius: 4px;
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background: #fff5f5;
+    color: #c53030;
+    font-size: 0.8rem;
+    border-radius: 0.5rem;
     font-weight: 600;
+    display: flex;
+    align-items: center;
 }
 
 .patient-history__section {
-    margin-bottom: 2rem;
-}
-
-.patient-history__section:last-child {
-    margin-bottom: 0;
+    margin-bottom: 2.5rem;
 }
 
 .patient-history__section-title {
-    font-size: 0.75rem;
-    font-weight: 800;
-    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 900;
+    color: var(--gray-400);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--gray-100);
-    margin-bottom: 1rem;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.patient-history__section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, var(--gray-200), transparent);
 }
 
 .patient-history__record {
-    padding: 0.75rem;
-    border-radius: 0.5rem;
+    padding: 1.25rem;
+    border-radius: 1rem;
     border: 1px solid var(--border-color);
-    font-size: 0.875rem;
+    background-color: #fff;
+    box-shadow: var(--shadow-sm);
 }
 
 .patient-history__record--rx {
     background-color: var(--record-rx-bg);
-    border-color: var(--green-100);
-    color: var(--green-900);
+    border-color: var(--record-rx-border);
 }
 
 .patient-history__record--req {
     background-color: var(--record-req-bg);
-    border-color: var(--purple-100);
-    color: var(--purple-900);
+    border-color: var(--record-req-border);
 }
 
 .patient-history__record--lic {
     background-color: var(--record-lic-bg);
-    border-color: var(--orange-100);
-    color: var(--orange-900);
+    border-color: var(--record-lic-border);
 }
 
 .patient-history__record-header {
     display: flex;
     justify-content: space-between;
-    font-weight: 700;
-    margin-bottom: 0.25rem;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-weight: 800;
 }
 
 .patient-history__record-type {
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
-    padding: 2px 6px;
-    border-radius: 4px;
+    font-weight: 900;
+    padding: 0.25rem 0.6rem;
+    border-radius: 2rem;
+    background-color: white;
     border: 1px solid currentColor;
 }
 
-.patient-history__loading {
-    text-align: center;
-    padding: 2rem;
-    color: var(--text-muted);
-}
-
-.patient-history__empty {
-    color: var(--text-muted);
-    font-style: italic;
-    padding: 1rem;
-    text-align: center;
-}
-
-.patient-history__empty-record {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    font-style: italic;
-    margin-left: 0.5rem;
-}
-
-.patient-history__rating {
-    font-size: 0.75rem;
-    margin-top: 0.5rem;
-    color: var(--blue-600);
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-}
-
-.patient-history__record-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
 .patient-history__record-text {
-    margin-top: 0.25rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-main);
 }
 
 .patient-history__record-text--pre {
     white-space: pre-wrap;
+    font-family: inherit;
+    padding: 0.5rem;
+    background: rgba(255,255,255,0.5);
+    border-radius: 0.4rem;
 }
 
 .patient-history__record-status {
+    margin-top: 0.75rem;
     font-size: 0.75rem;
-    opacity: 0.7;
-    text-align: right;
-    margin-top: 0.25rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    opacity: 0.8;
 }
 
+.patient-history__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    gap: 1rem;
+    color: var(--accent-blue);
+}
+
+.patient-history__empty {
+    grid-column: 1 / -1;
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--gray-400);
+    background-color: var(--gray-50);
+    border-radius: 1.5rem;
+    border: 2px dashed var(--gray-200);
+}
+
+.patient-history__rating {
+    margin-top: auto;
+    padding-top: 1rem;
+    font-size: 0.85rem;
+    color: var(--accent-blue);
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.patient-history__record-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 1rem;
+}

@@ -315,19 +315,21 @@ const SystemConfigPage = () => {
                     </TabButton>
                 </TabNav>
 
-                <div className="system-config-container animate-fadeIn">
-                    <main className="system-config-main">
-                        <Suspense fallback={<Loading variant="centered" />}>
-                            {renderContent(activeTab, controller)}
-                        </Suspense>
-                    </main>
+                <div className="layout-content-area animate-fadeIn">
+                    <div className="system-config-container">
+                        <main className="system-config-main">
+                            <Suspense fallback={<Loading variant="centered" />}>
+                                {renderContent(activeTab, controller)}
+                            </Suspense>
+                        </main>
 
-                    <QRCodeModal
-                        isOpen={qrModal.open}
-                        onClose={() => setQrModal({ ...qrModal, open: false })}
-                        url={qrModal.url}
-                        expiresAt={qrModal.expiry}
-                    />
+                        <QRCodeModal
+                            isOpen={qrModal.open}
+                            onClose={() => setQrModal({ ...qrModal, open: false })}
+                            url={qrModal.url}
+                            expiresAt={qrModal.expiry}
+                        />
+                    </div>
                 </div>
             </section>
         </MainLayout>

@@ -33,7 +33,7 @@
 /* --- Content Container (Beneath Header) --- */
 .layout-content-area {
     padding: clamp(0.25rem, 1vh, 0.75rem) clamp(1rem, 3vw, 2.5rem);
-    max-width: var(--max-width, 1800px);
+    max-width: var(--layout-max-width, 1920px);
     margin: 0 auto;
     width: 100%;
     position: relative;
@@ -93,21 +93,21 @@
  */
 .dashboard-grid {
     display: grid;
-    /* Use minmax(0, ...) to ensure content can shrink and doesn't push the layout */
-    grid-template-columns: clamp(18rem, 22vw, 24rem) minmax(0, 1fr);
+    grid-template-columns: repeat(12, 1fr);
     gap: clamp(1rem, 2vw, 1.5rem);
     align-items: start;
     width: 100%;
 }
 
 .dashboard-sidebar {
+    grid-column: span 4;
     display: flex;
     flex-direction: column;
     gap: clamp(0.75rem, 2vh, 1.25rem);
     padding: 0 clamp(0.5rem, 2vw, 1.5rem);
     align-items: center;
     position: sticky;
-    top: 1.5rem; /* Better offset from viewport top */
+    top: 1.5rem;
     align-self: start;
     height: auto;
     z-index: 5;
@@ -119,6 +119,7 @@
 }
 
 .dashboard-main {
+    grid-column: span 8;
     min-width: 0;
     display: flex;
     flex-direction: column;

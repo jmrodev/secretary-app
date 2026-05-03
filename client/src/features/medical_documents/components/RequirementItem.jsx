@@ -40,9 +40,16 @@ const RequirementItem = ({
                 {patient_name}
             </td>
             <td className="requirement-item__cell">
-                <Badge variant={status}>
-                    {t(status) || status}
-                </Badge>
+                <div className="requirement-item__status-group">
+                    <Badge variant={status}>
+                        {t(status) || status}
+                    </Badge>
+                    {payment_status && (
+                        <Badge variant={payment_status === 'paid' ? 'success' : (payment_status === 'bonified' ? 'premium' : 'warning')} size="sm">
+                            {payment_status === 'paid' ? `$${request.paid_amount || 0}` : (payment_status === 'bonified' ? t('bonified') : `$${debt_amount || 0}`)}
+                        </Badge>
+                    )}
+                </div>
             </td>
             <td className="requirement-item__cell">
                 <div className="requirement-item__actions">

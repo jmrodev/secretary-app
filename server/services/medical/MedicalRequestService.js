@@ -192,7 +192,7 @@ class MedicalRequestService {
 
             await this._checkPermissions(conn, req.user.role, req.user.user_id, reqInfo);
 
-            await saveToRecycleBin(req, 'medical_requests', id, `Solicitud #${id}`, reqInfo);
+            await saveToRecycleBin(req, 'medical_requests', id, `Request #${id}`, reqInfo);
             await medicationRepository.deleteByRequestId(id, conn);
             await transactionRepository.deletePendingByRequestId(id, conn);
             await medicalRequestRepository.delete(id, conn);

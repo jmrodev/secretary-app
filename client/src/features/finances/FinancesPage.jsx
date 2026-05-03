@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 // Atomic Design Components
@@ -13,6 +14,7 @@ import CashBoxDeliveryModal from '@/features/finances/components/CashBoxDelivery
 import PendingClosuresModal from '@/features/finances/components/PendingClosuresModal';
 
 import './FinancesPage.css';
+import '@/features/dashboard/components/DashboardLayout.css'; // Reuse dashboard grid styles
 
 /**
  * FinancesPage (Orchestrator).
@@ -41,32 +43,33 @@ const FinancesPage = () => {
 
     return (
         <MainLayout wide flush title={t('finances') || 'Finanzas'}>
-            <div className="finances-page">
-
-                <section className="layout-content-area">
+            <div className="finances-page layout-content-area">
+                <section className="animate-fadeIn">
                     <h2 className="visually-hidden">{t('financial_operations_area') || 'Área de Operaciones Financieras'}</h2>
                     {loading ? (
                         <Loading variant="centered" text={t('loading') || 'Cargando...'} />
                     ) : (
-                        <div className="dashboard-grid animate-fadeIn">
-                            <FinanceSidebar
-                                isAdminOrSecretary={isAdminOrSecretary}
-                                user={user}
-                                doctors={doctors}
-                                selectedDoctorFilter={selectedDoctorFilter}
-                                pendingClosuresCount={controller.pendingClosures.length}
-                                onOpenNewTransaction={handlers.onOpenNewTransaction}
-                                onOpenPendingClosures={() => handlers.setPendingClosuresOpen(true)}
-                                onSelectDoctor={handlers.onSelectDoctor}
-                                onOpenCloseBox={handlers.onOpenCloseBox}
-                                calculateBalance={handlers.calculateBalance}
-                                calculateBalanceByMethod={handlers.calculateBalanceByMethod}
-                                filters={filters}
-                                handlers={handlers}
-                                t={t}
-                            />
+                        <div className="dashboard-layout__grid">
+                            <aside className="dashboard-layout__sidebar">
+                                <FinanceSidebar
+                                    isAdminOrSecretary={isAdminOrSecretary}
+                                    user={user}
+                                    doctors={doctors}
+                                    selectedDoctorFilter={selectedDoctorFilter}
+                                    pendingClosuresCount={controller.pendingClosures.length}
+                                    onOpenNewTransaction={handlers.onOpenNewTransaction}
+                                    onOpenPendingClosures={() => handlers.setPendingClosuresOpen(true)}
+                                    onSelectDoctor={handlers.onSelectDoctor}
+                                    onOpenCloseBox={handlers.onOpenCloseBox}
+                                    calculateBalance={handlers.calculateBalance}
+                                    calculateBalanceByMethod={handlers.calculateBalanceByMethod}
+                                    filters={filters}
+                                    handlers={handlers}
+                                    t={t}
+                                />
+                            </aside>
 
-                            <section className="dashboard-main">
+                            <section className="dashboard-layout__main">
                                 <h3 className="visually-hidden">{t('transactions_and_stats') || 'Transacciones y Estadísticas'}</h3>
                                 {isAdminOrSecretary && stats.length > 0 && (
                                     <FinanceStatsCards stats={stats} t={t} />
@@ -95,51 +98,51 @@ const FinancesPage = () => {
                     )}
                 </section>
 
-            {/* --- Modals --- */}
-            <TransactionModal
-                isOpen={modalOpen}
-                initialData={selectedDoctorFilter && selectedDoctorFilter !== 'all' ? { doctorId: parseInt(selectedDoctorFilter) } : null}
-                onClose={handlers.onCloseNewTransaction}
-                onSuccess={handlers.onRefresh}
-            />
+                {/* --- Modals --- */}
+                <TransactionModal
+                    isOpen={modalOpen}
+                    initialData={selectedDoctorFilter && selectedDoctorFilter !== 'all' ? { doctorId: parseInt(selectedDoctorFilter) } : null}
+                    onClose={handlers.onCloseNewTransaction}
+                    onSuccess={handlers.onRefresh}
+                />
 
-            <CashBoxDeliveryModal
-                isOpen={closeBoxModal.open}
-                onClose={handlers.onCloseCloseBox}
-                onConfirm={handlers.onCloseBox}
-                doctorName={closeBoxModal.doctorName}
-                balance={closeBoxModal.balance}
-                amount={closeAmount}
-                setAmount={handlers.setCloseAmount}
-                t={t}
-            />
+                <CashBoxDeliveryModal
+                    isOpen={closeBoxModal.open}
+                    onClose={handlers.onCloseCloseBox}
+                    onConfirm={handlers.onCloseBox}
+                    doctorName={closeBoxModal.doctorName}
+                    balance={closeBoxModal.balance}
+                    amount={closeAmount}
+                    setAmount={handlers.setCloseAmount}
+                    t={t}
+                />
 
-            {
-                editingTx && (
-                    <EditTransactionModal
-                        isOpen={!!editingTx}
-                        onClose={() => handlers.setEditingTx(null)}
-                        onSave={handlers.onUpdateTransaction}
-                        transaction={editingTx}
-                        setTransaction={handlers.setEditingTx}
-                        settings={settings}
-                        user={user}
-                        t={t}
-                    />
-                )
-            }
+                {
+                    editingTx && (
+                        <EditTransactionModal
+                            isOpen={!!editingTx}
+                            onClose={() => handlers.setEditingTx(null)}
+                            onSave={handlers.onUpdateTransaction}
+                            transaction={editingTx}
+                            setTransaction={handlers.setEditingTx}
+                            settings={settings}
+                            user={user}
+                            t={t}
+                        />
+                    )
+                }
 
-            <PendingClosuresModal
-                isOpen={controller.pendingClosuresOpen}
-                onClose={() => handlers.setPendingClosuresOpen(false)}
-                pendingClosures={controller.pendingClosures}
-                duplicateClosures={controller.duplicateClosures}
-                onAutoClosure={handlers.handleAutoClosure}
-                onCloseAll={handlers.handleCloseAllPending}
-                onFixDuplicates={handlers.handleFixDuplicates}
-                onResetDay={handlers.handleResetDay}
-                t={t}
-            />
+                <PendingClosuresModal
+                    isOpen={controller.pendingClosuresOpen}
+                    onClose={() => handlers.setPendingClosuresOpen(false)}
+                    pendingClosures={controller.pendingClosures}
+                    duplicateClosures={controller.duplicateClosures}
+                    onAutoClosure={handlers.handleAutoClosure}
+                    onCloseAll={handlers.handleCloseAllPending}
+                    onFixDuplicates={handlers.handleFixDuplicates}
+                    onResetDay={handlers.handleResetDay}
+                    t={t}
+                />
             </div>
         </MainLayout>
     );

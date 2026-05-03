@@ -7,6 +7,7 @@ import { useModal } from '@/context/ModalContext';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useFetch } from '@/hooks/useFetch';
 import { useMedicalDocumentsHandlers } from '@/features/medical_documents/hooks/useMedicalDocumentsHandlers';
+import { useDoctors } from '@/context/DoctorContextDefinition';
 
 /**
  * useMedicalDocumentsController Hook (Orchestrator).
@@ -18,6 +19,7 @@ export const useMedicalDocumentsController = () => {
     const { t } = useLanguage();
     const { confirm, doubleConfirm } = useModal();
     const { canDeletePrescription, canDeleteLicense, canDeleteFile, canDeleteRequest } = usePermissions();
+    const { viewDoctorId } = useDoctors();
 
     // --- State ---
     const [activeTab, setActiveTab] = useState('requests'); // requests | files | prescriptions | licenses | certificates
@@ -42,6 +44,15 @@ export const useMedicalDocumentsController = () => {
     // Doctors
     const { data: doctors = [] } = useFetch('/users/doctors', { initialData: [] });
 
+    // Status filter logic based on active tab
+    const requestsStatus = useMemo(() => {
+        if (activeTab === 'requests') {
+            return requestsSubTab === 'list' ? ['pending', 'consult'] : ['completed', 'rejected'];
+        }
+        // For history tabs, we need completed requests to populate the combined views
+        return ['completed'];
+    }, [activeTab, requestsSubTab]);
+
     // Requests
     const { 
         data: requestsData = { requests: [], totalCount: 0 }, 
@@ -51,7 +62,8 @@ export const useMedicalDocumentsController = () => {
         params: {
             page: requestsPage,
             limit: requestsLimit,
-            status: requestsSubTab === 'list' ? ['pending', 'consult'] : ['completed', 'rejected']
+            status: requestsStatus,
+            doctorId: viewDoctorId // Pass to ensure refetch on change
         },
         initialData: { requests: [], totalCount: 0 }
     });
@@ -65,6 +77,7 @@ export const useMedicalDocumentsController = () => {
         loading: filesLoading, 
         refetch: fetchFiles 
     } = useFetch('/medical/files', { 
+        params: { doctorId: viewDoctorId },
         initialData: [],
         immediate: activeTab === 'files'
     });
@@ -75,7 +88,11 @@ export const useMedicalDocumentsController = () => {
         loading: prescriptionsLoading, 
         refetch: fetchPrescriptions 
     } = useFetch('/medical/prescriptions', {
-        params: { page: prescriptionsPage, limit: prescriptionsLimit },
+        params: { 
+            page: prescriptionsPage, 
+            limit: prescriptionsLimit,
+            doctorId: viewDoctorId
+        },
         initialData: { prescriptions: [], totalCount: 0 },
         immediate: ['prescriptions', 'history'].includes(activeTab)
     });
@@ -89,7 +106,11 @@ export const useMedicalDocumentsController = () => {
         loading: licensesLoading, 
         refetch: fetchLicenses 
     } = useFetch('/medical/licenses', {
-        params: { page: licensesPage, limit: licensesLimit },
+        params: { 
+            page: licensesPage, 
+            limit: licensesLimit,
+            doctorId: viewDoctorId
+        },
         initialData: { licenses: [], totalCount: 0 },
         immediate: ['licenses', 'history'].includes(activeTab)
     });

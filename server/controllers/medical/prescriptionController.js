@@ -11,19 +11,19 @@ exports.createPrescription = async (req, res) => {
         res.status(201).send("Prescription created");
     } catch (err) {
         console.error(err);
-        if (err.message === 'Appointment not found') return res.status(404).send(err.message);
-        if (err.message === 'Unauthorized') return res.status(403).send(err.message);
-        if (err.message === 'Medications are required') return res.status(400).send(err.message);
-        res.status(500).send("Server Error");
+        if (err.message === 'Appointment not found') return res.status(404).json({ error: 'appointment_not_found' });
+        if (err.message === 'Unauthorized') return res.status(403).json({ error: 'unauthorized' });
+        if (err.message === 'Medications are required') return res.status(400).json({ error: 'medications_required' });
+        res.status(500).json({ error: 'server_error' });
     }
 };
 
 exports.getPrescriptions = async (req, res) => {
     try {
-        const { page = 1, limit = 50 } = req.query;
-        const { patientId } = req.body;
+        const { page = 1, limit = 50, patientId, doctorId: queryDoctorId } = req.query;
         const filters = {
             patientId,
+            doctorId: req.doctorId || queryDoctorId,
             limit: parseInt(limit),
             offset: (parseInt(page) - 1) * parseInt(limit)
         };
@@ -31,7 +31,7 @@ exports.getPrescriptions = async (req, res) => {
         res.json(result);
     } catch (err) {
         console.error(err);
-        res.status(500).send("Server Error");
+        res.status(500).json({ error: 'server_error' });
     }
 };
 
@@ -42,9 +42,9 @@ exports.updatePrescription = async (req, res) => {
         res.send("Prescription updated");
     } catch (err) {
         console.error(err);
-        if (err.message === 'Prescription not found') return res.status(404).send(err.message);
-        if (err.message === 'Unauthorized') return res.status(403).send(err.message);
-        res.status(500).send("Server Error");
+        if (err.message === 'Prescription not found') return res.status(404).json({ error: 'prescription_not_found' });
+        if (err.message === 'Unauthorized') return res.status(403).json({ error: 'unauthorized' });
+        res.status(500).json({ error: 'server_error' });
     }
 };
 
@@ -55,8 +55,8 @@ exports.deletePrescription = async (req, res) => {
         res.json({ message: "Prescription deleted" });
     } catch (err) {
         console.error(err);
-        if (err.message === 'Prescription not found') return res.status(404).send(err.message);
-        if (err.message === 'Unauthorized') return res.status(403).send(err.message);
-        res.status(500).send("Server Error");
+        if (err.message === 'Prescription not found') return res.status(404).json({ error: 'prescription_not_found' });
+        if (err.message === 'Unauthorized') return res.status(403).json({ error: 'unauthorized' });
+        res.status(500).json({ error: 'server_error' });
     }
 };

@@ -11,18 +11,18 @@ exports.createLicense = async (req, res) => {
         res.status(201).send("License created");
     } catch (err) {
         console.error(err);
-        if (err.message === 'Appointment not found') return res.status(404).send(err.message);
-        if (err.message === 'Unauthorized') return res.status(403).send(err.message);
-        res.status(500).send("Server Error");
+        if (err.message === 'Appointment not found') return res.status(404).json({ error: 'appointment_not_found' });
+        if (err.message === 'Unauthorized') return res.status(403).json({ error: 'unauthorized' });
+        res.status(500).json({ error: 'server_error' });
     }
 };
 
 exports.getLicenses = async (req, res) => {
     try {
-        const { page = 1, limit = 50 } = req.query;
-        const { patientId } = req.body;
+        const { page = 1, limit = 50, patientId, doctorId: queryDoctorId } = req.query;
         const filters = {
             patientId,
+            doctorId: req.doctorId || queryDoctorId,
             limit: parseInt(limit),
             offset: (parseInt(page) - 1) * parseInt(limit)
         };
@@ -30,7 +30,7 @@ exports.getLicenses = async (req, res) => {
         res.json(result);
     } catch (err) {
         console.error(err);
-        res.status(500).send("Server Error");
+        res.status(500).json({ error: 'server_error' });
     }
 };
 
@@ -41,9 +41,9 @@ exports.updateLicense = async (req, res) => {
         res.send("License updated");
     } catch (err) {
         console.error(err);
-        if (err.message === 'License not found') return res.status(404).send(err.message);
-        if (err.message === 'Unauthorized') return res.status(403).send(err.message);
-        res.status(500).send("Server Error");
+        if (err.message === 'License not found') return res.status(404).json({ error: 'license_not_found' });
+        if (err.message === 'Unauthorized') return res.status(403).json({ error: 'unauthorized' });
+        res.status(500).json({ error: 'server_error' });
     }
 };
 
@@ -54,8 +54,8 @@ exports.deleteLicense = async (req, res) => {
         res.json({ message: "License deleted" });
     } catch (err) {
         console.error(err);
-        if (err.message === 'License not found') return res.status(404).send(err.message);
-        if (err.message === 'Unauthorized') return res.status(403).send(err.message);
-        res.status(500).send("Server Error");
+        if (err.message === 'License not found') return res.status(404).json({ error: 'license_not_found' });
+        if (err.message === 'Unauthorized') return res.status(403).json({ error: 'unauthorized' });
+        res.status(500).json({ error: 'server_error' });
     }
 };

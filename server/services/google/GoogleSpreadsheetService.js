@@ -13,8 +13,8 @@ class GoogleSpreadsheetService {
     constructor() {
         this.sheetNameCache = {};
         this.months = [
-            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
         ];
     }
 
@@ -26,11 +26,11 @@ class GoogleSpreadsheetService {
         const month = this.months[date.getMonth()];
         const year = date.getFullYear();
 
-        let subType = 'Gastos'; // Default if nothing else matches
-        if (tx.appointment_id) subType = 'Turnos';
-        else if (tx.request_id) subType = 'Solicitudes';
-        else if (tx.type === 'withdrawal' || tx.is_withdrawal === 1 || tx.type === 'payout') subType = 'Retiros';
-        else if (tx.type?.startsWith('expense')) subType = 'Gastos';
+        let subType = 'Expenses'; // Default if nothing else matches
+        if (tx.appointment_id) subType = 'Appointments';
+        else if (tx.request_id) subType = 'Requests';
+        else if (tx.type === 'withdrawal' || tx.is_withdrawal === 1 || tx.type === 'payout') subType = 'Withdrawals';
+        else if (tx.type?.startsWith('expense')) subType = 'Expenses';
 
         return `${month} ${year} - ${subType}`;
     }
@@ -63,7 +63,7 @@ class GoogleSpreadsheetService {
                 range: `${sheetName}!A1:G1`,
                 valueInputOption: 'RAW',
                 resource: {
-                    values: [['Fecha', 'Hora', 'Paciente', 'Valor', 'Cobrado', 'Pendiente', 'ID Interno']]
+                    values: [['Date', 'Time', 'Patient', 'Value', 'Paid', 'Pending', 'Internal ID']]
                 }
             });
         }
@@ -155,11 +155,11 @@ class GoogleSpreadsheetService {
 
         const dateObj = new Date(tx.transaction_date);
 
-        let subType = 'Gasto';
-        if (tx.appointment_id) subType = 'Turno';
-        else if (tx.request_id) subType = 'Solicitud';
-        else if (tx.type === 'withdrawal' || tx.is_withdrawal === 1 || tx.type === 'payout') subType = 'Retiro';
-        else if (tx.type?.startsWith('expense')) subType = 'Gasto';
+        let subType = 'Expense';
+        if (tx.appointment_id) subType = 'Appointment';
+        else if (tx.request_id) subType = 'Request';
+        else if (tx.type === 'withdrawal' || tx.is_withdrawal === 1 || tx.type === 'payout') subType = 'Withdrawal';
+        else if (tx.type?.startsWith('expense')) subType = 'Expense';
 
         const rowValues = [
             dateObj.toLocaleDateString('es-AR'),
