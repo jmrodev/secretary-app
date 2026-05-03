@@ -31,13 +31,14 @@ class MedicalRequestRepository {
             params.push(filters.doctorId);
         }
         if (filters.status) {
-            if (Array.isArray(filters.status)) {
-                whereClauses.push(`r.status IN (${filters.status.map(() => '?').join(',')})`);
-                params.push(...filters.status);
-            } else {
-                whereClauses.push("r.status = ?");
-                params.push(filters.status);
-            }
+            const statusArray = Array.isArray(filters.status) ? filters.status : [filters.status];
+            const expandedStatus = [...statusArray];
+            if (statusArray.includes('completed')) expandedStatus.push('completado');
+            if (statusArray.includes('pending')) expandedStatus.push('pendiente');
+            if (statusArray.includes('rejected')) expandedStatus.push('rechazado');
+
+            whereClauses.push(`r.status IN (${expandedStatus.map(() => '?').join(',')})`);
+            params.push(...expandedStatus);
         }
 
         if (whereClauses.length > 0) query += " WHERE " + whereClauses.join(" AND ");
@@ -63,13 +64,14 @@ class MedicalRequestRepository {
             params.push(filters.doctorId);
         }
         if (filters.status) {
-            if (Array.isArray(filters.status)) {
-                whereClauses.push(`r.status IN (${filters.status.map(() => '?').join(',')})`);
-                params.push(...filters.status);
-            } else {
-                whereClauses.push("r.status = ?");
-                params.push(filters.status);
-            }
+            const statusArray = Array.isArray(filters.status) ? filters.status : [filters.status];
+            const expandedStatus = [...statusArray];
+            if (statusArray.includes('completed')) expandedStatus.push('completado');
+            if (statusArray.includes('pending')) expandedStatus.push('pendiente');
+            if (statusArray.includes('rejected')) expandedStatus.push('rechazado');
+
+            whereClauses.push(`r.status IN (${expandedStatus.map(() => '?').join(',')})`);
+            params.push(...expandedStatus);
         }
 
         if (whereClauses.length > 0) query += " WHERE " + whereClauses.join(" AND ");
