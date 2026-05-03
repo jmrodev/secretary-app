@@ -45,7 +45,7 @@ router.delete('/requests/:id', verifyToken, medicalRequestController.deleteReque
 
 // Vademecum & Patient Medications
 router.get('/vademecum/search', verifyToken, medicationController.searchVademecum);
-router.get('/patients/:patientId/medications', verifyToken, medicationController.getPatientMedications);
+router.get('/patients/ :patientId/medications', verifyToken, medicationController.getPatientMedications);
 router.post('/patients/medications', verifyToken, medicationController.addPatientMedication);
 router.put('/patients/medications/:id', verifyToken, medicationController.updatePatientMedication);
 router.delete('/patients/medications/:id', verifyToken, medicationController.deletePatientMedication);

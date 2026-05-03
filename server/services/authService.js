@@ -50,7 +50,7 @@ class AuthService {
             await conn.commit();
             logAction({ body: { username }, ip: req.ip }, 'PUBLIC_REGISTER', `New patient registered and messages linked: ${username}`);
 
-            return { user_id: userId, username, patient_id: profileId };
+            return { user_id: userId, username, patientId: profileId };
         } catch (error) {
             await conn.rollback();
             throw error;
@@ -102,7 +102,7 @@ class AuthService {
             await conn.commit();
             logAction({ body: { username }, ip: req.ip }, 'REGISTER', `New user: ${username} as ${role}`);
 
-            return { user_id: userId, username, role, token, patient_id: profileId };
+            return { user_id: userId, username, role, token, patientId: profileId };
         } catch (error) {
             await conn.rollback();
             throw error;
