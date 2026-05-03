@@ -82,10 +82,10 @@ class FinanceService {
         const conn = await pool.getConnection();
         try {
             await conn.beginTransaction();
-            const { patient_id, amount, method, doctor_id } = data;
+            const { patientId, amount, method, doctor_id } = data;
             const payAmount = parseFloat(amount);
 
-            const userId = await patientRepository.findUserIdById(patient_id, conn);
+            const userId = await patientRepository.findUserIdById(patientId, conn);
             if (!userId) throw new Error("Patient not found");
 
             const debts = await transactionRepository.findPendingByUserId(userId, conn);

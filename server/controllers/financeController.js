@@ -13,7 +13,7 @@ const transactionRepository = require('../repositories/transactionRepository');
 exports.getPricing = async (req, res) => {
     try {
         const { service_type } = req.query;
-        const { doctor_id, patient_id } = req.body || {};
+        const { doctor_id, patientId } = req.body || {};
         if (!doctor_id) return res.status(400).send("Doctor ID required");
         const result = await financeService.getPricing(doctor_id, patientId, service_type);
         res.json({ price: result.price.toFixed(2), explanation: result.explanation });

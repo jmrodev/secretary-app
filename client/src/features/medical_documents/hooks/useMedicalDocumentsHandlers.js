@@ -113,7 +113,7 @@ export const useMedicalDocumentsHandlers = ({
 
         const formData = new FormData();
         formData.append('file', selectedFile);
-        formData.append('patient_id', filePatient);
+        formData.append('patientId', filePatient);
         formData.append('description', fileDesc);
 
         try {
