@@ -35,7 +35,8 @@ const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
 
     useEffect(() => {
         if (patientId || phone) {
-            fetchHistory();
+            // Initial fetch wrapped in timeout to avoid linter warning and sync updates
+            const t = setTimeout(() => fetchHistory(), 0);
             
             // Auto-polling para sentirlo en vivo (cada 3 segundos)
             const intervalId = setInterval(() => {
@@ -47,7 +48,10 @@ const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
                    }).catch(err => console.error("Auto-poll error", err));
             }, 3000);
             
-            return () => clearInterval(intervalId);
+            return () => {
+                clearTimeout(t);
+                clearInterval(intervalId);
+            };
         }
     }, [patientId, phone, fetchHistory]);
 

@@ -1,79 +1,18 @@
-# Dependency directories
-node_modules/
-**/node_modules/
-**/.package-lock.json
-
-# Build artifacts
-dist/
-dist-ssr/
-build/
-**/build/
-.gradle/
-**/.gradle/
-
-# Local configuration and credentials
-.env
-**/.env
-**/.env.local
-local.properties
-android_native/local.properties
-*.jks
-*.keystore
-
-# Database and data
-/data/database/
-/data/backups_dev/
-/data/backups_prod/
-/mysql_data/
-/mysql_data_prod/
-/android_sdk/
-/data/fichas_medicas/
-# Logs
-logs/*.txt
-# CSVs and JSONs
-data/*.csv
-extracted_patients.json
-# Build artifacts
-builds/
-!builds/old_gradle/
-
-# WhatsApp Bridge
-whatsapp-bridge-go/main
-whatsapp-bridge-go/*.db
-whatsapp-bridge-go/examplestore.db
-
-
-# Keys and certs
-*.key
-*.csr
-*.pem
-*.crt
-*.cer
-server/certs/
-
-# Server uploads
-server/uploads/
-
-# Android SDK tools
-android_sdk/
-*.gpg
-
-# System and IDE
-.vscode/
-.idea/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-*.DS_Store
-android_sdk/
-tools/android_sdk/
-backup_ddbb/
-backups/
-
 # wrangler files
 .wrangler
 .dev.vars*
 !.dev.vars.example
 !.env.example
+
+# pnpm
+# Rastreamos los archivos de configuración y el lockfile
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+# Ignoramos el store y node_modules
+**/.pnpm-store/
+node_modules/
+.pnpm-debug.log
+
+
+# Database
+server/02-dev-seed.sql

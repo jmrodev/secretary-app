@@ -34,7 +34,11 @@ export const DoctorProvider = ({ children }) => {
         if (isDoctor && doctors.length > 0 && !viewDoctorId) {
             const profile = doctors.find(d => d.user_id === (user.user_id || user.id));
             if (profile) {
-                setViewDoctorId(profile.id);
+                // Use a timeout to avoid synchronous setState during effect execution
+                const timeoutId = setTimeout(() => {
+                    setViewDoctorId(profile.id);
+                }, 0);
+                return () => clearTimeout(timeoutId);
             }
         }
     }, [isDoctor, doctors, user, viewDoctorId, setViewDoctorId]);
