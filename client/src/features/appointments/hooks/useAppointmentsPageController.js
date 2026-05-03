@@ -80,7 +80,10 @@ export const useAppointmentsPageController = () => {
     const booking = useAppointmentBooking(doctors);
     const nextSlot = useNextFreeSlot(viewDoctorId || booking.selectedDoctor);
 
-    const loading = doctorsLoading || institutionsLoading || patientApptLoading;
+    // Only block the initial render for critical data (doctors, institutions)
+    // Never block the page for search results - handle that locally in the component
+    const loading = doctorsLoading || institutionsLoading;
+    const searchLoading = patientApptLoading;
 
     useEffect(() => {
         // syncing logic simplified by context
@@ -137,6 +140,6 @@ export const useAppointmentsPageController = () => {
         showNextSlotModal: nextSlot.showModal, setShowNextSlotModal: nextSlot.setShowModal,
         holidays, booking, patientSearch, nextSlot, currentDoctor: viewDoctorId ? doctors.find(d => d.id === Number(viewDoctorId)) : null,
         filteredAppointments: appointments, appointments, calendarStats, doctorSchedule,
-        searchTerm, searchPatientId, patientAppointments, patientApptLoading, handlers, rescheduleAppt, exitRescheduleMode
+        searchTerm, searchPatientId, patientAppointments, patientApptLoading, searchLoading, handlers, rescheduleAppt, exitRescheduleMode
     };
 };

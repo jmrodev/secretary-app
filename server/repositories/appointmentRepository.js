@@ -88,22 +88,42 @@ class AppointmentRepository {
         const connection = conn || await pool.getConnection();
         try {
             let query = `
-                SELECT a.*, p.full_name as patient_name, p.dni as patient_dni, p.user_id as patient_user_id, p.behavior_rating, 
-                (SELECT COALESCE(SUM(t.amount), 0) FROM transactions t LEFT JOIN appointments a2 ON t.appointment_id = a2.id WHERE t.related_user_id = p.user_id AND t.status = 'pending' AND (t.appointment_id IS NULL OR a2.status IN ('completed', 'attended', 'arrived', 'absent'))) as total_debt,
-                (SELECT COALESCE(SUM(t.amount), 0) FROM transactions t WHERE t.appointment_id = a.id AND t.status = 'paid') as paid_amount,
-                (SELECT COALESCE(SUM(t.amount), 0) FROM transactions t WHERE t.appointment_id = a.id AND t.status = 'pending') as pending_amount,
-                (SELECT COUNT(*) FROM appointments a2 WHERE a2.patient_id = p.id) as total_appointments,
-                (SELECT COUNT(*) FROM appointments a2 WHERE a2.patient_id = p.id AND a2.status IN ('attended', 'completed')) as attended_appointments,
-                (SELECT COUNT(*) FROM appointments a2 WHERE a2.patient_id = p.id AND (a2.status = 'absent' OR (a2.status = 'cancelled' AND COALESCE(a2.cancellation_reason, '') NOT LIKE '%error%'))) as missed_appointments,
-                (SELECT GROUP_CONCAT(DISTINCT t.method) FROM transactions t WHERE t.appointment_id = a.id AND t.status = 'paid') as payment_methods,
-                (SELECT i.cbte_nro FROM invoices i JOIN transactions t ON i.transaction_id = t.id WHERE t.appointment_id = a.id LIMIT 1) as invoice_number,
-                (SELECT i.punto_vta FROM invoices i JOIN transactions t ON i.transaction_id = t.id WHERE t.appointment_id = a.id LIMIT 1) as invoice_punto_vta,
-                (SELECT i.cae FROM invoices i JOIN transactions t ON i.transaction_id = t.id WHERE t.appointment_id = a.id LIMIT 1) as invoice_cae,
-                (SELECT base_price FROM institutions inst WHERE inst.id = a.institution_id) as institution_base_price,
-                d.full_name as doctor_name, d.afip_cuit as doctor_cuit, p.phone as patient_phone 
+                SELECT a.*, 
+                p.full_name as patient_name, p.dni as patient_dni, p.user_id as patient_user_id, 
+                p.behavior_rating, p.phone as patient_phone,
+                p_stats.attended_appointments,
+                d.full_name as doctor_name, d.afip_cuit as doctor_cuit,
+                COALESCE(tx_agg.paid_amount, 0) as paid_amount,
+                COALESCE(tx_agg.pending_amount, 0) as pending_amount,
+                inv_agg.invoice_number, inv_agg.invoice_punto_vta, inv_agg.invoice_cae,
+                inst.base_price as institution_base_price
                 FROM appointments a 
                 LEFT JOIN patients p ON a.patient_id = p.id 
                 JOIN doctors d ON a.doctor_id = d.id
+                LEFT JOIN institutions inst ON a.institution_id = inst.id
+                LEFT JOIN (
+                    SELECT patient_id, 
+                           COUNT(CASE WHEN status IN ('attended', 'completed') THEN 1 END) as attended_appointments
+                    FROM appointments 
+                    GROUP BY patient_id
+                ) p_stats ON a.patient_id = p_stats.patient_id
+                LEFT JOIN (
+                    SELECT appointment_id,
+                        SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) as paid_amount,
+                        SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) as pending_amount
+                    FROM transactions
+                    GROUP BY appointment_id
+                ) tx_agg ON tx_agg.appointment_id = a.id
+                LEFT JOIN (
+                    SELECT t.appointment_id,
+                        MIN(i.cbte_nro) as invoice_number,
+                        MIN(i.punto_vta) as invoice_punto_vta,
+                        MIN(i.cae) as invoice_cae
+                    FROM invoices i
+                    JOIN transactions t ON i.transaction_id = t.id
+                    WHERE t.appointment_id IS NOT NULL
+                    GROUP BY t.appointment_id
+                ) inv_agg ON inv_agg.appointment_id = a.id
             `;
             let params = [];
             let whereClauses = [];

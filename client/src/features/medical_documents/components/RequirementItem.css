@@ -7,6 +7,13 @@
     background-color: var(--gray-50);
 }
 
+.medical-requirement-manager__table-container {
+    background: white;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--gray-200);
+    overflow: hidden;
+}
+
 .requirement-item__cell {
     padding: 0.5rem 0.75rem; /* Reduced from 0.75/1 */
     border-bottom: 1px solid var(--border-color);
@@ -45,8 +52,8 @@
 
 .requirement-item__status-group {
     display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    align-items: flex-start;
+    flex-direction: row;
+    gap: 0.375rem;
+    align-items: center;
 }
 

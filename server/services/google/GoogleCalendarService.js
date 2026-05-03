@@ -37,6 +37,7 @@ class GoogleCalendarService {
     }
 
     async listEvents(doctorId, filters) {
+        if (!await this._isSyncEnabled()) return { events: [] };
         const calendar = await this._getCalendar(doctorId);
         if (!calendar) return { events: [] };
 
@@ -114,6 +115,7 @@ class GoogleCalendarService {
     }
 
     async checkConflict(doctorId, startTime, endTime) {
+        if (!await this._isSyncEnabled()) return false;
         const calendar = await this._getCalendar(doctorId);
         if (!calendar) return false;
 
@@ -126,6 +128,7 @@ class GoogleCalendarService {
     }
 
     async getBusyIntervals(doctorId, startTime, endTime) {
+        if (!await this._isSyncEnabled()) return [];
         const calendar = await this._getCalendar(doctorId);
         if (!calendar) return [];
 

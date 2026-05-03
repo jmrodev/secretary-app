@@ -21,9 +21,8 @@
     /* ------------------------------ */
 
     background-color: var(--requests-bg);
-    border-radius: var(--radius);
+    border-radius: var(--radius-sm);
     overflow-x: auto;
-    box-shadow: var(--shadow-sm);
     border: 1px solid var(--requests-border);
 }
 
@@ -32,11 +31,11 @@
 }
 
 .medical-requests__th {
-    padding: 1rem;
+    padding: 0.75rem 1rem;
     text-align: left;
     background: var(--gray-50);
-    border-bottom: 2px solid var(--border-color);
-    font-size: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.7rem;
     font-weight: 700;
     color: var(--text-muted);
     text-transform: uppercase;
@@ -70,7 +69,7 @@
 }
 
 .medical-requests__td {
-    padding: 1rem;
+    padding: 0.5rem 1rem;
     border-bottom: 1px solid var(--gray-100);
     vertical-align: middle;
 }

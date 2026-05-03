@@ -32,7 +32,7 @@ const AppointmentsPage = () => {
         t, user, loading, activeTab, showOutOfHours,
         viewDoctorId, doctors, institutions, insurances, selectedDate, filteredAppointments,
         appointments, doctorSchedule, holidays, calendarStats, currentDoctor,
-        searchTerm, searchPatientId, patientAppointments, patientApptLoading,
+        searchTerm, searchPatientId, patientAppointments, patientApptLoading, searchLoading,
         paymentModal, actionModal, historyModal,
         prescribeModal, whatsappModal, setWhatsappModal, showNextSlotModal, setShowNextSlotModal,
         editPatientModalOpen, authModalOpen,
@@ -72,10 +72,10 @@ const AppointmentsPage = () => {
 
                     <section className="appointments-page__body">
                         {searchPatientId || searchTerm ? (
-                            <section className="appointments-page__panel appointments-page__panel--agenda">
+                            <section className="appointments-page__panel appointments-page__panel--agenda animate-fadeIn">
                                 <PatientHistoryView
                                     patientAppointments={searchPatientId ? patientAppointments : appointments} 
-                                    loading={patientApptLoading}
+                                    loading={searchLoading}
                                     onClose={() => { setSearchPatientId(''); handlers.setSearchTerm(''); }} 
                                     t={t} 
                                     searchPatientId={searchPatientId || searchTerm} 

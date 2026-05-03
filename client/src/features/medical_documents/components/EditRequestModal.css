@@ -1,4 +1,41 @@
+.edit-request-modal__body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 0.5rem 0;
+}
 
-.edit-request-modal__label {
-    margin-left: 10px;
+.edit-request-modal__section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.edit-request-modal__prescriptions {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 0.5rem;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.edit-request-modal__payment-status {
+    padding: 1rem;
+    background: rgba(var(--accent-color-rgb), 0.05);
+    border: 1px solid rgba(var(--accent-color-rgb), 0.1);
+    border-radius: 12px;
+}
+
+.modal-header__title-flex {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Checkbox specific to this modal */
+.edit-request-modal__payment-status .checkbox-container {
+    margin: 0;
+    padding: 0;
 }

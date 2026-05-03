@@ -2,7 +2,16 @@ const retrievalService = require('../../services/appointments/retrievalService')
 
 exports.getAppointments = async (req, res) => {
     try {
-        const query = { ...(req.body || {}), search: req.query.search };
+        const rawSearch = req.query.search?.trim();
+        const patientId = req.body?.patientId || req.query.patientId;
+
+        // Guard: require at least a patientId OR a meaningful search term (2+ chars)
+        // to avoid accidentally dumping all appointments in the response.
+        if (!patientId && (!rawSearch || rawSearch.length < 2)) {
+            return res.json([]);
+        }
+
+        const query = { ...(req.body || {}), search: rawSearch };
         const appointments = await retrievalService.getAppointments(req.user, query);
         res.json(appointments);
     } catch (err) {

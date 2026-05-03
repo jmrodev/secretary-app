@@ -4,31 +4,38 @@ import { useFetch } from '@/hooks/useFetch';
 /**
  * Hook to search patients and their specific appointment results.
  * Used within the agenda to filter by patient name or phone.
+ * 
+ * - Only fires a request when the search term has 2+ characters (after 400ms debounce).
+ * - Does NOT load all appointments on mount (avoids heavy 600+ row payload).
  */
 export const usePatientSearch = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchPatientId, setSearchPatientId] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
 
-    // Debounce search term
+    // Debounce: wait 400ms after user stops typing
     useEffect(() => {
         const timer = setTimeout(() => {
-            setDebouncedSearch(searchTerm);
-        }, 500);
+            setDebouncedSearch(searchTerm.trim());
+        }, 400);
         return () => clearTimeout(timer);
     }, [searchTerm]);
 
-    // Main Appointments Fetch
+    // Only search when there's a meaningful term (2+ chars)
+    const shouldSearch = debouncedSearch.length >= 2;
+
+    // Main Appointments Search Fetch — only fires when shouldSearch is true
     const { 
         data: appointments = [], 
         loading: appointmentsLoading,
         refetch: fetchAppointments 
     } = useFetch('/appointments', {
         params: { search: debouncedSearch },
-        initialData: []
+        initialData: [],
+        immediate: shouldSearch
     });
 
-    // Patient History Fetch
+    // Patient History Fetch — only fires when a specific patientId is selected
     const { 
         data: patientAppointments = [], 
         loading: patientApptLoading
@@ -41,9 +48,9 @@ export const usePatientSearch = () => {
     return {
         searchTerm, setSearchTerm,
         searchPatientId, setSearchPatientId,
-        appointments,
+        appointments: shouldSearch ? appointments : [],
         patientAppointments,
-        patientApptLoading: patientApptLoading || appointmentsLoading,
+        patientApptLoading: patientApptLoading || (shouldSearch && appointmentsLoading),
         fetchAppointments
     };
 };
