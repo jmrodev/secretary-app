@@ -283,7 +283,7 @@ export const usePatientFormController = ({
                     const insuranceName = insurances.find(i => i.id == formData.insurance_id)?.name || 'Particular';
 
                     const newPatient = {
-                        id: res.data.patient_id,
+                        id: res.data.patientId,
                         user_id: res.data.user_id,
                         ...formData,
                         phone: derivedPhone,
