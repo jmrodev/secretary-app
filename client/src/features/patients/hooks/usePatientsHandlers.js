@@ -37,7 +37,7 @@ export const usePatientsHandlers = ({
 
             const [info, trans, appts] = await Promise.all([
                 api.get(`/users/patients/${id}`),
-                api.get(`/finances/transactions?patient_id=${id}`),
+                api.get(`/finances/transactions?patientId=${id}`),
                 api.get(`/appointments?patientId=${id}`)
             ]);
             setPatientDetails({ ...info.data, transactions: trans.data, appointments: appts.data });
@@ -136,7 +136,7 @@ export const usePatientsHandlers = ({
     const handlePayDebt = useCallback(async (debtParams) => {
         try {
             const { patientId, amount, method } = debtParams;
-            await api.post('/finances/pay-debt', { patient_id: patientId, amount, method });
+            await api.post('/finances/pay-debt', { patientId, amount, method });
             showMessage(t('payment_processed'), 'success');
             setDebtModal(prev => ({ ...prev, open: false }));
             fetchPatients();

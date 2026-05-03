@@ -19,9 +19,9 @@ exports.createRequest = async (req, res) => {
 
 exports.getRequests = async (req, res) => {
     try {
-        const { page = 1, limit = 50, status, patientId, doctorId: queryDoctorId, search } = req.query;
+        const { page = 1, limit = 50, status, patientId, patient_id, doctorId: queryDoctorId, search } = req.query;
         const filters = {
-            patientId,
+            patientId: patientId || patient_id,
             doctorId: req.doctorId || queryDoctorId,
             status,
             search: search?.trim() || undefined,

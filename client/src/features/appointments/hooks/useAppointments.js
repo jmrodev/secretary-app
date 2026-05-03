@@ -125,7 +125,7 @@ export const useAppointments = () => {
             setIsSubmitting(true);
             await api.post('/medical/prescriptions', {
                 appointment_id: data.apptId,
-                patient_id: data.patientId,
+                patientId: data.patientId,
                 medications: data.medications,
                 instructions: data.instructions,
                 items: data.items,

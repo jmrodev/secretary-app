@@ -141,7 +141,7 @@ export const useAppointmentBooking = (doctors) => {
             if (editModeId) {
                 await api.put(`/appointments/${editModeId}`, {
                     doctor_id: selectedDoctor,
-                    patient_id: (user.role === 'secretary' || user.role === 'doctor') ? selectedPatient : undefined,
+                    patientId: (user.role === 'secretary' || user.role === 'doctor') ? selectedPatient : undefined,
                     appointment_date: new Date(date).toISOString(),
                     reason: reason || 'Consulta',
                     bonified,
@@ -152,7 +152,7 @@ export const useAppointmentBooking = (doctors) => {
             } else {
                 await api.post('/appointments', {
                     doctor_id: selectedDoctor,
-                    patient_id: (user.role === 'secretary' || user.role === 'doctor') ? selectedPatient : undefined,
+                    patientId: (user.role === 'secretary' || user.role === 'doctor') ? selectedPatient : undefined,
                     appointment_date: new Date(date).toISOString(),
                     reason: reason || 'Consulta',
                     bonified,

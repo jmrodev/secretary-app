@@ -20,8 +20,8 @@ export const useMedicalRecords = (patientId, showMessage, t) => {
             const res = await api.get(`/medical/patients/${patientId}/medications`);
             setMedications(res.data);
 
-            const reqRes = await api.post('/medical/requests', { patientId });
-            setRecentRequests(reqRes.data.filter(r => r.type === 'prescription'));
+            const reqRes = await api.get(`/medical/requests?patientId=${patientId}`);
+            setRecentRequests(reqRes.data.requests.filter(r => r.type === 'prescription'));
 
         } catch (err) {
             console.error("Error fetching patient meds:", err);
@@ -54,7 +54,7 @@ export const useMedicalRecords = (patientId, showMessage, t) => {
             for (const med of pendingMedications) {
                 await api.post('/medical/patients/medications', {
                     ...med,
-                    patient_id: patientId
+                    patientId: patientId
                 });
             }
 

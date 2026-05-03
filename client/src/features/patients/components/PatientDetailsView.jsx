@@ -41,9 +41,9 @@ const PatientDetailsView = ({
             .then(res => setChronicMeds(res.data))
             .catch(err => console.error("Error fetching chronic meds:", err));
 
-        api.post('/medical/requests', { patientId: details.id })
+        api.get(`/medical/requests?patientId=${details.id}`)
             .then(res => {
-                const prescriptions = res.data.filter(r => r.type === 'prescription');
+                const prescriptions = res.data.requests.filter(r => r.type === 'prescription');
                 setRecentRequests(prescriptions);
             })
             .catch(err => console.error("Error fetching requests:", err));
