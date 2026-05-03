@@ -1,14 +1,14 @@
 .input {
     /* --- Local Component Tokens --- */
-    --input-bg: var(--white);
-    --input-border: var(--gray-200);
-    --input-text: var(--text-main);
-    --input-focus-border: var(--blue-500);
-    --input-focus-ring: rgba(59, 130, 246, 0.1);
+    --input-bg: rgba(255, 255, 255, 0.05);
+    --input-border: rgba(255, 255, 255, 0.1);
+    --input-text: var(--white);
+    --input-focus-border: var(--primary-hover);
+    --input-focus-ring: rgba(0, 61, 155, 0.2);
     --input-error-border: var(--red-500);
-    --input-error-ring: rgba(239, 68, 68, 0.1);
-    --input-disabled-bg: var(--gray-50);
-    --input-disabled-text: var(--gray-400);
+    --input-error-ring: rgba(239, 68, 68, 0.2);
+    --input-disabled-bg: rgba(255, 255, 255, 0.02);
+    --input-disabled-text: var(--gray-500);
     /* ------------------------------ */
 
     width: 100%;
@@ -16,6 +16,8 @@
     border-radius: 0.75rem;
     border: 1px solid var(--input-border);
     background-color: var(--input-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     color: var(--input-text);
     font-size: 0.9375rem;
     font-family: inherit;

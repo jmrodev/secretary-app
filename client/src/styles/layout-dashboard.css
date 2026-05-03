@@ -131,21 +131,23 @@
  */
 .dashboard-card {
     /* --- Local Component Tokens --- */
-    --card-bg: var(--white);
-    --card-border: var(--gray-300);
-    --card-shadow: var(--shadow-sm);
-    --card-header-bg: var(--gray-50);
-    --card-title-color: #475569; /* Slate 600 - Better contrast */
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --card-border: rgba(255, 255, 255, 0.1);
+    --card-shadow: var(--shadow-lg);
+    --card-header-bg: rgba(255, 255, 255, 0.03);
+    --card-title-color: var(--text-secondary);
     /* ------------------------------ */
 
     background-color: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--card-border);
     border-radius: var(--radius-lg);
     box-shadow: var(--card-shadow);
     display: flex;
     flex-direction: column;
     padding: clamp(0.75rem, 1.5vw, 1.25rem);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .dashboard-card:hover {

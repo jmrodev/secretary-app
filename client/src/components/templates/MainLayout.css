@@ -6,7 +6,8 @@
     display: flex;
     height: 100vh;
     overflow: hidden;
-    background-color: var(--layout-bg);
+    background: var(--bg-gradient-blue);
+    color: var(--text-main);
 }
 
 @media screen and (max-width: 1024px) {

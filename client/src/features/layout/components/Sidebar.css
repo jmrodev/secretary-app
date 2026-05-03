@@ -1,25 +1,27 @@
 .sidebar {
     /* --- Local Component Tokens --- */
-    --sidebar-bg: var(--secondary-color); /* Slate 900 */
-    --sidebar-border: rgba(255, 255, 255, 0.1);
+    --sidebar-bg: rgba(15, 23, 42, 0.6); /* Translucent Slate 900 */
+    --sidebar-border: rgba(255, 255, 255, 0.05);
     
     --header-border-bottom: rgba(255, 255, 255, 0.05);
     
-    --link-color: rgba(255, 255, 255, 0.7);
-    --link-bg-hover: rgba(255, 255, 255, 0.08);
+    --link-color: rgba(255, 255, 255, 0.6);
+    --link-bg-hover: rgba(255, 255, 255, 0.05);
     --link-color-hover: #ffffff;
     
-    --link-active-bg: var(--primary-color);
+    --link-active-bg: rgba(0, 61, 155, 0.4);
     --link-active-color: #ffffff;
     --link-active-indicator: #ffffff;
     
-    --section-title-color: rgba(255, 255, 255, 0.5);
-    --section-header-hover: rgba(255, 255, 255, 0.05);
+    --section-title-color: rgba(255, 255, 255, 0.4);
+    --section-header-hover: rgba(255, 255, 255, 0.03);
     /* ------------------------------ */
 
     width: var(--sidebar-width);
     height: 100vh;
     background-color: var(--sidebar-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-right: 1px solid var(--sidebar-border);
     display: flex;
     flex-direction: column;
