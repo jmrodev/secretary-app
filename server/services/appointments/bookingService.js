@@ -70,7 +70,7 @@ class BookingService {
                 userId
             });
 
-            return { id: appointmentId, patient_id };
+            return { id: appointmentId, patientId };
         } catch (err) {
             await conn.rollback();
             throw err;
