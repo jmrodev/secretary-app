@@ -6,6 +6,7 @@ const doctorManagementController = require('../controllers/user/doctorManagement
 const userAccountController = require('../controllers/user/userAccountController');
 const reminderController = require('../controllers/user/reminderController');
 const userStatsController = require('../controllers/user/userStatsController');
+const restoreController = require('../controllers/restoreController');
 
 const { verifyToken } = require('../middleware/authMiddleware');
 const { authorize } = require('../middleware/authorize');
@@ -16,6 +17,7 @@ router.put('/profile', verifyToken, profileController.updateProfile);
 
 // Specific patient details (for doctors/secretaries)
 router.get('/patients/:id', verifyToken, patientManagementController.getPatientDetails);
+router.post('/patients/:id/restore', verifyToken, authorize(ACCESS_LEVELS.MANAGE_PATIENTS), restoreController.restoreItem);
 router.put('/patients/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_PATIENTS), patientManagementController.updatePatientDetails);
 router.put('/patients/:id/toggle-new', verifyToken, authorize(ACCESS_LEVELS.MANAGE_PATIENTS), patientManagementController.toggleNewPatientStatus);
 

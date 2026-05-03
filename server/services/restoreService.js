@@ -57,11 +57,11 @@ class RestoreService {
         const username = auth?.username || profile.email || profile.dni || `restored_patient_${Date.now()}`;
         const passwordHash = auth?.password_hash || await bcrypt.hash(crypto.randomBytes(16).toString('hex'), 10);
 
-        const [uRes] = await conn.query(
+        const uRes = await conn.query(
             "INSERT INTO users (username, password_hash, role) VALUES (?, ?, 'patient')",
             [username, passwordHash]
         );
-        const newUserId = uRes.insertId;
+        const newUserId = Number(uRes.insertId);
 
         // 2. Restore Patient Profile
         await conn.query(`
@@ -84,7 +84,7 @@ class RestoreService {
             profile.next_suggested_visit_date, profile.next_suggested_prescription_date,
             profile.license_expiry_date,
             profile.street_name, profile.street_number, profile.floor, profile.apartment,
-            profile.city, profile.country
+            profile.city, profile.province, profile.country
         ]);
 
         // 3. Re-link Transactions that were orphaned
@@ -159,7 +159,7 @@ class RestoreService {
         const { profile } = data;
         const passwordHash = await bcrypt.hash(crypto.randomBytes(16).toString('hex'), 10);
         const username = profile.full_name.replace(/\s+/g, '.').toLowerCase();
-        const [uRes] = await conn.query("INSERT INTO users (username, password_hash, role) VALUES (?, ?, 'doctor')", [username, passwordHash]);
+        const uRes = await conn.query("INSERT INTO users (username, password_hash, role) VALUES (?, ?, 'doctor')", [username, passwordHash]);
         await conn.query(`INSERT INTO doctors (id, user_id, full_name, specialty, phone) VALUES (?, ?, ?, ?, ?)`,
             [profile.id, uRes.insertId, profile.full_name, profile.specialty, profile.phone]);
     }
@@ -168,7 +168,7 @@ class RestoreService {
         const { profile } = data;
         const passwordHash = await bcrypt.hash(crypto.randomBytes(16).toString('hex'), 10);
         const username = profile.full_name.replace(/\s+/g, '.').toLowerCase();
-        const [uRes] = await conn.query("INSERT INTO users (username, password_hash, role) VALUES (?, ?, 'secretary')", [username, passwordHash]);
+        const uRes = await conn.query("INSERT INTO users (username, password_hash, role) VALUES (?, ?, 'secretary')", [username, passwordHash]);
         await conn.query(`INSERT INTO secretaries (id, user_id, full_name, phone) VALUES (?, ?, ?, ?)`,
             [profile.id, uRes.insertId, profile.full_name, profile.phone]);
     }

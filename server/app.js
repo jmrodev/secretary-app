@@ -114,6 +114,12 @@ app.use('/api/schedules', require('./routes/scheduleRoutes'));
 app.use('/api/billing', require('./routes/billingRoutes'));
 app.use('/uploads', express.static('uploads'));
 
+// Debug Middleware for 404s
+app.use((req, res, next) => {
+    console.log(`[DEBUG] ${req.method} ${req.url} - Checking matches...`);
+    next();
+});
+
 app.get('/api/debug/dump-appointments', async (req, res) => {
     try {
         const rows = await appointmentRepository.findAllDetailed();
