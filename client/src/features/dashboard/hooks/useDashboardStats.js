@@ -17,7 +17,7 @@ export const useDashboardStats = (isStaff = false, doctor_id = '') => {
         error: errorDoctors
     } = useFetch('/users/doctors', { initialData: { doctors: [], totalCount: 0 } });
 
-    const doctors = doctorData?.doctors || [];
+    const doctors = useMemo(() => doctorData?.doctors || [], [doctorData?.doctors]);
     
     const {
         data: newPatientStats = null,
