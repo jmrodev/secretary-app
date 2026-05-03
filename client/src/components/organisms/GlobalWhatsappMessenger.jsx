@@ -99,13 +99,16 @@ const GlobalWhatsappMessenger = () => {
 
     if (!isOpen) {
         return (
-            <Button 
-                className="global-wa-btn" 
-                onClick={() => setIsOpen(true)}
-                variant="success"
-                icon={<Icon name="whatsapp" size="1.8rem" />}
-                unstyled // We use custom floating styles in CSS
-            />
+            <div className="global-wa-trigger-container">
+                <Button 
+                    className="global-wa-simple-btn" 
+                    onClick={() => setIsOpen(true)}
+                    variant="success"
+                    icon={<Icon name="CHAT" size="1.2rem" />}
+                >
+                    {t('whatsapp_messenger')}
+                </Button>
+            </div>
         );
     }
 
@@ -119,8 +122,7 @@ const GlobalWhatsappMessenger = () => {
             <section className="global-wa-messenger__sidebar">
                 <header className="global-wa-messenger__sidebar-header">
                     <div className="global-wa-messenger__title">
-                        <Icon name="whatsapp" size="1.2rem" />
-                        <h3>{t('my_messages')}</h3>
+                        <h3>{t('contacts')}</h3>
                     </div>
                     {viewDoctorId && (
                         <div className="global-wa-messenger__doctor-filter" title={t('filtering_by_doctor')}>
@@ -139,7 +141,7 @@ const GlobalWhatsappMessenger = () => {
                         <Button 
                             variant="ghost"
                             size="sm"
-                            className="global-wa-messenger__close-mobile" 
+                            className="global-wa-messenger__close-btn" 
                             onClick={() => setIsOpen(false)}
                             icon={<Icon name="close" size="1.2rem" />}
                         />
@@ -235,7 +237,7 @@ const GlobalWhatsappMessenger = () => {
                         <Button 
                             variant="ghost"
                             size="sm"
-                            className="global-wa-messenger__close-desktop" 
+                            className="global-wa-messenger__close-btn" 
                             onClick={() => setIsOpen(false)}
                             icon={<Icon name="close" size="1.2rem" />}
                         />
@@ -253,11 +255,11 @@ const GlobalWhatsappMessenger = () => {
                                     <div className={`global-wa-messenger__pulse-ring global-wa-messenger__pulse-ring--${bridgeStatus.status}`}></div>
                                 </div>
                                 
-                                <h3>{t(bridgeStatus.status === 'offline' ? 'bridge_offline_title' : 'whatsapp_pairing_required') || (bridgeStatus.status === 'offline' ? 'Servicio Desconectado' : 'Vincular WhatsApp')}</h3>
+                                <h3>{t(bridgeStatus.status === 'offline' ? 'bridge_offline_title' : 'whatsapp_pairing_required')}</h3>
                                 <p>
                                     {bridgeStatus.status === 'offline' 
-                                        ? t('bridge_offline_desc') || 'El puente de WhatsApp no está respondiendo. Por favor, verificá que el servicio esté corriendo.'
-                                        : t('whatsapp_pairing_desc') || 'Escaneá este código desde tu celular (Ajustes > Dispositivos vinculados)'}
+                                        ? t('bridge_offline_desc') 
+                                        : t('whatsapp_pairing_desc')}
                                 </p>
                                 
                                 {bridgeStatus.status !== 'offline' && (
