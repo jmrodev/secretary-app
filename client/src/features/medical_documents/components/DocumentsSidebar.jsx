@@ -4,6 +4,7 @@ import TabButton from '@/components/atoms/TabButton';
 import Icon from '@/components/atoms/Icon';
 import SearchBar from '@/components/molecules/SearchBar';
 import Button from '@/components/atoms/Button';
+import { DoctorSelector } from '@/features/doctors';
 import './DocumentsSidebar.css';
 
 /**
@@ -45,6 +46,14 @@ const DocumentsSidebar = ({
                         </TabButton>
                     ))}
                 </TabNav>
+            </div>
+
+            <div className="dashboard-card medical-documents__doctor-card">
+                <h3 className="dashboard-card__title">
+                    <Icon name="medical_services" size="1.2rem" color="var(--accent-color)" />
+                    {t('doctor_filter') || t('doctor_label')}
+                </h3>
+                <DoctorSelector />
             </div>
 
             <div className="dashboard-card medical-documents__search-card">
