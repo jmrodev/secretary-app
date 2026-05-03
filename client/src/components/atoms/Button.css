@@ -1,13 +1,13 @@
 .btn {
     /* --- Local Component Tokens --- */
-    --btn-bg: var(--gray-100);
-    --btn-text: var(--text-main);
-    --btn-border: transparent;
-    --btn-shadow: none;
-    --btn-hover-bg: var(--gray-200);
-    --btn-hover-text: var(--text-main);
-    --btn-hover-shadow: var(--shadow-sm);
-    --btn-hover-y: -1px;
+    --btn-bg: rgba(255, 255, 255, 0.1);
+    --btn-text: var(--white);
+    --btn-border: rgba(255, 255, 255, 0.1);
+    --btn-shadow: var(--shadow-sm);
+    --btn-hover-bg: rgba(255, 255, 255, 0.2);
+    --btn-hover-text: var(--white);
+    --btn-hover-shadow: var(--shadow-md);
+    --btn-hover-y: -2px;
     /* ------------------------------ */
 
     display: inline-flex;
@@ -108,13 +108,13 @@
 }
 
 .btn--secondary {
-    --btn-bg: var(--white);
-    --btn-border: var(--gray-200);
-    --btn-text: var(--gray-700);
+    --btn-bg: rgba(255, 255, 255, 0.05);
+    --btn-border: rgba(255, 255, 255, 0.1);
+    --btn-text: var(--white);
     --btn-shadow: var(--shadow-sm);
-    --btn-hover-bg: var(--gray-50);
-    --btn-hover-border: var(--gray-300);
-    --btn-hover-text: var(--gray-900);
+    --btn-hover-bg: rgba(255, 255, 255, 0.15);
+    --btn-hover-border: rgba(255, 255, 255, 0.2);
+    --btn-hover-text: var(--white);
 }
 
 .btn--secondary:hover:not(:disabled) {

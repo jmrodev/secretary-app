@@ -7,14 +7,16 @@
     --accent-color: #0c56d0; /* Surface Tint */
     --accent-hover: #0040a2; 
     
-    --background-bg: #f7f9fc; /* Neutral Surface (Editorial Calm) */
-    --card-bg: #ffffff;
-    --modal-bg: #ffffff;
-    --modal-bg-dark: #2d3133;
+    --background-bg: #0f172a; /* Slate 900 - Base for gradient */
+    --bg-gradient-blue: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     
-    --text-main: #0f172a; 
-    --text-muted: #475569; 
-    --text-secondary: #1e293b; /* Slate 800 for better legibility on 400 bg surfaces if needed */
+    --card-bg: rgba(255, 255, 255, 0.05); /* Glassmorphism effect */
+    --modal-bg: rgba(30, 41, 59, 0.8);
+    --modal-bg-dark: #1e293b;
+    
+    --text-main: #f8fafc; /* Slate 50 for dark background */
+    --text-muted: #94a3b8; /* Slate 400 */
+    --text-secondary: #cbd5e1; /* Slate 300 */
     
     --border-color: #64748b; /* Slate 500 - Stronger borders for Slate-400 bg */
     --error: #ef4444; 
@@ -156,10 +158,11 @@
     --font-newsreader: 'Newsreader', 'Georgia', serif;
     --font-manrope: 'Manrope', sans-serif;
     
-    --glass: rgba(255, 255, 255, 0.7); 
-    --glass-dark: rgba(25, 28, 30, 0.7);
+    --glass: rgba(255, 255, 255, 0.1); 
+    --glass-dark: rgba(15, 23, 42, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
     
     --sidebar-width: 280px;
-    --sidebar-bg: var(--secondary-color); /* Slate 900 */
+    --sidebar-bg: #0f172a; /* Slate 900 */
     --sidebar-text: #ffffff;
 }
