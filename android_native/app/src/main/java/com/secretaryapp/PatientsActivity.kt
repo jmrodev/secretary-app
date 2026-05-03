@@ -75,7 +75,7 @@ class PatientsActivity : AppCompatActivity() {
         } else {
             // Normal navigation workflow
             val intent = Intent(this, PatientDetailActivity::class.java).apply {
-                putExtra("patient_id", patient.id)
+                putExtra("patientId", patient.id)
                 putExtra("name", patient.full_name)
                 putExtra("dni", patient.dni)
                 putExtra("phone", patient.phone)

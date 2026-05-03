@@ -78,7 +78,7 @@ const GlobalWhatsappMessenger = () => {
     }, [isOpen, activeChat, fetchConversations, fetchStatus, bridgeStatus.status, viewDoctorId]);
 
     const handlePatientClick = (conv) => {
-        setActiveChat({ patientId: conv.patient_id, phone: conv.patient_phone });
+        setActiveChat({ patientId: conv.patientId || conv.patient_id, phone: conv.patient_phone });
     };
 
     const handleBack = () => {
@@ -205,7 +205,7 @@ const GlobalWhatsappMessenger = () => {
                         <div className="global-wa-messenger__chat-user">
                             {activeChat ? (
                                 <>
-                                    <strong>{activeChat.patientId ? (conversations.find(c => c.patient_id === activeChat.patientId)?.patient_name) : activeChat.phone}</strong>
+                                    <strong>{activeChat.patientId ? (conversations.find(c => c.patientId === activeChat.patientId || c.patient_id === activeChat.patientId)?.patient_name) : activeChat.phone}</strong>
                                     <span className="global-wa-messenger__online-status">{t('live')}</span>
                                 </>
                             ) : (

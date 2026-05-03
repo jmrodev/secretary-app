@@ -40,7 +40,7 @@ interface ApiService {
     @POST("medical/files")
     suspend fun uploadFile(
         @Header("Authorization") token: String,
-        @Part("patient_id") patientId: RequestBody,
+        @Part("patientId") patientId: RequestBody,
         @Part("description") description: RequestBody,
         @Part file: MultipartBody.Part
     ): Response<UploadResponse>
@@ -48,7 +48,7 @@ interface ApiService {
     @GET("medical/files")
     suspend fun getPatientFiles(
         @Header("Authorization") token: String,
-        @Query("patient_id") patientId: Int
+        @Query("patientId") patientId: Int
     ): Response<List<PatientFile>>
 
     @GET("users/patients/{id}")
