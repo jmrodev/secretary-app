@@ -9,7 +9,7 @@ data class Appointment(
     val payment_status: String?, // pending, paid, debt, partial
     val reason: String?,
     val doctor_id: Int,
-    val patient_id: Int?,
+    val patientId: Int?,
     val behavior_rating: Int?,
     val total_debt: Double?,
     val total_appointments: Int?,

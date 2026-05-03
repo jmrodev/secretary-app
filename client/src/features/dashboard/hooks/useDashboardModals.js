@@ -15,7 +15,7 @@ export const useDashboardModals = () => {
             initialData: {
                 type: 'income_patient',
                 amount: appt.cost || 0,
-                patientId: appt.patient_id,
+                patientId: appt.patientId || appt.patient_id,
                 patientName: appt.patient_name,
                 patientDni: appt.patient_dni,
                 patientUserId: appt.patient_user_id,
@@ -31,7 +31,7 @@ export const useDashboardModals = () => {
     const handleOpenHistory = useCallback((appt) => {
         setHistoryModal({
             open: true,
-            patientId: appt.patient_id,
+            patientId: appt.patientId || appt.patient_id,
             patientName: appt.patient_name
         });
         setActionModal(prev => ({ ...prev, open: false }));

@@ -25,7 +25,7 @@ class PatientFilesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_patient_files)
         
-        patientId = intent.getIntExtra("patient_id", 0)
+        patientId = intent.getIntExtra("patientId", 0)
         val patientName = intent.getStringExtra("patient_name") ?: "Paciente"
         
         findViewById<TextView>(R.id.tvFilesTitle).text = "Archivos de $patientName"

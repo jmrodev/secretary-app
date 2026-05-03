@@ -2,7 +2,7 @@ package com.secretaryapp.model
 
 data class PatientFile(
     val id: Int,
-    val patient_id: Int,
+    val patientId: Int,
     val file_name: String,
     val file_url: String,
     val file_type: String?,

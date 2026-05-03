@@ -71,7 +71,7 @@ class AppointmentDetailActivity : AppCompatActivity() {
 
         // Role Logic
         val role = SessionManager.role
-        val patientId = intent.getIntExtra("patient_id", 0)
+        val patientId = intent.getIntExtra("patientId", 0)
 
         if (role == "doctor") {
             layoutDoctor.visibility = View.VISIBLE

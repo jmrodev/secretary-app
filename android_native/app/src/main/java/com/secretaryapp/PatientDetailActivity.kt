@@ -65,7 +65,7 @@ class PatientDetailActivity : AppCompatActivity() {
         val phone = intent.getStringExtra("phone")
         val email = intent.getStringExtra("email")
         val address = intent.getStringExtra("address")
-        patientId = intent.getIntExtra("patient_id", 0)
+        patientId = intent.getIntExtra("patientId", 0)
 
         // Restore state if available
         savedInstanceState?.let {
@@ -142,7 +142,7 @@ class PatientDetailActivity : AppCompatActivity() {
         
         findViewById<Button>(R.id.btnViewFiles).setOnClickListener {
             val intent = Intent(this, PatientFilesActivity::class.java)
-            intent.putExtra("patient_id", patientId)
+            intent.putExtra("patientId", patientId)
             intent.putExtra("patient_name", name)
             startActivity(intent)
         }
