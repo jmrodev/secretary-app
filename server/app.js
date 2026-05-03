@@ -88,7 +88,7 @@ app.get(frontendRoutes, (req, res) => {
 // Extract Doctor Context from Headers
 app.use((req, res, next) => {
     const doctorId = req.headers['x-doctor-id'];
-    if (doctorId) {
+    if (doctorId && doctorId !== 'undefined' && doctorId !== 'null' && doctorId !== '') {
         req.doctorId = doctorId;
     }
     next();

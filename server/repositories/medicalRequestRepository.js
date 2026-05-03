@@ -26,8 +26,8 @@ class MedicalRequestRepository {
 
         if (filters.patientId) { whereClauses.push("r.patient_id = ?"); params.push(filters.patientId); }
         if (filters.doctorId) {
-            // Include requests assigned to this doctor OR unassigned patient-submitted requests
-            whereClauses.push("(r.doctor_id = ? OR (r.is_patient_submitted = TRUE AND r.doctor_id IS NULL))");
+            // Include requests assigned to this doctor OR ANY unassigned requests (to avoid visibility gaps)
+            whereClauses.push("(r.doctor_id = ? OR r.doctor_id IS NULL)");
             params.push(filters.doctorId);
         }
         if (filters.status) {
@@ -58,7 +58,8 @@ class MedicalRequestRepository {
 
         if (filters.patientId) { whereClauses.push("r.patient_id = ?"); params.push(filters.patientId); }
         if (filters.doctorId) {
-            whereClauses.push("(r.doctor_id = ? OR (r.is_patient_submitted = TRUE AND r.doctor_id IS NULL))");
+            // Include requests assigned to this doctor OR ANY unassigned requests
+            whereClauses.push("(r.doctor_id = ? OR r.doctor_id IS NULL)");
             params.push(filters.doctorId);
         }
         if (filters.status) {
