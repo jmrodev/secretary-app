@@ -13,7 +13,7 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^6.0.1",
     "vite": "^8.0.10",
-    "wrangler": "^4.83.0"
+    "wrangler": "^4.87.0"
   },
   "pnpm": {
     "overrides": {
