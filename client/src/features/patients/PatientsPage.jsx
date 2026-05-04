@@ -98,9 +98,8 @@ const PatientsPage = () => {
                         onGeneratePrescriptionLink={handleGeneratePrescriptionLink}
                         onToggleNew={handleToggleNew}
                         onPayDebt={handleOpenDebtModal}
-                    >
-                        <PatientMedications patientId={patientDetails.id} patientName={patientDetails.full_name} />
-                    </PatientDetailsView>
+                    />
+
                 ) : (
                     // --- LIST VIEW ---
                     <section className="dashboard-layout__grid">
