@@ -47,7 +47,8 @@
 }
 
 .patient-table td {
-    padding: 1rem;
+    padding: 1.25rem 1rem; /* More spacing */
+    font-size: 1rem;
     border-bottom: 1px solid var(--table-border-inner);
     vertical-align: middle;
 }
@@ -67,11 +68,13 @@
 }
 
 .patient-table__name {
-    font-weight: 700;
-    color: var(--text-main);
+    font-size: 1.35rem; /* Large and dominant */
+    font-weight: 800;
+    color: var(--gray-900);
     text-transform: capitalize;
     white-space: nowrap;
 }
+
 
 .patient-table__row--institution {
     cursor: default;
@@ -107,17 +110,19 @@
 .patient-table__id-info {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
-    font-size: 0.75rem;
-    color: var(--text-secondary);
+    gap: 0.35rem;
+    font-size: 0.95rem; /* Increased for readability */
+    color: var(--slate-700);
 }
 
+
 .patient-table__id-label {
-    font-weight: 600;
-    color: var(--gray-400);
+    font-weight: 800;
+    color: var(--slate-400);
     width: 2.5rem;
     display: inline-block;
 }
+
 
 .patient-table__contact-link {
     display: inline-flex;
@@ -184,11 +189,12 @@
 }
 
 .rating-item__label {
-    font-size: 0.65rem;
-    font-weight: 800;
-    color: var(--text-muted);
-    width: 2rem;
+    font-size: 0.8rem; /* Increased readability */
+    font-weight: 900;
+    color: var(--slate-600);
+    width: 2.5rem;
 }
+
 
 .rating-item__stars {
     display: flex;
@@ -209,13 +215,14 @@
 }
 
 .patient-table td .patient-table__debt-badge {
-    font-weight: 700;
-    font-size: 0.75rem;
+    font-weight: 800;
+    font-size: 1.1rem; /* Big and clear debt */
     background: var(--red-50);
     color: var(--red-600);
     border: 1px solid var(--red-100);
-    padding: 0.25rem 0.625rem;
+    padding: 0.5rem 1rem;
 }
+
 
 .patient-table__zero-debt {
     font-size: 0.75rem;

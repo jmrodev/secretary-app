@@ -35,12 +35,9 @@ export const usePatientsHandlers = ({
             setDetailsLoading(true);
             setSelectedPatientId(id);
 
-            const [info, trans, appts] = await Promise.all([
-                api.get(`/users/patients/${id}`),
-                api.get(`/finances/transactions?patientId=${id}`),
-                api.get(`/appointments?patientId=${id}`)
-            ]);
-            setPatientDetails({ ...info.data, transactions: trans.data, appointments: appts.data });
+            // Optimized: Only fetch basic details (which now include stats via the extended view)
+            const res = await api.get(`/users/patients/${id}`);
+            setPatientDetails(res.data);
         } catch (err) {
             console.error(err);
             showMessage(t('failed_load_history') || "Failed to load history", 'error');
@@ -49,6 +46,7 @@ export const usePatientsHandlers = ({
             setDetailsLoading(false);
         }
     }, [showMessage, setSelectedPatientId, setDetailsLoading, setPatientDetails, t]);
+
 
     const handleDeletePatient = useCallback(async (patientData) => {
         if (!patientData?.user_id) return;

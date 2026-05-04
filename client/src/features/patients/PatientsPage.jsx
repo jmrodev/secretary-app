@@ -12,7 +12,6 @@ import Icon from '@/components/atoms/Icon';
 
 // Molecules (Shared/Global)
 import QRCodeModal from '@/features/patients/components/QRCodeModal';
-import SearchBar from '@/components/molecules/SearchBar';
 import Pagination from '@/components/molecules/Pagination';
 import TabNav from '@/components/molecules/TabNav';
 
@@ -40,7 +39,7 @@ const PatientsPage = () => {
         totalCount, currentPage, totalPages, handlePageChange,
         doctors, insurances, recycleItems, institutions,
         activeTab, setActiveTab,
-        searchTerm, setSearchTerm,
+        setSearchTerm,
         selectedPatientId, setSelectedPatientId, patientDetails,
 
         // Modals
@@ -135,12 +134,16 @@ const PatientsPage = () => {
                                 </h3>
                                 <div className="patients-sidebar__search">
                                     {activeTab === 'list' && (
-                                        <SearchBar
-                                            value={searchTerm}
-                                            onChange={e => setSearchTerm(e.target.value)}
-                                            placeholder={t('search_placeholder')}
-                                            className="action-bar__search"
-                                        />
+                                        <div className="search-bar action-bar__search">
+                                            <input
+                                                type="text"
+                                                value={controller.searchTerm}
+                                                onChange={e => setSearchTerm(e.target.value)}
+                                                placeholder={t('search_placeholder')}
+                                                className="search-bar__input"
+                                            />
+                                            <Icon name="search" className="search-bar__icon" />
+                                        </div>
                                     )}
                                 </div>
                             </div>

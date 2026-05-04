@@ -103,9 +103,10 @@ const PatientList = ({
                             <td>
                                 <div className="patient-table__name-cell">
                                     <strong className="patient-table__name">
-                                        {p.full_name}
+                                        {p.full_name || `${p.first_name || ''} ${p.last_name || ''}`.trim() || 'N/A'}
                                     </strong>
                                     {p.is_new_patient === 1 && <Badge variant="blue" size="sm">NEW</Badge>}
+
                                     {p.attended_appointments > 0 && (
                                         <Badge variant="success" size="sm" title={`${t('attended_appointments') || 'Visitas'}: ${p.attended_appointments}`}>
                                             <Icon name="history" size="0.8rem" /> {p.attended_appointments}

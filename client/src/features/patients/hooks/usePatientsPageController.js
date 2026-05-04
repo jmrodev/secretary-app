@@ -83,7 +83,8 @@ export const usePatientsPageController = () => {
     const handleSearchChange = useCallback((value) => {
         setSearchTerm(value);
         setCurrentPage(1);
-    }, []);
+    }, [setSearchTerm]);
+
 
     const totalPages = Math.ceil(totalCount / itemsPerPage);
 

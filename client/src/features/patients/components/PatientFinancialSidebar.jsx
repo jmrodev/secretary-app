@@ -25,12 +25,12 @@ const PatientFinancialSidebar = ({
             <div className="patient-details__financial-card">
                 <header className="patient-details__financial-header">
                     <h4 className="patient-details__financial-title">
-                        {t('financial_history_debt')}
+                        {t('financial_history_debt') || 'HISTORIAL FINANCIERO Y DEUDA'}
                     </h4>
                 </header>
                 <div className="patient-details__financial-content patient-details__financial-content--padded-xl">
                     <span className={`patient-details__financial-amount ${Number(details.total_debt) > 0 ? 'patient-details__financial-amount--debt' : 'patient-details__financial-amount--clear'}`}>
-                        ${Number(details.total_debt).toFixed(2)}
+                        ${Number(details.total_debt).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                     {Number(details.total_debt) > 0 && (
                         <div className="config-flex config-flex--column config-flex--gap-1">
@@ -38,15 +38,15 @@ const PatientFinancialSidebar = ({
                                 variant="primary"
                                 className="patient-details__pay-debt-btn"
                                 onClick={(e) => onPayDebt(e, details.id, details.total_debt)}
-                                icon={<Icon name="payments" size="1rem" />}
+                                icon={<Icon name="payments" size="1.2rem" />}
                             >
-                                {t('pay_debt')}
+                                {t('pay_debt') || 'Pagar Deuda'}
                             </Button>
                             <Button
                                 variant="whatsapp"
                                 size="sm"
                                 className="patient-details__remind-debt-btn"
-                                icon={<Icon name="chat" size="1rem" />}
+                                icon={<Icon name="chat" size="1.1rem" />}
                                 onClick={() => {
                                     const phone = details.phoneNumbers?.find(p => p.is_primary)?.phone_number || details.phone;
                                     if (!phone) return alert(t('no_phone_available'));
@@ -60,56 +60,10 @@ const PatientFinancialSidebar = ({
                     )}
                 </div>
             </div>
-
-            {/* Sidebar Block 2: Quick Tools */}
-            <div className="details-block details-block--sidebar details-block--tools">
-                <header className="details-block__header">
-                    <h3 className="details-block__title">
-                        <Icon name="settings" size="1rem" />
-                        {t('tools')}
-                    </h3>
-                </header>
-                <div className="details-block__content patient-details__tools-list">
-                    <Button
-                        variant="secondary"
-                        className="patient-details__tool-btn"
-                        onClick={() => onGenerateQR(details.id)}
-                        icon={<Icon name="qr_code" size="1.1rem" />}
-                    >
-                        {t('generate_qr_access')}
-                    </Button>
-                    <Button
-                        variant="secondary"
-                        className="patient-details__tool-btn"
-                        onClick={() => onGeneratePrescriptionLink(details.id)}
-                        icon={<Icon name="description" size="1.1rem" />}
-                    >
-                        {t('request_prescription_link')}
-                    </Button>
-
-                    <Button
-                        variant="accent"
-                        className="patient-details__tool-btn"
-                        onClick={() => window.open('/uploads/secretary-app.apk', '_blank')}
-                        icon={<Icon name="DOWNLOAD" size="1.1rem" />}
-                    >
-                        {t('download_apk')}
-                    </Button>
-
-                    {(user?.role === 'admin' || user?.role === 'secretary') && (
-                        <Button
-                            variant="ghost"
-                            className="patient-details__delete-btn"
-                            onClick={() => onDelete(details)}
-                            icon={<Icon name="delete" size="1rem" />}
-                        >
-                            {t('delete_patient')}
-                        </Button>
-                    )}
-                </div>
-            </div>
         </aside>
     );
 };
+
+
 
 export default PatientFinancialSidebar;

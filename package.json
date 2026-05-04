@@ -2,10 +2,12 @@
   "name": "secretary-app",
   "private": true,
   "scripts": {
-    "lint": "pnpm --filter client run lint",
-    "build": "pnpm --filter client run build",
-    "test": "pnpm --filter server run test"
+    "lint": "npm --prefix client run lint",
+    "precommit": "npm run lint && echo '🚀 Linter passed! Safe to commit.'",
+    "build": "npm --prefix client run build",
+    "test": "npm --prefix server run test"
   },
+
   "dependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0"

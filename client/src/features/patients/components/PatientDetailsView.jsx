@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import api from '@/api/axios';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+import { formatDate } from '@/utils/dateUtils';
+
 
 // Local Feature Components
 import PatientInfoBlock from '@/features/patients/components/PatientInfoBlock';
@@ -30,6 +32,7 @@ const PatientDetailsView = ({
     onPayDebt,
     children
 }) => {
+    const [activeTab, setActiveTab] = useState('general'); // 'general' | 'history' | 'finances' | 'chat'
     const [isCleanView, setIsCleanView] = useState(false);
     const [chronicMeds, setChronicMeds] = useState([]);
     const [recentRequests, setRecentRequests] = useState([]);
@@ -91,47 +94,162 @@ const PatientDetailsView = ({
                         <Button size="sm" variant="secondary" onClick={onEdit} icon={<Icon name="EDIT" size="1rem" />}>
                             {t('edit_info')}
                         </Button>
+                        {(user?.role === 'admin' || user?.role === 'secretary') && (
+                            <Button size="sm" variant="ghost" className="patient-details__delete-header-btn" onClick={() => onDelete(details)} icon={<Icon name="delete" size="1rem" />}>
+                                {t('delete')}
+                            </Button>
+                        )}
                     </div>
+
                 </header>
 
                 <h1 className="patient-details__title">{details.full_name}</h1>
 
+                <div className="patient-details__tabs-nav">
+                    <button 
+                        className={`patient-details__tab-link ${activeTab === 'general' ? 'patient-details__tab-link--active' : ''}`}
+                        onClick={() => setActiveTab('general')}
+                    >
+                        <Icon name="person" size="1.1rem" />
+                        {t('general_info') || 'General'}
+                    </button>
+                    <button 
+                        className={`patient-details__tab-link ${activeTab === 'history' ? 'patient-details__tab-link--active' : ''}`}
+                        onClick={() => setActiveTab('history')}
+                    >
+                        <Icon name="history" size="1.1rem" />
+                        {t('medical_history') || 'Historia'}
+                    </button>
+                    <button 
+                        className={`patient-details__tab-link ${activeTab === 'finances' ? 'patient-details__tab-link--active' : ''}`}
+                        onClick={() => setActiveTab('finances')}
+                    >
+                        <Icon name="payments" size="1.1rem" />
+                        {t('finances') || 'Finanzas'}
+                    </button>
+                    <button 
+                        className={`patient-details__tab-link ${activeTab === 'medications' ? 'patient-details__tab-link--active' : ''}`}
+                        onClick={() => setActiveTab('medications')}
+                    >
+                        <Icon name="description" size="1.1rem" />
+                        {t('prescriptions') || 'Recetas'}
+                    </button>
+                    <button 
+                        className={`patient-details__tab-link ${activeTab === 'chat' ? 'patient-details__tab-link--active' : ''}`}
+                        onClick={() => setActiveTab('chat')}
+                    >
+
+                        <Icon name="chat" size="1.1rem" />
+                        {t('whatsapp_history') || 'Chat'}
+                    </button>
+                </div>
+
                 <div className="patient-details__grid">
                     {/* Main Content Area */}
                     <main className="patient-details__main">
-                        <PatientInfoBlock
-                            details={details}
-                            t={t}
-                            onGeneratePrescriptionLink={onGeneratePrescriptionLink}
-                        />
+                        {activeTab === 'general' && (
+                            <>
+                                <PatientInfoBlock
+                                    details={details}
+                                    t={t}
+                                    onGeneratePrescriptionLink={onGeneratePrescriptionLink}
+                                />
+                                {children}
+                            </>
+                        )}
 
-                        <PatientHistoryTable
-                            details={details}
-                            t={t}
-                            onPayDebt={onPayDebt}
-                        />
+                        {activeTab === 'history' && (
+                            <PatientHistoryTable
+                                details={details}
+                                t={t}
+                                onPayDebt={onPayDebt}
+                            />
+                        )}
 
-                        {/* WhatsApp Live Chat History */}
-                        <WhatsappChatHistory 
-                            patientId={details.id} 
-                            t={t} 
-                        />
+                        {activeTab === 'finances' && (
+                            <PatientFinancialSidebar
+                                details={details}
+                                t={t}
+                                user={user}
+                                onPayDebt={onPayDebt}
+                                onGenerateQR={onGenerateQR}
+                                onGeneratePrescriptionLink={onGeneratePrescriptionLink}
+                                onDelete={onDelete}
+                                isFullWidth
+                            />
+                        )}
 
-                        {children}
+                        {activeTab === 'medications' && (
+                            <div className="patient-details__meds-tab">
+                                {/* Component for Chronic Meds or Prescriptions list could go here */}
+                                <div className="details-block details-block--medications">
+                                    <header className="details-block__header">
+                                        <h3 className="details-block__title">
+                                            <Icon name="medication" size="1.2rem" />
+                                            {t('current_medication') || 'Medicación actual del paciente'}
+                                        </h3>
+                                        <Button variant="ghost" size="sm" icon={<Icon name="settings" size="1rem" />}>
+                                            {t('configure') || 'Configurar'}
+                                        </Button>
+                                    </header>
+                                    <div className="details-block__content details-block__content--padded">
+                                        {chronicMeds.length > 0 ? (
+                                            <ul className="patient-details__meds-list">
+                                                {chronicMeds.map((m, i) => <li key={i}>{m.name || m}</li>)}
+                                            </ul>
+                                        ) : <p className="patient-details__text-empty">{t('no_current_medications') || 'No hay medicación registrada actualmente'}</p>}
+                                    </div>
+                                </div>
+
+
+                                <div className="details-block details-block--medications" style={{marginTop: '2rem'}}>
+                                    <header className="details-block__header">
+                                        <h3 className="details-block__title">
+                                            <Icon name="folder_open" size="1.2rem" />
+                                            {t('recent_prescriptions') || 'Recetas Recientes'}
+                                        </h3>
+                                        <Button size="sm" onClick={() => onGeneratePrescriptionLink(details.id)}>
+                                            {t('new_prescription') || 'Nueva Receta'}
+                                        </Button>
+                                    </header>
+                                    <div className="details-block__content details-block__content--padded">
+                                        {recentRequests.length > 0 ? (
+                                            <ul className="patient-details__requests-list">
+                                                {recentRequests.map((r, i) => (
+                                                    <li key={i} className="patient-details__request-item">
+                                                        <strong>{formatDate(r.created_at)}</strong> - {r.medications}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        ) : <p>{t('no_recent_prescriptions') || 'No hay recetas recientes'}</p>}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'chat' && (
+
+                            <WhatsappChatHistory 
+                                patientId={details.id} 
+                                t={t} 
+                            />
+                        )}
                     </main>
 
-                    {/* Sidebar Info Area */}
-                    <aside className="patient-details__sidebar">
-                        <PatientFinancialSidebar
-                            details={details}
-                            t={t}
-                            user={user}
-                            onPayDebt={onPayDebt}
-                            onGenerateQR={onGenerateQR}
-                            onGeneratePrescriptionLink={onGeneratePrescriptionLink}
-                            onDelete={onDelete}
-                        />
-                    </aside>
+                    {/* Sidebar Info Area (Persistent or Hidden depending on tab) */}
+                    {activeTab === 'general' && (
+                        <aside className="patient-details__sidebar">
+                            <PatientFinancialSidebar
+                                details={details}
+                                t={t}
+                                user={user}
+                                onPayDebt={onPayDebt}
+                                onGenerateQR={onGenerateQR}
+                                onGeneratePrescriptionLink={onGeneratePrescriptionLink}
+                                onDelete={onDelete}
+                            />
+                        </aside>
+                    )}
                 </div>
             </section>
         </>
