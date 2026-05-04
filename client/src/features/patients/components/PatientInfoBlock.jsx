@@ -25,9 +25,18 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink }) => {
                 <table className="patient-details__info-table">
                     <tbody>
                         <tr className="patient-details__info-row">
+                            <th className="patient-details__info-label">{t('full_name')}</th>
+                            <td className="patient-details__info-value">
+                                <span className="patient-details__table-cell-bold">
+                                    {details.full_name || `${details.first_name || ''} ${details.last_name || ''}`.trim() || 'N/A'}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr className="patient-details__info-row">
                             <th className="patient-details__info-label">{t('dni')}</th>
                             <td className="patient-details__info-value">{details.dni || 'N/A'}</td>
                         </tr>
+
                         <tr className="patient-details__info-row">
                             <th className="patient-details__info-label">{t('insurance_short')}</th>
                             <td className="patient-details__info-value">

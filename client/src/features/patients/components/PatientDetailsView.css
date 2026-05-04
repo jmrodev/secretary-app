@@ -23,6 +23,44 @@
     line-height: 1;
 }
 
+.patient-details__tabs-nav {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    padding: 0.5rem;
+    background-color: var(--gray-50);
+    border-radius: 1rem;
+    width: fit-content;
+    border: 1px solid var(--gray-200);
+}
+
+.patient-details__tab-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    border: none;
+    background: transparent;
+    border-radius: 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--gray-500);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.patient-details__tab-link:hover {
+    color: var(--blue-600);
+    background-color: var(--white);
+}
+
+.patient-details__tab-link--active {
+    background-color: var(--white);
+    color: var(--blue-600);
+    box-shadow: var(--shadow-sm);
+}
+
+
 .patient-details__grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -142,30 +180,32 @@
 
 .patient-details__info-label {
     width: 30%;
-    padding: 1rem 1.5rem;
+    padding: 1.25rem 1.5rem; /* More padding for easier reading */
     text-align: left;
-    font-size: 0.75rem;
+    font-size: 0.9rem; /* Increased from 0.75rem */
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--blue-700);
-    background-color: var(--blue-50);
-    border-right: 1px solid var(--blue-100);
+    color: var(--slate-700);
+    background-color: var(--gray-50);
+    border-right: 1px solid var(--gray-200);
 }
 
 .patient-details__info-value {
-    padding: 1rem 1.5rem;
-    font-size: 1rem;
+    padding: 1.25rem 1.5rem;
+    font-size: 1.15rem; /* Increased from 1rem */
     font-weight: 600;
-    color: var(--gray-800);
+    color: var(--gray-900);
 }
 
 .patient-details__info-hint {
-    font-size: 0.85rem;
+    font-size: 0.95rem; /* Increased from 0.85rem */
     font-weight: 500;
-    color: var(--gray-400);
+    color: var(--slate-500);
     margin-left: 0.5rem;
 }
+
+
 
 .patient-details__address-box {
     line-height: 1.5;
@@ -421,8 +461,10 @@
 
 .patient-details__table-cell-bold {
     font-weight: 800;
-    font-size: 0.95rem;
+    font-size: 1.4rem; /* Significantly larger for details view */
+    color: var(--gray-900);
 }
+
 
 .patient-details__pay-action {
     margin-top: 0.5rem;

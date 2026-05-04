@@ -1,0 +1,11 @@
+### Summary of changes:
+- **DB Optimization:** Created view_patients_extended to aggregate debt and attendance stats in a single query.
+- **Backend Refactor:** Updated PatientRepository to use the new view, reducing DB calls from 7 to 1 per profile view.
+- **Frontend Refactor:** 
+  - Implemented Tabs in PatientDetailsView (General, History, Prescriptions, Finances, Chat).
+  - Added Lazy Loading for history, finances, and WhatsApp chat.
+  - Significantly increased font sizes (1.35rem names, 1.15rem data) and improved contrast for senior accessibility.
+- **DX Improvements:** 
+  - Added precommit script for automatic linting.
+  - Overhauled .gitignore to protect sensitive data and clean up the repository.
+  - Cleaned up linting errors in PatientsPage.
