@@ -7,7 +7,8 @@ const userStatsService = require('../../services/userStatsService');
 
 exports.getStats = async (req, res) => {
     try {
-        const stats = await userStatsService.getStats(req.user);
+        const { doctor_id } = req.query;
+        const stats = await userStatsService.getStats(req.user, doctor_id);
         res.json(stats);
     } catch (err) {
         if (err.message === "Doctor profile not found") return res.status(404).send(err.message);

@@ -1,16 +1,16 @@
 .card {
     /* --- Local Component Tokens --- */
-    --card-bg: var(--white);
-    --card-border: var(--border-color);
-    --card-shadow: var(--shadow-premium);
+    --card-bg: var(--dashboard-card-bg);
+    --card-border: var(--dashboard-card-border);
+    --card-shadow: var(--shadow-sm);
     /* ------------------------------ */
 
     background-color: var(--card-bg);
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
     border: 1px solid var(--card-border);
     box-shadow: var(--card-shadow);
     overflow: hidden;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
 }
 
 .card__header {
@@ -31,8 +31,8 @@
 
 .card__footer {
     padding: 1rem 1.5rem;
-    background-color: var(--gray-50);
-    border-top: 1px solid var(--gray-100);
+    background-color: var(--dashboard-card-bg);
+    border-top: 1px solid var(--card-border);
 }
 
 /* Modifier for no-padding cards (flush content) */

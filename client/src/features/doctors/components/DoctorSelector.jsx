@@ -24,7 +24,7 @@ const DoctorSelector = () => {
     }
 
     return (
-        <span className="doctor-inline-selector">
+        <span className="doctor-selector">
             <Icon name="medical_services" size="1rem" />
             <Select
                 variant="ghost"
@@ -35,7 +35,7 @@ const DoctorSelector = () => {
                     { value: '', label: t('all_doctors') },
                     ...doctors.map(d => ({ value: d.id, label: d.full_name }))
                 ]}
-                className="doctor-inline-selector__select"
+                className="doctor-selector__select"
             />
         </span>
     );

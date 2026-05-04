@@ -3,12 +3,13 @@ import { usePermissions } from '@/hooks/usePermissions';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useConfig } from '@/context/ConfigContext';
-import { useModal } from '@/context/ModalContext';
-import { useDoctors } from '@/context/DoctorContextDefinition';
-import { useAppointments } from '@/features/appointments';
-import { useUsers } from '@/features/users';
+import { useSearch } from '@/context/SearchContext';
 import { usePatientsHandlers } from '@/features/patients/hooks/usePatientsHandlers';
 import { useFetch } from '@/hooks/useFetch';
+import { useModal } from '@/context/ModalContext';
+import { useDoctors } from '@/context/DoctorContextDefinition';
+import { useAppointments } from '@/features/appointments/hooks/useAppointments';
+import { useUsers } from '@/features/users/hooks/useUsers';
 
 /**
  * usePatientsPageController (Orchestrator).
@@ -25,15 +26,12 @@ export const usePatientsPageController = () => {
     const { viewDoctorId, setViewDoctorId } = useDoctors();
     const { savePrescription } = useAppointments();
     const { deleteUser } = useUsers();
+    const { searchTerm, setSearchTerm } = useSearch();
 
     // View State (Pagination)
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(50);
     const [activeTab, setActiveTab] = useState('list'); // 'list' | 'recycle'
-    const [searchTerm, setSearchTerm] = useState(() => {
-        const params = new URLSearchParams(window.location.search);
-        return params.get('search') || '';
-    });
 
     // --- FETCH DATA (Server-Side) using useFetch ---
     

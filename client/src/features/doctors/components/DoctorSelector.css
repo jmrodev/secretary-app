@@ -1,54 +1,51 @@
 /* DoctorSelector Organism Styles */
 
-.doctor-inline-selector {
+.doctor-selector {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.35rem 1rem;
-    background-color: var(--glass);
-    backdrop-filter: blur(12px);
-    border-radius: var(--radius, 1.5rem);
-    margin-left: 0.75rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: var(--shadow-sm);
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    padding: 0.35rem 0.85rem;
+    background-color: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px);
+    border-radius: 100px;
+    border: none; /* No border as requested */
+    transition: background-color 0.3s ease;
     vertical-align: middle;
+    color: #ffffff;
 }
 
-.doctor-inline-selector:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-    background-color: var(--white);
-    border-color: var(--primary-color);
+.doctor-selector:hover {
+    background-color: rgba(255, 255, 255, 0.15);
 }
 
-.doctor-inline-selector__select {
+.doctor-selector__select {
     border: none;
     background: transparent;
-    padding: 0 1.5rem 0 0; /* Space for the arrow */
+    padding: 0 1.25rem 0 0;
     font-weight: 700;
-    font-size: 0.85rem;
-    color: #1e293b; /* Slate 800 - High contrast */
+    font-size: 0.75rem;
+    color: inherit;
     cursor: pointer;
     width: auto;
     outline: none;
-    background-position: right center;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
 }
 
 /* Ensure options are always readable */
-.doctor-inline-selector__select option {
+.doctor-selector__select option {
     background-color: #ffffff;
     color: #1e293b;
     font-weight: 400;
 }
 
 .doctor-selector-display-name {
-    color: inherit; /* Inherit from subtitle (usually white in premium) */
+    color: inherit;
     font-size: 0.85rem;
     margin-left: 0.5rem;
     font-weight: 700;
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.1);
     padding: 0.2rem 0.6rem;
     border-radius: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: none;
 }

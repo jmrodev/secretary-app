@@ -84,18 +84,17 @@
         bottom: 0;
         width: 80%;
         max-width: 320px;
-        background: var(--white);
+        background: var(--sidebar-bg);
         z-index: 100;
         padding: 1.5rem;
-        box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+        box-shadow: -10px 0 30px rgba(0,0,0,0.5);
         overflow-y: auto;
     }
 
     .dashboard-layout__backdrop {
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.3);
-        backdrop-filter: blur(4px);
+        background: rgba(0,0,0,0.6);
         z-index: 90;
         border: none;
     }
