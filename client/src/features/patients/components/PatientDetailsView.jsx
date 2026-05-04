@@ -221,8 +221,9 @@ const PatientDetailsView = ({
                                                     </li>
                                                 ))}
                                             </ul>
-                                        ) : <p>{t('no_recent_prescriptions') || 'No hay recetas recientes'}</p>}
+                                        ) : <p className="patient-details__text-empty">{t('no_history') || 'No hay historial'}</p>}
                                     </div>
+
                                 </div>
                             </div>
                         )}
@@ -235,22 +236,8 @@ const PatientDetailsView = ({
                             />
                         )}
                     </main>
-
-                    {/* Sidebar Info Area (Persistent or Hidden depending on tab) */}
-                    {activeTab === 'general' && (
-                        <aside className="patient-details__sidebar">
-                            <PatientFinancialSidebar
-                                details={details}
-                                t={t}
-                                user={user}
-                                onPayDebt={onPayDebt}
-                                onGenerateQR={onGenerateQR}
-                                onGeneratePrescriptionLink={onGeneratePrescriptionLink}
-                                onDelete={onDelete}
-                            />
-                        </aside>
-                    )}
                 </div>
+
             </section>
         </>
     );
