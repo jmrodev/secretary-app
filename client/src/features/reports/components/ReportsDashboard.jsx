@@ -6,7 +6,7 @@ import PrescriptionReportTable from '@/features/reports/components/PrescriptionR
 import LicenseReportTable from '@/features/reports/components/LicenseReportTable';
 import CertificateReportTable from '@/features/reports/components/CertificateReportTable';
 import BalanceView from '@/features/reports/components/BalanceView';
-import { PageHeader } from '@/features/layout';
+import PageHeader from '@/components/organisms/PageHeader';
 
 import Icon from '@/components/atoms/Icon';
 import './ReportsDashboard.css';

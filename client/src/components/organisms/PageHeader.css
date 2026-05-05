@@ -1,0 +1,194 @@
+/* PageHeader Organism Styles */
+
+.page-header {
+    --header-title-color: var(--text-main);
+    --header-subtitle-color: var(--text-muted);
+    --header-divider-color: var(--border-color);
+
+    margin-bottom: clamp(1rem, 2vh, 1.5rem);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 0;
+}
+
+.page-header__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+.page-header__title-container {
+    flex: 1;
+    min-width: 0;
+}
+
+.page-header__title {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 800;
+    color: var(--header-title-color);
+    margin: 0;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.page-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.page-header--divider {
+    border-bottom: 1px solid var(--header-divider-color);
+    padding-bottom: 1.25rem;
+}
+
+/* =============================================
+   PREMIUM VARIANT — Clinical Curator Header
+   ============================================= */
+.page-header--premium {
+    position: relative;
+    height: auto;
+    min-height: 80px;
+    background-color: var(--secondary-color);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    padding: 0;
+}
+
+.page-header__background {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.35) grayscale(0.2);
+    opacity: 0.6;
+    animation: headerSlowZoom 20s infinite alternate linear;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Modifier Context for Content */
+.page-header--premium .page-header__content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.75rem 2.5rem;
+    gap: 1rem;
+}
+
+.page-header__utilities {
+    display: grid;
+    grid-template-columns: 320px 1fr 450px;
+    align-items: center;
+    width: 100%;
+    gap: 2rem;
+}
+
+/* Centering helper */
+.page-header__center {
+    display: flex;
+    justify-content: center;
+}
+
+.page-header__stats-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1.5rem;
+}
+
+.page-header__selectors {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Search Bar — Premium Glass (No Border) */
+.page-header__search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: none; /* No border as requested */
+    border-radius: 10px;
+    padding: 0 1rem;
+    width: 320px; 
+    height: 38px;
+    backdrop-filter: blur(20px);
+    transition: none !important;
+}
+
+.page-header__search-container:focus-within {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: none; /* No shadow/ring */
+}
+
+.page-header__search-icon {
+    color: rgba(255, 255, 255, 0.3);
+    margin-right: 0.6rem;
+}
+
+/* Override Input atom styles for the header search */
+.page-header__search-input.input {
+    --input-bg: transparent;
+    --input-border: transparent;
+    --input-text: var(--white);
+    --input-focus-ring: transparent;
+    padding: 0;
+    height: 100%;
+    box-shadow: none;
+    font-size: 0.9rem;
+    width: 100% !important; /* Force width */
+}
+
+.page-header__search-input.input:focus {
+    transform: none;
+    box-shadow: none;
+}
+
+.page-header__search-input.input::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+    font-weight: 400;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .page-header--premium .page-header__utilities {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+        text-align: center;
+    }
+
+    .page-header__search-container {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .page-header__stats-container {
+        justify-content: center;
+    }
+}
+
+/* Animations */
+@keyframes headerSlowZoom {
+    from { transform: scale(1.02); }
+    to { transform: scale(1.08); }
+}

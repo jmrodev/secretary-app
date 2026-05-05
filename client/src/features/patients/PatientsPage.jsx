@@ -126,26 +126,7 @@ const PatientsPage = () => {
                                 </TabNav>
                             </div>
 
-                            <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">
-                                    <Icon name="search" size="1.2rem" />
-                                    {t('search')}
-                                </h3>
-                                <div className="patients-sidebar__search">
-                                    {activeTab === 'list' && (
-                                        <div className="search-bar action-bar__search">
-                                            <input
-                                                type="text"
-                                                value={controller.searchTerm}
-                                                onChange={e => setSearchTerm(e.target.value)}
-                                                placeholder={t('search_placeholder')}
-                                                className="search-bar__input"
-                                            />
-                                            <Icon name="search" className="search-bar__icon" />
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
+                            {/* Global search is now in the PageHeader. Sidebar search is redundant. */}
 
                             {isStaff && activeTab === 'list' && (
                                 <div className="dashboard-card">

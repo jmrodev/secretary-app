@@ -54,17 +54,7 @@ const AppointmentsPage = () => {
                 <section className="layout-content-area">
                     <header className="appointments-top-actions animate-fadeIn">
                         <div className="appointments-top-actions__main">
-                            <form className="appointments-search-bar" role="search" onSubmit={(e) => e.preventDefault()}>
-                                <Icon name="search" className="appointments-search-bar__icon" />
-                                <input
-                                    type="text"
-                                    className="appointments-search-bar__input"
-                                    placeholder={t('search_placeholder')}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    value={searchTerm}
-                                    aria-label={t('search_placeholder')}
-                                />
-                            </form>
+                            {/* Global search in Header handles patient filtering */}
                         </div>
                     </header>
 

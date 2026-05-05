@@ -100,6 +100,14 @@ class BookingService {
         }
 
         await appointmentRepository.delete(oldAppt.id, conn);
+
+        // EMIT OVERWRITE EVENT
+        appointmentEvents.emit('appointmentOverwritten', {
+            oldAppointment: oldAppt,
+            oldPatientName,
+            newUserId: userId,
+            timestamp: new Date()
+        });
     }
 
     async generateDebt(appointmentId, doctorId, patientId, type, institutionId, patientData, conn) {

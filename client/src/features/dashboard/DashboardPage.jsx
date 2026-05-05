@@ -91,7 +91,7 @@ const DashboardPage = () => {
     const shouldShowErrorState = Boolean(error) && !hasDashboardData;
 
     return (
-        <MainLayout wide flush title={t('dashboard')}>
+        <MainLayout wide flush title={t('dashboard')} hideTitle>
             <main className="dashboard-page-orchestrator">
                 <section className="layout-content-area">
                     
@@ -107,29 +107,8 @@ const DashboardPage = () => {
                             </Button>
                         </article>
                     ) : (
-                        <div className="dashboard-layout__grid animate-fadeIn">
-                            {/* Left Side: Metrics & Quick Actions (Span 4) */}
-                            <aside className="dashboard-layout__sidebar">
-                                <DashboardSidebar
-                                    stats={stats}
-                                    newPatientStats={newPatientStats}
-                                    user={user}
-                                    t={t}
-                                />
-                                
-                                {(isAdminOrSecretary || isDoctor) && (
-                                    <QuickActions
-                                        t={t}
-                                        handlers={handlers}
-                                        isAdmin={isAdmin}
-                                        isSecretary={isSecretary}
-                                        isDoctor={isDoctor}
-                                        compact={true}
-                                    />
-                                )}
-                            </aside>
-
-                            {/* Right Side: Main Functional Area (Span 8) */}
+                        <div className="dashboard-layout__full animate-fadeIn">
+                            {/* Main Functional Area */}
                             <section className="dashboard-layout__main">
                                 <article className="dashboard-card dashboard-card--priority">
                                     <div className="dashboard-requirements">

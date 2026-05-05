@@ -1,0 +1,20 @@
+# appointmentRepository.js
+
+- **Tipo:** code
+- **Archivo:** server/repositories/appointmentRepository.js
+- **Comunidad:** [[_COMMUNITY_Community 1]]
+
+## Conexiones Directas
+- --> [[AppointmentRepository|AppointmentRepository]] (contains)
+
+## Miembros de la misma Comunidad
+- [[sqlUtils.js|sqlUtils.js]]
+- [[filterValidColumns()|filterValidColumns()]]
+- [[buildUpdateQuery()|buildUpdateQuery()]]
+- [[buildInsertQuery()|buildInsertQuery()]]
+- [[licenseRepository.js|licenseRepository.js]]
+- [[LicenseRepository|LicenseRepository]]
+- [[.findById()|.findById()]]
+- [[.findAll()|.findAll()]]
+- [[.countAll()|.countAll()]]
+- [[.create()|.create()]]

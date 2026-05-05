@@ -1,11 +1,24 @@
 const appointmentEvents = require('../events/appointmentEvents');
 const googleSyncService = require('../services/appointments/googleSyncService');
+const doctorRepository = require('../repositories/doctorRepository');
 const { logAction } = require('../utils/audit');
 
 // 1. Google Calendar Synchronizer
 appointmentEvents.on('appointmentCreated', async ({ appointmentId, data, patientData, paymentStatus, userId }) => {
     const startTime = new Date(data.appointment_date);
-    const endTime = new Date(startTime.getTime() + 30 * 60000);
+    
+    // Fetch doctor config to get real appointment duration
+    let duration = 30; // Default fallback
+    try {
+        const doctorConfig = await doctorRepository.getDoctorConfig(data.doctor_id);
+        if (doctorConfig && doctorConfig.appointment_duration) {
+            duration = doctorConfig.appointment_duration;
+        }
+    } catch (err) {
+        console.warn(`[Listeners] Failed to fetch doctor config for ID ${data.doctor_id}: ${err.message}`);
+    }
+
+    const endTime = new Date(startTime.getTime() + duration * 60000);
     const eventData = {
         summary: patientData.full_name,
         description: `Motivo: ${data.reason}\nPaciente: ${patientData.full_name}\nTipo: ${data.type}\nPago: ${paymentStatus}`,
@@ -17,8 +30,11 @@ appointmentEvents.on('appointmentCreated', async ({ appointmentId, data, patient
 
 // 2. Audit Logger
 appointmentEvents.on('appointmentCreated', async ({ appointmentId, patientData, userId }) => {
-    // Assuming a fake 'req' object or a specialized log function
     console.log(`[Audit] Appointment ${appointmentId} created by User ${userId}`);
+});
+
+appointmentEvents.on('appointmentOverwritten', async ({ oldAppointment, oldPatientName, newUserId }) => {
+    console.log(`[Audit] Appointment ${oldAppointment.id} (Patient: ${oldPatientName}) was OVERWRITTEN by User ${newUserId}`);
 });
 
 // Listener for updates
