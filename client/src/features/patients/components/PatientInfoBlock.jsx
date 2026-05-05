@@ -139,78 +139,9 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink }) => {
                                     : <span className="patient-details__text-empty">{t('none')}</span>}
                             </td>
                         </tr>
-                        <tr className="patient-details__info-row">
-                            <th className="patient-details__info-label">{t('attendance')}</th>
-                            <td className="patient-details__info-value">
-                                <div className="patient-details__attend-flex">
-                                    <span>
-                                        <strong>{details.attended_appointments}</strong> {t('attended')}
-                                    </span>
-                                    <span className="patient-details__info-hint">
-                                        / {details.total_appointments} {t('total_appointments')}
-                                    </span>
-                                </div>
-                            </td>
-                        </tr>
-                        {(details.license_expiry_date || details.next_suggested_visit_date || details.next_suggested_prescription_date) && (
-                            <tr className="patient-details__info-row">
-                                <th className="patient-details__info-label">{t('important_dates')}</th>
-                                <td className="patient-details__info-value">
-                                    <div className="patient-details__date-indicators">
-                                        {details.license_expiry_date && (
-                                            <div className="date-indicator date-indicator--rose">
-                                                <span className="date-indicator__label">{t('license_expiry_date')}</span>
-                                                <p className="date-indicator__value">{formatDate(details.license_expiry_date)}</p>
-                                            </div>
-                                        )}
-                                        {details.next_suggested_visit_date && (
-                                            <div className="date-indicator date-indicator--amber">
-                                                <div className="config-flex config-flex--between">
-                                                    <div>
-                                                        <span className="date-indicator__label">{t('next_visit_suggested')}</span>
-                                                        <p className="date-indicator__value">{formatDate(details.next_suggested_visit_date)}</p>
-                                                    </div>
-                                                    <Button
-                                                        size="xs"
-                                                        variant="whatsapp"
-                                                        className="date-indicator__action"
-                                                        icon={<Icon name="chat" size="0.8rem" />}
-                                                        onClick={() => {
-                                                            const phone = details.phoneNumbers?.find(p => p.is_primary)?.phone_number || details.phone;
-                                                            if (!phone) return alert(t('no_phone_available'));
-                                                            const msg = `Hola ${details.full_name}, te escribimos de Cima Salud para recordarte que ya es tiempo de tu próximo control sugerido (${formatDate(details.next_suggested_visit_date)}). ¿Te gustaría agendar un turno?`;
-                                                            window.open(`https://wa.me/${phone.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`, '_blank');
-                                                        }}
-                                                    >
-                                                        {t('remind')}
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        )}
-                                        {details.next_suggested_prescription_date && (
-                                            <div className="date-indicator date-indicator--indigo">
-                                                <div className="config-flex config-flex--between">
-                                                    <div>
-                                                        <span className="date-indicator__label">{t('next_prescription_suggested')}</span>
-                                                        <p className="date-indicator__value">{formatDate(details.next_suggested_prescription_date)}</p>
-                                                    </div>
-                                                    <Button
-                                                        size="xs"
-                                                        variant="ghost"
-                                                        className="date-indicator__action"
-                                                        icon={<Icon name="description" size="0.8rem" />}
-                                                        onClick={() => onGeneratePrescriptionLink(details.id)}
-                                                    >
-                                                        {t('send_link')}
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                </td>
-                            </tr>
-                        )}
                     </tbody>
+
+
                 </table>
             </div>
         </section>
