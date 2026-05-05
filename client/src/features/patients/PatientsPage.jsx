@@ -19,7 +19,6 @@ import TabNav from '@/components/molecules/TabNav';
 import PatientList from '@/features/patients/components/PatientList';
 import PatientDetailsView from '@/features/patients/components/PatientDetailsView';
 import PatientRecycleBin from '@/features/patients/components/PatientRecycleBin';
-import PatientMedications from '@/features/patients/components/PatientMedications';
 import DebtPaymentModal from '@/features/patients/components/DebtPaymentModal';
 import PatientManagerModal from '@/features/patients/components/PatientManagerModal';
 
