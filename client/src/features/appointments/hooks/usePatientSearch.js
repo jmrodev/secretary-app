@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useFetch } from '@/hooks/useFetch';
+import { useSearch } from '@/context/SearchContext';
 
 /**
  * Hook to search patients and their specific appointment results.
@@ -9,14 +10,14 @@ import { useFetch } from '@/hooks/useFetch';
  * - Does NOT load all appointments on mount (avoids heavy 600+ row payload).
  */
 export const usePatientSearch = () => {
-    const [searchTerm, setSearchTerm] = useState('');
+    const { searchTerm, setSearchTerm } = useSearch();
     const [searchPatientId, setSearchPatientId] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
 
     // Debounce: wait 400ms after user stops typing
     useEffect(() => {
         const timer = setTimeout(() => {
-            setDebouncedSearch(searchTerm.trim());
+            setDebouncedSearch((searchTerm || '').trim());
         }, 400);
         return () => clearTimeout(timer);
     }, [searchTerm]);

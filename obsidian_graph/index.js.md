@@ -1,0 +1,10 @@
+# index.js
+
+- **Tipo:** code
+- **Archivo:** client/src/constants/index.js
+- **Comunidad:** [[_COMMUNITY_Community 396]]
+
+## Conexiones Directas
+_No se detectaron conexiones automáticas._
+
+## Miembros de la misma Comunidad

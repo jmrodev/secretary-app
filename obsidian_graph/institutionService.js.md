@@ -1,0 +1,18 @@
+# institutionService.js
+
+- **Tipo:** code
+- **Archivo:** client/src/services/institutionService.js
+- **Comunidad:** [[_COMMUNITY_Community 35]]
+
+## Conexiones Directas
+- --> [[InstitutionService|InstitutionService]] (contains)
+
+## Miembros de la misma Comunidad
+- [[institutionService.js|institutionService.js]]
+- [[InstitutionService|InstitutionService]]
+- [[.getAllInstitutions()|.getAllInstitutions()]]
+- [[.createInstitution()|.createInstitution()]]
+- [[.updateInstitution()|.updateInstitution()]]
+- [[.getInstitutionFinances()|.getInstitutionFinances()]]
+- [[.getInstitutionPatients()|.getInstitutionPatients()]]
+- [[.deleteInstitution()|.deleteInstitution()]]

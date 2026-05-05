@@ -3,7 +3,7 @@ import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/context/LanguageContext';
 import { MedicalRequirementManager } from '@/features/medical_documents/index';
 import MainLayout from '@/components/templates/MainLayout';
-import { PageHeader } from '@/features/layout';
+import PageHeader from '@/components/organisms/PageHeader';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 
@@ -24,6 +24,7 @@ const RequestsPage = () => {
                 <PageHeader 
                     variant="premium"
                     title={t('requests_workflow') || "Solicitudes"}
+                    hideTitle={true}
                     subtitle="Gestione las solicitudes de recetas, certificados y licencias médicas."
                 />
 

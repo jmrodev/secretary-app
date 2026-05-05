@@ -6,7 +6,7 @@ const doctorRepository = require('../repositories/doctorRepository');
  * Business logic for dashboard statistics.
  */
 class UserStatsService {
-    async getStats(user) {
+    async getStats(user, requestedDoctorId = null) {
         const { role, user_id } = user;
 
         const now = new Date();
@@ -23,7 +23,7 @@ class UserStatsService {
         const monthStart = pad(new Date(now.getFullYear(), now.getMonth(), 1));
         const monthEnd = pad(new Date(now.getFullYear(), now.getMonth() + 1, 1));
 
-        let doctorId = null;
+        let doctorId = requestedDoctorId;
         if (role === 'doctor') {
             const doc = await doctorRepository.getDoctorConfigByUserId(user_id);
             if (!doc) throw new Error("Doctor profile not found");

@@ -7,4 +7,4 @@ export { useSidebarController } from '@/features/layout/hooks/useSidebarControll
 
 // Components
 export { default as Sidebar } from '@/features/layout/components/Sidebar';
-export { default as PageHeader } from '@/features/layout/components/PageHeader';
+export { default as Navbar } from '@/features/layout/components/Navbar';

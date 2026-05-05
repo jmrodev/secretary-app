@@ -46,9 +46,9 @@
  */
 .dashboard-nav-bar {
     /* --- Local Component Tokens --- */
-    --nav-bar-bg: var(--card-bg);
-    --nav-bar-border: var(--border-color);
-    --nav-bar-shadow: var(--shadow-md);
+    --nav-bar-bg: var(--dashboard-card-bg);
+    --nav-bar-border: var(--dashboard-card-border);
+    --nav-bar-shadow: var(--shadow-sm);
     /* ------------------------------ */
 
     background-color: var(--nav-bar-bg);
@@ -131,16 +131,14 @@
  */
 .dashboard-card {
     /* --- Local Component Tokens --- */
-    --card-bg: rgba(255, 255, 255, 0.05);
-    --card-border: rgba(255, 255, 255, 0.1);
-    --card-shadow: var(--shadow-lg);
-    --card-header-bg: rgba(255, 255, 255, 0.03);
-    --card-title-color: var(--text-secondary);
+    --card-bg: var(--dashboard-card-bg);
+    --card-border: var(--dashboard-card-border);
+    --card-shadow: var(--shadow-sm);
+    --card-header-bg: transparent;
+    --card-title-color: var(--text-main);
     /* ------------------------------ */
 
     background-color: var(--card-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--card-border);
     border-radius: var(--radius-lg);
     box-shadow: var(--card-shadow);
@@ -237,9 +235,10 @@
 .dashboard-search-bar input {
     width: 100%;
     padding: 0.75rem 1rem 0.75rem 2.8rem; /* Space for internal icon */
-    border-radius: 14px;
-    border: 1px solid var(--border-color);
-    background: var(--white);
+    border-radius: 24px; /* More DashStack-like pill */
+    border: 1px solid var(--dashboard-card-border);
+    background: var(--dashboard-card-bg);
+    color: var(--text-main);
     font-size: 0.95rem;
     transition: all 0.3s ease;
     box-shadow: var(--shadow-sm);
@@ -333,17 +332,17 @@
         right: 0;
         top: auto;
         width: 100%;
-        background: var(--white);
+        background: var(--sidebar-bg);
         z-index: 2000;
         padding: 1.5rem;
         border-radius: 24px 24px 0 0;
-        box-shadow: 0 -15px 50px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 -15px 50px rgba(0, 0, 0, 0.5);
         max-height: 85vh;
         overflow-y: auto;
         flex-direction: column;
         gap: 1.5rem;
         animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        border-top: 1px solid var(--border-color);
+        border-top: 1px solid var(--dashboard-card-border);
         padding-top: 0.5rem; /* Space for handle */
     }
 
@@ -375,8 +374,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(8px);
+        background: rgba(0, 0, 0, 0.6);
         z-index: 1500;
         animation: fadeIn 0.4s ease;
     }

@@ -1,0 +1,21 @@
+# MessageAdapter.kt
+
+- **Tipo:** code
+- **Archivo:** android_native/app/src/main/java/com/secretaryapp/ui/MessageAdapter.kt
+- **Comunidad:** [[_COMMUNITY_Community 5]]
+
+## Conexiones Directas
+- --> [[MessageAdapter|MessageAdapter]] (contains)
+- --> [[MessageViewHolder|MessageViewHolder]] (contains)
+
+## Miembros de la misma Comunidad
+- [[ComposeMessageActivity.kt|ComposeMessageActivity.kt]]
+- [[ComposeMessageActivity|ComposeMessageActivity]]
+- [[.onCreate()|.onCreate()]]
+- [[.setupRecipientTypeSpinner()|.setupRecipientTypeSpinner()]]
+- [[.loadRecipients()|.loadRecipients()]]
+- [[.setupListeners()|.setupListeners()]]
+- [[.sendBroadcast()|.sendBroadcast()]]
+- [[MessagesActivity.kt|MessagesActivity.kt]]
+- [[MessagesActivity|MessagesActivity]]
+- [[.onCreate()|.onCreate()]]

@@ -1,0 +1,30 @@
+# FinanceService
+
+- **Tipo:** code
+- **Archivo:** server/services/finance/financeService.js
+- **Comunidad:** [[_COMMUNITY_Community 8]]
+
+## Conexiones Directas
+- <-- [[financeService.js|financeService.js]] (contains)
+- --> [[.createTransaction()|.createTransaction()]] (method)
+- --> [[.payDebt()|.payDebt()]] (method)
+- --> [[.getTransactions()|.getTransactions()]] (method)
+- --> [[.getPendingClosures()|.getPendingClosures()]] (method)
+- --> [[.payInstitutionDebt()|.payInstitutionDebt()]] (method)
+- --> [[.syncAppointmentPaymentStatus()|.syncAppointmentPaymentStatus()]] (method)
+- --> [[.syncRequestPaymentStatus()|.syncRequestPaymentStatus()]] (method)
+- --> [[.closeCashBox()|.closeCashBox()]] (method)
+- --> [[.getPricing()|.getPricing()]] (method)
+- --> [[.markAsBonified()|.markAsBonified()]] (method)
+
+## Miembros de la misma Comunidad
+- [[dateUtils.js|dateUtils.js]]
+- [[formatLocalSQL()|formatLocalSQL()]]
+- [[nowLocalSQL()|nowLocalSQL()]]
+- [[formatDateOnlySQL()|formatDateOnlySQL()]]
+- [[restoreService.js|restoreService.js]]
+- [[RestoreService|RestoreService]]
+- [[.restoreItem()|.restoreItem()]]
+- [[._restorePatient()|._restorePatient()]]
+- [[._restoreDoctor()|._restoreDoctor()]]
+- [[._restoreSecretary()|._restoreSecretary()]]

@@ -1,13 +1,12 @@
 /* LoginForm Component Styles (BEM) */
 
 .auth-card {
-    background: var(--white);
+    background: var(--dashboard-card-bg);
     padding: 3rem 2.5rem;
-    border-radius: 1.5rem;
-    box-shadow: 0 24px 45px -20px rgba(15, 23, 42, 0.45);
-    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--dashboard-card-border);
     width: 100%;
-    backdrop-filter: blur(2px);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -25,13 +24,13 @@
     font-size: 2rem;
     font-weight: 800;
     margin-bottom: 0.75rem;
-    color: var(--gray-900);
+    color: var(--text-main);
     letter-spacing: -0.025em;
 }
 
 .auth-card__subtitle {
     font-size: 1rem;
-    color: var(--gray-500);
+    color: var(--text-muted);
 }
 
 .auth-card__error {
@@ -56,7 +55,7 @@
 }
 
 .auth-card__form .form-group__label {
-    color: var(--gray-700);
+    color: var(--text-secondary);
     font-weight: 600;
 }
 
@@ -74,7 +73,7 @@
 .auth-card__footer {
     margin-top: 2rem;
     padding-top: 2rem;
-    border-top: 1px solid var(--gray-100);
+    border-top: 1px solid var(--dashboard-card-border);
     text-align: center;
 }
 
@@ -87,7 +86,7 @@
 }
 
 .auth-card__footer-text {
-    color: var(--gray-500);
+    color: var(--text-muted);
     font-size: 0.95rem;
 }
 

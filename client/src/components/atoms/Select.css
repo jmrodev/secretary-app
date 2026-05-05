@@ -60,3 +60,18 @@
     border-radius: 0.5rem;
     background-position: right 0.5rem center;
 }
+
+.select--ghost {
+    background-color: transparent;
+    border-color: transparent;
+    color: inherit;
+    box-shadow: none;
+    padding-left: 0;
+    /* White arrow for ghost variant */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+}
+
+.select--ghost:focus {
+    transform: none;
+    box-shadow: none;
+}

@@ -4,65 +4,10 @@
     /* ------------------------------ */
 
     display: flex;
-    height: 100vh;
-    overflow: hidden;
-    background: var(--bg-gradient-blue);
+    flex-direction: column;
+    min-height: 100vh;
+    background: radial-gradient(circle at top right, #273142 0%, #1B2431 100%);
     color: var(--text-main);
-}
-
-@media screen and (max-width: 1024px) {
-    .app-layout {
-        flex-direction: column;
-        height: auto;
-        overflow: auto;
-    }
-
-    .main-content {
-        padding: 0.5rem;
-        height: auto;
-        overflow: visible;
-    }
-
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        border-right: none;
-        border-bottom: 1px solid var(--sidebar-border);
-        flex-direction: row;
-    }
-
-    .sidebar__header,
-    .sidebar__footer,
-    .sidebar-user,
-    .sidebar__section-title {
-        display: none;
-    }
-
-    .sidebar__nav {
-        flex-direction: row;
-        overflow-x: auto;
-        padding: 0.5rem;
-        gap: 1rem;
-        width: 100%;
-        justify-content: flex-start;
-    }
-
-    .sidebar__link {
-        padding: 0.5rem 0.75rem;
-        white-space: nowrap;
-        font-size: 0.75rem;
-        min-width: fit-content;
-        flex-direction: row;
-        gap: 0.4rem;
-        border-radius: 6px;
-    }
-
-    .sidebar__link-icon {
-        font-size: 1.1rem;
-    }
 }
 
 .main-content {
@@ -71,63 +16,36 @@
     /* ------------------------------ */
 
     flex: 1;
-    padding: var(--content-padding);
-    overflow: auto; /* Allow both X and Y overflow */
-    min-height: 0;
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
-/* Base constraint for content inside main layout */
-.main-content > :not(.page-header--premium):not(.page-header) {
+.main-content__inner {
+    padding: var(--content-padding);
     width: 100%;
     max-width: var(--layout-max-width, 1600px);
     margin: 0 auto;
     flex: 1;
-    display: flex;
-    flex-direction: column;
 }
 
-/* Ensure PageHeader is always full width and at the top */
+/* PageHeader specific overrides for horizontal layout */
 .main-content > .page-header--premium,
 .main-content > .page-header {
     width: 100%;
-    max-width: none;
-    margin: 0;
 }
 
-.main-content.dashboard-wide {
+.main-content.dashboard-wide .main-content__inner {
     padding: 2rem;
+    max-width: 1920px;
 }
 
-.main-content--flush {
+.main-content--flush .main-content__inner {
     padding: 0 !important;
 }
 
-.main-content.dashboard-wide>* {
-    max-width: 1920px;
-    width: 100%;
-    margin: 0 auto;
-}
-
-@media screen and (max-width: 1400px),
-screen and (max-height: 800px) {
-    .main-content {
-        padding: 1.25rem 1.5rem;
-    }
-}
-
-@media screen and (max-width: 768px) {
-    .main-content {
+@media screen and (max-width: 1024px) {
+    .main-content__inner {
         padding: 1rem;
     }
-
-    .main-content.dashboard-wide {
-        padding: 0.75rem;
-    }
-}
-
-.main-content.dashboard-wide.system-config-layout {
-    padding: 0;
-    overflow: hidden;
 }
