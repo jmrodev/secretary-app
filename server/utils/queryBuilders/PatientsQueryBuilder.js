@@ -60,6 +60,7 @@ class PatientsQueryBuilder extends BaseQueryBuilder {
                 { condition: 'p.last_name LIKE ?', params: term },
                 { condition: 'p.dni LIKE ?', params: term },
                 { condition: 'p.street_name LIKE ?', params: term },
+                { condition: 'CAST(p.street_number AS CHAR) LIKE ?', params: term },
                 { condition: 'p.phone LIKE ?', params: term }
             ]);
         });

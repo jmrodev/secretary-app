@@ -5,7 +5,6 @@ const statsRepository = require('../repositories/statsRepository');
 const medicalRequestRepository = require('../repositories/medicalRequestRepository');
 const medicalFileRepository = require('../repositories/medicalFileRepository');
 const doctorRepository = require('../repositories/doctorRepository');
-const userRepository = require('../repositories/userRepository');
 const bcrypt = require('bcrypt');
 const { pool } = require('../db');
 const { PatientsQueryBuilder } = require('../utils/queryBuilders');
@@ -24,6 +23,9 @@ class PatientService {
             let activeDoctorId = doctorId;
             if (user.role === 'doctor') {
                 const doc = await doctorRepository.getDoctorConfigByUserId(user.user_id, conn);
+                if (!doc?.id) {
+                    return { patients: [], totalCount: 0 };
+                }
                 activeDoctorId = doc?.id;
             }
 

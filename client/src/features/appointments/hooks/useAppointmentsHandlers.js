@@ -11,7 +11,7 @@ import { useHolidayHandlers } from '@/features/appointments/hooks/useHolidayHand
  * Coordinates UI, actions, and holiday handling.
  */
 export const useAppointmentsHandlers = ({
-    user, t, showMessage, confirm, navigate,
+    user, t, showMessage, confirm, prompt, navigate,
     selectedDate, setSelectedDate, viewDoctorId, setViewDoctorId, selectedDoctor, setSelectedDoctor,
     rescheduleAppt, holidays, appointments, filteredAppointments, doctors, settings,
     setDate, setShowForm, setBonified, setSelectedInstitution, setReason, setSyncReferenceInfo, setSyncingZombieId,

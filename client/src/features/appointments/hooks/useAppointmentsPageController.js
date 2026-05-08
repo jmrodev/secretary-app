@@ -27,7 +27,7 @@ export const useAppointmentsPageController = () => {
     const { t, language } = useLanguage();
     const { showMessage } = useMessage();
     const { settings } = useConfig();
-    const { confirm } = useModal();
+    const { confirm, prompt } = useModal();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -106,7 +106,7 @@ export const useAppointmentsPageController = () => {
     }, [user, doctors, rescheduleAppt, syncAppt, isDoctor, booking, viewDoctorId, setViewDoctorId]);
 
     const hookHandlers = useAppointmentsHandlers({
-        user, t, showMessage, confirm, navigate, selectedDate, setSelectedDate,
+        user, t, showMessage, confirm, prompt, navigate, selectedDate, setSelectedDate,
         viewDoctorId, setViewDoctorId, selectedDoctor: booking.selectedDoctor, setSelectedDoctor: booking.setSelectedDoctor,
         rescheduleAppt, exitRescheduleMode, holidays, doctors, settings, appointments,
         filteredAppointments: appointments, selectedPatientData: booking.selectedPatientData,

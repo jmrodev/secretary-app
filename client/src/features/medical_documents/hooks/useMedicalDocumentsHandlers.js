@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import api from '@/api/axios';
 import { isToday } from '@/utils/dateUtils';
-import { timeAgo } from '@/utils/dateUtils';
 
 /**
  * useMedicalDocumentsHandlers Hook (Executor).

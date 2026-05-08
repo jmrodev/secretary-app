@@ -1,5 +1,4 @@
 const { nowLocalSQL } = require('../../utils/dateUtils');
-const transactionRepository = require('../../repositories/transactionRepository');
 const statsRepository = require('../../repositories/statsRepository');
 
 /**
