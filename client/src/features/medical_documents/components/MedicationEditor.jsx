@@ -21,7 +21,7 @@ const MedicationEditor = ({
     const baseClass = 'medication-editor';
 
     return (
-        <div className={`${baseClass} animate-fadeIn`}>
+        <div className={`${baseClass} animate-fade-in`}>
             <div className={`${baseClass}__list`}>
                 {meds.map((med, idx) => (
                     <div key={idx} className={`${baseClass}__row`}>

@@ -16,7 +16,7 @@ const BalanceFinancialSummary = ({
     t
 }) => {
     return (
-        <section className="balance-summary animate-fadeIn">
+        <section className="balance-summary animate-fade-in">
             <h3 className="balance-summary__title">Resumen Financiero</h3>
 
             <div className="balance-summary__item">

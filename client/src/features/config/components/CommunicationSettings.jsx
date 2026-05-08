@@ -19,7 +19,7 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
     ], []);
 
     return (
-        <div className="tab-panel animate-fadeIn communication-settings">
+        <div className="tab-panel animate-fade-in communication-settings">
             {/* Clinic Address */}
             <div className="config-section">
                 <div className="config-section__header">

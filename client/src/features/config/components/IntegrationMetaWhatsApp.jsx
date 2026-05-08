@@ -9,7 +9,7 @@ import ConfigField from '@/features/config/components/ConfigField';
  */
 const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, loading, isAuthorized }) => {
     return (
-        <div className="config-section animate-fadeIn">
+        <div className="config-section animate-fade-in">
             <div className="config-section__header">
                 <span className="config-section__icon"><Icon name="chat" /></span>
                 <h3 className="config-section__title">Meta Business (WhatsApp API)</h3>

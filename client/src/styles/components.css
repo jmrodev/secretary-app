@@ -10,7 +10,7 @@
     box-shadow: var(--shadow-md);
     z-index: 99999;
     font-weight: 500;
-    animation: slideInDown 0.3s ease-out;
+    animation: slide-in-down 0.3s ease-out;
 }
 
 .toast-info {
@@ -25,7 +25,7 @@
     border: 1px solid var(--red-400);
 }
 
-@keyframes slideInDown {
+@keyframes slide-in-down {
     from {
         transform: translateY(-100%);
         opacity: 0;

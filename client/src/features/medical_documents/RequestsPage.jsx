@@ -29,7 +29,7 @@ const RequestsPage = () => {
                 />
 
                 <div className="layout-content-area">
-                    <div className="dashboard-grid animate-fadeIn">
+                    <div className="dashboard-grid animate-fade-in">
                         <aside className="dashboard-layout__sidebar">
                             <div className="dashboard-card">
                                 <h3 className="dashboard-card__title">

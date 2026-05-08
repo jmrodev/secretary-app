@@ -198,11 +198,11 @@
 }
 
 /* Animations */
-.animate-fadeIn {
-    animation: fadeIn 0.4s ease-out;
+.animate-fade-in {
+    animation: fade-in 0.4s ease-out;
 }
 
-@keyframes fadeIn {
+@keyframes fade-in {
     from {
         opacity: 0;
         transform: translateY(10px);
@@ -341,7 +341,7 @@
         overflow-y: auto;
         flex-direction: column;
         gap: 1.5rem;
-        animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         border-top: 1px solid var(--dashboard-card-border);
         padding-top: 0.5rem; /* Space for handle */
     }
@@ -376,7 +376,7 @@
         bottom: 0;
         background: rgba(0, 0, 0, 0.6);
         z-index: 1500;
-        animation: fadeIn 0.4s ease;
+        animation: fade-in 0.4s ease;
     }
 
     .dashboard-main {
@@ -385,7 +385,7 @@
     }
 }
 
-@keyframes slideUp {
+@keyframes slide-up {
     from { transform: translateY(100%); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
 }

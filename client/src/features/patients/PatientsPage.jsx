@@ -84,7 +84,7 @@ const PatientsPage = () => {
 
     return (
         <MainLayout wide flush title={(!selectedPatientId || !patientDetails) ? t('patients') : null}>
-            <div className="patients-page layout-content-area animate-fadeIn">
+            <div className="patients-page layout-content-area animate-fade-in">
                 {(selectedPatientId && patientDetails) ? (
                     // --- DETAILS VIEW ---
                     <PatientDetailsView

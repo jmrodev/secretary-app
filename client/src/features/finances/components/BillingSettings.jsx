@@ -52,7 +52,7 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
     };
 
     return (
-        <div className="tab-panel animate-fadeIn">
+        <div className="tab-panel animate-fade-in">
             <div className="config-section">
                 <div className="config-section__header">
                     <span className="config-section__icon"><Icon name="receipt_long" /></span>

@@ -29,7 +29,7 @@ const MedicalHistoryTable = ({
     const safeItems = Array.isArray(items) ? items : [];
 
     return (
-        <section className={`medical-history ${loading ? 'medical-history--loading' : 'animate-fadeIn'}`}>
+        <section className={`medical-history ${loading ? 'medical-history--loading' : 'animate-fade-in'}`}>
             <header className="medical-history__title">
                 <span className="medical-history__title-icon">
                     <Icon name={icon} size="1.2rem" />

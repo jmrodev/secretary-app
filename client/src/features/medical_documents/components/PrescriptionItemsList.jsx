@@ -18,7 +18,7 @@ const PrescriptionItemsList = ({ items, handleRemoveItem, t }) => {
             </label>
             <div className="prescription-items__list">
                 {items.map((item, idx) => (
-                    <div key={idx} className="prescription-item animate-slideIn">
+                    <div key={idx} className="prescription-item animate-slide-in">
                         <div className="prescription-item__info">
                             <div className="prescription-item__header">
                                 <span className="prescription-item__name">{item.name}</span>

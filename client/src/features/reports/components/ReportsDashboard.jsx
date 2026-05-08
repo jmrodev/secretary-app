@@ -36,7 +36,7 @@ const ReportsDashboard = ({
                 subtitle={t('reports_page_subtitle') || 'Generación de reportes mensuales de turnos y recetas.'}
             />
 
-            <div className="dashboard-nav-bar dashboard-nav-bar--centered animate-fadeIn">
+            <div className="dashboard-nav-bar dashboard-nav-bar--centered animate-fade-in">
                 <ReportTabs
                     activeTab={activeTab}
                     onTabChange={(tab) => {
@@ -46,7 +46,7 @@ const ReportsDashboard = ({
                 />
             </div>
 
-            <div className="dashboard-grid animate-fadeIn">
+            <div className="dashboard-grid animate-fade-in">
                 <aside className="dashboard-sidebar">
                     <div className="dashboard-card">
                         <h3 className="dashboard-card__title">

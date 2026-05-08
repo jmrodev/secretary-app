@@ -37,11 +37,11 @@ const InstitutionsPage = () => {
         <MainLayout wide flush title={t('institutions') || 'Instituciones'}>
             <div className="institutions-page-orchestrator">
                 
-                <div className="layout-content-area animate-fadeIn">
+                <div className="layout-content-area animate-fade-in">
                     {loading ? (
                         <Loading variant="centered" text={t('loading') || "Cargando..."} />
                     ) : (
-                        <div className="dashboard-grid animate-fadeIn">
+                        <div className="dashboard-grid animate-fade-in">
                         <aside className="dashboard-sidebar">
                             <div className="dashboard-card">
                                 <h3 className="dashboard-card__title">
@@ -109,7 +109,7 @@ const InstitutionsPage = () => {
 
                         <main className="dashboard-main">
                             <div className="dashboard-card no-padding">
-                                <div className="institutions__content animate-fadeIn">
+                                <div className="institutions__content animate-fade-in">
                                     <InstitutionFinances
                                         institutions={institutions}
                                         selectedInstId={selectedInstId}

@@ -99,7 +99,7 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
     };
 
     return (
-        <div className="doctor-messages-form animate-fadeIn">
+        <div className="doctor-messages-form animate-fade-in">
             <TabNav className="doctor-messages-form__subtabs">
                 {[
                     { id: 'templates', label: t('reminders_tab'), icon: 'history' },
@@ -120,7 +120,7 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
 
             <div className="doctor-messages-form__content">
                 {activeSubTab === 'templates' && (
-                    <section className="doctor-messages-form__section animate-fadeIn">
+                    <section className="doctor-messages-form__section animate-fade-in">
                         <MessageTemplateEditor
                             id="doctor-reminder-template"
                             label={t('presential_reminder_label')}
@@ -148,7 +148,7 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
                 )}
 
                 {activeSubTab === 'confirmation' && (
-                    <section className="doctor-messages-form__section animate-fadeIn">
+                    <section className="doctor-messages-form__section animate-fade-in">
                         <MessageTemplateEditor
                             id="doctor-confirmation-template"
                             label={t('presential_confirmation_label')}
@@ -176,7 +176,7 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
                 )}
 
                 {activeSubTab === 'ai' && (
-                    <section className="doctor-messages-form__section doctor-messages-form__section--ai animate-fadeIn">
+                    <section className="doctor-messages-form__section doctor-messages-form__section--ai animate-fade-in">
                         <header className="doctor-messages-form__ai-header">
                             <div className="doctor-messages-form__ai-title-group">
                                 <Icon name="psychology" size="1.2rem" className="doctor-messages-form__ai-icon" />

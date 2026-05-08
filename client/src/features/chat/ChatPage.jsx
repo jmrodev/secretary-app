@@ -27,7 +27,7 @@ const ChatPage = () => {
 
     return (
         <MainLayout wide flush>
-            <main className={`chat-page-orchestrator ${selectedConvo ? 'chat-page-orchestrator--convo-selected' : ''} animate-fadeIn`}>
+            <main className={`chat-page-orchestrator ${selectedConvo ? 'chat-page-orchestrator--convo-selected' : ''} animate-fade-in`}>
                 <div className="layout-content-area">
                     <div className="chat-page-container">
                         <ChatSidebar

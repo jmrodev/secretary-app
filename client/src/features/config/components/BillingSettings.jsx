@@ -57,7 +57,7 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
     };
 
     return (
-        <div className="tab-panel animate-fadeIn">
+        <div className="tab-panel animate-fade-in">
             {/* AFIP General Configuration */}
             <div className="config-section">
                 <div className="config-section__header">

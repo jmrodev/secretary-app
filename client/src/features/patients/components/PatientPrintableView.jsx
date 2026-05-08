@@ -94,7 +94,7 @@ const PatientPrintableView = ({
     };
 
     return (
-        <div className="printable-patient-sheet printable-patient-sheet--fullscreen animate-fadeIn">
+        <div className="printable-patient-sheet printable-patient-sheet--fullscreen animate-fade-in">
             <header className="printable-patient-sheet__header no-print">
                 <Button variant="secondary" size="sm-compact" onClick={onClose}>
                     &larr; {t('back')}

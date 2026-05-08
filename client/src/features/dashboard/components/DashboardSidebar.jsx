@@ -11,7 +11,7 @@ const DashboardSidebar = ({ stats, newPatientStats, user, t }) => {
         <aside className="dashboard-sidebar-stats">
             {/* General Statistics Section - Horizontal Bento Card */}
             {stats && (
-                <section className="dashboard-sidebar__section animate-fadeIn">
+                <section className="dashboard-sidebar__section animate-fade-in">
                     <header className="dashboard-sidebar__header">
                         <h4 className="dashboard-sidebar__title">
                             {t('general_stats')}
@@ -55,7 +55,7 @@ const DashboardSidebar = ({ stats, newPatientStats, user, t }) => {
 
             {/* New Patient Growth Section - Sparkline Bento Layout */}
             {newPatientStats && (
-                <section className="dashboard-sidebar__section dashboard-sidebar__section--growth animate-fadeIn">
+                <section className="dashboard-sidebar__section dashboard-sidebar__section--growth animate-fade-in">
                     <header className="dashboard-sidebar__header">
                         <h4 className="dashboard-sidebar__title">
                             {t('new_patients_stat')}

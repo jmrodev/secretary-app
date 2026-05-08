@@ -16,7 +16,7 @@ const InstitutionSummary = ({
     if (!report) return null;
 
     return (
-        <div className="institution-finances__header-bar animate-fadeIn">
+        <div className="institution-finances__header-bar animate-fade-in">
             <div className="institution-finances__stats">
                 <div className="institution-finances__stat-item">
                     <div className="institution-finances__stat-icon institution-finances__stat-icon--blue">

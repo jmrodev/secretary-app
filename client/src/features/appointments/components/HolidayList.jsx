@@ -26,7 +26,7 @@ const HolidayList = ({ holidays, onDelete }) => {
             {holidays
                 .sort((a, b) => new Date(a.date) - new Date(b.date))
                 .map(h => (
-                    <div key={h.id} className="holiday-list__item animate-fadeIn">
+                    <div key={h.id} className="holiday-list__item animate-fade-in">
                         <div className="holiday-list__info">
                             <span className="holiday-list__date">
                                 <Icon name="calendar_today" size="0.9rem" />

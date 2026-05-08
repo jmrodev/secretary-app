@@ -115,7 +115,7 @@ const MedicalRequirementManager = ({
                 </nav>
             )}
 
-            <article className={`${baseClass}__content animate-fadeIn`}>
+            <article className={`${baseClass}__content animate-fade-in`}>
                 {activeTab === 'new' ? (
                     <MedicalRequestForm
                         doctors={doctors}

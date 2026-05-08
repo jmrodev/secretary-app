@@ -29,19 +29,7 @@ exports.getRequests = async (req, res) => {
             offset: (parseInt(page) - 1) * parseInt(limit)
         };
 
-        // VERBOSE CONTROLLER LOGGING
-        console.log("=== [CONTROLLER DEBUG] ===");
-        console.log("x-doctor-id header:", req.headers['x-doctor-id']);
-        console.log("req.doctorId:", req.doctorId);
-        console.log("Filters:", JSON.stringify(filters));
-
         const result = await medicalRequestService.getRequests(req.user, filters);
-        
-        console.log(`[GET_REQUESTS] Result: Total ${result.totalCount}, Items ${result.requests.length}`);
-        if (result.requests.length > 0) {
-            console.log("[GET_REQUESTS] Sample Status:", result.requests[0].status);
-        }
-
         res.json(result);
     } catch (err) {
         console.error(err);

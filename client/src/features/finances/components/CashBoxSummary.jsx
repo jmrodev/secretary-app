@@ -26,7 +26,7 @@ const CashBoxSummary = ({
 
         if (compact) {
             return (
-                <div key={id || 'null'} className="cash-box__item-compact animate-fadeIn">
+                <div key={id || 'null'} className="cash-box__item-compact animate-fade-in">
                     <span className="cash-box__name-compact">{name?.split(' ')[0] || t('general_clinic')}</span>
                     <div className="cash-box__values-compact">
                         <span className="cash-box__method-compact cash-box__method-compact--cash">
@@ -44,7 +44,7 @@ const CashBoxSummary = ({
         }
 
         return (
-            <Card key={id || 'null'} className="cash-box__card animate-fadeIn">
+            <Card key={id || 'null'} className="cash-box__card animate-fade-in">
                 <h4 className="cash-box__doctor-name">{name || t('general_clinic')}</h4>
                 <div className="cash-box__details">
                     <div className="cash-box__row">
@@ -74,7 +74,7 @@ const CashBoxSummary = ({
 
     if (compact) {
         return (
-            <div className="cash-box cash-box--compact animate-fadeIn">
+            <div className="cash-box cash-box--compact animate-fade-in">
                 <h3 className="cash-box__header-compact">{t('cash_boxes')}:</h3>
                 {renderDoctorCard(null, null, t('general_clinic'))}
                 {filteredDoctors.map(d => renderDoctorCard(d, d.id, d.full_name))}
@@ -93,7 +93,7 @@ const CashBoxSummary = ({
     }
 
     return (
-        <div className="cash-box animate-fadeIn">
+        <div className="cash-box animate-fade-in">
             <header className="cash-box__header">
                 <h3 className="cash-box__title">{t('cash_boxes')}</h3>
                 {selectedDoctorFilter && (

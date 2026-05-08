@@ -11,7 +11,7 @@ const InstitutionPatientsTable = ({
     t
 }) => {
     return (
-        <section className="institution-patients animate-fadeIn">
+        <section className="institution-patients animate-fade-in">
             <header className="institution-patients__header">
                 <h3 className="institution-patients__title">
                     <Icon name="PATIENTS" size="1.2rem" /> {t('patient_list_padron')}

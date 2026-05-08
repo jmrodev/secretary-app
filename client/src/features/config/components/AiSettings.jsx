@@ -12,7 +12,7 @@ const AiSettings = ({ user, settings, updateSetting }) => {
     const isAdmin = user?.role === 'admin' || user?.role === 'secretary';
 
     return (
-        <div className="tab-panel animate-fadeIn ai-settings">
+        <div className="tab-panel animate-fade-in ai-settings">
             {/* WhatsApp Automation */}
             <div className="config-section">
                 <div className="config-section__header">

@@ -99,7 +99,7 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                     </div>
                 ) : (
                     currentTasks.map((task, idx) => (
-                        <article key={`${task.id}-${task.taskType}-${idx}`} className="dashboard-reminders__item animate-fadeIn">
+                        <article key={`${task.id}-${task.taskType}-${idx}`} className="dashboard-reminders__item animate-fade-in">
                             <div className="dashboard-reminders__item-info">
                                 <h4 className="dashboard-reminders__item-name">{task.full_name}</h4>
                                 <div className="dashboard-reminders__item-details">

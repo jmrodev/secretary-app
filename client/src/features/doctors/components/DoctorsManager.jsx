@@ -20,7 +20,7 @@ const DoctorsManager = ({
 }) => {
     return (
         <section className="doctors-manager">
-            <div className="dashboard-nav-bar dashboard-nav-bar--centered animate-fadeIn">
+            <div className="dashboard-nav-bar dashboard-nav-bar--centered animate-fade-in">
                 <div className="doctors-manager__counter">
                     <Icon name="medical_services" size="1.2rem" />
                     {filteredDoctors.length} {t('doctors_count') || 'Médicos activos'}
@@ -30,7 +30,7 @@ const DoctorsManager = ({
             {loading ? (
                 <Loading variant="centered" text={t('loading_doctors') || "Cargando médicos..."} />
             ) : (
-                <div className="dashboard-grid animate-fadeIn">
+                <div className="dashboard-grid animate-fade-in">
                     <aside className="dashboard-sidebar">
                         <div className="dashboard-card">
                             <h3 className="dashboard-card__title">

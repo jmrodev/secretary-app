@@ -36,7 +36,7 @@ class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return (
-        <div className="error-boundary-container animate-fadeIn">
+        <div className="error-boundary-container animate-fade-in">
             <div className="error-boundary-card">
                 <div className="error-boundary-icon">
                     <Icon name="error_outline" size="4rem" color="#e74c3c" />

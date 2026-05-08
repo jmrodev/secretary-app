@@ -6,7 +6,7 @@ import './DoctorCard.css';
 
 const DoctorCard = ({ doctor, currentUser, onEdit, t }) => {
     return (
-        <article className="card doctor-card animate-fadeIn">
+        <article className="card doctor-card animate-fade-in">
             <header className="doctor-card__header">
                 <div className="doctor-card__avatar">
                     {doctor.full_name?.charAt(0).toUpperCase()}

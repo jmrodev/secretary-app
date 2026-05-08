@@ -30,7 +30,7 @@ const ConfirmModal = ({
 
     return ReactDOM.createPortal(
         <div className="modal-overlay-bem">
-            <div className="modal-content-bem animate-fadeIn">
+            <div className="modal-content-bem animate-fade-in">
                 <div className="modal-header-bem">
                     <h3 className="modal-header-bem__title">
                         {title || (type === 'alert' ? t('alert') : t('confirm'))}

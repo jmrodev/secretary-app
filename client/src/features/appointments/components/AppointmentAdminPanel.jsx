@@ -81,7 +81,7 @@ const AppointmentAdminPanel = ({
             <div className={`${baseClass}__content`}>
                 {/* ATTENDANCE TAB */}
                 {activeTab === 'attendance' && (
-                    <article className={`${baseClass}__tab-pane animate-fadeIn`}>
+                    <article className={`${baseClass}__tab-pane animate-fade-in`}>
                         {isPendingPayment && !isGoogle && (
                             <section className={`${baseClass}__group ${baseClass}__group--highlight`}>
                                 <h4 className={`${baseClass}__group-title`}>{t('pending_payment')}</h4>
@@ -138,7 +138,7 @@ const AppointmentAdminPanel = ({
 
                 {/* MANAGEMENT TAB */}
                 {activeTab === 'management' && showAdminPanel && (
-                    <article className={`${baseClass}__tab-pane animate-fadeIn`}>
+                    <article className={`${baseClass}__tab-pane animate-fade-in`}>
                         <section className={`${baseClass}__group`}>
                             <h4 className={`${baseClass}__group-title`}>{t('appointment_modification')}</h4>
                             <div className={`${baseClass}__grid`}>
@@ -171,7 +171,7 @@ const AppointmentAdminPanel = ({
 
                 {/* CONTACT TAB */}
                 {activeTab === 'contact' && appt.patient_phone && (
-                    <article className={`${baseClass}__tab-pane animate-fadeIn`}>
+                    <article className={`${baseClass}__tab-pane animate-fade-in`}>
                         <section className={`${baseClass}__group`}>
                             <h4 className={`${baseClass}__group-title`}>{t('patient_contact')}</h4>
                             <div className={`${baseClass}__phone-display`}>
@@ -214,7 +214,7 @@ const AppointmentAdminPanel = ({
 
                 {/* STATUS TAB */}
                 {activeTab === 'status' && showAdminPanel && (
-                    <article className={`${baseClass}__tab-pane animate-fadeIn`}>
+                    <article className={`${baseClass}__tab-pane animate-fade-in`}>
                         <section className={`${baseClass}__group`}>
                             <h4 className={`${baseClass}__group-title`}>{t('exception_status')}</h4>
                             <div className={`${baseClass}__grid`}>
@@ -241,7 +241,7 @@ const AppointmentAdminPanel = ({
 
                 {/* DANGER/SYSTEM TAB */}
                 {activeTab === 'danger' && !isGoogle && (
-                    <article className={`${baseClass}__tab-pane animate-fadeIn`}>
+                    <article className={`${baseClass}__tab-pane animate-fade-in`}>
                         <section className={`${baseClass}__group ${baseClass}__group--danger`}>
                             <h4 className={`${baseClass}__group-title`}>{t('danger_zone')}</h4>
                             <div className={`${baseClass}__grid`}>

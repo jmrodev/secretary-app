@@ -105,7 +105,7 @@ const renderContent = (activeTab, controller) => {
     const metadata = getTabMetadata(activeTab, t);
 
     const wrap = (content) => (
-        <section className="settings-content-wrapper animate-fadeInUp">
+        <section className="settings-content-wrapper animate-fade-in-up">
             <header className="settings-content-header">
                 <div className="settings-content-header__icon">
                     <Icon name={metadata.icon} size="1.5rem" />
@@ -146,7 +146,7 @@ const renderContent = (activeTab, controller) => {
                             setQrModal({ open: true, url, expiry: null });
                         }}
                     />
-                    <article className="system-config-page__documentation animate-fadeIn">
+                    <article className="system-config-page__documentation animate-fade-in">
                         <header className="system-config-page__section-header">
                             <Icon name="description" size="1.2rem" className="system-config-page__section-icon" />
                             <h3 className="system-config-page__section-title">Documentación y Ayuda</h3>
@@ -215,7 +215,7 @@ const renderContent = (activeTab, controller) => {
             );
         case 'data':
             return wrap(
-                <div className="system-config-page__data-management animate-fadeIn">
+                <div className="system-config-page__data-management animate-fade-in">
                     <div className="system-config-page__section-header">
                         <Icon name="payments" size="1.2rem" className="system-config-page__section-icon" />
                         <h3 className="system-config-page__section-title">
@@ -315,7 +315,7 @@ const SystemConfigPage = () => {
                     </TabButton>
                 </TabNav>
 
-                <div className="layout-content-area animate-fadeIn">
+                <div className="layout-content-area animate-fade-in">
                     <div className="system-config-container">
                         <main className="system-config-main">
                             <Suspense fallback={<Loading variant="centered" />}>

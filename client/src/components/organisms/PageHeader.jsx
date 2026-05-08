@@ -31,7 +31,7 @@ const PageHeader = ({
     // Standard variant
     if (!isPremium) {
         return (
-            <header className={`page-header ${divider ? 'page-header--divider' : ''} ${className} animate-fadeIn`}>
+            <header className={`page-header ${divider ? 'page-header--divider' : ''} ${className} animate-fade-in`}>
                 <div className="page-header__content">
                     <div className="page-header__title-container">
                         {!hideTitle && <h1 className="page-header__title">{title}</h1>}
@@ -50,7 +50,7 @@ const PageHeader = ({
 
     // Premium variant
     return (
-        <header className={`page-header page-header--premium ${className} animate-fadeIn`}>
+        <header className={`page-header page-header--premium ${className} animate-fade-in`}>
             <img
                 src={resolvedBg}
                 alt=""

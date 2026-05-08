@@ -100,7 +100,7 @@ const DoctorFiscalSettings = ({
                 </div>
 
                 {generatedCsr && showCsrInfo && (
-                    <div className="doctor-fiscal-settings__csr-box animate-fadeIn">
+                    <div className="doctor-fiscal-settings__csr-box animate-fade-in">
                         <div className="doctor-fiscal-settings__csr-header">
                             <h6 className="doctor-fiscal-settings__csr-title">{t('csr_generated_title')}</h6>
                             <Button onClick={onHideCsrInfo} className="doctor-fiscal-settings__csr-close" unstyled>{t('hide')}</Button>
@@ -135,7 +135,7 @@ const DoctorFiscalSettings = ({
                     </div>
 
                     {connectionStatus === 'ok' && (
-                        <div className="doctor-fiscal-settings__status-box doctor-fiscal-settings__status-box--success animate-fadeIn">
+                        <div className="doctor-fiscal-settings__status-box doctor-fiscal-settings__status-box--success animate-fade-in">
                             <div className="doctor-fiscal-settings__status-icon">
                                 <Icon name="check_circle" size="1.5rem" />
                             </div>
@@ -149,7 +149,7 @@ const DoctorFiscalSettings = ({
                     )}
 
                     {connectionStatus === 'error' && (
-                        <div className="doctor-fiscal-settings__status-box doctor-fiscal-settings__status-box--error animate-fadeIn">
+                        <div className="doctor-fiscal-settings__status-box doctor-fiscal-settings__status-box--error animate-fade-in">
                             <div className="doctor-fiscal-settings__status-icon">
                                 <Icon name="error" size="1.5rem" />
                             </div>

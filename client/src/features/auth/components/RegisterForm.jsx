@@ -95,7 +95,7 @@ const RegisterForm = () => {
 
                     {/* Role specific fields */}
                     {formData.role === 'doctor' && (
-                        <div className="animate-fadeIn">
+                        <div className="animate-fade-in">
                             <FormGroup label={t('specialty')}>
                                 <Input
                                     name="specialty"
@@ -118,7 +118,7 @@ const RegisterForm = () => {
                     )}
 
                     {formData.role === 'patient' && (
-                        <div className="animate-fadeIn">
+                        <div className="animate-fade-in">
                             <FormGroup label={t('dob')}>
                                 <Input
                                     type="date"

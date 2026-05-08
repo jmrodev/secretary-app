@@ -41,7 +41,7 @@ const MedicationInputSection = ({
     ];
 
     return (
-        <div className={`${baseClass ? `${baseClass}__med-input-row` : ''} ${compClass}__med-input-row animate-fadeIn`}>
+        <div className={`${baseClass ? `${baseClass}__med-input-row` : ''} ${compClass}__med-input-row animate-fade-in`}>
             <div className={`${baseClass ? `${baseClass}__inputs-grid` : ''} ${compClass}__inputs-grid`}>
                 <div className={`${baseClass ? `${baseClass}__field-wrapper` : ''} ${compClass}__field-wrapper`}>
                     <label className={`${baseClass ? `${baseClass}__field-label` : ''} ${compClass}__field-label`}>
@@ -152,7 +152,7 @@ const MedicationInputSection = ({
                 </div>
 
                 {daysSupply !== null && (
-                    <div className={`${baseClass ? `${baseClass}__supply-preview` : ''} ${compClass}__supply-preview animate-fadeIn`}>
+                    <div className={`${baseClass ? `${baseClass}__supply-preview` : ''} ${compClass}__supply-preview animate-fade-in`}>
                         <Icon name="notifications" size="1.1rem" color="var(--accent-color)" />
                         <div className={`${baseClass ? `${baseClass}__supply-text` : ''} ${compClass}__supply-text`}>
                             {t('supply_prefix')} <strong className={compClass + '__text-accent'}>~{daysSupply} {t('days')}</strong>

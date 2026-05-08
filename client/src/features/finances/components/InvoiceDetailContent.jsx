@@ -11,7 +11,7 @@ import './InvoiceDetailContent.css';
  */
 const InvoiceDetailContent = ({ tx, formatDate }) => {
     return (
-        <div className="invoice-detail animate-fadeIn">
+        <div className="invoice-detail animate-fade-in">
             <h3 className="invoice-detail__title">Comprobante Electrónico</h3>
             <div className="invoice-detail__content">
                 <p className="invoice-detail__row">

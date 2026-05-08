@@ -25,7 +25,7 @@ const MedicationInput = ({
     };
 
     return (
-        <div className={`medication-input ${className} animate-fadeIn`}>
+        <div className={`medication-input ${className} animate-fade-in`}>
             <div className="medication-input__header">
                 <label className="medication-input__label">
                     {label}

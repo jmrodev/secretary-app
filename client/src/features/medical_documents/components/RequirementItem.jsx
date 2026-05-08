@@ -24,7 +24,7 @@ const RequirementItem = ({
     const { id, type, created_at, patient_name, status, payment_status, debt_amount, payment_method, patient_id, patient_user_id, doctor_id } = request;
 
     return (
-        <tr className="requirement-item animate-fadeIn">
+        <tr className="requirement-item animate-fade-in">
             <td className="requirement-item__cell">
                 <Badge
                     variant={type === 'prescription' ? 'blue' : 'green'}

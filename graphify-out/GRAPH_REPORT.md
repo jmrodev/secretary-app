@@ -1,16 +1,16 @@
-# Graph Report - secretary-app  (2026-05-04)
+# Graph Report - secretary-app  (2026-05-07)
 
 ## Corpus Check
-- 560 files · ~249,730 words
+- 559 files · ~249,456 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1692 nodes · 1650 edges · 127 communities detected
+- 1697 nodes · 1657 edges · 122 communities detected
 - Extraction: 82% EXTRACTED · 18% INFERRED · 0% AMBIGUOUS · INFERRED: 305 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `8c10a919`
+- Built from commit: `c8ff9350`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -122,26 +122,21 @@
 - [[_COMMUNITY_Community 104|Community 104]]
 - [[_COMMUNITY_Community 105|Community 105]]
 - [[_COMMUNITY_Community 106|Community 106]]
-- [[_COMMUNITY_Community 107|Community 107]]
-- [[_COMMUNITY_Community 108|Community 108]]
 - [[_COMMUNITY_Community 109|Community 109]]
 - [[_COMMUNITY_Community 110|Community 110]]
+- [[_COMMUNITY_Community 111|Community 111]]
+- [[_COMMUNITY_Community 112|Community 112]]
 - [[_COMMUNITY_Community 113|Community 113]]
 - [[_COMMUNITY_Community 114|Community 114]]
 - [[_COMMUNITY_Community 115|Community 115]]
 - [[_COMMUNITY_Community 116|Community 116]]
 - [[_COMMUNITY_Community 117|Community 117]]
-- [[_COMMUNITY_Community 118|Community 118]]
-- [[_COMMUNITY_Community 119|Community 119]]
-- [[_COMMUNITY_Community 120|Community 120]]
-- [[_COMMUNITY_Community 121|Community 121]]
-- [[_COMMUNITY_Community 123|Community 123]]
+- [[_COMMUNITY_Community 132|Community 132]]
+- [[_COMMUNITY_Community 135|Community 135]]
+- [[_COMMUNITY_Community 136|Community 136]]
 - [[_COMMUNITY_Community 137|Community 137]]
-- [[_COMMUNITY_Community 140|Community 140]]
-- [[_COMMUNITY_Community 141|Community 141]]
-- [[_COMMUNITY_Community 142|Community 142]]
-- [[_COMMUNITY_Community 143|Community 143]]
-- [[_COMMUNITY_Community 144|Community 144]]
+- [[_COMMUNITY_Community 138|Community 138]]
+- [[_COMMUNITY_Community 139|Community 139]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `useLanguage()` - 70 edges
@@ -158,20 +153,20 @@
 ## Surprising Connections (you probably didn't know these)
 - `getAiSuggestion()` --calls--> `fetch()`  [INFERRED]
   server/controllers/whatsappController.js → worker.js
-- `WhatsappChatHistory()` --calls--> `useMessage()`  [INFERRED]
-  client/src/features/patients/components/WhatsappChatHistory.jsx → client/src/context/MessageContext.jsx
-- `useTempAccessController()` --calls--> `useModal()`  [INFERRED]
-  client/src/controllers/useTempAccessController.js → client/src/context/ModalContext.jsx
-- `useInstitutionsController()` --calls--> `useModal()`  [INFERRED]
-  client/src/features/institutions/hooks/useInstitutionsController.js → client/src/context/ModalContext.jsx
-- `useRequirementManagerController()` --calls--> `useModal()`  [INFERRED]
-  client/src/features/medical_documents/hooks/useRequirementManagerController.js → client/src/context/ModalContext.jsx
+- `InstitutionsSection()` --calls--> `useInstitutionsController()`  [INFERRED]
+  client/src/features/config/SystemConfigPage.jsx → client/src/features/institutions/hooks/useInstitutionsController.js
+- `DoctorsSection()` --calls--> `useDoctorsPageController()`  [INFERRED]
+  client/src/features/config/SystemConfigPage.jsx → client/src/features/doctors/hooks/useDoctorsPageController.js
+- `ProfileSection()` --calls--> `useProfileController()`  [INFERRED]
+  client/src/features/config/SystemConfigPage.jsx → client/src/features/auth/hooks/useProfileController.js
+- `ReportsSection()` --calls--> `useReportsController()`  [INFERRED]
+  client/src/features/config/SystemConfigPage.jsx → client/src/features/reports/hooks/useReportsController.js
 
-## Communities (409 total, 97 thin omitted)
+## Communities (404 total, 92 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.03
-Nodes (30): LanguageSelector(), AiSettings(), AppointmentCard(), Calendar(), CalendarSection(), ChatConversationItem(), ChatSidebar(), ChatThread() (+22 more)
+Cohesion: 0.04
+Nodes (28): LanguageSelector(), AiSettings(), AppointmentCard(), Calendar(), CalendarSection(), ChatConversationItem(), ChatSidebar(), ChatThread() (+20 more)
 
 ### Community 1 - "Community 1"
 Cohesion: 0.05
@@ -186,44 +181,44 @@ Cohesion: 0.06
 Nodes (7): ApiService, LoginRequest, LoginResponse, UpdatePaymentRequest, UpdateReasonRequest, UpdateStatusRequest, MainActivity
 
 ### Community 4 - "Community 4"
+Cohesion: 0.06
+Nodes (18): ProtectedRoute(), useAuth(), AppointmentFormModal(), FloatingChat(), LoginForm(), MedicalHistoryTable(), MedicalRequestList(), PatientBlocker() (+10 more)
+
+### Community 5 - "Community 5"
+Cohesion: 0.08
+Nodes (18): AppointmentsPage(), AppointmentAdminPanel(), PatientMedications(), PrescriptionModal(), QRCodeModal(), WhatsappChatHistory(), WhatsAppModal(), useConfig() (+10 more)
+
+### Community 6 - "Community 6"
 Cohesion: 0.09
 Nodes (11): Message, MessageResponse, Recipient, SendMessageRequest, TypingRequest, TypingStatus, UnreadCountResponse, ComposeMessageActivity (+3 more)
 
-### Community 5 - "Community 5"
-Cohesion: 0.06
-Nodes (16): ProtectedRoute(), useAuth(), AppointmentFormModal(), LoginForm(), MedicalHistoryTable(), MedicalRequestForm(), MedicalRequestList(), PatientBlocker() (+8 more)
-
-### Community 6 - "Community 6"
-Cohesion: 0.08
-Nodes (16): RoleGuard(), MedicalRequirementManager(), Navbar(), Sidebar(), UserManagement(), DoctorProvider(), useFetch(), usePatientsHandlers() (+8 more)
-
 ### Community 7 - "Community 7"
+Cohesion: 0.07
+Nodes (16): ChatPage(), MedicalRequestForm(), MedicationAutocomplete(), UserManagement(), useSearch(), useFetch(), useMedicalRequest(), useMedicationAutocomplete() (+8 more)
+
+### Community 8 - "Community 8"
 Cohesion: 0.11
 Nodes (6): FinanceService, PatientService, RestoreService, formatDateOnlySQL(), formatLocalSQL(), nowLocalSQL()
 
-### Community 8 - "Community 8"
+### Community 9 - "Community 9"
 Cohesion: 0.1
 Nodes (6): AppointmentDetailActivity, PatientFilesActivity, AppointmentHistoryAdapter, HistoryViewHolder, FileViewHolder, PatientFileAdapter
 
-### Community 10 - "Community 10"
+### Community 11 - "Community 11"
 Cohesion: 0.14
 Nodes (4): MessageDetailActivity, ChatAdapter, ReceivedViewHolder, SentViewHolder
 
-### Community 11 - "Community 11"
-Cohesion: 0.09
-Nodes (15): ProfilePage(), AuditLogsSection(), DoctorsSection(), getTabMetadata(), ProfileSection(), renderContent(), SystemConfigPage(), UserSection() (+7 more)
-
 ### Community 12 - "Community 12"
-Cohesion: 0.1
-Nodes (12): AppointmentsPage(), AppointmentAdminPanel(), BillingSettings(), PrescriptionModal(), WhatsAppModal(), useMessage(), useAppointmentBooking(), useAppointmentsPageController() (+4 more)
+Cohesion: 0.08
+Nodes (12): ProfilePage(), RoleGuard(), AppointmentActionModal(), MedicalRequirementManager(), DoctorProvider(), useMedicalDocumentsController(), useMedicalDocumentsHandlers(), usePermissions() (+4 more)
 
 ### Community 14 - "Community 14"
-Cohesion: 0.11
-Nodes (12): AppointmentActionModal(), QRCodeModal(), ReportsSection(), useConfig(), useModal(), FinancesPage(), useAppointments(), useFinanceHandlers() (+4 more)
+Cohesion: 0.09
+Nodes (11): BillingSettings(), DaySchedule(), useModal(), DoctorsPage(), useDayScheduleHandlers(), useDoctorsPageController(), useInsurancesController(), useReportsController() (+3 more)
 
-### Community 16 - "Community 16"
-Cohesion: 0.17
-Nodes (13): FinanceFilters(), ReportFilters(), formatDate(), formatDateTimeLong(), formatTime(), getMonthsOptions(), isPast(), isPastDay() (+5 more)
+### Community 15 - "Community 15"
+Cohesion: 0.16
+Nodes (15): FinanceFilters(), ReportFilters(), formatDate(), formatDateTimeLong(), formatTime(), getMonthsOptions(), isPast(), isPastDay() (+7 more)
 
 ### Community 20 - "Community 20"
 Cohesion: 0.17
@@ -246,42 +241,42 @@ Cohesion: 0.21
 Nodes (3): RemindersActivity, ReminderAdapter, ViewHolder
 
 ### Community 31 - "Community 31"
+Cohesion: 0.2
+Nodes (10): AuditLogsSection(), DoctorsSection(), getTabMetadata(), InstitutionsSection(), ProfileSection(), renderContent(), ReportsSection(), SystemConfigPage() (+2 more)
+
+### Community 32 - "Community 32"
 Cohesion: 0.18
 Nodes (5): AppError, AuthRequiredError, ConflictError, NotFoundError, ValidationError
 
-### Community 40 - "Community 40"
+### Community 41 - "Community 41"
 Cohesion: 0.22
 Nodes (5): TempAccessFormWrapper(), TempAccessPage(), PatientManagerModal(), useTempAccessController(), usePatientFormController()
 
-### Community 44 - "Community 44"
+### Community 45 - "Community 45"
 Cohesion: 0.25
 Nodes (4): useAppointmentActions(), useAppointmentsHandlers(), useAppointmentUIHandlers(), useHolidayHandlers()
 
-### Community 45 - "Community 45"
+### Community 46 - "Community 46"
 Cohesion: 0.38
 Nodes (5): checkModificationPermissions(), formatDateForDB(), freeSlot(), occupySlot(), validateAdminPassword()
 
-### Community 47 - "Community 47"
+### Community 48 - "Community 48"
 Cohesion: 0.43
 Nodes (5): getMetaCredentials(), sendAutomatedReminders(), sendMessageDirect(), sendTemplateMessage(), sendTestMessage()
 
-### Community 59 - "Community 59"
-Cohesion: 0.29
-Nodes (3): useSearch(), usePatientSearch(), PageHeader()
-
-### Community 68 - "Community 68"
-Cohesion: 0.33
-Nodes (3): InstitutionsSection(), useInstitutionsController(), InstitutionsPage()
-
 ### Community 69 - "Community 69"
 Cohesion: 0.33
-Nodes (3): useMedicalDocumentsController(), useMedicalDocumentsHandlers(), MedicalDocumentsPage()
+Nodes (3): FinancesPage(), useFinanceHandlers(), useFinancesPageController()
 
-### Community 74 - "Community 74"
+### Community 70 - "Community 70"
+Cohesion: 0.33
+Nodes (3): Navbar(), Sidebar(), useSidebarController()
+
+### Community 75 - "Community 75"
 Cohesion: 0.7
 Nodes (4): importDoctorEvents(), importEvent(), importFromGoogle(), parseEventDescription()
 
-### Community 84 - "Community 84"
+### Community 85 - "Community 85"
 Cohesion: 0.7
 Nodes (4): generateAppointmentsPrint(), generateBalancePrint(), generatePrescriptionsPrint(), printReport()
 
@@ -292,16 +287,16 @@ Nodes (3): GeneralSettings(), renderPermissionsGroup(), renderUrlConfiguration()
 ## Knowledge Gaps
 - **19 isolated node(s):** `AppointmentEventEmitter`, `SendRequest`, `FilterMode`, `UpdateReasonRequest`, `UpdateStatusRequest` (+14 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **97 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **92 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `useLanguage()` connect `Community 0` to `Community 99`, `Community 68`, `Community 5`, `Community 6`, `Community 69`, `Community 104`, `Community 40`, `Community 106`, `Community 11`, `Community 108`, `Community 12`, `Community 14`, `Community 59`, `Community 26`, `Community 27`?**
+- **Why does `useLanguage()` connect `Community 0` to `Community 99`, `Community 4`, `Community 5`, `Community 69`, `Community 7`, `Community 70`, `Community 41`, `Community 102`, `Community 12`, `Community 14`, `Community 84`, `Community 26`, `Community 27`?**
   _High betweenness centrality (0.015) - this node is a cross-community bridge._
-- **Why does `useMessage()` connect `Community 12` to `Community 68`, `Community 69`, `Community 6`, `Community 5`, `Community 103`, `Community 105`, `Community 40`, `Community 11`, `Community 108`, `Community 107`, `Community 14`, `Community 106`, `Community 82`, `Community 26`, `Community 123`?**
+- **Why does `useMessage()` connect `Community 5` to `Community 4`, `Community 69`, `Community 7`, `Community 104`, `Community 41`, `Community 12`, `Community 14`, `Community 83`, `Community 84`, `Community 26`?**
   _High betweenness centrality (0.005) - this node is a cross-community bridge._
-- **Why does `useAuth()` connect `Community 5` to `Community 69`, `Community 102`, `Community 6`, `Community 105`, `Community 106`, `Community 11`, `Community 12`, `Community 107`, `Community 14`, `Community 83`?**
+- **Why does `useAuth()` connect `Community 4` to `Community 5`, `Community 69`, `Community 7`, `Community 103`, `Community 102`, `Community 12`, `Community 14`?**
   _High betweenness centrality (0.002) - this node is a cross-community bridge._
 - **Are the 69 inferred relationships involving `useLanguage()` (e.g. with `useInstitutionsController()` and `InstitutionForm()`) actually correct?**
   _`useLanguage()` has 69 INFERRED edges - model-reasoned connections that need verification._

@@ -66,7 +66,7 @@ const PublicRegisterPage = () => {
     if (success) {
         return (
             <div className="public-register-paginated">
-                <div className="step-card success-card animate-fadeIn">
+                <div className="step-card success-card animate-fade-in">
                     <span className="success-emoji">✅</span>
                     <h1 className="accessible-title">¡Todo Listo!</h1>
                     <p className="accessible-text">Tus datos se guardaron correctamente.</p>
@@ -80,7 +80,7 @@ const PublicRegisterPage = () => {
         switch(step) {
             case 1:
                 return (
-                    <div className="step-field animate-fadeIn">
+                    <div className="step-field animate-fade-in">
                         <label className="accessible-label">¿Cuál es tu NOMBRE?</label>
                         <input
                             name="firstName"
@@ -95,7 +95,7 @@ const PublicRegisterPage = () => {
                 );
             case 2:
                 return (
-                    <div className="step-field animate-fadeIn">
+                    <div className="step-field animate-fade-in">
                         <label className="accessible-label">¿Cuál es tu APELLIDO?</label>
                         <input
                             name="lastName"
@@ -109,7 +109,7 @@ const PublicRegisterPage = () => {
                 );
             case 3:
                 return (
-                    <div className="step-field animate-fadeIn">
+                    <div className="step-field animate-fade-in">
                         <label className="accessible-label">¿Cuál es tu DIRECCIÓN?</label>
                         <input
                             name="address"
@@ -123,7 +123,7 @@ const PublicRegisterPage = () => {
                 );
             case 4:
                 return (
-                    <div className="step-field animate-fadeIn">
+                    <div className="step-field animate-fade-in">
                         <label className="accessible-label">¿Cuál es tu DNI?</label>
                         <input
                             name="dni"
@@ -139,7 +139,7 @@ const PublicRegisterPage = () => {
                 );
             case 5:
                 return (
-                    <div className="step-field animate-fadeIn">
+                    <div className="step-field animate-fade-in">
                         <label className="accessible-label">Tu TELÉFONO es:</label>
                         <input
                             name="phone"

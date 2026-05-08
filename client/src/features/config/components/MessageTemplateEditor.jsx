@@ -43,7 +43,7 @@ const MessageTemplateEditor = ({
     t
 }) => {
     return (
-        <div className="message-template-editor animate-fadeIn">
+        <div className="message-template-editor animate-fade-in">
             <label className="message-template-editor__label" htmlFor={id}>{label}</label>
 
             <AutoTextarea

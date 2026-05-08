@@ -74,7 +74,7 @@ const FloatingChat = () => {
     return (
         <div className={baseClass}>
             {isOpen ? (
-                <div className={`${baseClass}__window animate-fadeIn`}>
+                <div className={`${baseClass}__window animate-fade-in`}>
                     <div className={`${baseClass}__header`} onClick={() => !selectedConvo && closeChat()}>
                         <h4 className={`${baseClass}__title`}>
                             {selectedConvo ? (

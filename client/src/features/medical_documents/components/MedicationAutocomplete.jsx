@@ -75,7 +75,7 @@ const MedicationAutocomplete = ({
     };
 
     return (
-        <div className={`${baseClass} ${className} animate-fadeIn`} ref={wrapperRef}>
+        <div className={`${baseClass} ${className} animate-fade-in`} ref={wrapperRef}>
             <div className={`${baseClass}__input-wrapper`}>
                 <Input
                     className={`${baseClass}__input`}
@@ -108,7 +108,7 @@ const MedicationAutocomplete = ({
             </div>
 
             {showSuggestions && suggestions.length > 0 && (
-                <ul ref={listRef} className={`${baseClass}__list animate-fadeIn`}>
+                <ul ref={listRef} className={`${baseClass}__list animate-fade-in`}>
                     {suggestions.map((med, idx) => (
                         <li
                             key={med.id || idx}

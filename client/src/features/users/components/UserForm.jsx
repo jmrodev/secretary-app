@@ -19,7 +19,7 @@ const UserForm = ({ type, formData, setFormData }) => {
 
     if (type === 'DELETE') {
         return (
-            <div className="user-form animate-fadeIn">
+            <div className="user-form animate-fade-in">
                 <p className="user-form__hint">
                     {t('delete_confirmation') || '¿Eliminar usuario?'} <strong>{formData.username}</strong>?
                     <br />
@@ -39,7 +39,7 @@ const UserForm = ({ type, formData, setFormData }) => {
 
     if (type === 'RESET_DNI') {
         return (
-            <div className="user-form__alert animate-fadeIn">
+            <div className="user-form__alert animate-fade-in">
                 <p className="user-form__alert-text">
                     ¿Reiniciar contraseña de <strong>{formData.username}</strong> al DNI (<strong>{formData.dni}</strong>)?
                 </p>
@@ -49,7 +49,7 @@ const UserForm = ({ type, formData, setFormData }) => {
 
     if (type === 'RESET_MANUAL') {
         return (
-            <div className="user-form animate-fadeIn">
+            <div className="user-form animate-fade-in">
                 <FormGroup label={t('new_password')}>
                     <Input
                         value={formData.password}
@@ -62,7 +62,7 @@ const UserForm = ({ type, formData, setFormData }) => {
     }
 
     return (
-        <div className="user-form animate-fadeIn">
+        <div className="user-form animate-fade-in">
             <div className="user-form__row">
                 <FormGroup label={t('username')} required>
                     <Input

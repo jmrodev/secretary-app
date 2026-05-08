@@ -37,7 +37,7 @@ const TransactionRow = ({
     };
 
     return (
-        <tr className={`transactions-table__row ${isGrouped ? 'transactions-table__row--grouped' : ''} animate-fadeIn`}>
+        <tr className={`transactions-table__row ${isGrouped ? 'transactions-table__row--grouped' : ''} animate-fade-in`}>
             <td className="transactions-table__cell--first">
                 <div className="transactions-table__date">{formatDateUnambiguous(tx.transaction_date)}</div>
                 <div className="transactions-table__time">{formatTime(tx.transaction_date)}</div>

@@ -128,7 +128,7 @@ const GlobalWhatsappMessenger = () => {
         <aside className={`
             global-wa-messenger 
             ${activeChat ? 'global-wa-messenger--chat-active' : ''} 
-            animate-slideUp
+            animate-slide-up
         `}>
             {/* Sidebar: Conversations List */}
             <section className="global-wa-messenger__sidebar">
@@ -259,7 +259,7 @@ const GlobalWhatsappMessenger = () => {
                 <div className="global-wa-messenger__chat-content">
                     {bridgeStatus.status !== 'connected' ? (
                         <div className="global-wa-messenger__pairing">
-                            <div className="global-wa-messenger__pairing-card animate-fadeIn">
+                            <div className="global-wa-messenger__pairing-card animate-fade-in">
                                 <div className="global-wa-messenger__pairing-icon-wrapper">
                                     <div className={`global-wa-messenger__pairing-icon global-wa-messenger__pairing-icon--${bridgeStatus.status}`}>
                                         <Icon name={bridgeStatus.status === 'offline' ? 'cloud_off' : 'qr_code_scanner'} size="2.5rem" />
@@ -277,7 +277,7 @@ const GlobalWhatsappMessenger = () => {
                                 {bridgeStatus.status !== 'offline' && (
                                     <div className="global-wa-messenger__qr-wrapper">
                                         {bridgeStatus.qr_code ? (
-                                            <div className="global-wa-messenger__qr-container animate-zoomIn">
+                                            <div className="global-wa-messenger__qr-container animate-zoom-in">
                                                 <QRCodeSVG 
                                                     value={bridgeStatus.qr_code}
                                                     size={240}

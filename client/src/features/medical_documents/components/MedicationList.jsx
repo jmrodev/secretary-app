@@ -18,7 +18,7 @@ const MedicationList = ({
     }
 
     return (
-        <div className={`medication-list ${className} animate-fadeIn`}>
+        <div className={`medication-list ${className} animate-fade-in`}>
             <div className="medication-list__items">
                 {medications.map((med, index) => (
                     <MedicationTag

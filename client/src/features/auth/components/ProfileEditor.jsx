@@ -24,7 +24,7 @@ const ProfileEditor = ({
 
     if (isAdmin) {
         return (
-            <div className="profile-editor animate-fadeIn">
+            <div className="profile-editor animate-fade-in">
                 <div className="profile-editor__card">
                     <div className="profile-editor__section-title">
                         <Icon name="USERS" size="1.2rem" />
@@ -38,7 +38,7 @@ const ProfileEditor = ({
     }
 
     return (
-        <div className="profile-editor animate-fadeIn">
+        <div className="profile-editor animate-fade-in">
 
             <form onSubmit={handleUpdate}>
                 <div className="profile-editor__grid">

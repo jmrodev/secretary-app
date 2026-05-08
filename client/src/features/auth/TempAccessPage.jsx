@@ -82,7 +82,7 @@ const TempAccessPage = () => {
                     </section>
                 </article>
 
-                <aside className="temp-access__download-card animate-fadeIn">
+                <aside className="temp-access__download-card animate-fade-in">
                     <div className="temp-access__download-info">
                         <h4 className="temp-access__download-title">
                             <Icon name="SMARTPHONE" className="mr-2" />

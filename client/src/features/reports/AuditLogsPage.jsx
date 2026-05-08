@@ -14,7 +14,7 @@ const AuditLogsPage = () => {
     
     return (
         <MainLayout wide>
-            <main className="audit-logs-page-orchestrator animate-fadeIn">
+            <main className="audit-logs-page-orchestrator animate-fade-in">
                 <AuditLogManager {...controller} />
             </main>
         </MainLayout>
