@@ -65,12 +65,12 @@ exports.getDetailedStats = async (doctor_id) => {
         populateData(yearAggs, 'year');
 
         // 4. Appointment Results
-        const apptToday = await appointmentRepository.getAppointmentSummaryStats('appointment_date', todayStr, true, doctor_id);
-        const apptMonth = await appointmentRepository.getAppointmentSummaryStats('appointment_date', monthStr, false, doctor_id);
-        const apptYear = await appointmentRepository.getAppointmentSummaryStats('appointment_date', yearStr, false, doctor_id);
-        const apptDebt = await appointmentRepository.getAppointmentDebt(doctor_id);
+        const apptToday = await statsRepository.getAppointmentSummaryStats('appointment_date', todayStr, true, doctor_id);
+        const apptMonth = await statsRepository.getAppointmentSummaryStats('appointment_date', monthStr, false, doctor_id);
+        const apptYear = await statsRepository.getAppointmentSummaryStats('appointment_date', yearStr, false, doctor_id);
+        const apptDebt = await statsRepository.getAppointmentDebt(doctor_id);
 
-        const totalDebtVal = await appointmentRepository.getTotalDebt(doctor_id);
+        const totalDebtVal = await statsRepository.getTotalDebt(doctor_id);
 
         // Aggregate All Data into the final structure expected by the controller
         return {

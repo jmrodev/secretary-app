@@ -1,6 +1,7 @@
 const patientRepository = require('../repositories/patientRepository');
 const phoneRepository = require('../repositories/phoneRepository');
 const appointmentRepository = require('../repositories/appointmentRepository');
+const statsRepository = require('../repositories/statsRepository');
 const medicalFileRepository = require('../repositories/medicalFileRepository');
 const googleContactService = require('../services/google/GoogleContactService');
 const userRepository = require('../repositories/userRepository');
@@ -69,7 +70,7 @@ class PatientService {
         if (!patient) throw new Error("Patient not found");
 
         const appointments = await appointmentRepository.findByPatientId(id);
-        const [stats] = await appointmentRepository.getStats(id);
+        const [stats] = await statsRepository.getPatientAppointmentStats(id);
 
         const prescriptions = await patientRepository.getHistoryFull(id);
         const files = await medicalFileRepository.findAll({ patient_id: id });
@@ -173,7 +174,7 @@ class PatientService {
     }
 
     async getNewPatientStats() {
-        const stats = await patientRepository.getNewPatientStats();
+        const stats = await statsRepository.getNewPatientStats();
         return {
             current_new: Number(stats.total_new),
             currentDay: Number(stats.current_day),

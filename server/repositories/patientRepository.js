@@ -134,18 +134,6 @@ static ALLOWED_FIELDS = [
         return await conn.query(`UPDATE patients SET ${fields} WHERE id = ?`, values);
     }
 
-    async getDebt(userId, conn = pool) {
-        const rows = await conn.query(`
-            SELECT COALESCE(SUM(t.amount), 0) as total_debt 
-            FROM transactions t 
-            LEFT JOIN appointments a ON t.appointment_id = a.id 
-            WHERE t.related_user_id = ? 
-            AND t.status = 'pending' 
-            AND (t.appointment_id IS NULL OR a.status IN ('completed', 'attended', 'arrived', 'absent'))
-        `, [userId]);
-        return rows[0]?.total_debt || 0;
-    }
-
     async updateLicenseInfo(id, expiryDate, conn = pool) {
         return await conn.query("UPDATE patients SET license_expiry_date = ?, license_notified = 0 WHERE id = ?", [expiryDate, id]);
     }
@@ -157,19 +145,6 @@ static ALLOWED_FIELDS = [
     async getPrescriptionInterval(patientId, doctorId, conn = pool) {
         const rows = await conn.query("SELECT prescription_interval_days FROM patient_doctors WHERE patient_id = ? AND doctor_id = ?", [patientId, doctorId]);
         return rows[0] || null;
-    }
-
-    async getNewPatientStats(conn = pool) {
-        const [stats] = await conn.query(`
-            SELECT COUNT(*) as total_new,
-                   COUNT(CASE WHEN DATE(u.created_at) = CURDATE() THEN 1 END) as current_day,
-                   COUNT(CASE WHEN YEARWEEK(u.created_at, 1) = YEARWEEK(NOW(), 1) THEN 1 END) as current_week,
-                   COUNT(CASE WHEN MONTH(u.created_at) = MONTH(NOW()) AND YEAR(u.created_at) = YEAR(NOW()) THEN 1 END) as current_month,
-                   COUNT(CASE WHEN YEAR(u.created_at) = YEAR(NOW()) THEN 1 END) as current_year,
-                   COUNT(CASE WHEN YEAR(u.created_at) = YEAR(NOW()) - 1 THEN 1 END) as last_year
-            FROM patients p JOIN users u ON p.user_id = u.id WHERE p.is_new_patient = 1
-        `);
-        return stats;
     }
 
     async findRecentMedications(patientId, conn = pool) {
