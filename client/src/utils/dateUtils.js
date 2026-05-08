@@ -205,6 +205,45 @@ export const isSameDay = (d1, d2) => {
 };
 
 /**
+ * Returns true if the date is today.
+ */
+export const isToday = (date) => {
+    return isSameDay(date, new Date());
+};
+
+/**
+ * Returns a "time ago" string from a date.
+ * e.g. "hace 2 horas", "hace 5 min", "Justo ahora"
+ */
+export const timeAgo = (date) => {
+    const d = parseDate(date);
+    if (!d) return '';
+    const now = new Date();
+    const diffMs = now - d;
+
+    const seconds = Math.floor(diffMs / 1000);
+    if (seconds < 60) return 'Justo ahora';
+
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `hace ${minutes} ${minutes === 1 ? 'min' : 'mins'}`;
+
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `hace ${hours} ${hours === 1 ? 'hora' : 'horas'}`;
+
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `hace ${days} ${days === 1 ? 'día' : 'días'}`;
+
+    const weeks = Math.floor(days / 7);
+    if (weeks < 5) return `hace ${weeks} ${weeks === 1 ? 'semana' : 'semanas'}`;
+
+    const months = Math.floor(days / 30);
+    if (months < 12) return `hace ${months} ${months === 1 ? 'mes' : 'meses'}`;
+
+    const years = Math.floor(days / 365);
+    return `hace ${years} ${years === 1 ? 'año' : 'años'}`;
+};
+
+/**
  * Returns the timezone offset in minutes (e.g. 180 for GMT-3)
  */
 export const getClientOffset = () => {

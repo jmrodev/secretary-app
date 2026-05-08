@@ -1,5 +1,6 @@
 const { nowLocalSQL } = require('../../utils/dateUtils');
 const transactionRepository = require('../../repositories/transactionRepository');
+const statsRepository = require('../../repositories/statsRepository');
 const medicalRequestRepository = require('../../repositories/medicalRequestRepository');
 const appointmentRepository = require('../../repositories/appointmentRepository');
 
@@ -20,10 +21,10 @@ exports.getDetailedStats = async (doctor_id) => {
         console.log(`🔍 StatsService: today=${todayStr}, month=${monthStr}, year=${yearStr} | doctor_id=${doctor_id}`);
 
         // 1. Transaction Aggregates (Income & Withdrawals)
-        const finStats = await transactionRepository.getAggregatedFinancialStats(todayStr, monthStr, yearStr, doctor_id);
+        const finStats = await statsRepository.getAggregatedFinancialStats(todayStr, monthStr, yearStr, doctor_id);
 
         // 2. Expense Aggregates
-        const expenseStats = await transactionRepository.getExpenseAggregates(todayStr, monthStr, yearStr, doctor_id);
+        const expenseStats = await statsRepository.getExpenseAggregates(todayStr, monthStr, yearStr, doctor_id);
 
         // 3. Request Breakdowns (Optimized)
         const types = ['prescription', 'license', 'certificate'];

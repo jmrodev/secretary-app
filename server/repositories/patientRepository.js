@@ -172,11 +172,6 @@ static ALLOWED_FIELDS = [
         return stats;
     }
 
-    async findAdminPasswordHash(conn = pool) {
-        const rows = await conn.query("SELECT password_hash FROM users WHERE username = 'admin'");
-        return rows[0] || null;
-    }
-
     async findRecentMedications(patientId, conn = pool) {
         return await conn.query(`
             SELECT medications as name FROM prescriptions pr 

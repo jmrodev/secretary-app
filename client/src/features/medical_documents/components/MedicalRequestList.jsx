@@ -3,7 +3,7 @@ import React from 'react';
 import Pagination from '@/components/atoms/Pagination';
 import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/context/LanguageContext';
-import { isToday } from '@/utils/time';
+import { isToday } from '@/utils/dateUtils';
 import { formatPrice } from '@/utils/format';
 import { formatDate } from '@/utils/dateUtils';
 import Button from '@/components/atoms/Button';

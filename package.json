@@ -1,11 +1,13 @@
 {
   "name": "secretary-app",
+  "version": "1.0.0",
   "private": true,
+  "packageManager": "pnpm@11.0.8",
   "scripts": {
-    "lint": "npm --prefix client run lint",
-    "precommit": "npm run lint && echo '🚀 Linter passed! Safe to commit.'",
-    "build": "npm --prefix client run build",
-    "test": "npm --prefix server run test"
+    "lint": "pnpm --filter client lint",
+    "precommit": "pnpm run lint && echo '🚀 Linter passed! Safe to commit.'",
+    "build": "pnpm --filter client build",
+    "test": "pnpm --filter server test"
   },
 
   "dependencies": {

@@ -23,7 +23,7 @@ export const useAppointmentsHandlers = ({
 }) => {
 
     const appointmentActions = useAppointmentActions({
-        user, t, showMessage, confirm, navigate,
+        user, t, showMessage, confirm, prompt, navigate,
         updateStatus, updateAppointment, deleteAppointment, rescheduleAppointment,
         bookAppointment, savePrescription, fetchAppointments
     });
