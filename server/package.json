@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "jest",
+    "lint": "eslint .",
     "dev": "node --watch app.js",
     "tunnel": "node utils/tunnel-manager.js",
     "tunnel:config": "./cloudflared tunnel --config config.yml run"

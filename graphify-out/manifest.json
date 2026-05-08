@@ -376,12 +376,12 @@
     "hash": "7a23e71029b60f40801cd94d6b03d86d"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/utils/queryBuilders/PatientsQueryBuilder.js": {
-    "mtime": 1777782452.5474846,
-    "hash": "9a6ae5defafd6dbcd7d0e0b7e0f99fc6"
+    "mtime": 1778201335.1885924,
+    "hash": "c91c7149570dabe3233df3697e3231df"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/scripts/create_patient_view.sql": {
-    "mtime": 1777942045.5706673,
-    "hash": "bef2f03a5df58ac987c553a0dd89a218"
+    "mtime": 1778201324.3603718,
+    "hash": "6b9d34350218232a7eef90610e969fdf"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/scripts/create-admin.js": {
     "mtime": 1777782452.5254846,
@@ -440,8 +440,8 @@
     "hash": "bdfee42f8e0bf719ab6db739f959ab50"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/services/patientService.js": {
-    "mtime": 1778201237.7424212,
-    "hash": "ad29aec0dbad2eefe759cebbc8efe4d1"
+    "mtime": 1778201512.2486842,
+    "hash": "67cc7e275dd09e4c8c1755190079ca8f"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/services/importService.js": {
     "mtime": 1777782452.5404847,
@@ -504,8 +504,8 @@
     "hash": "bf10af20e7ff67b70240b69441098e8d"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/services/finance/statsService.js": {
-    "mtime": 1778201156.571213,
-    "hash": "6b7125abcc7ff43d4a7b3a6264edde2a"
+    "mtime": 1778201548.2482238,
+    "hash": "ad3904fb8ff980fecd5977c28616f5f3"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/services/finance/financeService.js": {
     "mtime": 1777788282.849441,
@@ -612,8 +612,8 @@
     "hash": "d96f2be2a2fe25a6629e8b43bff8a7a7"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/repositories/statsRepository.js": {
-    "mtime": 1778201201.4604871,
-    "hash": "042f42c6b5ee7c68cd6c9dbc27ac6586"
+    "mtime": 1778201461.0685196,
+    "hash": "3a96556962272c0e93a616122d549db9"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/repositories/doctorRepository.js": {
     "mtime": 1777782452.5214846,
@@ -636,8 +636,8 @@
     "hash": "5a72fa8cf22539b21d95917ce7773b52"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/repositories/patientRepository.js": {
-    "mtime": 1778201228.278185,
-    "hash": "8b486279cf836b0f91a1fbfc2429a959"
+    "mtime": 1778201484.253248,
+    "hash": "8b1277f882c42d06fa77627bfb936a23"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/repositories/systemSettingsRepository.js": {
     "mtime": 1776530248.441127,
@@ -676,8 +676,8 @@
     "hash": "a83e7612bff931c55b09a1e09ec22a7b"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/repositories/medicalRequestRepository.js": {
-    "mtime": 1777782452.5234845,
-    "hash": "c4bbc79dd5d3b95471b894556cc7eb98"
+    "mtime": 1778201475.547109,
+    "hash": "d11e8f781c08b5b32343d4a005768f8d"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/repositories/holidayRepository.js": {
     "mtime": 1776530248.440715,
