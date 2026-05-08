@@ -440,8 +440,8 @@
     "hash": "bdfee42f8e0bf719ab6db739f959ab50"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/services/patientService.js": {
-    "mtime": 1777782452.5434847,
-    "hash": "9a606cc16e5d77bdf43ff562c9fe2fb9"
+    "mtime": 1778201237.7424212,
+    "hash": "ad29aec0dbad2eefe759cebbc8efe4d1"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/services/importService.js": {
     "mtime": 1777782452.5404847,
@@ -504,8 +504,8 @@
     "hash": "bf10af20e7ff67b70240b69441098e8d"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/services/finance/statsService.js": {
-    "mtime": 1778200665.7792292,
-    "hash": "69fa988ab9373e830028cf59bb832368"
+    "mtime": 1778201156.571213,
+    "hash": "6b7125abcc7ff43d4a7b3a6264edde2a"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/services/finance/financeService.js": {
     "mtime": 1777788282.849441,
@@ -612,8 +612,8 @@
     "hash": "d96f2be2a2fe25a6629e8b43bff8a7a7"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/repositories/statsRepository.js": {
-    "mtime": 1778200634.2954125,
-    "hash": "745adc708b5e41f05c21f4a971cd4d8f"
+    "mtime": 1778201201.4604871,
+    "hash": "042f42c6b5ee7c68cd6c9dbc27ac6586"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/repositories/doctorRepository.js": {
     "mtime": 1777782452.5214846,
@@ -636,8 +636,8 @@
     "hash": "5a72fa8cf22539b21d95917ce7773b52"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/repositories/patientRepository.js": {
-    "mtime": 1778200608.561608,
-    "hash": "aed3efbd168f1d82414cffecbf90b218"
+    "mtime": 1778201228.278185,
+    "hash": "8b486279cf836b0f91a1fbfc2429a959"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/repositories/systemSettingsRepository.js": {
     "mtime": 1776530248.441127,
@@ -652,8 +652,8 @@
     "hash": "0962bc0fac27abb1d7931fb1787f393c"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/repositories/appointmentRepository.js": {
-    "mtime": 1777782452.5204844,
-    "hash": "27ca1023eda76455df08a270cfce9707"
+    "mtime": 1778201138.6976643,
+    "hash": "7caf3c796d06b917be612d6090a4ed6f"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/repositories/insuranceRepository.js": {
     "mtime": 1777782452.5214846,

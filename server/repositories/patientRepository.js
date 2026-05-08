@@ -173,16 +173,6 @@ static ALLOWED_FIELDS = [
             await conn.batch("INSERT INTO patient_doctors (patient_id, doctor_id) VALUES (?, ?)", insertValues);
         }
     }
-
-    async getHistoryFull(patientId, conn = pool) {
-        return await conn.query(`
-            (SELECT p.id, p.created_at, 'prescription' as type, d.full_name as doctor_name, p.medications as diagnosis, NULL as days
-             FROM prescriptions p JOIN appointments a ON p.appointment_id = a.id JOIN doctors d ON a.doctor_id = d.id WHERE a.patient_id = ?)
-            UNION
-            (SELECT ml.id, ml.created_at, 'license' as type, d.full_name as doctor_name, ml.diagnosis, ml.days_duration as days
-             FROM medical_licenses ml JOIN appointments a ON ml.appointment_id = a.id JOIN doctors d ON a.doctor_id = d.id WHERE a.patient_id = ?)
-            ORDER BY created_at DESC`, [patientId, patientId]);
-    }
 }
 
 module.exports = new PatientRepository();

@@ -1,8 +1,6 @@
 const { nowLocalSQL } = require('../../utils/dateUtils');
 const transactionRepository = require('../../repositories/transactionRepository');
 const statsRepository = require('../../repositories/statsRepository');
-const medicalRequestRepository = require('../../repositories/medicalRequestRepository');
-const appointmentRepository = require('../../repositories/appointmentRepository');
 
 /**
  * Finance Stats Service
@@ -41,9 +39,9 @@ exports.getDetailedStats = async (doctor_id) => {
 
         // Fetch aggregates for all types in parallel for the three timeframes
         const [todayAggs, monthAggs, yearAggs] = await Promise.all([
-            medicalRequestRepository.getAllTypesRequestAggregates(types, 'created_at', todayStr, true, doctor_id),
-            medicalRequestRepository.getAllTypesRequestAggregates(types, 'created_at', monthStr, false, doctor_id),
-            medicalRequestRepository.getAllTypesRequestAggregates(types, 'created_at', yearStr, false, doctor_id)
+            statsRepository.getAllTypesRequestAggregates(types, 'created_at', todayStr, true, doctor_id),
+            statsRepository.getAllTypesRequestAggregates(types, 'created_at', monthStr, false, doctor_id),
+            statsRepository.getAllTypesRequestAggregates(types, 'created_at', yearStr, false, doctor_id)
         ]);
 
         // Helper to populate the data

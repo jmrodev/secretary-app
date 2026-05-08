@@ -26,7 +26,6 @@ class MedicalRequestRepository {
 
         if (filters.patientId) { whereClauses.push("r.patient_id = ?"); params.push(filters.patientId); }
         if (filters.doctorId) {
-            // Include requests assigned to this doctor OR ANY unassigned requests (to avoid visibility gaps)
             whereClauses.push("(r.doctor_id = ? OR r.doctor_id IS NULL)");
             params.push(filters.doctorId);
         }
@@ -55,14 +54,7 @@ class MedicalRequestRepository {
             params.push(parseInt(filters.limit), parseInt(filters.offset || 0));
         }
 
-        // VERBOSE LOGGING
-        console.log("=== [SQL DEBUG] ===");
-        console.log("Query:", query);
-        console.log("Params:", JSON.stringify(params));
-
-        const rows = await conn.query(query, params);
-        console.log(`[SQL DEBUG] Rows returned: ${rows.length}`);
-        return rows;
+        return await conn.query(query, params);
     }
 
     async countAll(filters = {}, conn = pool) {
@@ -74,7 +66,6 @@ class MedicalRequestRepository {
 
         if (filters.patientId) { whereClauses.push("r.patient_id = ?"); params.push(filters.patientId); }
         if (filters.doctorId) {
-            // Include requests assigned to this doctor OR ANY unassigned requests
             whereClauses.push("(r.doctor_id = ? OR r.doctor_id IS NULL)");
             params.push(filters.doctorId);
         }
@@ -91,21 +82,14 @@ class MedicalRequestRepository {
         }
         if (filters.search) {
             const term = `%${filters.search}%`;
-            // countAll needs a JOIN on patients to search by name
             whereClauses.push("(p.full_name LIKE ? OR d.full_name LIKE ?)");
             params.push(term, term);
         }
 
         if (whereClauses.length > 0) query += " WHERE " + whereClauses.join(" AND ");
         
-        console.log("=== [SQL COUNT DEBUG] ===");
-        console.log("Query:", query);
-        console.log("Params:", JSON.stringify(params));
-
         const [row] = await conn.query(query, params);
-        const total = row?.total || 0;
-        console.log(`[SQL COUNT DEBUG] Total: ${total}`);
-        return total;
+        return row?.total || 0;
     }
 
     async findById(id, conn = pool) {
@@ -135,7 +119,6 @@ class MedicalRequestRepository {
     async update(id, updates, conn = pool) {
         if (!updates || Object.keys(updates).length === 0) return 0;
 
-        // Filter updates to only allow whitelisted fields
         const validUpdates = {};
         for (const key of Object.keys(updates)) {
             if (ALLOWED_UPDATES.includes(key)) {
@@ -161,53 +144,14 @@ class MedicalRequestRepository {
         return await conn.query(`INSERT INTO medical_request_items (${fields}) VALUES (${placeholders})`, values);
     }
 
-    async getRequestAggregates(type, dateColumn, dateValue, isExactDate, doctor_id, conn = pool) {
-        const doctorFilter = doctor_id ? " AND r.doctor_id = ?" : "";
-        const dateFilter = isExactDate ? `DATE(r.${dateColumn}) = ?` : `r.${dateColumn} >= ?`;
-        const query = `
-            SELECT 
-                COUNT(DISTINCT r.id) as count,
-                SUM(CASE WHEN t.status = 'paid' THEN t.amount ELSE 0 END) as paid,
-                SUM(CASE WHEN t.status = 'pending' THEN t.amount ELSE 0 END) as debt,
-                SUM(CASE WHEN r.payment_status = 'bonified' THEN 1 ELSE 0 END) as bonified
-            FROM medical_requests r
-            LEFT JOIN transactions t ON t.request_id = r.id
-            WHERE r.type = ? AND ${dateFilter}
-            AND r.status != 'rejected'
-            ${doctorFilter}
-        `;
-        const params = [type, dateValue];
-        if (doctor_id) params.push(doctor_id);
-
-        const [row] = await conn.query(query, params);
-        return row || { count: 0, paid: 0, debt: 0 };
-    }
-
-    async getAllTypesRequestAggregates(types, dateColumn, dateValue, isExactDate, doctor_id, conn = pool) {
-        if (!types || types.length === 0) return [];
-        const doctorFilter = doctor_id ? " AND r.doctor_id = ?" : "";
-        const dateFilter = isExactDate ? `DATE(r.${dateColumn}) = ?` : `r.${dateColumn} >= ?`;
-        const typePlaceholders = types.map(() => '?').join(',');
-
-        const query = `
-            SELECT
-                r.type,
-                COUNT(DISTINCT r.id) as count,
-                SUM(CASE WHEN t.status = 'paid' THEN t.amount ELSE 0 END) as paid,
-                SUM(CASE WHEN t.status = 'pending' THEN t.amount ELSE 0 END) as debt,
-                SUM(CASE WHEN r.payment_status = 'bonified' THEN 1 ELSE 0 END) as bonified
-            FROM medical_requests r
-            LEFT JOIN transactions t ON t.request_id = r.id
-            WHERE r.type IN (${typePlaceholders}) AND ${dateFilter}
-            AND r.status != 'rejected'
-            ${doctorFilter}
-            GROUP BY r.type
-        `;
-        const params = [...types, dateValue];
-        if (doctor_id) params.push(doctor_id);
-
-        const rows = await conn.query(query, params);
-        return rows;
+    async getPatientMedicalHistory(patientId, conn = pool) {
+        return await conn.query(`
+            (SELECT p.id, p.created_at, 'prescription' as type, d.full_name as doctor_name, p.medications as diagnosis, NULL as days
+             FROM prescriptions p JOIN appointments a ON p.appointment_id = a.id JOIN doctors d ON a.doctor_id = d.id WHERE a.patient_id = ?)
+            UNION
+            (SELECT ml.id, ml.created_at, 'license' as type, d.full_name as doctor_name, ml.diagnosis, ml.days_duration as days
+             FROM medical_licenses ml JOIN appointments a ON ml.appointment_id = a.id JOIN doctors d ON a.doctor_id = d.id WHERE a.patient_id = ?)
+            ORDER BY created_at DESC`, [patientId, patientId]);
     }
 }
 

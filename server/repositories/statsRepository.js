@@ -164,6 +164,55 @@ class StatsRepository {
         `, [userId]);
         return rows[0]?.total_debt || 0;
     }
+
+    async getRequestAggregates(type, dateColumn, dateValue, isExactDate, doctor_id, conn = pool) {
+        const doctorFilter = doctor_id ? " AND r.doctor_id = ?" : "";
+        const dateFilter = isExactDate ? `DATE(r.${dateColumn}) = ?` : `r.${dateColumn} >= ?`;
+        const query = `
+            SELECT 
+                COUNT(DISTINCT r.id) as count,
+                SUM(CASE WHEN t.status = 'paid' THEN t.amount ELSE 0 END) as paid,
+                SUM(CASE WHEN t.status = 'pending' THEN t.amount ELSE 0 END) as debt,
+                SUM(CASE WHEN r.payment_status = 'bonified' THEN 1 ELSE 0 END) as bonified
+            FROM medical_requests r
+            LEFT JOIN transactions t ON t.request_id = r.id
+            WHERE r.type = ? AND ${dateFilter}
+            AND r.status != 'rejected'
+            ${doctorFilter}
+        `;
+        const params = [type, dateValue];
+        if (doctor_id) params.push(doctor_id);
+
+        const [row] = await conn.query(query, params);
+        return row || { count: 0, paid: 0, debt: 0 };
+    }
+
+    async getAllTypesRequestAggregates(types, dateColumn, dateValue, isExactDate, doctor_id, conn = pool) {
+        if (!types || types.length === 0) return [];
+        const doctorFilter = doctor_id ? " AND r.doctor_id = ?" : "";
+        const dateFilter = isExactDate ? `DATE(r.${dateColumn}) = ?` : `r.${dateColumn} >= ?`;
+        const typePlaceholders = types.map(() => '?').join(',');
+
+        const query = `
+            SELECT
+                r.type,
+                COUNT(DISTINCT r.id) as count,
+                SUM(CASE WHEN t.status = 'paid' THEN t.amount ELSE 0 END) as paid,
+                SUM(CASE WHEN t.status = 'pending' THEN t.amount ELSE 0 END) as debt,
+                SUM(CASE WHEN r.payment_status = 'bonified' THEN 1 ELSE 0 END) as bonified
+            FROM medical_requests r
+            LEFT JOIN transactions t ON t.request_id = r.id
+            WHERE r.type IN (${typePlaceholders}) AND ${dateFilter}
+            AND r.status != 'rejected'
+            ${doctorFilter}
+            GROUP BY r.type
+        `;
+        const params = [...types, dateValue];
+        if (doctor_id) params.push(doctor_id);
+
+        const rows = await conn.query(query, params);
+        return rows;
+    }
 }
 
 module.exports = new StatsRepository();
