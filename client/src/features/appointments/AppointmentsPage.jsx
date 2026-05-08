@@ -2,7 +2,6 @@ import React from 'react';
 import { useAppointmentsPageController } from '@/features/appointments/hooks/useAppointmentsPageController';
 import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
-import Icon from '@/components/atoms/Icon';
 import { PatientManagerModal, PatientHistoryModal } from '@/features/patients';
 import { PrescriptionModal } from '@/features/medical_documents';
 import WhatsAppModal from '@/features/chat/components/WhatsAppModal';

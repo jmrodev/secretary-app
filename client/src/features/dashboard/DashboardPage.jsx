@@ -1,19 +1,11 @@
 import React from 'react';
-import { 
-    useDashboardController, 
-    DashboardSidebar, 
-    DashboardReminders,
-    QuickActions
-} from '@/features/dashboard/index'; // Local index
-import { PrescriptionModal, MedicalRequirementManager } from '@/features/medical_documents';
-import { PatientHistoryModal } from '@/features/patients';
-import { TransactionModal } from '@/features/finances';
-
-
-// Internal component from another feature (keeping as is or move to molecules if shared)
-import AppointmentActionModal from '@/features/appointments/components/AppointmentActionModal.jsx';
-
-// Global Atomic Components
+import { useDashboardController } from '@/features/dashboard/index';
+import DashboardReminders from '@/features/dashboard/components/DashboardReminders';
+import MedicalRequirementManager from '@/features/medical_documents/components/MedicalRequirementManager';
+import AppointmentActionModal from '@/features/appointments/components/AppointmentActionModal';
+import PrescriptionModal from '@/features/medical_documents/components/PrescriptionModal';
+import PatientHistoryModal from '@/features/patients/components/PatientHistoryModal';
+import TransactionModal from '@/features/finances/components/TransactionModal';
 import MainLayout from '@/components/templates/MainLayout';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
@@ -31,7 +23,7 @@ const DashboardPage = () => {
         user, t,
         loading,
         error,
-        stats, newPatientStats, reminders, activeTab,
+        stats, reminders, activeTab,
         actionModal,
         historyModal,
         prescribeModal,
@@ -39,7 +31,7 @@ const DashboardPage = () => {
         isSubmitting,
         doctors,
         handlers,
-        isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff
+        isAdmin, isSecretary, isDoctor
     } = controller;
 
     const isAdminOrSecretary = isAdmin || isSecretary;
