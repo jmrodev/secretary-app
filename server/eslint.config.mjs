@@ -15,6 +15,12 @@ export default [
     rules: {
       ...js.configs.recommended.rules,
       "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+      "no-empty": "warn",
+      "no-undef": "warn",
+      "preserve-caught-error": "warn",
+      "no-unreachable": "warn",
+      "no-useless-assignment": "warn",
+      "no-useless-escape": "warn",
       "no-console": "off",
     },
   },
