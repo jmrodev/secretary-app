@@ -72,7 +72,7 @@ const DoctorEditModal = ({
             }
         >
             {type === 'EDIT' && (
-                <div className="doctor-edit-modal__header-info animate-fadeIn">
+                <div className="doctor-edit-modal__header-info animate-fade-in">
                     <div className="doctor-edit-modal__avatar">
                         <Icon name="person" size="1.5rem" />
                     </div>
@@ -105,7 +105,7 @@ const DoctorEditModal = ({
             )}
 
             {type === 'CREATE' && (
-                <div className="doctor-edit-modal__content animate-fadeIn">
+                <div className="doctor-edit-modal__content animate-fade-in">
                     <UserForm
                         type="CREATE"
                         formData={data}
@@ -114,7 +114,7 @@ const DoctorEditModal = ({
                 </div>
             )}
             {type === 'EDIT' && (
-                <div className="doctor-edit-modal__content animate-fadeIn">
+                <div className="doctor-edit-modal__content animate-fade-in">
                     {activeTab === 'tariffs' && (
                         <DoctorTariffsForm
                             data={data}

@@ -17,7 +17,7 @@ const ScheduleTimeBlock = ({
     t
 }) => {
     return (
-        <div className="time-block p-4 bg-white border border-slate-100 rounded-sm flex flex-wrap items-center gap-4 shadow-sm animate-fadeIn mb-3">
+        <div className="time-block p-4 bg-white border border-slate-100 rounded-sm flex flex-wrap items-center gap-4 shadow-sm animate-fade-in mb-3">
             <div className="time-block__inputs flex items-center gap-2">
                 <Input
                     type="time"

@@ -46,7 +46,7 @@ const PendingClosuresModal = ({
                 </div>
             }
         >
-            <div className="pending-closures-container animate-fadeIn">
+            <div className="pending-closures-container animate-fade-in">
                 {duplicateClosures && duplicateClosures.length > 0 && (
                     <div className="pending-closures-alert">
                         <div className="pending-closures-alert__title">

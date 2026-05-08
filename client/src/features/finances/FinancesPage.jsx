@@ -44,7 +44,7 @@ const FinancesPage = () => {
     return (
         <MainLayout wide flush title={t('finances') || 'Finanzas'}>
             <div className="finances-page layout-content-area">
-                <section className="animate-fadeIn">
+                <section className="animate-fade-in">
                     <h2 className="visually-hidden">{t('financial_operations_area') || 'Área de Operaciones Financieras'}</h2>
                     {loading ? (
                         <Loading variant="centered" text={t('loading') || 'Cargando...'} />

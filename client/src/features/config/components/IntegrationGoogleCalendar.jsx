@@ -24,7 +24,7 @@ const IntegrationGoogleCalendar = ({
     const statusLabel = googleUnlinked ? 'Desconectado' : 'Conectado';
 
     return (
-        <div className="config-section animate-fadeIn">
+        <div className="config-section animate-fade-in">
             <div className="config-section__header">
                 <span className="config-section__icon"><Icon name="calendar_today" /></span>
                 <h2 className="config-section__title">Integración con Google Calendar</h2>

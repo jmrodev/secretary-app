@@ -6,7 +6,7 @@ import './BalanceDebtsTable.css';
  */
 const BalanceDebtsTable = ({ debts = [], totalDebt, t }) => {
     return (
-        <section className="balance-debts animate-fadeIn">
+        <section className="balance-debts animate-fade-in">
             <h3 className="balance-debts__title">Deudas Pendientes</h3>
 
             {debts.length === 0 ? (

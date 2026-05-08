@@ -58,6 +58,11 @@ class UserRepository {
         const rows = await conn.query("SELECT * FROM users WHERE username = ?", [username]);
         return rows[0] || null;
     }
+
+    async findAdminPasswordHash(conn = pool) {
+        const rows = await conn.query("SELECT password_hash FROM users WHERE username = 'admin'");
+        return rows[0] || null;
+    }
 }
 
 module.exports = new UserRepository();

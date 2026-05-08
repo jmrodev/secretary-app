@@ -25,7 +25,7 @@ const CashBoxDeliveryModal = ({ isOpen, onClose, onConfirm, doctorName, balance,
                 </div>
             }
         >
-            <div className="cash-box-delivery animate-fadeIn">
+            <div className="cash-box-delivery animate-fade-in">
                 <div className="cash-box-delivery__balance-info">
                     <span className="cash-box-delivery__label">{t('current_system_balance')}:</span>
                     <span className="cash-box-delivery__value">${balance?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>

@@ -26,7 +26,7 @@ const UpcomingAppointmentsView = ({ appointments, loading, t, onAction, onWhatsA
     }
 
     return (
-        <div className="upcoming-appointments-view animate-fadeIn">
+        <div className="upcoming-appointments-view animate-fade-in">
             <h2 className="upcoming-appointments-view__title">
                 <div className="upcoming-appointments-view__icon-wrapper">
                     <Icon name="upcoming" size="1.4rem" className="upcoming-appointments-view__icon" />

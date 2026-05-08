@@ -12,7 +12,7 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
     const method = settings.remote_access_method || 'none';
 
     return (
-        <div className="config-section animate-fadeIn">
+        <div className="config-section animate-fade-in">
             <div className="config-section__header">
                 <span className="config-section__icon"><Icon name="language" /></span>
                 <h3 className="config-section__title">Acceso Remoto (Internet)</h3>
@@ -40,7 +40,7 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
                 <div className="config-section__divider"></div>
 
                 {method === 'duckdns' && (
-                    <div className="animate-fadeIn">
+                    <div className="animate-fade-in">
                         <div className="config-grid config-grid--2col config-grid--gap-1">
                             <ConfigField
                                 id="duckdns-domain"

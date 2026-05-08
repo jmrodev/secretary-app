@@ -14,7 +14,7 @@ const DashboardLayout = ({
 }) => {
     return (
         <section className="dashboard-layout">
-            <header className="dashboard-layout__toolbar dashboard-top-actions animate-fadeIn">
+            <header className="dashboard-layout__toolbar dashboard-top-actions animate-fade-in">
                 {searchSlot}
                 <Button
                     variant="premium"

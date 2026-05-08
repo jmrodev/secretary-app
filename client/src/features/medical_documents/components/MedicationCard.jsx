@@ -23,7 +23,7 @@ const MedicationCard = ({
     const variantClass = isKnown ? `${baseClass}--known` : `${baseClass}--unknown`;
 
     return (
-        <div className={`${baseClass} ${variantClass} animate-fadeIn`}>
+        <div className={`${baseClass} ${variantClass} animate-fade-in`}>
             <div className={`${baseClass}__header`}>
                 <span className={`${baseClass}__name`}>{name}</span>
                 {isKnown ? (

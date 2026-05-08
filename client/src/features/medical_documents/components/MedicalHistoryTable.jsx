@@ -3,8 +3,7 @@ import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import Pagination from '@/components/atoms/Pagination';
 import { useAuth } from '@/features/auth';
-import { timeAgo } from '@/utils/time';
-import { formatDate } from '@/utils/dateUtils';
+import { timeAgo, formatDate } from '@/utils/dateUtils';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import './MedicalHistoryTable.css';
@@ -30,7 +29,7 @@ const MedicalHistoryTable = ({
     const safeItems = Array.isArray(items) ? items : [];
 
     return (
-        <section className={`medical-history ${loading ? 'medical-history--loading' : 'animate-fadeIn'}`}>
+        <section className={`medical-history ${loading ? 'medical-history--loading' : 'animate-fade-in'}`}>
             <header className="medical-history__title">
                 <span className="medical-history__title-icon">
                     <Icon name={icon} size="1.2rem" />

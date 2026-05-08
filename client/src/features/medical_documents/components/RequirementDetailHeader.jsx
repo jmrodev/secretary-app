@@ -8,7 +8,7 @@ import './RequirementDetailHeader.css';
  */
 const RequirementDetailHeader = ({ selectedRequest }) => {
     return (
-        <header className="requirements-detail__header animate-fadeIn">
+        <header className="requirements-detail__header animate-fade-in">
             <div className="requirements-detail__patient">
                 <span className="requirements-detail__patient-name">{selectedRequest.patient_name}</span>
                 {selectedRequest.patient_dni && (

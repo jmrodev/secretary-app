@@ -1,46 +1,17 @@
 const BaseQueryBuilder = require('./BaseQueryBuilder');
-const { pool } = require('../../db');
 
 /**
  * PatientsQueryBuilder - Constructor de queries para la entidad Patients
- * Maneja filtros por rol, búsquedas, e inclusión de datos relacionados
+ * Utiliza la vista view_patients_extended para obtener estadísticas pre-calculadas.
  */
 class PatientsQueryBuilder extends BaseQueryBuilder {
     constructor(user) {
-        super('patients p', user);
+        // Cambiamos el origen a la vista extendida
+        super('view_patients_extended p', user);
 
-        // Campos base de pacientes
+        // Campos base (incluyendo los calculados por la vista)
         this.select([
-            'p.id',
-            'p.user_id',
-            'p.full_name',
-            'p.first_name',
-            'p.last_name',
-            'p.dni',
-            'p.phone',
-            'p.email',
-            'p.street_name',
-            'p.street_number',
-            'p.floor',
-            'p.apartment',
-            'p.city',
-            'p.province',
-            'p.country',
-            'p.dob',
-            'p.medical_history',
-            'p.insurance_id',
-            'p.affiliate_number',
-            'p.tariff_percent',
-            'p.tariff_override',
-            'p.behavior_rating',
-            'p.visit_interval_days',
-            'p.prescription_interval_days',
-            'p.institution_id',
-            'p.next_suggested_visit_date',
-            'p.next_suggested_prescription_date',
-            'p.license_expiry_date',
-            'p.is_new_patient',
-            'p.marked_new_at'
+            'p.*'
         ]);
     }
 
@@ -63,88 +34,6 @@ class PatientsQueryBuilder extends BaseQueryBuilder {
     }
 
     /**
-     * Incluye la deuda total del paciente
-     */
-    includeDebtStats() {
-        this.select(`(
-            SELECT COALESCE(SUM(t.amount), 0) 
-            FROM transactions t 
-            LEFT JOIN appointments a ON t.appointment_id = a.id 
-            WHERE t.related_user_id = p.user_id 
-            AND t.status = 'pending' 
-            AND (t.appointment_id IS NULL OR a.status IN ('completed', 'attended', 'arrived', 'absent'))
-        ) as total_debt`);
-        return this;
-    }
-
-    /**
-     * Incluye estadísticas de turnos
-     */
-    includeAppointmentStats() {
-        this.select([
-            `(SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id) as total_appointments`,
-            `(SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id AND a.status IN ('attended', 'completed')) as attended_appointments`,
-            `(SELECT COUNT(*) FROM appointments a WHERE a.patient_id = p.id AND (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%'))) as missed_appointments`,
-            ` (
-                SELECT CASE 
-                    WHEN COALESCE(SUM(t.amount), 0) <= 0 THEN 5
-                    WHEN SUM(t.amount) < 1000 THEN 4
-                    WHEN SUM(t.amount) < 5000 THEN 3
-                    WHEN SUM(t.amount) < 10000 THEN 2
-                    ELSE 1 
-                END
-                FROM transactions t 
-                LEFT JOIN appointments a ON t.appointment_id = a.id 
-                WHERE t.related_user_id = p.user_id 
-                AND t.status = 'pending' 
-                AND (t.appointment_id IS NULL OR a.status IN ('completed', 'attended', 'arrived', 'absent'))
-            ) as financial_rating`,
-            ` (
-                SELECT CASE 
-                    WHEN COUNT(*) = 0 THEN 5
-                    WHEN (COUNT(*) - COUNT(CASE WHEN (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%')) THEN 1 END)) / COUNT(*) >= 0.95 THEN 5
-                    WHEN (COUNT(*) - COUNT(CASE WHEN (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%')) THEN 1 END)) / COUNT(*) >= 0.85 THEN 4
-                    WHEN (COUNT(*) - COUNT(CASE WHEN (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%')) THEN 1 END)) / COUNT(*) >= 0.70 THEN 3
-                    WHEN (COUNT(*) - COUNT(CASE WHEN (a.status = 'absent' OR (a.status = 'cancelled' AND COALESCE(a.cancellation_reason, '') NOT LIKE '%error%')) THEN 1 END)) / COUNT(*) >= 0.50 THEN 2
-                    ELSE 1 
-                END
-                FROM appointments a WHERE a.patient_id = p.id
-            ) as attendance_rating`
-        ]);
-        return this;
-    }
-
-    /**
-     * Aplica filtro por rol del usuario
-     * - Doctor: solo sus pacientes asignados
-     * - Admin/Secretary: todos los pacientes
-     * - Patient: bloqueado (se maneja en el controller)
-     */
-    async applyRoleFilter() {
-        if (!this.user) return this;
-
-        if (this.user.role === 'doctor') {
-            // Necesitamos el doctor_id
-            const conn = await pool.getConnection();
-            try {
-                const docRows = await conn.query(
-                    "SELECT id FROM doctors WHERE user_id = ?",
-                    [this.user.user_id]
-                );
-
-                if (docRows && docRows.length > 0) {
-                    const doctorId = docRows[0].id;
-                    this.filterByDoctor(doctorId);
-                }
-            } finally {
-                conn.release();
-            }
-        }
-
-        return this;
-    }
-
-    /**
      * Filtra por doctor (asignación en patient_doctors)
      */
     filterByDoctor(doctorId) {
@@ -157,7 +46,6 @@ class PatientsQueryBuilder extends BaseQueryBuilder {
 
     /**
      * Aplica búsqueda por texto
-     * Busca en: nombre completo, first_name, last_name, DNI, dirección, teléfono
      */
     applySearch(searchTerm) {
         if (!searchTerm || searchTerm.trim() === '') return this;
@@ -172,7 +60,7 @@ class PatientsQueryBuilder extends BaseQueryBuilder {
                 { condition: 'p.last_name LIKE ?', params: term },
                 { condition: 'p.dni LIKE ?', params: term },
                 { condition: 'p.street_name LIKE ?', params: term },
-                { condition: 'p.street_number LIKE ?', params: term },
+                { condition: 'CAST(p.street_number AS CHAR) LIKE ?', params: term },
                 { condition: 'p.phone LIKE ?', params: term }
             ]);
         });
@@ -209,20 +97,10 @@ class PatientsQueryBuilder extends BaseQueryBuilder {
     }
 
     /**
-     * Filtra por comportamiento
-     */
-    filterByBehavior(rating) {
-        if (rating) {
-            this.where('p.behavior_rating = ?', rating);
-        }
-        return this;
-    }
-
-    /**
-     * Ordena por deuda (mayor deuda primero, luego por nombre)
+     * Ordena por deuda
      */
     sortByDebt() {
-        this.orderByClause = `ORDER BY total_debt DESC, p.full_name ASC`;
+        this.orderByClause = `ORDER BY total_debt_calculated DESC, p.full_name ASC`;
         return this;
     }
 
@@ -235,23 +113,12 @@ class PatientsQueryBuilder extends BaseQueryBuilder {
     }
 
     /**
-     * Ordena por fecha de creación
-     */
-    sortByCreatedAt(direction = 'DESC') {
-        this.orderBy('p.created_at', direction);
-        return this;
-    }
-
-    /**
-     * Método de conveniencia para obtener configuración completa
-     * Incluye todo lo que normalmente se necesita
+     * Conveniencia para detalles completos
      */
     withFullDetails() {
         return this
             .includeInsurance()
-            .includeInstitution()
-            .includeDebtStats()
-            .includeAppointmentStats();
+            .includeInstitution();
     }
 }
 

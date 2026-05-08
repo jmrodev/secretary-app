@@ -1,7 +1,5 @@
 const { nowLocalSQL } = require('../../utils/dateUtils');
-const transactionRepository = require('../../repositories/transactionRepository');
-const medicalRequestRepository = require('../../repositories/medicalRequestRepository');
-const appointmentRepository = require('../../repositories/appointmentRepository');
+const statsRepository = require('../../repositories/statsRepository');
 
 /**
  * Finance Stats Service
@@ -20,10 +18,10 @@ exports.getDetailedStats = async (doctor_id) => {
         console.log(`🔍 StatsService: today=${todayStr}, month=${monthStr}, year=${yearStr} | doctor_id=${doctor_id}`);
 
         // 1. Transaction Aggregates (Income & Withdrawals)
-        const finStats = await transactionRepository.getAggregatedFinancialStats(todayStr, monthStr, yearStr, doctor_id);
+        const finStats = await statsRepository.getAggregatedFinancialStats(todayStr, monthStr, yearStr, doctor_id);
 
         // 2. Expense Aggregates
-        const expenseStats = await transactionRepository.getExpenseAggregates(todayStr, monthStr, yearStr, doctor_id);
+        const expenseStats = await statsRepository.getExpenseAggregates(todayStr, monthStr, yearStr, doctor_id);
 
         // 3. Request Breakdowns (Optimized)
         const types = ['prescription', 'license', 'certificate'];
@@ -40,9 +38,9 @@ exports.getDetailedStats = async (doctor_id) => {
 
         // Fetch aggregates for all types in parallel for the three timeframes
         const [todayAggs, monthAggs, yearAggs] = await Promise.all([
-            medicalRequestRepository.getAllTypesRequestAggregates(types, 'created_at', todayStr, true, doctor_id),
-            medicalRequestRepository.getAllTypesRequestAggregates(types, 'created_at', monthStr, false, doctor_id),
-            medicalRequestRepository.getAllTypesRequestAggregates(types, 'created_at', yearStr, false, doctor_id)
+            statsRepository.getAllTypesRequestAggregates(types, 'created_at', todayStr, true, doctor_id),
+            statsRepository.getAllTypesRequestAggregates(types, 'created_at', monthStr, false, doctor_id),
+            statsRepository.getAllTypesRequestAggregates(types, 'created_at', yearStr, false, doctor_id)
         ]);
 
         // Helper to populate the data
@@ -64,12 +62,12 @@ exports.getDetailedStats = async (doctor_id) => {
         populateData(yearAggs, 'year');
 
         // 4. Appointment Results
-        const apptToday = await appointmentRepository.getAppointmentSummaryStats('appointment_date', todayStr, true, doctor_id);
-        const apptMonth = await appointmentRepository.getAppointmentSummaryStats('appointment_date', monthStr, false, doctor_id);
-        const apptYear = await appointmentRepository.getAppointmentSummaryStats('appointment_date', yearStr, false, doctor_id);
-        const apptDebt = await appointmentRepository.getAppointmentDebt(doctor_id);
+        const apptToday = await statsRepository.getAppointmentSummaryStats('appointment_date', todayStr, true, doctor_id);
+        const apptMonth = await statsRepository.getAppointmentSummaryStats('appointment_date', monthStr, false, doctor_id);
+        const apptYear = await statsRepository.getAppointmentSummaryStats('appointment_date', yearStr, false, doctor_id);
+        const apptDebt = await statsRepository.getAppointmentDebt(doctor_id);
 
-        const totalDebtVal = await appointmentRepository.getTotalDebt(doctor_id);
+        const totalDebtVal = await statsRepository.getTotalDebt(doctor_id);
 
         // Aggregate All Data into the final structure expected by the controller
         return {

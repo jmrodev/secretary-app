@@ -1,9 +1,10 @@
 const patientRepository = require('../repositories/patientRepository');
 const phoneRepository = require('../repositories/phoneRepository');
 const appointmentRepository = require('../repositories/appointmentRepository');
+const statsRepository = require('../repositories/statsRepository');
+const medicalRequestRepository = require('../repositories/medicalRequestRepository');
 const medicalFileRepository = require('../repositories/medicalFileRepository');
-const googleContactService = require('../services/google/GoogleContactService');
-const userRepository = require('../repositories/userRepository');
+const doctorRepository = require('../repositories/doctorRepository');
 const bcrypt = require('bcrypt');
 const { pool } = require('../db');
 const { PatientsQueryBuilder } = require('../utils/queryBuilders');
@@ -19,11 +20,19 @@ class PatientService {
     async getAllPatients(user, search, page = 1, limit = 50, doctorId = null) {
         const conn = await pool.getConnection();
         try {
+            let activeDoctorId = doctorId;
+            if (user.role === 'doctor') {
+                const doc = await doctorRepository.getDoctorConfigByUserId(user.user_id, conn);
+                if (!doc?.id) {
+                    return { patients: [], totalCount: 0 };
+                }
+                activeDoctorId = doc?.id;
+            }
+
             const builder = new PatientsQueryBuilder(user);
-            await builder.applyRoleFilter();
             
-            if (doctorId && user?.role !== 'doctor') {
-                builder.filterByDoctor(doctorId);
+            if (activeDoctorId) {
+                builder.filterByDoctor(activeDoctorId);
             }
 
             builder.withFullDetails().applySearch(search).sortByDebt();
@@ -47,10 +56,10 @@ class PatientService {
 
             const patients = rows.map(r => ({
                 ...r,
-                total_debt: Number(r.total_debt),
-                total_appointments: Number(r.total_appointments),
+                total_debt: Number(r.total_debt_calculated || 0),
+                total_appointments: Number(r.total_appointments || 0),
                 attended_appointments: Number(r.attended_appointments || 0),
-                missed_appointments: Number(r.missed_appointments),
+                missed_appointments: Number(r.missed_appointments || 0),
                 financial_rating: Number(r.financial_rating || 5),
                 attendance_rating: Number(r.attendance_rating || 5)
             }));
@@ -69,16 +78,16 @@ class PatientService {
         if (!patient) throw new Error("Patient not found");
 
         const appointments = await appointmentRepository.findByPatientId(id);
-        const [stats] = await appointmentRepository.getStats(id);
+        const [stats] = await statsRepository.getPatientAppointmentStats(id);
 
-        const prescriptions = await patientRepository.getHistoryFull(id);
+        const prescriptions = await medicalRequestRepository.getPatientMedicalHistory(id);
         const files = await medicalFileRepository.findAll({ patient_id: id });
         const assignedDoctors = await patientRepository.getAssignedDoctors(id);
         const phoneNumbers = await phoneRepository.findByEntity('patient', id);
 
         return {
             ...patient,
-            total_debt: Number(patient.total_debt || 0),
+            total_debt: Number(patient.total_debt_calculated || 0),
             appointments,
             prescriptions,
             files,
@@ -173,7 +182,7 @@ class PatientService {
     }
 
     async getNewPatientStats() {
-        const stats = await patientRepository.getNewPatientStats();
+        const stats = await statsRepository.getNewPatientStats();
         return {
             current_new: Number(stats.total_new),
             currentDay: Number(stats.current_day),

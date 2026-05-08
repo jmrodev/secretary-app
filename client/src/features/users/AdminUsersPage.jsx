@@ -32,7 +32,7 @@ const AdminUsersPage = () => {
     return (
         <MainLayout wide flush title={t('user_management') || 'Gestión de Usuarios'}>
             <div className="admin-users-page-orchestrator">
-                <div className="layout-content-area animate-fadeIn">
+                <div className="layout-content-area animate-fade-in">
                     <div className="dashboard-nav-bar">
                         <div className="admin-users-page__spacer"></div>
                         <div className="admin-users-page__nav-actions">

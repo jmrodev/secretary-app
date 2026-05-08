@@ -25,7 +25,7 @@ const MedicalRequirementTable = ({
     onPageChange
 }) => {
     return (
-        <div className="medical-requirement-manager__content animate-fadeIn">
+        <div className="medical-requirement-manager__content animate-fade-in">
             {!hideFilters && (
                 <div className="medical-requirement-manager__filters">
                     <TabButton

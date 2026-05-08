@@ -20,7 +20,7 @@ const RequirementMedicationList = ({
     const unknownMeds = meds.filter(m => !checkIsKnown(m.name));
 
     return (
-        <div className="requirements-content animate-fadeIn">
+        <div className="requirements-content animate-fade-in">
             {meds.length > 0 && (
                 <div className="medication-list">
                     <h4 className="requirements-detail__section-title">

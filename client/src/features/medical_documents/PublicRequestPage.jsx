@@ -48,7 +48,7 @@ const PublicRequestPage = () => {
                 </header>
 
                 {error && patientInfo && (
-                    <div className="public-prescription__error-banner animate-fadeIn">
+                    <div className="public-prescription__error-banner animate-fade-in">
                         <p className="public-prescription__error-text">
                             <Icon name="WARNING" className="mr-1" /> {error}
                         </p>
@@ -78,7 +78,7 @@ const PublicRequestPage = () => {
                 )}
 
                 {selectedMeds.length > 0 && (
-                    <section className="public-prescription__section animate-fadeIn">
+                    <section className="public-prescription__section animate-fade-in">
                         <h2 className="public-prescription__section-title">
                             <Icon name="CHECK" size="1.2rem" className="mr-2" />
                             Seleccionados ({selectedMeds.length})

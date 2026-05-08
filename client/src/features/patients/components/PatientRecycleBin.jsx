@@ -35,7 +35,7 @@ const PatientRecycleBin = ({
     }
 
     return (
-        <div className="patient-recycle-bin animate-fadeIn">
+        <div className="patient-recycle-bin animate-fade-in">
             <div className="patient-recycle-bin__container">
                 <table className="patient-recycle-bin__table">
                     <thead>

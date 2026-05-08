@@ -20,7 +20,7 @@ const BalanceCashFlowTable = ({ appointments = [], t }) => {
     const totalOthers = totalIncome - totalCash;
 
     return (
-        <section className="balance-cashflow animate-fadeIn">
+        <section className="balance-cashflow animate-fade-in">
             <header>
                 <h3 className="balance-cashflow__title">Rendición de Caja</h3>
                 <p className="balance-cashflow__subtitle">Detalle de ingresos diarios por método de pago</p>

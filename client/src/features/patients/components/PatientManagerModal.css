@@ -27,7 +27,7 @@
     background-color: var(--amber-50);
     border: 0.0625rem solid var(--amber-200);
     border-radius: var(--radius-md);
-    animation: fadeIn 0.4s ease-out;
+    animation: fade-in 0.4s ease-out;
 }
 
 .patient-manager-modal__reference-label {

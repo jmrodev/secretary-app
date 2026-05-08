@@ -17,7 +17,7 @@ const InstitutionSelector = ({
     t
 }) => {
     return (
-        <div className="inst-finances__selector-bar animate-fadeIn">
+        <div className="inst-finances__selector-bar animate-fade-in">
             <div className="inst-finances__selector-group">
                 <label className="inst-finances__label">
                     <Icon name="business" size="1.2rem" color="var(--accent-color)" />

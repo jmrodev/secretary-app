@@ -259,63 +259,6 @@ class AppointmentRepository {
             ORDER BY a.appointment_date DESC`, [patientId]);
     }
 
-    async getStats(patientId, conn = pool) {
-        return await conn.query(`
-            SELECT 
-                COUNT(*) as total,
-                COUNT(CASE WHEN status IN ('completed', 'attended', 'arrived') THEN 1 END) as attended,
-                COUNT(CASE WHEN status = 'absent' THEN 1 END) as absent,
-                COUNT(CASE WHEN status = 'cancelled' THEN 1 END) as cancelled
-            FROM appointments 
-            WHERE patient_id = ?`, [patientId]);
-    }
-
-    async getAppointmentSummaryStats(dateColumn, dateValue, isExactDate, doctor_id, conn = pool) {
-        const doctorFilter = doctor_id ? " AND a.doctor_id = ?" : "";
-        const dateFilter = isExactDate ? `DATE(a.${dateColumn}) = ?` : `a.${dateColumn} >= ?`;
-        const query = `
-            SELECT 
-                COUNT(DISTINCT a.id) as count,
-                SUM(CASE WHEN t.status = 'paid' THEN t.amount ELSE 0 END) as paid,
-                SUM(a.bonified) as bonified
-            FROM appointments a
-            LEFT JOIN transactions t ON t.appointment_id = a.id
-            WHERE ${dateFilter}
-            AND a.status NOT IN ('cancelled', 'absent', 'reserved')
-            ${doctorFilter}
-        `;
-        const params = [dateValue];
-        if (doctor_id) params.push(doctor_id);
-        const [row] = await conn.query(query, params);
-        return row || { count: 0, paid: 0 };
-    }
-
-    async getAppointmentDebt(doctor_id, conn = pool) {
-        const query = `
-            SELECT SUM(t.amount) as total 
-            FROM transactions t
-            JOIN appointments a ON t.appointment_id = a.id
-            WHERE t.status = 'pending' 
-              AND a.status IN ('completed', 'attended', 'arrived', 'absent')
-              ${doctor_id ? " AND t.doctor_id = ?" : ""}
-        `;
-        const [row] = await conn.query(query, doctor_id ? [doctor_id] : []);
-        return row?.total || 0;
-    }
-
-    async getTotalDebt(doctor_id, conn = pool) {
-        const query = `
-            SELECT SUM(t.amount) as total 
-            FROM transactions t
-            LEFT JOIN appointments a ON t.appointment_id = a.id
-            WHERE t.status = 'pending'
-              AND (t.appointment_id IS NULL OR a.status IN ('completed', 'attended', 'arrived', 'absent'))
-              ${doctor_id ? " AND t.doctor_id = ?" : ""}
-        `;
-        const [row] = await conn.query(query, doctor_id ? [doctor_id] : []);
-        return row?.total || 0;
-    }
-
     async findTomorrowAppointments(conn = pool) {
         return await conn.query(`
             SELECT a.*, p.full_name as patient_name, p.phone as patient_phone, d.full_name as doctor_name,

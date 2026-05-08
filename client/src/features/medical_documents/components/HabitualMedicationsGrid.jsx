@@ -10,7 +10,7 @@ const HabitualMedicationsGrid = ({ patientMeds, medicationItems, onSelect, baseC
     if (!patientMeds || patientMeds.length === 0) return null;
 
     return (
-        <div className={`${baseClass}__habitual animate-fadeIn`}>
+        <div className={`${baseClass}__habitual animate-fade-in`}>
             <label className={`${baseClass}__field-label block text-sm font-bold text-gray-700 mb-3`}>
                 {t('habitual_meds') || 'Habituales'}:
             </label>

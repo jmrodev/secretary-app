@@ -6,7 +6,7 @@
     display: flex;
     align-items: center;
     gap: var(--stats-gap);
-    animation: fadeInDown 0.6s cubic-bezier(0.2, 0, 0, 1) both;
+    animation: fade-inDown 0.6s cubic-bezier(0.2, 0, 0, 1) both;
 }
 
 .compact-stats__group {
@@ -107,7 +107,7 @@
     }
 }
 
-@keyframes fadeInDown {
+@keyframes fade-inDown {
     from {
         opacity: 0;
         transform: translateY(-10px);

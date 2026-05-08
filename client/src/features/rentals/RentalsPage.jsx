@@ -32,7 +32,7 @@ const RentalsPage = () => {
     return (
         <MainLayout wide flush title={t('office_rentals') || 'Alquiler de Consultorios'}>
             <div className="rentals-page-orchestrator">
-                <div className="layout-content-area animate-fadeIn">
+                <div className="layout-content-area animate-fade-in">
                     <div className="dashboard-nav-bar">
                         <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
                             <Icon name="domain" size="1.2rem" />

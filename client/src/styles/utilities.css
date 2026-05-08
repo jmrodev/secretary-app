@@ -40,8 +40,8 @@
     gap: 0.75rem;
 }
 
-.animate-fadeIn {
-    animation: fadeIn 0.3s ease-out forwards;
+.animate-fade-in {
+    animation: fade-in 0.3s ease-out forwards;
 }
 
 .overflow-visible {
@@ -260,7 +260,7 @@
     color: #4338ca;
 }
 
-@keyframes fadeIn {
+@keyframes fade-in {
     from {
         opacity: 0;
         transform: translateY(10px);

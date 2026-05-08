@@ -99,7 +99,7 @@ const DashboardPage = () => {
                             </Button>
                         </article>
                     ) : (
-                        <div className="dashboard-layout__full animate-fadeIn">
+                        <div className="dashboard-layout__full animate-fade-in">
                             {/* Main Functional Area */}
                             <section className="dashboard-layout__main">
                                 <article className="dashboard-card dashboard-card--priority">

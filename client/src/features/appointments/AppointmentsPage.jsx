@@ -51,7 +51,7 @@ const AppointmentsPage = () => {
         <MainLayout wide flush title={t('appointments_title')}>
             <main className="appointments-page-orchestrator">
                 <section className="layout-content-area">
-                    <header className="appointments-top-actions animate-fadeIn">
+                    <header className="appointments-top-actions animate-fade-in">
                         <div className="appointments-top-actions__main">
                             {/* Global search in Header handles patient filtering */}
                         </div>
@@ -61,7 +61,7 @@ const AppointmentsPage = () => {
 
                     <section className="appointments-page__body">
                         {searchPatientId || searchTerm ? (
-                            <section className="appointments-page__panel appointments-page__panel--agenda animate-fadeIn">
+                            <section className="appointments-page__panel appointments-page__panel--agenda animate-fade-in">
                                 <PatientHistoryView
                                     patientAppointments={searchPatientId ? patientAppointments : appointments} 
                                     loading={searchLoading}

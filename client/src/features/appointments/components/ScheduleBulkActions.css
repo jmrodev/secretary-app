@@ -4,7 +4,7 @@
     border: 1px solid var(--gray-200);
     border-radius: var(--radius-sm);
     margin-bottom: 2rem;
-    animation: fadeIn 0.3s ease-out;
+    animation: fade-in 0.3s ease-out;
 }
 
 .schedule-bulk__title {

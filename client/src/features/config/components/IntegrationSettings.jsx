@@ -26,7 +26,7 @@ const IntegrationSettings = ({
     const isAuthorized = user?.role === 'admin' || user?.role === 'secretary';
 
     return (
-        <div className="tab-panel animate-fadeIn">
+        <div className="tab-panel animate-fade-in">
             <IntegrationGoogleCalendar
                 googleUnlinked={googleUnlinked}
                 settings={settings}

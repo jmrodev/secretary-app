@@ -105,7 +105,7 @@ const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => {
     const isAdmin = user?.role === 'admin';
 
     return (
-        <div className="tab-panel animate-fadeIn general-settings">
+        <div className="tab-panel animate-fade-in general-settings">
             {/* Functionalities and Permissions */}
             <article className="config-section">
                 <header className="config-section__header">

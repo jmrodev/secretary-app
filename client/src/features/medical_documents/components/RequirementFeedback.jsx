@@ -9,7 +9,7 @@ const RequirementFeedback = ({ doctorNote, secretaryNote, t }) => {
     if (!doctorNote && !secretaryNote) return null;
 
     return (
-        <div className="requirements-detail__feedback animate-fadeIn">
+        <div className="requirements-detail__feedback animate-fade-in">
             {doctorNote && (
                 <div className="requirements-detail__feedback-item requirements-detail__feedback-item--doctor">
                     <strong className="requirements-detail__feedback-label">{t('doctor_note') || 'Nota del Doctor'}:</strong>

@@ -40,7 +40,7 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
 
 
                 {method === 'duckdns' && (
-                    <div className="animate-fadeIn">
+                    <div className="animate-fade-in">
                         <div className="config-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                             <ConfigField
                                 id="duckdns-domain"

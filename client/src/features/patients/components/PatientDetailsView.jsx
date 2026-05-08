@@ -66,7 +66,7 @@ const PatientDetailsView = ({
 
     return (
         <>
-            <section className="patient-details animate-fadeIn no-print-section">
+            <section className="patient-details animate-fade-in no-print-section">
                 <header className="patient-details__header">
                     <Button variant="secondary" onClick={onBack}>
                         &larr; {t('back_to_list')}

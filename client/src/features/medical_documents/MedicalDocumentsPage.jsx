@@ -96,7 +96,7 @@ const MedicalDocumentsPage = () => {
     return (
         <MainLayout wide flush title={t('medical_documents')}>
             <div className="medical-documents-page layout-content-area">
-                <section className="dashboard-layout__grid animate-fadeIn no-print">
+                <section className="dashboard-layout__grid animate-fade-in no-print">
                     <aside className="dashboard-layout__sidebar">
                         <DocumentsSidebar
                             t={t}

@@ -12,7 +12,7 @@ const DoctorsPage = () => {
 
     return (
         <MainLayout wide flush title="Gestión de Profesionales">
-            <div className="layout-content-area animate-fadeIn">
+            <div className="layout-content-area animate-fade-in">
                 <DoctorsManager {...controller} />
             </div>
         </MainLayout>

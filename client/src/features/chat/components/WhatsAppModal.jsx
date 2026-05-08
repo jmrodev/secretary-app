@@ -99,7 +99,7 @@ const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange }) => 
                 </div>
             }
         >
-            <div className="whatsapp-modal animate-fadeIn">
+            <div className="whatsapp-modal animate-fade-in">
                 <div className="whatsapp-modal__info">
                     <div className="whatsapp-modal__icon">
                         <Icon name="smartphone" size="1.2rem" />

@@ -12,7 +12,7 @@ const MedicationItemsSummary = ({ items, onRemove, baseClass, t }) => {
     if (!items || items.length === 0) return null;
 
     return (
-        <ul className={`${baseClass ? `${baseClass}__med-list` : 'medication-items-summary'} animate-fadeIn`}>
+        <ul className={`${baseClass ? `${baseClass}__med-list` : 'medication-items-summary'} animate-fade-in`}>
             {items.map((item, idx) => (
                 <li key={idx} className={`${baseClass ? `${baseClass}__med-item` : ''} medication-items-summary__item`}>
                     <div className={`${baseClass ? `${baseClass}__med-info` : ''} medication-items-summary__info`}>

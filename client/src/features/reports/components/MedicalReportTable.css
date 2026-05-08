@@ -1,4 +1,4 @@
-/* MedicalReportTable Component Styles (BEM) */
+/* MedicalReportTable Shared Styles (BEM) */
 
 .medical-report {
     display: flex;
@@ -19,15 +19,11 @@
     font-weight: 800;
     color: var(--text-main);
     margin-bottom: 1.5rem;
-    text-transform: uppercase;
 }
 
 .medical-report__table {
     width: 100%;
     border-collapse: collapse;
-    background: var(--card-bg);
-    border-radius: var(--radius);
-    overflow: hidden;
 }
 
 .medical-report__table th {
@@ -42,7 +38,7 @@
 }
 
 .medical-report__row {
-    border-bottom: 1px solid var(--gray-100);
+    border-bottom: 1px solid var(--gray-50);
 }
 
 .medical-report__row td {
@@ -50,13 +46,54 @@
     font-size: 0.875rem;
 }
 
+.medical-report__cell--right {
+    text-align: right;
+}
+
+.medical-report__cell--bold {
+    font-weight: 700;
+}
+
+.medical-report__footer-subtotal td {
+    background: var(--gray-50);
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.medical-report__footer td {
+    background: var(--gray-100);
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--text-main);
+}
+
+.medical-report__group {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.medical-report__date-header {
+    background: var(--purple-700);
+    color: white;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.medical-report__patient-info {
+    display: flex;
+    flex-direction: column;
+}
+
 .medical-report__patient-name {
     font-weight: 700;
-    display: block;
 }
 
 .medical-report__patient-dni {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--text-muted);
 }
 
@@ -65,69 +102,16 @@
     border-radius: 2rem;
     font-size: 0.65rem;
     font-weight: 800;
-    display: inline-flex;
-    text-transform: uppercase;
 }
 
-.medical-report__badge--paid {
-    background: var(--green-100);
-    color: var(--green-700);
-}
-
-.medical-report__badge--debt {
-    background: var(--red-100);
-    color: var(--red-700);
-}
+.medical-report__badge--paid { background: var(--green-100); color: var(--green-700); }
+.medical-report__badge--debt { background: var(--red-100); color: var(--red-700); }
+.medical-report__badge--bonified { background: var(--blue-100); color: var(--blue-700); }
 
 .medical-report__method-badge {
-    padding: 0.2rem 0.6rem;
-    border-radius: 0.25rem;
     font-size: 0.65rem;
-    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
     background: var(--gray-100);
-    color: var(--text-secondary);
-}
-
-.medical-report__method-badge--cash,
-.medical-report__method-badge--efectivo {
-    background: var(--green-50);
-    color: var(--green-700);
-}
-
-.medical-report__method-badge--transfer {
-    background: var(--blue-50);
-    color: var(--blue-700);
-}
-
-.medical-report__date-header {
-    background: var(--blue-900);
-    color: white;
-    padding: 1rem 1.5rem;
-    border-top-left-radius: var(--radius-sm);
-    border-top-right-radius: var(--radius-sm);
-    font-size: 1rem;
-    font-weight: 800;
-    margin-bottom: 0px;
-}
-
-.medical-report__cell--right {
-    text-align: right;
-}
-
-.medical-report__cell--bold {
-    font-weight: 800;
-}
-
-.medical-report__footer-subtotal td {
-    background-color: var(--gray-50);
-    font-weight: 600;
-    border-top: 1px solid var(--border-color);
-}
-
-.medical-report__footer td {
-    background-color: var(--gray-100);
-    font-weight: 800;
-    color: var(--text-main);
-    font-size: 1rem;
-    border-top: 2px solid var(--border-color);
+    color: var(--text-muted);
 }

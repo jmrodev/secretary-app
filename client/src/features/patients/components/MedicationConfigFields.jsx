@@ -36,7 +36,7 @@ const MedicationConfigFields = ({
     ];
 
     return (
-        <div className="medication-config-fields animate-fadeIn">
+        <div className="medication-config-fields animate-fade-in">
             <div className="medication-config-fields__mode-selector">
                 <label className="medication-config-fields__label">{t('reminder_mode')}</label>
                 <div className="medication-config-fields__btn-group">
@@ -68,7 +68,7 @@ const MedicationConfigFields = ({
             </div>
 
             {currentMed.reminder_mode === 'calculation' && (
-                <div className="medication-config-fields__grid animate-fadeIn">
+                <div className="medication-config-fields__grid animate-fade-in">
                     <div className="medication-config-fields__group">
                         <label className="medication-config-fields__label">{t('units_per_box')}</label>
                         <Select
@@ -98,7 +98,7 @@ const MedicationConfigFields = ({
             )}
 
             {currentMed.reminder_mode === 'fixed_day' && (
-                <div className="medication-config-fields__group animate-fadeIn">
+                <div className="medication-config-fields__group animate-fade-in">
                     <label className="medication-config-fields__label">{t('reminder_day_of_month')}</label>
                     <Input
                         type="number"

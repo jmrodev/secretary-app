@@ -23,7 +23,7 @@ const DocumentsSidebar = ({
     handlePrintPrescriptions
 }) => {
     return (
-        <aside className="dashboard-sidebar medical-documents__sidebar animate-fadeIn">
+        <aside className="dashboard-sidebar medical-documents__sidebar animate-fade-in">
             <div className="dashboard-nav-bar">
                 <TabNav className="medical-documents__tabs">
                     {[
