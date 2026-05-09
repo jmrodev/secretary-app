@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import CalendarDayCell from '@/features/appointments/components/CalendarDayCell.jsx';
 import CalendarHeader from '@/features/appointments/components/CalendarHeader.jsx';
 import DayHeaders from '@/features/appointments/components/DayHeaders.jsx';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { isPastDay, isSameDay } from '@/utils/dateUtils';
 import './Calendar.css';
 

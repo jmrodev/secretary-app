@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLanguage, useLanguageActions } from '@/context/LanguageContext';
+import { useLanguage, useLanguageActions } from '@/hooks/useLanguage';
 import Button from '@/components/atoms/Button';
 import './LanguageSelector.css';
 

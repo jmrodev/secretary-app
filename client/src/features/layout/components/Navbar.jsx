@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useSidebarController } from '@/features/layout/hooks/useSidebarController';
+import { useLayoutController } from '@/features/layout/hooks/useLayoutController';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import LanguageSelector from '@/components/atoms/LanguageSelector';
@@ -15,7 +15,7 @@ const Navbar = () => {
         user, logout, t, settings,
         location, doctors,
         isStaff, isAdmin, isSecretary, isPatient, isDoctor
-    } = useSidebarController();
+    } = useLayoutController();
 
     const [isAdminOpen, setIsAdminOpen] = useState(false);
     const [isSpreadsheetsOpen, setIsSpreadsheetsOpen] = useState(false);

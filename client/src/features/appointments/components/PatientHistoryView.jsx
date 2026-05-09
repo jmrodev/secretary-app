@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import Loading from '@/components/atoms/Loading';

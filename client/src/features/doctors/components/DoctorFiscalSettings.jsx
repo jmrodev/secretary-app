@@ -4,7 +4,7 @@ import Icon from '@/components/atoms/Icon';
 import Input from '@/components/atoms/Input';
 import Switch from '@/components/atoms/Switch';
 import FormGroup from '@/components/molecules/FormGroup';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import './DoctorFiscalSettings.css';
 
 /**

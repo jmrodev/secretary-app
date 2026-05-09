@@ -4,7 +4,7 @@ import api from '@/api/axios';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import WhatsappChatHistory from '@/features/patients/components/WhatsappChatHistory';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useDoctors } from '@/context/DoctorContextDefinition';
 import './GlobalWhatsappMessenger.css';
 

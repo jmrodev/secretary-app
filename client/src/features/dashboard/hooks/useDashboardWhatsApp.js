@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { copyToClipboard } from '@/utils/clipboardUtils';
 import { replaceTemplateVariables } from '@/utils/stringUtils';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useMessage } from '@/context/MessageContext';
 import api from '@/api/axios';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import ConfigField from '@/features/config/components/ConfigField';
 import Icon from '@/components/atoms/Icon';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 
 /**
  * AiSettings Feature Component.

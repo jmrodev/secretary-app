@@ -3,7 +3,7 @@ import FormGroup from '@/components/molecules/FormGroup';
 import Input from '@/components/atoms/Input';
 import Select from '@/components/atoms/Select';
 import PhoneNumbersManager from '@/components/molecules/PhoneNumbersManager';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { capitalizeWords } from '@/utils/stringUtils';
 import './UserForm.css';
 

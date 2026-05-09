@@ -6,7 +6,7 @@ import Select from '@/components/atoms/Select';
 import Icon from '@/components/atoms/Icon';
 import PhoneNumbersManager from '@/components/molecules/PhoneNumbersManager';
 import { capitalizeWords } from '@/utils/stringUtils';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import './InsuranceFormModal.css';
 
 const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFormData, isEditing }) => {

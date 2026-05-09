@@ -43,8 +43,8 @@ const RentalsPage = () => {
                     {loading ? (
                         <Loading variant="centered" text={t('loading_rentals')} />
                     ) : (
-                        <div className="dashboard-grid">
-                            <aside className="dashboard-sidebar">
+                        <div className="dashboard-layout__grid">
+                            <aside className="dashboard-layout__sidebar">
                                 {/* Booking Form (Doctors only) */}
                                 {user && user.role === 'doctor' && (
                                     <div className="dashboard-card">
@@ -105,7 +105,7 @@ const RentalsPage = () => {
                                 </div>
                             </aside>
 
-                            <main className="dashboard-main">
+                            <main className="dashboard-layout__main">
                                  {/* My Rentals List */}
                                 {user && user.role === 'doctor' && (
                                     <div className="dashboard-card no-padding">

@@ -3,7 +3,7 @@ import api from '@/api/axios';
 import { useAuth } from '@/features/auth';
 import { useModal } from '@/context/ModalContext';
 import { useMessage } from '@/context/MessageContext';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useFetch } from '@/hooks/useFetch';
 
 export const useDoctorsPageController = () => {

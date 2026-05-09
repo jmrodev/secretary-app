@@ -15,7 +15,6 @@
 screen and (max-height: 800px) {
     :root {
         font-size: 12.5px;
-        --sidebar-width: 210px;
     }
 
     /* 

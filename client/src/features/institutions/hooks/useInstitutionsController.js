@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { institutionService } from '@/services/institutionService';
 import { useMessage } from '@/context/MessageContext';
 import { useModal } from '@/context/ModalContext';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { capitalizeWords } from '@/utils/stringUtils';
 import { useFetch } from '@/hooks/useFetch';
 

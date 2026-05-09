@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import { useFetch } from '@/hooks/useFetch';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import './SearchBar.css';
 
 /**
@@ -15,7 +15,7 @@ const SearchBar = ({ value, onChange, placeholder, onSelect, className = '' }) =
     const wrapperRef = useRef(null);
 
     // Fetch recent patients using architectural standard useFetch
-    const { data: suggestionsData, loading, refetch: fetchRecent } = useFetch('/users/patients/recent', {
+    const { data: suggestionsData, refetch: fetchRecent } = useFetch('/users/patients/recent', {
         immediate: false,
         initialData: { patients: [] }
     });

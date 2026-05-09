@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useAuth } from '@/features/auth';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useMessage } from '@/context/MessageContext';
 import { PatientSearchSelect } from '@/features/patients';
 import Card from '@/components/atoms/Card';

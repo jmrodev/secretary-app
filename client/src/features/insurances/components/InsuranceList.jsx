@@ -2,7 +2,7 @@ import React from 'react';
 import Button from '@/components/atoms/Button';
 import Badge from '@/components/atoms/Badge';
 import Icon from '@/components/atoms/Icon';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import './InsuranceList.css';
 
 const InsuranceList = ({ insurances, onEdit, onDelete, hasFilter }) => {

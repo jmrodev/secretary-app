@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '@/api/axios';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useMessage } from '@/context/MessageContext';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 
 /**
  * Profile Controller (Auth Feature Hook).

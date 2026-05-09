@@ -30,8 +30,8 @@ const DoctorsManager = ({
             {loading ? (
                 <Loading variant="centered" text={t('loading_doctors') || "Cargando médicos..."} />
             ) : (
-                <div className="dashboard-grid animate-fade-in">
-                    <aside className="dashboard-sidebar">
+                <div className="dashboard-layout__grid animate-fade-in">
+                    <aside className="dashboard-layout__sidebar">
                         <div className="dashboard-card">
                             <h3 className="dashboard-card__title">
                                 <Icon name="search" size="1.2rem" />
@@ -62,7 +62,7 @@ const DoctorsManager = ({
                         </div>
                     </aside>
 
-                    <main className="dashboard-main">
+                    <main className="dashboard-layout__main">
                         <div className="doctors-manager__grid">
                             {filteredDoctors.length === 0 ? (
                                 <div className="doctors-manager__empty-state">

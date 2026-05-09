@@ -18,7 +18,6 @@ import { formatDate } from '@/utils/dateUtils';
 
 // Styles
 import './MedicalDocumentsPage.css';
-import '@/features/dashboard/components/DashboardLayout.css'; // Reuse dashboard grid styles
 
 /**
  * MedicalDocumentsPage (Orchestrator).

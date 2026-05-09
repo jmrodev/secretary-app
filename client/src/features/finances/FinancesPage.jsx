@@ -14,7 +14,6 @@ import CashBoxDeliveryModal from '@/features/finances/components/CashBoxDelivery
 import PendingClosuresModal from '@/features/finances/components/PendingClosuresModal';
 
 import './FinancesPage.css';
-import '@/features/dashboard/components/DashboardLayout.css'; // Reuse dashboard grid styles
 
 /**
  * FinancesPage (Orchestrator).

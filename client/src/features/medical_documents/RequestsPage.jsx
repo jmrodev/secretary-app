@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '@/features/auth';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { MedicalRequirementManager } from '@/features/medical_documents/index';
 import MainLayout from '@/components/templates/MainLayout';
 import PageHeader from '@/components/organisms/PageHeader';
@@ -29,7 +29,7 @@ const RequestsPage = () => {
                 />
 
                 <div className="layout-content-area">
-                    <div className="dashboard-grid animate-fade-in">
+                    <div className="dashboard-layout__grid animate-fade-in">
                         <aside className="dashboard-layout__sidebar">
                             <div className="dashboard-card">
                                 <h3 className="dashboard-card__title">

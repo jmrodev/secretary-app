@@ -1,6 +1,6 @@
 import React from 'react';
 import Icon from '@/components/atoms/Icon';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 
 /**
  * ChatSidebar Component (Feature Component).

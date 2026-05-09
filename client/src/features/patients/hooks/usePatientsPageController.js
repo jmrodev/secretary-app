@@ -1,9 +1,9 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useMessage } from '@/context/MessageContext';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useConfig } from '@/context/ConfigContext';
-import { useSearch } from '@/context/SearchContext';
+import { useSearch } from '@/hooks/useSearch';
 import { usePatientsHandlers } from '@/features/patients/hooks/usePatientsHandlers';
 import { useFetch } from '@/hooks/useFetch';
 import { useModal } from '@/context/ModalContext';

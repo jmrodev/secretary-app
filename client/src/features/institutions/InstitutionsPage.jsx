@@ -41,8 +41,8 @@ const InstitutionsPage = () => {
                     {loading ? (
                         <Loading variant="centered" text={t('loading') || "Cargando..."} />
                     ) : (
-                        <div className="dashboard-grid animate-fade-in">
-                        <aside className="dashboard-sidebar">
+                        <div className="dashboard-layout__grid animate-fade-in">
+                        <aside className="dashboard-layout__sidebar">
                             <div className="dashboard-card">
                                 <h3 className="dashboard-card__title">
                                     <Icon name="build" size="1.2rem" />
@@ -107,7 +107,7 @@ const InstitutionsPage = () => {
                             </div>
                         </aside>
 
-                        <main className="dashboard-main">
+                        <main className="dashboard-layout__main">
                             <div className="dashboard-card no-padding">
                                 <div className="institutions__content animate-fade-in">
                                     <InstitutionFinances

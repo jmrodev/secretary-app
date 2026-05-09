@@ -1,7 +1,7 @@
 import React from 'react';
 import Select from '@/components/atoms/Select';
 import Icon from '@/components/atoms/Icon';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useDoctors } from '@/context/DoctorContextDefinition';
 import './DoctorSelector.css';
 

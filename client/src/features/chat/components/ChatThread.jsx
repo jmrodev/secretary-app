@@ -3,7 +3,7 @@ import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import Input from '@/components/atoms/Input';
 import ChatMessageBubble from '@/features/chat/components/ChatMessageBubble';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 
 /**
  * ChatThread Molecule (Feature Component).
