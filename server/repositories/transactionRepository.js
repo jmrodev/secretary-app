@@ -389,33 +389,20 @@ class TransactionRepository {
     async findPendingClosures(doctorId, conn) {
         const connection = conn || await pool.getConnection();
         try {
-            const doctorClause = doctorId ? "AND t.doctor_id = ?" : "";
+            const doctorClause = doctorId ? "WHERE doctor_id = ?" : "";
             const params = [];
             if (doctorId) params.push(doctorId);
 
             const query = `
                 SELECT 
-                    DATE(t.transaction_date) as date,
-                    MAX(TIME(t.transaction_date)) as lastTime,
-                    t.doctor_id,
-                    d.full_name as doctor_name,
-                    SUM(CASE WHEN t.method = 'cash' THEN 
-                        CASE WHEN t.is_withdrawal = 1 THEN -t.amount 
-                             WHEN (t.type LIKE 'income%' OR t.type = 'income') THEN t.amount 
-                             WHEN (t.type LIKE 'expense%' OR t.type = 'expense') THEN -t.amount 
-                             ELSE 0 END 
-                        ELSE 0 END) as balance,
-                    SUM(CASE WHEN t.method != 'cash' THEN 
-                        CASE WHEN t.is_withdrawal = 1 THEN -t.amount 
-                             WHEN (t.type LIKE 'income%' OR t.type = 'income') THEN t.amount 
-                             WHEN (t.type LIKE 'expense%' OR t.type = 'expense') THEN -t.amount 
-                             ELSE 0 END 
-                        ELSE 0 END) as transferBalance
-                FROM transactions t
-                LEFT JOIN doctors d ON t.doctor_id = d.id
-                WHERE t.status = 'paid' ${doctorClause}
-                GROUP BY DATE(t.transaction_date), t.doctor_id
-                HAVING balance > 0.01 OR transferBalance > 0.01
+                    transaction_date as date,
+                    TIME(last_activity) as lastTime,
+                    doctor_id,
+                    doctor_name,
+                    cash_balance as balance,
+                    transfer_balance as transferBalance
+                FROM view_daily_balances
+                ${doctorClause}
                 ORDER BY date DESC
             `;
 
@@ -423,6 +410,22 @@ class TransactionRepository {
         } finally {
             if (!conn) connection.release();
         }
+    async getAudits(filters = {}, conn = pool) {
+        let query = `
+            SELECT ta.*, t.description, p.full_name as patient_name, d.full_name as doctor_name
+            FROM transaction_audits ta
+            JOIN transactions t ON ta.transaction_id = t.id
+            LEFT JOIN users u ON t.related_user_id = u.id
+            LEFT JOIN patients p ON u.id = p.user_id
+            LEFT JOIN doctors d ON t.doctor_id = d.id
+            WHERE 1=1
+        `;
+        const params = [];
+        if (filters.transaction_id) { query += " AND ta.transaction_id = ?"; params.push(filters.transaction_id); }
+        if (filters.action) { query += " AND ta.action = ?"; params.push(filters.action); }
+        
+        query += " ORDER BY ta.changed_at DESC LIMIT 100";
+        return await conn.query(query, params);
     }
 }
 

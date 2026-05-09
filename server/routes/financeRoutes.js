@@ -29,5 +29,6 @@ router.post('/pay-debt', verifyToken, financeController.payDebt);
 router.post('/pay-institution-debt', verifyToken, financeController.payInstitutionDebt);
 router.get('/pending-closures', verifyToken, financeController.getPendingClosures);
 router.get('/stats', verifyToken, authorize(ACCESS_LEVELS.MANAGE_FINANCE), financeController.getStats);
+router.get('/transactions/audits', verifyToken, authorize(ACCESS_LEVELS.MANAGE_FINANCE), financeController.getTransactionAudits);
 
 module.exports = router;
