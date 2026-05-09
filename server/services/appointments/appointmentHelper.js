@@ -3,20 +3,9 @@ const { AuthRequiredError } = require('../../utils/errors');
 const appointmentRepository = require('../../repositories/appointmentRepository');
 const systemSettingsRepository = require('../../repositories/systemSettingsRepository');
 
-const formatDateForDB = (date) => {
-    try {
-        if (!date) return null;
-        const d = new Date(date);
-        if (isNaN(d.getTime())) {
-            console.error("[formatDateForDB] Invalid date input:", date);
-            return null;
-        }
-        return d.toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace('T', ' ').slice(0, 19);
-    } catch (err) {
-        console.error("[formatDateForDB] Error formatting date:", date, err);
-        return null;
-    }
-};
+const { formatLocalSQL } = require('../../utils/dateUtils');
+
+const formatDateForDB = (date) => formatLocalSQL(date);
 
 const freeSlot = async (conn, doctorId, appointmentDate) => {
     const formatted = formatDateForDB(appointmentDate);

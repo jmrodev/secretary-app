@@ -14,14 +14,17 @@ export const useLanguageLogic = () => {
         localStorage.setItem(LANGUAGE_KEY, language);
     }, [language]);
 
-    const t = useCallback((key, params = {}) => {
-        let text = translations[language]?.[key] || key;
+    const t = useCallback((key, params = null) => {
+        const langData = translations[language] || translations['es'] || {};
+        let text = langData[key] || key;
         
-        // Handle variable interpolation: {variable_name} -> params.variable_name
         if (params && typeof params === 'object') {
-            Object.entries(params).forEach(([k, v]) => {
-                text = text.replace(new RegExp(`{${k}}`, 'g'), v);
-            });
+            // Using a single pass replacement if possible, or simple split/join for speed
+            for (const k in params) {
+                if (Object.prototype.hasOwnProperty.call(params, k)) {
+                    text = text.split(`{${k}}`).join(params[k]);
+                }
+            }
         }
         
         return text;

@@ -116,7 +116,7 @@ class LicenseService {
                 description: `Medical License - ${days} days`,
                 related_user_id: patientUserId, doctor_id: doctorId,
                 appointment_id: apptId, status: 'pending'
-            }, userId);
+            }, userId, conn);
         }
     }
 

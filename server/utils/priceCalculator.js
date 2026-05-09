@@ -1,87 +1,27 @@
-const doctorRepository = require('../repositories/doctorRepository');
-const patientRepository = require('../repositories/patientRepository');
-
 /**
- * Calculates the final price for a medical service based on Doctor's base price and Patient's tariff adjustments.
+ * Calculates the final price for a medical service using the centralized DB function.
  * 
- * @param {Object} conn - Active DB connection
+ * @param {Object} pool - DB Pool or Connection
  * @param {number} doctorId - Doctor ID
  * @param {number} patientId - Patient ID
- * @param {string} serviceType - 'consultation', 'prescription', 'medical_license', 'virtual_consultation', 'certificate'
- * @returns {Promise<{price: number, basePrice: number, explanation: string}>}
+ * @param {string} serviceType - 'consultation', 'prescription', etc.
+ * @returns {Promise<{price: number}>}
  */
-async function calculatePrice(conn, doctorId, patientId, serviceType = 'consultation', appointmentInstitutionId = null) {
-    // Get Doctor Prices via Repository
-    const d = await doctorRepository.findPrices(doctorId, conn);
-
-    if (!d) {
-        throw new Error("Doctor not found");
+async function calculatePrice(pool, doctorId, patientId, serviceType = 'consultation', appointmentInstitutionId = null) {
+    try {
+        const [rows] = await pool.query(
+            "SELECT fn_calculate_service_price(?, ?, ?, ?) as price",
+            [doctorId, patientId, serviceType, appointmentInstitutionId]
+        );
+        
+        return {
+            price: Number(rows[0]?.price || 0),
+            explanation: "Calculated via Centralized DB Engine (fn_calculate_service_price)"
+        };
+    } catch (err) {
+        console.error("Error calculating price via DB function", err);
+        throw err;
     }
-
-    let basePrice = 0;
-    let priceType = 'Consultation';
-
-    switch (serviceType) {
-        case 'prescription':
-            basePrice = Number(d.prescription_price) || 0;
-            priceType = 'Prescription';
-            break;
-        case 'medical_license':
-            basePrice = Number(d.medical_license_price) || 0;
-            priceType = 'Medical License';
-            break;
-        case 'certificate':
-            basePrice = Number(d.certificate_price) || 0;
-            priceType = 'Certificate';
-            break;
-        case 'virtual_consultation':
-            basePrice = Number(d.virtual_consultation_price) || 0;
-            priceType = 'Virtual Consultation';
-            break;
-        case 'consultation':
-        default:
-            basePrice = Number(d.consultation_price) || 0;
-            priceType = 'Consultation';
-            break;
-    }
-
-    let finalPrice = basePrice;
-    let explanation = `${priceType} Base: $${basePrice}`;
-
-    // Get Patient Tariff & Institution Base Price via Repository
-    if (patientId) {
-        const patData = await patientRepository.findTariffAndInstitutionPrice(patientId, appointmentInstitutionId, conn);
-
-        if (patData) {
-            const { tariff_percent, tariff_override, inst_price } = patData;
-
-            // If Institution has a defined price, it overrides the Doctor's base price
-            if (Number(inst_price) > 0) {
-                basePrice = Number(inst_price);
-                explanation = `${priceType} (Institution Rate): $${basePrice}`;
-                finalPrice = 0; // The institution covers it; patient share starts at 0 (unless adjusted below)
-            }
-
-            const percent = Number(tariff_percent) || 0;
-            const override = Number(tariff_override);
-
-            if (!isNaN(override) && override > 0 && (serviceType === 'consultation' || !serviceType)) {
-                // Override applies primarily to standard consultation
-                finalPrice = override;
-                explanation += ` | Override: $${override}`;
-            } else if (percent !== 0) {
-                const adjustment = basePrice * (percent / 100);
-                finalPrice += adjustment;
-                explanation += ` | Adj: ${percent}% ($${adjustment.toFixed(2)})`;
-            }
-        }
-    }
-
-    return {
-        price: Number(finalPrice.toFixed(2)),
-        basePrice: Number(basePrice.toFixed(2)),
-        explanation
-    };
 }
 
 module.exports = { calculatePrice };

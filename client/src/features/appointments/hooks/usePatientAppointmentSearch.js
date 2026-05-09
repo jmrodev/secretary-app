@@ -9,7 +9,7 @@ import { useSearch } from '@/context/SearchContext';
  * - Only fires a request when the search term has 2+ characters (after 400ms debounce).
  * - Does NOT load all appointments on mount (avoids heavy 600+ row payload).
  */
-export const usePatientSearch = () => {
+export const usePatientAppointmentSearch = () => {
     const { searchTerm, setSearchTerm } = useSearch();
     const [searchPatientId, setSearchPatientId] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');

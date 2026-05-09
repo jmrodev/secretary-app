@@ -2,13 +2,16 @@ import { createContext, useContext } from 'react';
 import { useLanguageLogic } from '@/context/useLanguageLogic';
 
 const LanguageContext = createContext(null);
+const LanguageActionsContext = createContext(null);
 
 export const LanguageProvider = ({ children }) => {
-    const value = useLanguageLogic();
+    const { language, t, setLanguage, toggleLanguage } = useLanguageLogic();
 
     return (
-        <LanguageContext.Provider value={value}>
-            {children}
+        <LanguageContext.Provider value={{ language, t }}>
+            <LanguageActionsContext.Provider value={{ setLanguage, toggleLanguage }}>
+                {children}
+            </LanguageActionsContext.Provider>
         </LanguageContext.Provider>
     );
 };
@@ -16,12 +19,20 @@ export const LanguageProvider = ({ children }) => {
 export const useLanguage = () => {
     const context = useContext(LanguageContext);
     if (!context) {
-        // Fallback to avoid crashes if provider is missing
         return {
             language: 'es',
-            setLanguage: () => { },
-            toggleLanguage: () => { },
             t: (key) => key
+        };
+    }
+    return context;
+};
+
+export const useLanguageActions = () => {
+    const context = useContext(LanguageActionsContext);
+    if (!context) {
+        return {
+            setLanguage: () => { },
+            toggleLanguage: () => { }
         };
     }
     return context;

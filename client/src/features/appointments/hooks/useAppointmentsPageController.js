@@ -13,35 +13,42 @@ import { useNextFreeSlot } from '@/features/appointments/hooks/useNextFreeSlot';
 import { useAppointmentBooking } from '@/features/appointments/hooks/useAppointmentBooking';
 import { useWhatsAppUniversal } from '@/features/appointments/hooks/useWhatsAppUniversal';
 import { useGoogleEvents } from '@/features/appointments/hooks/useGoogleEvents';
-import { usePatientSearch } from '@/features/appointments/hooks/usePatientSearch';
+import { usePatientAppointmentSearch } from '@/features/appointments/hooks/usePatientAppointmentSearch';
 import { useAppointmentsHandlers } from '@/features/appointments/hooks/useAppointmentsHandlers';
 import { copyToClipboard } from '@/utils/clipboardUtils';
 import { useDoctors } from '@/context/DoctorContextDefinition';
+import { useAgendaState } from '@/features/appointments/hooks/useAgendaState';
+import { useAgendaModals } from '@/features/appointments/hooks/useAgendaModals';
 
 /**
- * useAppointmentsPageController (Handler Hook).
+ * useAppointmentsPageController (Orchestrator).
  * Orchestrates all state and side effects for the Appointments Page.
  */
 export const useAppointmentsPageController = () => {
-    const { user, isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff } = usePermissions();
-    const { t, language } = useLanguage();
+    const { user, language } = usePermissions();
+    const { t } = useLanguage();
     const { showMessage } = useMessage();
     const { settings } = useConfig();
     const { confirm, prompt } = useModal();
     const navigate = useNavigate();
-    const location = useLocation();
 
     const { viewDoctorId, setViewDoctorId, doctors, doctorsLoading } = useDoctors();
-    const [selectedDate, setSelectedDate] = useState(location.state?.selectedDate ? new Date(location.state.selectedDate) : new Date());
-    const [activeTab, setActiveTab] = useState(location.state?.activeTab || 'calendar');
-    const [showOutOfHours, setShowOutOfHours] = useState(false);
-    const [editPatientModalOpen, setEditPatientModalOpen] = useState(false);
-    const [paymentModal, setPaymentModal] = useState({ open: false, initialData: {} });
-    const [actionModal, setActionModal] = useState({ open: false, appt: null });
-    const [historyModal, setHistoryModal] = useState({ open: false, patientId: null, patientName: '' });
-    const [prescribeModal, setPrescribeModal] = useState({ open: false, apptId: null, patientName: '', medications: '', instructions: '' });
-    const [authModalOpen, setAuthModalOpen] = useState(false);
-    const [retryAction, setRetryAction] = useState(null);
+    
+    // Extracted Logic Hooks
+    const agendaState = useAgendaState(setViewDoctorId);
+    const agendaModals = useAgendaModals();
+
+    const { 
+        selectedDate, setSelectedDate, activeTab, setActiveTab, 
+        showOutOfHours, setShowOutOfHours, rescheduleAppt, exitRescheduleMode 
+    } = agendaState;
+
+    const { 
+        editPatientModalOpen, setEditPatientModalOpen, paymentModal, setPaymentModal,
+        actionModal, setActionModal, historyModal, setHistoryModal,
+        prescribeModal, setPrescribeModal, authModalOpen, setAuthModalOpen,
+        retryAction, setRetryAction
+    } = agendaModals;
 
     // --- Data Fetching using useFetch ---
     
@@ -70,7 +77,7 @@ export const useAppointmentsPageController = () => {
 
     const { updateStatus, updateAppointment, cancelAppointment, deleteAppointment, rescheduleAppointment, savePrescription } = useAppointments();
     const { holidays, addHoliday, deleteHoliday } = useHolidays();
-    const patientSearch = usePatientSearch();
+    const patientSearch = usePatientAppointmentSearch();
     const { 
         searchTerm, setSearchTerm, searchPatientId, setSearchPatientId, 
         appointments, patientAppointments, patientApptLoading, fetchAppointments 
@@ -80,30 +87,8 @@ export const useAppointmentsPageController = () => {
     const booking = useAppointmentBooking(doctors);
     const nextSlot = useNextFreeSlot(viewDoctorId || booking.selectedDoctor);
 
-    // Only block the initial render for critical data (doctors, institutions)
-    // Never block the page for search results - handle that locally in the component
     const loading = doctorsLoading || institutionsLoading;
     const searchLoading = patientApptLoading;
-
-    useEffect(() => {
-        // syncing logic simplified by context
-    }, [viewDoctorId, booking]);
-
-    const rescheduleAppt = location.state?.rescheduleAppt;
-    const syncAppt = location.state?.syncAppt;
-    const exitRescheduleMode = useCallback(() => navigate(location.pathname, { replace: true, state: {} }), [navigate, location.pathname]);
-
-    useEffect(() => {
-        if (rescheduleAppt) { queueMicrotask(() => setViewDoctorId(rescheduleAppt.doctor_id)); return; }
-        if (syncAppt) {
-            queueMicrotask(() => {
-                setViewDoctorId(syncAppt.doctor_id);
-                setSelectedDate(new Date(syncAppt.appointment_date));
-            });
-        }
-        
-        // Initial logic moved to DoctorContext
-    }, [user, doctors, rescheduleAppt, syncAppt, isDoctor, booking, viewDoctorId, setViewDoctorId]);
 
     const hookHandlers = useAppointmentsHandlers({
         user, t, showMessage, confirm, prompt, navigate, selectedDate, setSelectedDate,

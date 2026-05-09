@@ -10,6 +10,7 @@ import { useModal } from '@/context/ModalContext';
 import { useDoctors } from '@/context/DoctorContextDefinition';
 import { useAppointments } from '@/features/appointments/hooks/useAppointments';
 import { useUsers } from '@/features/users/hooks/useUsers';
+import { usePatientQuery } from '@/features/patients/hooks/usePatientQuery';
 
 /**
  * usePatientsPageController (Orchestrator).
@@ -29,29 +30,22 @@ export const usePatientsPageController = () => {
     const { searchTerm, setSearchTerm } = useSearch();
 
     // View State (Pagination)
-    const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(50);
     const [activeTab, setActiveTab] = useState('list'); // 'list' | 'recycle'
 
-    // --- FETCH DATA (Server-Side) using useFetch ---
-    
-    // Main Patients Data
     const { 
-        data: patientData, 
+        patients, 
+        totalCount, 
+        totalPages, 
+        currentPage, 
+        handlePageChange,
         loading: patientsLoading, 
-        refetch: fetchPatients 
-    } = useFetch('/users/patients', {
-        initialData: { patients: [], totalCount: 0 },
-        params: {
-            page: currentPage,
-            limit: itemsPerPage,
-            search: searchTerm,
-            doctor_id: viewDoctorId
-        }
+        refetch: fetchPatients,
+    } = usePatientQuery({
+        limit: itemsPerPage,
+        doctorId: viewDoctorId,
+        useGlobalSearch: true
     });
-
-    const patients = patientData?.patients || [];
-    const totalCount = patientData?.totalCount || 0;
 
     // Supplementary Lists
     const { data: doctorsData = [] } = useFetch('/users/doctors', { initialData: [] });
@@ -76,22 +70,6 @@ export const usePatientsPageController = () => {
     const [debtModal, setDebtModal] = useState({ open: false, params: { patientId: null, amount: '', method: 'cash' } });
     const [prescribeModal, setPrescribeModal] = useState({ open: false, data: { apptId: null, patientId: null, patientName: '', medications: '', instructions: '' } });
     const [qrModal, setQrModal] = useState({ open: false, url: '', expiry: null, patientName: '', patientPhone: '' });
-
-    // Reset to page 1 on search
-    const handleSearchChange = useCallback((value) => {
-        setSearchTerm(value);
-        setCurrentPage(1);
-    }, [setSearchTerm]);
-
-
-    const totalPages = Math.ceil(totalCount / itemsPerPage);
-
-    const handlePageChange = useCallback((newPage) => {
-        if (newPage >= 1 && newPage <= totalPages) {
-            setCurrentPage(newPage);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    }, [totalPages]);
 
     // --- Handlers Hook ---
     const hookHandlers = usePatientsHandlers({
@@ -125,7 +103,7 @@ export const usePatientsPageController = () => {
         detailsLoading,
         activeTab, setActiveTab,
         viewDoctorId, setViewDoctorId,
-        searchTerm, setSearchTerm: handleSearchChange,
+        searchTerm, setSearchTerm,
         selectedPatientId, setSelectedPatientId,
         patientDetails, setPatientDetails,
 

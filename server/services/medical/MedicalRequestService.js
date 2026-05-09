@@ -214,17 +214,16 @@ class MedicalRequestService {
         const pricing = await calculatePrice(conn, reqInfo.doctor_id, reqInfo.patient_id, reqInfo.type);
 
         if (pricing.price > 0) {
-            await transactionRepository.create({
+            await financeService.createTransaction({
                 type: 'income_patient',
-                amount: pricing.price,
+                amount: 0,
+                debt_amount: pricing.price,
                 description: `${reqInfo.type}: ${reqInfo.patient_name}`,
                 doctor_id: reqInfo.doctor_id,
                 status: 'pending',
-                method: 'cash',
-                related_user_id: reqInfo.patient_user_id || reqInfo.user_id, // Need to ensure we use correct ID
-                request_id: requestId,
-                transaction_date: new Date()
-            }, conn);
+                related_user_id: reqInfo.patient_user_id || reqInfo.user_id,
+                request_id: requestId
+            }, userId, conn);
         }
     }
 

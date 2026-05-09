@@ -158,13 +158,23 @@ class AppointmentRepository {
             SELECT 
                 a.id, a.appointment_date, a.reason, a.status, a.payment_status, a.type, a.is_out_of_hours, a.bonified, a.rescheduled_from_date,
                 p.full_name as patient_name, d.full_name as doctor_name,
-                (SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE appointment_id = a.id AND is_withdrawal = 0 AND status = 'paid') as paid_amount,
-                (SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE appointment_id = a.id AND is_withdrawal = 0 AND status = 'paid' AND (method = 'cash' OR method = 'efectivo')) as cash_amount,
-                (SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE appointment_id = a.id AND is_withdrawal = 0 AND status = 'pending') as debt_amount,
-                (SELECT GROUP_CONCAT(method) FROM transactions WHERE appointment_id = a.id AND is_withdrawal = 0 AND status = 'paid') as methods
+                COALESCE(tx.paid_amount, 0) as paid_amount,
+                COALESCE(tx.cash_amount, 0) as cash_amount,
+                COALESCE(tx.debt_amount, 0) as debt_amount,
+                tx.methods
             FROM appointments a
             LEFT JOIN patients p ON a.patient_id = p.id
             JOIN doctors d ON a.doctor_id = d.id
+            LEFT JOIN (
+                SELECT 
+                    appointment_id,
+                    SUM(CASE WHEN is_withdrawal = 0 AND status = 'paid' THEN amount ELSE 0 END) as paid_amount,
+                    SUM(CASE WHEN is_withdrawal = 0 AND status = 'paid' AND (method = 'cash' OR method = 'efectivo') THEN amount ELSE 0 END) as cash_amount,
+                    SUM(CASE WHEN is_withdrawal = 0 AND status = 'pending' THEN amount ELSE 0 END) as debt_amount,
+                    GROUP_CONCAT(DISTINCT method) as methods
+                FROM transactions
+                GROUP BY appointment_id
+            ) tx ON tx.appointment_id = a.id
             WHERE MONTH(a.appointment_date) = ? AND YEAR(a.appointment_date) = ?
         `;
         const params = [month, year];
@@ -178,15 +188,28 @@ class AppointmentRepository {
     async findByDoctorAndDateForSync(doctorId, date, conn = pool) {
         return await conn.query(`
             SELECT a.*, p.full_name as patient_name, p.phone as patient_phone,
-                   COALESCE(SUM(CASE WHEN t.status = 'paid' THEN t.amount ELSE 0 END), 0) as amount_paid,
-                   COALESCE(SUM(CASE WHEN t.status = 'pending' THEN t.amount ELSE 0 END), 0) as amount_debt,
-                   (SELECT COUNT(*) FROM appointments a2 WHERE a2.patient_id = p.id AND a2.status IN ('attended', 'completed')) as attended_appointments,
-                   (SELECT base_price FROM institutions inst WHERE inst.id = a.institution_id) as institution_base_price
+                   COALESCE(tx.amount_paid, 0) as amount_paid,
+                   COALESCE(tx.amount_debt, 0) as amount_debt,
+                   p_stats.attended_appointments,
+                   inst.base_price as institution_base_price
             FROM appointments a
             LEFT JOIN patients p ON a.patient_id = p.id
-            LEFT JOIN transactions t ON t.appointment_id = a.id
+            LEFT JOIN (
+                SELECT appointment_id,
+                       SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) as amount_paid,
+                       SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) as amount_debt
+                FROM transactions
+                GROUP BY appointment_id
+            ) tx ON tx.appointment_id = a.id
+            LEFT JOIN (
+                SELECT patient_id, COUNT(*) as attended_appointments
+                FROM appointments
+                WHERE status IN ('attended', 'completed')
+                GROUP BY patient_id
+            ) p_stats ON p_stats.patient_id = a.patient_id
+            LEFT JOIN institutions inst ON inst.id = a.institution_id
             WHERE a.doctor_id = ? AND DATE(a.appointment_date) = ? AND a.status != 'cancelled'
-            GROUP BY a.id ORDER BY a.appointment_date ASC
+            ORDER BY a.appointment_date ASC
         `, [doctorId, date]);
     }
 
@@ -270,6 +293,23 @@ class AppointmentRepository {
               AND a.status = 'pending'
               AND (p.phone IS NOT NULL AND p.phone != '')
         `);
+    }
+
+    async callSpBookAppointment(data, conn) {
+        const connection = conn || await pool.getConnection();
+        try {
+            const results = await connection.query(
+                "CALL sp_book_appointment(?, ?, ?, ?, ?, ?, ?, ?, ?, @p_appointment_id); SELECT @p_appointment_id as id;",
+                [
+                    data.patient_id, data.doctor_id, data.appointment_date, 
+                    data.reason, data.is_out_of_hours ? 1 : 0, data.type, 
+                    data.institution_id, data.bonified ? 1 : 0, data.created_by
+                ]
+            );
+            return results[1][0]?.id || null;
+        } finally {
+            if (!conn) connection.release();
+        }
     }
 }
 

@@ -1,0 +1,15 @@
+{
+  "name": "build and lint",
+  "target": "branch",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "include": [
+        "~DEFAULT_BRANCH",
+        "refs/heads/main",
+        "refs/heads/staging"
+      ],
+      "exclude": []
+    }
+  }
+}

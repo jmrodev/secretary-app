@@ -192,6 +192,11 @@ class PatientService {
             lastYear: Number(stats.last_year)
         };
     }
+
+    async getRecentPatients() {
+        const [rows] = await pool.query('SELECT * FROM view_recent_patients');
+        return rows;
+    }
 }
 
 module.exports = new PatientService();
