@@ -154,7 +154,7 @@ class GoogleContactService {
                         conn.release();
                     }
                 }
-            } catch (err) {
+            } catch (_error) {
                 results.errors++;
             }
         }

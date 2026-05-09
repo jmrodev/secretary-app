@@ -38,9 +38,7 @@ class TemporaryAccessService {
             // We might need username here too, but findById doesn't return it currently.
             // If needed, we can add a method to patientRepository that joins with users.
             if (patient) {
-                const user = await userRepository.findByUsername(patient.username); // Wait, patient table doesn't have username field.
-                // Actually, the original code did:
-                // SELECT p.*, u.username FROM patients p JOIN users u ON p.user_id = u.id WHERE p.id = ?
+                // Patient found
             }
             // Let's add findDetailedById to patientRepository if it's missing or update it.
         }

@@ -72,7 +72,7 @@ app.use(async (req, res, next) => {
                 }
             }
         }
-    } catch (e) {
+    } catch (_) {
         // Silently fail to not block the request
     }
 

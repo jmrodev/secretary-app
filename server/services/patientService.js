@@ -98,7 +98,7 @@ class PatientService {
         };
     }
 
-    async updatePatientDetails(id, updates, reqUser) {
+    async updatePatientDetails(id, updates, _reqUser) {
         const conn = await pool.getConnection();
         try {
             await conn.beginTransaction();

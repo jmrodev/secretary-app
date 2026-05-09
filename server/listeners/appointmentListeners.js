@@ -1,14 +1,13 @@
 const appointmentEvents = require('../events/appointmentEvents');
 const googleSyncService = require('../services/appointments/googleSyncService');
 const doctorRepository = require('../repositories/doctorRepository');
-const { logAction } = require('../utils/audit');
 const whatsappService = require('../services/whatsappService');
 
 // 1. Google Calendar Synchronizer
 // ... existing code ...
 
 // 3. WhatsApp Confirmation Notifier
-appointmentEvents.on('appointmentCreated', async ({ appointmentId, data, patientData }) => {
+appointmentEvents.on('appointmentCreated', async ({ data, patientData }) => {
     try {
         await whatsappService.sendConfirmationMessage({
             patient_id: patientData.id,
@@ -47,7 +46,7 @@ appointmentEvents.on('appointmentCreated', async ({ appointmentId, data, patient
 });
 
 // 2. Audit Logger
-appointmentEvents.on('appointmentCreated', async ({ appointmentId, patientData, userId }) => {
+appointmentEvents.on('appointmentCreated', async ({ appointmentId, userId }) => {
     console.log(`[Audit] Appointment ${appointmentId} created by User ${userId}`);
 });
 

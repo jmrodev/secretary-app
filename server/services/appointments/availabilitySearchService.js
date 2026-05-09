@@ -1,4 +1,3 @@
-const googleCalendarService = require('../google/GoogleCalendarService');
 const holidayRepository = require('../../repositories/holidayRepository');
 const doctorRepository = require('../../repositories/doctorRepository');
 const appointmentRepository = require('../../repositories/appointmentRepository');

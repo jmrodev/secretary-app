@@ -85,7 +85,7 @@ describe('RestoreService', () => {
         data: JSON.stringify(patientData),
       };
 
-      mockConn.query.mockImplementation(async (sql, params) => {
+      mockConn.query.mockImplementation(async (sql, _params) => {
         if (sql.includes('SELECT * FROM recycle_bin')) return [mockItem];
         if (sql.includes('INSERT INTO users')) return [{ insertId: 10 }]; // mock users insert
         if (sql.includes('SELECT id FROM doctors')) return [{ id: 1 }]; // doctor check
@@ -115,7 +115,7 @@ describe('RestoreService', () => {
         data: JSON.stringify(doctorData),
       };
 
-      mockConn.query.mockImplementation(async (sql, params) => {
+      mockConn.query.mockImplementation(async (sql, _params) => {
         if (sql.includes('SELECT * FROM recycle_bin')) return [mockItem];
         if (sql.includes('INSERT INTO users')) return [{ insertId: 20 }];
         return [];
@@ -146,7 +146,7 @@ describe('RestoreService', () => {
         data: JSON.stringify(secData),
       };
 
-      mockConn.query.mockImplementation(async (sql, params) => {
+      mockConn.query.mockImplementation(async (sql, _params) => {
         if (sql.includes('SELECT * FROM recycle_bin')) return [mockItem];
         if (sql.includes('INSERT INTO users')) return [{ insertId: 30 }];
         return [];
@@ -173,7 +173,7 @@ describe('RestoreService', () => {
             id: 4, entity_type: 'medical_request', entity_name: 'Cert request', data: JSON.stringify(reqData)
         };
 
-        mockConn.query.mockImplementation(async (sql, params) => {
+        mockConn.query.mockImplementation(async (sql, _params) => {
             if (sql.includes('SELECT * FROM recycle_bin')) return [mockItem];
             if (sql.includes('SELECT id FROM patients')) return [[{ id: 1 }]];
             if (sql.includes('SELECT id FROM doctors')) return [[{ id: 1 }]];
@@ -200,7 +200,7 @@ describe('RestoreService', () => {
             data: JSON.stringify({ profile: {} }), // missing fields to force error, though we mock it below
         };
 
-        mockConn.query.mockImplementation(async (sql, params) => {
+        mockConn.query.mockImplementation(async (sql, _params) => {
             if (sql.includes('SELECT * FROM recycle_bin')) return [mockItem];
             throw new Error('Database insertion failed');
         });

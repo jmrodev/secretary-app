@@ -53,7 +53,7 @@ describe('RestoreService', () => {
                 data: JSON.stringify(itemData)
             }];
 
-            mockConn.query.mockImplementation((query, args) => {
+            mockConn.query.mockImplementation((query, _args) => {
                 if (query.includes('SELECT * FROM recycle_bin')) {
                     return Promise.resolve(dbRows);
                 }
@@ -93,7 +93,7 @@ describe('RestoreService', () => {
                 data: JSON.stringify({ profile: { id: 1 } })
             }];
 
-            mockConn.query.mockImplementation((query, args) => {
+            mockConn.query.mockImplementation((query, _args) => {
                 if (query.includes('SELECT * FROM recycle_bin')) {
                     return Promise.resolve(dbRows);
                 }

@@ -78,7 +78,7 @@ class FinanceService {
         }
     }
 
-    async payDebt(data, currentUserId) {
+    async payDebt(data, _currentUserId) {
         const { patientId, amount, method, doctor_id } = data;
         const payAmount = parseFloat(amount);
         if (isNaN(payAmount) || payAmount <= 0) throw new Error("Invalid amount");
@@ -144,7 +144,7 @@ class FinanceService {
     }
 
 
-    async payInstitutionDebt(data, currentUserId) {
+    async payInstitutionDebt(data, _currentUserId) {
         const conn = await pool.getConnection();
         try {
             const { institution_id, amount, method, transaction_ids } = data;
@@ -236,7 +236,7 @@ class FinanceService {
             // Sync statuses
             const syncPromises = [];
             for (const appointmentId of syncAppointments) {
-                syncPromises.push(this.syncAppointmentPaymentStatus(appointmentId, currentUserId, conn));
+                syncPromises.push(this.syncAppointmentPaymentStatus(appointmentId, _currentUserId, conn));
             }
             for (const requestId of syncRequests) {
                 syncPromises.push(this.syncRequestPaymentStatus(requestId, conn));
@@ -270,8 +270,8 @@ class FinanceService {
         }
     }
 
-    async syncAppointmentPaymentStatus(appointmentId, userId, conn) {
-        const { totalPaid, totalPending, hasPaid, hasPending } = await transactionRepository.getPaymentSummary(appointmentId, conn);
+    async syncAppointmentPaymentStatus(appointmentId, _userId, conn) {
+        const { _totalPaid, _totalPending, hasPaid, hasPending } = await transactionRepository.getPaymentSummary(appointmentId, conn);
         let finalStatus = (hasPaid && hasPending) ? 'partial' : (hasPaid ? 'paid' : (hasPending ? 'debt' : 'pending'));
         await appointmentRepository.update(appointmentId, {
             payment_status: finalStatus,
@@ -281,8 +281,8 @@ class FinanceService {
 
     async syncRequestPaymentStatus(requestId, conn) {
         console.log(`[FinanceService] syncRequestPaymentStatus for Request: ${requestId}`);
-        const { totalPaid, totalPending, hasPaid, hasPending } = await transactionRepository.getRequestPaymentSummary(requestId, conn);
-        console.log(`[FinanceService] Summary for ${requestId}: Paid=${totalPaid}, Pending=${totalPending}, hasPaid=${hasPaid}, hasPending=${hasPending}`);
+        const { _totalPaid, totalPending, hasPaid, hasPending } = await transactionRepository.getRequestPaymentSummary(requestId, conn);
+        console.log(`[FinanceService] Summary for ${requestId}: Paid=${_totalPaid}, Pending=${totalPending}, hasPaid=${hasPaid}, hasPending=${hasPending}`);
 
         let finalStatus = (hasPaid && hasPending) ? 'partial' : (hasPaid ? 'paid' : (hasPending ? 'debt' : 'pending'));
         console.log(`[FinanceService] Updating Request ${requestId} status to: ${finalStatus}`);

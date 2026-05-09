@@ -159,7 +159,7 @@ class GoogleCalendarService {
                 } else {
                     await this._createNewEvent(doctorId, appt, eventData, req, results);
                 }
-            } catch (err) { results.errors++; }
+            } catch (_error) { results.errors++; }
         }
         return results;
     }

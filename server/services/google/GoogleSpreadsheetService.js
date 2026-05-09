@@ -155,12 +155,6 @@ class GoogleSpreadsheetService {
 
         const dateObj = new Date(tx.transaction_date);
 
-        let subType = 'Expense';
-        if (tx.appointment_id) subType = 'Appointment';
-        else if (tx.request_id) subType = 'Request';
-        else if (tx.type === 'withdrawal' || tx.is_withdrawal === 1 || tx.type === 'payout') subType = 'Withdrawal';
-        else if (tx.type?.startsWith('expense')) subType = 'Expense';
-
         const rowValues = [
             dateObj.toLocaleDateString('es-AR'),
             dateObj.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),

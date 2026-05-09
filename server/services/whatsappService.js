@@ -2,6 +2,7 @@ const axios = require('axios');
 const systemSettingsRepository = require('../repositories/systemSettingsRepository');
 const appointmentRepository = require('../repositories/appointmentRepository');
 const whatsappRepository = require('../repositories/whatsappRepository');
+const { formatDateDisplay, formatTimeDisplay } = require('../utils/dateUtils');
 
 const getMetaCredentials = async () => {
     const rows = await systemSettingsRepository.findManyByKeys(['meta_phone_number_id', 'meta_access_token']);
@@ -49,7 +50,7 @@ const sendTemplateMessage = async (to, templateName, languageCode = 'es', compon
         return response.data;
     } catch (error) {
         console.error('WhatsApp API Error:', error.response?.data || error.message);
-        throw new Error(error.response?.data?.error?.message || 'Failed to send WhatsApp message');
+        throw new Error(error.response?.data?.error?.message || 'Failed to send WhatsApp message', { cause: error });
     }
 };
 
@@ -79,7 +80,7 @@ const sendMessageDirect = async (to, message, patientId = null) => {
         return response.data;
     } catch (error) {
         console.error('Local WhatsApp Bridge Error:', error.response?.data || error.message);
-        throw new Error('Local WhatsApp bridge is not responding. Ensure the bridge service is running.');
+        throw new Error('Local WhatsApp bridge is not responding. Ensure the bridge service is running.', { cause: error });
     }
 };
 
@@ -122,9 +123,9 @@ const sendAutomatedReminders = async () => {
                         : "Hola {patient_name}, recordamos tu turno para el {date} a las {time} con Dr/a. {doctor_name} en {appointment_location}. Confirma asistencia.";
                 }
 
-                const dateStr = new Date(appt.appointment_date).toLocaleDateString('es-AR');
-                const timeStr = new Date(appt.appointment_date).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false });
-                const address = settings.clinic_address || 'Montiel 1255';
+                const dateStr = formatDateDisplay(appt.appointment_date);
+                const timeStr = formatTimeDisplay(appt.appointment_date);
+                const address = settings.clinic_address || '';
 
                 const message = template
                     .replace(/{patient_name}/g, appt.patient_name)
@@ -164,7 +165,7 @@ const getBridgeStatus = async () => {
         const bridgeUrl = process.env.WHATSAPP_BRIDGE_STATUS_URL || 'http://127.0.0.1:8090/api/status';
         const response = await axios.get(bridgeUrl, { timeout: 2000 });
         return response.data;
-    } catch (error) {
+    } catch (_) {
         return { status: 'offline', qr_code: '' };
     }
 };
@@ -194,9 +195,9 @@ const sendConfirmationMessage = async (appt) => {
                 : "¡Hola {patient_name}! Confirmamos tu turno para el {date} a las {time} con Dr/a. {doctor_name} en {appointment_location}.";
         }
 
-        const dateStr = new Date(appt.appointment_date).toLocaleDateString('es-AR');
-        const timeStr = new Date(appt.appointment_date).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false });
-        const address = settings.clinic_address || 'Montiel 1255';
+        const dateStr = formatDateDisplay(appt.appointment_date);
+        const timeStr = formatTimeDisplay(appt.appointment_date);
+        const address = settings.clinic_address || '';
 
         // Get doctor name (we might need to fetch it if not provided)
         let doctorName = appt.doctor_name || 'Médico';

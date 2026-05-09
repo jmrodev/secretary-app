@@ -108,6 +108,24 @@ class PatientsQueryBuilder extends BaseQueryBuilder {
     }
 
     /**
+     * Filtra pacientes con deuda mayor a 0
+     */
+    onlyWithDebt() {
+        this.where('p.total_debt_calculated > 0');
+        return this;
+    }
+
+    /**
+     * Filtra por estado de riesgo financiero (green, yellow, red)
+     */
+    filterByRiskStatus(status) {
+        if (status) {
+            this.where('p.debt_status = ?', status);
+        }
+        return this;
+    }
+
+    /**
      * Ordena por nombre
      */
     sortByName(direction = 'ASC') {

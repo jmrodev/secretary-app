@@ -72,15 +72,15 @@ class LocalAfipService {
             }
 
             return this.tokenData;
-        } catch (err) {
-            if (err.extra?.fault?.faultcode === 'ns1:coe.alreadyAuthenticated' ||
-                (err.message && err.message.includes('alreadyAuthenticated'))) {
+        } catch (error) {
+            if (error.extra?.fault?.faultcode === 'ns1:coe.alreadyAuthenticated' ||
+                (error.message && error.message.includes('alreadyAuthenticated'))) {
                 const msg = "AFIP indica que ya existe un token válido. Por seguridad, AFIP bloquea pedidos nuevos por unos minutos. Por favor, espera 2-5 minutos e intenta nuevamente.";
                 console.warn(`[LocalAfipService] ${msg}`);
-                throw new Error(msg);
+                throw new Error(msg, { cause: error });
             }
-            console.error("[LocalAfipService] WSAA Error:", err);
-            throw new Error(`Error de AFIP: ${err.message}`);
+            console.error("[LocalAfipService] WSAA Error:", error);
+            throw new Error(`Error de AFIP: ${error.message}`, { cause: error });
         }
     }
 

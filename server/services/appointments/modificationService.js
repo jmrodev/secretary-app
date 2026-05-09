@@ -3,7 +3,6 @@ const googleSyncService = require('./googleSyncService');
 const financeService = require('../finance/financeService');
 const helper = require('./appointmentHelper');
 const { pool } = require('../../db');
-const { logAction } = require('../../utils/audit');
 
 /**
  * ModificationService
