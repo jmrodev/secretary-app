@@ -410,6 +410,8 @@ class TransactionRepository {
         } finally {
             if (!conn) connection.release();
         }
+    }
+
     async getAudits(filters = {}, conn = pool) {
         let query = `
             SELECT ta.*, t.description, p.full_name as patient_name, d.full_name as doctor_name

@@ -132,8 +132,8 @@
     "hash": "034b3a93939ad45a10bf7f7669fca50e"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/controllers/financeController.js": {
-    "mtime": 1778206301.6230707,
-    "hash": "7983f2c0d6c3ef29df8505f4dab608e6"
+    "mtime": 1778352236.048941,
+    "hash": "cdb2faa6dd994414049ff0f81358ad3c"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/controllers/institutionController.js": {
     "mtime": 1776530248.4362102,
@@ -296,8 +296,8 @@
     "hash": "3aed16b725e9b2371298ba85408271ce"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/routes/financeRoutes.js": {
-    "mtime": 1778206301.6370704,
-    "hash": "57c52e7fbb940f1a60f5bf6345547abc"
+    "mtime": 1778352246.6337996,
+    "hash": "5498cf79ba4f9265d8c0d9266485080f"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/routes/scheduleRoutes.js": {
     "mtime": 1776530248.4425957,
@@ -418,6 +418,10 @@
   "/home/jmro/Documentos/proyectos/secretary-app/server/scripts/migrations/01_optimize_patient_search.sql": {
     "mtime": 1778347761.7120962,
     "hash": "22b19ed93d7adaf4825457ea762da283"
+  },
+  "/home/jmro/Documentos/proyectos/secretary-app/server/scripts/migrations/09_daily_balance_view.sql": {
+    "mtime": 1778352254.265701,
+    "hash": "b5582189d04bc734917a67aa418b8abd"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/scripts/migrations/07_update_recent_patients_view.sql": {
     "mtime": 1778350038.420474,
@@ -644,8 +648,8 @@
     "hash": "7ce838457658ab6b32be4d9d52cb7a14"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/repositories/messageRepository.js": {
-    "mtime": 1778206301.6340704,
-    "hash": "d96f2be2a2fe25a6629e8b43bff8a7a7"
+    "mtime": 1778351959.4869566,
+    "hash": "dc46715a047b491a350efd8532bb6de0"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/repositories/statsRepository.js": {
     "mtime": 1778206301.6350706,
@@ -668,8 +672,8 @@
     "hash": "3694e92b2f6817da3957310290ab79a5"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/repositories/transactionRepository.js": {
-    "mtime": 1778206301.6360705,
-    "hash": "5a72fa8cf22539b21d95917ce7773b52"
+    "mtime": 1778352228.2920477,
+    "hash": "4934a8067d9165202d454b25a4314b5c"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/repositories/patientRepository.js": {
     "mtime": 1778206301.6340704,
