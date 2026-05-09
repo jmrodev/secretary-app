@@ -120,7 +120,7 @@ input:disabled,
 select:disabled,
 textarea:disabled,
 .form-control:disabled {
-    background-color: var(--gray-50);
+    background-color: var(--gray-800);
     color: var(--gray-500);
     cursor: not-allowed;
     transform: none;
@@ -128,11 +128,12 @@ textarea:disabled,
 
 label {
     display: block;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 0.5rem;
-    color: var(--gray-500);
+    color: var(--text-secondary);
     font-size: 0.9rem;
 }
+
 
 /* Tables */
 .table-base {

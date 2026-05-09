@@ -118,7 +118,9 @@ export const usePatientsPageController = () => {
             ...hookHandlers,
             fetchPatients, fetchRecycleBin,
             handleSavePrescription,
-        }
+        },
+        fetched: patientsLoading === false && patients !== undefined, // Or update usePatientQuery to return fetched
     };
+
 };
 

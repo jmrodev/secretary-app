@@ -190,7 +190,9 @@ export const useDashboardController = () => {
         historyModal: modalsHook.historyModal,
         prescribeModal: modalsHook.prescribeModal,
         paymentModal: modalsHook.paymentModal,
+        fetched: statsHook.fetched && remindersHook.fetched,
         isSubmitting,
+
         viewDoctorId,
         setViewDoctorId,
         doctors: statsHook.doctors,

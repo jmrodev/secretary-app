@@ -32,7 +32,7 @@ export const useAppointmentsPageController = () => {
     const { confirm, prompt } = useModal();
     const navigate = useNavigate();
 
-    const { viewDoctorId, setViewDoctorId, doctors, doctorsLoading } = useDoctors();
+    const { viewDoctorId, setViewDoctorId, doctors, doctorsLoading, doctorsFetched } = useDoctors();
     
     // Extracted Logic Hooks
     const agendaState = useAgendaState(setViewDoctorId);
@@ -53,16 +53,19 @@ export const useAppointmentsPageController = () => {
     // --- Data Fetching using useFetch ---
     
     // Institutions
-    const { data: instData, loading: institutionsLoading } = useFetch('/institutions', { 
+    const institutionsHook = useFetch('/institutions', { 
         initialData: { institutions: [], totalCount: 0 } 
     });
+    const { data: instData, loading: institutionsLoading } = institutionsHook;
     const institutions = instData?.institutions || [];
+
 
     // Insurances (Required for PatientManagerModal)
     const { data: insData } = useFetch('/insurances', { 
         initialData: { insurances: [], totalCount: 0 } 
     });
     const insurances = insData?.insurances || [];
+
 
     // Calendar Stats
     const { data: calendarStats = {} } = useFetch('/appointments/stats', {
@@ -125,6 +128,8 @@ export const useAppointmentsPageController = () => {
         showNextSlotModal: nextSlot.showModal, setShowNextSlotModal: nextSlot.setShowModal,
         holidays, booking, patientSearch, nextSlot, currentDoctor: viewDoctorId ? doctors.find(d => d.id === Number(viewDoctorId)) : null,
         filteredAppointments: appointments, appointments, calendarStats, doctorSchedule,
-        searchTerm, searchPatientId, patientAppointments, patientApptLoading, searchLoading, handlers, rescheduleAppt, exitRescheduleMode
+        searchTerm, searchPatientId, patientAppointments, patientApptLoading, searchLoading, handlers, rescheduleAppt, exitRescheduleMode,
+        fetched: doctorsFetched && institutionsHook.fetched && patientSearch.fetched
     };
+
 };

@@ -67,7 +67,10 @@ const MedicalRequirementManager = ({
         'referral': t('referral')
     };
 
-    if (loading) return <Loading variant="centered" text={t('loading')} />;
+    // Only show global loading if we haven't fetched anything yet (initial load)
+    if (loading && !controller.fetched) return <Loading variant="centered" text={t('loading')} />;
+
+
 
     const isAdminOrSecretary = ['admin', 'secretary'].includes(user?.role);
     const canEdit = user?.role === 'admin' || user?.role === 'secretary' || user?.role === 'doctor';

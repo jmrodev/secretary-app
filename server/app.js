@@ -3,7 +3,6 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const { pool } = require('./db');
 const systemSettingsRepository = require('./repositories/systemSettingsRepository');
-const appointmentRepository = require('./repositories/appointmentRepository');
 
 // BigInt JSON serialization fix
 BigInt.prototype.toJSON = function () { return Number(this); };
@@ -120,14 +119,6 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get('/api/debug/dump-appointments', async (req, res) => {
-    try {
-        const rows = await appointmentRepository.findAllDetailed();
-        res.json({ count: rows.length, rows });
-    } catch (e) {
-        res.status(500).json({ error: e.message });
-    }
-});
 
 // Start server
 const server = app.listen(PORT, '0.0.0.0', async () => {

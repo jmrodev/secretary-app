@@ -45,7 +45,7 @@ const FinancesPage = () => {
             <div className="finances-page layout-content-area">
                 <section className="animate-fade-in">
                     <h2 className="visually-hidden">{t('financial_operations_area') || 'Área de Operaciones Financieras'}</h2>
-                    {loading ? (
+                    {loading && filteredTransactions.length === 0 ? (
                         <Loading variant="centered" text={t('loading') || 'Cargando...'} />
                     ) : (
                         <div className="dashboard-layout__grid">

@@ -71,16 +71,16 @@ const DashboardPage = () => {
     }
 
     const hasLoadedStats = (
-        !loading &&
         stats !== null &&
         stats !== undefined &&
         typeof stats === 'object' &&
         Object.keys(stats).length > 0
     );
-    const hasLoadedReminders = Array.isArray(reminders) && reminders.length > 0;
-    const hasDashboardData = hasLoadedStats || hasLoadedReminders;
-    const shouldShowLoadingState = loading && !hasDashboardData;
-    const shouldShowErrorState = Boolean(error) && !hasDashboardData;
+    const hasLoadedReminders = Array.isArray(reminders) && (reminders.length > 0 || !loading);
+    const shouldShowLoadingState = loading && !controller.fetched;
+    const shouldShowErrorState = Boolean(error) && !controller.fetched;
+
+
 
     return (
         <MainLayout wide flush title={t('dashboard')} hideTitle>

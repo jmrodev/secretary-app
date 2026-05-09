@@ -7,8 +7,8 @@
     --input-focus-ring: rgba(72, 128, 255, 0.1);
     --input-error-border: var(--danger);
     --input-error-ring: rgba(249, 55, 93, 0.1);
-    --input-disabled-bg: var(--gray-50);
-    --input-disabled-text: var(--gray-400);
+    --input-disabled-bg: var(--gray-800);
+    --input-disabled-text: var(--text-muted);
     /* ------------------------------ */
 
     width: 100%;

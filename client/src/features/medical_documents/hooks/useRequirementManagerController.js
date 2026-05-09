@@ -27,11 +27,7 @@ export const useRequirementManagerController = (user) => {
     // --- FETCH DATA using useFetch ---
 
     // Requests
-    const { 
-        data: requestsData = { requests: [], totalCount: 0 }, 
-        loading: requestsLoading, 
-        refetch: fetchRequests 
-    } = useFetch('/medical/requests', {
+    const requestsHook = useFetch('/medical/requests', {
         params: {
             page: currentPage,
             limit: itemsPerPage,
@@ -39,6 +35,12 @@ export const useRequirementManagerController = (user) => {
         },
         initialData: { requests: [], totalCount: 0 }
     });
+    const { 
+        data: requestsData = { requests: [], totalCount: 0 }, 
+        loading: requestsLoading, 
+        refetch: fetchRequests 
+    } = requestsHook;
+
 
     const requests = requestsData.requests || [];
     const totalCount = requestsData.totalCount || 0;
@@ -269,7 +271,10 @@ export const useRequirementManagerController = (user) => {
         confirmAction,
         handleDelete,
         fetchRequests,
+        fetched: requestsHook.fetched,
         patientMeds, fetchingMeds,
+
+
         isEditing, setIsEditing,
         editMeds, setEditMeds,
         editNotes, setEditNotes,

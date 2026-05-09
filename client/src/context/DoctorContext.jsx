@@ -16,7 +16,7 @@ export const DoctorProvider = ({ children }) => {
     );
 
     // Doctors List (Cached globally)
-    const { data: doctorData, loading: doctorsLoading } = useFetch('/users/doctors', {
+    const { data: doctorData, loading: doctorsLoading, fetched: doctorsFetched } = useFetch('/users/doctors', {
         initialData: { doctors: [], totalCount: 0 },
         immediate: !!user // Fetch only if logged in
     });
@@ -50,12 +50,14 @@ export const DoctorProvider = ({ children }) => {
     const value = useMemo(() => ({
         doctors,
         doctorsLoading,
+        doctorsFetched,
         viewDoctorId,
         setViewDoctorId,
         currentDoctor,
         doctorDisplayName: currentDoctor ? currentDoctor.full_name : null,
         isStaff
-    }), [doctors, doctorsLoading, viewDoctorId, setViewDoctorId, currentDoctor, isStaff]);
+    }), [doctors, doctorsLoading, doctorsFetched, viewDoctorId, setViewDoctorId, currentDoctor, isStaff]);
+
 
     return (
         <DoctorContext.Provider value={value}>

@@ -45,7 +45,14 @@ const AppointmentsPage = () => {
         setPrescribeModal, setEditPatientModalOpen, setAuthModalOpen
     } = handlers;
 
-    if (loading || !user) return <Loading variant="full-page" />;
+    if (!user) return <Loading variant="full-page" />;
+
+    // Only show global loading if we haven't fetched anything yet (initial load)
+    if (loading && !controller.fetched) {
+        return <Loading variant="full-page" text={t('loading')} />;
+    }
+
+
 
     return (
         <MainLayout wide flush title={t('appointments_title')}>

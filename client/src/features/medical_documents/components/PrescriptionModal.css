@@ -4,11 +4,11 @@
 /* ── Root container ── */
 .prescription-modal {
     /* --- Local Component Tokens --- */
-    --modal-bg: var(--white);
-    --modal-island-bg: var(--gray-50);
-    --modal-border: var(--gray-200);
-    --btn-active-bg: var(--blue-600);
-    --btn-hover-bg: var(--blue-50);
+    --modal-bg: var(--dashboard-card-bg);
+    --modal-island-bg: var(--gray-800);
+    --modal-border: var(--dashboard-card-border);
+    --btn-active-bg: var(--primary-color);
+    --btn-hover-bg: var(--gray-700);
     /* ------------------------------ */
 
     display: flex;
@@ -72,14 +72,14 @@
 
 .prescription-modal__freq-btn:hover {
     background-color: var(--btn-hover-bg);
-    color: var(--blue-700);
-    border-color: var(--blue-200);
+    color: var(--text-main);
+    border-color: var(--dashboard-card-border);
 }
 
 .prescription-modal__freq-btn--active {
     background-color: var(--btn-active-bg);
-    color: var(--white);
-    border-color: var(--blue-700);
+    color: var(--text-main);
+    border-color: var(--primary-color);
 }
 
 /* ── Numeric fields row (3 inputs + add btn) ── */
@@ -121,11 +121,11 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.6rem 0.9rem;
-    background: var(--success-50, #ecfdf5);
-    border: 1px solid var(--success-200, #a7f3d0);
+    background: var(--green-800);
+    border: 1px solid var(--green-700);
     border-radius: 0.6rem;
     font-size: 0.8rem;
-    color: var(--success-700, #065f46);
+    color: var(--green-200);
 }
 
 /* ── Habitual medications ── */
@@ -152,9 +152,9 @@
     padding: 0.35rem 0.7rem;
     font-size: 0.75rem;
     font-weight: 600;
-    background: var(--blue-50, #eff6ff);
-    color: var(--blue-700, #1d4ed8);
-    border: 1px solid var(--blue-100, #dbeafe);
+    background: var(--gray-800);
+    color: var(--text-main);
+    border: 1px solid var(--dashboard-card-border);
     border-radius: 0.5rem;
     cursor: pointer;
     transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
@@ -162,13 +162,13 @@
 }
 
 .prescription-modal__habitual-btn:hover {
-    background: var(--blue-100, #dbeafe);
+    background: var(--gray-700);
 }
 
 .prescription-modal__habitual-btn--active {
-    background: var(--success-500, #10b981);
-    border-color: var(--success-600, #059669);
-    color: #fff;
+    background: var(--green-800);
+    border-color: var(--green-600);
+    color: var(--text-main);
 }
 
 .prescription-modal__habitual-name {
@@ -186,8 +186,8 @@
     flex-direction: column;
     gap: 0.5rem;
     padding: 0.75rem;
-    background: var(--gray-50, #f9fafb);
-    border: 1px solid var(--border-color);
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
     border-radius: 0.75rem;
 }
 
@@ -196,8 +196,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 0.6rem 0.75rem;
-    background: var(--bg-card, #fff);
-    border: 1px solid var(--border-color);
+    background: var(--gray-800);
+    border: 1px solid var(--dashboard-card-border);
     border-radius: 0.5rem;
 }
 
@@ -220,7 +220,7 @@
 
 .prescription-modal__item-supply {
     font-weight: 700;
-    color: var(--success-600, #059669);
+    color: var(--green-400);
 }
 
 /* ── Textarea (preview and instructions) ── */

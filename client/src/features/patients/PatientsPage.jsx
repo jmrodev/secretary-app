@@ -68,11 +68,17 @@ const PatientsPage = () => {
         handleRestorePatient,
     } = handlers;
 
-    if (loading || !authUser) return (
+    if (!authUser) return <Loading variant="full-page" />;
+
+    // Only show global loading if we haven't fetched any patients yet (initial load)
+    if (loading && !controller.fetched) return (
+
         <MainLayout wide flush>
             <Loading variant="centered" text={t('loading')} />
         </MainLayout>
     );
+
+
 
     if (detailsLoading) return (
         <MainLayout wide flush>

@@ -47,8 +47,8 @@
 
 .modal-header {
     padding: 1.25rem 1.75rem;
-    background: var(--gray-50);
-    border-bottom: 1px solid var(--gray-200);
+    background: var(--gray-800);
+    border-bottom: 1px solid var(--dashboard-card-border);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -66,8 +66,8 @@
 }
 
 .modal-header__close {
-    background: var(--white);
-    border: 1px solid var(--gray-200);
+    background: var(--gray-700);
+    border: 1px solid var(--gray-600);
     color: var(--text-muted);
     cursor: pointer;
     width: 32px;
@@ -80,9 +80,9 @@
 }
 
 .modal-header__close:hover {
-    background: var(--red-50);
-    color: var(--red-600);
-    border-color: var(--red-100);
+    background: var(--red-900);
+    color: var(--red-50);
+    border-color: var(--red-800);
 }
 
 .modal-body {
@@ -111,8 +111,8 @@
 
 .input-group__static-text {
     padding: 0.85rem 1rem;
-    background: var(--gray-50);
-    border: 1px solid var(--gray-200);
+    background: var(--gray-800);
+    border: 1px solid var(--dashboard-card-border);
     border-radius: 12px;
     font-weight: 600;
     color: var(--text-main);
@@ -123,8 +123,8 @@
     width: 100%;
     min-height: 110px;
     padding: 0.85rem 1rem;
-    background: var(--white);
-    border: 1px solid var(--gray-300);
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
     border-radius: 12px;
     color: var(--text-main);
     font-size: 0.95rem;
@@ -142,8 +142,8 @@
 .input-group__select {
     width: 100%;
     padding: 0.85rem 1rem;
-    background: var(--white);
-    border: 1px solid var(--gray-300);
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
     border-radius: 12px;
     color: var(--text-main);
     font-weight: 500;
@@ -157,8 +157,8 @@
 
 .modal-footer {
     padding: 1.25rem 1.75rem;
-    background: var(--gray-50);
-    border-top: 1px solid var(--gray-200);
+    background: var(--gray-800);
+    border-top: 1px solid var(--dashboard-card-border);
     display: flex;
     justify-content: flex-end;
     gap: 1rem;

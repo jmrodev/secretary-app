@@ -51,8 +51,8 @@
     align-items: center;
     justify-content: center;
     padding: 2rem;
-    background: rgba(255, 255, 255, 0.5);
-    border: 2px dashed var(--border-color);
+    background: var(--dashboard-card-bg);
+    border: 2px dashed var(--dashboard-card-border);
     border-radius: 1.25rem;
     color: var(--text-muted);
     gap: 1rem;
@@ -65,9 +65,9 @@
 }
 
 .medical-requirement-manager__table-container {
-    background: white;
+    background: var(--dashboard-card-bg);
     border-radius: var(--radius-sm);
-    border: 1px solid var(--gray-200);
+    border: 1px solid var(--dashboard-card-border);
     overflow: hidden;
 }
 
@@ -78,14 +78,14 @@
 }
 
 .medical-requirement-manager__table-header {
-    background-color: var(--gray-50);
+    background-color: var(--gray-800);
     padding: 0.5rem 0.75rem;
     font-size: 0.7rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--gray-500);
-    border-bottom: 1px solid var(--gray-200);
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--dashboard-card-border);
 }
 
 .medical-requirement-manager__form-group {
@@ -114,15 +114,15 @@
 }
 
 .requirements-detail__body {
-    background: white;
-    border: 1px solid var(--border-color);
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
     border-radius: 1rem;
     overflow: hidden;
 }
 
 .requirements-detail__body--editing {
-    border-color: var(--blue-500);
-    box-shadow: 0 0 0 4px var(--blue-50);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(72, 128, 255, 0.1);
 }
 
 .requirements-detail__section-title {
@@ -132,8 +132,8 @@
     font-size: 0.9rem;
     font-weight: 700;
     padding: 1rem;
-    background: var(--gray-50);
-    border-bottom: 1px solid var(--border-color);
+    background: var(--gray-800);
+    border-bottom: 1px solid var(--dashboard-card-border);
     margin: 0;
 }
 
@@ -150,8 +150,8 @@
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;
-    background: var(--gray-50);
-    border-top: 1px solid var(--border-color);
+    background: var(--gray-800);
+    border-top: 1px solid var(--dashboard-card-border);
 }
 
 .requirements-detail__footer {
