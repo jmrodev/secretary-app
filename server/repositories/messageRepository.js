@@ -80,8 +80,7 @@ class MessageRepository {
                     u.username as other_username,
                     COALESCE(d.full_name, s.full_name, p.full_name, u.username) as other_display_name,
                     COALESCE(d.phone, s.phone, p.phone) as other_phone,
-                    (SELECT COUNT(*) FROM messages 
-                     WHERE recipient_id = ? AND sender_id = convo.other_user_id AND read_status < 2) as unread_count
+                    COALESCE(un.unread_count, 0) as unread_count
              FROM (
                 SELECT MAX(id) as last_id, 
                        IF(sender_id = ?, recipient_id, sender_id) as other_user_id
@@ -94,6 +93,12 @@ class MessageRepository {
              LEFT JOIN doctors d ON u.id = d.user_id
              LEFT JOIN secretaries s ON u.id = s.user_id
              LEFT JOIN patients p ON u.id = p.user_id
+             LEFT JOIN (
+                SELECT sender_id, recipient_id, COUNT(*) as unread_count
+                FROM messages
+                WHERE recipient_id = ? AND read_status < 2
+                GROUP BY sender_id, recipient_id
+             ) un ON un.sender_id = convo.other_user_id
              ORDER BY m.created_at DESC
         `, [userId, userId, userId, userId, userId]);
     }

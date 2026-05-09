@@ -180,3 +180,15 @@ exports.deleteTransaction = async (req, res) => {
         res.status(500).send("Server Error");
     }
 };
+
+exports.getTransactionAudits = async (req, res) => {
+    try {
+        if (req.user.role !== 'admin') return res.status(403).send("Admin only");
+        const { transaction_id, action } = req.query;
+        const audits = await transactionRepository.getAudits({ transaction_id, action });
+        res.json(audits);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    }
+};
