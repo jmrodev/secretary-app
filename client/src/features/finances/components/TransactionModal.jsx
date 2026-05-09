@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from '@/components/molecules/Modal';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useConfig } from '@/context/ConfigContext';
 import { useTransactionForm } from '@/features/finances/hooks/useTransactionForm';
 import { formatPrice } from '@/utils/format';

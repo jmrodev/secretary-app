@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useUsers } from '@/features/users/hooks/useUsers';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 
 // Atoms & Molecules
 import Button from '@/components/atoms/Button';

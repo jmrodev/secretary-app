@@ -165,7 +165,5 @@
     --glass-dark: rgba(15, 23, 42, 0.4);
     --glass-border: rgba(255, 255, 255, 0.05);
     
-    --sidebar-width: 280px;
     --sidebar-bg: #273142; /* DashStack Sidebar Bg */
-    --sidebar-text: #ffffff;
 }

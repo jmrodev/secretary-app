@@ -2,7 +2,7 @@ import React from 'react';
 import Calendar from '@/features/appointments/components/Calendar.jsx';
 import HolidayForm from '@/features/appointments/components/HolidayForm.jsx';
 import Icon from '@/components/atoms/Icon';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import './CalendarSection.css';
 
 /**

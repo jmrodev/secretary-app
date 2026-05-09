@@ -23,7 +23,6 @@ import DebtPaymentModal from '@/features/patients/components/DebtPaymentModal';
 import PatientManagerModal from '@/features/patients/components/PatientManagerModal';
 
 import './PatientsPage.css';
-import '@/features/dashboard/components/DashboardLayout.css'; // Reuse dashboard grid styles
 
 /**
  * PatientsPage (Orchestrator).

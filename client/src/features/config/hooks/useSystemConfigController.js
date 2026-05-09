@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/features/auth';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useMessage } from '@/context/MessageContext';
 import { useModal } from '@/context/ModalContext';
 import { useConfig } from '@/context/ConfigContext';

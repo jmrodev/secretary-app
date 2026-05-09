@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '@/features/auth';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 
 // Atomic Design Components
 import MainLayout from '@/components/templates/MainLayout';
@@ -39,8 +39,8 @@ const AdminUsersPage = () => {
                         </div>
                     </div>
 
-                    <div className="dashboard-grid">
-                        <aside className="dashboard-sidebar">
+                    <div className="dashboard-layout__grid">
+                        <aside className="dashboard-layout__sidebar">
                             <div className="dashboard-card">
                                 <h3 className="dashboard-card__title">
                                     <Icon name="build" size="1.2rem" />
@@ -67,7 +67,7 @@ const AdminUsersPage = () => {
                             </div>
                         </aside>
 
-                        <main className="dashboard-main">
+                        <main className="dashboard-layout__main">
                             <section className="admin-users-page__table-wrapper">
                                 <UserManagement
                                     excludeRoles={['patient']}

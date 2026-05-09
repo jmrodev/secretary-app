@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
 import { financeService } from '@/services/financeService';
 import { userService } from '@/services/userService';

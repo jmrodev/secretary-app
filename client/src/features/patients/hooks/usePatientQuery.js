@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useFetch } from '@/hooks/useFetch';
-import { useSearch } from '@/context/SearchContext';
+import { useSearch } from '@/hooks/useSearch';
 
 /**
  * usePatientQuery

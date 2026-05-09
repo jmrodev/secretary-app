@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useDoctors } from '@/context/DoctorContextDefinition';
 import { useDashboardStats } from '@/features/dashboard/hooks/useDashboardStats';
 import Icon from '@/components/atoms/Icon';

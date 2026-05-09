@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
 import { useAppointments } from '@/features/appointments';
 import { useDoctors } from '@/features/users';

@@ -65,6 +65,17 @@
     font-weight: 600;
 }
 
+.patients-search-select__value-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.patients-search-select__input {
+    color: var(--text-main);
+    font-size: 0.9rem;
+}
+
 /* No Results section */
 .form-select-no-results {
     padding: 1.5rem;

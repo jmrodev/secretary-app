@@ -2,7 +2,7 @@ import React from 'react';
 import TabButton from '@/components/atoms/TabButton';
 import TabNav from '@/components/molecules/TabNav';
 import Icon from '@/components/atoms/Icon';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 
 const NavTabs = ({ activeTab, setActiveTab, userRole, isStaff, isAdmin }) => {
     const { t } = useLanguage();

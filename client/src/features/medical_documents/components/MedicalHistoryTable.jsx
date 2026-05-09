@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import Pagination from '@/components/atoms/Pagination';
 import { useAuth } from '@/features/auth';
 import { timeAgo, formatDate } from '@/utils/dateUtils';

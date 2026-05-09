@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useMessage } from '@/context/MessageContext';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useConfig } from '@/context/ConfigContext';
 import { useAppointments } from '@/features/appointments';
 import api from '@/api/axios';

@@ -3,8 +3,7 @@
 // Global structural components and orchestration
 
 // Controllers & Hooks
-export { useSidebarController } from '@/features/layout/hooks/useSidebarController';
+export { useLayoutController } from '@/features/layout/hooks/useLayoutController';
 
 // Components
-export { default as Sidebar } from '@/features/layout/components/Sidebar';
 export { default as Navbar } from '@/features/layout/components/Navbar';

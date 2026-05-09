@@ -3,7 +3,7 @@ import Modal from '@/components/molecules/Modal';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import FormGroup from '@/components/molecules/FormGroup';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useMessage } from '@/context/MessageContext';
 import api from '@/api/axios';
 import './WhatsAppModal.css';

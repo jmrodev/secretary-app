@@ -2,7 +2,8 @@ import React from 'react';
 import AsyncSelect from 'react-select/async';
 import { patientService } from '@/services/patientService';
 import Button from '@/components/atoms/Button';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
+import './PatientSearchSelect.css';
 
 const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, autoFocus = false, selectedData }) => {
     const { t } = useLanguage();
@@ -37,13 +38,13 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
         <AsyncSelect
             value={selectedOption}
             classNames={{
-                control: ({ isFocused }) => `input-field input-flex-container ${isFocused ? 'focus-ring' : ''}`,
-                input: () => 'no-style-input',
-                menu: () => 'dropdown-menu',
-                option: ({ isFocused, isSelected }) => `dropdown-item ${isFocused ? 'active' : ''} ${isSelected ? 'selected' : ''}`,
-                placeholder: () => 'placeholder-text',
-                singleValue: () => 'single-value-text',
-                valueContainer: () => 'value-flex-container'
+                control: ({ isFocused }) => `patients-search-select__control ${isFocused ? 'patients-search-select__control--focused' : ''}`,
+                input: () => 'patients-search-select__input',
+                menu: () => 'patients-search-select__menu',
+                option: ({ isFocused, isSelected }) => `patients-search-select__option ${isFocused ? 'patients-search-select__option--focused' : ''} ${isSelected ? 'patients-search-select__option--selected' : ''}`,
+                placeholder: () => 'patients-search-select__placeholder',
+                singleValue: () => 'patients-search-select__single-value',
+                valueContainer: () => 'patients-search-select__value-container'
             }}
             cacheOptions
             defaultOptions

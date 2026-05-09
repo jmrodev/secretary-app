@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useFetch } from '@/hooks/useFetch';
-import { useSearch } from '@/context/SearchContext';
+import { useSearch } from '@/hooks/useSearch';
 
 /**
  * Hook to search patients and their specific appointment results.

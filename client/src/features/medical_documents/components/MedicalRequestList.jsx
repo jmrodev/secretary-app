@@ -2,7 +2,7 @@
 import React from 'react';
 import Pagination from '@/components/atoms/Pagination';
 import { useAuth } from '@/features/auth';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { isToday } from '@/utils/dateUtils';
 import { formatPrice } from '@/utils/format';
 import { formatDate } from '@/utils/dateUtils';

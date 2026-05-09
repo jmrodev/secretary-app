@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useRequirementManagerController } from '@/features/medical_documents/hooks/useRequirementManagerController';
 
 // Components

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Modal from '@/components/molecules/Modal';
 import TabButton from '@/components/atoms/TabButton';
 import api from '@/api/axios';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import Icon from '@/components/atoms/Icon';
 import './PatientHistoryModal.css';
 

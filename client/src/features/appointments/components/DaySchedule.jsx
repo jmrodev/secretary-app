@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useDayScheduleHandlers } from '@/features/appointments/hooks/useDayScheduleHandlers';
 import { isSameDay } from '@/utils/dateUtils';
 

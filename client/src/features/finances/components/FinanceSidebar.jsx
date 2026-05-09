@@ -29,7 +29,7 @@ const FinanceSidebar = ({
     t
 }) => {
     return (
-        <aside className="finance-sidebar dashboard-sidebar">
+        <aside className="finance-sidebar dashboard-layout__sidebar">
             {/* Main Action & Doctor Filter Card */}
             <Card className="finance-sidebar__card">
                 <div className="finance-sidebar__stack">

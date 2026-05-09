@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Modal from '@/components/molecules/Modal';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useAuth } from '@/features/auth';
 import { useModal } from '@/context/ModalContext';
 import { useConfig } from '@/context/ConfigContext';

@@ -1,8 +1,8 @@
 import React from 'react';
 import { DoctorSelector } from '@/features/doctors';
 import { useDoctors } from '@/context/DoctorContextDefinition';
-import { useLanguage } from '@/context/LanguageContext';
-import { useSearch } from '@/context/SearchContext';
+import { useLanguage } from '@/hooks/useLanguage';
+import { useSearch } from '@/hooks/useSearch';
 import Icon from '@/components/atoms/Icon';
 import Input from '@/components/atoms/Input';
 import LiveClock from '@/components/atoms/LiveClock';

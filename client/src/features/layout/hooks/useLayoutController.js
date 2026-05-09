@@ -1,15 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { usePermissions } from '@/hooks/usePermissions';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useConfig } from '@/context/ConfigContext';
 import { useFetch } from '@/hooks/useFetch';
 
 /**
- * Controller hook for the Sidebar orchestration.
+ * Controller hook for the Layout orchestration.
  * Handles navigation state, user session, and external data fetching (doctors/spreadsheets).
  */
-export const useSidebarController = () => {
+export const useLayoutController = () => {
     const { user, logout, isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff } = usePermissions();
     const { t } = useLanguage();
     const { settings } = useConfig();
