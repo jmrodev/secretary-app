@@ -3,6 +3,7 @@ const { formatLocalSQL } = require('../utils/dateUtils');
 const statsService = require('../services/finance/statsService');
 const financeService = require('../services/finance/financeService');
 const transactionRepository = require('../repositories/transactionRepository');
+const { pool } = require('../db');
 
 /**
  * financeController
