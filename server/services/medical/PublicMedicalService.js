@@ -64,7 +64,7 @@ class PublicMedicalService {
         };
     }
 
-    async submitPublicPrescriptionRequest(token, requestData, req) {
+    async submitPublicPrescriptionRequest(token, requestData) {
         const conn = await pool.getConnection();
         try {
             const { medications, notes, doctorId } = requestData;

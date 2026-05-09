@@ -50,7 +50,7 @@ const sendTemplateMessage = async (to, templateName, languageCode = 'es', compon
         return response.data;
     } catch (error) {
         console.error('WhatsApp API Error:', error.response?.data || error.message);
-        throw new Error(error.response?.data?.error?.message || 'Failed to send WhatsApp message');
+        throw new Error(error.response?.data?.error?.message || 'Failed to send WhatsApp message', { cause: error });
     }
 };
 
@@ -80,7 +80,7 @@ const sendMessageDirect = async (to, message, patientId = null) => {
         return response.data;
     } catch (error) {
         console.error('Local WhatsApp Bridge Error:', error.response?.data || error.message);
-        throw new Error('Local WhatsApp bridge is not responding. Ensure the bridge service is running.');
+        throw new Error('Local WhatsApp bridge is not responding. Ensure the bridge service is running.', { cause: error });
     }
 };
 
@@ -165,7 +165,7 @@ const getBridgeStatus = async () => {
         const bridgeUrl = process.env.WHATSAPP_BRIDGE_STATUS_URL || 'http://127.0.0.1:8090/api/status';
         const response = await axios.get(bridgeUrl, { timeout: 2000 });
         return response.data;
-    } catch (error) {
+    } catch (_) {
         return { status: 'offline', qr_code: '' };
     }
 };

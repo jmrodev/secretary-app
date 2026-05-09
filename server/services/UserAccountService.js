@@ -4,10 +4,7 @@ const doctorRepository = require('../repositories/doctorRepository');
 const patientRepository = require('../repositories/patientRepository');
 const secretaryRepository = require('../repositories/secretaryRepository');
 const phoneRepository = require('../repositories/phoneRepository');
-const medicalRequestRepository = require('../repositories/medicalRequestRepository');
-const medicalFileRepository = require('../repositories/medicalFileRepository');
 const { saveToRecycleBin } = require('../utils/recycleBin');
-const googleContactService = require('./google/GoogleContactService');
 const bcrypt = require('bcrypt');
 
 /**

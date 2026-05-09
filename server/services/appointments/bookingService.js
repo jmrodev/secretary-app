@@ -54,7 +54,7 @@ class BookingService {
                 userId
             });
 
-            return { id: appointmentId, patientId };
+            return { id: appointmentId, patient_id };
         } catch (err) {
             await conn.rollback();
             throw err;
@@ -92,8 +92,6 @@ class BookingService {
             newUserId: userId,
             timestamp: new Date()
         });
-    }
-
     }
 }
 

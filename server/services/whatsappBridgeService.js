@@ -20,7 +20,7 @@ class WhatsAppBridgeService {
         try {
             const response = await axios.get(this.bridgeUrl, { timeout: 2000 });
             return response.status === 200;
-        } catch (error) {
+        } catch (_error) {
             return false;
         }
     }

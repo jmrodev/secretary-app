@@ -8,7 +8,6 @@ const { pool } = require('../db');
 const { formatAfipDate } = require('../utils/dateUtils');
 const path = require('path');
 const fs = require('fs');
-const { exec } = require('child_process');
 
 /**
  * BillingService
@@ -64,8 +63,8 @@ class BillingService {
                 DbServer: 'OK (Mock)',
                 AuthServer: 'OK (Mock)'
             }),
-            getLastVoucher: async (pto, type) => 0,
-            createVoucher: async (data) => ({
+            getLastVoucher: async (_pto, _type) => 0,
+            createVoucher: async (_data) => ({
                 CAE: '12345678901234',
                 CAEFchVto: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
             })

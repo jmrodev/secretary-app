@@ -3,6 +3,7 @@ const { formatLocalSQL } = require('../utils/dateUtils');
 const statsService = require('../services/finance/statsService');
 const financeService = require('../services/finance/financeService');
 const transactionRepository = require('../repositories/transactionRepository');
+const { pool } = require('../db');
 
 /**
  * financeController
@@ -28,7 +29,7 @@ exports.createTransaction = async (req, res) => {
         const data = { ...req.body };
         if (req.file) data.proof_file = `/uploads/${req.file.filename}`;
         if (data.payments && typeof data.payments === 'string') {
-            try { data.payments = JSON.parse(data.payments); } catch (e) { }
+            try { data.payments = JSON.parse(data.payments); } catch (_) { /* Ignore parsing error */ }
         }
         const insertId = await financeService.createTransaction(data, req.user?.user_id);
         logAction(req, 'FINANCE_CREATE', `Created transaction: ${data.description}`);

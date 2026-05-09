@@ -16,7 +16,7 @@ class HolidayService {
             return await holidayRepository.create(data);
         } catch (err) {
             if (err.code === 'ER_DUP_ENTRY') {
-                throw new Error("Holiday already exists for this date");
+                throw new Error("Holiday already exists for this date", { cause: err });
             }
             throw err;
         }

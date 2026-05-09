@@ -39,7 +39,7 @@ class MedicalRequestService {
             }, conn);
 
             if (raw_medication_data) {
-                await this._processRequestItems(conn, requestId, patient_id, raw_medication_data, req.user.user_id);
+                await this._processRequestItems(conn, requestId, patient_id, raw_medication_data);
             }
 
             if (initialStatus === 'completed' && !bonified) {
@@ -154,7 +154,7 @@ class MedicalRequestService {
 
             if (raw_medication_data) {
                 await medicationRepository.deleteByRequestId(id, conn);
-                await this._processRequestItems(conn, id, reqInfo.patient_id, raw_medication_data, user_id);
+                await this._processRequestItems(conn, id, reqInfo.patient_id, raw_medication_data);
             }
 
             if (debt_amount !== undefined) {
@@ -227,7 +227,7 @@ class MedicalRequestService {
         }
     }
 
-    async _processRequestItems(conn, requestId, patientId, rawData, userId) {
+    async _processRequestItems(conn, requestId, patientId, rawData) {
         const items = typeof rawData === 'string' ? JSON.parse(rawData) : rawData;
         if (!Array.isArray(items)) return;
 
