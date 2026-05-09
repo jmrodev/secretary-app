@@ -148,7 +148,7 @@ class PrescriptionService {
                 description: `Prescription - ${instructions ? instructions.substring(0, 50) : 'General'}`,
                 related_user_id: pat.user_id, doctor_id: doctorId,
                 appointment_id: appointment_id, status: 'pending'
-            }, userId);
+            }, userId, conn);
         }
 
         const doc = await doctorRepository.getDoctorConfig(doctorId, conn);

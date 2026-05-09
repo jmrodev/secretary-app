@@ -560,18 +560,31 @@ LEFT JOIN (
 
 **Razón:** Con subconsultas correlacionadas, 50 turnos en el resultado = 200 consultas adicionales a `transactions` e `invoices`. El patrón con JOINs pre-agregados ejecuta esas agregaciones una sola vez, independientemente del volumen del resultado.
 
-#### 15.3 Decisión: Funciones Almacenadas (Stored Functions)
+#### 15.3 Estrategia: Lógica en Base de Datos (Vistas y Funciones)
 
-**Decisión: NO usar Stored Functions ni Stored Procedures en este proyecto.**
+**REGLA DE ORO**: Los cambios en base de datos (índices, vistas, funciones y procedimientos) siempre tienen **prioridad absoluta** y deben realizarse antes que cualquier cambio en el código de la aplicación.
 
-El cálculo de `paid_amount`/`pending_amount` aparece en múltiples queries y podría parecer un buen candidato para una función almacenada. Sin embargo, se descartó por las siguientes razones:
+A diferencia de versiones anteriores de esta arquitectura, se ha decidido **priorizar el uso de lógica en base de datos** por las siguientes razones:
 
-| Criterio | Stored Function | JOIN Pre-Agregado (elegido) |
-|---|---|---|
-| Control de versiones (Git) | ❌ Requiere scripts de migración adicionales | ✅ En el repositorio como código Node.js |
-| Portabilidad | ❌ Acoplado a MariaDB/MySQL | ✅ Agnóstico |
-| Debuggeo | ❌ Difícil de testear unitariamente | ✅ Testeable con Jest |
-| Deploy | ❌ Requiere paso de migración en cada deploy | ✅ Sin pasos extras |
-| Rendimiento | Similar | Similar (misma ganancia) |
+1. **Rendimiento**: El motor MariaDB es órdenes de magnitud más eficiente procesando datos, filtros y agregaciones que el servidor Node.js.
+2. **Consistencia**: Una Vista o Función garantiza que la misma regla de negocio se aplique en cualquier parte del sistema (Reportes, Agenda, Búsqueda).
+3. **Reducción de Deuda Técnica**: Menos código en los Repositorios y Servicios de Node.js significa una aplicación más ligera y fácil de mantener.
 
-**Conclusión:** El mismo beneficio de rendimiento se obtiene con JOINs pre-agregados (sección 15.2), sin el costo operacional de mantener lógica de negocio dentro de la base de datos.
+**Lineamientos:**
+- **Vistas (Views)**: Obligatorias para consultas que involucren múltiples JOINs o cálculos complejos (ej: `view_patients_extended`).
+- **Funciones y Procedimientos**: Preferidos para cálculos de deuda, validaciones complejas de integridad o procesos batch.
+- **Índices**: Deben crearse inmediatamente al detectar una nueva necesidad de filtrado o búsqueda.
+
+**Conclusión:** Si una mejora puede resolverse en la base de datos, **DEBE** resolverse allí primero. El código Node.js debe limitarse a orquestar y llamar a estas estructuras pre-optimizadas.
+
+#### 15.4 Estrategia: Manejo de Fechas Centralizado (dateUtils)
+
+**REGLA DE ORO**: Está PROHIBIDO el formateo manual de fechas en servicios o controladores utilizando `toLocaleString` o manipulación directa de strings de fecha.
+
+Para asegurar la consistencia horaria (especialmente con la zona `America/Argentina/Buenos_Aires`) y evitar desfases de UTC:
+
+1. **Uso de dateUtils**: Debe utilizarse siempre el archivo `@/utils/dateUtils.js` (en Server) o equivalentes centralizados para cualquier conversión a formato SQL (`formatLocalSQL`).
+2. **Fuentes de Verdad**: El servidor siempre debe tratar las fechas como "Locales" al momento de interactuar con la base de datos, delegando en las utilidades centralizadas la normalización del formato MariaDB (`YYYY-MM-DD HH:mm:ss`).
+3. **Mantenibilidad**: Centralizar el manejo de fechas permite ajustar zonas horarias o formatos de visualización en un solo lugar sin riesgo de romper reportes o agendamientos en toda la aplicación.
+
+**Conclusión:** La manipulación de fechas es una fuente común de errores silenciosos. Al centralizarla en utilidades, garantizamos que toda la aplicación "hable el mismo idioma" temporal.

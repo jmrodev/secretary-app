@@ -1,8 +1,7 @@
 import React from 'react';
 import AsyncSelect from 'react-select/async';
-import api from '@/api/axios';
+import { patientService } from '@/services/patientService';
 import Button from '@/components/atoms/Button';
-
 import { useLanguage } from '@/context/LanguageContext';
 
 const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, autoFocus = false, selectedData }) => {
@@ -10,11 +9,8 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
     const finalPlaceholder = placeholder || t('search_placeholder');
 
     const loadOptions = async (inputValue) => {
-        if (!inputValue || inputValue.length < 2) return [];
         try {
-            const res = await api.get(`/users/patients?search=${inputValue}`);
-            // El backend ahora devuelve { patients, totalCount }
-            const patients = Array.isArray(res.data) ? res.data : (res.data.patients || []);
+            const patients = await patientService.search(inputValue);
             
             return patients.map(p => ({
                 value: p.id,
@@ -22,7 +18,6 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
                 patient: p
             }));
         } catch (err) {
-            console.error("Error searching patients", err);
             return [];
         }
     };

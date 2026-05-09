@@ -16,6 +16,7 @@ router.get('/profile', verifyToken, profileController.getProfile);
 router.put('/profile', verifyToken, profileController.updateProfile);
 
 // Specific patient details (for doctors/secretaries)
+router.get('/patients/recent', verifyToken, patientManagementController.getRecentPatients);
 router.get('/patients/:id', verifyToken, patientManagementController.getPatientDetails);
 router.post('/patients/:id/restore', verifyToken, authorize(ACCESS_LEVELS.MANAGE_PATIENTS), restoreController.restoreItem);
 router.put('/patients/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_PATIENTS), patientManagementController.updatePatientDetails);

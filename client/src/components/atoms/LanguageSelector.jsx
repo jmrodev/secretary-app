@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage, useLanguageActions } from '@/context/LanguageContext';
 import Button from '@/components/atoms/Button';
 import './LanguageSelector.css';
 
@@ -8,7 +8,8 @@ import './LanguageSelector.css';
  * Removed Tailwind utility classes.
  */
 const LanguageSelector = () => {
-    const { language, toggleLanguage } = useLanguage();
+    const { language } = useLanguage();
+    const { toggleLanguage } = useLanguageActions();
 
     return (
         <div className="language-selector">

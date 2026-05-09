@@ -45,25 +45,28 @@ class PatientsQueryBuilder extends BaseQueryBuilder {
     }
 
     /**
-     * Aplica búsqueda por texto
+     * Aplica búsqueda por texto utilizando FULLTEXT INDEX y coincidencia fonética (Fuzzy)
      */
     applySearch(searchTerm) {
         if (!searchTerm || searchTerm.trim() === '') return this;
 
-        const tokens = searchTerm.split(/\s+/).filter(t => t.length > 0);
+        const tokens = searchTerm.trim().split(/\s+/).filter(t => t.length > 0);
+        const booleanQuery = tokens.map(t => `+${t}*`).join(' ');
+        const soundexQuery = tokens.join(' ');
 
-        tokens.forEach(token => {
-            const term = `%${token}%`;
-            this.orWhere([
-                { condition: 'p.full_name LIKE ?', params: term },
-                { condition: 'p.first_name LIKE ?', params: term },
-                { condition: 'p.last_name LIKE ?', params: term },
-                { condition: 'p.dni LIKE ?', params: term },
-                { condition: 'p.street_name LIKE ?', params: term },
-                { condition: 'CAST(p.street_number AS CHAR) LIKE ?', params: term },
-                { condition: 'p.phone LIKE ?', params: term }
-            ]);
-        });
+        // Agregamos una columna calculada de relevancia para el ORDER BY
+        // 10 puntos por MATCH exacto/prefijo, 5 puntos por sonido similar
+        this.select([
+            `(MATCH(p.full_name, p.dni, p.phone) AGAINST(? IN BOOLEAN MODE) * 10 + 
+              IF(p.full_name SOUNDS LIKE ?, 5, 0)) as search_relevance`
+        ]);
+        this.params.push(booleanQuery, soundexQuery);
+
+        this.where('(MATCH(p.full_name, p.dni, p.phone) AGAINST(? IN BOOLEAN MODE) OR p.full_name SOUNDS LIKE ?)', 
+            [booleanQuery, soundexQuery]);
+
+        // Priorizar por relevancia de búsqueda antes que por deuda
+        this.orderByClause = `ORDER BY search_relevance DESC, total_debt_calculated DESC, p.full_name ASC`;
 
         return this;
     }

@@ -169,10 +169,90 @@ const getBridgeStatus = async () => {
     }
 };
 
+/**
+ * Send an immediate confirmation message for a newly booked appointment
+ * @param {Object} data - Appointment details { patient_name, appointment_date, doctor_id, type, patient_phone, patient_id }
+ */
+const sendConfirmationMessage = async (appt) => {
+    try {
+        const isEnabled = await systemSettingsRepository.findByKey('whatsapp_use_local_bridge');
+        if (!isEnabled || isEnabled.setting_value !== 'true') {
+            return;
+        }
+
+        // Fetch global settings for templates
+        const settingsRows = await systemSettingsRepository.findAll();
+        const settings = {};
+        settingsRows.forEach(r => settings[r.setting_key] = r.setting_value);
+
+        const isVirtual = appt.type === 'virtual';
+        let template = isVirtual ? settings.appointment_confirmation_virtual_template : settings.appointment_confirmation_template;
+
+        if (!template?.trim()) {
+            template = isVirtual 
+                ? "¡Hola {patient_name}! Confirmamos tu turno VIRTUAL para el {date} a las {time} con Dr/a. {doctor_name}. Recibirás el link minutos antes."
+                : "¡Hola {patient_name}! Confirmamos tu turno para el {date} a las {time} con Dr/a. {doctor_name} en {appointment_location}.";
+        }
+
+        const dateStr = new Date(appt.appointment_date).toLocaleDateString('es-AR');
+        const timeStr = new Date(appt.appointment_date).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false });
+        const address = settings.clinic_address || 'Montiel 1255';
+
+        // Get doctor name (we might need to fetch it if not provided)
+        let doctorName = appt.doctor_name || 'Médico';
+        if (!appt.doctor_name && appt.doctor_id) {
+            const doctorRepository = require('../repositories/doctorRepository');
+            const doctor = await doctorRepository.findById(appt.doctor_id);
+            if (doctor) doctorName = doctor.full_name || doctor.name;
+        }
+
+        const message = template
+            .replace(/{patient_name}/g, appt.patient_name || 'Paciente')
+            .replace(/{date}/g, dateStr)
+            .replace(/{time}/g, timeStr)
+            .replace(/{doctor_name}/g, doctorName)
+            .replace(/{appointment_location}/g, isVirtual ? 'Virtual' : address)
+            .replace(/{appointment_type}/g, isVirtual ? 'VIRTUAL' : 'PRESENCIAL');
+
+        let phone = appt.patient_phone.replace(/\D/g, '');
+        if (!phone.startsWith('54') && phone.length >= 10) phone = '549' + phone;
+
+        await sendMessageDirect(phone, message, appt.patient_id);
+        console.log(`[WhatsApp Bridge] Confirmation sent to ${phone} (${appt.patient_name})`);
+    } catch (err) {
+        console.error(`[WhatsApp] Failed to send confirmation to ${appt.patient_name}:`, err.message);
+    }
+};
+
+/**
+ * Send a debt reminder message to a patient
+ */
+const sendDebtReminder = async (data) => {
+    try {
+        const { patient_id, patient_name, debt_amount, patient_phone } = data;
+        
+        const isEnabled = await systemSettingsRepository.findByKey('whatsapp_use_local_bridge');
+        if (!isEnabled || isEnabled.setting_value !== 'true') return;
+
+        const message = `¡Hola ${patient_name || 'Paciente'}! 👋 Te escribimos del consultorio para recordarte que tienes un saldo pendiente de $${debt_amount}. Podés abonarlo en tu próxima visita o por transferencia. ¡Muchas gracias!`;
+
+        let phone = patient_phone.replace(/\D/g, '');
+        if (!phone.startsWith('54') && phone.length >= 10) phone = '549' + phone;
+
+        await sendMessageDirect(phone, message, patient_id);
+        console.log(`[WhatsApp Bridge] Debt reminder sent to ${phone} (${patient_name})`);
+    } catch (err) {
+        console.error(`[WhatsApp] Failed to send debt reminder:`, err.message);
+        throw err;
+    }
+};
+
 module.exports = {
     sendTemplateMessage,
     sendTestMessage,
     sendMessageDirect,
+    sendConfirmationMessage,
     sendAutomatedReminders,
+    sendDebtReminder,
     getBridgeStatus
 };

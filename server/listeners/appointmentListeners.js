@@ -2,8 +2,26 @@ const appointmentEvents = require('../events/appointmentEvents');
 const googleSyncService = require('../services/appointments/googleSyncService');
 const doctorRepository = require('../repositories/doctorRepository');
 const { logAction } = require('../utils/audit');
+const whatsappService = require('../services/whatsappService');
 
 // 1. Google Calendar Synchronizer
+// ... existing code ...
+
+// 3. WhatsApp Confirmation Notifier
+appointmentEvents.on('appointmentCreated', async ({ appointmentId, data, patientData }) => {
+    try {
+        await whatsappService.sendConfirmationMessage({
+            patient_id: patientData.id,
+            patient_name: patientData.full_name,
+            patient_phone: patientData.phone_number || patientData.phone,
+            appointment_date: data.appointment_date,
+            doctor_id: data.doctor_id,
+            type: data.type
+        });
+    } catch (err) {
+        console.error(`[Listeners] WhatsApp Confirmation Error: ${err.message}`);
+    }
+});
 appointmentEvents.on('appointmentCreated', async ({ appointmentId, data, patientData, paymentStatus, userId }) => {
     const startTime = new Date(data.appointment_date);
     

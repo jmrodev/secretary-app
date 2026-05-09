@@ -58,3 +58,13 @@ exports.getNewPatientStats = async (req, res) => {
         res.status(500).send("Server Error");
     }
 };
+
+exports.getRecentPatients = async (req, res) => {
+    try {
+        const patients = await patientService.getRecentPatients();
+        res.json({ patients });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server Error" });
+    }
+};
