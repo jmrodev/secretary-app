@@ -1,8 +1,6 @@
 const appointmentRepository = require('../../repositories/appointmentRepository');
 const patientRepository = require('../../repositories/patientRepository');
-const transactionRepository = require('../../repositories/transactionRepository');
 const appointmentEvents = require('../../events/appointmentEvents');
-const { calculatePrice } = require('../../utils/priceCalculator');
 const { pool } = require('../../db');
 const { ConflictError, NotFoundError } = require('../../utils/errors');
 const { formatLocalSQL } = require('../../utils/dateUtils');
@@ -45,11 +43,6 @@ class BookingService {
                 throw spErr;
             }
 
-            let paymentStatus = 'pending';
-            if (!data.bonified) {
-                paymentStatus = await this.generateDebt(appointmentId, data.doctor_id, patient_id, data.type, finalInstitutionId, patientData, conn, userId);
-            }
-
             await conn.commit();
 
             // EMIT EVENT
@@ -57,7 +50,7 @@ class BookingService {
                 appointmentId,
                 data,
                 patientData,
-                paymentStatus,
+                paymentStatus: 'pending',
                 userId
             });
 
@@ -101,43 +94,6 @@ class BookingService {
         });
     }
 
-    async generateDebt(appointmentId, doctorId, patientId, type, institutionId, patientData, conn, userId) {
-        const serviceType = type === 'virtual' ? 'virtual_consultation' : 'consultation';
-        const priceInfo = await calculatePrice(conn, doctorId, patientId, serviceType, institutionId);
-
-        const patientShare = priceInfo.price;
-        const basePrice = priceInfo.basePrice || patientShare;
-        const institutionDebt = institutionId ? Math.max(0, basePrice - patientShare) : 0;
-
-        const financeService = require('../finance/financeService');
-
-        if (patientShare > 0) {
-            await financeService.createTransaction({
-                type: 'income_patient',
-                amount: 0,
-                debt_amount: patientShare,
-                description: `${type === 'virtual' ? 'Virtual' : 'Presencial'} Share: ${patientData.full_name}`,
-                related_user_id: patientData.user_id,
-                doctor_id: doctorId,
-                appointment_id: appointmentId,
-                status: 'pending'
-            }, userId, conn);
-        }
-
-        if (institutionDebt > 0 && institutionId) {
-            await financeService.createTransaction({
-                type: 'income_patient',
-                amount: 0,
-                debt_amount: institutionDebt,
-                description: `${type === 'virtual' ? 'Virtual' : 'Presencial'} Institution Share: ${patientData.full_name}`,
-                doctor_id: doctorId,
-                institution_id: institutionId,
-                appointment_id: appointmentId,
-                status: 'pending'
-            }, userId, conn);
-        }
-
-        return 'pending';
     }
 }
 

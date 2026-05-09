@@ -5,6 +5,7 @@ const doctorRepository = require('../repositories/doctorRepository');
 const transactionRepository = require('../repositories/transactionRepository');
 const invoiceRepository = require('../repositories/invoiceRepository');
 const { pool } = require('../db');
+const { formatAfipDate } = require('../utils/dateUtils');
 const path = require('path');
 const fs = require('fs');
 const { exec } = require('child_process');
@@ -139,13 +140,7 @@ class BillingService {
             const lastCbte = await afip.getLastVoucher(ptoVta, cbteTipo);
             const nextCbte = parseInt(lastCbte) + 1;
 
-            const now = new Date();
-            const argentinaDate = new Intl.DateTimeFormat('en-CA', {
-                timeZone: 'America/Argentina/Buenos_Aires',
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-            }).format(now).replace(/-/g, '');
+            const argentinaDate = formatAfipDate();
 
             const data = {
                 CantReg: 1,
