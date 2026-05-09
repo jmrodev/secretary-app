@@ -44,6 +44,7 @@ function nowLocalSQL() {
 
 /**
  * Formats a date object or string into a MariaDB-compatible DATE string (YYYY-MM-DD)
+ * without UTC shifting issues.
  */
 function formatDateOnlySQL(dateInput) {
     if (!dateInput) return null;
@@ -51,12 +52,54 @@ function formatDateOnlySQL(dateInput) {
     if (isNaN(d.getTime())) return null;
     
     const pad = (n) => n.toString().padStart(2, '0');
-    return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
+    // Using local methods to match the "Secretary Display" intended date
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+/**
+ * Formats a date for AFIP/ARCA API (YYYYMMDD) in Argentina Timezone.
+ */
+function formatAfipDate(dateInput = new Date()) {
+    const d = new Date(dateInput);
+    const pad = (n) => n.toString().padStart(2, '0');
+    
+    // We can use Intl or just manual local methods if we trust the server time is Argentina
+    // To be 100% safe as per Rule 15.4, we use manual local components
+    const YYYY = d.getFullYear();
+    const MM = pad(d.getMonth() + 1);
+    const DD = pad(d.getDate());
+    
+    return `${YYYY}${MM}${DD}`;
+}
+
+/**
+ * Formats a date for display (DD/MM/YYYY).
+ */
+function formatDateDisplay(dateInput) {
+    if (!dateInput) return '';
+    const d = new Date(dateInput);
+    if (isNaN(d.getTime())) return '';
+    const pad = (n) => n.toString().padStart(2, '0');
+    return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+}
+
+/**
+ * Formats a time for display (HH:mm).
+ */
+function formatTimeDisplay(dateInput) {
+    if (!dateInput) return '';
+    const d = new Date(dateInput);
+    if (isNaN(d.getTime())) return '';
+    const pad = (n) => n.toString().padStart(2, '0');
+    return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
 module.exports = {
     TIMEZONE,
     formatLocalSQL,
     formatDateOnlySQL,
-    nowLocalSQL
+    nowLocalSQL,
+    formatAfipDate,
+    formatDateDisplay,
+    formatTimeDisplay
 };

@@ -2,6 +2,7 @@ const axios = require('axios');
 const systemSettingsRepository = require('../repositories/systemSettingsRepository');
 const appointmentRepository = require('../repositories/appointmentRepository');
 const whatsappRepository = require('../repositories/whatsappRepository');
+const { formatDateDisplay, formatTimeDisplay } = require('../utils/dateUtils');
 
 const getMetaCredentials = async () => {
     const rows = await systemSettingsRepository.findManyByKeys(['meta_phone_number_id', 'meta_access_token']);
@@ -122,9 +123,9 @@ const sendAutomatedReminders = async () => {
                         : "Hola {patient_name}, recordamos tu turno para el {date} a las {time} con Dr/a. {doctor_name} en {appointment_location}. Confirma asistencia.";
                 }
 
-                const dateStr = new Date(appt.appointment_date).toLocaleDateString('es-AR');
-                const timeStr = new Date(appt.appointment_date).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false });
-                const address = settings.clinic_address || 'Montiel 1255';
+                const dateStr = formatDateDisplay(appt.appointment_date);
+                const timeStr = formatTimeDisplay(appt.appointment_date);
+                const address = settings.clinic_address || '';
 
                 const message = template
                     .replace(/{patient_name}/g, appt.patient_name)
@@ -194,9 +195,9 @@ const sendConfirmationMessage = async (appt) => {
                 : "¡Hola {patient_name}! Confirmamos tu turno para el {date} a las {time} con Dr/a. {doctor_name} en {appointment_location}.";
         }
 
-        const dateStr = new Date(appt.appointment_date).toLocaleDateString('es-AR');
-        const timeStr = new Date(appt.appointment_date).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false });
-        const address = settings.clinic_address || 'Montiel 1255';
+        const dateStr = formatDateDisplay(appt.appointment_date);
+        const timeStr = formatTimeDisplay(appt.appointment_date);
+        const address = settings.clinic_address || '';
 
         // Get doctor name (we might need to fetch it if not provided)
         let doctorName = appt.doctor_name || 'Médico';
