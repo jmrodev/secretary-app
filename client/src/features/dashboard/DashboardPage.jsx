@@ -23,7 +23,7 @@ const DashboardPage = () => {
         user, t,
         loading,
         error,
-        stats, reminders, activeTab,
+        reminders, activeTab,
         actionModal,
         historyModal,
         prescribeModal,
@@ -70,13 +70,6 @@ const DashboardPage = () => {
         return <Loading variant="full-page" />;
     }
 
-    const hasLoadedStats = (
-        stats !== null &&
-        stats !== undefined &&
-        typeof stats === 'object' &&
-        Object.keys(stats).length > 0
-    );
-    const hasLoadedReminders = Array.isArray(reminders) && (reminders.length > 0 || !loading);
     const shouldShowLoadingState = loading && !controller.fetched;
     const shouldShowErrorState = Boolean(error) && !controller.fetched;
 

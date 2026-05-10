@@ -68,6 +68,7 @@ export const useDashboardStats = (isStaff = false, doctor_id = '') => {
         stats, newPatientStats, pendingReqCount, doctors, 
         loadingStats, loadingDoctors, loadingNewPatientStats, loadingRequests,
         statsHook.fetched, requestsHook.fetched,
+        doctorData,
         errorStats, errorDoctors, errorNewPatientStats, errorRequests,
         fetchStats, fetchRequests, fetchNewPatientStats
     ]);

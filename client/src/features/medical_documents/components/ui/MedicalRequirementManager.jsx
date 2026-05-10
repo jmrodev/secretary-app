@@ -6,7 +6,6 @@ import { useRequirementManagerController } from '@/features/medical_documents/ho
 import TabButton from '@/components/atoms/TabButton';
 import Icon from '@/components/atoms/Icon';
 import Loading from '@/components/atoms/Loading';
-import MedicalRequestForm from '@/features/medical_documents/components/forms/MedicalRequestForm';
 import MedicalRequirementTable from '@/features/medical_documents/components/lists/MedicalRequirementTable';
 import MedicalRequirementRecycleBin from '@/features/medical_documents/components/lists/MedicalRequirementRecycleBin';
 import MedicalRequirementDetailModal from '@/features/medical_documents/components/modals/MedicalRequirementDetailModal';

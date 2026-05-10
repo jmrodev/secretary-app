@@ -28,8 +28,7 @@ const DaySchedule = ({
     const overturnEnd = doctor?.overturn_end_time || '21:00';
 
     const dateStr = [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
-    const holiday = holidays && holidays.find(h => h.date.startsWith(dateStr));
-    let daysConfig = holiday ? [] : (schedule || []).filter(s => s.day_of_week === date.getDay() && s.is_break === 0);
+    void (holidays && holidays.find(h => h.date.startsWith(dateStr)));
 
     const dayApps = React.useMemo(() => {
         return [...appointments]
@@ -91,7 +90,7 @@ const DaySchedule = ({
             const timeStr = row.slot_time;
             if (!slotsMap.has(timeStr)) {
                 // Parse time to Date object for the UI
-                const [h, m, s] = timeStr.split(':').map(Number);
+                const [h, m] = timeStr.split(':').map(Number);
                 const slotDate = new Date(date);
                 slotDate.setHours(h, m, 0, 0);
                 
@@ -118,8 +117,8 @@ const DaySchedule = ({
     // Provide the pre-grouped appointments to ScheduleTimeline
     const getAppointmentsForSlot = (slotTime) => {
         const timeStr = slotTime.toTimeString().split(' ')[0]; // "08:00:00"
-        const slot = timeSlots.find(s => s.time.toTimeString().split(' ')[0] === timeStr);
-        return slot ? slot.slotApps : [];
+        const found = timeSlots.find(slot => slot.time.toTimeString().split(' ')[0] === timeStr);
+        return found ? found.slotApps : [];
     };
 
     if (loading) {

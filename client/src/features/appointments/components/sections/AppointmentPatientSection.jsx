@@ -2,7 +2,6 @@ import React from 'react';
 import Icon from '@/components/atoms/Icon';
 import { PatientSearchSelect } from '@/features/patients';
 import { capitalizeWords } from '@/utils/core/stringUtils';
-import Input from '@/components/atoms/Input';
 import './AppointmentPatientSection.css';
 
 /**

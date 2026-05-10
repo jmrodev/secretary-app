@@ -13,7 +13,6 @@ export const useNextFreeSlot = (doctorId) => {
     const [includeOutOfHours, setIncludeOutOfHours] = useState(false);
     const [slotsPage, setSlotsPage] = useState(0);
     const [slotHistory, setSlotHistory] = useState([]);
-    const [currentSlotParams, setCurrentSlotParams] = useState(null);
     const slotsPerPage = 8;
 
     const slotPages = useMemo(() => {
@@ -96,7 +95,6 @@ export const useNextFreeSlot = (doctorId) => {
         if (slotHistory.length > 0) {
             const prevDate = slotHistory[slotHistory.length - 1];
             setSlotHistory(prev => prev.slice(0, -1));
-            setCurrentSlotParams(prevDate);
             fetchNextFreeSlots(prevDate);
         }
     };

@@ -69,13 +69,13 @@ export const useAppointmentsPageController = () => {
         doctor_id: viewDoctorId
     }), [selectedDate, viewDoctorId]);
 
-    const { data: calendarStats = {}, fetched: statsFetched } = useFetch('/appointments/stats', {
+    const { data: calendarStats = {} } = useFetch('/appointments/stats', {
         params: statsParams,
         immediate: !!viewDoctorId,
         initialData: {}
     });
 
-    const { data: agendaAppointments = {}, loading: agendaLoading, refetch: fetchAgenda, fetched: agendaFetched } = useFetch('/appointments/month-report', {
+    const { data: agendaAppointments = {}, loading: agendaLoading, refetch: fetchAgenda } = useFetch('/appointments/month-report', {
         params: statsParams,
         immediate: !!viewDoctorId,
         initialData: { appointments: [] }

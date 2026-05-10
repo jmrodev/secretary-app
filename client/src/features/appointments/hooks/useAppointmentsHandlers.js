@@ -258,11 +258,10 @@ export const useAppointmentsHandlers = ({
             setViewDoctorId(doctorId);
             if (onClose) onClose();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }), [
-        handleDateSelect, handleUpdateStatus, handleSavePrescription, handleDelete, handleReschedule,
-        handleSyncGoogleEvent, handleBook, handleWhatsAppSlot, confirmNextSlot, handleUpdateType, handleSaveNote,
-        appointmentActions, uiHandlers, holidayHandlers, booking, setEditPatientModalOpen, setPrescribeModal, 
-        setSlotHistory, navigate, fetchNextFreeSlots, viewDoctorId, selectedDoctor, setSelectedDate, setViewDoctorId,
-        setShowForm, setDate, setSelectedDoctor, setIsOutOfHours, setBonified, setSelectedInstitution, setShowNextSlotModal
+        handleSlotClick, handleDateSelect, handleUpdateStatus, handleSavePrescription, handleDelete, handleReschedule,
+        appointmentActions, uiHandlers, holidayHandlers, booking,
+        navigate, fetchNextFreeSlots
     ]);
 };

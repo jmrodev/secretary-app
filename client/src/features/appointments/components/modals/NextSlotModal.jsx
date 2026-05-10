@@ -33,6 +33,7 @@ const NextSlotModal = ({
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, slotsPage, slotPages.length, nextSlotData?.nextStartDate]);
 
     const monthNames = t('months_array');
