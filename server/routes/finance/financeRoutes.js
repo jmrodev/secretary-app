@@ -20,6 +20,7 @@ const upload = multer({ storage: storage });
 
 // Consolidated Transactions
 router.get('/pricing', verifyToken, financeController.getPricing);
+router.post('/pricing', verifyToken, financeController.getPricing);
 router.post('/transactions', verifyToken, upload.single('proof'), financeController.createTransaction);
 router.get('/transactions', verifyToken, financeController.getTransactions); // View logic handles roles
 router.post('/transactions/close', verifyToken, financeController.closeCashBox);

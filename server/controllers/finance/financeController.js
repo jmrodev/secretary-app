@@ -13,7 +13,11 @@ const { pool } = require('../../db');
 
 exports.getPricing = async (req, res) => {
     try {
-        const { service_type, doctor_id, patientId } = req.query || {};
+        const query = req.query || {};
+        const body = req.body || {};
+        const doctor_id = query.doctor_id || body.doctor_id;
+        const service_type = query.service_type || body.service_type;
+        const { patientId } = body;
         if (!doctor_id) return res.status(400).send("Doctor ID required");
         const result = await financeService.getPricing(doctor_id, patientId, service_type);
         res.json({ price: result.price.toFixed(2), explanation: result.explanation });
