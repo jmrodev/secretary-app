@@ -14,30 +14,27 @@ const DayScheduleHeader = ({
     onPrevDay, onToday, onNextDay, onPrint, onNextFreeSlot, t
 }) => {
     return (
-        <header className="day-schedule__header">
-            <div className="day-schedule__title-group">
-                <h3 className="day-schedule__title">
+        <header className="day-schedule-header">
+            <div className="day-schedule-header__title-group">
+                <h3 className="day-schedule-header__title">
                     {formatDate(date, { weekday: true, monthName: true, hideYear: true })}
                 </h3>
-                {holiday && <span className="day-schedule__holiday-badge"><Icon name="beach_access" size="1rem" className="mr-1" />{holiday.description}</span>}
+                {holiday && (
+                    <span className="day-schedule-header__holiday-badge">
+                        <Icon name="beach_access" />
+                        <span>{holiday.description}</span>
+                    </span>
+                )}
             </div>
 
-            <div className="day-schedule__nav">
+            <div className="day-schedule-header__nav">
                 <Button variant="ghost" size="sm-compact" onClick={onPrevDay} icon={<Icon name="chevron_left" />} />
                 <Button variant="ghost" size="sm-compact" onClick={onToday}>{t('today') || "Hoy"}</Button>
                 <Button variant="ghost" size="sm-compact" onClick={onNextDay} icon={<Icon name="chevron_right" />} />
             </div>
 
-            <div className="day-schedule__toolbar">
-                <div className="day-schedule__controls">
-                    <Button 
-                        variant="ghost" 
-                        size="sm-compact" 
-                        onClick={onNextFreeSlot} 
-                        icon={<Icon name="search" />}
-                    >
-                        {t('next_free_slot')}
-                    </Button>
+            <div className="day-schedule-header__toolbar">
+                <div className="day-schedule-header__controls">
                     <Switch label={t('show_out_of_hours')} checked={showOutOfHours} onChange={setShowOutOfHours} />
                     <Switch label={t('show_cancelled')} checked={showCancelled} onChange={setShowCancelled} />
                 </div>

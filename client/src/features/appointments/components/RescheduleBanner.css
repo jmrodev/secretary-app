@@ -1,1 +1,65 @@
-/* RescheduleBanner Component Styles (BEM) */
+/* RescheduleBanner Molecule Styles (BEM) - Dark Premium Theme */
+
+.reschedule-banner {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 0.75rem 1.5rem;
+    background: rgba(30, 41, 59, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: var(--radius-full);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    color: var(--text-main);
+    animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    min-width: 400px;
+}
+
+.reschedule-banner__content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.reschedule-banner__icon {
+    color: var(--primary-color);
+}
+
+.reschedule-banner__patient {
+    font-weight: 800;
+    color: var(--primary-color);
+}
+
+.reschedule-banner__instruction {
+    opacity: 0.8;
+}
+
+.reschedule-banner__exit-btn {
+    font-weight: 800;
+    color: var(--danger);
+}
+
+@keyframes slide-up {
+    from { transform: translate(-50%, 100%); opacity: 0; }
+    to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+@media (max-width: 600px) {
+    .reschedule-banner {
+        min-width: 90%;
+        bottom: 1rem;
+        flex-direction: column;
+        gap: 0.75rem;
+        border-radius: var(--radius-lg);
+        text-align: center;
+    }
+}

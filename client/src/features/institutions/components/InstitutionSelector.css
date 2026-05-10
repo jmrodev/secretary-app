@@ -1,60 +1,60 @@
 /* InstitutionSelector Feature Molecule - BEM Styles */
 
-.inst-finances__selector-bar {
+.institution-selector {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 1.5rem;
     padding: 1.5rem;
-    background-color: var(--white);
-    border: 1px solid var(--border-color, var(--gray-100));
+    background-color: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
     border-radius: var(--radius-sm);
     box-shadow: var(--shadow-sm);
 }
 
-.inst-finances__selector-group {
+.institution-selector__group {
     display: flex;
     align-items: center;
     gap: 1rem;
 }
 
-.inst-finances__label {
+.institution-selector__label {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-size: 0.75rem;
     font-weight: 700;
-    color: var(--text-muted, var(--gray-400));
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
-.inst-finances__select {
+.institution-selector__select {
     min-width: 240px;
     padding: 0.5rem 1rem;
     border-radius: var(--radius-sm);
-    border: 1px solid var(--gray-200);
+    border: 1px solid var(--dashboard-card-border);
     font-size: 0.875rem;
     font-weight: 700;
-    color: var(--text-main, var(--gray-700));
-    background-color: var(--gray-50);
+    color: var(--text-main);
+    background-color: var(--gray-900);
 }
 
-.inst-finances__select:focus {
+.institution-selector__select:focus {
     border-color: var(--accent-color);
     outline: none;
 }
 
-.inst-finances__view-toggle {
+.institution-selector__view-toggle {
     display: flex;
-    background-color: var(--gray-50);
+    background-color: var(--gray-900);
     padding: 0.25rem;
     border-radius: var(--radius-sm);
-    border: 1px solid var(--gray-100);
+    border: 1px solid var(--dashboard-card-border);
 }
 
-.inst-finances__toggle-btn {
+.institution-selector__toggle-btn {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -68,15 +68,15 @@
     cursor: pointer;
     background: transparent;
     border: none;
-    color: var(--gray-400);
+    color: var(--gray-500);
 }
 
-.inst-finances__toggle-btn:hover:not(.inst-finances__toggle-btn--active) {
-    color: var(--gray-600);
+.institution-selector__toggle-btn:hover:not(.institution-selector__toggle-btn--active) {
+    color: var(--text-main);
 }
 
-.inst-finances__toggle-btn--active {
+.institution-selector__toggle-btn--active {
     background-color: var(--accent-color);
-    color: var(--white);
+    color: white;
     box-shadow: var(--shadow-md);
 }

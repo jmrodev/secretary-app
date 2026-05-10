@@ -2,6 +2,7 @@ import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Input from '@/components/atoms/Input';
+import './AppointmentMedicalPanel.css';
 
 /**
  * AppointmentMedicalPanel Molecule (Internal to feature).

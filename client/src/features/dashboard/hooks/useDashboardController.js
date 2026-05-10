@@ -161,13 +161,8 @@ export const useDashboardController = () => {
         navigate: modalsHook.navigate
     };
 
-    const loading = (
-        statsHook.loadingStats ||
-        statsHook.loadingDoctors ||
-        statsHook.loadingRequests ||
-        remindersHook.loadingReminders ||
-        (isStaff && statsHook.loadingNewPatientStats)
-    );
+    const loading = statsHook.loadingDoctors;
+
 
     const error =
         statsHook.errorStats ||
@@ -190,7 +185,8 @@ export const useDashboardController = () => {
         historyModal: modalsHook.historyModal,
         prescribeModal: modalsHook.prescribeModal,
         paymentModal: modalsHook.paymentModal,
-        fetched: statsHook.fetched && remindersHook.fetched,
+        fetched: statsHook.fetchedDoctors,
+
         isSubmitting,
 
         viewDoctorId,

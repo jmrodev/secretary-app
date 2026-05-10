@@ -7,11 +7,12 @@ const { formatLocalSQL } = require('../../utils/dateUtils');
 
 class BookingService {
     async createAppointment(userId, role, data) {
+        console.log("[BookingService] Incoming Data:", JSON.stringify(data, null, 2));
         const conn = await pool.getConnection();
         try {
             await conn.beginTransaction();
 
-            let patient_id = data.patient_id;
+            let patient_id = data.patient_id || data.patientId;
             if (role === 'patient') {
                 const patient = await patientRepository.findByUserId(userId, conn);
                 if (!patient) throw new NotFoundError("Patient profile not found");
@@ -31,13 +32,13 @@ class BookingService {
                     appointment_date: formattedDate,
                     reason: data.reason,
                     is_out_of_hours: data.is_out_of_hours === true || data.is_out_of_hours === 1 || data.is_out_of_hours === 'true',
-                    type: data.type,
+                    type: data.type || 'consultation',
                     institution_id: finalInstitutionId,
                     bonified: data.bonified === true || data.bonified === 1 || data.bonified === 'true',
                     created_by: userId
                 }, conn);
             } catch (spErr) {
-                if (spErr.message === 'slot_already_taken') {
+                if (spErr.text === 'slot_already_taken' || spErr.message === 'slot_already_taken') {
                     throw new ConflictError("Ya existe un turno confirmado en este horario.");
                 }
                 throw spErr;

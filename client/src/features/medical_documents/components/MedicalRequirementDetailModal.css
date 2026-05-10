@@ -1,1 +1,67 @@
-/* MedicalRequirementDetailModal Component Styles (BEM) */
+/* MedicalRequirementDetailModal.css - Isolated Styles */
+
+.medical-requirement-detail-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.medical-requirement-detail-modal__info-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.medical-requirement-detail-modal__body {
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.medical-requirement-detail-modal__body--editing {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(72, 128, 255, 0.1);
+}
+
+.medical-requirement-detail-modal__section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 1rem;
+    background: var(--gray-900);
+    border-bottom: 1px solid var(--dashboard-card-border);
+    margin: 0;
+    color: var(--text-main);
+}
+
+.medical-requirement-detail-modal__notes {
+    padding: 1rem;
+    border-top: 1px solid var(--dashboard-card-border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.medical-requirement-detail-modal__actions {
+    padding: 1rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    background: var(--gray-900);
+    border-top: 1px solid var(--dashboard-card-border);
+}
+
+.medical-requirement-detail-modal__footer {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 1rem;
+    border-top: 1px solid var(--dashboard-card-border);
+}
+
+.requirements-edit {
+    display: flex;
+    flex-direction: column;
+}

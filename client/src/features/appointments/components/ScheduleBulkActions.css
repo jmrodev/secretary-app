@@ -1,27 +1,36 @@
+/* ScheduleBulkActions Component Styles (BEM) - Dark Mode Standard */
+
 .schedule-bulk {
     padding: 1.5rem;
-    background-color: var(--gray-50);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius-sm);
+    background-color: var(--gray-900);
+    border: 1px solid var(--dashboard-card-border);
+    border-radius: var(--radius-md);
     margin-bottom: 2rem;
-    animation: fade-in 0.3s ease-out;
+    animation: fade-in-up 0.3s ease-out;
+    box-shadow: var(--shadow-sm);
 }
 
 .schedule-bulk__title {
-    font-size: 0.875rem;
-    font-weight: 700;
-    color: var(--gray-700);
-    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 1.25rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.schedule-bulk__title-icon {
+    color: var(--primary-color);
 }
 
 .schedule-bulk__actions {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 1.5rem;
+    gap: 2rem;
 }
 
 .schedule-bulk__time-inputs {
@@ -30,29 +39,33 @@
     gap: 0.75rem;
 }
 
-#root .schedule-bulk__time-input {
-    width: auto;
-    padding: 0.25rem 0.75rem;
-    font-size: 0.875rem;
-}
-
 .schedule-bulk__separator {
-    font-weight: 500;
-    color: var(--gray-400);
+    font-weight: 700;
+    color: var(--text-muted);
     text-transform: lowercase;
     font-style: italic;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
 }
 
 .schedule-bulk__buttons {
     display: flex;
-    gap: 0.75rem;
+    gap: 1rem;
 }
 
-.schedule-bulk__btn-text {
-    font-size: 10px;
-    font-weight: 700;
+.schedule-bulk__btn-label {
+    font-size: 0.7rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    height: 2.25rem;
+    letter-spacing: 0.075em;
+}
+
+@media (max-width: 768px) {
+    .schedule-bulk__actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .schedule-bulk__buttons {
+        justify-content: space-between;
+    }
 }

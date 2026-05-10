@@ -31,11 +31,18 @@ class PatientService {
 
             const builder = new PatientsQueryBuilder(user);
             
-            if (activeDoctorId) {
+            // Comentado temporalmente para restaurar visibilidad masiva
+            /*
+            if (activeDoctorId && !search) {
                 builder.filterByDoctor(activeDoctorId);
             }
+            */
 
-            builder.withFullDetails().applySearch(search).sortByDebt();
+            builder.withFullDetails().applySearch(search);
+            
+            if (!search) {
+                builder.sortByDebt();
+            }
 
             // 1. Get Total Count (without pagination)
             const { query: countQuery, params: countParams } = builder.buildCount();

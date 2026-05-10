@@ -1,85 +1,110 @@
-/* AppointmentFormModal Styles (BEM) */
+/* AppointmentFormModal Executor Styles (BEM) - Dark Mode Standard */
 
 .appointment-form-modal {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.85rem;
-    padding: 0;
-}
-
-@media (min-width: 640px) {
-    .appointment-form-modal {
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-        align-items: start;
-    }
-
-    .form-actions {
-        grid-column: 1 / -1;
-    }
-
-    .checkbox-group {
-        grid-column: 1 / -1;
-        margin-top: 0.5rem;
-    }
-}
-
-.appointment-sync-alert {
-    grid-column: 1 / -1;
-    margin-bottom: 1rem;
-    padding: 1rem;
-    background-color: var(--amber-50);
-    border: 2px solid var(--amber-200);
-    border-radius: 1rem;
     display: flex;
-    gap: 0.75rem;
-    align-items: center;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 0.5rem 0;
 }
 
-.appointment-sync-alert__icon { color: var(--amber-600); }
-.appointment-sync-alert__title { font-size: 0.75rem; font-weight: 800; color: var(--amber-700); text-transform: uppercase; }
-.appointment-sync-alert__text { font-size: 0.875rem; margin: 0; color: var(--amber-900); }
-
-.appointment-type-selector { display: flex; gap: 0.5rem; }
-.appointment-type-selector__btn {
-    flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
-    padding: 0.75rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color);
-    background: white; cursor: pointer; transition: all 0.2s ease;
+/* Form Layout Grid */
+.appointment-form-modal__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
 }
-.appointment-type-selector__btn--active { background: var(--primary); color: white; border-color: var(--primary); }
 
-.missing-data-alert {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-top: 0.5rem; padding: 0.5rem 0.75rem; background-color: var(--red-50);
-    border: 1px solid var(--red-100); border-radius: var(--radius); font-size: 0.875rem;
+/* Full Width Elements */
+.appointment-form-modal__field--full {
+    grid-column: 1 / -1;
 }
-.missing-data-alert__text { color: var(--red-700); }
-.missing-data-alert__action { background: none; border: none; font-weight: 700; color: var(--primary); text-decoration: underline; cursor: pointer; }
 
-.patient-quick-info {
-    margin-top: 0.5rem; padding: 0.75rem; background-color: var(--emerald-50);
-    border: 1px solid var(--emerald-100); border-radius: 0.75rem; display: flex; align-items: center;
+/* Field Grouping */
+.appointment-form-modal__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
-.patient-quick-info__field { flex: 1; display: flex; flex-direction: column; }
-.patient-quick-info__label { font-size: 10px; font-weight: 900; color: var(--emerald-600); text-transform: uppercase; }
-.patient-quick-info__input { font-weight: 700; color: var(--emerald-900); border: none; background: transparent; border-bottom: 1px solid var(--emerald-100); }
 
+.appointment-form-modal__label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Extra Out-of-Hours Badge */
 .appointment-form-modal__extra-badge {
-    margin-top: 8px; padding: 8px 12px; background-color: #fffbeb;
-    border: 1px solid #fcd34d; border-radius: 8px; color: #92400e; font-size: 0.75rem; font-weight: 800;
-}
-.appointment-form-modal__extra-badge--pulse { animation: pulse 2s infinite; }
-
-.appointment-form-modal__checkbox { margin-right: 0.5rem; }
-
-.appointment-form-modal__autofill-trap {
-    position: absolute;
-    opacity: 0;
-    top: -1000px;
-    left: -1000px;
-    height: 0;
-    width: 0;
-    overflow: hidden;
-    pointer-events: none;
+    margin-top: 0.75rem; 
+    padding: 0.75rem 1rem; 
+    background-color: rgba(245, 158, 11, 0.05);
+    border: 1px solid rgba(245, 158, 11, 0.2); 
+    border-radius: var(--radius-md); 
+    color: var(--warning); 
+    font-size: 0.8rem; 
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
+.appointment-form-modal__extra-badge--pulse { 
+    animation: pulse-soft 2s infinite; 
+}
+
+/* Bonified/Checkbox Group */
+.appointment-form-modal__checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background-color: var(--gray-950);
+    border: 1px solid var(--dashboard-card-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.appointment-form-modal__checkbox-container:hover {
+    border-color: var(--primary-color);
+    background-color: var(--gray-900);
+}
+
+.appointment-form-modal__checkbox {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+}
+
+.appointment-form-modal__checkbox-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-main);
+    cursor: pointer;
+}
+
+/* Actions Area */
+.appointment-form-modal__actions {
+    margin-top: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--dashboard-card-border);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.appointment-form-modal__submit {
+    min-width: 200px;
+}
+
+@keyframes pulse-soft {
+    0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.2); }
+    70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+}
+
+@media (max-width: 640px) {
+    .appointment-form-modal__grid {
+        grid-template-columns: 1fr;
+    }
+}

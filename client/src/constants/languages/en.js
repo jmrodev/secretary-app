@@ -283,6 +283,8 @@ export const en = {
     confirm_delete_appointment: "Are you sure? This will remove the record permanently.",
     appointments_title: "Appointment Schedule",
     appointments_subtitle: "Organize your daily schedule with calendar and day-by-day focus.",
+    find_next_free: "Find Next Free Slot",
+    search_free_slots: "Search Free Slots",
 
     // Patients
     patients_list: "Patients",

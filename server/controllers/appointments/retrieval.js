@@ -22,8 +22,9 @@ exports.getAppointments = async (req, res) => {
 
 exports.getMonthlyReport = async (req, res) => {
     try {
-        const { doctor_id, month, year } = { ...req.query, ...req.body };
-        const report = await retrievalService.getMonthlyReport(doctor_id, month, year);
+        const { doctor_id, doctorId, month, year } = { ...req.query, ...req.body };
+        const activeDoctorId = doctor_id || doctorId;
+        const report = await retrievalService.getMonthlyReport(activeDoctorId, month, year);
         res.json(report);
     } catch (err) {
         console.error("[Controller] getMonthlyReport error:", err);

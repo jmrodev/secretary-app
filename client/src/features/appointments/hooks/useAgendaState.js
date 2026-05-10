@@ -25,10 +25,19 @@ export const useAgendaState = (setViewDoctorId) => {
     // Handle initial state sync from router (reschedule/sync)
     useEffect(() => {
         if (rescheduleAppt) {
-            queueMicrotask(() => setViewDoctorId(rescheduleAppt.doctor_id));
+            queueMicrotask(() => {
+                // Only update if different to avoid loops
+                setViewDoctorId(prev => {
+                    const newId = String(rescheduleAppt.doctor_id);
+                    return prev === newId ? prev : newId;
+                });
+            });
         } else if (syncAppt) {
             queueMicrotask(() => {
-                setViewDoctorId(syncAppt.doctor_id);
+                setViewDoctorId(prev => {
+                    const newId = String(syncAppt.doctor_id);
+                    return prev === newId ? prev : newId;
+                });
                 setSelectedDate(new Date(syncAppt.appointment_date));
             });
         }

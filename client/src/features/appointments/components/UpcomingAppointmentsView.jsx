@@ -39,7 +39,8 @@ const UpcomingAppointmentsView = ({ appointments, loading, t, onAction, onWhatsA
                     <AppointmentCard
                         key={appt.id} appt={appt}
                         onClick={() => onAction(appt)}
-                        onWhatsApp={() => onWhatsApp(appt)}
+                        showActions={true}
+                        onWhatsAppAction={onWhatsApp}
                     />
                 ))}
             </div>

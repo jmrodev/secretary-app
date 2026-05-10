@@ -199,9 +199,13 @@ export const isSameDay = (d1, d2) => {
     const a = parseDate(d1);
     const b = parseDate(d2);
     if (!a || !b) return false;
-    return a.getFullYear() === b.getFullYear() &&
-        a.getMonth() === b.getMonth() &&
-        a.getDate() === b.getDate();
+
+    // Use toLocaleDateString with Argentina timezone to get a stable comparison string "YYYY-MM-DD"
+    const options = { timeZone: 'America/Argentina/Buenos_Aires', year: 'numeric', month: '2-digit', day: '2-digit' };
+    const strA = a.toLocaleDateString('en-CA', options); // en-CA gives YYYY-MM-DD
+    const strB = b.toLocaleDateString('en-CA', options);
+    
+    return strA === strB;
 };
 
 /**

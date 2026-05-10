@@ -7,16 +7,9 @@
     background-color: var(--gray-800);
 }
 
-.medical-requirement-manager__table-container {
-    background: var(--dashboard-card-bg);
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--dashboard-card-border);
-    overflow: hidden;
-}
-
 .requirement-item__cell {
     padding: 0.5rem 0.75rem; /* Reduced from 0.75/1 */
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--dashboard-card-border);
     vertical-align: middle;
 }
 

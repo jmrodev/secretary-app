@@ -286,6 +286,18 @@ export const es = {
     confirm_delete_appointment: "¿Está seguro? Esto eliminará el registro permanentemente.",
     appointments_title: "Agenda de Turnos",
     appointments_subtitle: "Gestiona tu agenda diaria y visualiza los próximos compromisos.",
+    find_next_free: "Encontrar Próximo Libre",
+    search_free_slots: "Buscar Próximos Huecos Libres",
+    apply_to_multiple_days: "Aplicar a múltiples días (Sobrescribe horarios)",
+    to_label: "a",
+    mon_to_fri: "Lunes a Viernes",
+    mon_to_sat: "Lunes a Sábado",
+    explore_more_dates: "Explorar más fechas",
+    search_limit_3_months: "La búsqueda se limita a los próximos 3 meses para optimizar rendimiento.",
+    include_overtime_short: "Inc. Sobreturnos",
+    exploring_schedule: "Explorando agenda...",
+    time_date: "Hora / Fecha",
+    keyboard_nav_help: "Tip: Usa las flechas ← → o RePág/AvPág para navegar entre meses.",
 
     // Patients
     patients_list: "Pacientes",

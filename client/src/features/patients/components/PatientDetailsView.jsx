@@ -181,38 +181,36 @@ const PatientDetailsView = ({
 
                         {activeTab === 'medications' && (
                             <div className="patient-details__meds-tab">
-                                {/* Component for Chronic Meds or Prescriptions list could go here */}
-                                <div className="details-block details-block--medications">
-                                    <header className="details-block__header">
-                                        <h3 className="details-block__title">
+                                <section className="patient-details__block patient-details__block--medications">
+                                    <header className="patient-details__block-header">
+                                        <h3 className="patient-details__block-title">
                                             <Icon name="medication" size="1.2rem" />
-                                            {t('current_medication') || 'Medicación actual del paciente'}
+                                            {t('current_medication') || 'Medicación actual'}
                                         </h3>
                                         <Button variant="ghost" size="sm" icon={<Icon name="settings" size="1rem" />}>
-                                            {t('configure') || 'Configurar'}
+                                            {t('configure')}
                                         </Button>
                                     </header>
-                                    <div className="details-block__content details-block__content--padded">
+                                    <div className="patient-details__block-content patient-details__block-content--padded">
                                         {chronicMeds.length > 0 ? (
                                             <ul className="patient-details__meds-list">
                                                 {chronicMeds.map((m, i) => <li key={i}>{m.name || m}</li>)}
                                             </ul>
-                                        ) : <p className="patient-details__text-empty">{t('no_current_medications') || 'No hay medicación registrada actualmente'}</p>}
+                                        ) : <p className="patient-details__text-empty">{t('no_current_medications')}</p>}
                                     </div>
-                                </div>
+                                </section>
 
-
-                                <div className="details-block details-block--medications" style={{marginTop: '2rem'}}>
-                                    <header className="details-block__header">
-                                        <h3 className="details-block__title">
+                                <section className="patient-details__block patient-details__block--medications" style={{marginTop: '2rem'}}>
+                                    <header className="patient-details__block-header">
+                                        <h3 className="patient-details__block-title">
                                             <Icon name="folder_open" size="1.2rem" />
-                                            {t('recent_prescriptions') || 'Recetas Recientes'}
+                                            {t('recent_prescriptions')}
                                         </h3>
                                         <Button size="sm" onClick={() => onGeneratePrescriptionLink(details.id)}>
-                                            {t('new_prescription') || 'Nueva Receta'}
+                                            {t('new_prescription')}
                                         </Button>
                                     </header>
-                                    <div className="details-block__content details-block__content--padded">
+                                    <div className="patient-details__block-content patient-details__block-content--padded">
                                         {recentRequests.length > 0 ? (
                                             <ul className="patient-details__requests-list">
                                                 {recentRequests.map((r, i) => (
@@ -221,10 +219,9 @@ const PatientDetailsView = ({
                                                     </li>
                                                 ))}
                                             </ul>
-                                        ) : <p className="patient-details__text-empty">{t('no_history') || 'No hay historial'}</p>}
+                                        ) : <p className="patient-details__text-empty">{t('no_history')}</p>}
                                     </div>
-
-                                </div>
+                                </section>
                             </div>
                         )}
 

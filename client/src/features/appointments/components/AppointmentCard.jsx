@@ -28,7 +28,7 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
 
             <div className="appointment-card__info">
                 <div className="appointment-card__patient-name">
-                    {appt.type === 'virtual' && <Icon name="videocam" size="1.1rem" className="mr-1" />}
+                    {appt.type === 'virtual' && <Icon name="videocam" size="1.1rem" />}
                     <span className="appointment-card__patient-name-text">
                         {appt.patient_name || 'S/N'}
                     </span>
@@ -38,7 +38,7 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
                             className="appointment-card__visit-count" 
                             title={`${t('attended_appointments') || 'Visitas'}: ${appt.attended_appointments}`}
                         >
-                            <Icon name="history" size="0.9rem" /> {appt.attended_appointments} {t('visits') || 'visitas'}
+                            <Icon name="history" size="0.9rem" /> {appt.attended_appointments}
                         </Badge>
                     )}
                 </div>
@@ -54,7 +54,7 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
                 )}
                 <div className="appointment-card__details">
                     <span className="appointment-card__doctor">
-                        <Icon name="person" size="1rem" className="mr-1" />
+                        <Icon name="person" size="1rem" />
                         {appt.doctor_name}
                     </span>
                     {appt.reason && <span className="appointment-card__reason">• {appt.reason}</span>}
@@ -81,11 +81,9 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
 
                     if (appt.bonified === 1 || appt.bonified === true || appt.bonified === 'true') {
                         return (
-                            <div className="appt-status__col">
-                                <div className="appt-status__text appt-status__amount--paid">
-                                    <span className="appt-status__bonified">{t('bonified') || 'Bonificado'}</span>
-                                    <Icon name="verified" size="1rem" className="appt-status__icon--blue" />
-                                </div>
+                            <div className="appointment-card__payment-info appointment-card__payment-info--bonified">
+                                <span>{t('bonified') || 'Bonif.'}</span>
+                                <Icon name="verified" className="appointment-card__payment-icon" />
                             </div>
                         );
                     }
@@ -99,23 +97,21 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
                     if (paid >= effectiveTotal && effectiveTotal > 0) {
                         colorModifier = 'paid';
                         amountToDisplay = paid;
-                        statusIcon = <Icon name="check_circle" size="1rem" className="appt-status__check" />;
+                        statusIcon = <Icon name="check_circle" className="appointment-card__payment-icon" />;
                     } else if (!isAttended) {
                         colorModifier = 'pending';
                     } else if (pending > 0 || (!hasTransactions && cost > 0)) {
                         colorModifier = 'debt';
                         amountToDisplay = pending > 0 ? pending : cost;
-                        statusIcon = <Icon name="cancel" size="1rem" className="appt-status__check" />;
+                        statusIcon = <Icon name="error" className="appointment-card__payment-icon" />;
                     }
 
                     if (amountToDisplay === 0) return null;
 
                     return (
-                        <div className="appt-status__col">
-                            <div className={`appt-status__text appt-status__amount--${colorModifier}`}>
-                                <span>${amountToDisplay.toLocaleString()}</span>
-                                {statusIcon}
-                            </div>
+                        <div className={`appointment-card__payment-info appointment-card__payment-info--${colorModifier}`}>
+                            <span>${amountToDisplay.toLocaleString()}</span>
+                            {statusIcon}
                         </div>
                     );
                 })()}

@@ -13,25 +13,25 @@ import './PatientHistoryTable.css';
  */
 const PatientHistoryTable = ({ details, t, onPayDebt }) => {
     return (
-        <section className="details-block details-block--history">
-            <header className="details-block__header">
-                <h3 className="details-block__title">
+        <section className="patient-details__block patient-details__block--history">
+            <header className="patient-details__block-header">
+                <h3 className="patient-details__block-title">
                     <Icon name="calendar_month" size="1.2rem" />
                     {t('appointment_history')}
                 </h3>
             </header>
-            <div className="details-block__content">
+            <div className="patient-details__block-content">
                 {details.appointments && details.appointments.length > 0 ? (
                     <div className="patient-details__history-container">
                         <table className="patient-details__history-table">
                             <thead className="patient-details__history-header">
                                 <tr>
-                                    <th>{t('appointment_date')}</th>
-                                    <th>{t('appointment_doctor')}</th>
-                                    <th>{t('appointment_status')}</th>
-                                    <th>{t('appointment_payment')}</th>
-                                    <th>{t('appointment_balance')}</th>
-                                    <th>{t('appointment_reason')}</th>
+                                    <th className="patient-details__history-th">{t('appointment_date')}</th>
+                                    <th className="patient-details__history-th">{t('appointment_doctor')}</th>
+                                    <th className="patient-details__history-th">{t('appointment_status')}</th>
+                                    <th className="patient-details__history-th">{t('appointment_payment')}</th>
+                                    <th className="patient-details__history-th">{t('appointment_balance')}</th>
+                                    <th className="patient-details__history-th">{t('appointment_reason')}</th>
                                 </tr>
                             </thead>
                             <tbody>

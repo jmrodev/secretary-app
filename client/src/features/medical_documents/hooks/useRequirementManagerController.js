@@ -62,6 +62,7 @@ export const useRequirementManagerController = (user) => {
 
     // Selection/Edit State
     const [selectedRequest, setSelectedRequest] = useState(null);
+    const [isNewModalOpen, setIsNewModalOpen] = useState(false);
     const [actionModal, setActionModal] = useState({ open: false, type: '', id: null });
     const [actionNote, setActionNote] = useState('');
 
@@ -103,6 +104,10 @@ export const useRequirementManagerController = (user) => {
     }, [selectedRequest]);
 
     const handleTabChange = (newTab) => {
+        if (newTab === 'new') {
+            setIsNewModalOpen(true);
+            return;
+        }
         setActiveTab(newTab);
         if (newTab === 'list') {
             setCurrentPage(1);
@@ -261,6 +266,8 @@ export const useRequirementManagerController = (user) => {
         setActionNote,
         activeTab,
         setActiveTab: handleTabChange,
+        isNewModalOpen,
+        setIsNewModalOpen,
         recycleRequests,
         doctors,
         filter,

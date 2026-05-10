@@ -17,14 +17,14 @@ const InstitutionSelector = ({
     t
 }) => {
     return (
-        <div className="inst-finances__selector-bar animate-fade-in">
-            <div className="inst-finances__selector-group">
-                <label className="inst-finances__label">
+        <div className="institution-selector animate-fade-in">
+            <div className="institution-selector__group">
+                <label className="institution-selector__label">
                     <Icon name="business" size="1.2rem" color="var(--accent-color)" />
                     {t('institutions') || 'Instituciones'}:
                 </label>
                 <select
-                    className="inst-finances__select"
+                    className="institution-selector__select"
                     value={selectedInstId}
                     onChange={e => setSelectedInstId(e.target.value)}
                 >
@@ -36,11 +36,11 @@ const InstitutionSelector = ({
             </div>
 
             {selectedInstId && (
-                <div className="inst-finances__view-toggle">
+                <div className="institution-selector__view-toggle">
                     <Button
-                        className={`inst-finances__toggle-btn ${
+                        className={`institution-selector__toggle-btn ${
                             viewMode === 'transactions' 
-                            ? 'inst-finances__toggle-btn--active' 
+                            ? 'institution-selector__toggle-btn--active' 
                             : ''
                         }`}
                         onClick={() => setViewMode('transactions')}
@@ -50,9 +50,9 @@ const InstitutionSelector = ({
                         {t('finances')}
                     </Button>
                     <Button
-                        className={`inst-finances__toggle-btn ${
+                        className={`institution-selector__toggle-btn ${
                             viewMode === 'patients' 
-                            ? 'inst-finances__toggle-btn--active' 
+                            ? 'institution-selector__toggle-btn--active' 
                             : ''
                         }`}
                         onClick={() => setViewMode('patients')}

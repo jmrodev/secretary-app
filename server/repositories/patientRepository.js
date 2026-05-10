@@ -16,17 +16,18 @@ static ALLOWED_FIELDS = [
 ];
 
     async findById(id, conn = pool) {
-        const rows = await conn.query(`
-            SELECT 
-                p.*,
-                p.total_debt_calculated as total_debt,
-                i.name as insurance_name, 
-                inst.name as institution_name
-            FROM view_patients_extended p
-            LEFT JOIN insurances i ON p.insurance_id = i.id 
-            LEFT JOIN institutions inst ON p.institution_id = inst.id 
-            WHERE p.id = ?`, [id]);
-        return rows[0] || null;
+        if (!id) return null;
+        const connection = conn || await pool.getConnection();
+        try {
+            const PatientsQueryBuilder = require('../utils/queryBuilders/PatientsQueryBuilder');
+            const builder = new PatientsQueryBuilder();
+            builder.withFullDetails().where('p.id = ?', id);
+            const { query, params } = builder.build();
+            const rows = await connection.query(query, params);
+            return rows.length > 0 ? rows[0] : null;
+        } finally {
+            if (!conn) connection.release();
+        }
     }
 
 

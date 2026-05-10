@@ -30,7 +30,10 @@ const ScheduleSection = ({
                 />
             ) : (
                 <>
-                    <h3 className="schedule-section__title"><Icon name="list" className="mr-1" />Lista de Días Cerrados</h3>
+                    <h3 className="schedule-section__title">
+                        <Icon name="list" className="schedule-section__title-icon" />
+                        Lista de Días Cerrados
+                    </h3>
                     <div className="schedule-section__content">
                         <HolidayList holidays={holidays} onDelete={onDeleteHoliday} />
                     </div>

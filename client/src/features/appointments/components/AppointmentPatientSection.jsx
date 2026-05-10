@@ -1,8 +1,9 @@
 import React from 'react';
-import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { PatientSearchSelect } from '@/features/patients';
 import { capitalizeWords } from '@/utils/stringUtils';
+import Input from '@/components/atoms/Input';
+import './AppointmentPatientSection.css';
 
 /**
  * AppointmentPatientSection Molecule (Internal to feature).
@@ -12,44 +13,48 @@ const AppointmentPatientSection = ({
     selectedPatient, selectedPatientData, missingData, handlePatientChange, handlePhoneChange, onOpenEditPatient, t
 }) => {
     return (
-        <div className="input-group">
-            <label className="form-label">{t('patients') || 'Paciente'}</label>
-            <PatientSearchSelect
-                value={selectedPatient}
-                selectedData={selectedPatientData}
-                autoFocus={true}
-                placeholder="Buscar Paciente..."
-                onCreatePatient={async (name) => {
-                    handlePatientChange(null, { full_name: capitalizeWords(name) });
-                    onOpenEditPatient();
-                }}
-                onChange={handlePatientChange}
-            />
+        <div className="appointment-patient-section">
+            <div className="appointment-patient-section__search-group">
+                <label className="appointment-patient-section__group-label">{t('patients') || 'Paciente'}</label>
+                <PatientSearchSelect
+                    value={selectedPatient}
+                    selectedData={selectedPatientData}
+                    autoFocus={true}
+                    placeholder="Buscar Paciente..."
+                    onCreatePatient={async (name) => {
+                        handlePatientChange(null, { full_name: capitalizeWords(name) });
+                        onOpenEditPatient();
+                    }}
+                    onChange={handlePatientChange}
+                />
+            </div>
 
             {missingData.length > 0 && (
-                <div className="missing-data-alert">
-                    <span className="missing-data-alert__text">
-                        <Icon name="warning" size="1rem" className="mr-1" />
+                <div className="appointment-patient-section__missing-alert">
+                    <span className="appointment-patient-section__missing-text">
+                        <Icon name="warning" size="1rem" />
                         <strong>Datos incompletos:</strong> {missingData.join(', ')}.
                     </span>
-                    <Button
+                    <button
                         type="button"
-                        className="missing-data-alert__action"
+                        className="appointment-patient-section__missing-action"
                         onClick={onOpenEditPatient}
-                        unstyled
                     >
                         Completar
-                    </Button>
+                    </button>
                 </div>
             )}
 
             {selectedPatient && (
-                <div className="patient-quick-info">
-                    <div className="patient-quick-info__field">
-                        <span className="patient-quick-info__label"><Icon name="phone" size="1rem" className="mr-1" />Teléfono</span>
+                <div className="appointment-patient-section__quick-info">
+                    <div className="appointment-patient-section__field">
+                        <span className="appointment-patient-section__label">
+                            <Icon name="phone" size="1rem" />
+                            Teléfono
+                        </span>
                         <input
                             type="text"
-                            className="patient-quick-info__input"
+                            className="appointment-patient-section__input"
                             value={selectedPatientData?.phone || ''}
                             onChange={e => handlePhoneChange(e.target.value)}
                             placeholder="Sin teléfono"

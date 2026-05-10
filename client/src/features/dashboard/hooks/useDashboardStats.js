@@ -56,6 +56,7 @@ export const useDashboardStats = (isStaff = false, doctor_id = '') => {
         loadingNewPatientStats,
         loadingRequests,
         fetched: statsHook.fetched && requestsHook.fetched,
+        fetchedDoctors: doctorData !== undefined && !loadingDoctors,
         errorStats,
         errorDoctors,
         errorNewPatientStats,

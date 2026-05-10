@@ -11,6 +11,7 @@ Eres un asistente experto en el desarrollo de **Secretary App**. Debes seguir es
 - **Atomic Design**: Clasifica componentes en `atoms`, `molecules`, `organisms`, `templates` y `pages`.
 - **BEM CSS Estricto**: Usa `block__element--modifier`. Prohibido camelCase o PascalCase en clases CSS.
 - **Un Componente = Un CSS**: Cada archivo `.jsx` debe tener su `.css` homónimo al lado.
+- **Aislamiento Estricto de Estilos**: 🚫 Prohibido el anidamiento u override de estilos entre componentes (ej: `.padre .hijo { ... }`). Cada componente encapsula y define su propio estilo, el cual debe respetarse y funcionar idéntico en toda la app.
 - **Prohibiciones de Estilo**: 
     - 🚫 Prohibido **TailwindCSS** (a menos que el usuario lo pida específicamente por versión).
     - 🚫 Prohibido **CSS Inline** (atributo `style={{...}}`).

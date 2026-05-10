@@ -371,6 +371,20 @@ class TransactionRepository {
         return await conn.query(query, params);
     }
 
+    async findDailySummary(month, year, doctorId, conn = pool) {
+        let query = `
+            SELECT report_date, total_income, total_cash, total_withdrawal 
+            FROM view_daily_financial_summary 
+            WHERE MONTH(report_date) = ? AND YEAR(report_date) = ?
+        `;
+        const params = [month, year];
+        if (doctorId) {
+            query += " AND doctor_id = ?";
+            params.push(doctorId);
+        }
+        return await conn.query(query, params);
+    }
+
     async findTotalIncomeByPeriod(month, year, doctorId, conn = pool) {
         let query = `
             SELECT COALESCE(SUM(amount), 0) as total FROM transactions 

@@ -1,156 +1,149 @@
+/* AppointmentCard Molecule (BEM Strict) - Dark Mode Standard */
+
 .appointment-card {
     display: flex;
     align-items: center;
-    padding: 1.25rem 1.5rem; /* Increased padding for editorial feel */
-    background: var(--white);
-    border-radius: var(--radius-md); /* Bento radius */
-    box-shadow: var(--shadow-sm); /* Ambient shadow */
-    margin-bottom: 0.75rem;
+    gap: 1rem;
+    padding: 0.85rem 1.25rem;
+    background-color: var(--gray-900);
+    border: 1px solid var(--dashboard-card-border);
+    border-radius: var(--radius-md);
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: none; /* No-line rule */
-    gap: 1.5rem;
-    min-width: 0;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
+    user-select: none;
 }
 
 .appointment-card:hover {
-    transform: translateY(-2px);
+    background-color: var(--gray-800);
+    border-color: var(--primary-color);
+    transform: translateX(4px);
     box-shadow: var(--shadow-md);
-    background-color: var(--gray-50);
 }
 
-/* Tonal Shifts for Status (No lines) */
-.appointment-card--confirmed { background-color: var(--blue-50); }
-.appointment-card--arrived, .appointment-card--attended, .appointment-card--completed { background-color: var(--green-50); }
-.appointment-card--absent, .appointment-card--cancelled, .appointment-card--rejected { background-color: var(--red-50); }
-.appointment-card--rescheduled { background-color: var(--amber-50); }
-.appointment-card--virtual { background-color: var(--indigo-50); }
+/* --- Status Modifiers (Left Accent) --- */
+.appointment-card--completed  { border-left: 4px solid var(--success); }
+.appointment-card--cancelled  { border-left: 4px solid var(--danger); opacity: 0.6; }
+.appointment-card--absent     { border-left: 4px solid var(--warning); opacity: 0.8; }
+.appointment-card--pending    { border-left: 4px solid var(--primary-color); }
+.appointment-card--confirmed  { border-left: 4px solid var(--info); }
+.appointment-card--arrived    { border-left: 4px solid var(--teal-500); }
+.appointment-card--virtual    { background: linear-gradient(90deg, var(--gray-900), rgba(59, 130, 246, 0.05)); }
 
-.appointment-card__time-box { 
-    min-width: 60px; 
-    display: flex; 
-    flex-direction: column;
+/* --- Sub-elements --- */
+.appointment-card__time-box {
+    min-width: 3.5rem;
+    display: flex;
     justify-content: center;
 }
 
-.appointment-card__time { 
-    font-size: 1rem; 
-    font-weight: 800; 
+.appointment-card__time {
+    font-size: 0.95rem;
+    font-weight: 800;
     color: var(--primary-color);
-    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
 }
 
-.appointment-card__info { 
-    flex: 1; 
-    overflow: hidden; 
-    display: flex; 
-    flex-direction: column; 
-    gap: 0.35rem;
-    min-width: 0; 
+.appointment-card__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
 }
 
 .appointment-card__patient-name {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    font-weight: 800;
-    font-size: 1.1rem;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 700;
     color: var(--text-main);
-    min-width: 0;
 }
 
 .appointment-card__patient-name-text {
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.appointment-card__visit-count {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.65rem;
-    font-weight: 700;
-    border-radius: 2rem;
-    background-color: rgba(0, 61, 155, 0.1);
-    color: var(--primary-color);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.appointment-card__phone { 
-    font-size: 0.85rem; 
-    color: var(--text-muted); 
-    font-weight: 500; 
+.appointment-card__details {
     display: flex;
     align-items: center;
-    gap: 0.25rem;
-    width: fit-content;
-    padding: 0;
-}
-
-.appointment-card__details { 
-    display: flex; 
-    align-items: center; 
-    gap: 0.75rem; 
-    font-size: 0.85rem; 
+    gap: 0.75rem;
+    font-size: 0.75rem;
     color: var(--text-muted);
 }
 
-.appointment-card__doctor { 
+.appointment-card__doctor {
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.35rem;
+    font-weight: 600;
+    color: var(--text-secondary);
 }
 
-.appointment-card__reason { 
-    font-style: italic; 
-    opacity: 0.8; 
+.appointment-card__reason {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    opacity: 0.8;
 }
 
-.appointment-card__status { 
-    display: flex; 
-    flex-direction: column; 
-    align-items: flex-end; 
-    gap: 0.25rem;
-    min-width: 100px; 
+/* --- Status Area (Payment & Chips) --- */
+.appointment-card__status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.35rem;
+    min-width: 6rem;
 }
-
-.appt-status__text { 
-    font-weight: 800; 
-    font-size: 0.9rem; 
-    display: flex; 
-    align-items: center; 
-    gap: 0.25rem; 
-}
-
-.appt-status__amount--pending { color: var(--warning); }
-.appt-status__amount--paid { color: var(--success); }
-.appt-status__amount--debt { color: var(--error); }
 
 .appointment-card__status-chip {
-    font-size: 0.7rem; 
-    padding: 0.15rem 0.75rem; 
-    border-radius: 2rem; 
-    font-weight: 800; 
+    font-size: 0.65rem;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    background: var(--gray-100);
-    color: var(--gray-600);
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-full);
+    background: var(--gray-800);
+    color: var(--text-muted);
 }
 
-.appointment-card__status-chip--confirmed { color: var(--blue-700); background: var(--blue-100); }
-.appointment-card__status-chip--completed { color: var(--green-700); background: var(--green-100); }
+.appointment-card__status-chip--completed { color: var(--success); background: rgba(0, 182, 122, 0.1); }
+.appointment-card__status-chip--cancelled { color: var(--danger); background: rgba(249, 55, 93, 0.1); }
+.appointment-card__status-chip--pending   { color: var(--primary-color); background: rgba(59, 130, 246, 0.1); }
 
-.appointment-card__actions { 
-    display: flex; 
-    gap: 0.5rem; 
+/* --- Payment Amount Indicators --- */
+.appointment-card__payment-info {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-weight: 800;
+    font-size: 0.85rem;
+}
+
+.appointment-card__payment-info--paid { color: var(--success); }
+.appointment-card__payment-info--debt { color: var(--danger); }
+.appointment-card__payment-info--bonified { color: var(--primary-color); }
+
+.appointment-card__payment-icon {
+    font-size: 0.9rem;
+}
+
+/* --- Actions Overlay (Visible on hover if needed) --- */
+.appointment-card__actions {
+    display: flex;
+    gap: 0.35rem;
     margin-left: 0.5rem;
 }
 
-.appointment-card__action-btn {
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
+/* --- Specific Styles for Incomplete/Google --- */
+.appointment-card--external {
+    border-style: dashed;
 }
 
+.appointment-card--anonymous {
+    background-color: var(--gray-950);
+}

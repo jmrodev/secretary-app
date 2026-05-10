@@ -75,6 +75,7 @@
   AppointmentReportTable.css
   ```
 - **NO usar**: CSS inline, styled-components, o CSS-in-JS
+- **Aislamiento Estricto de Estilos**: Queda estrictamente prohibido que un componente sobrescriba o modifique los estilos de sus componentes hijos a través de anidamiento CSS (ej: `.padre .hijo { ... }`). Cada componente encapsula y define su propio estilo, el cual debe respetarse y funcionar de manera idéntica en cualquier parte de la aplicación.
 
 ### 8. Optimización con Memoización (`useMemo` / `useCallback`)
 - **Uso Justificado**: NO memorizar todo por defecto. Usar solo cuando:

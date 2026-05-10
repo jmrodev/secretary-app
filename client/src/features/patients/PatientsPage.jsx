@@ -106,55 +106,45 @@ const PatientsPage = () => {
 
                 ) : (
                     // --- LIST VIEW ---
-                    <section className="dashboard-layout__grid">
-                        <aside className="dashboard-layout__sidebar">
-                            <div className="dashboard-nav-bar">
-                                <TabNav className="patients__nav">
+                    <div className="patients-page__list-view animate-fade-in">
+                        <div className="dashboard-nav-bar">
+                            <TabNav>
+                                <TabButton
+                                    isActive={activeTab === 'list'}
+                                    onClick={() => setActiveTab('list')}
+                                    icon={<Icon name="groups" size="1.1rem" />}
+                                >
+                                    {t('active_list')}
+                                </TabButton>
+                                {isStaff && (
                                     <TabButton
-                                        isActive={activeTab === 'list'}
-                                        onClick={() => setActiveTab('list')}
-                                        icon={<Icon name="groups" size="1.1rem" />}
+                                        isActive={activeTab === 'recycle'}
+                                        onClick={() => { setActiveTab('recycle'); fetchRecycleBin(); }}
+                                        icon={<Icon name="delete" size="1.1rem" />}
                                     >
-                                        {t('active_list')}
+                                        {t('recycle_bin')}
+                                        {recycleItems.length > 0 && <span className="patients-page__dot-badge">{recycleItems.length}</span>}
                                     </TabButton>
-                                    {isStaff && (
-                                        <TabButton
-                                            isActive={activeTab === 'recycle'}
-                                            onClick={() => { setActiveTab('recycle'); fetchRecycleBin(); }}
-                                            icon={<Icon name="delete" size="1.1rem" />}
-                                        >
-                                            {t('recycle_bin')}
-                                            {recycleItems.length > 0 && <span className="patients__dot-badge">{recycleItems.length}</span>}
-                                        </TabButton>
-                                    )}
-                                </TabNav>
-                            </div>
-
-                            {/* Global search is now in the PageHeader. Sidebar search is redundant. */}
+                                )}
+                            </TabNav>
 
                             {isStaff && activeTab === 'list' && (
-                                <div className="dashboard-card">
-                                    <h3 className="dashboard-card__title">
-                                        <Icon name="build" size="1.2rem" />
-                                        {t('actions')}
-                                    </h3>
-                                    <div className="patients-sidebar__tools">
-                                        <Button
-                                            variant="primary"
-                                            className="patients-sidebar__btn-tool"
-                                            onClick={handleNewClick}
-                                            icon={<Icon name="add" size="1.1rem" />}
-                                        >
-                                            {t('new_patient_btn')}
-                                        </Button>
-                                    </div>
+                                <div className="dashboard-nav-bar__actions">
+                                    <Button
+                                        variant="primary"
+                                        size="sm"
+                                        onClick={handleNewClick}
+                                        icon={<Icon name="add" size="1.1rem" />}
+                                    >
+                                        {t('new_patient_btn')}
+                                    </Button>
                                 </div>
                             )}
-                        </aside>
+                        </div>
 
-                        <main className="dashboard-layout__main">
+                        <main className="patients-page__main">
                             {activeTab === 'list' ? (
-                                <div className="patients-list-view">
+                                <div className="patients-page__table-wrapper">
                                     <section className="dashboard-card dashboard-card--no-padding dashboard-card--scroll-horizontal">
                                         <PatientList
                                             patients={patients}
@@ -185,7 +175,7 @@ const PatientsPage = () => {
                                 />
                             )}
                         </main>
-                    </section>
+                    </div>
                 )}
             </div>
 

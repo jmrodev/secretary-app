@@ -76,7 +76,8 @@ export const useFinancesPageController = () => {
 
     const transactions = txData?.transactions || [];
     const totalCount = txData?.totalCount || 0;
-    const loading = txLoading || statsLoading || closuresLoading || isActionLoading || doctorsLoading;
+    const loading = txLoading || doctorsLoading || isActionLoading;
+    const fetched = txData !== undefined && !txLoading;
 
     // --- UI State ---
     const [modalOpen, setModalOpen] = useState(false);
@@ -149,6 +150,8 @@ export const useFinancesPageController = () => {
             searchQuery,
             options: { years: [], types: [], paymentMethods: [] }
         },
-        filteredTransactions: transactions
+        filteredTransactions: transactions,
+        fetched
     };
+
 };

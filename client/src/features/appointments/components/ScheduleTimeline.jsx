@@ -2,6 +2,7 @@ import React from 'react';
 import AppointmentCard from '@/features/appointments/components/AppointmentCard';
 import Icon from '@/components/atoms/Icon';
 import { formatTime, isPast as checkIsPast } from '@/utils/dateUtils';
+import './ScheduleTimeline.css';
 
 /**
  * ScheduleTimeline (Executor Component).
@@ -22,8 +23,8 @@ const ScheduleTimeline = ({
                     const isPast = checkIsPast(slot.time);
 
                     return (
-                        <div key={index} className={`time-slot ${isSlotClosed ? 'time-slot--closed' : ''} ${isPast ? 'time-slot--past' : ''}`}>
-                            <div className="slot-content">
+                        <div key={index} className={`schedule-timeline__slot ${isSlotClosed ? 'schedule-timeline__slot--closed' : ''} ${isPast ? 'schedule-timeline__slot--past' : ''}`}>
+                            <div className="schedule-timeline__slot-content">
                                 {slotApps
                                     .filter(appt => showCancelled || !['cancelled', 'suspended', 'absent'].includes(appt.status))
                                     .map(appt => (
@@ -35,15 +36,15 @@ const ScheduleTimeline = ({
 
                                 {!isBlocked && (
                                     <div
-                                        className={`available-slot ${isSlotClosed ? 'available-slot--closed' : ''}`}
+                                        className={`schedule-timeline__available ${isSlotClosed ? 'schedule-timeline__available--closed' : ''}`}
                                         onClick={() => onSlotAction(slot)}
                                     >
-                                        <span className="available-slot__icon">
-                                            <Icon name={isSlotClosed ? 'block' : 'add'} size="1rem" />
+                                        <span className="schedule-timeline__available-icon">
+                                            <Icon name={isSlotClosed ? 'lock' : 'add'} size="1rem" />
                                         </span>
-                                        <div className="available-slot__info">
-                                            <span className="available-slot__time">{formatTime(slot.time)}</span>
-                                            <span className="available-slot__label">
+                                        <div className="schedule-timeline__available-info">
+                                            <span className="schedule-timeline__available-time">{formatTime(slot.time)}</span>
+                                            <span className="schedule-timeline__available-label">
                                                 {isSlotClosed ? (t('closed_hours') || 'Fuera de Horario') : (t('available') || 'Disponible')}
                                             </span>
                                         </div>

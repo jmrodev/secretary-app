@@ -1,21 +1,18 @@
-/* AppointmentAdminPanel Molecule Styles (BEM) */
+/* AppointmentAdminPanel Molecule Styles (BEM) - Dark Mode Standard */
 
 .appointment-admin-panel {
     /* --- Local Component Tokens --- */
-    --panel-group-bg: var(--white);
-    --panel-group-border: var(--gray-300);
-    --panel-group-border-left: var(--gray-400);
-    --panel-group-border-hover: var(--gray-500);
+    --panel-group-bg: var(--gray-900);
+    --panel-group-border: var(--dashboard-card-border);
+    --panel-group-border-left: var(--gray-700);
 
-    --panel-highlight-bg: var(--blue-50);
-    --panel-highlight-border: var(--blue-200);
-    --panel-highlight-border-left: var(--blue-500);
-    --panel-highlight-border-hover: var(--blue-600);
+    --panel-highlight-bg: rgba(59, 130, 246, 0.05);
+    --panel-highlight-border: rgba(59, 130, 246, 0.15);
+    --panel-highlight-border-left: var(--primary-color);
 
-    --panel-danger-bg: var(--red-50);
-    --panel-danger-border: var(--red-200);
-    --panel-danger-border-left: var(--red-500);
-    --panel-danger-border-hover: var(--red-600);
+    --panel-danger-bg: rgba(249, 55, 93, 0.05);
+    --panel-danger-border: rgba(249, 55, 93, 0.15);
+    --panel-danger-border-left: var(--danger);
     /* ------------------------------ */
 
     display: flex;
@@ -25,9 +22,9 @@
 }
 
 .appointment-admin-panel__tabs {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     overflow-x: auto;
-    scrollbar-width: none; /* Hide scrollbar for cleaner look */
+    scrollbar-width: none;
 }
 
 .appointment-admin-panel__tabs::-webkit-scrollbar {
@@ -35,27 +32,26 @@
 }
 
 .appointment-admin-panel__content {
-    min-height: 180px; /* Prevent jumpy height changes */
+    min-height: 180px;
 }
 
 .appointment-admin-panel__group {
     background-color: var(--panel-group-bg);
-    border-radius: var(--radius);
+    border-radius: var(--radius-md);
     padding: 1.25rem;
     border: 1px solid var(--panel-group-border);
     border-left: 4px solid var(--panel-group-border-left);
     display: flex;
     flex-direction: column;
-    gap: 0.85rem;
-    margin-bottom: 1rem;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
     box-shadow: var(--shadow-sm);
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease;
 }
 
 .appointment-admin-panel__group:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
-    border-left-color: var(--panel-group-border-hover);
 }
 
 .appointment-admin-panel__group:last-child {
@@ -68,31 +64,23 @@
     border-left-color: var(--panel-highlight-border-left);
 }
 
-.appointment-admin-panel__group--highlight:hover {
-    border-left-color: var(--panel-highlight-border-hover);
-}
-
 .appointment-admin-panel__group--danger {
     background-color: var(--panel-danger-bg);
     border-color: var(--panel-danger-border);
     border-left-color: var(--panel-danger-border-left);
 }
 
-.appointment-admin-panel__group--danger:hover {
-    border-left-color: var(--panel-danger-border-hover);
-}
-
 .appointment-admin-panel__group-title {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     text-transform: uppercase;
-    letter-spacing: 0.075em;
+    letter-spacing: 0.1em;
     color: var(--text-muted);
     margin: 0 0 0.25rem 0;
     font-weight: 800;
 }
 
 .appointment-admin-panel__group--danger .appointment-admin-panel__group-title {
-    color: var(--error);
+    color: var(--danger);
 }
 
 .appointment-admin-panel__grid {
@@ -102,35 +90,30 @@
 }
 
 .appointment-admin-panel__action {
-    display: inline-flex;
-    justify-content: center;
-    min-width: 130px;
+    flex: 1;
+    min-width: 140px;
 }
 
 .appointment-admin-panel__phone-display {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: var(--white);
-    border: 1px solid var(--border-color);
-    padding: 0.75rem 1rem;
-    border-radius: var(--radius);
-    margin-bottom: 0.75rem;
+    background-color: var(--gray-950);
+    border: 1px solid var(--dashboard-card-border);
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 1rem;
 }
 
 .appointment-admin-panel__phone-number {
     font-family: var(--font-mono, monospace);
     font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--text-main);
+    font-weight: 700;
+    color: var(--primary-color);
 }
 
 @media (max-width: 480px) {
     .appointment-admin-panel__grid {
-        grid-template-columns: 1fr;
-    }
-
-    .appointment-admin-panel__tabs {
-        justify-content: flex-start;
+        flex-direction: column;
     }
 }

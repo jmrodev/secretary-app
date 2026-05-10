@@ -6,6 +6,7 @@ import { PatientManagerModal, PatientHistoryModal } from '@/features/patients';
 import { PrescriptionModal } from '@/features/medical_documents';
 import WhatsAppModal from '@/features/chat/components/WhatsAppModal';
 import AdminAuthModal from '@/features/auth/components/AdminAuthModal';
+import Icon from '@/components/atoms/Icon';
 import { TransactionModal } from '@/features/finances';
 
 // Feature Components (Executors)
@@ -17,7 +18,7 @@ import AppointmentFormModal from '@/features/appointments/components/Appointment
 import PatientHistoryView from '@/features/appointments/components/PatientHistoryView';
 import UpcomingAppointmentsView from '@/features/appointments/components/UpcomingAppointmentsView';
 import NextSlotModal from '@/features/appointments/components/NextSlotModal';
-
+import Button from '@/components/atoms/Button';
 import './AppointmentsPage.css';
 
 /**
@@ -28,7 +29,7 @@ import './AppointmentsPage.css';
 const AppointmentsPage = () => {
     const controller = useAppointmentsPageController();
     const {
-        t, user, loading, activeTab, showOutOfHours,
+        t, user, loading, agendaLoading, activeTab, showOutOfHours,
         viewDoctorId, doctors, institutions, insurances, selectedDate, filteredAppointments,
         appointments, doctorSchedule, holidays, calendarStats, currentDoctor,
         searchTerm, searchPatientId, patientAppointments, searchLoading,
@@ -36,7 +37,7 @@ const AppointmentsPage = () => {
         prescribeModal, whatsappModal, setWhatsappModal, showNextSlotModal, setShowNextSlotModal,
         editPatientModalOpen, authModalOpen,
         handlers, booking, nextSlot, rescheduleAppt, exitRescheduleMode,
-        isStaff, isAdmin, isDoctor, isPatient, isMedicalStaff
+        isStaff, isAdmin, isDoctor, isPatient, isMedicalStaff, fetched
     } = controller;
 
     const {
@@ -45,30 +46,42 @@ const AppointmentsPage = () => {
         setPrescribeModal, setEditPatientModalOpen, setAuthModalOpen
     } = handlers;
 
+    // IMPORTANT: Conditional returns MUST happen after ALL hooks/logic that might trigger state
     if (!user) return <Loading variant="full-page" />;
 
     // Only show global loading if we haven't fetched anything yet (initial load)
-    if (loading && !controller.fetched) {
+    if (loading && !fetched) {
         return <Loading variant="full-page" text={t('loading')} />;
     }
-
-
 
     return (
         <MainLayout wide flush title={t('appointments_title')}>
             <main className="appointments-page-orchestrator">
-                <section className="layout-content-area">
-                    <header className="appointments-top-actions animate-fade-in">
-                        <div className="appointments-top-actions__main">
-                            {/* Global search in Header handles patient filtering */}
+                <section className="appointments-page-orchestrator__body animate-fade-in">
+                    <header className="appointments-page-orchestrator__top-actions">
+                        <div className="appointments-page-orchestrator__live-indicator">
+                            <span className="appointments-page-orchestrator__live-dot"></span>
+                            <span className="appointments-page-orchestrator__live-text">{t('live_mode') || 'LIVE'}</span>
+                        </div>
+
+                        <div className="appointments-page-orchestrator__main-actions">
+                            <Button 
+                                variant="accent" 
+                                size="md" 
+                                onClick={handlers.openNextSlot}
+                                icon={<Icon name="bolt" />}
+                                className="appointments-page-orchestrator__next-slot-btn"
+                            >
+                                <strong>{t('find_next_free') || 'Encontrar Próximo Libre'}</strong>
+                            </Button>
                         </div>
                     </header>
 
                     <RescheduleBanner rescheduleAppt={rescheduleAppt} onExit={exitRescheduleMode} t={t} />
 
-                    <section className="appointments-page__body">
+                    <div className="appointments-page-orchestrator__content">
                         {searchPatientId || searchTerm ? (
-                            <section className="appointments-page__panel appointments-page__panel--agenda animate-fade-in">
+                            <section className="appointments-page-orchestrator__panel appointments-page-orchestrator__panel--agenda animate-fade-in">
                                 <PatientHistoryView
                                     patientAppointments={searchPatientId ? patientAppointments : appointments} 
                                     loading={searchLoading}
@@ -79,7 +92,7 @@ const AppointmentsPage = () => {
                                 />
                             </section>
                         ) : activeTab === 'upcoming' ? (
-                            <section className="appointments-page__panel appointments-page__panel--agenda">
+                            <section className="appointments-page-orchestrator__panel appointments-page-orchestrator__panel--agenda">
                                 <UpcomingAppointmentsView
                                     appointments={filteredAppointments} 
                                     loading={loading} 
@@ -89,9 +102,9 @@ const AppointmentsPage = () => {
                                 />
                             </section>
                         ) : (
-                            <section className={activeTab === 'monthly' ? 'appointments-page__grid appointments-page__grid--monthly' : 'appointments-page__grid'}>
-                                <aside className="appointments-page__sidebar">
-                                    <section className="appointments-page__panel appointments-page__panel--calendar">
+                            <div className={activeTab === 'monthly' ? 'appointments-page-orchestrator__grid appointments-page-orchestrator__grid--monthly' : 'appointments-page-orchestrator__grid'}>
+                                <aside className="appointments-page-orchestrator__sidebar">
+                                    <section className="appointments-page-orchestrator__panel appointments-page-orchestrator__panel--calendar">
                                         <CalendarSection
                                             activeTab={activeTab} selectedDate={selectedDate} onDateSelect={handlers.handleDateSelect}
                                             appointments={filteredAppointments} calendarStats={calendarStats} holidays={holidays}
@@ -99,24 +112,26 @@ const AppointmentsPage = () => {
                                             viewDoctorId={viewDoctorId} onSearchPatientId={setSearchPatientId} searchPatientId={searchPatientId}
                                             onCreatePatient={booking.createPatient} onNextFreeSlot={handlers.openNextSlot}
                                             onSyncDayToGoogle={() => handlers.syncDayToGoogle(viewDoctorId, selectedDate)}
+                                            loading={agendaLoading}
                                         />
                                     </section>
                                 </aside>
 
                                 {activeTab !== 'monthly' && (
-                                    <section className="appointments-page__panel appointments-page__panel--agenda">
+                                    <section className="appointments-page-orchestrator__panel appointments-page-orchestrator__panel--agenda">
                                         <ScheduleSection
                                             activeTab={activeTab} selectedDate={selectedDate} onDateSelect={handlers.handleDateSelect}
                                             selectedDoctor={currentDoctor} viewDoctorId={viewDoctorId} appointments={appointments}
                                             doctorSchedule={doctorSchedule} holidays={holidays} onSlotClick={handlers.handleSlotClick}
                                             onDeleteHoliday={handlers.handleDeleteHoliday} showOutOfHours={showOutOfHours} setShowOutOfHours={setShowOutOfHours}
                                             onNextFreeSlot={handlers.openNextSlot}
+                                            loading={agendaLoading}
                                         />
                                     </section>
                                 )}
-                            </section>
+                            </div>
                         )}
-                    </section>
+                    </div>
                 </section>
             </main>
 

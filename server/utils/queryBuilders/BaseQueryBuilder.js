@@ -7,6 +7,7 @@ class BaseQueryBuilder {
         this.baseTable = baseTable;
         this.user = user;
         this.selectFields = [];
+        this.selectParams = [];
         this.joins = [];
         this.conditions = [];
         this.params = [];
@@ -16,14 +17,17 @@ class BaseQueryBuilder {
     }
 
     /**
-     * Agrega campos al SELECT
-     * @param {string|string[]} fields - Campo(s) a seleccionar
+     * Agrega campos al SELECT con soporte de parámetros
      */
-    select(fields) {
+    select(fields, params = []) {
         if (Array.isArray(fields)) {
             this.selectFields.push(...fields);
         } else {
             this.selectFields.push(fields);
+        }
+
+        if (params && params.length > 0) {
+            this.selectParams.push(...params);
         }
         return this;
     }
@@ -147,7 +151,7 @@ class BaseQueryBuilder {
 
         return {
             query,
-            params: this.params
+            params: [...this.selectParams, ...this.params] // Combinamos ambos en orden
         };
     }
 
@@ -179,7 +183,7 @@ class BaseQueryBuilder {
 
         return {
             query,
-            params: this.params
+            params: this.params // Solo usamos los parámetros del WHERE
         };
     }
 
