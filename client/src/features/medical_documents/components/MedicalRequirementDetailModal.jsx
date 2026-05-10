@@ -13,6 +13,9 @@ import RequirementDetailHeader from '@/features/medical_documents/components/Req
 import RequirementMedicationList from '@/features/medical_documents/components/RequirementMedicationList';
 import RequirementFeedback from '@/features/medical_documents/components/RequirementFeedback';
 
+// Styles
+import './MedicalRequirementDetailModal.css';
+
 /**
  * MedicalRequirementDetailModal Organism (Feature-based).
  * Orchestrates the display and editing of medical request details.
@@ -48,10 +51,10 @@ const MedicalRequirementDetailModal = ({
             onClose={onClose}
             title={t('request_detail') || "Detalle de Solicitud"}
         >
-            <div className="requirements-detail">
+            <div className="medical-requirement-detail-modal">
                 <RequirementDetailHeader selectedRequest={selectedRequest} />
 
-                <div className="requirements-detail__info-bar">
+                <div className="medical-requirement-detail-modal__info-bar">
                     <Badge variant={selectedRequest.type === 'prescription' ? 'blue' : 'green'}>
                         {typeLabels[selectedRequest.type] || selectedRequest.type}
                     </Badge>
@@ -62,10 +65,10 @@ const MedicalRequirementDetailModal = ({
                     )}
                 </div>
 
-                <div className={`requirements-detail__body ${isEditing ? 'requirements-detail__body--editing' : ''}`}>
+                <div className={`medical-requirement-detail-modal__body ${isEditing ? 'medical-requirement-detail-modal__body--editing' : ''}`}>
                     {isEditing ? (
                         <div className="requirements-edit">
-                            <h4 className="requirements-detail__section-title">
+                            <h4 className="medical-requirement-detail-modal__section-title">
                                 <Icon name="edit_note" />
                                 {t('editing_medication') || 'Editando Medicación'}
                             </h4>
@@ -78,7 +81,7 @@ const MedicalRequirementDetailModal = ({
                                 onAddMed={handleAddMed}
                                 t={t}
                             />
-                            <div className="requirements-detail__notes">
+                            <div className="medical-requirement-detail-modal__notes">
                                 <FormGroup label={t('request_note') || 'Nota del Paciente'}>
                                     <Input
                                         type="textarea"
@@ -98,7 +101,7 @@ const MedicalRequirementDetailModal = ({
                                     />
                                 </FormGroup>
                             </div>
-                            <div className="requirements-detail__actions">
+                            <div className="medical-requirement-detail-modal__actions">
                                 <Button variant="ghost" onClick={handleCancelEdit}>
                                     {t('cancel')}
                                 </Button>
@@ -124,7 +127,7 @@ const MedicalRequirementDetailModal = ({
                     t={t}
                 />
 
-                <div className="requirements-detail__footer">
+                <div className="medical-requirement-detail-modal__footer">
                     <Button onClick={onClose} variant="secondary">
                         {t('close')}
                     </Button>

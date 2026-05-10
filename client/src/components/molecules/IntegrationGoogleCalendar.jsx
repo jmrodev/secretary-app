@@ -58,12 +58,10 @@ const IntegrationGoogleCalendar = ({
                     {!googleUnlinked ? (
                         <div className="config-group__items">
                             <div className="config-actions">
-                                <Button variant="secondary" onClick={onRefreshToken}>
-                                    <Icon name="sync" className="mr-1" />
+                                <Button variant="secondary" onClick={onRefreshToken} icon={<Icon name="sync" />}>
                                     Refrescar Enlace
                                 </Button>
-                                <Button variant="danger" onClick={onDisconnectGoogle}>
-                                    <Icon name="close" className="mr-1" />
+                                <Button variant="danger" onClick={onDisconnectGoogle} icon={<Icon name="close" />}>
                                     Desconectar Cuenta
                                 </Button>
                             </div>
@@ -78,8 +76,8 @@ const IntegrationGoogleCalendar = ({
                                     onClick={onRetryGoogle}
                                     disabled={loading}
                                     style={{ marginTop: '0.5rem' }}
+                                    icon={<Icon name="bolt" />}
                                 >
-                                    <Icon name="bolt" className="mr-1" />
                                     Reintentar Elementos Fallidos
                                 </Button>
                             </Alert>

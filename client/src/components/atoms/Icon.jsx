@@ -19,13 +19,19 @@ const Icon = ({
 
     const style = {
         fontSize: size,
-        color: color,
-        cursor: onIconClick ? 'pointer' : 'inherit'
+        color: color
     };
+
+    const combinedClasses = [
+        'material-symbols-outlined',
+        'icon',
+        onIconClick ? 'icon--clickable' : '',
+        className
+    ].filter(Boolean).join(' ');
 
     return (
         <span
-            className={`material-symbols-outlined icon ${className}`}
+            className={combinedClasses}
             style={style}
             onClick={onIconClick}
         >

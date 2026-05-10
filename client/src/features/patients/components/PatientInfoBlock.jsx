@@ -13,15 +13,15 @@ import './PatientInfoBlock.css';
  */
 const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink }) => {
     return (
-        <section className="details-block details-block--info">
-            <header className="details-block__header">
-                <h3 className="details-block__title">
-                    <Icon name="PROFILE" size="1.2rem" />
+        <section className="patient-details__block patient-details__block--info">
+            <header className="patient-details__block-header">
+                <h3 className="patient-details__block-title">
+                    <Icon name="person" size="1.2rem" />
                     {t('patient_info')}
                 </h3>
             </header>
 
-            <div className="details-block__content">
+            <div className="patient-details__block-content">
                 <table className="patient-details__info-table">
                     <tbody>
                         <tr className="patient-details__info-row">

@@ -30,9 +30,11 @@ const DaySchedule = ({
     const holiday = holidays && holidays.find(h => h.date.startsWith(dateStr));
     let daysConfig = holiday ? [] : (schedule || []).filter(s => s.day_of_week === date.getDay() && s.is_break === 0);
 
-    const dayApps = [...appointments]
-        .filter(appt => isSameDay(appt.appointment_date, date))
-        .sort((a, b) => new Date(a.appointment_date).getTime() - new Date(b.appointment_date).getTime());
+    const dayApps = React.useMemo(() => {
+        return [...appointments]
+            .filter(appt => isSameDay(appt.appointment_date, date))
+            .sort((a, b) => new Date(a.appointment_date).getTime() - new Date(b.appointment_date).getTime());
+    }, [appointments, date]);
 
     const parseTime = (timeStr, baseDate) => {
         if (!timeStr) return null;

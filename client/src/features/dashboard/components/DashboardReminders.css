@@ -1,18 +1,18 @@
 .dashboard-reminders {
     /* --- Local Component Tokens --- */
-    --reminders-tabs-bg: var(--gray-100);
-    --reminders-item-bg: var(--white);
-    --reminders-item-border: var(--gray-300);
-    --reminders-item-hover: var(--accent-color);
+    --reminders-tabs-bg: var(--gray-900);
+    --reminders-item-bg: var(--dashboard-card-bg);
+    --reminders-item-border: var(--dashboard-card-border);
+    --reminders-item-hover: var(--gray-800);
     
-    --badge-visit-bg: var(--amber-100);
-    --badge-visit-text: var(--amber-800);
-    --badge-prescription-bg: var(--green-100);
-    --badge-prescription-text: var(--green-800);
-    --badge-medication-bg: var(--red-100);
-    --badge-medication-text: var(--red-800);
-    --badge-license-bg: var(--blue-100);
-    --badge-license-text: var(--blue-800);
+    --badge-visit-bg: rgba(245, 158, 11, 0.15);
+    --badge-visit-text: var(--amber-400);
+    --badge-prescription-bg: rgba(16, 185, 129, 0.15);
+    --badge-prescription-text: var(--green-400);
+    --badge-medication-bg: rgba(239, 68, 68, 0.15);
+    --badge-medication-text: var(--red-400);
+    --badge-license-bg: rgba(59, 130, 246, 0.15);
+    --badge-license-text: var(--blue-400);
     /* ------------------------------ */
 
     display: flex;
@@ -37,7 +37,9 @@
 .dashboard-reminders__count {
     margin-left: 0.5rem;
     padding: 0 0.5rem;
-    background: rgba(255, 255, 255, 0.4);
+    background: var(--gray-800);
+    border: 1px solid var(--dashboard-card-border);
+    color: var(--text-muted);
     border-radius: 10px;
     font-size: 0.75rem;
 }
@@ -54,11 +56,11 @@
 .dashboard-reminders__item {
     background-color: var(--reminders-item-bg);
     padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--gray-100);
+    border-bottom: 1px solid var(--reminders-item-border);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
 }
 
 .dashboard-reminders__item:last-child {
@@ -66,7 +68,7 @@
 }
 
 .dashboard-reminders__item:hover {
-    background-color: var(--gray-50);
+    background-color: var(--reminders-item-hover);
 }
 
 .dashboard-reminders__item-info {

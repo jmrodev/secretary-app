@@ -46,28 +46,8 @@
 }
 
 .auth-card__form {
-    display: grid;
-    gap: 1rem;
-}
-
-.auth-card__form .form-group {
-    margin-bottom: 0.25rem;
-}
-
-.auth-card__form .form-group__label {
-    color: var(--text-secondary);
-    font-weight: 600;
-}
-
-.auth-card__form .input {
-    border-color: var(--gray-300);
-    background-color: var(--white);
-}
-
-.auth-card__form .input:focus,
-.auth-card__form .input:focus-visible {
-    border-color: var(--blue-500);
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.18);
+    display: flex;
+    flex-direction: column;
 }
 
 .auth-card__footer {
@@ -107,6 +87,6 @@
     min-height: 2.75rem;
 }
 
-.auth-card .btn:focus-visible {
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.22);
+.auth-card .btn {
+    width: 100%;
 }

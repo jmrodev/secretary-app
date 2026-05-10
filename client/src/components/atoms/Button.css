@@ -88,100 +88,72 @@
 }
 
 .btn--secondary {
-    --btn-bg: var(--dashboard-card-bg);
+    --btn-bg: var(--gray-900);
     --btn-border: var(--dashboard-card-border);
     --btn-text: var(--text-main);
     --btn-shadow: var(--shadow-sm);
-    --btn-hover-bg: var(--gray-100);
-}
-
-.btn--secondary:hover:not(:disabled) {
-    border-color: var(--btn-hover-border);
+    --btn-hover-bg: var(--gray-800);
 }
 
 .btn--outline-danger {
-    --btn-bg: var(--white);
-    --btn-border: var(--red-300);
-    --btn-text: var(--red-600);
+    --btn-bg: transparent;
+    --btn-border: var(--red-700);
+    --btn-text: var(--red-400);
     --btn-shadow: var(--shadow-sm);
-    --btn-hover-bg: var(--red-50);
+    --btn-hover-bg: rgba(239, 68, 68, 0.1);
     --btn-hover-border: var(--red-500);
-    --btn-hover-text: var(--red-700);
+    --btn-hover-text: var(--red-300);
 }
 
 .btn--outline-success {
-    --btn-bg: var(--white);
-    --btn-border: var(--green-300);
-    --btn-text: var(--green-600);
+    --btn-bg: transparent;
+    --btn-border: var(--green-700);
+    --btn-text: var(--green-400);
     --btn-shadow: var(--shadow-sm);
-    --btn-hover-bg: var(--green-50);
+    --btn-hover-bg: rgba(34, 197, 94, 0.1);
     --btn-hover-border: var(--green-500);
-    --btn-hover-text: var(--green-700);
+    --btn-hover-text: var(--green-300);
 }
 
 .btn--outline-warning {
-    --btn-bg: var(--white);
-    --btn-border: var(--amber-300);
-    --btn-text: var(--amber-600);
+    --btn-bg: transparent;
+    --btn-border: var(--amber-700);
+    --btn-text: var(--amber-400);
     --btn-shadow: var(--shadow-sm);
-    --btn-hover-bg: var(--amber-50);
+    --btn-hover-bg: rgba(245, 158, 11, 0.1);
     --btn-hover-border: var(--amber-500);
-    --btn-hover-text: var(--amber-700);
-}
-
-.btn--outline-info {
-    --btn-bg: var(--white);
-    --btn-border: var(--sky-300);
-    --btn-text: var(--sky-600);
-    --btn-shadow: var(--shadow-sm);
-    --btn-hover-bg: var(--sky-50);
-    --btn-hover-border: var(--sky-500);
-    --btn-hover-text: var(--sky-700);
-}
-
-.btn--outline-accent {
-    --btn-bg: var(--white);
-    --btn-border: var(--indigo-300);
-    --btn-text: var(--indigo-600);
-    --btn-shadow: var(--shadow-sm);
-    --btn-hover-bg: var(--indigo-50);
-    --btn-hover-border: var(--indigo-500);
-    --btn-hover-text: var(--indigo-700);
+    --btn-hover-text: var(--amber-300);
 }
 
 .btn--ghost {
     --btn-bg: transparent;
     --btn-text: var(--text-muted);
-    --btn-hover-bg: var(--gray-100);
+    --btn-hover-bg: var(--gray-800);
     --btn-hover-text: var(--text-main);
     --btn-hover-y: 0;
 }
 
-/* NEW: Premium Glass Variant for Headers */
-/* btn--glass-premium removed in DashStack migration */
-
 .btn--link {
     --btn-bg: transparent;
-    --btn-text: var(--blue-600);
-    --btn-hover-bg: var(--indigo-50);
-    --btn-hover-text: var(--accent-hover);
+    --btn-text: var(--primary-color);
+    --btn-hover-bg: rgba(72, 128, 255, 0.05);
+    --btn-hover-text: var(--primary-hover);
     --btn-hover-y: 0;
 }
 
-
 .btn--status {
-    background: var(--gray-50);
-    border: 1px dashed var(--gray-300);
-    color: var(--gray-500);
+    background: var(--gray-900);
+    border: 1px dashed var(--dashboard-card-border);
+    color: var(--text-muted);
     font-size: 0.75rem;
     padding: 0.25rem 0.5rem;
 }
 
 .btn--status:hover:not(:disabled) {
-    background: white;
+    background: var(--gray-800);
     border-style: solid;
-    border-color: var(--blue-400);
-    color: var(--blue-600);
+    border-color: var(--primary-color);
+    color: var(--text-main);
 }
 
 /* Sizes */
@@ -205,9 +177,9 @@
 
 /* State */
 .btn--active {
-    background: var(--blue-50);
-    border-color: var(--blue-200);
-    color: var(--blue-700);
+    background: rgba(72, 128, 255, 0.1);
+    border-color: var(--primary-color);
+    color: var(--text-main);
 }
 
 /* Icon Buttons */

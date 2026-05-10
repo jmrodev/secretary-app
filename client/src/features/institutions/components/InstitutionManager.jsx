@@ -28,14 +28,14 @@ const InstitutionManager = ({
     } = handlers;
 
     return (
-        <div className="institutions-manager">
-            <header className="institutions-manager__header">
-                <h2 className="institutions-manager__title">{t('institutions') || 'Instituciones'}</h2>
-                <p className="institutions-manager__subtitle">{t('institutions_subtitle') || 'Gestiona instituciones pagadoras y convenios.'}</p>
+        <div className="institution-manager">
+            <header className="institution-manager__header">
+                <h2 className="institution-manager__title">{t('institutions') || 'Instituciones'}</h2>
+                <p className="institution-manager__subtitle">{t('institutions_subtitle') || 'Gestiona instituciones pagadoras y convenios.'}</p>
             </header>
 
-            <div className="institutions-manager__nav">
-                <TabNav className="institutions__nav">
+            <div className="institution-manager__nav">
+                <TabNav className="institution-manager__tab-nav">
                     <TabButton
                         isActive={activeTab === 'list'}
                         onClick={() => setActiveTab('list')}
@@ -53,14 +53,14 @@ const InstitutionManager = ({
                 </TabNav>
             </div>
 
-            <div className="dashboard-card dashboard-card--highlighted institutions-manager__content">
+            <div className="dashboard-card institution-manager__card">
                 {/* Actions Header inside card */}
                 {activeTab === 'list' && (
-                    <div className="institutions-manager__actions">
+                    <div className="institution-manager__actions">
                         <Button
                             variant="primary"
                             size="sm"
-                            className="institutions-manager__action-btn"
+                            className="institution-manager__action-btn"
                             onClick={() => handleOpenFormModal()}
                             icon={<Icon name="add" size="1.1rem" />}
                         >
@@ -69,7 +69,7 @@ const InstitutionManager = ({
                     </div>
                 )}
 
-                <div className="institutions-manager__list-container">
+                <div className="institution-manager__list-container">
                     {activeTab === 'list' ? (
 
                         <InstitutionList

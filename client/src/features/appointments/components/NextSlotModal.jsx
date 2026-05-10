@@ -13,18 +13,27 @@ import './NextSlotModal.css';
 const NextSlotModal = ({
     isOpen, onClose, loading, nextSlotData, includeOutOfHours, onToggleOutOfHours,
     slotsPage, setSlotsPage, slotPages, onSelect, onWhatsApp, onNextGroup, onPrevGroup,
-    hasPrevGroup, hasNextGroup
+    hasPrevGroup, hasNextGroup, fetchNextFreeSlots
 }) => {
     const { t } = useLanguage();
+    const handleNextPage = async () => {
+        if (slotsPage < slotPages.length - 1) {
+            setSlotsPage(p => p + 1);
+        } else if (nextSlotData?.nextStartDate) {
+            await fetchNextFreeSlots(nextSlotData.nextStartDate, null, true);
+            setSlotsPage(p => p + 1);
+        }
+    };
+
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (!isOpen) return;
-            if ((e.key === 'ArrowLeft' || e.key === 'PageUp') && hasPrevGroup) onPrevGroup();
-            else if ((e.key === 'ArrowRight' || e.key === 'PageDown') && hasNextGroup) onNextGroup();
+            if ((e.key === 'ArrowLeft' || e.key === 'PageUp') && (slotsPage > 0)) setSlotsPage(p => p - 1);
+            else if ((e.key === 'ArrowRight' || e.key === 'PageDown') && (slotsPage < slotPages.length - 1 || nextSlotData?.nextStartDate)) handleNextPage();
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isOpen, hasPrevGroup, hasNextGroup, onPrevGroup, onNextGroup]);
+    }, [isOpen, slotsPage, slotPages.length, nextSlotData?.nextStartDate]);
 
     const monthNames = t('months_array');
     const todayIso = new Date().toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).split(' ')[0];
@@ -47,27 +56,9 @@ const NextSlotModal = ({
         >
             <div className={baseClass}>
                 <div className={`${baseClass}__controls`}>
-                    <div className={`${baseClass}__info-box`}>
-                        <div className={`${baseClass}__info-content`}>
-                            <Icon name="info" size="1rem" className={`${baseClass}__info-icon`} />
-                            <span className={`${baseClass}__info-text`}>{t('search_limit_3_months')}</span>
-                        </div>
-                    </div>
 
-                    <div className={`${baseClass}__toggle-row`}>
-                        <label className={`${baseClass}__toggle-label`}>
-                            <input
-                                type="checkbox"
-                                className={`${baseClass}__toggle-checkbox`}
-                                checked={includeOutOfHours}
-                                onChange={(e) => onToggleOutOfHours(e.target.checked)}
-                            />
-                            <span className={`${baseClass}__toggle-text`}>
-                                <Icon name="lock_open" size="1rem" />
-                                {t('include_overtime_short')}
-                            </span>
-                        </label>
-                    </div>
+
+
                 </div>
 
                 {(!nextSlotData || loading) ? (
@@ -78,12 +69,7 @@ const NextSlotModal = ({
                 ) : (
                     <div className={`${baseClass}__table-wrapper`}>
                         <table className={`${baseClass}__table`}>
-                            <thead className={`${baseClass}__thead`}>
-                                <tr>
-                                    <th className={`${baseClass}__th`}>{t('time_date')}</th>
-                                    <th className={`${baseClass}__th ${baseClass}__th--right`}>{t('actions')}</th>
-                                </tr>
-                            </thead>
+
                             <tbody className={`${baseClass}__tbody`}>
                                 {currentSlots.map((slot, index) => {
                                     const [y, m] = slot.dayDate.split('-'); 
@@ -163,59 +149,49 @@ const NextSlotModal = ({
                     </div>
                 )}
 
-                {nextSlotData?.results && (
-                    <div className={`${baseClass}__pagination`}>
+                <div className={`${baseClass}__pagination`}>
+                    <div className={`${baseClass}__toggle-row`}>
+                        <label className={`${baseClass}__toggle-label`}>
+                            <input
+                                type="checkbox"
+                                className={`${baseClass}__toggle-checkbox`}
+                                checked={includeOutOfHours}
+                                onChange={(e) => onToggleOutOfHours(e.target.checked)}
+                            />
+                            <span className={`${baseClass}__toggle-text`}>
+                                <Icon name="lock_open" size="1rem" />
+                                {t('include_overtime_short')}
+                            </span>
+                        </label>
+                    </div>
+
+                    <div className={`${baseClass}__pagination-controls`}>
                         <Button 
                             variant="secondary" 
                             size="sm" 
                             onClick={() => setSlotsPage(p => Math.max(0, p - 1))} 
-                            disabled={slotsPage === 0}
+                            disabled={slotsPage === 0 || loading}
                             icon={<Icon name="chevron_left" size="1.1rem" />}
                         >
-                            {t('previous_month')}
+                            {t('previous')}
                         </Button>
                         <span className={`${baseClass}__page-info`}>
-                            {t('page_x')?.replace('{page}', slotsPage + 1)}
+                            {slotsPage + 1} / {slotPages.length}
                         </span>
                         <Button 
                             variant="secondary" 
                             size="sm" 
-                            onClick={() => setSlotsPage(p => p + 1)} 
-                            disabled={slotsPage >= slotPages.length - 1}
-                            iconRight={<Icon name="chevron_right" size="1.1rem" />}
+                            onClick={onNextGroup} 
+                            disabled={loading || (slotsPage >= slotPages.length - 1 && !hasNextGroup)}
+                            iconRight={<Icon name={slotsPage >= slotPages.length - 1 && hasNextGroup ? "search" : "chevron_right"} size="1.1rem" />}
                         >
-                            {t('next_month')}
+                            {slotsPage >= slotPages.length - 1 && hasNextGroup ? t('explore_more_dates') : t('next')}
                         </Button>
                     </div>
-                )}
-
-                <div className={`${baseClass}__footer-nav`}>
-                    {hasPrevGroup && (
-                        <Button 
-                            variant="secondary" 
-                            className={`${baseClass}__footer-btn`} 
-                            onClick={onPrevGroup}
-                        >
-                            <Icon name="chevron_left" size="1.2rem" />
-                            <span className={`${baseClass}__footer-btn-label`}>{t('previous_month')}</span>
-                        </Button>
-                    )}
-                    {hasNextGroup && (
-                        <Button 
-                            variant="secondary" 
-                            className={`${baseClass}__footer-btn ${baseClass}__footer-btn--explore`} 
-                            onClick={onNextGroup}
-                        >
-                            <Icon name="search" size="1.2rem" />
-                            <span className={`${baseClass}__footer-btn-text--explore`}>{t('explore_more_dates')}</span>
-                        </Button>
-                    )}
                 </div>
 
-                <div className={`${baseClass}__help-footer`}>
-                    <span>{t('keyboard_nav_help')}</span>
-                    <Button className={`${baseClass}__close-btn`} onClick={onClose} unstyled>{t('close')}</Button>
-                </div>
+
+
             </div>
         </Modal>
     );

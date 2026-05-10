@@ -1,70 +1,84 @@
 /* PatientDetailsView Styles (BEM) - Feature Specific */
 
 .patient-details {
-    padding: 1.5rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    animation: fade-in 0.3s ease-out;
 }
 
 .patient-details__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 2px solid var(--gray-100);
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--dashboard-card-border);
+}
+
+.patient-details__title-area {
+    display: flex;
+    flex-direction: column;
 }
 
 .patient-details__title {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     font-weight: 900;
     text-transform: capitalize;
-    margin-bottom: 2rem;
-    color: var(--gray-900);
+    color: var(--text-main);
     letter-spacing: -0.04em;
-    line-height: 1;
+    line-height: 1.1;
+    margin: 0;
+}
+
+.patient-details__subtitle {
+    font-size: 1rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-top: 0.25rem;
 }
 
 .patient-details__tabs-nav {
     display: flex;
     gap: 0.5rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     padding: 0.5rem;
-    background-color: var(--gray-50);
-    border-radius: 1rem;
+    background-color: var(--gray-900);
+    border-radius: var(--radius-md);
     width: fit-content;
-    border: 1px solid var(--gray-200);
+    border: 1px solid var(--dashboard-card-border);
 }
 
 .patient-details__tab-link {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.75rem 1.25rem;
+    padding: 0.6rem 1.25rem;
     border: none;
     background: transparent;
-    border-radius: 0.75rem;
+    border-radius: var(--radius-sm);
     font-size: 0.85rem;
     font-weight: 700;
-    color: var(--gray-500);
+    color: var(--text-muted);
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .patient-details__tab-link:hover {
-    color: var(--blue-600);
-    background-color: var(--white);
+    color: var(--primary-color);
+    background-color: var(--gray-800);
 }
 
 .patient-details__tab-link--active {
-    background-color: var(--white);
-    color: var(--blue-600);
+    background-color: var(--dashboard-card-bg);
+    color: var(--primary-color);
     box-shadow: var(--shadow-sm);
 }
-
 
 .patient-details__grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
 @media (min-width: 1024px) {
@@ -76,46 +90,39 @@
 .patient-details__main {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
 .patient-details__sidebar {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
-/* Unified Block Structure */
-.details-block {
-    /* --- Local Component Tokens --- */
-    --block-bg: var(--white);
-    --block-border: var(--gray-200);
-    --block-header-bg: var(--gray-50);
-    --block-title-color: var(--gray-800);
-    /* ------------------------------ */
-
-    background-color: var(--block-bg);
-    border: 1px solid var(--block-border);
-    border-radius: 1rem;
+/* Unified Block Structure (Internal Molecule) */
+.patient-details__block {
+    background-color: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
+    border-radius: var(--radius-lg);
     overflow: hidden;
     box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
 }
 
-.details-block__header {
-    padding: 1.25rem 1.5rem;
-    background-color: var(--block-header-bg);
-    border-bottom: 2px solid var(--blue-500);
+.patient-details__block-header {
+    padding: 1rem 1.5rem;
+    background-color: var(--gray-900);
+    border-bottom: 2px solid var(--primary-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.details-block__title {
-    font-size: 1rem;
+.patient-details__block-title {
+    font-size: 0.9rem;
     font-weight: 800;
-    color: var(--block-title-color);
+    color: var(--text-main);
     margin: 0;
     display: flex;
     align-items: center;
@@ -124,54 +131,40 @@
     letter-spacing: 0.05em;
 }
 
-.details-block__content {
+.patient-details__block-content {
     padding: 0;
 }
 
-.details-block__content--padded {
+.patient-details__block-content--padded {
     padding: 1.5rem;
 }
 
 /* Modifier for sidebar blocks */
-.details-block--sidebar .details-block__header {
+.patient-details__block--sidebar .patient-details__block-header {
     padding: 1rem;
     border-bottom-width: 1px;
     background: transparent;
 }
 
-.details-block--sidebar .details-block__title {
+.patient-details__block--sidebar .patient-details__block-title {
     font-size: 0.75rem;
 }
 
-/* Colors for headers */
-.details-block--info .details-block__header {
-    border-bottom-color: var(--blue-500);
-}
+/* Colors for headers (Semantics) */
+.patient-details__block--info .patient-details__block-header { border-bottom-color: var(--primary-color); }
+.patient-details__block--history .patient-details__block-header { border-bottom-color: var(--gray-700); }
+.patient-details__block--financial .patient-details__block-header { border-bottom-color: var(--danger); }
+.patient-details__block--tools .patient-details__block-header { border-bottom-color: var(--success); }
+.patient-details__block--medications .patient-details__block-header { border-bottom-color: var(--accent-color); }
 
-.details-block--history .details-block__header {
-    border-bottom-color: var(--slate-700);
-}
-
-.details-block--financial .details-block__header {
-    border-bottom-color: var(--red-500);
-}
-
-.details-block--tools .details-block__header {
-    border-bottom-color: var(--green-500);
-}
-
-.details-block--medications .details-block__header {
-    border-bottom-color: var(--indigo-500);
-}
-
-
+/* Info Table Section */
 .patient-details__info-table {
     width: 100%;
     border-collapse: collapse;
 }
 
 .patient-details__info-row {
-    border-bottom: 1px solid var(--gray-50);
+    border-bottom: 1px solid var(--dashboard-card-border);
 }
 
 .patient-details__info-row:last-child {
@@ -180,227 +173,110 @@
 
 .patient-details__info-label {
     width: 30%;
-    padding: 1.25rem 1.5rem; /* More padding for easier reading */
+    padding: 1rem 1.5rem;
     text-align: left;
-    font-size: 0.9rem; /* Increased from 0.75rem */
+    font-size: 0.8rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--slate-700);
-    background-color: var(--gray-50);
-    border-right: 1px solid var(--gray-200);
+    color: var(--text-muted);
+    background-color: var(--gray-900);
+    border-right: 1px solid var(--dashboard-card-border);
 }
 
 .patient-details__info-value {
-    padding: 1.25rem 1.5rem;
-    font-size: 1.15rem; /* Increased from 1rem */
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
     font-weight: 600;
-    color: var(--gray-900);
+    color: var(--text-main);
 }
 
 .patient-details__info-hint {
-    font-size: 0.95rem; /* Increased from 0.85rem */
+    font-size: 0.85rem;
     font-weight: 500;
-    color: var(--slate-500);
+    color: var(--text-muted);
     margin-left: 0.5rem;
 }
 
-
-
-.patient-details__address-box {
-    line-height: 1.5;
-}
-
-.patient-details__map-link {
-    display: inline-block;
-    margin-top: 0.5rem;
-    font-size: 0.75rem;
-    color: var(--blue-600);
-    text-decoration: none;
-    font-weight: 700;
-}
-
-.patient-details__map-link:hover {
-    text-decoration: underline;
-}
-
-.patient-details__text-empty {
-    font-style: italic;
-    color: var(--slate-300);
-    font-weight: 400;
-}
-
-/* Contact List */
-.patient-details__contact-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-}
-
-.patient-details__contact-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: white;
-    padding: 0.25rem 0.75rem;
-    border-radius: 2rem;
-    border: 1px solid var(--slate-200);
-}
-
-.patient-details__contact-indicator {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    background-color: var(--slate-200);
-}
-
-.patient-details__contact-indicator--primary {
-    background-color: var(--green-500);
-    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
-}
-
-.patient-details__contact-link {
-    color: var(--blue-600);
-    text-decoration: none;
-    font-weight: 700;
-}
-
-.patient-details__contact-link--email {
-    color: var(--indigo-600);
-}
-
-/* Indicators (Dates) */
+/* Date Indicators Section */
 .patient-details__date-indicators {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 1rem;
 }
 
-.date-indicator {
+.patient-details__date-indicator {
     padding: 1rem;
-    border-radius: 1rem;
-    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--dashboard-card-border);
+    background: var(--gray-900);
 }
 
-.date-indicator--rose {
-    background-color: var(--rose-50);
-    border-color: var(--rose-100);
-}
+.patient-details__date-indicator--rose { border-left: 4px solid var(--rose-500); }
+.patient-details__date-indicator--amber { border-left: 4px solid var(--amber-500); }
+.patient-details__date-indicator--indigo { border-left: 4px solid var(--primary-color); }
 
-.date-indicator--amber {
-    background-color: var(--amber-50);
-    border-color: var(--amber-100);
-}
-
-.date-indicator--indigo {
-    background-color: var(--indigo-50);
-    border-color: var(--indigo-100);
-}
-
-.date-indicator__label {
+.patient-details__date-label {
     display: block;
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin-bottom: 0.25rem;
+    color: var(--text-muted);
 }
 
-.date-indicator--rose .date-indicator__label {
-    color: var(--rose-600);
-}
-
-.date-indicator--amber .date-indicator__label {
-    color: var(--amber-600);
-}
-
-.date-indicator--indigo .date-indicator__label {
-    color: var(--indigo-600);
-}
-
-.date-indicator__value {
+.patient-details__date-value {
     font-size: 1rem;
     font-weight: 800;
-    color: var(--slate-800);
-}
-
-.date-indicator__action {
-    background-color: white;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    box-shadow: var(--shadow-sm);
-    padding: 0.25rem 0.5rem;
-    height: auto;
-    font-size: 0.65rem;
-    font-weight: 800;
-    color: var(--slate-600);
-    transition: all 0.2s ease;
-}
-
-.date-indicator__action:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
-    color: var(--blue-600);
+    color: var(--text-main);
 }
 
 /* Financial Debt Block */
 .patient-details__financial-card {
-    background: linear-gradient(135deg, var(--gray-800), var(--gray-900));
+    background: linear-gradient(135deg, var(--gray-800), var(--gray-950));
     color: var(--white);
     text-align: center;
-    border-radius: 1rem;
+    border-radius: var(--radius-lg);
     box-shadow: var(--shadow-xl);
     overflow: hidden;
+    border: 1px solid var(--dashboard-card-border);
 }
 
 .patient-details__financial-header {
     padding: 1.25rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .patient-details__financial-content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1rem;
+    padding: 2rem 1.5rem;
 }
 
 .patient-details__financial-amount {
-    font-size: 3rem;
+    font-size: 3.5rem;
     font-weight: 900;
     letter-spacing: -0.05em;
     line-height: 1;
 }
 
 .patient-details__financial-amount--debt {
-    color: var(--red-400);
-    text-shadow: 0 0 20px rgba(248, 113, 113, 0.2);
+    color: var(--danger);
+    text-shadow: 0 0 20px rgba(249, 55, 93, 0.3);
 }
 
 .patient-details__financial-amount--clear {
-    color: var(--green-400);
+    color: var(--success);
+    text-shadow: 0 0 20px rgba(0, 182, 122, 0.3);
 }
 
-.patient-details__pay-debt-btn {
-    width: 100%;
-    background-color: var(--red-500);
-    border: none;
-    color: white;
-    font-weight: 800;
-    padding: 1rem;
-    transition: all 0.2s ease;
-}
-
-.patient-details__pay-debt-btn:hover {
-    background-color: var(--red-600);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
-}
-
-/* History Table */
+/* History Table Section */
 .patient-details__history-container {
     max-height: 500px;
     overflow-y: auto;
-    border-radius: 0 0 0.75rem 0.75rem;
 }
 
 .patient-details__history-table {
@@ -409,200 +285,45 @@
     text-align: left;
 }
 
-.patient-details__history-header {
+.patient-details__history-th {
     position: sticky;
     top: 0;
-    background-color: var(--slate-50);
-    z-index: 10;
-}
-
-.patient-details__history-header th {
     padding: 1rem;
     font-size: 0.75rem;
     font-weight: 800;
-    color: white;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    background: linear-gradient(to right, var(--slate-700), var(--slate-800));
-    border-bottom: 2px solid var(--slate-900);
-}
-
-.patient-details__history-row:nth-child(even) {
-    background-color: var(--slate-50);
+    background: var(--gray-900);
+    border-bottom: 1px solid var(--dashboard-card-border);
+    z-index: 10;
 }
 
 .patient-details__history-row {
-    border-bottom: 1px solid var(--slate-50);
+    border-bottom: 1px solid var(--dashboard-card-border);
     transition: background-color 0.2s ease;
 }
 
 .patient-details__history-row:hover {
-    background-color: var(--slate-50);
+    background-color: var(--gray-800);
 }
 
 .patient-details__history-cell {
     padding: 1rem;
+    color: var(--text-main);
 }
 
-.patient-details__table-cell-date-box {
-    display: flex;
-    flex-direction: column;
-}
-
-.patient-details__table-cell-date-main {
-    font-weight: 700;
-    color: var(--slate-800);
-}
-
-.patient-details__table-cell-date-sub {
-    font-size: 0.75rem;
-    color: var(--slate-400);
-}
-
-.patient-details__table-cell-bold {
-    font-weight: 800;
-    font-size: 1.4rem; /* Significantly larger for details view */
-    color: var(--gray-900);
-}
-
-
-.patient-details__pay-action {
-    margin-top: 0.5rem;
-}
-
-.patient-details__pay-btn-mini {
-    padding: 0.2rem 0.6rem;
-    font-size: 0.7rem;
-    height: auto;
-    border: 1px solid var(--blue-200);
-    color: var(--blue-600);
-}
-
-.patient-details__table-cell-reason {
-    font-size: 0.85rem;
-    color: var(--slate-600);
-    max-width: 200px;
-    line-height: 1.4;
-}
-
-.patient-details__cancel-reason {
-    margin-top: 0.5rem;
-    padding: 0.5rem;
-    background-color: var(--red-50);
-    border-left: 3px solid var(--red-400);
-    color: var(--red-700);
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-.patient-details__reschedule-info {
-    margin-top: 0.5rem;
-    padding: 0.4rem 0.6rem;
-    background-color: var(--amber-50);
-    border-left: 3px solid var(--amber-400);
-    color: var(--amber-800);
-    font-size: 0.75rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    border-radius: 0 4px 4px 0;
-}
-
-/* Tools Sidebar */
-.patient-details__tools-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    padding: 1.5rem;
-}
-
-.patient-details__tool-btn {
-    justify-content: flex-start;
-    gap: 1rem;
-    font-weight: 700;
-    padding: 0.85rem 1.25rem;
-}
-
-.patient-details__delete-btn {
-    margin-top: 1rem;
-    color: var(--red-500);
-    justify-content: flex-start;
-    gap: 1rem;
-    font-weight: 700;
-    opacity: 0.7;
-    transition: all 0.2s ease;
-}
-
-.patient-details__delete-btn:hover {
-    opacity: 1;
-    background-color: var(--red-50);
-}
-
-.history-empty-state {
-    padding: 4rem 2rem;
-    text-align: center;
-    color: var(--slate-400);
-}
-
+/* Animations */
 @keyframes fade-in {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- PRINT STYLES --- */
+/* Print Styles */
 @media print {
-    .patient-details__header,
-    .main-layout__sidebar,
-    .dashboard-sidebar,
-    .sidebar,
-    .patient-details__pay-btn-mini,
-    .date-indicator__action,
-    .details-block__header button,
-    .patient-medications .details-block__header button,
-    .no-print,
-    button,
-    a[href^="tel:"],
-    a[href^="https://wa.me"] {
-        display: none;
-    }
-
-    .patient-details {
-        padding: 0;
-        background: white;
-    }
-    
-    .patient-details__grid {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-    }
-
-    .patient-details__main {
-        width: 100%;
-    }
-
-    .patient-details__sidebar {
-        width: 100%;
-        display: none;
-    }
-
-    .patient-details__history-container {
-        max-height: none;
-        overflow: visible;
-    }
-
-    .details-block {
-        box-shadow: none;
-        border: 1px solid #e2e8f0;
-        page-break-inside: avoid;
-        margin-bottom: 1.5rem;
-    }
-
-    table { page-break-inside: auto; }
-    tr { page-break-inside: avoid; page-break-after: auto; }
-
-    .patient-details__title {
-        font-size: 1.75rem;
-        margin-bottom: 1rem;
-    }
+    .patient-details { padding: 0; }
+    .patient-details__tabs-nav, .patient-details__header, .no-print { display: none; }
+    .patient-details__block { border: 1px solid #ccc; box-shadow: none; }
+    .patient-details__title { color: black; }
 }
+

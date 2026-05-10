@@ -1,73 +1,77 @@
-/* DayScheduleHeader Component Styles (BEM) */
+/* DayScheduleHeader Block Styles (BEM) - Dark Mode Standard */
 
-.day-schedule__header {
+.day-schedule-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.75rem 0.5rem;
-    background-color: transparent; /* No presence, just natural flow */
-    border-bottom: 1px solid var(--gray-100); /* Thin minimalist line instead of tonal block */
-    margin-bottom: 1rem;
-    gap: 1rem;
+    padding: 1rem 0;
+    background-color: transparent;
+    border-bottom: 1px solid var(--dashboard-card-border);
+    margin-bottom: 1.5rem;
+    gap: 1.5rem;
     flex-wrap: wrap;
 }
 
-.day-schedule__title-group {
+.day-schedule-header__title-group {
     display: flex;
-    align-items: baseline;
-    gap: 1rem;
+    align-items: center;
+    gap: 1.25rem;
 }
 
-.day-schedule__title {
+.day-schedule-header__title {
     margin: 0;
     font-family: var(--font-newsreader);
-    font-size: 1.25rem; /* Smaller, more discreet */
+    font-size: 1.75rem;
     font-weight: 400;
     color: var(--text-main);
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
+    font-style: italic;
 }
 
-.day-schedule__holiday-badge {
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: var(--rose-500);
+.day-schedule-header__holiday-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.75rem;
+    background: rgba(249, 55, 93, 0.1);
+    border: 1px solid rgba(249, 55, 93, 0.2);
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--danger);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
-.day-schedule__nav {
+.day-schedule-header__nav {
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    background: var(--gray-50);
-    padding: 0.15rem;
-    border-radius: 0.5rem;
+    /* Container only manages layout, not child styling */
 }
 
-.day-schedule__toolbar {
+.day-schedule-header__toolbar {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.5rem;
     margin-left: auto;
 }
 
-.day-schedule__controls {
+.day-schedule-header__controls {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.25rem;
 }
 
-/* Discreet switch styling for minimalist look */
-.day-schedule__controls .switch__label {
-    font-size: 0.7rem;
-    font-weight: 500;
-    color: var(--text-muted);
-    text-transform: none;
-    letter-spacing: 0;
-}
-
-@media (max-width: 900px) {
-    .day-schedule__header {
-        padding: 0.5rem;
+@media (max-width: 1024px) {
+    .day-schedule-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .day-schedule-header__toolbar {
+        margin-left: 0;
+        width: 100%;
+        justify-content: space-between;
     }
 }

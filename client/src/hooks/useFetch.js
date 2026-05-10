@@ -19,6 +19,7 @@ export const useFetch = (url, options = {}) => {
     const [data, setData] = useState(initialData);
     const [loading, setLoading] = useState(immediate);
     const [error, setError] = useState(null);
+    const [fetched, setFetched] = useState(false);
 
     const execute = useCallback(async (customUrl) => {
         const finalUrl = customUrl || url;
@@ -32,6 +33,7 @@ export const useFetch = (url, options = {}) => {
         try {
             const res = await api.get(finalUrl, stableApiOptions);
             setData(res.data);
+            setFetched(true);
             return res.data;
         } catch (err) {
             setError(err);
@@ -60,5 +62,6 @@ export const useFetch = (url, options = {}) => {
         };
     }, [execute, immediate]);
 
-    return { data, loading, error, refetch: execute, setData };
+    return { data, loading, error, fetched, refetch: execute, setData };
 };
+

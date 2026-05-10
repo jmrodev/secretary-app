@@ -1,51 +1,52 @@
-.phone-manager {
+.phone-numbers-manager {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
-.phone-manager__list {
+.phone-numbers-manager__list {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-.phone-manager__row {
+.phone-numbers-manager__row {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     padding: 0.5rem;
-    background-color: var(--gray-50);
+    background-color: var(--gray-900);
+    border: 1px solid var(--dashboard-card-border);
     border-radius: var(--radius-sm);
     transition: all 0.2s ease;
 }
 
-.phone-manager__row:hover {
-    background-color: var(--blue-50);
+.phone-numbers-manager__row:hover {
+    background-color: var(--gray-800);
 }
 
-.phone-manager__row--primary {
-    border-left: 0.1875rem solid var(--primary-color);
+.phone-numbers-manager__row--primary {
+    border-left: 3px solid var(--primary-color);
 }
 
-.phone-manager__label-wrapper {
+.phone-numbers-manager__label-wrapper {
     width: 6.25rem;
     flex-shrink: 0;
 }
 
-.phone-manager__input-label {
+.phone-numbers-manager__input-label {
     width: 100%;
     background: transparent;
     border: none;
     font-size: 0.625rem;
     font-weight: 800;
-    color: var(--gray-400);
+    color: var(--gray-500);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     outline: none;
 }
 
-.phone-manager__number-wrapper {
+.phone-numbers-manager__number-wrapper {
     flex: 1;
     display: flex;
     align-items: center;
@@ -53,7 +54,7 @@
     min-width: 0;
 }
 
-.phone-manager__input-number {
+.phone-numbers-manager__input-number {
     flex: 1;
     background: transparent;
     border: none;
@@ -64,34 +65,34 @@
     min-width: 0;
 }
 
-.phone-manager__actions {
+.phone-numbers-manager__actions {
     display: flex;
     gap: 0.25rem;
     padding-right: 0.5rem;
 }
 
-.phone-manager__action {
-    color: var(--gray-400);
+.phone-numbers-manager__action {
+    color: var(--gray-500);
 }
 
-.phone-manager__action--whatsapp:hover { color: var(--success); }
-.phone-manager__action--call:hover { color: var(--primary-color); }
+.phone-numbers-manager__action--whatsapp:hover { color: var(--green-400); }
+.phone-numbers-manager__action--call:hover { color: var(--primary-color); }
 
-.phone-manager__controls {
+.phone-numbers-manager__controls {
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    border-left: 0.0625rem solid var(--gray-200);
+    border-left: 1px solid var(--dashboard-card-border);
     padding-left: 0.5rem;
 }
 
-.phone-manager__star,
-.phone-manager__delete {
+.phone-numbers-manager__star,
+.phone-numbers-manager__delete {
     background: transparent;
     border: none;
     padding: 0.25rem;
     cursor: pointer;
-    color: var(--gray-300);
+    color: var(--gray-600);
     transition: all 0.2s;
     border-radius: 50%;
     display: flex;
@@ -99,17 +100,17 @@
     justify-content: center;
 }
 
-.phone-manager__star:hover { color: var(--amber-500); }
-.phone-manager__star--active { color: var(--amber-500); }
+.phone-numbers-manager__star:hover { color: var(--amber-400); }
+.phone-numbers-manager__star--active { color: var(--amber-400); }
 
-.phone-manager__delete:hover {
-    color: var(--error);
-    background-color: var(--red-50);
+.phone-numbers-manager__delete:hover {
+    color: var(--red-400);
+    background-color: rgba(239, 68, 68, 0.1);
 }
 
-.phone-manager__add {
+.phone-numbers-manager__add {
     background: transparent;
-    border: 0.0625rem dashed var(--gray-300);
+    border: 1px dashed var(--dashboard-card-border);
     border-radius: var(--radius-sm);
     padding: 0.5rem;
     display: flex;
@@ -123,17 +124,17 @@
     transition: all 0.2s;
 }
 
-.phone-manager__add:hover {
+.phone-numbers-manager__add:hover {
     border-color: var(--primary-color);
     color: var(--primary-color);
-    background-color: var(--blue-50);
+    background-color: var(--gray-900);
 }
 
 @media (max-width: 48rem) {
-    .phone-manager__row {
+    .phone-numbers-manager__row {
         flex-wrap: wrap;
     }
-    .phone-manager__label-wrapper {
+    .phone-numbers-manager__label-wrapper {
         width: 100%;
     }
 }

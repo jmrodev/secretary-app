@@ -21,7 +21,7 @@
 .medication-input-section__field-label {
     font-size: 0.8rem;
     font-weight: 600;
-    color: var(--gray-600);
+    color: var(--text-secondary);
     display: flex;
     align-items: center;
     gap: 0.25rem;
@@ -53,14 +53,14 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem;
-    background-color: var(--bg-surface);
+    background-color: var(--dashboard-card-bg);
     border-radius: var(--radius-sm);
-    border: 1px dashed var(--accent-light);
+    border: 1px dashed var(--accent-color);
 }
 
 .medication-input-section__supply-text {
     font-size: 0.85rem;
-    color: var(--gray-700);
+    color: var(--text-main);
 }
 
 .medication-input-section__add-btn {

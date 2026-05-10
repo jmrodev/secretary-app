@@ -8,67 +8,31 @@
     overflow: hidden;
 }
 
-.dashboard-layout__full {
-    width: 100%;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.dashboard-layout__full .dashboard-layout__main {
-    width: 100%;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
 
 
-
-.dashboard-card {
-    background-color: var(--white);
-    border-radius: 1.25rem;
-    padding: 1rem;
-    box-shadow: var(--shadow-premium);
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    border: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.dashboard-card--no-padding {
-    padding: 0;
-}
-
-.dashboard-card--priority {
-    grid-column: span 8;
+.dashboard-page-orchestrator__priority-card {
     height: 100%;
     overflow: hidden;
 }
 
-.dashboard-card__content {
-    padding: 1.5rem;
-    height: 100%;
-}
-
 /* Dashboard Requirements Section */
-.dashboard-requirements {
+.dashboard-page-orchestrator__requirements {
     display: flex;
     flex-direction: column;
     height: 100%;
 }
 
-.dashboard-requirements__header {
+.dashboard-page-orchestrator__requirements-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--gray-50);
+    border-bottom: 1px solid var(--dashboard-card-border);
     flex-shrink: 0;
 }
 
-.dashboard-requirements__content {
+.dashboard-page-orchestrator__requirements-content {
     flex: 1;
     overflow-y: auto;
     min-height: 0;
@@ -76,12 +40,12 @@
 }
 
 /* Custom Scrollbar */
-.dashboard-requirements__content::-webkit-scrollbar { width: 6px; }
-.dashboard-requirements__content::-webkit-scrollbar-track { background: transparent; }
-.dashboard-requirements__content::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 10px; }
-.dashboard-requirements__content::-webkit-scrollbar-thumb:hover { background: var(--gray-300); }
+.dashboard-page-orchestrator__requirements-content::-webkit-scrollbar { width: 6px; }
+.dashboard-page-orchestrator__requirements-content::-webkit-scrollbar-track { background: transparent; }
+.dashboard-page-orchestrator__requirements-content::-webkit-scrollbar-thumb { background: var(--gray-700); border-radius: 10px; }
+.dashboard-page-orchestrator__requirements-content::-webkit-scrollbar-thumb:hover { background: var(--gray-600); }
 
-.dashboard-requirements__title {
+.dashboard-page-orchestrator__requirements-title {
     display: flex;
     align-items: center;
     gap: 0.75rem;

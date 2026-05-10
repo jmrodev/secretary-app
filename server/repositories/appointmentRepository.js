@@ -6,10 +6,7 @@ class AppointmentRepository {
         const connection = conn || await pool.getConnection();
         try {
             const rows = await connection.query(`
-                SELECT a.*, p.full_name as patient_name, p.dni as patient_dni, p.user_id as patient_user_id, p.behavior_rating
-                FROM appointments a 
-                LEFT JOIN patients p ON a.patient_id = p.id 
-                WHERE a.id = ?
+                SELECT * FROM v_appointment_details WHERE id = ?
             `, [id]);
             return rows.length > 0 ? rows[0] : null;
         } finally {
@@ -87,58 +84,21 @@ class AppointmentRepository {
     async getHistory(filters, conn) {
         const connection = conn || await pool.getConnection();
         try {
-            let query = `
-                SELECT a.*, 
-                p.full_name as patient_name, p.dni as patient_dni, p.user_id as patient_user_id, 
-                p.behavior_rating, p.phone as patient_phone,
-                p_stats.attended_appointments,
-                d.full_name as doctor_name, d.afip_cuit as doctor_cuit,
-                COALESCE(tx_agg.paid_amount, 0) as paid_amount,
-                COALESCE(tx_agg.pending_amount, 0) as pending_amount,
-                inv_agg.invoice_number, inv_agg.invoice_punto_vta, inv_agg.invoice_cae,
-                inst.base_price as institution_base_price
-                FROM appointments a 
-                LEFT JOIN patients p ON a.patient_id = p.id 
-                JOIN doctors d ON a.doctor_id = d.id
-                LEFT JOIN institutions inst ON a.institution_id = inst.id
-                LEFT JOIN (
-                    SELECT patient_id, 
-                           COUNT(CASE WHEN status IN ('attended', 'completed') THEN 1 END) as attended_appointments
-                    FROM appointments 
-                    GROUP BY patient_id
-                ) p_stats ON a.patient_id = p_stats.patient_id
-                LEFT JOIN (
-                    SELECT appointment_id,
-                        SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) as paid_amount,
-                        SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) as pending_amount
-                    FROM transactions
-                    GROUP BY appointment_id
-                ) tx_agg ON tx_agg.appointment_id = a.id
-                LEFT JOIN (
-                    SELECT t.appointment_id,
-                        MIN(i.cbte_nro) as invoice_number,
-                        MIN(i.punto_vta) as invoice_punto_vta,
-                        MIN(i.cae) as invoice_cae
-                    FROM invoices i
-                    JOIN transactions t ON i.transaction_id = t.id
-                    WHERE t.appointment_id IS NOT NULL
-                    GROUP BY t.appointment_id
-                ) inv_agg ON inv_agg.appointment_id = a.id
-            `;
+            let query = "SELECT * FROM v_appointment_details";
             let params = [];
             let whereClauses = [];
 
             if (filters.patient_id) {
-                whereClauses.push("a.patient_id = ?");
+                whereClauses.push("patient_id = ?");
                 params.push(filters.patient_id);
             }
             if (filters.doctor_id) {
-                whereClauses.push("a.doctor_id = ?");
+                whereClauses.push("doctor_id = ?");
                 params.push(filters.doctor_id);
             }
             if (filters.search) {
                 const searchTerm = `%${filters.search}%`;
-                whereClauses.push("(p.full_name LIKE ? OR a.reason LIKE ? OR p.phone LIKE ?)");
+                whereClauses.push("(patient_name LIKE ? OR reason LIKE ? OR patient_phone LIKE ?)");
                 params.push(searchTerm, searchTerm, searchTerm);
             }
 
@@ -146,7 +106,7 @@ class AppointmentRepository {
                 query += " WHERE " + whereClauses.join(" AND ");
             }
 
-            query += " ORDER BY a.appointment_date DESC";
+            query += " ORDER BY appointment_date DESC";
             return await connection.query(query, params);
         } finally {
             if (!conn) connection.release();
@@ -154,62 +114,20 @@ class AppointmentRepository {
     }
 
     async findMonthlyAppointments(month, year, doctorId, conn = pool) {
-        let query = `
-            SELECT 
-                a.id, a.appointment_date, a.reason, a.status, a.payment_status, a.type, a.is_out_of_hours, a.bonified, a.rescheduled_from_date,
-                p.full_name as patient_name, d.full_name as doctor_name,
-                COALESCE(tx.paid_amount, 0) as paid_amount,
-                COALESCE(tx.cash_amount, 0) as cash_amount,
-                COALESCE(tx.debt_amount, 0) as debt_amount,
-                tx.methods
-            FROM appointments a
-            LEFT JOIN patients p ON a.patient_id = p.id
-            JOIN doctors d ON a.doctor_id = d.id
-            LEFT JOIN (
-                SELECT 
-                    appointment_id,
-                    SUM(CASE WHEN is_withdrawal = 0 AND status = 'paid' THEN amount ELSE 0 END) as paid_amount,
-                    SUM(CASE WHEN is_withdrawal = 0 AND status = 'paid' AND (method = 'cash' OR method = 'efectivo') THEN amount ELSE 0 END) as cash_amount,
-                    SUM(CASE WHEN is_withdrawal = 0 AND status = 'pending' THEN amount ELSE 0 END) as debt_amount,
-                    GROUP_CONCAT(DISTINCT method) as methods
-                FROM transactions
-                GROUP BY appointment_id
-            ) tx ON tx.appointment_id = a.id
-            WHERE MONTH(a.appointment_date) = ? AND YEAR(a.appointment_date) = ?
-        `;
+        let query = "SELECT * FROM v_appointment_details WHERE MONTH(appointment_date) = ? AND YEAR(appointment_date) = ?";
         const params = [month, year];
         if (doctorId) {
-            query += " AND a.doctor_id = ?";
+            query += " AND doctor_id = ?";
             params.push(doctorId);
         }
-        query += " ORDER BY a.appointment_date ASC";
+        query += " ORDER BY appointment_date ASC";
         return await conn.query(query, params);
     }
     async findByDoctorAndDateForSync(doctorId, date, conn = pool) {
         return await conn.query(`
-            SELECT a.*, p.full_name as patient_name, p.phone as patient_phone,
-                   COALESCE(tx.amount_paid, 0) as amount_paid,
-                   COALESCE(tx.amount_debt, 0) as amount_debt,
-                   p_stats.attended_appointments,
-                   inst.base_price as institution_base_price
-            FROM appointments a
-            LEFT JOIN patients p ON a.patient_id = p.id
-            LEFT JOIN (
-                SELECT appointment_id,
-                       SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) as amount_paid,
-                       SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) as amount_debt
-                FROM transactions
-                GROUP BY appointment_id
-            ) tx ON tx.appointment_id = a.id
-            LEFT JOIN (
-                SELECT patient_id, COUNT(*) as attended_appointments
-                FROM appointments
-                WHERE status IN ('attended', 'completed')
-                GROUP BY patient_id
-            ) p_stats ON p_stats.patient_id = a.patient_id
-            LEFT JOIN institutions inst ON inst.id = a.institution_id
-            WHERE a.doctor_id = ? AND DATE(a.appointment_date) = ? AND a.status != 'cancelled'
-            ORDER BY a.appointment_date ASC
+            SELECT * FROM v_appointment_details 
+            WHERE doctor_id = ? AND DATE(appointment_date) = ? AND status != 'cancelled'
+            ORDER BY appointment_date ASC
         `, [doctorId, date]);
     }
 
@@ -298,15 +216,19 @@ class AppointmentRepository {
     async callSpBookAppointment(data, conn) {
         const connection = conn || await pool.getConnection();
         try {
-            const results = await connection.query(
-                "CALL sp_book_appointment(?, ?, ?, ?, ?, ?, ?, ?, ?, @p_appointment_id); SELECT @p_appointment_id as id;",
+            // Ejecutamos el procedimiento
+            await connection.query(
+                "CALL sp_book_appointment(?, ?, ?, ?, ?, ?, ?, ?, ?, @p_appointment_id)",
                 [
                     data.patient_id, data.doctor_id, data.appointment_date, 
                     data.reason, data.is_out_of_hours ? 1 : 0, data.type, 
                     data.institution_id, data.bonified ? 1 : 0, data.created_by
                 ]
             );
-            return results[1][0]?.id || null;
+
+            // Obtenemos el ID generado mediante la variable de sesión
+            const results = await connection.query("SELECT @p_appointment_id as id");
+            return results[0]?.id || null;
         } finally {
             if (!conn) connection.release();
         }

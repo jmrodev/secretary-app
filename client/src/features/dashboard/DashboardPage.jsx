@@ -71,16 +71,16 @@ const DashboardPage = () => {
     }
 
     const hasLoadedStats = (
-        !loading &&
         stats !== null &&
         stats !== undefined &&
         typeof stats === 'object' &&
         Object.keys(stats).length > 0
     );
-    const hasLoadedReminders = Array.isArray(reminders) && reminders.length > 0;
-    const hasDashboardData = hasLoadedStats || hasLoadedReminders;
-    const shouldShowLoadingState = loading && !hasDashboardData;
-    const shouldShowErrorState = Boolean(error) && !hasDashboardData;
+    const hasLoadedReminders = Array.isArray(reminders) && (reminders.length > 0 || !loading);
+    const shouldShowLoadingState = loading && !controller.fetched;
+    const shouldShowErrorState = Boolean(error) && !controller.fetched;
+
+
 
     return (
         <MainLayout wide flush title={t('dashboard')} hideTitle>
@@ -99,13 +99,13 @@ const DashboardPage = () => {
                             </Button>
                         </article>
                     ) : (
-                        <div className="dashboard-layout__full animate-fade-in">
+                        <div className="dashboard-page-orchestrator__full-wrapper animate-fade-in" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                             {/* Main Functional Area */}
-                            <section className="dashboard-layout__main">
-                                <article className="dashboard-card dashboard-card--priority">
-                                    <div className="dashboard-requirements">
-                                        <header className="dashboard-requirements__header">
-                                            <h3 className="dashboard-requirements__title">
+                            <section style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                                <article className="dashboard-card dashboard-page-orchestrator__priority-card">
+                                    <div className="dashboard-page-orchestrator__requirements">
+                                        <header className="dashboard-page-orchestrator__requirements-header">
+                                            <h3 className="dashboard-page-orchestrator__requirements-title">
                                                 <Icon name={activeTab === 'reminders' ? 'notifications_active' : 'description'} size="1.5rem" />
                                                 {activeTab === 'reminders' ? t('dashboard_reminders') : t('pending_requests')}
                                             </h3>
@@ -121,7 +121,7 @@ const DashboardPage = () => {
                                             </div>
                                         </header>
 
-                                        <div className="dashboard-requirements__content">
+                                        <div className="dashboard-page-orchestrator__requirements-content">
                                             {isAdminOrSecretary || isDoctor ? (
                                                 activeTab === 'requirements' ? (
                                                     <MedicalRequirementManager user={user} hideTabs={true} hideFilters={true} setPaymentModal={setPaymentModal} />

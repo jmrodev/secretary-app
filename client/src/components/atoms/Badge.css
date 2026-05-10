@@ -1,7 +1,7 @@
 .badge {
     /* --- Local Component Tokens --- */
-    --badge-bg: var(--gray-100);
-    --badge-color: var(--gray-600);
+    --badge-bg: var(--gray-800);
+    --badge-color: var(--gray-300);
     /* ------------------------------ */
 
     display: inline-flex;
@@ -33,47 +33,47 @@
     font-size: 0.6875rem;
 }
 
-/* Variants - Tonal Layering Strategy */
+/* Variants - Tonal Layering Strategy for Dark Mode */
 .badge--blue {
-    --badge-bg: var(--blue-50);
-    --badge-color: var(--blue-700);
-    border: 1px solid var(--blue-100);
+    --badge-bg: var(--blue-800);
+    --badge-color: var(--blue-200);
+    border: 1px solid var(--blue-700);
 }
 
 .badge--green,
 .badge--success,
 .badge--completed {
-    --badge-bg: var(--green-50);
-    --badge-color: var(--green-700);
-    border: 1px solid var(--green-100);
+    --badge-bg: var(--green-800);
+    --badge-color: var(--green-200);
+    border: 1px solid var(--green-700);
 }
 
 .badge--red,
 .badge--danger,
 .badge--rejected {
-    --badge-bg: var(--red-50);
-    --badge-color: var(--red-700);
-    border: 1px solid var(--red-100);
+    --badge-bg: var(--red-800);
+    --badge-color: var(--red-200);
+    border: 1px solid var(--red-700);
 }
 
 .badge--amber,
 .badge--warning,
 .badge--pending {
-    --badge-bg: var(--amber-50);
-    --badge-color: var(--amber-700);
-    border: 1px solid var(--amber-100);
+    --badge-bg: var(--amber-700);
+    --badge-color: var(--amber-200);
+    border: 1px solid var(--amber-600);
 }
 
 .badge--purple,
 .badge--consult {
-    --badge-bg: var(--purple-50);
-    --badge-color: var(--purple-700);
-    border: 1px solid var(--purple-100);
+    --badge-bg: var(--purple-800);
+    --badge-color: var(--purple-200);
+    border: 1px solid var(--purple-700);
 }
 
 .badge--accent {
     --badge-bg: var(--primary-color);
-    --badge-color: var(--white);
+    --badge-color: var(--text-main);
     box-shadow: var(--shadow-sm);
 }
 
@@ -87,11 +87,11 @@
     height: 1rem;
     padding: 0 0.25rem;
     background: var(--red-500);
-    color: white;
+    color: var(--text-main);
     font-size: 0.625rem;
     font-weight: 700;
     border-radius: 9999px;
-    border: 2px solid white;
+    border: 2px solid var(--dashboard-card-bg);
     line-height: 1;
 }
 

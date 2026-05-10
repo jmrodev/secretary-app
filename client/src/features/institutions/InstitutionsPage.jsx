@@ -38,7 +38,7 @@ const InstitutionsPage = () => {
             <div className="institutions-page-orchestrator">
                 
                 <div className="layout-content-area animate-fade-in">
-                    {loading ? (
+                    {loading && institutions.length === 0 ? (
                         <Loading variant="centered" text={t('loading') || "Cargando..."} />
                     ) : (
                         <div className="dashboard-layout__grid animate-fade-in">

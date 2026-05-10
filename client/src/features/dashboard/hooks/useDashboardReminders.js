@@ -4,14 +4,16 @@ import api from '@/api/axios';
 import { replaceTemplateVariables } from '@/utils/stringUtils';
 
 export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
+    const remindersHook = useFetch('/users/reminders', {
+        initialData: []
+    });
     const { 
         data: reminders = [], 
         loading: loadingReminders, 
         error: errorReminders,
         refetch: fetchReminders 
-    } = useFetch('/users/reminders', {
-        initialData: []
-    });
+    } = remindersHook;
+
 
     const handleCompleteReminder = useCallback(async (reminder, type) => {
         try {
@@ -107,13 +109,15 @@ export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
     return useMemo(() => ({
         reminders,
         loadingReminders,
+        fetched: remindersHook.fetched,
         errorReminders,
         fetchReminders,
         handleCompleteReminder,
         handleMarkNotified,
         handleWhatsAppReminder
     }), [
-        reminders, loadingReminders, errorReminders, fetchReminders,
+        reminders, loadingReminders, remindersHook.fetched, errorReminders, fetchReminders,
         handleCompleteReminder, handleMarkNotified, handleWhatsAppReminder
     ]);
+
 };

@@ -36,22 +36,22 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
     };
 
     return (
-        <section className="phone-manager">
-            <div className="phone-manager__list">
+        <section className="phone-numbers-manager">
+            <div className="phone-numbers-manager__list">
                 {displayPhoneNumbers.map((pn, index) => (
-                    <div key={index} className={`phone-manager__row ${pn.is_primary ? 'phone-manager__row--primary' : ''}`}>
-                        <div className="phone-manager__label-wrapper">
+                    <div key={index} className={`phone-numbers-manager__row ${pn.is_primary ? 'phone-numbers-manager__row--primary' : ''}`}>
+                        <div className="phone-numbers-manager__label-wrapper">
                             <input
-                                className="phone-manager__input-label"
+                                className="phone-numbers-manager__input-label"
                                 value={pn.label}
                                 onChange={(e) => handleUpdate(index, 'label', e.target.value)}
                                 placeholder={t('label')}
                             />
                         </div>
 
-                        <div className="phone-manager__number-wrapper">
+                        <div className="phone-numbers-manager__number-wrapper">
                             <input
-                                className="phone-manager__input-number"
+                                className="phone-numbers-manager__input-number"
                                 value={pn.phone_number}
                                 onChange={(e) => handleUpdate(index, 'phone_number', e.target.value)}
                                 placeholder="+549..."
@@ -59,13 +59,13 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
                             />
                             
                             {pn.phone_number && pn.phone_number.length > 5 && (
-                                <div className="phone-manager__actions">
+                                <div className="phone-numbers-manager__actions">
                                     <Button
                                         to={`tel:${pn.phone_number.replace(/[^0-9+]/g, '')}`}
                                         variant="link"
                                         size="compact"
                                         title={t('call')}
-                                        className="phone-manager__action phone-manager__action--call"
+                                        className="phone-numbers-manager__action phone-numbers-manager__action--call"
                                         icon={<Icon name="call" size="1rem" />}
                                     />
                                     <Button
@@ -74,17 +74,17 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
                                         variant="link"
                                         size="compact"
                                         title="WhatsApp"
-                                        className="phone-manager__action phone-manager__action--whatsapp"
+                                        className="phone-numbers-manager__action phone-numbers-manager__action--whatsapp"
                                         icon={<Icon name="chat" size="1rem" />}
                                     />
                                 </div>
                             )}
                         </div>
 
-                        <div className="phone-manager__controls">
+                        <div className="phone-numbers-manager__controls">
                             <button
                                 type="button"
-                                className={`phone-manager__star ${pn.is_primary ? 'phone-manager__star--active' : ''}`}
+                                className={`phone-numbers-manager__star ${pn.is_primary ? 'phone-numbers-manager__star--active' : ''}`}
                                 onClick={() => handleUpdate(index, 'is_primary', true)}
                                 title={t('mark_as_primary')}
                             >
@@ -93,7 +93,7 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
 
                             <button
                                 type="button"
-                                className="phone-manager__delete"
+                                className="phone-numbers-manager__delete"
                                 onClick={() => handleRemove(index)}
                                 title={t('delete')}
                             >
@@ -104,7 +104,7 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
                 ))}
             </div>
 
-            <button type="button" className="phone-manager__add" onClick={handleAdd}>
+            <button type="button" className="phone-numbers-manager__add" onClick={handleAdd}>
                 <Icon name="add" size="0.9rem" />
                 <span>{t('add_another_phone')}</span>
             </button>

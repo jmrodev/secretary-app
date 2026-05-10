@@ -38,7 +38,7 @@ const InsurancesPage = () => {
             <div className="insurances-page-orchestrator">
 
                 <div className="layout-content-area animate-fade-in">
-                    {loading ? (
+                    {loading && filteredInsurances.length === 0 ? (
                         <Loading variant="centered" text={t('loading') || "Cargando..."} />
                     ) : (
                         <div className="dashboard-layout__grid animate-fade-in">

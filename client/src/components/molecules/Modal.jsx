@@ -18,28 +18,29 @@ const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', variant 
     if (!isOpen) return null;
 
     return ReactDOM.createPortal(
-        <div className="modal-overlay" onClick={onClose}>
+        <div className="modal" onClick={onClose}>
             <div
-                className={`modal-content ${size && size !== 'md' ? `modal-content--${size}` : ''} ${variant === 'dark' ? 'modal-content--dark' : ''} ${className}`}
+                className={`modal__content ${size && size !== 'md' ? `modal__content--${size}` : ''} ${className}`}
                 onClick={e => e.stopPropagation()}
             >
-                <header className="modal-header">
-                    <h3 className="modal-header__title">{title}</h3>
+                <header className="modal__header">
+                    <h3 className="modal__title">{title}</h3>
                     <Button
-                        className="modal-close"
+                        variant="ghost"
+                        size="md-compact"
+                        className="modal__close"
                         onClick={onClose}
                         aria-label="Close"
-                        unstyled
-                        icon={<Icon name="close" />}
+                        icon={<Icon name="CLOSE" />}
                     />
                 </header>
 
-                <div className="modal-body">
+                <div className="modal__body">
                     {children}
                 </div>
 
                 {footer && (
-                    <footer className="modal-footer">
+                    <footer className="modal__footer">
                         {footer}
                     </footer>
                 )}

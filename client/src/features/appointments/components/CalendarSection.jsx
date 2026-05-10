@@ -24,6 +24,7 @@ const CalendarSection = ({
                         selectedDate={selectedDate} onDateSelect={onDateSelect}
                         appointments={appointments} calendarStats={calendarStats}
                         holidays={holidays} showOutOfHours={showOutOfHours}
+                        compact={true}
                     />
 
                     {/* Tools section removed per user request */}

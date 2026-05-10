@@ -6,12 +6,42 @@ const BaseQueryBuilder = require('./BaseQueryBuilder');
  */
 class PatientsQueryBuilder extends BaseQueryBuilder {
     constructor(user) {
-        // Cambiamos el origen a la vista extendida
-        super('view_patients_extended p', user);
+        // Usamos la tabla base patients para habilitar FULLTEXT search
+        super('patients p', user);
 
-        // Campos base (incluyendo los calculados por la vista)
+        // Joins necesarios para replicar view_patients_extended
+        this.leftJoin('users u', 'p.user_id = u.id');
+        this.leftJoin('view_patient_balances b', 'p.id = b.patient_id');
+        this.leftJoin(`(
+            SELECT 
+                patient_id,
+                COUNT(*) as total_appointments,
+                COUNT(CASE WHEN status IN ('attended', 'completed') THEN 1 END) as attended_appointments,
+                COUNT(CASE WHEN (status = 'absent' OR (status = 'cancelled' AND COALESCE(cancellation_reason, '') NOT LIKE '%error%')) THEN 1 END) as missed_appointments,
+                MAX(appointment_date) as last_visit
+            FROM appointments
+            GROUP BY patient_id
+        ) appt_stats`, 'appt_stats.patient_id = p.id');
+
+        // Campos base incluyendo los calculados
         this.select([
-            'p.*'
+            'p.*',
+            'u.username',
+            'u.role',
+            'COALESCE(appt_stats.total_appointments, 0) as total_appointments',
+            'COALESCE(appt_stats.attended_appointments, 0) as attended_appointments',
+            'COALESCE(appt_stats.missed_appointments, 0) as missed_appointments',
+            'appt_stats.last_visit',
+            'COALESCE(b.total_debt_calculated, 0) as total_debt_calculated',
+            'COALESCE(b.debt_status, "green") as debt_status',
+            'b.oldest_debt_days',
+            `CASE 
+                WHEN COALESCE(b.total_debt_calculated, 0) <= 0 THEN 5
+                WHEN b.total_debt_calculated < 1000 THEN 4
+                WHEN b.total_debt_calculated < 5000 THEN 3
+                WHEN b.total_debt_calculated < 10000 THEN 2
+                ELSE 1 
+            END as financial_rating`
         ]);
     }
 
@@ -59,11 +89,10 @@ class PatientsQueryBuilder extends BaseQueryBuilder {
         this.select([
             `(MATCH(p.full_name, p.dni, p.phone) AGAINST(? IN BOOLEAN MODE) * 10 + 
               IF(p.full_name SOUNDS LIKE ?, 5, 0)) as search_relevance`
-        ]);
-        this.params.push(booleanQuery, soundexQuery);
+        ], [booleanQuery, soundexQuery]);
 
-        this.where('(MATCH(p.full_name, p.dni, p.phone) AGAINST(? IN BOOLEAN MODE) OR p.full_name SOUNDS LIKE ?)', 
-            [booleanQuery, soundexQuery]);
+        this.where('(MATCH(p.full_name, p.dni, p.phone) AGAINST(? IN BOOLEAN MODE) OR p.full_name SOUNDS LIKE ? OR p.full_name LIKE ? OR p.dni LIKE ?)', 
+            booleanQuery, soundexQuery, `%${searchTerm}%`, `%${searchTerm}%`);
 
         // Priorizar por relevancia de búsqueda antes que por deuda
         this.orderByClause = `ORDER BY search_relevance DESC, total_debt_calculated DESC, p.full_name ASC`;

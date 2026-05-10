@@ -1,23 +1,30 @@
-/* DayHeaders Styles (BEM) */
+/* DayHeaders Styles (BEM) - Dark Mode Standard */
 
 .day-headers {
     display: grid; 
     grid-template-columns: repeat(7, 1fr);
     gap: 0.5rem;
     background-color: transparent; 
-    padding: 0.25rem 0;
+    padding: 0.5rem 0;
 }
-
-/* Sunday Header */
-.day-headers > :nth-child(7n+1) { color: var(--rose-600); }
-/* Saturday Header */
-.day-headers > :nth-child(7n) { color: var(--indigo-600); }
 
 .day-headers__day {
     text-align: center; 
-    font-size: 0.7rem; 
-    font-weight: 800;
-    color: var(--gray-600); 
+    font-size: 0.65rem; 
+    font-weight: 900;
+    color: var(--text-muted); 
     text-transform: uppercase; 
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
+}
+
+/* Sunday Header */
+.day-headers > :nth-child(1) { 
+    color: var(--danger);
+    opacity: 0.8;
+}
+
+/* Saturday Header */
+.day-headers > :nth-child(7) { 
+    color: var(--primary-color);
+    opacity: 0.8;
 }

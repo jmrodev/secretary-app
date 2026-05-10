@@ -10,7 +10,7 @@ import './Calendar.css';
  * Calendar (Executor Component).
  * Renders the monthly navigation grid for the agenda.
  */
-const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = [], calendarStats = {}, hideNavigation = false, showOutOfHours = false }) => {
+const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = [], calendarStats = {}, hideNavigation = false, showOutOfHours = false, compact = false }) => {
     const [viewDate, setViewDate] = useState(new Date(selectedDate || new Date()));
     const { t } = useLanguage();
 
@@ -29,6 +29,17 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
     const { days, firstDay } = getDaysInMonth(viewDate);
     const months = t('months_array') || ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const daysOfWeek = t('days_short_array') || ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    const appointmentsByDate = React.useMemo(() => {
+        const map = {};
+        appointments.forEach(appt => {
+            const d = new Date(appt.appointment_date);
+            const dateStr = [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-');
+            if (!map[dateStr]) map[dateStr] = [];
+            map[dateStr].push(appt);
+        });
+        return map;
+    }, [appointments]);
 
     const handlePrevMonth = () => {
         const newDate = new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1);
@@ -54,7 +65,10 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
             const isToday = isSameDay(new Date(), currentDay);
             const dateStr = [currentDay.getFullYear(), String(currentDay.getMonth() + 1).padStart(2, '0'), String(currentDay.getDate()).padStart(2, '0')].join('-');
             const dayStats = calendarStats[dateStr] || {};
-            const dayAppts = appointments.filter(appt => isSameDay(appt.appointment_date, currentDay));
+            
+            // Use the pre-calculated map instead of filtering on each day
+            const dayAppts = appointmentsByDate[dateStr] || [];
+            
             const bookedInCount = (dayStats.bookedIn !== undefined) ? dayStats.bookedIn : dayAppts.filter(a => !a.is_out_of_hours).length;
             const bookedOutCount = (dayStats.bookedOut !== undefined) ? dayStats.bookedOut : dayAppts.filter(a => a.is_out_of_hours).length;
             const count = (dayStats.bookedIn !== undefined && dayStats.bookedOut !== undefined) ? (dayStats.bookedIn + dayStats.bookedOut) : dayAppts.length;
@@ -66,7 +80,7 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
                     isHoliday={!!isHolidayObj} holidayDescription={isHolidayObj?.description || ''}
                     appointmentCount={count} bookedInCount={bookedInCount} bookedOutCount={bookedOutCount}
                     freeInCount={dayStats.freeIn} freeOutCount={dayStats.freeOut} showOutOfHours={showOutOfHours}
-                    onClick={() => onDateSelect(currentDay)} isCurrentMonth={true} t={t}
+                    onClick={() => onDateSelect(currentDay)} isCurrentMonth={true} t={t} compact={compact}
                 />
             );
         }

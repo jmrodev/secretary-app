@@ -32,38 +32,58 @@ class RetrievalService {
         const holidays = await holidayRepository.findActiveByMonth(targetMonth, targetYear);
         const holidayMap = {};
         holidays.forEach(h => {
-            const d = new Date(h.date).toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
+            const dateStrRaw = h.date instanceof Date ? h.date.toISOString().split('T')[0] : String(h.date).split(' ')[0];
+            const dateObj = new Date(`${dateStrRaw}T12:00:00-03:00`); // Midday to be safe
+            const d = dateObj.toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
             holidayMap[d] = h.description;
         });
 
         // 1. Fetch Appointments for the list
         const appointments = await appointmentRepository.findMonthlyAppointments(targetMonth, targetYear, doctorId);
 
-        // 2. Fetch ALL Paid Income Transactions of the month (The real Cash Flow)
-        const incomeTransactions = await transactionRepository.findMonthlyIncome(targetMonth, targetYear, doctorId);
+        // 2. Fetch Pre-calculated Daily Summaries (The real SQL-First Cash Flow)
+        const dailySummaries = await transactionRepository.findDailySummary(targetMonth, targetYear, doctorId);
+        const summaryMap = {};
+        dailySummaries.forEach(s => {
+            const dateStrRaw = s.report_date instanceof Date ? s.report_date.toISOString().split('T')[0] : String(s.report_date).split(' ')[0];
+            const dateObj = new Date(`${dateStrRaw}T12:00:00-03:00`);
+            const dateStr = dateObj.toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
+            summaryMap[dateStr] = s;
+        });
 
         const report = {};
         const daysInMonth = new Date(targetYear, targetMonth, 0).getDate();
 
         for (let d = 1; d <= daysInMonth; d++) {
-            const dateObj = new Date(targetYear, targetMonth - 1, d);
+            const dateStrRaw = `${targetYear}-${String(targetMonth).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            const dateObj = new Date(`${dateStrRaw}T12:00:00-03:00`);
             const dateStr = dateObj.toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
             const dayOfWeek = dateObj.getDay();
+            const daySummary = summaryMap[dateStr] || {};
+            
             report[dateStr] = {
                 date: dateStr,
                 appointments: [],
-                total_dia: 0,
-                total_efectivo: 0,
-                total_paid: 0,
+                total_dia: Number(daySummary.total_income || 0),
+                total_efectivo: Number(daySummary.total_cash || 0),
+                total_paid: Number(daySummary.total_income || 0),
+                total_withdrawal: Number(daySummary.total_withdrawal || 0),
                 is_weekend: dayOfWeek === 0 || dayOfWeek === 6,
                 is_holiday: !!holidayMap[dateStr],
                 holiday_description: holidayMap[dateStr] || null
             };
         }
 
-        // Fill Appointments list (List only, don't use for totals yet)
+        // Fill Appointments list (Visual only)
         appointments.forEach(a => {
-            const dateObj = new Date(a.appointment_date);
+            // Force parsing as Argentina time to avoid shifts if server is in UTC
+            // MariaDB date strings like 'YYYY-MM-DD HH:mm:ss'
+            const dateStrRaw = a.appointment_date instanceof Date 
+                ? a.appointment_date.toISOString().replace('Z', '').replace('T', ' ')
+                : String(a.appointment_date);
+                
+            // Append -03:00 to force the timezone regardless of server local time
+            const dateObj = new Date(dateStrRaw.includes('-03:00') ? dateStrRaw : `${dateStrRaw} -03:00`);
             const dateStr = dateObj.toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
 
             let finalName = a.patient_name || (a.reason ? `(Sin Paciente) ${a.reason}` : 'Desconocido');
@@ -76,15 +96,17 @@ class RetrievalService {
             if (report[dateStr]) {
                 report[dateStr].appointments.push({
                     id: a.id,
+                    doctor_id: a.doctor_id,
+                    appointment_date: a.appointment_date,
                     hora: dateObj.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Argentina/Buenos_Aires' }),
                     nombre: finalName || 'Desconocido',
                     info: detail,
                     asistencia: a.status,
                     pago: a.payment_status,
                     monto_pagado: a.paid_amount,
-                    monto_efectivo: a.cash_amount,
-                    debt_amount: a.debt_amount,
-                    metodos_pago: a.methods || '',
+                    monto_efectivo: a.paid_amount, 
+                    debt_amount: a.pending_amount,
+                    metodos_pago: '', 
                     dia: dateStr,
                     tipo_atencion: a.type,
                     is_overturn: !!a.is_out_of_hours
@@ -92,21 +114,9 @@ class RetrievalService {
             }
         });
 
-        // Calculate Totals per Day based on ACTUAL Transactions (Cash Flow)
-        incomeTransactions.forEach(t => {
-            const dateStr = new Date(t.transaction_date).toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
-            if (report[dateStr]) {
-                report[dateStr].total_paid += Number(t.amount);
-                report[dateStr].total_dia += Number(t.amount); // total_dia used in some views as total_paid synonym
-                if (t.method === 'cash' || t.method === 'efectivo') {
-                    report[dateStr].total_efectivo += Number(t.amount);
-                }
-            }
-        });
-
-        const totalOther = incomeTransactions
-            .filter(t => !t.appointment_id)
-            .reduce((acc, t) => acc + Number(t.amount), 0);
+        // Other income (not linked to appointments) is now inherently included in the daily summaries
+        // If we still need to separate "Other", we can do it via a different view or query.
+        const totalOther = 0; // Simplified for now since summary includes everything
 
         // Withdrawals
         const withdrawals = await transactionRepository.findMonthlyWithdrawals(targetMonth, targetYear, doctorId);

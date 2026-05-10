@@ -1,37 +1,33 @@
-/* --- Appointment Action Modal (BEM) - Premium Medical Theme --- */
+/* --- Appointment Action Modal (BEM) - Dark Premium Theme --- */
 
 .appointment-modal__content {
     /* --- Local Component Tokens --- */
-    --modal-reason-bg: #f8fafc;
-    --modal-reason-border: #e2e8f0;
-    --modal-reason-border-left: var(--purple-500);
-    
-    --medical-panel-bg: #f0f9ff;
-    --medical-panel-border: #bae6fd;
-    --medical-panel-border-left: var(--blue-600);
+    --modal-panel-bg: var(--gray-900);
+    --modal-panel-border: var(--dashboard-card-border);
     /* ------------------------------ */
 
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1.5rem;
     padding: 1.5rem;
-    background: linear-gradient(to bottom, #ffffff, var(--gray-50));
+    background: var(--background-bg);
 }
 
 /* Reason Box */
 .appointment-modal__reason {
-    background-color: var(--modal-reason-bg);
+    background-color: var(--modal-panel-bg);
     padding: 1.25rem;
-    border-radius: 1rem;
-    border: 1px solid var(--modal-reason-border);
-    border-left: 4px solid var(--modal-reason-border-left);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--modal-panel-border);
+    border-left: 4px solid var(--primary-color);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
 }
 
 .appointment-modal__reason:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-color);
 }
 
 .appointment-modal__text {
@@ -43,63 +39,20 @@
 
 .appointment-modal__strong {
     font-weight: 900;
-    color: var(--gray-400);
+    color: var(--text-muted);
     text-transform: uppercase;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     letter-spacing: 0.1em;
     display: block;
     margin-bottom: 0.4rem;
 }
 
-/* Medical Panel Styles */
-.appointment-medical-panel {
-    background-color: var(--medical-panel-bg);
-    padding: 1.5rem;
-    border-radius: 1rem;
-    border: 1px solid var(--medical-panel-border);
-    border-left: 4px solid var(--medical-panel-border-left);
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.appointment-medical-panel:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-}
-
-.appointment-medical-panel__title {
-    font-size: 0.8rem;
-    font-weight: 900;
-    color: var(--blue-700);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.appointment-medical-panel__actions {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 0.75rem;
-}
-
-.appointment-medical-panel__note-section {
-    display: flex;
-    gap: 0.75rem;
-    align-items: stretch;
-}
-
-.appointment-medical-panel__note-input {
-    flex: 1;
+.appointment-modal__sync-container {
+    padding-top: 0.5rem;
 }
 
 .appointment-modal__sync-btn {
     width: 100%;
-    height: 3rem;
-    font-weight: 700;
 }
+
+/* Note: Sub-panel styles (Medical/Admin) have been moved to their respective CSS files */

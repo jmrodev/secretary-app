@@ -2,15 +2,16 @@
 
 .select {
     /* --- Local Component Tokens --- */
-    --select-bg: var(--white);
-    --select-border: var(--gray-200);
+    --select-bg: var(--dashboard-card-bg);
+    --select-border: var(--dashboard-card-border);
     --select-text: var(--text-main);
-    --select-focus-border: var(--blue-500);
-    --select-focus-ring: rgba(59, 130, 246, 0.1);
-    --select-error-border: var(--red-500);
-    --select-disabled-bg: var(--gray-50);
-    --select-disabled-text: var(--gray-400);
+    --select-focus-border: var(--primary-color);
+    --select-focus-ring: rgba(72, 128, 255, 0.1);
+    --select-error-border: var(--error);
+    --select-disabled-bg: var(--gray-800);
+    --select-disabled-text: var(--text-muted);
     /* ------------------------------ */
+
 
     width: 100%;
     padding: 0.75rem 1rem;

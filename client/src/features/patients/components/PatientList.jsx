@@ -20,12 +20,12 @@ const PatientList = ({
 
     const renderStars = (rating, colorClass) => {
         return (
-            <div className={`rating-item__stars rating-item__stars--${colorClass}`}>
+            <div className={`patient-list__stars patient-list__stars--${colorClass}`}>
                 {[1, 2, 3, 4, 5].map(s => (
                     <Icon
                         key={s}
                         name={s <= (rating || 5) ? 'star' : 'star_outline'}
-                        size="14px"
+                        size="12px"
                     />
                 ))}
             </div>
@@ -42,9 +42,9 @@ const PatientList = ({
     }
 
     return (
-        <section className="patient-list-container">
+        <section className="patient-list">
             <h2 className="visually-hidden">{t('patient_list')}</h2>
-            <table className="patient-table table-base">
+            <table className="patient-list__table">
                 <thead>
                     <tr>
                         <th>{t('patient')}</th>
@@ -52,29 +52,29 @@ const PatientList = ({
                         <th>{t('contact')}</th>
                         <th>{t('ratings')}</th>
                         <th>{t('debt')}</th>
-                        <th className="patient-table__actions">{t('actions')}</th>
+                        <th className="patient-list__actions">{t('actions')}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {institutions.filter(inst => Number(inst.total_debt) > 0).map(inst => (
-                        <tr key={`inst-${inst.id}`} className="patient-table__row patient-table__row--institution">
+                        <tr key={`inst-${inst.id}`} className="patient-list__row patient-list__row--institution">
                             <td>
-                                <div className="patient-table__name-cell">
-                                    <Icon name="account_balance" size="1.1rem" className="patient-table__inst-icon" />
-                                    <span className="patient-table__inst-name">
+                                <div className="patient-list__name-cell">
+                                    <Icon name="account_balance" size="1.1rem" className="patient-list__inst-icon" />
+                                    <span className="patient-list__inst-name">
                                         [INSTITUCIÓN] {inst.name}
                                     </span>
                                 </div>
                             </td>
                             <td>
-                                <span className="patient-table__inst-type">{t('institution_debt') || 'Deuda Institucional'}</span>
+                                <span className="patient-list__inst-type">{t('institution_debt') || 'Deuda Institucional'}</span>
                             </td>
                             <td></td>
                             <td></td>
                             <td>
                                 <Badge variant="warning">${Number(inst.total_debt).toLocaleString()}</Badge>
                             </td>
-                            <td className="patient-table__actions">
+                            <td className="patient-list__actions">
                                 <Button
                                     size="sm-compact"
                                     variant="link"
@@ -88,21 +88,15 @@ const PatientList = ({
                         </tr>
                     ))}
 
-                    {institutions.filter(inst => Number(inst.total_debt) > 0).length > 0 && (
-                        <tr className="patient-table__row--divider">
-                            <td colSpan={6} className="patient-table__divider-cell"><hr className="patient-table__divider" /></td>
-                        </tr>
-                    )}
-
                     {patients.map(p => (
                         <tr
                             key={p.id}
                             onClick={() => onViewDetails(p.id)}
-                            className="patient-table__row"
+                            className="patient-list__row"
                         >
                             <td>
-                                <div className="patient-table__name-cell">
-                                    <strong className="patient-table__name">
+                                <div className="patient-list__name-cell">
+                                    <strong className="patient-list__name">
                                         {p.full_name || `${p.first_name || ''} ${p.last_name || ''}`.trim() || 'N/A'}
                                     </strong>
                                     {p.is_new_patient === 1 && <Badge variant="blue" size="sm">NEW</Badge>}
@@ -115,15 +109,15 @@ const PatientList = ({
                                 </div>
                             </td>
                             <td>
-                                <div className="patient-table__id-info">
-                                    {p.dni && <span><span className="patient-table__id-label">DNI:</span> {p.dni}</span>}
-                                    {(p.insurance_name || p.insurance) && <span><span className="patient-table__id-label">OS:</span> {p.insurance_name || p.insurance}</span>}
+                                <div className="patient-list__id-info">
+                                    {p.dni && <span><span className="patient-list__id-label">DNI:</span> {p.dni}</span>}
+                                    {(p.insurance_name || p.insurance) && <span><span className="patient-list__id-label">OS:</span> {p.insurance_name || p.insurance}</span>}
                                 </div>
                             </td>
                             <td>
-                                <div className="patient-table__contact-info">
+                                <div className="patient-list__contact-info">
                                     {p.phone ? (
-                                        <div className="patient-table__contact-row">
+                                        <div className="patient-list__contact-row">
                                             <Button
                                                 to={`https://wa.me/${p.phone.replace(/[^0-9]/g, '')}`}
                                                 target="_blank"
@@ -137,7 +131,7 @@ const PatientList = ({
                                                 to={`tel:${p.phone.replace(/[^0-9+]/g, '')}`}
                                                 variant="phone"
                                                 size="sm"
-                                                className="patient-table__contact-link"
+                                                className="patient-list__contact-link"
                                                 onClick={(e) => e.stopPropagation()}
                                                 title="Llamar"
                                                 icon={<Icon name="call" size="0.9rem" />}
@@ -145,14 +139,14 @@ const PatientList = ({
                                                 {p.phone}
                                             </Button>
                                         </div>
-                                    ) : <div className="patient-table__no-contact">{t('no_phone_short')}</div>}
+                                    ) : <div className="patient-list__no-contact">{t('no_phone_short')}</div>}
 
                                     {p.email && (
                                         <Button
                                             to={`mailto:${p.email}`}
                                             variant="link"
                                             size="sm"
-                                            className="patient-table__contact-link--email"
+                                            className="patient-list__contact-link--email"
                                             onClick={(e) => e.stopPropagation()}
                                             icon={<Icon name="mail" size="0.9rem" />}
                                         >
@@ -162,21 +156,21 @@ const PatientList = ({
                                 </div>
                             </td>
                             <td>
-                                <div className="rating-group">
-                                    <div className="rating-item" title={`${t('rating_financial_tooltip')}\nDeuda Actual: $${p.total_debt}`}>
-                                        <span className="rating-item__label">FIN</span>
+                                <div className="patient-list__rating-group">
+                                    <div className="patient-list__rating-item" title={`${t('rating_financial_tooltip')}\nDeuda Actual: $${p.total_debt}`}>
+                                        <span className="patient-list__rating-label">FIN</span>
                                         {renderStars(p.financial_rating, 'gold')}
                                     </div>
-                                    <div className="rating-item" title={`${t('rating_attendance_tooltip')}\nResumen: ${p.total_appointments - p.missed_appointments}/${p.total_appointments}`}>
-                                        <span className="rating-item__label">ASIST</span>
+                                    <div className="patient-list__rating-item" title={`${t('rating_attendance_tooltip')}\nResumen: ${p.total_appointments - p.missed_appointments}/${p.total_appointments}`}>
+                                        <span className="patient-list__rating-label">ASIST</span>
                                         {renderStars(p.attendance_rating, 'blue')}
                                     </div>
                                     <div
-                                        className="rating-item rating-item--interactive"
+                                        className="patient-list__rating-item patient-list__rating-item--interactive"
                                         onClick={(e) => onToggleRating(e, p.id, p.behavior_rating)}
                                         title={`${t('rating_behavior_tooltip')}\nCalificación: ${p.behavior_rating || 5}/5 (Click para cambiar)`}
                                     >
-                                        <span className="rating-item__label">COND</span>
+                                        <span className="patient-list__rating-label">COND</span>
                                         {renderStars(p.behavior_rating, 'pink')}
                                     </div>
                                 </div>
@@ -187,20 +181,20 @@ const PatientList = ({
                                         size="sm-compact"
                                         variant="warning"
                                         onClick={(e) => onOpenDebt(e, p.id, p.total_debt)}
-                                        className="patient-table__debt-badge"
+                                        className="patient-list__debt-badge"
                                         icon={<Icon name="payments" size="1rem" />}
                                     >
                                         ${p.total_debt}
                                     </Button>
                                 ) : (
-                                    <span className="patient-table__zero-debt">$0.00</span>
+                                    <span className="patient-list__zero-debt">$0.00</span>
                                 )}
                             </td>
-                            <td className="patient-table__actions">
+                            <td className="patient-list__actions">
                                 <Button
                                     variant="info"
                                     size="sm-compact"
-                                    className="patient-table__view-btn"
+                                    className="patient-list__view-btn"
                                     icon={<Icon name="badge" />}
                                 >
                                     {t('view_details') || 'Ficha'}

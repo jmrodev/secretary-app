@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import api from '@/api/axios';
 
 // Feature internal hooks
@@ -237,7 +237,7 @@ export const useAppointmentsHandlers = ({
         await updateAppointment(id, { type }, fetchAppointments);
     };
 
-    return {
+    return useMemo(() => ({
         handleDateSelect, handleSlotClick, handleUpdateStatus, handleSavePrescription, handleDelete, handleReschedule,
         handleSyncGoogleEvent, handleBook, handleNextFreeSlot: (sd, override) => fetchNextFreeSlots(sd, override), handleWhatsAppSlot, confirmNextSlot,
         handleAdminAuthConfirm: (retry, pass) => appointmentActions.handleAdminAuthConfirm?.(retry, pass), // Mapping if needed or using direct
@@ -258,5 +258,11 @@ export const useAppointmentsHandlers = ({
             setViewDoctorId(doctorId);
             if (onClose) onClose();
         }
-    };
+    }), [
+        handleDateSelect, handleUpdateStatus, handleSavePrescription, handleDelete, handleReschedule,
+        handleSyncGoogleEvent, handleBook, handleWhatsAppSlot, confirmNextSlot, handleUpdateType, handleSaveNote,
+        appointmentActions, uiHandlers, holidayHandlers, booking, setEditPatientModalOpen, setPrescribeModal, 
+        setSlotHistory, navigate, fetchNextFreeSlots, viewDoctorId, selectedDoctor, setSelectedDate, setViewDoctorId,
+        setShowForm, setDate, setSelectedDoctor, setIsOutOfHours, setBonified, setSelectedInstitution, setShowNextSlotModal
+    ]);
 };

@@ -83,11 +83,12 @@ export const useNextFreeSlot = (doctorId) => {
         }
     };
 
-    const handleNextPage = () => {
-        if (nextSlotData?.nextStartDate) {
-            setSlotHistory(prev => [...prev, currentSlotParams]);
-            setCurrentSlotParams(nextSlotData.nextStartDate);
-            fetchNextFreeSlots(nextSlotData.nextStartDate);
+    const handleNextPage = async () => {
+        if (slotsPage < slotPages.length - 1) {
+            setSlotsPage(p => p + 1);
+        } else if (nextSlotData?.nextStartDate) {
+            await fetchNextFreeSlots(nextSlotData.nextStartDate, null, true);
+            setSlotsPage(p => p + 1);
         }
     };
 

@@ -10,9 +10,9 @@
     align-items: center;
     padding: 0.5rem;
     margin-bottom: 0.5rem;
-    background-color: var(--white);
+    background-color: var(--dashboard-card-bg);
     border-radius: var(--radius-sm);
-    border: 1px solid var(--gray-100);
+    border: 1px solid var(--dashboard-card-border);
     box-shadow: var(--shadow-sm);
 }
 
@@ -28,7 +28,7 @@
 }
 
 .medication-items-summary__dose {
-    color: var(--gray-500);
+    color: var(--text-muted);
 }
 
 .medication-items-summary__freq {
@@ -38,9 +38,9 @@
 
 .medication-items-summary__qty {
     font-weight: 700;
-    color: var(--gray-700);
+    color: var(--text-main);
 }
 
 .medication-items-summary__remove-btn:hover {
-    background-color: #fef2f2; /* Light red/red-50 equivalent */
+    background-color: var(--gray-800);
 }

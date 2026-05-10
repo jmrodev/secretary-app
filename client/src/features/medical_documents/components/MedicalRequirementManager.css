@@ -11,7 +11,7 @@
     display: flex;
     gap: 0.75rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--dashboard-card-border);
 }
 
 .medical-requirement-manager__tab-wrapper {
@@ -51,8 +51,8 @@
     align-items: center;
     justify-content: center;
     padding: 2rem;
-    background: rgba(255, 255, 255, 0.5);
-    border: 2px dashed var(--border-color);
+    background: var(--dashboard-card-bg);
+    border: 2px dashed var(--dashboard-card-border);
     border-radius: 1.25rem;
     color: var(--text-muted);
     gap: 1rem;
@@ -65,9 +65,9 @@
 }
 
 .medical-requirement-manager__table-container {
-    background: white;
+    background: var(--dashboard-card-bg);
     border-radius: var(--radius-sm);
-    border: 1px solid var(--gray-200);
+    border: 1px solid var(--dashboard-card-border);
     overflow: hidden;
 }
 
@@ -78,85 +78,14 @@
 }
 
 .medical-requirement-manager__table-header {
-    background-color: var(--gray-50);
+    background-color: var(--gray-800);
     padding: 0.5rem 0.75rem;
     font-size: 0.7rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--gray-500);
-    border-bottom: 1px solid var(--gray-200);
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--dashboard-card-border);
 }
 
-.medical-requirement-manager__form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
 
-.medical-requirement-manager__form-label {
-    font-weight: 600;
-    color: var(--text-secondary);
-    font-size: 0.85rem;
-}
-
-/* Detail & Edit specific */
-.requirements-detail {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.requirements-detail__info-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.requirements-detail__body {
-    background: white;
-    border: 1px solid var(--border-color);
-    border-radius: 1rem;
-    overflow: hidden;
-}
-
-.requirements-detail__body--editing {
-    border-color: var(--blue-500);
-    box-shadow: 0 0 0 4px var(--blue-50);
-}
-
-.requirements-detail__section-title {
-    display: flex;
-    align-items: center;
-    gap: 0.65rem;
-    font-size: 0.9rem;
-    font-weight: 700;
-    padding: 1rem;
-    background: var(--gray-50);
-    border-bottom: 1px solid var(--border-color);
-    margin: 0;
-}
-
-.requirements-detail__notes {
-    padding: 1rem;
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.requirements-detail__actions {
-    padding: 1rem;
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.75rem;
-    background: var(--gray-50);
-    border-top: 1px solid var(--border-color);
-}
-
-.requirements-detail__footer {
-    display: flex;
-    justify-content: flex-end;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border-color);
-}

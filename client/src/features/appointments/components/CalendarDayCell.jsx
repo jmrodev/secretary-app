@@ -9,7 +9,7 @@ import './CalendarDayCell.css';
 const CalendarDayCell = ({
   day, isCurrentMonth = true, isSelected = false, isToday = false, isHoliday = false, holidayDescription = '',
   appointmentCount = 0, bookedInCount = 0, bookedOutCount = 0, freeInCount = 0, freeOutCount = 0,
-  showOutOfHours = false, onClick, disabled = false, isPast = false, t
+  showOutOfHours = false, onClick, disabled = false, isPast = false, t, compact = false
 }) => {
   const handleClick = () => { if (!disabled && onClick) onClick(day); };
 
@@ -18,7 +18,8 @@ const CalendarDayCell = ({
     isSelected && 'calendar-day-cell--selected',
     isToday && 'calendar-day-cell--today',
     isHoliday && 'calendar-day-cell--holiday',
-    isPast && 'calendar-day-cell--past'
+    isPast && 'calendar-day-cell--past',
+    compact && 'calendar-day-cell--compact'
   ].filter(Boolean).join(' ');
 
   return (

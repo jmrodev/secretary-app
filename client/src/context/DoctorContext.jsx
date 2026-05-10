@@ -16,7 +16,7 @@ export const DoctorProvider = ({ children }) => {
     );
 
     // Doctors List (Cached globally)
-    const { data: doctorData, loading: doctorsLoading } = useFetch('/users/doctors', {
+    const { data: doctorData, loading: doctorsLoading, fetched: doctorsFetched } = useFetch('/users/doctors', {
         initialData: { doctors: [], totalCount: 0 },
         immediate: !!user // Fetch only if logged in
     });
@@ -25,8 +25,11 @@ export const DoctorProvider = ({ children }) => {
 
     const setViewDoctorId = useCallback((id) => {
         const stringId = id ? String(id) : '';
-        setViewDoctorIdInternal(stringId);
-        localStorage.setItem('global_selected_doctor_id', stringId);
+        setViewDoctorIdInternal(prev => {
+            if (prev === stringId) return prev;
+            localStorage.setItem('global_selected_doctor_id', stringId);
+            return stringId;
+        });
     }, []);
 
     // Initial logic: if user is a doctor, default to their own ID
@@ -50,12 +53,14 @@ export const DoctorProvider = ({ children }) => {
     const value = useMemo(() => ({
         doctors,
         doctorsLoading,
+        doctorsFetched,
         viewDoctorId,
         setViewDoctorId,
         currentDoctor,
         doctorDisplayName: currentDoctor ? currentDoctor.full_name : null,
         isStaff
-    }), [doctors, doctorsLoading, viewDoctorId, setViewDoctorId, currentDoctor, isStaff]);
+    }), [doctors, doctorsLoading, doctorsFetched, viewDoctorId, setViewDoctorId, currentDoctor, isStaff]);
+
 
     return (
         <DoctorContext.Provider value={value}>

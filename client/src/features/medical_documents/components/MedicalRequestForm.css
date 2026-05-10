@@ -20,8 +20,8 @@
 
 .medical-request-form__readonly-value {
     padding: 0.625rem 0.75rem;
-    background: var(--gray-50);
-    border: 1px solid var(--border-color);
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
     border-radius: var(--radius-sm);
     color: var(--text-main);
     font-weight: 600;
@@ -36,9 +36,9 @@
     flex-wrap: wrap;
     gap: 1.5rem;
     padding: 1rem;
-    background: var(--gray-50);
+    background: var(--dashboard-card-bg);
     border-radius: var(--radius-sm);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--dashboard-card-border);
 }
 
 .medical-request-form__panel-item {

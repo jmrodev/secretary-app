@@ -1,13 +1,13 @@
 .tab-btn {
     /* --- Local Component Tokens --- */
     --tab-bg: transparent;
-    --tab-color: var(--gray-500);
-    --tab-hover-bg: var(--gray-100);
-    --tab-hover-color: var(--gray-700);
-    --tab-active-bg: var(--white);
-    --tab-active-color: var(--blue-600);
-    --tab-active-border: var(--gray-200);
-    --tab-active-shadow: var(--shadow-md);
+    --tab-color: var(--text-muted);
+    --tab-hover-bg: var(--gray-800);
+    --tab-hover-color: var(--text-main);
+    --tab-active-bg: var(--dashboard-card-bg);
+    --tab-active-color: var(--primary-color);
+    --tab-active-border: var(--dashboard-card-border);
+    --tab-active-shadow: var(--shadow-sm);
     /* ------------------------------ */
 
     padding: 0.625rem 1.25rem;

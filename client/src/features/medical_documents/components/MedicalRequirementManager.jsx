@@ -11,6 +11,7 @@ import MedicalRequirementTable from '@/features/medical_documents/components/Med
 import MedicalRequirementRecycleBin from '@/features/medical_documents/components/MedicalRequirementRecycleBin';
 import MedicalRequirementDetailModal from '@/features/medical_documents/components/MedicalRequirementDetailModal';
 import MedicalRequirementActionModal from '@/features/medical_documents/components/MedicalRequirementActionModal';
+import MedicalRequestModal from '@/features/medical_documents/components/MedicalRequestModal';
 
 // Styles
 import './MedicalRequirementManager.css';
@@ -36,6 +37,8 @@ const MedicalRequirementManager = ({
         loading,
         selectedRequest,
         setSelectedRequest,
+        isNewModalOpen,
+        setIsNewModalOpen,
         actionModal,
         setActionModal,
         actionNote,
@@ -56,7 +59,7 @@ const MedicalRequirementManager = ({
 
     const handleCloseDetail = () => setSelectedRequest(null);
     const handleCloseAction = () => setActionModal({ open: false, type: '', id: null });
-    const handleNewTab = () => setActiveTab('new');
+    const handleNewClick = () => setIsNewModalOpen(true);
     const handleListTab = () => setActiveTab('list');
     const handleRecycleTab = () => setActiveTab('recycle');
 
@@ -67,7 +70,10 @@ const MedicalRequirementManager = ({
         'referral': t('referral')
     };
 
-    if (loading) return <Loading variant="centered" text={t('loading')} />;
+    // Only show global loading if we haven't fetched anything yet (initial load)
+    if (loading && !controller.fetched) return <Loading variant="centered" text={t('loading')} />;
+
+
 
     const isAdminOrSecretary = ['admin', 'secretary'].includes(user?.role);
     const canEdit = user?.role === 'admin' || user?.role === 'secretary' || user?.role === 'doctor';
@@ -89,8 +95,8 @@ const MedicalRequirementManager = ({
                     </TabButton>
                     {!hideNew && (
                         <TabButton
-                            isActive={activeTab === 'new'}
-                            onClick={handleNewTab}
+                            isActive={false}
+                            onClick={handleNewClick}
                             variant="pill"
                             icon={<Icon name="add_circle" />}
                         >
@@ -116,20 +122,12 @@ const MedicalRequirementManager = ({
             )}
 
             <article className={`${baseClass}__content animate-fade-in`}>
-                {activeTab === 'new' ? (
-                    <MedicalRequestForm
-                        doctors={doctors}
-                        onRequestCreated={() => {
-                            fetchRequests();
-                            setActiveTab('list');
-                        }}
-                    />
-                ) : activeTab === 'list' ? (
+                {activeTab === 'list' ? (
                     <MedicalRequirementTable
                         requests={requests}
                         filter={filter}
                         setFilter={setFilter}
-                        handleNewTab={handleNewTab}
+                        handleNewTab={handleNewClick}
                         setSelectedRequest={setSelectedRequest}
                         handleDelete={handleDelete}
                         openActionModal={openActionModal}
@@ -151,6 +149,14 @@ const MedicalRequirementManager = ({
                     />
                 )}
             </article>
+
+            <MedicalRequestModal 
+                isOpen={isNewModalOpen}
+                onClose={() => setIsNewModalOpen(false)}
+                doctors={doctors}
+                t={t}
+                onRequestCreated={fetchRequests}
+            />
 
             <MedicalRequirementDetailModal
                 selectedRequest={selectedRequest}
