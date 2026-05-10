@@ -1,15 +1,15 @@
-const { pool } = require('../../db');
-const { logAction } = require('../../utils/audit');
-const { calculatePrice } = require('../../utils/priceCalculator');
-const { saveToRecycleBin } = require('../../utils/recycleBin');
-const medicalRequestRepository = require('../../repositories/medicalRequestRepository');
-const patientRepository = require('../../repositories/patientRepository');
-const medicationRepository = require('../../repositories/medicationRepository');
-const doctorRepository = require('../../repositories/doctorRepository');
-const systemSettingsRepository = require('../../repositories/systemSettingsRepository');
-const transactionRepository = require('../../repositories/transactionRepository');
-const financeService = require('../finance/financeService');
-const { ROLES } = require('../../constants/roles');
+const { pool } = require('../../../db');
+const { logAction } = require('../../../utils/system/audit');
+const { calculatePrice } = require('../../../utils/finance/priceCalculator');
+const { saveToRecycleBin } = require('../../../utils/system/recycleBin');
+const medicalRequestRepository = require('../../../repositories/medical/medicalRequestRepository');
+const patientRepository = require('../../../repositories/user/patientRepository');
+const medicationRepository = require('../../../repositories/medical/medicationRepository');
+const doctorRepository = require('../../../repositories/user/doctorRepository');
+const systemSettingsRepository = require('../../../repositories/system/systemSettingsRepository');
+const transactionRepository = require('../../../repositories/finance/transactionRepository');
+const financeService = require('../../finance/financeService');
+const { ROLES } = require('../../../constants/roles');
 
 /**
  * MedicalRequestService
@@ -110,7 +110,7 @@ class MedicalRequestService {
             if (status === 'completed' && reqInfo.payment_status === 'pending') {
                 await this.generateRequestDebt(conn, id, user_id);
                 // Sync status to reflect the new debt
-                const financeService = require('../finance/financeService');
+                const financeService = require('../../finance/financeService');
                 await financeService.syncRequestPaymentStatus(id, conn);
             }
 

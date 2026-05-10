@@ -1,6 +1,6 @@
-const restoreService = require('../../services/restoreService');
-const { pool } = require('../../db');
-const { logAction } = require('../../utils/audit');
+const restoreService = require('../../../services/system/restoreService');
+const { pool } = require('../../../db');
+const { logAction } = require('../../../utils/system/audit');
 const bcrypt = require('bcrypt');
 
 // Mock dependencies

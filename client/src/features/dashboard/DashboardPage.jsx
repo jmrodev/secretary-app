@@ -1,11 +1,11 @@
 import React from 'react';
 import { useDashboardController } from '@/features/dashboard/index';
 import DashboardReminders from '@/features/dashboard/components/DashboardReminders';
-import MedicalRequirementManager from '@/features/medical_documents/components/MedicalRequirementManager';
-import AppointmentActionModal from '@/features/appointments/components/AppointmentActionModal';
-import PrescriptionModal from '@/features/medical_documents/components/PrescriptionModal';
-import PatientHistoryModal from '@/features/patients/components/PatientHistoryModal';
-import TransactionModal from '@/features/finances/components/TransactionModal';
+import MedicalRequirementManager from '@/features/medical_documents/components/ui/MedicalRequirementManager';
+import AppointmentActionModal from '@/features/appointments/components/modals/AppointmentActionModal';
+import PrescriptionModal from '@/features/medical_documents/components/modals/PrescriptionModal';
+import PatientHistoryModal from '@/features/patients/components/modals/PatientHistoryModal';
+import TransactionModal from '@/features/finances/components/modals/TransactionModal';
 import MainLayout from '@/components/templates/MainLayout';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/features/auth/AuthContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useNavigate } from 'react-router-dom';
-import { capitalizeWords } from '@/utils/stringUtils';
+import { capitalizeWords } from '@/utils/core/stringUtils';
 
 /**
  * Controller hook for the Register form.

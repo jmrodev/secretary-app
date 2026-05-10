@@ -4,7 +4,7 @@ import api from '@/api/axios';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useMessage } from '@/context/MessageContext';
 import { useConfig } from '@/context/ConfigContext';
-import { capitalizeWords } from '@/utils/stringUtils';
+import { capitalizeWords } from '@/utils/core/stringUtils';
 import { PATIENT_CAPITALIZE_FIELDS } from '@/constants/patientConstants';
 
 /**

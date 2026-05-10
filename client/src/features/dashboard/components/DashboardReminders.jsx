@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import TabButton from '@/components/atoms/TabButton';
-import { formatDate } from '@/utils/dateUtils';
+import { formatDate } from '@/utils/core/dateUtils';
 import './DashboardReminders.css';
 
 /**

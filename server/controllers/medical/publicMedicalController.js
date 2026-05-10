@@ -1,4 +1,4 @@
-const publicMedicalService = require('../../services/medical/PublicMedicalService');
+const publicMedicalService = require('../../../services/medical/PublicMedicalService');
 
 /**
  * publicMedicalController

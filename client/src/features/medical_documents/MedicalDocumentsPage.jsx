@@ -14,7 +14,7 @@ import MainLayout from '@/components/templates/MainLayout';
 import Icon from '@/components/atoms/Icon';
 import TabButton from '@/components/atoms/TabButton';
 import TabNav from '@/components/molecules/TabNav';
-import { formatDate } from '@/utils/dateUtils';
+import { formatDate } from '@/utils/core/dateUtils';
 
 // Styles
 import './MedicalDocumentsPage.css';

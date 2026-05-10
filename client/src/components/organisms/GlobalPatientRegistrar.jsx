@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import PatientManagerModal from '@/features/patients/components/PatientManagerModal';
+import PatientManagerModal from '@/features/patients/components/modals/PatientManagerModal';
 
 /**
  * GlobalPatientRegistrar

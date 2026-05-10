@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { pool } = require('../db');
+const { pool } = require('../../db');
 
 async function reset() {
     try {

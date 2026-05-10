@@ -1,4 +1,4 @@
-const medicalExportService = require('../../services/medical/MedicalExportService');
+const medicalExportService = require('../../../services/medical/MedicalExportService');
 
 /**
  * medicalExportController

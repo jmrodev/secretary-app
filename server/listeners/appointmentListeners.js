@@ -1,7 +1,7 @@
 const appointmentEvents = require('../events/appointmentEvents');
 const googleSyncService = require('../services/appointments/googleSyncService');
-const doctorRepository = require('../repositories/doctorRepository');
-const whatsappService = require('../services/whatsappService');
+const doctorRepository = require('../repositories/user/doctorRepository');
+const whatsappService = require('../services/communication/whatsappService');
 
 // 1. Google Calendar Synchronizer
 // ... existing code ...

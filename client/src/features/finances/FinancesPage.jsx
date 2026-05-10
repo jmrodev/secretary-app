@@ -5,13 +5,13 @@ import React from 'react';
 import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
 import { useFinancesPageController } from '@/features/finances/hooks/useFinancesPageController';
-import FinanceStatsCards from '@/features/finances/components/FinanceStatsCards';
-import EditTransactionModal from '@/features/finances/components/EditTransactionModal';
-import TransactionModal from '@/features/finances/components/TransactionModal';
-import FinanceSidebar from '@/features/finances/components/FinanceSidebar';
-import TransactionsTable from '@/features/finances/components/TransactionsTable';
-import CashBoxDeliveryModal from '@/features/finances/components/CashBoxDeliveryModal';
-import PendingClosuresModal from '@/features/finances/components/PendingClosuresModal';
+import FinanceStatsCards from '@/features/finances/components/sections/FinanceStatsCards';
+import EditTransactionModal from '@/features/finances/components/modals/EditTransactionModal';
+import TransactionModal from '@/features/finances/components/modals/TransactionModal';
+import FinanceSidebar from '@/features/finances/components/ui/FinanceSidebar';
+import TransactionsTable from '@/features/finances/components/tables/TransactionsTable';
+import CashBoxDeliveryModal from '@/features/finances/components/modals/CashBoxDeliveryModal';
+import PendingClosuresModal from '@/features/finances/components/modals/PendingClosuresModal';
 
 import './FinancesPage.css';
 

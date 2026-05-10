@@ -3,7 +3,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import api from '@/api/axios';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
-import WhatsappChatHistory from '@/features/patients/components/WhatsappChatHistory';
+import WhatsappChatHistory from '@/features/patients/components/views/WhatsappChatHistory';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useDoctors } from '@/context/DoctorContextDefinition';
 import './GlobalWhatsappMessenger.css';

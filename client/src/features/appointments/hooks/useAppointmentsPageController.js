@@ -16,7 +16,7 @@ import { useGoogleSync } from '@/features/appointments/hooks/useGoogleSync';
 import { useDoctorSchedules } from '@/features/appointments/hooks/useDoctorSchedules';
 import { usePatientAppointmentSearch } from '@/features/appointments/hooks/usePatientAppointmentSearch';
 import { useAppointmentsHandlers } from '@/features/appointments/hooks/useAppointmentsHandlers';
-import { copyToClipboard } from '@/utils/clipboardUtils';
+import { copyToClipboard } from '@/utils/core/clipboardUtils';
 import { useDoctors } from '@/context/DoctorContextDefinition';
 import { useAgendaState } from '@/features/appointments/hooks/useAgendaState';
 import { useAgendaModals } from '@/features/appointments/hooks/useAgendaModals';

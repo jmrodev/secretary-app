@@ -4,7 +4,7 @@ import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useConfig } from '@/context/ConfigContext';
 import { useAuth } from '@/features/auth';
-import { capitalizeFirst } from '@/utils/stringUtils';
+import { capitalizeFirst } from '@/utils/core/stringUtils';
 
 /**
  * Hook to manage the appointment booking lifecycle.

@@ -1,6 +1,6 @@
-const holidayRepository = require('../../repositories/holidayRepository');
-const doctorRepository = require('../../repositories/doctorRepository');
-const appointmentRepository = require('../../repositories/appointmentRepository');
+const holidayRepository = require('../../../repositories/appointments/holidayRepository');
+const doctorRepository = require('../../../repositories/user/doctorRepository');
+const appointmentRepository = require('../../../repositories/appointments/appointmentRepository');
 
 /**
  * AvailabilityStatsService

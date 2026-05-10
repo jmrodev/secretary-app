@@ -1,6 +1,6 @@
-const googleCalendarService = require('../google/GoogleCalendarService');
-const appointmentRepository = require('../../repositories/appointmentRepository');
-const googleIntegrationRepository = require('../../repositories/googleIntegrationRepository');
+const googleCalendarService = require('../../google/GoogleCalendarService');
+const appointmentRepository = require('../../../repositories/appointments/appointmentRepository');
+const googleIntegrationRepository = require('../../../repositories/user/googleIntegrationRepository');
 
 class GoogleSyncService {
     buildDescription(appt, patient, extra = {}) {

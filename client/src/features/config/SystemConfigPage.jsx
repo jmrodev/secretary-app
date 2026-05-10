@@ -1,10 +1,10 @@
 import React, { Suspense } from 'react';
 import { useSystemConfigController } from '@/features/config/hooks/useSystemConfigController';
-import GeneralSettings from '@/features/config/components/GeneralSettings';
-import CommunicationSettings from '@/features/config/components/CommunicationSettings';
-import IntegrationSettings from '@/features/config/components/IntegrationSettings';
-import BillingSettings from '@/features/config/components/BillingSettings';
-import AiSettings from '@/features/config/components/AiSettings';
+import GeneralSettings from '@/features/config/components/sections/GeneralSettings';
+import CommunicationSettings from '@/features/config/components/sections/CommunicationSettings';
+import IntegrationSettings from '@/features/config/components/sections/IntegrationSettings';
+import BillingSettings from '@/features/config/components/sections/BillingSettings';
+import AiSettings from '@/features/config/components/sections/AiSettings';
 import { useDoctorsPageController } from '@/features/doctors';
 import { useProfileController, ProfileEditor } from '@/features/auth';
 import { useReportsController, useAuditLogsController } from '@/features/reports';
@@ -26,7 +26,7 @@ const InstitutionManager = React.lazy(() => import('@/features/institutions').th
 const AuditLogManager = React.lazy(() => import('@/features/reports').then(module => ({ default: module.AuditLogManager })));
 const UserManager = React.lazy(() => import('@/features/users').then(module => ({ default: module.UserManager })));
 
-import { printReport } from '@/utils/reportPrintHelper';
+import { printReport } from '@/utils/printing/reportPrintHelper';
 import './SystemConfigPage.css';
 
 // --- Sub-sections Orchestrated within the Page ---

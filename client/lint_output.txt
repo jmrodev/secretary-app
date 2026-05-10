@@ -1,0 +1,46 @@
+
+> client@1.9.3 lint
+> eslint .
+
+
+/home/jmro/Documentos/proyectos/secretary-app/client/src/constants/languages/es.js
+  931:5  error  Duplicate key 'search_free_slots'       no-dupe-keys
+  932:5  error  Duplicate key 'exploring_schedule'      no-dupe-keys
+  936:5  error  Duplicate key 'search_limit_3_months'   no-dupe-keys
+  937:5  error  Duplicate key 'include_overtime_short'  no-dupe-keys
+  938:5  error  Duplicate key 'time_date'               no-dupe-keys
+  941:5  error  Duplicate key 'explore_more_dates'      no-dupe-keys
+  942:5  error  Duplicate key 'keyboard_nav_help'       no-dupe-keys
+
+/home/jmro/Documentos/proyectos/secretary-app/client/src/features/appointments/components/AppointmentPatientSection.jsx
+  5:8  warning  'Input' is defined but never used. Allowed unused vars must match /^(React|use[A-Z].*|is[A-Z].*|set[A-Z].*|handle[A-Z].*|t|api|user|settings|navigate|components)$/u  no-unused-vars
+
+/home/jmro/Documentos/proyectos/secretary-app/client/src/features/appointments/components/NextSlotModal.jsx
+  36:8  warning  React Hook useEffect has missing dependencies: 'handleNextPage' and 'setSlotsPage'. Either include them or remove the dependency array. If 'setSlotsPage' changes too often, find the parent component that defines it and wrap that definition in useCallback  react-hooks/exhaustive-deps
+
+/home/jmro/Documentos/proyectos/secretary-app/client/src/features/appointments/hooks/useAppointmentsHandlers.js
+  261:9  warning  React Hook useMemo has a missing dependency: 'handleSlotClick'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/jmro/Documentos/proyectos/secretary-app/client/src/features/appointments/hooks/useAppointmentsPageController.js
+  72:48  warning  'statsFetched' is assigned a value but never used. Allowed unused vars must match /^(React|use[A-Z].*|is[A-Z].*|set[A-Z].*|handle[A-Z].*|t|api|user|settings|navigate|components)$/u   no-unused-vars
+  78:99  warning  'agendaFetched' is assigned a value but never used. Allowed unused vars must match /^(React|use[A-Z].*|is[A-Z].*|set[A-Z].*|handle[A-Z].*|t|api|user|settings|navigate|components)$/u  no-unused-vars
+
+/home/jmro/Documentos/proyectos/secretary-app/client/src/features/appointments/hooks/useNextFreeSlot.js
+  16:12  warning  'currentSlotParams' is assigned a value but never used. Allowed unused vars must match /^(React|use[A-Z].*|is[A-Z].*|set[A-Z].*|handle[A-Z].*|t|api|user|settings|navigate|components)$/u  no-unused-vars
+
+/home/jmro/Documentos/proyectos/secretary-app/client/src/features/dashboard/DashboardPage.jsx
+  73:11  warning  'hasLoadedStats' is assigned a value but never used. Allowed unused vars must match /^(React|use[A-Z].*|is[A-Z].*|set[A-Z].*|handle[A-Z].*|t|api|user|settings|navigate|components)$/u      no-unused-vars
+  79:11  warning  'hasLoadedReminders' is assigned a value but never used. Allowed unused vars must match /^(React|use[A-Z].*|is[A-Z].*|set[A-Z].*|handle[A-Z].*|t|api|user|settings|navigate|components)$/u  no-unused-vars
+
+/home/jmro/Documentos/proyectos/secretary-app/client/src/features/dashboard/hooks/useDashboardStats.js
+  67:9  warning  React Hook useMemo has a missing dependency: 'doctorData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/jmro/Documentos/proyectos/secretary-app/client/src/features/finances/hooks/useFinancesPageController.js
+  63:40  warning  'statsLoading' is assigned a value but never used. Allowed unused vars must match /^(React|use[A-Z].*|is[A-Z].*|set[A-Z].*|handle[A-Z].*|t|api|user|settings|navigate|components)$/u     no-unused-vars
+  72:50  warning  'closuresLoading' is assigned a value but never used. Allowed unused vars must match /^(React|use[A-Z].*|is[A-Z].*|set[A-Z].*|handle[A-Z].*|t|api|user|settings|navigate|components)$/u  no-unused-vars
+
+/home/jmro/Documentos/proyectos/secretary-app/client/src/features/medical_documents/components/MedicalRequirementManager.jsx
+  9:8  warning  'MedicalRequestForm' is defined but never used. Allowed unused vars must match /^(React|use[A-Z].*|is[A-Z].*|set[A-Z].*|handle[A-Z].*|t|api|user|settings|navigate|components)$/u  no-unused-vars
+
+✖ 19 problems (7 errors, 12 warnings)
+
