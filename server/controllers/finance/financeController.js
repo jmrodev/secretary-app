@@ -16,10 +16,11 @@ exports.getPricing = async (req, res) => {
         const query = req.query || {};
         const body = req.body || {};
         const isPost = req.method === 'POST';
-        const doctor_id = isPost ? (body.doctor_id || body.doctorId) : (query.doctor_id || query.doctorId);
-        const service_type = isPost ? (body.service_type || body.serviceType) : (query.service_type || query.serviceType);
-        const patientId = isPost ? (body.patientId || body.patient_id) : undefined;
-        if (!isPost && (query.patientId !== undefined || query.patient_id !== undefined)) {
+        const doctor_id = isPost ? (body.doctor_id ?? body.doctorId) : (query.doctor_id ?? query.doctorId);
+        const service_type = isPost ? (body.service_type ?? body.serviceType) : (query.service_type ?? query.serviceType);
+        const patientId = isPost ? (body.patientId ?? body.patient_id) : undefined;
+        const hasQueryPatientId = Object.prototype.hasOwnProperty.call(query, 'patientId') || Object.prototype.hasOwnProperty.call(query, 'patient_id');
+        if (!isPost && hasQueryPatientId) {
             return res.status(400).send("Invalid request parameters");
         }
         const normalizedDoctorId = Number.parseInt(doctor_id, 10);
