@@ -15,11 +15,19 @@ exports.getPricing = async (req, res) => {
     try {
         const query = req.query || {};
         const body = req.body || {};
-        const doctor_id = query.doctor_id || body.doctor_id;
-        const service_type = query.service_type || body.service_type;
-        const { patientId } = body;
-        if (!doctor_id) return res.status(400).send("Doctor ID required");
-        const result = await financeService.getPricing(doctor_id, patientId, service_type);
+        const isPost = req.method === 'POST';
+        const doctor_id = isPost ? body.doctor_id : query.doctor_id;
+        const service_type = isPost ? body.service_type : query.service_type;
+        const patientId = isPost ? body.patientId : undefined;
+        if (!isPost && query.patientId !== undefined) {
+            return res.status(400).send("Invalid request parameters");
+        }
+        const normalizedDoctorId = Number.parseInt(doctor_id, 10);
+        if (!normalizedDoctorId) return res.status(400).send("Doctor ID required");
+        if (service_type !== undefined && typeof service_type !== 'string') {
+            return res.status(400).send("Invalid request parameters");
+        }
+        const result = await financeService.getPricing(normalizedDoctorId, patientId, service_type);
         res.json({ price: result.price.toFixed(2), explanation: result.explanation });
     } catch (err) {
         console.error(err);
