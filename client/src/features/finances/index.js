@@ -23,4 +23,4 @@ export { default as BalanceCashFlowTable } from '@/features/finances/components/
 export { default as BalanceDebtsTable } from '@/features/finances/components/tables/BalanceDebtsTable';
 export { default as CashBoxSummary } from '@/features/finances/components/sections/CashBoxSummary';
 export { default as HistoricalWithdrawalModal } from '@/features/finances/components/modals/HistoricalWithdrawalModal';
-export { default as BillingSettings } from '@/features/finances/components/ui/BillingSettings';
+

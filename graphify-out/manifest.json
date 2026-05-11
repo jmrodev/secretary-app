@@ -1068,8 +1068,8 @@
     "hash": "5894bfb75611fc5a9505d2aebcacca51"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/dashboard/DashboardPage.jsx": {
-    "mtime": 1778403033.8540797,
-    "hash": "39f11bd5cb07f0f48251bfcf0e815699"
+    "mtime": 1778403455.1041317,
+    "hash": "e96a7b9a6a19c94b61be90b84b4c9b20"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/dashboard/index.js": {
     "mtime": 1778396892.184245,
@@ -1080,8 +1080,8 @@
     "hash": "b1fd6399de1bde38f7098d12465368f4"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/dashboard/hooks/useDashboardStats.js": {
-    "mtime": 1778396892.0730736,
-    "hash": "4c0f5ee1a8e7420db8c5e7bc65042c21"
+    "mtime": 1778403283.8546894,
+    "hash": "6cc00f91099cfa3f856f13f6d188b6f6"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/dashboard/hooks/useDashboardModals.js": {
     "mtime": 1778356078.1372895,
@@ -1188,8 +1188,8 @@
     "hash": "00fae908d3240b2ce44d87b3058cf002"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/medical_documents/components/ui/MedicalRequirementManager.jsx": {
-    "mtime": 1778403034.0490801,
-    "hash": "beca66b958bef7543850cf68ced4ed8d"
+    "mtime": 1778403145.8393462,
+    "hash": "61e791b7e016e677881f1e8bb162b5ca"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/medical_documents/components/forms/MedicalRequestForm.jsx": {
     "mtime": 1778403033.99408,
@@ -1340,8 +1340,8 @@
     "hash": "42ab44e81cbd060e5ad17e5ba8259e07"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/appointments/hooks/useAppointmentsPageController.js": {
-    "mtime": 1778403033.7680795,
-    "hash": "0aada9c383e5f2fb2eb4ca9401420157"
+    "mtime": 1778403604.3645284,
+    "hash": "9efc61d6ea0c731e540e9241968040d5"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/appointments/hooks/useAppointmentBooking.js": {
     "mtime": 1778403033.7650795,
@@ -1352,16 +1352,16 @@
     "hash": "74c1acc42e561a133f9cd3d424234a58"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/appointments/hooks/useNextFreeSlot.js": {
-    "mtime": 1778396890.925291,
-    "hash": "fc371941906208fd4229276ae76b1be3"
+    "mtime": 1778403416.5490308,
+    "hash": "1262d7f6a74007615001baf91bd47139"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/appointments/hooks/usePatientAppointmentSearch.js": {
     "mtime": 1778396890.930251,
     "hash": "d38d1dd84d3938424d676c30b5c11ff6"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/appointments/hooks/useAppointmentsHandlers.js": {
-    "mtime": 1778396890.916251,
-    "hash": "d8d0123dfad905220cfa3ee5abd35c5d"
+    "mtime": 1778403837.449163,
+    "hash": "e735437a8c752f1c6278d6cb5d863983"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/appointments/hooks/useHolidays.js": {
     "mtime": 1778356078.1969411,
@@ -1392,8 +1392,8 @@
     "hash": "45cab7525fa186f687513b9059a5ad04"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/appointments/components/modals/NextSlotModal.jsx": {
-    "mtime": 1778403033.7390795,
-    "hash": "3971d822436c85984faceb8b84328af6"
+    "mtime": 1778403902.9163435,
+    "hash": "6f1a84bac55e26ed1711b0b6c4bfed0e"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/appointments/components/modals/AppointmentFormModal.jsx": {
     "mtime": 1778403033.7372303,
@@ -1412,8 +1412,8 @@
     "hash": "b3cf968b2598e7d4fb24fe07e13593db"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/appointments/components/schedule/DaySchedule.jsx": {
-    "mtime": 1778403033.7420795,
-    "hash": "f7c5f57de68b2c01f51e19135463a076"
+    "mtime": 1778403764.4209626,
+    "hash": "c000a6f0c2ab164124af21818cbab179"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/appointments/components/schedule/DayHeaders.jsx": {
     "mtime": 1778403033.7400095,
@@ -1476,8 +1476,8 @@
     "hash": "deeab6134232360d90dd2db459ee8d3d"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/appointments/components/sections/AppointmentPatientSection.jsx": {
-    "mtime": 1778403033.7550795,
-    "hash": "3830166254d35639e3d40560ee5a3459"
+    "mtime": 1778403553.6273925,
+    "hash": "eaa8ea3b130006ef738631952324ee25"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/appointments/components/sections/AppointmentHeader.jsx": {
     "mtime": 1778403033.7550795,
@@ -1672,8 +1672,8 @@
     "hash": "54247399b0477660f72f9a1b60529595"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/finances/hooks/useFinancesPageController.js": {
-    "mtime": 1778396892.3162446,
-    "hash": "27a0cbff34864edf08c207f821338a3a"
+    "mtime": 1778403131.1303105,
+    "hash": "d0622722e4ebac55704d1de2c20fcd7a"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/finances/hooks/useFinanceHandlers.js": {
     "mtime": 1778356078.287638,
