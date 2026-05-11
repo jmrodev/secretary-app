@@ -4,8 +4,8 @@ import { useDayScheduleHandlers } from '@/features/appointments/hooks/useDaySche
 import { isSameDay } from '@/utils/core/dateUtils';
 import { useFetch } from '@/hooks/useFetch';
 
-import DayScheduleHeader from '@/features/appointments/components/DayScheduleHeader.jsx';
-import ScheduleTimeline from '@/features/appointments/components/ScheduleTimeline.jsx';
+import DayScheduleHeader from '@/features/appointments/components/schedule/DayScheduleHeader.jsx';
+import ScheduleTimeline from '@/features/appointments/components/schedule/ScheduleTimeline.jsx';
 
 import './DaySchedule.css';
 

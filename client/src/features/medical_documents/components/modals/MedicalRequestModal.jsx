@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from '@/components/molecules/Modal';
-import MedicalRequestForm from './MedicalRequestForm';
+import MedicalRequestForm from '../forms/MedicalRequestForm';
 
 /**
  * MedicalRequestModal Organism (Feature-based).

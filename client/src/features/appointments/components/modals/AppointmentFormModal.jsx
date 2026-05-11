@@ -5,9 +5,9 @@ import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useAuth } from '@/features/auth';
 
-import AppointmentSyncAlert from '@/features/appointments/components/AppointmentSyncAlert.jsx';
-import AppointmentTypeSelector from '@/features/appointments/components/AppointmentTypeSelector.jsx';
-import AppointmentPatientSection from '@/features/appointments/components/AppointmentPatientSection.jsx';
+import AppointmentSyncAlert from '@/features/appointments/components/ui/AppointmentSyncAlert.jsx';
+import AppointmentTypeSelector from '@/features/appointments/components/forms/AppointmentTypeSelector.jsx';
+import AppointmentPatientSection from '@/features/appointments/components/sections/AppointmentPatientSection.jsx';
 
 import './AppointmentFormModal.css';
 import Select from '@/components/atoms/Select';

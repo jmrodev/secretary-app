@@ -43,10 +43,6 @@
     "mtime": 1776530248.437432,
     "hash": "088036c7485b5b29beaa253012182fd6"
   },
-  "/home/jmro/Documentos/proyectos/secretary-app/server/run_migration.js": {
-    "mtime": 1778206301.6380703,
-    "hash": "d8618ffee7f44d8ba2e8d4f7edabb02a"
-  },
   "/home/jmro/Documentos/proyectos/secretary-app/server/eslint.config.mjs": {
     "mtime": 1778396893.4962394,
     "hash": "4f16c7fb0349e7097c6bd143edc761e9"
@@ -116,8 +112,8 @@
     "hash": "6dae3c2bd79b4b550aa72f416a80e80d"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/controllers/finance/financeController.js": {
-    "mtime": 1778403034.1760805,
-    "hash": "08dc2bf0bca065cb213aa827744cfd7f"
+    "mtime": 1778462080.1808233,
+    "hash": "fb9757b59b3eb41fac6c49458bb0bd13"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/controllers/core/insuranceController.js": {
     "mtime": 1778403034.1720803,
@@ -256,8 +252,8 @@
     "hash": "35671f22f9876119dec88f1a99726b94"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/routes/finance/financeRoutes.js": {
-    "mtime": 1778403034.2864144,
-    "hash": "b62ff27c046eb21fb2fd2beabd411a6a"
+    "mtime": 1778462080.1818235,
+    "hash": "4dbf194a3ea35bb60fd2a62eff528e5c"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/routes/core/consultorioRoutes.js": {
     "mtime": 1778403034.2830806,
@@ -402,22 +398,6 @@
   "/home/jmro/Documentos/proyectos/secretary-app/server/scripts/vademecum/importVademecum.js": {
     "mtime": 1778206301.6410704,
     "hash": "79a84d9fb1a4941a8e0e26b3820cfb92"
-  },
-  "/home/jmro/Documentos/proyectos/secretary-app/server/scripts/maintenance/migrate_whatsapp.js": {
-    "mtime": 1778396893.8142378,
-    "hash": "e8351ffa46b576756f590724828246e9"
-  },
-  "/home/jmro/Documentos/proyectos/secretary-app/server/scripts/maintenance/inspect_db.js": {
-    "mtime": 1778396893.798238,
-    "hash": "721868e75802064e82e36b49f4c9f450"
-  },
-  "/home/jmro/Documentos/proyectos/secretary-app/server/scripts/maintenance/describe_table.js": {
-    "mtime": 1778396893.789238,
-    "hash": "6f2c01a012dbe5a11792770497ed0112"
-  },
-  "/home/jmro/Documentos/proyectos/secretary-app/server/scripts/maintenance/whatsapp_migration.sql": {
-    "mtime": 1778206301.7890663,
-    "hash": "6ecefa63bd0249040f0a0ee198bd778a"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/server/scripts/maintenance/reset_admin.js": {
     "mtime": 1778403034.2990806,
@@ -795,21 +775,9 @@
     "mtime": 1776530248.4521275,
     "hash": "a803923a1f1ca006d65fe6c7a079fe6d"
   },
-  "/home/jmro/Documentos/proyectos/secretary-app/scratch/check_requests.js": {
-    "mtime": 1778206301.6090713,
-    "hash": "ab0260a1071e4b3e5c7de0742eaaca8c"
-  },
   "/home/jmro/Documentos/proyectos/secretary-app/scratch/check_css_encapsulation.js": {
     "mtime": 1778368383.4172974,
     "hash": "3c6b3a002426fd88b2637b67694bce82"
-  },
-  "/home/jmro/Documentos/proyectos/secretary-app/scratch/check_db.js": {
-    "mtime": 1778206301.6090713,
-    "hash": "ee454f17411fd5d23bdfb4901ce02a76"
-  },
-  "/home/jmro/Documentos/proyectos/secretary-app/scratch/check_sync_status.js": {
-    "mtime": 1778206301.611071,
-    "hash": "ac3296d1ed097878ce37e615bc86dac1"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/whatsapp-bridge-go/main.go": {
     "mtime": 1778206301.7980661,
@@ -1668,8 +1636,8 @@
     "hash": "50c1fd423b60721136e40bd0cca0c188"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/finances/index.js": {
-    "mtime": 1778403033.9550798,
-    "hash": "54247399b0477660f72f9a1b60529595"
+    "mtime": 1778462080.397824,
+    "hash": "5246cd1fabdf856dce841cee5aab092b"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/finances/hooks/useFinancesPageController.js": {
     "mtime": 1778403131.1303105,
@@ -1739,10 +1707,6 @@
     "mtime": 1778403033.94708,
     "hash": "ac9b8d1e919a9120cf759664bae767a6"
   },
-  "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/finances/components/ui/BillingSettings.jsx": {
-    "mtime": 1778403033.9239619,
-    "hash": "b45a7db00954556c23e99e3719acf96f"
-  },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/finances/components/ui/FinanceFilters.jsx": {
     "mtime": 1778403033.9390798,
     "hash": "0e2c074fac9e2422d5360aa1e0a5f425"
@@ -1772,8 +1736,8 @@
     "hash": "0b1380ce49e5a68d484cfe12014bd2d6"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/finances/services/financeService.js": {
-    "mtime": 1778403033.9550798,
-    "hash": "50174a37cff61b98d755f607dc86eccc"
+    "mtime": 1778462080.1568234,
+    "hash": "6fdbd44c516bcae7fdcc046c58283633"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/users/AdminUsersPage.jsx": {
     "mtime": 1778396893.1712408,
@@ -1888,8 +1852,8 @@
     "hash": "29077e8bcab478762ca0038852c68194"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/patients/PatientsPage.jsx": {
-    "mtime": 1778403034.0950801,
-    "hash": "7ff27fff15e5f44ecca3c674090aa591"
+    "mtime": 1778462080.3988242,
+    "hash": "296cf71d2a87a1c2bec0551c73c53464"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/features/patients/PublicRegisterPage.jsx": {
     "mtime": 1778356078.406639,
@@ -2152,8 +2116,8 @@
     "hash": "964a8202932697d31f253140693647bd"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/components/auth/RoleGuard.jsx": {
-    "mtime": 1778356078.4483805,
-    "hash": "49778f4a8d8f167ea3a8ce9b6c225be4"
+    "mtime": 1778462080.397824,
+    "hash": "0889c93c708e0d3e8ba87e3d3a31d606"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/components/atoms/Tooltip.jsx": {
     "mtime": 1778356078.4487388,
@@ -2184,16 +2148,16 @@
     "hash": "ab2bdd5c7917a81a4db5c8f15f66f4f5"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/components/atoms/Pagination.jsx": {
-    "mtime": 1778356078.4544218,
-    "hash": "69104a3833e20c50510a2573035cf9b4"
+    "mtime": 1778462080.3968241,
+    "hash": "29960ae06223f1fb863a4ed9eb211f43"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/components/atoms/Badge.jsx": {
     "mtime": 1778356078.4559972,
     "hash": "8fb88c2f1dce0cf9157e8ba30aa7795f"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/components/atoms/CurrencyInput.jsx": {
-    "mtime": 1778356078.456615,
-    "hash": "724f04000b5501fc7463a4f5b80db205"
+    "mtime": 1778462080.3968241,
+    "hash": "4e734cd3d9e7d7a03a7181cb923096c9"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/components/atoms/Icon.jsx": {
     "mtime": 1778396890.3582535,
@@ -2247,22 +2211,6 @@
     "mtime": 1778356078.4716558,
     "hash": "60c679ea1fdaaa1d0638a492c141fe0c"
   },
-  "/home/jmro/Documentos/proyectos/secretary-app/client/src/components/molecules/IntegrationGoogleCalendar.jsx": {
-    "mtime": 1778396890.3672533,
-    "hash": "460a28b8c6d2b43218da11e7136942df"
-  },
-  "/home/jmro/Documentos/proyectos/secretary-app/client/src/components/molecules/IntegrationMetaWhatsApp.jsx": {
-    "mtime": 1778356078.4725,
-    "hash": "89eeebf42295e2b946d07b33632018ed"
-  },
-  "/home/jmro/Documentos/proyectos/secretary-app/client/src/components/molecules/ConfigField.jsx": {
-    "mtime": 1778356078.4728563,
-    "hash": "adf504bff3dd43cd0d45eb39f9e76a97"
-  },
-  "/home/jmro/Documentos/proyectos/secretary-app/client/src/components/molecules/IntegrationRemoteAccess.jsx": {
-    "mtime": 1778396890.3692534,
-    "hash": "f07133debbac73be7b5f01dedeaf12ba"
-  },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/components/molecules/Modal.jsx": {
     "mtime": 1778396890.3692534,
     "hash": "1b128720f04a4b21765fdb863ab9e4e9"
@@ -2271,17 +2219,9 @@
     "mtime": 1778356078.4763842,
     "hash": "5b5df91e6f878cc5595ec1d8dd4a598d"
   },
-  "/home/jmro/Documentos/proyectos/secretary-app/client/src/components/molecules/NavTabs.jsx": {
-    "mtime": 1778396890.3702533,
-    "hash": "318f1f37a173520ec0b0958175978603"
-  },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/components/molecules/ConfirmModal.jsx": {
     "mtime": 1778396890.3652534,
     "hash": "7cb3844a967ae686d16ee2d40cf50085"
-  },
-  "/home/jmro/Documentos/proyectos/secretary-app/client/src/components/molecules/Pagination.jsx": {
-    "mtime": 1778356078.47964,
-    "hash": "60df05e321a99528266f901573e1badb"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/components/molecules/FormGroup.jsx": {
     "mtime": 1778356078.480649,
@@ -2306,10 +2246,6 @@
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/components/molecules/CompactHeaderStats.jsx": {
     "mtime": 1778396890.3642533,
     "hash": "a950b54feb34f7c136757b5a4ae06190"
-  },
-  "/home/jmro/Documentos/proyectos/secretary-app/client/src/components/molecules/ConfigToggle.jsx": {
-    "mtime": 1778356078.48444,
-    "hash": "af245248a7c4a1c07163dda3edf48c60"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/src/utils/core/clipboardUtils.js": {
     "mtime": 1778403034.1378999,
@@ -6594,10 +6530,6 @@
   "/home/jmro/Documentos/proyectos/secretary-app/docs/DOCS_ARCA_2026.md": {
     "mtime": 1778206298.5061555,
     "hash": "7dd09328317455914784e564f0b4e766"
-  },
-  "/home/jmro/Documentos/proyectos/secretary-app/client/lint_output.txt": {
-    "mtime": 1778403033.7260795,
-    "hash": "8a25a6ca4f0e6431a8fb127659b1dde1"
   },
   "/home/jmro/Documentos/proyectos/secretary-app/client/index.html": {
     "mtime": 1777902147.9143338,

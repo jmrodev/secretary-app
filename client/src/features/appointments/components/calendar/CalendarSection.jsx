@@ -1,6 +1,6 @@
 import React from 'react';
-import Calendar from '@/features/appointments/components/Calendar.jsx';
-import HolidayForm from '@/features/appointments/components/HolidayForm.jsx';
+import Calendar from '@/features/appointments/components/calendar/Calendar.jsx';
+import HolidayForm from '@/features/appointments/components/forms/HolidayForm.jsx';
 import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import './CalendarSection.css';

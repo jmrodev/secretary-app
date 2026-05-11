@@ -6,7 +6,7 @@ import PrescriptionHabitualMeds from '@/features/medical_documents/components/se
 import PrescriptionFormFields from '@/features/medical_documents/components/forms/PrescriptionFormFields';
 import PrescriptionItemsList from '@/features/medical_documents/components/lists/PrescriptionItemsList';
 
-import './PrescriptionModal.css';
+import '../modals/PrescriptionModal.css';
 
 const FREQ_PRESETS = [
     { label: '1/día', unitsPerDay: 1, text: 'cada 24hs' },
