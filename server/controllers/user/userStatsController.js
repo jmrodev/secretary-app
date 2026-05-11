@@ -1,4 +1,4 @@
-const userStatsService = require('../../../services/system/userStatsService');
+const userStatsService = require('../../services/system/userStatsService');
 
 /**
  * UserStatsController

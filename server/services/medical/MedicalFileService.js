@@ -1,8 +1,8 @@
-const { logAction } = require('../../../utils/system/audit');
+const { logAction } = require('../../utils/system/audit');
 const fs = require('fs');
 const path = require('path');
-const medicalFileRepository = require('../../../repositories/medical/medicalFileRepository');
-const systemSettingsRepository = require('../../../repositories/system/systemSettingsRepository');
+const medicalFileRepository = require('../../repositories/medical/medicalFileRepository');
+const systemSettingsRepository = require('../../repositories/system/systemSettingsRepository');
 
 /**
  * MedicalFileService

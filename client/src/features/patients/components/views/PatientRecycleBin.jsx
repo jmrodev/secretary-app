@@ -3,6 +3,7 @@ import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import { formatDate, formatTime } from '@/utils/core/dateUtils';
+import Loading from '@/components/atoms/Loading';
 import './PatientRecycleBin.css';
 
 /**
@@ -19,7 +20,7 @@ const PatientRecycleBin = ({
     if (loading) {
         return (
             <div className="patient-recycle-bin__loading">
-                <div className="status-display__spinner"></div>
+                <Loading text={t('loading')} />
             </div>
         );
     }

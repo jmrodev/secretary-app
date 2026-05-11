@@ -1,5 +1,6 @@
 import React from 'react';
 import Icon from '@/components/atoms/Icon';
+import Loading from '@/components/atoms/Loading';
 import './StatusDisplay.css';
 
 /**
@@ -34,8 +35,7 @@ const StatusDisplay = ({
             default:
                 return (
                     <div className="status-display status-display--loading">
-                        <div className="status-display__spinner"></div>
-                        <p className="status-display__message">{message || 'Cargando...'}</p>
+                        <Loading text={message} />
                     </div>
                 );
         }

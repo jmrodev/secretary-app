@@ -1,4 +1,4 @@
-const availabilityService = require('../../../services/appointments/availabilityService');
+const availabilityService = require('../../services/appointments/availabilityService');
 
 exports.getNextFreeSlot = async (req, res) => {
     try {

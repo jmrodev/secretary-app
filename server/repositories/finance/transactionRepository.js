@@ -56,8 +56,8 @@ class TransactionRepository {
                 data.transaction_date || null,
                 data.is_withdrawal || false
             ]);
-            const [rows] = await connection.query("SELECT @p_id as id");
-            return rows[0].id;
+            const results = await connection.query("SELECT @p_id as id");
+            return results[0]?.id || null;
         } finally {
             if (!conn) connection.release();
         }

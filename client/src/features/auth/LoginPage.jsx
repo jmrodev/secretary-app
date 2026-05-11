@@ -9,6 +9,10 @@ import './LoginPage.css';
 const LoginPage = () => {
     return (
         <main className="login-page login-page--hero animate-fade-in">
+            <div className="login-page__background-blobs">
+                <div className="login-page__blob login-page__blob--primary"></div>
+                <div className="login-page__blob login-page__blob--secondary"></div>
+            </div>
             <div className="login-page__overlay" aria-hidden="true"></div>
             <section className="login-page__content">
                 <LoginForm />

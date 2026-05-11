@@ -176,14 +176,14 @@ static ALLOWED_FIELDS = [
     }
     async searchPatients(filters, user, conn = pool) {
         const { search = '', page = 1, limit = 50, doctor_id = null } = filters;
-        const [rows] = await conn.query(
+        const results = await conn.query(
             "CALL sp_search_patients(?, ?, ?, ?, ?, ?, @p_total_count)",
             [search, page, limit, doctor_id, user.role, user.user_id]
         );
-        const [countRow] = await conn.query("SELECT @p_total_count as total");
+        const resultsCount = await conn.query("SELECT @p_total_count as total");
         return {
-            patients: rows[0] || [],
-            totalCount: countRow[0]?.total || 0
+            patients: results[0] || [],
+            totalCount: resultsCount[0]?.total || 0
         };
     }
 }

@@ -1,5 +1,5 @@
-const googleSpreadsheetService = require('../../../services/google/GoogleSpreadsheetService');
-const { logAction } = require('../../../utils/system/audit');
+const googleSpreadsheetService = require('../../services/google/GoogleSpreadsheetService');
+const { logAction } = require('../../utils/system/audit');
 
 /**
  * googleSpreadsheetController

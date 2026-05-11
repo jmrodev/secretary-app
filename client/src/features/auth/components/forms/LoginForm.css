@@ -1,92 +1,149 @@
 /* LoginForm Component Styles (BEM) */
 
-.auth-card {
-    background: var(--dashboard-card-bg);
-    padding: 3rem 2.5rem;
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-lg);
-    border: 1px solid var(--dashboard-card-border);
+.card.auth-card {
+    background: rgba(15, 23, 42, 0.8); /* Much darker for better contrast */
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    padding: 0; /* Let Card handle structure but we control content */
+    border-radius: 1.5rem;
+    box-shadow: 
+        0 10px 30px -10px rgba(0, 0, 0, 0.5),
+        var(--shadow-premium);
+    border: 1px solid rgba(255, 255, 255, 0.05); /* Very subtle border */
     width: 100%;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+    overflow: visible;
 }
 
-.auth-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 28px 55px -20px rgba(15, 23, 42, 0.5);
+.card.auth-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.45);
+}
+
+.card.auth-card :global(.card__header),
+.card.auth-card :global(.card__footer) {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.card.auth-card :global(.card__content) {
+    padding: 3.5rem 3rem;
 }
 
 .auth-card__header {
     text-align: center;
     margin-bottom: 2.5rem;
+    padding: 3.5rem 3rem 0; /* Move padding here since title is out of content */
 }
 
+
+
 .auth-card__title {
-    font-size: 2rem;
+    font-family: var(--font-manrope);
+    font-size: 2.25rem;
     font-weight: 800;
     margin-bottom: 0.75rem;
     color: var(--text-main);
-    letter-spacing: -0.025em;
+    letter-spacing: -0.04em;
+    background: linear-gradient(to bottom right, var(--gray-100) 40%, var(--gray-400));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .auth-card__subtitle {
     font-size: 1rem;
     color: var(--text-muted);
+    font-weight: 500;
 }
 
 .auth-card__error {
-    background-color: var(--red-50);
-    color: var(--red-600);
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #f87171;
     padding: 1rem;
-    border-radius: 0.75rem;
-    margin-bottom: 1.5rem;
-    font-size: 0.9rem;
-    font-weight: 500;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    font-size: 0.875rem;
+    font-weight: 600;
     text-align: center;
-    border: 1px solid var(--red-100);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shake {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+    40%, 60% { transform: translate3d(4px, 0, 0); }
 }
 
 .auth-card__form {
     display: flex;
     flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Custom styling for inputs inside auth-card to match glass theme */
+.auth-card :global(.form-group__label) {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.6rem;
+    display: block;
+}
+
+.auth-card :global(.input) {
+    background: rgba(15, 23, 42, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 1rem !important;
+    height: 3.25rem;
+    color: white !important;
+    font-weight: 500;
+}
+
+.auth-card :global(.input:focus) {
+    background: rgba(15, 23, 42, 0.5) !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 4px rgba(72, 128, 255, 0.15) !important;
+}
+
+.auth-card__button--submit {
+    margin-top: 1.5rem;
+    height: 3.5rem !important;
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    border-radius: 1rem !important;
+    box-shadow: 0 10px 15px -3px rgba(72, 128, 255, 0.3);
+    transition: all 0.3s ease !important;
+}
+
+.auth-card__button--submit:hover {
+    transform: scale(1.02);
+    box-shadow: 0 20px 25px -5px rgba(72, 128, 255, 0.4);
 }
 
 .auth-card__footer {
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--dashboard-card-border);
+    margin-top: 1rem;
+    padding: 0 3rem 3.5rem;
     text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .auth-card__download {
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
 }
 
 .auth-card__download-btn {
-    width: 100%;
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 0.875rem !important;
 }
 
 .auth-card__footer-text {
     color: var(--text-muted);
-    font-size: 0.95rem;
-}
-
-.auth-card__link {
-    color: var(--blue-600);
-    font-weight: 700;
-    margin-left: 0.5rem;
-    transition: color 0.2s;
-}
-
-.auth-card__link:hover {
-    color: var(--blue-700);
-}
-
-.auth-card__button--submit {
-    width: 100%;
-    margin-top: 0.5rem;
-    min-height: 2.75rem;
-}
-
-.auth-card .btn {
-    width: 100%;
+    font-size: 0.85rem;
+    font-weight: 500;
+    opacity: 0.7;
 }

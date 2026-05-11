@@ -1,5 +1,5 @@
-const googleContactService = require('../../../services/google/GoogleContactService');
-const { logAction } = require('../../../utils/system/audit');
+const googleContactService = require('../../services/google/GoogleContactService');
+const { logAction } = require('../../utils/system/audit');
 
 /**
  * googleContactController

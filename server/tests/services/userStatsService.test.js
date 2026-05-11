@@ -1,6 +1,6 @@
-const userStatsService = require('../../../services/system/userStatsService');
-const statsRepository = require('../../../repositories/system/statsRepository');
-const doctorRepository = require('../../../repositories/user/doctorRepository');
+const userStatsService = require('../../services/system/userStatsService');
+const statsRepository = require('../../repositories/system/statsRepository');
+const doctorRepository = require('../../repositories/user/doctorRepository');
 
 jest.mock('../../repositories/statsRepository');
 jest.mock('../../repositories/doctorRepository');

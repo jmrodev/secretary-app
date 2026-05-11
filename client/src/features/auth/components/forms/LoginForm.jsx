@@ -4,6 +4,8 @@ import Button from '@/components/atoms/Button';
 import Input from '@/components/atoms/Input';
 import FormGroup from '@/components/molecules/FormGroup';
 import Icon from '@/components/atoms/Icon';
+import Loading from '@/components/atoms/Loading';
+import Card from '@/components/atoms/Card';
 import './LoginForm.css';
 
 /**
@@ -21,13 +23,36 @@ const LoginForm = () => {
     const { setUsername, setPassword, handleSubmit } = handlers;
 
     return (
-        <section className="auth-card">
-            <header className="auth-card__header">
-                <h1 className="auth-card__title">{t('welcome_back')}</h1>
-                <p className="auth-card__subtitle">{t('sign_in_subtitle')}</p>
-            </header>
-
+        <Card 
+            className="auth-card" 
+            noPadding 
+            title={
+                <div className="auth-card__header">
+                    <h1 className="auth-card__title">{t('welcome_back')}</h1>
+                    <p className="auth-card__subtitle">{t('sign_in_subtitle')}</p>
+                </div>
+            }
+            footer={
+                <div className="auth-card__footer">
+                    <div className="auth-card__download">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="auth-card__download-btn"
+                            icon={<Icon name="DOWNLOAD" size="1.1rem" />}
+                            onClick={() => window.open('/uploads/secretary-app.apk', '_blank')}
+                        >
+                            {t('download_apk')}
+                        </Button>
+                    </div>
+                    <p className="auth-card__footer-text">
+                        © {new Date().getFullYear()} {t('app_name')}
+                    </p>
+                </div>
+            }
+        >
             {error && <div className="auth-card__error">{error}</div>}
+
 
             <form className="auth-card__form" onSubmit={handleSubmit}>
                 <FormGroup label={t('username')}>
@@ -56,29 +81,15 @@ const LoginForm = () => {
                     type="submit"
                     variant="primary"
                     className="auth-card__button--submit"
-                    disabled={loading}
                 >
-                    {loading ? t('signing_in') : t('sign_in')}
+                    {loading ? (
+                        <Loading variant="inline" size="sm" text={t('signing_in')} />
+                    ) : (
+                        t('sign_in')
+                    )}
                 </Button>
             </form>
-
-            <footer className="auth-card__footer">
-                <div className="auth-card__download">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        className="auth-card__download-btn"
-                        icon={<Icon name="DOWNLOAD" size="1.1rem" />}
-                        onClick={() => window.open('/uploads/secretary-app.apk', '_blank')}
-                    >
-                        {t('download_apk')}
-                    </Button>
-                </div>
-                <p className="auth-card__footer-text">
-                    © {new Date().getFullYear()} {t('app_name')}
-                </p>
-            </footer>
-        </section>
+        </Card>
     );
 };
 

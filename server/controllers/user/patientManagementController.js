@@ -1,5 +1,5 @@
-const patientService = require('../../../services/user/patientService');
-const { logCRUD } = require('../../../utils/system/audit');
+const patientService = require('../../services/user/patientService');
+const { logCRUD } = require('../../utils/system/audit');
 
 /**
  * PatientManagementController

@@ -1,10 +1,10 @@
 const { google } = require('googleapis');
-const { logAction } = require('../../../utils/system/audit');
+const { logAction } = require('../../utils/system/audit');
 const googleAuthService = require('./GoogleAuthService');
-const googleIntegrationRepository = require('../../../repositories/user/googleIntegrationRepository');
-const systemSettingsRepository = require('../../../repositories/system/systemSettingsRepository');
-const appointmentRepository = require('../../../repositories/appointments/appointmentRepository');
-const { TIMEZONE } = require('../../../utils/core/dateUtils');
+const googleIntegrationRepository = require('../../repositories/user/googleIntegrationRepository');
+const systemSettingsRepository = require('../../repositories/system/systemSettingsRepository');
+const appointmentRepository = require('../../repositories/appointments/appointmentRepository');
+const { TIMEZONE } = require('../../utils/core/dateUtils');
 
 /**
  * GoogleCalendarService

@@ -1,8 +1,8 @@
-const transactionRepository = require('../../../repositories/finance/transactionRepository');
-const patientRepository = require('../../../repositories/user/patientRepository');
-const { pool } = require('../../../db');
-const { formatLocalSQL, nowLocalSQL } = require('../../../utils/core/dateUtils');
-const { calculatePrice } = require('../../../utils/finance/priceCalculator');
+const transactionRepository = require('../../repositories/finance/transactionRepository');
+const patientRepository = require('../../repositories/user/patientRepository');
+const { pool } = require('../../db');
+const { formatLocalSQL, nowLocalSQL } = require('../../utils/core/dateUtils');
+const { calculatePrice } = require('../../utils/finance/priceCalculator');
 
 /**
  * FinanceService (SQL-First Edition)

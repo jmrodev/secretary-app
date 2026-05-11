@@ -1,4 +1,4 @@
-const reminderService = require('../../../services/communication/reminderService');
+const reminderService = require('../../services/communication/reminderService');
 
 exports.getReminders = async (req, res) => {
     try {

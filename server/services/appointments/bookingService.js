@@ -1,9 +1,9 @@
-const appointmentRepository = require('../../../repositories/appointments/appointmentRepository');
-const patientRepository = require('../../../repositories/user/patientRepository');
-const appointmentEvents = require('../../../events/appointmentEvents');
-const { pool } = require('../../../db');
-const { ConflictError, NotFoundError } = require('../../../utils/core/errors');
-const { formatLocalSQL } = require('../../../utils/core/dateUtils');
+const appointmentRepository = require('../../repositories/appointments/appointmentRepository');
+const patientRepository = require('../../repositories/user/patientRepository');
+const appointmentEvents = require('../../events/appointmentEvents');
+const { pool } = require('../../db');
+const { ConflictError, NotFoundError } = require('../../utils/core/errors');
+const { formatLocalSQL } = require('../../utils/core/dateUtils');
 
 class BookingService {
     async createAppointment(userId, role, data) {

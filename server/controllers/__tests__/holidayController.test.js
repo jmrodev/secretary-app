@@ -1,6 +1,6 @@
 const httpMocks = require('node-mocks-http');
 const holidayController = require('../../holidayController');
-const holidayService = require('../../../services/appointments/holidayService');
+const holidayService = require('../../services/appointments/holidayService');
 
 jest.mock('../../services/holidayService');
 jest.mock('../../db', () => ({

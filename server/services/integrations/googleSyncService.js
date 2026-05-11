@@ -1,5 +1,5 @@
 const logger = require('../../utils/core/logger');
-const googleCalendarService = require('./google/GoogleCalendarService');
+const googleCalendarService = require('../google/GoogleCalendarService');
 const googleIntegrationRepository = require('../../repositories/user/googleIntegrationRepository');
 const appointmentRepository = require('../../repositories/appointments/appointmentRepository');
 

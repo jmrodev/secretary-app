@@ -4,6 +4,7 @@ import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { formatDate } from '@/utils/core/dateUtils';
 import { useLanguage } from '@/hooks/useLanguage';
+import Loading from '@/components/atoms/Loading';
 import './NextSlotModal.css';
 
 /**
@@ -63,10 +64,7 @@ const NextSlotModal = ({
                 </div>
 
                 {(!nextSlotData || loading) ? (
-                    <div className={`${baseClass}__loading`}>
-                        <div className="loading-spinner-small"></div>
-                        <p className={`${baseClass}__loading-text`}>{t('exploring_schedule')}</p>
-                    </div>
+                    <Loading text={t('exploring_schedule')} />
                 ) : (
                     <div className={`${baseClass}__table-wrapper`}>
                         <table className={`${baseClass}__table`}>

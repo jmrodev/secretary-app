@@ -3,6 +3,7 @@ import Modal from '@/components/molecules/Modal';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
+import Loading from '@/components/atoms/Loading';
 import './NextSlotCalendarModal.css';
 
 /**
@@ -168,10 +169,7 @@ const NextSlotCalendarModal = ({
                 {renderControls()}
                 <div className="calendar-slot-modal__content">
                     {loading && !nextSlotData ? (
-                        <div className="calendar-loader">
-                            <div className="loading-spinner"></div>
-                            <p className="calendar-loader__text">{t('exploring_schedule')}</p>
-                        </div>
+                        <Loading text={t('exploring_schedule')} />
                     ) : !nextSlotData || nextSlotData.results?.length === 0 ? (
                         <div className="calendar-empty">
                             <p className="calendar-empty__text">{t('no_slots_available')}</p>

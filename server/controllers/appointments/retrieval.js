@@ -1,4 +1,4 @@
-const retrievalService = require('../../../services/appointments/retrievalService');
+const retrievalService = require('../../services/appointments/retrievalService');
 
 exports.getAppointments = async (req, res) => {
     try {
