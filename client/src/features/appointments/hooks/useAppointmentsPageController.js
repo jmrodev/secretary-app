@@ -16,7 +16,7 @@ import { useGoogleSync } from '@/features/appointments/hooks/useGoogleSync';
 import { useDoctorSchedules } from '@/features/appointments/hooks/useDoctorSchedules';
 import { usePatientAppointmentSearch } from '@/features/appointments/hooks/usePatientAppointmentSearch';
 import { useAppointmentsHandlers } from '@/features/appointments/hooks/useAppointmentsHandlers';
-import { copyToClipboard } from '@/utils/clipboardUtils';
+import { copyToClipboard } from '@/utils/core/clipboardUtils';
 import { useDoctors } from '@/context/DoctorContextDefinition';
 import { useAgendaState } from '@/features/appointments/hooks/useAgendaState';
 import { useAgendaModals } from '@/features/appointments/hooks/useAgendaModals';
@@ -69,13 +69,13 @@ export const useAppointmentsPageController = () => {
         doctor_id: viewDoctorId
     }), [selectedDate, viewDoctorId]);
 
-    const { data: calendarStats = {}, fetched: statsFetched } = useFetch('/appointments/stats', {
+    const { data: calendarStats = {} } = useFetch('/appointments/stats', {
         params: statsParams,
         immediate: !!viewDoctorId,
         initialData: {}
     });
 
-    const { data: agendaAppointments = {}, loading: agendaLoading, refetch: fetchAgenda, fetched: agendaFetched } = useFetch('/appointments/month-report', {
+    const { data: agendaAppointments = {}, loading: agendaLoading, refetch: fetchAgenda } = useFetch('/appointments/month-report', {
         params: statsParams,
         immediate: !!viewDoctorId,
         initialData: { appointments: [] }

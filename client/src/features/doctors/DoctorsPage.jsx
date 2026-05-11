@@ -1,6 +1,6 @@
 import React from 'react';
 import MainLayout from '@/components/templates/MainLayout';
-import DoctorsManager from '@/features/doctors/components/DoctorsManager';
+import DoctorsManager from '@/features/doctors/components/views/DoctorsManager';
 import { useDoctorsPageController } from '@/features/doctors/hooks/useDoctorsPageController';
 
 /**

@@ -1,4 +1,4 @@
-const doctorService = require('../../services/doctorService');
+const doctorService = require('../../../services/user/doctorService');
 
 /**
  * DoctorManagementController

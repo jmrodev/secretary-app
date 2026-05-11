@@ -3,7 +3,18 @@ import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import './Pagination.css';
 
-const Pagination = ({ currentPage, totalPages, onPageChange, t }) => {
+/**
+ * Pagination atom.
+ * Renders numbered page controls with optional item count info.
+ *
+ * @param {number}   currentPage      - Current active page (1-indexed)
+ * @param {number}   totalPages       - Total number of pages
+ * @param {Function} onPageChange     - Callback(pageNumber)
+ * @param {Function} t                - Translation function
+ * @param {number}   [totalCount]     - Total item count (shows "X of Y" when provided with itemsShowing)
+ * @param {number}   [itemsShowing]   - Items visible on current page
+ */
+const Pagination = ({ currentPage, totalPages, onPageChange, t, totalCount, itemsShowing }) => {
     if (totalPages <= 1) return null;
 
     const pages = [];
@@ -21,6 +32,11 @@ const Pagination = ({ currentPage, totalPages, onPageChange, t }) => {
 
     return (
         <div className="pagination">
+            {(totalCount !== undefined && itemsShowing !== undefined) && (
+                <span className="pagination__info">
+                    {t?.('showing') ?? 'Showing'} {itemsShowing} {t?.('of') ?? 'of'} {totalCount}
+                </span>
+            )}
             <Button
                 variant="ghost"
                 size="sm-compact"

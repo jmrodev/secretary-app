@@ -1,5 +1,5 @@
-const holidayService = require('../../services/holidayService');
-const holidayRepository = require('../../repositories/holidayRepository');
+const holidayService = require('../../../services/appointments/holidayService');
+const holidayRepository = require('../../../repositories/appointments/holidayRepository');
 
 jest.mock('../../repositories/holidayRepository');
 jest.mock('../../db', () => ({
@@ -16,7 +16,7 @@ describe('HolidayService', () => {
 
     afterAll(async () => {
         // Ensure pool is closed if it was somehow created (which it shouldn't be with the mock)
-        const { pool } = require('../../db');
+        const { pool } = require('../../../db');
         if (pool && typeof pool.end === 'function') {
             await pool.end();
         }

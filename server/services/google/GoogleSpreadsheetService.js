@@ -1,9 +1,9 @@
 const { google } = require('googleapis');
-const { logAction } = require('../../utils/audit');
+const { logAction } = require('../../../utils/system/audit');
 const googleAuthService = require('./GoogleAuthService');
-const googleIntegrationRepository = require('../../repositories/googleIntegrationRepository');
-const transactionRepository = require('../../repositories/transactionRepository');
-const systemSettingsRepository = require('../../repositories/systemSettingsRepository');
+const googleIntegrationRepository = require('../../../repositories/user/googleIntegrationRepository');
+const transactionRepository = require('../../../repositories/finance/transactionRepository');
+const systemSettingsRepository = require('../../../repositories/system/systemSettingsRepository');
 
 /**
  * GoogleSpreadsheetService
@@ -219,7 +219,7 @@ class GoogleSpreadsheetService {
         }
         query += " ORDER BY t.transaction_date ASC";
 
-        const { pool } = require('../../db');
+        const { pool } = require('../../../db');
         const transactions = await pool.query(query, params);
 
         console.log(`[GoogleSpreadsheetService] Starting bulk sync for ${transactions.length} transactions...`);

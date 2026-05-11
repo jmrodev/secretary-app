@@ -1,5 +1,5 @@
-const patientService = require('../../services/patientService');
-const { logCRUD } = require('../../utils/audit');
+const patientService = require('../../../services/user/patientService');
+const { logCRUD } = require('../../../utils/system/audit');
 
 /**
  * PatientManagementController
@@ -63,6 +63,16 @@ exports.getRecentPatients = async (req, res) => {
     try {
         const patients = await patientService.getRecentPatients();
         res.json({ patients });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server Error" });
+    }
+};
+
+exports.getSearchSuggestions = async (req, res) => {
+    try {
+        const suggestions = await patientService.getSearchSuggestions(req.user);
+        res.json(suggestions);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Server Error" });

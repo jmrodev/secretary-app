@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const userRepository = require('../repositories/userRepository');
+const userRepository = require('../repositories/user/userRepository');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: require('path').resolve(__dirname, '../.env') });

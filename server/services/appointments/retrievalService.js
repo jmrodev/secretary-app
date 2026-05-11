@@ -1,16 +1,20 @@
-const appointmentRepository = require('../../repositories/appointmentRepository');
-const transactionRepository = require('../../repositories/transactionRepository');
-const holidayRepository = require('../../repositories/holidayRepository');
-const patientRepository = require('../../repositories/patientRepository');
-const doctorRepository = require('../../repositories/doctorRepository');
+const appointmentRepository = require('../../../repositories/appointments/appointmentRepository');
+const transactionRepository = require('../../../repositories/finance/transactionRepository');
+const holidayRepository = require('../../../repositories/appointments/holidayRepository');
+const patientRepository = require('../../../repositories/user/patientRepository');
+const doctorRepository = require('../../../repositories/user/doctorRepository');
 
 class RetrievalService {
     async getAppointments(user, query) {
         const { role, user_id } = user;
-        // patientId may come from body (POST) or query (GET)
         const filters = {
-            patient_id: query.patientId,
-            search: query.search
+            search: query.search || '',
+            status: query.status || null,
+            start_date: query.startDate || null,
+            end_date: query.endDate || null,
+            page: parseInt(query.page) || 1,
+            limit: parseInt(query.limit) || 50,
+            patient_id: query.patientId || null
         };
 
         if (role === 'patient') {
@@ -21,7 +25,11 @@ class RetrievalService {
             if (doctor) filters.doctor_id = doctor.id;
         }
 
-        return await appointmentRepository.getHistory(filters);
+        return await appointmentRepository.searchAppointments(filters);
+    }
+
+    async getDailySchedule(doctorId, dateStr) {
+        return await appointmentRepository.getDailySchedule(doctorId, dateStr);
     }
 
     async getMonthlyReport(doctorId, month, year) {

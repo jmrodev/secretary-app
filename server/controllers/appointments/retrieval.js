@@ -1,4 +1,4 @@
-const retrievalService = require('../../services/appointments/retrievalService');
+const retrievalService = require('../../../services/appointments/retrievalService');
 
 exports.getAppointments = async (req, res) => {
     try {
@@ -28,6 +28,20 @@ exports.getMonthlyReport = async (req, res) => {
         res.json(report);
     } catch (err) {
         console.error("[Controller] getMonthlyReport error:", err);
+        res.status(500).send("Server Error");
+    }
+};
+
+exports.getDailySchedule = async (req, res) => {
+    try {
+        const { doctorId, date } = req.query;
+        if (!doctorId || !date) {
+            return res.status(400).json({ error: 'Faltan parámetros: doctorId y date son obligatorios.' });
+        }
+        const schedule = await retrievalService.getDailySchedule(doctorId, date);
+        res.json(schedule);
+    } catch (err) {
+        console.error("[Controller] getDailySchedule error:", err);
         res.status(500).send("Server Error");
     }
 };

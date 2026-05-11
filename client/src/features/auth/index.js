@@ -8,10 +8,10 @@ export * from '@/features/auth/authReducer';
 export * from '@/features/auth/useAuthLogic';
 
 // Components
-export { default as LoginForm } from '@/features/auth/components/LoginForm';
-export { default as RegisterForm } from '@/features/auth/components/RegisterForm';
-export { default as ProfileEditor } from '@/features/auth/components/ProfileEditor';
-export { default as AdminAuthModal } from '@/features/auth/components/AdminAuthModal';
+export { default as LoginForm } from '@/features/auth/components/forms/LoginForm';
+export { default as RegisterForm } from '@/features/auth/components/forms/RegisterForm';
+export { default as ProfileEditor } from '@/features/auth/components/forms/ProfileEditor';
+export { default as AdminAuthModal } from '@/features/auth/components/modals/AdminAuthModal';
 
 // Hooks
 export * from '@/features/auth/hooks/useLoginController';

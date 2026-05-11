@@ -3,7 +3,7 @@ import api from '@/api/axios';
 import { useMessage } from '@/context/MessageContext';
 import { useModal } from '@/context/ModalContext';
 import { useLanguage } from '@/hooks/useLanguage';
-import { capitalizeWords } from '@/utils/stringUtils';
+import { capitalizeWords } from '@/utils/core/stringUtils';
 import { useFetch } from '@/hooks/useFetch';
 
 export const useInsurancesController = () => {

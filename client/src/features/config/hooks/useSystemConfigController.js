@@ -50,7 +50,7 @@ export const useSystemConfigController = () => {
         const tab = urlParams.get('tab');
 
         if (tab && tab !== activeTab) {
-            queueMicrotask(() => setActiveTab(tab));
+            setActiveTab(tab);
         }
 
         if (status === 'success') {
@@ -120,7 +120,7 @@ export const useSystemConfigController = () => {
         try {
             setLoading(true);
             await api.post('/whatsapp/test', { to: phone });
-            showMessage('Mensaje de prueba enviado. Verifique su WhatsApp.', 'success');
+            showMessage('✅ Mensaje de prueba enviado. Verifique su WhatsApp.', 'success');
         } catch (error) {
             console.error(error);
             showMessage(error.response?.data?.error || 'Error al enviar mensaje de prueba', 'error');
@@ -170,23 +170,21 @@ export const useSystemConfigController = () => {
         }
     }, [confirm, showMessage, refreshSettings, t]);
 
-    const handlers = {
-        setActiveTab,
-        setQrModal,
-        updateSetting,
-        handleGoogleAuth,
-        handleDisconnectGoogle,
-        handleRetryGoogleFailed,
-        handleTestMeta,
-        insertVariable,
-        handleRefreshTunnel
-    };
-
     return {
         user, t, settings, loading,
         activeTab,
         qrModal,
         googleUnlinked,
-        handlers
+        handlers: {
+            setActiveTab,
+            setQrModal,
+            updateSetting,
+            handleGoogleAuth,
+            handleDisconnectGoogle,
+            handleRetryGoogleFailed,
+            handleTestMeta,
+            insertVariable,
+            handleRefreshTunnel
+        }
     };
 };

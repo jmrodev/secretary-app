@@ -1,4 +1,4 @@
-const medicalFileService = require('../../services/medical/MedicalFileService');
+const medicalFileService = require('../../../services/medical/MedicalFileService');
 
 /**
  * medicalFileController

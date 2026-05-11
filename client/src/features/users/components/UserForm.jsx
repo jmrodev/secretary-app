@@ -4,7 +4,7 @@ import Input from '@/components/atoms/Input';
 import Select from '@/components/atoms/Select';
 import PhoneNumbersManager from '@/components/molecules/PhoneNumbersManager';
 import { useLanguage } from '@/hooks/useLanguage';
-import { capitalizeWords } from '@/utils/stringUtils';
+import { capitalizeWords } from '@/utils/core/stringUtils';
 import './UserForm.css';
 
 const UserForm = ({ type, formData, setFormData }) => {

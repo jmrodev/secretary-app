@@ -14,18 +14,16 @@ const SearchBar = ({ value, onChange, placeholder, onSelect, className = '' }) =
     const [showSuggestions, setShowSuggestions] = useState(false);
     const wrapperRef = useRef(null);
 
-    // Fetch recent patients using architectural standard useFetch
-    const { data: suggestionsData, refetch: fetchRecent } = useFetch('/users/patients/recent', {
+    // Fetch smart suggestions using architectural standard useFetch
+    const { data: suggestions, refetch: fetchSuggestions } = useFetch('/users/search/suggestions', {
         immediate: false,
-        initialData: { patients: [] }
+        initialData: []
     });
 
-    const suggestions = suggestionsData?.patients || [];
-
-    // Load recent patients when focused and empty
+    // Load suggestions when focused and empty
     const handleFocus = () => {
         if (!value) {
-            fetchRecent();
+            fetchSuggestions();
             setShowSuggestions(true);
         }
     };
@@ -46,11 +44,11 @@ const SearchBar = ({ value, onChange, placeholder, onSelect, className = '' }) =
         setShowSuggestions(false);
     };
 
-    const handleSelectSuggestion = (patient) => {
+    const handleSelectSuggestion = (item) => {
         if (onSelect) {
-            onSelect(patient);
+            onSelect(item);
         } else {
-            onChange({ target: { value: patient.full_name } });
+            onChange({ target: { value: item.label } });
         }
         setShowSuggestions(false);
     };
@@ -86,28 +84,31 @@ const SearchBar = ({ value, onChange, placeholder, onSelect, className = '' }) =
             {showSuggestions && suggestions.length > 0 && !value && (
                 <div className="search-box__suggestions">
                     <header className="search-box__suggestions-header">
-                        <Icon name="history" /> {t('recent_suggestions')}
+                        <Icon name="history" /> {t('recent_activity')}
                     </header>
                     <ul className="search-box__suggestions-list">
-                        {suggestions.map(patient => (
+                        {suggestions.map((item, idx) => (
                             <li 
-                                key={patient.id} 
+                                key={`${item.type}-${item.id}-${idx}`} 
                                 className="search-box__suggestion-item"
-                                onClick={() => handleSelectSuggestion(patient)}
+                                onClick={() => handleSelectSuggestion(item)}
                             >
+                                <div className="search-box__suggestion-icon">
+                                    <Icon name={item.type === 'patient' ? 'person' : 'calendar_today'} />
+                                </div>
                                 <div className="search-box__suggestion-info">
                                     <span className="search-box__suggestion-name">
-                                        {patient.full_name}
+                                        {item.label}
                                     </span>
                                     <span className="search-box__suggestion-dni">
-                                        {patient.dni}
+                                        {item.sublabel}
                                     </span>
                                 </div>
                                 
-                                {patient.debt_status && (
+                                {item.debt_status && (
                                     <div 
-                                        className={`search-box__suggestion-status search-box__suggestion-status--${patient.debt_status}`}
-                                        title={t(`debt_status_${patient.debt_status}`)}
+                                        className={`search-box__suggestion-status search-box__suggestion-status--${item.debt_status}`}
+                                        title={t(`debt_status_${item.debt_status}`)}
                                     />
                                 )}
                             </li>

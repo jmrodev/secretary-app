@@ -1,4 +1,4 @@
-const licenseService = require('../../services/medical/LicenseService');
+const licenseService = require('../../../services/medical/LicenseService');
 
 /**
  * licenseController

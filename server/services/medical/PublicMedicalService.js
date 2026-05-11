@@ -1,12 +1,12 @@
-const { pool } = require('../../db');
-const { calculatePrice } = require('../../utils/priceCalculator');
+const { pool } = require('../../../db');
+const { calculatePrice } = require('../../../utils/finance/priceCalculator');
 const crypto = require('crypto');
-const prescriptionRequestTokenRepository = require('../../repositories/prescriptionRequestTokenRepository');
-const appointmentRepository = require('../../repositories/appointmentRepository');
-const doctorRepository = require('../../repositories/doctorRepository');
-const patientRepository = require('../../repositories/patientRepository');
-const medicalRequestRepository = require('../../repositories/medicalRequestRepository');
-const transactionRepository = require('../../repositories/transactionRepository');
+const prescriptionRequestTokenRepository = require('../../../repositories/system/prescriptionRequestTokenRepository');
+const appointmentRepository = require('../../../repositories/appointments/appointmentRepository');
+const doctorRepository = require('../../../repositories/user/doctorRepository');
+const patientRepository = require('../../../repositories/user/patientRepository');
+const medicalRequestRepository = require('../../../repositories/medical/medicalRequestRepository');
+const transactionRepository = require('../../../repositories/finance/transactionRepository');
 
 /**
  * PublicMedicalService

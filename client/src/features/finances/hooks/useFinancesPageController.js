@@ -60,7 +60,7 @@ export const useFinancesPageController = () => {
     });
 
     // Stats
-    const { data: stats = [], loading: statsLoading, refetch: fetchStats } = useFetch(`/finances/stats`, {
+    const { data: stats = [], refetch: fetchStats } = useFetch(`/finances/stats`, {
         params: { doctor_id: selectedDoctorFilter || 'all' },
         initialData: []
     });
@@ -69,7 +69,7 @@ export const useFinancesPageController = () => {
     // const { data: doctors = [] } = useFetch('/users/doctors', { initialData: [] });
 
     // Pending Closures
-    const { data: pendingClosures = [], loading: closuresLoading, refetch: fetchClosures } = useFetch(`/finances/pending-closures`, {
+    const { data: pendingClosures = [], refetch: fetchClosures } = useFetch(`/finances/pending-closures`, {
         params: { doctor_id: selectedDoctorFilter || 'all' },
         initialData: []
     });

@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useFetch } from '@/hooks/useFetch';
 import api from '@/api/axios';
-import { replaceTemplateVariables } from '@/utils/stringUtils';
+import { replaceTemplateVariables } from '@/utils/core/stringUtils';
 
 export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
     const remindersHook = useFetch('/users/reminders', {

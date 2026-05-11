@@ -1,5 +1,5 @@
-const insuranceController = require('../../controllers/insuranceController');
-const insuranceService = require('../../services/insuranceService');
+const insuranceController = require('../../../controllers/core/insuranceController');
+const insuranceService = require('../../../services/core/insuranceService');
 
 // Mock the insuranceService
 jest.mock('../../services/insuranceService');

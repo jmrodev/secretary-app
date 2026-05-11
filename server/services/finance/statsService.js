@@ -1,5 +1,5 @@
-const { nowLocalSQL } = require('../../utils/dateUtils');
-const statsRepository = require('../../repositories/statsRepository');
+const { nowLocalSQL } = require('../../../utils/core/dateUtils');
+const statsRepository = require('../../../repositories/system/statsRepository');
 
 /**
  * Finance Stats Service

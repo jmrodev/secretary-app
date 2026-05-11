@@ -1,4 +1,4 @@
-const prescriptionService = require('../../services/medical/PrescriptionService');
+const prescriptionService = require('../../../services/medical/PrescriptionService');
 
 /**
  * prescriptionController

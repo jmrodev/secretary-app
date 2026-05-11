@@ -4,20 +4,20 @@ import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
 import { PatientManagerModal, PatientHistoryModal } from '@/features/patients';
 import { PrescriptionModal } from '@/features/medical_documents';
-import WhatsAppModal from '@/features/chat/components/WhatsAppModal';
-import AdminAuthModal from '@/features/auth/components/AdminAuthModal';
+import WhatsAppModal from '@/features/chat/components/ui/WhatsAppModal';
+import AdminAuthModal from '@/features/auth/components/modals/AdminAuthModal';
 import Icon from '@/components/atoms/Icon';
 import { TransactionModal } from '@/features/finances';
 
 // Feature Components (Executors)
-import CalendarSection from '@/features/appointments/components/CalendarSection';
-import ScheduleSection from '@/features/appointments/components/ScheduleSection';
-import RescheduleBanner from '@/features/appointments/components/RescheduleBanner';
-import AppointmentActionModal from '@/features/appointments/components/AppointmentActionModal';
-import AppointmentFormModal from '@/features/appointments/components/AppointmentFormModal';
-import PatientHistoryView from '@/features/appointments/components/PatientHistoryView';
-import UpcomingAppointmentsView from '@/features/appointments/components/UpcomingAppointmentsView';
-import NextSlotModal from '@/features/appointments/components/NextSlotModal';
+import CalendarSection from '@/features/appointments/components/calendar/CalendarSection';
+import ScheduleSection from '@/features/appointments/components/schedule/ScheduleSection';
+import RescheduleBanner from '@/features/appointments/components/ui/RescheduleBanner';
+import AppointmentActionModal from '@/features/appointments/components/modals/AppointmentActionModal';
+import AppointmentFormModal from '@/features/appointments/components/modals/AppointmentFormModal';
+import PatientHistoryView from '@/features/appointments/components/views/PatientHistoryView';
+import UpcomingAppointmentsView from '@/features/appointments/components/views/UpcomingAppointmentsView';
+import NextSlotModal from '@/features/appointments/components/modals/NextSlotModal';
 import Button from '@/components/atoms/Button';
 import './AppointmentsPage.css';
 

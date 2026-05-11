@@ -2,13 +2,13 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const { pool } = require('./db');
-const systemSettingsRepository = require('./repositories/systemSettingsRepository');
+const systemSettingsRepository = require('./repositories/system/systemSettingsRepository');
 
 // BigInt JSON serialization fix
 BigInt.prototype.toJSON = function () { return Number(this); };
 
-const authRoutes = require('./routes/authRoutes');
-const institutionRoutes = require('./routes/institutionRoutes');
+const authRoutes = require('./routes/user/authRoutes');
+const institutionRoutes = require('./routes/core/institutionRoutes');
 
 const morgan = require('morgan');
 const { rateLimit } = require('express-rate-limit');
@@ -26,7 +26,7 @@ const globalLimiter = rateLimit({
 // Register Event Listeners
 require('./listeners/appointmentListeners');
 
-const { initScheduler } = require('./utils/scheduler');
+const { initScheduler } = require('./utils/system/scheduler');
 
 const app = express();
 
@@ -94,23 +94,23 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/auth', authRoutes);
-app.use('/api/users', require('./routes/userRoutes'));
-app.use('/api/appointments', require('./routes/appointmentRoutes'));
-app.use('/api/consultorios', require('./routes/consultorioRoutes'));
-app.use('/api/medical', require('./routes/medicalRoutes'));
-app.use('/api/whatsapp', require('./routes/whatsappRoutes'));
-app.use('/api/finances', require('./routes/financeRoutes'));
-app.use('/api/logs', require('./routes/logRoutes'));
-app.use('/api/google', require('./routes/googleRoutes'));
-app.use('/api/import', require('./routes/importRoutes'));
-app.use('/api/settings', require('./routes/settingsRoutes'));
-app.use('/api/insurances', require('./routes/insuranceRoutes'));
-app.use('/api/holidays', require('./routes/holidayRoutes'));
-app.use('/api/messages', require('./routes/messageRoutes'));
-app.use('/api/temp-access', require('./routes/tempAccessRoutes'));
+app.use('/api/users', require('./routes/user/userRoutes'));
+app.use('/api/appointments', require('./routes/appointments/appointmentRoutes'));
+app.use('/api/consultorios', require('./routes/core/consultorioRoutes'));
+app.use('/api/medical', require('./routes/medical/medicalRoutes'));
+app.use('/api/whatsapp', require('./routes/communication/whatsappRoutes'));
+app.use('/api/finances', require('./routes/finance/financeRoutes'));
+app.use('/api/logs', require('./routes/system/logRoutes'));
+app.use('/api/google', require('./routes/integrations/googleRoutes'));
+app.use('/api/import', require('./routes/system/importRoutes'));
+app.use('/api/settings', require('./routes/system/settingsRoutes'));
+app.use('/api/insurances', require('./routes/core/insuranceRoutes'));
+app.use('/api/holidays', require('./routes/appointments/holidayRoutes'));
+app.use('/api/messages', require('./routes/communication/messageRoutes'));
+app.use('/api/temp-access', require('./routes/system/tempAccessRoutes'));
 app.use('/api/institutions', institutionRoutes);
-app.use('/api/schedules', require('./routes/scheduleRoutes'));
-app.use('/api/billing', require('./routes/billingRoutes'));
+app.use('/api/schedules', require('./routes/appointments/scheduleRoutes'));
+app.use('/api/billing', require('./routes/finance/billingRoutes'));
 app.use('/uploads', express.static('uploads'));
 
 // Debug Middleware for 404s
@@ -135,12 +135,12 @@ const server = app.listen(PORT, '0.0.0.0', async () => {
 
 
         // Start Google Sync Worker
-        const { startSyncWorker } = require('./services/googleSyncService');
+        const { startSyncWorker } = require('./services/integrations/googleSyncService');
         startSyncWorker();
 
         // Start WhatsApp Bridge (Go)
         // The bridge is now managed by docker-compose
-        // const whatsappBridgeService = require('./services/whatsappBridgeService');
+        // const whatsappBridgeService = require('./services/communication/whatsappBridgeService');
         // whatsappBridgeService.init();
 
 

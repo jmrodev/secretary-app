@@ -5,7 +5,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useFetch } from '@/hooks/useFetch';
-import { extractMedicationDetails } from '@/utils/medicationHelpers';
+import { extractMedicationDetails } from '@/features/medical_documents/utils/medicationHelpers';
 
 /**
  * Controller hook for the Medical Documents Manager.
