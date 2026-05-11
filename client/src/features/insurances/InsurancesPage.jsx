@@ -1,8 +1,8 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Loading from '@/components/atoms/Loading';
+import Card from '@/components/atoms/Card';
 import Icon from '@/components/atoms/Icon';
-import SearchBar from '@/components/molecules/SearchBar';
 import { useInsurancesController, InsuranceList, InsuranceFormModal } from '@/features/insurances/index';
 import MainLayout from '@/components/templates/MainLayout';
 import './InsurancesPage.css';
@@ -35,46 +35,32 @@ const InsurancesPage = () => {
 
     return (
         <MainLayout wide flush title={t('insurances') || 'Obras Sociales'}>
-            <div className="insurances-page-orchestrator">
-
-                <div className="layout-content-area animate-fade-in">
+                <div className="insurances-page layout-content-area animate-fade-in">
                     {loading && filteredInsurances.length === 0 ? (
                         <Loading variant="centered" text={t('loading') || "Cargando..."} />
                     ) : (
-                        <div className="dashboard-layout__grid animate-fade-in">
-                            <aside className="dashboard-layout__sidebar">
-                                <div className="dashboard-card">
-                                    <h3 className="dashboard-card__title">
-                                        <Icon name="search" size="1.2rem" />
-                                        {t('search') || 'Buscar'}
-                                    </h3>
-                                    <SearchBar
-                                        value={searchTerm}
-                                        onChange={e => setSearchTerm(e.target.value)}
-                                        placeholder={t('search_insurances_placeholder') || 'Buscar por nombre, CUIT...'}
-                                    />
+                        <div className="insurances-page__list-view animate-fade-in">
+                            <div className="dashboard-nav-bar">
+                                <div className="dashboard-nav-bar__title">
+                                    <h2 className="dashboard-nav-bar__title-text">
+                                        <Icon name="verified_user" size="1.4rem" />
+                                        {t('insurances_list') || 'Lista de Obras Sociales'}
+                                    </h2>
                                 </div>
-
-                                <div className="dashboard-card">
-                                    <h3 className="dashboard-card__title">
-                                        <Icon name="build" size="1.2rem" />
-                                        {t('actions') || 'Acciones'}
-                                    </h3>
-                                    <div className="insurances-page__actions-group">
-                                        <Button
-                                            variant="primary"
-                                            className="insurances-page__add-btn"
-                                            onClick={handleOpenCreate}
-                                            icon={<Icon name="add" size="1.1rem" />}
-                                        >
-                                            {t('new_insurance') || 'Nueva Obra Social'}
-                                        </Button>
-                                    </div>
+                                <div className="dashboard-nav-bar__actions">
+                                    <Button
+                                        variant="primary"
+                                        size="sm"
+                                        onClick={handleOpenCreate}
+                                        icon={<Icon name="add" size="1.1rem" />}
+                                    >
+                                        {t('new_insurance') || 'Nueva Obra Social'}
+                                    </Button>
                                 </div>
-                            </aside>
+                            </div>
 
-                            <main className="dashboard-layout__main">
-                                <div className="dashboard-card no-padding">
+                            <main className="insurances-page__main">
+                                <Card noPadding>
                                     <div className="insurances__content animate-fade-in">
                                         <InsuranceList
                                             insurances={filteredInsurances}
@@ -83,7 +69,7 @@ const InsurancesPage = () => {
                                             hasFilter={searchTerm !== ''}
                                         />
                                     </div>
-                                </div>
+                                </Card>
                             </main>
                         </div>
                     )}
@@ -97,7 +83,6 @@ const InsurancesPage = () => {
                     setFormData={setFormData}
                     isEditing={!!editingId}
                 />
-            </div>
         </MainLayout>
     );
 };

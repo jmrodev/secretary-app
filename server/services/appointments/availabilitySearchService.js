@@ -1,5 +1,5 @@
-const appointmentRepository = require('../../../repositories/appointments/appointmentRepository');
-const { formatLocalSQL } = require('../../../utils/core/dateUtils');
+const appointmentRepository = require('../../repositories/appointments/appointmentRepository');
+const { formatLocalSQL } = require('../../utils/core/dateUtils');
 
 /**
  * AvailabilitySearchService (SQL-First Edition)

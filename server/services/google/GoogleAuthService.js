@@ -1,6 +1,6 @@
 const { google } = require('googleapis');
-const googleIntegrationRepository = require('../../../repositories/user/googleIntegrationRepository');
-const systemSettingsRepository = require('../../../repositories/system/systemSettingsRepository');
+const googleIntegrationRepository = require('../../repositories/user/googleIntegrationRepository');
+const systemSettingsRepository = require('../../repositories/system/systemSettingsRepository');
 
 /**
  * GoogleAuthService

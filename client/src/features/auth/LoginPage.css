@@ -9,6 +9,7 @@
     padding: 1.5rem;
     overflow: hidden;
     background-color: var(--background-bg);
+    font-family: var(--font-nunito);
 }
 
 .login-page--hero {
@@ -20,8 +21,45 @@
 .login-page__overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(27, 36, 49, 0.4) 0%, rgba(27, 36, 49, 0.9) 100%);
+    background: radial-gradient(circle at center, rgba(15, 23, 42, 0.6) 0%, rgba(15, 23, 42, 0.98) 100%);
     z-index: 1;
+}
+
+.login-page__background-blobs {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.login-page__blob {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.3;
+    animation: blob-move 20s infinite alternate;
+}
+
+.login-page__blob--primary {
+    background: var(--primary-color);
+    top: -100px;
+    right: -100px;
+}
+
+.login-page__blob--secondary {
+    background: #7c3aed; /* Violet/Purple accent */
+    bottom: -100px;
+    left: -100px;
+    animation-delay: -5s;
+}
+
+@keyframes blob-move {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-20px, 50px) scale(1.1); }
+    100% { transform: translate(20px, -20px) scale(0.9); }
 }
 
 .login-page__content {
@@ -29,4 +67,10 @@
     z-index: 10;
     width: 100%;
     max-width: 450px;
+    animation: slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slide-up {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
 }

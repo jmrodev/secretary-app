@@ -1,5 +1,5 @@
-const holidayController = require('../../../controllers/scheduling/holidayController');
-const holidayService = require('../../../services/appointments/holidayService');
+const holidayController = require('../../controllers/scheduling/holidayController');
+const holidayService = require('../../services/appointments/holidayService');
 
 jest.mock('../../services/holidayService');
 

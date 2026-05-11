@@ -2,7 +2,8 @@ import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '@/features/auth';
 import { PatientBlocker } from '@/features/patients';
-import './ProtectedRoute.css';
+import Loading from '@/components/atoms/Loading';
+import { useLanguage } from '@/hooks/useLanguage';
 
 /**
  * Route guard layout component.
@@ -10,15 +11,10 @@ import './ProtectedRoute.css';
  */
 const ProtectedRoute = () => {
     const { user, loading } = useAuth();
+    const { t } = useLanguage();
 
     if (loading) {
-        return (
-            <div className="app-loading">
-                <div className="app-loading__content">
-                    Cargando aplicación...
-                </div>
-            </div>
-        );
+        return <Loading variant="full-page" text="Cargando Clínica..." />;
     }
     
     if (!user) return <Navigate to="/login" />;

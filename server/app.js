@@ -113,11 +113,6 @@ app.use('/api/schedules', require('./routes/appointments/scheduleRoutes'));
 app.use('/api/billing', require('./routes/finance/billingRoutes'));
 app.use('/uploads', express.static('uploads'));
 
-// Debug Middleware for 404s
-app.use((req, res, next) => {
-    console.log(`[DEBUG] ${req.method} ${req.url} - Checking matches...`);
-    next();
-});
 
 
 // Start server

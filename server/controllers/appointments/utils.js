@@ -1,4 +1,4 @@
-const userRepository = require('../../../repositories/user/userRepository');
+const userRepository = require('../../repositories/user/userRepository');
 const bcrypt = require('bcrypt');
 
 // Helper to validate Admin Password for overrides

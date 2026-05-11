@@ -1,5 +1,5 @@
-const medicationRepository = require('../../../repositories/medical/medicationRepository');
-const vademecumRepository = require('../../../repositories/medical/vademecumRepository');
+const medicationRepository = require('../../repositories/medical/medicationRepository');
+const vademecumRepository = require('../../repositories/medical/vademecumRepository');
 
 /**
  * MedicationService

@@ -3,6 +3,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useDayScheduleHandlers } from '@/features/appointments/hooks/useDayScheduleHandlers';
 import { isSameDay } from '@/utils/core/dateUtils';
 import { useFetch } from '@/hooks/useFetch';
+import Loading from '@/components/atoms/Loading';
 
 import DayScheduleHeader from '@/features/appointments/components/schedule/DayScheduleHeader.jsx';
 import ScheduleTimeline from '@/features/appointments/components/schedule/ScheduleTimeline.jsx';
@@ -122,7 +123,11 @@ const DaySchedule = ({
     };
 
     if (loading) {
-        return <div className="day-schedule"><div className="day-schedule__loading">Cargando agenda...</div></div>;
+        return (
+            <div className="day-schedule">
+                <Loading variant="centered" text={t('loading')} />
+            </div>
+        );
     }
 
     return (

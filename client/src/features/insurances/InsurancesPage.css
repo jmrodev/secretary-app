@@ -1,32 +1,21 @@
-/* InsurancesPage Styles */
+/* InsurancesPage Styles - Unified Wide Layout */
 
-.insurances-page-orchestrator {
+.insurances-page {
     display: flex;
     flex-direction: column;
-    flex: 1;
-    min-height: 0;
+    gap: 1.5rem;
 }
 
-.insurances-page__counter {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--text-muted);
-}
-
-.insurances-page__actions-group {
+.insurances-page__list-view {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1.25rem;
 }
 
-.insurances-page__add-btn {
-    justify-content: flex-start;
+.insurances-page__main {
     width: 100%;
 }
 
 .insurances__content {
-    animation: fade-in 0.4s ease-out;
+    animation: fade-in 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }

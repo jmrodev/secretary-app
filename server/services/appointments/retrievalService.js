@@ -1,8 +1,8 @@
-const appointmentRepository = require('../../../repositories/appointments/appointmentRepository');
-const transactionRepository = require('../../../repositories/finance/transactionRepository');
-const holidayRepository = require('../../../repositories/appointments/holidayRepository');
-const patientRepository = require('../../../repositories/user/patientRepository');
-const doctorRepository = require('../../../repositories/user/doctorRepository');
+const appointmentRepository = require('../../repositories/appointments/appointmentRepository');
+const transactionRepository = require('../../repositories/finance/transactionRepository');
+const holidayRepository = require('../../repositories/appointments/holidayRepository');
+const patientRepository = require('../../repositories/user/patientRepository');
+const doctorRepository = require('../../repositories/user/doctorRepository');
 
 class RetrievalService {
     async getAppointments(user, query) {

@@ -5,6 +5,7 @@ import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Input from '@/components/atoms/Input';
 import Badge from '@/components/atoms/Badge';
+import Loading from '@/components/atoms/Loading';
 import './MedicationAutocomplete.css';
 
 /**
@@ -88,7 +89,7 @@ const MedicationAutocomplete = ({
                 />
                 <div className={`${baseClass}__actions`}>
                     {loading ? (
-                        <div className={`${baseClass}__spinner`}></div>
+                        <Loading size="sm" variant="inline" />
                     ) : searchTerm ? (
                         <Button
                             type="button"

@@ -1,9 +1,9 @@
-const { pool } = require('../../../db');
+const { pool } = require('../../db');
 const googleCalendarService = require('./GoogleCalendarService');
-const appointmentRepository = require('../../../repositories/appointments/appointmentRepository');
-const patientRepository = require('../../../repositories/user/patientRepository');
-const doctorRepository = require('../../../repositories/user/doctorRepository');
-const { TIMEZONE } = require('../../../utils/core/dateUtils');
+const appointmentRepository = require('../../repositories/appointments/appointmentRepository');
+const patientRepository = require('../../repositories/user/patientRepository');
+const doctorRepository = require('../../repositories/user/doctorRepository');
+const { TIMEZONE } = require('../../utils/core/dateUtils');
 
 /**
  * GoogleCalendarAuditService

@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+import Loading from '@/components/atoms/Loading';
 import './ChatWindow.css';
 
 /**
@@ -61,7 +62,7 @@ const ChatWindow = ({
             <section className="chat-window__messages" ref={scrollRef}>
                 {loading ? (
                     <div className="chat-window__messages-status">
-                        <div className="loading-spinner"></div>
+                        <Loading size="md" />
                     </div>
                 ) : thread.length === 0 ? (
                     <div className="chat-window__messages-status chat-window__messages-status--empty">
@@ -99,7 +100,7 @@ const ChatWindow = ({
                         disabled={sending || !messageText.trim()}
                         variant="primary"
                     >
-                        {sending ? <div className="loading-spinner"></div> : <Icon name="send" size="1.1rem" />}
+                        {sending ? <Loading variant="inline" size="sm" /> : <Icon name="send" size="1.1rem" />}
                     </Button>
                 </form>
             </footer>

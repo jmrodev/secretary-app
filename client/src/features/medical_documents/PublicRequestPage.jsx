@@ -3,6 +3,7 @@ import { usePublicPrescriptionRequestController } from '@/features/medical_docum
 import StatusDisplay from '@/components/molecules/StatusDisplay';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+import Loading from '@/components/atoms/Loading';
 import './PublicRequestPage.css';
 
 /**
@@ -115,7 +116,7 @@ const PublicRequestPage = () => {
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
-                        {searching && <div className="search-spinner"></div>}
+                        {searching && <Loading variant="inline" size="sm" />}
                     </div>
 
                     {searchResults.length > 0 && (
@@ -155,8 +156,7 @@ const PublicRequestPage = () => {
                         Notas (Opcional)
                     </h2>
                     <textarea
-                        className="input-field"
-                        style={{ minHeight: '120px' }}
+                        className="public-prescription__notes-field"
                         placeholder="Ej: Retiro por secretaría el miércoles..."
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}

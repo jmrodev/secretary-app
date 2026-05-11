@@ -1,14 +1,14 @@
-const { pool } = require('../../../db');
-const { logAction } = require('../../../utils/system/audit');
-const { calculatePrice } = require('../../../utils/finance/priceCalculator');
+const { pool } = require('../../db');
+const { logAction } = require('../../utils/system/audit');
+const { calculatePrice } = require('../../utils/finance/priceCalculator');
 const medicationService = require('./MedicationService');
-const financeService = require('../../finance/financeService');
-const prescriptionRepository = require('../../../repositories/medical/prescriptionRepository');
-const appointmentRepository = require('../../../repositories/appointments/appointmentRepository');
-const patientRepository = require('../../../repositories/user/patientRepository');
-const medicationRepository = require('../../../repositories/medical/medicationRepository');
-const doctorRepository = require('../../../repositories/user/doctorRepository');
-const systemSettingsRepository = require('../../../repositories/system/systemSettingsRepository');
+const financeService = require('../finance/financeService');
+const prescriptionRepository = require('../../repositories/medical/prescriptionRepository');
+const appointmentRepository = require('../../repositories/appointments/appointmentRepository');
+const patientRepository = require('../../repositories/user/patientRepository');
+const medicationRepository = require('../../repositories/medical/medicationRepository');
+const doctorRepository = require('../../repositories/user/doctorRepository');
+const systemSettingsRepository = require('../../repositories/system/systemSettingsRepository');
 
 /**
  * PrescriptionService

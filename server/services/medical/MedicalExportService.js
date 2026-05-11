@@ -1,7 +1,7 @@
-const medicalExportRepository = require('../../../repositories/medical/medicalExportRepository');
-const transactionRepository = require('../../../repositories/finance/transactionRepository');
-const doctorRepository = require('../../../repositories/user/doctorRepository');
-const patientRepository = require('../../../repositories/user/patientRepository');
+const medicalExportRepository = require('../../repositories/medical/medicalExportRepository');
+const transactionRepository = require('../../repositories/finance/transactionRepository');
+const doctorRepository = require('../../repositories/user/doctorRepository');
+const patientRepository = require('../../repositories/user/patientRepository');
 
 /**
  * MedicalExportService

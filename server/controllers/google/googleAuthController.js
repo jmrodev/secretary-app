@@ -1,6 +1,6 @@
-const googleAuthService = require('../../../services/google/GoogleAuthService');
-const googleIntegrationRepository = require('../../../repositories/user/googleIntegrationRepository');
-const { logAction } = require('../../../utils/system/audit');
+const googleAuthService = require('../../services/google/GoogleAuthService');
+const googleIntegrationRepository = require('../../repositories/user/googleIntegrationRepository');
+const { logAction } = require('../../utils/system/audit');
 
 /**
  * googleAuthController

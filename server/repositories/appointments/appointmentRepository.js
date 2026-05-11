@@ -15,11 +15,11 @@ class AppointmentRepository {
 
     async callSpGetFreeSlots(filters, conn = pool) {
         const { doctor_id, start_date, days_to_check = 30, include_out_of_hours = 0 } = filters;
-        const [rows] = await conn.query(
+        const results = await conn.query(
             "CALL sp_get_free_slots(?, ?, ?, ?)",
             [doctor_id, start_date, days_to_check, include_out_of_hours]
         );
-        return rows[0] || [];
+        return results[0] || [];
     }
 
     async findById(id, conn) {
@@ -103,14 +103,14 @@ class AppointmentRepository {
 
     async searchAppointments(filters, conn = pool) {
         const { search = '', doctor_id = null, patient_id = null, status = null, start_date = null, end_date = null, page = 1, limit = 50 } = filters;
-        const [rows] = await conn.query(
+        const results = await conn.query(
             "CALL sp_search_appointments(?, ?, ?, ?, ?, ?, ?, ?, @p_total_count)",
             [search, doctor_id, patient_id, status, start_date, end_date, page, limit]
         );
-        const [countRow] = await conn.query("SELECT @p_total_count as total");
+        const resultsCount = await conn.query("SELECT @p_total_count as total");
         return {
-            appointments: rows[0] || [],
-            totalCount: countRow[0]?.total || 0
+            appointments: results[0] || [],
+            totalCount: resultsCount[0]?.total || 0
         };
     }
 

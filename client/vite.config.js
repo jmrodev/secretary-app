@@ -18,8 +18,8 @@ export default defineConfig({
       clientPort: 5173,
     },
     proxy: {
-      '/api': 'http://server:5000',
-      '/uploads': 'http://server:5000'
+      '/api': 'http://localhost:5000',
+      '/uploads': 'http://localhost:5000'
     }
   }
 })

@@ -1,5 +1,5 @@
-const modificationService = require('../../../services/appointments/modificationService');
-const { logAction } = require('../../../utils/system/audit');
+const modificationService = require('../../services/appointments/modificationService');
+const { logAction } = require('../../utils/system/audit');
 
 const handleError = (res, err, context) => {
     console.error(`[ModificationController] Error in ${context}:`, err);

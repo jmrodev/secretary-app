@@ -7,6 +7,7 @@ import Icon from '@/components/atoms/Icon';
 import PhoneNumbersManager from '@/components/molecules/PhoneNumbersManager';
 import { capitalizeWords } from '@/utils/core/stringUtils';
 import { useLanguage } from '@/hooks/useLanguage';
+import FormGroup from '@/components/molecules/FormGroup';
 import './InsuranceFormModal.css';
 
 const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFormData, isEditing }) => {
@@ -15,78 +16,73 @@ const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFormData, 
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={isEditing ? "Editar Obra Social" : "Nueva Obra Social"}
+            title={isEditing ? t('edit_insurance') : t('new_insurance')}
             footer={
                 <>
-                    <Button variant="secondary" onClick={onClose}>Cancelar</Button>
-                    <Button onClick={onSubmit}>Guardar</Button>
+                    <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
+                    <Button onClick={onSubmit}>{t('save') || 'Guardar'}</Button>
                 </>
             }
         >
             <div className="insurance-modal__form">
-                <div className="input-group">
-                    <label className="input-label">Name *</label>
+                <FormGroup label={`${t('name')} *`}>
                     <Input value={formData.name} onChange={e => setFormData({ ...formData, name: capitalizeWords(e.target.value) })} autoFocus />
-                </div>
-                <div className="input-group">
-                    <label className="input-label">CUIT</label>
+                </FormGroup>
+
+                <FormGroup label="CUIT">
                     <Input value={formData.cuit} onChange={e => setFormData({ ...formData, cuit: e.target.value })} />
-                </div>
-                <div className="input-group">
-                    <label className="input-label">Website</label>
+                </FormGroup>
+
+                <FormGroup label={t('website') || 'Website'}>
                     <Input value={formData.website} onChange={e => setFormData({ ...formData, website: e.target.value })} placeholder="e.g. www.osde.com.ar" />
-                </div>
+                </FormGroup>
+
                 <div className="insurance-modal__manager-wrapper">
                     <PhoneNumbersManager
                         phoneNumbers={formData.phoneNumbers}
                         onChange={(newPhones) => setFormData({ ...formData, phoneNumbers: newPhones })}
                     />
                 </div>
-                <div className="input-group">
-                    <label className="input-label">Email</label>
+
+                <FormGroup label="Email">
                     <Input value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
                     {formData.email && (
                         <a href={`mailto:${formData.email}`} className="insurance-modal__link">
                             {t('send_email')} <Icon name="OPEN_IN_NEW" size="sm" />
                         </a>
                     )}
-                </div>
-                <div className="insurance-modal__section-title">Dirección</div>
+                </FormGroup>
+
+                <div className="insurance-modal__section-title">{t('address_details') || 'Dirección'}</div>
+                
                 <div className="insurance-modal__row">
-                    <div className="input-group insurance-modal__column--flex-3">
-                        <label className="input-label">Nombre de Calle</label>
+                    <FormGroup label={t('street_name') || 'Calle'} className="insurance-modal__column--flex-3">
                         <Input value={formData.street_name || ''} onChange={e => setFormData({ ...formData, street_name: capitalizeWords(e.target.value) })} placeholder="Ej: Av. Rivadavia" />
-                    </div>
-                    <div className="input-group insurance-modal__column--flex-1">
-                        <label className="input-label">Nro</label>
+                    </FormGroup>
+                    <FormGroup label={t('number_short') || 'Nro'} className="insurance-modal__column--flex-1">
                         <Input value={formData.street_number || ''} onChange={e => setFormData({ ...formData, street_number: e.target.value })} placeholder="123" />
-                    </div>
+                    </FormGroup>
                 </div>
 
-                <div className="form-row">
-                    <div className="input-group">
-                        <label className="input-label">Piso</label>
+                <div className="insurance-modal__row">
+                    <FormGroup label={t('floor') || 'Piso'}>
                         <Input value={formData.floor || ''} onChange={e => setFormData({ ...formData, floor: e.target.value })} />
-                    </div>
-                    <div className="input-group">
-                        <label className="input-label">Depto</label>
+                    </FormGroup>
+                    <FormGroup label={t('apartment_short') || 'Depto'}>
                         <Input value={formData.apartment || ''} onChange={e => setFormData({ ...formData, apartment: e.target.value })} />
-                    </div>
+                    </FormGroup>
                 </div>
 
-                <div className="form-row">
-                    <div className="input-group">
-                        <label className="input-label">Ciudad</label>
+                <div className="insurance-modal__row">
+                    <FormGroup label={t('city') || 'Ciudad'}>
                         <Input value={formData.city || ''} onChange={e => setFormData({ ...formData, city: capitalizeWords(e.target.value) })} />
-                    </div>
-                    <div className="input-group">
-                        <label className="input-label">Provincia</label>
+                    </FormGroup>
+                    <FormGroup label={t('province') || 'Provincia'}>
                         <Input value={formData.province || ''} onChange={e => setFormData({ ...formData, province: capitalizeWords(e.target.value) })} />
-                    </div>
+                    </FormGroup>
                 </div>
 
-                <div className="input-group">
-                    <label className="input-label">Notas de Dirección / Referencias</label>
+                <FormGroup label={t('address_notes') || 'Notas de Dirección'}>
                     <Input value={formData.address} onChange={e => setFormData({ ...formData, address: capitalizeWords(e.target.value) })} />
                     {(formData.street_name || formData.address) && (
                         <a
@@ -100,18 +96,18 @@ const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFormData, 
                             {t('view_on_map')} <Icon name="OPEN_IN_NEW" size="sm" />
                         </a>
                     )}
-                </div>
-                <div className="input-group">
-                    <label className="input-label">Estado</label>
+                </FormGroup>
+
+                <FormGroup label={t('status') || 'Estado'}>
                     <Select
                         value={formData.status}
                         onChange={e => setFormData({ ...formData, status: e.target.value })}
                         options={[
-                            { value: 'active', label: 'Activo' },
-                            { value: 'inactive', label: 'Inactivo' }
+                            { value: 'active', label: t('active') || 'Activo' },
+                            { value: 'inactive', label: t('inactive') || 'Inactivo' }
                         ]}
                     />
-                </div>
+                </FormGroup>
             </div>
         </Modal>
     );

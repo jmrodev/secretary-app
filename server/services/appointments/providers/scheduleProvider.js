@@ -1,4 +1,4 @@
-const doctorRepository = require('../../../../repositories/user/doctorRepository');
+const doctorRepository = require('../../../repositories/user/doctorRepository');
 
 class ScheduleProvider {
     async getDoctorSchedule(doctorId, dayOfWeek, conn) {

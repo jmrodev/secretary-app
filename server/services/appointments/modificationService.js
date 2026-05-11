@@ -1,8 +1,8 @@
-const appointmentRepository = require('../../../repositories/appointments/appointmentRepository');
+const appointmentRepository = require('../../repositories/appointments/appointmentRepository');
 const googleSyncService = require('./googleSyncService');
-const financeService = require('../../finance/financeService');
+const financeService = require('../finance/financeService');
 const helper = require('./appointmentHelper');
-const { pool } = require('../../../db');
+const { pool } = require('../../db');
 
 /**
  * ModificationService

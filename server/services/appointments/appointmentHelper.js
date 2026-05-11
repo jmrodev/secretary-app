@@ -1,9 +1,9 @@
-const { validateAdminPassword } = require('../../../controllers/appointments/utils');
-const { AuthRequiredError } = require('../../../utils/core/errors');
-const appointmentRepository = require('../../../repositories/appointments/appointmentRepository');
-const systemSettingsRepository = require('../../../repositories/system/systemSettingsRepository');
+const { validateAdminPassword } = require('../../controllers/appointments/utils');
+const { AuthRequiredError } = require('../../utils/core/errors');
+const appointmentRepository = require('../../repositories/appointments/appointmentRepository');
+const systemSettingsRepository = require('../../repositories/system/systemSettingsRepository');
 
-const { formatLocalSQL } = require('../../../utils/core/dateUtils');
+const { formatLocalSQL } = require('../../utils/core/dateUtils');
 
 const formatDateForDB = (date) => formatLocalSQL(date);
 
