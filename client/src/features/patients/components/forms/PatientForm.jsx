@@ -12,6 +12,8 @@ import PatientAddressFields from '@/features/patients/components/forms/PatientAd
 import PatientInstitutionFields from '@/features/patients/components/forms/PatientInstitutionFields';
 import PatientAdminFields from '@/features/patients/components/forms/PatientAdminFields';
 import PatientMedicalNotes from '@/features/patients/components/forms/PatientMedicalNotes';
+import { use } from 'react';
+import { LanguageContext } from '@/context/LanguageContext';
 import './PatientForm.css';
 
 
@@ -48,12 +50,12 @@ const PatientForm = ({
     } = controller;
 
     const {
-        handleChange,
-        handleManualValueChange,
-        handleDoctorToggle,
-        handlePhoneChange,
-        handleInstitutionToggle,
-        handleSubmit
+        updatePatientData,
+        setPatientValue,
+        toggleDoctorAssignment,
+        updatePhoneNumbers,
+        toggleInstitutionCoverage,
+        savePatient
     } = handlers;
 
     const [currentStep, setCurrentStep] = React.useState(0);
@@ -69,118 +71,93 @@ const PatientForm = ({
         if (currentStep > 0) setCurrentStep(prev => prev - 1);
     };
 
-    const renderStepContent = () => {
-        const stepId = activeSteps[currentStep].id;
+    const stepId = activeSteps[currentStep].id;
 
-        switch (stepId) {
-            case 'personal':
-                return (
-                    <section className="patient-form__step-content">
-                        <PatientIdentityFields
-                            formData={formData}
-                            handleChange={handleChange}
-                            t={t}
-                        />
-                        {!isEdit && (
-                            <PatientAccountFields
-                                formData={formData}
-                                handleChange={handleChange}
-                                t={t}
-                            />
-                        )}
-                    </section>
-                );
-            case 'insurance':
-                return (
-                    <section className="patient-form__step-content">
-                        <PatientInsuranceFields
-                            formData={formData}
-                            handleChange={handleChange}
-                            insurances={insurances}
-                            t={t}
-                        />
-                    </section>
-                );
-            case 'address':
-                return (
-                    <section className="patient-form__step-content">
-                        <PatientAddressFields
-                            formData={formData}
-                            handleChange={handleChange}
-                            t={t}
-                        />
-                    </section>
-                );
-            case 'contact':
-                return (
-                    <section className="patient-form__step-content">
-                        <PatientContactFields
-                            formData={formData}
-                            handleChange={handleChange}
-                            handlePhoneChange={handlePhoneChange}
-                            t={t}
-                        />
-                    </section>
-                );
-            case 'medical':
-                return (
-                    <section className="patient-form__step-content">
-                        <PatientInstitutionFields
-                            coveredByInstitution={coveredByInstitution}
-                            handleInstitutionToggle={handleInstitutionToggle}
-                            formData={formData}
-                            handleChange={handleChange}
-                            institutions={institutions}
-                            t={t}
-                        />
-                        <PatientMedicalNotes
-                            formData={formData}
-                            handleChange={handleChange}
-                            t={t}
-                        />
-                    </section>
-                );
-            case 'admin':
-                return (
-                    <section className="patient-form__step-content">
-                        <PatientAdminFields
-                            formData={formData}
-                            doctors={doctors}
-                            handleDoctorToggle={handleDoctorToggle}
-                            handleManualValueChange={handleManualValueChange}
-                            handleChange={handleChange}
-                            t={t}
-                        />
-                    </section>
-                );
-            default:
-                return null;
-        }
+    // --- Steps Mapping ---
+    const stepContents = {
+        personal: (
+            <section className="patient-form__step-content">
+                <PatientIdentityFields formData={formData} handleChange={updatePatientData} t={t} />
+                {!isEdit && <PatientAccountFields formData={formData} handleChange={updatePatientData} t={t} />}
+            </section>
+        ),
+        insurance: (
+            <section className="patient-form__step-content">
+                <PatientInsuranceFields formData={formData} handleChange={updatePatientData} insurances={insurances} t={t} />
+            </section>
+        ),
+        address: (
+            <section className="patient-form__step-content">
+                <PatientAddressFields formData={formData} handleChange={updatePatientData} t={t} />
+            </section>
+        ),
+        contact: (
+            <section className="patient-form__step-content">
+                <PatientContactFields formData={formData} handleChange={updatePatientData} handlePhoneChange={updatePhoneNumbers} t={t} />
+            </section>
+        ),
+        medical: (
+            <section className="patient-form__step-content">
+                <PatientInstitutionFields
+                    coveredByInstitution={coveredByInstitution}
+                    handleInstitutionToggle={toggleInstitutionCoverage}
+                    formData={formData}
+                    handleChange={updatePatientData}
+                    institutions={institutions}
+                    t={t}
+                />
+                <PatientMedicalNotes formData={formData} handleChange={updatePatientData} t={t} />
+            </section>
+        ),
+        admin: (
+            <section className="patient-form__step-content">
+                <PatientAdminFields
+                    formData={formData}
+                    doctors={doctors}
+                    handleDoctorToggle={toggleDoctorAssignment}
+                    handleManualValueChange={setPatientValue}
+                    handleChange={updatePatientData}
+                    t={t}
+                />
+            </section>
+        )
     };
 
     return (
-        <form onSubmit={handleSubmit} className="patient-form" autoComplete="off">
+        <form onSubmit={savePatient} className="patient-form" autoComplete="off">
             {/* 1. HEADER: Stepper Indicator (Fixed) */}
             <header className="patient-form__header">
                 <nav className="patient-form__stepper">
-                    {activeSteps.map((step, index) => (
-                        <div 
-                            key={step.id} 
-                            className={`patient-form__step ${index === currentStep ? 'patient-form__step--active' : ''} ${index < currentStep ? 'patient-form__step--completed' : ''}`}
-                            onClick={() => index < currentStep && setCurrentStep(index)}
-                        >
-                            <div className="patient-form__step-icon">
-                                <Icon name={index < currentStep ? 'check' : step.icon} size="1.2rem" />
+                    {activeSteps.map((step, index) => {
+                        const isClickable = index < currentStep;
+                        return (
+                            <div 
+                                key={step.id} 
+                                className={`patient-form__step ${index === currentStep ? 'patient-form__step--active' : ''} ${isClickable ? 'patient-form__step--completed' : ''}`}
+                                onClick={() => isClickable && setCurrentStep(index)}
+                                onKeyDown={(e) => {
+                                    if (isClickable && (e.key === 'Enter' || e.key === ' ')) {
+                                        e.preventDefault();
+                                        setCurrentStep(index);
+                                    }
+                                }}
+                                role="button"
+                                tabIndex={isClickable ? 0 : -1}
+                                aria-current={index === currentStep ? 'step' : undefined}
+                            >
+                                <div className="patient-form__step-icon">
+                                    <Icon name={index < currentStep ? 'check' : step.icon} size="1.2rem" />
+                                </div>
+                                <span className="patient-form__step-label">{t(step.labelKey)}</span>
                             </div>
-                            <span className="patient-form__step-label">{t(step.labelKey)}</span>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </nav>
             </header>
 
             {/* 2. MAIN: Form Content (Scrollable) */}
             <main className="patient-form__main">
-                {renderStepContent()}
+                {stepContents[stepId] || null}
             </main>
 
             {/* 3. FOOTER: Navigation Actions (Fixed) */}

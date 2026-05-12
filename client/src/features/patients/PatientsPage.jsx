@@ -15,14 +15,14 @@ import QRCodeModal from '@/features/patients/components/modals/QRCodeModal';
 import Pagination from '@/components/atoms/Pagination';
 import TabNav from '@/components/molecules/TabNav';
 
-// Feature components (Internal - Local to this folder)
-import PatientList from '@/features/patients/components/views/PatientList';
-import PatientDetailsView from '@/features/patients/components/views/PatientDetailsView';
-import PatientRecycleBin from '@/features/patients/components/views/PatientRecycleBin';
-import DebtPaymentModal from '@/features/patients/components/modals/DebtPaymentModal';
-import PatientManagerModal from '@/features/patients/components/modals/PatientManagerModal';
+import FeatureToolbar from '@/components/organisms/FeatureToolbar';
 
-import './PatientsPage.css';
+// Feature Components
+import PatientList from './components/views/PatientList';
+import PatientRecycleBin from './components/views/PatientRecycleBin';
+import PatientDetailsView from './components/views/PatientDetailsView';
+import PatientManagerModal from './components/modals/PatientManagerModal';
+import DebtPaymentModal from './components/modals/DebtPaymentModal';
 
 /**
  * PatientsPage (Orchestrator).
@@ -72,13 +72,10 @@ const PatientsPage = () => {
 
     // Only show global loading if we haven't fetched any patients yet (initial load)
     if (loading && !controller.fetched) return (
-
         <MainLayout wide flush>
             <Loading variant="centered" text={t('loading')} />
         </MainLayout>
     );
-
-
 
     if (detailsLoading) return (
         <MainLayout wide flush>
@@ -88,7 +85,7 @@ const PatientsPage = () => {
 
     return (
         <MainLayout wide flush title={(!selectedPatientId || !patientDetails) ? t('patients') : null}>
-            <div className="patients-page layout-content-area animate-fade-in">
+            <div className="patients-page-orchestrator layout-content-area animate-fade-in">
                 {(selectedPatientId && patientDetails) ? (
                     // --- DETAILS VIEW ---
                     <PatientDetailsView
@@ -106,30 +103,26 @@ const PatientsPage = () => {
 
                 ) : (
                     // --- LIST VIEW ---
-                    <div className="patients-page__list-view animate-fade-in">
-                        <div className="dashboard-nav-bar">
-                            <TabNav>
-                                <TabButton
-                                    isActive={activeTab === 'list'}
-                                    onClick={() => setActiveTab('list')}
-                                    icon={<Icon name="groups" size="1.1rem" />}
-                                >
-                                    {t('active_list')}
-                                </TabButton>
-                                {isStaff && (
-                                    <TabButton
-                                        isActive={activeTab === 'recycle'}
-                                        onClick={() => { setActiveTab('recycle'); fetchRecycleBin(); }}
-                                        icon={<Icon name="delete" size="1.1rem" />}
-                                    >
-                                        {t('recycle_bin')}
-                                        {recycleItems.length > 0 && <span className="patients-page__dot-badge">{recycleItems.length}</span>}
-                                    </TabButton>
-                                )}
-                            </TabNav>
-
-                            {isStaff && activeTab === 'list' && (
-                                <div className="dashboard-nav-bar__actions">
+                    <div className="patients-page__list-view">
+                        <FeatureToolbar
+                            className="patients-page-orchestrator__toolbar"
+                            tabs={[
+                                { id: 'list', label: t('active_list'), icon: 'groups' },
+                                { 
+                                    id: 'recycle', 
+                                    label: t('recycle_bin'), 
+                                    icon: 'delete',
+                                    badge: recycleItems.length > 0 ? recycleItems.length : null,
+                                    hidden: !isStaff
+                                }
+                            ]}
+                            activeTab={activeTab}
+                            onTabChange={(tab) => {
+                                setActiveTab(tab);
+                                if (tab === 'recycle') fetchRecycleBin();
+                            }}
+                            actions={
+                                isStaff && activeTab === 'list' && (
                                     <Button
                                         variant="primary"
                                         size="sm"
@@ -138,11 +131,11 @@ const PatientsPage = () => {
                                     >
                                         {t('new_patient_btn')}
                                     </Button>
-                                </div>
-                            )}
-                        </div>
+                                )
+                            }
+                        />
 
-                        <main className="patients-page__main">
+                        <main className="patients-page-orchestrator__main">
                             {activeTab === 'list' ? (
                                 <div className="patients-page__table-wrapper">
                                     <section className="dashboard-card dashboard-card--no-padding dashboard-card--scroll-horizontal">

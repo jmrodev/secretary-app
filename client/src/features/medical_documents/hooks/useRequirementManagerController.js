@@ -5,6 +5,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useFetch } from '@/hooks/useFetch';
+import { useSearch } from '@/hooks/useSearch';
 import { extractMedicationDetails } from '@/features/medical_documents/utils/medicationHelpers';
 
 /**
@@ -17,6 +18,7 @@ export const useRequirementManagerController = (user) => {
     const { t } = useLanguage();
     const { doubleConfirm, confirm } = useModal();
     const { canDeleteRequest } = usePermissions();
+    const { searchTerm } = useSearch();
 
     // View State
     const [activeTab, setActiveTab] = useState('list'); // 'new' | 'list' | 'recycle'
@@ -31,7 +33,8 @@ export const useRequirementManagerController = (user) => {
         params: {
             page: currentPage,
             limit: itemsPerPage,
-            status: filter === 'active' ? ['pending', 'consult'] : ['completed', 'rejected']
+            status: filter === 'active' ? ['pending', 'consult'] : ['completed', 'rejected'],
+            search: searchTerm || undefined
         },
         initialData: { requests: [], totalCount: 0 }
     });
@@ -76,11 +79,31 @@ export const useRequirementManagerController = (user) => {
         initialData: []
     });
 
-    // Medication/Edit State
-    const [isEditing, setIsEditing] = useState(false);
-    const [editMeds, setEditMeds] = useState([]);
-    const [editNotes, setEditNotes] = useState('');
-    const [editDoctorNote, setEditDoctorNote] = useState('');
+    const [editState, dispatch] = React.useReducer((state, action) => {
+        switch (action.type) {
+            case 'RESET': return { ...state, isEditing: false, ...action.payload };
+            case 'SET_EDITING': return { ...state, isEditing: action.payload };
+            case 'UPDATE_FIELD': {
+                const newValue = typeof action.payload === 'function' 
+                    ? action.payload(state[action.field]) 
+                    : action.payload;
+                return { ...state, [action.field]: newValue };
+            }
+            default: return state;
+        }
+    }, {
+        isEditing: false,
+        editMeds: [],
+        editNotes: '',
+        editDoctorNote: ''
+    });
+
+    const { isEditing, editMeds, editNotes, editDoctorNote } = editState;
+    const setIsEditing = (val) => dispatch({ type: 'SET_EDITING', payload: val });
+    const setEditMeds = (val) => dispatch({ type: 'UPDATE_FIELD', field: 'editMeds', payload: val });
+    const setEditNotes = (val) => dispatch({ type: 'UPDATE_FIELD', field: 'editNotes', payload: val });
+    const setEditDoctorNote = (val) => dispatch({ type: 'UPDATE_FIELD', field: 'editDoctorNote', payload: val });
+
     const [newMedInput, setNewMedInput] = useState({ name: '', dose: '', frequency: '', quantity: '' });
 
     // Polling Logic
@@ -93,12 +116,14 @@ export const useRequirementManagerController = (user) => {
 
     useEffect(() => {
         if (selectedRequest) {
-            queueMicrotask(() => {
-                setIsEditing(false);
-                const { meds, notes } = extractMedicationDetails(selectedRequest);
-                setEditMeds(meds);
-                setEditNotes(notes);
-                setEditDoctorNote(selectedRequest.doctor_note || '');
+            const { meds, notes } = extractMedicationDetails(selectedRequest);
+            dispatch({
+                type: 'RESET',
+                payload: {
+                    editMeds: meds,
+                    editNotes: notes,
+                    editDoctorNote: selectedRequest.doctor_note || ''
+                }
             });
         }
     }, [selectedRequest]);
@@ -234,14 +259,16 @@ export const useRequirementManagerController = (user) => {
     };
 
     const updateEditMed = (index, field, value) => {
-        const newMeds = [...editMeds];
-        newMeds[index] = { ...newMeds[index], [field]: value };
-        setEditMeds(newMeds);
+        setEditMeds(prev => {
+            const newMeds = [...prev];
+            newMeds[index] = { ...newMeds[index], [field]: value };
+            return newMeds;
+        });
     };
 
     const handleAddMed = () => {
         if (newMedInput.name.trim()) {
-            setEditMeds([...editMeds, { ...newMedInput, name: newMedInput.name.trim() }]);
+            setEditMeds(prev => [...prev, { ...newMedInput, name: newMedInput.name.trim() }]);
             setNewMedInput({ name: '', dose: '', frequency: '', quantity: '' });
         }
     };

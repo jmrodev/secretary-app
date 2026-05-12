@@ -28,6 +28,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
     const { user } = useAuth();
     const { t } = useLanguage();
     const { showMessage } = useMessage();
+    const [isExpired, setIsExpired] = React.useState(false);
 
     const {
         selectedDoctor, setSelectedDoctor,
@@ -44,6 +45,14 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
         tempMedsProps
     } = useMedicalRequest(initialType, initialSendToDoctor, user, showMessage, t, onRequestCreated);
 
+    React.useEffect(() => {
+        if (patientData?.next_suggested_prescription_date) {
+            setIsExpired(new Date(patientData.next_suggested_prescription_date) > new Date());
+        } else {
+            setIsExpired(false);
+        }
+    }, [patientData]);
+
     const handleSubmit = (e) => {
         handleCreateRequest(e, medicationItems, reqNote);
     };
@@ -51,7 +60,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
     if (user?.role !== 'secretary' && user?.role !== 'doctor') return null;
 
     const baseClass = 'medical-request-form';
- 
+
     const formContent = (
         <form onSubmit={handleSubmit} className={baseClass}>
             <div className={`${baseClass}__row ${baseClass}__row--2`}>
@@ -97,7 +106,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                     placeholder={t('select_patient')}
                 />
 
-                {patientData && reqType === 'prescription' && patientData.next_suggested_prescription_date && new Date(patientData.next_suggested_prescription_date) > new Date() && (
+                {isExpired && reqType === 'prescription' && (
                     <div className={`${baseClass}__badge-wrapper`}>
                         <Badge variant="warning">
                             <Icon name="warning" size="1rem" />

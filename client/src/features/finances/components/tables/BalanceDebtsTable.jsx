@@ -4,7 +4,9 @@ import './BalanceDebtsTable.css';
  * BalanceDebtsTable Feature Molecule.
  * Summarized view of pending accounts receivable within the finances domain.
  */
-const BalanceDebtsTable = ({ debts = [], totalDebt, t }) => {
+const EMPTY_DEBTS = [];
+
+const BalanceDebtsTable = ({ debts = EMPTY_DEBTS, totalDebt, t }) => {
     return (
         <section className="balance-debts animate-fade-in">
             <h3 className="balance-debts__title">Deudas Pendientes</h3>
@@ -25,8 +27,8 @@ const BalanceDebtsTable = ({ debts = [], totalDebt, t }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {debts.map((d, i) => (
-                                <tr key={i}>
+                            {debts.map((d) => (
+                                <tr key={d.transaction_id || d.id || `${d.date}-${d.patient}`}>
                                     <td>{d.date}</td>
                                     <td className="balance-debts__cell--bold">{d.patient}</td>
                                     <td>{d.type}</td>

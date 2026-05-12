@@ -5,12 +5,15 @@ import { useModal } from '@/context/ModalContext';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useFetch } from '@/hooks/useFetch';
+import { useSearch } from '@/hooks/useSearch';
 
 export const useDoctorsPageController = () => {
     const { t } = useLanguage();
     const { user: currentUser } = useAuth();
     const { showMessage } = useMessage();
     const { confirm } = useModal();
+    const { searchTerm, setSearchTerm } = useSearch();
+
     // Data State using useFetch
     const { data: docData, loading: doctorsLoading, refetch: fetchDoctors } = useFetch('/users/doctors', { 
         initialData: { doctors: [], totalCount: 0 } 
@@ -18,8 +21,6 @@ export const useDoctorsPageController = () => {
 
     const doctors = useMemo(() => docData?.doctors || [], [docData]);
     const { data: settings = {}, loading: settingsLoading } = useFetch('/settings', { initialData: {} });
-
-    const [searchTerm, setSearchTerm] = useState('');
 
     // Unified Modal State: type = 'EDIT'
     const [modalState, setModalState] = useState({

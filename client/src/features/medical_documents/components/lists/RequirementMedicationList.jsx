@@ -35,9 +35,9 @@ const RequirementMedicationList = ({
                                 {t('new_meds_warning') || 'Nuevos / No Habituales'}
                             </h5>
                             <div className="requirements-detail__grid">
-                                {unknownMeds.map((m, i) => (
+                                {unknownMeds.map((m) => (
                                     <MedicationCard
-                                        key={i}
+                                        key={m.name}
                                         {...m}
                                         isKnown={false}
                                         canEdit={canEdit}
@@ -57,9 +57,9 @@ const RequirementMedicationList = ({
                                 {t('habitual_meds') || 'Habituales (Validado)'}
                             </h5>
                             <div className="requirements-detail__grid">
-                                {knownMeds.map((m, i) => (
+                                {knownMeds.map((m) => (
                                     <MedicationCard
-                                        key={i}
+                                        key={m.name}
                                         {...m}
                                         isKnown={true}
                                         duration={calculateDuration(m.quantity, m.frequency)}

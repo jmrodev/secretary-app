@@ -63,11 +63,16 @@ const InsuranceList = ({ insurances, onEdit, onDelete, hasFilter }) => {
                                     <div className="insurance-card__data-value">
                                         {ins.phoneNumbers && ins.phoneNumbers.length > 0 ? (
                                             <div className="insurance-card__phones">
-                                                {ins.phoneNumbers.filter(p => p.is_primary).map(p => (
-                                                    <a key={p.id} href={`tel:${p.phone_number.replace(/[^0-9+]/g, '')}`} className="insurance-card__link">
-                                                        {p.phone_number} {p.label && <span className="insurance-card__phone-tag">({p.label})</span>}
-                                                    </a>
-                                                ))}
+                                                {ins.phoneNumbers.reduce((acc, p) => {
+                                                    if (p.is_primary) {
+                                                        acc.push(
+                                                            <a key={p.id} href={`tel:${p.phone_number.replace(/[^0-9+]/g, '')}`} className="insurance-card__link">
+                                                                {p.phone_number} {p.label && <span className="insurance-card__phone-tag">({p.label})</span>}
+                                                            </a>
+                                                        );
+                                                    }
+                                                    return acc;
+                                                }, [])}
                                                 {ins.phoneNumbers.length > 1 && <span className="insurance-card__more-phones">+{ins.phoneNumbers.length - 1} {t('more')}</span>}
                                             </div>
                                         ) : (ins.phone ? (

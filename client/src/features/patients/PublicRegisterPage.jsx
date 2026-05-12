@@ -8,6 +8,90 @@ import './PublicRegisterPage.css';
  * Paginated form (one field at a time) for accessibility and mobile ease.
  * Focused on: Name, Surname, Address, DNI, Phone.
  */
+const StepField = ({ step, formData, onChange }) => {
+    switch(step) {
+        case 1:
+            return (
+                <div className="step-field animate-fade-in">
+                    <label htmlFor="firstName" className="accessible-label">¿Cuál es tu NOMBRE?</label>
+                    <input
+                        id="firstName"
+                        name="firstName"
+                        className="accessible-input"
+                        value={formData.firstName}
+                        onChange={onChange}
+                        placeholder="Escribí tu nombre..."
+                        autoFocus
+                        autoComplete="off"
+                    />
+                </div>
+            );
+        case 2:
+            return (
+                <div className="step-field animate-fade-in">
+                    <label htmlFor="lastName" className="accessible-label">¿Cuál es tu APELLIDO?</label>
+                    <input
+                        id="lastName"
+                        name="lastName"
+                        className="accessible-input"
+                        value={formData.lastName}
+                        onChange={onChange}
+                        placeholder="Escribí tu apellido..."
+                        autoComplete="off"
+                    />
+                </div>
+            );
+        case 3:
+            return (
+                <div className="step-field animate-fade-in">
+                    <label htmlFor="address" className="accessible-label">¿Cuál es tu DIRECCIÓN?</label>
+                    <input
+                        id="address"
+                        name="address"
+                        className="accessible-input"
+                        value={formData.address}
+                        onChange={onChange}
+                        placeholder="Calle y número..."
+                        autoComplete="off"
+                    />
+                </div>
+            );
+        case 4:
+            return (
+                <div className="step-field animate-fade-in">
+                    <label htmlFor="dni" className="accessible-label">¿Cuál es tu DNI?</label>
+                    <input
+                        id="dni"
+                        name="dni"
+                        type="number"
+                        inputMode="numeric"
+                        className="accessible-input"
+                        value={formData.dni}
+                        onChange={onChange}
+                        placeholder="Sólo números..."
+                        autoComplete="off"
+                    />
+                </div>
+            );
+        case 5:
+            return (
+                <div className="step-field animate-fade-in">
+                    <label htmlFor="phone" className="accessible-label">Tu TELÉFONO es:</label>
+                    <input
+                        id="phone"
+                        name="phone"
+                        className="accessible-input accessible-input--disabled"
+                        value={formData.phone}
+                        readOnly
+                        disabled
+                    />
+                </div>
+            );
+        default:
+            return null;
+    }
+};
+
 const PublicRegisterPage = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
@@ -27,7 +111,7 @@ const PublicRegisterPage = () => {
 
     const totalSteps = 5;
 
-    const handleChange = (e) => {
+    const updateRegisterData = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
@@ -76,84 +160,6 @@ const PublicRegisterPage = () => {
         );
     }
 
-    const renderStep = () => {
-        switch(step) {
-            case 1:
-                return (
-                    <div className="step-field animate-fade-in">
-                        <label className="accessible-label">¿Cuál es tu NOMBRE?</label>
-                        <input
-                            name="firstName"
-                            className="accessible-input"
-                            value={formData.firstName}
-                            onChange={handleChange}
-                            placeholder="Escribí tu nombre..."
-                            autoFocus
-                            autoComplete="off"
-                        />
-                    </div>
-                );
-            case 2:
-                return (
-                    <div className="step-field animate-fade-in">
-                        <label className="accessible-label">¿Cuál es tu APELLIDO?</label>
-                        <input
-                            name="lastName"
-                            className="accessible-input"
-                            value={formData.lastName}
-                            onChange={handleChange}
-                            placeholder="Escribí tu apellido..."
-                            autoComplete="off"
-                        />
-                    </div>
-                );
-            case 3:
-                return (
-                    <div className="step-field animate-fade-in">
-                        <label className="accessible-label">¿Cuál es tu DIRECCIÓN?</label>
-                        <input
-                            name="address"
-                            className="accessible-input"
-                            value={formData.address}
-                            onChange={handleChange}
-                            placeholder="Calle y número..."
-                            autoComplete="off"
-                        />
-                    </div>
-                );
-            case 4:
-                return (
-                    <div className="step-field animate-fade-in">
-                        <label className="accessible-label">¿Cuál es tu DNI?</label>
-                        <input
-                            name="dni"
-                            type="number"
-                            inputMode="numeric"
-                            className="accessible-input"
-                            value={formData.dni}
-                            onChange={handleChange}
-                            placeholder="Sólo números..."
-                            autoComplete="off"
-                        />
-                    </div>
-                );
-            case 5:
-                return (
-                    <div className="step-field animate-fade-in">
-                        <label className="accessible-label">Tu TELÉFONO es:</label>
-                        <input
-                            name="phone"
-                            className="accessible-input accessible-input--disabled"
-                            value={formData.phone}
-                            disabled
-                        />
-                    </div>
-                );
-            default:
-                return null;
-        }
-    };
-
     return (
         <div className="public-register-paginated">
             <div className="step-header">
@@ -166,7 +172,7 @@ const PublicRegisterPage = () => {
             <main className="step-container">
                 {error && <div className="accessible-error">{error}</div>}
                 
-                {renderStep()}
+                <StepField step={step} formData={formData} onChange={updateRegisterData} />
 
                 <footer className="step-footer">
                     {step > 1 && (

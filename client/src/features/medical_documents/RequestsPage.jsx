@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/hooks/useLanguage';
-import { MedicalRequirementManager } from '@/features/medical_documents/index';
+import MedicalRequirementManager from './components/ui/MedicalRequirementManager';
 import MainLayout from '@/components/templates/MainLayout';
 import PageHeader from '@/components/organisms/PageHeader';
 import Icon from '@/components/atoms/Icon';
@@ -9,6 +9,8 @@ import Button from '@/components/atoms/Button';
 
 // Local Styles
 import './RequestsPage.css';
+
+import FeatureToolbar from '@/components/organisms/FeatureToolbar';
 
 /**
  * RequestsPage (Orchestrator).
@@ -21,57 +23,32 @@ const RequestsPage = () => {
     return (
         <MainLayout wide flush>
             <div className="requests-page-orchestrator">
-                <PageHeader 
-                    variant="premium"
-                    title={t('requests_workflow') || "Solicitudes"}
-                    hideTitle={true}
-                    subtitle="Gestione las solicitudes de recetas, certificados y licencias médicas."
+                <FeatureToolbar
+                    className="requests-page-orchestrator__top-actions"
+                    actions={
+                        <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => window.location.reload()}
+                            icon={<Icon name="sync" size="1.1rem" />}
+                        >
+                            {t('refresh') || 'Actualizar'}
+                        </Button>
+                    }
                 />
 
-                <div className="layout-content-area">
-                    <div className="dashboard-layout__grid animate-fade-in">
-                        <aside className="dashboard-layout__sidebar">
-                            <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">
-                                    <Icon name="build" size="1.2rem" />
-                                    {t('actions') || 'Acciones'}
-                                </h3>
-                                <div className="requests-page__actions">
-                                    <Button
-                                        variant="outline"
-                                        className="requests-page__action-btn"
-                                        onClick={() => window.location.reload()}
-                                        icon={<Icon name="sync" size="1.1rem" />}
-                                    >
-                                        {t('refresh') || 'Actualizar'}
-                                    </Button>
-                                </div>
-                            </div>
-
-                            <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">
-                                    <Icon name="info" size="1.2rem" />
-                                    {t('information') || 'Información'}
-                                </h3>
-                                 <p className="requests-page__info-text">
-                                    Aquí puede ver y procesar las solicitudes realizadas por los pacientes a través del portal público.
-                                </p>
-                            </div>
-                        </aside>
-
-                        <main className="dashboard-layout__main">
-                            <article className="dashboard-card no-padding">
-                                <section className="requests-page__section">
-                                    <MedicalRequirementManager user={user} />
-                                </section>
-                            </article>
-                        </main>
-                    </div>
+                <div className="layout-content-area animate-fade-in">
+                    <main className="dashboard-layout__main dashboard-layout__main--full">
+                        <article className="dashboard-card no-padding">
+                            <section className="requests-page__section">
+                                <MedicalRequirementManager user={user} />
+                            </section>
+                        </article>
+                    </main>
                 </div>
             </div>
         </MainLayout>
     );
-
 };
 
 export default RequestsPage;

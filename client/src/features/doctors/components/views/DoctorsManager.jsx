@@ -7,6 +7,8 @@ import DoctorEditModal from '@/features/doctors/components/modals/DoctorEditModa
 import SearchBar from '@/components/molecules/SearchBar';
 import './DoctorsManager.css';
 
+import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+
 const DoctorsManager = ({
     t,
     currentUser,
@@ -20,49 +22,31 @@ const DoctorsManager = ({
 }) => {
     return (
         <section className="doctors-manager">
-            <div className="dashboard-nav-bar dashboard-nav-bar--centered animate-fade-in">
-                <div className="doctors-manager__counter">
-                    <Icon name="medical_services" size="1.2rem" />
-                    {filteredDoctors.length} {t('doctors_count') || 'Médicos activos'}
-                </div>
-            </div>
+            <FeatureToolbar
+                className="doctors-manager-orchestrator__top-actions"
+                actions={
+                    <div className="doctors-manager__toolbar-actions">
+                        <Button
+                            variant="primary"
+                            size="sm"
+                            onClick={() => handlers.onEditDoctor(null)}
+                            icon={<Icon name="add" size="1.1rem" />}
+                        >
+                            {t('new') || 'Nuevo'}
+                        </Button>
+                        <div className="doctors-manager__counter">
+                            <Icon name="medical_services" size="1.2rem" />
+                            <span>{filteredDoctors.length} {t('doctors_count') || 'Médicos activos'}</span>
+                        </div>
+                    </div>
+                }
+            />
 
             {loading ? (
                 <Loading variant="centered" text={t('loading_doctors') || "Cargando médicos..."} />
             ) : (
                 <div className="dashboard-layout__grid animate-fade-in">
-                    <aside className="dashboard-layout__sidebar">
-                        <div className="dashboard-card">
-                            <h3 className="dashboard-card__title">
-                                <Icon name="search" size="1.2rem" />
-                                {t('search') || 'Buscar'}
-                            </h3>
-                            <SearchBar
-                                value={searchTerm}
-                                onChange={e => setSearchTerm(e.target.value)}
-                                placeholder={t('search_doctors_placeholder')}
-                            />
-                        </div>
-
-                        <div className="dashboard-card">
-                            <h3 className="dashboard-card__title">
-                                <Icon name="build" size="1.2rem" />
-                                {t('actions') || 'Acciones'}
-                            </h3>
-                            <div className="doctors-manager__actions-group">
-                                <Button
-                                    variant="primary"
-                                    className="doctors-manager__add-btn"
-                                    onClick={() => handlers.onEditDoctor(null)}
-                                    icon={<Icon name="add" size="1.1rem" />}
-                                >
-                                    {t('new') || 'Nuevo'}
-                                </Button>
-                            </div>
-                        </div>
-                    </aside>
-
-                    <main className="dashboard-layout__main">
+                    <main className="dashboard-layout__main dashboard-layout__main--full">
                         <div className="doctors-manager__grid">
                             {filteredDoctors.length === 0 ? (
                                 <div className="doctors-manager__empty-state">

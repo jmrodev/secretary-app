@@ -5,9 +5,9 @@ import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useAuth } from '@/features/auth';
 
-import AppointmentSyncAlert from '@/features/appointments/components/ui/AppointmentSyncAlert.jsx';
-import AppointmentTypeSelector from '@/features/appointments/components/forms/AppointmentTypeSelector.jsx';
-import AppointmentPatientSection from '@/features/appointments/components/sections/AppointmentPatientSection.jsx';
+import AppointmentSyncAlert from '../ui/AppointmentSyncAlert.jsx';
+import AppointmentTypeSelector from '../forms/AppointmentTypeSelector.jsx';
+import AppointmentPatientSection from '../sections/AppointmentPatientSection.jsx';
 
 import './AppointmentFormModal.css';
 import Select from '@/components/atoms/Select';
@@ -46,21 +46,22 @@ const AppointmentFormModal = ({
         >
             <form onSubmit={onSubmit} id="new-appointment-form" className="appointment-form-modal" autoComplete="off">
                 <div className="appointment-form-modal__autofill-trap">
-                    <input type="text" name="fake_user_trap_appt" autoComplete="username" tabIndex={-1} />
-                    <input type="password" name="fake_pass_trap_appt" autoComplete="new-password" tabIndex={-1} />
+                    <input type="text" name="fake_user_trap_appt" autoComplete="username" tabIndex={-1} readOnly />
+                    <input type="password" name="fake_pass_trap_appt" autoComplete="new-password" tabIndex={-1} readOnly />
                 </div>
 
                 <AppointmentSyncAlert info={syncReferenceInfo} />
 
                 <div className="appointment-form-modal__grid">
                     <div className="appointment-form-modal__field">
-                        <label className="appointment-form-modal__label">{t('doctors') || 'Doctor'}</label>
+                        <label className="appointment-form-modal__label" htmlFor="doctor-select">{t('doctors') || 'Doctor'}</label>
                         {user?.role === 'doctor' ? (
                             <div className="appointment-form-modal__read-only-field">
                                 {doctors.find(d => d.id === Number(selectedDoctor))?.full_name || 'Usted'}
                             </div>
                         ) : (
                             <Select
+                                id="doctor-select"
                                 value={selectedDoctor || ''}
                                 onChange={handleDoctorChange}
                                 options={doctorOptions}
@@ -86,8 +87,9 @@ const AppointmentFormModal = ({
                     />
 
                     <div className="appointment-form-modal__field">
-                        <label className="appointment-form-modal__label">{t('date_time') || 'Fecha y Hora'}</label>
+                        <label className="appointment-form-modal__label" htmlFor="appointment-date">{t('date_time') || 'Fecha y Hora'}</label>
                         <Input
+                            id="appointment-date"
                             type="datetime-local"
                             value={date}
                             onChange={handleDateChange}
@@ -102,8 +104,9 @@ const AppointmentFormModal = ({
                     </div>
 
                     <div className="appointment-form-modal__field">
-                        <label className="appointment-form-modal__label">Obra Social / Institución</label>
+                        <label className="appointment-form-modal__label" htmlFor="institution-select">Obra Social / Institución</label>
                         <Select
+                            id="institution-select"
                             value={selectedInstitution}
                             onChange={handleInstitutionChange}
                             options={institutionOptions}
@@ -111,8 +114,9 @@ const AppointmentFormModal = ({
                     </div>
 
                     <div className="appointment-form-modal__field appointment-form-modal__field--full">
-                        <label className="appointment-form-modal__label">{t('reason') || 'Motivo de Consulta'}</label>
+                        <label className="appointment-form-modal__label" htmlFor="reason-textarea">{t('reason') || 'Motivo de Consulta'}</label>
                         <Input
+                            id="reason-textarea"
                             type="textarea"
                             rows="3"
                             value={reason}
@@ -123,20 +127,16 @@ const AppointmentFormModal = ({
                     </div>
 
                     <div className="appointment-form-modal__field appointment-form-modal__field--full">
-                        <div
-                            className="appointment-form-modal__checkbox-container"
-                            onClick={() => handleBonifiedChange(!bonified)}
-                        >
+                        <div className="appointment-form-modal__checkbox-container">
                             <input
                                 type="checkbox"
                                 id="bonified"
                                 checked={bonified}
                                 onChange={e => handleBonifiedChange(e.target.checked)}
                                 className="appointment-form-modal__checkbox"
-                                onClick={(e) => e.stopPropagation()}
                             />
                             <label htmlFor="bonified" className="appointment-form-modal__checkbox-label">
-                                Bonificado (Sin Costo)
+                                {t('bonified_label') || 'Bonificado (Sin Costo)'}
                             </label>
                         </div>
                     </div>

@@ -5,8 +5,8 @@ import { isSameDay } from '@/utils/core/dateUtils';
 import { useFetch } from '@/hooks/useFetch';
 import Loading from '@/components/atoms/Loading';
 
-import DayScheduleHeader from '@/features/appointments/components/schedule/DayScheduleHeader.jsx';
-import ScheduleTimeline from '@/features/appointments/components/schedule/ScheduleTimeline.jsx';
+import DayScheduleHeader from './DayScheduleHeader.jsx';
+import ScheduleTimeline from './ScheduleTimeline.jsx';
 
 import './DaySchedule.css';
 

@@ -7,7 +7,7 @@ import './PatientMedicalNotes.css';
  * PatientMedicalNotes Molecule.
  * Handles clinical history and medical observations.
  */
-const PatientMedicalNotes = ({ formData, handleChange, t }) => {
+const PatientMedicalNotes = ({ formData, updatePatientData, t }) => {
     return (
         <article className="patient-medical-notes">
             <header className="patient-medical-notes__header">
@@ -23,7 +23,7 @@ const PatientMedicalNotes = ({ formData, handleChange, t }) => {
                         name="medical_history"
                         rows={6}
                         value={formData.medical_history || ''}
-                        onChange={handleChange}
+                        onChange={updatePatientData}
                         placeholder={t('medical_history_placeholder')}
                         className="patient-medical-notes__textarea"
                     />

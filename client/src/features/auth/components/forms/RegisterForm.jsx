@@ -19,7 +19,7 @@ const RegisterForm = () => {
         handlers,
         t
     } = useRegisterController();
-    const { handleChange, handleSubmit } = handlers;
+    const { updateRegisterData, handleSubmit } = handlers;
 
     return (
         <div className="auth-layout auth-layout--hero">
@@ -38,7 +38,7 @@ const RegisterForm = () => {
                         <Select
                             name="role"
                             value={formData.role}
-                            onChange={handleChange}
+                            onChange={updateRegisterData}
                             disabled={loading}
                             options={[
                                 { value: 'patient', label: t('patient') },
@@ -52,7 +52,7 @@ const RegisterForm = () => {
                         <Input
                             name="fullName"
                             value={formData.fullName}
-                            onChange={handleChange}
+                            onChange={updateRegisterData}
                             placeholder="Nombre completo"
                             disabled={loading}
                             required
@@ -63,7 +63,7 @@ const RegisterForm = () => {
                         <Input
                             name="dni"
                             value={formData.dni}
-                            onChange={handleChange}
+                            onChange={updateRegisterData}
                             placeholder="DNI"
                             disabled={loading}
                             required
@@ -74,7 +74,7 @@ const RegisterForm = () => {
                         <Input
                             name="username"
                             value={formData.username}
-                            onChange={handleChange}
+                            onChange={updateRegisterData}
                             placeholder="Usuario"
                             disabled={loading}
                             required
@@ -86,7 +86,7 @@ const RegisterForm = () => {
                             type="password"
                             name="password"
                             value={formData.password}
-                            onChange={handleChange}
+                            onChange={updateRegisterData}
                             placeholder="••••••••"
                             disabled={loading}
                             required
@@ -100,7 +100,7 @@ const RegisterForm = () => {
                                 <Input
                                     name="specialty"
                                     value={formData.specialty}
-                                    onChange={handleChange}
+                                    onChange={updateRegisterData}
                                     placeholder="Especialidad médica"
                                     disabled={loading}
                                 />
@@ -109,7 +109,7 @@ const RegisterForm = () => {
                                 <Input
                                     name="cbu"
                                     value={formData.cbu}
-                                    onChange={handleChange}
+                                    onChange={updateRegisterData}
                                     placeholder="CBU para transferencias"
                                     disabled={loading}
                                 />
@@ -124,7 +124,7 @@ const RegisterForm = () => {
                                     type="date"
                                     name="dob"
                                     value={formData.dob}
-                                    onChange={handleChange}
+                                    onChange={updateRegisterData}
                                     disabled={loading}
                                 />
                             </FormGroup>

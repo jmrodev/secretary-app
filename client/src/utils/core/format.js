@@ -1,3 +1,10 @@
+const CURRENCY_FORMATTER = new Intl.NumberFormat('es-AR', {
+    style: 'currency',
+    currency: 'ARS',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+});
+
 /**
  * Formats a number as a currency string.
  * Uses 'es-AR' locale by default to show thousands separator as dot (10.000).
@@ -10,15 +17,7 @@ export const formatPrice = (value) => {
     const num = Number(value);
     if (isNaN(num)) return '$ 0';
 
-    // Using es-AR for dot thousands separator and comma decimal
-    // maximumFractionDigits: 0 to avoid cents if not needed, or 2 if precise.
-    // User requested "ver los valores mas facil", usually integers for these prices.
-    return new Intl.NumberFormat('es-AR', {
-        style: 'currency',
-        currency: 'ARS',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-    }).format(num);
+    return CURRENCY_FORMATTER.format(num);
 };
 
 /**

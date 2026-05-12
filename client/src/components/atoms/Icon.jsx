@@ -29,11 +29,22 @@ const Icon = ({
         className
     ].filter(Boolean).join(' ');
 
+    const handleKeyDown = (e) => {
+        if (onIconClick && (e.key === 'Enter' || e.key === ' ')) {
+            e.preventDefault();
+            onIconClick(e);
+        }
+    };
+
     return (
         <span
             className={combinedClasses}
             style={style}
             onClick={onIconClick}
+            onKeyDown={handleKeyDown}
+            role={onIconClick ? 'button' : undefined}
+            tabIndex={onIconClick ? 0 : undefined}
+            aria-hidden={!onIconClick}
         >
             {symbol}
         </span>

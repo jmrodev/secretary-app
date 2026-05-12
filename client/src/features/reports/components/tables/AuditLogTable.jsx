@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Badge from '@/components/atoms/Badge';
+import { formatDateTimeLong } from '@/utils/core/dateUtils';
 import './AuditLogTable.css';
 
 const AuditLogTable = ({ logs, onSelectLog, t }) => {
@@ -33,7 +34,7 @@ const AuditLogTable = ({ logs, onSelectLog, t }) => {
                     {logs.map(log => (
                         <tr key={log.id} className="audit-log-table__row">
                             <td className="audit-log-table__cell audit-log-table__cell--time">
-                                {new Date(log.created_at).toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                                {formatDateTimeLong(log.created_at)}
                             </td>
                             <td className="audit-log-table__cell audit-log-table__cell--user">
                                 {log.username}

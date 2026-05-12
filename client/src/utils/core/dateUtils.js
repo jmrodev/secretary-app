@@ -248,6 +248,22 @@ export const timeAgo = (date) => {
 };
 
 /**
+ * Calculates age based on a birth date.
+ * @param {string|Date} dob 
+ */
+export const calculateAge = (dob) => {
+    const birthDate = parseDate(dob);
+    if (!birthDate) return null;
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+};
+
+/**
  * Returns the timezone offset in minutes (e.g. 180 for GMT-3)
  */
 export const getClientOffset = () => {

@@ -1,7 +1,7 @@
-
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+import { formatDate, formatTime, parseDate } from '@/utils/core/dateUtils';
 import './PatientPrintableView.css';
 
 /**
@@ -44,13 +44,23 @@ const PatientPrintableView = ({
         let filtered = [...items];
 
         if (fromDate) {
-            filtered = filtered.filter(i => new Date(i[dateProp]).setHours(0,0,0,0) >= new Date(fromDate).setHours(0,0,0,0));
+            const start = parseDate(fromDate);
+            if (start) start.setHours(0, 0, 0, 0);
+            filtered = filtered.filter(i => {
+                const d = parseDate(i[dateProp]);
+                return d && d.setHours(0, 0, 0, 0) >= start?.getTime();
+            });
         }
         if (toDate) {
-            filtered = filtered.filter(i => new Date(i[dateProp]).setHours(23,59,59,999) <= new Date(toDate).setHours(23,59,59,999));
+            const end = parseDate(toDate);
+            if (end) end.setHours(23, 59, 59, 999);
+            filtered = filtered.filter(i => {
+                const d = parseDate(i[dateProp]);
+                return d && d.setHours(23, 59, 59, 999) <= end?.getTime();
+            });
         }
 
-        filtered.sort((a,b) => new Date(b[dateProp]) - new Date(a[dateProp]));
+        filtered.sort((a, b) => (parseDate(b[dateProp]) || 0) - (parseDate(a[dateProp]) || 0));
 
         if (limitCount && Number(limitCount) > 0) {
             filtered = filtered.slice(0, Number(limitCount));
@@ -59,9 +69,18 @@ const PatientPrintableView = ({
         return filtered;
     };
 
+    const filteredAppointments = useMemo(() => 
+        filterByDateAndLimit(details.appointments, 'appointment_date'),
+        [details.appointments, fromDate, toDate, limitCount]
+    );
+
+    const filteredRequests = useMemo(() => 
+        filterByDateAndLimit(recentRequests, 'created_at'),
+        [recentRequests, fromDate, toDate, limitCount]
+    );
+
     const formatMedicationData = (dataStr) => {
         if (!dataStr) return '-';
-        // Iteratively strip tags until none remain, preventing multi-char bypass attacks
         let cleanStr = String(dataStr);
         let prev;
         do {
@@ -75,7 +94,7 @@ const PatientPrintableView = ({
                 if (Array.isArray(parsed)) {
                     return (
                         <ul className="printable-sublist">
-                            {parsed.map((m, i) => <li key={i}>{m.name}</li>)}
+                            {parsed.map((m) => <li key={m.name}>{m.name}</li>)}
                         </ul>
                     );
                 }
@@ -86,7 +105,7 @@ const PatientPrintableView = ({
         if (lines.length > 1) {
             return (
                 <ul className="printable-sublist">
-                    {lines.map((line, i) => <li key={i}>{line.trim()}</li>)}
+                    {lines.map((line) => <li key={line}>{line.trim()}</li>)}
                 </ul>
             );
         }
@@ -173,9 +192,9 @@ const PatientPrintableView = ({
             {printOptions.turnos && (
                 <>
                     <h3 className="printable-subtitle">{t('appointment_history')}</h3>
-                    {details.appointments && details.appointments.length > 0 ? (
+                    {filteredAppointments.length > 0 ? (
                         <ul className="printable-list">
-                            {filterByDateAndLimit(details.appointments, 'appointment_date').map(app => {
+                            {filteredAppointments.map(app => {
                                 const isExcluded = excludedItems.has(`appt_${app.id}`);
                                 return (
                                     <li key={app.id} className={`${isExcluded ? 'no-print' : ''} printable-list-item--flex`}>
@@ -186,7 +205,7 @@ const PatientPrintableView = ({
                                             className="no-print cursor-pointer"
                                         />
                                         <div>
-                                            <strong>{new Date(app.appointment_date).toLocaleDateString('es-AR')} {new Date(app.appointment_date).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}</strong> 
+                                            <strong>{formatDate(app.appointment_date)} {formatTime(app.appointment_date)}</strong> 
                                             {app.doctor_name ? ` | ${t('doctor')}: ${app.doctor_name}` : ''}
                                             | {t('status')}: {t(app.status)} 
                                             | {t('reason')}: {app.reason || '-'} 
@@ -207,8 +226,8 @@ const PatientPrintableView = ({
                     <h3 className="printable-subtitle">{t('chronic_medication_title')}</h3>
                     {chronicMeds && chronicMeds.length > 0 ? (
                         <ul className="printable-list">
-                            {chronicMeds.map((m, idx) => (
-                                <li key={idx}>
+                            {chronicMeds.map((m) => (
+                                <li key={m.id || m.medication_name}>
                                     <strong>{m.medication_name}</strong> {m.dose ? `- ${t('dose')}: ${m.dose}` : ''} {m.frequency ? `(${m.frequency})` : ''} {m.notes ? `| ${t('obs')}: ${m.notes}` : ''}
                                 </li>
                             ))}
@@ -222,12 +241,12 @@ const PatientPrintableView = ({
             {printOptions.recetas && (
                 <>
                     <h3 className="printable-subtitle">{t('prescription_history')}</h3>
-                    {recentRequests && recentRequests.length > 0 ? (
+                    {filteredRequests.length > 0 ? (
                         <ul className="printable-list">
-                            {filterByDateAndLimit(recentRequests, 'created_at').map((p, idx) => {
+                            {filteredRequests.map((p) => {
                                 const isExcluded = excludedItems.has(`req_${p.id}`);
                                 return (
-                                    <li key={idx} className={`printable-list-item--grouped ${isExcluded ? 'no-print' : ''}`}>
+                                    <li key={p.id} className={`printable-list-item--grouped ${isExcluded ? 'no-print' : ''}`}>
                                         <input 
                                             type="checkbox" 
                                             checked={!isExcluded} 
@@ -236,7 +255,7 @@ const PatientPrintableView = ({
                                         />
                                         <div className="flex-1">
                                             <div className="printable-item-header mb-1 text-sm-compact">
-                                                <strong>{new Date(p.created_at || p.action_date).toLocaleDateString('es-AR')}</strong> 
+                                                <strong>{formatDate(p.created_at || p.action_date)}</strong> 
                                                 {p.doctor_name ? ` | ${t('doctor')}: ${p.doctor_name}` : ''}
                                             </div>
                                             <div className="printable-item-content">

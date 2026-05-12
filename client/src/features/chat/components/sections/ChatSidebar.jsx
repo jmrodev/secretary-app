@@ -65,7 +65,7 @@ const ChatSidebar = ({
                 </div>
             </div>
 
-            <div className="chat-sidebar__list custom-scrollbar">
+            <div className="chat-sidebar__list custom-scrollbar" role="listbox" aria-label={t('conversations_list')}>
                 {filteredConvos.length === 0 && suggestedRecipients.length === 0 && (
                     <div className="chat-sidebar__empty">
                         <p>{q ? t('no_results_found') : t('no_conversations')}</p>
@@ -77,6 +77,10 @@ const ChatSidebar = ({
                         key={`convo-${convo.id}`}
                         className={`chat-sidebar__convo-item ${selectedConvo?.other_user_id === convo.other_user_id ? 'chat-sidebar__convo-item--active' : ''} ${convo.unread_count > 0 ? 'chat-sidebar__convo-item--unread' : ''}`}
                         onClick={() => onSelectConvo(convo)}
+                        onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onSelectConvo(convo)}
+                        role="option"
+                        aria-selected={selectedConvo?.other_user_id === convo.other_user_id}
+                        tabIndex={0}
                     >
                         <div className="chat-sidebar__convo-avatar">
                             {convo.other_display_name ? convo.other_display_name[0].toUpperCase() : '?'}
@@ -105,6 +109,10 @@ const ChatSidebar = ({
                         key={`recipient-${r.id}`}
                         className="chat-sidebar__convo-item"
                         onClick={() => onStartNewChat(r)}
+                        onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onStartNewChat(r)}
+                        role="option"
+                        aria-selected={false}
+                        tabIndex={0}
                     >
                         <div className="chat-sidebar__convo-avatar">
                             {r.display_name[0].toUpperCase()}

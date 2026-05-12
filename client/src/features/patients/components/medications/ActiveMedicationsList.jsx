@@ -12,17 +12,30 @@ import './ActiveMedicationsList.css';
  * Renders the table of active/chronic medications for a patient.
  */
 const ActiveMedicationsList = ({ medications, loading, t, onDiscontinue, onRemindRefill, settings, user, patientName }) => {
+    const [now, setNow] = React.useState(null);
+    React.useEffect(() => {
+        setNow(new Date());
+    }, []);
+
     if (loading) {
-        return <div className="patient-medications__loading">Cargando...</div>;
+        return <div className="patient-medications__loading">Cargando…</div>;
     }
 
-    if (medications.length === 0) {
+    if (!medications || medications.length === 0) {
         return (
             <div className="patient-medications__empty-state">
                 <p>{t('no_current_medications') || 'No hay medicación habitual registrada.'}</p>
             </div>
         );
     }
+
+    const isUrgent = (refillDate) => {
+        if (!now || !refillDate) return false;
+        const refill = new Date(refillDate);
+        const limit = new Date(now);
+        limit.setDate(limit.getDate() + 2);
+        return refill <= limit;
+    };
 
     return (
         <div className="patient-medications__history-container">
@@ -51,7 +64,7 @@ const ActiveMedicationsList = ({ medications, loading, t, onDiscontinue, onRemin
                                     {med.presentation} - {med.monodroga}
                                 </div>
                                 {med.next_refill_date && (
-                                    <div className={`patient-medications__refill-info ${new Date(med.next_refill_date) <= new Date(new Date().setDate(new Date().getDate() + 2)) ? 'patient-medications__refill-info--urgent' : ''}`}>
+                                    <div className={`patient-medications__refill-info ${isUrgent(med.next_refill_date) ? 'patient-medications__refill-info--urgent' : ''}`}>
                                         <Icon name="today" size="0.8rem" />
                                         {t('next_refill_date')}: {formatDate(med.next_refill_date)}
                                         <span className="patient-medications__mode-badge">

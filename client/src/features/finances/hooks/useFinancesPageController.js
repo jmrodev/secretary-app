@@ -7,6 +7,7 @@ import { useConfig } from '@/context/ConfigContext';
 import { useFetch } from '@/hooks/useFetch';
 import { useFinanceHandlers } from '@/features/finances/hooks/useFinanceHandlers';
 import { useDoctors } from '@/context/DoctorContextDefinition';
+import { useSearch } from '@/hooks/useSearch';
 
 export const useFinancesPageController = () => {
     const { user } = useAuth();
@@ -19,7 +20,7 @@ export const useFinancesPageController = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(50);
     const { viewDoctorId: selectedDoctorFilter, setViewDoctorId: setSelectedDoctorFilter, doctors, doctorsLoading } = useDoctors();
-    const [searchQuery, setSearchQuery] = useState('');
+    const { searchTerm: searchQuery, setSearchTerm: setSearchQuery } = useSearch();
     const [debouncedSearch, setDebouncedSearch] = useState('');
     const [, setHistoricalWithdrawalOpen] = useState(false);
     const [isActionLoading, setIsActionLoading] = useState(false);

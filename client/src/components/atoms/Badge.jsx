@@ -42,11 +42,21 @@ const Badge = ({
     const variantClass = `${baseClass}--${normalizedVariant}`;
     const interactiveClass = onClick ? `${baseClass}--interactive` : '';
 
+    const handleKeyDown = (e) => {
+        if (onClick && (e.key === 'Enter' || e.key === ' ')) {
+            e.preventDefault();
+            onClick(e);
+        }
+    };
+
     return (
         <span
             className={`${baseClass} ${variantClass} ${interactiveClass} ${className}`}
             onClick={onClick}
+            onKeyDown={onClick ? handleKeyDown : undefined}
             title={title}
+            role={onClick ? 'button' : undefined}
+            tabIndex={onClick ? 0 : undefined}
         >
             {children}
         </span>

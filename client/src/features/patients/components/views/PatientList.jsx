@@ -4,6 +4,20 @@ import Badge from '@/components/atoms/Badge';
 import Icon from '@/components/atoms/Icon';
 import './PatientList.css';
 
+const RatingStars = ({ rating, colorClass }) => {
+    return (
+        <div className={`patient-list__stars patient-list__stars--${colorClass}`}>
+            {[1, 2, 3, 4, 5].map(s => (
+                <Icon
+                    key={s}
+                    name={s <= (rating || 5) ? 'star' : 'star_outline'}
+                    size="12px"
+                />
+            ))}
+        </div>
+    );
+};
+
 /**
  * PatientList (Executor).
  * Renders a tabular list of patients with search filtering and actions.
@@ -17,20 +31,6 @@ const PatientList = ({
     t
 }) => {
     const institutions = Array.isArray(rawInstitutions) ? rawInstitutions : (rawInstitutions?.institutions || []);
-
-    const renderStars = (rating, colorClass) => {
-        return (
-            <div className={`patient-list__stars patient-list__stars--${colorClass}`}>
-                {[1, 2, 3, 4, 5].map(s => (
-                    <Icon
-                        key={s}
-                        name={s <= (rating || 5) ? 'star' : 'star_outline'}
-                        size="12px"
-                    />
-                ))}
-            </div>
-        );
-    };
 
     if (patients.length === 0) {
         return (
@@ -159,19 +159,27 @@ const PatientList = ({
                                 <div className="patient-list__rating-group">
                                     <div className="patient-list__rating-item" title={`${t('rating_financial_tooltip')}\nDeuda Actual: $${p.total_debt}`}>
                                         <span className="patient-list__rating-label">FIN</span>
-                                        {renderStars(p.financial_rating, 'gold')}
+                                        <RatingStars rating={p.financial_rating} colorClass="gold" />
                                     </div>
                                     <div className="patient-list__rating-item" title={`${t('rating_attendance_tooltip')}\nResumen: ${p.total_appointments - p.missed_appointments}/${p.total_appointments}`}>
                                         <span className="patient-list__rating-label">ASIST</span>
-                                        {renderStars(p.attendance_rating, 'blue')}
+                                        <RatingStars rating={p.attendance_rating} colorClass="blue" />
                                     </div>
                                     <div
                                         className="patient-list__rating-item patient-list__rating-item--interactive"
                                         onClick={(e) => onToggleRating(e, p.id, p.behavior_rating)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                e.preventDefault();
+                                                onToggleRating(e, p.id, p.behavior_rating);
+                                            }
+                                        }}
                                         title={`${t('rating_behavior_tooltip')}\nCalificación: ${p.behavior_rating || 5}/5 (Click para cambiar)`}
+                                        role="button"
+                                        tabIndex={0}
                                     >
                                         <span className="patient-list__rating-label">COND</span>
-                                        {renderStars(p.behavior_rating, 'pink')}
+                                        <RatingStars rating={p.behavior_rating} colorClass="pink" />
                                     </div>
                                 </div>
                             </td>

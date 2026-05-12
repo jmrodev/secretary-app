@@ -32,16 +32,14 @@ const CurrencyInput = ({
     };
 
     useEffect(() => {
-        queueMicrotask(() => {
-            if (value !== undefined && value !== null) {
-                setDisplayValue(format(value));
-            } else {
-                setDisplayValue('');
-            }
-        });
+        if (value !== undefined && value !== null) {
+            setDisplayValue(format(value));
+        } else {
+            setDisplayValue('');
+        }
     }, [value]);
 
-    const handleChange = (e) => {
+    const handleCurrencyChange = (e) => {
         const inputVal = e.target.value;
         const rawValue = inputVal.replace(/\D/g, '');
 
@@ -64,7 +62,7 @@ const CurrencyInput = ({
             placeholder={placeholder}
             required={required}
             value={displayValue}
-            onChange={handleChange}
+            onChange={handleCurrencyChange}
         />
     );
 };

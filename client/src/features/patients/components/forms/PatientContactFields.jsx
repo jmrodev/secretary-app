@@ -10,7 +10,7 @@ import './PatientContactFields.css';
  * Manages email and multiple phone numbers through PhoneNumbersManager.
  * Optimized for Bento Box layout.
  */
-const PatientContactFields = ({ formData, handleChange, handlePhoneChange, t }) => {
+const PatientContactFields = ({ formData, updatePatientData, updatePhoneNumbers, t }) => {
     return (
         <article className="patient-contact-fields">
             <header className="patient-contact-fields__header">
@@ -27,7 +27,7 @@ const PatientContactFields = ({ formData, handleChange, handlePhoneChange, t }) 
                             name="email"
                             className="patient-contact-fields__field"
                             value={formData.email || ''}
-                            onChange={handleChange}
+                            onChange={updatePatientData}
                             placeholder="paciente@ejemplo.com"
                         />
                         {formData.email && (
@@ -45,7 +45,7 @@ const PatientContactFields = ({ formData, handleChange, handlePhoneChange, t }) 
                 <div className="patient-contact-fields__phones patient-contact-fields__group--span-12">
                     <PhoneNumbersManager
                         phoneNumbers={formData.phoneNumbers}
-                        onChange={handlePhoneChange}
+                        onChange={updatePhoneNumbers}
                     />
                 </div>
             </div>

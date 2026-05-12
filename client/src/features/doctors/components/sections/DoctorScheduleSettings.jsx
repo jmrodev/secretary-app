@@ -100,7 +100,7 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
         });
     };
 
-    if (loading) return <div className="schedule-settings__loading">Cargando horarios...</div>;
+    if (loading) return <div className="schedule-settings__loading">Cargando horarios…</div>;
 
     return (
         <section className="schedule-settings">

@@ -1,11 +1,11 @@
-import { useContext } from 'react';
+import { use } from 'react';
 import { LanguageContext, LanguageActionsContext } from '@/context/LanguageContext';
 
 /**
  * Hook to consume LanguageContext (language and t function).
  */
 export const useLanguage = () => {
-    const context = useContext(LanguageContext);
+    const context = use(LanguageContext);
     if (!context) {
         return {
             language: 'es',
@@ -19,7 +19,7 @@ export const useLanguage = () => {
  * Hook to consume LanguageActionsContext (setLanguage and toggleLanguage).
  */
 export const useLanguageActions = () => {
-    const context = useContext(LanguageActionsContext);
+    const context = use(LanguageActionsContext);
     if (!context) {
         return {
             setLanguage: () => { },

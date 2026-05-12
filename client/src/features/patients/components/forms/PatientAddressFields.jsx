@@ -9,7 +9,7 @@ import './PatientAddressFields.css';
  * Contains street, city, province, country and notes with Google Maps integration.
  * Optimized for Bento Box layout.
  */
-const PatientAddressFields = ({ formData, handleChange, t }) => {
+const PatientAddressFields = ({ formData, updatePatientData, t }) => {
     return (
         <article className="patient-address-fields">
             <header className="patient-address-fields__header">
@@ -24,7 +24,7 @@ const PatientAddressFields = ({ formData, handleChange, t }) => {
                         name="street_name"
                         className="patient-address-fields__field"
                         value={formData.street_name || ''}
-                        onChange={handleChange}
+                        onChange={updatePatientData}
                         placeholder={t('street_placeholder')}
                     />
                 </div>
@@ -34,7 +34,7 @@ const PatientAddressFields = ({ formData, handleChange, t }) => {
                         name="street_number"
                         className="patient-address-fields__field"
                         value={formData.street_number || ''}
-                        onChange={handleChange}
+                        onChange={updatePatientData}
                         placeholder="1234"
                     />
                 </div>
@@ -45,7 +45,7 @@ const PatientAddressFields = ({ formData, handleChange, t }) => {
                         name="floor"
                         className="patient-address-fields__field"
                         value={formData.floor || ''}
-                        onChange={handleChange}
+                        onChange={updatePatientData}
                         placeholder="2"
                     />
                 </div>
@@ -55,7 +55,7 @@ const PatientAddressFields = ({ formData, handleChange, t }) => {
                         name="apartment"
                         className="patient-address-fields__field"
                         value={formData.apartment || ''}
-                        onChange={handleChange}
+                        onChange={updatePatientData}
                         placeholder="B"
                     />
                 </div>
@@ -66,7 +66,7 @@ const PatientAddressFields = ({ formData, handleChange, t }) => {
                         name="city"
                         className="patient-address-fields__field"
                         value={formData.city || ''}
-                        onChange={handleChange}
+                        onChange={updatePatientData}
                     />
                 </div>
                 <div className="patient-address-fields__group patient-address-fields__group--span-6">
@@ -75,7 +75,7 @@ const PatientAddressFields = ({ formData, handleChange, t }) => {
                         name="province"
                         className="patient-address-fields__field"
                         value={formData.province || ''}
-                        onChange={handleChange}
+                        onChange={updatePatientData}
                     />
                 </div>
             </div>

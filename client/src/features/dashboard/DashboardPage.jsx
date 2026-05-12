@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDashboardController } from '@/features/dashboard/index';
+import { useDashboardController } from './hooks/useDashboardController';
 import DashboardReminders from '@/features/dashboard/components/DashboardReminders';
 import MedicalRequirementManager from '@/features/medical_documents/components/ui/MedicalRequirementManager';
 import AppointmentActionModal from '@/features/appointments/components/modals/AppointmentActionModal';
@@ -10,6 +10,7 @@ import MainLayout from '@/components/templates/MainLayout';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Loading from '@/components/atoms/Loading';
+import FeatureToolbar from '@/components/organisms/FeatureToolbar';
 
 import './DashboardPage.css';
 
@@ -76,13 +77,30 @@ const DashboardPage = () => {
 
 
     return (
-        <MainLayout wide flush title={t('dashboard')} hideTitle>
-            <main className="dashboard-page-orchestrator">
-                <section className="layout-content-area">
-                    
-                    {shouldShowLoadingState ? (
-                        <Loading variant="centered" text={t('loading')} />
-                    ) : shouldShowErrorState ? (
+        <MainLayout wide flush title={t('dashboard')}>
+            <div className="dashboard-page-orchestrator layout-content-area animate-fade-in">
+                <FeatureToolbar
+                    className="dashboard-page-orchestrator__toolbar"
+                    tabs={[
+                        { id: 'requirements', label: t('pending_requests'), icon: 'description' },
+                        { id: 'reminders', label: t('dashboard_reminders'), icon: 'notifications_active' }
+                    ]}
+                    activeTab={activeTab}
+                    onTabChange={setActiveTab}
+                    actions={
+                        <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={refreshDashboard}
+                            icon={<Icon name="refresh" size="1rem" />}
+                        >
+                            {t('refresh')}
+                        </Button>
+                    }
+                />
+
+                <main className="dashboard-page-orchestrator__main">
+                    {shouldShowErrorState ? (
                         <article className="dashboard-page-orchestrator__state-card">
                             <h3>{t('dashboard_error_title')}</h3>
                             <p>{t('dashboard_error_message')}</p>
@@ -92,29 +110,13 @@ const DashboardPage = () => {
                             </Button>
                         </article>
                     ) : (
-                        <div className="dashboard-page-orchestrator__full-wrapper animate-fade-in" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                            {/* Main Functional Area */}
-                            <section style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                                <article className="dashboard-card dashboard-page-orchestrator__priority-card">
-                                    <div className="dashboard-page-orchestrator__requirements">
-                                        <header className="dashboard-page-orchestrator__requirements-header">
-                                            <h3 className="dashboard-page-orchestrator__requirements-title">
-                                                <Icon name={activeTab === 'reminders' ? 'notifications_active' : 'description'} size="1.5rem" />
-                                                {activeTab === 'reminders' ? t('dashboard_reminders') : t('pending_requests')}
-                                            </h3>
-
-                                            <div className="dashboard-page-orchestrator__header-actions">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() => setActiveTab(activeTab === 'reminders' ? 'requirements' : 'reminders')}
-                                                >
-                                                    {activeTab === 'reminders' ? t('back_to_requests') : `${t('view_reminders')} (${reminders?.length || 0})`}
-                                                </Button>
-                                            </div>
-                                        </header>
-
-                                        <div className="dashboard-page-orchestrator__requirements-content">
+                        <div className="dashboard-page-orchestrator__content">
+                            <article className="dashboard-card no-padding">
+                                <div className="dashboard-page-orchestrator__view-container">
+                                    {shouldShowLoadingState ? (
+                                        <Loading variant="centered" text={t('loading')} />
+                                    ) : (
+                                        <div className="dashboard-page-orchestrator__view-content">
                                             {isAdminOrSecretary || isDoctor ? (
                                                 activeTab === 'requirements' ? (
                                                     <MedicalRequirementManager user={user} hideTabs={true} hideFilters={true} setPaymentModal={setPaymentModal} />
@@ -134,63 +136,63 @@ const DashboardPage = () => {
                                                 </div>
                                             )}
                                         </div>
-                                    </div>
-                                </article>
-                            </section>
+                                    )}
+                                </div>
+                            </article>
                         </div>
                     )}
-                </section>
+                </main>
+            </div>
 
-                {/* Modals */}
-                <AppointmentActionModal
-                    isOpen={actionModal.open}
-                    onClose={() => setActionModal({ ...actionModal, open: false })}
-                    appt={actionModal.appt}
-                    doctors={doctors}
-                    onUpdateStatus={handleUpdateStatus}
-                    onDelete={handleDelete}
-                    onCancel={handleCancel}
-                    onPay={handleOpenPayment}
-                    onWhatsApp={handleWhatsApp}
-                    onUpdateType={handleUpdateType}
-                    onHardEdit={handleHardEdit}
-                    onHistory={handleOpenHistory}
-                    onPrescribe={handleOpenPrescribe}
-                    onReschedule={handleOpenReschedule}
-                    onSync={handleOpenSync}
-                    onSaveNote={handleSaveNote}
-                    fetchAppointments={refreshDashboard}
-                />
+            {/* Modals */}
+            <AppointmentActionModal
+                isOpen={actionModal.open}
+                onClose={() => setActionModal(prev => ({ ...prev, open: false }))}
+                appt={actionModal.appt}
+                doctors={doctors}
+                onUpdateStatus={handleUpdateStatus}
+                onDelete={handleDelete}
+                onCancel={handleCancel}
+                onPay={handleOpenPayment}
+                onWhatsApp={handleWhatsApp}
+                onUpdateType={handleUpdateType}
+                onHardEdit={handleHardEdit}
+                onHistory={handleOpenHistory}
+                onPrescribe={handleOpenPrescribe}
+                onReschedule={handleOpenReschedule}
+                onSync={handleOpenSync}
+                onSaveNote={handleSaveNote}
+                fetchAppointments={refreshDashboard}
+            />
 
-                <PrescriptionModal
-                    isOpen={prescribeModal.open}
-                    onClose={() => setPrescribeModal({ ...prescribeModal, open: false })}
-                    patientName={prescribeModal.patientName}
-                    onSubmit={handlePrescriptionSubmit}
-                    t={t}
-                    isSubmitting={isSubmitting}
-                />
+            <PrescriptionModal
+                isOpen={prescribeModal.open}
+                onClose={() => setPrescribeModal(prev => ({ ...prev, open: false }))}
+                patientName={prescribeModal.patientName}
+                onSubmit={handlePrescriptionSubmit}
+                t={t}
+                isSubmitting={isSubmitting}
+            />
 
-                <PatientHistoryModal
-                    isOpen={historyModal.open}
-                    onClose={() => setHistoryModal({ ...historyModal, open: false })}
-                    patientId={historyModal.patientId}
-                    patientName={historyModal.patientName}
-                />
+            <PatientHistoryModal
+                isOpen={historyModal.open}
+                onClose={() => setHistoryModal(prev => ({ ...prev, open: false }))}
+                patientId={historyModal.patientId}
+                patientName={historyModal.patientName}
+            />
 
-                <TransactionModal
-                    isOpen={paymentModal.open}
-                    onClose={() => setPaymentModal({ ...paymentModal, open: false })}
-                    initialData={{
-                        ...paymentModal.initialData,
-                        appointment_id: paymentModal.apptId || paymentModal.initialData?.apptId
-                    }}
-                    requestId={paymentModal.reqId || paymentModal.initialData?.reqId}
-                    onSuccess={async () => {
-                        refreshDashboard();
-                    }}
-                />
-            </main>
+            <TransactionModal
+                isOpen={paymentModal.open}
+                onClose={() => setPaymentModal(prev => ({ ...prev, open: false }))}
+                initialData={{
+                    ...paymentModal.initialData,
+                    appointment_id: paymentModal.apptId || paymentModal.initialData?.apptId
+                }}
+                requestId={paymentModal.reqId || paymentModal.initialData?.reqId}
+                onSuccess={async () => {
+                    refreshDashboard();
+                }}
+            />
         </MainLayout>
     );
 

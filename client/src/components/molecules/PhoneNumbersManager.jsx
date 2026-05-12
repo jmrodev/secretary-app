@@ -39,7 +39,7 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
         <section className="phone-numbers-manager">
             <div className="phone-numbers-manager__list">
                 {displayPhoneNumbers.map((pn, index) => (
-                    <div key={index} className={`phone-numbers-manager__row ${pn.is_primary ? 'phone-numbers-manager__row--primary' : ''}`}>
+                    <div key={`phone-${index}`} className={`phone-numbers-manager__row ${pn.is_primary ? 'phone-numbers-manager__row--primary' : ''}`}>
                         <div className="phone-numbers-manager__label-wrapper">
                             <input
                                 className="phone-numbers-manager__input-label"

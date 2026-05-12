@@ -8,7 +8,7 @@ import './PatientIdentityFields.css';
  * Contains primary identification: first name, last name, DNI, and DOB.
  * Optimized for Bento Box layout.
  */
-const PatientIdentityFields = ({ formData, handleChange, t }) => {
+const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
     return (
         <article className="patient-identity-fields">
             <header className="patient-identity-fields__header">
@@ -23,7 +23,7 @@ const PatientIdentityFields = ({ formData, handleChange, t }) => {
                         name="first_name"
                         className="patient-identity-fields__field"
                         value={formData.first_name || ''}
-                        onChange={handleChange}
+                        onChange={updatePatientData}
                         required
                         placeholder={t('first_name_placeholder')}
                     />
@@ -34,7 +34,7 @@ const PatientIdentityFields = ({ formData, handleChange, t }) => {
                         name="last_name"
                         className="patient-identity-fields__field"
                         value={formData.last_name || ''}
-                        onChange={handleChange}
+                        onChange={updatePatientData}
                         required
                         placeholder={t('last_name_placeholder')}
                     />
@@ -45,7 +45,7 @@ const PatientIdentityFields = ({ formData, handleChange, t }) => {
                         name="dni"
                         className="patient-identity-fields__field"
                         value={formData.dni || ''}
-                        onChange={handleChange}
+                        onChange={updatePatientData}
                         required
                         placeholder="12.345.678"
                     />
@@ -57,7 +57,7 @@ const PatientIdentityFields = ({ formData, handleChange, t }) => {
                         name="dob"
                         className="patient-identity-fields__field"
                         value={formData.dob || ''}
-                        onChange={handleChange}
+                        onChange={updatePatientData}
                     />
                 </div>
             </div>

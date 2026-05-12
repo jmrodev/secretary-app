@@ -16,8 +16,7 @@ import MainLayout from '@/components/templates/MainLayout';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Loading from '@/components/atoms/Loading';
-import TabNav from '@/components/molecules/TabNav';
-import TabButton from '@/components/atoms/TabButton';
+import FeatureToolbar from '@/components/organisms/FeatureToolbar';
 
 // Lazy load heavy components
 const DoctorsManager = React.lazy(() => import('@/features/doctors').then(module => ({ default: module.DoctorsManager })));
@@ -248,90 +247,39 @@ const SystemConfigPage = () => {
 
     return (
         <MainLayout wide flush title={controller.t('config') || 'Configuración del Sistema'}>
-            <section className="system-config-page">
-                <TabNav className="system-config-tabs">
-                    <TabButton 
-                        isActive={activeTab === 'general'} 
-                        onClick={() => handlers.setActiveTab('general')}
-                    >
-                        <Icon name="settings" size="1.2rem" />
-                        {controller.t('general')}
-                    </TabButton>
-                    <TabButton 
-                        isActive={activeTab === 'profile'} 
-                        onClick={() => handlers.setActiveTab('profile')}
-                    >
-                        <Icon name="person" size="1.2rem" />
-                        {controller.t('profile')}
-                    </TabButton>
-                    <TabButton 
-                        isActive={activeTab === 'communications'} 
-                        onClick={() => handlers.setActiveTab('communications')}
-                    >
-                        <Icon name="chat" size="1.2rem" />
-                        {controller.t('communications')}
-                    </TabButton>
-                    <TabButton 
-                        isActive={activeTab === 'ai'} 
-                        onClick={() => handlers.setActiveTab('ai')}
-                    >
-                        <Icon name="psychology" size="1.2rem" />
-                        {controller.t('ai')}
-                    </TabButton>
-                    <TabButton 
-                        isActive={activeTab === 'doctors'} 
-                        onClick={() => handlers.setActiveTab('doctors')}
-                    >
-                        <Icon name="medical_services" size="1.2rem" />
-                        {controller.t('doctors')}
-                    </TabButton>
-                    <TabButton 
-                        isActive={activeTab === 'integrations'} 
-                        onClick={() => handlers.setActiveTab('integrations')}
-                    >
-                        <Icon name="extension" size="1.2rem" />
-                        {controller.t('integrations')}
-                    </TabButton>
-                    <TabButton 
-                        isActive={activeTab === 'users'} 
-                        onClick={() => handlers.setActiveTab('users')}
-                    >
-                        <Icon name="group" size="1.2rem" />
-                        {controller.t('users')}
-                    </TabButton>
-                    <TabButton 
-                        isActive={activeTab === 'billing'} 
-                        onClick={() => handlers.setActiveTab('billing')}
-                    >
-                        <Icon name="payments" size="1.2rem" />
-                        {controller.t('billing')}
-                    </TabButton>
-                    <TabButton 
-                        isActive={activeTab === 'logs'} 
-                        onClick={() => handlers.setActiveTab('logs')}
-                    >
-                        <Icon name="list_alt" size="1.2rem" />
-                        {controller.t('logs')}
-                    </TabButton>
-                </TabNav>
+            <div className="system-config-page-orchestrator layout-content-area animate-fade-in">
+                <FeatureToolbar
+                    className="system-config-page__toolbar"
+                    tabs={[
+                        { id: 'general', label: controller.t('general'), icon: 'settings' },
+                        { id: 'profile', label: controller.t('profile'), icon: 'person' },
+                        { id: 'communications', label: controller.t('communications'), icon: 'chat' },
+                        { id: 'ai', label: controller.t('ai'), icon: 'psychology' },
+                        { id: 'doctors', label: controller.t('doctors'), icon: 'medical_services' },
+                        { id: 'integrations', label: controller.t('integrations'), icon: 'extension' },
+                        { id: 'users', label: controller.t('users'), icon: 'group' },
+                        { id: 'billing', label: controller.t('billing'), icon: 'payments' },
+                        { id: 'logs', label: controller.t('logs'), icon: 'list_alt' }
+                    ]}
+                    activeTab={activeTab}
+                    onTabChange={handlers.setActiveTab}
+                />
 
-                <div className="layout-content-area animate-fade-in">
+                <main className="system-config-page-orchestrator__main">
                     <div className="system-config-container">
-                        <main className="system-config-main">
-                            <Suspense fallback={<Loading variant="centered" />}>
-                                {renderContent(activeTab, controller)}
-                            </Suspense>
-                        </main>
+                        <Suspense fallback={<Loading variant="centered" />}>
+                            {renderContent(activeTab, controller)}
+                        </Suspense>
 
                         <QRCodeModal
                             isOpen={qrModal.open}
-                            onClose={() => setQrModal({ ...qrModal, open: false })}
+                            onClose={() => setQrModal(prev => ({ ...prev, open: false }))}
                             url={qrModal.url}
                             expiresAt={qrModal.expiry}
                         />
                     </div>
-                </div>
-            </section>
+                </main>
+            </div>
         </MainLayout>
     );
 };

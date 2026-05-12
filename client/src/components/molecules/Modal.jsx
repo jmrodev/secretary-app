@@ -15,16 +15,27 @@ const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', variant 
         };
     }, [isOpen]);
 
-    if (!isOpen) return null;
+    const handleKeyDown = (e) => {
+        if (e.key === 'Escape') onClose();
+    };
 
     return ReactDOM.createPortal(
-        <div className="modal" onClick={onClose}>
+        <div 
+            className="modal" 
+            onClick={onClose} 
+            onKeyDown={handleKeyDown}
+            role="presentation"
+        >
             <div
                 className={`modal__content ${size && size !== 'md' ? `modal__content--${size}` : ''} ${className}`}
                 onClick={e => e.stopPropagation()}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="modal-title"
+                tabIndex={-1}
             >
                 <header className="modal__header">
-                    <h3 className="modal__title">{title}</h3>
+                    <h3 id="modal-title" className="modal__title">{title}</h3>
                     <Button
                         variant="ghost"
                         size="md-compact"

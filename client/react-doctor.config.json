@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "react-doctor/no-render-in-render": "error",
+    "react-doctor/no-derived-state-effect": "error",
+    "react-doctor/no-cascading-set-state": "error",
+    "react-doctor/no-complex-memo": "warn",
+    "react-doctor/no-array-index-as-key": "error",
+    "react-doctor/heavy-library-import": "warn"
+  }
+}

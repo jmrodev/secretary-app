@@ -2,9 +2,9 @@ import { useCallback, useMemo } from 'react';
 import api from '@/api/axios';
 
 // Feature internal hooks
-import { useAppointmentActions } from '@/features/appointments/hooks/useAppointmentActions';
-import { useAppointmentUIHandlers } from '@/features/appointments/hooks/useAppointmentUIHandlers';
-import { useHolidayHandlers } from '@/features/appointments/hooks/useHolidayHandlers';
+import { useAppointmentActions } from './useAppointmentActions';
+import { useAppointmentUIHandlers } from './useAppointmentUIHandlers';
+import { useHolidayHandlers } from './useHolidayHandlers';
 
 /**
  * High-level handlers for the appointments feature.

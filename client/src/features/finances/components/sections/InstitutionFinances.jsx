@@ -54,11 +54,7 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
             .reduce((sum, tr) => sum + Number(tr.amount), 0);
     })();
 
-    React.useEffect(() => {
-        if (isPayModalOpen) {
-            setPaymentData(p => ({ ...p, amount: selectedAmount.toString(), transaction_ids: Array.from(selectedTrs) }));
-        }
-    }, [isPayModalOpen, selectedAmount, selectedTrs, setPaymentData]);
+
 
     const handleToggleSelect = (id) => {
         setSelectedTrs(prev => {
@@ -71,9 +67,10 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
 
     const handleSelectAll = (checked) => {
         if (checked) {
-            const pendingIds = filteredTransactions
-                .filter(tr => tr.payment_status === 'pending')
-                .map(tr => tr.transaction_id);
+            const pendingIds = filteredTransactions.reduce((acc, tr) => {
+                if (tr.payment_status === 'pending') acc.push(tr.transaction_id);
+                return acc;
+            }, []);
             setSelectedTrs(new Set(pendingIds));
         } else {
             setSelectedTrs(new Set());
@@ -150,7 +147,14 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
                         selectedTrs={selectedTrs}
                         onToggleSelect={handleToggleSelect}
                         onSelectAll={handleSelectAll}
-                        onPayClick={() => setIsPayModalOpen(true)}
+                        onPayClick={() => {
+                            setPaymentData(p => ({
+                                ...p,
+                                amount: selectedAmount.toString(),
+                                transaction_ids: Array.from(selectedTrs)
+                            }));
+                            setIsPayModalOpen(true);
+                        }}
                         formatDate={formatDate}
                         t={t}
                     />

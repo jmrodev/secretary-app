@@ -38,7 +38,7 @@
     margin-bottom: 0.5rem;
 }
 
-.holiday-card {
+.calendar-section__holiday-card {
     background-color: var(--dashboard-card-bg);
     border: 1px solid var(--dashboard-card-border);
     border-radius: var(--radius-lg);

@@ -9,10 +9,8 @@ import './ReportFilters.css';
 const ReportFilters = ({
     month,
     year,
-    selectedDoctorId,
     onMonthChange,
     onYearChange,
-    onDoctorChange,
     onGenerate,
     onDownload,
     onPrint,
@@ -20,7 +18,6 @@ const ReportFilters = ({
     onStepYear,
     isSubmitting,
     hasData,
-    doctors,
     t
 }) => {
     // We pass null for allLabelKey because ReportFilters specifically requires a month (no "All Months" option)
@@ -30,46 +27,38 @@ const ReportFilters = ({
     }));
 
     return (
-        <section className="report-filters">
-            <h2 className="visually-hidden">{t('filters')}</h2>
-            <fieldset className="report-filters__group">
-                <legend className="report-filters__label">{t('month')}</legend>
-                <div className="report-filters__control-row">
+        <div className="report-filters report-filters--horizontal">
+            <div className="report-filters__controls">
+                <div className="report-filters__field">
                     <Button
                         variant="ghost"
                         size="sm-compact"
                         onClick={() => onStepMonth(-1)}
-                        className="report-filters__step-btn"
                     >
-                        <Icon name="chevron_left" size="1.2rem" />
+                        <Icon name="chevron_left" size="1.1rem" />
                     </Button>
                     <Select
                         value={month}
                         onChange={(e) => onMonthChange(Number(e.target.value))}
                         options={monthOptions}
-                        className="report-filters__select"
+                        className="report-filters__select report-filters__select--month"
                     />
                     <Button
                         variant="ghost"
                         size="sm-compact"
                         onClick={() => onStepMonth(1)}
-                        className="report-filters__step-btn"
                     >
-                        <Icon name="chevron_right" size="1.2rem" />
+                        <Icon name="chevron_right" size="1.1rem" />
                     </Button>
                 </div>
-            </fieldset>
 
-            <fieldset className="report-filters__group">
-                <legend className="report-filters__label">{t('year')}</legend>
-                <div className="report-filters__control-row">
+                <div className="report-filters__field">
                     <Button
                         variant="ghost"
                         size="sm-compact"
                         onClick={() => onStepYear(-1)}
-                        className="report-filters__step-btn"
                     >
-                        <Icon name="chevron_left" size="1.2rem" />
+                        <Icon name="chevron_left" size="1.1rem" />
                     </Button>
                     <Input
                         type="number"
@@ -83,61 +72,42 @@ const ReportFilters = ({
                         variant="ghost"
                         size="sm-compact"
                         onClick={() => onStepYear(1)}
-                        className="report-filters__step-btn"
                     >
-                        <Icon name="chevron_right" size="1.2rem" />
+                        <Icon name="chevron_right" size="1.1rem" />
                     </Button>
                 </div>
-            </fieldset>
+            </div>
 
-            <fieldset className="report-filters__group">
-                <legend className="report-filters__label">{t('doctor') || 'Médico'}</legend>
-                <Select
-                    value={selectedDoctorId}
-                    onChange={(e) => onDoctorChange(e.target.value)}
-                    options={[
-                        { value: '', label: t('all_doctors') || 'Todos los Médicos' },
-                        ...doctors.map(doc => ({
-                            value: doc.id,
-                            label: doc.full_name || doc.username
-                        }))
-                    ]}
-                    className="report-filters__select report-filters__select--doctor"
-                />
-            </fieldset>
-
-            <footer className="report-filters__actions">
+            <div className="report-filters__actions">
                 <Button
                     onClick={onGenerate}
                     disabled={isSubmitting}
                     variant="primary"
-                    className="report-filters__btn report-filters__btn--generate"
+                    size="sm"
                 >
-                    {isSubmitting ? '...' : t('generate_report')}
+                    {isSubmitting ? '...' : t('generate')}
                 </Button>
 
                 {hasData && (
-                    <>
+                    <div className="report-filters__export-group">
                         <Button
                             variant="secondary"
+                            size="sm"
                             onClick={onDownload}
-                            className="report-filters__btn"
-                        >
-                            <Icon name="attachment" size="1.1rem" className="report-filters__btn-icon" />
-                            {t('download_json')}
-                        </Button>
+                            icon={<Icon name="download" size="1.1rem" />}
+                            title={t('download_json')}
+                        />
                         <Button
-                            variant="accent"
+                            variant="secondary"
+                            size="sm"
                             onClick={onPrint}
-                            className="report-filters__btn"
-                        >
-                            <Icon name="print" size="1.1rem" className="report-filters__btn-icon" />
-                            {t('print')}
-                        </Button>
-                    </>
+                            icon={<Icon name="print" size="1.1rem" />}
+                            title={t('print')}
+                        />
+                    </div>
                 )}
-            </footer>
-        </section>
+            </div>
+        </div>
     );
 };
 

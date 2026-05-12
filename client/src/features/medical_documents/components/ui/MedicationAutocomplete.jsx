@@ -84,7 +84,7 @@ const MedicationAutocomplete = ({
                     onChange={(e) => handleSearch(e.target.value)}
                     onFocus={() => searchTerm.length >= 2 && setShowSuggestions(true)}
                     onKeyDown={handleKeyDown}
-                    placeholder={placeholder || t('search_medication') || "Buscar medicamento..."}
+                    placeholder={placeholder || t('search_medication')}
                     autoComplete="off"
                 />
                 <div className={`${baseClass}__actions`}>
@@ -94,7 +94,7 @@ const MedicationAutocomplete = ({
                         <Button
                             type="button"
                             onClick={handleClear}
-                            aria-label={t('clear') || "Limpiar"}
+                            aria-label={t('clear')}
                             tabIndex="-1"
                             unstyled
                             icon={<Icon name="close" />}
@@ -109,13 +109,15 @@ const MedicationAutocomplete = ({
             </div>
 
             {showSuggestions && suggestions.length > 0 && (
-                <ul ref={listRef} className={`${baseClass}__list animate-fade-in`}>
+                <ul ref={listRef} className={`${baseClass}__list animate-fade-in`} role="listbox">
                     {suggestions.map((med, idx) => (
                         <li
                             key={med.id || idx}
                             className={`${baseClass}__item ${cursor === idx ? `${baseClass}__item--active` : ''}`}
                             onClick={() => handleSelect(med)}
                             onMouseEnter={() => setCursor(idx)}
+                            role="option"
+                            aria-selected={cursor === idx}
                         >
                             <div className={`${baseClass}__item-title`}>
                                 {highlightMatch(med.name, searchTerm)}
@@ -139,7 +141,7 @@ const MedicationAutocomplete = ({
                     <li className={`${baseClass}__footer`}>
                         <span className={`${baseClass}__footer-brand`}>{t('iosfa_vademecum')}</span>
                         <span className={`${baseClass}__footer-count`}>
-                            {suggestions.length} {t('results') || 'resultados'}
+                            {suggestions.length} {t('results')}
                         </span>
                     </li>
                 </ul>

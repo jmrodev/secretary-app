@@ -2,19 +2,18 @@ import { useState, useCallback } from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
 import { useAppointments } from '@/features/appointments';
-import { useDoctors } from '@/features/users';
+import { useDoctors } from '@/context/DoctorContextDefinition';
 import api from '@/api/axios';
 
 export const useReportsController = () => {
     const { t } = useLanguage();
     const { alert } = useModal();
     const { getMonthlyReport, isSubmitting } = useAppointments();
-    const { doctors } = useDoctors();
+    const { doctors, viewDoctorId: selectedDoctorId } = useDoctors();
 
     const [activeTab, setActiveTab] = useState('appointments'); // appointments | prescriptions | balance
-    const [month, setMonth] = useState(new Date().getMonth() + 1);
-    const [year, setYear] = useState(new Date().getFullYear());
-    const [selectedDoctorId, setSelectedDoctorId] = useState('');
+    const [month, setMonth] = useState(() => new Date().getMonth() + 1);
+    const [year, setYear] = useState(() => new Date().getFullYear());
     const [reportData, setReportData] = useState(null);
 
     const handleGenerateReport = async () => {
@@ -101,7 +100,6 @@ export const useReportsController = () => {
         year,
         setYear,
         selectedDoctorId,
-        setSelectedDoctorId,
         reportData,
         isSubmitting,
         doctors,

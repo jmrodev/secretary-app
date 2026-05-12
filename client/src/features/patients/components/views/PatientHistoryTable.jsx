@@ -12,6 +12,12 @@ import './PatientHistoryTable.css';
  * Renders the appointment and payment history for a specific patient.
  */
 const PatientHistoryTable = ({ details, t, onPayDebt }) => {
+    const [isMounted, setIsMounted] = React.useState(false);
+
+    React.useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
     return (
         <section className="patient-details__block patient-details__block--history">
             <header className="patient-details__block-header">
@@ -82,7 +88,7 @@ const PatientHistoryTable = ({ details, t, onPayDebt }) => {
                                                     </div>
                                                 )}
                                                 {app.rescheduled_from_date && (
-                                                    <div className="patient-details__reschedule-info" title={`Originalmente para ${new Date(app.rescheduled_from_date).toLocaleString()}`}>
+                                                    <div className="patient-details__reschedule-info" title={isMounted ? `${t('originally_for') || 'Originalmente para'} ${new Date(app.rescheduled_from_date).toLocaleString()}` : ''}>
                                                         <Icon name="history" size="0.8rem" />
                                                         {t('rescheduled_from')}: {formatDate(app.rescheduled_from_date)}
                                                     </div>

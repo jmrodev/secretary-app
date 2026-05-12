@@ -29,7 +29,7 @@ export const useRegisterController = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleChange = (e) => {
+    const updateRegisterData = (e) => {
         let { name, value } = e.target;
         if (['fullName'].includes(name)) {
             value = capitalizeWords(value);
@@ -60,7 +60,7 @@ export const useRegisterController = () => {
     };
 
     const handlers = {
-        handleChange,
+        updateRegisterData,
         handleSubmit,
     };
 

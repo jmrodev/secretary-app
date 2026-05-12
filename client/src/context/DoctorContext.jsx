@@ -32,19 +32,19 @@ export const DoctorProvider = ({ children }) => {
         });
     }, []);
 
+    const onDoctorsLoaded = React.useRef((profileId) => {
+        setViewDoctorId(profileId);
+    }).current;
+
     // Initial logic: if user is a doctor, default to their own ID
     useEffect(() => {
         if (isDoctor && doctors.length > 0 && !viewDoctorId) {
             const profile = doctors.find(d => d.user_id === (user.user_id || user.id));
             if (profile) {
-                // Use a timeout to avoid synchronous setState during effect execution
-                const timeoutId = setTimeout(() => {
-                    setViewDoctorId(profile.id);
-                }, 0);
-                return () => clearTimeout(timeoutId);
+                onDoctorsLoaded(profile.id);
             }
         }
-    }, [isDoctor, doctors, user, viewDoctorId, setViewDoctorId]);
+    }, [isDoctor, doctors, user, viewDoctorId, onDoctorsLoaded]);
 
     const currentDoctor = useMemo(() => 
         doctors.find(d => String(d.id) === String(viewDoctorId)) || null

@@ -49,11 +49,16 @@ const PrescriptionForm = ({
         return Math.floor((upb * boxes) / daily);
     }, [tempUnitsPerBox, tempQty, tempDailyUnits]);
 
-    const refillDateStr = useMemo(() => {
-        if (!daysSupply) return null;
+    const [clientRefillDate, setClientRefillDate] = useState(null);
+
+    React.useEffect(() => {
+        if (!daysSupply) {
+            setClientRefillDate(null);
+            return;
+        }
         const d = new Date();
         d.setDate(d.getDate() + daysSupply);
-        return d.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
+        setClientRefillDate(d.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' }));
     }, [daysSupply]);
 
     // ── Handlers ─────────────────────────────────────────────────────────────
@@ -118,14 +123,15 @@ const PrescriptionForm = ({
             vademecum_id: tempVademecumId
         };
 
-        const existingIdx = medicationItems.findIndex(i => i.name === newItem.name);
-        if (existingIdx > -1) {
-            const next = [...medicationItems];
-            next[existingIdx] = newItem;
-            setMedicationItems(next);
-        } else {
-            setMedicationItems([...medicationItems, newItem]);
-        }
+        setMedicationItems(prev => {
+            const existingIdx = prev.findIndex(i => i.name === newItem.name);
+            if (existingIdx > -1) {
+                const next = [...prev];
+                next[existingIdx] = newItem;
+                return next;
+            }
+            return [...prev, newItem];
+        });
 
         // Reset
         setTempMed('');
@@ -139,7 +145,7 @@ const PrescriptionForm = ({
     };
 
     const handleRemoveItem = (index) => {
-        setMedicationItems(medicationItems.filter((_, i) => i !== index));
+        setMedicationItems(prev => prev.filter((_, i) => i !== index));
     };
 
     return (
@@ -162,7 +168,7 @@ const PrescriptionForm = ({
                 handleSelectMedication={handleSelectMedication}
                 canAdd={tempMed.trim().length > 0}
                 daysSupply={daysSupply}
-                refillDateStr={refillDateStr}
+                refillDateStr={clientRefillDate}
                 freqPresets={FREQ_PRESETS}
                 t={t}
             />

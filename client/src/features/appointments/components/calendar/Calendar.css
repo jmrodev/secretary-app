@@ -1,6 +1,6 @@
 /* Calendar Component Styles (BEM) - Dark Mode Standard */
 
-.calendar-grid {
+.calendar {
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -9,10 +9,9 @@
     background-color: transparent;
     border: none;
     border-radius: var(--radius-md);
-    overflow: hidden;
 }
 
-.calendar-grid__simple-title {
+.calendar__simple-title {
     padding: 0.5rem 1rem 1.25rem;
     text-align: left;
     font-weight: 500;
@@ -24,33 +23,33 @@
     letter-spacing: -0.02em;
 }
 
-.calendar-grid__main-container {
+.calendar__main-container {
     margin: 0.25rem;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.4rem;
 }
 
-.calendar-grid__body {
+.calendar__body {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     background-color: transparent;
-    gap: 0.5rem;
+    gap: 0.4rem;
 }
 
 /* Weekend Markers (Subtle approach for dark mode) */
 /* Sunday Column */
-.calendar-grid__body > :nth-child(7n+1) { 
+.calendar__body > :nth-child(7n+1) { 
     background-color: rgba(249, 55, 93, 0.02); 
     border-color: rgba(249, 55, 93, 0.1); 
 }
 /* Saturday Column */
-.calendar-grid__body > :nth-child(7n) { 
+.calendar__body > :nth-child(7n) { 
     background-color: rgba(59, 130, 246, 0.02); 
     border-color: rgba(59, 130, 246, 0.1); 
 }
 
-.calendar-grid__cell--empty {
+.calendar__cell--empty {
     background: transparent;
     border: none;
     aspect-ratio: 1 / 1;

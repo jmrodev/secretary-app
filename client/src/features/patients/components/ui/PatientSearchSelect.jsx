@@ -50,7 +50,6 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
             defaultOptions
             loadOptions={loadOptions}
             onChange={handleChange}
-            autoFocus={autoFocus}
             placeholder={finalPlaceholder}
             isClearable={true}
             noOptionsMessage={({ inputValue }) => (

@@ -8,12 +8,12 @@ import './PatientInstitutionFields.css';
  * Manages settings for institutional coverage (e.g., Hospital, Municipality).
  * Optimized for Bento Box layout.
  */
-const PatientInstitutionFields = ({ coveredByInstitution, handleInstitutionToggle, formData, handleChange, institutions, t }) => {
+const PatientInstitutionFields = ({ coveredByInstitution, toggleInstitutionCoverage, formData, updatePatientData, institutions, t }) => {
     const safeInstitutions = Array.isArray(institutions) ? institutions : (institutions?.institutions || []);
 
     const institutionOptions = [
-        { value: '', label: t('select_institution') || 'Seleccionar Institución...' },
-        ...safeInstitutions.filter(i => i.status === 'active').map(inst => ({ value: inst.id, label: inst.name }))
+        { value: '', label: t('select_institution') },
+        ...safeInstitutions.filter(inst => inst.status === 'active').map(inst => ({ value: inst.id, label: inst.name }))
     ];
 
     return (
@@ -33,11 +33,13 @@ const PatientInstitutionFields = ({ coveredByInstitution, handleInstitutionToggl
                         <input
                             type="checkbox"
                             checked={coveredByInstitution}
-                            onChange={(e) => handleInstitutionToggle(e.target.checked)}
+                            onChange={(e) => toggleInstitutionCoverage(e.target.checked)}
                             id="pf_institution"
                             className="patient-institution-fields__switch-input"
                         />
-                        <label htmlFor="pf_institution" className="patient-institution-fields__switch-slider"></label>
+                        <label htmlFor="pf_institution" className="patient-institution-fields__switch-slider">
+                            <span className="sr-only">{t('toggle_institution')}</span>
+                        </label>
                     </div>
                 </div>
 
@@ -49,7 +51,7 @@ const PatientInstitutionFields = ({ coveredByInstitution, handleInstitutionToggl
                             className="patient-institution-fields__field"
                             value={formData.institution_id || ''}
                             options={institutionOptions}
-                            onChange={handleChange}
+                            onChange={updatePatientData}
                         />
                     </div>
                 )}

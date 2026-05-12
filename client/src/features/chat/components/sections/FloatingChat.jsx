@@ -3,6 +3,7 @@ import { useMessage } from '@/context/MessageContext';
 import { useFloatingChatController } from '@/features/chat/hooks/useFloatingChatController';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
+import { formatTime } from '@/utils/core/dateUtils';
 
 // Local Components
 import ChatThread from '@/features/chat/components/sections/ChatThread';
@@ -39,10 +40,8 @@ const FloatingChat = () => {
     /**
      * Helper to format timestamps for message bubbles.
      */
-    const formatDate = (dateString = '') => {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        return date.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+    const formatMessageTime = (dateString = '') => {
+        return formatTime(dateString);
     };
 
     /**
@@ -75,10 +74,32 @@ const FloatingChat = () => {
         <div className={baseClass}>
             {isOpen ? (
                 <div className={`${baseClass}__window animate-fade-in`}>
-                    <div className={`${baseClass}__header`} onClick={() => !selectedConvo && closeChat()}>
+                    <div 
+                        className={`${baseClass}__header`} 
+                        onClick={() => !selectedConvo && closeChat()}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if ((e.key === 'Enter' || e.key === ' ') && !selectedConvo) {
+                                e.preventDefault();
+                                closeChat();
+                            }
+                        }}
+                    >
                         <h4 className={`${baseClass}__title`}>
                             {selectedConvo ? (
-                                <span className={`${baseClass}__back`} onClick={(e) => { e.stopPropagation(); backToList(); }}>
+                                <span 
+                                    className={`${baseClass}__back`} 
+                                    onClick={(e) => { e.stopPropagation(); backToList(); }}
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            backToList();
+                                        }
+                                    }}
+                                >
                                     <Icon name="arrow_back" size="1.1rem" />
                                     {selectedConvo.other_display_name}
                                 </span>
@@ -110,7 +131,7 @@ const FloatingChat = () => {
                                 messageText={messageText}
                                 isOtherTyping={isOtherTyping}
                                 scrollRef={scrollRef}
-                                formatDate={formatDate}
+                                formatDate={formatMessageTime}
                                 renderTicks={renderTicks}
                                 handleTyping={handleTyping}
                                 handleSendMessage={handleSendMessage}
@@ -128,7 +149,18 @@ const FloatingChat = () => {
                     </div>
                 </div>
             ) : (
-                <div className={`${baseClass}__minimized`} onClick={toggleChat}>
+                <div 
+                    className={`${baseClass}__minimized`} 
+                    onClick={toggleChat}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            toggleChat();
+                        }
+                    }}
+                >
                     <Icon name="chat" size="1.1rem" />
                     <span>Mensajes</span>
                     {unreadCount > 0 && <span className={`${baseClass}__badge`}>{unreadCount}</span>}

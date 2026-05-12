@@ -73,8 +73,8 @@ const AppointmentReportTable = ({ data, t }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {dailySummary.map((day, idx) => (
-                            <tr key={idx} className={`appointment-report__row ${day.is_weekend ? 'appointment-report__row--weekend' : ''} ${day.is_holiday ? 'appointment-report__row--holiday' : ''}`}>
+                        {dailySummary.map((day) => (
+                            <tr key={day.date} className={`appointment-report__row ${day.is_weekend ? 'appointment-report__row--weekend' : ''} ${day.is_holiday ? 'appointment-report__row--holiday' : ''}`}>
                                 <td>
                                     {day.date}
                                     {day.is_holiday && <span className="appointment-report__tag-small"><Icon name="celebration" size="1rem" /></span>}
@@ -128,8 +128,8 @@ const AppointmentReportTable = ({ data, t }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {list.map((dayGroup, idx) => (
-                            <React.Fragment key={idx}>
+                        {list.map((dayGroup) => (
+                            <React.Fragment key={dayGroup.date}>
                                 <tr className={`appointment-report__day-header ${dayGroup.is_weekend ? 'appointment-report__day-header--weekend' : ''} ${dayGroup.is_holiday ? 'appointment-report__day-header--holiday' : ''}`}>
                                     <td colSpan="7">
                                         <Icon name="calendar_today" size="1rem" className="mr-1" /> {dayGroup.date}
@@ -138,8 +138,8 @@ const AppointmentReportTable = ({ data, t }) => {
                                         {dayGroup.is_weekend && !dayGroup.is_holiday && <span className="appointment-report__weekend-note">({t('weekend_short') || 'Finde'})</span>}
                                     </td>
                                 </tr>
-                                {dayGroup.appointments.map((appt, i) => (
-                                    <tr key={`${idx}-${i}`} className={`appointment-report__row ${appt.is_overturn ? 'appointment-report__row--overturn' : ''}`}>
+                                {dayGroup.appointments.map((appt) => (
+                                    <tr key={appt.id || `${dayGroup.date}-${appt.hora}-${appt.nombre}`} className={`appointment-report__row ${appt.is_overturn ? 'appointment-report__row--overturn' : ''}`}>
                                         <td className="appointment-report__cell-day">{appt.dia}</td>
                                         <td>
                                             {appt.info}

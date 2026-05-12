@@ -7,6 +7,8 @@ import { useInsurancesController, InsuranceList, InsuranceFormModal } from '@/fe
 import MainLayout from '@/components/templates/MainLayout';
 import './InsurancesPage.css';
 
+import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+
 /**
  * InsurancesPage (Orchestrator).
  * Manages healthcare providers and insurance schemes.
@@ -35,45 +37,38 @@ const InsurancesPage = () => {
 
     return (
         <MainLayout wide flush title={t('insurances') || 'Obras Sociales'}>
-                <div className="insurances-page layout-content-area animate-fade-in">
+            <div className="insurances-page-orchestrator layout-content-area animate-fade-in">
+                <FeatureToolbar
+                    className="insurances-page-orchestrator__toolbar"
+                    actions={
+                        <Button
+                            variant="primary"
+                            size="sm"
+                            onClick={handleOpenCreate}
+                            icon={<Icon name="add" size="1.1rem" />}
+                        >
+                            {t('new_insurance') || 'Nueva Obra Social'}
+                        </Button>
+                    }
+                />
+
+                <main className="insurances-page-orchestrator__main">
                     {loading && filteredInsurances.length === 0 ? (
                         <Loading variant="centered" text={t('loading') || "Cargando..."} />
                     ) : (
-                        <div className="insurances-page__list-view animate-fade-in">
-                            <div className="dashboard-nav-bar">
-                                <div className="dashboard-nav-bar__title">
-                                    <h2 className="dashboard-nav-bar__title-text">
-                                        <Icon name="verified_user" size="1.4rem" />
-                                        {t('insurances_list') || 'Lista de Obras Sociales'}
-                                    </h2>
-                                </div>
-                                <div className="dashboard-nav-bar__actions">
-                                    <Button
-                                        variant="primary"
-                                        size="sm"
-                                        onClick={handleOpenCreate}
-                                        icon={<Icon name="add" size="1.1rem" />}
-                                    >
-                                        {t('new_insurance') || 'Nueva Obra Social'}
-                                    </Button>
-                                </div>
+                        <Card noPadding>
+                            <div className="insurances__content animate-fade-in">
+                                <InsuranceList
+                                    insurances={filteredInsurances}
+                                    onEdit={handleOpenEdit}
+                                    onDelete={handleDelete}
+                                    hasFilter={searchTerm !== ''}
+                                />
                             </div>
-
-                            <main className="insurances-page__main">
-                                <Card noPadding>
-                                    <div className="insurances__content animate-fade-in">
-                                        <InsuranceList
-                                            insurances={filteredInsurances}
-                                            onEdit={handleOpenEdit}
-                                            onDelete={handleDelete}
-                                            hasFilter={searchTerm !== ''}
-                                        />
-                                    </div>
-                                </Card>
-                            </main>
-                        </div>
+                        </Card>
                     )}
-                </div>
+                </main>
+            </div>
 
                 <InsuranceFormModal
                     isOpen={modalOpen}

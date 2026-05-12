@@ -1,6 +1,6 @@
 import React from 'react';
-import Calendar from '@/features/appointments/components/calendar/Calendar.jsx';
-import HolidayForm from '@/features/appointments/components/forms/HolidayForm.jsx';
+import Calendar from './Calendar.jsx';
+import HolidayForm from '../forms/HolidayForm.jsx';
 import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import './CalendarSection.css';
@@ -30,7 +30,7 @@ const CalendarSection = ({
                     {/* Tools section removed per user request */}
                 </>
             ) : (
-                <div className="dashboard-card holiday-card">
+                <div className="calendar-section__holiday-card dashboard-card">
                     <h3 className="dashboard-card__title">
                         <Icon name="event_busy" size="1rem" />
                         {t('block_agenda')}

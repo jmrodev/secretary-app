@@ -7,8 +7,10 @@ import './MedicationList.css';
  * Renders a collection of MedicationTag atoms.
  * Typically used as the visual output of the MedicationInput component.
  */
+const EMPTY_ARRAY = [];
+
 const MedicationList = ({
-    medications = [],
+    medications = EMPTY_ARRAY,
     onRemove,
     emptyMessage = 'No medications added yet',
     className = ''
@@ -22,7 +24,7 @@ const MedicationList = ({
             <div className="medication-list__items">
                 {medications.map((med, index) => (
                     <MedicationTag
-                        key={index}
+                        key={med.id || med.medication_id || `med-${index}`}
                         label={med.name || med.full_label || med.medication_name || med}
                         onRemove={() => onRemove(index)}
                     />

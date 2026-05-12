@@ -146,7 +146,7 @@ export const useMedicalDocumentsHandlers = ({
             showMessage(t('prescription_updated') || 'Receta actualizada', 'success');
             setIsEditing(false);
             fetchHistory();
-            setSelectedPrescription({ ...selectedPrescription, ...editData });
+            setSelectedPrescription(prev => ({ ...prev, ...editData }));
         } catch (err) {
             showMessage(`${t('error')}: ${err.response?.data || err.message}`, 'error');
         }
@@ -159,7 +159,7 @@ export const useMedicalDocumentsHandlers = ({
             showMessage(t('license_updated') || 'Licencia actualizada', 'success');
             setIsEditing(false);
             fetchHistory();
-            setSelectedLicense({ ...selectedLicense, ...licenseEditData });
+            setSelectedLicense(prev => ({ ...prev, ...licenseEditData }));
         } catch (err) {
             showMessage(`${t('error')}: ${err.response?.data || err.message}`, 'error');
         }
@@ -172,7 +172,7 @@ export const useMedicalDocumentsHandlers = ({
             showMessage(t('request_updated') || 'Solicitud actualizada', 'success');
             setIsEditing(false);
             fetchRequests();
-            setSelectedRequest({ ...selectedRequest, ...requestEditData });
+            setSelectedRequest(prev => ({ ...prev, ...requestEditData }));
         } catch (err) {
             showMessage(`${t('error')}: ${err.response?.data || err.message}`, 'error');
         }

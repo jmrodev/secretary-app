@@ -14,7 +14,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
     // --- State ---
     const [formData, setFormData] = useState({
         type: 'income_patient',
-        payments: [{ amount: '', method: 'cash' }],
+        payments: [{ _tmpId: Date.now(), amount: '', method: 'cash' }],
         description: '',
         related_user_id: '',
         doctor_id: '',
@@ -81,7 +81,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
 
         const newFormState = {
             type: data.type || 'income_patient',
-            payments: data.payments || [{ amount: data.amount !== undefined ? data.amount : '', method: data.method || 'cash' }],
+            payments: data.payments ? data.payments.map(p => ({ ...p, _tmpId: p._tmpId || Math.random() })) : [{ _tmpId: Date.now(), amount: data.amount !== undefined ? data.amount : '', method: data.method || 'cash' }],
             description: data.description || '',
             related_user_id: data.related_user_id || data.patientUserId || data.patientId || '',
             doctor_id: data.doctorId || '',
@@ -194,7 +194,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
     };
 
     const addPaymentMethod = () => {
-        setFormData(prev => ({ ...prev, payments: [...prev.payments, { amount: '', method: 'cash' }] }));
+        setFormData(prev => ({ ...prev, payments: [...prev.payments, { _tmpId: Date.now(), amount: '', method: 'cash' }] }));
     };
 
     const removePaymentMethod = (index) => {
@@ -209,7 +209,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         setMedications(prev => prev.filter((_, i) => i !== index));
     };
 
-    const handleSubmit = async () => {
+    const saveTransaction = async () => {
         if (!formData.doctor_id) {
             alert(t('please_select_doctor') || 'Por favor, seleccione un profesional');
             return;
@@ -281,7 +281,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         handlePaymentChange,
         addPaymentMethod,
         removePaymentMethod,
-        handleSubmit,
+        saveTransaction,
         addMedication,
         removeMedication,
         setTotalPrice

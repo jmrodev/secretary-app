@@ -31,21 +31,47 @@ const FREQ_PRESETS = [
  */
 const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, t, isSubmitting }) => {
     const { showMessage } = useMessage();
-    const [, setMedications] = useState('');
-    const [instructions, setInstructions] = useState('');
-    const [items, setItems] = useState([]);
-    const [patientMeds, setPatientMeds] = useState([]);
-    const [historyMeds, setHistoryMeds] = useState([]);
-    const [bonified, setBonified] = useState(false);
+    
+    const [state, dispatch] = React.useReducer((s, a) => {
+        if (a.type === 'RESET_FORM') return { ...s, ...a.payload };
+        if (a.type === 'UPDATE') return { ...s, ...a.payload };
+        return { ...s, [a.field]: a.value };
+    }, {
+        instructions: '',
+        items: [],
+        patientMeds: [],
+        historyMeds: [],
+        bonified: false,
+        tempMed: '',
+        tempDose: '',
+        tempUnitsPerBox: '',
+        tempDailyUnits: '',
+        tempBoxes: '',
+        tempFreqPreset: null,
+        currentVademecumId: null
+    });
 
-    // Structured input states
-    const [tempMed, setTempMed] = useState('');
-    const [tempDose, setTempDose] = useState('');
-    const [tempUnitsPerBox, setTempUnitsPerBox] = useState('');  // units inside a box
-    const [tempDailyUnits, setTempDailyUnits] = useState('');   // pills/day
-    const [tempBoxes, setTempBoxes] = useState('');             // how many boxes
-    const [tempFreqPreset, setTempFreqPreset] = useState(null); // selected preset index
-    const [currentVademecumId, setCurrentVademecumId] = useState(null);
+    const {
+        instructions, items, patientMeds, historyMeds, bonified,
+        tempMed, tempDose, tempUnitsPerBox, tempDailyUnits, tempBoxes,
+        tempFreqPreset, currentVademecumId
+    } = state;
+
+    const setInstructions = (v) => dispatch({ field: 'instructions', value: v });
+    const setItems = (v) => {
+        const val = typeof v === 'function' ? v(items) : v;
+        dispatch({ field: 'items', value: val });
+    };
+    const setPatientMeds = (v) => dispatch({ field: 'patientMeds', value: v });
+    const setHistoryMeds = (v) => dispatch({ field: 'historyMeds', value: v });
+    const setBonified = (v) => dispatch({ field: 'bonified', value: v });
+    const setTempMed = (v) => dispatch({ field: 'tempMed', value: v });
+    const setTempDose = (v) => dispatch({ field: 'tempDose', value: v });
+    const setTempUnitsPerBox = (v) => dispatch({ field: 'tempUnitsPerBox', value: v });
+    const setTempDailyUnits = (v) => dispatch({ field: 'tempDailyUnits', value: v });
+    const setTempBoxes = (v) => dispatch({ field: 'tempBoxes', value: v });
+    const setTempFreqPreset = (v) => dispatch({ field: 'tempFreqPreset', value: v });
+    const setCurrentVademecumId = (v) => dispatch({ field: 'currentVademecumId', value: v });
 
     // ── Fetch data ──────────────────────────────────────────────────────────
     // ── Helpers ─────────────────────────────────────────────────────────────
@@ -55,14 +81,19 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
     };
 
     const resetFields = () => {
-        setTempMed('');
-        setTempDose('');
-        setTempUnitsPerBox('');
-        setTempDailyUnits('');
-        setTempBoxes('');
-        setTempFreqPreset(null);
-        setCurrentVademecumId(null);
-        setBonified(false);
+        dispatch({
+            type: 'UPDATE',
+            payload: {
+                tempMed: '',
+                tempDose: '',
+                tempUnitsPerBox: '',
+                tempDailyUnits: '',
+                tempBoxes: '',
+                tempFreqPreset: null,
+                currentVademecumId: null,
+                bonified: false
+            }
+        });
     };
 
     // ── Fetch data ──────────────────────────────────────────────────────────

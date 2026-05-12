@@ -22,28 +22,28 @@ const BalanceCashFlowTable = ({ appointments = [], t }) => {
     return (
         <section className="balance-cashflow animate-fade-in">
             <header>
-                <h3 className="balance-cashflow__title">Rendición de Caja</h3>
-                <p className="balance-cashflow__subtitle">Detalle de ingresos diarios por método de pago</p>
+                <h3 className="balance-cashflow__title">{t('cash_reconciliation')}</h3>
+                <p className="balance-cashflow__subtitle">{t('daily_income_detail')}</p>
             </header>
 
             <div className="balance-cashflow__table-wrapper">
                 <table className="balance-cashflow__table">
                     <thead>
                         <tr>
-                            <th>Fecha</th>
-                            <th className="balance-cashflow__cell--right">Efectivo</th>
-                            <th className="balance-cashflow__cell--right">Otros Métodos</th>
-                            <th className="balance-cashflow__cell--right">Total Día</th>
+                            <th>{t('date_label')}</th>
+                            <th className="balance-cashflow__cell--right">{t('cash')}</th>
+                            <th className="balance-cashflow__cell--right">{t('other_methods')}</th>
+                            <th className="balance-cashflow__cell--right">{t('daily_total')}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredDays.slice().reverse().map((day, idx) => {
+                        {filteredDays.slice().reverse().map((day) => {
                             const cash = Number(day.total_efectivo || 0);
                             const total = Number(day.total_paid || 0);
                             const others = total - cash;
 
                             return (
-                                <tr key={idx}>
+                                <tr key={day.date}>
                                     <td>{day.date}</td>
                                     <td className="balance-cashflow__cell--right">$ {cash.toLocaleString()}</td>
                                     <td className="balance-cashflow__cell--right">$ {others.toLocaleString()}</td>
@@ -56,7 +56,7 @@ const BalanceCashFlowTable = ({ appointments = [], t }) => {
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td>TOTAL:</td>
+                            <td>{t('total').toUpperCase()}:</td>
                             <td className="balance-cashflow__cell--right">$ {totalCash.toLocaleString()}</td>
                             <td className="balance-cashflow__cell--right">$ {totalOthers.toLocaleString()}</td>
                             <td className="balance-cashflow__cell--right balance-cashflow__cell--bold">$ {totalIncome.toLocaleString()}</td>
