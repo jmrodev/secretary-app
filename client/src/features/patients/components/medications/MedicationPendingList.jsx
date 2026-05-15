@@ -18,7 +18,7 @@ const MedicationPendingList = ({ pendingMedications, onRemovePending, t }) => {
                 {t('medications_to_add') || 'Lista a Guardar'} ({pendingMedications.length})
             </label>
             {pendingMedications.map((med, idx) => (
-                <div key={idx} className="medication-pending-list__item">
+                <div key={med._tempId || idx} className="medication-pending-list__item">
                     <div className="medication-pending-list__info">
                         <div className="medication-pending-list__name">{med.medication_name}</div>
                         <div className="medication-pending-list__details">

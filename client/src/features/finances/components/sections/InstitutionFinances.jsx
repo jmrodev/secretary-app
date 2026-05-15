@@ -1,5 +1,6 @@
 import React from 'react';
 import { useInstitutionFinances } from '@/features/finances/hooks/useInstitutionFinances';
+import { formatDate } from '@/utils/core/dateUtils';
 
 // Molecules
 import InstitutionSummary from '@/features/finances/components/sections/InstitutionSummary';
@@ -77,23 +78,6 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
         }
     };
 
-    const formatDate = (dateStr) => {
-        if (!dateStr) return 'N/A';
-        const date = new Date(dateStr);
-        const day = date.getDate();
-        const months = t('months_array') || [
-            'january', 'february', 'march', 'april', 'may', 'june',
-            'july', 'august', 'september', 'october', 'november', 'december'
-        ];
-        const monthKey = months[date.getMonth()].toLowerCase();
-        const month = t(monthKey);
-        const year = date.getFullYear();
-        return (t('date_format_long') || "{day} {month} {year}")
-            .replace('{day}', day)
-            .replace('{month}', month)
-            .replace('{year}', year);
-    };
-
     if (!selectedInstId) {
         return (
             <div className="institution-finances">
@@ -155,7 +139,7 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
                             }));
                             setIsPayModalOpen(true);
                         }}
-                        formatDate={formatDate}
+                        formatDate={(d) => formatDate(d, { monthName: true })}
                         t={t}
                     />
                 </div>
@@ -165,7 +149,7 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
                 <div className="institution-finances__grid">
                     <InstitutionPatientsTable
                         patients={patients}
-                        formatDate={formatDate}
+                        formatDate={(d) => formatDate(d, { monthName: true })}
                         t={t}
                     />
                 </div>

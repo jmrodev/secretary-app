@@ -6,12 +6,14 @@ import { formatDate, formatTime } from '@/utils/core/dateUtils';
 import Loading from '@/components/atoms/Loading';
 import './PatientRecycleBin.css';
 
+const EMPTY_ARRAY = [];
+
 /**
  * PatientRecycleBin (Executor).
  * Renders a list of deleted patients for restoration.
  */
 const PatientRecycleBin = ({
-    recycleItems = [],
+    recycleItems = EMPTY_ARRAY,
     onRestore,
     loading
 }) => {

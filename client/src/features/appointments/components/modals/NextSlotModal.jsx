@@ -2,7 +2,7 @@ import React, { Fragment, useEffect } from 'react';
 import Modal from '@/components/molecules/Modal';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import { formatDate } from '@/utils/core/dateUtils';
+import { formatDate, getNow, toInputDate } from '@/utils/core/dateUtils';
 import { useLanguage } from '@/hooks/useLanguage';
 import Loading from '@/components/atoms/Loading';
 import './NextSlotModal.css';
@@ -38,7 +38,7 @@ const NextSlotModal = ({
     }, [isOpen, slotsPage, slotPages.length, nextSlotData?.nextStartDate]);
 
     const monthNames = t('months_array');
-    const todayIso = new Date().toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).split(' ')[0];
+    const todayIso = toInputDate(getNow());
     const currentSlots = slotPages.length > 0 ? slotPages[Math.min(slotsPage, slotPages.length - 1)] : [];
 
     const baseClass = 'next-slot-modal';
@@ -79,7 +79,7 @@ const NextSlotModal = ({
                                     const showMonthHeader = !prevSlot || (monthLabel !== `${monthNames[parseInt(prevSlot.dayDate.split('-')[1]) - 1]} ${prevSlot.dayDate.split('-')[0]}`);
                                     
                                     return (
-                                        <Fragment key={`${slot.dayDate}-${slot.iso}-${index}`}>
+                                        <Fragment key={`${slot.dayDate}-${slot.iso}`}>
                                             {showMonthHeader && (
                                                 <tr className={`${baseClass}__month-header`}>
                                                     <td colSpan="2" className={`${baseClass}__month-cell`}>

@@ -36,15 +36,27 @@ const Icon = ({
         }
     };
 
+    if (onIconClick) {
+        return (
+            <button
+                type="button"
+                className={combinedClasses}
+                style={{ ...style, background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+                onClick={onIconClick}
+                onKeyDown={handleKeyDown}
+                aria-label={typeof name === 'string' ? name.toLowerCase().replace(/_/g, ' ') : 'icon'}
+            >
+                {symbol}
+            </button>
+        );
+    }
+
     return (
         <span
             className={combinedClasses}
             style={style}
-            onClick={onIconClick}
-            onKeyDown={handleKeyDown}
-            role={onIconClick ? 'button' : undefined}
-            tabIndex={onIconClick ? 0 : undefined}
-            aria-hidden={!onIconClick}
+            role="presentation"
+            aria-hidden="true"
         >
             {symbol}
         </span>

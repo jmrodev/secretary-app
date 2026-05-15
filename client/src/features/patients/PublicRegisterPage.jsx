@@ -8,7 +8,7 @@ import './PublicRegisterPage.css';
  * Paginated form (one field at a time) for accessibility and mobile ease.
  * Focused on: Name, Surname, Address, DNI, Phone.
  */
-const StepField = ({ step, formData, onChange }) => {
+const StepField = ({ step, formData, onChange, inputRef }) => {
     switch(step) {
         case 1:
             return (
@@ -21,8 +21,8 @@ const StepField = ({ step, formData, onChange }) => {
                         value={formData.firstName}
                         onChange={onChange}
                         placeholder="Escribí tu nombre..."
-                        autoFocus
                         autoComplete="off"
+                        ref={inputRef}
                     />
                 </div>
             );
@@ -38,6 +38,7 @@ const StepField = ({ step, formData, onChange }) => {
                         onChange={onChange}
                         placeholder="Escribí tu apellido..."
                         autoComplete="off"
+                        ref={inputRef}
                     />
                 </div>
             );
@@ -53,6 +54,7 @@ const StepField = ({ step, formData, onChange }) => {
                         onChange={onChange}
                         placeholder="Calle y número..."
                         autoComplete="off"
+                        ref={inputRef}
                     />
                 </div>
             );
@@ -70,6 +72,7 @@ const StepField = ({ step, formData, onChange }) => {
                         onChange={onChange}
                         placeholder="Sólo números..."
                         autoComplete="off"
+                        ref={inputRef}
                     />
                 </div>
             );
@@ -96,8 +99,15 @@ const PublicRegisterPage = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const { request, loading } = useFetch();
+    const inputRef = React.useRef(null);
     
     const [step, setStep] = useState(1);
+
+    React.useEffect(() => {
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [step]);
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -147,51 +157,49 @@ const PublicRegisterPage = () => {
         }
     };
 
-    if (success) {
-        return (
-            <div className="public-register-paginated">
+    return (
+        <div className="public-register-paginated">
+            {success ? (
                 <div className="step-card success-card animate-fade-in">
                     <span className="success-emoji">✅</span>
                     <h1 className="accessible-title">¡Todo Listo!</h1>
                     <p className="accessible-text">Tus datos se guardaron correctamente.</p>
                     <p className="accessible-subtext">Ya podés cerrar esta página y volver al WhatsApp.</p>
                 </div>
-            </div>
-        );
-    }
+            ) : (
+                <>
+                    <div className="step-header">
+                        <div className="progress-text">Paso {step} de {totalSteps}</div>
+                        <div className="progress-bar">
+                            <div className="progress-fill" style={{ width: `${(step / totalSteps) * 100}%` }}></div>
+                        </div>
+                    </div>
 
-    return (
-        <div className="public-register-paginated">
-            <div className="step-header">
-                <div className="progress-text">Paso {step} de {totalSteps}</div>
-                <div className="progress-bar">
-                    <div className="progress-fill" style={{ width: `${(step / totalSteps) * 100}%` }}></div>
-                </div>
-            </div>
+                    <main className="step-container">
+                        {error && <div className="accessible-error">{error}</div>}
+                        
+                        <StepField step={step} formData={formData} onChange={updateRegisterData} inputRef={inputRef} />
 
-            <main className="step-container">
-                {error && <div className="accessible-error">{error}</div>}
-                
-                <StepField step={step} formData={formData} onChange={updateRegisterData} />
-
-                <footer className="step-footer">
-                    {step > 1 && (
-                        <button className="btn-huge btn-huge--secondary" onClick={prevStep} disabled={loading}>
-                            ATRÁS
-                        </button>
-                    )}
-                    
-                    {step < totalSteps ? (
-                        <button className="btn-huge btn-huge--primary" onClick={nextStep}>
-                            SIGUIENTE
-                        </button>
-                    ) : (
-                        <button className="btn-huge btn-huge--success" onClick={handleSubmit} disabled={loading}>
-                            {loading ? 'GUARDANDO...' : 'FINALIZAR'}
-                        </button>
-                    )}
-                </footer>
-            </main>
+                        <footer className="step-footer">
+                            {step > 1 && (
+                                <button className="btn-huge btn-huge--secondary" onClick={prevStep} disabled={loading}>
+                                    ATRÁS
+                                </button>
+                            )}
+                            
+                            {step < totalSteps ? (
+                                <button className="btn-huge btn-huge--primary" onClick={nextStep}>
+                                    SIGUIENTE
+                                </button>
+                            ) : (
+                                <button className="btn-huge btn-huge--success" onClick={handleSubmit} disabled={loading}>
+                                    {loading ? 'GUARDANDO...' : 'FINALIZAR'}
+                                </button>
+                            )}
+                        </footer>
+                    </main>
+                </>
+            )}
         </div>
     );
 };

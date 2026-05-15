@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import { formatDate } from '@/utils/core/dateUtils';
+import { formatDate, compareDates } from '@/utils/core/dateUtils';
 import './HolidayList.css';
 
 /**
@@ -10,7 +10,7 @@ import './HolidayList.css';
 const HolidayList = ({ holidays, onDelete }) => {
     const sortedHolidays = useMemo(() => {
         if (!holidays) return [];
-        return [...holidays].sort((a, b) => new Date(a.date) - new Date(b.date));
+        return holidays.toSorted((a, b) => compareDates(a.date, b.date));
     }, [holidays]);
 
     if (!sortedHolidays || sortedHolidays.length === 0) {

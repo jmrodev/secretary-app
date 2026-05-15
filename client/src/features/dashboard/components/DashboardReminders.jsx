@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import TabButton from '@/components/atoms/TabButton';
-import { formatDate } from '@/utils/core/dateUtils';
+import { formatDate, isPast } from '@/utils/core/dateUtils';
 import './DashboardReminders.css';
 
 /**
@@ -17,7 +17,7 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
     const allTasks = [];
     reminders.forEach(r => {
         // Visit Reminder
-        if (r.next_suggested_visit_date && new Date(r.next_suggested_visit_date) <= new Date()) {
+        if (r.next_suggested_visit_date && isPast(r.next_suggested_visit_date)) {
             allTasks.push({
                 ...r,
                 taskType: 'visit',
@@ -27,7 +27,7 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
             });
         }
         // Prescription Reminder
-        if (r.next_suggested_prescription_date && new Date(r.next_suggested_prescription_date) <= new Date()) {
+        if (r.next_suggested_prescription_date && isPast(r.next_suggested_prescription_date)) {
             allTasks.push({
                 ...r,
                 taskType: 'prescription',
@@ -37,7 +37,7 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
             });
         }
         // License Reminder
-        if (r.license_expiry_date && new Date(r.license_expiry_date) <= new Date()) {
+        if (r.license_expiry_date && isPast(r.license_expiry_date)) {
             allTasks.push({
                 ...r,
                 taskType: 'license',
@@ -98,10 +98,8 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                         </p>
                     </div>
                 ) : (
-                    currentTasks.map((task) => {
-                        const taskKey = `${task.id}-${task.taskType}`;
-                        return (
-                            <article key={taskKey} className="dashboard-reminders__item animate-fade-in">
+                    currentTasks.map((task) => (
+                        <article key={`${task.id}-${task.taskType}`} className="dashboard-reminders__item animate-fade-in">
                             <div className="dashboard-reminders__item-info">
                                 <h4 className="dashboard-reminders__item-name">{task.full_name}</h4>
                                 <div className="dashboard-reminders__item-details">

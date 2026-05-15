@@ -92,20 +92,21 @@ const InstitutionsPage = () => {
                             />
 
                             <main className="dashboard-layout__main dashboard-layout__main--full">
-                            <div className="dashboard-card no-padding">
-                                <div className="institutions__content animate-fade-in">
-                                    <InstitutionFinances
-                                        institutions={institutions}
-                                        selectedInstId={selectedInstId}
-                                        viewMode={viewMode}
-                                        setViewMode={setViewMode}
-                                        t={t}
-                                    />
+                                <div className="dashboard-card no-padding">
+                                    <div className="institutions__content animate-fade-in">
+                                        <InstitutionFinances
+                                            institutions={institutions}
+                                            selectedInstId={selectedInstId}
+                                            viewMode={viewMode}
+                                            setViewMode={setViewMode}
+                                            t={t}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                        </main>
-                    </div>
-                )}
+                            </main>
+                        </>
+                    )}
+                </div>
 
                 <InstitutionFormModal
                     isOpen={isFormModalOpen}
@@ -116,12 +117,9 @@ const InstitutionsPage = () => {
                     isEditing={!!editingInstitution}
                     t={t}
                 />
-                </div>
             </div>
         </MainLayout>
     );
 };
 
 export default InstitutionsPage;
-
-

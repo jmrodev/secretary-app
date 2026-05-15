@@ -1,19 +1,24 @@
+import React from 'react';
+import { getToday, parseDate } from '@/utils/core/dateUtils';
 import './BalanceCashFlowTable.css';
+
+const EMPTY_ARRAY = [];
 
 /**
  * BalanceCashFlowTable Feature Molecule.
  * Detailed daily breakdown of income split by payment method (cash vs others).
  * Part of the analytical reporting within the finances domain.
  */
-const BalanceCashFlowTable = ({ appointments = [], t }) => {
+const BalanceCashFlowTable = ({ appointments = EMPTY_ARRAY, t }) => {
     // Filter days up to today
-    const filteredDays = appointments.filter(day => {
-        const [d, m, y] = day.date.split('/');
-        const dayDate = new Date(y, m - 1, d);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        return dayDate <= today;
-    });
+    const filteredDays = React.useMemo(() => {
+        const today = getToday();
+
+        return appointments.filter(day => {
+            const dayDate = parseDate(day.date);
+            return dayDate && dayDate <= today;
+        });
+    }, [appointments]);
 
     const totalCash = filteredDays.reduce((acc, d) => acc + Number(d.total_efectivo || 0), 0);
     const totalIncome = filteredDays.reduce((acc, d) => acc + Number(d.total_paid || 0), 0);

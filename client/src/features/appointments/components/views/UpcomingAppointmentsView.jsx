@@ -2,6 +2,7 @@ import React from 'react';
 import AppointmentCard from '../cards/AppointmentCard';
 import Loading from '@/components/atoms/Loading';
 import Icon from '@/components/atoms/Icon';
+import { isPast, compareDates } from '@/utils/core/dateUtils';
 import './UpcomingAppointmentsView.css';
 
 /**
@@ -12,8 +13,8 @@ const UpcomingAppointmentsView = ({ appointments, loading, t, onAction, onWhatsA
     if (loading) return <Loading />;
 
     const upcoming = (appointments || [])
-        .filter(a => new Date(a.appointment_date) >= new Date())
-        .sort((a, b) => new Date(a.appointment_date) - new Date(b.appointment_date));
+        .filter(a => !isPast(a.appointment_date))
+        .sort((a, b) => compareDates(a.appointment_date, b.appointment_date));
 
     if (upcoming.length === 0) {
         return (

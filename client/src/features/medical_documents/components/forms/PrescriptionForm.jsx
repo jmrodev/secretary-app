@@ -1,5 +1,6 @@
 
 import React, { useState, useMemo } from 'react';
+import { getNow } from '@/utils/core/dateUtils';
 
 // Molecules
 import PrescriptionHabitualMeds from '@/features/medical_documents/components/sections/PrescriptionHabitualMeds';
@@ -56,7 +57,7 @@ const PrescriptionForm = ({
             setClientRefillDate(null);
             return;
         }
-        const d = new Date();
+        const d = getNow();
         d.setDate(d.getDate() + daysSupply);
         setClientRefillDate(d.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' }));
     }, [daysSupply]);

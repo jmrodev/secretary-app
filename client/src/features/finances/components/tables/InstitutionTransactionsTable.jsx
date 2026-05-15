@@ -1,4 +1,5 @@
 import React from 'react';
+import { getNow, parseDate } from '@/utils/core/dateUtils';
 import Badge from '@/components/atoms/Badge';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
@@ -19,6 +20,8 @@ const InstitutionTransactionsTable = ({
     formatDate,
     t
 }) => {
+    // Use a stable reference for "today" to avoid hydration issues and unnecessary recalculations
+    const [today] = React.useState(() => getNow());
     const pendingTransactions = transactions.filter(tr => tr.payment_status === 'pending');
     const allChecked = pendingTransactions.length > 0 && pendingTransactions.every(tr => selectedTrs.has(tr.transaction_id));
 
@@ -81,8 +84,8 @@ const InstitutionTransactionsTable = ({
                     <tbody>
                         {transactions.map(tr => {
                             const displayDate = tr.appointment_date || tr.transaction_date;
-                            const trDate = new Date(displayDate);
-                            const diffDays = Math.ceil(Math.abs(new Date() - trDate) / (1000 * 60 * 60 * 24));
+                            const trDate = parseDate(displayDate);
+                            const diffDays = Math.ceil(Math.abs(today - trDate) / (1000 * 60 * 60 * 24));
                             const isPending = tr.payment_status === 'pending';
                             const isChecked = selectedTrs.has(tr.transaction_id);
 
@@ -110,7 +113,7 @@ const InstitutionTransactionsTable = ({
                                                 {tr.patient_name}
                                             </a>
                                         ) : (
-                                            <span className="institution-transactions__text-muted">—</span>
+                                            <span className="institution-transactions__text-muted">-</span>
                                         )}
                                     </td>
                                     <td>{tr.doctor_name || 'N/A'}</td>
@@ -119,7 +122,7 @@ const InstitutionTransactionsTable = ({
                                             {t(tr.appointment_status) || tr.appointment_status}
                                         </Badge>
                                     </td>
-                                    <td className="institution-transactions__cell--center">
+                                    <td className="institution-transactions__cell--center" suppressHydrationWarning>
                                         {isPending ? (
                                             <span className={`institution-transactions__age-badge ${diffDays > 30 ? 'institution-transactions__age-badge--critical' : 'institution-transactions__age-badge--warning'}`}>
                                                 {t('days_count').replace('{days}', diffDays)}

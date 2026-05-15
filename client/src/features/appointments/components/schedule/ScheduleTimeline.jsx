@@ -44,14 +44,17 @@ const ScheduleTimeline = ({
                                 </div>
                             ) : (
                                 <div className={`schedule-timeline__apps-grid ${slotApps.length > 1 ? 'schedule-timeline__apps-grid--multiple' : ''}`}>
-                                    {slotApps
-                                        .filter(appt => showCancelled || !['cancelled', 'suspended', 'absent'].includes(appt.status))
-                                        .map(appt => (
-                                            <AppointmentCard
-                                                key={appt.id} appt={appt}
-                                                onClick={() => onSlotClick(time.getHours(), appt)}
-                                            />
-                                        ))}
+                                    {slotApps.reduce((acc, appt) => {
+                                        if (showCancelled || !['cancelled', 'suspended', 'absent'].includes(appt.status)) {
+                                            acc.push(
+                                                <AppointmentCard
+                                                    key={appt.id} appt={appt}
+                                                    onClick={() => onSlotClick(time.getHours(), appt)}
+                                                />
+                                            );
+                                        }
+                                        return acc;
+                                    }, [])}
                                 </div>
                             )}
 

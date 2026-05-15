@@ -9,6 +9,7 @@
     "lint": "oxlint . && react-doctor --lint --fail-on error . && eslint .",
     "lint:fix": "oxlint . --fix && eslint . --fix",
     "doctor": "react-doctor",
+    "doctor:report": "react-doctor --json . > reports/doctor-report.json",
     "preview": "vite preview"
   },
   "dependencies": {

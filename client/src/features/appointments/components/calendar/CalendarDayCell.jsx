@@ -2,13 +2,15 @@ import React from 'react';
 import CalendarDayIndicator from './CalendarDayIndicator';
 import './CalendarDayCell.css';
 
+const EMPTY_OBJECT = {};
+
 /**
  * CalendarDayCell (Internal to feature).
  * Represents a single day in the monthly calendar grid.
  */
 const CalendarDayCell = ({
   day,
-  status = {}, // { isCurrentMonth, isSelected, isToday, isHoliday, isPast, disabled, compact }
+  status = EMPTY_OBJECT, // { isCurrentMonth, isSelected, isToday, isHoliday, isPast, disabled, compact }
   holidayDescription = '',
   appointmentCount = 0,
   bookedInCount = 0,
@@ -28,7 +30,7 @@ const CalendarDayCell = ({
     compact = false 
   } = status;
 
-  const handleClick = () => { if (!disabled && onClick) onClick(day); };
+  const handleSelectDay = () => { if (!disabled && onClick) onClick(day); };
 
   const cellClasses = [
     'calendar-day-cell',
@@ -49,7 +51,7 @@ const CalendarDayCell = ({
   return (
     <div
       className={cellClasses}
-      onClick={handleClick}
+      onClick={handleSelectDay}
       onKeyDown={handleKeyDown}
       title={isHoliday ? holidayDescription : ''}
       role="button"

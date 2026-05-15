@@ -87,18 +87,20 @@ const IntegrationGoogleCalendar = ({
                             <div className="config-section__divider"></div>
 
                             <div className="config-field">
-                                <label className="config-field__label">Google Sheets - ID de Hoja de Cálculo (Finanzas)</label>
-                                <p className="config-field__hint">
-                                    Pega el ID de la hoja de cálculo de Google donde deseas respaldar las transacciones.
-                                    <br />
-                                    <small>El ID se encuentra en la URL: docs.google.com/spreadsheets/d/<b>ID_AQUI</b>/edit</small>
-                                </p>
                                 <ConfigField
                                     id="finance-spreadsheet-id"
+                                    label="Google Sheets - ID de Hoja de Cálculo (Finanzas)"
                                     value={settings.finance_spreadsheet_id || ''}
                                     onChange={(e) => updateSetting('finance_spreadsheet_id', e.target.value)}
                                     placeholder="e.g. 1aBCdEfGhIjKlMnOpQrStUvWxYz1234567890"
                                     className="config-field__input--monospace"
+                                    hint={
+                                        <>
+                                            Pega el ID de la hoja de cálculo de Google donde deseas respaldar las transacciones.
+                                            <br />
+                                            <small>El ID se encuentra en la URL: docs.google.com/spreadsheets/d/<b>ID_AQUI</b>/edit</small>
+                                        </>
+                                    }
                                 />
                             </div>
                         </div>

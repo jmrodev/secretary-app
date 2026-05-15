@@ -66,7 +66,7 @@ const MedicationAutocomplete = ({
             <>
                 {chunks.map((chunk, i) =>
                     regex.test(chunk) ? (
-                        <span key={i} className={`${baseClass}__highlight`}>{chunk}</span>
+                        <span key={`match-${i}-${chunk}`} className={`${baseClass}__highlight`}>{chunk}</span>
                     ) : (
                         chunk
                     )
@@ -112,12 +112,19 @@ const MedicationAutocomplete = ({
                 <ul ref={listRef} className={`${baseClass}__list animate-fade-in`} role="listbox">
                     {suggestions.map((med, idx) => (
                         <li
-                            key={med.id || idx}
+                            key={med.id || `med-suggestion-${idx}`}
                             className={`${baseClass}__item ${cursor === idx ? `${baseClass}__item--active` : ''}`}
                             onClick={() => handleSelect(med)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    handleSelect(med);
+                                }
+                            }}
                             onMouseEnter={() => setCursor(idx)}
                             role="option"
                             aria-selected={cursor === idx}
+                            tabIndex={0}
                         >
                             <div className={`${baseClass}__item-title`}>
                                 {highlightMatch(med.name, searchTerm)}

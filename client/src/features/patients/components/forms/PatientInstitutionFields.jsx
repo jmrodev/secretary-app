@@ -11,10 +11,15 @@ import './PatientInstitutionFields.css';
 const PatientInstitutionFields = ({ coveredByInstitution, toggleInstitutionCoverage, formData, updatePatientData, institutions, t }) => {
     const safeInstitutions = Array.isArray(institutions) ? institutions : (institutions?.institutions || []);
 
-    const institutionOptions = [
+    const institutionOptions = React.useMemo(() => [
         { value: '', label: t('select_institution') },
-        ...safeInstitutions.filter(inst => inst.status === 'active').map(inst => ({ value: inst.id, label: inst.name }))
-    ];
+        ...safeInstitutions.reduce((acc, inst) => {
+            if (inst.status === 'active') {
+                acc.push({ value: inst.id, label: inst.name });
+            }
+            return acc;
+        }, [])
+    ], [safeInstitutions, t]);
 
     return (
         <article className="patient-institution-fields">

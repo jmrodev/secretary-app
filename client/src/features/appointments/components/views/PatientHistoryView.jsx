@@ -3,7 +3,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import Loading from '@/components/atoms/Loading';
-import { formatDate } from '@/utils/core/dateUtils';
+import { formatDate, formatTime } from '@/utils/core/dateUtils';
 import './PatientHistoryView.css';
 
 /**
@@ -64,7 +64,6 @@ const PatientHistoryView = ({ patientAppointments, loading, onClose, t, searchPa
                     </thead>
                     <tbody>
                         {patientAppointments.map(appt => {
-                            const apptDate = new Date(appt.appointment_date);
                             const paid = Number(appt.paid_amount || 0);
                             const pending = Number(appt.pending_amount || 0);
                             const cost = Number(appt.cost || 0);
@@ -80,7 +79,7 @@ const PatientHistoryView = ({ patientAppointments, loading, onClose, t, searchPa
                             if (isBonified) { paymentClass = 'bonified'; paymentLabel = translate('bonified') || 'Bonif.'; }
                             else if (isFullyPaid) { paymentClass = 'paid'; paymentLabel = `$${paid.toLocaleString()}`; }
                             else if (hasDebt) { paymentClass = 'debt'; paymentLabel = `$${(pending || cost).toLocaleString()}`; }
-                            else if (effectiveTotal === 0) { paymentClass = ''; paymentLabel = '—'; }
+                            else if (effectiveTotal === 0) { paymentClass = ''; paymentLabel = '-'; }
 
                             return (
                                 <tr
@@ -93,13 +92,13 @@ const PatientHistoryView = ({ patientAppointments, loading, onClose, t, searchPa
                                         {formatDate(appt.appointment_date)}
                                     </td>
                                     <td className="patient-history-view__td patient-history-view__td--time">
-                                        {apptDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
+                                        {formatTime(appt.appointment_date, { hour12: false })}
                                     </td>
                                     <td className="patient-history-view__td patient-history-view__td--doctor">
-                                        {appt.doctor_name ? `Dr. ${appt.doctor_name.split(' ').pop()}` : '—'}
+                                        {appt.doctor_name ? `Dr. ${appt.doctor_name.split(' ').pop()}` : '-'}
                                     </td>
                                     <td className="patient-history-view__td patient-history-view__td--reason">
-                                        <span title={appt.reason}>{appt.reason || '—'}</span>
+                                        <span title={appt.reason}>{appt.reason || '-'}</span>
                                         {appt.type === 'virtual' && (
                                             <Icon name="videocam" size="0.9rem" className="patient-history-view__virtual-icon" title="Virtual" />
                                         )}
@@ -110,11 +109,11 @@ const PatientHistoryView = ({ patientAppointments, loading, onClose, t, searchPa
                                         </span>
                                     </td>
                                     <td className="patient-history-view__td">
-                                        {paymentLabel !== '—' ? (
+                                        {paymentLabel !== '-' ? (
                                             <span className={`patient-history-view__payment-badge patient-history-view__payment-badge--${paymentClass}`}>
                                                 {paymentLabel}
                                             </span>
-                                        ) : <span className="patient-history-view__td--muted">—</span>}
+                                        ) : <span className="patient-history-view__td--muted">-</span>}
                                     </td>
                                     <td className="patient-history-view__td patient-history-view__td--actions" onClick={e => e.stopPropagation()}>
                                         {appt.patient_phone && (

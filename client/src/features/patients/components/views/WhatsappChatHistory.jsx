@@ -36,25 +36,20 @@ const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
     const [state, dispatch] = React.useReducer(chatReducer, initialState);
     const { messages, loading, newMessage, sending, aiLoading } = state;
     
-    const setMessages = (val) => dispatch({ type: 'SET_MESSAGES', payload: val });
-    const setLoading = (val) => dispatch({ type: 'SET_LOADING', payload: val });
-    const setNewMessage = (val) => dispatch({ type: 'SET_NEW_MESSAGE', payload: val });
-    const setSending = (val) => dispatch({ type: 'SET_SENDING', payload: val });
-    const setAiLoading = (val) => dispatch({ type: 'SET_AI_LOADING', payload: val });
-
     const messagesEndRef = useRef(null);
 
     const fetchHistory = useCallback(async () => {
         try {
-            setLoading(true);
+            dispatch({ type: 'SET_LOADING', payload: true });
             const res = await api.post('/whatsapp/history', { patientId, phone });
             if (res.data.success) {
-                setMessages(res.data.data);
+                dispatch({ type: 'SET_MESSAGES', payload: res.data.data });
+            } else {
+                dispatch({ type: 'SET_LOADING', payload: false });
             }
         } catch (error) {
             console.error("Error fetching WhatsApp history", error);
-        } finally {
-            setLoading(false);
+            dispatch({ type: 'SET_LOADING', payload: false });
         }
     }, [patientId, phone]);
 
@@ -70,7 +65,7 @@ const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
                 api.post('/whatsapp/history', { patientId, phone })
                    .then(res => {
                        if (res.data.success) {
-                           setMessages(res.data.data);
+                           dispatch({ type: 'SET_MESSAGES', payload: res.data.data });
                        }
                    }).catch(err => console.error("Auto-poll error", err));
             }, 5000);
@@ -91,11 +86,11 @@ const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
     const handleGetAiSuggestion = async () => {
         if (aiLoading) return;
         try {
-            setAiLoading(true);
+            dispatch({ type: 'SET_AI_LOADING', payload: true });
             const res = await api.post('/whatsapp/ai-suggestion', { patientId });
             
             if (res.data.success && res.data.suggestion) {
-                setNewMessage(res.data.suggestion);
+                dispatch({ type: 'SET_NEW_MESSAGE', payload: res.data.suggestion });
             } else {
                 showMessage(t('ai_no_context') || "La IA no pudo generar una respuesta.", "warning");
             }
@@ -103,7 +98,7 @@ const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
             console.error("[AI] Error al obtener sugerencia:", error);
             showMessage("Error de conexión con la IA", "error");
         } finally {
-            setAiLoading(false);
+            dispatch({ type: 'SET_AI_LOADING', payload: false });
         }
     };
 
@@ -112,7 +107,7 @@ const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
         if (!newMessage.trim() || sending) return;
 
         try {
-            setSending(true);
+            dispatch({ type: 'SET_SENDING', payload: true });
             let targetPhone;
             if (patientId) {
                 const patientRes = await api.get(`/users/patients/${patientId}`);
@@ -129,13 +124,13 @@ const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
                 patientId: patientId || null
             });
             
-            setNewMessage('');
+            dispatch({ type: 'SEND_SUCCESS' });
             fetchHistory();
         } catch (error) {
             console.error("Error sending message", error);
             showMessage(t('error_sending_whatsapp'), "error");
         } finally {
-            setSending(false);
+            dispatch({ type: 'SET_SENDING', payload: false });
         }
     };
 
@@ -188,7 +183,7 @@ const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
                     className="whatsapp-chat__input"
                     placeholder={t('write_message')}
                     value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
+                    onChange={(e) => dispatch({ type: 'SET_NEW_MESSAGE', payload: e.target.value })}
                     disabled={sending}
                 />
                 <button 

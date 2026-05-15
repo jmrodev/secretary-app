@@ -12,13 +12,15 @@ import './PhoneNumbersManager.css';
 const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
     const { t } = useLanguage();
 
+    const generateId = () => crypto.randomUUID();
+
     // Ghost item if list is empty
     const displayPhoneNumbers = (phoneNumbers && phoneNumbers.length > 0)
         ? phoneNumbers
-        : [{ phone_number: '+549', label: t('cell_phone') || 'Celular', is_primary: true }];
+        : [{ id: 'ghost', phone_number: '+549', label: t('cell_phone') || 'Celular', is_primary: true }];
 
     const handleAdd = () => {
-        onChange([...(phoneNumbers || []), { phone_number: '+549', label: t('cell_phone') || 'Celular', is_primary: false }]);
+        onChange([...(phoneNumbers || []), { id: generateId(), phone_number: '+549', label: t('cell_phone') || 'Celular', is_primary: false }]);
     };
 
     const handleRemove = (index) => {
@@ -27,8 +29,12 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
     };
 
     const handleUpdate = (index, field, value) => {
-        let currentList = (phoneNumbers && phoneNumbers.length > 0) ? [...phoneNumbers] : [{ phone_number: '+549', label: t('cell_phone') || 'Celular', is_primary: true }];
-        currentList[index][field] = value;
+        let currentList = (phoneNumbers && phoneNumbers.length > 0) 
+            ? phoneNumbers.map(p => ({ ...p, id: p.id || generateId() })) 
+            : [{ id: generateId(), phone_number: '+549', label: t('cell_phone') || 'Celular', is_primary: true }];
+            
+        currentList[index] = { ...currentList[index], [field]: value };
+        
         if (field === 'is_primary' && value === true) {
             currentList.forEach((p, i) => { if (i !== index) p.is_primary = false; });
         }
@@ -39,7 +45,7 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
         <section className="phone-numbers-manager">
             <div className="phone-numbers-manager__list">
                 {displayPhoneNumbers.map((pn, index) => (
-                    <div key={`phone-${index}`} className={`phone-numbers-manager__row ${pn.is_primary ? 'phone-numbers-manager__row--primary' : ''}`}>
+                    <div key={pn.id || `phone-${index}`} className={`phone-numbers-manager__row ${pn.is_primary ? 'phone-numbers-manager__row--primary' : ''}`}>
                         <div className="phone-numbers-manager__label-wrapper">
                             <input
                                 className="phone-numbers-manager__input-label"

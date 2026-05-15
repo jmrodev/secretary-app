@@ -29,7 +29,7 @@ export const usePatientQuery = (options = {}) => {
     useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedSearch(searchTerm);
-            setCurrentPage(1); // Reset to page 1 on new search
+            setCurrentPage(1);
         }, debounceMs);
         return () => clearTimeout(timer);
     }, [searchTerm, debounceMs]);

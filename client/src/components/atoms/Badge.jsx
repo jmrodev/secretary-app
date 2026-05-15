@@ -49,14 +49,26 @@ const Badge = ({
         }
     };
 
+    if (onClick) {
+        return (
+            <button
+                type="button"
+                className={`${baseClass} ${variantClass} ${interactiveClass} ${className}`}
+                onClick={onClick}
+                onKeyDown={handleKeyDown}
+                title={title}
+                style={{ border: 'none', background: 'none', padding: 0, cursor: 'pointer', display: 'inline-flex' }}
+            >
+                {children}
+            </button>
+        );
+    }
+
     return (
         <span
-            className={`${baseClass} ${variantClass} ${interactiveClass} ${className}`}
-            onClick={onClick}
-            onKeyDown={onClick ? handleKeyDown : undefined}
+            className={`${baseClass} ${variantClass} ${className}`}
             title={title}
-            role={onClick ? 'button' : undefined}
-            tabIndex={onClick ? 0 : undefined}
+            role="presentation"
         >
             {children}
         </span>

@@ -5,6 +5,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useConfig } from '@/context/ConfigContext';
 import { useAuth } from '@/features/auth';
 import { capitalizeFirst } from '@/utils/core/stringUtils';
+import { formatCurrency } from '@/utils/core/formatUtils';
 
 /**
  * Hook to manage the appointment booking lifecycle.
@@ -59,9 +60,6 @@ export const useAppointmentBooking = (doctors) => {
             queueMicrotask(() => setSelectedInstitution(selectedPatientData.institution_id));
         }
     }, [selectedPatientData]);
-
-    const formatCurrency = (val) =>
-        new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(val);
 
     const getBookingContext = useCallback(() => {
         if (!selectedPatientData || !date) return null;

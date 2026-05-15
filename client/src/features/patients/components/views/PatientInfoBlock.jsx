@@ -2,7 +2,7 @@
 import React from 'react';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
-import { formatDate } from '@/utils/core/dateUtils';
+import { formatDate, calculateAge } from '@/utils/core/dateUtils';
 
 // Local Styles
 import './PatientInfoBlock.css';

@@ -42,11 +42,13 @@ const QuickSelectGrid = ({ meds, label, items, onSelect, t }) => {
     );
 };
 
+const EMPTY_ARRAY = [];
+
 /**
  * PrescriptionHabitualMeds Molecule.
  * Displays a grid of habitual medications for quick selection.
  */
-const PrescriptionHabitualMeds = ({ patientMeds, historyMeds = [], items, handleSelectMedication, t }) => {
+const PrescriptionHabitualMeds = ({ patientMeds, historyMeds = EMPTY_ARRAY, items, handleSelectMedication, t }) => {
     const hasHabitual = patientMeds && patientMeds.length > 0;
     const hasHistory = historyMeds && historyMeds.length > 0;
 

@@ -5,14 +5,14 @@ import { financeService } from '@/features/finances/services/financeService';
 import { userService } from '@/features/users/services/userService';
 import { getServiceTypes } from '@/constants/transactionOptions';
 import { capitalizeFirst } from '@/utils/core/stringUtils';
-import { toInputDateTime } from '@/utils/core/dateUtils';
+import { toInputDateTime, getNow } from '@/utils/core/dateUtils';
 
 export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, onClose) => {
     const { t } = useLanguage();
     const { alert } = useModal();
 
     // --- State ---
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState(() => ({
         type: 'income_patient',
         payments: [{ _tmpId: Date.now(), amount: '', method: 'cash' }],
         description: '',
@@ -21,8 +21,8 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         status: 'paid',
         service_type: 'consultation',
         proof: null,
-        transaction_date: toInputDateTime(new Date())
-    });
+        transaction_date: toInputDateTime(getNow())
+    }));
 
     const [loading, setLoading] = useState(false);
     const [patients, setPatients] = useState([]);
@@ -77,7 +77,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
             initialServiceType = 'virtual_consultation';
         }
 
-        const localIso = toInputDateTime(new Date());
+        const localIso = toInputDateTime(getNow());
 
         const newFormState = {
             type: data.type || 'income_patient',

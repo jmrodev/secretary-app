@@ -7,6 +7,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
 import { useConfig } from '@/context/ConfigContext';
 import { copyToClipboard } from '@/utils/core/clipboardUtils';
+import { formatTime } from '@/utils/core/dateUtils';
 
 import './QRCodeModal.css';
 
@@ -73,8 +74,8 @@ const QRCodeModal = ({ isOpen, onClose, url, expiresAt, patientName, patientPhon
                     />
                 </div>
                 {expiresAt && (
-                    <p className="qr-modal-content__expiry">
-                        {t('expires_label')}: {new Date(expiresAt).toLocaleTimeString()}
+                    <p className="qr-modal-content__expiry" suppressHydrationWarning>
+                        {t('expires_label')}: {formatTime(expiresAt)}
                     </p>
                 )}
             </div>

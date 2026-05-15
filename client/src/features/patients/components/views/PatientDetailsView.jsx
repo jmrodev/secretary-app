@@ -52,21 +52,18 @@ const PatientDetailsView = ({
             .catch(err => console.error("Error fetching requests:", err));
     }, [details.id]);
 
-    if (isCleanView) {
-        return (
-            <PatientPrintableView 
-                details={details} 
-                chronicMeds={chronicMeds} 
-                recentRequests={recentRequests} 
-                onClose={() => setIsCleanView(false)} 
-                t={t}
-            />
-        );
-    }
-
     return (
         <>
-            <section className="patient-details animate-fade-in no-print-section">
+            {isCleanView ? (
+                <PatientPrintableView 
+                    details={details} 
+                    chronicMeds={chronicMeds} 
+                    recentRequests={recentRequests} 
+                    onClose={() => setIsCleanView(false)} 
+                    t={t}
+                />
+            ) : (
+                <section className="patient-details animate-fade-in no-print-section">
                 <header className="patient-details__header">
                     <Button variant="secondary" onClick={onBack}>
                         &larr; {t('back_to_list')}
@@ -194,7 +191,7 @@ const PatientDetailsView = ({
                                     <div className="patient-details__block-content patient-details__block-content--padded">
                                         {chronicMeds.length > 0 ? (
                                             <ul className="patient-details__meds-list">
-                                                {chronicMeds.map((m, i) => <li key={i}>{m.name || m}</li>)}
+                                                {chronicMeds.map((m, i) => <li key={m.id || `med-${i}`}>{m.name || m}</li>)}
                                             </ul>
                                         ) : <p className="patient-details__text-empty">{t('no_current_medications')}</p>}
                                     </div>
@@ -214,7 +211,7 @@ const PatientDetailsView = ({
                                         {recentRequests.length > 0 ? (
                                             <ul className="patient-details__requests-list">
                                                 {recentRequests.map((r, i) => (
-                                                    <li key={i} className="patient-details__request-item">
+                                                    <li key={r.id || `req-${i}`} className="patient-details__request-item">
                                                         <strong>{formatDate(r.created_at)}</strong> - {r.medications}
                                                     </li>
                                                 ))}
@@ -236,6 +233,7 @@ const PatientDetailsView = ({
                 </div>
 
             </section>
+            )}
         </>
     );
 };

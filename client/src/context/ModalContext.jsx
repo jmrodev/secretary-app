@@ -1,11 +1,11 @@
-import React, { createContext, useContext, useMemo } from 'react';
+import React, { createContext, use, useMemo } from 'react';
 import ConfirmModal from '@/components/molecules/ConfirmModal';
 import { useModalLogic } from '@/context/useModalLogic';
 
 const ModalContext = createContext(null);
 
 export const useModal = () => {
-    const context = useContext(ModalContext);
+    const context = use(ModalContext);
     if (!context) {
         // Safe fallback to prevent crashes if used outside provider
         return {

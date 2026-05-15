@@ -1,8 +1,45 @@
-import React, { useState, useMemo } from 'react';
+import React, { useReducer, useMemo } from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { formatDate, formatTime, parseDate } from '@/utils/core/dateUtils';
 import './PatientPrintableView.css';
+
+const initialState = {
+    fromDate: '',
+    toDate: '',
+    limitCount: '',
+    excludedItems: new Set(),
+    printOptions: {
+        datos: true,
+        finanzas: true,
+        turnos: true,
+        cronicos: true,
+        recetas: true
+    }
+};
+
+function printReducer(state, action) {
+    switch (action.type) {
+        case 'SET_FILTER':
+            return { ...state, [action.payload.name]: action.payload.value };
+        case 'TOGGLE_OPTION':
+            return {
+                ...state,
+                printOptions: {
+                    ...state.printOptions,
+                    [action.payload]: !state.printOptions[action.payload]
+                }
+            };
+        case 'TOGGLE_EXCLUDE': {
+            const up = new Set(state.excludedItems);
+            if (up.has(action.payload)) up.delete(action.payload);
+            else up.add(action.payload);
+            return { ...state, excludedItems: up };
+        }
+        default:
+            return state;
+    }
+}
 
 /**
  * PatientPrintableView Organism (Executor).
@@ -16,27 +53,11 @@ const PatientPrintableView = ({
     onClose, 
     t 
 }) => {
-    // Advanced Filters
-    const [fromDate, setFromDate] = useState('');
-    const [toDate, setToDate] = useState('');
-    const [limitCount, setLimitCount] = useState('');
-    const [excludedItems, setExcludedItems] = useState(new Set()); 
-
-    const [printOptions, setPrintOptions] = useState({
-        datos: true,
-        finanzas: true,
-        turnos: true,
-        cronicos: true,
-        recetas: true
-    });
+    const [state, dispatch] = useReducer(printReducer, initialState);
+    const { fromDate, toDate, limitCount, excludedItems, printOptions } = state;
 
     const toggleExclude = (idKey) => {
-        setExcludedItems(prev => {
-            const up = new Set(prev);
-            if (up.has(idKey)) up.delete(idKey);
-            else up.add(idKey);
-            return up;
-        });
+        dispatch({ type: 'TOGGLE_EXCLUDE', payload: idKey });
     };
 
     const filterByDateAndLimit = (items, dateProp) => {
@@ -123,34 +144,44 @@ const PatientPrintableView = ({
                     <div className="printable-filters">
                         <span className="printable-filters__title">{t('sections')}</span>
                         <label className="printable-checkbox">
-                            <input type="checkbox" checked={printOptions.datos} onChange={() => setPrintOptions(p => ({ ...p, datos: !p.datos }))} /> {t('personal_data')}
+                            <input type="checkbox" checked={printOptions.datos} onChange={() => dispatch({ type: 'TOGGLE_OPTION', payload: 'datos' })} /> {t('personal_data')}
                         </label>
                         <label className="printable-checkbox">
-                            <input type="checkbox" checked={printOptions.finanzas} onChange={() => setPrintOptions(p => ({ ...p, finanzas: !p.finanzas }))} /> {t('financial_history')}
+                            <input type="checkbox" checked={printOptions.finanzas} onChange={() => dispatch({ type: 'TOGGLE_OPTION', payload: 'finanzas' })} /> {t('financial_history')}
                         </label>
                         <label className="printable-checkbox">
-                            <input type="checkbox" checked={printOptions.turnos} onChange={() => setPrintOptions(p => ({ ...p, turnos: !p.turnos }))} /> {t('appointments')}
+                            <input type="checkbox" checked={printOptions.turnos} onChange={() => dispatch({ type: 'TOGGLE_OPTION', payload: 'turnos' })} /> {t('appointments')}
                         </label>
                         <label className="printable-checkbox">
-                            <input type="checkbox" checked={printOptions.cronicos} onChange={() => setPrintOptions(p => ({ ...p, cronicos: !p.cronicos }))} /> {t('chronic_medications')}
+                            <input type="checkbox" checked={printOptions.cronicos} onChange={() => dispatch({ type: 'TOGGLE_OPTION', payload: 'cronicos' })} /> {t('chronic_medications')}
                         </label>
                         <label className="printable-checkbox">
-                            <input type="checkbox" checked={printOptions.recetas} onChange={() => setPrintOptions(p => ({ ...p, recetas: !p.recetas }))} /> {t('prescriptions')}
+                            <input type="checkbox" checked={printOptions.recetas} onChange={() => dispatch({ type: 'TOGGLE_OPTION', payload: 'recetas' })} /> {t('prescriptions')}
                         </label>
                     </div>
 
                     <div className="printable-filters">
                         <span className="printable-filters__title">{t('range_limit')}</span>
-                        <input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} className="printable-input" />
+                        <input 
+                            type="date" 
+                            value={fromDate} 
+                            onChange={(e) => dispatch({ type: 'SET_FILTER', payload: { name: 'fromDate', value: e.target.value } })} 
+                            className="printable-input" 
+                        />
                         <span>-</span>
-                        <input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} className="printable-input" />
+                        <input 
+                            type="date" 
+                            value={toDate} 
+                            onChange={(e) => dispatch({ type: 'SET_FILTER', payload: { name: 'toDate', value: e.target.value } })} 
+                            className="printable-input" 
+                        />
                         
                         <span className="ml-4">{t('limit')}</span>
                         <input 
                             type="number" 
                             placeholder={t('all')}
                             value={limitCount} 
-                            onChange={(e) => setLimitCount(e.target.value)} 
+                            onChange={(e) => dispatch({ type: 'SET_FILTER', payload: { name: 'limitCount', value: e.target.value } })} 
                             className="printable-input printable-input--w-60"
                         />
                     </div>

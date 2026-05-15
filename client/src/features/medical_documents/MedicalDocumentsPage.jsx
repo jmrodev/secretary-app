@@ -14,7 +14,7 @@ import FeatureToolbar from '@/components/organisms/FeatureToolbar';
 import Button from '@/components/atoms/Button';
 import TabButton from '@/components/atoms/TabButton';
 import TabNav from '@/components/molecules/TabNav';
-import { formatDate } from '@/utils/core/dateUtils';
+import { formatDate, compareDates, getNow } from '@/utils/core/dateUtils';
 
 // Styles
 import './MedicalDocumentsPage.css';
@@ -73,7 +73,7 @@ const MedicalDocumentsPage = () => {
             }
             return acc;
         }, [])
-    ].toSorted((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    ].toSorted((a, b) => compareDates(a.created_at, b.created_at, true));
 
     const combinedLicenses = [
         ...licenses.map(l => ({ ...l, _origin: 'license' })),
@@ -89,7 +89,7 @@ const MedicalDocumentsPage = () => {
             }
             return acc;
         }, [])
-    ].toSorted((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    ].toSorted((a, b) => compareDates(a.created_at, b.created_at, true));
 
     const combinedCertificates = [
         ...requests.reduce((acc, r) => {
@@ -102,11 +102,11 @@ const MedicalDocumentsPage = () => {
             }
             return acc;
         }, [])
-    ].toSorted((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    ].toSorted((a, b) => compareDates(a.created_at, b.created_at, true));
 
-    const [printDate, setPrintDate] = React.useState('');
+    const [printDate, setPrintDate] = React.useState(() => formatDate(getNow(), { time: true }));
     React.useEffect(() => {
-        setPrintDate(formatDate(new Date(), { time: true }));
+        setPrintDate(formatDate(getNow(), { time: true }));
     }, [t]);
 
     return (

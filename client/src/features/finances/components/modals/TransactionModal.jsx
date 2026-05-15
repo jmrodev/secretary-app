@@ -190,8 +190,24 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
     const statusOptions = getStatusOptions(t);
     const serviceTypes = getServiceTypes(t);
 
-    const doctorOptions = [{ value: '', label: t('select_doctor') }, ...doctors.map(d => ({ value: d.id, label: d.full_name }))];
-    const doctorUserOptions = [{ value: '', label: t('select_doctor') }, ...doctors.map(d => ({ value: d.user_id, label: d.full_name }))];
+    const doctorOptions = React.useMemo(() => [
+        { value: '', label: t('select_doctor') }, 
+        ...doctors.map(d => ({ value: d.id, label: d.full_name }))
+    ], [doctors, t]);
+
+    const doctorUserOptions = React.useMemo(() => [
+        { value: '', label: t('select_doctor') }, 
+        ...doctors.map(d => ({ value: d.user_id, label: d.full_name }))
+    ], [doctors, t]);
+
+    const filteredPatients = React.useMemo(() => {
+        if (!patientSearch || !patients) return [];
+        const search = patientSearch.toLowerCase();
+        return patients.filter(p =>
+            p.full_name.toLowerCase().includes(search) ||
+            (p.dni && p.dni.includes(patientSearch))
+        );
+    }, [patients, patientSearch]);
 
     return (
         <Modal
@@ -245,10 +261,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                             />
                             {showPatientList && patientSearch && !formData.related_user_id && (
                                 <ul className="transaction-modal__results" role="listbox">
-                                    {patients.filter(p =>
-                                        p.full_name.toLowerCase().includes(patientSearch.toLowerCase()) ||
-                                        (p.dni && p.dni.includes(patientSearch))
-                                    ).map(p => (
+                                    {filteredPatients.map(p => (
                                         <li
                                             key={p.id}
                                             onClick={() => selectPatient(p)}
@@ -260,6 +273,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                                             }}
                                             className="transaction-modal__item"
                                             role="option"
+                                            aria-selected={false}
                                             tabIndex={0}
                                         >
                                             <span className="transaction-modal__item-name">{p.full_name}</span>

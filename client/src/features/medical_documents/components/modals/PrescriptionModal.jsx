@@ -13,6 +13,8 @@ import PrescriptionItemsList from '@/features/medical_documents/components/lists
 
 import './PrescriptionModal.css';
 
+const generateId = () => `${Date.now()}-${Math.random()}`;
+
 // Common frequency presets: label (display) + unitsPerDay (numeric)
 const FREQ_PRESETS = [
     { label: '1/día', unitsPerDay: 1, text: 'cada 24hs' },
@@ -163,6 +165,8 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
         return d.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
     }, [daysSupply]);
 
+    // Use a reference date for calculations if needed, but for now we'll suppress warning on the UI side.
+
 
 
     // ── Handlers ─────────────────────────────────────────────────────────────
@@ -206,6 +210,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
             const calcDs = ds(parseFloat(upb), parseFloat(boxes), parseFloat(daily));
 
             const newItem = {
+                _id: generateId(),
                 vademecum_id: vademecumId,
                 name: medName,
                 dose: dose.trim(),
@@ -217,10 +222,6 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
             };
 
             setItems(prev => [...prev, newItem]);
-            const supplyStr = calcDs ? ` (~${calcDs}d)` : '';
-            const qtyStr = (boxes && boxes !== '0') ? ` x${boxes}` : '';
-            const fullLabel = `${medName} ${dose.trim()} ${frequencyText}${qtyStr}${supplyStr}`.trim().replace(/\s+/g, ' ');
-            setMedications(curr => curr.trim() ? `${curr.trim()}\n${fullLabel}` : fullLabel);
         }
     };
 
@@ -254,6 +255,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
         }
 
         const newItem = {
+            _id: generateId(),
             vademecum_id: currentVademecumId,
             name: medName,
             dose: tempDose.trim(),
@@ -275,14 +277,6 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
                 next = [...prev, newItem];
             }
 
-            // Sync medications text area
-            const newText = next.map(i => {
-                const supplyStr = i.days_supply ? ` (~${i.days_supply}d)` : '';
-                const qtyStr = i.quantity && i.quantity !== '0' ? ` x${i.quantity}` : '';
-                return `${i.name} ${i.dose || ''} ${i.frequency || ''}${qtyStr}${supplyStr}`.trim().replace(/\s+/g, ' ');
-            }).join('\n');
-            setMedications(newText);
-
             return next;
         });
 
@@ -292,12 +286,6 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
     const handleRemoveItem = (index) => {
         setItems(prev => {
             const newItems = prev.filter((_, i) => i !== index);
-            const newText = newItems.map(i => {
-                const supplyStr = i.days_supply ? ` (~${i.days_supply}d)` : '';
-                const qtyStr = i.quantity && i.quantity !== '0' ? ` x${i.quantity}` : '';
-                return `${i.name} ${i.dose || ''} ${i.frequency || ''}${qtyStr}${supplyStr}`.trim().replace(/\s+/g, ' ');
-            }).join('\n');
-            setMedications(newText);
             return newItems;
         });
     };
@@ -351,7 +339,6 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
         }).join('\n');
 
         onSubmit({ medications: finalMeds, instructions, items: finalItems, bonified });
-        setMedications('');
         setInstructions('');
         setItems([]);
         resetFields();

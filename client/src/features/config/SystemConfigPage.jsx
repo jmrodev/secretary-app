@@ -81,7 +81,7 @@ const getTabMetadata = (tab, t) => {
     return meta[tab] || { title: tab, icon: 'settings', desc: '' };
 };
 
-const renderContent = (activeTab, controller) => {
+const SettingsContent = ({ activeTab, controller }) => {
     const {
         user,
         settings,
@@ -268,7 +268,7 @@ const SystemConfigPage = () => {
                 <main className="system-config-page-orchestrator__main">
                     <div className="system-config-container">
                         <Suspense fallback={<Loading variant="centered" />}>
-                            {renderContent(activeTab, controller)}
+                            <SettingsContent activeTab={activeTab} controller={controller} />
                         </Suspense>
 
                         <QRCodeModal

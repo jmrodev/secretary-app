@@ -24,7 +24,7 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
                 </p>
 
                 <div className="config-field">
-                    <label className="config-field__label">Método de Acceso</label>
+                    <label htmlFor="remote-access-method" className="config-field__label">Método de Acceso</label>
                     <Select
                         id="remote-access-method"
                         value={method}

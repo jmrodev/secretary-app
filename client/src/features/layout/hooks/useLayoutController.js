@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -30,10 +30,16 @@ export const useLayoutController = () => {
         return adminPaths.some(path => location.pathname === path);
     });
 
+    const fetchRef = useRef(fetchSidebarDoctors);
     useEffect(() => {
-        window.addEventListener('doctors-updated', fetchSidebarDoctors);
-        return () => window.removeEventListener('doctors-updated', fetchSidebarDoctors);
+        fetchRef.current = fetchSidebarDoctors;
     }, [fetchSidebarDoctors]);
+
+    useEffect(() => {
+        const handler = () => fetchRef.current();
+        window.addEventListener('doctors-updated', handler);
+        return () => window.removeEventListener('doctors-updated', handler);
+    }, []);
 
     /**
      * Helper to determine active link styling based on current path.

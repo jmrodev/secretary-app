@@ -59,7 +59,7 @@ const ReportsDashboard = ({
                         onDownload={handleDownloadJson}
                         onPrint={onPrint}
                         onStepMonth={changeMonth}
-                        onStepYear={(d) => setYear(year + d)}
+                        onStepYear={(d) => setYear(prev => prev + d)}
                         isSubmitting={isSubmitting}
                         hasData={!!reportData}
                         t={t}

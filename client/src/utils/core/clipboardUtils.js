@@ -23,9 +23,7 @@ export const copyToClipboard = async (text) => {
             textArea.value = text;
 
             // Ensure it's not visible but part of DOM
-            textArea.style.position = "fixed";
-            textArea.style.left = "-9999px";
-            textArea.style.top = "0";
+            textArea.style.cssText = "position: fixed; left: -9999px; top: 0;";
             textArea.setAttribute('readonly', ''); // Prevent keyboard popping up on mobile
             document.body.appendChild(textArea);
 

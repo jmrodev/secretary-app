@@ -32,9 +32,9 @@ export const DoctorProvider = ({ children }) => {
         });
     }, []);
 
-    const onDoctorsLoaded = React.useRef((profileId) => {
+    const onDoctorsLoaded = React.useCallback((profileId) => {
         setViewDoctorId(profileId);
-    }).current;
+    }, []);
 
     // Initial logic: if user is a doctor, default to their own ID
     useEffect(() => {

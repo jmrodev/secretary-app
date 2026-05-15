@@ -4,13 +4,15 @@ import HolidayList from '../sections/HolidayList.jsx';
 import Icon from '@/components/atoms/Icon';
 import './ScheduleSection.css';
 
+const EMPTY_ARRAY = [];
+
 /**
  * ScheduleSection (Executor Component).
  * Main content area for viewing the daily agenda or management lists.
  */
 const ScheduleSection = ({
-    activeTab, selectedDate, selectedDoctor, viewDoctorId, appointments = [],
-    doctorSchedule = [], holidays = [], onSlotClick, onDeleteHoliday,
+    activeTab, selectedDate, selectedDoctor, viewDoctorId, appointments = EMPTY_ARRAY,
+    doctorSchedule = EMPTY_ARRAY, holidays = EMPTY_ARRAY, onSlotClick, onDeleteHoliday,
     onDateSelect, showOutOfHours, setShowOutOfHours, onNextFreeSlot, className
 }) => {
     const getDoctorThemeModifier = () => viewDoctorId ? `schedule-section--doctor-${Number(viewDoctorId) % 10}` : '';

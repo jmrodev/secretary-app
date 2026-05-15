@@ -5,12 +5,16 @@ import TabButton from '@/components/atoms/TabButton';
 import api from '@/api/axios';
 import { useLanguage } from '@/hooks/useLanguage';
 import Icon from '@/components/atoms/Icon';
+import { formatDate } from '@/utils/core/dateUtils';
 import './PatientHistoryModal.css';
 
 /**
  * PatientHistoryModal Molecule (Executor).
  * Renders the medical history of a patient (appointments, prescriptions, licenses, requests).
  */
+const DateTimeDisplay = ({ date }) => formatDate(date, { time: true });
+const SimpleDateDisplay = ({ date }) => formatDate(date);
+
 const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
     const { t } = useLanguage();
     const [activeTab, setActiveTab] = useState('appointments');
@@ -24,6 +28,7 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
     });
 
     const fetchHistory = useCallback(async () => {
+        if (!patientId) return;
         setLoading(true);
         try {
             const [apptRes, prescRes, licRes, reqRes] = await Promise.all([
@@ -47,16 +52,8 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
     }, [patientId]);
 
     useEffect(() => {
-        if (isOpen && patientId) {
-            queueMicrotask(() => fetchHistory());
-        }
-    }, [isOpen, patientId, fetchHistory]);
-
-    const formatDate = (dateStr) => {
-        if (!dateStr) return '';
-        const d = new Date(dateStr);
-        return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    };
+        if (isOpen) fetchHistory();
+    }, [isOpen, fetchHistory]);
 
     if (!isOpen) return null;
 
@@ -88,7 +85,7 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
 
             <div className={`${baseClass}__body`}>
                 {loading ? (
-                    <div className={`${baseClass}__loading`}>{t('loading')}...</div>
+                    <div className={`${baseClass}__loading`}>{t('loading')}…</div>
                 ) : (
                     <>
                         {activeTab === 'appointments' && (
@@ -104,7 +101,7 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
                                             <div className={`${baseClass}__item-header`}>
                                                 <span className={`${baseClass}__date`}>
                                                     <Icon name="calendar_month" size="1.2rem" className="mr-1" />
-                                                    {formatDate(appt.appointment_date)}
+                                                    <DateTimeDisplay date={appt.appointment_date} />
                                                 </span>
                                                 <span className={`status-chip status-${appt.status}`}>{t(appt.status) || appt.status}</span>
                                             </div>
@@ -150,7 +147,7 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
                                             {history.prescriptions.map(p => (
                                                 <div key={p.id} className={`${baseClass}__record ${baseClass}__record--rx`}>
                                                     <div className={`${baseClass}__record-header`}>
-                                                        <span>{formatDate(p.created_at || p.appointment_date)}</span>
+                                                        <span><DateTimeDisplay date={p.created_at || p.appointment_date} /></span>
                                                         <span className={`${baseClass}__doctor`}>
                                                             <Icon name="person" size="0.9rem" />
                                                             {p.doctor_name}
@@ -176,7 +173,7 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
                                             {history.requests.map(r => (
                                                 <div key={r.id} className={`${baseClass}__record ${baseClass}__record--req`}>
                                                     <div className={`${baseClass}__record-header`}>
-                                                        <span>{formatDate(r.created_at)}</span>
+                                                        <span><DateTimeDisplay date={r.created_at} /></span>
                                                         <span className={`${baseClass}__record-type`}>{r.type}</span>
                                                     </div>
                                                     <div className={`${baseClass}__record-text`}>"{r.request_note}"</div>
@@ -205,7 +202,7 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
                                                     <div className={`${baseClass}__record-header`}>
                                                         <span>
                                                             <Icon name="calendar_today" size="0.9rem" className="mr-1" />
-                                                            {new Date(l.start_date).toLocaleDateString()}
+                                                            <SimpleDateDisplay date={l.start_date} />
                                                         </span>
                                                         <span className={`${baseClass}__record-type`}>
                                                             {l.days_duration} {t('days') || 'Días'}

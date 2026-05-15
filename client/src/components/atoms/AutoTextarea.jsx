@@ -27,7 +27,8 @@ const AutoTextarea = ({
         const el = textareaRef.current;
         if (!el) return;
         el.style.height = 'auto';
-        el.style.height = el.scrollHeight + 'px';
+        const nextHeight = el.scrollHeight;
+        el.style.height = `${nextHeight}px`;
     };
 
     useEffect(() => {

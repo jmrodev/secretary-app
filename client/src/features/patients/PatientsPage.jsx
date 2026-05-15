@@ -175,7 +175,7 @@ const PatientsPage = () => {
             {/* --- GLOBALLY HOISTED MODALS --- */}
             <PatientManagerModal
                 isOpen={editModal.open}
-                onClose={() => setEditModal({ ...editModal, open: false })}
+                onClose={() => setEditModal(prev => ({ ...prev, open: false }))}
                 patient={editModal.data}
                 onUpdate={handleUpdatePatient}
                 insurances={insurances}
@@ -184,7 +184,7 @@ const PatientsPage = () => {
 
             <QRCodeModal
                 isOpen={qrModal.open}
-                onClose={() => setQrModal({ ...qrModal, open: false })}
+                onClose={() => setQrModal(prev => ({ ...prev, open: false }))}
                 url={qrModal.url}
                 expiresAt={qrModal.expiry}
                 patientName={qrModal.patientName}
@@ -193,7 +193,7 @@ const PatientsPage = () => {
 
             <DebtPaymentModal
                 isOpen={debtModal.open}
-                onClose={() => setDebtModal({ ...debtModal, open: false })}
+                onClose={() => setDebtModal(prev => ({ ...prev, open: false }))}
                 onConfirm={() => handlePayDebt(debtModal.params)}
                 amount={debtModal.params.amount}
                 onAmountChange={handleDebtAmountChange}

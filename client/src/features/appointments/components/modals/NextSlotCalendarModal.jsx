@@ -4,7 +4,7 @@ import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import Loading from '@/components/atoms/Loading';
-import { formatDate, toInputDate } from '@/utils/core/dateUtils';
+import { formatDate, toInputDate, getNow, createDate, parseDate } from '@/utils/core/dateUtils';
 import './NextSlotCalendarModal.css';
 
 /**
@@ -52,8 +52,8 @@ const SlotSection = ({ title, slots, type, onWhatsApp, onSelect, t }) => {
         <div className="slots-list__section">
             <div className={`slots-list__section-header ${type === 'normal' ? 'slots-list__section-header--normal' : 'slots-list__section-header--extra'}`}>{title}</div>
             <table className="slots-list__table">
-                <tbody>{slots.map((slot, idx) => (
-                    <tr key={`${type}-${slot.iso}-${idx}`} className={`slots-list__row ${type !== 'normal' ? 'slots-list__row--extra' : ''}`}>
+                <tbody>{slots.map((slot) => (
+                    <tr key={`${type}-${slot.iso}`} className={`slots-list__row ${type !== 'normal' ? 'slots-list__row--extra' : ''}`}>
                         <td className="slots-list__cell">
                             <div className="slots-list__time-group">
                                 <span className={`slots-list__time slots-list__time--${type}`}>{slot.time}</span>
@@ -78,7 +78,7 @@ const SlotSection = ({ title, slots, type, onWhatsApp, onSelect, t }) => {
 
 const modalInitialState = {
     selectedDate: null,
-    currentMonth: new Date(),
+    currentMonth: getNow(),
     viewMode: 'calendar',
     hasInitialized: false,
     clientDates: { todayIso: '', selectedDateStr: '' }
@@ -91,7 +91,7 @@ function modalReducer(state, action) {
         case 'SET_VIEW_MODE': return { ...state, viewMode: action.payload };
         case 'SET_INITIALIZED': return { ...state, hasInitialized: action.payload };
         case 'SET_CLIENT_DATES': return { ...state, clientDates: { ...state.clientDates, ...action.payload } };
-        case 'RESET': return { ...modalInitialState, currentMonth: new Date() };
+        case 'RESET': return { ...modalInitialState, currentMonth: getNow() };
         default: return state;
     }
 }
@@ -108,7 +108,7 @@ const NextSlotCalendarModal = ({
     const dayNames = t('days_short_array') || [];
 
     useEffect(() => {
-        dispatch({ type: 'SET_CLIENT_DATES', payload: { todayIso: toInputDate(new Date()) } });
+        dispatch({ type: 'SET_CLIENT_DATES', payload: { todayIso: toInputDate(getNow()) } });
     }, []);
 
     useEffect(() => {
@@ -136,8 +136,8 @@ const NextSlotCalendarModal = ({
     const calendarDays = useMemo(() => {
         const year = currentMonth.getFullYear();
         const month = currentMonth.getMonth();
-        const firstDay = new Date(year, month, 1).getDay();
-        const lastDay = new Date(year, month + 1, 0).getDate();
+        const firstDay = createDate(year, month, 1).getDay();
+        const lastDay = createDate(year, month + 1, 0).getDate();
         const days = [];
         for (let i = 0; i < firstDay; i++) days.push(null);
         for (let day = 1; day <= lastDay; day++) {
@@ -148,8 +148,8 @@ const NextSlotCalendarModal = ({
     }, [currentMonth, slotsByDate, clientDates.todayIso]);
 
     const selectedSlots = selectedDate ? slotsByDate[selectedDate]?.slots || [] : [];
-    const handlePrevMonth = () => dispatch({ type: 'SET_MONTH', payload: new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1) });
-    const handleNextMonth = () => dispatch({ type: 'SET_MONTH', payload: new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1) });
+    const handlePrevMonth = () => dispatch({ type: 'SET_MONTH', payload: createDate(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1) });
+    const handleNextMonth = () => dispatch({ type: 'SET_MONTH', payload: createDate(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1) });
 
     const handleDateClick = (dateStr) => {
         if (slotsByDate[dateStr]) { 
@@ -175,7 +175,7 @@ const NextSlotCalendarModal = ({
             if (isMounted) {
                 const [year, month] = nextSlotData.results[0].date.split('-');
                 queueMicrotask(() => {
-                    dispatch({ type: 'SET_MONTH', payload: new Date(parseInt(year), parseInt(month) - 1, 1) });
+                    dispatch({ type: 'SET_MONTH', payload: createDate(parseInt(year), parseInt(month) - 1, 1) });
                     dispatch({ type: 'SET_INITIALIZED', payload: true });
                 });
             }
@@ -183,12 +183,19 @@ const NextSlotCalendarModal = ({
         return () => { isMounted = false; };
     }, [nextSlotData, isOpen, hasInitialized]);
 
+    const onLoadMoreRef = React.useRef(onLoadMore);
+    useEffect(() => {
+        onLoadMoreRef.current = onLoadMore;
+    }, [onLoadMore]);
+
     useEffect(() => {
         if (!loading && hasMore && isOpen) {
             const lastDate = nextSlotData?.results?.[nextSlotData.results.length - 1]?.date;
-            if (lastDate && new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0) > new Date(lastDate)) onLoadMore();
+            if (lastDate && createDate(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0) > parseDate(lastDate)) {
+                onLoadMoreRef.current();
+            }
         }
-    }, [currentMonth, loading, hasMore, nextSlotData, isOpen, onLoadMore]);
+    }, [currentMonth, loading, hasMore, nextSlotData, isOpen]);
 
     return (
         <Modal 
@@ -233,11 +240,11 @@ const NextSlotCalendarModal = ({
                                 <Button onClick={handleNextMonth} variant="ghost" size="sm-compact" icon={<Icon name="chevron_right" />} />
                             </div>
                             <div className="day-headers">
-                                {dayNames.map(day => <div key={day} className="day-headers__day">{day}</div>)}
+                                {dayNames.map((day, idx) => <div key={`header-${idx}`} className="day-headers__day">{day}</div>)}
                             </div>
                             <div className="calendar-grid__body">
                                 {calendarDays.map((dayData, idx) => {
-                                    if (!dayData) return <div key={`empty-${idx}`} className="calendar-day-cell calendar-day-cell--other-month"></div>;
+                                    if (!dayData) return <div key={`empty-${currentMonth.getTime()}-${idx}`} className="calendar-day-cell calendar-day-cell--other-month"></div>;
                                     const { day, dateStr, isToday, slots } = dayData;
                                     const hasSlots = slots && slots.total > 0;
                                     const isDisabled = dateStr < clientDates.todayIso;

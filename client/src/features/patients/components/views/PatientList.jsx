@@ -4,6 +4,8 @@ import Badge from '@/components/atoms/Badge';
 import Icon from '@/components/atoms/Icon';
 import './PatientList.css';
 
+const EMPTY_ARRAY = [];
+
 const RatingStars = ({ rating, colorClass }) => {
     return (
         <div className={`patient-list__stars patient-list__stars--${colorClass}`}>
@@ -18,19 +20,186 @@ const RatingStars = ({ rating, colorClass }) => {
     );
 };
 
+const InstitutionRow = ({ inst, t }) => {
+    if (Number(inst.total_debt) <= 0) return null;
+    return (
+        <tr className="patient-list__row patient-list__row--institution">
+            <td>
+                <div className="patient-list__name-cell">
+                    <Icon name="account_balance" size="1.1rem" className="patient-list__inst-icon" />
+                    <span className="patient-list__inst-name">
+                        [INSTITUCIÓN] {inst.name}
+                    </span>
+                </div>
+            </td>
+            <td>
+                <span className="patient-list__inst-type">{t('institution_debt') || 'Deuda Institucional'}</span>
+            </td>
+            <td></td>
+            <td></td>
+            <td>
+                <Badge variant="warning">${Number(inst.total_debt).toLocaleString()}</Badge>
+            </td>
+            <td className="patient-list__actions">
+                <Button
+                    size="sm-compact"
+                    variant="link"
+                    to={`/institutions`}
+                    onClick={(e) => e.stopPropagation()}
+                    icon={<Icon name="arrow_forward" size="1rem" />}
+                >
+                    {t('go') || 'Ir'}
+                </Button>
+            </td>
+        </tr>
+    );
+};
+
+const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
+    return (
+        <tr
+            onClick={() => onViewDetails(p.id)}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onViewDetails(p.id);
+                }
+            }}
+            className="patient-list__row"
+            role="button"
+            tabIndex={0}
+        >
+            <td>
+                <div className="patient-list__name-cell">
+                    <strong className="patient-list__name">
+                        {p.full_name || `${p.first_name || ''} ${p.last_name || ''}`.trim() || 'N/A'}
+                    </strong>
+                    {p.is_new_patient === 1 && <Badge variant="blue" size="sm">NEW</Badge>}
+
+                    {p.attended_appointments > 0 && (
+                        <Badge variant="success" size="sm" title={`${t('attended_appointments') || 'Visitas'}: ${p.attended_appointments}`}>
+                            <Icon name="history" size="0.8rem" /> {p.attended_appointments}
+                        </Badge>
+                    )}
+                </div>
+            </td>
+            <td>
+                <div className="patient-list__id-info">
+                    {p.dni && <span><span className="patient-list__id-label">DNI:</span> {p.dni}</span>}
+                    {(p.insurance_name || p.insurance) && <span><span className="patient-list__id-label">OS:</span> {p.insurance_name || p.insurance}</span>}
+                </div>
+            </td>
+            <td>
+                <div className="patient-list__contact-info">
+                    {p.phone ? (
+                        <div className="patient-list__contact-row">
+                            <Button
+                                to={`https://wa.me/${p.phone.replace(/[^0-9]/g, '')}`}
+                                target="_blank"
+                                variant="whatsapp"
+                                size="sm-compact"
+                                onClick={(e) => e.stopPropagation()}
+                                title="WhatsApp"
+                                icon={<Icon name="send" size="1.1rem" />}
+                            />
+                            <Button
+                                to={`tel:${p.phone.replace(/[^0-9+]/g, '')}`}
+                                variant="phone"
+                                size="sm"
+                                className="patient-list__contact-link"
+                                onClick={(e) => e.stopPropagation()}
+                                title="Llamar"
+                                icon={<Icon name="call" size="0.9rem" />}
+                            >
+                                {p.phone}
+                            </Button>
+                        </div>
+                    ) : <div className="patient-list__no-contact">{t('no_phone_short')}</div>}
+
+                    {p.email && (
+                        <Button
+                            to={`mailto:${p.email}`}
+                            variant="link"
+                            size="sm"
+                            className="patient-list__contact-link--email"
+                            onClick={(e) => e.stopPropagation()}
+                            icon={<Icon name="mail" size="0.9rem" />}
+                        >
+                            {p.email}
+                        </Button>
+                    )}
+                </div>
+            </td>
+            <td>
+                <div className="patient-list__rating-group">
+                    <div className="patient-list__rating-item" title={`${t('rating_financial_tooltip')}\nDeuda Actual: $${p.total_debt}`}>
+                        <span className="patient-list__rating-label">FIN</span>
+                        <RatingStars rating={p.financial_rating} colorClass="gold" />
+                    </div>
+                    <div className="patient-list__rating-item" title={`${t('rating_attendance_tooltip')}\nResumen: ${p.total_appointments - p.missed_appointments}/${p.total_appointments}`}>
+                        <span className="patient-list__rating-label">ASIST</span>
+                        <RatingStars rating={p.attendance_rating} colorClass="blue" />
+                    </div>
+                    <div
+                        className="patient-list__rating-item patient-list__rating-item--interactive"
+                        onClick={(e) => onToggleRating(e, p.id, p.behavior_rating)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                onToggleRating(e, p.id, p.behavior_rating);
+                            }
+                        }}
+                        title={`${t('rating_behavior_tooltip')}\nCalificación: ${p.behavior_rating || 5}/5 (Click para cambiar)`}
+                        role="button"
+                        tabIndex={0}
+                    >
+                        <span className="patient-list__rating-label">COND</span>
+                        <RatingStars rating={p.behavior_rating} colorClass="pink" />
+                    </div>
+                </div>
+            </td>
+            <td>
+                {Number(p.total_debt) > 0 ? (
+                    <Button
+                        size="sm-compact"
+                        variant="warning"
+                        onClick={(e) => onOpenDebt(e, p.id, p.total_debt)}
+                        className="patient-list__debt-badge"
+                        icon={<Icon name="payments" size="1rem" />}
+                    >
+                        ${p.total_debt}
+                    </Button>
+                ) : (
+                    <span className="patient-list__zero-debt">$0.00</span>
+                )}
+            </td>
+            <td className="patient-list__actions">
+                <Button
+                    variant="info"
+                    size="sm-compact"
+                    className="patient-list__view-btn"
+                    icon={<Icon name="badge" />}
+                >
+                    {t('view_details') || 'Ficha'}
+                </Button>
+            </td>
+        </tr>
+    );
+};
+
 /**
  * PatientList (Executor).
  * Renders a tabular list of patients with search filtering and actions.
  */
 const PatientList = ({
     patients,
-    institutions: rawInstitutions = [],
+    institutions: rawInstitutions = EMPTY_ARRAY,
     onViewDetails,
     onOpenDebt,
     onToggleRating,
     t
 }) => {
-    const institutions = Array.isArray(rawInstitutions) ? rawInstitutions : (rawInstitutions?.institutions || []);
+    const institutions = Array.isArray(rawInstitutions) ? rawInstitutions : (rawInstitutions?.institutions || EMPTY_ARRAY);
 
     if (patients.length === 0) {
         return (
@@ -56,159 +225,19 @@ const PatientList = ({
                     </tr>
                 </thead>
                 <tbody>
-                    {institutions.filter(inst => Number(inst.total_debt) > 0).map(inst => (
-                        <tr key={`inst-${inst.id}`} className="patient-list__row patient-list__row--institution">
-                            <td>
-                                <div className="patient-list__name-cell">
-                                    <Icon name="account_balance" size="1.1rem" className="patient-list__inst-icon" />
-                                    <span className="patient-list__inst-name">
-                                        [INSTITUCIÓN] {inst.name}
-                                    </span>
-                                </div>
-                            </td>
-                            <td>
-                                <span className="patient-list__inst-type">{t('institution_debt') || 'Deuda Institucional'}</span>
-                            </td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <Badge variant="warning">${Number(inst.total_debt).toLocaleString()}</Badge>
-                            </td>
-                            <td className="patient-list__actions">
-                                <Button
-                                    size="sm-compact"
-                                    variant="link"
-                                    to={`/institutions`}
-                                    onClick={(e) => e.stopPropagation()}
-                                    icon={<Icon name="arrow_forward" size="1rem" />}
-                                >
-                                    {t('go') || 'Ir'}
-                                </Button>
-                            </td>
-                        </tr>
+                    {institutions.map(inst => (
+                        <InstitutionRow key={`inst-${inst.id}`} inst={inst} t={t} />
                     ))}
 
                     {patients.map(p => (
-                        <tr
-                            key={p.id}
-                            onClick={() => onViewDetails(p.id)}
-                            className="patient-list__row"
-                        >
-                            <td>
-                                <div className="patient-list__name-cell">
-                                    <strong className="patient-list__name">
-                                        {p.full_name || `${p.first_name || ''} ${p.last_name || ''}`.trim() || 'N/A'}
-                                    </strong>
-                                    {p.is_new_patient === 1 && <Badge variant="blue" size="sm">NEW</Badge>}
-
-                                    {p.attended_appointments > 0 && (
-                                        <Badge variant="success" size="sm" title={`${t('attended_appointments') || 'Visitas'}: ${p.attended_appointments}`}>
-                                            <Icon name="history" size="0.8rem" /> {p.attended_appointments}
-                                        </Badge>
-                                    )}
-                                </div>
-                            </td>
-                            <td>
-                                <div className="patient-list__id-info">
-                                    {p.dni && <span><span className="patient-list__id-label">DNI:</span> {p.dni}</span>}
-                                    {(p.insurance_name || p.insurance) && <span><span className="patient-list__id-label">OS:</span> {p.insurance_name || p.insurance}</span>}
-                                </div>
-                            </td>
-                            <td>
-                                <div className="patient-list__contact-info">
-                                    {p.phone ? (
-                                        <div className="patient-list__contact-row">
-                                            <Button
-                                                to={`https://wa.me/${p.phone.replace(/[^0-9]/g, '')}`}
-                                                target="_blank"
-                                                variant="whatsapp"
-                                                size="sm-compact"
-                                                onClick={(e) => e.stopPropagation()}
-                                                title="WhatsApp"
-                                                icon={<Icon name="send" size="1.1rem" />}
-                                            />
-                                            <Button
-                                                to={`tel:${p.phone.replace(/[^0-9+]/g, '')}`}
-                                                variant="phone"
-                                                size="sm"
-                                                className="patient-list__contact-link"
-                                                onClick={(e) => e.stopPropagation()}
-                                                title="Llamar"
-                                                icon={<Icon name="call" size="0.9rem" />}
-                                            >
-                                                {p.phone}
-                                            </Button>
-                                        </div>
-                                    ) : <div className="patient-list__no-contact">{t('no_phone_short')}</div>}
-
-                                    {p.email && (
-                                        <Button
-                                            to={`mailto:${p.email}`}
-                                            variant="link"
-                                            size="sm"
-                                            className="patient-list__contact-link--email"
-                                            onClick={(e) => e.stopPropagation()}
-                                            icon={<Icon name="mail" size="0.9rem" />}
-                                        >
-                                            {p.email}
-                                        </Button>
-                                    )}
-                                </div>
-                            </td>
-                            <td>
-                                <div className="patient-list__rating-group">
-                                    <div className="patient-list__rating-item" title={`${t('rating_financial_tooltip')}\nDeuda Actual: $${p.total_debt}`}>
-                                        <span className="patient-list__rating-label">FIN</span>
-                                        <RatingStars rating={p.financial_rating} colorClass="gold" />
-                                    </div>
-                                    <div className="patient-list__rating-item" title={`${t('rating_attendance_tooltip')}\nResumen: ${p.total_appointments - p.missed_appointments}/${p.total_appointments}`}>
-                                        <span className="patient-list__rating-label">ASIST</span>
-                                        <RatingStars rating={p.attendance_rating} colorClass="blue" />
-                                    </div>
-                                    <div
-                                        className="patient-list__rating-item patient-list__rating-item--interactive"
-                                        onClick={(e) => onToggleRating(e, p.id, p.behavior_rating)}
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter' || e.key === ' ') {
-                                                e.preventDefault();
-                                                onToggleRating(e, p.id, p.behavior_rating);
-                                            }
-                                        }}
-                                        title={`${t('rating_behavior_tooltip')}\nCalificación: ${p.behavior_rating || 5}/5 (Click para cambiar)`}
-                                        role="button"
-                                        tabIndex={0}
-                                    >
-                                        <span className="patient-list__rating-label">COND</span>
-                                        <RatingStars rating={p.behavior_rating} colorClass="pink" />
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                {Number(p.total_debt) > 0 ? (
-                                    <Button
-                                        size="sm-compact"
-                                        variant="warning"
-                                        onClick={(e) => onOpenDebt(e, p.id, p.total_debt)}
-                                        className="patient-list__debt-badge"
-                                        icon={<Icon name="payments" size="1rem" />}
-                                    >
-                                        ${p.total_debt}
-                                    </Button>
-                                ) : (
-                                    <span className="patient-list__zero-debt">$0.00</span>
-                                )}
-                            </td>
-                            <td className="patient-list__actions">
-                                <Button
-                                    variant="info"
-                                    size="sm-compact"
-                                    className="patient-list__view-btn"
-                                    icon={<Icon name="badge" />}
-                                >
-                                    {t('view_details') || 'Ficha'}
-                                </Button>
-                            </td>
-                        </tr>
+                        <PatientRow 
+                            key={p.id} 
+                            p={p} 
+                            onViewDetails={onViewDetails} 
+                            onOpenDebt={onOpenDebt} 
+                            onToggleRating={onToggleRating} 
+                            t={t} 
+                        />
                     ))}
                 </tbody>
             </table>

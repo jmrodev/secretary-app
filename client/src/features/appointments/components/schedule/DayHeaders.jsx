@@ -8,8 +8,8 @@ import './DayHeaders.css';
 const DayHeaders = ({ daysOfWeek }) => {
   return (
     <div className="day-headers">
-      {daysOfWeek.map((day, index) => (
-        <div key={index} className="day-headers__day">{day}</div>
+      {daysOfWeek.map((day) => (
+        <div key={day} className="day-headers__day">{day}</div>
       ))}
     </div>
   );

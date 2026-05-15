@@ -4,13 +4,15 @@ import TabButton from '@/components/atoms/TabButton';
 import Icon from '@/components/atoms/Icon';
 import './FeatureToolbar.css';
 
+const EMPTY_ARRAY = [];
+
 /**
  * FeatureToolbar Organism.
  * A generic, reusable horizontal bar for feature orchestration.
  * Centralizes navigation tabs and contextual actions.
  */
 const FeatureToolbar = ({
-    tabs = [],
+    tabs = EMPTY_ARRAY,
     activeTab,
     onTabChange,
     actions,

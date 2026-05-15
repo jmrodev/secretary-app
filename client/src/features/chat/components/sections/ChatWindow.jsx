@@ -2,6 +2,7 @@ import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Loading from '@/components/atoms/Loading';
+import { parseDate, isToday, formatTime, formatDate as formatUtil } from '@/utils/core/dateUtils';
 import './ChatWindow.css';
 
 /**
@@ -22,12 +23,10 @@ const ChatWindow = ({
 }) => {
 
     const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        const now = new Date();
-        const isToday = date.toDateString() === now.toDateString();
-        return isToday
-            ? date.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })
-            : date.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' });
+        const date = parseDate(dateString);
+        return isToday(date)
+            ? formatTime(date, { hour12: false })
+            : formatUtil(date, { hideYear: true });
     };
 
     if (!selectedConvo) {

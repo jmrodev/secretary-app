@@ -32,15 +32,15 @@ const StatusActionModal = ({
             }
         >
             <div className="input-group">
-                <label className="input-label">
+                <label className="input-label" htmlFor="status-note">
                     {type === 'completed' ? t('message_optional') : t('reason_rejection')}
                 </label>
                 <textarea
+                    id="status-note"
                     className="input-field"
                     rows="3"
                     value={note}
                     onChange={e => onNoteChange(e.target.value)}
-                    autoFocus
                 />
             </div>
         </Modal>

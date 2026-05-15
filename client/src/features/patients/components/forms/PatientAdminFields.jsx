@@ -4,12 +4,14 @@ import CurrencyInput from '@/components/atoms/CurrencyInput';
 import Icon from '@/components/atoms/Icon';
 import './PatientAdminFields.css';
 
+const EMPTY_ARRAY = [];
+
 /**
  * PatientAdminFields Molecule.
  * Contains advanced settings only visible to administrators: doctor assignments, tariffs, and intervals.
  * Optimized for Bento Box layout.
  */
-const PatientAdminFields = ({ formData, doctors = [], handleDoctorToggle, handleManualValueChange, updateAdminFields, t }) => {
+const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoctorToggle, handleManualValueChange, updateAdminFields, t }) => {
     return (
         <article className="patient-admin-fields">
             <header className="patient-admin-fields__header">

@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { isDueSoon } from '@/utils/core/dateUtils';
 import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useMessage } from '@/context/MessageContext';
@@ -28,7 +29,6 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
     const { user } = useAuth();
     const { t } = useLanguage();
     const { showMessage } = useMessage();
-    const [isExpired, setIsExpired] = React.useState(false);
 
     const {
         selectedDoctor, setSelectedDoctor,
@@ -45,13 +45,10 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
         tempMedsProps
     } = useMedicalRequest(initialType, initialSendToDoctor, user, showMessage, t, onRequestCreated);
 
-    React.useEffect(() => {
-        if (patientData?.next_suggested_prescription_date) {
-            setIsExpired(new Date(patientData.next_suggested_prescription_date) > new Date());
-        } else {
-            setIsExpired(false);
-        }
-    }, [patientData]);
+    const isExpired = React.useMemo(() => {
+        if (reqType !== 'prescription') return false;
+        return isDueSoon(patientData?.next_suggested_prescription_date, 0);
+    }, [patientData?.next_suggested_prescription_date, reqType]);
 
     const handleSubmit = (e) => {
         handleCreateRequest(e, medicationItems, reqNote);

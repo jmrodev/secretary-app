@@ -3,7 +3,7 @@ import CalendarDayCell from './CalendarDayCell.jsx';
 import CalendarHeader from './CalendarHeader.jsx';
 import DayHeaders from '../schedule/DayHeaders.jsx';
 import { useLanguage } from '@/hooks/useLanguage';
-import { isPastDay, isSameDay } from '@/utils/core/dateUtils';
+import { isPastDay, isSameDay, getNow, parseDate, createDate } from '@/utils/core/dateUtils';
 import './Calendar.css';
 
 /**
@@ -27,22 +27,21 @@ const Calendar = ({
     showOutOfHours = false, 
     compact = false 
 }) => {
-    const [viewDate, setViewDate] = useState(new Date(selectedDate || new Date()));
+    const [viewDate, setViewDate] = useState(() => parseDate(selectedDate || getNow()));
     const { t } = useLanguage();
 
-    // Sync viewDate when selectedDate prop changes (e.g. from external search)
+    // Sync viewDate when selectedDate prop changes
     useEffect(() => {
         if (selectedDate) {
-            const dateObj = new Date(selectedDate);
-            setViewDate(prev => isSameDay(prev, dateObj) ? prev : dateObj);
+            setViewDate(parseDate(selectedDate));
         }
     }, [selectedDate]);
 
     const getDaysInMonth = (date) => {
         const year = date.getFullYear();
         const month = date.getMonth();
-        const days = new Date(year, month + 1, 0).getDate();
-        const firstDay = new Date(year, month, 1).getDay();
+        const days = createDate(year, month + 1, 0).getDate();
+        const firstDay = createDate(year, month, 1).getDay();
         return { days, firstDay };
     };
 
@@ -53,7 +52,7 @@ const Calendar = ({
     const appointmentsByDate = React.useMemo(() => {
         const map = {};
         appointments.forEach(appt => {
-            const d = new Date(appt.appointment_date);
+            const d = parseDate(appt.appointment_date);
             const dateStr = [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-');
             if (!map[dateStr]) map[dateStr] = [];
             map[dateStr].push(appt);
@@ -65,7 +64,7 @@ const Calendar = ({
         const map = {};
         holidays.forEach(h => {
             if (!h.date) return;
-            const d = new Date(h.date);
+            const d = parseDate(h.date);
             const dateStr = [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-');
             map[dateStr] = h;
         });
@@ -73,13 +72,13 @@ const Calendar = ({
     }, [holidays]);
 
     const handlePrevMonth = () => {
-        const newDate = new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1);
+        const newDate = createDate(viewDate.getFullYear(), viewDate.getMonth() - 1, 1);
         setViewDate(newDate);
         onDateSelect(newDate);
     };
 
     const handleNextMonth = () => {
-        const newDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1);
+        const newDate = createDate(viewDate.getFullYear(), viewDate.getMonth() + 1, 1);
         setViewDate(newDate);
         onDateSelect(newDate);
     };
@@ -127,14 +126,14 @@ const CalendarGrid = ({
     
     // Empty cells before first day
     for (let i = 0; i < firstDay; i++) {
-        dayElements.push(<div key={`empty-pre-${viewDate.getMonth()}-${i}`} className="calendar__cell calendar__cell--empty"></div>);
+        dayElements.push(<div key={`empty-pre-${viewDate.getFullYear()}-${viewDate.getMonth()}-${i}`} className="calendar__cell calendar__cell--empty"></div>);
     }
 
     // Days of the month
     for (let i = 1; i <= days; i++) {
-        const currentDay = new Date(viewDate.getFullYear(), viewDate.getMonth(), i);
-        const isSelected = selectedDate && isSameDay(new Date(selectedDate), currentDay);
-        const isToday = isSameDay(new Date(), currentDay);
+        const currentDay = createDate(viewDate.getFullYear(), viewDate.getMonth(), i);
+        const isSelected = selectedDate && isSameDay(parseDate(selectedDate), currentDay);
+        const isTodayDate = isSameDay(getNow(), currentDay);
         const dateStr = [currentDay.getFullYear(), String(currentDay.getMonth() + 1).padStart(2, '0'), String(currentDay.getDate()).padStart(2, '0')].join('-');
         const dayStats = calendarStats[dateStr] || {};
         
@@ -151,7 +150,7 @@ const CalendarGrid = ({
                 day={i} 
                 status={{
                     isSelected,
-                    isToday,
+                    isToday: isTodayDate,
                     isPast: isPastDay(currentDay),
                     isHoliday: !!isHolidayObj,
                     compact
@@ -173,7 +172,7 @@ const CalendarGrid = ({
     const totalCells = 42;
     const currentCount = dayElements.length;
     for (let i = 0; i < (totalCells - currentCount); i++) {
-        dayElements.push(<div key={`empty-post-${viewDate.getMonth()}-${i}`} className="calendar__cell calendar__cell--empty"></div>);
+        dayElements.push(<div key={`empty-post-${viewDate.getFullYear()}-${viewDate.getMonth()}-${i}`} className="calendar__cell calendar__cell--empty"></div>);
     }
 
     return <>{dayElements}</>;
