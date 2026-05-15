@@ -3,9 +3,8 @@ import React from 'react';
 import Pagination from '@/components/atoms/Pagination';
 import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/hooks/useLanguage';
-import { isToday } from '@/utils/core/dateUtils';
+import { isToday, formatDate } from '@/utils/core/dateUtils';
 import { formatPrice } from '@/utils/core/format';
-import { formatDate } from '@/utils/core/dateUtils';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import './MedicalRequestList.css';
@@ -74,7 +73,15 @@ const MedicalRequestList = ({
                                             <span
                                                 className={`medical-requests__type-tag medical-requests__type-tag--${r.type} medical-requests__type-tag--clickable`}
                                                 onClick={() => handleEditRequest({ ...r, _origin: 'request', _readOnly: true })}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' || e.key === ' ') {
+                                                        e.preventDefault();
+                                                        handleEditRequest({ ...r, _origin: 'request', _readOnly: true });
+                                                    }
+                                                }}
                                                 title={t('view') || 'Ver'}
+                                                role="button"
+                                                tabIndex={0}
                                             >
                                                 {r.type === 'prescription' ? t('prescription') : (r.type === 'license' ? t('license') : (r.type === 'certificate' ? t('certificate') : r.type))}
                                             </span>

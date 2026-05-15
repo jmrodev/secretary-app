@@ -7,6 +7,8 @@ import Icon from '@/components/atoms/Icon';
 import { usePatientFormController } from '@/features/patients/hooks/usePatientFormController';
 import './PatientManagerModal.css';
 
+const EMPTY_ARRAY = [];
+
 /**
  * PatientManagerModal Molecule (Executor).
  * Orchestrator modal for adding or editing a patient.
@@ -17,8 +19,8 @@ const PatientManagerModal = ({
     patient,
     onUpdate,
     referenceInfo,
-    insurances = [],
-    doctors = []
+    insurances = EMPTY_ARRAY,
+    doctors = EMPTY_ARRAY
 }) => {
     const isEdit = !!(patient && patient.id);
 

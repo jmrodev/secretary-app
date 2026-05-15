@@ -8,7 +8,10 @@ import { useFinancesPageController } from '@/features/finances/hooks/useFinances
 import FinanceStatsCards from '@/features/finances/components/sections/FinanceStatsCards';
 import EditTransactionModal from '@/features/finances/components/modals/EditTransactionModal';
 import TransactionModal from '@/features/finances/components/modals/TransactionModal';
-import FinanceSidebar from '@/features/finances/components/ui/FinanceSidebar';
+import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+import Button from '@/components/atoms/Button';
+import Icon from '@/components/atoms/Icon';
+import Badge from '@/components/atoms/Badge';
 import TransactionsTable from '@/features/finances/components/tables/TransactionsTable';
 import CashBoxDeliveryModal from '@/features/finances/components/modals/CashBoxDeliveryModal';
 import PendingClosuresModal from '@/features/finances/components/modals/PendingClosuresModal';
@@ -25,7 +28,7 @@ const FinancesPage = () => {
         stats,
         loading,
         doctors,
-        selectedDoctorFilter, // This is a string like '3' or 'all'
+        selectedDoctorFilter,
         modalOpen,
         closeBoxModal,
         closeAmount,
@@ -42,60 +45,73 @@ const FinancesPage = () => {
 
     return (
         <MainLayout wide flush title={t('finances') || 'Finanzas'}>
-            <div className="finances-page layout-content-area">
-                <section className="animate-fade-in">
+            <div className="finances-page-orchestrator layout-content-area animate-fade-in">
+                <FeatureToolbar
+                    className="finances-page-orchestrator__toolbar"
+                    actions={
+                        isAdminOrSecretary && (
+                            <div className="finances-page__toolbar-actions">
+                                <Button
+                                    variant="primary"
+                                    size="sm"
+                                    onClick={handlers.onOpenNewTransaction}
+                                    icon={<Icon name="add" size="1.1rem" />}
+                                >
+                                    {t('new_transaction')}
+                                </Button>
+
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="finances-page__action-btn--badge"
+                                    onClick={() => handlers.setPendingClosuresOpen(true)}
+                                    icon={<Icon name="calendar_view_week" size="1.1rem" />}
+                                >
+                                    {t('deliver_box') || 'Entregar Caja'}
+                                    <Badge 
+                                        count={controller.pendingClosures.length} 
+                                        position="top-right" 
+                                        variant="danger" 
+                                    />
+                                </Button>
+                            </div>
+                        )
+                    }
+                />
+
+                <main className="finances-page-orchestrator__main">
                     <h2 className="visually-hidden">{t('financial_operations_area') || 'Área de Operaciones Financieras'}</h2>
+                    
                     {loading && filteredTransactions.length === 0 ? (
                         <Loading variant="centered" text={t('loading') || 'Cargando...'} />
                     ) : (
-                        <div className="dashboard-layout__grid">
-                            <aside className="dashboard-layout__sidebar">
-                                <FinanceSidebar
-                                    isAdminOrSecretary={isAdminOrSecretary}
+                        <div className="finances-page-orchestrator__content">
+                            {isAdminOrSecretary && stats.length > 0 && (
+                                <FinanceStatsCards stats={stats} t={t} />
+                            )}
+
+                            <article className="dashboard-card no-padding">
+                                <h4 className="visually-hidden">{t('transactions_list') || 'Listado de Transacciones'}</h4>
+                                <TransactionsTable
+                                    transactions={filteredTransactions}
+                                    totalCount={controller.totalCount}
+                                    currentPage={controller.currentPage}
+                                    totalPages={controller.totalPages}
+                                    onPageChange={handlers.onPageChange}
                                     user={user}
-                                    doctors={doctors}
-                                    selectedDoctorFilter={selectedDoctorFilter}
-                                    pendingClosuresCount={controller.pendingClosures.length}
-                                    onOpenNewTransaction={handlers.onOpenNewTransaction}
-                                    onOpenPendingClosures={() => handlers.setPendingClosuresOpen(true)}
-                                    onSelectDoctor={handlers.onSelectDoctor}
-                                    onOpenCloseBox={handlers.onOpenCloseBox}
-                                    calculateBalance={handlers.calculateBalance}
-                                    calculateBalanceByMethod={handlers.calculateBalanceByMethod}
-                                    filters={filters}
-                                    handlers={handlers}
+                                    settings={settings}
                                     t={t}
+                                    onEdit={handlers.onEditTransaction}
+                                    onDelete={handlers.onDeleteTransaction}
+                                    onGenerateInvoice={handlers.onGenerateInvoice}
+                                    onSync={handlers.onSyncTransaction}
+                                    alert={controller.alert}
                                 />
-                            </aside>
-
-                            <section className="dashboard-layout__main">
-                                <h3 className="visually-hidden">{t('transactions_and_stats') || 'Transacciones y Estadísticas'}</h3>
-                                {isAdminOrSecretary && stats.length > 0 && (
-                                    <FinanceStatsCards stats={stats} t={t} />
-                                )}
-
-                                <article className="dashboard-card no-padding">
-                                    <h4 className="visually-hidden">{t('transactions_list') || 'Listado de Transacciones'}</h4>
-                                    <TransactionsTable
-                                        transactions={filteredTransactions}
-                                        totalCount={controller.totalCount}
-                                        currentPage={controller.currentPage}
-                                        totalPages={controller.totalPages}
-                                        onPageChange={handlers.onPageChange}
-                                        user={user}
-                                        settings={settings}
-                                        t={t}
-                                        onEdit={handlers.onEditTransaction}
-                                        onDelete={handlers.onDeleteTransaction}
-                                        onGenerateInvoice={handlers.onGenerateInvoice}
-                                        onSync={handlers.onSyncTransaction}
-                                        alert={controller.alert}
-                                    />
-                                </article>
-                            </section>
+                            </article>
                         </div>
                     )}
-                </section>
+                </main>
+            </div>
 
                 {/* --- Modals --- */}
                 <TransactionModal
@@ -142,7 +158,6 @@ const FinancesPage = () => {
                     onResetDay={handlers.handleResetDay}
                     t={t}
                 />
-            </div>
         </MainLayout>
     );
 };

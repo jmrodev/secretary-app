@@ -6,10 +6,10 @@
     --appointments-panel-bg: var(--dashboard-card-bg);
     --appointments-panel-border: var(--dashboard-card-border);
     --appointments-panel-shadow: var(--shadow-sm);
-    --appointments-gap: 1.5rem;
-    --appointments-radius: var(--radius-lg);
+    --appointments-gap: 2rem;
+    --appointments-radius: var(--radius-xl);
 
-    --live-indicator-bg: rgba(0, 182, 122, 0.1);
+    --live-indicator-bg: rgba(0, 182, 122, 0.08);
     --live-indicator-dot: var(--success); 
     --live-indicator-text: var(--success);
     --search-bg: var(--gray-900);
@@ -21,6 +21,7 @@
     flex-direction: column;
     background-color: transparent;
     animation: fade-in 0.3s ease-out;
+    padding: 0.5rem 1rem;
 }
 
 /* --- Top Actions (Live Indicator & Actions) --- */
@@ -108,29 +109,26 @@
     gap: var(--appointments-gap);
 }
 
-.appointments-page-orchestrator__grid {
+.appointments-page-orchestrator__main-grid {
     flex: 1;
     display: grid;
-    grid-template-columns: minmax(20rem, 0.8fr) 1.2fr;
-    gap: var(--appointments-gap);
+    grid-template-columns: minmax(22rem, 0.36fr) 1fr;
+    gap: 1.5rem;
 }
 
-.appointments-page-orchestrator__grid--monthly {
+.appointments-page-orchestrator__main-grid--monthly {
     grid-template-columns: 1fr;
-}
-
-.appointments-page-orchestrator__sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: var(--appointments-gap);
 }
 
 .appointments-page-orchestrator__panel {
     background: var(--appointments-panel-bg);
     border: 1px solid var(--appointments-panel-border);
     border-radius: var(--appointments-radius);
-    padding: 1.25rem;
+    padding: 0; 
     box-shadow: var(--appointments-panel-shadow);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
 }
 
 .appointments-page-orchestrator__panel--calendar {

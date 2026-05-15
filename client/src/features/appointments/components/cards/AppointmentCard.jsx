@@ -3,6 +3,8 @@ import { useLanguage } from '@/hooks/useLanguage';
 import Button from '@/components/atoms/Button';
 import Badge from '@/components/atoms/Badge';
 import Icon from '@/components/atoms/Icon';
+import { formatDate, formatTime, formatDateTimeLong } from '@/utils/core/dateUtils';
+import { formatCurrency } from '@/utils/core/format';
 import './AppointmentCard.css';
 
 /**
@@ -11,18 +13,45 @@ import './AppointmentCard.css';
  */
 const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction }) => {
     const { t } = useLanguage();
+    const [clientTime, setClientTime] = React.useState('');
+
+    React.useEffect(() => {
+        if (appt.appointment_date) {
+            setClientTime(formatTime(appt.appointment_date, { hour12: false }));
+        }
+    }, [appt.appointment_date]);
 
     const isExternal = appt.source === 'google' || appt.source === 'google-incomplete' || appt.status === 'external';
     const isAnonymous = !appt.patient_id;
+
+    const [rescheduledDate, setRescheduledDate] = React.useState('');
+    const [rescheduledFull, setRescheduledFull] = React.useState('');
+
+    React.useEffect(() => {
+        if (appt.rescheduled_from_date) {
+            setRescheduledDate(formatDate(appt.rescheduled_from_date));
+            setRescheduledFull(formatDateTimeLong(appt.rescheduled_from_date));
+        }
+    }, [appt.rescheduled_from_date]);
+
+    const handleKeyDown = (e) => {
+        if (onClick && (e.key === 'Enter' || e.key === ' ')) {
+            e.preventDefault();
+            onClick(e);
+        }
+    };
 
     return (
         <div
             className={`appointment-card appointment-card--${appt.status} ${appt.type === 'virtual' ? 'appointment-card--virtual' : ''} ${isExternal ? 'appointment-card--external' : ''} ${isAnonymous ? 'appointment-card--anonymous' : ''}`}
             onClick={onClick}
+            onKeyDown={handleKeyDown}
+            role="button"
+            tabIndex={0}
         >
             <div className="appointment-card__time-box">
                 <span className="appointment-card__time">
-                    {new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
+                    {clientTime}
                 </span>
             </div>
 
@@ -59,9 +88,9 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
                     </span>
                     {appt.reason && <span className="appointment-card__reason">• {appt.reason}</span>}
                     {appt.rescheduled_from_date && (
-                        <span className="appointment-card__rescheduled-info" title={`Reprogramado del ${new Date(appt.rescheduled_from_date).toLocaleString()}`}>
+                        <span className="appointment-card__rescheduled-info" title={`Reprogramado del ${rescheduledFull}`}>
                             <Icon name="history" size="0.9rem" />
-                            {new Date(appt.rescheduled_from_date).toLocaleDateString()}
+                            {rescheduledDate}
                         </span>
                     )}
                 </div>
@@ -110,7 +139,7 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
 
                     return (
                         <div className={`appointment-card__payment-info appointment-card__payment-info--${colorModifier}`}>
-                            <span>${amountToDisplay.toLocaleString()}</span>
+                            <span>{formatCurrency(amountToDisplay)}</span>
                             {statusIcon}
                         </div>
                     );

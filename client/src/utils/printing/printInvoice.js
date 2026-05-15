@@ -1,4 +1,5 @@
 import QRCode from 'qrcode';
+import { getNow, formatDate, getArgentineNowISO } from '../core/dateUtils';
 
 export const printInvoice = async (data) => {
     const formattedNumber = `${String(data.ptoVta).padStart(5, '0')}-${String(data.number).padStart(8, '0')}`;
@@ -7,7 +8,7 @@ export const printInvoice = async (data) => {
 
     // Correct ARCA QR encoding (Standard v1 2026)
     // Synchronize to Argentina Time (GMT-3) to match ARCA server window
-    const nowArg = new Date().toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace(' ', 'T');
+    const nowArg = getArgentineNowISO();
     const qrDateStr = data.fecha || nowArg.split('T')[0];
 
     const qrData = {
@@ -168,7 +169,7 @@ export const printInvoice = async (data) => {
                         <div class="header-right">
                             <h2 class="voucher-title">${voucherName}</h2>
                             <p style="margin: 5px 0; font-size: 14pt;"><strong>Nº ${formattedNumber}</strong></p>
-                            <p style="margin: 5px 0;">Fecha: <strong>${new Date().toLocaleDateString('es-AR')}</strong></p>
+                            <p style="margin: 5px 0;">Fecha: <strong>${formatDate(getNow())}</strong></p>
                             <p style="margin: 5px 0;">CUIT: <strong>${data.doctorCuit || '27252572592'}</strong></p>
                             <p style="margin: 5px 0;">Ingresos Brutos: <strong>${data.doctorCuit || '27252572592'}</strong></p>
                             <p style="margin: 5px 0;">Inicio de Actividades: <strong>01/01/2021</strong></p>
@@ -217,7 +218,7 @@ export const printInvoice = async (data) => {
                         </div>
                         <div class="cae-section">
                             <div style="font-size: 14pt;">CAE: ${data.cae}</div>
-                            <div>Vto. CAE: ${data.vto ? new Date(data.vto).toLocaleDateString() : '-'}</div>
+                            <div>Vto. CAE: ${formatDate(data.vto, { fallback: '-' })}</div>
                             <div style="margin-top: 10px; font-weight: normal; font-size: 8pt; color: #777;">
                                 Comprobante autorizado por AFIP.<br/>
                                 Representación gráfica simplificada.

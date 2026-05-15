@@ -35,6 +35,13 @@ const Navbar = () => {
         setIsAdminOpen(false);
     };
 
+    const handleKeyDown = (e, toggleFn) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleFn();
+        }
+    };
+
     return (
         <header className="navbar">
             <div className="navbar__container">
@@ -91,43 +98,55 @@ const Navbar = () => {
                     {/* Spreadsheets Dropdown */}
                     {doctors.length > 0 && (
                         <div className={`navbar__dropdown ${isSpreadsheetsOpen ? 'navbar__dropdown--open' : ''}`}>
-                            <div className="navbar__dropdown-trigger" onClick={toggleSpreadsheets}>
+                            <div 
+                                className="navbar__dropdown-trigger" 
+                                onClick={toggleSpreadsheets}
+                                onKeyDown={(e) => handleKeyDown(e, toggleSpreadsheets)}
+                                role="button"
+                                tabIndex={0}
+                            >
                                 {t('spreadsheets') || 'Planillas'}
                                 <Icon name={isSpreadsheetsOpen ? 'EXPAND_LESS' : 'EXPAND_MORE'} size="1rem" />
                             </div>
                             {isSpreadsheetsOpen && (
                                 <div className="navbar__dropdown-content">
                                     {isDoctor ? (
-                                        doctors
-                                            .filter(d => d.user_id === (user.user_id || user.id) && d.spreadsheet_id)
-                                            .map(d => (
-                                                <a
-                                                    key={d.id}
-                                                    href={`https://docs.google.com/spreadsheets/d/${d.spreadsheet_id}`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="navbar__link"
-                                                >
-                                                    <Icon name="SPREADSHEETS" className="navbar__link-icon" />
-                                                    {t('my_spreadsheet') || 'Mi Planilla'}
-                                                </a>
-                                            ))
+                                        doctors.reduce((acc, d) => {
+                                            if (d.user_id === (user.user_id || user.id) && d.spreadsheet_id) {
+                                                acc.push(
+                                                    <a
+                                                        key={d.id}
+                                                        href={`https://docs.google.com/spreadsheets/d/${d.spreadsheet_id}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="navbar__link"
+                                                    >
+                                                        <Icon name="SPREADSHEETS" className="navbar__link-icon" />
+                                                        {t('my_spreadsheet') || 'Mi Planilla'}
+                                                    </a>
+                                                );
+                                            }
+                                            return acc;
+                                        }, [])
                                     ) : (
-                                        doctors
-                                            .filter(d => d.spreadsheet_id)
-                                            .map(d => (
-                                                <a
-                                                    key={d.id}
-                                                    href={`https://docs.google.com/spreadsheets/d/${d.spreadsheet_id}`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="navbar__link"
-                                                    title={`Planilla de ${d.full_name}`}
-                                                >
-                                                    <Icon name="SPREADSHEETS" className="navbar__link-icon" />
-                                                    {d.full_name.split(' ')[0]}
-                                                </a>
-                                            ))
+                                        doctors.reduce((acc, d) => {
+                                            if (d.spreadsheet_id) {
+                                                acc.push(
+                                                    <a
+                                                        key={d.id}
+                                                        href={`https://docs.google.com/spreadsheets/d/${d.spreadsheet_id}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="navbar__link"
+                                                        title={`Planilla de ${d.full_name}`}
+                                                    >
+                                                        <Icon name="SPREADSHEETS" className="navbar__link-icon" />
+                                                        {d.full_name.split(' ')[0]}
+                                                    </a>
+                                                );
+                                            }
+                                            return acc;
+                                        }, [])
                                     )}
                                 </div>
                             )}
@@ -137,7 +156,13 @@ const Navbar = () => {
                     {/* Admin Dropdown */}
                     {isStaff && (
                         <div className={`navbar__dropdown ${isAdminOpen ? 'navbar__dropdown--open' : ''}`}>
-                            <div className="navbar__dropdown-trigger" onClick={toggleAdmin}>
+                            <div 
+                                className="navbar__dropdown-trigger" 
+                                onClick={toggleAdmin}
+                                onKeyDown={(e) => handleKeyDown(e, toggleAdmin)}
+                                role="button"
+                                tabIndex={0}
+                            >
                                 {t('administration')}
                                 <Icon name={isAdminOpen ? 'EXPAND_LESS' : 'EXPAND_MORE'} size="1rem" />
                             </div>

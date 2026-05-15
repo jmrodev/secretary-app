@@ -7,13 +7,13 @@ import './CalendarDayIndicator.css';
  */
 const CalendarDayIndicator = ({
   count, bookedInCount, bookedOutCount, freeInCount, freeOutCount, isHoliday,
-  holidayDescription = '', variant = 'normal', showOutOfHours = false, t
+  holidayDescription = '', variant = 'normal', showOutOfHours = false, isSelected = false, t
 }) => {
   if (count === 0 && !isHoliday && !freeInCount && !freeOutCount) return null;
   const translate = (key, fallback) => (t && t(key)) || fallback;
 
   return (
-    <div className="calendar-day-indicator">
+    <div className={`calendar-day-indicator ${isSelected ? 'calendar-day-indicator--selected' : ''}`}>
       <div className="calendar-day-indicator__grid">
         <div className="calendar-day-indicator__row calendar-day-indicator__row--in-hours">
           <div className={`calendar-day-indicator__appointment-badge calendar-day-indicator__appointment-badge--free-normal ${freeInCount === 0 ? 'calendar-day-indicator__appointment-badge--zero' : ''}`}

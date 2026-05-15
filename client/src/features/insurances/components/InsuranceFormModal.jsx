@@ -26,26 +26,26 @@ const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFormData, 
         >
             <div className="insurance-modal__form">
                 <FormGroup label={`${t('name')} *`}>
-                    <Input value={formData.name} onChange={e => setFormData({ ...formData, name: capitalizeWords(e.target.value) })} autoFocus />
+                    <Input value={formData.name} onChange={e => setFormData(prev => ({ ...prev, name: capitalizeWords(e.target.value) }))} />
                 </FormGroup>
 
                 <FormGroup label="CUIT">
-                    <Input value={formData.cuit} onChange={e => setFormData({ ...formData, cuit: e.target.value })} />
+                    <Input value={formData.cuit} onChange={e => setFormData(prev => ({ ...prev, cuit: e.target.value }))} />
                 </FormGroup>
 
                 <FormGroup label={t('website') || 'Website'}>
-                    <Input value={formData.website} onChange={e => setFormData({ ...formData, website: e.target.value })} placeholder="e.g. www.osde.com.ar" />
+                    <Input value={formData.website} onChange={e => setFormData(prev => ({ ...prev, website: e.target.value }))} placeholder="e.g. www.osde.com.ar" />
                 </FormGroup>
 
                 <div className="insurance-modal__manager-wrapper">
                     <PhoneNumbersManager
                         phoneNumbers={formData.phoneNumbers}
-                        onChange={(newPhones) => setFormData({ ...formData, phoneNumbers: newPhones })}
+                        onChange={(newPhones) => setFormData(prev => ({ ...prev, phoneNumbers: newPhones }))}
                     />
                 </div>
 
                 <FormGroup label="Email">
-                    <Input value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
+                    <Input value={formData.email} onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))} />
                     {formData.email && (
                         <a href={`mailto:${formData.email}`} className="insurance-modal__link">
                             {t('send_email')} <Icon name="OPEN_IN_NEW" size="sm" />
@@ -57,33 +57,33 @@ const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFormData, 
                 
                 <div className="insurance-modal__row">
                     <FormGroup label={t('street_name') || 'Calle'} className="insurance-modal__column--flex-3">
-                        <Input value={formData.street_name || ''} onChange={e => setFormData({ ...formData, street_name: capitalizeWords(e.target.value) })} placeholder="Ej: Av. Rivadavia" />
+                        <Input value={formData.street_name || ''} onChange={e => setFormData(prev => ({ ...prev, street_name: capitalizeWords(e.target.value) }))} placeholder="Ej: Av. Rivadavia" />
                     </FormGroup>
                     <FormGroup label={t('number_short') || 'Nro'} className="insurance-modal__column--flex-1">
-                        <Input value={formData.street_number || ''} onChange={e => setFormData({ ...formData, street_number: e.target.value })} placeholder="123" />
+                        <Input value={formData.street_number || ''} onChange={e => setFormData(prev => ({ ...prev, street_number: e.target.value }))} placeholder="123" />
                     </FormGroup>
                 </div>
 
                 <div className="insurance-modal__row">
                     <FormGroup label={t('floor') || 'Piso'}>
-                        <Input value={formData.floor || ''} onChange={e => setFormData({ ...formData, floor: e.target.value })} />
+                        <Input value={formData.floor || ''} onChange={e => setFormData(prev => ({ ...prev, floor: e.target.value }))} />
                     </FormGroup>
                     <FormGroup label={t('apartment_short') || 'Depto'}>
-                        <Input value={formData.apartment || ''} onChange={e => setFormData({ ...formData, apartment: e.target.value })} />
+                        <Input value={formData.apartment || ''} onChange={e => setFormData(prev => ({ ...prev, apartment: e.target.value }))} />
                     </FormGroup>
                 </div>
 
                 <div className="insurance-modal__row">
                     <FormGroup label={t('city') || 'Ciudad'}>
-                        <Input value={formData.city || ''} onChange={e => setFormData({ ...formData, city: capitalizeWords(e.target.value) })} />
+                        <Input value={formData.city || ''} onChange={e => setFormData(prev => ({ ...prev, city: capitalizeWords(e.target.value) }))} />
                     </FormGroup>
                     <FormGroup label={t('province') || 'Provincia'}>
-                        <Input value={formData.province || ''} onChange={e => setFormData({ ...formData, province: capitalizeWords(e.target.value) })} />
+                        <Input value={formData.province || ''} onChange={e => setFormData(prev => ({ ...prev, province: capitalizeWords(e.target.value) }))} />
                     </FormGroup>
                 </div>
 
                 <FormGroup label={t('address_notes') || 'Notas de Dirección'}>
-                    <Input value={formData.address} onChange={e => setFormData({ ...formData, address: capitalizeWords(e.target.value) })} />
+                    <Input value={formData.address} onChange={e => setFormData(prev => ({ ...prev, address: capitalizeWords(e.target.value) }))} />
                     {(formData.street_name || formData.address) && (
                         <a
                             href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
@@ -101,7 +101,7 @@ const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFormData, 
                 <FormGroup label={t('status') || 'Estado'}>
                     <Select
                         value={formData.status}
-                        onChange={e => setFormData({ ...formData, status: e.target.value })}
+                        onChange={e => setFormData(prev => ({ ...prev, status: e.target.value }))}
                         options={[
                             { value: 'active', label: t('active') || 'Activo' },
                             { value: 'inactive', label: t('inactive') || 'Inactivo' }

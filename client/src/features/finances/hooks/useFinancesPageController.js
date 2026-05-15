@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useReducer, useEffect, useCallback, useMemo, useState } from 'react';
 import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
@@ -7,6 +7,32 @@ import { useConfig } from '@/context/ConfigContext';
 import { useFetch } from '@/hooks/useFetch';
 import { useFinanceHandlers } from '@/features/finances/hooks/useFinanceHandlers';
 import { useDoctors } from '@/context/DoctorContextDefinition';
+import { useSearch } from '@/hooks/useSearch';
+
+const initialState = {
+    currentPage: 1,
+    debouncedSearch: '',
+    isActionLoading: false,
+    modalOpen: false,
+    pendingClosuresOpen: false,
+    editingTx: null,
+    closeBoxModal: { open: false, doctorId: '', doctorName: '', balance: 0 },
+    closeAmount: ''
+};
+
+function financesReducer(state, action) {
+    switch (action.type) {
+        case 'SET_PAGE': return { ...state, currentPage: action.payload };
+        case 'SET_SEARCH': return { ...state, debouncedSearch: action.payload, currentPage: 1 };
+        case 'SET_LOADING': return { ...state, isActionLoading: action.payload };
+        case 'SET_MODAL_OPEN': return { ...state, modalOpen: action.payload };
+        case 'SET_CLOSURES_OPEN': return { ...state, pendingClosuresOpen: action.payload };
+        case 'SET_EDITING_TX': return { ...state, editingTx: action.payload };
+        case 'SET_CLOSE_BOX': return { ...state, closeBoxModal: { ...state.closeBoxModal, ...action.payload } };
+        case 'SET_CLOSE_AMOUNT': return { ...state, closeAmount: action.payload };
+        default: return state;
+    }
+}
 
 export const useFinancesPageController = () => {
     const { user } = useAuth();
@@ -15,32 +41,24 @@ export const useFinancesPageController = () => {
     const { alert, confirm } = useModal();
     const { settings } = useConfig();
 
-    // --- View State ---
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(50);
+    // --- State Management ---
+    const [state, dispatch] = useReducer(financesReducer, initialState);
+    const { 
+        currentPage, debouncedSearch, isActionLoading, modalOpen, 
+        pendingClosuresOpen, editingTx, closeBoxModal, closeAmount 
+    } = state;
+
+    const itemsPerPage = 50;
     const { viewDoctorId: selectedDoctorFilter, setViewDoctorId: setSelectedDoctorFilter, doctors, doctorsLoading } = useDoctors();
-    const [searchQuery, setSearchQuery] = useState('');
-    const [debouncedSearch, setDebouncedSearch] = useState('');
-    const [, setHistoricalWithdrawalOpen] = useState(false);
-    const [isActionLoading, setIsActionLoading] = useState(false);
+    const { searchTerm: searchQuery, setSearchTerm: setSearchQuery } = useSearch();
 
     // Debounce search
     useEffect(() => {
         const timer = setTimeout(() => {
-            setDebouncedSearch(searchQuery);
-            setCurrentPage(1); // Reset page on new search
+            dispatch({ type: 'SET_SEARCH', payload: searchQuery });
         }, 500);
         return () => clearTimeout(timer);
     }, [searchQuery]);
-
-    // Persistance handled by context
-    /*
-    useEffect(() => {
-        if (selectedDoctorFilter) {
-            localStorage.setItem('last_selected_doctor_id', selectedDoctorFilter);
-        }
-    }, [selectedDoctorFilter]);
-    */
 
     // --- FETCH DATA using useFetch ---
     
@@ -65,9 +83,6 @@ export const useFinancesPageController = () => {
         initialData: []
     });
 
-    // Doctors provided by context
-    // const { data: doctors = [] } = useFetch('/users/doctors', { initialData: [] });
-
     // Pending Closures
     const { data: pendingClosures = [], refetch: fetchClosures } = useFetch(`/finances/pending-closures`, {
         params: { doctor_id: selectedDoctorFilter || 'all' },
@@ -78,13 +93,6 @@ export const useFinancesPageController = () => {
     const totalCount = txData?.totalCount || 0;
     const loading = txLoading || doctorsLoading || isActionLoading;
     const fetched = txData !== undefined && !txLoading;
-
-    // --- UI State ---
-    const [modalOpen, setModalOpen] = useState(false);
-    const [pendingClosuresOpen, setPendingClosuresOpen] = useState(false);
-    const [editingTx, setEditingTx] = useState(null);
-    const [closeBoxModal, setCloseBoxModal] = useState({ open: false, doctorId: '', doctorName: '', balance: 0 });
-    const [closeAmount, setCloseAmount] = useState('');
 
     // --- Handlers ---
     const fetchData = useCallback(() => {
@@ -97,15 +105,20 @@ export const useFinancesPageController = () => {
         user, t, showMessage, confirm, alert,
         transactions, pendingClosures, duplicateClosures: [],
         closeBoxModal, closeAmount, editingTx,
-        setLoading: setIsActionLoading,
-        fetchData, setEditingTx, setModalOpen,
-        setHistoricalWithdrawalOpen, setPendingClosuresOpen,
-        setCloseBoxModal, setCloseAmount, setSelectedDoctorFilter
+        setLoading: (val) => dispatch({ type: 'SET_LOADING', payload: val }),
+        fetchData, 
+        setEditingTx: (val) => dispatch({ type: 'SET_EDITING_TX', payload: val }), 
+        setModalOpen: (val) => dispatch({ type: 'SET_MODAL_OPEN', payload: val }),
+        setHistoricalWithdrawalOpen: () => {}, // Handled elsewhere or not needed
+        setPendingClosuresOpen: (val) => dispatch({ type: 'SET_CLOSURES_OPEN', payload: val }),
+        setCloseBoxModal: (val) => dispatch({ type: 'SET_CLOSE_BOX', payload: val }), 
+        setCloseAmount: (val) => dispatch({ type: 'SET_CLOSE_AMOUNT', payload: val }), 
+        setSelectedDoctorFilter
     });
 
     const onSelectDoctor = (id) => {
         setSelectedDoctorFilter(id);
-        setCurrentPage(1);
+        dispatch({ type: 'SET_PAGE', payload: 1 });
     };
 
     const calculateBalanceByMethod = (doctorId) => {
@@ -142,7 +155,7 @@ export const useFinancesPageController = () => {
             ...baseHandlers,
             onSelectDoctor,
             setSearchQuery,
-            onPageChange: setCurrentPage,
+            onPageChange: (page) => dispatch({ type: 'SET_PAGE', payload: page }),
             calculateBalanceByMethod,
             calculateBalance
         },

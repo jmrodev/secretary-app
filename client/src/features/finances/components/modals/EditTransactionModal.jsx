@@ -7,6 +7,7 @@ import CurrencyInput from '@/components/atoms/CurrencyInput';
 import AutoTextarea from '@/components/atoms/AutoTextarea';
 import Icon from '@/components/atoms/Icon';
 import FormGroup from '@/components/molecules/FormGroup';
+import { toInputDateTime } from '@/utils/core/dateUtils';
 import './EditTransactionModal.css';
 
 /**
@@ -24,11 +25,15 @@ const EditTransactionModal = ({
     user,
     t
 }) => {
-    if (!transaction) return null;
-
-    const handleChange = (field, value) => {
-        setTransaction({ ...transaction, [field]: value });
+    const handleTransactionChange = (field, value) => {
+        setTransaction(prev => ({ ...prev, [field]: value }));
     };
+
+    const formattedDate = React.useMemo(() => {
+        return toInputDateTime(transaction?.transaction_date);
+    }, [transaction?.transaction_date]);
+
+    if (!transaction) return null;
 
     const paymentMethods = [
         { value: 'cash', label: t('cash') },
@@ -60,7 +65,7 @@ const EditTransactionModal = ({
                 <FormGroup label={t('amount')}>
                     <CurrencyInput
                         value={transaction.amount}
-                        onChange={e => handleChange('amount', e.target.value)}
+                        onChange={e => handleTransactionChange('amount', e.target.value)}
                         className="edit-transaction-modal__input"
                     />
                 </FormGroup>
@@ -68,7 +73,7 @@ const EditTransactionModal = ({
                 <FormGroup label={t('description')}>
                     <AutoTextarea
                         value={transaction.description}
-                        onChange={e => handleChange('description', e.target.value)}
+                        onChange={e => handleTransactionChange('description', e.target.value)}
                         placeholder={t('description_placeholder')}
                         className="edit-transaction-modal__textarea"
                     />
@@ -77,7 +82,7 @@ const EditTransactionModal = ({
                 <FormGroup label={t('payment_method')}>
                     <Select
                         value={transaction.method}
-                        onChange={e => handleChange('method', e.target.value)}
+                        onChange={e => handleTransactionChange('method', e.target.value)}
                         options={paymentMethods}
                         className="edit-transaction-modal__select"
                     />
@@ -86,7 +91,7 @@ const EditTransactionModal = ({
                 <FormGroup label={t('status')}>
                     <Select
                         value={transaction.status}
-                        onChange={e => handleChange('status', e.target.value)}
+                        onChange={e => handleTransactionChange('status', e.target.value)}
                         options={statusOptions}
                         className="edit-transaction-modal__select"
                     />
@@ -96,8 +101,8 @@ const EditTransactionModal = ({
                     <FormGroup label={t('transaction_date') || 'Fecha de Transacción'}>
                         <Input
                             type="datetime-local"
-                            value={transaction.transaction_date ? new Date(transaction.transaction_date).toLocaleString('sv').slice(0, 16).replace(' ', 'T') : ''}
-                            onChange={e => handleChange('transaction_date', e.target.value)}
+                            value={formattedDate}
+                            onChange={e => handleTransactionChange('transaction_date', e.target.value)}
                             className="edit-transaction-modal__input"
                         />
                         <div className="edit-transaction-modal__warning">

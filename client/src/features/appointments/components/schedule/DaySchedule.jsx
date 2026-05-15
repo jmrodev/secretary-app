@@ -1,14 +1,16 @@
 import React from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useDayScheduleHandlers } from '@/features/appointments/hooks/useDayScheduleHandlers';
-import { isSameDay } from '@/utils/core/dateUtils';
+import { isSameDay, compareDates, parseDate, createDate, toInputDate } from '@/utils/core/dateUtils';
 import { useFetch } from '@/hooks/useFetch';
 import Loading from '@/components/atoms/Loading';
 
-import DayScheduleHeader from '@/features/appointments/components/schedule/DayScheduleHeader.jsx';
-import ScheduleTimeline from '@/features/appointments/components/schedule/ScheduleTimeline.jsx';
+import DayScheduleHeader from './DayScheduleHeader.jsx';
+import ScheduleTimeline from './ScheduleTimeline.jsx';
 
 import './DaySchedule.css';
+
+const EMPTY_ARRAY = [];
 
 /**
  * DaySchedule (Executor Component).
@@ -16,7 +18,7 @@ import './DaySchedule.css';
  */
 const DaySchedule = ({
     date, appointments, onSlotClick, doctor, schedule, onDateSelect,
-    holidays = [], showOutOfHours, setShowOutOfHours, onNextFreeSlot
+    holidays = EMPTY_ARRAY, showOutOfHours, setShowOutOfHours, onNextFreeSlot
 }) => {
     const { t } = useLanguage();
     const [showCancelled, setShowCancelled] = React.useState(false);
@@ -28,30 +30,29 @@ const DaySchedule = ({
     const overturnStart = doctor?.overturn_start_time || '08:00';
     const overturnEnd = doctor?.overturn_end_time || '21:00';
 
-    const dateStr = [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
-    void (holidays && holidays.find(h => h.date.startsWith(dateStr)));
+    const dateStr = toInputDate(date);
 
     const dayApps = React.useMemo(() => {
         return [...appointments]
             .filter(appt => isSameDay(appt.appointment_date, date))
-            .sort((a, b) => new Date(a.appointment_date).getTime() - new Date(b.appointment_date).getTime());
+            .sort((a, b) => compareDates(a.appointment_date, b.appointment_date));
     }, [appointments, date]);
 
     const parseTime = (timeStr, baseDate) => {
         if (!timeStr) return null;
         const [h, m] = timeStr.split(':').map(Number);
-        const d = new Date(baseDate); d.setHours(h, m, 0, 0); return d;
+        return createDate(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate(), h, m);
     };
 
-    let startLimit = new Date(date); startLimit.setHours(8, 0, 0, 0);
-    let endLimit = new Date(date); endLimit.setHours(21, 0, 0, 0);
+    let startLimit = createDate(date.getFullYear(), date.getMonth(), date.getDate(), 8);
+    let endLimit = createDate(date.getFullYear(), date.getMonth(), date.getDate(), 21);
 
     if (showOutOfHours) {
         const oStart = parseTime(overturnStart, date);
         const oEnd = parseTime(overturnEnd, date);
         if (oStart < startLimit) startLimit = oStart;
         if (oEnd > endLimit) endLimit = oEnd;
-        const sevenAM = new Date(date); sevenAM.setHours(7, 0, 0, 0);
+        const sevenAM = createDate(date.getFullYear(), date.getMonth(), date.getDate(), 7);
         if (startLimit > sevenAM) startLimit = sevenAM;
     }
 
@@ -65,15 +66,15 @@ const DaySchedule = ({
     const duration = (doctor && doctor.appointment_duration) ? doctor.appointment_duration : 60;
     if (dayApps.length > 0) {
         dayApps.forEach(a => {
-            const aStart = new Date(a.appointment_date); const aEnd = new Date(aStart.getTime() + duration * 60000);
+            const aStart = parseDate(a.appointment_date); const aEnd = parseDate(aStart.getTime() + duration * 60000);
             if (aStart < startLimit) startLimit = aStart; if (aEnd > endLimit) endLimit = aEnd;
         });
     }
 
     // Fetch SQL-First daily schedule
-    const { data: rawSlots = [], loading, refetch } = useFetch('/appointments/daily-schedule', {
+    const { data: rawSlots = EMPTY_ARRAY, loading, refetch } = useFetch('/appointments/daily-schedule', {
         params: { doctorId: doctor?.id, date: dateStr },
-        initialData: []
+        initialData: EMPTY_ARRAY
     });
 
     // Sync with parent appointments (refetch if global list changes)
@@ -92,8 +93,7 @@ const DaySchedule = ({
             if (!slotsMap.has(timeStr)) {
                 // Parse time to Date object for the UI
                 const [h, m] = timeStr.split(':').map(Number);
-                const slotDate = new Date(date);
-                slotDate.setHours(h, m, 0, 0);
+                const slotDate = createDate(date.getFullYear(), date.getMonth(), date.getDate(), h, m);
                 
                 slotsMap.set(timeStr, {
                     time: slotDate,

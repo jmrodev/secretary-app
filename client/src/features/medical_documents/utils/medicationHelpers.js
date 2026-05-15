@@ -36,7 +36,10 @@ export const extractMedicationDetails = (req) => {
             notes = parts.slice(1).join('Notas: ').trim();
         }
         if (!meds || meds.length === 0) {
-            if (medsPart) meds = medsPart.split(',').map(m => m.trim()).filter(Boolean);
+            if (medsPart) meds = medsPart.split(',').flatMap(m => {
+                const trimmed = m.trim();
+                return trimmed ? [trimmed] : [];
+            });
         }
     } else {
         notes = noteContent;

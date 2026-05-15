@@ -13,6 +13,8 @@ import PrescriptionItemsList from '@/features/medical_documents/components/lists
 
 import './PrescriptionModal.css';
 
+const generateId = () => `${Date.now()}-${Math.random()}`;
+
 // Common frequency presets: label (display) + unitsPerDay (numeric)
 const FREQ_PRESETS = [
     { label: '1/día', unitsPerDay: 1, text: 'cada 24hs' },
@@ -31,21 +33,47 @@ const FREQ_PRESETS = [
  */
 const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, t, isSubmitting }) => {
     const { showMessage } = useMessage();
-    const [, setMedications] = useState('');
-    const [instructions, setInstructions] = useState('');
-    const [items, setItems] = useState([]);
-    const [patientMeds, setPatientMeds] = useState([]);
-    const [historyMeds, setHistoryMeds] = useState([]);
-    const [bonified, setBonified] = useState(false);
+    
+    const [state, dispatch] = React.useReducer((s, a) => {
+        if (a.type === 'RESET_FORM') return { ...s, ...a.payload };
+        if (a.type === 'UPDATE') return { ...s, ...a.payload };
+        return { ...s, [a.field]: a.value };
+    }, {
+        instructions: '',
+        items: [],
+        patientMeds: [],
+        historyMeds: [],
+        bonified: false,
+        tempMed: '',
+        tempDose: '',
+        tempUnitsPerBox: '',
+        tempDailyUnits: '',
+        tempBoxes: '',
+        tempFreqPreset: null,
+        currentVademecumId: null
+    });
 
-    // Structured input states
-    const [tempMed, setTempMed] = useState('');
-    const [tempDose, setTempDose] = useState('');
-    const [tempUnitsPerBox, setTempUnitsPerBox] = useState('');  // units inside a box
-    const [tempDailyUnits, setTempDailyUnits] = useState('');   // pills/day
-    const [tempBoxes, setTempBoxes] = useState('');             // how many boxes
-    const [tempFreqPreset, setTempFreqPreset] = useState(null); // selected preset index
-    const [currentVademecumId, setCurrentVademecumId] = useState(null);
+    const {
+        instructions, items, patientMeds, historyMeds, bonified,
+        tempMed, tempDose, tempUnitsPerBox, tempDailyUnits, tempBoxes,
+        tempFreqPreset, currentVademecumId
+    } = state;
+
+    const setInstructions = (v) => dispatch({ field: 'instructions', value: v });
+    const setItems = (v) => {
+        const val = typeof v === 'function' ? v(items) : v;
+        dispatch({ field: 'items', value: val });
+    };
+    const setPatientMeds = (v) => dispatch({ field: 'patientMeds', value: v });
+    const setHistoryMeds = (v) => dispatch({ field: 'historyMeds', value: v });
+    const setBonified = (v) => dispatch({ field: 'bonified', value: v });
+    const setTempMed = (v) => dispatch({ field: 'tempMed', value: v });
+    const setTempDose = (v) => dispatch({ field: 'tempDose', value: v });
+    const setTempUnitsPerBox = (v) => dispatch({ field: 'tempUnitsPerBox', value: v });
+    const setTempDailyUnits = (v) => dispatch({ field: 'tempDailyUnits', value: v });
+    const setTempBoxes = (v) => dispatch({ field: 'tempBoxes', value: v });
+    const setTempFreqPreset = (v) => dispatch({ field: 'tempFreqPreset', value: v });
+    const setCurrentVademecumId = (v) => dispatch({ field: 'currentVademecumId', value: v });
 
     // ── Fetch data ──────────────────────────────────────────────────────────
     // ── Helpers ─────────────────────────────────────────────────────────────
@@ -55,14 +83,19 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
     };
 
     const resetFields = () => {
-        setTempMed('');
-        setTempDose('');
-        setTempUnitsPerBox('');
-        setTempDailyUnits('');
-        setTempBoxes('');
-        setTempFreqPreset(null);
-        setCurrentVademecumId(null);
-        setBonified(false);
+        dispatch({
+            type: 'UPDATE',
+            payload: {
+                tempMed: '',
+                tempDose: '',
+                tempUnitsPerBox: '',
+                tempDailyUnits: '',
+                tempBoxes: '',
+                tempFreqPreset: null,
+                currentVademecumId: null,
+                bonified: false
+            }
+        });
     };
 
     // ── Fetch data ──────────────────────────────────────────────────────────
@@ -132,6 +165,8 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
         return d.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
     }, [daysSupply]);
 
+    // Use a reference date for calculations if needed, but for now we'll suppress warning on the UI side.
+
 
 
     // ── Handlers ─────────────────────────────────────────────────────────────
@@ -175,6 +210,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
             const calcDs = ds(parseFloat(upb), parseFloat(boxes), parseFloat(daily));
 
             const newItem = {
+                _id: generateId(),
                 vademecum_id: vademecumId,
                 name: medName,
                 dose: dose.trim(),
@@ -186,10 +222,6 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
             };
 
             setItems(prev => [...prev, newItem]);
-            const supplyStr = calcDs ? ` (~${calcDs}d)` : '';
-            const qtyStr = (boxes && boxes !== '0') ? ` x${boxes}` : '';
-            const fullLabel = `${medName} ${dose.trim()} ${frequencyText}${qtyStr}${supplyStr}`.trim().replace(/\s+/g, ' ');
-            setMedications(curr => curr.trim() ? `${curr.trim()}\n${fullLabel}` : fullLabel);
         }
     };
 
@@ -223,6 +255,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
         }
 
         const newItem = {
+            _id: generateId(),
             vademecum_id: currentVademecumId,
             name: medName,
             dose: tempDose.trim(),
@@ -244,14 +277,6 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
                 next = [...prev, newItem];
             }
 
-            // Sync medications text area
-            const newText = next.map(i => {
-                const supplyStr = i.days_supply ? ` (~${i.days_supply}d)` : '';
-                const qtyStr = i.quantity && i.quantity !== '0' ? ` x${i.quantity}` : '';
-                return `${i.name} ${i.dose || ''} ${i.frequency || ''}${qtyStr}${supplyStr}`.trim().replace(/\s+/g, ' ');
-            }).join('\n');
-            setMedications(newText);
-
             return next;
         });
 
@@ -261,12 +286,6 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
     const handleRemoveItem = (index) => {
         setItems(prev => {
             const newItems = prev.filter((_, i) => i !== index);
-            const newText = newItems.map(i => {
-                const supplyStr = i.days_supply ? ` (~${i.days_supply}d)` : '';
-                const qtyStr = i.quantity && i.quantity !== '0' ? ` x${i.quantity}` : '';
-                return `${i.name} ${i.dose || ''} ${i.frequency || ''}${qtyStr}${supplyStr}`.trim().replace(/\s+/g, ' ');
-            }).join('\n');
-            setMedications(newText);
             return newItems;
         });
     };
@@ -320,7 +339,6 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
         }).join('\n');
 
         onSubmit({ medications: finalMeds, instructions, items: finalItems, bonified });
-        setMedications('');
         setInstructions('');
         setItems([]);
         resetFields();

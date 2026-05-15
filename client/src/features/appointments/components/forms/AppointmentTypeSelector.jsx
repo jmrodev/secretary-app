@@ -18,7 +18,7 @@ const AppointmentTypeSelector = ({ type, onChange, t }) => {
                 onClick={() => onChange('consultation')}
                 unstyled
             >
-                <Icon name="person" size="1.2rem" />
+                <Icon name="person" size="1.2rem" className="appointment-type-selector__icon" />
                 <span>{t('in_person') || 'Presencial'}</span>
             </Button>
             <Button
@@ -27,7 +27,7 @@ const AppointmentTypeSelector = ({ type, onChange, t }) => {
                 onClick={() => onChange('virtual')}
                 unstyled
             >
-                <Icon name="videocam" size="1.2rem" />
+                <Icon name="videocam" size="1.2rem" className="appointment-type-selector__icon" />
                 <span>{t('virtual_type') || 'Virtual'}</span>
             </Button>
         </div>

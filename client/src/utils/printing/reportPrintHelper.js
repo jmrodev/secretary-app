@@ -1,4 +1,6 @@
 
+import { formatDate } from '../core/dateUtils';
+
 /**
  * Helper to handle report printing with consistent styling
  */
@@ -113,7 +115,7 @@ const generateBalancePrint = (reportData, monthName, year, t) => {
         const status = (p.payment_status || '').toLowerCase();
         if (status === 'paid' || status === 'pagado') totalPres += amt;
         else if (status === 'debt' || status === 'debe') {
-            allDebts.push({ date: p.date ? new Date(p.date).toLocaleDateString() : '-', type: 'Receta', patient: p.patient_name, amount: amt });
+            allDebts.push({ date: formatDate(p.date, { fallback: '-' }), type: 'Receta', patient: p.patient_name, amount: amt });
         }
     });
 
@@ -255,7 +257,7 @@ const generatePrescriptionsPrint = (reportData, monthName, year, t) => {
         const amt = Number(item.amount || 0);
         if (item.payment_status === 'paid' || item.payment_status === 'pagado') total += amt;
         const itemStatus = `${item.payment_status || ''} ${item.payment_method ? `(${item.payment_method})` : ''}`;
-        const itemDate = item.date ? new Date(item.date).toLocaleDateString() : '';
+        const itemDate = formatDate(item.date, { fallback: '' });
         return `
                         <tr>
                             <td>${itemDate}</td>

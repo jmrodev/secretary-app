@@ -7,19 +7,19 @@ import { useModal } from '@/context/ModalContext';
 import { useConfig } from '@/context/ConfigContext';
 import { useFetch } from '@/hooks/useFetch';
 
-import { useAppointments } from '@/features/appointments/hooks/useAppointments';
-import { useHolidays } from '@/features/appointments/hooks/useHolidays';
-import { useNextFreeSlot } from '@/features/appointments/hooks/useNextFreeSlot';
-import { useAppointmentBooking } from '@/features/appointments/hooks/useAppointmentBooking';
-import { useWhatsAppUniversal } from '@/features/appointments/hooks/useWhatsAppUniversal';
-import { useGoogleSync } from '@/features/appointments/hooks/useGoogleSync';
-import { useDoctorSchedules } from '@/features/appointments/hooks/useDoctorSchedules';
-import { usePatientAppointmentSearch } from '@/features/appointments/hooks/usePatientAppointmentSearch';
-import { useAppointmentsHandlers } from '@/features/appointments/hooks/useAppointmentsHandlers';
+import { useAppointments } from './useAppointments';
+import { useHolidays } from './useHolidays';
+import { useNextFreeSlot } from './useNextFreeSlot';
+import { useAppointmentBooking } from './useAppointmentBooking';
+import { useWhatsAppUniversal } from './useWhatsAppUniversal';
+import { useGoogleSync } from './useGoogleSync';
+import { useDoctorSchedules } from './useDoctorSchedules';
+import { usePatientAppointmentSearch } from './usePatientAppointmentSearch';
+import { useAppointmentsHandlers } from './useAppointmentsHandlers';
 import { copyToClipboard } from '@/utils/core/clipboardUtils';
 import { useDoctors } from '@/context/DoctorContextDefinition';
-import { useAgendaState } from '@/features/appointments/hooks/useAgendaState';
-import { useAgendaModals } from '@/features/appointments/hooks/useAgendaModals';
+import { useAgendaState } from './useAgendaState';
+import { useAgendaModals } from './useAgendaModals';
 
 /**
  * useAppointmentsPageController (Orchestrator).

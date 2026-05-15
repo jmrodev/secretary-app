@@ -38,8 +38,8 @@ const FinanceStatsCards = ({ stats, t }) => {
         <section className="finance-stats">
             <h2 className="visually-hidden">{t('financial_summary_title')}</h2>
             {/* Breakdown Cards (Appointments, Prescriptions, Licenses, Certificates) */}
-            {otherStats.map((s, idx) => (
-                <Card key={idx} className="finance-stats__card">
+            {otherStats.map((s) => (
+                <Card key={s.type} className="finance-stats__card">
                     <h3 className="finance-stats__title">
                         <Icon 
                             name={typeIcons[s.type]} 
@@ -117,10 +117,10 @@ const FinanceStatsCards = ({ stats, t }) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {tableStats.map((s, idx) => {
+                                {tableStats.map((s) => {
                                     const isNegative = ['expenses', 'withdrawal'].includes(s.type);
                                     return (
-                                        <tr key={idx} className="finance-stats__method-row">
+                                        <tr key={s.type} className="finance-stats__method-row">
                                             <td className="finance-stats__table-cell finance-stats__label">
                                                 <Icon 
                                                     name={typeIcons[s.type]} 
@@ -143,8 +143,8 @@ const FinanceStatsCards = ({ stats, t }) => {
                                         </tr>
                                     );
                                 })}
-                                {financialSummary.map((s, idx) => (
-                                    <tr key={`summary-${idx}`} className="finance-stats__summary-row">
+                                {financialSummary.map((s) => (
+                                    <tr key={s.type} className="finance-stats__summary-row">
                                         <td className="finance-stats__table-cell finance-stats__label finance-stats__label--bold">
                                             <Icon 
                                                 name={typeIcons[s.type]} 

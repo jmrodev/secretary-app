@@ -13,23 +13,25 @@ import './HistoricalWithdrawalModal.css';
  * Refactored to follow BEM and Atomic Design standards.
  */
 const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) => {
-    const [amount, setAmount] = useState('');
-    const [date, setDate] = useState('');
-    const [time, setTime] = useState('12:30');
-    const [doctorId, setDoctorId] = useState('');
-    const [description, setDescription] = useState('');
+    const [state, dispatch] = React.useReducer((s, a) => ({ ...s, ...a }), {
+        amount: '',
+        date: '',
+        time: '12:30',
+        doctorId: '',
+        description: ''
+    });
+
+    const { amount, date, time, doctorId, description } = state;
 
     useEffect(() => {
         if (isOpen) {
-            queueMicrotask(() => {
-                setAmount('');
-                const today = new Date().toISOString().split('T')[0];
-                setDate(today);
-                setTime('12:30');
-                setDescription('Cierre manual de caja');
-                if (doctors && doctors.length > 0) {
-                    setDoctorId(doctors[0].id);
-                }
+            const today = new Date().toISOString().split('T')[0];
+            dispatch({
+                amount: '',
+                date: today,
+                time: '12:30',
+                description: 'Cierre manual de caja',
+                doctorId: doctors && doctors.length > 0 ? doctors[0].id : ''
             });
         }
     }, [isOpen, doctors]);
@@ -67,7 +69,7 @@ const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) =
                 <FormGroup label={t('doctor') || 'Doctor'}>
                     <Select
                         value={doctorId}
-                        onChange={(e) => setDoctorId(e.target.value)}
+                        onChange={(e) => dispatch({ doctorId: e.target.value })}
                         options={doctorOptions}
                         className="historical-withdrawal-modal__select"
                     />
@@ -77,7 +79,7 @@ const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) =
                     <Input
                         type="number"
                         value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
+                        onChange={(e) => dispatch({ amount: e.target.value })}
                         placeholder="0.00"
                         required
                         min="0"
@@ -91,7 +93,7 @@ const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) =
                         <Input
                             type="date"
                             value={date}
-                            onChange={(e) => setDate(e.target.value)}
+                            onChange={(e) => dispatch({ date: e.target.value })}
                             required
                             className="historical-withdrawal-modal__input"
                         />
@@ -100,7 +102,7 @@ const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) =
                         <Input
                             type="time"
                             value={time}
-                            onChange={(e) => setTime(e.target.value)}
+                            onChange={(e) => dispatch({ time: e.target.value })}
                             required
                             className="historical-withdrawal-modal__input"
                         />
@@ -110,7 +112,7 @@ const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) =
                 <FormGroup label={t('description') || 'Descripción'}>
                     <Input
                         value={description}
-                        onChange={(e) => setDescription(e.target.value)}
+                        onChange={(e) => dispatch({ description: e.target.value })}
                         placeholder="Ej: Cierre del día martes"
                         className="historical-withdrawal-modal__input"
                     />

@@ -20,9 +20,10 @@ export const useDayScheduleHandlers = ({ date, appointments, doctor, onDateSelec
         const appsToPrint = appointments
             .filter(appt => {
                 const d = new Date(appt.appointment_date);
-                return d.getFullYear() === date.getFullYear() && d.getMonth() === date.getMonth() && d.getDate() === date.getDate();
+                const isSameDay = d.getFullYear() === date.getFullYear() && d.getMonth() === date.getMonth() && d.getDate() === date.getDate();
+                const isVisible = showCancelled || !['cancelled', 'suspended', 'absent'].includes(appt.status);
+                return isSameDay && isVisible;
             })
-            .filter(appt => showCancelled || !['cancelled', 'suspended', 'absent'].includes(appt.status))
             .sort((a, b) => new Date(a.appointment_date) - new Date(b.appointment_date));
 
         let htmlContent = `

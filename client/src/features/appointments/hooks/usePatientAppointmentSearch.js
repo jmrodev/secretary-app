@@ -26,32 +26,26 @@ export const usePatientAppointmentSearch = () => {
     const shouldSearch = debouncedSearch.length >= 2;
 
     // Main Appointments Search Fetch — only fires when shouldSearch is true
-    const { 
-        data: appointments = [], 
-        loading: appointmentsLoading,
-        refetch: fetchAppointments 
-    } = useFetch('/appointments', {
+    // Main Appointments Search Fetch
+    const appointmentsHook = useFetch('/appointments', {
         params: { search: debouncedSearch },
-        initialData: [],
+        initialData: { appointments: [], totalCount: 0 },
         immediate: shouldSearch
     });
 
-    // Patient History Fetch — only fires when a specific patientId is selected
-    const { 
-        data: patientAppointments = [], 
-        loading: patientApptLoading
-    } = useFetch('/appointments', {
+    // Patient History Fetch
+    const patientHistoryHook = useFetch('/appointments', {
         params: { patientId: searchPatientId },
-        initialData: [],
+        initialData: { appointments: [], totalCount: 0 },
         immediate: !!searchPatientId
     });
 
     return {
         searchTerm, setSearchTerm,
         searchPatientId, setSearchPatientId,
-        appointments: shouldSearch ? appointments : [],
-        patientAppointments,
-        patientApptLoading: patientApptLoading || (shouldSearch && appointmentsLoading),
-        fetchAppointments
+        appointments: shouldSearch ? (appointmentsHook.data?.appointments || []) : [],
+        patientAppointments: patientHistoryHook.data?.appointments || [],
+        patientApptLoading: patientHistoryHook.loading || (shouldSearch && appointmentsHook.loading),
+        fetchAppointments: appointmentsHook.refetch
     };
 };

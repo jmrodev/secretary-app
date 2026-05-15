@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import Card from '@/components/atoms/Card';
-import { formatTime } from '@/utils/core/dateUtils';
+import { formatTime, parseDate } from '@/utils/core/dateUtils';
 import Pagination from '@/components/atoms/Pagination';
 
 // Local Feature Components
@@ -34,8 +34,8 @@ const TransactionsTable = ({
      */
     const formatDateUnambiguous = (dateStr) => {
         if (!dateStr) return "-";
-        const d = new Date(dateStr);
-        if (isNaN(d.getTime())) return dateStr;
+        const d = parseDate(dateStr);
+        if (!d || isNaN(d.getTime())) return dateStr;
         const day = d.getDate().toString().padStart(2, '0');
         const months = t('months_array') || [
             'january', 'february', 'march', 'april', 'may', 'june',
@@ -51,30 +51,30 @@ const TransactionsTable = ({
     /**
      * Translates internal system-generated descriptions.
      */
+    const transTable = React.useMemo(() => [
+        { k: "Consultation (Booking)", v: t('consultation_booking') || "Consulta (Reserva)" },
+        { k: "Consultation (Patient Share)", v: t('consultation_patient_share') || "Consulta (Parte del Paciente)" },
+        { k: "Consultation (Institution Share)", v: t('consultation_institution_share') || "Consulta (Parte de Institución)" },
+        { k: "Payment for appointment on", v: t('payment_appointment_on') || "Pago por turno del" },
+        { k: "Cash Box Delivery to Dr.", v: t('cash_box_delivery_to') || "Entrega de caja al Dr." },
+        { k: "Request: license for", v: t('request_license_for') || "Solicitud: licencia para" },
+        { k: "Request: prescription for", v: t('request_prescription_for') || "Solicitud: receta para" },
+        { k: "- Paid Part by Inst", v: `- ${t('paid_part_inst') || 'Pago Parcial (Inst.)'}` },
+        { k: "- Paid by Inst", v: `- ${t('paid_inst') || 'Pagado (Inst.)'}` },
+        { k: "- Paid Part", v: `- ${t('paid_part') || 'Pago Parcial'}` },
+        { k: "- Paid", v: `- ${t('paid') || 'Pagado'}` },
+        { k: "Advance Payment / Credit", v: t('advance_payment') || 'Pago Adelantado / Saldo a Favor' },
+        { k: "DEBT:", v: t('debt_tag') || 'DEUDA:' },
+        { k: "Virtual Share:", v: t('virtual_share') || 'Virtual:' },
+        { k: "Presencial Share:", v: t('presencial_share') || 'Presencial:' },
+        { k: "Virtual Institution Share:", v: t('virtual_institution_share') || 'Virtual (Inst.):' },
+        { k: "Presencial Institution Share:", v: t('presencial_institution_share') || 'Presencial (Inst.):' },
+        { k: "Saldo a favor (Turno Eliminado):", v: t('credit_balance_deleted') || 'Saldo a favor (Turno Eliminado):' }
+    ], [t]);
+
     const translateDescription = (desc) => {
         if (!desc) return "";
         let d = desc;
-        const transTable = [
-            { k: "Consultation (Booking)", v: t('consultation_booking') || "Consulta (Reserva)" },
-            { k: "Consultation (Patient Share)", v: t('consultation_patient_share') || "Consulta (Parte del Paciente)" },
-            { k: "Consultation (Institution Share)", v: t('consultation_institution_share') || "Consulta (Parte de Institución)" },
-            { k: "Payment for appointment on", v: t('payment_appointment_on') || "Pago por turno del" },
-            { k: "Cash Box Delivery to Dr.", v: t('cash_box_delivery_to') || "Entrega de caja al Dr." },
-            { k: "Request: license for", v: t('request_license_for') || "Solicitud: licencia para" },
-            { k: "Request: prescription for", v: t('request_prescription_for') || "Solicitud: receta para" },
-            { k: "- Paid Part by Inst", v: `- ${t('paid_part_inst') || 'Pago Parcial (Inst.)'}` },
-            { k: "- Paid by Inst", v: `- ${t('paid_inst') || 'Pagado (Inst.)'}` },
-            { k: "- Paid Part", v: `- ${t('paid_part') || 'Pago Parcial'}` },
-            { k: "- Paid", v: `- ${t('paid') || 'Pagado'}` },
-            { k: "Advance Payment / Credit", v: t('advance_payment') || 'Pago Adelantado / Saldo a Favor' },
-            { k: "DEBT:", v: t('debt_tag') || 'DEUDA:' },
-            { k: "Virtual Share:", v: t('virtual_share') || 'Virtual:' },
-            { k: "Presencial Share:", v: t('presencial_share') || 'Presencial:' },
-            { k: "Virtual Institution Share:", v: t('virtual_institution_share') || 'Virtual (Inst.):' },
-            { k: "Presencial Institution Share:", v: t('presencial_institution_share') || 'Presencial (Inst.):' },
-            { k: "Saldo a favor (Turno Eliminado):", v: t('credit_balance_deleted') || 'Saldo a favor (Turno Eliminado):' }
-        ];
-
         transTable.forEach(item => {
             if (d.includes(item.k)) {
                 d = d.replace(item.k, item.v);
@@ -95,7 +95,7 @@ const TransactionsTable = ({
         const parts = description.split(regex);
         return parts.map((part, i) =>
             part.toLowerCase() === patientName.toLowerCase()
-                ? <strong key={i} className="transactions-table__highlight">{part}</strong>
+                ? <strong key={`part-${i}-${part}`} className="transactions-table__highlight">{part}</strong>
                 : part
         );
     };
@@ -154,9 +154,16 @@ const TransactionsTable = ({
                                 </td>
                             </tr>
                         ) : (
-                            groupedTransactions.map((group, gIdx) => (
-                                <React.Fragment key={`group-${gIdx}`}>
-                                    {group.map((tx) => (
+                            groupedTransactions.map((group) => {
+                                const groupKey = group[0].appointment_id 
+                                    ? `g-appt-${group[0].appointment_id}` 
+                                    : group[0].request_id 
+                                        ? `g-req-${group[0].request_id}`
+                                        : `g-tx-${group[0].id}`;
+                                
+                                return (
+                                    <React.Fragment key={groupKey}>
+                                        {group.map((tx) => (
                                         <TransactionRow
                                             key={tx.id}
                                             tx={tx}
@@ -182,7 +189,8 @@ const TransactionsTable = ({
                                         </tr>
                                     )}
                                 </React.Fragment>
-                            ))
+                                );
+                            })
                         )}
                     </tbody>
                 </table>

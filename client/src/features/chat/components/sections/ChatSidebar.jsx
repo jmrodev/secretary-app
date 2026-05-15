@@ -1,6 +1,7 @@
 import React from 'react';
 import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
+import { parseDate, isToday, formatTime, formatDate as formatUtil } from '@/utils/core/dateUtils';
 
 /**
  * ChatSidebar Component (Feature Component).
@@ -21,12 +22,10 @@ const ChatSidebar = ({
     // Formatting Helpers
     const formatDate = (dateString) => {
         if (!dateString) return '';
-        const date = new Date(dateString);
-        const now = new Date();
-        const isToday = date.toDateString() === now.toDateString();
-        return isToday
-            ? date.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })
-            : date.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' });
+        const date = parseDate(dateString);
+        return isToday(date)
+            ? formatTime(date, { hour12: false })
+            : formatUtil(date, { hideYear: true });
     };
 
     const q = searchTerm.toLowerCase().trim();
@@ -65,7 +64,7 @@ const ChatSidebar = ({
                 </div>
             </div>
 
-            <div className="chat-sidebar__list custom-scrollbar">
+            <div className="chat-sidebar__list custom-scrollbar" role="listbox" aria-label={t('conversations_list')}>
                 {filteredConvos.length === 0 && suggestedRecipients.length === 0 && (
                     <div className="chat-sidebar__empty">
                         <p>{q ? t('no_results_found') : t('no_conversations')}</p>
@@ -77,6 +76,10 @@ const ChatSidebar = ({
                         key={`convo-${convo.id}`}
                         className={`chat-sidebar__convo-item ${selectedConvo?.other_user_id === convo.other_user_id ? 'chat-sidebar__convo-item--active' : ''} ${convo.unread_count > 0 ? 'chat-sidebar__convo-item--unread' : ''}`}
                         onClick={() => onSelectConvo(convo)}
+                        onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onSelectConvo(convo)}
+                        role="option"
+                        aria-selected={selectedConvo?.other_user_id === convo.other_user_id}
+                        tabIndex={0}
                     >
                         <div className="chat-sidebar__convo-avatar">
                             {convo.other_display_name ? convo.other_display_name[0].toUpperCase() : '?'}
@@ -105,6 +108,10 @@ const ChatSidebar = ({
                         key={`recipient-${r.id}`}
                         className="chat-sidebar__convo-item"
                         onClick={() => onStartNewChat(r)}
+                        onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onStartNewChat(r)}
+                        role="option"
+                        aria-selected={false}
+                        tabIndex={0}
                     >
                         <div className="chat-sidebar__convo-avatar">
                             {r.display_name[0].toUpperCase()}

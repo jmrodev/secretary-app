@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
+const CURRENCY_FORMATTER = new Intl.NumberFormat('es-AR', {
+    style: 'decimal',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+});
+
 /**
  * CurrencyInput Atom follows Atomic Design & BEM.
  * Reuses the 'input' base class from design-system.
@@ -24,24 +30,18 @@ const CurrencyInput = ({
 
     const format = (val) => {
         if (!val && val !== 0) return '';
-        return new Intl.NumberFormat('es-AR', {
-            style: 'decimal',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        }).format(Number(val));
+        return CURRENCY_FORMATTER.format(Number(val));
     };
 
     useEffect(() => {
-        queueMicrotask(() => {
-            if (value !== undefined && value !== null) {
-                setDisplayValue(format(value));
-            } else {
-                setDisplayValue('');
-            }
-        });
+        if (value !== undefined && value !== null) {
+            setDisplayValue(format(value));
+        } else {
+            setDisplayValue('');
+        }
     }, [value]);
 
-    const handleChange = (e) => {
+    const handleCurrencyChange = (e) => {
         const inputVal = e.target.value;
         const rawValue = inputVal.replace(/\D/g, '');
 
@@ -64,7 +64,7 @@ const CurrencyInput = ({
             placeholder={placeholder}
             required={required}
             value={displayValue}
-            onChange={handleChange}
+            onChange={handleCurrencyChange}
         />
     );
 };

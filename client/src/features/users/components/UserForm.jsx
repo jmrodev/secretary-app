@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import FormGroup from '@/components/molecules/FormGroup';
 import Input from '@/components/atoms/Input';
 import Select from '@/components/atoms/Select';
@@ -10,11 +10,11 @@ import './UserForm.css';
 const UserForm = ({ type, formData, setFormData }) => {
     const { t } = useLanguage();
 
-    const handleChange = (field, value) => {
+    const handleUserUpdate = (field, value) => {
         if (['full_name', 'specialty'].includes(field) && typeof value === 'string') {
             value = capitalizeWords(value);
         }
-        setFormData({ ...formData, [field]: value });
+        setFormData(prev => ({ ...prev, [field]: value }));
     };
 
     if (type === 'DELETE') {
@@ -30,7 +30,7 @@ const UserForm = ({ type, formData, setFormData }) => {
                         type="password"
                         placeholder="Ingrese 1234 para confirmar"
                         value={formData.securityCode || ''}
-                        onChange={e => handleChange('securityCode', e.target.value)}
+                        onChange={e => handleUserUpdate('securityCode', e.target.value)}
                     />
                 </FormGroup>
             </div>
@@ -53,7 +53,7 @@ const UserForm = ({ type, formData, setFormData }) => {
                 <FormGroup label={t('new_password')}>
                     <Input
                         value={formData.password}
-                        onChange={e => handleChange('password', e.target.value)}
+                        onChange={e => handleUserUpdate('password', e.target.value)}
                         placeholder="Nueva contraseña"
                     />
                 </FormGroup>
@@ -67,7 +67,7 @@ const UserForm = ({ type, formData, setFormData }) => {
                 <FormGroup label={t('username')} required>
                     <Input
                         value={formData.username}
-                        onChange={e => handleChange('username', e.target.value)}
+                        onChange={e => handleUserUpdate('username', e.target.value)}
                     />
                 </FormGroup>
                 {type === 'CREATE' && (
@@ -75,7 +75,7 @@ const UserForm = ({ type, formData, setFormData }) => {
                         <Input
                             type="password"
                             value={formData.password}
-                            onChange={e => handleChange('password', e.target.value)}
+                            onChange={e => handleUserUpdate('password', e.target.value)}
                         />
                     </FormGroup>
                 )}
@@ -84,7 +84,7 @@ const UserForm = ({ type, formData, setFormData }) => {
             <FormGroup label={t('role_header')}>
                 <Select
                     value={formData.role}
-                    onChange={e => handleChange('role', e.target.value)}
+                    onChange={e => handleUserUpdate('role', e.target.value)}
                     options={[
                         { value: 'doctor', label: t('doctor') },
                         { value: 'secretary', label: t('secretary') },
@@ -96,21 +96,21 @@ const UserForm = ({ type, formData, setFormData }) => {
             <FormGroup label={t('full_name')} required>
                 <Input
                     value={formData.full_name}
-                    onChange={e => handleChange('full_name', e.target.value)}
+                    onChange={e => handleUserUpdate('full_name', e.target.value)}
                 />
             </FormGroup>
 
             <FormGroup label={t('dni')}>
                 <Input
                     value={formData.dni}
-                    onChange={e => handleChange('dni', e.target.value)}
+                    onChange={e => handleUserUpdate('dni', e.target.value)}
                 />
             </FormGroup>
 
             <div className="user-form__divider">
                 <PhoneNumbersManager
                     phoneNumbers={formData.phoneNumbers}
-                    onChange={(newPhones) => handleChange('phoneNumbers', newPhones)}
+                    onChange={(newPhones) => handleUserUpdate('phoneNumbers', newPhones)}
                 />
             </div>
 
@@ -118,7 +118,7 @@ const UserForm = ({ type, formData, setFormData }) => {
                 <FormGroup label={t('specialty')}>
                     <Input
                         value={formData.specialty}
-                        onChange={e => handleChange('specialty', e.target.value)}
+                        onChange={e => handleUserUpdate('specialty', e.target.value)}
                         placeholder="E.g. Cardiología"
                     />
                 </FormGroup>

@@ -98,9 +98,11 @@
 - **Regla de Oro**: Si un orquestador tiene lógica compleja, debe extraerse a un hook controlador.
 
 ### 11. Estrategia de Ramas (Git Flow)
-- **main**: Rama de producción. Contiene código estable y desplegable.
-- **development**: Rama de integración principal. Todo el desarrollo se realiza y se une aquí antes de pasar a `main`.
-- **Limpieza**: Una vez que una funcionalidad se integra en `development` y se valida, su rama de origen DEBE ser borrada tanto local como remotamente.
+- **main**: Rama de producción principal (estado más estable).
+- **development**: Rama de integración principal. Todo el desarrollo se realiza y se une aquí.
+- **release-\*** (LTS/Producción Específica): Ramas que representan versiones instaladas en producción (ej: `release-v1.0-cima`). Estas ramas son **INTOCABLES** y no deben borrarse aunque estén fusionadas, ya que sirven como anclaje para hotfixes críticos en producción sin arrastrar la inestabilidad o los cambios masivos de `development`.
+- **Limpieza**: Las ramas de funcionalidades (`feat/*`, `fix/*`, `chore/*`) DEBEN ser borradas inmediatamente después de su integración exitosa en `development`.
+- **Regla de Oro**: Nunca borrar una rama de tipo `release-*` sin autorización explícita, ya que es el único camino seguro para soporte técnico en vivo.
 
 ### 12. Seguridad y Repositorios (Backend)
 - **Protección SQL**: PROHIBIDO concatenar variables en strings de SQL.
@@ -461,11 +463,14 @@ Antes de hacer commit, verificar:
 - [ ] ¿No hay código repetido (DRY)?
 - [ ] ¿Sigue la estructura Atomic Design?
 - [ ] ¿Sigue el patrón MVC?
-- [ ] ¿Los nombres son consistentes?
+- [ ] ¿Los nombres son consistentes y semánticos (no genéricos)?
 - [ ] ¿El código está documentado?
 - [ ] ¿Las variables CSS están centralizadas?
 - [ ] ¿Los estilos son reutilizables?
 - [ ] ¿Cero fallbacks en traducciones? (Prohibido `t('key') || 'Texto'`)
+- [ ] ¿Evita render-in-render (funciones JSX inline)?
+- [ ] ¿Usa `use()` en lugar de `useContext()` (React 19)?
+- [ ] ¿Puntuación tipográfica correcta (elipsis `…`)?
 
 ## Recursos
 
@@ -476,7 +481,22 @@ Antes de hacer commit, verificar:
 
 ---
 
-### 14. Estándar de Respuesta de API (Listados)
+### 14. Modern React (React 19) & Calidad (React-Doctor)
+
+Para mantener la excelencia técnica y compatibilidad total con React 19, se aplican las siguientes reglas arquitectónicas validadas por `react-doctor`:
+
+- **Nomenclatura Semántica de Handlers**: Evitar nombres genéricos como `handleClick` o `handleChange` para acciones de dominio. Los nombres deben describir **qué hacen**, no cuándo ocurren.
+    - ✅ `handleSavePatient`, `handleTabSelection`, `handleMedicationChange`.
+    - ❌ `handleClick`, `onChange`, `handleEvent`.
+- **Prohibición de Render-in-Render**: No definir funciones de renderizado (que retornen JSX) dentro del cuerpo de otro componente, ni llamarlas como funciones `{renderSomething()}` si contienen lógica compleja.
+    - **Regla**: Si una sección de la UI tiene su propio estado o lógica, debe ser un **Componente Independiente** para asegurar una reconciliación correcta de React y evitar pérdida de estado/foco.
+- **Tamaño de Componentes (Single Responsibility)**: Mantener los componentes enfocados y pequeños. Si un componente supera las ~350 líneas, es un candidato obligatorio para ser descompuesto en sub-componentes lógicos.
+- **APIs de React 19**: Priorizar el uso de la nueva API `use()` para consumir contextos (`use(Context)`) en lugar del tradicional `useContext(Context)`, aprovechando su flexibilidad para lecturas condicionales.
+- **Puntuación Tipográfica**: Utilizar el carácter de elipsis real (`…` o `&hellip;`) en lugar de tres puntos (`...`) y evitar el guion largo (`—`) en texto JSX, ya que este último puede confundirse con prefijos de salida de modelos de IA.
+
+---
+
+### 15. Estándar de Respuesta de API (Listados)
 Para garantizar la compatibilidad con el sistema de paginación y el hook `useFetch`, todos los endpoints que devuelvan listas de entidades deben seguir este formato:
 
 - **Estructura**: `{ [nombre_entidad]: Array, totalCount: Number }`
@@ -493,9 +513,9 @@ Para garantizar la compatibilidad con el sistema de paginación y el hook `useFe
 
 ---
 
-### 15. Estrategia de Rendimiento de Base de Datos (MariaDB)
+### 16. Estrategia de Rendimiento de Base de Datos (MariaDB)
 
-#### 15.1 Índices
+#### 16.1 Índices
 
 Los índices son **obligatorios** para cualquier columna que aparezca en cláusulas `WHERE`, `ORDER BY`, `GROUP BY` o como clave de `JOIN`. La ausencia de índices convierte búsquedas en full-table-scans que degradan el rendimiento de forma silenciosa y acumulativa.
 
@@ -534,7 +554,7 @@ Los índices son **obligatorios** para cualquier columna que aparezca en cláusu
 - `LIKE '%término%'` **NO usa índices** de B-Tree. Para búsquedas de texto libre en tablas grandes, evaluar `FULLTEXT INDEX` o buscar en columnas secundarias (`phone`, `dni`) que sí admiten prefijo (`LIKE 'término%'`).
 - Documentar aquí cualquier índice nuevo creado mediante migración.
 
-#### 15.2 Patrón: JOINs Pre-Agregados vs. Subconsultas Correlacionadas
+#### 16.2 Patrón: JOINs Pre-Agregados vs. Subconsultas Correlacionadas
 
 **PROHIBIDO** el uso de subconsultas correlacionadas para calcular agregados por fila:
 
@@ -561,7 +581,7 @@ LEFT JOIN (
 
 **Razón:** Con subconsultas correlacionadas, 50 turnos en el resultado = 200 consultas adicionales a `transactions` e `invoices`. El patrón con JOINs pre-agregados ejecuta esas agregaciones una sola vez, independientemente del volumen del resultado.
 
-#### 15.3 Estrategia: Lógica en Base de Datos (Vistas y Funciones)
+#### 16.3 Estrategia: Lógica en Base de Datos (Vistas y Funciones)
 
 **REGLA DE ORO**: Los cambios en base de datos (índices, vistas, funciones y procedimientos) siempre tienen **prioridad absoluta** y deben realizarse antes que cualquier cambio en el código de la aplicación.
 
@@ -578,7 +598,7 @@ A diferencia de versiones anteriores de esta arquitectura, se ha decidido **prio
 
 **Conclusión:** Si una mejora puede resolverse en la base de datos, **DEBE** resolverse allí primero. El código Node.js debe limitarse a orquestar y llamar a estas estructuras pre-optimizadas.
 
-#### 15.4 Estrategia: Manejo de Fechas Centralizado (dateUtils)
+#### 16.4 Estrategia: Manejo de Fechas Centralizado (dateUtils)
 
 **REGLA DE ORO**: Está PROHIBIDO el formateo manual de fechas en servicios o controladores utilizando `toLocaleString` o manipulación directa de strings de fecha.
 

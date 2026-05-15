@@ -116,7 +116,7 @@ const MedicationConfigFields = ({
                     <label className="medication-config-fields__label">{t('frequency')}</label>
                     <Input
                         value={currentMed.frequency}
-                        onChange={e => setCurrentMed({ ...currentMed, frequency: e.target.value })}
+                        onChange={e => setCurrentMed(prev => ({ ...prev, frequency: e.target.value }))}
                         placeholder={t('frequency_placeholder') || "Cada 24hs..."}
                     />
                 </div>
@@ -125,7 +125,7 @@ const MedicationConfigFields = ({
                     <Input
                         type="date"
                         value={currentMed.next_refill_date}
-                        onChange={e => setCurrentMed({ ...currentMed, next_refill_date: e.target.value })}
+                        onChange={e => setCurrentMed(prev => ({ ...prev, next_refill_date: e.target.value }))}
                         disabled={currentMed.reminder_mode !== 'fixed_date'}
                     />
                     {currentMed.reminder_mode !== 'fixed_date' && (
@@ -140,7 +140,7 @@ const MedicationConfigFields = ({
                 <div className="medication-config-fields__notes">
                     <Input
                         value={currentMed.notes}
-                        onChange={e => setCurrentMed({ ...currentMed, notes: e.target.value })}
+                        onChange={e => setCurrentMed(prev => ({ ...prev, notes: e.target.value }))}
                         placeholder={t('notes_placeholder')}
                     />
                 </div>
@@ -149,7 +149,7 @@ const MedicationConfigFields = ({
                     id="is_chronic"
                     label={t('chronic')}
                     checked={currentMed.is_chronic}
-                    onChange={checked => setCurrentMed({ ...currentMed, is_chronic: checked })}
+                    onChange={checked => setCurrentMed(prev => ({ ...prev, is_chronic: checked }))}
                 />
 
                 <Button 

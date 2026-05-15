@@ -163,7 +163,7 @@ export const usePatientFormController = ({
 
     // Handlers
     const handlers = {
-        handleChange: (e) => {
+        updatePatientData: (e) => {
             let { name, value } = e.target;
 
             // Apply capitalization if needed
@@ -203,11 +203,11 @@ export const usePatientFormController = ({
             });
         },
 
-        handleManualValueChange: (name, value) => {
+        setPatientValue: (name, value) => {
             setFormData(prev => ({ ...prev, [name]: value }));
         },
 
-        handleDoctorToggle: (doctorId) => {
+        toggleDoctorAssignment: (doctorId) => {
             setFormData(prev => {
                 const current = prev.assignedDoctors || [];
                 const next = current.includes(doctorId)
@@ -217,18 +217,18 @@ export const usePatientFormController = ({
             });
         },
 
-        handlePhoneChange: (newPhones) => {
+        updatePhoneNumbers: (newPhones) => {
             setFormData(prev => ({ ...prev, phoneNumbers: newPhones }));
         },
 
-        handleInstitutionToggle: (checked) => {
+        toggleInstitutionCoverage: (checked) => {
             setCoveredByInstitution(checked);
             if (!checked) {
                 setFormData(prev => ({ ...prev, institution_id: '' }));
             }
         },
 
-        handleSubmit: async (e) => {
+        savePatient: async (e) => {
             if (e) e.preventDefault();
             setIsSubmitting(true);
 

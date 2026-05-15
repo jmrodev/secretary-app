@@ -27,13 +27,15 @@ const getFriendlyVarLabel = (variable, t) => {
     return labels[variable] || variable;
 };
 
+const EMPTY_ARRAY = [];
+
 const MessageTemplateEditor = ({
     id,
     label,
     value,
     settingKey,
     placeholder,
-    variables = [],
+    variables = EMPTY_ARRAY,
     updateSetting,
     insertVariable,
     disabled,

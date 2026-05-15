@@ -4,12 +4,14 @@ import CurrencyInput from '@/components/atoms/CurrencyInput';
 import Icon from '@/components/atoms/Icon';
 import './PatientAdminFields.css';
 
+const EMPTY_ARRAY = [];
+
 /**
  * PatientAdminFields Molecule.
  * Contains advanced settings only visible to administrators: doctor assignments, tariffs, and intervals.
  * Optimized for Bento Box layout.
  */
-const PatientAdminFields = ({ formData, doctors = [], handleDoctorToggle, handleManualValueChange, handleChange, t }) => {
+const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoctorToggle, handleManualValueChange, updateAdminFields, t }) => {
     return (
         <article className="patient-admin-fields">
             <header className="patient-admin-fields__header">
@@ -51,7 +53,7 @@ const PatientAdminFields = ({ formData, doctors = [], handleDoctorToggle, handle
                         type="number"
                         name="tariff_percent"
                         value={formData.tariff_percent || ''}
-                        onChange={handleChange}
+                        onChange={updateAdminFields}
                         placeholder="10%"
                     />
                 </div>
@@ -71,7 +73,7 @@ const PatientAdminFields = ({ formData, doctors = [], handleDoctorToggle, handle
                         type="number" 
                         name="visit_interval_days" 
                         value={formData.visit_interval_days || ''} 
-                        onChange={handleChange} 
+                        onChange={updateAdminFields} 
                         placeholder="30 days"
                     />
                 </div>
@@ -81,7 +83,7 @@ const PatientAdminFields = ({ formData, doctors = [], handleDoctorToggle, handle
                         type="number" 
                         name="prescription_interval_days" 
                         value={formData.prescription_interval_days || ''} 
-                        onChange={handleChange} 
+                        onChange={updateAdminFields} 
                         placeholder="90 days"
                     />
                 </div>
@@ -93,7 +95,7 @@ const PatientAdminFields = ({ formData, doctors = [], handleDoctorToggle, handle
                         type="date" 
                         name="next_suggested_visit_date" 
                         value={formData.next_suggested_visit_date || ''} 
-                        onChange={handleChange} 
+                        onChange={updateAdminFields} 
                     />
                 </div>
                 <div className="patient-admin-fields__group patient-admin-fields__group--span-4">
@@ -102,7 +104,7 @@ const PatientAdminFields = ({ formData, doctors = [], handleDoctorToggle, handle
                         type="date" 
                         name="next_suggested_prescription_date" 
                         value={formData.next_suggested_prescription_date || ''} 
-                        onChange={handleChange} 
+                        onChange={updateAdminFields} 
                     />
                 </div>
                 <div className="patient-admin-fields__group patient-admin-fields__group--span-4">
@@ -111,7 +113,7 @@ const PatientAdminFields = ({ formData, doctors = [], handleDoctorToggle, handle
                         type="date" 
                         name="license_expiry_date" 
                         value={formData.license_expiry_date || ''} 
-                        onChange={handleChange} 
+                        onChange={updateAdminFields} 
                     />
                 </div>
             </div>

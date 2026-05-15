@@ -67,8 +67,8 @@ const PrescriptionReportTable = ({ data, t }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {dailySummary.map((day, idx) => (
-                            <tr key={idx} className="prescription-report__row">
+                        {dailySummary.map((day) => (
+                            <tr key={day.date} className="prescription-report__row">
                                 <td>
                                     {day.date}
                                     <span className="prescription-report__day-name"> {getDayOfWeek(day.date)}</span>
@@ -105,8 +105,8 @@ const PrescriptionReportTable = ({ data, t }) => {
             </div>
 
             {/* Detailed Daily Breakdown */}
-            {dailySummary.map((day, groupIdx) => (
-                <div key={groupIdx} className="prescription-report__group">
+            {dailySummary.map((day) => (
+                <div key={day.date} className="prescription-report__group">
                     <h3 className="prescription-report__date-header">
                         {day.date} - {t('total_day')}: ${day.total.toLocaleString()}
                     </h3>
@@ -123,8 +123,8 @@ const PrescriptionReportTable = ({ data, t }) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {day.items.map((item, idx) => (
-                                    <tr key={idx} className="prescription-report__row">
+                                {day.items.map((item) => (
+                                    <tr key={item.id || `${item.date}-${item.patient_name}-${item.medications}`} className="prescription-report__row">
                                         <td>{item.source_type === 'direct' ? t('direct') : t('request')}</td>
                                         <td>
                                             <div className="prescription-report__patient-info">

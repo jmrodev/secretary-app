@@ -10,7 +10,10 @@ import './GeneralSettings.css';
  * GeneralSettings Feature Component.
  * Orchestrates system functionalities, permissions and networking URLs.
  */
-const renderPermissionsGroup = (settings, updateSetting, isAdmin) => {
+/**
+ * PermissionsGroup Section Component.
+ */
+const PermissionsGroup = ({ settings, updateSetting, isAdmin }) => {
     return (
         <article className="config-group">
             <header className="config-group__header">
@@ -57,7 +60,10 @@ const renderPermissionsGroup = (settings, updateSetting, isAdmin) => {
     );
 };
 
-const renderUrlConfiguration = (settings, updateSetting, isAdmin, onShowQr) => {
+/**
+ * UrlConfiguration Section Component.
+ */
+const UrlConfiguration = ({ settings, updateSetting, isAdmin, onShowQr }) => {
     return (
         <div className="config-grid">
             <ConfigField
@@ -130,7 +136,7 @@ const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => {
                         disabled={!isAdmin}
                     />
 
-                    {renderPermissionsGroup(settings, updateSetting, isAdmin)}
+                    <PermissionsGroup settings={settings} updateSetting={updateSetting} isAdmin={isAdmin} />
 
                     <ConfigToggle
                         id="enable-secretary-finance-crud"
@@ -158,7 +164,7 @@ const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => {
                 </header>
 
                 <div className="config-section__body">
-                    {renderUrlConfiguration(settings, updateSetting, isAdmin, onShowQr)}
+                    <UrlConfiguration settings={settings} updateSetting={updateSetting} isAdmin={isAdmin} onShowQr={onShowQr} />
                 </div>
             </article>
 

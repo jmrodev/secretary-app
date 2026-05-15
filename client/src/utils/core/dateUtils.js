@@ -10,7 +10,29 @@
  * - Backend converts ISO UTC -> Argentina Time for storage.
  */
 
-// --- 1. Parsing ---
+// --- 1. Basic Creation & Comparison ---
+
+/**
+ * Returns the current date and time.
+ * Centralizes all "new Date()" calls.
+ */
+export const getNow = () => new Date();
+
+/**
+ * Returns a Date object for today at 00:00:00.
+ */
+export const getToday = () => {
+    const now = getNow();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+};
+
+/**
+ * Creates a Date object from specific components.
+ * Use this instead of new Date(y, m, d...)
+ */
+export const createDate = (year, month = 0, day = 1, hours = 0, minutes = 0, seconds = 0, ms = 0) => {
+    return new Date(year, month, day, hours, minutes, seconds, ms);
+};
 
 /**
  * Safely parses "DD/MM/YYYY" or ISO strings into a Date object.
@@ -31,7 +53,131 @@ export const parseDate = (input) => {
     return isNaN(d.getTime()) ? null : d;
 };
 
-// --- 2. Formatting for Display ---
+/**
+ * Returns true if the date is before the current time.
+ */
+export const isPast = (date) => {
+    const d = parseDate(date);
+    if (!d) return false;
+    return d < getNow();
+};
+
+/**
+ * Returns true if the date is before today (at 00:00:00).
+ */
+export const isPastDay = (date) => {
+    const d = parseDate(date);
+    if (!d) return false;
+    return d < getToday();
+};
+
+/**
+ * Returns true if two dates represent the same day (Year, Month, Day)
+ */
+export const isSameDay = (d1, d2) => {
+    const a = parseDate(d1);
+    const b = parseDate(d2);
+    if (!a || !b) return false;
+
+    // Use toLocaleDateString to get a stable comparison string "YYYY-MM-DD" based on local time
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    const strA = a.toLocaleDateString('en-CA', options); // en-CA gives YYYY-MM-DD
+    const strB = b.toLocaleDateString('en-CA', options);
+    
+    return strA === strB;
+};
+
+/**
+ * Returns true if the date is today.
+ */
+export const isToday = (date) => {
+    return isSameDay(date, getNow());
+};
+
+/**
+ * Helper for sorting dates. 
+ * Usage: array.sort((a, b) => compareDates(a.date, b.date))
+ */
+export const compareDates = (d1, d2, descending = false) => {
+    const a = parseDate(d1)?.getTime() || 0;
+    const b = parseDate(d2)?.getTime() || 0;
+    return descending ? b - a : a - b;
+};
+
+// --- 2. Manipulation ---
+
+/**
+ * Adds or subtracts days from a date.
+ */
+export const addDays = (date, days) => {
+    const d = parseDate(date);
+    if (!d) return null;
+    const result = new Date(d);
+    result.setDate(result.getDate() + days);
+    return result;
+};
+
+/**
+ * Adds or subtracts months from a date.
+ */
+export const addMonths = (date, months) => {
+    const d = parseDate(date);
+    if (!d) return null;
+    const result = new Date(d);
+    result.setMonth(result.getMonth() + months);
+    return result;
+};
+
+/**
+ * Returns the first day of the month for a given date.
+ */
+export const startOfMonth = (date) => {
+    const d = parseDate(date);
+    if (!d) return null;
+    return new Date(d.getFullYear(), d.getMonth(), 1);
+};
+
+/**
+ * Returns the last day of the month for a given date.
+ */
+export const endOfMonth = (date) => {
+    const d = parseDate(date);
+    if (!d) return null;
+    return new Date(d.getFullYear(), d.getMonth() + 1, 0);
+};
+
+/**
+ * Returns the number of days in the month for a given date.
+ */
+export const getDaysInMonth = (date) => {
+    const d = endOfMonth(date);
+    return d ? d.getDate() : 0;
+};
+
+/**
+ * Calculates the age in years based on a birth date.
+ */
+export const calculateAge = (dobStr) => {
+    const dob = parseDate(dobStr);
+    if (!dob) return 0;
+    const now = getNow();
+    let age = now.getFullYear() - dob.getFullYear();
+    const m = now.getMonth() - dob.getMonth();
+    if (m < 0 || (m === 0 && now.getDate() < dob.getDate())) {
+        age--;
+    }
+    return age;
+};
+
+/**
+ * Returns the current date/time in Argentina formatted as ISO (YYYY-MM-DDTHH:mm:ss).
+ * Specifically required for ARCA/AFIP QR generation.
+ */
+export const getArgentineNowISO = () => {
+    return new Date().toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace(' ', 'T');
+};
+
+// --- 3. Formatting for Display ---
 
 /**
  * Formats a date for user display (e.g. "10/03/2026")
@@ -42,9 +188,9 @@ export const formatDate = (date, options = {}) => {
     const d = parseDate(date);
     if (!d) return options.fallback || 'N/A';
 
-    const locale = 'es-AR';
+    const locale = undefined; // undefined tells the browser to use the user's system locale
     const opts = {
-        timeZone: 'America/Argentina/Buenos_Aires',
+        // timeZone is intentionally omitted to use the user's local timezone
         day: '2-digit',
         month: options.monthName ? 'long' : '2-digit',
         ...(options.hideYear ? {} : { year: 'numeric' }),
@@ -65,13 +211,12 @@ export const formatDate = (date, options = {}) => {
  * @param {number} monthIndex 
  * @param {Function} t - Translation function
  */
-export const getMonthName = (monthIndex, t = null) => {
+const getMonthName = (monthIndex, t = null) => {
     if (t && t('months_array')) {
         return t('months_array')[monthIndex];
     }
-    return new Date(2026, monthIndex, 1).toLocaleDateString('es-AR', {
-        month: 'long',
-        timeZone: 'America/Argentina/Buenos_Aires'
+    return getNow().toLocaleDateString(undefined, {
+        month: 'long'
     });
 };
 
@@ -99,15 +244,14 @@ export const getMonthsOptions = (t, allLabelKey = 'all_months') => {
 export const formatTime = (date, options = {}) => {
     const d = parseDate(date);
     if (!d) return '--:--';
-    return d.toLocaleTimeString('es-AR', {
-        timeZone: 'America/Argentina/Buenos_Aires',
+    return d.toLocaleTimeString(undefined, {
         hour: '2-digit',
         minute: '2-digit',
         hour12: options.hour12 !== undefined ? options.hour12 : true
     });
 };
 
-// --- 2. Input Handling (<input type="datetime-local" />) ---
+// --- 4. Input Handling (<input type="datetime-local" />) ---
 
 /**
  * Converts a Date object to "YYYY-MM-DDTHH:mm" string for use in datetime-local inputs.
@@ -141,18 +285,7 @@ export const toInputDate = (date) => {
     return localISODate;
 };
 
-// --- 3. API Communication ---
-
-/**
- * Prepares a date for the API.
- * Ensures we send a full ISO UTC string.
- * @param {string|Date} input - Can be Date object or "YYYY-MM-DDTHH:mm" string
- */
-export const toApiDate = (input) => {
-    const d = parseDate(input);
-    if (!d) return null;
-    return d.toISOString();
-};
+// --- 5. API Communication ---
 
 /**
  * Formats a date with full time and AM/PM (e.g. "20/02/2026 06:54 a. m.")
@@ -161,8 +294,7 @@ export const toApiDate = (input) => {
 export const formatDateTimeLong = (date) => {
     const d = parseDate(date);
     if (!d) return 'N/A';
-    return d.toLocaleString('es-AR', {
-        timeZone: 'America/Argentina/Buenos_Aires',
+    return d.toLocaleString(undefined, {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
@@ -173,46 +305,16 @@ export const formatDateTimeLong = (date) => {
 };
 
 /**
- * Returns true if the date is before the current time.
+ * Returns true if the date is before or within the next X days.
+ * @param {string|Date} date 
+ * @param {number} days 
  */
-export const isPast = (date) => {
+export const isDueSoon = (date, days = 2) => {
     const d = parseDate(date);
     if (!d) return false;
-    return d < new Date();
-};
-
-/**
- * Returns true if the date is before today (at 00:00:00).
- */
-export const isPastDay = (date) => {
-    const d = parseDate(date);
-    if (!d) return false;
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    return d < today;
-};
-
-/**
- * Returns true if two dates represent the same day (Year, Month, Day)
- */
-export const isSameDay = (d1, d2) => {
-    const a = parseDate(d1);
-    const b = parseDate(d2);
-    if (!a || !b) return false;
-
-    // Use toLocaleDateString with Argentina timezone to get a stable comparison string "YYYY-MM-DD"
-    const options = { timeZone: 'America/Argentina/Buenos_Aires', year: 'numeric', month: '2-digit', day: '2-digit' };
-    const strA = a.toLocaleDateString('en-CA', options); // en-CA gives YYYY-MM-DD
-    const strB = b.toLocaleDateString('en-CA', options);
-    
-    return strA === strB;
-};
-
-/**
- * Returns true if the date is today.
- */
-export const isToday = (date) => {
-    return isSameDay(date, new Date());
+    const limit = getNow();
+    limit.setDate(limit.getDate() + days);
+    return d <= limit;
 };
 
 /**
@@ -222,8 +324,7 @@ export const isToday = (date) => {
 export const timeAgo = (date) => {
     const d = parseDate(date);
     if (!d) return '';
-    const now = new Date();
-    const diffMs = now - d;
+    const diffMs = getNow() - d;
 
     const seconds = Math.floor(diffMs / 1000);
     if (seconds < 60) return 'Justo ahora';
@@ -245,11 +346,4 @@ export const timeAgo = (date) => {
 
     const years = Math.floor(days / 365);
     return `hace ${years} ${years === 1 ? 'año' : 'años'}`;
-};
-
-/**
- * Returns the timezone offset in minutes (e.g. 180 for GMT-3)
- */
-export const getClientOffset = () => {
-    return new Date().getTimezoneOffset();
 };

@@ -12,7 +12,9 @@ import Modal from '@/components/molecules/Modal';
 import UserTable from '@/features/users/components/UserTable';
 import UserForm from '@/features/users/components/UserForm';
 
-const UserManagement = ({ excludeRoles = [], role = null }) => {
+const EMPTY_EXCLUDE = [];
+
+const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
     const { t } = useLanguage();
     const {
         users,

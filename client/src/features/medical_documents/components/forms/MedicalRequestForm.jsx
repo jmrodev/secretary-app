@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { isDueSoon } from '@/utils/core/dateUtils';
 import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useMessage } from '@/context/MessageContext';
@@ -44,6 +45,11 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
         tempMedsProps
     } = useMedicalRequest(initialType, initialSendToDoctor, user, showMessage, t, onRequestCreated);
 
+    const isExpired = React.useMemo(() => {
+        if (reqType !== 'prescription') return false;
+        return isDueSoon(patientData?.next_suggested_prescription_date, 0);
+    }, [patientData?.next_suggested_prescription_date, reqType]);
+
     const handleSubmit = (e) => {
         handleCreateRequest(e, medicationItems, reqNote);
     };
@@ -51,7 +57,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
     if (user?.role !== 'secretary' && user?.role !== 'doctor') return null;
 
     const baseClass = 'medical-request-form';
- 
+
     const formContent = (
         <form onSubmit={handleSubmit} className={baseClass}>
             <div className={`${baseClass}__row ${baseClass}__row--2`}>
@@ -97,7 +103,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                     placeholder={t('select_patient')}
                 />
 
-                {patientData && reqType === 'prescription' && patientData.next_suggested_prescription_date && new Date(patientData.next_suggested_prescription_date) > new Date() && (
+                {isExpired && reqType === 'prescription' && (
                     <div className={`${baseClass}__badge-wrapper`}>
                         <Badge variant="warning">
                             <Icon name="warning" size="1rem" />

@@ -4,6 +4,12 @@ import { useAuth } from '@/features/auth';
 import { copyToClipboard } from '@/utils/core/clipboardUtils';
 import api from '@/api/axios';
 
+const PRICE_FORMATTER = new Intl.NumberFormat('es-AR', { 
+    style: 'currency', 
+    currency: 'ARS', 
+    maximumFractionDigits: 0 
+});
+
 /**
  * useWhatsAppUniversal (Handler Hook).
  * Logic for sending WhatsApp messages (Reminders/Confirmations) for appointments.
@@ -58,7 +64,7 @@ export const useWhatsAppUniversal = (doctors) => {
                     doctor_name: doctor?.full_name || 'Doctor',
                     appointment_type: appt.type === 'virtual' ? 'VIRTUAL' : 'PRESENCIAL',
                     appointment_location: address,
-                    price: new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(appt.type === 'virtual' ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0)),
+                    price: PRICE_FORMATTER.format(appt.type === 'virtual' ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0)),
                     secretary_name: user.name || 'Secretaría'
                 };
                 if (await handleMetaSend(phone, metaTemplateName, metaParamsOrder, context)) return;
@@ -80,7 +86,7 @@ export const useWhatsAppUniversal = (doctors) => {
         }
 
         const address = isVirtual ? 'Virtual (Cima Salud)' : (settings.clinic_address || 'Montiel 1255');
-        const price = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(isVirtual ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0));
+        const price = PRICE_FORMATTER.format(isVirtual ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0));
         const apptType = isVirtual ? 'VIRTUAL' : 'PRESENCIAL';
 
         const message = messageTemplate

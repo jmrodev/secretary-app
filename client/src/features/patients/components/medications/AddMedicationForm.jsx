@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import MedicationAutocomplete from '@/features/medical_documents/components/ui/MedicationAutocomplete';
+import { getNow, addMonths, toInputDate } from '@/utils/core/dateUtils';
 
 // Local CSS
 import './AddMedicationForm.css';
@@ -105,10 +106,10 @@ const AddMedicationForm = ({
         if (mode === 'calculation') {
             nextDate = calculateRefillDate(currentMed.units_per_box, currentMed.daily_intake, currentMed.boxes_count) || '';
         } else if (mode === 'fixed_day' && currentMed.reminder_day) {
-            const date = new Date();
+            let date = getNow();
             date.setDate(currentMed.reminder_day);
-            if (date <= new Date()) date.setMonth(date.getMonth() + 1);
-            nextDate = date.toISOString().split('T')[0];
+            if (date <= getNow()) date = addMonths(date, 1);
+            nextDate = toInputDate(date);
         }
 
         setCurrentMed(prev => ({
@@ -121,13 +122,13 @@ const AddMedicationForm = ({
     const handleReminderDayChange = (val) => {
         let nextDate = currentMed.next_refill_date;
         if (val) {
-            const date = new Date();
+            let date = getNow();
             let day = parseInt(val);
             if (day < 1) day = 1;
             if (day > 31) day = 31;
             date.setDate(day);
-            if (date <= new Date()) date.setMonth(date.getMonth() + 1);
-            nextDate = date.toISOString().split('T')[0];
+            if (date <= getNow()) date = addMonths(date, 1);
+            nextDate = toInputDate(date);
         }
         setCurrentMed(prev => ({ ...prev, reminder_day: val, next_refill_date: nextDate }));
     };
@@ -162,7 +163,7 @@ const AddMedicationForm = ({
                     <label className="add-medication-form__label">{t('search_medication') || 'Buscar Medicamento'}</label>
                     <MedicationAutocomplete
                         value={currentMed.medication_name}
-                        onChange={(val) => setCurrentMed({ ...currentMed, medication_name: val })}
+                        onChange={(val) => setCurrentMed(prev => ({ ...prev, medication_name: val }))}
                         onSelectMedication={handleSelectFromVademecum}
                         placeholder={t('search_add_medication') || "Buscar y seleccionar..."}
                     />

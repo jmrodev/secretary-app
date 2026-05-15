@@ -1,10 +1,13 @@
 import { useCallback, useMemo } from 'react';
 import api from '@/api/axios';
+import { getNow, parseDate, toInputDateTime, toInputDate, createDate, formatDate } from '@/utils/core/dateUtils';
 
 // Feature internal hooks
-import { useAppointmentActions } from '@/features/appointments/hooks/useAppointmentActions';
-import { useAppointmentUIHandlers } from '@/features/appointments/hooks/useAppointmentUIHandlers';
-import { useHolidayHandlers } from '@/features/appointments/hooks/useHolidayHandlers';
+import { useAppointmentActions } from './useAppointmentActions';
+import { useAppointmentUIHandlers } from './useAppointmentUIHandlers';
+import { useHolidayHandlers } from './useHolidayHandlers';
+
+const PRICE_FORMATTER = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
 
 /**
  * High-level handlers for the appointments feature.
@@ -44,24 +47,18 @@ export const useAppointmentsHandlers = ({
     const handleSlotClick = async (hour, existingAppt, minute = 0) => {
         if (rescheduleAppt) {
             if (existingAppt) return;
-            const toLocalYMD = (d) => {
-                const date = new Date(d);
-                return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-            };
-            const selectedYMD = toLocalYMD(selectedDate);
-            const isHoliday = holidays.find(h => toLocalYMD(h.date) === selectedYMD);
+            const selectedYMD = toInputDate(selectedDate);
+            const isHoliday = holidays.find(h => toInputDate(h.date) === selectedYMD);
 
             if (isHoliday) {
                 showMessage((t('cannot_reschedule_holiday') || 'No se puede reprogramar a un feriado: {description}').replace('{description}', isHoliday.description), 'error');
                 return;
             }
 
-            const newDate = new Date(selectedDate);
-            newDate.setHours(hour, minute, 0, 0);
-            const offset = newDate.getTimezoneOffset() * 60000;
-            const localISOTime = (new Date(newDate - offset)).toISOString().slice(0, 16);
+            const newDate = createDate(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), hour, minute);
+            const localISOTime = toInputDateTime(newDate);
 
-            if (await confirm(t('confirm_reschedule_to').replace('{date}', new Date(localISOTime).toLocaleString()))) {
+            if (await confirm(t('confirm_reschedule_to').replace('{date}', formatDate(localISOTime, { time: true })))) {
                 const result = await appointmentActions.handleReschedule(rescheduleAppt.id, localISOTime);
                 if (result?.success) {
                     exitRescheduleMode();
@@ -76,12 +73,8 @@ export const useAppointmentsHandlers = ({
         if (existingAppt) {
             setActionModal({ open: true, appt: existingAppt });
         } else {
-            const toLocalYMD = (d) => {
-                const date = new Date(d);
-                return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-            };
-            const selectedYMD = toLocalYMD(selectedDate);
-            const isHoliday = holidays.find(h => toLocalYMD(h.date) === selectedYMD);
+            const selectedYMD = toInputDate(selectedDate);
+            const isHoliday = holidays.find(h => toInputDate(h.date) === selectedYMD);
 
             if (isHoliday) {
                 showMessage((t('cannot_book_holiday') || 'No se puede reservar en un feriado: {description}').replace('{description}', isHoliday.description), 'error');
@@ -89,10 +82,8 @@ export const useAppointmentsHandlers = ({
             }
 
             if (['patient', 'secretary', 'doctor', 'admin'].includes(user.role)) {
-                const newDate = new Date(selectedDate);
-                newDate.setHours(hour, minute, 0, 0);
-                const offset = newDate.getTimezoneOffset() * 60000;
-                const localISOTime = (new Date(newDate - offset)).toISOString().slice(0, 16);
+                const newDate = createDate(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), hour, minute);
+                const localISOTime = toInputDateTime(newDate);
 
                 setDate(localISOTime);
                 if (viewDoctorId) setSelectedDoctor(viewDoctorId);
@@ -156,9 +147,8 @@ export const useAppointmentsHandlers = ({
     };
 
     const handleSyncGoogleEvent = (appt) => {
-        const apptDate = new Date(appt.appointment_date);
-        const offset = apptDate.getTimezoneOffset() * 60000;
-        const localISOTime = (new Date(apptDate - offset)).toISOString().slice(0, 16);
+        const apptDate = parseDate(appt.appointment_date);
+        const localISOTime = toInputDateTime(apptDate);
         setDate(localISOTime);
         setSelectedDoctor(appt.doctor_id);
         const prefillReason = appt.source === 'google-incomplete' ? appt.reason : appt.patient_name;
@@ -188,10 +178,10 @@ export const useAppointmentsHandlers = ({
     };
 
     const handleWhatsAppSlot = (slot) => {
-        const dateObj = new Date(slot.iso);
-        const dateStr = dateObj.toLocaleDateString('es-AR');
-        const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const dayName = slot.dayName || dateObj.toLocaleDateString('es-AR', { weekday: 'long' });
+        const dateObj = parseDate(slot.iso);
+        const dateStr = formatDate(dateObj);
+        const timeStr = formatDate(dateObj, { time: true }).split(' ')[1] || ''; // Quick way to get time part from formatted string
+        const dayName = slot.dayName || formatDate(dateObj, { weekday: true });
         const doctor = doctors.find(d => Number(d.id) === Number(viewDoctorId || selectedDoctor));
         const doctorName = doctor?.full_name || doctor?.name || '';
         
@@ -202,14 +192,14 @@ export const useAppointmentsHandlers = ({
         if (messageTemplate) {
             const slotPrice = isVirtualSlot ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0);
             const address = isVirtualSlot ? 'Virtual (Cima Salud)' : (settings.clinic_address || 'Montiel 1255');
-            const formatPrice = (p) => new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(p);
+            
             message = messageTemplate
                 .replace(/{[\s]*doctor_name[\s]*}/gi, doctorName)
                 .replace(/{[\s]*date[\s]*}/gi, slot.formattedDate ? `${dayName} ${slot.formattedDate}` : `${dayName} ${dateStr}`)
                 .replace(/{[\s]*time[\s]*}/gi, timeStr)
                 .replace(/{[\s]*appointment_type[\s]*}/gi, isVirtualSlot ? 'VIRTUAL' : 'PRESENCIAL')
                 .replace(/{[\s]*appointment_location[\s]*}/gi, address)
-                .replace(/{[\s]*price[\s]*}/gi, formatPrice(slotPrice))
+                .replace(/{[\s]*price[\s]*}/gi, PRICE_FORMATTER.format(slotPrice))
                 .replace(/{[\s]*secretary_name[\s]*}/gi, user.name || 'Secretaría');
         } else {
             message = `Hola, tenemos un turno ${isVirtualSlot ? 'VIRTUAL' : 'PRESENCIAL'} disponible el ${slot.formattedDate || dateStr} a las ${timeStr} con el/la Dr/a. ${doctorName}.`;
@@ -224,9 +214,8 @@ export const useAppointmentsHandlers = ({
     };
 
     const confirmNextSlot = (dateIso, isOutOfHours = false) => {
-        const slotDate = new Date(dateIso);
-        const offset = slotDate.getTimezoneOffset() * 60000;
-        setDate((new Date(slotDate - offset)).toISOString().slice(0, 16));
+        const slotDate = parseDate(dateIso);
+        setDate(toInputDateTime(slotDate));
         setSelectedDoctor(viewDoctorId || selectedDoctor);
         setIsOutOfHours(!!isOutOfHours);
         setShowNextSlotModal(false);
@@ -252,9 +241,8 @@ export const useAppointmentsHandlers = ({
         handleOpenSync: (appt) => navigate('/appointments', { state: { syncAppt: appt } }),
         handleSelectMedication: (med) => setPrescribeModal(prev => ({ ...prev, medications: (prev.medications || '').trim() ? `${prev.medications}\n${med.full_label}` : med.full_label })),
         handleGoToAppointment: (apptId, doctorId, date, onClose) => {
-            const apptDate = new Date(date);
-            const offset = apptDate.getTimezoneOffset() * 60000;
-            setSelectedDate(new Date(apptDate.getTime() + offset));
+            const apptDate = parseDate(date);
+            setSelectedDate(apptDate);
             setViewDoctorId(doctorId);
             if (onClose) onClose();
         }

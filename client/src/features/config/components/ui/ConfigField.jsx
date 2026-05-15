@@ -8,6 +8,8 @@ import './ConfigField.css';
  * Renders a labeled input or select field used across system preferences.
  * Supports more robust validation and styling via Atoms.
  */
+const EMPTY_OPTIONS = [];
+
 const ConfigField = ({
     label,
     hint,
@@ -19,7 +21,7 @@ const ConfigField = ({
     id,
     variant = '', // e.g., 'monospace'
     className = '',
-    options = [] // Only used if type="select"
+    options = EMPTY_OPTIONS // Only used if type="select"
 }) => {
     const isSelect = type === 'select';
     const rootClass = `config-field ${variant ? `config-field--${variant}` : ''}`;

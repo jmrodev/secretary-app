@@ -18,7 +18,6 @@ const AppointmentPatientSection = ({
                 <PatientSearchSelect
                     value={selectedPatient}
                     selectedData={selectedPatientData}
-                    autoFocus={true}
                     placeholder="Buscar Paciente..."
                     onCreatePatient={async (name) => {
                         handlePatientChange(null, { full_name: capitalizeWords(name) });

@@ -57,7 +57,7 @@ const PrescriptionFormFields = ({
                 <div className="prescription-modal__freq-presets">
                     {freqPresets.map((p, idx) => (
                         <Button
-                            key={idx}
+                            key={p.label}
                             type="button"
                             className={`prescription-modal__freq-btn${tempFreqPreset === idx ? ' prescription-modal__freq-btn--active' : ''}`}
                             onClick={() => handleFreqPreset(idx)}
@@ -72,10 +72,11 @@ const PrescriptionFormFields = ({
             {/* Numeric fields row */}
             <div className="prescription-modal__numeric-row">
                 <div className="prescription-modal__numeric-field">
-                    <label className="prescription-modal__label">
+                    <label htmlFor="units-per-box" className="prescription-modal__label">
                         {t('units_per_box') || 'Caja de (X) pastillas'}
                     </label>
                     <select
+                        id="units-per-box"
                         className="input input--sm"
                         style={{ width: '100%' }}
                         value={tempUnitsPerBox}
@@ -89,10 +90,11 @@ const PrescriptionFormFields = ({
                 </div>
 
                 <div className="prescription-modal__numeric-field">
-                    <label className="prescription-modal__label">
+                    <label htmlFor="daily-units" className="prescription-modal__label">
                         {t('daily_units') || 'Pastillas por día'}
                     </label>
                     <select
+                        id="daily-units"
                         className="input input--sm"
                         style={{ width: '100%' }}
                         value={tempDailyUnits}
@@ -110,11 +112,12 @@ const PrescriptionFormFields = ({
                 </div>
 
                 <div className="prescription-modal__numeric-field">
-                    <label className="prescription-modal__label">
+                    <label htmlFor="boxes-input" className="prescription-modal__label">
                         {t('boxes') || 'Cantidad de cajas'}
                         <Tooltip text="Cantidad de cajas que se prescribe." />
                     </label>
                     <Input
+                        id="boxes-input"
                         size="sm"
                         type="number"
                         min="1"
@@ -126,7 +129,7 @@ const PrescriptionFormFields = ({
 
                 {/* Add button */}
                 <div className="prescription-modal__add-col">
-                    <label className="prescription-modal__label">&nbsp;</label>
+                    <div className="prescription-modal__label-spacer" aria-hidden="true">&nbsp;</div>
                     <Button
                         type="button"
                         onClick={handleAddItem}
@@ -140,7 +143,7 @@ const PrescriptionFormFields = ({
 
             {/* Days supply preview */}
             {daysSupply !== null && (
-                <div className="prescription-modal__supply-preview">
+                <div className="prescription-modal__supply-preview" suppressHydrationWarning>
                     <Icon name="NOTIFICATIONS" size="1rem" />
                     <span>
                         {t('supply_prefix') || 'Abastece'} <strong>~{daysSupply} {t('days') || 'días'}</strong>

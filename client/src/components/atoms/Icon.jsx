@@ -29,11 +29,34 @@ const Icon = ({
         className
     ].filter(Boolean).join(' ');
 
+    const handleKeyDown = (e) => {
+        if (onIconClick && (e.key === 'Enter' || e.key === ' ')) {
+            e.preventDefault();
+            onIconClick(e);
+        }
+    };
+
+    if (onIconClick) {
+        return (
+            <button
+                type="button"
+                className={combinedClasses}
+                style={{ ...style, background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+                onClick={onIconClick}
+                onKeyDown={handleKeyDown}
+                aria-label={typeof name === 'string' ? name.toLowerCase().replace(/_/g, ' ') : 'icon'}
+            >
+                {symbol}
+            </button>
+        );
+    }
+
     return (
         <span
             className={combinedClasses}
             style={style}
-            onClick={onIconClick}
+            role="presentation"
+            aria-hidden="true"
         >
             {symbol}
         </span>

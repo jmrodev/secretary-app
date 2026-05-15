@@ -50,8 +50,8 @@ const LicenseReportTable = ({ data, t }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {dailySummary.map((day, idx) => (
-                            <tr key={idx} className="medical-report__row">
+                        {dailySummary.map((day) => (
+                            <tr key={day.date} className="medical-report__row">
                                 <td>{day.date}</td>
                                 <td className="medical-report__cell--right">$ {day.cash.toLocaleString()}</td>
                                 <td className="medical-report__cell--right">$ {day.others.toLocaleString()}</td>
@@ -85,8 +85,8 @@ const LicenseReportTable = ({ data, t }) => {
             </div>
 
             {/* Detailed Daily Breakdown */}
-            {dailySummary.map((day, groupIdx) => (
-                <div key={groupIdx} className="medical-report__group">
+            {dailySummary.map((day) => (
+                <div key={day.date} className="medical-report__group">
                     <h3 className="medical-report__date-header">
                         {day.date} - {t('total_day')}: ${day.total.toLocaleString()}
                     </h3>
@@ -103,8 +103,8 @@ const LicenseReportTable = ({ data, t }) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {day.items.map((item, idx) => (
-                                    <tr key={idx} className="medical-report__row">
+                                {day.items.map((item) => (
+                                    <tr key={item.id || `${item.date}-${item.patient_name}`} className="medical-report__row">
                                         <td>
                                             <div className="medical-report__patient-info">
                                                 <span className="medical-report__patient-name">{item.patient_name}</span>

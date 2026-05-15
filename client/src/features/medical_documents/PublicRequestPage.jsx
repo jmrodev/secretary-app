@@ -63,9 +63,9 @@ const PublicRequestPage = () => {
                             Medicación Reciente
                         </h2>
                         <div className="med-chip-grid">
-                            {patientInfo.recentMeds.map((med, idx) => (
+                            {patientInfo.recentMeds.map((med) => (
                                 <Button
-                                    key={idx}
+                                    key={med}
                                     onClick={() => handleToggleMedSelection(med)}
                                     className={`med-chip ${selectedMeds.includes(med) ? 'med-chip--active' : ''}`}
                                     title={med}
@@ -85,8 +85,8 @@ const PublicRequestPage = () => {
                             Seleccionados ({selectedMeds.length})
                         </h2>
                         <ul className="selected-list list-none">
-                            {selectedMeds.map((med, idx) => (
-                                <li key={idx} className="selected-item">
+                            {selectedMeds.map((med) => (
+                                <li key={med} className="selected-item">
                                     <span className="selected-item__name">{med}</span>
                                     <Button
                                         onClick={() => handleToggleMedSelection(med)}

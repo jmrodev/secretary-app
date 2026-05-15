@@ -8,11 +8,22 @@ import ScheduleTimeBlock from '@/features/appointments/components/schedule/Sched
 
 import './DoctorScheduleSettings.css';
 
+const EMPTY_SCHEDULE = [];
+const DAYS = [
+    { id: 1, name: 'Lunes' },
+    { id: 2, name: 'Martes' },
+    { id: 3, name: 'Miércoles' },
+    { id: 4, name: 'Jueves' },
+    { id: 5, name: 'Viernes' },
+    { id: 6, name: 'Sábado' },
+    { id: 0, name: 'Domingo' }
+];
+
 /**
  * DoctorScheduleSettings Organism.
  * Provides a specialized interface for configuring a doctor's weekly work schedule.
  */
-const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading }) => {
+const DoctorScheduleSettings = ({ doctorId, schedule = EMPTY_SCHEDULE, setSchedule, loading }) => {
     const { t } = useLanguage();
     const [focusedIndex, setFocusedIndex] = useState(null);
 
@@ -31,16 +42,6 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
             }
         }
     }, [schedule, setSchedule]);
-
-    const DAYS = [
-        { id: 1, name: 'Lunes' },
-        { id: 2, name: 'Martes' },
-        { id: 3, name: 'Miércoles' },
-        { id: 4, name: 'Jueves' },
-        { id: 5, name: 'Viernes' },
-        { id: 6, name: 'Sábado' },
-        { id: 0, name: 'Domingo' }
-    ];
 
     const handleAddBlock = (dayId) => {
         setSchedule(prev => [
@@ -100,7 +101,7 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
         });
     };
 
-    if (loading) return <div className="schedule-settings__loading">Cargando horarios...</div>;
+    if (loading) return <div className="schedule-settings__loading">Cargando horarios…</div>;
 
     return (
         <section className="schedule-settings">
@@ -120,9 +121,12 @@ const DoctorScheduleSettings = ({ doctorId, schedule = [], setSchedule, loading 
 
             <div className="schedule-settings__days">
                 {DAYS.map(day => {
-                    const dayBlocks = (Array.isArray(schedule) ? schedule : [])
-                        .map((s, idx) => ({ ...s, originalIndex: idx }))
-                        .filter(s => s.day_of_week === day.id);
+                    const dayBlocks = (Array.isArray(schedule) ? schedule : []).reduce((acc, s, idx) => {
+                        if (s.day_of_week === day.id) {
+                            acc.push({ ...s, originalIndex: idx });
+                        }
+                        return acc;
+                    }, []);
 
                     if (focusedIndex === null) {
                         dayBlocks.sort((a, b) => {

@@ -3,10 +3,12 @@ import globals from 'globals'
 import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import reactDoctor from 'react-doctor/eslint-plugin'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
   globalIgnores(['dist']),
+  reactDoctor.configs.recommended,
   {
     files: ['**/*.{js,jsx}'],
     extends: [
@@ -31,6 +33,19 @@ export default defineConfig([
       react,
     },
     rules: {
+      'react-doctor/no-render-in-render': 'error',
+      'max-lines': ['warn', { max: 350, skipBlankLines: true, skipComments: true }],
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "Identifier[name=/^(handleClick|handleChange|handleEvent)$/]",
+          message: "Use semantic handler names (e.g., handleSavePatient) instead of generic names like handleClick.",
+        },
+        {
+          selector: "JSXText[value=/\\.{3}/]",
+          message: "Use the real ellipsis character (…) instead of three dots (...).",
+        },
+      ],
       'react/jsx-uses-vars': 'error',
       'no-unused-vars': ['warn', {
         vars: 'all',

@@ -14,9 +14,11 @@ import Loading from '@/components/atoms/Loading';
  * @param {boolean} [props.redirectTo=true] - Whether to redirect or just return null/fallback UI.
  * @param {boolean} [props.showLoading=true] - Whether to show a loading screen while auth is resolving.
  */
+const EMPTY_ARRAY = [];
+
 const RoleGuard = ({ 
     children, 
-    allowedRoles = [], 
+    allowedRoles = EMPTY_ARRAY, 
     fallbackPath = '/dashboard',
     redirectTo = true,
     showLoading = true

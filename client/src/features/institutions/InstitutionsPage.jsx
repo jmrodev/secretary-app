@@ -7,6 +7,8 @@ import { InstitutionFinances } from '@/features/finances';
 import { useInstitutionsController, InstitutionFormModal } from '@/features/institutions/index';
 import './InstitutionsPage.css';
 
+import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+
 /**
  * InstitutionsPage (Orchestrator).
  * Manages institutional payers and agreements.
@@ -33,95 +35,78 @@ const InstitutionsPage = () => {
     const [selectedInstId, setSelectedInstId] = React.useState('');
     const [viewMode, setViewMode] = React.useState('transactions');
 
+    // Sync selectedInstId with institutions list if not set
+    React.useEffect(() => {
+        if (!selectedInstId && institutions.length > 0) {
+            setSelectedInstId(String(institutions[0].id));
+        }
+    }, [institutions, selectedInstId]);
+
     return (
         <MainLayout wide flush title={t('institutions') || 'Instituciones'}>
             <div className="institutions-page-orchestrator">
-                
                 <div className="layout-content-area animate-fade-in">
                     {loading && institutions.length === 0 ? (
                         <Loading variant="centered" text={t('loading') || "Cargando..."} />
                     ) : (
-                        <div className="dashboard-layout__grid animate-fade-in">
-                        <aside className="dashboard-layout__sidebar">
-                            <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">
-                                    <Icon name="build" size="1.2rem" />
-                                    {t('actions') || 'Acciones'}
-                                </h3>
-                                <div className="institutions-sidebar__actions">
-                                    <Button
-                                        variant="primary"
-                                        className="institutions-sidebar__add-btn"
-                                        onClick={() => handleOpenFormModal()}
-                                        icon={<Icon name="add" size="1.1rem" />}
-                                    >
-                                        {t('new_institution') || 'Nueva Institución'}
-                                    </Button>
+                        <>
+                            <FeatureToolbar
+                                className="institutions-page-orchestrator__top-actions"
+                                tabs={institutions.map(inst => ({
+                                    id: String(inst.id),
+                                    label: inst.name,
+                                    icon: 'business',
+                                    badge: Number(inst.pending_count) > 0 ? inst.pending_count : null
+                                }))}
+                                activeTab={selectedInstId}
+                                onTabChange={setSelectedInstId}
+                                actions={
+                                    <div className="institutions-page__toolbar-actions">
+                                        <Button
+                                            variant="primary"
+                                            size="sm"
+                                            onClick={() => handleOpenFormModal()}
+                                            icon={<Icon name="add" size="1.1rem" />}
+                                        >
+                                            {t('new_institution') || 'Nueva'}
+                                        </Button>
+                                        
+                                        {selectedInstId && (
+                                            <div className="institutions-page__selected-actions">
+                                                <Button
+                                                    variant="secondary"
+                                                    size="sm"
+                                                    onClick={() => handleOpenFormModal(institutions.find(i => String(i.id) === selectedInstId))}
+                                                    icon={<Icon name="edit" size="1.1rem" />}
+                                                />
+                                                <Button
+                                                    variant="secondary"
+                                                    size="sm"
+                                                    onClick={() => handleDelete(Number(selectedInstId))}
+                                                    icon={<Icon name="delete" size="1.1rem" />}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                }
+                            />
 
-                                    {institutions.length > 0 && (
-                                        <div className="institutions-sidebar__list">
-                                            <p className="institutions-sidebar__list-label">
-                                                {t('institutions') || 'Instituciones'}
-                                            </p>
-                                            {institutions.map(inst => (
-                                                <div
-                                                    key={inst.id}
-                                                    className={`institution-item ${selectedInstId === String(inst.id) ? 'institution-item--active' : ''}`}
-                                                >
-                                                    <Button
-                                                        variant="ghost"
-                                                        active={selectedInstId === String(inst.id)}
-                                                        onClick={() => setSelectedInstId(String(inst.id))}
-                                                        className="institution-item__btn"
-                                                    >
-                                                        <span className="institution-item__name">{inst.name}</span>
-                                                        {Number(inst.pending_count) > 0 && (
-                                                            <span className="institution-item__badge">
-                                                                {inst.pending_count}
-                                                            </span>
-                                                        )}
-                                                    </Button>
-                                                    <div className="institution-item__actions">
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm-compact"
-                                                            onClick={() => handleOpenFormModal(inst)}
-                                                            title={t('edit')}
-                                                            className="institution-item__action-btn institution-item__action-btn--edit"
-                                                            icon={<Icon name="edit" size="0.9rem" />}
-                                                        />
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm-compact"
-                                                            onClick={() => handleDelete(inst.id)}
-                                                            title={t('delete')}
-                                                            className="institution-item__action-btn institution-item__action-btn--delete"
-                                                            icon={<Icon name="delete" size="0.9rem" />}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
+                            <main className="dashboard-layout__main dashboard-layout__main--full">
+                                <div className="dashboard-card no-padding">
+                                    <div className="institutions__content animate-fade-in">
+                                        <InstitutionFinances
+                                            institutions={institutions}
+                                            selectedInstId={selectedInstId}
+                                            viewMode={viewMode}
+                                            setViewMode={setViewMode}
+                                            t={t}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                        </aside>
-
-                        <main className="dashboard-layout__main">
-                            <div className="dashboard-card no-padding">
-                                <div className="institutions__content animate-fade-in">
-                                    <InstitutionFinances
-                                        institutions={institutions}
-                                        selectedInstId={selectedInstId}
-                                        viewMode={viewMode}
-                                        setViewMode={setViewMode}
-                                        t={t}
-                                    />
-                                </div>
-                            </div>
-                        </main>
-                    </div>
-                )}
+                            </main>
+                        </>
+                    )}
+                </div>
 
                 <InstitutionFormModal
                     isOpen={isFormModalOpen}
@@ -132,12 +117,9 @@ const InstitutionsPage = () => {
                     isEditing={!!editingInstitution}
                     t={t}
                 />
-                </div>
             </div>
         </MainLayout>
     );
 };
 
 export default InstitutionsPage;
-
-

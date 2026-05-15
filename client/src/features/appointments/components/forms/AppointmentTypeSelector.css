@@ -36,6 +36,6 @@
     box-shadow: 0 0 0 1px var(--primary-color);
 }
 
-.appointment-type-selector__btn--active .icon {
+.appointment-type-selector__btn--active .appointment-type-selector__icon {
     color: var(--primary-color);
 }

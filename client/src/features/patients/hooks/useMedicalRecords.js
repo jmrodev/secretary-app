@@ -1,6 +1,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import api from '@/api/axios';
+import { getNow, addDays, toInputDate } from '@/utils/core/dateUtils';
 
 /**
  * useMedicalRecords (Handler).
@@ -39,9 +40,7 @@ export const useMedicalRecords = (patientId, showMessage, t) => {
 
         const totalUnits = Number(units) * Number(boxes || 1);
         const daysLasting = Math.floor(totalUnits / Number(daily));
-        const date = new Date();
-        date.setDate(date.getDate() + daysLasting);
-        return date.toISOString().split('T')[0];
+        return toInputDate(addDays(getNow(), daysLasting));
     };
 
     const handleSaveMedications = async () => {
@@ -51,12 +50,12 @@ export const useMedicalRecords = (patientId, showMessage, t) => {
         }
 
         try {
-            for (const med of pendingMedications) {
-                await api.post('/medical/patients/medications', {
+            await Promise.all(pendingMedications.map(med => 
+                api.post('/medical/patients/medications', {
                     ...med,
                     patientId: patientId
-                });
-            }
+                })
+            ));
 
             showMessage(
                 t('medications_added') || `${pendingMedications.length} medicamento(s) agregado(s)`,
@@ -83,7 +82,7 @@ export const useMedicalRecords = (patientId, showMessage, t) => {
     };
 
     const handleAddToPending = (med) => {
-        setPendingMedications(prev => [...prev, med]);
+        setPendingMedications(prev => [...prev, { ...med, _tempId: `${Date.now()}-${Math.random()}` }]);
     };
 
     const handleRemovePending = (index) => {

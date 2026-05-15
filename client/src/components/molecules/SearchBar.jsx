@@ -21,7 +21,7 @@ const SearchBar = ({ value, onChange, placeholder, onSelect, className = '' }) =
     });
 
     // Load suggestions when focused and empty
-    const handleFocus = () => {
+    const openSuggestionsOnFocus = () => {
         if (!value) {
             fetchSuggestions();
             setShowSuggestions(true);
@@ -39,7 +39,7 @@ const SearchBar = ({ value, onChange, placeholder, onSelect, className = '' }) =
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const handleClear = () => {
+    const handleClearSearch = () => {
         onChange({ target: { value: '' } });
         setShowSuggestions(false);
     };
@@ -65,7 +65,7 @@ const SearchBar = ({ value, onChange, placeholder, onSelect, className = '' }) =
                     className="search-box__input"
                     value={value}
                     onChange={onChange}
-                    onFocus={handleFocus}
+                    onFocus={openSuggestionsOnFocus}
                     autoComplete="off"
                 />
                 {value && (
@@ -73,7 +73,7 @@ const SearchBar = ({ value, onChange, placeholder, onSelect, className = '' }) =
                         <Button 
                             variant="ghost" 
                             size="sm-compact"
-                            onClick={handleClear}
+                            onClick={handleClearSearch}
                             icon={<Icon name="close" />}
                             title={t('clear_search')}
                         />
@@ -86,33 +86,49 @@ const SearchBar = ({ value, onChange, placeholder, onSelect, className = '' }) =
                     <header className="search-box__suggestions-header">
                         <Icon name="history" /> {t('recent_activity')}
                     </header>
-                    <ul className="search-box__suggestions-list">
-                        {suggestions.map((item, idx) => (
-                            <li 
-                                key={`${item.type}-${item.id}-${idx}`} 
-                                className="search-box__suggestion-item"
-                                onClick={() => handleSelectSuggestion(item)}
-                            >
-                                <div className="search-box__suggestion-icon">
-                                    <Icon name={item.type === 'patient' ? 'person' : 'calendar_today'} />
-                                </div>
-                                <div className="search-box__suggestion-info">
-                                    <span className="search-box__suggestion-name">
-                                        {item.label}
-                                    </span>
-                                    <span className="search-box__suggestion-dni">
-                                        {item.sublabel}
-                                    </span>
-                                </div>
-                                
-                                {item.debt_status && (
-                                    <div 
-                                        className={`search-box__suggestion-status search-box__suggestion-status--${item.debt_status}`}
-                                        title={t(`debt_status_${item.debt_status}`)}
-                                    />
-                                )}
-                            </li>
-                        ))}
+                    <ul className="search-box__suggestions-list" role="listbox">
+                        {suggestions.map((item) => {
+                            const itemKey = `${item.type}-${item.id}`;
+                            const handleKeyDown = (e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    handleSelectSuggestion(item);
+                                }
+                            };
+
+                            return (
+                                <li 
+                                    key={itemKey} 
+                                    className="search-box__suggestion-item"
+                                    onClick={() => handleSelectSuggestion(item)}
+                                    onKeyDown={handleKeyDown}
+                                    role="option"
+                                    aria-selected="false"
+                                    tabIndex={0}
+                                >
+                                    <div className="search-box__suggestion-icon">
+                                        <Icon name={item.type === 'patient' ? 'person' : 'calendar_today'} />
+                                    </div>
+                                    <div className="search-box__suggestion-info">
+                                        <span className="search-box__suggestion-name">
+                                            {item.label}
+                                        </span>
+                                        <span className="search-box__suggestion-dni">
+                                            {item.sublabel}
+                                        </span>
+                                    </div>
+                                    
+                                    {item.debt_status && (
+                                        <div 
+                                            className={`search-box__suggestion-status search-box__suggestion-status--${item.debt_status}`}
+                                            title={t(`debt_status_${item.debt_status}`)}
+                                            role="status"
+                                            aria-label={t(`debt_status_${item.debt_status}`)}
+                                        />
+                                    )}
+                                </li>
+                            );
+                        })}
                     </ul>
                 </div>
             )}

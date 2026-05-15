@@ -1,5 +1,6 @@
 import React from 'react';
 import { useInstitutionFinances } from '@/features/finances/hooks/useInstitutionFinances';
+import { formatDate } from '@/utils/core/dateUtils';
 
 // Molecules
 import InstitutionSummary from '@/features/finances/components/sections/InstitutionSummary';
@@ -54,11 +55,7 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
             .reduce((sum, tr) => sum + Number(tr.amount), 0);
     })();
 
-    React.useEffect(() => {
-        if (isPayModalOpen) {
-            setPaymentData(p => ({ ...p, amount: selectedAmount.toString(), transaction_ids: Array.from(selectedTrs) }));
-        }
-    }, [isPayModalOpen, selectedAmount, selectedTrs, setPaymentData]);
+
 
     const handleToggleSelect = (id) => {
         setSelectedTrs(prev => {
@@ -71,30 +68,14 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
 
     const handleSelectAll = (checked) => {
         if (checked) {
-            const pendingIds = filteredTransactions
-                .filter(tr => tr.payment_status === 'pending')
-                .map(tr => tr.transaction_id);
+            const pendingIds = filteredTransactions.reduce((acc, tr) => {
+                if (tr.payment_status === 'pending') acc.push(tr.transaction_id);
+                return acc;
+            }, []);
             setSelectedTrs(new Set(pendingIds));
         } else {
             setSelectedTrs(new Set());
         }
-    };
-
-    const formatDate = (dateStr) => {
-        if (!dateStr) return 'N/A';
-        const date = new Date(dateStr);
-        const day = date.getDate();
-        const months = t('months_array') || [
-            'january', 'february', 'march', 'april', 'may', 'june',
-            'july', 'august', 'september', 'october', 'november', 'december'
-        ];
-        const monthKey = months[date.getMonth()].toLowerCase();
-        const month = t(monthKey);
-        const year = date.getFullYear();
-        return (t('date_format_long') || "{day} {month} {year}")
-            .replace('{day}', day)
-            .replace('{month}', month)
-            .replace('{year}', year);
     };
 
     if (!selectedInstId) {
@@ -150,8 +131,15 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
                         selectedTrs={selectedTrs}
                         onToggleSelect={handleToggleSelect}
                         onSelectAll={handleSelectAll}
-                        onPayClick={() => setIsPayModalOpen(true)}
-                        formatDate={formatDate}
+                        onPayClick={() => {
+                            setPaymentData(p => ({
+                                ...p,
+                                amount: selectedAmount.toString(),
+                                transaction_ids: Array.from(selectedTrs)
+                            }));
+                            setIsPayModalOpen(true);
+                        }}
+                        formatDate={(d) => formatDate(d, { monthName: true })}
                         t={t}
                     />
                 </div>
@@ -161,7 +149,7 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
                 <div className="institution-finances__grid">
                     <InstitutionPatientsTable
                         patients={patients}
-                        formatDate={formatDate}
+                        formatDate={(d) => formatDate(d, { monthName: true })}
                         t={t}
                     />
                 </div>

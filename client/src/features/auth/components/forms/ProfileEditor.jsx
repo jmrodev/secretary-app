@@ -19,7 +19,7 @@ const ProfileEditor = ({
     loading,
     isAdmin, isDoctor, isPatient, isSecretary, isStaff
 }) => {
-    const { handleChange, handleUpdate } = handlers;
+    const { handleProfileChange, handleUpdate } = handlers;
     if (loading || !user) return <div className="profile-editor__loading">{t('loading') || 'Cargando...'}</div>;
 
     if (isAdmin) {
@@ -56,7 +56,7 @@ const ProfileEditor = ({
                         <FormGroup label={t('full_name')} required>
                             <Input
                                 value={formData.fullName}
-                                onChange={e => handleChange('fullName', e.target.value)}
+                                onChange={e => handleProfileChange('fullName', e.target.value)}
                                 placeholder="Juan Perez"
                                 required
                             />
@@ -65,7 +65,7 @@ const ProfileEditor = ({
                         <FormGroup label={t('dni')}>
                             <Input
                                 value={formData.dni}
-                                onChange={e => handleChange('dni', e.target.value)}
+                                onChange={e => handleProfileChange('dni', e.target.value)}
                                 placeholder="12.345.678"
                             />
                         </FormGroup>
@@ -73,7 +73,7 @@ const ProfileEditor = ({
                         <div className="profile-editor__phone-section">
                             <PhoneNumbersManager
                                 phoneNumbers={formData.phoneNumbers}
-                                onChange={(val) => handleChange('phoneNumbers', val)}
+                                onChange={(val) => handleProfileChange('phoneNumbers', val)}
                             />
                         </div>
                     </div>
@@ -91,7 +91,7 @@ const ProfileEditor = ({
                                     type="textarea"
                                     rows={8}
                                     value={formData.medicalHistory}
-                                    onChange={e => handleChange('medicalHistory', e.target.value)}
+                                    onChange={e => handleProfileChange('medicalHistory', e.target.value)}
                                     placeholder="Allergies, chronic conditions, etc."
                                 />
                             </FormGroup>

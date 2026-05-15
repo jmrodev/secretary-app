@@ -179,7 +179,7 @@ export const useFinanceHandlers = ({
 
         setLoading(true);
         try {
-            for (const day of pendingClosures) {
+            const closurePromises = pendingClosures.map(day => {
                 let [h, m] = day.lastTime.split(':').map(Number);
                 m += 1;
                 if (m >= 60) { m = 0; h += 1; }
@@ -187,19 +187,24 @@ export const useFinanceHandlers = ({
                 const dateTime = `${day.date} ${timeStr}`;
                 const docId = day.doctor_id;
 
+                const dayPromises = [];
+
                 if (day.balance > 0) {
-                    await api.post('/finances/transactions', {
+                    dayPromises.push(api.post('/finances/transactions', {
                         type: 'withdrawal', amount: day.balance, description: `${t('auto_closure')} (${day.date}) - ${t('cash') || 'Efectivo'} - ${user.name || user.username}`,
                         doctor_id: docId, transaction_date: dateTime, status: 'paid', method: 'cash', is_withdrawal: true
-                    });
+                    }));
                 }
                 if (day.transferBalance > 0) {
-                    await api.post('/finances/transactions', {
+                    dayPromises.push(api.post('/finances/transactions', {
                         type: 'withdrawal', amount: day.transferBalance, description: `${t('auto_closure')} (${day.date}) - ${t('transfer') || 'Transferencia'} - ${user.name || user.username}`,
                         doctor_id: docId, transaction_date: dateTime, status: 'paid', method: 'transfer', is_withdrawal: true
-                    });
+                    }));
                 }
-            }
+                return Promise.all(dayPromises);
+            });
+
+            await Promise.all(closurePromises);
             const successMsg = t('close_all_success_msg')?.replace('{count}', pendingClosures.length) || `Cerradas: ${pendingClosures.length}`;
             showMessage(successMsg, 'success');
             fetchData();
@@ -219,13 +224,12 @@ export const useFinanceHandlers = ({
 
         try {
             setLoading(true);
-            let deletedCount = 0;
-            for (const day of duplicateClosures) {
-                for (const id of day.ids) {
-                    await api.delete(`/finances/transactions/${id}`);
-                    deletedCount++;
-                }
-            }
+            const deletePromises = duplicateClosures.flatMap(day => 
+                day.ids.map(id => api.delete(`/finances/transactions/${id}`))
+            );
+            await Promise.all(deletePromises);
+            
+            const deletedCount = deletePromises.length;
             const successMsg = t('fix_duplicates_success_msg')?.replace('{count}', deletedCount) || `Corregidos: ${deletedCount}`;
             showMessage(successMsg, 'success');
             fetchData();
@@ -238,20 +242,21 @@ export const useFinanceHandlers = ({
     }, [duplicateClosures, confirm, setLoading, showMessage, fetchData, alert, t]);
 
     const handleResetDay = useCallback(async (date, doctorId) => {
-        const toDeleteIds = transactions
-            .filter(t => {
-                const isWithdrawal = t.is_withdrawal === 1 || t.is_withdrawal === true || t.type === 'withdrawal';
-                const desc = t.description || '';
-                const dateInDesc = desc.match(/\d{4}-\d{2}-\d{2}/);
-                const tDate = dateInDesc ? dateInDesc[0] : (t.transaction_date && String(t.transaction_date).split(' ')[0].split('T')[0]);
+        const toDeleteIds = transactions.reduce((acc, tran) => {
+            const isWithdrawal = tran.is_withdrawal === 1 || tran.is_withdrawal === true || tran.type === 'withdrawal';
+            const desc = tran.description || '';
+            const dateInDesc = desc.match(/\d{4}-\d{2}-\d{2}/);
+            const tDate = dateInDesc ? dateInDesc[0] : (tran.transaction_date && String(tran.transaction_date).split(' ')[0].split('T')[0]);
 
-                const matchesDate = tDate === date;
-                const matchesDoctor = String(t.doctor_id) === String(doctorId) ||
-                    (t.doctor_id === null && (doctorId === 'null' || !doctorId));
+            const matchesDate = tDate === date;
+            const matchesDoctor = String(tran.doctor_id) === String(doctorId) ||
+                (tran.doctor_id === null && (doctorId === 'null' || !doctorId));
 
-                return isWithdrawal && matchesDate && matchesDoctor;
-            })
-            .map(t => t.id);
+            if (isWithdrawal && matchesDate && matchesDoctor) {
+                acc.push(tran.id);
+            }
+            return acc;
+        }, []);
 
         if (toDeleteIds.length === 0) {
             showMessage(t('no_withdrawals_found') || "No hay entregas.", "info");
@@ -263,9 +268,8 @@ export const useFinanceHandlers = ({
 
         try {
             setLoading(true);
-            for (const id of toDeleteIds) {
-                await api.delete(`/finances/transactions/${id}`);
-            }
+            await Promise.all(toDeleteIds.map(id => api.delete(`/finances/transactions/${id}`)));
+            
             const successMsg = t('reset_day_success_msg')?.replace('{date}', date) || `Reseteado: ${date}`;
             showMessage(successMsg, 'success');
             fetchData();

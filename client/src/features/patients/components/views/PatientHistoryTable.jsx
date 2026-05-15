@@ -2,7 +2,7 @@
 import React from 'react';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
-import { formatDate, formatTime } from '@/utils/core/dateUtils';
+import { formatDate, formatTime, formatDateTimeLong } from '@/utils/core/dateUtils';
 
 // Local Styles
 import './PatientHistoryTable.css';
@@ -82,7 +82,11 @@ const PatientHistoryTable = ({ details, t, onPayDebt }) => {
                                                     </div>
                                                 )}
                                                 {app.rescheduled_from_date && (
-                                                    <div className="patient-details__reschedule-info" title={`Originalmente para ${new Date(app.rescheduled_from_date).toLocaleString()}`}>
+                                                    <div 
+                                                        className="patient-details__reschedule-info" 
+                                                        title={`${t('originally_for') || 'Originalmente para'} ${formatDateTimeLong(app.rescheduled_from_date)}`}
+                                                        suppressHydrationWarning
+                                                    >
                                                         <Icon name="history" size="0.8rem" />
                                                         {t('rescheduled_from')}: {formatDate(app.rescheduled_from_date)}
                                                     </div>

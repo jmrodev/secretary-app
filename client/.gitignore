@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# React Doctor Reports
+reports/
+doctor-report.json
+.agents/

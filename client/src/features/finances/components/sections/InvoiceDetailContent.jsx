@@ -7,9 +7,24 @@ import './InvoiceDetailContent.css';
 /**
  * InvoiceDetailContent Feature Molecule.
  * Modal content for viewing and printing generated invoices within the finances domain.
- * Refactored to follow BEM and Atomic Design standards.
  */
 const InvoiceDetailContent = ({ tx, formatDate }) => {
+    const handlePrint = () => {
+        printInvoice({
+            ptoVta: tx.invoice_punto_vta,
+            number: tx.invoice_number,
+            cbteTipo: tx.invoice_cbte_tipo,
+            cae: tx.invoice_cae,
+            vto: tx.invoice_cae_vto,
+            fecha: tx.transaction_date ? new Date(tx.transaction_date).toISOString().split('T')[0] : null,
+            patient: tx.patient_full_name,
+            patientDni: tx.patient_dni,
+            doctor: tx.doctor_name,
+            doctorCuit: tx.doctor_cuit,
+            amount: tx.amount
+        });
+    };
+
     return (
         <div className="invoice-detail animate-fade-in">
             <h3 className="invoice-detail__title">Comprobante Electrónico</h3>
@@ -50,19 +65,7 @@ const InvoiceDetailContent = ({ tx, formatDate }) => {
                 <Button
                     variant="primary"
                     size="md"
-                    onClick={() => printInvoice({
-                        ptoVta: tx.invoice_punto_vta,
-                        number: tx.invoice_number,
-                        cbteTipo: tx.invoice_cbte_tipo,
-                        cae: tx.invoice_cae,
-                        vto: tx.invoice_cae_vto,
-                        fecha: tx.transaction_date ? new Date(tx.transaction_date).toISOString().split('T')[0] : null,
-                        patient: tx.patient_full_name,
-                        patientDni: tx.patient_dni,
-                        doctor: tx.doctor_name,
-                        doctorCuit: tx.doctor_cuit,
-                        amount: tx.amount
-                    })}
+                    onClick={handlePrint}
                     icon={<Icon name="PRINT" size="1.2rem" />}
                 >
                     Imprimir Factura

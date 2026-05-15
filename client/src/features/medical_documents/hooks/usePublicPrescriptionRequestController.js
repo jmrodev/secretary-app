@@ -1,28 +1,60 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '@/api/axios';
 
+const initialState = {
+    loading: true,
+    error: null,
+    success: false,
+    patientInfo: null,
+    selectedMeds: [],
+    notes: '',
+    searchTerm: '',
+    searchResults: [],
+    searching: false,
+};
+
+function reducer(state, action) {
+    switch (action.type) {
+        case 'START_FETCH': return { ...state, loading: true, error: null };
+        case 'FETCH_SUCCESS': return { ...state, loading: false, patientInfo: action.payload };
+        case 'FETCH_ERROR': return { ...state, loading: false, error: action.payload };
+        case 'SET_SEARCH_TERM': return { ...state, searchTerm: action.payload };
+        case 'SET_SEARCH_RESULTS': return { ...state, searchResults: action.payload, searching: false };
+        case 'START_SEARCH': return { ...state, searching: true };
+        case 'SET_NOTES': return { ...state, notes: action.payload };
+        case 'TOGGLE_MED': {
+            const medName = action.payload;
+            const selectedMeds = state.selectedMeds.includes(medName)
+                ? state.selectedMeds.filter(m => m !== medName)
+                : [...state.selectedMeds, medName];
+            return { ...state, selectedMeds };
+        }
+        case 'ADD_MANUAL_MED': {
+            const med = state.searchTerm.trim();
+            if (!med || state.selectedMeds.includes(med)) return { ...state, searchTerm: '', searchResults: [] };
+            return { ...state, selectedMeds: [...state.selectedMeds, med], searchTerm: '', searchResults: [] };
+        }
+        case 'SUBMIT_START': return { ...state, loading: true, error: null };
+        case 'SUBMIT_SUCCESS': return { ...state, loading: false, success: true };
+        case 'SUBMIT_ERROR': return { ...state, loading: false, error: action.payload };
+        default: return state;
+    }
+}
+
 export const usePublicPrescriptionRequestController = () => {
     const { token } = useParams();
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [success, setSuccess] = useState(false);
-    const [patientInfo, setPatientInfo] = useState(null);
-    const [selectedMeds, setSelectedMeds] = useState([]);
-    const [notes, setNotes] = useState('');
-    const [searchTerm, setSearchTerm] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
-    const [searching, setSearching] = useState(false);
+    const [realState, realDispatch] = React.useReducer(reducer, initialState);
+    const { loading, error, success, patientInfo, selectedMeds, notes, searchTerm, searchResults, searching } = realState;
 
     useEffect(() => {
         const fetchData = async () => {
+            realDispatch({ type: 'START_FETCH' });
             try {
                 const res = await api.get(`/medical/public/prescription-request/${token}`);
-                setPatientInfo(res.data);
+                realDispatch({ type: 'FETCH_SUCCESS', payload: res.data });
             } catch (err) {
-                setError(err.response?.data?.error || "El enlace es inválido o ha expirado.");
-            } finally {
-                setLoading(false);
+                realDispatch({ type: 'FETCH_ERROR', payload: err.response?.data?.error || "El enlace es inválido o ha expirado." });
             }
         };
         fetchData();
@@ -30,66 +62,45 @@ export const usePublicPrescriptionRequestController = () => {
 
     useEffect(() => {
         if (searchTerm.length < 3) {
-            queueMicrotask(() => setSearchResults([]));
+            realDispatch({ type: 'SET_SEARCH_RESULTS', payload: [] });
             return;
         }
 
         const delayDebounceFn = setTimeout(async () => {
-            setSearching(true);
+            realDispatch({ type: 'START_SEARCH' });
             try {
-                // Use public search endpoint
                 const res = await api.get(`/medical/public/vademecum/search?q=${searchTerm}`);
-                setSearchResults(res.data);
+                realDispatch({ type: 'SET_SEARCH_RESULTS', payload: res.data });
             } catch (err) {
                 console.error("Search failed", err);
-            } finally {
-                setSearching(false);
+                realDispatch({ type: 'SET_SEARCH_RESULTS', payload: [] });
             }
         }, 500);
 
         return () => clearTimeout(delayDebounceFn);
     }, [searchTerm]);
 
-    const handleToggleMedSelection = (medName) => {
-        setSelectedMeds(prev =>
-            prev.includes(medName)
-                ? prev.filter(m => m !== medName)
-                : [...prev, medName]
-        );
-    };
-
-    const handleAddManualMed = () => {
-        if (!searchTerm.trim()) return;
-        if (!selectedMeds.includes(searchTerm.trim())) {
-            setSelectedMeds(prev => [...prev, searchTerm.trim()]);
-        }
-        setSearchTerm('');
-        setSearchResults([]);
-    };
+    const handleToggleMedSelection = (medName) => realDispatch({ type: 'TOGGLE_MED', payload: medName });
+    const handleAddManualMed = () => realDispatch({ type: 'ADD_MANUAL_MED' });
 
     const handleSubmit = async () => {
         if (selectedMeds.length === 0) return;
-
-        setLoading(true);
-        setError(null); // Clear previous errors
+        realDispatch({ type: 'SUBMIT_START' });
         try {
             await api.post(`/medical/public/prescription-request/${token}`, {
                 medications: selectedMeds,
                 notes,
                 doctorId: patientInfo?.doctorId
             });
-            setSuccess(true);
+            realDispatch({ type: 'SUBMIT_SUCCESS' });
         } catch (err) {
-            console.error("Submission failed", err);
-            setError(err.response?.data?.error || "Hubo un error al enviar la solicitud. Por favor intenta de nuevo.");
-        } finally {
-            setLoading(false);
+            realDispatch({ type: 'SUBMIT_ERROR', payload: err.response?.data?.error || "Hubo un error al enviar la solicitud." });
         }
     };
 
     const handlers = {
-        setNotes,
-        setSearchTerm,
+        setNotes: (val) => realDispatch({ type: 'SET_NOTES', payload: val }),
+        setSearchTerm: (val) => realDispatch({ type: 'SET_SEARCH_TERM', payload: val }),
         handleToggleMedSelection,
         handleAddManualMed,
         handleSubmit

@@ -17,6 +17,12 @@ const ConfirmModal = ({
     const { t } = useLanguage();
     const inputRef = useRef(null);
 
+    React.useEffect(() => {
+        if (isOpen && type === 'prompt' && inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [isOpen, type]);
+
     if (!isOpen) return null;
 
     const handleConfirm = (e) => {
@@ -50,7 +56,6 @@ const ConfirmModal = ({
                     {type === 'prompt' && (
                         <form onSubmit={handleConfirm} className="modal-form-bem">
                             <input
-                                autoFocus
                                 type="text"
                                 className="input-field"
                                 defaultValue={initialValue}

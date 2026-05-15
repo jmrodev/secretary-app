@@ -8,7 +8,7 @@ import './PatientInsuranceFields.css';
  * Handles insurance selection and affiliate number.
  * Optimized for Bento Box layout.
  */
-const PatientInsuranceFields = ({ formData, handleChange, insurances, t }) => {
+const PatientInsuranceFields = ({ formData, updatePatientData, insurances, t }) => {
     const selectedInsurance = insurances.find(i => i.id === parseInt(formData.insurance_id));
 
     return (
@@ -25,7 +25,7 @@ const PatientInsuranceFields = ({ formData, handleChange, insurances, t }) => {
                         name="insurance_id"
                         className="patient-insurance-fields__select"
                         value={formData.insurance_id || ''}
-                        onChange={handleChange}
+                        onChange={updatePatientData}
                     >
                         <option value="">{t('particular')}</option>
                         {insurances.map(insurance => (
@@ -42,7 +42,7 @@ const PatientInsuranceFields = ({ formData, handleChange, insurances, t }) => {
                         name="affiliate_number"
                         className="patient-insurance-fields__field"
                         value={formData.affiliate_number || ''}
-                        onChange={handleChange}
+                        onChange={updatePatientData}
                         placeholder="Ej: 123456789/00"
                     />
                 </div>

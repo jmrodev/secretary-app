@@ -1,10 +1,12 @@
 import React from 'react';
 import './Select.css';
 
+const EMPTY_ARRAY = [];
+
 const Select = ({
     value,
     onChange,
-    options = [],
+    options = EMPTY_ARRAY,
     className = '',
     disabled = false,
     id,

@@ -53,7 +53,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, t, totalCount, item
             />
             
             <div className="pagination__pages">
-                {start > 1 && <span className="pagination__ellipsis">...</span>}
+                {start > 1 && <span className="pagination__ellipsis">…</span>}
                 {pages.map(p => (
                     <Button
                         key={p}
@@ -65,7 +65,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, t, totalCount, item
                         {p}
                     </Button>
                 ))}
-                {end < totalPages && <span className="pagination__ellipsis">...</span>}
+                {end < totalPages && <span className="pagination__ellipsis">…</span>}
             </div>
 
             <Button

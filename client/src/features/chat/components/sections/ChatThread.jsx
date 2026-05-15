@@ -24,6 +24,14 @@ const ChatThread = ({
 }) => {
     const { t } = useLanguage();
 
+    const inputRef = React.useRef(null);
+
+    React.useEffect(() => {
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, []);
+
     return (
         <>
             <div className="floating-chat__messages" ref={scrollRef}>
@@ -42,19 +50,19 @@ const ChatThread = ({
                 )}
                 {isOtherTyping && (
                     <div className="floating-chat__bubble floating-chat__bubble--received typing-indicator">
-                        <em>Escribiendo...</em>
+                        <em>Escribiendo…</em>
                     </div>
                 )}
             </div>
             <form className="floating-chat__input-area" onSubmit={handleSendMessage}>
                 <div className="floating-chat__input-wrapper">
                     <Input
-                        placeholder="Responde aquí..."
+                        placeholder="Responde aquí…"
                         value={messageText}
                         onChange={handleTyping}
                         disabled={sending}
                         size="sm"
-                        autoFocus
+                        ref={inputRef}
                     />
                 </div>
                 <Button

@@ -3,13 +3,15 @@ import MedicationAutocomplete from '@/features/medical_documents/components/ui/M
 import MedicationList from '@/features/medical_documents/components/lists/MedicationList';
 import './MedicationInput.css';
 
+const EMPTY_ARRAY = [];
+
 /**
  * MedicationInput Feature Molecule.
  * Higher-level input that combines autocomplete search and a list of selected items.
  * Used across various medical forms within the medical_documents domain.
  */
 const MedicationInput = ({
-    medications = [],
+    medications = EMPTY_ARRAY,
     onAdd,
     onRemove,
     label = 'Medications',

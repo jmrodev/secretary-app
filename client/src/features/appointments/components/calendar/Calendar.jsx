@@ -1,28 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import CalendarDayCell from '@/features/appointments/components/calendar/CalendarDayCell.jsx';
-import CalendarHeader from '@/features/appointments/components/calendar/CalendarHeader.jsx';
-import DayHeaders from '@/features/appointments/components/schedule/DayHeaders.jsx';
+import CalendarDayCell from './CalendarDayCell.jsx';
+import CalendarHeader from './CalendarHeader.jsx';
+import DayHeaders from '../schedule/DayHeaders.jsx';
 import { useLanguage } from '@/hooks/useLanguage';
-import { isPastDay, isSameDay } from '@/utils/core/dateUtils';
+import { isPastDay, isSameDay, getNow, parseDate, createDate } from '@/utils/core/dateUtils';
 import './Calendar.css';
 
 /**
  * Calendar (Executor Component).
  * Renders the monthly navigation grid for the agenda.
  */
-const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = [], calendarStats = {}, hideNavigation = false, showOutOfHours = false, compact = false }) => {
-    const [viewDate, setViewDate] = useState(new Date(selectedDate || new Date()));
+const EMPTY_ARRAY = [];
+const EMPTY_OBJECT = {};
+
+/**
+ * Calendar (Executor Component).
+ * Renders the monthly navigation grid for the agenda.
+ */
+const Calendar = ({ 
+    selectedDate, 
+    onDateSelect, 
+    appointments = EMPTY_ARRAY, 
+    holidays = EMPTY_ARRAY, 
+    calendarStats = EMPTY_OBJECT, 
+    hideNavigation = false, 
+    showOutOfHours = false, 
+    compact = false 
+}) => {
+    const [viewDate, setViewDate] = useState(() => parseDate(selectedDate || getNow()));
     const { t } = useLanguage();
 
+    // Sync viewDate when selectedDate prop changes
     useEffect(() => {
-        if (selectedDate) queueMicrotask(() => setViewDate(new Date(selectedDate)));
+        if (selectedDate) {
+            setViewDate(parseDate(selectedDate));
+        }
     }, [selectedDate]);
 
     const getDaysInMonth = (date) => {
         const year = date.getFullYear();
         const month = date.getMonth();
-        const days = new Date(year, month + 1, 0).getDate();
-        const firstDay = new Date(year, month, 1).getDay();
+        const days = createDate(year, month + 1, 0).getDate();
+        const firstDay = createDate(year, month, 1).getDay();
         return { days, firstDay };
     };
 
@@ -33,7 +52,7 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
     const appointmentsByDate = React.useMemo(() => {
         const map = {};
         appointments.forEach(appt => {
-            const d = new Date(appt.appointment_date);
+            const d = parseDate(appt.appointment_date);
             const dateStr = [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-');
             if (!map[dateStr]) map[dateStr] = [];
             map[dateStr].push(appt);
@@ -41,61 +60,31 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
         return map;
     }, [appointments]);
 
+    const holidaysByDate = React.useMemo(() => {
+        const map = {};
+        holidays.forEach(h => {
+            if (!h.date) return;
+            const d = parseDate(h.date);
+            const dateStr = [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-');
+            map[dateStr] = h;
+        });
+        return map;
+    }, [holidays]);
+
     const handlePrevMonth = () => {
-        const newDate = new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1);
+        const newDate = createDate(viewDate.getFullYear(), viewDate.getMonth() - 1, 1);
         setViewDate(newDate);
         onDateSelect(newDate);
     };
 
     const handleNextMonth = () => {
-        const newDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1);
+        const newDate = createDate(viewDate.getFullYear(), viewDate.getMonth() + 1, 1);
         setViewDate(newDate);
         onDateSelect(newDate);
     };
 
-    const renderDays = () => {
-        const dayElements = [];
-        for (let i = 0; i < firstDay; i++) {
-            dayElements.push(<div key={`empty-pre-${i}`} className="calendar-grid__cell calendar-grid__cell--empty"></div>);
-        }
-
-        for (let i = 1; i <= days; i++) {
-            const currentDay = new Date(viewDate.getFullYear(), viewDate.getMonth(), i);
-            const isSelected = selectedDate && isSameDay(new Date(selectedDate), currentDay);
-            const isToday = isSameDay(new Date(), currentDay);
-            const dateStr = [currentDay.getFullYear(), String(currentDay.getMonth() + 1).padStart(2, '0'), String(currentDay.getDate()).padStart(2, '0')].join('-');
-            const dayStats = calendarStats[dateStr] || {};
-            
-            // Use the pre-calculated map instead of filtering on each day
-            const dayAppts = appointmentsByDate[dateStr] || [];
-            
-            const bookedInCount = (dayStats.bookedIn !== undefined) ? dayStats.bookedIn : dayAppts.filter(a => !a.is_out_of_hours).length;
-            const bookedOutCount = (dayStats.bookedOut !== undefined) ? dayStats.bookedOut : dayAppts.filter(a => a.is_out_of_hours).length;
-            const count = (dayStats.bookedIn !== undefined && dayStats.bookedOut !== undefined) ? (dayStats.bookedIn + dayStats.bookedOut) : dayAppts.length;
-            const isHolidayObj = holidays && holidays.find(h => h.date && isSameDay(new Date(h.date), currentDay));
-
-            dayElements.push(
-                <CalendarDayCell
-                    key={i} day={i} isSelected={isSelected} isToday={isToday} isPast={isPastDay(currentDay)}
-                    isHoliday={!!isHolidayObj} holidayDescription={isHolidayObj?.description || ''}
-                    appointmentCount={count} bookedInCount={bookedInCount} bookedOutCount={bookedOutCount}
-                    freeInCount={dayStats.freeIn} freeOutCount={dayStats.freeOut} showOutOfHours={showOutOfHours}
-                    onClick={() => onDateSelect(currentDay)} isCurrentMonth={true} t={t} compact={compact}
-                />
-            );
-        }
-
-        // Fill to 6 rows
-        const totalCells = 42;
-        const currentCount = dayElements.length;
-        for (let i = 0; i < (totalCells - currentCount); i++) {
-            dayElements.push(<div key={`empty-post-${i}`} className="calendar-grid__cell calendar-grid__cell--empty"></div>);
-        }
-        return dayElements;
-    };
-
     return (
-        <div className="calendar-grid">
+        <div className="calendar">
             {!hideNavigation && (
                 <CalendarHeader
                     month={months[viewDate.getMonth()]} year={viewDate.getFullYear()}
@@ -103,16 +92,90 @@ const Calendar = ({ selectedDate, onDateSelect, appointments = [], holidays = []
                 />
             )}
             {hideNavigation && (
-                <div className="calendar-grid__simple-title">
+                <div className="calendar__simple-title">
                     {months[viewDate.getMonth()]} {viewDate.getFullYear()}
                 </div>
             )}
-            <div className="calendar-grid__main-container">
+            <div className="calendar__main-container">
                 <DayHeaders daysOfWeek={daysOfWeek} />
-                <div className="calendar-grid__body">{renderDays()}</div>
+                <div className="calendar__body">
+                    <CalendarGrid 
+                        viewDate={viewDate}
+                        selectedDate={selectedDate}
+                        days={days}
+                        firstDay={firstDay}
+                        calendarStats={calendarStats}
+                        appointmentsByDate={appointmentsByDate}
+                        holidaysByDate={holidaysByDate}
+                        showOutOfHours={showOutOfHours}
+                        compact={compact}
+                        onDateSelect={onDateSelect}
+                        t={t}
+                    />
+                </div>
             </div>
         </div>
     );
+};
+
+const CalendarGrid = ({ 
+    viewDate, selectedDate, days, firstDay, calendarStats, 
+    appointmentsByDate, holidaysByDate, showOutOfHours, compact, onDateSelect, t 
+}) => {
+    const dayElements = [];
+    
+    // Empty cells before first day
+    for (let i = 0; i < firstDay; i++) {
+        dayElements.push(<div key={`empty-pre-${viewDate.getFullYear()}-${viewDate.getMonth()}-${i}`} className="calendar__cell calendar__cell--empty"></div>);
+    }
+
+    // Days of the month
+    for (let i = 1; i <= days; i++) {
+        const currentDay = createDate(viewDate.getFullYear(), viewDate.getMonth(), i);
+        const isSelected = selectedDate && isSameDay(parseDate(selectedDate), currentDay);
+        const isTodayDate = isSameDay(getNow(), currentDay);
+        const dateStr = [currentDay.getFullYear(), String(currentDay.getMonth() + 1).padStart(2, '0'), String(currentDay.getDate()).padStart(2, '0')].join('-');
+        const dayStats = calendarStats[dateStr] || {};
+        
+        const dayAppts = appointmentsByDate[dateStr] || [];
+        
+        const bookedInCount = (dayStats.bookedIn !== undefined) ? dayStats.bookedIn : dayAppts.filter(a => !a.is_out_of_hours).length;
+        const bookedOutCount = (dayStats.bookedOut !== undefined) ? dayStats.bookedOut : dayAppts.filter(a => a.is_out_of_hours).length;
+        const count = (dayStats.bookedIn !== undefined && dayStats.bookedOut !== undefined) ? (dayStats.bookedIn + dayStats.bookedOut) : dayAppts.length;
+        const isHolidayObj = holidaysByDate[dateStr];
+
+        dayElements.push(
+            <CalendarDayCell
+                key={dateStr} 
+                day={i} 
+                status={{
+                    isSelected,
+                    isToday: isTodayDate,
+                    isPast: isPastDay(currentDay),
+                    isHoliday: !!isHolidayObj,
+                    compact
+                }}
+                holidayDescription={isHolidayObj?.description || ''}
+                appointmentCount={count} 
+                bookedInCount={bookedInCount} 
+                bookedOutCount={bookedOutCount}
+                freeInCount={dayStats.freeIn} 
+                freeOutCount={dayStats.freeOut} 
+                showOutOfHours={showOutOfHours}
+                onClick={() => onDateSelect(currentDay)} 
+                t={t} 
+            />
+        );
+    }
+
+    // Fill to 6 rows (42 cells)
+    const totalCells = 42;
+    const currentCount = dayElements.length;
+    for (let i = 0; i < (totalCells - currentCount); i++) {
+        dayElements.push(<div key={`empty-post-${viewDate.getFullYear()}-${viewDate.getMonth()}-${i}`} className="calendar__cell calendar__cell--empty"></div>);
+    }
+
+    return <>{dayElements}</>;
 };
 
 export default Calendar;

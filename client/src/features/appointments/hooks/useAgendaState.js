@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { getNow, parseDate } from '@/utils/core/dateUtils';
 
 /**
  * useAgendaState
@@ -10,7 +11,7 @@ export const useAgendaState = (setViewDoctorId) => {
     const navigate = useNavigate();
 
     const [selectedDate, setSelectedDate] = useState(
-        location.state?.selectedDate ? new Date(location.state.selectedDate) : new Date()
+        location.state?.selectedDate ? parseDate(location.state.selectedDate) : getNow()
     );
     const [activeTab, setActiveTab] = useState(location.state?.activeTab || 'calendar');
     const [showOutOfHours, setShowOutOfHours] = useState(false);
@@ -25,21 +26,10 @@ export const useAgendaState = (setViewDoctorId) => {
     // Handle initial state sync from router (reschedule/sync)
     useEffect(() => {
         if (rescheduleAppt) {
-            queueMicrotask(() => {
-                // Only update if different to avoid loops
-                setViewDoctorId(prev => {
-                    const newId = String(rescheduleAppt.doctor_id);
-                    return prev === newId ? prev : newId;
-                });
-            });
+            setViewDoctorId(String(rescheduleAppt.doctor_id));
         } else if (syncAppt) {
-            queueMicrotask(() => {
-                setViewDoctorId(prev => {
-                    const newId = String(syncAppt.doctor_id);
-                    return prev === newId ? prev : newId;
-                });
-                setSelectedDate(new Date(syncAppt.appointment_date));
-            });
+            setViewDoctorId(String(syncAppt.doctor_id));
+            setSelectedDate(parseDate(syncAppt.appointment_date));
         }
     }, [rescheduleAppt, syncAppt, setViewDoctorId]);
 

@@ -1,6 +1,6 @@
 /* FinancesPage Styles (BEM) */
 
-.finances-page {
+.finances-page-orchestrator {
     display: flex;
     flex-direction: column;
     flex: 1;

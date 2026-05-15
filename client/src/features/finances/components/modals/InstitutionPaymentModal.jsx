@@ -50,7 +50,7 @@ const InstitutionPaymentModal = ({
                     <Input
                         type="number"
                         value={paymentData.amount}
-                        onChange={e => setPaymentData({ ...paymentData, amount: e.target.value })}
+                        onChange={e => setPaymentData(prev => ({ ...prev, amount: e.target.value }))}
                         placeholder="0.00"
                     />
                 </FormGroup>
@@ -58,7 +58,7 @@ const InstitutionPaymentModal = ({
                 <FormGroup label={t('payment_method')} required>
                     <Select
                         value={paymentData.method}
-                        onChange={e => setPaymentData({ ...paymentData, method: e.target.value })}
+                        onChange={e => setPaymentData(prev => ({ ...prev, method: e.target.value }))}
                         options={paymentMethods}
                     />
                 </FormGroup>

@@ -5,26 +5,42 @@ import Icon from '@/components/atoms/Icon';
 import './Modal.css';
 
 const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', variant = 'light', className = '' }) => {
-    // Prevent scrolling on body when modal is open
+    // Prevent scrolling on body when modal is open and handle global Escape key
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = 'hidden';
+            const handleKeyDownGlobal = (e) => {
+                if (e.key === 'Escape') onClose();
+            };
+            window.addEventListener('keydown', handleKeyDownGlobal);
+            return () => {
+                document.body.style.overflow = 'unset';
+                window.removeEventListener('keydown', handleKeyDownGlobal);
+            };
         }
-        return () => {
-            document.body.style.overflow = 'unset';
-        };
-    }, [isOpen]);
+    }, [isOpen, onClose]);
 
     if (!isOpen) return null;
 
     return ReactDOM.createPortal(
-        <div className="modal" onClick={onClose}>
+        <div className="modal">
+            <button
+                type="button"
+                className="modal__backdrop"
+                onClick={onClose}
+                aria-label="Cerrar modal"
+            />
             <div
                 className={`modal__content ${size && size !== 'md' ? `modal__content--${size}` : ''} ${className}`}
                 onClick={e => e.stopPropagation()}
+                onKeyDown={e => e.stopPropagation()}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="modal-title"
+                tabIndex={-1}
             >
                 <header className="modal__header">
-                    <h3 className="modal__title">{title}</h3>
+                    <h3 id="modal-title" className="modal__title">{title}</h3>
                     <Button
                         variant="ghost"
                         size="md-compact"

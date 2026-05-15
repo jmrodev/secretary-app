@@ -79,34 +79,39 @@ const MedicalFileRepository = ({
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {files.filter(filterItem).map(f => (
-                                        <tr
-                                            key={f.id}
-                                            className="medical-file-repository__row--interactive"
-                                            onClick={() => window.open(f.file_url, '_blank')}
-                                        >
-                                            <td className="medical-file-repository__cell--pl medical-file-repository__cell--py">
-                                                <div className="config-flex">
-                                                    <Icon name="folder_open" size="1.2rem" className="medical-file-repository__file-icon" />
-                                                    <span className="medical-file-repository__file-name">{f.description || f.file_name}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span className="medical-file-repository__patient-name">{f.patient_name}</span>
-                                            </td>
-                                            <td className="medical-file-repository__cell--pr medical-file-repository__cell--right">
-                                                {(user?.role === 'admin' || canDeleteFile) && (
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm-compact"
-                                                        className="medical-file-repository__btn--delete"
-                                                        onClick={(e) => { e.stopPropagation(); openDeleteFileModal(f); }}
-                                                        icon={<Icon name="delete" size="1rem" />}
-                                                    />
-                                                )}
-                                            </td>
-                                        </tr>
-                                    ))}
+                                    {files.reduce((acc, f) => {
+                                        if (filterItem(f)) {
+                                            acc.push(
+                                                <tr
+                                                    key={f.id}
+                                                    className="medical-file-repository__row--interactive"
+                                                    onClick={() => window.open(f.file_url, '_blank')}
+                                                >
+                                                    <td className="medical-file-repository__cell--pl medical-file-repository__cell--py">
+                                                        <div className="config-flex">
+                                                            <Icon name="folder_open" size="1.2rem" className="medical-file-repository__file-icon" />
+                                                            <span className="medical-file-repository__file-name">{f.description || f.file_name}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span className="medical-file-repository__patient-name">{f.patient_name}</span>
+                                                    </td>
+                                                    <td className="medical-file-repository__cell--pr medical-file-repository__cell--right">
+                                                        {(user?.role === 'admin' || canDeleteFile) && (
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm-compact"
+                                                                className="medical-file-repository__btn--delete"
+                                                                onClick={(e) => { e.stopPropagation(); openDeleteFileModal(f); }}
+                                                                icon={<Icon name="delete" size="1rem" />}
+                                                            />
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        }
+                                        return acc;
+                                    }, [])}
                                 </tbody>
                             </table>
                         )}

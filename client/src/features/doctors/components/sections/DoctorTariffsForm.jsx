@@ -8,7 +8,7 @@ import './DoctorTariffsForm.css';
 
 const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
     // Helper to update specific field
-    const handleChange = (field, value) => onChange({ ...data, [field]: value });
+    const handleTariffChange = (field, value) => onChange({ ...data, [field]: value });
 
     return (
         <div className="doctor-tariffs-form">
@@ -17,13 +17,13 @@ const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
                     <h4 className="doctor-tariffs-form__title">{t('rental_configuration') || 'Configuración de Alquiler'}</h4>
                     <div className="doctor-tariffs-form__grid">
                         <FormGroup label={t('office_number')}>
-                            <Input value={data.office_number} onChange={e => handleChange('office_number', e.target.value)} />
+                            <Input value={data.office_number} onChange={e => handleTariffChange('office_number', e.target.value)} />
                         </FormGroup>
                         <div className="doctor-tariffs-form__nested-grid">
                             <FormGroup label={t('type')}>
                                 <Select
                                     value={data.rental_type}
-                                    onChange={e => handleChange('rental_type', e.target.value)}
+                                    onChange={e => handleTariffChange('rental_type', e.target.value)}
                                     options={[
                                         { value: 'hourly', label: t('hourly') },
                                         { value: 'daily', label: t('daily') },
@@ -33,7 +33,7 @@ const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
                                 />
                             </FormGroup>
                             <FormGroup label={t('cost')}>
-                                <CurrencyInput value={data.rental_cost} onChange={e => handleChange('rental_cost', e.target.value)} />
+                                <CurrencyInput value={data.rental_cost} onChange={e => handleTariffChange('rental_cost', e.target.value)} />
                             </FormGroup>
                         </div>
                     </div>
@@ -46,38 +46,38 @@ const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
                 </h4>
                  <div className="doctor-tariffs-form__grid doctor-tariffs-form__grid--3col">
                     <FormGroup label={t('consultation_price')}>
-                        <CurrencyInput value={data.consultation_price} onChange={e => handleChange('consultation_price', e.target.value)} />
+                        <CurrencyInput value={data.consultation_price} onChange={e => handleTariffChange('consultation_price', e.target.value)} />
                     </FormGroup>
                     <FormGroup label={t('virtual_consultation_price') || 'Consulta Virtual'}>
-                        <CurrencyInput value={data.virtual_consultation_price} onChange={e => handleChange('virtual_consultation_price', e.target.value)} />
+                        <CurrencyInput value={data.virtual_consultation_price} onChange={e => handleTariffChange('virtual_consultation_price', e.target.value)} />
                     </FormGroup>
                     <FormGroup label={t('prescription_price') || 'Recetas'}>
-                        <CurrencyInput value={data.prescription_price} onChange={e => handleChange('prescription_price', e.target.value)} />
+                        <CurrencyInput value={data.prescription_price} onChange={e => handleTariffChange('prescription_price', e.target.value)} />
                     </FormGroup>
                     <FormGroup label={t('medical_license_price') || 'Licencia Médica'}>
-                        <CurrencyInput value={data.medical_license_price} onChange={e => handleChange('medical_license_price', e.target.value)} />
+                        <CurrencyInput value={data.medical_license_price} onChange={e => handleTariffChange('medical_license_price', e.target.value)} />
                     </FormGroup>
                     <FormGroup label={t('certificate_price') || 'Certificados'}>
-                        <CurrencyInput value={data.certificate_price} onChange={e => handleChange('certificate_price', e.target.value)} />
+                        <CurrencyInput value={data.certificate_price} onChange={e => handleTariffChange('certificate_price', e.target.value)} />
                     </FormGroup>
                 </div>
             </div>
 
             <div className="doctor-tariffs-form__grid">
                 <FormGroup label={t('specialty')}>
-                    <Input value={data.specialty} onChange={e => handleChange('specialty', e.target.value)} />
+                    <Input value={data.specialty} onChange={e => handleTariffChange('specialty', e.target.value)} />
                 </FormGroup>
                 <FormGroup label={t('cbu_label')}>
-                    <Input value={data.cbu || ''} onChange={(e) => handleChange('cbu', e.target.value)} placeholder="28500..." />
+                    <Input value={data.cbu || ''} onChange={(e) => handleTariffChange('cbu', e.target.value)} placeholder="28500..." />
                 </FormGroup>
                 <FormGroup label={t('alias_label')}>
-                    <Input value={data.alias || ''} onChange={(e) => handleChange('alias', e.target.value)} placeholder="mi.alias.pago" />
+                    <Input value={data.alias || ''} onChange={(e) => handleTariffChange('alias', e.target.value)} placeholder="mi.alias.pago" />
                 </FormGroup>
                 <FormGroup label={t('professional_bio') || 'Bio Profesional'}>
                     <AutoTextarea
                         className="doctor-tariffs-form__bio-field"
                         value={data.bio || ''}
-                        onChange={(e) => handleChange('bio', e.target.value)}
+                        onChange={(e) => handleTariffChange('bio', e.target.value)}
                         placeholder="Breve currículum o información relevante..."
                     />
                 </FormGroup>

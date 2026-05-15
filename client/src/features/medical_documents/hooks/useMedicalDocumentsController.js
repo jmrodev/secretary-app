@@ -6,7 +6,8 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useFetch } from '@/hooks/useFetch';
-import { useMedicalDocumentsHandlers } from '@/features/medical_documents/hooks/useMedicalDocumentsHandlers';
+import { useSearch } from '@/hooks/useSearch';
+import { useMedicalDocumentsHandlers } from './useMedicalDocumentsHandlers';
 import { useDoctors } from '@/context/DoctorContextDefinition';
 
 /**
@@ -20,11 +21,11 @@ export const useMedicalDocumentsController = () => {
     const { confirm, doubleConfirm } = useModal();
     const { canDeletePrescription, canDeleteLicense, canDeleteFile, canDeleteRequest } = usePermissions();
     const { viewDoctorId } = useDoctors();
+    const { searchTerm, setSearchTerm } = useSearch();
 
     // --- State ---
     const [activeTab, setActiveTab] = useState('requests');
     const [requestsSubTab, setRequestsSubTab] = useState('list');
-    const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isEditing, setIsEditing] = useState(false);

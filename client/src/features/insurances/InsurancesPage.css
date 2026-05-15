@@ -1,18 +1,11 @@
-/* InsurancesPage Styles - Unified Wide Layout */
+/* InsurancesPage Styles - Unified Orchestrator Layout */
 
-.insurances-page {
+.insurances-page-orchestrator {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
 }
 
-.insurances-page__list-view {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-}
-
-.insurances-page__main {
+.insurances-page-orchestrator__main {
     width: 100%;
 }
 

@@ -8,7 +8,7 @@ import './PatientAccountFields.css';
  * Contains username and password fields for new patient account creation.
  * Optimized for Bento Box layout.
  */
-const PatientAccountFields = ({ formData, handleChange, t }) => {
+const PatientAccountFields = ({ formData, updatePatientData, t }) => {
     return (
         <article className="patient-account-fields">
             <header className="patient-account-fields__header">
@@ -24,7 +24,7 @@ const PatientAccountFields = ({ formData, handleChange, t }) => {
                         name="username"
                         className="patient-account-fields__field"
                         value={formData.username || ''}
-                        onChange={handleChange}
+                        onChange={updatePatientData}
                         required
                         autoComplete="off"
                         placeholder={t('username_placeholder')}
@@ -37,7 +37,7 @@ const PatientAccountFields = ({ formData, handleChange, t }) => {
                         name="password"
                         className="patient-account-fields__field"
                         value={formData.password || ''}
-                        onChange={handleChange}
+                        onChange={updatePatientData}
                         required
                         autoComplete="new-password"
                         placeholder="••••••••"

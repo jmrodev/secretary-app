@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import api from '@/api/axios';
 import { useFetch } from '@/hooks/useFetch';
+import { getNow } from '@/utils/core/dateUtils';
 
 /**
  * Controller hook for FloatingChat component.
@@ -155,7 +156,7 @@ export const useFloatingChatController = (user, showMessage) => {
             sender_id: user.user_id,
             recipient_id: selectedConvo.other_user_id,
             message: messageText,
-            created_at: new Date().toISOString(),
+            created_at: getNow().toISOString(),
             read_status: 0,
             is_optimistic: true
         };

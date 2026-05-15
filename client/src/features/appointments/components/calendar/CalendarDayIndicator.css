@@ -3,7 +3,7 @@
 .calendar-day-indicator {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 4px;
     margin-top: auto;
     width: 100%;
 }
@@ -11,57 +11,70 @@
 .calendar-day-indicator__grid {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 2px;
     width: 100%;
 }
 
 .calendar-day-indicator__row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 3px;
+    gap: 2px;
 }
 
 .calendar-day-indicator__row--hidden {
-    opacity: 0;
-    pointer-events: none;
+    display: none;
 }
 
-.calendar-day-indicator .calendar-day-indicator__appointment-badge {
+.calendar-day-indicator__appointment-badge {
     display: flex;
     align-items: center;
     justify-content: center;
-    /*min-width: 16px;
-    min-height: 16px;
-    */
-    padding: 1px 2px;
-    border-radius: 6px;
+    padding: 2px;
+    border-radius: 4px;
     font-weight: 900;
+    font-size: 0.65rem;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.calendar-day-indicator__appointment-badge:hover {
+    transform: scale(1.1);
+    z-index: 5;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
 .calendar-day-indicator__appointment-badge--free-normal {
-    color: var(--green-700);
+    color: var(--success);
+    background: rgba(var(--success-rgb), 0.1);
 }
 
 .calendar-day-indicator__appointment-badge--booked-normal {
-    color: var(--blue-700);
+    color: var(--accent);
+    background: rgba(var(--accent-rgb), 0.1);
 }
 
 .calendar-day-indicator__appointment-badge--free-extra {
-    color: var(--amber-700);
+    color: var(--warning);
+    background: rgba(var(--warning-rgb), 0.1);
 }
 
 .calendar-day-indicator__appointment-badge--booked-extra {
-    color: var(--indigo-700);
+    color: var(--indigo-400);
+    background: rgba(var(--indigo-rgb), 0.1);
 }
 
 .calendar-day-indicator__appointment-badge--zero {
-    opacity: 0.2;
+    opacity: 0.1;
+    color: var(--text-muted);
+    background: transparent;
 }
 
-@media (max-width: 768px) {
-    .calendar-day-indicator .calendar-day-indicator__appointment-badge {
-        min-width: 14px;
-        min-height: 14px;
-        font-size: 0.7rem;
-    }
+/* Modifier for when the parent cell is selected - No nesting from parent! */
+.calendar-day-indicator--selected .calendar-day-indicator__appointment-badge {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--white);
+}
+
+.calendar-day-indicator--selected .calendar-day-indicator__appointment-badge--zero {
+    opacity: 0.3;
 }

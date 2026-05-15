@@ -23,7 +23,7 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
         }
     };
 
-    const handleChange = (selectedOption) => {
+    const handleSelectPatient = (selectedOption) => {
         onChange(selectedOption ? selectedOption.value : '', selectedOption ? selectedOption.patient : null);
     };
 
@@ -49,8 +49,7 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
             cacheOptions
             defaultOptions
             loadOptions={loadOptions}
-            onChange={handleChange}
-            autoFocus={autoFocus}
+            onChange={handleSelectPatient}
             placeholder={finalPlaceholder}
             isClearable={true}
             noOptionsMessage={({ inputValue }) => (

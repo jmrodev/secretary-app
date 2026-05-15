@@ -64,7 +64,15 @@ const MedicalHistoryTable = ({
                                             <span
                                                 className="medical-history__origin-tag medical-history__origin-tag--clickable"
                                                 onClick={() => onView({ ...item, _readOnly: true })}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' || e.key === ' ') {
+                                                        e.preventDefault();
+                                                        onView({ ...item, _readOnly: true });
+                                                    }
+                                                }}
                                                 title={t('view') || 'Ver'}
+                                                role="button"
+                                                tabIndex={0}
                                             >
                                                 {originLabel || t('request')}
                                             </span>

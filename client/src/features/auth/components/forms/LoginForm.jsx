@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLoginController } from '@/features/auth/hooks/useLoginController';
 import Button from '@/components/atoms/Button';
 import Input from '@/components/atoms/Input';
@@ -12,21 +12,24 @@ import './LoginForm.css';
  * LoginForm - Executor Component.
  * Implements the Login UI and connects it to the useLoginController.
  */
+import { getNow } from '../../../../utils/core/dateUtils';
+
+const CURRENT_YEAR = getNow().getFullYear();
+
 const LoginForm = () => {
     const {
         username,
         password,
-        error, loading,
+        error, 
+        loading,
         handlers,
         t
     } = useLoginController();
-    const { setUsername, setPassword, handleSubmit } = handlers;
 
     return (
-        <Card 
-            className="auth-card" 
-            noPadding 
-            title={
+        <Card
+            className="login-form animate-fade-in"
+            header={
                 <div className="auth-card__header">
                     <h1 className="auth-card__title">{t('welcome_back')}</h1>
                     <p className="auth-card__subtitle">{t('sign_in_subtitle')}</p>
@@ -45,21 +48,20 @@ const LoginForm = () => {
                             {t('download_apk')}
                         </Button>
                     </div>
-                    <p className="auth-card__footer-text">
-                        © {new Date().getFullYear()} {t('app_name')}
+                    <p className="auth-card__footer-text" suppressHydrationWarning>
+                        © {CURRENT_YEAR} {t('app_name')}
                     </p>
                 </div>
             }
         >
             {error && <div className="auth-card__error">{error}</div>}
 
-
-            <form className="auth-card__form" onSubmit={handleSubmit}>
+            <form className="auth-card__form" onSubmit={handlers.handleSubmit}>
                 <FormGroup label={t('username')}>
                     <Input
                         type="text"
                         value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        onChange={(e) => handlers.setUsername(e.target.value)}
                         placeholder={t('username_placeholder')}
                         disabled={loading}
                         required
@@ -70,7 +72,7 @@ const LoginForm = () => {
                     <Input
                         type="password"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e) => handlers.setPassword(e.target.value)}
                         placeholder="••••••••"
                         disabled={loading}
                         required

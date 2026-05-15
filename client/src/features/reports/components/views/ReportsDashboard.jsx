@@ -11,13 +11,15 @@ import PageHeader from '@/components/organisms/PageHeader';
 import Icon from '@/components/atoms/Icon';
 import './ReportsDashboard.css';
 
+import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+
 const ReportsDashboard = ({
     t,
     activeTab,
     setActiveTab,
     month,
-    setMonth,
     year,
+    setMonth,
     setYear,
     selectedDoctorId,
     setSelectedDoctorId,
@@ -32,49 +34,41 @@ const ReportsDashboard = ({
     return (
         <section className="reports-dashboard">
             <PageHeader 
-                title={t('reports_page_title') || 'Reportes y Exportaciones'}
-                subtitle={t('reports_page_subtitle') || 'Generación de reportes mensuales de turnos y recetas.'}
+                title={t('reports_page_title')}
+                subtitle={t('reports_page_subtitle')}
             />
 
-            <div className="dashboard-nav-bar dashboard-nav-bar--centered animate-fade-in">
-                <ReportTabs
-                    activeTab={activeTab}
-                    onTabChange={(tab) => {
-                        setActiveTab(tab);
-                    }}
-                    t={t}
-                />
-            </div>
+            <FeatureToolbar
+                className="reports-dashboard-orchestrator__top-actions"
+                tabs={[
+                    { id: 'appointments', label: t('appointments'), icon: 'event' },
+                    { id: 'prescriptions', label: t('prescriptions'), icon: 'medication' },
+                    { id: 'licenses', label: t('medical_licenses'), icon: 'description' },
+                    { id: 'certificates', label: t('certificates'), icon: 'verified' },
+                    { id: 'balance', label: t('balance'), icon: 'account_balance_wallet' }
+                ]}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                actions={
+                    <ReportFilters
+                        month={month}
+                        year={year}
+                        onMonthChange={setMonth}
+                        onYearChange={setYear}
+                        onGenerate={handleGenerateReport}
+                        onDownload={handleDownloadJson}
+                        onPrint={onPrint}
+                        onStepMonth={changeMonth}
+                        onStepYear={(d) => setYear(prev => prev + d)}
+                        isSubmitting={isSubmitting}
+                        hasData={!!reportData}
+                        t={t}
+                    />
+                }
+            />
 
             <div className="dashboard-layout__grid animate-fade-in">
-                <aside className="dashboard-layout__sidebar">
-                    <div className="dashboard-card">
-                        <h3 className="dashboard-card__title">
-                            <Icon name="filter_list" size="1.2rem" />
-                            {t('filters') || 'Filtros'}
-                        </h3>
-                        <ReportFilters
-                            month={month}
-                            year={year}
-                            selectedDoctorId={selectedDoctorId}
-                            onMonthChange={setMonth}
-                            onYearChange={setYear}
-                            onDoctorChange={setSelectedDoctorId}
-                            onGenerate={handleGenerateReport}
-                            onDownload={handleDownloadJson}
-                            onPrint={onPrint}
-                            onStepMonth={changeMonth}
-                            onStepYear={(d) => setYear(year + d)}
-                            isSubmitting={isSubmitting}
-                            hasData={!!reportData}
-                            doctors={doctors}
-                            t={t}
-                            vertical
-                        />
-                    </div>
-                </aside>
-
-                <main className="dashboard-layout__main">
+                <main className="dashboard-layout__main dashboard-layout__main--full">
                     <div className="dashboard-card no-padding">
                         <div className="reports-page__results">
                             {activeTab === 'appointments' && (

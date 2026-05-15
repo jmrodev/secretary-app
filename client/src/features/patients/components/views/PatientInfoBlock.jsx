@@ -2,7 +2,7 @@
 import React from 'react';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
-import { formatDate } from '@/utils/core/dateUtils';
+import { formatDate, calculateAge } from '@/utils/core/dateUtils';
 
 // Local Styles
 import './PatientInfoBlock.css';
@@ -50,7 +50,7 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink }) => {
                                 {formatDate(details.dob)}
                                 {details.dob && (
                                     <span className="patient-details__info-hint">
-                                        ({Math.floor((new Date() - new Date(details.dob)) / 31557600000)} {t('years')})
+                                        ({calculateAge(details.dob)} {t('years')})
                                     </span>
                                 )}
                             </td>
@@ -87,8 +87,8 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink }) => {
                             <td className="patient-details__info-value">
                                 <div className="patient-details__contact-list">
                                     {details.phoneNumbers && details.phoneNumbers.length > 0 ? (
-                                        details.phoneNumbers.map((p, idx) => (
-                                            <div key={idx} className="patient-details__contact-item">
+                                        details.phoneNumbers.map((p) => (
+                                            <div key={p.phone_number} className="patient-details__contact-item">
                                                 <span className={`patient-details__contact-indicator ${p.is_primary ? 'patient-details__contact-indicator--primary' : ''}`}></span>
                                                 <Button
                                                     to={`tel:${p.phone_number.replace(/[^0-9+]/g, '')}`}

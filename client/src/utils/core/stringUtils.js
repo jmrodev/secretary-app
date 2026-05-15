@@ -11,9 +11,12 @@ export const capitalizeFirst = (value = '') => {
 };
 
 export const capitalizeWords = (value = '') => {
+    if (!value) return '';
     return value
         .split(' ')
-        .filter(Boolean)
-        .map(capitalizeFirst)
-        .join(' ');
+        .reduce((acc, word) => {
+            if (!word) return acc;
+            const capitalized = capitalizeFirst(word);
+            return acc ? `${acc} ${capitalized}` : capitalized;
+        }, '');
 };
