@@ -5,6 +5,7 @@ import Input from '@/components/atoms/Input';
 import Select from '@/components/atoms/Select';
 import Icon from '@/components/atoms/Icon';
 import FormGroup from '@/components/molecules/FormGroup';
+import { getNow, toInputDate } from '@/utils/core/dateUtils';
 import './HistoricalWithdrawalModal.css';
 
 /**
@@ -24,17 +25,15 @@ const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) =
     const { amount, date, time, doctorId, description } = state;
 
     useEffect(() => {
-        if (isOpen) {
-            const today = new Date().toISOString().split('T')[0];
-            dispatch({
-                amount: '',
-                date: today,
-                time: '12:30',
-                description: 'Cierre manual de caja',
-                doctorId: doctors && doctors.length > 0 ? doctors[0].id : ''
-            });
-        }
-    }, [isOpen, doctors]);
+        const today = toInputDate(getNow());
+        dispatch({
+            amount: '',
+            date: today,
+            time: '12:30',
+            description: 'Cierre manual de caja',
+            doctorId: doctors && doctors.length > 0 ? doctors[0].id : ''
+        });
+    }, [doctors]); // Keep doctors as dep if we want to reset when they load
 
     const handleSubmit = (e) => {
         e.preventDefault();

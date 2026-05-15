@@ -3,7 +3,7 @@ import Modal from '@/components/molecules/Modal';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useConfig } from '@/context/ConfigContext';
 import { useTransactionForm } from '@/features/finances/hooks/useTransactionForm';
-import { formatPrice } from '@/utils/core/format';
+import { formatCurrency } from '@/utils/core/format';
 import {
     getTransactionTypes,
     getPaymentMethods,
@@ -47,7 +47,7 @@ const TransactionSummaryHeader = ({ requestId, patientSearch, doctors, doctor_id
 const TransactionPaymentsSection = ({ 
     pricingInfo, totalPrice, setTotalPrice, payments, 
     handlePaymentChange, addPaymentMethod, removePaymentMethod, 
-    currentPaidTotal, debtAmount, formatPrice, t 
+    currentPaidTotal, debtAmount, formatCurrency, t 
 }) => {
     const paymentMethods = getPaymentMethods(t);
     return (
@@ -129,12 +129,12 @@ const TransactionPaymentsSection = ({
                     <div className="transaction-modal__summary-content">
                         <div className="transaction-modal__summary-line">
                             <span className="transaction-modal__label">{t('paid')}:</span>
-                            <span className="transaction-modal__value transaction-modal__value--paid">{formatPrice(currentPaidTotal)}</span>
+                            <span className="transaction-modal__value transaction-modal__value--paid">{formatCurrency(currentPaidTotal)}</span>
                         </div>
                         {debtAmount > 0 ? (
                             <div className="transaction-modal__summary-line">
                                 <span className="transaction-modal__label">{t('debt')}:</span>
-                                <span className="transaction-modal__value transaction-modal__value--debt">{formatPrice(debtAmount)}</span>
+                                <span className="transaction-modal__value transaction-modal__value--debt">{formatCurrency(debtAmount)}</span>
                             </div>
                         ) : (
                             <div className="transaction-modal__status-paid">
@@ -340,7 +340,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                     removePaymentMethod={removePaymentMethod}
                     currentPaidTotal={currentPaidTotal}
                     debtAmount={debtAmount}
-                    formatPrice={formatPrice}
+                    formatCurrency={formatCurrency}
                     t={t}
                 />
 

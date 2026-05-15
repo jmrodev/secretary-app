@@ -106,29 +106,31 @@ const GlobalWhatsappMessenger = () => {
         }
     }, []);
 
-    // Polling logic
-    useEffect(() => {
-        if (isOpen) {
-            const initStatusTimer = setTimeout(() => fetchStatus(), 0);
-            const statusInterval = setInterval(fetchStatus, 5000);
-            
-            let conversationsInterval;
-            let initConvTimer;
+    // Use React 19 useEffectEvent for stable, up-to-date callback references
+    const onPollStatus = React.useEffectEvent(() => {
+        fetchStatus();
+    });
 
-            if (bridgeStatus.status === 'connected' && !activeChat) {
-                initConvTimer = setTimeout(() => fetchConversations(), 0);
-                conversationsInterval = setInterval(() => fetchConversations(true), 5000);
-            }
-
-            return () => {
-                clearTimeout(initStatusTimer);
-                if (initConvTimer) clearTimeout(initConvTimer);
-                clearInterval(statusInterval);
-                if (conversationsInterval) clearInterval(conversationsInterval);
-            };
+    const onPollConversations = React.useEffectEvent(() => {
+        if (bridgeStatus.status === 'connected' && !activeChat) {
+            fetchConversations(true);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isOpen, activeChat, bridgeStatus.status, viewDoctorId]);
+    });
+
+    useEffect(() => {
+        if (!isOpen) return;
+
+        // Initial fetch
+        onPollStatus();
+        
+        const statusInterval = setInterval(onPollStatus, 5000);
+        const conversationsInterval = setInterval(onPollConversations, 5000);
+
+        return () => {
+            clearInterval(statusInterval);
+            clearInterval(conversationsInterval);
+        };
+    }, [isOpen]); // Only depends on isOpen now!
 
     const handlePatientClick = (conv) => {
         setActiveChat({ patientId: conv.patientId || conv.patient_id, phone: conv.patient_phone });

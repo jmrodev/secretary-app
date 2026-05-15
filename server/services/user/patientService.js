@@ -35,7 +35,8 @@ class PatientService {
         if (!patient) throw new Error("Patient not found");
 
         const appointments = await appointmentRepository.findByPatientId(id);
-        const [stats] = await statsRepository.getPatientAppointmentStats(id);
+        const stats = await statsRepository.getPatientAppointmentStats(id);
+        const safeStats = stats || { total: 0, attended: 0, absent: 0, cancelled: 0 };
 
         const prescriptions = await medicalRequestRepository.getPatientMedicalHistory(id);
         const files = await medicalFileRepository.findAll({ patient_id: id });
@@ -48,10 +49,10 @@ class PatientService {
             appointments,
             prescriptions,
             files,
-            accumulated_days: Number(stats.attended),
+            accumulated_days: Number(safeStats.attended || 0),
             assignedDoctors,
             phoneNumbers,
-            stats
+            stats: safeStats
         };
     }
 

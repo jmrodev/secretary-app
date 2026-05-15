@@ -8,7 +8,11 @@ import { useFetch } from '@/hooks/useFetch';
  * Centralizes logic for creating medical requests (prescriptions, licenses, certificates).
  */
 export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMessage, t, onRequestCreated) => {
-    const [selectedDoctor, setSelectedDoctor] = useState(localStorage.getItem('last_selected_doctor_id') || '');
+    const [selectedDoctor, _setSelectedDoctor] = useState(localStorage.getItem('last_selected_doctor_id') || '');
+    const setSelectedDoctor = (id) => {
+        _setSelectedDoctor(id);
+        if (id) localStorage.setItem('last_selected_doctor_id', id);
+    };
     const [selectedPatient, setSelectedPatient] = useState('');
     const [patientData, setPatientData] = useState(null);
     const [reqType, setReqType] = useState(initialType || 'prescription');
@@ -33,12 +37,6 @@ export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMe
     const [tempUnitsPerBox, setTempUnitsPerBox] = useState('');
     const [tempQty, setTempQty] = useState('');
     const [tempVademecumId, setTempVademecumId] = useState(null);
-
-    useEffect(() => {
-        if (selectedDoctor) {
-            localStorage.setItem('last_selected_doctor_id', selectedDoctor);
-        }
-    }, [selectedDoctor]);
 
     const handleCreateRequest = async (e, initialItems = [], initialNote = '') => {
         if (e) e.preventDefault();

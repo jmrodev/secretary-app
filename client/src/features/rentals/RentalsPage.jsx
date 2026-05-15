@@ -3,7 +3,7 @@ import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import { formatPrice } from '@/utils/core/format';
+import { formatCurrency } from '@/utils/core/format';
 import { formatDate } from '@/utils/core/dateUtils';
 import { useRentalsController } from '@/features/rentals/hooks/useRentalsController';
 
@@ -142,7 +142,7 @@ const RentalsPage = () => {
                                                                 <td className="font-bold">{r.consultorio_name}</td>
                                                                 <td>{formatDate(r.rental_date)}</td>
                                                                 <td>{r.start_time} - {r.end_time}</td>
-                                                                <td className="text-right font-mono font-bold text-success">{formatPrice(r.cost)}</td>
+                                                                <td className="text-right font-mono font-bold text-success">{formatCurrency(r.cost)}</td>
                                                             </tr>
                                                         ))}
                                                     </tbody>

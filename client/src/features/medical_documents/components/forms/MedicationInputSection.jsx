@@ -77,7 +77,7 @@ const MedicationInputSection = ({
                         <div className={`${baseClass ? `${baseClass}__freq-presets` : ''} ${compClass}__freq-presets`}>
                             {freqPresets.map((p, idx) => (
                                 <Button
-                                    key={`freq-${p.label}-${idx}`}
+                                    key={p.label}
                                     variant="ghost"
                                     active={tempFreqPreset === idx}
                                     className={`${baseClass ? `${baseClass}__freq-btn` : ''} ${compClass}__freq-btn`}

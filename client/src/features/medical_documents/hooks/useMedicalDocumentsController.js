@@ -166,7 +166,11 @@ export const useMedicalDocumentsController = () => {
 
     // Selection/Edit State
     const [selectedPatient, setSelectedPatient] = useState('');
-    const [selectedDoctor, setSelectedDoctor] = useState(localStorage.getItem('last_selected_doctor_id') || '');
+    const [selectedDoctor, _setSelectedDoctor] = useState(localStorage.getItem('last_selected_doctor_id') || '');
+    const setSelectedDoctor = (id) => {
+        _setSelectedDoctor(id);
+        if (id) localStorage.setItem('last_selected_doctor_id', id);
+    };
     const [selectedFile, setSelectedFile] = useState(null);
     const [selectedPrescription, setSelectedPrescription] = useState(null);
     const [selectedLicense, setSelectedLicense] = useState(null);
@@ -209,11 +213,6 @@ export const useMedicalDocumentsController = () => {
         );
     };
 
-    useEffect(() => {
-        if (selectedDoctor) {
-            localStorage.setItem('last_selected_doctor_id', selectedDoctor);
-        }
-    }, [selectedDoctor]);
     const [printData] = useState([]);
 
     // --- Handlers Hook ---

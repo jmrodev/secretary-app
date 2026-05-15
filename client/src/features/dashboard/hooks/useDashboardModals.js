@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { formatDate } from '@/utils/core/dateUtils';
 
 export const useDashboardModals = () => {
     const navigate = useNavigate();
@@ -20,7 +21,7 @@ export const useDashboardModals = () => {
                 patientDni: appt.patient_dni,
                 patientUserId: appt.patient_user_id,
                 doctorId: appt.doctor_id,
-                description: `Payment for appointment on ${new Date(appt.appointment_date).toLocaleDateString()}`,
+                description: `Payment for appointment on ${formatDate(appt.appointment_date)}`,
                 apptId: appt.id
             },
             apptId: appt.id

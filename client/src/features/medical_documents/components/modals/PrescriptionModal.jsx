@@ -4,6 +4,7 @@ import Modal from '@/components/molecules/Modal';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { useMessage } from '@/context/MessageContext';
+import { formatDate } from '@/utils/core/dateUtils';
 import { capitalizeFirst } from '@/utils/core/stringUtils';
 
 // Local Feature Components
@@ -100,60 +101,57 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
 
     // ── Fetch data ──────────────────────────────────────────────────────────
     React.useEffect(() => {
-        if (isOpen && patientId) {
-            import('@/api/axios').then(module => {
-                const api = module.default;
+        if (!patientId) return;
 
-                // Fetch habitual meds
-                api.get(`/medical/patients/${patientId}/medications`)
-                    .then(res => setPatientMeds(res.data))
-                    .catch(err => console.error("Error fetching meds", err));
+        import('@/api/axios').then(module => {
+            const api = module.default;
 
-                // Fetch recent prescriptions to build history list
-                api.post('/medical/requests', { patientId, type: 'prescription' })
-                    .then(res => {
-                        const historyItems = [];
-                        const seenNames = new Set();
+            // Fetch habitual meds
+            api.get(`/medical/patients/${patientId}/medications`)
+                .then(res => setPatientMeds(res.data))
+                .catch(err => console.error("Error fetching meds", err));
 
-                        res.data.forEach(req => {
-                            // 1. Try structured data first
-                            if (req.raw_medication_data) {
-                                try {
-                                    const rawItems = typeof req.raw_medication_data === 'string'
-                                        ? JSON.parse(req.raw_medication_data)
-                                        : req.raw_medication_data;
+            // Fetch recent prescriptions to build history list
+            api.post('/medical/requests', { patientId, type: 'prescription' })
+                .then(res => {
+                    const historyItems = [];
+                    const seenNames = new Set();
 
-                                    if (Array.isArray(rawItems)) {
-                                        rawItems.forEach(it => {
-                                            const name = it.medication_name || it.name;
-                                            if (name && !seenNames.has(name.toLowerCase())) {
-                                                historyItems.push(it);
-                                                seenNames.add(name.toLowerCase());
-                                            }
-                                        });
-                                    }
-                                } catch (e) { console.warn("Error parsing raw_medication_data", e); }
-                            }
+                    res.data.forEach(req => {
+                        // 1. Try structured data first
+                        if (req.raw_medication_data) {
+                            try {
+                                const rawItems = typeof req.raw_medication_data === 'string'
+                                    ? JSON.parse(req.raw_medication_data)
+                                    : req.raw_medication_data;
 
-                            // 2. Fallback to parsing text field if we need more
-                            if (req.medications && seenNames.size < 10) {
-                                req.medications.split('\n').forEach(line => {
-                                    const name = line.trim().split(' (')[0].split(' x')[0].split(' cada')[0];
-                                    if (name && !seenNames.has(name.toLowerCase())) {
-                                        historyItems.push({ medication_name: name });
-                                        seenNames.add(name.toLowerCase());
-                                    }
-                                });
-                            }
-                        });
-                        setHistoryMeds(historyItems.slice(0, 15));
+                                if (Array.isArray(rawItems)) {
+                                    rawItems.forEach(it => {
+                                        const name = it.medication_name || it.name;
+                                        if (name && !seenNames.has(name.toLowerCase())) {
+                                            historyItems.push(it);
+                                            seenNames.add(name.toLowerCase());
+                                        }
+                                    });
+                                }
+                            } catch (e) { console.warn("Error parsing raw_medication_data", e); }
+                        }
+
+                        // 2. Fallback to parsing text field if we need more
+                        if (req.medications && seenNames.size < 10) {
+                            req.medications.split('\n').forEach(line => {
+                                const name = line.trim().split(' (')[0].split(' x')[0].split(' cada')[0];
+                                if (name && !seenNames.has(name.toLowerCase())) {
+                                    historyItems.push({ medication_name: name });
+                                    seenNames.add(name.toLowerCase());
+                                }
+                            });
+                        }
                     });
-            });
-        }
-        if (!isOpen) {
-            queueMicrotask(() => resetFields());
-        }
-    }, [isOpen, patientId]);
+                    setHistoryMeds(historyItems.slice(0, 15));
+                });
+        });
+    }, [patientId]);
 
     // ── Live days-supply calculation ─────────────────────────────────────────
     const daysSupply = useMemo(() => ds(parseFloat(tempUnitsPerBox), parseFloat(tempBoxes), parseFloat(tempDailyUnits)), [tempUnitsPerBox, tempBoxes, tempDailyUnits]);
@@ -162,7 +160,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
         if (!daysSupply) return null;
         const d = new Date();
         d.setDate(d.getDate() + daysSupply);
-        return d.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
+        return formatDate(d, { monthName: true, hideYear: true });
     }, [daysSupply]);
 
     // Use a reference date for calculations if needed, but for now we'll suppress warning on the UI side.

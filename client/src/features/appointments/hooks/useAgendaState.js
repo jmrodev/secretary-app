@@ -25,11 +25,17 @@ export const useAgendaState = (setViewDoctorId) => {
 
     // Handle initial state sync from router (reschedule/sync)
     useEffect(() => {
-        if (rescheduleAppt) {
-            setViewDoctorId(String(rescheduleAppt.doctor_id));
-        } else if (syncAppt) {
-            setViewDoctorId(String(syncAppt.doctor_id));
-            setSelectedDate(parseDate(syncAppt.appointment_date));
+        if (rescheduleAppt || syncAppt) {
+            const updates = {};
+            if (rescheduleAppt) {
+                updates.viewDoctorId = String(rescheduleAppt.doctor_id);
+            } else if (syncAppt) {
+                updates.viewDoctorId = String(syncAppt.doctor_id);
+                updates.selectedDate = parseDate(syncAppt.appointment_date);
+            }
+            
+            if (updates.viewDoctorId) setViewDoctorId(updates.viewDoctorId);
+            if (updates.selectedDate) setSelectedDate(updates.selectedDate);
         }
     }, [rescheduleAppt, syncAppt, setViewDoctorId]);
 

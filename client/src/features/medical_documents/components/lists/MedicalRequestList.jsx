@@ -4,7 +4,7 @@ import Pagination from '@/components/atoms/Pagination';
 import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { isToday, formatDate } from '@/utils/core/dateUtils';
-import { formatPrice } from '@/utils/core/format';
+import { formatCurrency } from '@/utils/core/format';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import './MedicalRequestList.css';
@@ -122,7 +122,7 @@ const MedicalRequestList = ({
                                             <div className={`medical-requests__payment-badge medical-requests__payment-badge--${paymentStatusClass}`}>
                                                 <span className="medical-requests__payment-dot"></span>
                                                 {r.payment_status === 'paid' ? t('paid') :
-                                                    ((r.payment_status === 'debt' || r.payment_status === 'partial') ? `${t(r.payment_status) || (r.payment_status === 'partial' ? 'Parcial' : 'Deuda')} ${formatPrice(r.debt_amount)}` :
+                                                    ((r.payment_status === 'debt' || r.payment_status === 'partial') ? `${t(r.payment_status) || (r.payment_status === 'partial' ? 'Parcial' : 'Deuda')} ${formatCurrency(r.debt_amount)}` :
                                                         (r.payment_status === 'bonified' ? (t('bonified') || 'Bonificado') : t('pending')))}
                                             </div>
 

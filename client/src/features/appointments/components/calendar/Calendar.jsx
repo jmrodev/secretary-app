@@ -32,9 +32,11 @@ const Calendar = ({
 
     // Sync viewDate when selectedDate prop changes
     useEffect(() => {
-        if (selectedDate) {
-            setViewDate(parseDate(selectedDate));
-        }
+        const nextDate = parseDate(selectedDate || getNow());
+        setViewDate(prev => {
+            if (isSameDay(prev, nextDate)) return prev;
+            return nextDate;
+        });
     }, [selectedDate]);
 
     const getDaysInMonth = (date) => {
@@ -125,13 +127,15 @@ const CalendarGrid = ({
     const dayElements = [];
     
     // Empty cells before first day
-    for (let i = 0; i < firstDay; i++) {
-        dayElements.push(<div key={`empty-pre-${viewDate.getFullYear()}-${viewDate.getMonth()}-${i}`} className="calendar__cell calendar__cell--empty"></div>);
+    const year = viewDate.getFullYear();
+    const month = viewDate.getMonth();
+    for (let cellIdx = 0; cellIdx < firstDay; cellIdx++) {
+        dayElements.push(<div key={`pre-pad-${year}-${month}-${cellIdx}`} className="calendar__cell calendar__cell--empty"></div>);
     }
 
     // Days of the month
-    for (let i = 1; i <= days; i++) {
-        const currentDay = createDate(viewDate.getFullYear(), viewDate.getMonth(), i);
+    for (let dayNum = 1; dayNum <= days; dayNum++) {
+        const currentDay = createDate(year, month, dayNum);
         const isSelected = selectedDate && isSameDay(parseDate(selectedDate), currentDay);
         const isTodayDate = isSameDay(getNow(), currentDay);
         const dateStr = [currentDay.getFullYear(), String(currentDay.getMonth() + 1).padStart(2, '0'), String(currentDay.getDate()).padStart(2, '0')].join('-');
@@ -147,7 +151,7 @@ const CalendarGrid = ({
         dayElements.push(
             <CalendarDayCell
                 key={dateStr} 
-                day={i} 
+                day={dayNum} 
                 status={{
                     isSelected,
                     isToday: isTodayDate,
@@ -171,8 +175,8 @@ const CalendarGrid = ({
     // Fill to 6 rows (42 cells)
     const totalCells = 42;
     const currentCount = dayElements.length;
-    for (let i = 0; i < (totalCells - currentCount); i++) {
-        dayElements.push(<div key={`empty-post-${viewDate.getFullYear()}-${viewDate.getMonth()}-${i}`} className="calendar__cell calendar__cell--empty"></div>);
+    for (let postIdx = 0; postIdx < (totalCells - currentCount); postIdx++) {
+        dayElements.push(<div key={`post-pad-${year}-${month}-${postIdx}`} className="calendar__cell calendar__cell--empty"></div>);
     }
 
     return <>{dayElements}</>;

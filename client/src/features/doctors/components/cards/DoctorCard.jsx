@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import { formatPrice } from '@/utils/core/format';
+import { formatCurrency } from '@/utils/core/format';
 import './DoctorCard.css';
 
 const DoctorCard = ({ doctor, currentUser, onEdit, t }) => {
@@ -51,13 +51,13 @@ const DoctorCard = ({ doctor, currentUser, onEdit, t }) => {
                     <div className="doctor-card__price-label">
                         {t('consult_abbrev') || 'CONSULTA'}
                     </div>
-                    <div className="doctor-card__price-value">{formatPrice(doctor.consultation_price)}</div>
+                    <div className="doctor-card__price-value">{formatCurrency(doctor.consultation_price)}</div>
                 </div>
                 <div className="doctor-card__price-box">
                     <div className="doctor-card__price-label">
                         {t('rx_abbrev') || 'RECETA'}
                     </div>
-                    <div className="doctor-card__price-value">{formatPrice(doctor.prescription_price)}</div>
+                    <div className="doctor-card__price-value">{formatCurrency(doctor.prescription_price)}</div>
                 </div>
             </div>
 

@@ -64,13 +64,15 @@ const MedicationAutocomplete = ({
 
         return (
             <>
-                {chunks.map((chunk, i) =>
-                    regex.test(chunk) ? (
-                        <span key={`match-${i}-${chunk}`} className={`${baseClass}__highlight`}>{chunk}</span>
+                {chunks.map((chunk, i) => {
+                    // Use a more stable key by combining index and content
+                    const chunkKey = `chunk-${i}-${chunk.length}`;
+                    return regex.test(chunk) ? (
+                        <span key={chunkKey} className={`${baseClass}__highlight`}>{chunk}</span>
                     ) : (
-                        chunk
-                    )
-                )}
+                        <React.Fragment key={chunkKey}>{chunk}</React.Fragment>
+                    );
+                })}
             </>
         );
     };

@@ -154,33 +154,41 @@ const AppointmentsPage = () => {
                 onSaveNote={handlers.handleSaveNote} fetchAppointments={handlers.fetchAppointments}
             />
 
-            <PrescriptionModal
-                isOpen={prescribeModal.open} onClose={() => setPrescribeModal(prev => ({ ...prev, open: false }))}
-                patientName={prescribeModal.patientName} patientId={prescribeModal.patientId}
-                onSubmit={(data) => handlers.handleSavePrescription({ ...prescribeModal, ...data })} t={t} isSubmitting={loading}
-            />
+            {prescribeModal.open && (
+                <PrescriptionModal
+                    isOpen={prescribeModal.open} onClose={() => setPrescribeModal(prev => ({ ...prev, open: false }))}
+                    patientName={prescribeModal.patientName} patientId={prescribeModal.patientId}
+                    onSubmit={(data) => handlers.handleSavePrescription({ ...prescribeModal, ...data })} t={t} isSubmitting={loading}
+                />
+            )}
 
-            <PatientHistoryModal
-                isOpen={historyModal.open} onClose={() => setHistoryModal(prev => ({ ...prev, open: false }))}
-                patientId={historyModal.patientId} patientName={historyModal.patientName}
-            />
+            {historyModal.open && (
+                <PatientHistoryModal
+                    isOpen={historyModal.open} onClose={() => setHistoryModal(prev => ({ ...prev, open: false }))}
+                    patientId={historyModal.patientId} patientName={historyModal.patientName}
+                />
+            )}
 
-            <WhatsAppModal
-                isOpen={whatsappModal.open} onClose={() => setWhatsappModal(prev => ({ ...prev, open: false }))}
-                phone={whatsappModal.phone} message={whatsappModal.message}
-                onMessageChange={(msg) => setWhatsappModal(prev => ({ ...prev, message: msg }))}
-            />
+            {whatsappModal.open && (
+                <WhatsAppModal
+                    isOpen={whatsappModal.open} onClose={() => setWhatsappModal(prev => ({ ...prev, open: false }))}
+                    phone={whatsappModal.phone} message={whatsappModal.message}
+                    onMessageChange={(msg) => setWhatsappModal(prev => ({ ...prev, message: msg }))}
+                />
+            )}
 
-            <NextSlotModal
-                isOpen={showNextSlotModal} onClose={() => setShowNextSlotModal(false)}
-                loading={nextSlot.loading} nextSlotData={nextSlot.nextSlotData}
-                includeOutOfHours={nextSlot.includeOutOfHours}
-                onToggleOutOfHours={(val) => { nextSlot.setIncludeOutOfHours(val); handlers.handleNextFreeSlot(null, val); }}
-                slotsPage={nextSlot.slotsPage} setSlotsPage={nextSlot.setSlotsPage} slotPages={nextSlot.slotPages}
-                onSelect={handlers.confirmNextSlot} onWhatsApp={handlers.handleWhatsAppSlot}
-                onNextGroup={nextSlot.handleNextPage} onPrevGroup={nextSlot.handlePrevPage}
-                hasPrevGroup={nextSlot.slotHistory?.length > 0} hasNextGroup={!!nextSlot.nextSlotData?.nextStartDate}
-            />
+            {showNextSlotModal && (
+                <NextSlotModal
+                    isOpen={showNextSlotModal} onClose={() => setShowNextSlotModal(false)}
+                    loading={nextSlot.loading} nextSlotData={nextSlot.nextSlotData}
+                    includeOutOfHours={nextSlot.includeOutOfHours}
+                    onToggleOutOfHours={(val) => { nextSlot.setIncludeOutOfHours(val); handlers.handleNextFreeSlot(null, val); }}
+                    slotsPage={nextSlot.slotsPage} setSlotsPage={nextSlot.setSlotsPage} slotPages={nextSlot.slotPages}
+                    onSelect={handlers.confirmNextSlot} onWhatsApp={handlers.handleWhatsAppSlot}
+                    onNextGroup={nextSlot.handleNextPage} onPrevGroup={nextSlot.handlePrevPage}
+                    hasPrevGroup={nextSlot.slotHistory?.length > 0} hasNextGroup={!!nextSlot.nextSlotData?.nextStartDate}
+                />
+            )}
 
             {editPatientModalOpen && (
                 <PatientManagerModal

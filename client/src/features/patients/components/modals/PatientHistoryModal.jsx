@@ -52,10 +52,8 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
     }, [patientId]);
 
     useEffect(() => {
-        if (isOpen) fetchHistory();
-    }, [isOpen, fetchHistory]);
-
-    if (!isOpen) return null;
+        fetchHistory();
+    }, [fetchHistory]);
 
     const baseClass = 'patient-history';
 

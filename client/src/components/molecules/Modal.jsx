@@ -6,19 +6,23 @@ import './Modal.css';
 
 const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', variant = 'light', className = '' }) => {
     // Prevent scrolling on body when modal is open and handle global Escape key
+    const onCloseRef = React.useRef(onClose);
+    onCloseRef.current = onClose;
+
+    // Prevent scrolling on body when modal is open and handle global Escape key
     useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = 'hidden';
-            const handleKeyDownGlobal = (e) => {
-                if (e.key === 'Escape') onClose();
-            };
-            window.addEventListener('keydown', handleKeyDownGlobal);
-            return () => {
-                document.body.style.overflow = 'unset';
-                window.removeEventListener('keydown', handleKeyDownGlobal);
-            };
-        }
-    }, [isOpen, onClose]);
+        if (!isOpen) return;
+
+        document.body.style.overflow = 'hidden';
+        const handleKeyDownGlobal = (e) => {
+            if (e.key === 'Escape') onCloseRef.current();
+        };
+        window.addEventListener('keydown', handleKeyDownGlobal);
+        return () => {
+            document.body.style.overflow = 'unset';
+            window.removeEventListener('keydown', handleKeyDownGlobal);
+        };
+    }, [isOpen]);
 
     if (!isOpen) return null;
 

@@ -165,37 +165,44 @@ const DashboardPage = () => {
                 fetchAppointments={refreshDashboard}
             />
 
-            <PrescriptionModal
-                isOpen={prescribeModal.open}
-                onClose={() => setPrescribeModal(prev => ({ ...prev, open: false }))}
-                patientName={prescribeModal.patientName}
-                onSubmit={handlePrescriptionSubmit}
-                t={t}
-                isSubmitting={isSubmitting}
-            />
+            {prescribeModal.open && (
+                <PrescriptionModal
+                    isOpen={prescribeModal.open}
+                    onClose={() => setPrescribeModal(prev => ({ ...prev, open: false }))}
+                    patientName={prescribeModal.patientName}
+                    onSubmit={handlePrescriptionSubmit}
+                    t={t}
+                    isSubmitting={isSubmitting}
+                />
+            )}
 
-            <PatientHistoryModal
-                isOpen={historyModal.open}
-                onClose={() => setHistoryModal(prev => ({ ...prev, open: false }))}
-                patientId={historyModal.patientId}
-                patientName={historyModal.patientName}
-            />
+            {historyModal.open && (
+                <PatientHistoryModal
+                    isOpen={historyModal.open}
+                    onClose={() => setHistoryModal(prev => ({ ...prev, open: false }))}
+                    patientId={historyModal.patientId}
+                    patientName={historyModal.patientName}
+                />
+            )}
 
-            <TransactionModal
-                isOpen={paymentModal.open}
-                onClose={() => setPaymentModal(prev => ({ ...prev, open: false }))}
-                initialData={{
-                    ...paymentModal.initialData,
-                    appointment_id: paymentModal.apptId || paymentModal.initialData?.apptId
-                }}
-                requestId={paymentModal.reqId || paymentModal.initialData?.reqId}
-                onSuccess={async () => {
-                    refreshDashboard();
-                }}
-            />
+            {paymentModal.open && (
+                <TransactionModal
+                    isOpen={paymentModal.open}
+                    onClose={() => setPaymentModal(prev => ({ ...prev, open: false }))}
+                    initialData={{
+                        ...paymentModal.initialData,
+                        appointment_id: paymentModal.apptId || paymentModal.initialData?.apptId
+                    }}
+                    requestId={paymentModal.reqId || paymentModal.initialData?.reqId}
+                    onSuccess={async () => {
+                        refreshDashboard();
+                        setPaymentModal(prev => ({ ...prev, open: false }));
+                    }}
+                    t={t}
+                />
+            )}
         </MainLayout>
     );
-
 };
 
 export default DashboardPage;

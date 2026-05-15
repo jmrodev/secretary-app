@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import api from '@/api/axios';
 import { useFetch } from '@/hooks/useFetch';
 import { getNow } from '@/utils/core/dateUtils';
@@ -104,6 +104,19 @@ export const useFloatingChatController = (user, showMessage) => {
         }
     }, [selectedConvo]);
 
+    // React 19 useEffectEvent for stable polling callbacks
+    const onPollGeneral = React.useEffectEvent(() => {
+        fetchConversations();
+        fetchUnreadCount();
+    });
+
+    const onPollThread = React.useEffectEvent(() => {
+        if (selectedConvo) {
+            fetchThread();
+            checkTypingStatus(selectedConvo.other_user_id);
+        }
+    });
+
     useEffect(() => {
         if (!user || user.role === 'patient') return;
 
@@ -111,23 +124,19 @@ export const useFloatingChatController = (user, showMessage) => {
             Notification.requestPermission();
         }
 
-        const interval = setInterval(() => {
-            fetchConversations();
-            fetchUnreadCount();
-        }, 15000);
-
+        const interval = setInterval(onPollGeneral, 15000);
         return () => clearInterval(interval);
-    }, [user, fetchConversations, fetchUnreadCount]);
+    }, [user]);
+
+    const activeConvoId = selectedConvo?.other_user_id;
 
     useEffect(() => {
-        if (selectedConvo) {
-            const threadInterval = setInterval(() => {
-                fetchThread();
-                checkTypingStatus(selectedConvo.other_user_id);
-            }, 5000);
-            return () => clearInterval(threadInterval);
-        }
-    }, [selectedConvo, fetchThread, checkTypingStatus]);
+        if (!activeConvoId) return;
+        
+        onPollThread();
+        const threadInterval = setInterval(onPollThread, 5000);
+        return () => clearInterval(threadInterval);
+    }, [activeConvoId]);
 
     useEffect(() => {
         if (scrollRef.current) {

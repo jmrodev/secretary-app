@@ -93,11 +93,12 @@ const TransactionsTable = ({
         const regex = new RegExp(`(${escapedName})`, 'gi');
 
         const parts = description.split(regex);
-        return parts.map((part, i) =>
-            part.toLowerCase() === patientName.toLowerCase()
-                ? <strong key={`part-${i}-${part}`} className="transactions-table__highlight">{part}</strong>
-                : part
-        );
+        return parts.map((part, i) => {
+            const partKey = `part-${i}-${part.length}`;
+            return part.toLowerCase() === patientName.toLowerCase()
+                ? <strong key={partKey} className="transactions-table__highlight">{part}</strong>
+                : part;
+        });
     };
 
     /**

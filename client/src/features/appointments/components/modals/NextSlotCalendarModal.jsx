@@ -107,14 +107,15 @@ const NextSlotCalendarModal = ({
     const monthNames = t('months_array') || [];
     const dayNames = t('days_short_array') || [];
 
+    // Initial state setup for client-side dates
     useEffect(() => {
-        dispatch({ type: 'SET_CLIENT_DATES', payload: { todayIso: toInputDate(getNow()) } });
-    }, []);
-
-    useEffect(() => {
-        if (selectedDate) {
-            dispatch({ type: 'SET_CLIENT_DATES', payload: { selectedDateStr: formatDate(selectedDate + 'T12:00:00') } });
-        }
+        const todayIso = toInputDate(getNow());
+        const selectedDateStr = selectedDate ? formatDate(selectedDate + 'T12:00:00') : '';
+        
+        dispatch({ 
+            type: 'SET_CLIENT_DATES', 
+            payload: { todayIso, selectedDateStr } 
+        });
     }, [selectedDate]);
 
     const slotsByDate = useMemo(() => {
@@ -240,11 +241,11 @@ const NextSlotCalendarModal = ({
                                 <Button onClick={handleNextMonth} variant="ghost" size="sm-compact" icon={<Icon name="chevron_right" />} />
                             </div>
                             <div className="day-headers">
-                                {dayNames.map((day, idx) => <div key={`header-${idx}`} className="day-headers__day">{day}</div>)}
+                                {dayNames.map((day) => <div key={`header-${day}`} className="day-headers__day">{day}</div>)}
                             </div>
                             <div className="calendar-grid__body">
-                                {calendarDays.map((dayData, idx) => {
-                                    if (!dayData) return <div key={`empty-${currentMonth.getTime()}-${idx}`} className="calendar-day-cell calendar-day-cell--other-month"></div>;
+                                {calendarDays.map((dayData, cellIdx) => {
+                                    if (!dayData) return <div key={`pad-${currentMonth.getTime()}-${cellIdx}`} className="calendar-day-cell calendar-day-cell--other-month"></div>;
                                     const { day, dateStr, isToday, slots } = dayData;
                                     const hasSlots = slots && slots.total > 0;
                                     const isDisabled = dateStr < clientDates.todayIso;

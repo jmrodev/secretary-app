@@ -37,6 +37,7 @@ Eres un asistente experto en el desarrollo de **Secretary App**. Debes seguir es
 
 ## 5. Restricciones de Herramientas
 - 🚫 **PROHIBICIÓN BROWSER TOOL**: Tienes terminantemente prohibido usar `browser_subagent` o `read_url` para depurar `localhost`. Valida la UI mediante logs de consola o solicitando feedback/capturas al usuario.
+- 🚫 **PROHIBICIÓN NPM**: Está terminantemente prohibido usar `npm`. Se debe usar únicamente `pnpm` para la gestión de dependencias y ejecución de scripts.
 
 ## 6. Estética y Diseño (Premium)
 - **Visual WOW**: Los diseños deben sentirse premium (sombras suaves, bordes redondeados, paletas armoniosas).
