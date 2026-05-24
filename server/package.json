@@ -23,7 +23,7 @@
     "dotenv": "^17.4.1",
     "express": "^5.2.1",
     "express-rate-limit": "^8.4.1",
-    "googleapis": "^171.4.0",
+    "googleapis": "^172.0.0",
     "jsonwebtoken": "^9.0.3",
     "mariadb": "3.5.2",
     "morgan": "^1.10.1",
